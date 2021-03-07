@@ -17,22 +17,22 @@
 # Furkan Ahmet Kara <furkanahmetkara.fk@gmail.com>, 2017, 2018.
 # Furkan Tokaç <developmentft@gmail.com>, 2018.
 # Sabri Ünal <libreajans@gmail.com>, 2019-2020.
-# Emin Tufan Çetin <etcetin@gmail.com>, 2016-2020.
+# Emin Tufan Çetin <etcetin@gmail.com>, 2016-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-03-31 15:44+0000\n"
-"PO-Revision-Date: 2020-02-05 15:27+0300\n"
+"POT-Creation-Date: 2021-02-10 20:12+0000\n"
+"PO-Revision-Date: 2021-03-07 22:49+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 3.34.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-POOTLE-MTIME: 1433334275.000000\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
@@ -78,7 +78,7 @@ msgstr ""
 "klasörlerinizi tarayabilir, çıkarılabilir ortamlara veri yazabilir ve "
 "okuyabilir, betik ve uygulamaları çalıştırabilir. Üç tür görünümü bulunur: "
 "Simge, Liste ve Ağaç. Nautilus’un işlevleri eklentiler ve betiklerle "
-"arttırılabilir."
+"genişletilebilir."
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:38
 msgid "The GNOME Project"
@@ -105,7 +105,7 @@ msgid "Search"
 msgstr "Arama"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:54 src/nautilus-bookmark.c:111
-#: src/nautilus-file.c:4422 src/nautilus-file-utilities.c:323
+#: src/nautilus-file.c:4426 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:314
 msgid "Other Locations"
 msgstr "Diğer Konumlar"
@@ -113,7 +113,8 @@ msgstr "Diğer Konumlar"
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
 msgid "folder;manager;explore;disk;filesystem;"
-msgstr "klasör;yönetici;gezgin;keşfet;gözat;disk;dosya sistemi;"
+msgstr ""
+"klasör;dizin;yönetici;gezgin;keşfet;keşif;gözat;göz at;disk;dosya sistemi;"
 
 #: data/org.gnome.Nautilus.desktop.in.in:20
 #: src/resources/ui/nautilus-toolbar.ui:27
@@ -207,8 +208,8 @@ msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
 msgstr ""
-"Eğer seçiliyse, Nautilus dosya silerken ya da Çöp’ü boşaltırken onay "
-"için size soracaktır."
+"Eğer seçiliyse, Nautilus dosya silerken ya da Çöp’ü boşaltırken onay için "
+"size soracaktır."
 
 #: data/org.gnome.nautilus.gschema.xml:119
 msgid "When to show number of items in a folder"
@@ -222,8 +223,8 @@ msgid ""
 "If set to “never” then never bother to compute item counts."
 msgstr ""
 "Klasörlerdeki dosya sayılarının ne zaman gösterileceği. Eğer “always” ayarlı "
-"ise dosyalar, klasör uzaktaki sunucuda olsa bile sayılır. Eğer “local-"
-"only” ayarlı ise yalnızca yerel dosya sistemlerindeki dosyaların miktarı "
+"ise dosyalar, klasör uzaktaki sunucuda olsa bile sayılır. Eğer “local-only” "
+"ayarlı ise yalnızca yerel dosya sistemlerindeki dosyaların miktarı "
 "gösterilir. “never” ayarlı ise hiçbir zaman öge sayısını hesaplama zahmetine "
 "girilmez."
 
@@ -236,8 +237,8 @@ msgid ""
 "Possible values are “single” to launch files on a single click, or “double” "
 "to launch them on a double click."
 msgstr ""
-"Geçerli değerler; dosyaları tek tıkla başlatmak için “single”, veya "
-"çift tıkla başlatmak için “double”."
+"Geçerli değerler; dosyaları tek tıkla başlatmak için “single”, veya çift "
+"tıkla başlatmak için “double”."
 
 #: data/org.gnome.nautilus.gschema.xml:129
 msgid "What to do with executable text files when activated"
@@ -264,8 +265,8 @@ msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
 msgstr ""
-"Bilinmeyen MIME türü açıldığında onu işleyecek uygulama aramak için "
-"paket yükleyici penceresinin açılması."
+"Bilinmeyen MIME türü açıldığında onu işleyecek uygulama aramak için paket "
+"yükleyici penceresinin açılması."
 
 #: data/org.gnome.nautilus.gschema.xml:139
 msgid "Use extra mouse button events in Nautilus’ browser window"
@@ -438,8 +439,8 @@ msgid ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
 msgstr ""
-"Yeni pencere/sekme açılırken tam metin aramanın öntanımlı olarak etkin "
-"olup olmayacağı"
+"Yeni pencere/sekme açılırken tam metin aramanın öntanımlı olarak etkin olup "
+"olmayacağı"
 
 #: data/org.gnome.nautilus.gschema.xml:211
 msgid ""
@@ -505,8 +506,8 @@ msgstr ""
 "düzeyine göre, eğer girilen tamsayı 0’dan büyükse dosya adı girilen satır "
 "sayısını geçmeyecektir. Eğer tamsayı 0 ya da daha küçükse, belirtilen "
 "yaklaştırma düzeyinde hiçbir sınır uygulanmaz. Hiçbir yakınlaştırma düzeyi "
-"belirtilmeksizin girilen, “Integer” (tamsayı) biçimindeki öntanımlı girdiye de "
-"izin verilir. Bu, diğer tüm yaklaştırma düzeyleri için satır sınırını "
+"belirtilmeksizin girilen, “Integer” (tamsayı) biçimindeki öntanımlı girdiye "
+"de izin verilir. Bu, diğer tüm yaklaştırma düzeyleri için satır sınırını "
 "belirtir. Örnekler: 0 — her zaman uzun dosya adlarını göster; 3 — eğer dosya "
 "adı üç satırı geçiyorsa kısalt; smallest:5, smaller:4,0 — yaklaştırma düzeyi "
 "“smallest” için eğer beş satırı geçerse dosya adını kısalt. “smaller” "
@@ -777,13 +778,13 @@ msgstr "Uygulanamaz"
 
 #: extensions/audio-video-properties/totem-properties-view.c:277
 #: extensions/audio-video-properties/resources/ui/properties.ui:512
-#: src/nautilus-file.c:7470
+#: src/nautilus-file.c:7453
 msgid "Audio"
 msgstr "Ses"
 
 #: extensions/audio-video-properties/totem-properties-view.c:279
 #: extensions/audio-video-properties/resources/ui/properties.ui:321
-#: src/nautilus-file.c:7478 src/nautilus-mime-actions.c:208
+#: src/nautilus-file.c:7461 src/nautilus-mime-actions.c:208
 msgid "Video"
 msgstr "Video"
 
@@ -882,11 +883,11 @@ msgstr "Fotoğraf Makinesi Modeli"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:230
 msgid "Exposure Time"
-msgstr "Tab Etme Zamanı"
+msgstr "Pozlama Zamanı"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:231
 msgid "Exposure Program"
-msgstr "Tab Etme Programı"
+msgstr "Pozlama Programı"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:232
 msgid "Aperture Value"
@@ -957,7 +958,7 @@ msgid "Failed to load image information"
 msgstr "Resim bilgisi yüklenirken hata oluştu"
 
 #: extensions/image-properties/nautilus-image-properties-page-provider.c:100
-#: src/nautilus-file.c:7472
+#: src/nautilus-file.c:7455
 msgid "Image"
 msgstr "Resim"
 
@@ -1077,8 +1078,8 @@ msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
 "to run it?"
 msgstr ""
-"“%s” kendiliğinden başlatılması istenen yazılım içeriyor. Çalıştırmak "
-"ister misiniz?"
+"“%s” kendiliğinden başlatılması istenen yazılım içeriyor. Çalıştırmak ister "
+"misiniz?"
 
 #: src/nautilus-autorun-software.c:192
 msgid "If you don’t trust this location or aren’t sure, press Cancel."
@@ -1173,7 +1174,7 @@ msgstr "Oluşturulma tarihi"
 
 #: src/nautilus-batch-rename-dialog.h:135
 msgid "Season number"
-msgstr "Mevsim numarası"
+msgstr "Sezon numarası"
 
 #: src/nautilus-batch-rename-dialog.h:142
 msgid "Episode number"
@@ -1215,7 +1216,7 @@ msgstr "Başlangıç"
 
 #: src/nautilus-canvas-container.c:1772
 msgid "The selection rectangle"
-msgstr "Seçim dörgeni"
+msgstr "Seçim dörtgeni"
 
 #: src/nautilus-canvas-view-container.c:366
 #: src/resources/ui/nautilus-preferences-window.ui:1282
@@ -1257,7 +1258,7 @@ msgstr "Dosyanın türü."
 
 #: src/nautilus-column-utilities.c:79
 msgid "Modified"
-msgstr "Değiştirildi"
+msgstr "Değiştirilme"
 
 #: src/nautilus-column-utilities.c:80 src/nautilus-column-utilities.c:138
 msgid "The date the file was modified."
@@ -1313,7 +1314,7 @@ msgstr "Dosyanın konumu."
 
 #: src/nautilus-column-utilities.c:137
 msgid "Modified — Time"
-msgstr "Değiştirilme — Zamanı"
+msgstr "Değiştirilme — Saat"
 
 #: src/nautilus-column-utilities.c:146
 msgid "Recency"
@@ -1321,7 +1322,7 @@ msgstr "Son Erişim"
 
 #: src/nautilus-column-utilities.c:147
 msgid "The date the file was accessed by the user."
-msgstr "Dosyanın kullanıcı tarafından erişildiği son tarih."
+msgstr "Kullanıcının dosyaya eriştiği son tarih."
 
 #: src/nautilus-column-utilities.c:156
 msgid "Star"
@@ -1475,8 +1476,7 @@ msgid ""
 "The name “%s” is not valid because it contains the character “/”. Please use "
 "a different name."
 msgstr ""
-"“/” karakteri kullanıldığından “%s” adı geçersiz. Lütfen başka ad "
-"kullanın."
+"“/” karakteri kullanıldığından “%s” adı geçersiz. Lütfen başka ad kullanın."
 
 #: src/nautilus-error-reporting.c:284
 #, c-format
@@ -1538,62 +1538,62 @@ msgstr "Üst düzey dosyalar yeniden adlandırılamıyor"
 msgid "File not found"
 msgstr "Dosya bulunamadı"
 
-#: src/nautilus-file.c:4426 src/nautilus-file-utilities.c:327
+#: src/nautilus-file.c:4430 src/nautilus-file-utilities.c:327
 #: src/nautilus-pathbar.c:319
 msgid "Starred"
 msgstr "Yıldızlı"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5499
+#: src/nautilus-file.c:5482
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5504
+#: src/nautilus-file.c:5487
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: src/nautilus-file.c:5513
+#: src/nautilus-file.c:5496
 #, no-c-format
 msgid "Yesterday"
 msgstr "Dün"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5522
+#: src/nautilus-file.c:5505
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Dün %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5529
+#: src/nautilus-file.c:5512
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Dün %l:%M %p"
 
-#: src/nautilus-file.c:5539
+#: src/nautilus-file.c:5522
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5548
+#: src/nautilus-file.c:5531
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5555
+#: src/nautilus-file.c:5538
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5566
+#: src/nautilus-file.c:5549
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
@@ -1601,7 +1601,7 @@ msgstr "%-e %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5576
+#: src/nautilus-file.c:5559
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e %b %H:%M"
@@ -1609,14 +1609,14 @@ msgstr "%-e %b %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5584
+#: src/nautilus-file.c:5567
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5595
+#: src/nautilus-file.c:5578
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
@@ -1624,7 +1624,7 @@ msgstr "%-e %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5605
+#: src/nautilus-file.c:5588
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y %H:%M"
@@ -1632,139 +1632,139 @@ msgstr "%-e %b %Y %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5613
+#: src/nautilus-file.c:5596
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y %l:%M %p"
 
-#: src/nautilus-file.c:5625
+#: src/nautilus-file.c:5608
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6088
+#: src/nautilus-file.c:6071
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "İzinlerin atanmasına izin verilmiyor"
 
-#: src/nautilus-file.c:6411
+#: src/nautilus-file.c:6394
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Sahibin atanmasına izin verilmiyor"
 
-#: src/nautilus-file.c:6430
+#: src/nautilus-file.c:6413
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "Belirtilen sahip “%s” yok"
 
-#: src/nautilus-file.c:6715
+#: src/nautilus-file.c:6698
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Küme atamasına izin verilemiyor"
 
-#: src/nautilus-file.c:6734
+#: src/nautilus-file.c:6717
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "Belirtilen ”%s” kümesi yok"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6876
+#: src/nautilus-file.c:6859
 msgid "Me"
 msgstr "Ben"
 
-#: src/nautilus-file.c:6908
+#: src/nautilus-file.c:6891
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u öge"
 
-#: src/nautilus-file.c:6909
+#: src/nautilus-file.c:6892
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u klasör"
 
-#: src/nautilus-file.c:6910
+#: src/nautilus-file.c:6893
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u dosya"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7387
+#: src/nautilus-file.c:7370
 msgid "? bytes"
 msgstr "? bayt"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7399
+#: src/nautilus-file.c:7382
 msgid "? items"
 msgstr "? öge"
 
-#: src/nautilus-file.c:7407
+#: src/nautilus-file.c:7390
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7433 src/nautilus-properties-window.c:1292
+#: src/nautilus-file.c:7416 src/nautilus-properties-window.c:1292
 msgid "unknown"
 msgstr "bilinmiyor"
 
-#: src/nautilus-file.c:7469 src/nautilus-file.c:7477 src/nautilus-file.c:7536
+#: src/nautilus-file.c:7452 src/nautilus-file.c:7460 src/nautilus-file.c:7519
 msgid "Program"
 msgstr "Uygulama"
 
-#: src/nautilus-file.c:7471
+#: src/nautilus-file.c:7454
 msgid "Font"
 msgstr "Yazı Tipi"
 
-#: src/nautilus-file.c:7473
+#: src/nautilus-file.c:7456
 msgid "Archive"
 msgstr "Arşiv"
 
-#: src/nautilus-file.c:7474
+#: src/nautilus-file.c:7457
 msgid "Markup"
 msgstr "İşaretleme"
 
-#: src/nautilus-file.c:7475 src/nautilus-file.c:7476
+#: src/nautilus-file.c:7458 src/nautilus-file.c:7459
 msgid "Text"
 msgstr "Metin"
 
-#: src/nautilus-file.c:7479
+#: src/nautilus-file.c:7462
 msgid "Contacts"
 msgstr "Kişiler"
 
-#: src/nautilus-file.c:7480
+#: src/nautilus-file.c:7463
 msgid "Calendar"
 msgstr "Takvim"
 
-#: src/nautilus-file.c:7481
+#: src/nautilus-file.c:7464
 msgid "Document"
 msgstr "Belge"
 
-#: src/nautilus-file.c:7482 src/nautilus-mime-actions.c:182
+#: src/nautilus-file.c:7465 src/nautilus-mime-actions.c:182
 msgid "Presentation"
 msgstr "Sunum"
 
-#: src/nautilus-file.c:7483 src/nautilus-mime-actions.c:190
+#: src/nautilus-file.c:7466 src/nautilus-mime-actions.c:190
 msgid "Spreadsheet"
 msgstr "Çizelge"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7510
+#: src/nautilus-file.c:7493
 msgid "Other"
 msgstr "Diğer"
 
-#: src/nautilus-file.c:7538
+#: src/nautilus-file.c:7521
 msgid "Binary"
 msgstr "İkili"
 
-#: src/nautilus-file.c:7543
+#: src/nautilus-file.c:7526
 msgid "Folder"
 msgstr "Klasör"
 
-#: src/nautilus-file.c:7582
+#: src/nautilus-file.c:7565
 msgid "Link"
 msgstr "Bağ"
 
@@ -1773,12 +1773,12 @@ msgstr "Bağ"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7588 src/nautilus-file-operations.c:454
+#: src/nautilus-file.c:7571 src/nautilus-file-operations.c:454
 #, c-format
 msgid "Link to %s"
 msgstr "%s için bağ"
 
-#: src/nautilus-file.c:7606 src/nautilus-file.c:7622 src/nautilus-file.c:7638
+#: src/nautilus-file.c:7589 src/nautilus-file.c:7605 src/nautilus-file.c:7621
 msgid "Link (broken)"
 msgstr "Bağlantı (bozuk)"
 
@@ -2513,7 +2513,7 @@ msgstr "Bir klasörü kendi üzerine kopyalayamazsınız."
 
 #: src/nautilus-file-operations.c:5185 src/nautilus-file-operations.c:5994
 msgid "The destination folder is inside the source folder."
-msgstr "Hedef klasör kaynak klasörünün içerisinde."
+msgstr "Hedef klasör, kaynak klasörünün içerisinde."
 
 #. the run_warning() frees all strings passed in automatically
 #: src/nautilus-file-operations.c:5225
@@ -2526,7 +2526,7 @@ msgstr "Dosyayı kendi üzerine kopyalayamazsınız."
 
 #: src/nautilus-file-operations.c:5227
 msgid "The source file would be overwritten by the destination."
-msgstr "Kaynak dosya hedef tarafından kendi üzerine yazılabilir."
+msgstr "Hedef tarafından kaynak dosyanın üstüne yazılabilir."
 
 #: src/nautilus-file-operations.c:5497 src/nautilus-file-operations.c:5585
 #, c-format
@@ -2541,7 +2541,7 @@ msgstr "%s içerisinde aynı adda zaten var olan dosya silinemedi."
 #: src/nautilus-file-operations.c:5587
 #, c-format
 msgid "There was an error copying the file into %s."
-msgstr "Dosya %s içerisine kopyalanırken hata oluştu."
+msgstr "Dosya, %s içerisine kopyalanırken hata oluştu."
 
 #: src/nautilus-file-operations.c:5776
 msgid "Copying Files"
@@ -2931,11 +2931,11 @@ msgstr "Çoklu Disk _Sürücüyü Durdur"
 msgid "_Lock Drive"
 msgstr "_Sürücüyü Kilitle"
 
-#: src/nautilus-files-view.c:9851
+#: src/nautilus-files-view.c:9871
 msgid "Content View"
 msgstr "İçerik Görünümü"
 
-#: src/nautilus-files-view.c:9852
+#: src/nautilus-files-view.c:9872
 msgid "View of the current folder"
 msgstr "Geçerli klasörün görünümü"
 
@@ -3292,12 +3292,12 @@ msgstr "Çöpü _Yinele"
 #: src/nautilus-file-undo-operations.c:1899
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
-msgstr "“%s” içesine konulu ögelerin özgün izinlerini geri yükle"
+msgstr "“%s” içine koyulu ögelerin özgün izinlerini geri yükle"
 
 #: src/nautilus-file-undo-operations.c:1900
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
-msgstr "“%s” içerisine konulu ögelerin izinlerini ayarla"
+msgstr "“%s” içine koyulu ögelerin izinlerini ayarla"
 
 #: src/nautilus-file-undo-operations.c:1902
 #: src/nautilus-file-undo-operations.c:2053
@@ -3763,8 +3763,8 @@ msgid ""
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
 msgstr ""
-"Birleştirme işlemi, klasörde kopyalanan dosyalarla çakışan dosyaların üzerine "
-"yazılacağı zaman onay için soracak."
+"Birleştirme işlemi, klasörde kopyalanan dosyalarla çakışan dosyaların "
+"üzerine yazılacağı zaman onay için soracak."
 
 #: src/nautilus-operations-ui-manager.c:158
 #, c-format
@@ -3948,8 +3948,8 @@ msgid ""
 "To open non-local files copy them to a local folder and then drop them "
 "again. The local files you dropped have already been opened."
 msgstr ""
-"Yerel olmayan dosyaları açmak için bunları önce yerel klasöre kopyalayın "
-"ve yeniden bırakın. Bıraktığınız yerel dosyalar zaten açıldı."
+"Yerel olmayan dosyaları açmak için bunları önce yerel klasöre kopyalayın ve "
+"yeniden bırakın. Bıraktığınız yerel dosyalar zaten açıldı."
 
 #: src/nautilus-program-choosing.c:468
 msgid "Details: "
@@ -4074,7 +4074,7 @@ msgstr "Toplam kapasite:"
 
 #: src/nautilus-properties-window.c:2983
 msgid "Filesystem type:"
-msgstr "Dosya Sistemi türü:"
+msgstr "Dosya sistemi türü:"
 
 #: src/nautilus-properties-window.c:3136
 #, c-format
@@ -4184,7 +4184,7 @@ msgstr "Dosya erişimi:"
 
 #: src/nautilus-properties-window.c:4319
 msgid "_Owner:"
-msgstr "_Sahibi:"
+msgstr "_Sahip:"
 
 #: src/nautilus-properties-window.c:4329 src/nautilus-properties-window.c:4652
 msgid "Owner:"
@@ -4192,7 +4192,7 @@ msgstr "Sahibi:"
 
 #: src/nautilus-properties-window.c:4355
 msgid "_Group:"
-msgstr "_Kümesi:"
+msgstr "_Küme:"
 
 #: src/nautilus-properties-window.c:4365 src/nautilus-properties-window.c:4666
 msgid "Group:"
@@ -4204,15 +4204,15 @@ msgstr "Diğerleri"
 
 #: src/nautilus-properties-window.c:4408
 msgid "Execute:"
-msgstr "Çalıştırma:"
+msgstr "Çalıştır:"
 
 #: src/nautilus-properties-window.c:4411
 msgid "Allow _executing file as program"
-msgstr "Dosyayı program gibi _çalıştırmaya izin ver"
+msgstr "Dosyayı program gibi ç_alıştırmaya izin ver"
 
 #: src/nautilus-properties-window.c:4635
 msgid "Change Permissions for Enclosed Files"
-msgstr "İlişikteki Dosyalar için İzinleri Değiştir"
+msgstr "İçine Koyulu Dosyaların İzinlerini Değiştir"
 
 #: src/nautilus-properties-window.c:4639
 msgid "Change"
@@ -4232,7 +4232,7 @@ msgstr "Güvenlik bağlamı:"
 
 #: src/nautilus-properties-window.c:4755
 msgid "Change Permissions for Enclosed Files…"
-msgstr "Ekli Doslayarın İzinlerini Değiştir…"
+msgstr "İçine Koyulu Dosyaların İzinlerini Değiştir…"
 
 #: src/nautilus-properties-window.c:4768
 #, c-format
@@ -4452,7 +4452,7 @@ msgstr[0] "%d dosya silindi"
 #: src/nautilus-window.c:1654
 #, c-format
 msgid "“%s” unstarred"
-msgstr "“%s” yıldız kaldırıldı"
+msgstr "“%s” yıldızı kaldırıldı"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
@@ -4460,7 +4460,7 @@ msgstr "“%s” yıldız kaldırıldı"
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
-msgstr[0] "%d dosya yıldızı kaldırıldı"
+msgstr[0] "%d dosyanın yıldızı kaldırıldı"
 
 #: src/nautilus-window.c:1798
 #, c-format
@@ -4857,7 +4857,7 @@ msgstr "Öge özelliklerini göster"
 
 #: src/resources/ui/nautilus-batch-rename-dialog-menu.ui:6
 msgid "Automatic Numbers"
-msgstr "Otomatik Numaralar"
+msgstr "Kendiliğinden Numarala"
 
 #: src/resources/ui/nautilus-batch-rename-dialog-menu.ui:8
 msgid "1, 2, 3, 4"
@@ -4940,7 +4940,7 @@ msgstr "Şununla Yer Değiştir"
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:287
 msgctxt "title"
 msgid "Replace"
-msgstr "Yer değiştir"
+msgstr "Yer Değiştir"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
 msgid "Create Archive"
@@ -4998,11 +4998,11 @@ msgstr "_Betikler"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:58
 msgid "_Open Scripts Folder"
-msgstr "_Betikler Klasörünü Aç"
+msgstr "Betikler Klasörünü _Aç"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:66
 msgid "_Open Item Location"
-msgstr "_Öge Konumunu Aç"
+msgstr "Öge Konumunu _Aç"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:71
 msgid "Open In New _Tab"
@@ -5014,7 +5014,7 @@ msgstr "Yeni _Pencerede Aç"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:83
 msgid "Open With Other _Application"
-msgstr "B_aşka Uygulamayla Aç"
+msgstr "_Başka Uygulamayla Aç"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:91
 #: src/gtk/nautilusgtkplacesview.c:1736
@@ -5085,7 +5085,7 @@ msgstr "Son Kullanılanlardan _Kaldır"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:203
 msgid "_Extract Here"
-msgstr "Buraya _Çıkar"
+msgstr "_Buraya Çıkar"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:208
 msgid "E_xtract to…"
@@ -5117,7 +5117,7 @@ msgstr "Klasör Boş"
 
 #: src/resources/ui/nautilus-no-search-results.ui:31
 msgid "No Results Found"
-msgstr "Hiçbir Sonuç Bulunamadı"
+msgstr "Sonuç Bulunamadı"
 
 #: src/resources/ui/nautilus-no-search-results.ui:46
 #: src/gtk/nautilusgtkplacesview.ui:274
@@ -5173,8 +5173,8 @@ msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
 msgstr ""
-"Dosya ve klasör adının altında gösterilecek bilgiler ekleyin. Yaklaştıkça "
-"daha çok bilgi gözükecektir."
+"Dosya ve klasör adının altında gösterilecek bilgiler ekle. Yaklaştıkça daha "
+"çok bilgi gözükecektir."
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:372
@@ -5208,7 +5208,7 @@ msgstr "Ögeleri _açmak için tek tık"
 
 #: src/resources/ui/nautilus-preferences-window.ui:510
 msgid "_Double click to open items"
-msgstr "Ög_eleri açmak için çift tık"
+msgstr "Ögeleri açmak için ç_ift tık"
 
 #: src/resources/ui/nautilus-preferences-window.ui:550
 msgid "Link Creation"
@@ -5264,7 +5264,7 @@ msgstr "Yalnızca bu _bilgisayarda"
 
 #: src/resources/ui/nautilus-preferences-window.ui:919
 msgid "_All locations"
-msgstr "Tüm konuml_ar"
+msgstr "_Tüm konumlar"
 
 #: src/resources/ui/nautilus-preferences-window.ui:936
 msgid "_Never"
@@ -5284,7 +5284,7 @@ msgstr "Yalnızca bu bilgisayardaki _dosyalar"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1023
 msgid "A_ll files"
-msgstr "Tüm dosya_lar"
+msgstr "_Tüm dosyalar"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1040
 msgid "N_ever"
@@ -5308,7 +5308,7 @@ msgstr "Yalnızca bu bilgisayardaki _klasörler"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1169
 msgid "All folder_s"
-msgstr "Tüm kla_sörler"
+msgstr "Tüm klasör_ler"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1186
 msgid "Ne_ver"
@@ -5316,7 +5316,7 @@ msgstr "As_la"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1221
 msgid "Search & Preview"
-msgstr "Ara & Önizle"
+msgstr "Ara & Ön İzle"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1248
 #: src/resources/ui/nautilus-preferences-window.ui:1296
@@ -5521,7 +5521,7 @@ msgstr "Son _Değiştirme"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:97
 msgid "_First Modified"
-msgstr "_İlk Değiştirme"
+msgstr "İ_lk Değiştirme"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:112
 msgid "_Size"
@@ -5533,7 +5533,7 @@ msgstr "_Tür"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:141
 msgid "Last _Trashed"
-msgstr "Son _Çöpe Atılan"
+msgstr "Son Çö_pe Atılan"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:174
 msgid "_Visible Columns…"
@@ -5588,7 +5588,7 @@ msgstr "Birim ayrılamadı"
 #. Allow to cancel the operation
 #: src/gtk/nautilusgtkplacesview.c:1470
 msgid "Cance_l"
-msgstr "Vazge_ç"
+msgstr "_Vazgeç"
 
 #: src/gtk/nautilusgtkplacesview.c:1633
 msgid "AppleTalk"
@@ -5699,6 +5699,97 @@ msgstr "_Sunucuya Bağlan"
 msgid "Enter server address…"
 msgstr "Sunucu adresini gir…"
 
+#~ msgid "Contains software to install"
+#~ msgstr "Kurulacak yazılım içermektedir"
+
+#~ msgid "_Name"
+#~ msgid_plural "_Names"
+#~ msgstr[0] "_Ad"
+
+#~ msgid "Show grid"
+#~ msgstr "Tabloyu göster"
+
+#~ msgid "Show list"
+#~ msgstr "Listeyi göster"
+
+#~ msgid "Show List"
+#~ msgstr "Listeyi Göster"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Quit"
+#~ msgstr "Çık"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Create link to copied item"
+#~ msgstr "Kopyalanan ögeye bağlantı oluştur"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Create link to selected item"
+#~ msgstr "Seçilen ögeye bağlantı oluştur"
+
+#~ msgid "Contents"
+#~ msgstr "İçerik"
+
+#~ msgid "Created"
+#~ msgstr "Oluşturulma"
+
+#~ msgid "The date the file was created."
+#~ msgstr "Dosyanın oluşturuldu tarih."
+
+#~ msgid "Password Required"
+#~ msgstr "Parola Gerekli"
+
+#~ msgid "Extract"
+#~ msgstr "Çıkar"
+
+#, c-format
+#~ msgid "“%s” is password-protected."
+#~ msgstr "“%s” parola korumalıdır."
+
+#~ msgid "Enter password…"
+#~ msgstr "Parolayı gir…"
+
+#~ msgid "Single click"
+#~ msgstr "Tek tık"
+
+#~ msgid "Double click"
+#~ msgstr "Çift tık"
+
+#~ msgid "Empty _Trash…"
+#~ msgstr "Çöpü _Boşalt…"
+
+#~ msgid "_Run as a Program"
+#~ msgstr "_Program Olarak Çalıştır"
+
+#~ msgid "_Delete Permanently…"
+#~ msgstr "_Kalıcı Olarak Sil…"
+
+#~ msgid "_Expandable Folders in List View"
+#~ msgstr "Liste Görünümünde _Genişleyebilen Klasörler"
+
+#~ msgid "Action to Open Items"
+#~ msgstr "Ögeleri Açacak Eylem"
+
+#~ msgid "Optional Context Menu Actions"
+#~ msgstr "İsteğe Bağlı Bağlam Menüsü Eylemleri"
+
+#~ msgid ""
+#~ "Show more actions in the menus. Keyboard shortcuts can be used even if "
+#~ "the actions are not shown."
+#~ msgstr ""
+#~ "Menülerde daha çok eylem göster. Eylemler gösterilmese bile klavye "
+#~ "kısayolları kullanılabilecektir."
+
+#~ msgid "Performance"
+#~ msgstr "Başarım"
+
+#~ msgid ""
+#~ "These features may cause slowdowns and excess network usage, especially "
+#~ "when browsing files outside this computer, such as on a remote server."
+#~ msgstr ""
+#~ "Bu özellikler, bu bilgisayarın dışında uzak sunuculardaki dosyalara göz "
+#~ "atarken yavaşlığa ve aşırı ağ kullanımına neden olabilir."
+
 #~ msgid "Create the initial window with the given geometry."
 #~ msgstr "Verilen geometride giriş penceresi oluştur."
 
@@ -5734,9 +5825,6 @@ msgstr "Sunucu adresini gir…"
 
 #~ msgid "Prefere_nces"
 #~ msgstr "_Tercihler"
-
-#~ msgid "_Quit"
-#~ msgstr "_Çık"
 
 #~ msgid ""
 #~ "Show a warning dialog for the change of the shortcut for move to the Trash"
@@ -6232,10 +6320,6 @@ msgstr "Sunucu adresini gir…"
 
 #~ msgid "View menu"
 #~ msgstr "Görünüm menüsü"
-
-#~ msgctxt "Sort Criterion"
-#~ msgid "_Name"
-#~ msgstr "_Ad"
 
 #~ msgid "Search _Relevance"
 #~ msgstr "Arama _Uygunluğu"
