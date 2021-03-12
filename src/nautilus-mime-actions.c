@@ -1666,8 +1666,9 @@ activate_files (ActivateParameters *parameters)
         pause_activation_timed_cancel (parameters);
 
         prompt = _("Are you sure you want to open all files?");
-        detail = g_strdup_printf (ngettext ("This will open %d separate application.",
-                                            "This will open %d separate applications.", num_apps), num_apps);
+        /* TODO: Replace 'window' with 'application' after string freeze. */
+        detail = g_strdup_printf (ngettext ("This will open %d separate window.",
+                                            "This will open %d separate windows.", num_apps), num_apps);
         dialog = eel_show_yes_no_dialog (prompt, detail,
                                          _("_OK"), _("_Cancel"),
                                          parameters->parent_window);
