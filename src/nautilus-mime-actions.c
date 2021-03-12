@@ -1653,7 +1653,7 @@ activate_files (ActivateParameters *parameters)
     num_files = g_queue_get_length (open_in_app_uris);
     open_files = TRUE;
 
-    if (g_queue_is_empty (open_in_app_uris) &&
+    if (!g_queue_is_empty (open_in_app_uris) &&
         (!parameters->user_confirmation ||
          num_files + num_unhandled > SILENT_OPEN_LIMIT) &&
         num_apps > 1)
