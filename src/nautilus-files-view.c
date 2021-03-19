@@ -6074,6 +6074,10 @@ copy_or_move_selection (NautilusFilesView *view,
         directory = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (priv->model));
         uri = nautilus_directory_get_uri (directory);
     }
+    else if (showing_starred_directory (view))
+    {
+        uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
+    }
     else
     {
         uri = nautilus_directory_get_uri (priv->model);
