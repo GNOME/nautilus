@@ -2642,12 +2642,6 @@ setup_basic_page (NautilusPropertiesWindow *self)
     g_signal_connect_object (self->name_field, "activate",
                              G_CALLBACK (name_field_activate), self, 0);
 
-    /* Start with name field selected, if it's an entry. */
-    if (GTK_IS_ENTRY (gtk_stack_get_visible_child (self->name_stack)))
-    {
-        gtk_widget_grab_focus (GTK_WIDGET (self->name_field));
-    }
-
     if (should_show_file_type (self))
     {
         gtk_widget_show (self->type_title_label);
