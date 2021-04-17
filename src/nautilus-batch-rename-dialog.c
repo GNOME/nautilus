@@ -1375,7 +1375,7 @@ numbering_tag_is_some_added (NautilusBatchRenameDialog *self)
 static void
 update_display_text (NautilusBatchRenameDialog *dialog)
 {
-    if(dialog->selection == NULL)
+    if (dialog->selection == NULL)
     {
         return;
     }

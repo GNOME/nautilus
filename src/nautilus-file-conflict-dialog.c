@@ -180,8 +180,8 @@ static void
 entry_text_changed_cb (GtkEditable                *entry,
                        NautilusFileConflictDialog *dialog)
 {
-    if  (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), "") != 0 &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), dialog->conflict_name) != 0)
+    if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), "") != 0 &&
+        g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), dialog->conflict_name) != 0)
     {
         gtk_widget_set_sensitive (dialog->rename_button, TRUE);
     }
@@ -241,7 +241,7 @@ checkbox_toggled_cb (GtkToggleButton            *t,
 {
     gtk_widget_set_sensitive (dialog->expander, !gtk_toggle_button_get_active (t));
 
-    if  (!gtk_toggle_button_get_active (t))
+    if (!gtk_toggle_button_get_active (t))
     {
         gtk_widget_hide (dialog->replace_button);
         gtk_widget_show (dialog->rename_button);

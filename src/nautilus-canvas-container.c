@@ -2910,7 +2910,7 @@ keyboard_space (NautilusCanvasContainer *container,
         {
             icon_toggle_selected (container, container->details->focus);
             g_signal_emit (container, signals[SELECTION_CHANGED], 0);
-            if  (container->details->focus->is_selected)
+            if (container->details->focus->is_selected)
             {
                 container->details->range_selection_base_icon = container->details->focus;
             }

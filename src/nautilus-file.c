@@ -3583,7 +3583,7 @@ compare_by_time (NautilusFile     *file_1,
     /* Now time_known_1 is equal to time_known_2. Check whether
      * we failed to get modification times for files
      */
-    if(time_known_1 == UNKNOWABLE || time_known_1 == UNKNOWN)
+    if (time_known_1 == UNKNOWABLE || time_known_1 == UNKNOWN)
     {
         return 0;
     }
