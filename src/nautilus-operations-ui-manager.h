@@ -26,3 +26,6 @@ enum
 
 void handle_unsupported_compressed_file (GtkWindow *parent_window,
                                          GFile     *compressed_file);
+
+gchar *extract_ask_passphrase (GtkWindow   *parent_window,
+                               const gchar *archive_basename);

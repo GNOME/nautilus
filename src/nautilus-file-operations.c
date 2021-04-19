@@ -8403,125 +8403,25 @@ extract_job_on_completed (AutoarExtractor *extractor,
     nautilus_file_changes_queue_file_added (output_file);
 }
 
-typedef struct
-{
-    ExtractJob *extract_job;
-    AutoarExtractor *extractor;
-    gchar *passphrase;
-    GtkWidget *passphrase_entry;
-    GMutex mutex;
-    GCond cond;
-    gboolean completed;
-} PassphraseRequestData;
-
-static void
-on_request_passphrase_cb (GtkDialog *dialog,
-                          gint       response_id,
-                          gpointer   user_data)
-{
-    PassphraseRequestData *data = user_data;
-
-    if (response_id == GTK_RESPONSE_CANCEL ||
-        response_id == GTK_RESPONSE_DELETE_EVENT)
-    {
-        abort_job ((CommonJob *) data->extract_job);
-    }
-    else
-    {
-        data->passphrase = g_strdup (gtk_entry_get_text (GTK_ENTRY (data->passphrase_entry)));
-    }
-
-    data->completed = TRUE;
-
-    gtk_widget_destroy (GTK_WIDGET (dialog));
-
-    g_cond_signal (&data->cond);
-    g_mutex_unlock (&data->mutex);
-}
-
-static gboolean
-run_passphrase_dialog (gpointer user_data)
-{
-    PassphraseRequestData *data = user_data;
-    g_autofree gchar *label_str = NULL;
-    g_autofree gchar *basename = NULL;
-    GtkWidget *dialog;
-    GtkWidget *entry;
-    GtkWidget *label;
-    GtkWidget *box;
-    GFile *source_file;
-
-    g_mutex_lock (&data->mutex);
-
-    dialog = gtk_dialog_new_with_buttons (_("Password Required"),
-                                          data->extract_job->common.parent_window,
-                                          GTK_DIALOG_USE_HEADER_BAR | GTK_DIALOG_MODAL,
-                                          _("Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("Extract"), GTK_RESPONSE_OK,
-                                          NULL);
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-    source_file = autoar_extractor_get_source_file (data->extractor);
-    basename = get_basename (source_file);
-
-    box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-    gtk_widget_set_margin_start (box, 20);
-    gtk_widget_set_margin_end (box, 20);
-    gtk_widget_set_margin_top (box, 20);
-    gtk_widget_set_margin_bottom (box, 20);
-
-    label_str = g_strdup_printf (_("“%s” is password-protected."), basename);
-    label = gtk_label_new (label_str);
-    gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-    gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
-    gtk_container_add (GTK_CONTAINER (box), label);
-
-    entry = gtk_entry_new ();
-    gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-    gtk_widget_set_valign (entry, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (entry, TRUE);
-    gtk_entry_set_placeholder_text (GTK_ENTRY (entry), _("Enter password…"));
-    gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
-    gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_PASSWORD);
-    gtk_container_add (GTK_CONTAINER (box), entry);
-
-    data->passphrase_entry = entry;
-    g_signal_connect (dialog, "response", G_CALLBACK (on_request_passphrase_cb), data);
-    gtk_widget_show_all (dialog);
-
-    return G_SOURCE_REMOVE;
-}
-
 static gchar *
 extract_job_on_request_passphrase (AutoarExtractor *extractor,
                                    gpointer         user_data)
 {
-    PassphraseRequestData *data;
     ExtractJob *extract_job = user_data;
+    GtkWindow *parent_window;
+    GFile *source_file;
+    g_autofree gchar *basename = NULL;
     gchar *passphrase;
 
-    data = g_new0 (PassphraseRequestData, 1);
-    g_mutex_init (&data->mutex);
-    g_cond_init (&data->cond);
-    data->extract_job = extract_job;
-    data->extractor = extractor;
+    parent_window = extract_job->common.parent_window;
+    source_file = autoar_extractor_get_source_file (extractor);
+    basename = get_basename (source_file);
 
-    g_mutex_lock (&data->mutex);
-
-    g_main_context_invoke (NULL,
-                           run_passphrase_dialog,
-                           data);
-
-    while (!data->completed)
+    passphrase = extract_ask_passphrase (parent_window, basename);
+    if (passphrase == NULL)
     {
-        g_cond_wait (&data->cond, &data->mutex);
+        abort_job ((CommonJob *) extract_job);
     }
-
-    g_mutex_unlock (&data->mutex);
-    g_mutex_clear (&data->mutex);
-    g_cond_clear (&data->cond);
-
-    passphrase = g_steal_pointer (&data->passphrase);
-    g_free (data);
 
     return passphrase;
 }
