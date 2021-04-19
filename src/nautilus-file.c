@@ -3480,6 +3480,11 @@ compare_by_type (NautilusFile *file_1,
     }
 
     result = g_utf8_collate (type_string_1, type_string_2);
+    if (result == 0)
+    {
+        /* Among files of the same (generic) type, sort them by mime type. */
+        result = g_utf8_collate (file_1->details->mime_type, file_2->details->mime_type);
+    }
 
     g_free (type_string_1);
     g_free (type_string_2);
