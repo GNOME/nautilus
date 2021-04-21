@@ -8372,6 +8372,7 @@ typedef struct
     GtkWidget *passphrase_entry;
     GMutex mutex;
     GCond cond;
+    gboolean completed;
 } PassphraseRequestData;
 
 static void
@@ -8386,8 +8387,12 @@ on_request_passphrase_cb (GtkDialog *dialog,
     {
         abort_job ((CommonJob *) data->extract_job);
     }
+    else
+    {
+        data->passphrase = g_strdup (gtk_entry_get_text (GTK_ENTRY (data->passphrase_entry)));
+    }
 
-    data->passphrase = g_strdup (gtk_entry_get_text (GTK_ENTRY (data->passphrase_entry)));
+    data->completed = TRUE;
 
     gtk_widget_destroy (GTK_WIDGET (dialog));
 
@@ -8467,7 +8472,7 @@ extract_job_on_request_passphrase (AutoarExtractor *extractor,
                            run_passphrase_dialog,
                            data);
 
-    while (data->passphrase == NULL)
+    while (!data->completed)
     {
         g_cond_wait (&data->cond, &data->mutex);
     }
