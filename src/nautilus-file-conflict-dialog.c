@@ -191,6 +191,23 @@ entry_text_changed_cb (GtkEditable                *entry,
     }
 }
 
+static int
+get_character_position_after_basename (const gchar *filename)
+{
+    const gchar *extension;
+
+    extension = eel_filename_get_extension_offset (filename);
+
+    if (extension == NULL)
+    {
+        /* If the filename has got no extension, we want the position of the
+         * the terminating null. */
+        return (int) g_utf8_strlen (filename, -1);
+    }
+
+    return g_utf8_pointer_to_offset (filename, extension);
+}
+
 static void
 on_expanded_notify (GtkExpander                *w,
                     GParamSpec                 *pspec,
@@ -212,15 +229,11 @@ on_expanded_notify (GtkExpander                *w,
              * replace the "(1)" bits with with something more meaningful, so
              * select this region for convenience. */
 
-            const gchar *offset;
             int start_pos;
             int end_pos;
 
-            offset = eel_filename_get_extension_offset (dialog->conflict_name);
-            start_pos = g_utf8_pointer_to_offset (dialog->conflict_name, offset);
-
-            offset = eel_filename_get_extension_offset (dialog->suggested_name);
-            end_pos = g_utf8_pointer_to_offset (dialog->suggested_name, offset);
+            start_pos = get_character_position_after_basename (dialog->conflict_name);
+            end_pos = get_character_position_after_basename (dialog->suggested_name);
 
             gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
         }
