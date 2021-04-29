@@ -107,6 +107,15 @@ eel_uri_is_in_xdg_dirs (const gchar *uri)
     return has_prefix;
 }
 
+/**
+ * eel_filename_get_extension_offset:
+ * @filename: a null-terminated string representing the basename of a file, with
+ *            or without extension.
+ *
+ * Returns: (nullable) (transfer none): A pointer to the substring containing
+ *                                      the dot and extension, or %NULL if there
+ *                                      is no extension.
+ */
 char *
 eel_filename_get_extension_offset (const char *filename)
 {
