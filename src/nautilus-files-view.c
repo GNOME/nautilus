@@ -6619,6 +6619,7 @@ action_run_in_terminal (GSimpleAction *action,
 {
     NautilusFilesView *view;
     g_autolist (NautilusFile) selection = NULL;
+    g_autofree char *old_working_dir = NULL;
     g_autofree char *uri = NULL;
     g_autofree char *executable_path = NULL;
     g_autofree char *quoted_path = NULL;
@@ -6636,6 +6637,8 @@ action_run_in_terminal (GSimpleAction *action,
         return;
     }
 
+    old_working_dir = change_to_view_directory (view);
+
     uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
     executable_path = g_filename_from_uri (uri, NULL, NULL);
     quoted_path = g_shell_quote (executable_path);
@@ -6646,6 +6649,8 @@ action_run_in_terminal (GSimpleAction *action,
     DEBUG ("Launching in terminal %s", quoted_path);
 
     nautilus_launch_application_from_command (screen, quoted_path, TRUE, NULL);
+
+    g_chdir (old_working_dir);
 }
 
 #define BG_KEY_PRIMARY_COLOR      "primary-color"
