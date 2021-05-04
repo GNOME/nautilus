@@ -44,7 +44,12 @@
   <menu id="selection-menu">
     <section id="new-folder-with-selection-section">
     </section>
-    <section id="open-with-default-application-section">
+    <section id="open-with-application-section">
+      <item>
+        <attribute name="label" translatable="yes">Open With Other _Application</attribute>
+        <attribute name="action">view.open-with-other-application</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
     </section>
     <submenu>
       <attribute name="label" translatable="yes">_Scripts</attribute>
@@ -73,13 +78,6 @@
       <item>
         <attribute name="label" translatable="yes">Open In New _Window</attribute>
         <attribute name="action">view.open-item-new-window</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">Open With Other _Application</attribute>
-        <attribute name="action">view.open-with-other-application</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>

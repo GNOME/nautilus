@@ -8148,8 +8148,8 @@ update_selection_menu (NautilusFilesView *view,
         g_menu_item_set_icon (menu_item, app_icon);
     }
 
-    object = gtk_builder_get_object (builder, "open-with-default-application-section");
-    g_menu_append_item (G_MENU (object), menu_item);
+    object = gtk_builder_get_object (builder, "open-with-application-section");
+    g_menu_prepend_item (G_MENU (object), menu_item);
 
     g_free (item_label);
     g_object_unref (menu_item);
