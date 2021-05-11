@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 3.40.x\n"
+"Project-Id-Version: nautilus 4.0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-03-12 22:06+0000\n"
-"PO-Revision-Date: 2021-03-13 10:57+0100\n"
+"POT-Creation-Date: 2021-04-19 11:41+0000\n"
+"PO-Revision-Date: 2021-05-11 13:43+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -166,9 +166,7 @@ msgstr ""
 msgid ""
 "If set to true, then Nautilus will show context menu items to create links "
 "from the copied or selected files."
-msgstr ""
-"Nautilus spør om bekreftelse ved sletting av filer eller tømming av "
-"papirkurven hvis verdien er «true»."
+msgstr "Nautilus spør om bekreftelse ved sletting av filer eller tømming av papirkurven hvis verdien er «true»."
 
 #: data/org.gnome.nautilus.gschema.xml:115
 msgid "When to show number of items in a folder"
@@ -203,21 +201,16 @@ msgid "Show the package installer for unknown MIME types"
 msgstr "Vis pakkeinstallasjon for ukjente MIME-typer"
 
 #: data/org.gnome.nautilus.gschema.xml:126
-#, fuzzy
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
-msgstr ""
-"Om brukeren skal presenteres med en pakkeinstallasjonsdialog når en ukjent "
-"MIME-type åpnes, slik at brukeren kan søke etter et program for å håndtere "
-"den."
+msgstr "Hvorvidt en pakkeinstallasjonsdialog skal vises når en ukjent MIME-type åpnes, slik at brukeren kan søke etter et program for å håndtere den."
 
 #: data/org.gnome.nautilus.gschema.xml:130
 msgid "Use extra mouse button events in Nautilus’ browser window"
 msgstr "Bruk ekstra museknapphendelser i Nautilus leservinduer"
 
 #: data/org.gnome.nautilus.gschema.xml:131
-#, fuzzy
 msgid ""
 "For users with mice that have “Forward” and “Back” buttons, this key will "
 "determine if any action is taken inside of Nautilus when either is pressed."
@@ -230,22 +223,17 @@ msgid "Mouse button to activate the “Forward” command in browser window"
 msgstr "Musknapp som aktiverer «Fremover»-knappen i nettleservinduet"
 
 #: data/org.gnome.nautilus.gschema.xml:136
-#, fuzzy
 msgid ""
 "For users with mice that have buttons for “Forward” and “Back”, this key "
 "will set which button activates the “Forward” command in a browser window. "
 "Possible values range between 6 and 14."
-msgstr ""
-"Denne nøkkelen bestemmer hvilken av musens evt. «Frem»- og «Tilbake»-knapper "
-"som utløser «Frem»-kommandoen i et utforskervindu. Gyldige verdier er tall "
-"mellom 6 og 14."
+msgstr "Denne nøkkelen bestemmer hvilken av musens evt. «Frem»- og «Tilbake»-knapper som utløser «Frem»-kommandoen i et utforskervindu. Gyldige verdier er tall mellom 6 og 14."
 
 #: data/org.gnome.nautilus.gschema.xml:140
 msgid "Mouse button to activate the “Back” command in browser window"
 msgstr "Musknapp som aktiverer «Tilbake»-knappen i nettleservinduet"
 
 #: data/org.gnome.nautilus.gschema.xml:141
-#, fuzzy
 msgid ""
 "For users with mice that have buttons for “Forward” and “Back”, this key "
 "will set which button activates the “Back” command in a browser window. "
@@ -260,7 +248,6 @@ msgid "When to show thumbnails of files"
 msgstr "Når filminiatyrer skal vises"
 
 #: data/org.gnome.nautilus.gschema.xml:147
-#, fuzzy
 msgid ""
 "Speed trade-off for when to show a file as a thumbnail. If set to “always” "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -280,35 +267,27 @@ msgid "Maximum image size for thumbnailing"
 msgstr "Maksimal miniatyrbildestørrelse"
 
 #: data/org.gnome.nautilus.gschema.xml:153
-#, fuzzy
 msgid ""
 "Images over this size (in megabytes) won’t be thumbnailed. The purpose of "
 "this setting is to avoid thumbnailing large images that may take a long time "
 "to load or use lots of memory."
-msgstr ""
-"Bilder som (i byte) er større enn dette får ikke miniatyrer. Formålet med "
-"denne innstillingen er å unngå å lage miniatyrer av store bilder som kan ta "
-"lang tid å laste inn eller bruke mye minne."
+msgstr "Bilder som (i megabyte) er større enn dette får ikke miniatyrer. Formålet med denne innstillingen er å unngå å lage miniatyrer av store bilder som kan ta lang tid å laste inn eller bruke mye minne."
 
 #: data/org.gnome.nautilus.gschema.xml:160
 msgid "Default sort order"
 msgstr "Forvalgt søkerekkefølge"
 
 #: data/org.gnome.nautilus.gschema.xml:161
-#, fuzzy
 msgid ""
 "The default sort-order for items in the icon view. Possible values are "
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
-msgstr ""
-"Forvalgt sorteringsrekkefølge for oppføringer i ikonvisning. Mulige verdier "
-"er «name», «size», «type» og «mtime»."
+msgstr "Forvalgt sorteringsrekkefølge for oppføringer i ikonvisning. Mulige verdier er «name», «size», «type», «mtime», «atime» og «starred»."
 
 #: data/org.gnome.nautilus.gschema.xml:165
 msgid "Reverse sort order in new windows"
 msgstr "Omvendt sorteringsrekkefølge i nye vinduer"
 
 #: data/org.gnome.nautilus.gschema.xml:166
-#, fuzzy
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
 "sorted by name, then instead of sorting the files from “a” to “z”, they will "
@@ -325,7 +304,6 @@ msgid "Default folder viewer"
 msgstr "Forvalgt mappevisning"
 
 #: data/org.gnome.nautilus.gschema.xml:177
-#, fuzzy
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are “list-view”, "
@@ -340,13 +318,10 @@ msgid "Whether to show hidden files"
 msgstr "Om skjulte filer skal vises"
 
 #: data/org.gnome.nautilus.gschema.xml:182
-#, fuzzy
 msgid ""
 "This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
 "Settings.FileChooser” is now used instead."
-msgstr ""
-"Dette nøkkelen er utgått, og blir ignorert. Nøkkelen «show-hidden» fra «org."
-"gtk.Settings.FileChooser» brukes i stedet."
+msgstr "Dette nøkkelen er utgått, og blir ignorert. Nøkkelen «show-hidden» fra «org.gtk.Settings.FileChooser» brukes i stedet."
 
 #: data/org.gnome.nautilus.gschema.xml:186
 msgid "What viewer should be used when searching"
@@ -366,7 +341,6 @@ msgstr ""
 "slipp operasjoner"
 
 #: data/org.gnome.nautilus.gschema.xml:192
-#, fuzzy
 msgid ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout."
@@ -410,7 +384,6 @@ msgid "List of possible captions on icons"
 msgstr "Liste med mulig bildetekst for ikoner"
 
 #: data/org.gnome.nautilus.gschema.xml:218
-#, fuzzy
 msgid ""
 "A list of captions below an icon in the icon view. The actual number of "
 "captions shown depends on the zoom level. Some possible values are: “size”, "
@@ -430,7 +403,6 @@ msgid "Text Ellipsis Limit"
 msgstr "Grense for tekst-ellipse"
 
 #: data/org.gnome.nautilus.gschema.xml:227
-#, fuzzy
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -445,30 +417,15 @@ msgid ""
 "names if they exceed four lines for zoom level “smaller”. Do not shorten "
 "file names for other zoom levels. Available zoom levels: small, standard, "
 "large."
-msgstr ""
-"En streng som bestemmer hvordan overskytende deler av for lange filnavn skal "
-"erstattes med ellipsetegn, avhengig av zoom-nivå. Hver listeoppføring er i "
-"formatet «zoom-nivå:heltall». For hvert valgt zoom-nivå, gitt at aktuelt "
-"heltall er større enn 0, skal filnavnet ikke overskyte valgt antall linjer. "
-"Hvis heltallet er 0 eller lavere, har valgt zoomnivå ingen grense. En "
-"forvalgt oppføring i formatet «heltall» uten zoomnivå er også tillatt, og "
-"bestemmer maskimalt antall linjer for alle andre zoomnivåer. For eksempel: 0 "
-"- vis alltid overskytende filnavn, 3 - forkort filnavn hvis de tar større "
-"plass enn tre linjer. «smallest:5,smaller:4,0» - forkort filnavn hvis de er "
-"tar større plass enn enn fem linjer for zoom-nivået «smallest», og hvis de "
-"tar større plass enn fire linjer for zoom-nivået «smaller». Filnavn "
-"forkortes ikke på andre zoom-nivåer. Følgende zoom-nivåer er tilgjengelig: "
-"«small», «standard» og «large»"
+msgstr "En streng som bestemmer hvordan overskytende deler av for lange filnavn skal erstattes med ellipsetegn, avhengig av zoom-nivå. Hver listeoppføring er i formatet «zoom-nivå:heltall». For hvert valgt zoom-nivå, gitt at aktuelt heltall er større enn 0, skal filnavnet ikke overskyte valgt antall linjer. Hvis heltallet er 0 eller lavere, har valgt zoomnivå ingen grense. En forvalgt oppføring i formatet «heltall» uten zoomnivå er også tillatt, og bestemmer maskimalt antall linjer for alle andre zoomnivåer. For eksempel: 0 - vis alltid overskytende filnavn, 3 - forkort filnavn hvis de tar større plass enn tre linjer. «smallest:5,smaller:4,0» - forkort filnavn hvis de er tar større plass enn enn fem linjer for zoom-nivået «smallest», og hvis de tar større plass enn fire linjer for zoom-nivået «smaller». Filnavn forkortes ikke på andre zoom-nivåer. Følgende zoom-nivåer er tilgjengelig: «small», «standard» og «large»"
 
 #: data/org.gnome.nautilus.gschema.xml:234
 msgid "Default list view zoom level"
 msgstr "Forvalgt zoom-nivå for listevisning"
 
 #: data/org.gnome.nautilus.gschema.xml:238
-#, fuzzy
-#| msgid "Default list of columns visible in the list view"
 msgid "Columns visible in list view"
-msgstr "Forvalgt liste med kolonner synlig i listevisning"
+msgstr "Kolonner synlig i listevisning"
 
 #: data/org.gnome.nautilus.gschema.xml:242
 msgid "Column order in list view"
@@ -479,23 +436,17 @@ msgid "Use tree view"
 msgstr "Bruk trevisning"
 
 #: data/org.gnome.nautilus.gschema.xml:247
-#, fuzzy
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat "
 "list."
-msgstr ""
-"Hvorvidt et tre skal brukes for navigasjon i listevisning i stedet for en "
-"flat liste"
+msgstr "Hvorvidt et tre skal brukes for navigasjon i listevisning i stedet for en flat liste."
 
 #: data/org.gnome.nautilus.gschema.xml:254
 msgid "Initial size of the window"
-msgstr ""
+msgstr "Initiell størrelse på vinduet"
 
 #: data/org.gnome.nautilus.gschema.xml:255
 #, fuzzy
-#| msgid ""
-#| "A string containing the saved geometry and coordinates string for "
-#| "navigation windows."
 msgid ""
 "A tuple containing the initial width and height of the application window."
 msgstr ""
@@ -5149,7 +5100,9 @@ msgstr "Valgfrie handlinger for kontekstmenyer"
 msgid ""
 "Show more actions in the menus. Keyboard shortcuts can be used even if the "
 "actions are not shown."
-msgstr "Vis flere handlinger i menyene. Tastatursnarveier kan brukes selv om handlingene ikke vises."
+msgstr ""
+"Vis flere handlinger i menyene. Tastatursnarveier kan brukes selv om "
+"handlingene ikke vises."
 
 #: src/resources/ui/nautilus-preferences-window.ui:89
 msgid "_Delete Permanently"
@@ -5163,7 +5116,9 @@ msgstr "Ytelse"
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this computer, such as on a remote server."
-msgstr "Disse funksjonene kan forårsake treghet og unødig bruk av nettverk. Spesielt når du ser på filer på andre datamaskiner slik som en ekstern tjener."
+msgstr ""
+"Disse funksjonene kan forårsake treghet og unødig bruk av nettverk. Spesielt "
+"når du ser på filer på andre datamaskiner slik som en ekstern tjener."
 
 #: src/resources/ui/nautilus-preferences-window.ui:113
 msgid "Search in Subfolders"
