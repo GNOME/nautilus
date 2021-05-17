@@ -1289,7 +1289,6 @@ nautilus_directory_notify_files_added (GList *files)
              * If it was renamed this could be ignored, but
              * queue a change just in case */
             nautilus_file_changed (file);
-            nautilus_file_unref (file);
         }
         else
         {
@@ -1297,6 +1296,7 @@ nautilus_directory_notify_files_added (GList *files)
                                      directory,
                                      g_object_ref (location));
         }
+        nautilus_file_unref (file);
         nautilus_directory_unref (directory);
     }
 
