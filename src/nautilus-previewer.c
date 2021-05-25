@@ -38,6 +38,7 @@
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
 static GDBusProxy *previewer_v2_proxy = NULL;
+static char *current_file_uri = NULL;
 
 static gboolean
 ensure_previewer_v2_proxy (void)
@@ -88,6 +89,16 @@ nautilus_previewer_call_show_file (const gchar *uri,
                                    guint        xid,
                                    gboolean     close_if_already_visible)
 {
+
+    if (current_file_uri != NULL && g_strcmp0 (current_file_uri, uri) == 0)
+    {
+        g_free (current_file_uri);
+        current_file_uri = NULL;
+
+        return;
+    }
+
+    current_file_uri = g_strdup (uri);
     if (!ensure_previewer_v2_proxy ())
     {
         return;
