@@ -1287,19 +1287,36 @@ nautilus_files_view_preview_files (NautilusFilesView *view,
     nautilus_files_view_preview (view, data);
 }
 
-void
-nautilus_files_view_preview_update (NautilusFilesView *view,
-                                    GList             *files)
+static void
+nautilus_files_view_preview_update (NautilusFilesView *view)
 {
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    GtkApplication *app;
+    GtkWindow *window;
+    g_autolist (NautilusFile) selection = NULL;
     PreviewExportData *data;
 
-    if (!nautilus_previewer_is_visible ())
+    if (!priv->active ||
+        !nautilus_previewer_is_visible ())
+    {
+        return;
+    }
+
+    app = GTK_APPLICATION (g_application_get_default ());
+    window = GTK_WINDOW (nautilus_files_view_get_window (view));
+    if (window == NULL || window != gtk_application_get_active_window (app))
+    {
+        return;
+    }
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    if (selection == NULL)
     {
         return;
     }
 
     data = g_new0 (PreviewExportData, 1);
-    data->uri = nautilus_file_get_uri (files->data);
+    data->uri = nautilus_file_get_uri (selection->data);
     data->is_update = TRUE;
 
     nautilus_files_view_preview (view, data);
@@ -9828,6 +9845,10 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_signal_connect (view,
                       "end-file-changes",
                       G_CALLBACK (on_end_file_changes),
+                      view);
+    g_signal_connect (view,
+                      "notify::selection",
+                      G_CALLBACK (nautilus_files_view_preview_update),
                       view);
 
     g_object_unref (builder);
