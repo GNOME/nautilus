@@ -1261,20 +1261,6 @@ update_previewer_selection (NautilusApplication *self,
 }
 
 static void
-on_application_active_window_changed (NautilusApplication *self,
-                                      GParamSpec          *pspec,
-                                      gpointer             user_data)
-{
-    GtkWindow *window;
-
-    window = gtk_application_get_active_window (GTK_APPLICATION (self));
-    if (NAUTILUS_IS_WINDOW (window))
-    {
-        update_previewer_selection (self, NAUTILUS_WINDOW (window));
-    }
-}
-
-static void
 on_application_shutdown (GApplication *application,
                          gpointer      user_data)
 {
@@ -1358,7 +1344,6 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     nautilus_profile_end (NULL);
 
-    g_signal_connect (self, "notify::active-window", G_CALLBACK (on_application_active_window_changed), NULL);
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
 
     g_signal_connect_object (gtk_icon_theme_get_default (),
