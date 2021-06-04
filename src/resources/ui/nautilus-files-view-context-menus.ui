@@ -46,10 +46,11 @@
     </section>
     <section id="open-with-default-application-section">
     </section>
-    <submenu id="scripts-submenu">
+    <submenu>
       <attribute name="label" translatable="yes">_Scripts</attribute>
       <attribute name="action">view.scripts</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
+      <section id="scripts-submenu-section" />
       <section>
         <item>
           <attribute name="label" translatable="yes">_Open Scripts Folder</attribute>
