@@ -5541,7 +5541,7 @@ update_scripts_menu (NautilusFilesView *view,
     {
         GObject *object;
 
-        object = gtk_builder_get_object (builder, "scripts-submenu");
+        object = gtk_builder_get_object (builder, "scripts-submenu-section");
         nautilus_gmenu_set_from_model (G_MENU (object),
                                        G_MENU_MODEL (submenu));
 
