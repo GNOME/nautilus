@@ -34,9 +34,9 @@
       "buildsystem": "cmake-ninja",
       "sources": [
         {
-          "type": "archive",
-          "url": "https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz",
-          "sha256": "51cffa8d19d67e1da6c1d0f570a75b8f6c814113367318c2c0407691888c5f01"
+          "type": "git",
+          "url": "https://github.com/Exiv2/exiv2.git",
+          "branch": "main"
         }
       ]
     },
@@ -46,13 +46,13 @@
       "builddir": true,
       "config-opts": [
         "--libdir=/app/lib",
-        "-Ddisable-introspection=True"
+        "-Dintrospection=false",
+        "-Dpython3_girdir=no"
       ],
       "sources": [
         {
           "type": "git",
-          "url": "https://gitlab.gnome.org/GNOME/gexiv2.git",
-          "tag": "gexiv2-0.10.10"
+          "url": "https://gitlab.gnome.org/GNOME/gexiv2.git"
         }
       ]
     },
