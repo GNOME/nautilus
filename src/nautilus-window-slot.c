@@ -1583,6 +1583,7 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
     char *error_message;
     char *detail_message;
     char *scheme_string;
+    char *file_path;
 
     /* Some sort of failure occurred. How 'bout we tell the user? */
 
@@ -1605,7 +1606,17 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
         {
             case G_IO_ERROR_NOT_FOUND:
             {
-                detail_message = g_strdup (_("Unable to find the requested file. Please check the spelling and try again."));
+                file_path = g_file_get_path (location);
+                if (file_path != NULL)
+                {
+                    detail_message = g_strdup_printf (_("Unable to find “%s”. Please check the spelling and try again."),
+                                                      file_path);
+                }
+                else
+                {
+                    detail_message = g_strdup (_("Unable to find the requested file. Please check the spelling and try again."));
+                }
+                g_free (file_path);
             }
             break;
 
