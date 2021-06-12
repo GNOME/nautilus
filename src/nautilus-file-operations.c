@@ -2526,7 +2526,6 @@ delete_task_done (GObject      *source_object,
                   gpointer      user_data)
 {
     DeleteJob *job;
-    GHashTable *debuting_uris;
 
     job = user_data;
 
@@ -2534,9 +2533,7 @@ delete_task_done (GObject      *source_object,
 
     if (job->done_callback)
     {
-        debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
-        job->done_callback (debuting_uris, job->user_cancel, job->done_callback_data);
-        g_hash_table_unref (debuting_uris);
+        job->done_callback (job->user_cancel, job->done_callback_data);
     }
 
     finalize_common ((CommonJob *) job);
@@ -7305,12 +7302,15 @@ typedef struct
 } MoveTrashCBData;
 
 static void
-callback_for_move_to_trash (GHashTable      *debuting_uris,
-                            gboolean         user_cancelled,
+callback_for_move_to_trash (gboolean         user_cancelled,
                             MoveTrashCBData *data)
 {
     if (data->real_callback)
     {
+        g_autoptr (GHashTable) debuting_uris = NULL;
+
+        debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
+
         data->real_callback (debuting_uris, !user_cancelled, data->real_data);
     }
     g_slice_free (MoveTrashCBData, data);

@@ -355,9 +355,8 @@ handle_empty_trash2 (NautilusDBusFileOperations2 *object,
 }
 
 static void
-trash_on_finished (GHashTable *debutting_uris,
-                   gboolean    user_cancel,
-                   gpointer    callback_data)
+trash_on_finished (gboolean user_cancel,
+                   gpointer callback_data)
 {
     g_application_release (g_application_get_default ());
 }
@@ -409,9 +408,8 @@ handle_trash_uris2 (NautilusDBusFileOperations2  *object,
 }
 
 static void
-delete_on_finished (GHashTable *debutting_uris,
-                    gboolean    user_cancel,
-                    gpointer    callback_data)
+delete_on_finished (gboolean user_cancel,
+                    gpointer callback_data)
 {
     g_application_release (g_application_get_default ());
 }

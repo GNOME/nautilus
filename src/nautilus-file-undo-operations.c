@@ -384,9 +384,8 @@ file_undo_info_operation_callback (NautilusFile *file,
 }
 
 static void
-file_undo_info_delete_callback (GHashTable *debuting_uris,
-                                gboolean    user_cancel,
-                                gpointer    user_data)
+file_undo_info_delete_callback (gboolean user_cancel,
+                                gpointer user_data)
 {
     NautilusFileUndoInfo *self = user_data;
 
@@ -1638,9 +1637,8 @@ trash_strings_func (NautilusFileUndoInfo  *info,
 }
 
 static void
-trash_redo_func_callback (GHashTable *debuting_uris,
-                          gboolean    user_cancel,
-                          gpointer    user_data)
+trash_redo_func_callback (gboolean user_cancel,
+                          gpointer user_data)
 {
     NautilusFileUndoInfoTrash *self = user_data;
     GHashTable *new_trashed_files;
@@ -1673,7 +1671,7 @@ trash_redo_func_callback (GHashTable *debuting_uris,
         self->trashed = new_trashed_files;
     }
 
-    file_undo_info_delete_callback (debuting_uris, user_cancel, user_data);
+    file_undo_info_delete_callback (user_cancel, user_data);
 }
 
 static void

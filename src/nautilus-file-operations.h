@@ -37,10 +37,10 @@ typedef void (* NautilusCopyCallback)      (GHashTable *debuting_uris,
 typedef void (* NautilusCreateCallback)    (GFile      *new_file,
 					    gboolean    success,
 					    gpointer    callback_data);
+/*TODO: Consolidate NautilusOpCallback and NautilusDeleteCallback*/
 typedef void (* NautilusOpCallback)        (gboolean    success,
 					    gpointer    callback_data);
-typedef void (* NautilusDeleteCallback)    (GHashTable *debuting_uris,
-					    gboolean    user_cancel,
+typedef void (* NautilusDeleteCallback)    (gboolean   user_cancel,
 					    gpointer    callback_data);
 typedef void (* NautilusMountCallback)     (GVolume    *volume,
 					    gboolean    success,

@@ -4864,8 +4864,7 @@ home_dir_in_selection (GList *selection)
 }
 
 static void
-trash_or_delete_done_cb (GHashTable        *debuting_uris,
-                         gboolean           user_cancel,
+trash_or_delete_done_cb (gboolean           user_cancel,
                          NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
