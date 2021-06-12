@@ -597,18 +597,6 @@ ext_create_link_redo_func (NautilusFileUndoInfoExt        *self,
 }
 
 static void
-ext_duplicate_redo_func (NautilusFileUndoInfoExt        *self,
-                         GtkWindow                      *parent_window,
-                         NautilusFileOperationsDBusData *dbus_data)
-{
-    nautilus_file_operations_duplicate (g_queue_peek_head_link (self->sources),
-                                        parent_window,
-                                        dbus_data,
-                                        file_undo_info_transfer_callback,
-                                        self);
-}
-
-static void
 ext_copy_redo_func (NautilusFileUndoInfoExt        *self,
                     GtkWindow                      *parent_window,
                     NautilusFileOperationsDBusData *dbus_data)
@@ -647,13 +635,10 @@ ext_redo_func (NautilusFileUndoInfo           *info,
     {
         ext_move_restore_redo_func (self, parent_window, dbus_data);
     }
-    else if (op_type == NAUTILUS_FILE_UNDO_OP_COPY)
+    else if (op_type == NAUTILUS_FILE_UNDO_OP_COPY ||
+             op_type == NAUTILUS_FILE_UNDO_OP_DUPLICATE)
     {
         ext_copy_redo_func (self, parent_window, dbus_data);
-    }
-    else if (op_type == NAUTILUS_FILE_UNDO_OP_DUPLICATE)
-    {
-        ext_duplicate_redo_func (self, parent_window, dbus_data);
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_LINK)
     {
@@ -692,9 +677,9 @@ ext_move_undo_func (NautilusFileUndoInfoExt        *self,
 }
 
 static void
-ext_copy_duplicate_undo_func (NautilusFileUndoInfoExt        *self,
-                              GtkWindow                      *parent_window,
-                              NautilusFileOperationsDBusData *dbus_data)
+ext_copy_undo_func (NautilusFileUndoInfoExt        *self,
+                    GtkWindow                      *parent_window,
+                    NautilusFileOperationsDBusData *dbus_data)
 {
     GList *files;
 
@@ -720,7 +705,7 @@ ext_undo_func (NautilusFileUndoInfo           *info,
         op_type == NAUTILUS_FILE_UNDO_OP_DUPLICATE ||
         op_type == NAUTILUS_FILE_UNDO_OP_CREATE_LINK)
     {
-        ext_copy_duplicate_undo_func (self, parent_window, dbus_data);
+        ext_copy_undo_func (self, parent_window, dbus_data);
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_MOVE)
     {

@@ -6008,17 +6008,23 @@ nautilus_file_operations_copy (GTask        *task,
     if (!nautilus_file_undo_manager_is_operating ())
     {
         g_autoptr (GFile) src_dir = NULL;
+        NautilusFileUndoOp undo_op_type;
 
         src_dir = g_file_get_parent (job->files->data);
-        /* In the case of duplicate, the undo_info is already set, so we don't want to
-         * overwrite it wrongfully.
-         */
-        if (job->common.undo_info == NULL)
+        undo_op_type = NAUTILUS_FILE_UNDO_OP_COPY;
+
+        if (job->destination == NULL)
         {
-            job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
-                                                                     g_list_length (job->files),
-                                                                     src_dir, job->destination);
+            /* Use a distinct undo op ID for "duplicate" operation. This merely affects the user facing info-text about
+             * undo; the actual op logic is the same as the regular copy.
+             */
+
+            undo_op_type = NAUTILUS_FILE_UNDO_OP_DUPLICATE;
         }
+
+        job->common.undo_info = nautilus_file_undo_info_ext_new (undo_op_type,
+                                                                 g_list_length (job->files),
+                                                                 src_dir, job->destination);
     }
 
     nautilus_progress_info_start (job->common.progress);
@@ -7089,40 +7095,6 @@ nautilus_file_operations_link (GList                          *files,
     g_task_run_in_thread (task, link_task_thread_func);
 }
 
-
-void
-nautilus_file_operations_duplicate (GList                          *files,
-                                    GtkWindow                      *parent_window,
-                                    NautilusFileOperationsDBusData *dbus_data,
-                                    NautilusCopyCallback            done_callback,
-                                    gpointer                        done_callback_data)
-{
-    g_autoptr (GTask) task = NULL;
-    CopyMoveJob *job;
-
-    job = copy_job_setup (files,
-                          NULL,
-                          parent_window,
-                          dbus_data,
-                          done_callback,
-                          done_callback_data);
-
-    if (!nautilus_file_undo_manager_is_operating ())
-    {
-        g_autoptr (GFile) src_dir = NULL;
-
-        src_dir = g_file_get_parent (files->data);
-        job->common.undo_info =
-            nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_DUPLICATE,
-                                             g_list_length (files),
-                                             src_dir, NULL);
-    }
-
-    task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
-    g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread (task, nautilus_file_operations_copy);
-}
-
 static void
 set_permissions_task_done (GObject      *source_object,
                            GAsyncResult *res,
@@ -7355,7 +7327,7 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
 {
     GList *locations;
     GList *p;
-    GFile *dest, *src_dir;
+    GFile *dest;
     GtkWindow *parent_window;
     gboolean target_is_mapping;
     gboolean have_nonmapping_source;
@@ -7399,28 +7371,16 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
 
     if (copy_action == GDK_ACTION_COPY)
     {
-        src_dir = g_file_get_parent (locations->data);
-        if (target_dir == NULL ||
-            (src_dir != NULL &&
-             g_file_equal (src_dir, dest)))
-        {
-            nautilus_file_operations_duplicate (locations,
-                                                parent_window,
-                                                dbus_data,
-                                                done_callback, done_callback_data);
-        }
-        else
-        {
-            nautilus_file_operations_copy_async (locations,
-                                                 dest,
-                                                 parent_window,
-                                                 dbus_data,
-                                                 done_callback, done_callback_data);
-        }
-        if (src_dir)
-        {
-            g_object_unref (src_dir);
-        }
+        gboolean duplicate;
+
+        duplicate = target_dir == NULL || g_file_has_parent (locations->data, dest);
+
+        /* Duplication operation is identified by having a NULL dest */
+        nautilus_file_operations_copy_async (locations,
+                                             duplicate ? NULL : dest,
+                                             parent_window,
+                                             dbus_data,
+                                             done_callback, done_callback_data);
     }
     else if (copy_action == GDK_ACTION_MOVE)
     {
