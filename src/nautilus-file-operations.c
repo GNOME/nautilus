@@ -34,6 +34,7 @@
 
 #include "nautilus-file-operations.h"
 #include "nautilus-file-operations-private.h"
+#include "nautilus-file-operations-admin.h"
 
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -859,7 +860,7 @@ has_invalid_xml_char (char *str)
     return FALSE;
 }
 
-static gchar *
+gchar *
 get_basename (GFile *file)
 {
     GFileInfo *info;
@@ -1780,19 +1781,27 @@ typedef void (*DeleteCallback) (GFile   *file,
                                 gpointer callback_data);
 
 static gboolean
-delete_file_recursively (GFile          *file,
+delete_file_recursively (CommonJob      *job,
+                         GFile          *file,
                          GCancellable   *cancellable,
                          DeleteCallback  callback,
                          gpointer        callback_data)
 {
     gboolean success;
+    g_autoptr (GFile) try_file = NULL;
     g_autoptr (GError) error = NULL;
 
     do
     {
         g_autoptr (GFileEnumerator) enumerator = NULL;
 
-        success = g_file_delete (file, cancellable, &error);
+        g_set_object (&try_file, file);
+        do
+        {
+            success = g_file_delete (try_file, cancellable, &error);
+        }
+        while (!success && retry_with_admin_uri (&try_file, job, &error));
+
         if (success ||
             !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_EMPTY))
         {
@@ -1800,11 +1809,15 @@ delete_file_recursively (GFile          *file,
         }
 
         g_clear_error (&error);
-
-        enumerator = g_file_enumerate_children (file,
-                                                G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                                G_FILE_QUERY_INFO_NONE,
-                                                cancellable, &error);
+        g_set_object (&try_file, file);
+        do
+        {
+            enumerator = g_file_enumerate_children (try_file,
+                                                    G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                                    G_FILE_QUERY_INFO_NONE,
+                                                    cancellable, &error);
+        }
+        while (enumerator == NULL && retry_with_admin_uri (&try_file, job, &error));
 
         if (enumerator)
         {
@@ -1822,12 +1835,18 @@ delete_file_recursively (GFile          *file,
 
                 child = g_file_enumerator_get_child (enumerator, info);
 
-                success = success && delete_file_recursively (child,
+                success = success && delete_file_recursively (job,
+                                                              child,
                                                               cancellable,
                                                               callback,
                                                               callback_data);
 
                 g_object_unref (info);
+
+                if (job_aborted (job))
+                {
+                    break;
+                }
 
                 info = g_file_enumerator_next_file (enumerator,
                                                     cancellable,
@@ -1992,7 +2011,8 @@ delete_files (CommonJob *job,
             continue;
         }
 
-        success = delete_file_recursively (file, job->cancellable,
+        success = delete_file_recursively (job,
+                                           file, job->cancellable,
                                            file_deleted_callback,
                                            &data);
 
@@ -3202,6 +3222,7 @@ scan_dir (GFile      *dir,
           CommonJob  *job,
           GQueue     *dirs)
 {
+    g_autoptr (GFile) try_dir = NULL;
     GFileInfo *info;
     GError *error;
     GFile *subdir;
@@ -3242,13 +3263,19 @@ retry:
     }
 
     error = NULL;
-    enumerator = g_file_enumerate_children (dir,
-                                            G_FILE_ATTRIBUTE_STANDARD_NAME ","
-                                            G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                                            G_FILE_ATTRIBUTE_STANDARD_SIZE,
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            job->cancellable,
-                                            &error);
+    g_set_object (&try_dir, dir);
+    do
+    {
+        enumerator = g_file_enumerate_children (try_dir,
+                                                G_FILE_ATTRIBUTE_STANDARD_NAME ","
+                                                G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+                                                G_FILE_ATTRIBUTE_STANDARD_SIZE,
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                job->cancellable,
+                                                &error);
+    }
+    while (enumerator == NULL && retry_with_admin_uri (&try_dir, job, &error));
+
     if (enumerator)
     {
         error = NULL;
@@ -3328,6 +3355,11 @@ retry:
     {
         g_error_free (error);
         skip_file (job, dir);
+        skip_subdirs = TRUE;
+    }
+    else if (job_aborted (job))
+    {
+        g_error_free (error);
         skip_subdirs = TRUE;
     }
     else if (IS_IO_ERROR (error, CANCELLED))
@@ -4534,6 +4566,7 @@ create_dest_dir (CommonJob  *job,
                  gboolean    same_fs,
                  char      **dest_fs_type)
 {
+    g_autoptr (GFile) try_dest = NULL;
     GError *error;
     GFile *new_dest, *dest_dir;
     char *primary, *secondary, *details;
@@ -4548,7 +4581,12 @@ retry:
      *  copying the attributes, because we need to be sure we can write to it */
 
     error = NULL;
-    res = g_file_make_directory (*dest, job->cancellable, &error);
+    g_set_object (&try_dest, *dest);
+    do
+    {
+        res = g_file_make_directory (try_dest, job->cancellable, &error);
+    }
+    while (!res && retry_with_admin_uri (&try_dest, job, &error));
 
     if (res)
     {
@@ -4570,7 +4608,7 @@ retry:
     {
         g_autofree gchar *basename = NULL;
 
-        if (IS_IO_ERROR (error, CANCELLED))
+        if (IS_IO_ERROR (error, CANCELLED) || job_aborted (job))
         {
             g_error_free (error);
             return CREATE_DEST_DIR_FAILED;
@@ -4681,6 +4719,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
                      gboolean       readonly_source_fs)
 {
     g_autoptr (GFileInfo) src_info = NULL;
+    g_autoptr (GFile) try_src = NULL;
     GFileInfo *info;
     GError *error;
     GFile *src_file;
@@ -4753,11 +4792,17 @@ copy_move_directory (CopyMoveJob   *copy_job,
     skip_error = should_skip_readdir_error (job, src);
 retry:
     error = NULL;
-    enumerator = g_file_enumerate_children (src,
-                                            G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            job->cancellable,
-                                            &error);
+    g_set_object (&try_src, src);
+    do
+    {
+        enumerator = g_file_enumerate_children (try_src,
+                                                G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                job->cancellable,
+                                                &error);
+    }
+    while (enumerator == NULL && retry_with_admin_uri (&try_src, job, &error));
+
     if (enumerator)
     {
         error = NULL;
@@ -4864,7 +4909,7 @@ retry:
             g_hash_table_replace (debuting_files, g_object_ref (*dest), GINT_TO_POINTER (create_dest));
         }
     }
-    else if (IS_IO_ERROR (error, CANCELLED))
+    else if (IS_IO_ERROR (error, CANCELLED) || job_aborted (job))
     {
         g_error_free (error);
     }
@@ -5199,6 +5244,8 @@ copy_move_file (CopyMoveJob   *copy_job,
                 gboolean      *skipped_file,
                 gboolean       readonly_source_fs)
 {
+    g_autoptr (GFile) try_src = NULL;
+    g_autoptr (GFile) try_dest = NULL;
     GFile *dest, *new_dest;
     g_autofree gchar *dest_uri = NULL;
     GError *error;
@@ -5356,23 +5403,35 @@ retry:
     pdata.source_info = source_info;
     pdata.transfer_info = transfer_info;
 
+    g_set_object (&try_src, src);
+    g_set_object (&try_dest, dest);
     if (copy_job->is_move)
     {
-        res = g_file_move (src, dest,
-                           flags,
-                           job->cancellable,
-                           copy_file_progress_callback,
-                           &pdata,
-                           &error);
+        do
+        {
+            res = g_file_move (try_src, try_dest,
+                               flags,
+                               job->cancellable,
+                               copy_file_progress_callback,
+                               &pdata,
+                               &error);
+        }
+        while (!res && (retry_with_admin_uri (&try_src, job, &error) ||
+                        retry_with_admin_uri (&try_dest, job, &error)));
     }
     else
     {
-        res = g_file_copy (src, dest,
-                           flags,
-                           job->cancellable,
-                           copy_file_progress_callback,
-                           &pdata,
-                           &error);
+        do
+        {
+            res = g_file_copy (try_src, try_dest,
+                               flags,
+                               job->cancellable,
+                               copy_file_progress_callback,
+                               &pdata,
+                               &error);
+        }
+        while (!res && (retry_with_admin_uri (&try_src, job, &error) ||
+                        retry_with_admin_uri (&try_dest, job, &error)));
     }
 
     if (res)
@@ -5650,7 +5709,7 @@ retry:
         g_object_unref (dest);
         return;
     }
-    else if (IS_IO_ERROR (error, CANCELLED))
+    else if (IS_IO_ERROR (error, CANCELLED) || job_aborted (job))
     {
         g_error_free (error);
     }
@@ -6051,6 +6110,8 @@ move_file_prepare (CopyMoveJob  *move_job,
                    GList       **fallback_files,
                    int           files_left)
 {
+    g_autoptr (GFile) try_src = NULL;
+    g_autoptr (GFile) try_dest = NULL;
     GFile *dest, *new_dest;
     g_autofree gchar *dest_uri = NULL;
     GError *error;
@@ -6060,6 +6121,7 @@ move_file_prepare (CopyMoveJob  *move_job,
     GFileCopyFlags flags;
     MoveFileCopyFallback *fallback;
     gboolean handled_invalid_filename;
+    gboolean res;
 
     overwrite = FALSE;
     handled_invalid_filename = *dest_fs_type != NULL;
@@ -6134,12 +6196,21 @@ retry:
     }
 
     error = NULL;
-    if (g_file_move (src, dest,
-                     flags,
-                     job->cancellable,
-                     NULL,
-                     NULL,
-                     &error))
+    g_set_object (&try_src, src);
+    g_set_object (&try_dest, dest);
+    do
+    {
+        res = g_file_move (try_src, try_dest,
+                           flags,
+                           job->cancellable,
+                           NULL,
+                           NULL,
+                           &error);
+    }
+    while (!res && (retry_with_admin_uri (&try_src, job, &error) ||
+                    retry_with_admin_uri (&try_dest, job, &error)));
+
+    if (res)
     {
         if (debuting_files)
         {
@@ -6275,7 +6346,7 @@ retry:
                                                 overwrite);
         *fallback_files = g_list_prepend (*fallback_files, fallback);
     }
-    else if (IS_IO_ERROR (error, CANCELLED))
+    else if (IS_IO_ERROR (error, CANCELLED) || job_aborted (job))
     {
         g_error_free (error);
     }
@@ -8166,7 +8237,7 @@ extract_job_on_error (AutoarExtractor *extractor,
     if (extract_job->destination_decided)
     {
         destination = extract_job->output_files->data;
-        delete_file_recursively (destination, NULL, NULL, NULL);
+        delete_file_recursively ((CommonJob *) extract_job, destination, NULL, NULL, NULL);
         extract_job->output_files = g_list_delete_link (extract_job->output_files,
                                                         extract_job->output_files);
         g_object_unref (destination);

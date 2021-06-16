@@ -189,6 +189,8 @@ libnautilus_sources = [
   'nautilus-file-operations-private.h',
   'nautilus-file-operations-dbus-data.c',
   'nautilus-file-operations-dbus-data.h',
+  'nautilus-file-operations-admin.c',
+  'nautilus-file-operations-admin.h',
   'nautilus-file-private.h',
   'nautilus-file-queue.c',
   'nautilus-file-queue.h',

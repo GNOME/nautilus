@@ -260,6 +260,8 @@ char *                  nautilus_file_get_filesystem_type               (Nautilu
 
 gboolean                nautilus_file_get_filesystem_remote             (NautilusFile                   *file);
 
+gboolean                nautilus_file_is_filesystem_readonly            (NautilusFile                   *file);
+
 NautilusFile *          nautilus_file_get_trash_original_file           (NautilusFile                   *file);
 
 /* Permissions. */

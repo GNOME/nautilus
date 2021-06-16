@@ -36,6 +36,8 @@ typedef struct
     gboolean merge_all;
     gboolean replace_all;
     gboolean delete_all;
+    gboolean admin_permission_granted;
+    gboolean admin_permission_denied;
 } CommonJob;
 
 typedef struct
@@ -134,3 +136,5 @@ typedef struct
     NautilusCreateCallback done_callback;
     gpointer done_callback_data;
 } CompressJob;
+
+gchar *get_basename (GFile *file);

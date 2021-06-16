@@ -4763,6 +4763,29 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
     return FALSE;
 }
 
+gboolean
+nautilus_file_is_filesystem_readonly (NautilusFile *file)
+{
+    g_assert (NAUTILUS_IS_FILE (file));
+
+    if (nautilus_file_is_directory (file))
+    {
+        return file->details->filesystem_readonly;
+    }
+    else
+    {
+        g_autoptr (NautilusFile) parent = NULL;
+
+        parent = nautilus_file_get_parent (file);
+        if (parent != NULL)
+        {
+            return parent->details->filesystem_readonly;
+        }
+    }
+
+    return FALSE;
+}
+
 static gboolean
 get_speed_tradeoff_preference_for_file (NautilusFile               *file,
                                         NautilusSpeedTradeoffValue  value)
