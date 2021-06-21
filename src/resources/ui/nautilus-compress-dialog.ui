@@ -13,7 +13,7 @@
       <object class="GtkBox" id="vbox">
         <property name="orientation">vertical</property>
         <property name="margin_top">18</property>
-        <property name="margin_bottom">12</property>
+        <property name="margin_bottom">18</property>
         <property name="margin_start">84</property>
         <property name="margin_end">84</property>
         <property name="spacing">6</property>
@@ -80,6 +80,21 @@
             </child>
             <child>
               <object class="HdyActionRow">
+                <property name="title" translatable="yes" comments="Translators: Keep '.zip' unmodified.">.zip (Password Protected)</property>
+                <property name="subtitle" translatable="yes">Encrypted .zip format.</property>
+                <property name="activatable-widget">encrypted_zip_radio_button</property>
+                <child type="prefix">
+                  <object class="GtkRadioButton" id="encrypted_zip_radio_button">
+                    <property name="draw-indicator">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="group">zip_radio_button</property>
+                    <signal name="toggled" handler="encrypted_zip_radio_button_on_toggled"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyActionRow">
                 <property name="title" translatable="no">.tar.xz</property>
                 <property name="subtitle" translatable="yes">Smaller archives but Linux and Mac only.</property>
                 <property name="activatable-widget">tar_xz_radio_button</property>
@@ -113,6 +128,29 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="passphrase_label">
+            <property name="label" translatable="yes">Password</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="passphrase_entry">
+            <property name="input-purpose">GTK_INPUT_PURPOSE_PASSWORD</property>
+            <property name="visibility">False</property>
+            <signal name="changed" handler="passphrase_entry_on_changed"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
           </packing>
         </child>
       </object>

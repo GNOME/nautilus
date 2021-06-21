@@ -33,10 +33,14 @@ struct _NautilusCompressDialogController
     GtkWidget *compress_dialog;
     GtkWidget *name_entry;
     GtkWidget *zip_radio_button;
+    GtkWidget *encrypted_zip_radio_button;
     GtkWidget *tar_xz_radio_button;
     GtkWidget *seven_zip_radio_button;
+    GtkWidget *passphrase_label;
+    GtkWidget *passphrase_entry;
 
     const char *extension;
+    gchar *passphrase;
 
     gulong response_handler_id;
 };
@@ -44,10 +48,11 @@ struct _NautilusCompressDialogController
 G_DEFINE_TYPE (NautilusCompressDialogController, nautilus_compress_dialog_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER);
 
 static gboolean
-nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetController  *self,
+nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetController  *controller,
                                                    gchar                             *name,
                                                    gchar                            **error_message)
 {
+    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
     gboolean is_valid;
 
     is_valid = TRUE;
@@ -70,7 +75,7 @@ nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetControl
         is_valid = FALSE;
         *error_message = _("An archive cannot be called “..”.");
     }
-    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
+    else if (nautilus_file_name_widget_controller_is_name_too_long (controller, name))
     {
         is_valid = FALSE;
         *error_message = _("Archive name is too long.");
@@ -80,6 +85,13 @@ nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetControl
     {
         /* We must warn about the side effect */
         *error_message = _("Archives with “.” at the beginning of their name are hidden.");
+    }
+
+    /* An empty passwords are not allowed. */
+    if (gtk_widget_get_sensitive (self->passphrase_entry) &&
+        (self->passphrase == NULL || self->passphrase[0] == '\0'))
+    {
+        is_valid = FALSE;
     }
 
     return is_valid;
@@ -135,6 +147,7 @@ update_selected_format (NautilusCompressDialogController *self,
 {
     const char *extension;
     GtkWidget *active_button;
+    gboolean passphrase_sensitive = FALSE;
 
     switch (format)
     {
@@ -142,6 +155,14 @@ update_selected_format (NautilusCompressDialogController *self,
         {
             extension = ".zip";
             active_button = self->zip_radio_button;
+        }
+        break;
+
+        case NAUTILUS_COMPRESSION_ENCRYPTED_ZIP:
+        {
+            extension = ".zip";
+            active_button = self->encrypted_zip_radio_button;
+            passphrase_sensitive = TRUE;
         }
         break;
 
@@ -167,6 +188,13 @@ update_selected_format (NautilusCompressDialogController *self,
     }
 
     self->extension = extension;
+
+    gtk_widget_set_sensitive (self->passphrase_label, passphrase_sensitive);
+    gtk_widget_set_sensitive (self->passphrase_entry, passphrase_sensitive);
+    if (!passphrase_sensitive)
+    {
+        gtk_entry_set_text (GTK_ENTRY (self->passphrase_entry), "");
+    }
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active_button),
                                   TRUE);
@@ -195,6 +223,23 @@ zip_radio_button_on_toggled (GtkToggleButton *toggle_button,
 
     update_selected_format (controller,
                             NAUTILUS_COMPRESSION_ZIP);
+}
+
+static void
+encrypted_zip_radio_button_on_toggled (GtkToggleButton *toggle_button,
+                                       gpointer         user_data)
+{
+    NautilusCompressDialogController *controller;
+
+    controller = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+
+    if (!gtk_toggle_button_get_active (toggle_button))
+    {
+        return;
+    }
+
+    update_selected_format (controller,
+                            NAUTILUS_COMPRESSION_ENCRYPTED_ZIP);
 }
 
 static void
@@ -231,6 +276,21 @@ seven_zip_radio_button_on_toggled (GtkToggleButton *toggle_button,
                             NAUTILUS_COMPRESSION_7ZIP);
 }
 
+static void
+passphrase_entry_on_changed (GtkEditable *editable,
+                             gpointer     user_data)
+{
+    NautilusCompressDialogController *self;
+
+    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+
+    g_free (self->passphrase);
+    self->passphrase = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->passphrase_entry)));
+
+    /* Update activation button sensitivity. */
+    g_signal_emit_by_name (self->name_entry, "changed");
+}
+
 NautilusCompressDialogController *
 nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                          NautilusDirectory *destination_directory,
@@ -244,8 +304,11 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     GtkWidget *name_entry;
     GtkWidget *activate_button;
     GtkWidget *zip_radio_button;
+    GtkWidget *encrypted_zip_radio_button;
     GtkWidget *tar_xz_radio_button;
     GtkWidget *seven_zip_radio_button;
+    GtkWidget *passphrase_label;
+    GtkWidget *passphrase_entry;
     NautilusCompressionFormat format;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
@@ -255,8 +318,11 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
     activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "activate_button"));
     zip_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "zip_radio_button"));
+    encrypted_zip_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "encrypted_zip_radio_button"));
     tar_xz_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "tar_xz_radio_button"));
     seven_zip_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_radio_button"));
+    passphrase_label = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_label"));
+    passphrase_entry = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_entry"));
 
     gtk_window_set_transient_for (GTK_WINDOW (compress_dialog),
                                   parent_window);
@@ -270,9 +336,12 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
     self->compress_dialog = compress_dialog;
     self->zip_radio_button = zip_radio_button;
+    self->encrypted_zip_radio_button = encrypted_zip_radio_button;
     self->tar_xz_radio_button = tar_xz_radio_button;
     self->seven_zip_radio_button = seven_zip_radio_button;
     self->name_entry = name_entry;
+    self->passphrase_label = passphrase_label;
+    self->passphrase_entry = passphrase_entry;
 
     self->response_handler_id = g_signal_connect (compress_dialog,
                                                   "response",
@@ -282,10 +351,14 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     gtk_builder_add_callback_symbols (builder,
                                       "zip_radio_button_on_toggled",
                                       G_CALLBACK (zip_radio_button_on_toggled),
+                                      "encrypted_zip_radio_button_on_toggled",
+                                      G_CALLBACK (encrypted_zip_radio_button_on_toggled),
                                       "tar_xz_radio_button_on_toggled",
                                       G_CALLBACK (tar_xz_radio_button_on_toggled),
                                       "seven_zip_radio_button_on_toggled",
                                       G_CALLBACK (seven_zip_radio_button_on_toggled),
+                                      "passphrase_entry_on_changed",
+                                      G_CALLBACK (passphrase_entry_on_changed),
                                       NULL);
     gtk_builder_connect_signals (builder, self);
 
@@ -323,6 +396,8 @@ nautilus_compress_dialog_controller_finalize (GObject *object)
         self->compress_dialog = NULL;
     }
 
+    g_free (self->passphrase);
+
     G_OBJECT_CLASS (nautilus_compress_dialog_controller_parent_class)->finalize (object);
 }
 
@@ -336,4 +411,10 @@ nautilus_compress_dialog_controller_class_init (NautilusCompressDialogController
 
     parent_class->get_new_name = nautilus_compress_dialog_controller_get_new_name;
     parent_class->name_is_valid = nautilus_compress_dialog_controller_name_is_valid;
+}
+
+const gchar *
+nautilus_compress_dialog_controller_get_passphrase (NautilusCompressDialogController *self)
+{
+    return self->passphrase;
 }

@@ -226,4 +226,5 @@ G_DECLARE_FINAL_TYPE (NautilusFileUndoInfoCompress, nautilus_file_undo_info_comp
 NautilusFileUndoInfo * nautilus_file_undo_info_compress_new (GList        *sources,
                                                              GFile        *output,
                                                              AutoarFormat  format,
-                                                             AutoarFilter  filter);
+                                                             AutoarFilter  filter,
+                                                             const gchar  *passphrase);

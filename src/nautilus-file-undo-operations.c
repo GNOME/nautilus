@@ -2495,6 +2495,7 @@ struct _NautilusFileUndoInfoCompress
     GFile *output;
     AutoarFormat format;
     AutoarFilter filter;
+    gchar *passphrase;
 };
 
 G_DEFINE_TYPE (NautilusFileUndoInfoCompress, nautilus_file_undo_info_compress, NAUTILUS_TYPE_FILE_UNDO_INFO)
@@ -2562,6 +2563,7 @@ compress_redo_func (NautilusFileUndoInfo           *info,
                                        self->output,
                                        self->format,
                                        self->filter,
+                                       self->passphrase,
                                        parent_window,
                                        dbus_data,
                                        compress_callback,
@@ -2597,6 +2599,7 @@ nautilus_file_undo_info_compress_finalize (GObject *obj)
 
     g_list_free_full (self->sources, g_object_unref);
     g_clear_object (&self->output);
+    g_free (self->passphrase);
 
     G_OBJECT_CLASS (nautilus_file_undo_info_compress_parent_class)->finalize (obj);
 }
@@ -2618,7 +2621,8 @@ NautilusFileUndoInfo *
 nautilus_file_undo_info_compress_new (GList        *sources,
                                       GFile        *output,
                                       AutoarFormat  format,
-                                      AutoarFilter  filter)
+                                      AutoarFilter  filter,
+                                      const gchar  *passphrase)
 {
     NautilusFileUndoInfoCompress *self;
 
@@ -2631,6 +2635,7 @@ nautilus_file_undo_info_compress_new (GList        *sources,
     self->output = g_object_ref (output);
     self->format = format;
     self->filter = filter;
+    self->passphrase = g_strdup (passphrase);
 
     return NAUTILUS_FILE_UNDO_INFO (self);
 }
