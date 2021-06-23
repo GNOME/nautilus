@@ -146,6 +146,7 @@
             <property name="input-purpose">GTK_INPUT_PURPOSE_PASSWORD</property>
             <property name="visibility">False</property>
             <signal name="changed" handler="passphrase_entry_on_changed"/>
+            <signal name="icon-press" handler="passphrase_entry_on_icon_press"/>
           </object>
           <packing>
             <property name="expand">False</property>

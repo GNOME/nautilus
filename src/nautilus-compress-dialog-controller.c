@@ -191,9 +191,13 @@ update_selected_format (NautilusCompressDialogController *self,
 
     gtk_widget_set_sensitive (self->passphrase_label, passphrase_sensitive);
     gtk_widget_set_sensitive (self->passphrase_entry, passphrase_sensitive);
+    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_entry),
+                                       GTK_ENTRY_ICON_SECONDARY,
+                                       passphrase_sensitive ? "view-conceal" : "");
     if (!passphrase_sensitive)
     {
         gtk_entry_set_text (GTK_ENTRY (self->passphrase_entry), "");
+        gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_entry), FALSE);
     }
 
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active_button),
@@ -291,6 +295,24 @@ passphrase_entry_on_changed (GtkEditable *editable,
     g_signal_emit_by_name (self->name_entry, "changed");
 }
 
+static void
+passphrase_entry_on_icon_press (GtkEntry             *entry,
+                                GtkEntryIconPosition  icon_pos,
+                                GdkEvent             *event,
+                                gpointer              user_data)
+{
+    NautilusCompressDialogController *self;
+    gboolean visibility;
+
+    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    visibility = gtk_entry_get_visibility (GTK_ENTRY (self->passphrase_entry));
+
+    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_entry),
+                                       GTK_ENTRY_ICON_SECONDARY,
+                                       visibility ? "view-conceal" : "view-reveal");
+    gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_entry), !visibility);
+}
+
 NautilusCompressDialogController *
 nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                          NautilusDirectory *destination_directory,
@@ -359,6 +381,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                       G_CALLBACK (seven_zip_radio_button_on_toggled),
                                       "passphrase_entry_on_changed",
                                       G_CALLBACK (passphrase_entry_on_changed),
+                                      "passphrase_entry_on_icon_press",
+                                      G_CALLBACK (passphrase_entry_on_icon_press),
                                       NULL);
     gtk_builder_connect_signals (builder, self);
 
