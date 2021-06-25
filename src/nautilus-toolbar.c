@@ -91,6 +91,8 @@ struct _NautilusToolbar
     GtkWidget *view_toggle_button;
     GtkWidget *view_toggle_icon;
 
+    GtkWidget *app_menu;
+
     GtkWidget *operations_popover;
     GtkWidget *operations_container;
     GtkWidget *operations_revealer;
@@ -1230,6 +1232,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher_container);
@@ -1502,13 +1505,9 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
 gboolean
 nautilus_toolbar_is_menu_visible (NautilusToolbar *self)
 {
-    GtkPopover *popover;
-
     g_return_val_if_fail (NAUTILUS_IS_TOOLBAR (self), FALSE);
 
-    popover = GTK_POPOVER (gtk_menu_button_get_popover (GTK_MENU_BUTTON (self->view_button)));
-
-    return gtk_widget_is_visible (GTK_WIDGET (popover));
+    return gtk_widget_is_visible (self->app_menu);
 }
 
 gboolean
