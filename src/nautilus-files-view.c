@@ -6854,19 +6854,17 @@ static void
 set_wallpaper_fallback (NautilusFile *file,
                         gpointer      user_data)
 {
-    char *target_uri;
+    g_autofree char *target_uri = NULL;
     GList *uris;
-    GFile *parent;
-    GFile *target;
+    g_autoptr (GFile) parent = NULL;
+    g_autoptr (GFile) target = NULL;
 
     /* Copy the item to Pictures/Wallpaper (internationalized) since it may be
      *  remote. Then set it as the current wallpaper. */
     parent = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
     target = g_file_get_child (parent, _("Wallpapers"));
-    g_object_unref (parent);
     g_file_make_directory_with_parents (target, NULL, NULL);
     target_uri = g_file_get_uri (target);
-    g_object_unref (target);
     uris = g_list_prepend (NULL, nautilus_file_get_uri (file));
     nautilus_file_operations_copy_move (uris,
                                         target_uri,
@@ -6875,7 +6873,6 @@ set_wallpaper_fallback (NautilusFile *file,
                                         NULL,
                                         wallpaper_copy_done_callback,
                                         NULL);
-    g_free (target_uri);
     g_list_free_full (uris, g_free);
 }
 
