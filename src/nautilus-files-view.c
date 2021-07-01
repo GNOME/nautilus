@@ -6856,13 +6856,13 @@ set_wallpaper_fallback (NautilusFile *file,
 {
     g_autofree char *target_uri = NULL;
     GList *uris;
-    g_autoptr (GFile) parent = NULL;
     g_autoptr (GFile) target = NULL;
 
     /* Copy the item to Pictures/Wallpaper (internationalized) since it may be
      *  remote. Then set it as the current wallpaper. */
-    parent = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
-    target = g_file_get_child (parent, _("Wallpapers"));
+    target = g_file_new_build_filename (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES),
+                                        _("Wallpapers"),
+                                        NULL);
     g_file_make_directory_with_parents (target, NULL, NULL);
     target_uri = g_file_get_uri (target);
     uris = g_list_prepend (NULL, nautilus_file_get_uri (file));
