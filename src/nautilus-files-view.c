@@ -6854,26 +6854,38 @@ static void
 set_wallpaper_fallback (NautilusFile *file,
                         gpointer      user_data)
 {
-    g_autofree char *target_uri = NULL;
-    GList *uris;
     g_autoptr (GFile) target = NULL;
+    g_autofree char *file_uri = NULL;
+    g_autoptr (GFile) file_parent = NULL;
 
-    /* Copy the item to Pictures/Wallpaper (internationalized) since it may be
-     *  remote. Then set it as the current wallpaper. */
+    /* Copy the item to Pictures/Wallpaper (internationalized),
+     * if it's not already there, since it may be remote.
+     * Then set it as the current wallpaper. */
     target = g_file_new_build_filename (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES),
                                         _("Wallpapers"),
                                         NULL);
     g_file_make_directory_with_parents (target, NULL, NULL);
-    target_uri = g_file_get_uri (target);
-    uris = g_list_prepend (NULL, nautilus_file_get_uri (file));
-    nautilus_file_operations_copy_move (uris,
-                                        target_uri,
-                                        GDK_ACTION_COPY,
-                                        GTK_WIDGET (user_data),
-                                        NULL,
-                                        wallpaper_copy_done_callback,
-                                        NULL);
-    g_list_free_full (uris, g_free);
+
+    file_parent = nautilus_file_get_parent_location (file);
+    file_uri = nautilus_file_get_uri (file);
+
+    if (!g_file_equal (file_parent, target))
+    {
+        g_autofree char *target_uri = g_file_get_uri (target);
+        g_autoptr (GList) uris = g_list_prepend (NULL, file_uri);
+
+        nautilus_file_operations_copy_move (uris,
+                                            target_uri,
+                                            GDK_ACTION_COPY,
+                                            GTK_WIDGET (user_data),
+                                            NULL,
+                                            wallpaper_copy_done_callback,
+                                            NULL);
+    }
+    else
+    {
+        set_uri_as_wallpaper (file_uri);
+    }
 }
 
 static void
