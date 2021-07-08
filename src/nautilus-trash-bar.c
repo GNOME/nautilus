@@ -41,7 +41,8 @@ enum
 
 enum
 {
-    TRASH_BAR_RESPONSE_EMPTY = 1,
+    TRASH_BAR_RESPONSE_AUTODELETE = 1,
+    TRASH_BAR_RESPONSE_EMPTY,
     TRASH_BAR_RESPONSE_RESTORE
 };
 
@@ -164,6 +165,28 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 
     switch (response_id)
     {
+        case TRASH_BAR_RESPONSE_AUTODELETE:
+        {
+            g_autoptr (GAppInfo) app_info = NULL;
+            g_autoptr (GError) error = NULL;
+
+            app_info = g_app_info_create_from_commandline ("gnome-control-center usage",
+                                                           NULL,
+                                                           G_APP_INFO_CREATE_NONE,
+                                                           NULL);
+
+            g_app_info_launch (app_info, NULL, NULL, &error);
+
+            if (error)
+            {
+                show_dialog (_("There was an error launching the application."),
+                             error->message,
+                             GTK_WINDOW (window),
+                             GTK_MESSAGE_ERROR);
+            }
+        }
+        break;
+
         case TRASH_BAR_RESPONSE_EMPTY:
         {
             nautilus_file_operations_empty_trash (window, TRUE, NULL);
@@ -217,6 +240,12 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
     gtk_container_add (GTK_CONTAINER (content_area), label);
 
     gtk_container_add (GTK_CONTAINER (content_area), subtitle);
+
+    w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
+                                 _("_Settings"),
+                                 TRASH_BAR_RESPONSE_AUTODELETE);
+    gtk_widget_set_tooltip_text (w,
+                                 _("Display system controls for trash content"));
 
     w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
                                  _("_Restore"),
