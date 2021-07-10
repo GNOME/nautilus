@@ -3372,8 +3372,10 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
     char *first_item_name;
     char *non_folder_count_str;
     char *non_folder_item_count_str;
+    char *non_folder_counts_str;
     char *folder_count_str;
     char *folder_item_count_str;
+    char *folder_counts_str;
     char *primary_status;
     char *detail_status;
     NautilusFile *file;
@@ -3391,8 +3393,10 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
     first_item_name = NULL;
     folder_count_str = NULL;
     folder_item_count_str = NULL;
+    folder_counts_str = NULL;
     non_folder_count_str = NULL;
     non_folder_item_count_str = NULL;
+    non_folder_counts_str = NULL;
 
     for (p = selection; p != NULL; p = p->next)
     {
@@ -3535,6 +3539,23 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
     }
     else
     {
+        if (folder_item_count_known)
+        {
+            folder_counts_str = g_strconcat (folder_count_str, " ", folder_item_count_str, NULL);
+        }
+        else
+        {
+            folder_counts_str = g_strdup (folder_count_str);
+        }
+
+        if (non_folder_size_known)
+        {
+            non_folder_counts_str = g_strconcat (non_folder_count_str, " ", non_folder_item_count_str, NULL);
+        }
+        else
+        {
+            non_folder_counts_str = g_strdup (non_folder_count_str);
+        }
         /* This is marked for translation in case a localizer
          * needs to change ", " to something else. The comma
          * is between the message about the number of folders
@@ -3542,19 +3563,19 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
          * message about the number of other items and the
          * total size of those items.
          */
-        primary_status = g_strdup_printf (_("%s %s, %s %s"),
-                                          folder_count_str,
-                                          folder_item_count_str,
-                                          non_folder_count_str,
-                                          non_folder_item_count_str);
+        primary_status = g_strdup_printf (_("%s, %s"),
+                                          folder_counts_str,
+                                          non_folder_counts_str);
         detail_status = NULL;
     }
 
     g_free (first_item_name);
     g_free (folder_count_str);
     g_free (folder_item_count_str);
+    g_free (folder_counts_str);
     g_free (non_folder_count_str);
     g_free (non_folder_item_count_str);
+    g_free (non_folder_counts_str);
 
     set_floating_bar_status (view, primary_status, detail_status);
 
