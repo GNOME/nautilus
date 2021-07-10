@@ -686,8 +686,10 @@ update_name_field (NautilusPropertiesWindow *self)
     {
         const char *original_name = NULL;
         g_autofree char *current_name = NULL;
+        gboolean use_label;
 
         file = get_original_file (self);
+        use_label = !nautilus_file_can_rename (file);
 
         if (file == NULL || nautilus_file_is_gone (file))
         {
@@ -695,7 +697,14 @@ update_name_field (NautilusPropertiesWindow *self)
         }
         else
         {
-            current_name = nautilus_file_get_display_name (file);
+            if (use_label)
+            {
+                current_name = nautilus_file_get_display_name (file);
+            }
+            else
+            {
+                current_name = nautilus_file_get_edit_name (file);
+            }
         }
 
         /* If the file name has changed since the original name was stored,

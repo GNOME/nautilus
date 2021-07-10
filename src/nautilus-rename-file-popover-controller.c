@@ -219,11 +219,11 @@ static gboolean
 name_entry_on_undo (GtkWidget                           *widget,
                     NautilusRenameFilePopoverController *self)
 {
-    g_autofree gchar *display_name = NULL;
+    g_autofree gchar *edit_name = NULL;
 
-    display_name = nautilus_file_get_display_name (self->target_file);
+    edit_name = nautilus_file_get_edit_name (self->target_file);
 
-    gtk_entry_set_text (GTK_ENTRY (widget), display_name);
+    gtk_entry_set_text (GTK_ENTRY (widget), edit_name);
 
     gtk_editable_select_region (GTK_EDITABLE (widget), 0, -1);
 
@@ -334,7 +334,7 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
                                                          GtkWidget                           *relative_to)
 {
     g_autoptr (NautilusDirectory) containing_directory = NULL;
-    g_autofree gchar *display_name = NULL;
+    g_autofree gchar *edit_name = NULL;
     gint n_chars;
 
     g_assert (NAUTILUS_IS_RENAME_FILE_POPOVER_CONTROLLER (self));
@@ -380,9 +380,9 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
                         self->target_is_folder ? _("Folder name") :
                         _("File name"));
 
-    display_name = nautilus_file_get_display_name (self->target_file);
+    edit_name = nautilus_file_get_edit_name (self->target_file);
 
-    gtk_entry_set_text (GTK_ENTRY (self->name_entry), display_name);
+    gtk_entry_set_text (GTK_ENTRY (self->name_entry), edit_name);
 
     gtk_popover_set_pointing_to (GTK_POPOVER (self->rename_file_popover), pointing_to);
     gtk_popover_set_relative_to (GTK_POPOVER (self->rename_file_popover), relative_to);
@@ -395,13 +395,13 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
         gint end_offset;
 
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (display_name,
+        eel_filename_get_rename_region (edit_name,
                                         &start_offset, &end_offset);
         gtk_editable_select_region (GTK_EDITABLE (self->name_entry),
                                     start_offset, end_offset);
     }
 
-    n_chars = g_utf8_strlen (display_name, -1);
+    n_chars = g_utf8_strlen (edit_name, -1);
     gtk_entry_set_width_chars (GTK_ENTRY (self->name_entry),
                                MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
                                     RENAME_ENTRY_MAX_CHARS));
