@@ -14,7 +14,7 @@
 # Hajime Taira <htaira@redhat.com>, 2015, 2019.
 # Akira Tanaka <root.167d36d4acb91@gmail.com>, 2017.
 # sujiniku <sujinikusityuu@gmail.com>, 2018, 2021.
-# sicklylife <translation@sicklylife.jp>, 2019-2020.
+# sicklylife <translation@sicklylife.jp>, 2019-2021.
 # Yuki Okushi <huyuumi.dev@gmail.com>, 2020.
 # Peniel Vargas <tsuneake.kaemitsu@gmail.com>, 2021.
 #
@@ -27,8 +27,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2021-05-22 18:30+0000\n"
-"PO-Revision-Date: 2021-04-17 00:34+0900\n"
-"Last-Translator: sujiniku <sujinikusityuu@gmail.com>\n"
+"PO-Revision-Date: 2021-07-11 19:30+0900\n"
+"Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -1250,16 +1250,12 @@ msgstr "ファイルにアクセスした日付"
 
 #: src/nautilus-column-utilities.c:105
 #: src/resources/ui/nautilus-properties-window.ui:288
-#, fuzzy
-#| msgid "Create"
 msgid "Created"
-msgstr "作成"
+msgstr "作成日"
 
 #: src/nautilus-column-utilities.c:106
-#, fuzzy
-#| msgid "The date the file was accessed."
 msgid "The date the file was created."
-msgstr "ファイルにアクセスした日付"
+msgstr "ファイルを作成した日付"
 
 #: src/nautilus-column-utilities.c:115
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:72
@@ -2647,10 +2643,8 @@ msgid "“%s” is password-protected."
 msgstr "“%s”はパスワードで保護されています。"
 
 #: src/nautilus-file-operations.c:8443
-#, fuzzy
-#| msgid "Enter server address…"
 msgid "Enter password…"
-msgstr "サーバーアドレスを入力…"
+msgstr "パスワードを入力…"
 
 #: src/nautilus-file-operations.c:8524
 #, c-format
@@ -3848,29 +3842,21 @@ msgid "None"
 msgstr "なし"
 
 #: src/nautilus-preferences-window.c:336
-#, fuzzy
-#| msgid "File conflict"
 msgid "Single click"
-msgstr "ファイルの衝突"
+msgstr "シングルクリック"
 
 #: src/nautilus-preferences-window.c:336
-#, fuzzy
-#| msgid "_Double click to open items"
 msgid "Double click"
-msgstr "ダブルクリックでアイテムを開く(_D)"
+msgstr "ダブルクリック"
 
 #: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
 #: src/nautilus-preferences-window.c:342
-#, fuzzy
-#| msgid "_On this computer only"
 msgid "On this computer only"
-msgstr "このコンピューターのフォルダーのみ(_O)"
+msgstr "このコンピューターのみ"
 
 #: src/nautilus-preferences-window.c:338
-#, fuzzy
-#| msgid "_All locations"
 msgid "All locations"
-msgstr "すべての場所(_A)"
+msgstr "すべての場所"
 
 #: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
 #: src/nautilus-preferences-window.c:342
@@ -3878,16 +3864,12 @@ msgid "Never"
 msgstr "しない"
 
 #: src/nautilus-preferences-window.c:340
-#, fuzzy
-#| msgid "A_ll files"
 msgid "All files"
-msgstr "すべてのファイル(_L)"
+msgstr "すべてのファイル"
 
 #: src/nautilus-preferences-window.c:342
-#, fuzzy
-#| msgid "All folder_s"
 msgid "All folders"
-msgstr "すべてのフォルダー(_S)"
+msgstr "すべてのフォルダー"
 
 #: src/nautilus-program-choosing.c:379
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -4974,7 +4956,7 @@ msgstr "別のアプリケーションで開く(_A)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
 msgid "_Run as a Program"
-msgstr ""
+msgstr "プログラムとして実行(_R)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:94
 #: src/gtk/nautilusgtkplacesview.c:1759
@@ -5024,10 +5006,8 @@ msgstr "ゴミ箱を空にする(_D)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:168
 #: src/resources/ui/nautilus-files-view-context-menus.ui:173
-#, fuzzy
-#| msgid "_Delete Permanently"
 msgid "_Delete Permanently…"
-msgstr "完全に削除(_D)"
+msgstr "完全に削除(_D)…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:178
 msgid "_Restore From Trash"
@@ -5097,28 +5077,28 @@ msgid "Open in New _Tab"
 msgstr "新しいタブで開く(_T)"
 
 #: src/resources/ui/nautilus-preferences-window.ui:19
-#, fuzzy
-#| msgid "Sort _folders before files"
 msgid "Sort _Folders Before Files"
 msgstr "フォルダーをファイルより前に配置する(_F)"
 
 #: src/resources/ui/nautilus-preferences-window.ui:37
 msgid "_Expandable Folders in List View"
-msgstr ""
+msgstr "一覧表示でフォルダーをツリー表示可能にする(_E)"
 
 #: src/resources/ui/nautilus-preferences-window.ui:54
 msgid "Action to Open Items"
-msgstr ""
+msgstr "アイテムの開き方"
 
 #: src/resources/ui/nautilus-preferences-window.ui:64
 msgid "Optional Context Menu Actions"
-msgstr ""
+msgstr "追加のコンテキストメニュー項目"
 
 #: src/resources/ui/nautilus-preferences-window.ui:65
 msgid ""
 "Show more actions in the menus. Keyboard shortcuts can be used even if the "
 "actions are not shown."
 msgstr ""
+"追加のメニューを表示します。非表示の場合でも、それらのキーボードショートカッ"
+"トは使用可能です。"
 
 #: src/resources/ui/nautilus-preferences-window.ui:89
 msgid "_Delete Permanently"
@@ -5126,31 +5106,27 @@ msgstr "完全に削除(_D)"
 
 #: src/resources/ui/nautilus-preferences-window.ui:107
 msgid "Performance"
-msgstr ""
+msgstr "パフォーマンス"
 
 #: src/resources/ui/nautilus-preferences-window.ui:108
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this computer, such as on a remote server."
 msgstr ""
+"これらの機能は、リモートサーバーなどの外部にあるファイルを閲覧するときに速度"
+"低下や余計なネットワークアクセスが起こる可能性があります。"
 
 #: src/resources/ui/nautilus-preferences-window.ui:113
-#, fuzzy
-#| msgid "Search in subfolders:"
 msgid "Search in Subfolders"
-msgstr "サブフォルダー内の検索:"
+msgstr "サブフォルダー内の検索"
 
 #: src/resources/ui/nautilus-preferences-window.ui:122
-#, fuzzy
-#| msgid "Show thumbnails:"
 msgid "Show Thumbnails"
-msgstr "サムネイルの表示:"
+msgstr "サムネイルの表示"
 
 #: src/resources/ui/nautilus-preferences-window.ui:131
-#, fuzzy
-#| msgid "Count number of files in folders:"
 msgid "Count Number of Files in Folders"
-msgstr "フォルダー内のファイル数の算出:"
+msgstr "フォルダー内のファイル数の算出"
 
 #: src/resources/ui/nautilus-preferences-window.ui:141
 msgid ""
