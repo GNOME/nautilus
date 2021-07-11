@@ -348,7 +348,9 @@ drag_data_get_callback (GtkWidget        *widget,
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
     g_free (uri);
     g_object_unref (location);
@@ -513,6 +515,7 @@ entry_would_have_inserted_characters (const GdkEvent *event)
         }
 
         default:
+        {
             if (keyval >= 0x20 && keyval <= 0xFF)
             {
                 if ((state & GDK_CONTROL_MASK) != 0)
@@ -524,6 +527,7 @@ entry_would_have_inserted_characters (const GdkEvent *event)
                     return FALSE;
                 }
             }
+        }
     }
 
     /* GTK+ 4 TODO: gdk_event_get_string () and check if length > 0. */
@@ -671,7 +675,9 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
 }
 
@@ -910,7 +916,9 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *entry
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
     priv->secondary_action = secondary_action;
 }

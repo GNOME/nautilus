@@ -1257,7 +1257,9 @@ get_gicon (ButtonData *button_data)
         }
 
         default:
+        {
             return NULL;
+        }
     }
 
     return NULL;

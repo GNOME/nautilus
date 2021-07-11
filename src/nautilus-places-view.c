@@ -189,7 +189,9 @@ nautilus_places_view_get_property (GObject    *object,
         break;
 
         default:
+        {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
     }
 }
 
@@ -216,7 +218,9 @@ nautilus_places_view_set_property (GObject      *object,
         break;
 
         default:
+        {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
     }
 }
 

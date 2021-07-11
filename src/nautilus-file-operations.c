@@ -3278,10 +3278,12 @@ report_preparing_count_progress (CommonJob  *job,
         break;
 
         case OP_KIND_COMPRESS:
+        {
             s = g_strdup_printf (ngettext ("Preparing to compress %'d file",
                                            "Preparing to compress %'d files",
                                            source_info->num_files),
                                  source_info->num_files);
+        }
     }
 
     nautilus_progress_info_take_details (job->progress, s);
@@ -3339,7 +3341,9 @@ get_scan_primary (OpKind kind)
         }
 
         case OP_KIND_COMPRESS:
+        {
             return g_strdup (_("Error while compressing files."));
+        }
     }
 }
 

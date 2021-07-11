@@ -655,7 +655,9 @@ special_directory_get_icon (GUserDirectory directory,
         ICON_CASE (VIDEOS);
 
         default:
+        {
             return (symbolic) ? g_themed_icon_new (NAUTILUS_ICON_FOLDER) : g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER);
+        }
     }
 
 #undef ICON_CASE

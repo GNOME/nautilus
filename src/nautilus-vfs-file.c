@@ -294,6 +294,7 @@ vfs_file_get_date (NautilusFile     *file,
         }
 
         case NAUTILUS_DATE_TYPE_RECENCY:
+        {
             /* Before we have info on a file, the date is unknown. */
             if (recency == 0)
             {
@@ -304,6 +305,7 @@ vfs_file_get_date (NautilusFile     *file,
                 *date = recency;
             }
             return TRUE;
+        }
     }
     return FALSE;
 }

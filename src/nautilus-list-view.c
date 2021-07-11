@@ -2020,7 +2020,9 @@ nautilus_list_view_get_icon_padding_for_zoom_level (NautilusListZoomLevel zoom_l
         }
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
 }
 

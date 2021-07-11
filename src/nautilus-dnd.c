@@ -696,7 +696,9 @@ nautilus_drag_drag_data_get_from_cache (GList            *cache,
         break;
 
         default:
+        {
             return FALSE;
+        }
     }
 
     result = g_string_new (NULL);

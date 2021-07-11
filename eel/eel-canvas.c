@@ -2952,7 +2952,9 @@ eel_canvas_button (GtkWidget      *widget,
         break;
 
         default:
+        {
             mask = 0;
+        }
     }
 
     switch (event->type)
@@ -2988,7 +2990,9 @@ eel_canvas_button (GtkWidget      *widget,
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
 
     return retval;

@@ -65,7 +65,9 @@ set_special_location (NautilusSpecialLocationBar *bar,
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
 
     gtk_label_set_text (GTK_LABEL (bar->label), message);

@@ -378,8 +378,10 @@ nautilus_canvas_item_set_property (GObject      *object,
         break;
 
         default:
+        {
             g_warning ("nautilus_canvas_item_set_property on unknown argument");
             return;
+        }
     }
 
     eel_canvas_item_request_update (EEL_CANVAS_ITEM (object));
@@ -776,8 +778,10 @@ nautilus_canvas_item_get_max_text_width (NautilusCanvasItem *item)
         break;
 
         default:
+        {
             g_warning ("Zoom level not valid. This may incur in missaligned grid");
             max_text_width = MAX_TEXT_WIDTH_STANDARD;
+        }
     }
 
     return max_text_width * canvas_item->canvas->pixels_per_unit - 2 * TEXT_BACK_PADDING_X;
@@ -1526,8 +1530,10 @@ nautilus_canvas_item_event (EelCanvasItem *item,
         }
 
         default:
+        {
             /* Don't eat up other events; canvas container might use them. */
             return FALSE;
+        }
     }
 }
 
@@ -2056,8 +2062,10 @@ nautilus_canvas_item_accessible_do_action (AtkAction *accessible,
         break;
 
         default:
+        {
             g_warning ("Invalid action passed to NautilusCanvasItemAccessible::do_action");
             return FALSE;
+        }
     }
 
     return TRUE;

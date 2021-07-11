@@ -1760,7 +1760,9 @@ pattern_select_response_cb (GtkWidget *dialog,
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
 }
 
@@ -2308,7 +2310,9 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
     }
 
     nautilus_file_operations_compress (source_files, output,

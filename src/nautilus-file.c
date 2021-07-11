@@ -3795,7 +3795,9 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             break;
 
             default:
+            {
                 g_return_val_if_reached (0);
+            }
         }
 
         if (reversed)
@@ -9416,8 +9418,10 @@ nautilus_drag_can_accept_info (NautilusFile              *drop_target_item,
         }
 
         default:
+        {
             g_assert_not_reached ();
             return FALSE;
+        }
     }
 }
 

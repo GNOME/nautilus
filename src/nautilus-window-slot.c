@@ -2448,8 +2448,10 @@ update_history (NautilusWindowSlot         *self,
         }
 
         case NAUTILUS_LOCATION_CHANGE_FORWARD:
+        {
             handle_go_direction (self, new_location, TRUE);
             return;
+        }
     }
     g_return_if_fail (FALSE);
 }
