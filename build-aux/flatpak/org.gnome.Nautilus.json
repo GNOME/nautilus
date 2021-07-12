@@ -77,16 +77,19 @@
       "cleanup": [
         "/etc",
         "/libexec/localsearch-3",
-        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Extract.service",
         "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service",
-        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service"
+        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service",
+        "/share/dbus-1/services/org.freedesktop.LocalSearch3.service",
+        "/share/dbus-1/services/org.freedesktop.LocalSearch3.Control.service"
       ],
       "config-opts": [
+        "-Ddomain_prefix=org.gnome.NautilusDevel",
         "-Dextract=true",
         "-Dgeneric_media_extractor=none",
         "-Dlandlock=disabled",
         "-Dman=false",
         "-Dminer_fs=true",
+        "-Dminer_fs_cache_location=$XDG_CACHE_HOME/nautilus/miner/files",
         "-Dminer_rss=false",
         "-Dsystemd_user_services=false",
         "-Dwriteback=false",
