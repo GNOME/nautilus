@@ -1,6 +1,6 @@
 FROM fedora:rawhide
 
-RUN dnf install --nogpg -y dnf-plugins-core uncrustify findutils git libportal-devel tracker3-miners python3-gobject dbus-daemon libhandy1-devel \
+RUN dnf install --nogpg -y dnf-plugins-core findutils git libportal-devel tracker3-miners python3-gobject dbus-daemon libhandy1-devel \
  && dnf builddep --nogpg -y nautilus \
  && dnf clean all
 
@@ -24,3 +24,15 @@ RUN dnf builddep --nogpg -y libhandy \
  && ninja -C _build install \
  && cd .. \
  && rm -rf libhandy
+
+RUN dnf builddep --nogpg -y uncrustify \
+ && dnf clean all \
+ && git clone --depth 1 https://github.com/uncrustify/uncrustify.git \
+ && cd uncrustify \
+ && mkdir build \
+ && cd build \
+ && cmake -DCMAKE_INSTALL_PREFIX=/usr .. \
+ && make \
+ && make install \
+ && cd ../.. \
+ && rm -rf uncrustify
