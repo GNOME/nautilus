@@ -472,16 +472,20 @@ slot_proxy_drag_data_received (GtkWidget        *widget,
     drag_info = user_data;
 
     g_assert (!drag_info->have_data);
-
-    drag_info->have_data = TRUE;
-    drag_info->info = info;
     drag_info->waiting_for_data = FALSE;
 
     if (gtk_selection_data_get_length (data) < 0)
     {
-        drag_info->have_valid_data = FALSE;
+        /* Data retrieval failed. */
+        if (drag_info->drop_occurred)
+        {
+            gtk_drag_finish (context, FALSE, FALSE, time);
+        }
         return;
     }
+
+    drag_info->have_data = TRUE;
+    drag_info->info = info;
 
     if (info == NAUTILUS_ICON_DND_GNOME_ICON_LIST)
     {
