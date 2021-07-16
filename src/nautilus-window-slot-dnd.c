@@ -32,6 +32,7 @@
 
 typedef struct
 {
+    gboolean waiting_for_data;
     gboolean have_data;
     gboolean have_valid_data;
 
@@ -181,7 +182,7 @@ slot_proxy_drag_motion (GtkWidget      *widget,
     window = gtk_widget_get_toplevel (widget);
     g_assert (NAUTILUS_IS_WINDOW (window));
 
-    if (!drag_info->have_data)
+    if (!drag_info->have_data && !drag_info->waiting_for_data)
     {
         target = gtk_drag_dest_find_target (widget, context, NULL);
 
@@ -190,6 +191,7 @@ slot_proxy_drag_motion (GtkWidget      *widget,
             goto out;
         }
 
+        drag_info->waiting_for_data = TRUE;
         gtk_drag_get_data (widget, context, target, time);
     }
 
@@ -353,8 +355,12 @@ slot_proxy_drag_drop (GtkWidget      *widget,
 
     drag_info->drop_occurred = TRUE;
 
-    target = gtk_drag_dest_find_target (widget, context, NULL);
-    gtk_drag_get_data (widget, context, target, time);
+    if (!drag_info->waiting_for_data)
+    {
+        target = gtk_drag_dest_find_target (widget, context, NULL);
+        drag_info->waiting_for_data = TRUE;
+        gtk_drag_get_data (widget, context, target, time);
+    }
 
     return TRUE;
 }
@@ -469,6 +475,7 @@ slot_proxy_drag_data_received (GtkWidget        *widget,
 
     drag_info->have_data = TRUE;
     drag_info->info = info;
+    drag_info->waiting_for_data = FALSE;
 
     if (gtk_selection_data_get_length (data) < 0)
     {
