@@ -36,6 +36,7 @@ typedef struct
     gboolean have_data;
     gboolean have_valid_data;
 
+    gboolean is_hover;
     gboolean drop_occurred;
 
     unsigned int info;
@@ -169,6 +170,8 @@ slot_proxy_drag_motion (GtkWidget      *widget,
     gboolean valid_xds_drag;
 
     drag_info = user_data;
+
+    drag_info->is_hover = TRUE;
 
     action = 0;
     valid_text_drag = FALSE;
@@ -335,6 +338,7 @@ slot_proxy_drag_leave (GtkWidget      *widget,
 
     drag_info = user_data;
 
+    drag_info->is_hover = FALSE;
     gtk_drag_unhighlight (widget);
     drag_info_clear (drag_info);
 }
@@ -473,6 +477,13 @@ slot_proxy_drag_data_received (GtkWidget        *widget,
 
     g_assert (!drag_info->have_data);
     drag_info->waiting_for_data = FALSE;
+
+    if (!drag_info->is_hover && !drag_info->drop_occurred)
+    {
+        /* Ignore data arriving after ::drag-leave, except if followed by
+         * ::drag-drop. */
+        return;
+    }
 
     if (gtk_selection_data_get_length (data) < 0)
     {
