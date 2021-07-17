@@ -302,6 +302,12 @@ typedef struct
     NautilusDirectory *directory;
 } FileAndDirectory;
 
+typedef struct
+{
+    NautilusFilesView *view;
+    GList *selection;
+} CompressCallbackData;
+
 /* forward declarations */
 
 static gboolean display_selection_info_idle_callback (gpointer data);
@@ -2217,9 +2223,9 @@ static void
 compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
                                              gpointer                          user_data)
 {
+    CompressCallbackData *callback_data = user_data;
     NautilusFilesView *view;
     g_autofree gchar *name = NULL;
-    GList *selection;
     GList *source_files = NULL;
     GList *l;
     CompressData *data;
@@ -2230,12 +2236,10 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     AutoarFormat format;
     AutoarFilter filter;
 
-    view = NAUTILUS_FILES_VIEW (user_data);
+    view = NAUTILUS_FILES_VIEW (callback_data->view);
     priv = nautilus_files_view_get_instance_private (view);
 
-    selection = nautilus_files_view_get_selection_for_file_transfer (view);
-
-    for (l = selection; l != NULL; l = l->next)
+    for (l = callback_data->selection; l != NULL; l = l->next)
     {
         source_files = g_list_prepend (source_files,
                                        nautilus_file_get_location (l->data));
@@ -2302,7 +2306,6 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
                                        compress_done,
                                        data);
 
-    nautilus_file_list_free (selection);
     g_list_free_full (source_files, g_object_unref);
     g_clear_object (&priv->compress_controller);
 }
@@ -2320,6 +2323,12 @@ compress_dialog_controller_on_cancelled (NautilusNewFolderDialogController *cont
     g_clear_object (&priv->compress_controller);
 }
 
+static void
+compress_callback_data_free (CompressCallbackData *data)
+{
+    nautilus_file_list_free (data->selection);
+    g_free (data);
+}
 
 static void
 nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
@@ -2328,6 +2337,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
     g_autofree char *common_prefix = NULL;
+    CompressCallbackData *data;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -2365,10 +2375,17 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
                                                                          containing_directory,
                                                                          common_prefix);
 
-    g_signal_connect (priv->compress_controller,
-                      "name-accepted",
-                      (GCallback) compress_dialog_controller_on_name_accepted,
-                      view);
+    data = g_new0 (CompressCallbackData, 1);
+    data->view = view;
+    data->selection = nautilus_files_view_get_selection_for_file_transfer (view);
+
+    g_signal_connect_data (priv->compress_controller,
+                           "name-accepted",
+                           (GCallback) compress_dialog_controller_on_name_accepted,
+                           data,
+                           (GClosureNotify) compress_callback_data_free,
+                           G_CONNECT_AFTER);
+
     g_signal_connect (priv->compress_controller,
                       "cancelled",
                       (GCallback) compress_dialog_controller_on_cancelled,
