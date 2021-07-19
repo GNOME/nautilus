@@ -294,8 +294,15 @@ recent_thread_func (gpointer user_data)
                 initial_date = g_ptr_array_index (date_range, 0);
                 end_date = g_ptr_array_index (date_range, 1);
                 type = nautilus_query_get_search_type (self->query);
-                target_time = (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) ?
-                              visited : modified;
+
+                if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
+                {
+                    target_time = visited;
+                }
+                else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
+                {
+                    target_time = modified;
+                }
 
                 if (!nautilus_file_date_in_between (target_time,
                                                     initial_date, end_date))

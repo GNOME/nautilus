@@ -277,6 +277,7 @@ send_batch_in_idle (SearchThreadData *thread_data)
     G_FILE_ATTRIBUTE_STANDARD_TYPE "," \
     G_FILE_ATTRIBUTE_TIME_MODIFIED "," \
     G_FILE_ATTRIBUTE_TIME_ACCESS "," \
+    G_FILE_ATTRIBUTE_TIME_CREATED "," \
     G_FILE_ATTRIBUTE_ID_FILE
 
 static void
@@ -296,6 +297,7 @@ visit_directory (GFile            *dir,
     gboolean visited;
     guint64 atime;
     guint64 mtime;
+    guint64 ctime;
     GDateTime *initial_date;
     GDateTime *end_date;
     gchar *uri;
@@ -354,6 +356,7 @@ visit_directory (GFile            *dir,
 
         mtime = g_file_info_get_attribute_uint64 (info, "time::modified");
         atime = g_file_info_get_attribute_uint64 (info, "time::access");
+        ctime = g_file_info_get_attribute_uint64 (info, "time::created");
 
         if (found && date_range != NULL)
         {
@@ -366,9 +369,13 @@ visit_directory (GFile            *dir,
             {
                 current_file_time = atime;
             }
-            else
+            else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
             {
                 current_file_time = mtime;
+            }
+            else
+            {
+                current_file_time = ctime;
             }
             found = nautilus_file_date_in_between (current_file_time,
                                                    initial_date,

@@ -45,6 +45,7 @@ struct _NautilusSearchPopover
     GtkWidget *type_stack;
     GtkWidget *last_used_button;
     GtkWidget *last_modified_button;
+    GtkWidget *created_button;
     GtkWidget *full_text_search_button;
     GtkWidget *filename_search_button;
 
@@ -349,9 +350,13 @@ search_time_type_changed (GtkToggleButton       *button,
     {
         type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED;
     }
-    else
+    else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->last_used_button)))
     {
         type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS;
+    }
+    else
+    {
+        type = NAUTILUS_QUERY_SEARCH_TYPE_CREATED;
     }
 
     g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
@@ -859,6 +864,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_used_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_modified_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, created_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, full_text_search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, filename_search_button);
 
@@ -905,11 +911,19 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), TRUE);
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), FALSE);
+    }
+    else if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
+    {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), TRUE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), FALSE);
     }
     else
     {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), TRUE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), TRUE);
     }
 
     self->fts_enabled = g_settings_get_boolean (nautilus_preferences,

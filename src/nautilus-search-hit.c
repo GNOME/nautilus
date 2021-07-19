@@ -35,6 +35,7 @@ struct _NautilusSearchHit
 
     GDateTime *modification_time;
     GDateTime *access_time;
+    GDateTime *creation_time;
     gdouble fts_rank;
     gchar *fts_snippet;
 
@@ -47,6 +48,7 @@ enum
     PROP_RELEVANCE,
     PROP_MODIFICATION_TIME,
     PROP_ACCESS_TIME,
+    PROP_CREATION_TIME,
     PROP_FTS_RANK,
     PROP_FTS_SNIPPET,
     NUM_PROPERTIES
@@ -218,6 +220,24 @@ nautilus_search_hit_set_access_time (NautilusSearchHit *hit,
 }
 
 void
+nautilus_search_hit_set_creation_time (NautilusSearchHit *hit,
+                                       GDateTime         *date)
+{
+    if (hit->creation_time != NULL)
+    {
+        g_date_time_unref (hit->creation_time);
+    }
+    if (date != NULL)
+    {
+        hit->creation_time = g_date_time_ref (date);
+    }
+    else
+    {
+        hit->creation_time = NULL;
+    }
+}
+
+void
 nautilus_search_hit_set_fts_snippet (NautilusSearchHit *hit,
                                      const gchar       *snippet)
 {
@@ -265,6 +285,12 @@ nautilus_search_hit_set_property (GObject      *object,
         case PROP_ACCESS_TIME:
         {
             nautilus_search_hit_set_access_time (hit, g_value_get_boxed (value));
+        }
+        break;
+
+        case PROP_CREATION_TIME:
+        {
+            nautilus_search_hit_set_creation_time (hit, g_value_get_boxed (value));
         }
         break;
 
@@ -325,6 +351,12 @@ nautilus_search_hit_get_property (GObject    *object,
         }
         break;
 
+        case PROP_CREATION_TIME:
+        {
+            g_value_set_boxed (value, hit->creation_time);
+        }
+        break;
+
         case PROP_FTS_SNIPPET:
         {
             g_value_set_string (value, hit->fts_snippet);
@@ -353,6 +385,10 @@ nautilus_search_hit_finalize (GObject *object)
     if (hit->modification_time != NULL)
     {
         g_date_time_unref (hit->modification_time);
+    }
+    if (hit->creation_time != NULL)
+    {
+        g_date_time_unref (hit->creation_time);
     }
 
     g_free (hit->fts_snippet);
@@ -390,6 +426,14 @@ nautilus_search_hit_class_init (NautilusSearchHitClass *class)
                                      g_param_spec_boxed ("access-time",
                                                          "acess time",
                                                          "access time",
+                                                         G_TYPE_DATE_TIME,
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+
+    g_object_class_install_property (object_class,
+                                     PROP_CREATION_TIME,
+                                     g_param_spec_boxed ("creation-time",
+                                                         "creation time",
+                                                         "creation time",
                                                          G_TYPE_DATE_TIME,
                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
     g_object_class_install_property (object_class,

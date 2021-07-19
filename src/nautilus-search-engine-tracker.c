@@ -179,6 +179,7 @@ cursor_callback (GObject      *object,
     const char *uri;
     const char *mtime_str;
     const char *atime_str;
+    const char *ctime_str;
     const gchar *snippet;
     GTimeVal tv;
     gdouble rank, match;
@@ -204,7 +205,8 @@ cursor_callback (GObject      *object,
     uri = tracker_sparql_cursor_get_string (cursor, 0, NULL);
     rank = tracker_sparql_cursor_get_double (cursor, 1);
     mtime_str = tracker_sparql_cursor_get_string (cursor, 2, NULL);
-    atime_str = tracker_sparql_cursor_get_string (cursor, 3, NULL);
+    ctime_str = tracker_sparql_cursor_get_string (cursor, 3, NULL);
+    atime_str = tracker_sparql_cursor_get_string (cursor, 4, NULL);
     basename = g_path_get_basename (uri);
 
     hit = nautilus_search_hit_new (uri);
@@ -214,7 +216,7 @@ cursor_callback (GObject      *object,
 
     if (tracker->fts_enabled)
     {
-        snippet = tracker_sparql_cursor_get_string (cursor, 4, NULL);
+        snippet = tracker_sparql_cursor_get_string (cursor, 5, NULL);
         nautilus_search_hit_set_fts_snippet (hit, snippet);
     }
 
@@ -239,6 +241,17 @@ cursor_callback (GObject      *object,
     else
     {
         g_warning ("unable to parse atime: %s", atime_str);
+    }
+    if (g_time_val_from_iso8601 (ctime_str, &tv))
+    {
+        GDateTime *date;
+        date = g_date_time_new_from_timeval_local (&tv);
+        nautilus_search_hit_set_creation_time (hit, date);
+        g_date_time_unref (date);
+    }
+    else
+    {
+        g_warning ("unable to parse ctime: %s", ctime_str);
     }
 
     g_queue_push_head (tracker->hits_pending, hit);
@@ -339,6 +352,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                            " ?url"
                            " xsd:double(COALESCE(?rank2, ?rank1)) AS ?rank"
                            " nfo:fileLastModified(?file)"
+                           " nfo:fileCreated(?file)"
                            " nfo:fileLastAccessed(?file)");
 
     if (tracker->fts_enabled && *search_text)
@@ -359,7 +373,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                      "  nfo:fileLastModified ?mtime;"
                      "  nfo:fileLastAccessed ?atime;"
                      "  nie:dataSource/tracker:available true;"
-                     "  nie:url ?url.");
+                     "  nie:url ?url."
+                     "  OPTIONAL { ?file nfo:fileCreated ?ctime.}");
 
     if (mimetypes->len > 0)
     {
@@ -429,10 +444,15 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
             g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", initial_date_format);
             g_string_append_printf (sparql, " && ?atime <= \"%s\"^^xsd:dateTime", end_date_format);
         }
-        else
+        else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
         {
             g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", initial_date_format);
             g_string_append_printf (sparql, " && ?mtime <= \"%s\"^^xsd:dateTime", end_date_format);
+        }
+        else
+        {
+            g_string_append_printf (sparql, "?ctime >= \"%s\"^^xsd:dateTime", initial_date_format);
+            g_string_append_printf (sparql, " && ?ctime <= \"%s\"^^xsd:dateTime", end_date_format);
         }
 
 

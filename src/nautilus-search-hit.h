@@ -36,6 +36,8 @@ void                nautilus_search_hit_set_modification_time (NautilusSearchHit
 							       GDateTime         *date);
 void                nautilus_search_hit_set_access_time       (NautilusSearchHit *hit,
 							       GDateTime         *date);
+void                nautilus_search_hit_set_creation_time     (NautilusSearchHit *hit,
+							       GDateTime         *date);
 void                nautilus_search_hit_set_fts_snippet       (NautilusSearchHit *hit,
                                                                const gchar       *snippet);
 void                nautilus_search_hit_compute_scores        (NautilusSearchHit *hit,
