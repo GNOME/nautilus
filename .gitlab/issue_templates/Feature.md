@@ -1,22 +1,27 @@
-### Use cases
-<!-- Describe what problem(s) the user is experiencing and that this request
-is trying to solve. -->
-
-
-### Desired behavior
-<!-- Describe the desired functionality. -->
-
-
-### Benefits of the solution
-<!-- List the possible benefits of the solution and how it fits in the project. -->
-
-
-### Possible drawbacks
 <!--
-     Describe possible drawbacks of the feature and list how it could affect
-     the project i.e. UI discoverability, complexity, impact in more or less
-     number of users, etc.
--->
+     Do you have a feature request?
+     Ideas for new features are welcome and there is a nicer place for them:
+     
+     https://discourse.gnome.org/tag/nautilus
 
-<!-- Ignore the text under this line. -->
-/label ~"1. Feature"
+     Add your feature suggestion as a new topic in the above website.
+-->
+<!--
+     While you are here, please report how the existing features have failed
+     to meet your needs or made it too difficult to perform some tasks.
+-->
+### Use cases
+<!-- Describe your needs and constraints. Examples from real world situations are useful. -->
+
+
+### Available features and workarounds
+<!-- How do you manage with the current version of the application? -->
+
+
+### Difficulties or shortcomings
+<!-- Why is the current experience unsatisfying? -->
+
+
+### Possible enhancements
+<!-- What could improve the situation? -->
+
