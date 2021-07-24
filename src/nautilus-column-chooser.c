@@ -69,23 +69,6 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_BOX);
 
-static void nautilus_column_chooser_constructed (GObject *object);
-static void view_row_activated_callback (GtkTreeView       *tree_view,
-                                         GtkTreePath       *path,
-                                         GtkTreeViewColumn *column,
-                                         gpointer           user_data);
-static void selection_changed_callback (GtkTreeSelection *selection,
-                                        gpointer          user_data);
-static void visible_toggled_callback (GtkCellRendererToggle *cell,
-                                      char                  *path_string,
-                                      gpointer               user_data);
-static void move_up_clicked_callback (GtkWidget *button,
-                                      gpointer   user_data);
-static void move_down_clicked_callback (GtkWidget *button,
-                                        gpointer   user_data);
-static void use_default_clicked_callback (GtkWidget *button,
-                                          gpointer   user_data);
-
 static void
 nautilus_column_chooser_set_property (GObject      *object,
                                       guint         param_id,
@@ -110,57 +93,6 @@ nautilus_column_chooser_set_property (GObject      *object,
         }
         break;
     }
-}
-
-static void
-nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
-{
-    GtkWidgetClass *widget_class;
-    GObjectClass *oclass;
-
-    widget_class = GTK_WIDGET_CLASS (chooser_class);
-    oclass = G_OBJECT_CLASS (chooser_class);
-
-    oclass->set_property = nautilus_column_chooser_set_property;
-    oclass->constructed = nautilus_column_chooser_constructed;
-
-    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, view);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, store);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_up_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_down_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_default_button);
-    gtk_widget_class_bind_template_callback (widget_class, view_row_activated_callback);
-    gtk_widget_class_bind_template_callback (widget_class, selection_changed_callback);
-    gtk_widget_class_bind_template_callback (widget_class, visible_toggled_callback);
-    gtk_widget_class_bind_template_callback (widget_class, move_up_clicked_callback);
-    gtk_widget_class_bind_template_callback (widget_class, move_down_clicked_callback);
-    gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
-
-    signals[CHANGED] = g_signal_new
-                           ("changed",
-                           G_TYPE_FROM_CLASS (chooser_class),
-                           G_SIGNAL_RUN_LAST,
-                           0, NULL, NULL,
-                           g_cclosure_marshal_VOID__VOID,
-                           G_TYPE_NONE, 0);
-
-    signals[USE_DEFAULT] = g_signal_new
-                               ("use-default",
-                               G_TYPE_FROM_CLASS (chooser_class),
-                               G_SIGNAL_RUN_LAST,
-                               0, NULL, NULL,
-                               g_cclosure_marshal_VOID__VOID,
-                               G_TYPE_NONE, 0);
-
-    g_object_class_install_property (oclass,
-                                     PROP_FILE,
-                                     g_param_spec_object ("file",
-                                                          "File",
-                                                          "The file this column chooser is for",
-                                                          NAUTILUS_TYPE_FILE,
-                                                          G_PARAM_CONSTRUCT_ONLY |
-                                                          G_PARAM_WRITABLE));
 }
 
 static void
@@ -396,12 +328,6 @@ nautilus_column_chooser_constructed (GObject *object)
 }
 
 static void
-nautilus_column_chooser_init (NautilusColumnChooser *chooser)
-{
-    gtk_widget_init_template (GTK_WIDGET (chooser));
-}
-
-static void
 set_visible_columns (NautilusColumnChooser  *chooser,
                      char                  **visible_columns)
 {
@@ -590,6 +516,63 @@ nautilus_column_chooser_get_settings (NautilusColumnChooser   *chooser,
 
     *visible_columns = get_column_names (chooser, TRUE);
     *column_order = get_column_names (chooser, FALSE);
+}
+
+static void
+nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
+{
+    GtkWidgetClass *widget_class;
+    GObjectClass *oclass;
+
+    widget_class = GTK_WIDGET_CLASS (chooser_class);
+    oclass = G_OBJECT_CLASS (chooser_class);
+
+    oclass->set_property = nautilus_column_chooser_set_property;
+    oclass->constructed = nautilus_column_chooser_constructed;
+
+    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, view);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, store);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_up_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_down_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_default_button);
+    gtk_widget_class_bind_template_callback (widget_class, view_row_activated_callback);
+    gtk_widget_class_bind_template_callback (widget_class, selection_changed_callback);
+    gtk_widget_class_bind_template_callback (widget_class, visible_toggled_callback);
+    gtk_widget_class_bind_template_callback (widget_class, move_up_clicked_callback);
+    gtk_widget_class_bind_template_callback (widget_class, move_down_clicked_callback);
+    gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
+
+    signals[CHANGED] = g_signal_new
+                           ("changed",
+                           G_TYPE_FROM_CLASS (chooser_class),
+                           G_SIGNAL_RUN_LAST,
+                           0, NULL, NULL,
+                           g_cclosure_marshal_VOID__VOID,
+                           G_TYPE_NONE, 0);
+
+    signals[USE_DEFAULT] = g_signal_new
+                               ("use-default",
+                               G_TYPE_FROM_CLASS (chooser_class),
+                               G_SIGNAL_RUN_LAST,
+                               0, NULL, NULL,
+                               g_cclosure_marshal_VOID__VOID,
+                               G_TYPE_NONE, 0);
+
+    g_object_class_install_property (oclass,
+                                     PROP_FILE,
+                                     g_param_spec_object ("file",
+                                                          "File",
+                                                          "The file this column chooser is for",
+                                                          NAUTILUS_TYPE_FILE,
+                                                          G_PARAM_CONSTRUCT_ONLY |
+                                                          G_PARAM_WRITABLE));
+}
+
+static void
+nautilus_column_chooser_init (NautilusColumnChooser *chooser)
+{
+    gtk_widget_init_template (GTK_WIDGET (chooser));
 }
 
 GtkWidget *
