@@ -34,10 +34,9 @@ struct _NautilusColumnChooser
 {
     GtkBox parent;
 
-    GtkTreeView *view;
+    GtkWidget *view;
     GtkListStore *store;
 
-    GtkWidget *main_box;
     GtkWidget *move_up_button;
     GtkWidget *move_down_button;
     GtkWidget *use_default_button;
@@ -71,6 +70,21 @@ static guint signals[LAST_SIGNAL];
 G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_BOX);
 
 static void nautilus_column_chooser_constructed (GObject *object);
+static void view_row_activated_callback (GtkTreeView       *tree_view,
+                                         GtkTreePath       *path,
+                                         GtkTreeViewColumn *column,
+                                         gpointer           user_data);
+static void selection_changed_callback (GtkTreeSelection *selection,
+                                        gpointer          user_data);
+static void visible_toggled_callback (GtkCellRendererToggle *cell,
+                                      char                  *path_string,
+                                      gpointer               user_data);
+static void move_up_clicked_callback (GtkWidget *button,
+                                      gpointer   user_data);
+static void move_down_clicked_callback (GtkWidget *button,
+                                        gpointer   user_data);
+static void use_default_clicked_callback (GtkWidget *button,
+                                          gpointer   user_data);
 
 static void
 nautilus_column_chooser_set_property (GObject      *object,
@@ -101,12 +115,27 @@ nautilus_column_chooser_set_property (GObject      *object,
 static void
 nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 {
+    GtkWidgetClass *widget_class;
     GObjectClass *oclass;
 
+    widget_class = GTK_WIDGET_CLASS (chooser_class);
     oclass = G_OBJECT_CLASS (chooser_class);
 
     oclass->set_property = nautilus_column_chooser_set_property;
     oclass->constructed = nautilus_column_chooser_constructed;
+
+    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, view);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, store);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_up_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_down_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_default_button);
+    gtk_widget_class_bind_template_callback (widget_class, view_row_activated_callback);
+    gtk_widget_class_bind_template_callback (widget_class, selection_changed_callback);
+    gtk_widget_class_bind_template_callback (widget_class, visible_toggled_callback);
+    gtk_widget_class_bind_template_callback (widget_class, move_up_clicked_callback);
+    gtk_widget_class_bind_template_callback (widget_class, move_down_clicked_callback);
+    gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
 
     signals[CHANGED] = g_signal_new
                            ("changed",
@@ -140,7 +169,7 @@ update_buttons (NautilusColumnChooser *chooser)
     GtkTreeSelection *selection;
     GtkTreeIter iter;
 
-    selection = gtk_tree_view_get_selection (chooser->view);
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (chooser->view));
 
     if (gtk_tree_selection_get_selected (selection, NULL, &iter))
     {
@@ -241,80 +270,6 @@ row_deleted_callback (GtkTreeModel *model,
     list_changed (NAUTILUS_COLUMN_CHOOSER (user_data));
 }
 
-static void move_up_clicked_callback (GtkWidget *button,
-                                      gpointer   user_data);
-static void move_down_clicked_callback (GtkWidget *button,
-                                        gpointer   user_data);
-
-static void
-add_tree_view (NautilusColumnChooser *chooser)
-{
-    GtkWidget *scrolled;
-    GtkWidget *view;
-    GtkListStore *store;
-    GtkCellRenderer *cell;
-    GtkTreeSelection *selection;
-
-    view = gtk_tree_view_new ();
-    gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (view), FALSE);
-
-    store = gtk_list_store_new (NUM_COLUMNS,
-                                G_TYPE_BOOLEAN,
-                                G_TYPE_STRING,
-                                G_TYPE_STRING,
-                                G_TYPE_BOOLEAN);
-
-    gtk_tree_view_set_model (GTK_TREE_VIEW (view),
-                             GTK_TREE_MODEL (store));
-    g_object_unref (store);
-
-    gtk_tree_view_set_reorderable (GTK_TREE_VIEW (view), TRUE);
-
-    g_signal_connect (view, "row-activated",
-                      G_CALLBACK (view_row_activated_callback), chooser);
-
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (view));
-    g_signal_connect (selection, "changed",
-                      G_CALLBACK (selection_changed_callback), chooser);
-
-    cell = gtk_cell_renderer_toggle_new ();
-
-    g_signal_connect (G_OBJECT (cell), "toggled",
-                      G_CALLBACK (visible_toggled_callback), chooser);
-
-    gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
-                                                 -1, NULL,
-                                                 cell,
-                                                 "active", COLUMN_VISIBLE,
-                                                 "sensitive", COLUMN_SENSITIVE,
-                                                 NULL);
-
-    cell = gtk_cell_renderer_text_new ();
-
-    gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (view),
-                                                 -1, NULL,
-                                                 cell,
-                                                 "text", COLUMN_LABEL,
-                                                 "sensitive", COLUMN_SENSITIVE,
-                                                 NULL);
-
-    chooser->view = GTK_TREE_VIEW (view);
-    chooser->store = store;
-
-    gtk_widget_show (view);
-
-    scrolled = gtk_scrolled_window_new (NULL, NULL);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled),
-                                         GTK_SHADOW_IN);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
-                                    GTK_POLICY_AUTOMATIC,
-                                    GTK_POLICY_AUTOMATIC);
-    gtk_widget_show (GTK_WIDGET (scrolled));
-
-    gtk_container_add (GTK_CONTAINER (scrolled), view);
-    gtk_box_pack_start (GTK_BOX (chooser->main_box), scrolled, TRUE, TRUE, 0);
-}
-
 static void
 move_up_clicked_callback (GtkWidget *button,
                           gpointer   user_data)
@@ -325,7 +280,7 @@ move_up_clicked_callback (GtkWidget *button,
 
     chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
 
-    selection = gtk_tree_view_get_selection (chooser->view);
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (chooser->view));
 
     if (gtk_tree_selection_get_selected (selection, NULL, &iter))
     {
@@ -356,7 +311,7 @@ move_down_clicked_callback (GtkWidget *button,
 
     chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
 
-    selection = gtk_tree_view_get_selection (chooser->view);
+    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (chooser->view));
 
     if (gtk_tree_selection_get_selected (selection, NULL, &iter))
     {
@@ -381,64 +336,6 @@ use_default_clicked_callback (GtkWidget *button,
 {
     g_signal_emit (NAUTILUS_COLUMN_CHOOSER (user_data),
                    signals[USE_DEFAULT], 0);
-}
-
-static void
-add_buttons (NautilusColumnChooser *chooser)
-{
-    GtkWidget *inline_toolbar;
-    GtkStyleContext *style_context;
-    GtkToolItem *tool_item;
-    GtkWidget *box;
-
-    inline_toolbar = gtk_toolbar_new ();
-    gtk_widget_show (GTK_WIDGET (inline_toolbar));
-
-    style_context = gtk_widget_get_style_context (GTK_WIDGET (inline_toolbar));
-    gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_INLINE_TOOLBAR);
-    gtk_box_pack_start (GTK_BOX (chooser->main_box), inline_toolbar,
-                        FALSE, FALSE, 0);
-
-    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    tool_item = gtk_tool_item_new ();
-    gtk_container_add (GTK_CONTAINER (tool_item), box);
-    gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
-
-    chooser->move_up_button = gtk_button_new_from_icon_name ("go-up-symbolic",
-                                                             GTK_ICON_SIZE_SMALL_TOOLBAR);
-    g_signal_connect (chooser->move_up_button,
-                      "clicked", G_CALLBACK (move_up_clicked_callback),
-                      chooser);
-    gtk_widget_set_sensitive (chooser->move_up_button, FALSE);
-    gtk_container_add (GTK_CONTAINER (box), chooser->move_up_button);
-
-    chooser->move_down_button = gtk_button_new_from_icon_name ("go-down-symbolic",
-                                                               GTK_ICON_SIZE_SMALL_TOOLBAR);
-    g_signal_connect (chooser->move_down_button,
-                      "clicked", G_CALLBACK (move_down_clicked_callback),
-                      chooser);
-    gtk_widget_set_sensitive (chooser->move_down_button, FALSE);
-    gtk_container_add (GTK_CONTAINER (box), chooser->move_down_button);
-
-    tool_item = gtk_separator_tool_item_new ();
-    gtk_separator_tool_item_set_draw (GTK_SEPARATOR_TOOL_ITEM (tool_item), FALSE);
-    gtk_tool_item_set_expand (tool_item, TRUE);
-    gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
-
-    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    tool_item = gtk_tool_item_new ();
-    gtk_container_add (GTK_CONTAINER (tool_item), box);
-    gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
-
-    chooser->use_default_button = gtk_button_new_with_mnemonic (_("Reset to De_fault"));
-    gtk_widget_set_tooltip_text (chooser->use_default_button,
-                                 _("Replace the current List Columns settings with the default settings"));
-    g_signal_connect (chooser->use_default_button,
-                      "clicked", G_CALLBACK (use_default_clicked_callback),
-                      chooser);
-    gtk_container_add (GTK_CONTAINER (box), chooser->use_default_button);
-
-    gtk_widget_show_all (inline_toolbar);
 }
 
 static void
@@ -501,19 +398,7 @@ nautilus_column_chooser_constructed (GObject *object)
 static void
 nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 {
-    g_object_set (G_OBJECT (chooser),
-                  "homogeneous", FALSE,
-                  "spacing", 8,
-                  "orientation", GTK_ORIENTATION_HORIZONTAL,
-                  NULL);
-
-    chooser->main_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_hexpand (chooser->main_box, TRUE);
-    gtk_widget_show (chooser->main_box);
-    gtk_container_add (GTK_CONTAINER (chooser), chooser->main_box);
-
-    add_tree_view (chooser);
-    add_buttons (chooser);
+    gtk_widget_init_template (GTK_WIDGET (chooser));
 }
 
 static void
