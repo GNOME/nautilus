@@ -253,17 +253,6 @@ checkbox_toggled_cb (GtkToggleButton            *t,
                      NautilusFileConflictDialog *dialog)
 {
     gtk_widget_set_sensitive (dialog->expander, !gtk_toggle_button_get_active (t));
-
-    if (!gtk_toggle_button_get_active (t))
-    {
-        gtk_widget_hide (dialog->replace_button);
-        gtk_widget_show (dialog->rename_button);
-    }
-    else
-    {
-        gtk_widget_hide (dialog->rename_button);
-        gtk_widget_show (dialog->replace_button);
-    }
 }
 
 static void
