@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-07-13 09:26+0000\n"
+"POT-Creation-Date: 2021-07-17 14:19+0000\n"
 "PO-Revision-Date: 2021-07-17 21:16+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian\n"
@@ -559,7 +559,7 @@ msgstr "Y"
 #: src/nautilus-files-view.c:6538 src/nautilus-location-entry.c:284
 #: src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590
 #: src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317
-#: src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5291
+#: src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300
 #: src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:13
@@ -1697,7 +1697,7 @@ msgstr "Tak diketahui"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7447 src/nautilus-properties-window.c:1268
+#: src/nautilus-file.c:7447 src/nautilus-properties-window.c:1277
 msgid "unknown"
 msgstr "tidak diketahui"
 
@@ -3915,8 +3915,8 @@ msgstr "Root Administrator"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3598
-#: src/nautilus-properties-window.c:3628
+#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3607
+#: src/nautilus-properties-window.c:3637
 msgid "None"
 msgstr "Nihil"
 
@@ -3959,7 +3959,7 @@ msgid "This is disabled due to security considerations."
 msgstr "Ini dinonaktifkan demi keamanan."
 
 #: src/nautilus-program-choosing.c:392 src/nautilus-program-choosing.c:469
-#: src/nautilus-properties-window.c:2616
+#: src/nautilus-properties-window.c:2625
 msgid "There was an error launching the application."
 msgstr "Galat sewaktu menjalankan aplikasi."
 
@@ -4045,58 +4045,58 @@ msgstr[0] "_Nama"
 msgstr[1] "_Nama"
 
 #. To translators: %s is the name of the folder.
-#: src/nautilus-properties-window.c:897
+#: src/nautilus-properties-window.c:906
 #, c-format
 msgctxt "folder"
 msgid "%s Properties"
 msgstr "Properti %s"
 
 #. To translators: %s is the name of the file.
-#: src/nautilus-properties-window.c:903
+#: src/nautilus-properties-window.c:912
 #, c-format
 msgctxt "file"
 msgid "%s Properties"
 msgstr "Properti %s"
 
-#: src/nautilus-properties-window.c:911
+#: src/nautilus-properties-window.c:920
 #, c-format
 msgid "Properties"
 msgstr "Properti"
 
-#: src/nautilus-properties-window.c:1326
+#: src/nautilus-properties-window.c:1335
 #, c-format
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-properties-window.c:1393
+#: src/nautilus-properties-window.c:1402
 msgid "Cancel Group Change?"
 msgstr "Batalkan Perubahan Kelompok?"
 
-#: src/nautilus-properties-window.c:1762
+#: src/nautilus-properties-window.c:1771
 msgid "Cancel Owner Change?"
 msgstr "Batalkan Perubahan Pemilik?"
 
-#: src/nautilus-properties-window.c:2090
+#: src/nautilus-properties-window.c:2099
 msgid "nothing"
 msgstr "tidak ada"
 
-#: src/nautilus-properties-window.c:2094
+#: src/nautilus-properties-window.c:2103
 msgid "unreadable"
 msgstr "tidak terbaca"
 
-#: src/nautilus-properties-window.c:2106
+#: src/nautilus-properties-window.c:2115
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] "%'d butir, dengan ukuran %s"
 msgstr[1] "%'d butir, dengan ukuran %s"
 
-#: src/nautilus-properties-window.c:2116
+#: src/nautilus-properties-window.c:2125
 msgid "(some contents unreadable)"
 msgstr "(beberapa isinya tidak terbaca)"
 
-#: src/nautilus-properties-window.c:2615
+#: src/nautilus-properties-window.c:2624
 #, c-format
 msgid "Details: %s"
 msgstr "Rincian: %s"
@@ -4104,114 +4104,114 @@ msgstr "Rincian: %s"
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: src/nautilus-properties-window.c:3502 src/nautilus-properties-window.c:3517
-#: src/nautilus-properties-window.c:3534
+#: src/nautilus-properties-window.c:3511 src/nautilus-properties-window.c:3526
+#: src/nautilus-properties-window.c:3543
 msgid "no "
 msgstr "jangan "
 
-#: src/nautilus-properties-window.c:3506
+#: src/nautilus-properties-window.c:3515
 msgid "list"
 msgstr "daftar"
 
-#: src/nautilus-properties-window.c:3510
+#: src/nautilus-properties-window.c:3519
 msgid "read"
 msgstr "baca"
 
-#: src/nautilus-properties-window.c:3521
+#: src/nautilus-properties-window.c:3530
 msgid "create/delete"
 msgstr "buat/hapus"
 
-#: src/nautilus-properties-window.c:3525
+#: src/nautilus-properties-window.c:3534
 msgid "write"
 msgstr "tulis"
 
-#: src/nautilus-properties-window.c:3536
+#: src/nautilus-properties-window.c:3545
 msgid "access"
 msgstr "akses"
 
-#: src/nautilus-properties-window.c:3605
+#: src/nautilus-properties-window.c:3614
 msgid "List files only"
 msgstr "Hanya melihat daftar berkas"
 
-#: src/nautilus-properties-window.c:3611
+#: src/nautilus-properties-window.c:3620
 msgid "Access files"
 msgstr "Mengakses berkas"
 
-#: src/nautilus-properties-window.c:3617
+#: src/nautilus-properties-window.c:3626
 msgid "Create and delete files"
 msgstr "Membuat dan hapus berkas"
 
-#: src/nautilus-properties-window.c:3635
+#: src/nautilus-properties-window.c:3644
 msgid "Read-only"
 msgstr "Hanya-baca"
 
-#: src/nautilus-properties-window.c:3641
+#: src/nautilus-properties-window.c:3650
 msgid "Read and write"
 msgstr "Baca dan tulis"
 
-#: src/nautilus-properties-window.c:4185
+#: src/nautilus-properties-window.c:4194
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Hak akses \"%s\" tidak dapat ditentukan."
 
-#: src/nautilus-properties-window.c:4429
+#: src/nautilus-properties-window.c:4438
 #, c-format
 msgid "Error while adding “%s”: %s"
 msgstr "Galat sewaktu menambahkan \"%s\": %s"
 
-#: src/nautilus-properties-window.c:4431
+#: src/nautilus-properties-window.c:4440
 msgid "Could not add application"
 msgstr "Tak dapat menambah aplikasi"
 
-#: src/nautilus-properties-window.c:4460
+#: src/nautilus-properties-window.c:4469
 msgid "Could not forget association"
 msgstr "Tak dapat melupakan asosiasi"
 
-#: src/nautilus-properties-window.c:4483
+#: src/nautilus-properties-window.c:4492
 msgid "Forget association"
 msgstr "Lupakan asosiasi"
 
-#: src/nautilus-properties-window.c:4523
+#: src/nautilus-properties-window.c:4532
 #, c-format
 msgid "Error while setting “%s” as default application: %s"
 msgstr "Galat saat menata \"%s\" sebagai aplikasi bawaan: %s"
 
-#: src/nautilus-properties-window.c:4525
+#: src/nautilus-properties-window.c:4534
 msgid "Could not set as default"
 msgstr "Tak dapat dijadikan bawaan"
 
 #. Translators: the %s here is a file extension
-#: src/nautilus-properties-window.c:4601
+#: src/nautilus-properties-window.c:4610
 #, c-format
 msgid "%s document"
 msgstr "%s dokumen"
 
 #. Translators; %s here is a mime-type description
-#: src/nautilus-properties-window.c:4611
+#: src/nautilus-properties-window.c:4620
 #, c-format
 msgid "Open all files of type “%s” with"
 msgstr "Buka semua berkas jenis \"%s\" dengan"
 
 #. Translators: first %s is filename, second %s is mime-type description
-#: src/nautilus-properties-window.c:4620
+#: src/nautilus-properties-window.c:4629
 #, c-format
 msgid "Select an application to open “%s” and other files of type “%s”"
 msgstr "Pilih aplikasi untuk membuka \"%s\" dan berkas lain berjenis \"%s\""
 
-#: src/nautilus-properties-window.c:5069
+#: src/nautilus-properties-window.c:5078
 msgid "Creating Properties window."
 msgstr "Membuat jendela Properti."
 
-#: src/nautilus-properties-window.c:5288
+#: src/nautilus-properties-window.c:5297
 msgid "Select Custom Icon"
 msgstr "Pilih Ikon Sendiri"
 
-#: src/nautilus-properties-window.c:5290
+#: src/nautilus-properties-window.c:5299
 msgid "_Revert"
 msgstr "_Kembalikan"
 
 #. Open item is always present
-#: src/nautilus-properties-window.c:5292 src/gtk/nautilusgtkplacesview.c:1704
+#: src/nautilus-properties-window.c:5301 src/gtk/nautilusgtkplacesview.c:1704
 msgid "_Open"
 msgstr "_Buka"
 
