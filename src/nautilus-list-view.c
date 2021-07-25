@@ -3282,14 +3282,6 @@ action_zoom_to_level (GSimpleAction *action,
 }
 
 static void
-column_editor_response_callback (GtkWidget *dialog,
-                                 int        response_id,
-                                 gpointer   user_data)
-{
-    gtk_widget_destroy (GTK_WIDGET (dialog));
-}
-
-static void
 column_chooser_changed_callback (NautilusColumnChooser *chooser,
                                  NautilusListView      *view)
 {
@@ -3398,48 +3390,28 @@ column_chooser_use_default_callback (NautilusColumnChooser *chooser,
 static GtkWidget *
 create_column_editor (NautilusListView *view)
 {
+    g_autoptr (GtkBuilder) builder = NULL;
     GtkWidget *window;
-    GtkWidget *label;
     GtkWidget *box;
     GtkWidget *column_chooser;
     NautilusFile *file;
     char *str;
     char *name;
-    const char *label_text;
+
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-list-view-column-editor.ui");
+
+    window = GTK_WIDGET (gtk_builder_get_object (builder, "window"));
+    gtk_window_set_transient_for (GTK_WINDOW (window),
+                                  GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))));
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
     name = nautilus_file_get_display_name (file);
     str = g_strdup_printf (_("%s Visible Columns"), name);
     g_free (name);
-
-    window = gtk_dialog_new_with_buttons (str,
-                                          GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
-                                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                                          NULL, NULL);
+    gtk_window_set_title (GTK_WINDOW (window), str);
     g_free (str);
-    g_signal_connect (window, "response",
-                      G_CALLBACK (column_editor_response_callback), NULL);
 
-    gtk_window_set_default_size (GTK_WINDOW (window), 300, 400);
-
-    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
-    gtk_container_set_border_width (GTK_CONTAINER (box), 12);
-    gtk_widget_set_hexpand (box, TRUE);
-    gtk_widget_show (box);
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))), box,
-                        TRUE, TRUE, 0);
-
-    label_text = _("Choose the order of information to appear in this folder:");
-    str = g_strconcat ("<b>", label_text, "</b>", NULL);
-    label = gtk_label_new (NULL);
-    gtk_label_set_markup (GTK_LABEL (label), str);
-    gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_label_set_yalign (GTK_LABEL (label), 0);
-    gtk_widget_show (label);
-    gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
-
-    g_free (str);
+    box = GTK_WIDGET (gtk_builder_get_object (builder, "box"));
 
     column_chooser = nautilus_column_chooser_new (file);
     gtk_box_pack_start (GTK_BOX (box), column_chooser, TRUE, TRUE, 0);
