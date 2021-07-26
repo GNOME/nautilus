@@ -4152,6 +4152,15 @@ nautilus_file_get_metadata (NautilusFile *file,
     return g_strdup (default_metadata);
 }
 
+/**
+ * nautilus_file_get_metadata_list:
+ * @file: A #NautilusFile to get metadata from.
+ * @key: A string representation of the metadata key (use macros when possible).
+ *
+ * Get the value of a metadata attribute which holds a list of strings.
+ *
+ * Returns: (transfer full): A zero-terminated array of newly allocated strings.
+ */
 gchar **
 nautilus_file_get_metadata_list (NautilusFile *file,
                                  const char   *key)
@@ -4199,6 +4208,14 @@ nautilus_file_set_metadata (NautilusFile *file,
     NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->set_metadata (file, key, val);
 }
 
+/**
+ * nautilus_file_set_metadata_list:
+ * @file: A #NautilusFile to set metadata into.
+ * @key: A string representation of the metadata key (use macros when possible).
+ * @list: (transfer none): A zero-terminated array of newly allocated strings.
+ *
+ * Set the value of a metadata attribute which takes a list of strings.
+ */
 void
 nautilus_file_set_metadata_list (NautilusFile  *file,
                                  const char    *key,
