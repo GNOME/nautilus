@@ -4152,14 +4152,12 @@ nautilus_file_get_metadata (NautilusFile *file,
     return g_strdup (default_metadata);
 }
 
-GList *
+gchar **
 nautilus_file_get_metadata_list (NautilusFile *file,
                                  const char   *key)
 {
-    GList *res;
     guint id;
     char **value;
-    int i;
 
     g_return_val_if_fail (key != NULL, NULL);
     g_return_val_if_fail (key[0] != '\0', NULL);
@@ -4177,17 +4175,7 @@ nautilus_file_get_metadata_list (NautilusFile *file,
 
     value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
 
-    if (value)
-    {
-        res = NULL;
-        for (i = 0; value[i] != NULL; i++)
-        {
-            res = g_list_prepend (res, g_strdup (value[i]));
-        }
-        return g_list_reverse (res);
-    }
-
-    return NULL;
+    return g_strdupv (value);
 }
 
 void
@@ -4950,7 +4938,9 @@ clean_up_metadata_keywords (NautilusFile  *file,
 static GList *
 nautilus_file_get_keywords (NautilusFile *file)
 {
-    GList *keywords, *metadata_keywords;
+    GList *keywords;
+    gchar **metadata_strv;
+    GList *metadata_keywords = NULL;
 
     if (file == NULL)
     {
@@ -4962,7 +4952,15 @@ nautilus_file_get_keywords (NautilusFile *file)
     keywords = g_list_copy_deep (file->details->extension_emblems, (GCopyFunc) g_strdup, NULL);
     keywords = g_list_concat (keywords, g_list_copy_deep (file->details->pending_extension_emblems, (GCopyFunc) g_strdup, NULL));
 
-    metadata_keywords = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
+    metadata_strv = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
+    /* Convert array to list */
+    for (gint i = 0; metadata_strv[i] != NULL; i++)
+    {
+        metadata_keywords = g_list_prepend (metadata_keywords, metadata_strv[i]);
+    }
+    /* Free only the container array. The strings are owned by the list now. */
+    g_free (metadata_strv);
+
     clean_up_metadata_keywords (file, &metadata_keywords);
     keywords = g_list_concat (keywords, metadata_keywords);
 

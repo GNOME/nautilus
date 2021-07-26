@@ -374,7 +374,7 @@ gboolean                nautilus_file_is_not_yet_confirmed              (Nautilu
 char *                  nautilus_file_get_metadata                      (NautilusFile                   *file,
 									 const char                     *key,
 									 const char                     *default_metadata);
-GList *                 nautilus_file_get_metadata_list                 (NautilusFile                   *file,
+gchar **                nautilus_file_get_metadata_list                 (NautilusFile                   *file,
 									 const char                     *key);
 void                    nautilus_file_set_metadata                      (NautilusFile                   *file,
 									 const char                     *key,

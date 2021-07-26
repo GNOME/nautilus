@@ -2345,34 +2345,13 @@ get_default_visible_columns (NautilusListView *list_view)
                                 NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
 }
 
-static GList *
-get_default_visible_columns_as_list (NautilusListView *list_view)
-{
-    GList *res = NULL;
-    gint i = 0;
-    gchar **array;
-
-    array = get_default_visible_columns (list_view);
-
-    while (array[i] != NULL)
-    {
-        res = g_list_prepend (res, array[i]);
-        i++;
-    }
-
-    g_free (array);
-
-    return res;
-}
-
 static char **
 get_visible_columns (NautilusListView *list_view)
 {
     NautilusFile *file;
-    g_autoptr (GList) visible_columns = NULL;
+    g_autofree gchar **visible_columns = NULL;
     g_autoptr (GFile) location = NULL;
     GPtrArray *res;
-    GList *l;
     g_autofree gchar *uri = NULL;
     gboolean can_star_current_directory;
     gboolean is_starred;
@@ -2389,16 +2368,16 @@ get_visible_columns (NautilusListView *list_view)
                                                        NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
     if (visible_columns == NULL)
     {
-        visible_columns = get_default_visible_columns_as_list (list_view);
+        visible_columns = get_default_visible_columns (list_view);
     }
 
     res = g_ptr_array_new ();
-    for (l = visible_columns; l != NULL; l = l->next)
+    for (gint i = 0; visible_columns[i] != NULL; i++)
     {
-        if (g_strcmp0 (l->data, "starred") != 0 ||
-            (g_strcmp0 (l->data, "starred") == 0 && (can_star_current_directory || is_starred)))
+        if (g_strcmp0 (visible_columns[i], "starred") != 0 ||
+            (g_strcmp0 (visible_columns[i], "starred") == 0 && (can_star_current_directory || is_starred)))
         {
-            g_ptr_array_add (res, l->data);
+            g_ptr_array_add (res, visible_columns[i]);
         }
     }
 
@@ -2439,7 +2418,7 @@ static char **
 get_column_order (NautilusListView *list_view)
 {
     NautilusFile *file;
-    GList *column_order;
+    gchar **column_order;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
 
@@ -2447,21 +2426,9 @@ get_column_order (NautilusListView *list_view)
                        (file,
                        NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
 
-    if (column_order)
+    if (column_order != NULL)
     {
-        GPtrArray *res;
-        GList *l;
-
-        res = g_ptr_array_new ();
-        for (l = column_order; l != NULL; l = l->next)
-        {
-            g_ptr_array_add (res, l->data);
-        }
-        g_ptr_array_add (res, NULL);
-
-        g_list_free (column_order);
-
-        return (char **) g_ptr_array_free (res, FALSE);
+        return column_order;
     }
 
     return get_default_column_order (list_view);
