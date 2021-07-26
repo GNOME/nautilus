@@ -382,7 +382,7 @@ void                    nautilus_file_set_metadata                      (Nautilu
 									 const char                     *metadata);
 void                    nautilus_file_set_metadata_list                 (NautilusFile                   *file,
 									 const char                     *key,
-									 GList                          *list);
+									 gchar                         **list);
 
 /* Covers for common data types. */
 gboolean                nautilus_file_get_boolean_metadata              (NautilusFile                   *file,

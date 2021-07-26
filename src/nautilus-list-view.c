@@ -1293,49 +1293,45 @@ column_header_menu_toggled (GtkCheckButton   *menu_item,
     char **visible_columns;
     char **column_order;
     const char *column;
-    GList *list = NULL;
-    GList *l;
+    gboolean active;
+    GPtrArray *ptr_array;
     int i;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
     visible_columns = get_visible_columns (list_view);
     column_order = get_column_order (list_view);
     column = g_object_get_data (G_OBJECT (menu_item), "column-name");
+    active = gtk_check_button_get_active (menu_item);
 
+    /* Rebuild visible_columns to add or remove the toggled column. */
+    ptr_array = g_ptr_array_sized_new (g_strv_length (visible_columns));
     for (i = 0; visible_columns[i] != NULL; ++i)
     {
-        list = g_list_prepend (list, visible_columns[i]);
+        if (!active && g_strcmp0 (visible_columns[i], column))
+        {
+            continue;
+        }
+        g_ptr_array_add (ptr_array, visible_columns[i]);
     }
 
-    if (gtk_check_button_get_active (menu_item))
+    if (active)
     {
-        list = g_list_prepend (list, g_strdup (column));
+        g_ptr_array_add (ptr_array, g_strdup (column));
     }
-    else
-    {
-        l = g_list_find_custom (list, column, (GCompareFunc) g_strcmp0);
-        list = g_list_delete_link (list, l);
-    }
-
-    list = g_list_reverse (list);
-    nautilus_file_set_metadata_list (file,
-                                     NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
-                                     list);
+    g_ptr_array_add (ptr_array, NULL);
 
     g_free (visible_columns);
+    visible_columns = (gchar **) g_ptr_array_free (ptr_array, FALSE);
 
-    visible_columns = g_new0 (char *, g_list_length (list) + 1);
-    for (i = 0, l = list; l != NULL; ++i, l = l->next)
-    {
-        visible_columns[i] = l->data;
-    }
+    nautilus_file_set_metadata_list (file,
+                                     NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
+                                     visible_columns);
 
     /* set view values ourselves, as new metadata could not have been
      * updated yet.
      */
     apply_columns_settings (list_view, column_order, visible_columns);
 
-    g_list_free (list);
     g_strfreev (column_order);
     g_strfreev (visible_columns);
 }
@@ -3124,8 +3120,6 @@ column_chooser_changed_callback (NautilusColumnChooser *chooser,
     NautilusFile *file;
     char **visible_columns;
     char **column_order;
-    GList *list;
-    int i;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
 
@@ -3133,27 +3127,12 @@ column_chooser_changed_callback (NautilusColumnChooser *chooser,
                                           &visible_columns,
                                           &column_order);
 
-    list = NULL;
-    for (i = 0; visible_columns[i] != NULL; ++i)
-    {
-        list = g_list_prepend (list, visible_columns[i]);
-    }
-    list = g_list_reverse (list);
     nautilus_file_set_metadata_list (file,
                                      NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
-                                     list);
-    g_list_free (list);
-
-    list = NULL;
-    for (i = 0; column_order[i] != NULL; ++i)
-    {
-        list = g_list_prepend (list, column_order[i]);
-    }
-    list = g_list_reverse (list);
+                                     visible_columns);
     nautilus_file_set_metadata_list (file,
                                      NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER,
-                                     list);
-    g_list_free (list);
+                                     column_order);
 
     apply_columns_settings (view, column_order, visible_columns);
 
