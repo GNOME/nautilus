@@ -419,8 +419,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         shifted_end_date = g_date_time_add_days (end_date, 1);
 
         type = nautilus_query_get_search_type (tracker->query);
-        initial_date_format = g_date_time_format (initial_date, "%Y-%m-%dT%H:%M:%S");
-        end_date_format = g_date_time_format (shifted_end_date, "%Y-%m-%dT%H:%M:%S");
+        initial_date_format = g_date_time_format_iso8601 (initial_date);
+        end_date_format = g_date_time_format_iso8601 (shifted_end_date);
 
         g_string_append (sparql, " && ");
 
