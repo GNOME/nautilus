@@ -77,7 +77,8 @@ typedef enum
 {
         NAUTILUS_COMPRESSION_ZIP = 0,
         NAUTILUS_COMPRESSION_TAR_XZ,
-        NAUTILUS_COMPRESSION_7ZIP
+        NAUTILUS_COMPRESSION_7ZIP,
+        NAUTILUS_COMPRESSION_ENCRYPTED_ZIP
 } NautilusCompressionFormat;
 
 /* Icon View */

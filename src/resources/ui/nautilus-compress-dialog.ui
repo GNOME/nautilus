@@ -29,6 +29,26 @@
           </object>
         </child>
         <child>
+          <object class="HdyActionRow" id="encrypted_zip_row">
+            <property name="visible">True</property>
+            <property name="activatable">True</property>
+            <property name="title" translatable="no">.zip</property>
+            <property name="subtitle" translatable="yes">Password protected .zip, must be installed on Windows and Mac.</property>
+            <signal name="activated" handler="encrypted_zip_row_on_activated"/>
+            <style>
+              <class name="encrypted_zip"/>
+            </style>
+            <child>
+              <object class="GtkImage" id="encrypted_zip_checkmark">
+                <property name="visible">True</property>
+                <property name="width-request">16</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
           <object class="HdyActionRow">
             <property name="visible">True</property>
             <property name="activatable">True</property>
@@ -130,6 +150,15 @@
                           </object>
                         </child>
                         <child>
+                          <object class="GtkLabel" id="encrypted_zip_label">
+                            <property name="label" translatable="no">.zip</property>
+                            <property name="xalign">0</property>
+                            <style>
+                              <class name="encrypted_zip"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
                           <object class="GtkLabel" id="tar_xz_label">
                             <property name="label" translatable="no">.tar.xz</property>
                             <property name="xalign">0</property>
@@ -179,6 +208,33 @@
             <property name="position">3</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkLabel" id="passphrase_label">
+            <property name="label" translatable="yes">Password</property>
+            <property name="margin-top">6</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="passphrase_entry">
+            <property name="placeholder-text" translatable="yes">Enter a password here.</property>
+            <property name="input-purpose">password</property>
+            <property name="visibility">False</property>
+            <property name="secondary-icon-name">view-conceal</property>
+            <signal name="changed" handler="passphrase_entry_on_changed"/>
+            <signal name="icon-press" handler="passphrase_entry_on_icon_press"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
       </object>
     </child>
     <child type="action">
@@ -197,6 +253,7 @@
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="sensitive">False</property>
+        <signal name="notify::sensitive" handler="activate_button_on_sensitive_notify"/>
       </object>
     </child>
     <action-widgets>

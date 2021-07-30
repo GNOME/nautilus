@@ -2254,6 +2254,7 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     NautilusFilesViewPrivate *priv;
     AutoarFormat format;
     AutoarFilter filter;
+    const gchar *passphrase = NULL;
 
     view = NAUTILUS_FILES_VIEW (callback_data->view);
     priv = nautilus_files_view_get_instance_private (view);
@@ -2299,6 +2300,14 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
         }
         break;
 
+        case NAUTILUS_COMPRESSION_ENCRYPTED_ZIP:
+        {
+            format = AUTOAR_FORMAT_ZIP;
+            filter = AUTOAR_FILTER_NONE;
+            passphrase = nautilus_compress_dialog_controller_get_passphrase (priv->compress_controller);
+        }
+        break;
+
         case NAUTILUS_COMPRESSION_TAR_XZ:
         {
             format = AUTOAR_FORMAT_TAR;
@@ -2322,6 +2331,7 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     nautilus_file_operations_compress (source_files, output,
                                        format,
                                        filter,
+                                       passphrase,
                                        nautilus_files_view_get_containing_window (view),
                                        NULL,
                                        compress_done,

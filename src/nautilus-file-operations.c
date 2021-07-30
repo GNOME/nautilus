@@ -222,6 +222,7 @@ typedef struct
 
     AutoarFormat format;
     AutoarFilter filter;
+    gchar *passphrase;
 
     guint64 total_size;
     guint total_files;
@@ -8757,6 +8758,7 @@ compress_task_done (GObject      *source_object,
 
     g_object_unref (compress_job->output_file);
     g_list_free_full (compress_job->source_files, g_object_unref);
+    g_free (compress_job->passphrase);
 
     finalize_common ((CommonJob *) compress_job);
 
@@ -9031,6 +9033,7 @@ compress_task_thread_func (GTask        *task,
                                         compress_job->format,
                                         compress_job->filter,
                                         FALSE);
+    autoar_compressor_set_passphrase (compressor, compress_job->passphrase);
 
     autoar_compressor_set_output_is_dest (compressor, TRUE);
 
@@ -9061,6 +9064,7 @@ nautilus_file_operations_compress (GList                          *files,
                                    GFile                          *output,
                                    AutoarFormat                    format,
                                    AutoarFilter                    filter,
+                                   const gchar                    *passphrase,
                                    GtkWindow                      *parent_window,
                                    NautilusFileOperationsDBusData *dbus_data,
                                    NautilusCreateCallback          done_callback,
@@ -9076,6 +9080,7 @@ nautilus_file_operations_compress (GList                          *files,
     compress_job->output_file = g_object_ref (output);
     compress_job->format = format;
     compress_job->filter = filter;
+    compress_job->passphrase = g_strdup (passphrase);
     compress_job->done_callback = done_callback;
     compress_job->done_callback_data = done_callback_data;
 
@@ -9086,7 +9091,8 @@ nautilus_file_operations_compress (GList                          *files,
         compress_job->common.undo_info = nautilus_file_undo_info_compress_new (files,
                                                                                output,
                                                                                format,
-                                                                               filter);
+                                                                               filter,
+                                                                               passphrase);
     }
 
     task = g_task_new (NULL, compress_job->common.cancellable,
