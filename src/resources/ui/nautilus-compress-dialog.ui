@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.14"/>
+  <object class="GtkPopover" id="extension_popover">
+    <property name="position">bottom</property>
+    <property name="constrain-to">none</property>
+    <child>
+      <object class="HdyPreferencesGroup">
+        <property name="visible">True</property>
+        <property name="margin-top">12</property>
+        <property name="margin-bottom">12</property>
+        <property name="margin-start">12</property>
+        <property name="margin-end">12</property>
+        <child>
+          <object class="HdyActionRow">
+            <property name="visible">True</property>
+            <property name="activatable">True</property>
+            <property name="title" translatable="no">.zip</property>
+            <property name="subtitle" translatable="yes">Compatible with all operating systems.</property>
+            <signal name="activated" handler="zip_row_on_activated"/>
+            <child>
+              <object class="GtkImage" id="zip_checkmark">
+                <property name="visible">True</property>
+                <property name="width-request">16</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="HdyActionRow">
+            <property name="visible">True</property>
+            <property name="activatable">True</property>
+            <property name="title" translatable="no">.tar.xz</property>
+            <property name="subtitle" translatable="yes">Smaller archives but Linux and Mac only.</property>
+            <signal name="activated" handler="tar_xz_row_on_activated"/>
+            <child>
+              <object class="GtkImage" id="tar_xz_checkmark">
+                <property name="visible">True</property>
+                <property name="width-request">16</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="HdyActionRow">
+            <property name="visible">True</property>
+            <property name="activatable">True</property>
+            <property name="title" translatable="no">.7z</property>
+            <property name="subtitle" translatable="yes">Smaller archives but must be installed on Windows and Mac.</property>
+            <signal name="activated" handler="seven_zip_row_on_activated"/>
+            <child>
+              <object class="GtkImage" id="seven_zip_checkmark">
+                <property name="visible">True</property>
+                <property name="width-request">16</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkDialog" id="compress_dialog">
     <property name="title" translatable="yes">Create Archive</property>
     <property name="resizable">False</property>
@@ -9,19 +73,26 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="use-header-bar">1</property>
+    <property name="default-width">500</property>
+    <property name="default-height">210</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="vbox">
         <property name="orientation">vertical</property>
-        <property name="margin_top">18</property>
-        <property name="margin_bottom">12</property>
-        <property name="margin_start">18</property>
-        <property name="margin_end">18</property>
+        <property name="margin-top">30</property>
+        <property name="margin-bottom">30</property>
+        <property name="margin-start">30</property>
+        <property name="margin-end">30</property>
+        <property name="width-request">390</property>
+        <property name="halign">center</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel" id="name_label">
             <property name="label" translatable="yes">Archive name</property>
             <property name="visible">True</property>
             <property name="xalign">0</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -30,9 +101,60 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="name_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="GtkEntry" id="name_entry">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="width-chars">30</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="extension_button">
+                <property name="popover">extension_popover</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkStack" id="extension_stack">
+                        <child>
+                          <object class="GtkLabel" id="zip_label">
+                            <property name="label" translatable="no">.zip</property>
+                            <property name="xalign">0</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="tar_xz_label">
+                            <property name="label" translatable="no">.tar.xz</property>
+                            <property name="xalign">0</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="seven_zip_label">
+                            <property name="label" translatable="no">.7z</property>
+                            <property name="xalign">0</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkImage">
+                        <property name="icon-name">pan-down-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -55,107 +177,6 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="hbox">
-            <property name="orientation">horizontal</property>
-            <property name="homogeneous">True</property>
-            <property name="spacing">0</property>
-            <child>
-              <object class="GtkRadioButton" id="zip_radio_button">
-                <property name="label" translatable="no">.zip</property>
-                <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="zip_radio_button_on_toggled"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkRadioButton" id="tar_xz_radio_button">
-                <property name="label" translatable="no">.tar.xz</property>
-                <property name="group">zip_radio_button</property>
-                <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="tar_xz_radio_button_on_toggled"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkRadioButton" id="seven_zip_radio_button">
-                <property name="label" translatable="no">.7z</property>
-                <property name="group">zip_radio_button</property>
-                <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="seven_zip_radio_button_on_toggled"/>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkStack" id="description_stack">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
-            <child>
-              <object class="GtkLabel" id="zip_description_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Compatible with all operating systems.</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-              <packing>
-                <property name="name">zip-description-label</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="tar_xz_description_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Smaller archives but Linux and Mac only.</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-              <packing>
-                <property name="name">tar-xz-description-label</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="seven_zip_description_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Smaller archives but must be installed on Windows and Mac.</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-              <packing>
-                <property name="name">seven-zip-description-label</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">5</property>
           </packing>
         </child>
       </object>
