@@ -326,37 +326,37 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
 {
     NautilusListView *view;
     GtkWidget *widget;
+    GtkTreePath *old_hover_path;
+
+    if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE)
+    {
+        return;
+    }
 
     view = user_data;
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    old_hover_path = view->details->hover_path;
 
-    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
+    gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
+                                   x, y,
+                                   &view->details->hover_path,
+                                   NULL, NULL, NULL);
+
+    if ((old_hover_path != NULL) != (view->details->hover_path != NULL))
     {
-        GtkTreePath *old_hover_path;
-
-        widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
-        old_hover_path = view->details->hover_path;
-
-        gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                       x, y,
-                                       &view->details->hover_path,
-                                       NULL, NULL, NULL);
-
-        if ((old_hover_path != NULL) != (view->details->hover_path != NULL))
+        if (view->details->hover_path != NULL)
         {
-            if (view->details->hover_path != NULL)
-            {
-                gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
-            }
-            else
-            {
-                gdk_window_set_cursor (gtk_widget_get_window (widget), NULL);
-            }
+            gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
         }
-
-        if (old_hover_path != NULL)
+        else
         {
-            gtk_tree_path_free (old_hover_path);
+            gdk_window_set_cursor (gtk_widget_get_window (widget), NULL);
         }
+    }
+
+    if (old_hover_path != NULL)
+    {
+        gtk_tree_path_free (old_hover_path);
     }
 }
 
@@ -368,12 +368,14 @@ on_event_controller_motion_leave (GtkEventControllerMotion *controller,
 
     view = user_data;
 
-    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE &&
-        view->details->hover_path != NULL)
+    if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE ||
+        view->details->hover_path == NULL)
     {
-        gtk_tree_path_free (view->details->hover_path);
-        view->details->hover_path = NULL;
+        return;
     }
+
+    gtk_tree_path_free (view->details->hover_path);
+    view->details->hover_path = NULL;
 }
 
 static void
@@ -385,25 +387,26 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
     NautilusListView *view;
     GtkWidget *widget;
 
-    view = user_data;
-
-    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
+    if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE)
     {
-        if (view->details->hover_path != NULL)
-        {
-            gtk_tree_path_free (view->details->hover_path);
-        }
-        widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+        return;
+    }
 
-        gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                       x, y,
-                                       &view->details->hover_path,
-                                       NULL, NULL, NULL);
+    view = user_data;
+    if (view->details->hover_path != NULL)
+    {
+        gtk_tree_path_free (view->details->hover_path);
+    }
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
 
-        if (view->details->hover_path != NULL)
-        {
-            gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
-        }
+    gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
+                                   x, y,
+                                   &view->details->hover_path,
+                                   NULL, NULL, NULL);
+
+    if (view->details->hover_path != NULL)
+    {
+        gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
     }
 }
 
