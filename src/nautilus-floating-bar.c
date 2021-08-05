@@ -43,6 +43,9 @@ struct _NautilusFloatingBar
     gboolean show_stop;
     gboolean is_interactive;
     guint hover_timeout_id;
+
+    GtkEventController *motion_controller;
+    double pointer_y_in_parent_coordinates;
 };
 
 enum
@@ -81,6 +84,7 @@ nautilus_floating_bar_finalize (GObject *obj)
     nautilus_floating_bar_remove_hover_timeout (self);
     g_free (self->primary_label);
     g_free (self->details_label);
+    g_clear_object (&self->motion_controller);
 
     G_OBJECT_CLASS (nautilus_floating_bar_parent_class)->finalize (obj);
 }
@@ -200,9 +204,7 @@ nautilus_floating_bar_remove_hover_timeout (NautilusFloatingBar *self)
 
 typedef struct
 {
-    GtkWidget *overlay;
-    GtkWidget *floating_bar;
-    GdkDevice *device;
+    NautilusFloatingBar *floating_bar;
     gint y_down_limit;
     gint y_upper_limit;
 } CheckPointerData;
@@ -217,39 +219,45 @@ static gboolean
 check_pointer_timeout (gpointer user_data)
 {
     CheckPointerData *data = user_data;
-    gint pointer_y = -1;
-
-    gdk_window_get_device_position (gtk_widget_get_window (data->overlay), data->device,
-                                    NULL, &pointer_y, NULL);
+    NautilusFloatingBar *self = data->floating_bar;
+    double pointer_y = self->pointer_y_in_parent_coordinates;
 
     if (pointer_y == -1 || pointer_y < data->y_down_limit || pointer_y > data->y_upper_limit)
     {
-        gtk_widget_show (data->floating_bar);
-        NAUTILUS_FLOATING_BAR (data->floating_bar)->hover_timeout_id = 0;
+        gtk_widget_show (GTK_WIDGET (self));
+        self->hover_timeout_id = 0;
 
         return G_SOURCE_REMOVE;
     }
     else
     {
-        gtk_widget_hide (data->floating_bar);
+        gtk_widget_hide (GTK_WIDGET (self));
     }
 
     return G_SOURCE_CONTINUE;
 }
 
-static gboolean
-overlay_event_cb (GtkWidget *parent,
-                  GdkEvent  *event,
-                  gpointer   user_data)
+static void
+on_event_controller_motion_enter (GtkEventControllerMotion *controller,
+                                  double                    x,
+                                  double                    y,
+                                  gpointer                  user_data)
 {
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
-    GtkWidget *widget = user_data;
     CheckPointerData *data;
     gint y_pos;
 
-    if (gdk_event_get_event_type (event) != GDK_ENTER_NOTIFY)
+    self->pointer_y_in_parent_coordinates = y;
+
+    if (self->is_interactive || !gtk_widget_is_visible (GTK_WIDGET (self)))
     {
-        return GDK_EVENT_PROPAGATE;
+        return;
+    }
+
+    gdk_window_get_position (gtk_widget_get_window (GTK_WIDGET (self)), NULL, &y_pos);
+    if (y < y_pos)
+    {
+        return;
     }
 
     if (self->hover_timeout_id != 0)
@@ -257,52 +265,61 @@ overlay_event_cb (GtkWidget *parent,
         g_source_remove (self->hover_timeout_id);
     }
 
-    if (gdk_event_get_window (event) != gtk_widget_get_window (widget))
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    if (self->is_interactive)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    gdk_window_get_position (gtk_widget_get_window (widget), NULL, &y_pos);
-
     data = g_slice_new (CheckPointerData);
-    data->overlay = parent;
-    data->floating_bar = widget;
-    data->device = gdk_event_get_device (event);
+    data->floating_bar = self;
     data->y_down_limit = y_pos;
-    data->y_upper_limit = y_pos + gtk_widget_get_allocated_height (widget);
+    data->y_upper_limit = y_pos + gtk_widget_get_allocated_height (GTK_WIDGET (self));
 
     self->hover_timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT, HOVER_HIDE_TIMEOUT_INTERVAL,
                                                  check_pointer_timeout, data,
                                                  check_pointer_data_free);
 
-    g_source_set_name_by_id (self->hover_timeout_id, "[nautilus-floating-bar] overlay_event_cb");
+    g_source_set_name_by_id (self->hover_timeout_id, "[nautilus-floating-bar] on_event_controller_motion_enter");
+}
 
-    return GDK_EVENT_STOP;
+static void
+on_event_controller_motion_leave (GtkEventControllerMotion *controller,
+                                  gpointer                  user_data)
+{
+    NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
+
+    self->pointer_y_in_parent_coordinates = -1;
+}
+
+static void
+on_event_controller_motion_motion (GtkEventControllerMotion *controller,
+                                   double                    x,
+                                   double                    y,
+                                   gpointer                  user_data)
+{
+    NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
+
+    self->pointer_y_in_parent_coordinates = y;
 }
 
 static void
 nautilus_floating_bar_parent_set (GtkWidget *widget,
                                   GtkWidget *old_parent)
 {
+    NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
     GtkWidget *parent;
 
     parent = gtk_widget_get_parent (widget);
 
-    if (old_parent != NULL)
-    {
-        g_signal_handlers_disconnect_by_func (old_parent,
-                                              overlay_event_cb, widget);
-    }
+    g_clear_object (&self->motion_controller);
 
     if (parent != NULL)
     {
-        g_signal_connect (parent, "event",
-                          G_CALLBACK (overlay_event_cb), widget);
+        self->motion_controller = gtk_event_controller_motion_new (parent);
+
+        gtk_event_controller_set_propagation_phase (self->motion_controller,
+                                                    GTK_PHASE_CAPTURE);
+        g_signal_connect (self->motion_controller, "enter",
+                          G_CALLBACK (on_event_controller_motion_enter), self);
+        g_signal_connect (self->motion_controller, "leave",
+                          G_CALLBACK (on_event_controller_motion_leave), self);
+        g_signal_connect (self->motion_controller, "motion",
+                          G_CALLBACK (on_event_controller_motion_motion), self);
     }
 }
 
@@ -467,6 +484,9 @@ nautilus_floating_bar_init (NautilusFloatingBar *self)
 
     context = gtk_widget_get_style_context (GTK_WIDGET (self));
     gtk_style_context_add_class (context, "floating-bar");
+
+    self->motion_controller = NULL;
+    self->pointer_y_in_parent_coordinates = -1;
 }
 
 static void
