@@ -244,6 +244,7 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
                                   gpointer                  user_data)
 {
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
+    GtkWidget *parent;
     CheckPointerData *data;
     gint y_pos;
 
@@ -254,7 +255,9 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
         return;
     }
 
-    gdk_window_get_position (gtk_widget_get_window (GTK_WIDGET (self)), NULL, &y_pos);
+    parent = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    gtk_widget_translate_coordinates (GTK_WIDGET (self), parent, 0, 0, NULL, &y_pos);
+
     if (y < y_pos)
     {
         return;
