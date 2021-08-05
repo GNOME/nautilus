@@ -301,13 +301,14 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
 }
 
 static void
-nautilus_floating_bar_parent_set (GtkWidget *widget,
-                                  GtkWidget *old_parent)
+on_parent_changed (GObject    *object,
+                   GParamSpec *pspec,
+                   gpointer    user_data)
 {
-    NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
+    NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (object);
     GtkWidget *parent;
 
-    parent = gtk_widget_get_parent (widget);
+    parent = gtk_widget_get_parent (GTK_WIDGET (object));
 
     g_clear_object (&self->motion_controller);
 
@@ -490,6 +491,11 @@ nautilus_floating_bar_init (NautilusFloatingBar *self)
 
     self->motion_controller = NULL;
     self->pointer_y_in_parent_coordinates = -1;
+
+    g_signal_connect (self,
+                      "notify::parent",
+                      G_CALLBACK (on_parent_changed),
+                      NULL);
 }
 
 static void
@@ -507,7 +513,6 @@ nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
     wclass->get_preferred_width_for_height = nautilus_floating_bar_get_preferred_width_for_height;
     wclass->get_preferred_height = nautilus_floating_bar_get_preferred_height;
     wclass->get_preferred_height_for_width = nautilus_floating_bar_get_preferred_height_for_width;
-    wclass->parent_set = nautilus_floating_bar_parent_set;
 
     properties[PROP_PRIMARY_LABEL] =
         g_param_spec_string ("primary-label",
