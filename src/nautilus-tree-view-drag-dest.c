@@ -593,7 +593,7 @@ drag_motion_callback (GtkWidget      *widget,
     GtkTreePath *path;
     GtkTreePath *drop_path, *old_drop_path;
     GtkTreeViewDropPosition pos;
-    GdkWindow *bin_window;
+    int bin_y;
     guint action;
     gboolean res = TRUE;
 
@@ -621,16 +621,13 @@ drag_motion_callback (GtkWidget      *widget,
     drop_path = get_drop_path (dest, path);
 
     action = 0;
-    bin_window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
-    if (bin_window != NULL)
+    gtk_tree_view_convert_bin_window_to_widget_coords (GTK_TREE_VIEW (widget),
+                                                       0, 0,
+                                                       NULL, &bin_y);
+    if (bin_y <= y)
     {
-        int bin_x, bin_y;
-        gdk_window_get_position (bin_window, &bin_x, &bin_y);
-        if (bin_y <= y)
-        {
-            /* ignore drags on the header */
-            action = get_drop_action (dest, context, drop_path);
-        }
+        /* ignore drags on the header */
+        action = get_drop_action (dest, context, drop_path);
     }
 
     gtk_tree_view_get_drag_dest_row (GTK_TREE_VIEW (widget), &old_drop_path,
