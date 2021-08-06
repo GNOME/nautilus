@@ -76,5 +76,6 @@ struct NautilusListViewDetails {
   GtkGesture *tree_view_multi_press_gesture;
   GtkEventController *motion_controller;
   GtkEventController *key_controller;
+  GtkGesture *long_press_gesture;
 };
 
