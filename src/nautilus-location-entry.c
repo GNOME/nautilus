@@ -385,6 +385,22 @@ set_prefix_dimming (GtkCellRenderer *completion_cell,
     pango_attr_list_unref (attrs);
 }
 
+static gboolean
+position_and_selection_are_at_end (GtkEditable *editable)
+{
+    int end;
+    int start_sel, end_sel;
+
+    end = get_editable_number_of_chars (editable);
+    if (gtk_editable_get_selection_bounds (editable, &start_sel, &end_sel))
+    {
+        if (start_sel != end || end_sel != end)
+        {
+            return FALSE;
+        }
+    }
+    return gtk_editable_get_position (editable) == end;
+}
 
 /* Update the path completions list based on the current text of the entry. */
 static gboolean
@@ -408,6 +424,15 @@ update_completions_store (gpointer callback_data)
     priv = nautilus_location_entry_get_instance_private (entry);
     editable = GTK_EDITABLE (entry);
 
+    priv->idle_id = 0;
+
+    /* Only do completions when we are typing at the end of the
+     * text. */
+    if (!position_and_selection_are_at_end (editable))
+    {
+        return FALSE;
+    }
+
     if (gtk_editable_get_selection_bounds (editable, &start_sel, NULL))
     {
         user_location = gtk_editable_get_chars (editable, 0, start_sel);
@@ -419,8 +444,6 @@ update_completions_store (gpointer callback_data)
 
     g_strstrip (user_location);
     set_prefix_dimming (priv->completion_cell, user_location);
-
-    priv->idle_id = 0;
 
     uri_scheme = g_uri_parse_scheme (user_location);
 
@@ -532,23 +555,6 @@ entry_would_have_inserted_characters (const GdkEvent *event)
 
     /* GTK+ 4 TODO: gdk_event_get_string () and check if length > 0. */
     return ((const GdkEventKey *) event)->length;
-}
-
-static gboolean
-position_and_selection_are_at_end (GtkEditable *editable)
-{
-    int end;
-    int start_sel, end_sel;
-
-    end = get_editable_number_of_chars (editable);
-    if (gtk_editable_get_selection_bounds (editable, &start_sel, &end_sel))
-    {
-        if (start_sel != end || end_sel != end)
-        {
-            return FALSE;
-        }
-    }
-    return gtk_editable_get_position (editable) == end;
 }
 
 static void
@@ -765,33 +771,17 @@ nautilus_location_entry_on_event (GtkWidget *widget,
         return GDK_EVENT_PROPAGATE;
     }
 
-    /* Only do completions when we are typing at the end of the
-     * text. Do the expand at idle time to avoid slowing down
-     * typing when the directory is large. Only insert an expansion
-     * when we type a key that would have inserted characters.
-     */
-    if (position_and_selection_are_at_end (editable))
-    {
-        /* Only insert a completion if a character was typed. Otherwise,
-         * update the completions store (i.e. in case backspace was pressed)
-         * but don't insert the completion into the entry. */
-        priv->idle_insert_completion = entry_would_have_inserted_characters (event);
 
-        if (priv->idle_id == 0)
-        {
-            priv->idle_id = g_idle_add (update_completions_store, widget);
-        }
-    }
-    else
+    /* Only insert a completion if a character was typed. Otherwise,
+     * update the completions store (i.e. in case backspace was pressed)
+     * but don't insert the completion into the entry. */
+    priv->idle_insert_completion = entry_would_have_inserted_characters (event);
+
+    /* Do the expand at idle time to avoid slowing down typing when the
+     * directory is large. */
+    if (priv->idle_id == 0)
     {
-        /* FIXME: Also might be good to do this when you click
-         * to change the position or selection.
-         */
-        if (priv->idle_id != 0)
-        {
-            g_source_remove (priv->idle_id);
-            priv->idle_id = 0;
-        }
+        priv->idle_id = g_idle_add (update_completions_store, self);
     }
 
     return handled;
