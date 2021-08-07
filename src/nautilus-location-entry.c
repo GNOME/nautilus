@@ -75,6 +75,8 @@ typedef struct _NautilusLocationEntryPrivate
     gchar *special_text;
     NautilusLocationEntryAction secondary_action;
 
+    GtkEventController *controller;
+
     GtkEntryCompletion *completion;
     GtkListStore *completions_store;
     GtkCellRenderer *completion_cell;
@@ -528,6 +530,8 @@ finalize (GObject *object)
     g_clear_object (&priv->completions_store);
     g_free (priv->current_directory);
 
+    g_clear_object (&priv->controller);
+
     G_OBJECT_CLASS (nautilus_location_entry_parent_class)->finalize (object);
 }
 
@@ -625,42 +629,24 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
 }
 
 static gboolean
-nautilus_location_entry_on_event (GtkWidget *widget,
-                                  GdkEvent  *event)
+nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
+                                     unsigned int           keyval,
+                                     unsigned int           keycode,
+                                     GdkModifierType        state,
+                                     gpointer               user_data)
 {
-    GtkWidgetClass *parent_widget_class;
-    NautilusLocationEntry *entry;
-    NautilusLocationEntryPrivate *priv;
+    GtkWidget *widget;
     GtkEditable *editable;
     gboolean selected;
-    guint keyval;
-    GdkModifierType state;
-    gboolean handled;
 
-    parent_widget_class = GTK_WIDGET_CLASS (nautilus_location_entry_parent_class);
 
-    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
-    {
-        return parent_widget_class->event (widget, event);
-    }
-
-    entry = NAUTILUS_LOCATION_ENTRY (widget);
-    priv = nautilus_location_entry_get_instance_private (entry);
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     editable = GTK_EDITABLE (widget);
     selected = gtk_editable_get_selection_bounds (editable, NULL, NULL);
 
     if (!gtk_editable_get_editable (editable))
     {
         return GDK_EVENT_PROPAGATE;
-    }
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-    if (G_UNLIKELY (!gdk_event_get_state (event, &state)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
     }
 
     /* The location bar entry wants TAB to work kind of
@@ -680,7 +666,7 @@ nautilus_location_entry_on_event (GtkWidget *widget,
         }
         else
         {
-            gtk_widget_error_bell (GTK_WIDGET (entry));
+            gtk_widget_error_bell (widget);
         }
 
         return GDK_EVENT_STOP;
@@ -690,23 +676,6 @@ nautilus_location_entry_on_event (GtkWidget *widget,
         !(state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)) && selected)
     {
         set_position_and_selection_to_end (editable);
-    }
-
-    /* GTK+ 4 TODO: Calling the event vfunc is not enough, we need the entry
-     *              to handle the key press and insert the text first.
-     *
-     * Chaining up here is required either way, since the code below
-     * used to be in the handler for ::event-after, which is no longer a thing.
-     */
-    handled = parent_widget_class->key_press_event (widget, (GdkEventKey *) event);
-
-
-    if (keyval == GDK_KEY_Down || keyval == GDK_KEY_Up)
-    {
-        /* Ignore up/down arrow keys. These are used by the entry completion,
-         * and if we modify the completion store, navigation through the list
-         * will be interrupted. */
-        return GDK_EVENT_PROPAGATE;
     }
 
     return GDK_EVENT_PROPAGATE;
@@ -801,13 +770,10 @@ nautilus_location_entry_cancel (NautilusLocationEntry *entry)
 static void
 nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 {
-    GtkWidgetClass *widget_class;
     GObjectClass *gobject_class;
     GtkEntryClass *entry_class;
     GtkBindingSet *binding_set;
 
-    widget_class = GTK_WIDGET_CLASS (class);
-    widget_class->event = nautilus_location_entry_on_event;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->dispose = nautilus_location_entry_dispose;
@@ -948,6 +914,15 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), entry, 0);
 
+    priv->controller = gtk_event_controller_key_new (GTK_WIDGET (entry));
+    /* In GTK3, the Tab key binding (for focus change) happens in the bubble
+     * phase, and we want to stop that from happening. After porting to GTK4
+     * we need to check whether this is still correct. */
+    gtk_event_controller_set_propagation_phase (priv->controller, GTK_PHASE_BUBBLE);
+    g_signal_connect (priv->controller,
+                      "key-pressed",
+                      G_CALLBACK (nautilus_location_entry_key_pressed),
+                      NULL);
     g_signal_connect_after (entry,
                             "insert-text",
                             G_CALLBACK (on_after_insert_text),
