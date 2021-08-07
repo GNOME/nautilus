@@ -987,7 +987,7 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 
     g_object_set (priv->completion,
                   "text-column", 0,
-                  "inline-completion", TRUE,
+                  "inline-completion", FALSE,
                   "inline-selection", TRUE,
                   "popup-single-match", TRUE,
                   NULL);
