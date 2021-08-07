@@ -327,6 +327,8 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     NautilusListView *view;
     GtkWidget *widget;
     GtkTreePath *old_hover_path;
+    int x_in_bin;
+    int y_in_bin;
 
     if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE)
     {
@@ -337,8 +339,11 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     old_hover_path = view->details->hover_path;
 
+    gtk_tree_view_convert_widget_to_bin_window_coords (GTK_TREE_VIEW (widget),
+                                                       x, y,
+                                                       &x_in_bin, &y_in_bin);
     gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                   x, y,
+                                   x_in_bin, y_in_bin,
                                    &view->details->hover_path,
                                    NULL, NULL, NULL);
 
@@ -386,6 +391,8 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
 {
     NautilusListView *view;
     GtkWidget *widget;
+    int x_in_bin;
+    int y_in_bin;
 
     if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE)
     {
@@ -399,8 +406,11 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
     }
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
 
+    gtk_tree_view_convert_widget_to_bin_window_coords (GTK_TREE_VIEW (widget),
+                                                       x, y,
+                                                       &x_in_bin, &y_in_bin);
     gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                   x, y,
+                                   x_in_bin, y_in_bin,
                                    &view->details->hover_path,
                                    NULL, NULL, NULL);
 
