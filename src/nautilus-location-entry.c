@@ -495,68 +495,6 @@ update_completions_store (gpointer callback_data)
     return FALSE;
 }
 
-/* Until we have a more elegant solution, this is how we figure out if
- * the GtkEntry inserted characters, assuming that the return value is
- * TRUE indicating that the GtkEntry consumed the key event for some
- * reason. This is a clone of code from GtkEntry.
- */
-static gboolean
-entry_would_have_inserted_characters (const GdkEvent *event)
-{
-    guint keyval;
-    GdkModifierType state;
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-    if (G_UNLIKELY (!gdk_event_get_state (event, &state)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
-    switch (keyval)
-    {
-        case GDK_KEY_BackSpace:
-        case GDK_KEY_Clear:
-        case GDK_KEY_Insert:
-        case GDK_KEY_Delete:
-        case GDK_KEY_Home:
-        case GDK_KEY_End:
-        case GDK_KEY_KP_Home:
-        case GDK_KEY_KP_End:
-        case GDK_KEY_Left:
-        case GDK_KEY_Right:
-        case GDK_KEY_KP_Left:
-        case GDK_KEY_KP_Right:
-        case GDK_KEY_Return:
-        /* For when the entry is set to be always visible.
-         */
-        case GDK_KEY_Escape:
-        {
-            return FALSE;
-        }
-
-        default:
-        {
-            if (keyval >= 0x20 && keyval <= 0xFF)
-            {
-                if ((state & GDK_CONTROL_MASK) != 0)
-                {
-                    return FALSE;
-                }
-                if ((state & GDK_MOD1_MASK) != 0)
-                {
-                    return FALSE;
-                }
-            }
-        }
-    }
-
-    /* GTK+ 4 TODO: gdk_event_get_string () and check if length > 0. */
-    return ((const GdkEventKey *) event)->length;
-}
-
 static void
 got_completion_data_callback (GFilenameCompleter    *completer,
                               NautilusLocationEntry *entry)
@@ -771,11 +709,19 @@ nautilus_location_entry_on_event (GtkWidget *widget,
         return GDK_EVENT_PROPAGATE;
     }
 
+    return GDK_EVENT_PROPAGATE;
+}
+
+static void
+after_text_change (NautilusLocationEntry *self,
+                   gboolean               insert)
+{
+    NautilusLocationEntryPrivate *priv = nautilus_location_entry_get_instance_private (self);
 
     /* Only insert a completion if a character was typed. Otherwise,
      * update the completions store (i.e. in case backspace was pressed)
      * but don't insert the completion into the entry. */
-    priv->idle_insert_completion = entry_would_have_inserted_characters (event);
+    priv->idle_insert_completion = insert;
 
     /* Do the expand at idle time to avoid slowing down typing when the
      * directory is large. */
@@ -783,8 +729,29 @@ nautilus_location_entry_on_event (GtkWidget *widget,
     {
         priv->idle_id = g_idle_add (update_completions_store, self);
     }
+}
 
-    return handled;
+static void
+on_after_insert_text (GtkEditable *editable,
+                      const gchar *text,
+                      gint         length,
+                      gint        *position,
+                      gpointer     data)
+{
+    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (editable);
+
+    after_text_change (self, TRUE);
+}
+
+static void
+on_after_delete_text (GtkEditable *editable,
+                      gint         start_pos,
+                      gint         end_pos,
+                      gpointer     data)
+{
+    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (editable);
+
+    after_text_change (self, FALSE);
 }
 
 static void
@@ -980,6 +947,15 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
                              G_CALLBACK (editable_activate_callback), entry, G_CONNECT_AFTER);
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), entry, 0);
+
+    g_signal_connect_after (entry,
+                            "insert-text",
+                            G_CALLBACK (on_after_insert_text),
+                            NULL);
+    g_signal_connect_after (entry,
+                            "delete-text",
+                            G_CALLBACK (on_after_delete_text),
+                            NULL);
 
     priv->completion = gtk_entry_completion_new ();
     priv->completions_store = gtk_list_store_new (1, G_TYPE_STRING);
