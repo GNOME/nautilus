@@ -37,7 +37,6 @@ typedef struct
     NautilusFileChangeKind kind;
     GFile *from;
     GFile *to;
-    GdkPoint point;
     int screen;
 } NautilusFileChange;
 
