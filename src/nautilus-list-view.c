@@ -505,6 +505,15 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     /* Column headers lie above bin_window, hence negative y coordinate. */
     if (bin_y < 0)
     {
+        if (button == GDK_BUTTON_SECONDARY)
+        {
+            popup_column_header_menu (view, x, y);
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+        }
+        else
+        {
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
+        }
         return;
     }
 
@@ -1375,33 +1384,6 @@ column_header_menu_use_default (GtkMenuItem      *menu_item,
     g_strfreev (default_order);
 }
 
-static gboolean
-on_column_header_event (GtkWidget *widget,
-                        GdkEvent  *event,
-                        gpointer   user_data)
-{
-    NautilusListView *list_view;
-    guint button;
-
-    list_view = NAUTILUS_LIST_VIEW (user_data);
-
-    if (gdk_event_get_event_type (event) != GDK_BUTTON_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    g_assert (gdk_event_get_button (event, &button));
-
-    if (button != GDK_BUTTON_SECONDARY)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    popup_column_header_menu (list_view, (&event->button)->x, (&event->button)->y);
-
-    return GDK_EVENT_STOP;
-}
-
 static void
 popup_column_header_menu (NautilusListView *list_view,
                           gdouble           x,
@@ -2189,11 +2171,6 @@ create_and_set_up_tree_view (NautilusListView *view)
                                  g_strdup ("name"),
                                  view->details->file_name_column);
 
-            g_signal_connect (gtk_tree_view_column_get_button (view->details->file_name_column),
-                              "event",
-                              G_CALLBACK (on_column_header_event),
-                              view);
-
             gtk_tree_view_set_search_column (view->details->tree_view, column_num);
 
             gtk_tree_view_column_set_sort_column_id (view->details->file_name_column, column_num);
@@ -2283,11 +2260,6 @@ create_and_set_up_tree_view (NautilusListView *view)
             g_hash_table_insert (view->details->columns,
                                  g_strdup (name),
                                  column);
-
-            g_signal_connect (gtk_tree_view_column_get_button (column),
-                              "event",
-                              G_CALLBACK (on_column_header_event),
-                              view);
 
             gtk_tree_view_column_set_resizable (column, TRUE);
             gtk_tree_view_column_set_sort_order (column, sort_order);
