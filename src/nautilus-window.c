@@ -179,7 +179,6 @@ static const struct
     { GDK_KEY_OpenURL, "enter-location" },
     { GDK_KEY_Refresh, "reload" },
     { GDK_KEY_Reload, "reload" },
-    { GDK_KEY_Search, "search" },
     { GDK_KEY_Start, "go-home" },
     { GDK_KEY_Stop, "stop" },
     { GDK_KEY_Back, "back" },

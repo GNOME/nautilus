@@ -1113,6 +1113,13 @@ static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     GApplication *app;
+    const gchar *search_visible_accels[] =
+    {
+        "<control>f",
+        "Search",
+        NULL
+    };
+
     app = g_application_get_default ();
 
     g_signal_connect (nautilus_trash_monitor_get (),
@@ -1142,7 +1149,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     nautilus_application_set_accelerator (app,
                                           "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_GRID_ID) ")",
                                           "<control>2");
-    nautilus_application_set_accelerator (app, "slot.search-visible", "<control>f");
+    nautilus_application_set_accelerators (app, "slot.search-visible", search_visible_accels);
 
     self->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
 }
