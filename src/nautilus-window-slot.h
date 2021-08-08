@@ -73,8 +73,10 @@ void     nautilus_window_slot_stop_loading                 (NautilusWindowSlot *
 const gchar *nautilus_window_slot_get_title                (NautilusWindowSlot *slot);
 void         nautilus_window_slot_update_title		   (NautilusWindowSlot *slot);
 
-gboolean nautilus_window_slot_handle_event       	   (NautilusWindowSlot *slot,
-							    GdkEvent           *event);
+gboolean nautilus_window_slot_handle_event       	   (NautilusWindowSlot    *slot,
+							    GtkEventControllerKey *controller,
+							    guint                  keyval,
+							    GdkModifierType        state);
 
 void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
 

@@ -73,5 +73,7 @@ void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
                                                    const gchar         *text);
 
 gboolean
-nautilus_query_editor_handle_event (NautilusQueryEditor *self,
-                                    GdkEvent            *event);
+nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
+                                    GtkEventControllerKey *controller,
+                                    guint                  keyval,
+                                    GdkModifierType        state);

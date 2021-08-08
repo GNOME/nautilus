@@ -745,12 +745,46 @@ nautilus_query_editor_set_text (NautilusQueryEditor *self,
     gtk_entry_set_text (GTK_ENTRY (self->entry), text);
 }
 
+static gboolean
+nautilus_gtk_search_entry_is_keynav_event (guint           keyval,
+                                           GdkModifierType state)
+{
+    if (keyval == GDK_KEY_Tab || keyval == GDK_KEY_KP_Tab ||
+        keyval == GDK_KEY_Up || keyval == GDK_KEY_KP_Up ||
+        keyval == GDK_KEY_Down || keyval == GDK_KEY_KP_Down ||
+        keyval == GDK_KEY_Left || keyval == GDK_KEY_KP_Left ||
+        keyval == GDK_KEY_Right || keyval == GDK_KEY_KP_Right ||
+        keyval == GDK_KEY_Home || keyval == GDK_KEY_KP_Home ||
+        keyval == GDK_KEY_End || keyval == GDK_KEY_KP_End ||
+        keyval == GDK_KEY_Page_Up || keyval == GDK_KEY_KP_Page_Up ||
+        keyval == GDK_KEY_Page_Down || keyval == GDK_KEY_KP_Page_Down ||
+        ((state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) != 0))
+    {
+        return TRUE;
+    }
+
+    /* Other navigation events should get automatically
+     * ignored as they will not change the content of the entry
+     */
+    return FALSE;
+}
+
 gboolean
-nautilus_query_editor_handle_event (NautilusQueryEditor *self,
-                                    GdkEvent            *event)
+nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
+                                    GtkEventControllerKey *controller,
+                                    guint                  keyval,
+                                    GdkModifierType        state)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (self), GDK_EVENT_PROPAGATE);
-    g_return_val_if_fail (event != NULL, GDK_EVENT_PROPAGATE);
+    g_return_val_if_fail (controller != NULL, GDK_EVENT_PROPAGATE);
 
-    return gtk_search_entry_handle_event (GTK_SEARCH_ENTRY (self->entry), event);
+    /* Conditions are copied straight from GTK. */
+    if (nautilus_gtk_search_entry_is_keynav_event (keyval, state) ||
+        keyval == GDK_KEY_space ||
+        keyval == GDK_KEY_Menu)
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    return gtk_event_controller_key_forward (controller, GTK_WIDGET (self->entry));
 }

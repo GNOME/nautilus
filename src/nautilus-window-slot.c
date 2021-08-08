@@ -608,34 +608,25 @@ nautilus_window_slot_search (NautilusWindowSlot *self,
 }
 
 gboolean
-nautilus_window_slot_handle_event (NautilusWindowSlot *self,
-                                   GdkEvent           *event)
+nautilus_window_slot_handle_event (NautilusWindowSlot    *self,
+                                   GtkEventControllerKey *controller,
+                                   guint                  keyval,
+                                   GdkModifierType        state)
 {
     gboolean retval;
     GAction *action;
-    guint keyval;
 
     retval = FALSE;
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
                                          "search-visible");
 
-    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
     if (keyval == GDK_KEY_Escape)
     {
-        g_autoptr (GVariant) state = NULL;
+        g_autoptr (GVariant) action_state = NULL;
 
-        state = g_action_get_state (action);
+        action_state = g_action_get_state (action);
 
-        if (g_variant_get_boolean (state))
+        if (g_variant_get_boolean (action_state))
         {
             nautilus_window_slot_set_search_visible (self, FALSE);
         }
@@ -644,7 +635,10 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
     /* If the action is not enabled, don't try to handle search */
     if (g_action_get_enabled (action))
     {
-        retval = nautilus_query_editor_handle_event (self->query_editor, event);
+        retval = nautilus_query_editor_handle_event (self->query_editor,
+                                                     controller,
+                                                     keyval,
+                                                     state);
     }
 
     if (retval)
