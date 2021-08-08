@@ -173,7 +173,6 @@ static const struct
 {
     /* Window actions */
     { GDK_KEY_AddFavorite, "bookmark-current-location" },
-    { GDK_KEY_Favorites, "bookmarks" },
     { GDK_KEY_Go, "enter-location" },
     { GDK_KEY_HomePage, "go-home" },
     { GDK_KEY_OpenURL, "enter-location" },
@@ -223,6 +222,20 @@ action_go_home (GSimpleAction *action,
     nautilus_window_open_location_full (window, home, 0, NULL, NULL);
 
     g_object_unref (home);
+}
+
+static void
+action_go_starred (GSimpleAction *action,
+                   GVariant      *state,
+                   gpointer       user_data)
+{
+    NautilusWindow *window;
+    g_autoptr (GFile) starred = NULL;
+
+    window = NAUTILUS_WINDOW (user_data);
+    starred = g_file_new_for_uri ("starred:///");
+
+    nautilus_window_open_location_full (window, starred, 0, NULL, NULL);
 }
 
 static void
@@ -2019,6 +2032,7 @@ const GActionEntry win_entries[] =
     /* Only accesible by shorcuts */
     { "close-current-view", action_close_current_view },
     { "go-home", action_go_home },
+    { "go-starred", action_go_starred },
     { "tab-previous", action_tab_previous },
     { "tab-next", action_tab_next },
     { "tab-move-left", action_tab_move_left },
@@ -2080,6 +2094,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.bookmark-current-location", "<control>d");
     nautilus_application_set_accelerator (app, "win.up", "<alt>Up");
     nautilus_application_set_accelerator (app, "win.go-home", "<alt>Home");
+    nautilus_application_set_accelerator (app, "win.go-starred", "Favorites");
     nautilus_application_set_accelerator (app, "win.tab-previous", "<control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-next", "<control>Page_Down");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
