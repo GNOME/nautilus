@@ -2372,11 +2372,9 @@ nautilus_window_key_capture (GtkEventControllerKey *controller,
                              GdkModifierType        state,
                              gpointer               user_data)
 {
-    g_autoptr (GdkEvent) event = NULL;
     GtkWidget *widget;
     GtkWidget *focus_widget;
 
-    event = gtk_get_current_event ();
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     focus_widget = gtk_window_get_focus (GTK_WINDOW (widget));
     if (focus_widget != NULL && GTK_IS_EDITABLE (focus_widget))
@@ -2385,8 +2383,7 @@ nautilus_window_key_capture (GtkEventControllerKey *controller,
          * the event to it before activating accelerators. This allows, e.g.,
          * typing a tilde without activating the prompt-home-location action.
          */
-        if (gtk_window_propagate_key_event (GTK_WINDOW (widget),
-                                            (GdkEventKey *) event))
+        if (gtk_event_controller_key_forward (controller, focus_widget))
         {
             return GDK_EVENT_STOP;
         }
