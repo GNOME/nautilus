@@ -372,17 +372,6 @@ G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW, nautilus_files_view_iface_init)
                          G_ADD_PRIVATE (NautilusFilesView));
 
-static const struct
-{
-    unsigned int keyval;
-    const char *action;
-} extra_view_keybindings [] =
-{
-    /* View actions */
-    { GDK_KEY_ZoomIn, "zoom-in" },
-    { GDK_KEY_ZoomOut, "zoom-out" },
-};
-
 /*
  * Floating Bar code
  */
@@ -9465,49 +9454,6 @@ on_parent_changed (GObject    *object,
     }
 }
 
-static gboolean
-nautilus_files_view_event (GtkWidget *widget,
-                           GdkEvent  *event)
-{
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-    guint keyval;
-
-    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    view = NAUTILUS_FILES_VIEW (widget);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
-    for (gint i = 0; i < G_N_ELEMENTS (extra_view_keybindings); i++)
-    {
-        if (extra_view_keybindings[i].keyval == keyval)
-        {
-            GAction *action;
-
-            action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
-                                                 extra_view_keybindings[i].action);
-
-            if (g_action_get_enabled (action))
-            {
-                g_action_activate (action, NULL);
-                return GDK_EVENT_STOP;
-            }
-
-            break;
-        }
-    }
-
-    return GDK_EVENT_PROPAGATE;
-}
-
 static NautilusQuery *
 nautilus_files_view_get_search_query (NautilusView *view)
 {
@@ -9662,7 +9608,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     oclass->get_property = nautilus_files_view_get_property;
     oclass->set_property = nautilus_files_view_set_property;
 
-    widget_class->event = nautilus_files_view_event;
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
 
