@@ -565,8 +565,8 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-    /* Remove after switching to GTK+ 4. */
-    if (gdk_event_get_window (event) != gtk_tree_view_get_bin_window (tree_view))
+    /* Column headers lie above bin_window, hence negative y coordinate. */
+    if (bin_y < 0)
     {
         return;
     }
