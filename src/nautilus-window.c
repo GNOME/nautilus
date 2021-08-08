@@ -152,6 +152,8 @@ struct _NautilusWindow
 
     GtkGesture *multi_press_gesture;
     GtkGesture *notebook_multi_press_gesture;
+    GtkEventController *key_capture_controller;
+    GtkEventController *key_bubble_controller;
 };
 
 enum
@@ -2204,6 +2206,9 @@ nautilus_window_dispose (GObject *object)
 
     g_clear_object (&window->notebook_multi_press_gesture);
 
+    g_clear_object (&window->key_capture_controller);
+    g_clear_object (&window->key_bubble_controller);
+
     G_OBJECT_CLASS (nautilus_window_parent_class)->dispose (object);
 }
 
@@ -2361,33 +2366,49 @@ nautilus_window_realize (GtkWidget *widget)
 }
 
 static gboolean
-nautilus_window_key_press_event (GtkWidget   *widget,
-                                 GdkEventKey *event)
+nautilus_window_key_capture (GtkEventControllerKey *controller,
+                             unsigned int           keyval,
+                             unsigned int           keycode,
+                             GdkModifierType        state,
+                             gpointer               user_data)
 {
-    NautilusWindow *window;
-    guint keyval;
+    g_autoptr (GdkEvent) event = NULL;
+    GtkWidget *widget;
     GtkWidget *focus_widget;
 
-    window = NAUTILUS_WINDOW (widget);
-
-    if (G_UNLIKELY (!gdk_event_get_keyval ((GdkEvent *) event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
-    focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
+    event = gtk_get_current_event ();
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    focus_widget = gtk_window_get_focus (GTK_WINDOW (widget));
     if (focus_widget != NULL && GTK_IS_EDITABLE (focus_widget))
     {
         /* if we have input focus on a GtkEditable (e.g. a GtkEntry), forward
-         * the event to it before activating accelerator bindings too.
+         * the event to it before activating accelerators. This allows, e.g.,
+         * typing a tilde without activating the prompt-home-location action.
          */
-        if (gtk_window_propagate_key_event (GTK_WINDOW (window),
+        if (gtk_window_propagate_key_event (GTK_WINDOW (widget),
                                             (GdkEventKey *) event))
         {
             return GDK_EVENT_STOP;
         }
     }
 
+    return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+nautilus_window_key_bubble (GtkEventControllerKey *controller,
+                            unsigned int           keyval,
+                            unsigned int           keycode,
+                            GdkModifierType        state,
+                            gpointer               user_data)
+{
+    g_autoptr (GdkEvent) event = NULL;
+    GtkWidget *widget;
+    NautilusWindow *window;
+
+    event = gtk_get_current_event ();
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    window = NAUTILUS_WINDOW (widget);
     if (window->active_slot != NULL &&
         nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
     {
@@ -2685,6 +2706,20 @@ nautilus_window_init (NautilusWindow *window)
                                                 GTK_PHASE_CAPTURE);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->notebook_multi_press_gesture),
                                    GDK_BUTTON_SECONDARY);
+
+    window->key_capture_controller = gtk_event_controller_key_new (GTK_WIDGET (window));
+    gtk_event_controller_set_propagation_phase (window->key_capture_controller,
+                                                GTK_PHASE_CAPTURE);
+    g_signal_connect (window->key_capture_controller,
+                      "key-pressed", G_CALLBACK (nautilus_window_key_capture),
+                      NULL);
+
+    window->key_bubble_controller = gtk_event_controller_key_new (GTK_WIDGET (window));
+    gtk_event_controller_set_propagation_phase (window->key_bubble_controller,
+                                                GTK_PHASE_BUBBLE);
+    g_signal_connect (window->key_bubble_controller,
+                      "key-pressed", G_CALLBACK (nautilus_window_key_bubble),
+                      NULL);
 }
 
 static void
@@ -2699,7 +2734,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
-    wclass->key_press_event = nautilus_window_key_press_event;
     wclass->delete_event = nautilus_window_delete_event;
     wclass->grab_focus = nautilus_window_grab_focus;
 
