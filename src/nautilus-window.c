@@ -165,25 +165,6 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (NautilusWindow, nautilus_window, HDY_TYPE_APPLICATION_WINDOW);
 
-static const struct
-{
-    unsigned int keyval;
-    const char *action;
-} extra_window_keybindings [] =
-{
-    /* Window actions */
-    { GDK_KEY_AddFavorite, "bookmark-current-location" },
-    { GDK_KEY_Go, "enter-location" },
-    { GDK_KEY_HomePage, "go-home" },
-    { GDK_KEY_OpenURL, "enter-location" },
-    { GDK_KEY_Refresh, "reload" },
-    { GDK_KEY_Reload, "reload" },
-    { GDK_KEY_Start, "go-home" },
-    { GDK_KEY_Stop, "stop" },
-    { GDK_KEY_Back, "back" },
-    { GDK_KEY_Forward, "forward" },
-};
-
 static const GtkPadActionEntry pad_actions[] =
 {
     { GTK_PAD_ACTION_BUTTON, 0, -1, N_("Parent folder"), "up" },
@@ -2063,21 +2044,22 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 #define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
 
     app = g_application_get_default ();
-    nautilus_application_set_accelerator (app, "win.back", "<alt>Left");
-    nautilus_application_set_accelerator (app, "win.forward", "<alt>Right");
-    nautilus_application_set_accelerator (app, "win.enter-location", "<control>l");
+    nautilus_application_set_accelerators (app, "win.back", ACCELS ("<alt>Left", "Back"));
+    nautilus_application_set_accelerators (app, "win.forward", ACCELS ("<alt>Right", "Forward"));
+    nautilus_application_set_accelerators (app, "win.enter-location", ACCELS ("<control>l", "Go", "OpenURL"));
     nautilus_application_set_accelerator (app, "win.new-tab", "<control>t");
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
 
     /* Special case reload, since users are used to use two shortcuts instead of one */
-    nautilus_application_set_accelerators (app, "win.reload", ACCELS ("F5", "<ctrl>r"));
+    nautilus_application_set_accelerators (app, "win.reload", ACCELS ("F5", "<ctrl>r", "Refresh", "Reload"));
+    nautilus_application_set_accelerator (app, "win.stop", "Stop");
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
     /* Only accesible by shorcuts */
-    nautilus_application_set_accelerator (app, "win.bookmark-current-location", "<control>d");
+    nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
     nautilus_application_set_accelerator (app, "win.up", "<alt>Up");
-    nautilus_application_set_accelerator (app, "win.go-home", "<alt>Home");
+    nautilus_application_set_accelerators (app, "win.go-home", ACCELS ("<alt>Home", "HomePage", "Start"));
     nautilus_application_set_accelerator (app, "win.go-starred", "Favorites");
     nautilus_application_set_accelerator (app, "win.tab-previous", "<control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-next", "<control>Page_Down");
@@ -2404,30 +2386,6 @@ nautilus_window_key_press_event (GtkWidget   *widget,
         {
             return GDK_EVENT_STOP;
         }
-    }
-
-    for (int i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++)
-    {
-        if (extra_window_keybindings[i].keyval == keyval)
-        {
-            GAction *action;
-
-            action = g_action_map_lookup_action (G_ACTION_MAP (window), extra_window_keybindings[i].action);
-
-            g_assert (action != NULL);
-            if (g_action_get_enabled (action))
-            {
-                g_action_activate (action, NULL);
-                return GDK_EVENT_STOP;
-            }
-
-            break;
-        }
-    }
-
-    if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event))
-    {
-        return GDK_EVENT_STOP;
     }
 
     if (window->active_slot != NULL &&
