@@ -462,10 +462,6 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
     {
         gtk_window_set_icon_name (GTK_WINDOW (self), name);
     }
-    else
-    {
-        gtk_window_set_icon (GTK_WINDOW (self), pixbuf);
-    }
 
     surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, gtk_widget_get_scale_factor (GTK_WIDGET (self)),
                                                     gtk_widget_get_window (GTK_WIDGET (self)));
