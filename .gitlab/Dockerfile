@@ -9,9 +9,9 @@ RUN dnf install --nogpg -y gnome-common \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/gnome-autoar.git \
  && cd gnome-autoar \
- && ./autogen.sh --prefix /usr \
- && make \
- && make install \
+ && meson . _build --prefix=/usr \
+ && ninja -C _build \
+ && ninja -C _build install \
  && cd .. \
  && rm -rf gnome-autoar
 

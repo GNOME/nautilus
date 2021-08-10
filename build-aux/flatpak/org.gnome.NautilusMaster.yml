@@ -72,6 +72,8 @@ modules:
   - type: git
     url: https://gitlab.gnome.org/GNOME/gnome-desktop.git
 - name: gnome-autoar
+  buildsystem: meson
+  builddir: true
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
