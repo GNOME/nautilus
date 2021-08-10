@@ -1,4 +1,4 @@
-FROM fedora:rawhide
+FROM fedora:latest
 
 RUN dnf install --nogpg -y dnf-plugins-core findutils git libportal-devel tracker3-miners python3-gobject dbus-daemon libhandy1-devel \
  && dnf builddep --nogpg -y nautilus \
