@@ -31,8 +31,6 @@
 
 #include <glib/gi18n.h>
 
-#include "nautilus-icon-info.h"
-
 typedef struct
 {
     GtkWidget *dialog;
@@ -172,8 +170,6 @@ static void
 present_autorun_for_software_dialog (GMount *mount)
 {
     GIcon *icon;
-    g_autoptr (NautilusIconInfo) icon_info = NULL;
-    g_autoptr (GdkPixbuf) pixbuf = NULL;
     g_autofree char *mount_name = NULL;
     GtkWidget *dialog;
     AutorunSoftwareDialogData *data;
@@ -202,11 +198,17 @@ present_autorun_for_software_dialog (GMount *mount)
 
 
     icon = g_mount_get_icon (mount);
-    icon_info = nautilus_icon_info_lookup (icon, 48,
-                                           gtk_widget_get_scale_factor (GTK_WIDGET (dialog)));
-    pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, 48);
+    if (G_IS_THEMED_ICON (icon))
+    {
+        const gchar * const *names;
 
-    gtk_window_set_icon (GTK_WINDOW (dialog), pixbuf);
+        names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+
+        if (names != NULL)
+        {
+            gtk_window_set_icon_name (GTK_WINDOW (dialog), names[0]);
+        }
+    }
 
     data = g_new0 (AutorunSoftwareDialogData, 1);
     data->dialog = dialog;
