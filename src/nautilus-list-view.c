@@ -470,13 +470,12 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     g_autoptr (GtkTreePath) path = NULL;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
-    GtkWidgetClass *tree_view_class;
     guint button;
     gint bin_x;
     gint bin_y;
     GdkEventSequence *sequence;
     const GdkEvent *event;
-    gboolean call_parent, on_expander, show_expanders;
+    gboolean on_expander, show_expanders;
     gboolean is_simple_click, path_selected;
     NautilusFile *file;
     gboolean on_star;
@@ -484,7 +483,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     view = NAUTILUS_LIST_VIEW (callback_data);
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
     tree_view = GTK_TREE_VIEW (widget);
-    tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
     selection = gtk_tree_view_get_selection (tree_view);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
 
@@ -541,7 +539,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         return;
     }
 
-    call_parent = TRUE;
     on_expander = FALSE;
     path_selected = gtk_tree_selection_path_is_selected (selection, path);
     show_expanders = g_settings_get_boolean (nautilus_list_view_preferences,
@@ -625,34 +622,33 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
 
         gdk_event_get_state (event, &state);
 
-        if (path_selected)
+        /* We cannot easily match the expected behavior of Shift+click, so we
+         * must fall back to GtkTreeView's default event handling.
+         *
+         * If Shift and Ctrl are held simultateously, GtkTreeView ignores Shift,
+         * so we implement a more useful behavior ourselves.
+         */
+        if ((state & GDK_SHIFT_MASK) != 0 && (state & GDK_CONTROL_MASK) == 0)
         {
-            if ((state & GDK_SHIFT_MASK) == 0)
-            {
-                /* We're going to filter out some situations where
-                 * we can't let the default code run because all
-                 * but one row would be would be deselected. We don't
-                 * want that; we want the right click menu or single
-                 * click to apply to everything that's currently selected.
-                 */
-                call_parent = FALSE;
-            }
+            return;
         }
-        else
+
+        /* Let GtkTreeView handle tree expanding/collapsing. */
+        if (is_simple_click && on_expander)
+        {
+            return;
+        }
+
+        /* As we don't let GtkTreeView default event handling go through, so we
+         * must grab the focus ourselves. */
+        gtk_widget_grab_focus (widget);
+
+        if (!path_selected)
         {
             if ((state & GDK_CONTROL_MASK) != 0)
             {
-                /* If CTRL is pressed, we don't allow the parent
-                 * class to handle it, since GtkTreeView doesn't
-                 * do it as intended currently.
-                 */
-                call_parent = FALSE;
                 if ((state & GDK_SHIFT_MASK) != 0)
                 {
-                    /* This is the CTRL+SHIFT selection mode which
-                     * we handleourselves, as the parent class would
-                     * otherwise do an unexpected selection.
-                     */
                     gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
                     if (cursor != NULL)
                     {
@@ -679,41 +675,13 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
                 }
                 g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
             }
-
-            if (button == GDK_BUTTON_SECONDARY &&
-                on_expander &&
-                !button_event_modifies_selection (event))
+            else
             {
-                /* If the right click happened on an expander, we should
-                 * fully change the selection on that row solely.
-                 */
                 gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
             }
         }
 
-        if (is_simple_click && on_expander)
-        {
-            /* Need to let the event propagate down, since propagating up
-             * by chaining up to button_press_event() doesn’t expand the
-             * expander.
-             */
-            return;
-        }
-
-        /* Needed to select an item before popping up a menu. */
-        if (call_parent)
-        {
-            g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
-            /* GTK+ 4 TODO: replace with event(), at the very least. */
-            tree_view_class->button_press_event (widget, (GdkEventButton *) event);
-            g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
-        }
-        else if (path_selected)
-        {
-            gtk_widget_grab_focus (widget);
-        }
-
-        if (is_simple_click && !on_expander)
+        if (is_simple_click)
         {
             view->details->drag_started = FALSE;
             view->details->drag_button = button;
