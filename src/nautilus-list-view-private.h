@@ -54,7 +54,6 @@ struct NautilusListViewDetails {
   int drag_y;
 
   gboolean drag_started;
-  gboolean ignore_button_release;
   gboolean row_selected_on_button_down;
   gboolean active;
   NautilusDragInfo *drag_source_info;
