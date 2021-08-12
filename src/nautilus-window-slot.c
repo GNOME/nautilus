@@ -620,15 +620,21 @@ nautilus_window_slot_handle_event (NautilusWindowSlot    *self,
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
                                          "search-visible");
 
-    if (keyval == GDK_KEY_Escape)
+    if (keyval == GDK_KEY_Escape ||
+        keyval == GDK_KEY_BackSpace)
     {
         g_autoptr (GVariant) action_state = NULL;
 
         action_state = g_action_get_state (action);
 
-        if (g_variant_get_boolean (action_state))
+        if (!g_variant_get_boolean (action_state))
+        {
+            return GDK_EVENT_PROPAGATE;
+        }
+        else if (keyval == GDK_KEY_Escape)
         {
             nautilus_window_slot_set_search_visible (self, FALSE);
+            return GDK_EVENT_STOP;
         }
     }
 
