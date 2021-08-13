@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-08-10 11:47+0000\n"
-"PO-Revision-Date: 2021-08-11 09:22+0300\n"
+"POT-Creation-Date: 2021-08-13 14:09+0000\n"
+"PO-Revision-Date: 2021-08-13 20:19+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -4090,7 +4090,7 @@ msgid "This is disabled due to security considerations."
 msgstr "Це заборонено з міркувань безпеки."
 
 #: src/nautilus-program-choosing.c:392 src/nautilus-program-choosing.c:469
-#: src/nautilus-properties-window.c:2625
+#: src/nautilus-properties-window.c:2625 src/nautilus-trash-bar.c:182
 msgid "There was an error launching the application."
 msgstr "Помилка при запуску програми."
 
@@ -4397,7 +4397,7 @@ msgid "Select Dates…"
 msgstr "Вибрати дати…"
 
 #. trash
-#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:201
+#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:227
 msgid "Trash"
 msgstr "Смітник"
 
@@ -4427,20 +4427,35 @@ msgstr "_Повернути"
 msgid "_Redo"
 msgstr "Пов_торити"
 
-#: src/nautilus-trash-bar.c:209
+#: src/nautilus-trash-bar.c:231
+msgid "Trashed items are automatically deleted after a period of time"
+msgstr ""
+"Записи зі «Смітника» автоматично вилучатимуться по завершенню певного часового проміжку"
+
+#: src/nautilus-trash-bar.c:245
+msgid "_Settings"
+msgstr ""
+"П_араметри"
+
+#: src/nautilus-trash-bar.c:248
+msgid "Display system controls for trash content"
+msgstr ""
+"Показати загальносистемні параметри для вмісту «Смітника»"
+
+#: src/nautilus-trash-bar.c:251
 msgid "_Restore"
 msgstr "_Відновити"
 
-#: src/nautilus-trash-bar.c:212
+#: src/nautilus-trash-bar.c:254
 msgid "Restore selected items to their original position"
 msgstr "Відновити вибрані об'єкти до їхніх початкових позицій"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
-#: src/nautilus-trash-bar.c:216
+#: src/nautilus-trash-bar.c:258
 msgid "_Empty…"
 msgstr "С_порожнити…"
 
-#: src/nautilus-trash-bar.c:219
+#: src/nautilus-trash-bar.c:261
 msgid "Delete all items in the Trash"
 msgstr "Вилучити всі об'єкти у смітнику"
 
@@ -5103,7 +5118,6 @@ msgid "Compatible with all operating systems."
 msgstr "Сумісно з усіма операційними системами."
 
 #: src/resources/ui/nautilus-compress-dialog.ui:36
-#| msgid "Smaller archives but must be installed on Windows and Mac."
 msgid "Password protected .zip, must be installed on Windows and Mac."
 msgstr "Захищений паролем .zip, має бути встановлено у Windows і Mac."
 
@@ -5124,12 +5138,10 @@ msgid "Archive name"
 msgstr "Назва архіву"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:213
-#| msgid "Password Required"
 msgid "Password"
 msgstr "Пароль"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:225
-#| msgid "Enter password…"
 msgid "Enter a password here."
 msgstr "Тут слід ввести пароль."
 
