@@ -62,9 +62,6 @@ struct _NautilusBatchRenameDialog
     GtkWidget *conflict_down;
     GtkWidget *conflict_up;
 
-    GList *original_name_listbox_rows;
-    GList *arrow_listbox_rows;
-    GList *result_listbox_rows;
     GList *listbox_labels_new;
     GList *listbox_labels_old;
     GList *listbox_icons;
@@ -720,10 +717,6 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
     GString *new_name;
     gchar *name;
 
-    dialog->original_name_listbox_rows = NULL;
-    dialog->arrow_listbox_rows = NULL;
-    dialog->result_listbox_rows = NULL;
-
     gtk_size_group_add_widget (dialog->size_group, dialog->result_listbox);
     gtk_size_group_add_widget (dialog->size_group, dialog->original_name_listbox);
 
@@ -735,25 +728,16 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
         name = nautilus_file_get_name (file);
         row = create_original_name_row_for_label (dialog, name);
         gtk_container_add (GTK_CONTAINER (dialog->original_name_listbox), row);
-        dialog->original_name_listbox_rows = g_list_prepend (dialog->original_name_listbox_rows,
-                                                             row);
 
         row = create_arrow_row_for_label (dialog);
         gtk_container_add (GTK_CONTAINER (dialog->arrow_listbox), row);
-        dialog->arrow_listbox_rows = g_list_prepend (dialog->arrow_listbox_rows,
-                                                     row);
 
         row = create_result_row_for_label (dialog, new_name->str);
         gtk_container_add (GTK_CONTAINER (dialog->result_listbox), row);
-        dialog->result_listbox_rows = g_list_prepend (dialog->result_listbox_rows,
-                                                      row);
 
         g_free (name);
     }
 
-    dialog->original_name_listbox_rows = g_list_reverse (dialog->original_name_listbox_rows);
-    dialog->arrow_listbox_rows = g_list_reverse (dialog->arrow_listbox_rows);
-    dialog->result_listbox_rows = g_list_reverse (dialog->result_listbox_rows);
     dialog->listbox_labels_old = g_list_reverse (dialog->listbox_labels_old);
     dialog->listbox_labels_new = g_list_reverse (dialog->listbox_labels_new);
     dialog->listbox_icons = g_list_reverse (dialog->listbox_icons);
@@ -772,6 +756,7 @@ select_nth_conflict (NautilusBatchRenameDialog *dialog)
     GtkAdjustment *adjustment;
     GtkAllocation allocation;
     ConflictData *conflict_data;
+    GtkListBoxRow *list_box_row;
 
     nth_conflict = dialog->selected_conflict;
     l = g_list_nth (dialog->duplicates, nth_conflict);
@@ -783,17 +768,20 @@ select_nth_conflict (NautilusBatchRenameDialog *dialog)
 
     nth_conflict_index = conflict_data->index;
 
-    l = g_list_nth (dialog->original_name_listbox_rows, nth_conflict_index);
+    l = g_list_nth (dialog->listbox_labels_new, nth_conflict_index);
+    list_box_row = GTK_LIST_BOX_ROW (gtk_widget_get_parent (l->data));
     gtk_list_box_select_row (GTK_LIST_BOX (dialog->original_name_listbox),
-                             l->data);
+                             list_box_row);
 
-    l = g_list_nth (dialog->arrow_listbox_rows, nth_conflict_index);
+    l = g_list_nth (dialog->listbox_labels_old, nth_conflict_index);
+    list_box_row = GTK_LIST_BOX_ROW (gtk_widget_get_parent (l->data));
     gtk_list_box_select_row (GTK_LIST_BOX (dialog->arrow_listbox),
-                             l->data);
+                             list_box_row);
 
-    l = g_list_nth (dialog->result_listbox_rows, nth_conflict_index);
+    l = g_list_nth (dialog->listbox_icons, nth_conflict_index);
+    list_box_row = GTK_LIST_BOX_ROW (gtk_widget_get_parent (l->data));
     gtk_list_box_select_row (GTK_LIST_BOX (dialog->result_listbox),
-                             l->data);
+                             list_box_row);
 
     /* scroll to the selected row */
     adjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (dialog->scrolled_window));
@@ -880,22 +868,26 @@ update_conflict_row_background (NautilusBatchRenameDialog *dialog)
 
     duplicates = dialog->duplicates;
 
-    for (l1 = dialog->original_name_listbox_rows,
-         l2 = dialog->arrow_listbox_rows,
-         l3 = dialog->result_listbox_rows;
+    for (l1 = dialog->listbox_labels_new,
+         l2 = dialog->listbox_labels_old,
+         l3 = dialog->listbox_icons;
          l1 != NULL && l2 != NULL && l3 != NULL;
          l1 = l1->next, l2 = l2->next, l3 = l3->next)
     {
-        context = gtk_widget_get_style_context (GTK_WIDGET (l1->data));
+        GtkWidget *row1 = gtk_widget_get_parent (l1->data);
+        GtkWidget *row2 = gtk_widget_get_parent (l2->data);
+        GtkWidget *row3 = gtk_widget_get_parent (l3->data);
+
+        context = gtk_widget_get_style_context (row1);
 
         if (gtk_style_context_has_class (context, "conflict-row"))
         {
             gtk_style_context_remove_class (context, "conflict-row");
 
-            context = gtk_widget_get_style_context (GTK_WIDGET (l2->data));
+            context = gtk_widget_get_style_context (row2);
             gtk_style_context_remove_class (context, "conflict-row");
 
-            context = gtk_widget_get_style_context (GTK_WIDGET (l3->data));
+            context = gtk_widget_get_style_context (row3);
             gtk_style_context_remove_class (context, "conflict-row");
         }
 
@@ -904,13 +896,13 @@ update_conflict_row_background (NautilusBatchRenameDialog *dialog)
             conflict_data = duplicates->data;
             if (conflict_data->index == index)
             {
-                context = gtk_widget_get_style_context (GTK_WIDGET (l1->data));
+                context = gtk_widget_get_style_context (row1);
                 gtk_style_context_add_class (context, "conflict-row");
 
-                context = gtk_widget_get_style_context (GTK_WIDGET (l2->data));
+                context = gtk_widget_get_style_context (row2);
                 gtk_style_context_add_class (context, "conflict-row");
 
-                context = gtk_widget_get_style_context (GTK_WIDGET (l3->data));
+                context = gtk_widget_get_style_context (row3);
                 gtk_style_context_add_class (context, "conflict-row");
 
                 duplicates = duplicates->next;
@@ -1916,9 +1908,6 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
 
     g_clear_object (&dialog->numbering_order_menu);
     g_clear_object (&dialog->add_tag_menu);
-    g_list_free (dialog->original_name_listbox_rows);
-    g_list_free (dialog->arrow_listbox_rows);
-    g_list_free (dialog->result_listbox_rows);
     g_list_free (dialog->listbox_labels_new);
     g_list_free (dialog->listbox_labels_old);
     g_list_free (dialog->listbox_icons);
