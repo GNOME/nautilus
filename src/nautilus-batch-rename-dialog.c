@@ -576,13 +576,10 @@ update_rows_height (NautilusBatchRenameDialog *dialog)
 }
 
 static GtkWidget *
-create_original_name_row_for_label (NautilusBatchRenameDialog *dialog,
-                                    const gchar               *old_text)
+create_original_name_label (NautilusBatchRenameDialog *dialog,
+                            const gchar               *old_text)
 {
-    GtkWidget *row;
     GtkWidget *label_old;
-
-    row = gtk_list_box_row_new ();
 
     label_old = gtk_label_new (old_text);
     gtk_label_set_xalign (GTK_LABEL (label_old), 0.0);
@@ -592,20 +589,16 @@ create_original_name_row_for_label (NautilusBatchRenameDialog *dialog,
 
     dialog->listbox_labels_old = g_list_prepend (dialog->listbox_labels_old, label_old);
 
-    gtk_container_add (GTK_CONTAINER (row), label_old);
-    gtk_widget_show_all (row);
+    gtk_widget_show_all (label_old);
 
-    return row;
+    return label_old;
 }
 
 static GtkWidget *
-create_result_row_for_label (NautilusBatchRenameDialog *dialog,
-                             const gchar               *new_text)
+create_result_label (NautilusBatchRenameDialog *dialog,
+                     const gchar               *new_text)
 {
-    GtkWidget *row;
     GtkWidget *label_new;
-
-    row = gtk_list_box_row_new ();
 
     label_new = gtk_label_new (new_text);
     gtk_label_set_xalign (GTK_LABEL (label_new), 0.0);
@@ -615,21 +608,18 @@ create_result_row_for_label (NautilusBatchRenameDialog *dialog,
 
     dialog->listbox_labels_new = g_list_prepend (dialog->listbox_labels_new, label_new);
 
-    gtk_container_add (GTK_CONTAINER (row), label_new);
-    gtk_widget_show_all (row);
+    gtk_widget_show_all (label_new);
 
-    return row;
+    return label_new;
 }
 
 static GtkWidget *
-create_arrow_row_for_label (NautilusBatchRenameDialog *dialog)
+create_arrow (NautilusBatchRenameDialog *dialog,
+              GtkTextDirection           text_direction)
 {
-    GtkWidget *row;
     GtkWidget *icon;
 
-    row = gtk_list_box_row_new ();
-
-    if (gtk_widget_get_direction (row) == GTK_TEXT_DIR_RTL)
+    if (text_direction == GTK_TEXT_DIR_RTL)
     {
         icon = gtk_label_new ("←");
     }
@@ -644,10 +634,9 @@ create_arrow_row_for_label (NautilusBatchRenameDialog *dialog)
 
     dialog->listbox_icons = g_list_prepend (dialog->listbox_icons, icon);
 
-    gtk_container_add (GTK_CONTAINER (row), icon);
-    gtk_widget_show_all (row);
+    gtk_widget_show_all (icon);
 
-    return row;
+    return icon;
 }
 
 static void
@@ -710,15 +699,18 @@ batch_rename_dialog_on_response (NautilusBatchRenameDialog *dialog,
 static void
 fill_display_listbox (NautilusBatchRenameDialog *dialog)
 {
-    GtkWidget *row;
+    GtkWidget *row_child;
     GList *l1;
     GList *l2;
     NautilusFile *file;
     GString *new_name;
     gchar *name;
+    GtkTextDirection text_direction;
 
     gtk_size_group_add_widget (dialog->size_group, dialog->result_listbox);
     gtk_size_group_add_widget (dialog->size_group, dialog->original_name_listbox);
+
+    text_direction = gtk_widget_get_direction (GTK_WIDGET (dialog));
 
     for (l1 = dialog->new_names, l2 = dialog->selection; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
@@ -726,14 +718,14 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
         new_name = l1->data;
 
         name = nautilus_file_get_name (file);
-        row = create_original_name_row_for_label (dialog, name);
-        gtk_container_add (GTK_CONTAINER (dialog->original_name_listbox), row);
+        row_child = create_original_name_label (dialog, name);
+        gtk_list_box_insert (GTK_LIST_BOX (dialog->original_name_listbox), row_child, -1);
 
-        row = create_arrow_row_for_label (dialog);
-        gtk_container_add (GTK_CONTAINER (dialog->arrow_listbox), row);
+        row_child = create_arrow (dialog, text_direction);
+        gtk_list_box_insert (GTK_LIST_BOX (dialog->arrow_listbox), row_child, -1);
 
-        row = create_result_row_for_label (dialog, new_name->str);
-        gtk_container_add (GTK_CONTAINER (dialog->result_listbox), row);
+        row_child = create_result_label (dialog, new_name->str);
+        gtk_list_box_insert (GTK_LIST_BOX (dialog->result_listbox), row_child, -1);
 
         g_free (name);
     }
