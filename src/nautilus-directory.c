@@ -2030,7 +2030,7 @@ nautilus_self_check_directory (void)
 
     for (guint i = 0; g_hash_table_size (directories) != 0 && i < 100000; i++)
     {
-        gtk_main_iteration ();
+        g_main_context_iteration (NULL, TRUE);
     }
 
     EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
@@ -2047,7 +2047,7 @@ nautilus_self_check_directory (void)
 
     for (guint i = 0; !got_files_flag && i < 100000; i++)
     {
-        gtk_main_iteration ();
+        g_main_context_iteration (NULL, TRUE);
     }
 
     EEL_CHECK_BOOLEAN_RESULT (got_files_flag, TRUE);

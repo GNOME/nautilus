@@ -136,7 +136,7 @@ main (int    argc,
 
     while (!ready)
     {
-        gtk_main_iteration ();
+        g_main_context_iteration (NULL, TRUE);
     }
 
     if (strcmp (field, "default_action_type") == 0)

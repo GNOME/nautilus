@@ -128,7 +128,7 @@ main (int    argc,
 
     while (!ready)
     {
-        gtk_main_iteration ();
+        g_main_context_iteration (NULL, TRUE);
     }
 
     default_application = nautilus_mime_get_default_application_for_file (file);
