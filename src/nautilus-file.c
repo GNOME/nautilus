@@ -1404,11 +1404,15 @@ nautilus_file_unmount (NautilusFile                  *file,
     else if (file->details->mount != NULL &&
              g_mount_can_unmount (file->details->mount))
     {
+        GtkWindow *parent;
+
+        parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
+
         data = g_new0 (UnmountData, 1);
         data->file = nautilus_file_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
-        nautilus_file_operations_unmount_mount_full (NULL, file->details->mount, NULL, FALSE, TRUE, unmount_done, data);
+        nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, FALSE, TRUE, unmount_done, data);
     }
     else if (callback)
     {
@@ -1447,11 +1451,15 @@ nautilus_file_eject (NautilusFile                  *file,
     else if (file->details->mount != NULL &&
              g_mount_can_eject (file->details->mount))
     {
+        GtkWindow *parent;
+
+        parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
+
         data = g_new0 (UnmountData, 1);
         data->file = nautilus_file_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
-        nautilus_file_operations_unmount_mount_full (NULL, file->details->mount, NULL, TRUE, TRUE, unmount_done, data);
+        nautilus_file_operations_unmount_mount_full (parent, file->details->mount, mount_op, TRUE, TRUE, unmount_done, data);
     }
     else if (callback)
     {
