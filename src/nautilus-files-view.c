@@ -3253,7 +3253,7 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
 }
 
 static void
-nautilus_files_view_destroy (GtkWidget *object)
+nautilus_files_view_dispose (GObject *object)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
@@ -3346,11 +3346,18 @@ nautilus_files_view_destroy (GtkWidget *object)
 
     g_clear_object (&priv->search_query);
     g_clear_object (&priv->location);
+    g_clear_object (&priv->view_action_group);
+    g_clear_object (&priv->background_menu_model);
+    g_clear_object (&priv->selection_menu_model);
+    g_clear_object (&priv->toolbar_menu_sections->zoom_section);
+    g_clear_object (&priv->toolbar_menu_sections->extended_section);
+    g_clear_object (&priv->extensions_background_menu);
+    g_clear_object (&priv->templates_menu);
+    g_clear_object (&priv->rename_file_controller);
+    g_clear_object (&priv->new_folder_controller);
+    g_clear_object (&priv->compress_controller);
 
-    /* We don't own the slot, so no unref */
-    priv->slot = NULL;
-
-    GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->destroy (object);
+    G_OBJECT_CLASS (nautilus_files_view_parent_class)->dispose (object);
 }
 
 static void
@@ -3362,16 +3369,9 @@ nautilus_files_view_finalize (GObject *object)
     view = NAUTILUS_FILES_VIEW (object);
     priv = nautilus_files_view_get_instance_private (view);
 
-    g_clear_object (&priv->view_action_group);
-    g_clear_object (&priv->background_menu_model);
-    g_clear_object (&priv->selection_menu_model);
-    g_clear_object (&priv->toolbar_menu_sections->zoom_section);
-    g_clear_object (&priv->toolbar_menu_sections->extended_section);
-    g_clear_object (&priv->extensions_background_menu);
-    g_clear_object (&priv->templates_menu);
-    g_clear_object (&priv->rename_file_controller);
-    g_clear_object (&priv->new_folder_controller);
-    g_clear_object (&priv->compress_controller);
+    /* We don't own the slot, so no unref */
+    priv->slot = NULL;
+
     g_free (priv->toolbar_menu_sections);
 
     g_hash_table_destroy (priv->non_ready_files);
@@ -9695,11 +9695,11 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
 
+    oclass->dispose = nautilus_files_view_dispose;
     oclass->finalize = nautilus_files_view_finalize;
     oclass->get_property = nautilus_files_view_get_property;
     oclass->set_property = nautilus_files_view_set_property;
 
-    widget_class->destroy = nautilus_files_view_destroy;
     widget_class->event = nautilus_files_view_event;
     widget_class->parent_set = nautilus_files_view_parent_set;
     widget_class->grab_focus = nautilus_files_view_grab_focus;
