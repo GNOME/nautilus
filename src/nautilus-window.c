@@ -2055,28 +2055,12 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     gchar detailed_action[80];
     gchar accel[80];
     gint i;
-    const gchar *reload_accels[] =
-    {
-        "F5",
-        "<ctrl>r",
-        NULL
-    };
-    const gchar *prompt_root_location_accels[] =
-    {
-        "slash",
-        "KP_Divide",
-        NULL
-    };
-    const gchar *prompt_home_location_accels[] =
-    {
-        "asciitilde",
-        "dead_tilde",
-        NULL
-    };
 
     g_action_map_add_action_entries (G_ACTION_MAP (window),
                                      win_entries, G_N_ELEMENTS (win_entries),
                                      window);
+
+#define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
 
     app = g_application_get_default ();
     nautilus_application_set_accelerator (app, "win.back", "<alt>Left");
@@ -2086,7 +2070,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
 
     /* Special case reload, since users are used to use two shortcuts instead of one */
-    nautilus_application_set_accelerators (app, "win.reload", reload_accels);
+    nautilus_application_set_accelerators (app, "win.reload", ACCELS ("F5", "<ctrl>r"));
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
@@ -2099,9 +2083,9 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.tab-next", "<control>Page_Down");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
-    nautilus_application_set_accelerators (app, "win.prompt-root-location", prompt_root_location_accels);
+    nautilus_application_set_accelerators (app, "win.prompt-root-location", ACCELS ("slash", "KP_Divide"));
     /* Support keyboard layouts which have a dead tilde key but not a tilde key. */
-    nautilus_application_set_accelerators (app, "win.prompt-home-location", prompt_home_location_accels);
+    nautilus_application_set_accelerators (app, "win.prompt-home-location", ACCELS ("asciitilde", "dead_tilde"));
     nautilus_application_set_accelerator (app, "win.view-menu", "F10");
     nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
 
@@ -2112,6 +2096,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
         g_snprintf (accel, sizeof (accel), "<alt>%i", i + 1);
         nautilus_application_set_accelerator (app, detailed_action, accel);
     }
+
+#undef ACCELS
 
     action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
     state = g_action_get_state (action);
