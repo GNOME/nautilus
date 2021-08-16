@@ -2,6 +2,7 @@
 <interface>
   <requires lib="gtk+" version="3.14"/>
   <object class="GtkPopover" id="extension_popover">
+    <signal name="show" handler="popover_on_show"/>
     <property name="position">bottom</property>
     <property name="constrain-to">none</property>
     <child>
@@ -12,7 +13,7 @@
         <property name="margin-start">12</property>
         <property name="margin-end">12</property>
         <child>
-          <object class="HdyActionRow">
+          <object class="HdyActionRow" id="zip_row">
             <property name="visible">True</property>
             <property name="activatable">True</property>
             <property name="title" translatable="no">.zip</property>
@@ -49,7 +50,7 @@
           </object>
         </child>
         <child>
-          <object class="HdyActionRow">
+          <object class="HdyActionRow" id="tar_xz_row">
             <property name="visible">True</property>
             <property name="activatable">True</property>
             <property name="title" translatable="no">.tar.xz</property>
@@ -66,7 +67,7 @@
           </object>
         </child>
         <child>
-          <object class="HdyActionRow">
+          <object class="HdyActionRow" id="seven_zip_row">
             <property name="visible">True</property>
             <property name="activatable">True</property>
             <property name="title" translatable="no">.7z</property>

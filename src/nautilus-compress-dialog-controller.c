@@ -36,9 +36,13 @@ struct _NautilusCompressDialogController
     GtkWidget *error_label;
     GtkWidget *name_entry;
     GtkWidget *extension_stack;
+    GtkWidget *zip_row;
     GtkWidget *zip_label;
+    GtkWidget *encrypted_zip_row;
     GtkWidget *encrypted_zip_label;
+    GtkWidget *tar_xz_row;
     GtkWidget *tar_xz_label;
+    GtkWidget *seven_zip_row;
     GtkWidget *seven_zip_label;
     GtkWidget *extension_popover;
     GtkWidget *zip_checkmark;
@@ -348,6 +352,50 @@ activate_button_on_sensitive_notify (GObject    *gobject,
     }
 }
 
+static void
+popover_on_show (GtkWidget *widget,
+                 gpointer   user_data)
+{
+    NautilusCompressDialogController *self;
+    NautilusCompressionFormat format;
+
+    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    format = g_settings_get_enum (nautilus_compression_preferences,
+                                  NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
+    switch (format)
+    {
+        case NAUTILUS_COMPRESSION_ZIP:
+        {
+            gtk_widget_grab_focus (self->zip_row);
+        }
+        break;
+
+        case NAUTILUS_COMPRESSION_ENCRYPTED_ZIP:
+        {
+            gtk_widget_grab_focus (self->encrypted_zip_row);
+        }
+        break;
+
+        case NAUTILUS_COMPRESSION_TAR_XZ:
+        {
+            gtk_widget_grab_focus (self->tar_xz_row);
+        }
+        break;
+
+        case NAUTILUS_COMPRESSION_7ZIP:
+        {
+            gtk_widget_grab_focus (self->seven_zip_row);
+        }
+        break;
+
+        default:
+        {
+            g_assert_not_reached ();
+        }
+        break;
+    }
+}
+
 NautilusCompressDialogController *
 nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                          NautilusDirectory *destination_directory,
@@ -361,9 +409,13 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     GtkWidget *name_entry;
     GtkWidget *activate_button;
     GtkWidget *extension_stack;
+    GtkWidget *zip_row;
     GtkWidget *zip_label;
+    GtkWidget *encrypted_zip_row;
     GtkWidget *encrypted_zip_label;
+    GtkWidget *tar_xz_row;
     GtkWidget *tar_xz_label;
+    GtkWidget *seven_zip_row;
     GtkWidget *seven_zip_label;
     GtkWidget *extension_popover;
     GtkWidget *zip_checkmark;
@@ -392,6 +444,10 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     seven_zip_checkmark = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_checkmark"));
     passphrase_label = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_label"));
     passphrase_entry = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_entry"));
+    zip_row = GTK_WIDGET (gtk_builder_get_object (builder, "zip_row"));
+    encrypted_zip_row = GTK_WIDGET (gtk_builder_get_object (builder, "encrypted_zip_row"));
+    tar_xz_row = GTK_WIDGET (gtk_builder_get_object (builder, "tar_xz_row"));
+    seven_zip_row = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_row"));
 
     gtk_window_set_transient_for (GTK_WINDOW (compress_dialog),
                                   parent_window);
@@ -420,6 +476,10 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     self->name_entry = name_entry;
     self->passphrase_label = passphrase_label;
     self->passphrase_entry = passphrase_entry;
+    self->zip_row = zip_row;
+    self->encrypted_zip_row = encrypted_zip_row;
+    self->tar_xz_row = tar_xz_row;
+    self->seven_zip_row = seven_zip_row;
 
     self->response_handler_id = g_signal_connect (compress_dialog,
                                                   "response",
@@ -441,6 +501,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                       G_CALLBACK (passphrase_entry_on_icon_press),
                                       "activate_button_on_sensitive_notify",
                                       G_CALLBACK (activate_button_on_sensitive_notify),
+                                      "popover_on_show",
+                                      G_CALLBACK (popover_on_show),
                                       NULL);
     gtk_builder_connect_signals (builder, self);
 
