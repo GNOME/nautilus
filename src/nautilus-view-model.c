@@ -266,26 +266,13 @@ void
 nautilus_view_model_remove_item (NautilusViewModel     *self,
                                  NautilusViewItemModel *item)
 {
-    NautilusViewItemModel *item_model;
-    gint i;
+    guint i;
 
-    i = 0;
-    item_model = NULL;
-    while ((item_model = g_list_model_get_item (G_LIST_MODEL (self->internal_model), i)))
-    {
-        if (item_model == item)
-        {
-            break;
-        }
-
-        i++;
-    }
-
-    if (item_model != NULL)
+    if (g_list_store_find (self->internal_model, item, &i))
     {
         NautilusFile *file;
 
-        file = nautilus_view_item_model_get_file (item_model);
+        file = nautilus_view_item_model_get_file (item);
         g_list_store_remove (self->internal_model, i);
         g_hash_table_remove (self->map_files_to_model, file);
     }
