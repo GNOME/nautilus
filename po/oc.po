@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-08-11 08:10+0000\n"
-"PO-Revision-Date: 2021-08-12 23:14+0200\n"
+"POT-Creation-Date: 2021-08-13 14:09+0000\n"
+"PO-Revision-Date: 2021-08-17 20:43+0200\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -4012,7 +4012,7 @@ msgid "This is disabled due to security considerations."
 msgstr "Es desactivat per de rasons de seguretat."
 
 #: src/nautilus-program-choosing.c:392 src/nautilus-program-choosing.c:469
-#: src/nautilus-properties-window.c:2625
+#: src/nautilus-properties-window.c:2625 src/nautilus-trash-bar.c:182
 msgid "There was an error launching the application."
 msgstr "Una error s'es produita al moment d'aviar l'aplicacion."
 
@@ -4319,7 +4319,7 @@ msgid "Select Dates…"
 msgstr "Seleccionatz las datas…"
 
 #. trash
-#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:201
+#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:227
 msgid "Trash"
 msgstr "Escobilhièr"
 
@@ -4349,20 +4349,34 @@ msgstr "_Anullar"
 msgid "_Redo"
 msgstr "_Restablir"
 
-#: src/nautilus-trash-bar.c:209
+#: src/nautilus-trash-bar.c:231
+msgid "Trashed items are automatically deleted after a period of time"
+msgstr ""
+"Los elements meses a l’escobilhièr son automaticament suprimits passat un "
+"periòde de temps"
+
+#: src/nautilus-trash-bar.c:245
+msgid "_Settings"
+msgstr "_Paramètres"
+
+#: src/nautilus-trash-bar.c:248
+msgid "Display system controls for trash content"
+msgstr "Afichar los contraròtles sistèma pel contengut de l’escobilhièr"
+
+#: src/nautilus-trash-bar.c:251
 msgid "_Restore"
 msgstr "_Restablir"
 
-#: src/nautilus-trash-bar.c:212
+#: src/nautilus-trash-bar.c:254
 msgid "Restore selected items to their original position"
 msgstr "Restablís cada icòna seleccionada a sa talha iniciala"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
-#: src/nautilus-trash-bar.c:216
+#: src/nautilus-trash-bar.c:258
 msgid "_Empty…"
 msgstr "_Voidar…"
 
-#: src/nautilus-trash-bar.c:219
+#: src/nautilus-trash-bar.c:261
 msgid "Delete all items in the Trash"
 msgstr "Suprimir totes los elements de l'escobilhièr"
 
