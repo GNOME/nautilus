@@ -314,19 +314,12 @@ real_remove_file (NautilusFilesView *files_view,
                   NautilusDirectory *directory)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    NautilusFile *current_file;
-    NautilusViewItemModel *current_item_model;
-    guint i = 0;
+    NautilusViewItemModel *item_model;
 
-    while ((current_item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (self->model), i))))
+    item_model = nautilus_view_model_get_item_from_file (self->model, file);
+    if (item_model != NULL)
     {
-        current_file = nautilus_view_item_model_get_file (current_item_model);
-        if (current_file == file)
-        {
-            nautilus_view_model_remove_item (self->model, current_item_model);
-            break;
-        }
-        i++;
+        nautilus_view_model_remove_item (self->model, item_model);
     }
 }
 
