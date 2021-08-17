@@ -11,15 +11,74 @@ struct _NautilusViewModel
     NautilusViewModelSortData *sort_data;
 };
 
-G_DEFINE_TYPE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT)
+static GType
+nautilus_view_model_get_item_type (GListModel *list)
+{
+    return NAUTILUS_TYPE_VIEW_ITEM_MODEL;
+}
+
+static guint
+nautilus_view_model_get_n_items (GListModel *list)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (list);
+
+    if (self->internal_model == NULL)
+    {
+        return 0;
+    }
+
+    return g_list_model_get_n_items (G_LIST_MODEL (self->internal_model));
+}
+
+static gpointer
+nautilus_view_model_get_item (GListModel *list,
+                              guint       position)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (list);
+
+    if (self->internal_model == NULL)
+    {
+        return NULL;
+    }
+
+    return g_list_model_get_item (G_LIST_MODEL (self->internal_model), position);
+}
+
+static void
+nautilus_view_model_list_model_init (GListModelInterface *iface)
+{
+    iface->get_item_type = nautilus_view_model_get_item_type;
+    iface->get_n_items = nautilus_view_model_get_n_items;
+    iface->get_item = nautilus_view_model_get_item;
+}
+
+G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL,
+                                                nautilus_view_model_list_model_init))
 
 enum
 {
     PROP_0,
     PROP_SORT_TYPE,
-    PROP_G_MODEL,
     N_PROPS
 };
+
+static void
+dispose (GObject *object)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (object);
+
+    if (self->internal_model != NULL)
+    {
+        g_signal_handlers_disconnect_by_func (self->internal_model,
+                                              g_list_model_items_changed,
+                                              self);
+        g_object_unref (self->internal_model);
+        self->internal_model = NULL;
+    }
+
+    G_OBJECT_CLASS (nautilus_view_model_parent_class)->dispose (object);
+}
 
 static void
 finalize (GObject *object)
@@ -33,7 +92,6 @@ finalize (GObject *object)
     {
         g_free (self->sort_data);
     }
-    g_object_unref (self->internal_model);
 }
 
 static void
@@ -49,12 +107,6 @@ get_property (GObject    *object,
         case PROP_SORT_TYPE:
         {
             g_value_set_object (value, self->sort_data);
-        }
-        break;
-
-        case PROP_G_MODEL:
-        {
-            g_value_set_object (value, self->internal_model);
         }
         break;
 
@@ -97,6 +149,9 @@ constructed (GObject *object)
 
     self->internal_model = g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM_MODEL);
     self->map_files_to_model = g_hash_table_new (NULL, NULL);
+
+    g_signal_connect_swapped (self->internal_model, "items-changed",
+                              G_CALLBACK (g_list_model_items_changed), self);
 }
 
 static void
@@ -104,6 +159,7 @@ nautilus_view_model_class_init (NautilusViewModelClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+    object_class->dispose = dispose;
     object_class->finalize = finalize;
     object_class->get_property = get_property;
     object_class->set_property = set_property;
@@ -160,12 +216,6 @@ NautilusViewModelSortData *
 nautilus_view_model_get_sort_type (NautilusViewModel *self)
 {
     return self->sort_data;
-}
-
-GListStore *
-nautilus_view_model_get_g_model (NautilusViewModel *self)
-{
-    return self->internal_model;
 }
 
 GQueue *

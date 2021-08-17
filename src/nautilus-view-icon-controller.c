@@ -300,7 +300,7 @@ real_is_empty (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
 
-    return g_list_model_get_n_items (G_LIST_MODEL (nautilus_view_model_get_g_model (self->model))) == 0;
+    return g_list_model_get_n_items (G_LIST_MODEL (self->model)) == 0;
 }
 
 static void
@@ -318,12 +318,12 @@ real_remove_file (NautilusFilesView *files_view,
     NautilusViewItemModel *current_item_model;
     guint i = 0;
 
-    while ((current_item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (nautilus_view_model_get_g_model (self->model)), i))))
+    while ((current_item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (self->model), i))))
     {
         current_file = nautilus_view_item_model_get_file (current_item_model);
         if (current_file == file)
         {
-            g_list_store_remove (nautilus_view_model_get_g_model (self->model), i);
+            nautilus_view_model_remove_item (self->model, current_item_model);
             break;
         }
         i++;
@@ -562,7 +562,7 @@ set_icon_size (NautilusViewIconController *self,
     NautilusViewItemModel *current_item_model;
     guint i = 0;
 
-    while ((current_item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (nautilus_view_model_get_g_model (self->model)), i))))
+    while ((current_item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (self->model), i))))
     {
         nautilus_view_item_model_set_icon_size (current_item_model,
                                                 get_icon_size_for_zoom_level (self->zoom_level));

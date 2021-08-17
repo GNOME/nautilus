@@ -104,12 +104,10 @@ nautilus_view_icon_ui_set_selection (NautilusViewIconUi *self,
 {
     NautilusViewItemModel *item_model;
     NautilusViewModel *model;
-    GListStore *gmodel;
     gint i = 0;
 
     model = nautilus_view_icon_controller_get_model (self->controller);
-    gmodel = nautilus_view_model_get_g_model (model);
-    while ((item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (gmodel), i))))
+    while ((item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (model), i))))
     {
         GtkWidget *item_ui;
 
@@ -203,7 +201,6 @@ constructed (GObject *object)
 {
     NautilusViewIconUi *self = NAUTILUS_VIEW_ICON_UI (object);
     NautilusViewModel *model;
-    GListStore *gmodel;
 
     G_OBJECT_CLASS (nautilus_view_icon_ui_parent_class)->constructed (object);
 
@@ -219,9 +216,8 @@ constructed (GObject *object)
     gtk_widget_set_margin_end (GTK_WIDGET (self), 10);
 
     model = nautilus_view_icon_controller_get_model (self->controller);
-    gmodel = nautilus_view_model_get_g_model (model);
     gtk_flow_box_bind_model (GTK_FLOW_BOX (self),
-                             G_LIST_MODEL (gmodel),
+                             G_LIST_MODEL (model),
                              create_widget_func, self, NULL);
 
     g_signal_connect (self, "child-activated", (GCallback) on_child_activated, self);

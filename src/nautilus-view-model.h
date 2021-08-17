@@ -22,7 +22,6 @@ NautilusViewModel * nautilus_view_model_new (void);
 void nautilus_view_model_set_sort_type (NautilusViewModel         *self,
                                         NautilusViewModelSortData *sort_data);
 NautilusViewModelSortData * nautilus_view_model_get_sort_type (NautilusViewModel *self);
-GListStore * nautilus_view_model_get_g_model (NautilusViewModel *self);
 NautilusViewItemModel * nautilus_view_model_get_item_from_file (NautilusViewModel *self,
                                                                 NautilusFile      *file);
 GQueue * nautilus_view_model_get_items_from_files (NautilusViewModel *self,
