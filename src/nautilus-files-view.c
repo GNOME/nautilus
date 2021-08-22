@@ -7949,6 +7949,10 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  TRUE);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "current-directory-properties");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !selection_contains_search);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "new-document");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_create_files &&
