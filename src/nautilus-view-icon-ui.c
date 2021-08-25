@@ -98,36 +98,6 @@ set_property (GObject      *object,
     }
 }
 
-void
-nautilus_view_icon_ui_set_selection (NautilusViewIconUi *self,
-                                     GQueue             *selection)
-{
-    NautilusViewItemModel *item_model;
-    NautilusViewModel *model;
-    gint i = 0;
-
-    model = nautilus_view_icon_controller_get_model (self->controller);
-    while ((item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (model), i))))
-    {
-        GtkWidget *item_ui;
-
-        item_ui = nautilus_view_item_model_get_item_ui (item_model);
-        if (g_queue_find (selection, item_model) != NULL)
-        {
-            gtk_flow_box_select_child (GTK_FLOW_BOX (self),
-                                       GTK_FLOW_BOX_CHILD (item_ui));
-        }
-        else
-        {
-            gtk_flow_box_unselect_child (GTK_FLOW_BOX (self),
-                                         GTK_FLOW_BOX_CHILD (item_ui));
-        }
-
-        i++;
-    }
-}
-
-
 static GtkWidget *
 create_widget_func (gpointer item,
                     gpointer user_data)

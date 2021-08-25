@@ -368,7 +368,16 @@ real_set_selection (NautilusFilesView *files_view,
 
     selection_files = convert_glist_to_queue (selection);
     selection_item_models = nautilus_view_model_get_items_from_files (self->model, selection_files);
-    nautilus_view_icon_ui_set_selection (self->view_ui, selection_item_models);
+
+    gtk_flow_box_unselect_all (GTK_FLOW_BOX (self->view_ui));
+    for (GList *l = g_queue_peek_head_link (selection_item_models); l != NULL ; l = l->next)
+    {
+        GtkWidget *item_ui;
+
+        item_ui = nautilus_view_item_model_get_item_ui (NAUTILUS_VIEW_ITEM_MODEL (l->data));
+        gtk_flow_box_select_child (GTK_FLOW_BOX (self->view_ui), GTK_FLOW_BOX_CHILD (item_ui));
+    }
+
     nautilus_files_view_notify_selection_changed (files_view);
 }
 

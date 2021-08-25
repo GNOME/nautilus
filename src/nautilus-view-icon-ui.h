@@ -30,9 +30,5 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusViewIconUi, nautilus_view_icon_ui, NAUTILUS, VIEW_ICON_UI, GtkFlowBox)
 
 NautilusViewIconUi * nautilus_view_icon_ui_new (NautilusViewIconController *controller);
-/* TODO: this should become the "nautilus_view_set_selection" once we have a proper
- * MVC also in the nautilus-view level. */
-void nautilus_view_icon_ui_set_selection (NautilusViewIconUi *self,
-                                          GQueue             *selection);
 
 G_END_DECLS
