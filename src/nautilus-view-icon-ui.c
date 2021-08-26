@@ -137,7 +137,7 @@ create_widget_func (gpointer item,
 
     child = nautilus_view_icon_item_ui_new (item_model);
     nautilus_view_item_model_set_item_ui (item_model, GTK_WIDGET (child));
-    gtk_widget_show (GTK_WIDGET (child));
+    gtk_widget_show_all (GTK_WIDGET (child));
 
     return GTK_WIDGET (child);
 }

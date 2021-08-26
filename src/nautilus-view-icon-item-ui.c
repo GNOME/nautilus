@@ -9,9 +9,9 @@ struct _NautilusViewIconItemUi
 
     NautilusViewItemModel *model;
 
-    GtkBox *container;
+    GtkWidget *fixed_height_box;
     GtkWidget *icon;
-    GtkLabel *label;
+    GtkWidget *label;
 };
 
 G_DEFINE_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, GTK_TYPE_FLOW_BOX_CHILD)
@@ -23,13 +23,11 @@ enum
     N_PROPS
 };
 
-static GtkWidget *
-create_icon (NautilusViewIconItemUi *self)
+static void
+update_icon (NautilusViewIconItemUi *self)
 {
     NautilusFileIconFlags flags;
     g_autoptr (GdkPixbuf) icon_pixbuf = NULL;
-    GtkImage *icon;
-    GtkBox *fixed_height_box;
     GtkStyleContext *style_context;
     NautilusFile *file;
     guint icon_size;
@@ -43,39 +41,19 @@ create_icon (NautilusViewIconItemUi *self)
 
     icon_pixbuf = nautilus_file_get_icon_pixbuf (file, icon_size,
                                                  TRUE, 1, flags);
-    icon = GTK_IMAGE (gtk_image_new_from_pixbuf (icon_pixbuf));
-    gtk_widget_set_hexpand (GTK_WIDGET (icon), TRUE);
-    gtk_widget_set_vexpand (GTK_WIDGET (icon), TRUE);
-    gtk_widget_set_valign (GTK_WIDGET (icon), GTK_ALIGN_CENTER);
-    gtk_widget_set_halign (GTK_WIDGET (icon), GTK_ALIGN_CENTER);
+    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon), icon_pixbuf);
 
-    fixed_height_box = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
-    gtk_widget_set_valign (GTK_WIDGET (fixed_height_box), GTK_ALIGN_CENTER);
-    gtk_widget_set_halign (GTK_WIDGET (fixed_height_box), GTK_ALIGN_CENTER);
-    gtk_widget_set_size_request (GTK_WIDGET (fixed_height_box), icon_size, icon_size);
-
+    gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
+    style_context = gtk_widget_get_style_context (self->fixed_height_box);
     if (nautilus_can_thumbnail (file) &&
         nautilus_file_should_show_thumbnail (file))
     {
-        style_context = gtk_widget_get_style_context (GTK_WIDGET (fixed_height_box));
         gtk_style_context_add_class (style_context, "icon-background");
     }
-
-    gtk_box_pack_start (fixed_height_box, GTK_WIDGET (icon), FALSE, FALSE, 0);
-
-    return GTK_WIDGET (fixed_height_box);
-}
-
-static void
-update_icon (NautilusViewIconItemUi *self)
-{
-    if (self->icon)
+    else
     {
-        gtk_container_remove (GTK_CONTAINER (self->container), GTK_WIDGET (self->icon));
+        gtk_style_context_remove_class (style_context, "icon-background");
     }
-    self->icon = create_icon (self);
-    gtk_widget_show_all (GTK_WIDGET (self->icon));
-    gtk_box_pack_start (self->container, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
 }
 
 static void
@@ -88,16 +66,10 @@ on_view_item_file_changed (GObject    *object,
 
     file = nautilus_view_item_model_get_file (self->model);
 
-    if (self->icon)
-    {
-        update_icon (self);
-    }
+    update_icon (self);
 
-    if (self->label)
-    {
-        gtk_label_set_text (self->label,
-                            nautilus_file_get_display_name (file));
-    }
+    gtk_label_set_text (GTK_LABEL (self->label),
+                        nautilus_file_get_display_name (file));
 }
 
 static void
@@ -107,67 +79,7 @@ on_view_item_size_changed (GObject    *object,
 {
     NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (user_data);
 
-    if (self->icon)
-    {
-        update_icon (self);
-    }
-}
-
-static void
-constructed (GObject *object)
-{
-    NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (object);
-    GtkBox *container;
-    GtkLabel *label;
-    GtkStyleContext *style_context;
-    NautilusFile *file;
-    guint icon_size;
-
-    G_OBJECT_CLASS (nautilus_view_icon_item_ui_parent_class)->constructed (object);
-
-    file = nautilus_view_item_model_get_file (self->model);
-    icon_size = nautilus_view_item_model_get_icon_size (self->model);
-    container = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
-    self->icon = create_icon (self);
-    gtk_box_pack_start (container, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
-
-    label = GTK_LABEL (gtk_label_new (nautilus_file_get_display_name (file)));
-    gtk_widget_set_vexpand (GTK_WIDGET (label), TRUE);
-    gtk_widget_show (GTK_WIDGET (label));
-
-#if PANGO_VERSION_CHECK (1, 44, 4)
-    {
-        PangoAttrList *attr_list = pango_attr_list_new ();
-        pango_attr_list_insert (attr_list, pango_attr_insert_hyphens_new (FALSE));
-        gtk_label_set_attributes (label, attr_list);
-        pango_attr_list_unref (attr_list);
-    }
-#endif
-
-    gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_MIDDLE);
-    gtk_label_set_line_wrap (label, TRUE);
-    gtk_label_set_line_wrap_mode (label, PANGO_WRAP_WORD_CHAR);
-    gtk_label_set_lines (label, 3);
-    gtk_label_set_max_width_chars (label, 0);
-    gtk_label_set_justify (label, GTK_JUSTIFY_CENTER);
-    gtk_widget_set_valign (GTK_WIDGET (label), GTK_ALIGN_START);
-    gtk_box_pack_end (container, GTK_WIDGET (label), FALSE, TRUE, 0);
-
-    style_context = gtk_widget_get_style_context (GTK_WIDGET (container));
-    gtk_style_context_add_class (style_context, "icon-item-background");
-
-    gtk_widget_set_valign (GTK_WIDGET (container), GTK_ALIGN_START);
-    gtk_widget_set_halign (GTK_WIDGET (container), GTK_ALIGN_CENTER);
-
-    self->container = container;
-    gtk_container_add (GTK_CONTAINER (self),
-                       GTK_WIDGET (container));
-    gtk_widget_show_all (GTK_WIDGET (self));
-
-    g_signal_connect (self->model, "notify::icon-size",
-                      (GCallback) on_view_item_size_changed, self);
-    g_signal_connect (self->model, "notify::file",
-                      (GCallback) on_view_item_file_changed, self);
+    update_icon (self);
 }
 
 static void
@@ -204,7 +116,20 @@ static void
 set_model (NautilusViewIconItemUi *self,
            NautilusViewItemModel  *model)
 {
+    NautilusFile *file;
+
     self->model = g_object_ref (model);
+
+    file = nautilus_view_item_model_get_file (self->model);
+
+    update_icon (self);
+    gtk_label_set_text (GTK_LABEL (self->label),
+                        nautilus_file_get_display_name (file));
+
+    g_signal_connect (self->model, "notify::icon-size",
+                      (GCallback) on_view_item_size_changed, self);
+    g_signal_connect (self->model, "notify::file",
+                      (GCallback) on_view_item_file_changed, self);
 }
 
 static void
@@ -232,11 +157,11 @@ static void
 nautilus_view_icon_item_ui_class_init (NautilusViewIconItemUiClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
     object_class->finalize = finalize;
     object_class->get_property = get_property;
     object_class->set_property = set_property;
-    object_class->constructed = constructed;
 
     g_object_class_install_property (object_class,
                                      PROP_MODEL,
@@ -245,11 +170,31 @@ nautilus_view_icon_item_ui_class_init (NautilusViewIconItemUiClass *klass)
                                                           "The item model that this UI reprensents",
                                                           NAUTILUS_TYPE_VIEW_ITEM_MODEL,
                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+
+    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-view-icon-item-ui.ui");
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, fixed_height_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, icon);
+    gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, label);
 }
 
 static void
 nautilus_view_icon_item_ui_init (NautilusViewIconItemUi *self)
 {
+    gtk_widget_init_template (GTK_WIDGET (self));
+
+#if PANGO_VERSION_CHECK (1, 44, 4)
+    {
+        PangoAttrList *attr_list;
+
+        /* GTK4 TODO: This attribute is set in the UI file but GTK 3 ignores it.
+         * Remove this block after the switch to GTK 4. */
+        attr_list = pango_attr_list_new ();
+        pango_attr_list_insert (attr_list, pango_attr_insert_hyphens_new (FALSE));
+        gtk_label_set_attributes (GTK_LABEL (self->label), attr_list);
+        pango_attr_list_unref (attr_list);
+    }
+#endif
 }
 
 NautilusViewIconItemUi *
