@@ -133,8 +133,6 @@ libnautilus_sources = [
   'nautilus-view-icon-controller.h',
   'nautilus-view-icon-item-ui.c',
   'nautilus-view-icon-item-ui.h',
-  'nautilus-view-icon-ui.c',
-  'nautilus-view-icon-ui.h',
   'nautilus-view-item-model.c',
   'nautilus-view-item-model.h',
   'nautilus-view-model.c',

@@ -1,5 +1,4 @@
 #include "nautilus-view-icon-controller.h"
-#include "nautilus-view-icon-ui.h"
 #include "nautilus-view-item-model.h"
 #include "nautilus-view-icon-item-ui.h"
 #include "nautilus-view-model.h"
@@ -14,7 +13,7 @@ struct _NautilusViewIconController
 {
     NautilusFilesView parent_instance;
 
-    NautilusViewIconUi *view_ui;
+    GtkFlowBox *view_ui;
     NautilusViewModel *model;
 
     GIcon *view_icon;
@@ -282,7 +281,7 @@ real_get_selection (NautilusFilesView *files_view)
     g_autoptr (GList) selected_items = NULL;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    selected_items = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+    selected_items = gtk_flow_box_get_selected_children (self->view_ui);
     for (l = selected_items; l != NULL; l = l->next)
     {
         NautilusViewItemModel *item_model;
@@ -369,13 +368,13 @@ real_set_selection (NautilusFilesView *files_view,
     selection_files = convert_glist_to_queue (selection);
     selection_item_models = nautilus_view_model_get_items_from_files (self->model, selection_files);
 
-    gtk_flow_box_unselect_all (GTK_FLOW_BOX (self->view_ui));
+    gtk_flow_box_unselect_all (self->view_ui);
     for (GList *l = g_queue_peek_head_link (selection_item_models); l != NULL ; l = l->next)
     {
         GtkWidget *item_ui;
 
         item_ui = nautilus_view_item_model_get_item_ui (NAUTILUS_VIEW_ITEM_MODEL (l->data));
-        gtk_flow_box_select_child (GTK_FLOW_BOX (self->view_ui), GTK_FLOW_BOX_CHILD (item_ui));
+        gtk_flow_box_select_child (self->view_ui, GTK_FLOW_BOX_CHILD (item_ui));
     }
 
     nautilus_files_view_notify_selection_changed (files_view);
@@ -385,7 +384,7 @@ static void
 real_select_all (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    gtk_flow_box_select_all (GTK_FLOW_BOX (self->view_ui));
+    gtk_flow_box_select_all (self->view_ui);
 }
 
 static GtkWidget *
@@ -677,7 +676,7 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
     item_ui = gtk_container_get_focus_child (GTK_CONTAINER (self->view_ui));
     if (item_ui == NULL || !gtk_flow_box_child_is_selected (GTK_FLOW_BOX_CHILD (item_ui)))
     {
-        g_autoptr (GList) list = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+        g_autoptr (GList) list = gtk_flow_box_get_selected_children (self->view_ui);
 
         list = g_list_last (list);
         item_ui = GTK_WIDGET (list->data);
@@ -714,7 +713,7 @@ on_button_press_event (GtkGestureMultiPress *gesture,
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (GTK_FLOW_BOX (self->view_ui),
+    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (self->view_ui,
                                                               x, y));
     if (child_at_pos != NULL)
     {
@@ -773,7 +772,7 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (GTK_FLOW_BOX (self->view_ui),
+    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (self->view_ui,
                                                               event_button->x, event_button->y));
     if (child_at_pos != NULL)
     {
@@ -978,6 +977,89 @@ finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_view_icon_controller_parent_class)->finalize (object);
 }
 
+static void
+on_child_activated (GtkFlowBox      *flow_box,
+                    GtkFlowBoxChild *child,
+                    gpointer         user_data)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    NautilusViewItemModel *item_model;
+    NautilusFile *file;
+    g_autoptr (GList) list = NULL;
+    GdkEvent *event;
+    guint keyval;
+    gboolean is_preview = FALSE;
+
+    item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child));
+    file = nautilus_view_item_model_get_file (item_model);
+    list = g_list_append (list, file);
+
+    event = gtk_get_current_event ();
+    if (event && gdk_event_get_keyval (event, &keyval))
+    {
+        if (keyval == GDK_KEY_space)
+        {
+            is_preview = TRUE;
+        }
+    }
+
+    if (is_preview)
+    {
+        nautilus_files_view_preview_files (NAUTILUS_FILES_VIEW (self), list, NULL);
+    }
+    else
+    {
+        nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (self), list, 0, TRUE);
+    }
+
+    g_clear_pointer (&event, gdk_event_free);
+}
+
+static void
+on_ui_selected_children_changed (GtkFlowBox *box,
+                                 gpointer    user_data)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+
+    nautilus_files_view_notify_selection_changed (NAUTILUS_FILES_VIEW (self));
+}
+
+static GtkWidget *
+create_widget_func (gpointer item,
+                    gpointer user_data)
+{
+    NautilusViewItemModel *item_model = NAUTILUS_VIEW_ITEM_MODEL (item);
+    NautilusViewIconItemUi *child;
+
+    child = nautilus_view_icon_item_ui_new (item_model);
+    nautilus_view_item_model_set_item_ui (item_model, GTK_WIDGET (child));
+    gtk_widget_show_all (GTK_WIDGET (child));
+
+    return GTK_WIDGET (child);
+}
+
+static GtkFlowBox *
+create_view_ui (NautilusViewIconController *self)
+{
+    GtkWidget *widget;
+    GtkFlowBox *flowbox;
+
+    widget = gtk_flow_box_new ();
+    gtk_widget_set_can_focus (widget, TRUE);
+    gtk_widget_set_valign (widget, GTK_ALIGN_START);
+    gtk_widget_set_margin_top (widget, 10);
+    gtk_widget_set_margin_start (widget, 10);
+    gtk_widget_set_margin_bottom (widget, 10);
+    gtk_widget_set_margin_end (widget, 10);
+
+    flowbox = GTK_FLOW_BOX (widget);
+    gtk_flow_box_set_activate_on_single_click (flowbox, FALSE);
+    gtk_flow_box_set_max_children_per_line (flowbox, 20);
+    gtk_flow_box_set_selection_mode (flowbox, GTK_SELECTION_MULTIPLE);
+    gtk_flow_box_set_homogeneous (flowbox, FALSE);
+
+    return flowbox;
+}
 
 const GActionEntry view_icon_actions[] =
 {
@@ -1000,10 +1082,19 @@ constructed (GObject *object)
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
     self->model = nautilus_view_model_new ();
-    self->view_ui = nautilus_view_icon_ui_new (self);
-    gtk_flow_box_set_hadjustment (GTK_FLOW_BOX (self->view_ui), hadjustment);
-    gtk_flow_box_set_vadjustment (GTK_FLOW_BOX (self->view_ui), vadjustment);
+
+    self->view_ui = create_view_ui (self);
+    gtk_flow_box_set_hadjustment (self->view_ui, hadjustment);
+    gtk_flow_box_set_vadjustment (self->view_ui, vadjustment);
     gtk_widget_show (GTK_WIDGET (self->view_ui));
+
+    g_signal_connect (self->view_ui, "child-activated", (GCallback) on_child_activated, self);
+    g_signal_connect (self->view_ui, "selected-children-changed", (GCallback) on_ui_selected_children_changed, self);
+
+    gtk_flow_box_bind_model (self->view_ui,
+                             G_LIST_MODEL (self->model),
+                             create_widget_func, self, NULL);
+
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 
     /* Compensating for the lack of event boxen to allow clicks outside the flow box. */
@@ -1102,12 +1193,4 @@ nautilus_view_icon_controller_new (NautilusWindowSlot *slot)
     return g_object_new (NAUTILUS_TYPE_VIEW_ICON_CONTROLLER,
                          "window-slot", slot,
                          NULL);
-}
-
-NautilusViewModel *
-nautilus_view_icon_controller_get_model (NautilusViewIconController *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_VIEW_ICON_CONTROLLER (self), NULL);
-
-    return self->model;
 }
