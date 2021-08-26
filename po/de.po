@@ -48,13 +48,14 @@
 # Tim Sabsch <tim@sabsch.com>, 2017-2021.
 # Philipp Kiemle <philipp.kiemle@gmail.com>, 2021.
 #
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-08-10 11:47+0000\n"
-"PO-Revision-Date: 2021-08-12 22:14+0200\n"
-"Last-Translator: Tim Sabsch <tim@sabsch.com>\n"
+"POT-Creation-Date: 2021-08-13 14:09+0000\n"
+"PO-Revision-Date: 2021-08-25 18:25+0200\n"
+"Last-Translator: Philipp Kiemle <philipp.kiemle@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -4064,7 +4065,7 @@ msgid "This is disabled due to security considerations."
 msgstr "Dies ist auf Grund von Sicherheitserwägungen deaktiviert."
 
 #: src/nautilus-program-choosing.c:392 src/nautilus-program-choosing.c:469
-#: src/nautilus-properties-window.c:2625
+#: src/nautilus-properties-window.c:2625 src/nautilus-trash-bar.c:182
 msgid "There was an error launching the application."
 msgstr "Beim Ausführen der Anwendung ist ein Fehler aufgetreten."
 
@@ -4375,7 +4376,7 @@ msgid "Select Dates…"
 msgstr "Daten wählen …"
 
 #. trash
-#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:201
+#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:227
 msgid "Trash"
 msgstr "Papierkorb"
 
@@ -4404,20 +4405,33 @@ msgstr "_Rückgängig"
 msgid "_Redo"
 msgstr "_Wiederholen"
 
-#: src/nautilus-trash-bar.c:209
+#: src/nautilus-trash-bar.c:231
+msgid "Trashed items are automatically deleted after a period of time"
+msgstr ""
+"Elemente im Papierkorb werden nach einer bestimmten Zeit automatisch gelöscht"
+
+#: src/nautilus-trash-bar.c:245
+msgid "_Settings"
+msgstr "_Einstellungen"
+
+#: src/nautilus-trash-bar.c:248
+msgid "Display system controls for trash content"
+msgstr ""
+
+#: src/nautilus-trash-bar.c:251
 msgid "_Restore"
 msgstr "_Wiederherstellen"
 
-#: src/nautilus-trash-bar.c:212
+#: src/nautilus-trash-bar.c:254
 msgid "Restore selected items to their original position"
 msgstr "Alle gewählten Objekte an ihrem ursprünglichen Ort wiederherstellen"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
-#: src/nautilus-trash-bar.c:216
+#: src/nautilus-trash-bar.c:258
 msgid "_Empty…"
 msgstr "_Leeren …"
 
-#: src/nautilus-trash-bar.c:219
+#: src/nautilus-trash-bar.c:261
 msgid "Delete all items in the Trash"
 msgstr "Alle Objekte im Papierkorb löschen"
 
