@@ -21,6 +21,14 @@ enum
     N_PROPS
 };
 
+enum
+{
+    FILE_CHANGED,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 static void
 nautilus_view_item_model_finalize (GObject *object)
 {
@@ -135,6 +143,14 @@ nautilus_view_item_model_class_init (NautilusViewItemModelClass *klass)
                                                           "The UI that reprensents the item model",
                                                           GTK_TYPE_WIDGET,
                                                           G_PARAM_READWRITE));
+
+    signals[FILE_CHANGED] = g_signal_new ("file-changed",
+                                          G_TYPE_FROM_CLASS (klass),
+                                          G_SIGNAL_RUN_LAST,
+                                          0,
+                                          NULL, NULL,
+                                          g_cclosure_marshal_VOID__VOID,
+                                          G_TYPE_NONE, 0);
 }
 
 NautilusViewItemModel *
@@ -204,4 +220,12 @@ nautilus_view_item_model_set_item_ui (NautilusViewItemModel *self,
     self->item_ui = g_object_ref (item_ui);
 
     g_object_notify (G_OBJECT (self), "item-ui");
+}
+
+void
+nautilus_view_item_model_file_changed (NautilusViewItemModel *self)
+{
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
+
+    g_signal_emit (self, signals[FILE_CHANGED], 0);
 }

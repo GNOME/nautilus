@@ -57,11 +57,8 @@ update_icon (NautilusViewIconItemUi *self)
 }
 
 static void
-on_view_item_file_changed (GObject    *object,
-                           GParamSpec *pspec,
-                           gpointer    user_data)
+on_file_changed (NautilusViewIconItemUi *self)
 {
-    NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (user_data);
     NautilusFile *file;
 
     file = nautilus_view_item_model_get_file (self->model);
@@ -148,8 +145,8 @@ set_model (NautilusViewIconItemUi *self,
 
     g_signal_connect (self->model, "notify::icon-size",
                       (GCallback) on_view_item_size_changed, self);
-    g_signal_connect (self->model, "notify::file",
-                      (GCallback) on_view_item_file_changed, self);
+    g_signal_connect_swapped (self->model, "file-changed",
+                              (GCallback) on_file_changed, self);
 }
 
 static void

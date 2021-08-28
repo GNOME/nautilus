@@ -252,9 +252,6 @@ real_clear (NautilusFilesView *files_view)
     nautilus_view_model_remove_all_items (self->model);
 }
 
-
-/* FIXME: ideally this should go into the model so there is not need to
- * recreate the model with the new data */
 static void
 real_file_changed (NautilusFilesView *files_view,
                    NautilusFile      *file,
@@ -262,14 +259,10 @@ real_file_changed (NautilusFilesView *files_view,
 {
     NautilusViewIconController *self;
     NautilusViewItemModel *item_model;
-    NautilusViewItemModel *new_item_model;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     item_model = nautilus_view_model_get_item_from_file (self->model, file);
-    nautilus_view_model_remove_item (self->model, item_model);
-    new_item_model = nautilus_view_item_model_new (file,
-                                                   get_icon_size_for_zoom_level (self->zoom_level));
-    nautilus_view_model_add_item (self->model, new_item_model);
+    nautilus_view_item_model_file_changed (item_model);
 }
 
 static GList *
