@@ -83,11 +83,15 @@ on_view_item_size_changed (GObject    *object,
 }
 
 static void
+set_model (NautilusViewIconItemUi *self,
+           NautilusViewItemModel  *model);
+
+static void
 finalize (GObject *object)
 {
     NautilusViewIconItemUi *self = (NautilusViewIconItemUi *) object;
 
-    g_signal_handlers_disconnect_by_data (self->model, self);
+    set_model (self, NULL);
     G_OBJECT_CLASS (nautilus_view_icon_item_ui_parent_class)->finalize (object);
 }
 
@@ -117,6 +121,22 @@ set_model (NautilusViewIconItemUi *self,
            NautilusViewItemModel  *model)
 {
     NautilusFile *file;
+
+    if (self->model == model)
+    {
+        return;
+    }
+
+    if (self->model != NULL)
+    {
+        g_signal_handlers_disconnect_by_data (self->model, self);
+        g_clear_object (&self->model);
+    }
+
+    if (model == NULL)
+    {
+        return;
+    }
 
     self->model = g_object_ref (model);
 
@@ -169,7 +189,7 @@ nautilus_view_icon_item_ui_class_init (NautilusViewIconItemUiClass *klass)
                                                           "Item model",
                                                           "The item model that this UI reprensents",
                                                           NAUTILUS_TYPE_VIEW_ITEM_MODEL,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                                          G_PARAM_READWRITE));
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-view-icon-item-ui.ui");
 
@@ -198,9 +218,14 @@ nautilus_view_icon_item_ui_init (NautilusViewIconItemUi *self)
 }
 
 NautilusViewIconItemUi *
-nautilus_view_icon_item_ui_new (NautilusViewItemModel *model)
+nautilus_view_icon_item_ui_new (void)
 {
-    return g_object_new (NAUTILUS_TYPE_VIEW_ICON_ITEM_UI,
-                         "model", model,
-                         NULL);
+    return g_object_new (NAUTILUS_TYPE_VIEW_ICON_ITEM_UI, NULL);
+}
+
+void
+nautilus_view_icon_item_ui_set_model (NautilusViewIconItemUi *self,
+                                      NautilusViewItemModel  *model)
+{
+    g_object_set (self, "model", model, NULL);
 }
