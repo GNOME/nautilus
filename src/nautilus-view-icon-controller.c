@@ -1027,19 +1027,35 @@ on_ui_selected_children_changed (GtkFlowBox *box,
     nautilus_files_view_notify_selection_changed (NAUTILUS_FILES_VIEW (self));
 }
 
+static void
+bind_item_ui (GtkWidget             **child,
+              NautilusViewItemModel  *item_model,
+              gpointer                user_data)
+{
+    nautilus_view_icon_item_ui_set_model (NAUTILUS_VIEW_ICON_ITEM_UI (*child),
+                                          item_model);
+    nautilus_view_item_model_set_item_ui (item_model, *child);
+}
+
+static void
+setup_item_ui (GtkWidget **child,
+               gpointer    user_data)
+{
+    *child = GTK_WIDGET (nautilus_view_icon_item_ui_new ());
+    gtk_widget_show_all (*child);
+}
+
 static GtkWidget *
 create_widget_func (gpointer item,
                     gpointer user_data)
 {
     NautilusViewItemModel *item_model = NAUTILUS_VIEW_ITEM_MODEL (item);
-    NautilusViewIconItemUi *child;
+    GtkWidget *child = NULL;
 
-    child = nautilus_view_icon_item_ui_new ();
-    nautilus_view_icon_item_ui_set_model (child, item_model);
-    nautilus_view_item_model_set_item_ui (item_model, GTK_WIDGET (child));
-    gtk_widget_show_all (GTK_WIDGET (child));
+    setup_item_ui (&child, user_data);
+    bind_item_ui (&child, item_model, user_data);
 
-    return GTK_WIDGET (child);
+    return child;
 }
 
 static GtkFlowBox *
