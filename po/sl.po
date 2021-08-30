@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-08-11 06:24+0000\n"
-"PO-Revision-Date: 2021-08-11 10:07+0200\n"
+"POT-Creation-Date: 2021-08-30 10:38+0000\n"
+"PO-Revision-Date: 2021-08-30 21:11+0200\n"
 "Last-Translator: Matej Urbančič <mateju@src.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -3003,7 +3003,7 @@ msgstr "Ni mogoče zaustaviti pogona"
 msgid "Unable to start “%s”"
 msgstr "Ni mogoče začeti »%s«"
 
-#: src/nautilus-files-view.c:8089
+#: src/nautilus-files-view.c:8093
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -3012,69 +3012,69 @@ msgstr[1] "Nova mapa z izborom (%'d predmet)"
 msgstr[2] "Nova mapa z izborom (%'d predmeta)"
 msgstr[3] "Nova mapa z izborom (%'d predmeti)"
 
-#: src/nautilus-files-view.c:8147
+#: src/nautilus-files-view.c:8151
 #, c-format
 msgid "Open With %s"
 msgstr "Odpri s programom %s"
 
-#: src/nautilus-files-view.c:8159
+#: src/nautilus-files-view.c:8163
 msgid "Run"
 msgstr "Zaženi"
 
-#: src/nautilus-files-view.c:8164
+#: src/nautilus-files-view.c:8168
 msgid "Extract Here"
 msgstr "Razširi na to mesto"
 
-#: src/nautilus-files-view.c:8165
+#: src/nautilus-files-view.c:8169
 msgid "Extract to…"
 msgstr "Razširi v …"
 
-#: src/nautilus-files-view.c:8169
+#: src/nautilus-files-view.c:8173
 msgid "Open"
 msgstr "Odpri"
 
-#: src/nautilus-files-view.c:8225
+#: src/nautilus-files-view.c:8229
 #: src/resources/ui/nautilus-files-view-context-menus.ui:108
 msgid "_Start"
 msgstr "_Zaženi"
 
-#: src/nautilus-files-view.c:8231 src/gtk/nautilusgtkplacesview.c:1759
+#: src/nautilus-files-view.c:8235 src/gtk/nautilusgtkplacesview.c:1759
 msgid "_Connect"
 msgstr "_Poveži se"
 
-#: src/nautilus-files-view.c:8237
+#: src/nautilus-files-view.c:8241
 msgid "_Start Multi-disk Drive"
 msgstr "_Zaženi več-diskovni pogon"
 
-#: src/nautilus-files-view.c:8243
+#: src/nautilus-files-view.c:8247
 msgid "U_nlock Drive"
 msgstr "_Odkleni pogon"
 
-#: src/nautilus-files-view.c:8261
+#: src/nautilus-files-view.c:8265
 msgid "Stop Drive"
 msgstr "Zaustavi pogon"
 
-#: src/nautilus-files-view.c:8267
+#: src/nautilus-files-view.c:8271
 msgid "_Safely Remove Drive"
 msgstr "_Varno odstrani pogon"
 
-#: src/nautilus-files-view.c:8273 src/gtk/nautilusgtkplacesview.c:1749
+#: src/nautilus-files-view.c:8277 src/gtk/nautilusgtkplacesview.c:1749
 msgid "_Disconnect"
 msgstr "_Prekini povezavo"
 
-#: src/nautilus-files-view.c:8279
+#: src/nautilus-files-view.c:8283
 msgid "_Stop Multi-disk Drive"
 msgstr "_Zaustavi več-diskovni pogon"
 
-#: src/nautilus-files-view.c:8285
+#: src/nautilus-files-view.c:8289
 msgid "_Lock Drive"
 msgstr "_Zakleni pogon"
 
-#: src/nautilus-files-view.c:10054
+#: src/nautilus-files-view.c:10058
 msgid "Content View"
 msgstr "Pogled vsebine"
 
-#: src/nautilus-files-view.c:10055
+#: src/nautilus-files-view.c:10059
 msgid "View of the current folder"
 msgstr "Pogled trenutne mape"
 
@@ -4094,7 +4094,7 @@ msgid "This is disabled due to security considerations."
 msgstr "Ta možnost je onemogočena iz varnostnih pomislekov."
 
 #: src/nautilus-program-choosing.c:392 src/nautilus-program-choosing.c:469
-#: src/nautilus-properties-window.c:2625
+#: src/nautilus-properties-window.c:2625 src/nautilus-trash-bar.c:182
 msgid "There was an error launching the application."
 msgstr "Prišlo je do napake med zaganjanjem programa."
 
@@ -4401,7 +4401,7 @@ msgid "Select Dates…"
 msgstr "Izbor datumov …"
 
 #. trash
-#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:201
+#: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:227
 msgid "Trash"
 msgstr "Smeti"
 
@@ -4429,20 +4429,32 @@ msgstr "_Razveljavi"
 msgid "_Redo"
 msgstr "_Ponovno uveljavi"
 
-#: src/nautilus-trash-bar.c:209
+#: src/nautilus-trash-bar.c:231
+msgid "Trashed items are automatically deleted after a period of time"
+msgstr "Predmeti v smeteh bodo samodejno izbrisani po določenem času"
+
+#: src/nautilus-trash-bar.c:245
+msgid "_Settings"
+msgstr "_Nastavitve"
+
+#: src/nautilus-trash-bar.c:248
+msgid "Display system controls for trash content"
+msgstr "PRikaz sistemskih nastavitev za vsebino smeti"
+
+#: src/nautilus-trash-bar.c:251
 msgid "_Restore"
 msgstr "_Obnovi"
 
-#: src/nautilus-trash-bar.c:212
+#: src/nautilus-trash-bar.c:254
 msgid "Restore selected items to their original position"
 msgstr "Obnovi izbrane predmete na njihov izvirni položaj"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
-#: src/nautilus-trash-bar.c:216
+#: src/nautilus-trash-bar.c:258
 msgid "_Empty…"
 msgstr "_Izprazni …"
 
-#: src/nautilus-trash-bar.c:219
+#: src/nautilus-trash-bar.c:261
 msgid "Delete all items in the Trash"
 msgstr "Izbriši vse predmete v smeteh"
 
