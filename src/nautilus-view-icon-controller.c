@@ -1060,10 +1060,6 @@ create_view_ui (NautilusViewIconController *self)
     widget = gtk_flow_box_new ();
     gtk_widget_set_can_focus (widget, TRUE);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
-    gtk_widget_set_margin_top (widget, 10);
-    gtk_widget_set_margin_start (widget, 10);
-    gtk_widget_set_margin_bottom (widget, 10);
-    gtk_widget_set_margin_end (widget, 10);
 
     flowbox = GTK_FLOW_BOX (widget);
     gtk_flow_box_set_activate_on_single_click (flowbox, FALSE);
