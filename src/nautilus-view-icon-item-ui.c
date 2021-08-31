@@ -1,6 +1,5 @@
 #include "nautilus-view-icon-item-ui.h"
 #include "nautilus-view-item-model.h"
-#include "nautilus-container-max-width.h"
 #include "nautilus-file.h"
 #include "nautilus-thumbnails.h"
 
@@ -10,7 +9,7 @@ struct _NautilusViewIconItemUi
 
     NautilusViewItemModel *model;
 
-    NautilusContainerMaxWidth *item_container;
+    GtkBox *container;
     GtkWidget *icon;
     GtkLabel *label;
 };
@@ -70,20 +69,13 @@ create_icon (NautilusViewIconItemUi *self)
 static void
 update_icon (NautilusViewIconItemUi *self)
 {
-    GtkBox *box;
-    guint icon_size;
-
-    icon_size = nautilus_view_item_model_get_icon_size (self->model);
-    nautilus_container_max_width_set_max_width (NAUTILUS_CONTAINER_MAX_WIDTH (self->item_container),
-                                                icon_size);
-    box = GTK_BOX (gtk_bin_get_child (GTK_BIN (self->item_container)));
     if (self->icon)
     {
-        gtk_container_remove (GTK_CONTAINER (box), GTK_WIDGET (self->icon));
+        gtk_container_remove (GTK_CONTAINER (self->container), GTK_WIDGET (self->icon));
     }
     self->icon = create_icon (self);
     gtk_widget_show_all (GTK_WIDGET (self->icon));
-    gtk_box_pack_start (box, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
+    gtk_box_pack_start (self->container, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
 }
 
 static void
@@ -126,7 +118,6 @@ constructed (GObject *object)
 {
     NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (object);
     GtkBox *container;
-    GtkBox *item_selection_background;
     GtkLabel *label;
     GtkStyleContext *style_context;
     NautilusFile *file;
@@ -137,13 +128,6 @@ constructed (GObject *object)
     file = nautilus_view_item_model_get_file (self->model);
     icon_size = nautilus_view_item_model_get_icon_size (self->model);
     container = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
-    /* This container is for having a constant selection background, instead of
-     * the dinamically sized one of the GtkFlowBox
-     */
-    item_selection_background = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
-    gtk_widget_set_halign (GTK_WIDGET (item_selection_background), GTK_ALIGN_CENTER);
-    gtk_widget_set_valign (GTK_WIDGET (item_selection_background), GTK_ALIGN_START);
-    self->item_container = nautilus_container_max_width_new ();
     self->icon = create_icon (self);
     gtk_box_pack_start (container, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
 
@@ -164,25 +148,20 @@ constructed (GObject *object)
     gtk_label_set_line_wrap (label, TRUE);
     gtk_label_set_line_wrap_mode (label, PANGO_WRAP_WORD_CHAR);
     gtk_label_set_lines (label, 3);
+    gtk_label_set_max_width_chars (label, 0);
     gtk_label_set_justify (label, GTK_JUSTIFY_CENTER);
     gtk_widget_set_valign (GTK_WIDGET (label), GTK_ALIGN_START);
     gtk_box_pack_end (container, GTK_WIDGET (label), FALSE, TRUE, 0);
 
-    style_context = gtk_widget_get_style_context (GTK_WIDGET (item_selection_background));
+    style_context = gtk_widget_get_style_context (GTK_WIDGET (container));
     gtk_style_context_add_class (style_context, "icon-item-background");
 
     gtk_widget_set_valign (GTK_WIDGET (container), GTK_ALIGN_START);
     gtk_widget_set_halign (GTK_WIDGET (container), GTK_ALIGN_CENTER);
 
-    gtk_container_add (GTK_CONTAINER (self->item_container),
-                       GTK_WIDGET (container));
-    nautilus_container_max_width_set_max_width (NAUTILUS_CONTAINER_MAX_WIDTH (self->item_container),
-                                                icon_size);
-
-    gtk_container_add (GTK_CONTAINER (item_selection_background),
-                       GTK_WIDGET (self->item_container));
+    self->container = container;
     gtk_container_add (GTK_CONTAINER (self),
-                       GTK_WIDGET (item_selection_background));
+                       GTK_WIDGET (container));
     gtk_widget_show_all (GTK_WIDGET (self));
 
     g_signal_connect (self->model, "notify::icon-size",
