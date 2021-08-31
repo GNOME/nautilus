@@ -216,6 +216,7 @@ flowbox {
 
 flowboxchild:selected {
   background-color:transparent;
+  outline-color: transparent;
 }
 
 .icon-background {
@@ -225,14 +226,20 @@ flowboxchild:selected {
   border-width:0px;
 }
 
-flowboxchild > .icon-item-background {
-  padding:4px;
+.icon-ui-labels-box {
+  padding: 2px 4px;
+  border-radius: 4px;
 }
-flowboxchild:selected > .icon-item-background {
-  padding:4px;
-  background-color:#4a90d9;
-  border-color:#4a90d9;
-  border-style:solid;
-  border-width:0px;
-  border-radius:4px 4px 4px 4px;
+
+flowboxchild:selected .icon-ui-labels-box {
+  color: @theme_selected_fg_color;
+  background-color: @theme_selected_bg_color;
+}
+
+flowboxchild:selected image {
+  -gtk-icon-effect: dim; /* GTK 3 only */
+  /* GTK 4 TODO: Replace previous line with the following one:
+  -gtk-icon-filter: opacity(0.5);
+  */
+  -gtk-icon-shadow: 0px 0px @theme_selected_bg_color;
 }

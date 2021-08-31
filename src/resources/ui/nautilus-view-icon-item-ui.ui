@@ -7,9 +7,6 @@
         <property name="orientation">vertical</property>
         <property name="halign">center</property>
         <property name="valign">start</property>
-        <style>
-          <class name="icon-item-background"/>
-        </style>
         <child>
           <object class="GtkBox" id="fixed_height_box">
             <property name="orientation">vertical</property>
@@ -31,6 +28,9 @@
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <property name="valign">start</property>
+            <style>
+              <class name="icon-ui-labels-box"/>
+            </style>
             <child>
               <object class="GtkLabel" id="label">
                 <property name="ellipsize">middle</property>
