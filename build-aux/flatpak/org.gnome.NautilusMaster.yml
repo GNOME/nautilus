@@ -32,7 +32,7 @@ modules:
   sources:
   - type: git
     url: https://github.com/Exiv2/exiv2.git
-    branch: main
+    branch: 0.27-maintenance
 - name: gexiv2
   buildsystem: meson
   builddir: true
@@ -45,6 +45,7 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/gexiv2.git
+    branch: gexiv2-0.12
 - name: tracker-miners
   buildsystem: meson
   cleanup:
