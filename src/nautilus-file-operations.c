@@ -205,6 +205,7 @@ typedef struct
     GFile *destination_directory;
     GList *output_files;
     gboolean destination_decided;
+    gboolean extraction_failed;
 
     gdouble base_progress;
 
@@ -8346,6 +8347,8 @@ extract_job_on_error (AutoarExtractor *extractor,
         return;
     }
 
+    extract_job->extraction_failed = TRUE;
+
     /* It is safe to use extract_job->output_files->data only when the
      * extract_job->destination_decided variable was set, see comment in the
      * extract_job_on_decide_destination function.
@@ -8571,8 +8574,7 @@ extract_job_on_scanned (AutoarExtractor *extractor,
 }
 
 static void
-report_extract_final_progress (ExtractJob *extract_job,
-                               gint        total_files)
+report_extract_final_progress (ExtractJob *extract_job)
 {
     char *status;
     g_autofree gchar *basename_dest = NULL;
@@ -8582,7 +8584,11 @@ report_extract_final_progress (ExtractJob *extract_job,
                                             extract_job->destination_directory);
     basename_dest = get_basename (extract_job->destination_directory);
 
-    if (total_files == 1)
+    /* The g_list_length function is used intentionally here instead of the
+     * extract_job->total_files variable to avoid printing wrong basename in
+     * the case of skipped files.
+     */
+    if (g_list_length (extract_job->source_files) == 1)
     {
         GFile *source_file;
         g_autofree gchar *basename = NULL;
@@ -8597,8 +8603,8 @@ report_extract_final_progress (ExtractJob *extract_job,
     {
         status = g_strdup_printf (ngettext ("Extracted %'d file to “%s”",
                                             "Extracted %'d files to “%s”",
-                                            total_files),
-                                  total_files,
+                                            extract_job->total_files),
+                                  extract_job->total_files,
                                   basename_dest);
     }
 
@@ -8609,6 +8615,8 @@ report_extract_final_progress (ExtractJob *extract_job,
                                          g_strdup_printf (_("%s / %s"),
                                                           formatted_size,
                                                           formatted_size));
+
+    nautilus_progress_info_set_progress (extract_job->common.progress, 1, 1);
 }
 
 static void
@@ -8690,6 +8698,7 @@ extract_task_thread_func (GTask        *task,
 
         extract_job->archive_compressed_size = archive_compressed_sizes[i];
         extract_job->destination_decided = FALSE;
+        extract_job->extraction_failed = FALSE;
 
         autoar_extractor_start (extractor,
                                 extract_job->common.cancellable);
@@ -8697,13 +8706,23 @@ extract_task_thread_func (GTask        *task,
         g_signal_handlers_disconnect_by_data (extractor,
                                               extract_job);
 
-        extract_job->base_progress += (gdouble) extract_job->archive_compressed_size /
-                                      (gdouble) extract_job->total_compressed_size;
+        if (!extract_job->extraction_failed)
+        {
+            extract_job->base_progress += (gdouble) extract_job->archive_compressed_size /
+                                          (gdouble) extract_job->total_compressed_size;
+        }
+        else
+        {
+            extract_job->total_files--;
+            extract_job->base_progress *= extract_job->total_compressed_size;
+            extract_job->total_compressed_size -= extract_job->archive_compressed_size;
+            extract_job->base_progress /= extract_job->total_compressed_size;
+        }
     }
 
     if (!job_aborted ((CommonJob *) extract_job))
     {
-        report_extract_final_progress (extract_job, extract_job->total_files);
+        report_extract_final_progress (extract_job);
     }
 
     if (extract_job->common.undo_info)
