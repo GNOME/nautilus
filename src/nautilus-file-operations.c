@@ -68,8 +68,6 @@
 #include <gdk/gdkwayland.h>
 #endif
 
-/* TODO: TESTING!!! */
-
 typedef struct
 {
     GTimer *time;
