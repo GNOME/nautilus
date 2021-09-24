@@ -204,6 +204,7 @@ typedef struct
     GList *source_files;
     GFile *destination_directory;
     GList *output_files;
+    gboolean destination_decided;
 
     gdouble base_progress;
 
@@ -8202,8 +8203,14 @@ extract_job_on_decide_destination (AutoarExtractor *extractor,
         return NULL;
     }
 
+    /* The extract_job->destination_decided variable signalizes whether the
+     * extract_job->output_files list already contains the final location as
+     * its first link. There is no way to get this over the AutoarExtractor
+     * API currently.
+     */
     extract_job->output_files = g_list_prepend (extract_job->output_files,
                                                 decided_destination);
+    extract_job->destination_decided = TRUE;
 
     return g_object_ref (decided_destination);
 }
@@ -8334,6 +8341,15 @@ extract_job_on_error (AutoarExtractor *extractor,
                                             source_file);
 
         return;
+    }
+
+    /* It is safe to use extract_job->output_files->data only when the
+     * extract_job->destination_decided variable was set, see comment in the
+     * extract_job_on_decide_destination function.
+     */
+    if (extract_job->destination_decided)
+    {
+        delete_file_recursively (extract_job->output_files->data, NULL, NULL, NULL);
     }
 
     basename = get_basename (source_file);
@@ -8657,6 +8673,7 @@ extract_task_thread_func (GTask        *task,
                           extract_job);
 
         extract_job->archive_compressed_size = archive_compressed_sizes[i];
+        extract_job->destination_decided = FALSE;
 
         autoar_extractor_start (extractor,
                                 extract_job->common.cancellable);
