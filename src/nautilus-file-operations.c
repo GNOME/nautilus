@@ -210,6 +210,7 @@ typedef struct
 
     guint64 archive_compressed_size;
     guint64 total_compressed_size;
+    gint total_files;
 
     NautilusExtractCallback done_callback;
     gpointer done_callback_data;
@@ -8332,6 +8333,7 @@ extract_job_on_error (AutoarExtractor *extractor,
     GFile *source_file;
     GFile *destination;
     gint response_id;
+    gint remaining_files;
     g_autofree gchar *basename = NULL;
 
     source_file = autoar_extractor_get_source_file (extractor);
@@ -8357,24 +8359,34 @@ extract_job_on_error (AutoarExtractor *extractor,
         g_object_unref (destination);
     }
 
+    if (extract_job->common.skip_all_error)
+    {
+        return;
+    }
+
     basename = get_basename (source_file);
     nautilus_progress_info_take_status (extract_job->common.progress,
                                         g_strdup_printf (_("Error extracting “%s”"),
                                                          basename));
 
-    response_id = run_warning ((CommonJob *) extract_job,
-                               g_strdup_printf (_("There was an error while extracting “%s”."),
-                                                basename),
-                               g_strdup (error->message),
-                               NULL,
-                               FALSE,
-                               CANCEL,
-                               SKIP,
-                               NULL);
+    remaining_files = g_list_length (g_list_find_custom (extract_job->source_files,
+                                                         source_file,
+                                                         (GCompareFunc) g_file_equal)) - 1;
+    response_id = run_cancel_or_skip_warning ((CommonJob *) extract_job,
+                                              g_strdup_printf (_("There was an error while extracting “%s”."),
+                                                               basename),
+                                              g_strdup (error->message),
+                                              NULL,
+                                              extract_job->total_files,
+                                              remaining_files);
 
     if (response_id == 0 || response_id == GTK_RESPONSE_DELETE_EVENT)
     {
         abort_job ((CommonJob *) extract_job);
+    }
+    else if (response_id == 1)
+    {
+        extract_job->common.skip_all_error = TRUE;
     }
 }
 
@@ -8607,7 +8619,6 @@ extract_task_thread_func (GTask        *task,
 {
     ExtractJob *extract_job = task_data;
     GList *l;
-    gint total_files;
     g_autofree guint64 *archive_compressed_sizes = NULL;
     gint i;
 
@@ -8618,9 +8629,10 @@ extract_task_thread_func (GTask        *task,
     nautilus_progress_info_set_details (extract_job->common.progress,
                                         _("Preparing to extract"));
 
-    total_files = g_list_length (extract_job->source_files);
+    extract_job->total_files = g_list_length (extract_job->source_files);
 
-    archive_compressed_sizes = g_malloc0_n (total_files, sizeof (guint64));
+    archive_compressed_sizes = g_malloc0_n (extract_job->total_files,
+                                            sizeof (guint64));
     extract_job->total_compressed_size = 0;
 
     for (l = extract_job->source_files, i = 0;
@@ -8691,7 +8703,7 @@ extract_task_thread_func (GTask        *task,
 
     if (!job_aborted ((CommonJob *) extract_job))
     {
-        report_extract_final_progress (extract_job, total_files);
+        report_extract_final_progress (extract_job, extract_job->total_files);
     }
 
     if (extract_job->common.undo_info)
