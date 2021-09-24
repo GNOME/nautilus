@@ -8330,6 +8330,7 @@ extract_job_on_error (AutoarExtractor *extractor,
 {
     ExtractJob *extract_job = user_data;
     GFile *source_file;
+    GFile *destination;
     gint response_id;
     g_autofree gchar *basename = NULL;
 
@@ -8349,7 +8350,11 @@ extract_job_on_error (AutoarExtractor *extractor,
      */
     if (extract_job->destination_decided)
     {
-        delete_file_recursively (extract_job->output_files->data, NULL, NULL, NULL);
+        destination = extract_job->output_files->data;
+        delete_file_recursively (destination, NULL, NULL, NULL);
+        extract_job->output_files = g_list_delete_link (extract_job->output_files,
+                                                        extract_job->output_files);
+        g_object_unref (destination);
     }
 
     basename = get_basename (source_file);
@@ -8602,7 +8607,6 @@ extract_task_thread_func (GTask        *task,
 {
     ExtractJob *extract_job = task_data;
     GList *l;
-    GList *existing_output_files = NULL;
     gint total_files;
     g_autofree guint64 *archive_compressed_sizes = NULL;
     gint i;
@@ -8689,23 +8693,6 @@ extract_task_thread_func (GTask        *task,
     {
         report_extract_final_progress (extract_job, total_files);
     }
-
-    for (l = extract_job->output_files; l != NULL; l = l->next)
-    {
-        GFile *output_file;
-
-        output_file = G_FILE (l->data);
-
-        if (g_file_query_exists (output_file, NULL))
-        {
-            existing_output_files = g_list_prepend (existing_output_files,
-                                                    g_object_ref (output_file));
-        }
-    }
-
-    g_list_free_full (extract_job->output_files, g_object_unref);
-
-    extract_job->output_files = existing_output_files;
 
     if (extract_job->common.undo_info)
     {
