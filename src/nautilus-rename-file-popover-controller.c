@@ -27,8 +27,8 @@
 #include "nautilus-file-private.h"
 
 
-#define RENAME_ENTRY_MIN_CHARS 20
-#define RENAME_ENTRY_MAX_CHARS 35
+#define RENAME_ENTRY_MIN_CHARS 30
+#define RENAME_ENTRY_MAX_CHARS 50
 
 struct _NautilusRenameFilePopoverController
 {
@@ -39,7 +39,7 @@ struct _NautilusRenameFilePopoverController
 
     GtkWidget *rename_file_popover;
     GtkWidget *name_entry;
-    GtkWidget *name_label;
+    GtkWidget *title_label;
 
     gulong closed_handler_id;
     gulong file_changed_handler_id;
@@ -293,7 +293,7 @@ nautilus_rename_file_popover_controller_new (void)
     GtkWidget *error_label;
     GtkWidget *name_entry;
     GtkWidget *activate_button;
-    GtkWidget *name_label;
+    GtkWidget *title_label;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-rename-file-popover.ui");
     rename_file_popover = GTK_WIDGET (gtk_builder_get_object (builder, "rename_file_popover"));
@@ -301,7 +301,7 @@ nautilus_rename_file_popover_controller_new (void)
     error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
     name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
     activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "rename_button"));
-    name_label = GTK_WIDGET (gtk_builder_get_object (builder, "name_label"));
+    title_label = GTK_WIDGET (gtk_builder_get_object (builder, "title_label"));
 
     self = g_object_new (NAUTILUS_TYPE_RENAME_FILE_POPOVER_CONTROLLER,
                          "error-revealer", error_revealer,
@@ -312,7 +312,7 @@ nautilus_rename_file_popover_controller_new (void)
 
     self->rename_file_popover = g_object_ref_sink (rename_file_popover);
     self->name_entry = name_entry;
-    self->name_label = name_label;
+    self->title_label = title_label;
 
     gtk_popover_set_default_widget (GTK_POPOVER (rename_file_popover), name_entry);
 
@@ -376,9 +376,9 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
                                                          G_CALLBACK (name_entry_on_event),
                                                          self);
 
-    gtk_label_set_text (GTK_LABEL (self->name_label),
-                        self->target_is_folder ? _("Folder name") :
-                        _("File name"));
+    gtk_label_set_text (GTK_LABEL (self->title_label),
+                        self->target_is_folder ? _("Rename Folder") :
+                        _("Rename File"));
 
     edit_name = nautilus_file_get_edit_name (self->target_file);
 

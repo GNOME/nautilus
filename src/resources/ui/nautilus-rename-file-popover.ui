@@ -6,59 +6,31 @@
     <property name="can-focus">False</property>
     <property name="position">bottom</property>
     <child>
-      <object class="GtkGrid">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="margin-start">10</property>
-        <property name="margin-end">10</property>
-        <property name="margin-top">10</property>
-        <property name="margin-bottom">10</property>
-        <property name="row-spacing">6</property>
-        <property name="column-spacing">6</property>
+        <property name="margin-start">18</property>
+        <property name="margin-end">18</property>
+        <property name="margin-top">18</property>
+        <property name="margin-bottom">18</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkLabel" id="name_label">
+          <object class="GtkLabel" id="title_label">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="halign">start</property>
-            <property name="label" translatable="yes">Name</property>
-            <property name="mnemonic-widget">name_entry</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-            </attributes>
+            <property name="margin-bottom">12</property>
+            <style>
+              <class name="title-2"/>
+            </style>
           </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">0</property>
-            <property name="width">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkEntry" id="name_entry">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="can-default">True</property>
+            <property name="margin-bottom">12</property>
           </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="rename_button">
-            <property name="label" translatable="yes">_Rename</property>
-            <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="can-focus">False</property>
-            <property name="receives-default">False</property>
-            <property name="use-underline">True</property>
-            <style>
-              <class name="suggested-action"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left-attach">1</property>
-            <property name="top-attach">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkRevealer" id="error_revealer">
@@ -68,17 +40,27 @@
               <object class="GtkLabel" id="error_label">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">4</property>
-                <property name="margin-bottom">4</property>
+                <property name="margin-bottom">12</property>
+                <property name="max-width-chars">0</property>
+                <property name="wrap">True</property>
                 <property name="xalign">0</property>
               </object>
             </child>
           </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">2</property>
-            <property name="width">2</property>
-          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="rename_button">
+            <property name="label" translatable="yes">_Rename</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="halign">end</property>
+            <property name="use-underline">True</property>
+            <style>
+              <class name="suggested-action"/>
+            </style>
+          </object>
         </child>
       </object>
     </child>
