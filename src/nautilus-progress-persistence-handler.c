@@ -145,7 +145,7 @@ progress_persistence_handler_show_complete_notification (NautilusProgressPersist
 
     complete_notification = g_notification_new (_("File Operations"));
     g_notification_set_body (complete_notification,
-                             _("All file operations have been successfully completed"));
+                             _("All file operations have been completed"));
     nautilus_application_send_notification (self->app,
                                             "transfer-complete",
                                             complete_notification);
