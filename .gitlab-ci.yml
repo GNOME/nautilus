@@ -44,7 +44,7 @@ update image:
          STORAGE_DRIVER: vfs
          BUILDAH_FORMAT: docker
          BUILDAH_ISOLATION: chroot
-    image: registry.fedoraproject.org/fedora:33
+    image: registry.fedoraproject.org/fedora:latest
     stage: image
     script:
         - dnf install -y buildah runc
@@ -52,8 +52,8 @@ update image:
         - buildah bud --tag $CI_REGISTRY_IMAGE -f .gitlab/Dockerfile
         - buildah tag $CI_REGISTRY_IMAGE "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
         - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - buildah push $CI_REGISTRY_IMAGE
-        - buildah push "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
+        - buildah push --creds $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD $CI_REGISTRY_IMAGE
+        - buildah push --creds $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
     when: manual
     only:
         - web
