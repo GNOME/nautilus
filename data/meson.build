@@ -15,16 +15,6 @@ install_data(
 
 po_dir = join_paths(meson.source_root(), 'po')
 
-line_up_parameters = executable(
-  'lineup-parameters',
-  'lineup-parameters.c',
-  build_by_default: false,
-  dependencies: [
-    gio,
-    gio_unix,
-  ]
-)
-
 desktop_conf = configuration_data()
 
 desktop_conf.set('icon', application_id)
