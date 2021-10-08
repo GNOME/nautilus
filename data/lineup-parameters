@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+#
+# Copyright © 2019 Michael Catanzaro <mcatanzaro@gnome.org>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Based on original C lineup-parameters by Sébastien Wilmet <swilmet@gnome.org>
+# Rewritten in Python to allow simple execution from source directory.
+#
+# Usage: lineup-parameters [file]
+# If the file is not given, stdin is read.
+# The result is printed to stdout.
+#
+# The restrictions:
+# - The function name must be at column 0, followed by a space and an opening
+#   parenthesis;
+# - One parameter per line;
+# - A parameter must follow certain rules (see the regex in the code), but it
+#   doesn't accept all possibilities of the C language.
+# - The opening curly brace ("{") of the function must also be at column 0.
+#
+# If one restriction is missing, the function declaration is not modified.
+#
+# Example:
+#
+# gboolean
+# frobnitz (Frobnitz *frobnitz,
+#           gint magic_number,
+#           GError **error)
+# {
+#   ...
+# }
+#
+# Becomes:
+#
+# gboolean
+# frobnitz (Frobnitz  *frobnitz,
+#           gint       magic_number,
+#           GError   **error)
+# {
+#   ...
+# }
+#
+# TODO: support "..." vararg parameter
+
+import argparse
+import re
+import sys
+
+from typing import NamedTuple
+
+# https://regexr.com/ is your friend.
+functionNameRegex = re.compile(r'^(\w+) ?\(')
+parameterRegex = re.compile(
+    r'^\s*(?P<type>(const\s+)?\w+)'
+    r'\s+(?P<stars>\**)'
+    r'\s*(?P<name>\w+)'
+    r'\s*(?P<end>,|\))'
+    r'\s*$')
+openingCurlyBraceRegex = re.compile(r'^{\s*$')
+
+
+def matchFunctionName(line):
+    match = functionNameRegex.match(line)
+    if match:
+        functionName = match.group(1)
+        firstParamPosition = match.end(0)
+        return (functionName, firstParamPosition)
+    return (None, 0)
+
+
+class ParameterInfo(NamedTuple):
+    paramType: str
+    name: str
+    numStars: int
+    isLastParameter: bool
+
+
+def matchParameter(line):
+    _, firstParamPosition = matchFunctionName(line)
+    match = parameterRegex.match(line[firstParamPosition:])
+    if match is None:
+        return None
+    paramType = match.group('type')
+    assert(paramType is not None)
+    name = match.group('name')
+    assert(name is not None)
+    stars = match.group('stars')
+    numStars = len(stars) if stars is not None else 0
+    end = match.group('end')
+    isLastParameter = True if end is not None and end == ')' else False
+    return ParameterInfo(paramType, name, numStars, isLastParameter)
+
+
+def matchOpeningCurlyBrace(line):
+    return True if openingCurlyBraceRegex.match(line) is not None else False
+
+
+# Length returned is number of lines the declaration takes up
+def getFunctionDeclarationLength(remainingLines):
+    for i in range(len(remainingLines)):
+        currentLine = remainingLines[i]
+        parameterInfo = matchParameter(currentLine)
+        if parameterInfo is None:
+            return 0
+        if parameterInfo.isLastParameter:
+            if i + 1 == len(remainingLines):
+                return 0
+            nextLine = remainingLines[i + 1]
+            if not matchOpeningCurlyBrace(nextLine):
+                return 0
+            return i + 1
+    return 0
+
+
+def getParameterInfos(remainingLines, length):
+    parameterInfos = []
+    for i in range(length):
+        parameterInfos.append(matchParameter(remainingLines[i]))
+    return parameterInfos
+
+
+def computeSpacing(parameterInfos):
+    maxTypeLength = 0
+    maxStarsLength = 0
+    for parameterInfo in parameterInfos:
+        maxTypeLength = max(maxTypeLength, len(parameterInfo.paramType))
+        maxStarsLength = max(maxStarsLength, parameterInfo.numStars)
+    return (maxTypeLength, maxStarsLength)
+
+
+def printParameter(parameterInfo, maxTypeLength, maxStarsLength, outfile):
+    outfile.write(f'{parameterInfo.paramType:<{maxTypeLength + 1}}')
+    paramNamePaddedWithStars = f'{parameterInfo.name:*>{parameterInfo.numStars + len(parameterInfo.name)}}'
+    outfile.write(f'{paramNamePaddedWithStars:>{maxStarsLength + len(parameterInfo.name)}}')
+
+
+def printFunctionDeclaration(remainingLines, length, useTabs, outfile):
+    functionName, _ = matchFunctionName(remainingLines[0])
+    assert(functionName is not None)
+    outfile.write(f'{functionName} (')
+    numSpacesToParenthesis = len(functionName) + 2
+    whitespace = ''
+    if useTabs:
+        tabs = ''.ljust(numSpacesToParenthesis // 8, '\t')
+        spaces = ''.ljust(numSpacesToParenthesis % 8)
+        whitespace = tabs + spaces
+    else:
+        whitespace = ''.ljust(numSpacesToParenthesis)
+    parameterInfos = getParameterInfos(remainingLines, length)
+    maxTypeLength, maxStarsLength = computeSpacing(parameterInfos)
+    numParameters = len(parameterInfos)
+    for i in range(numParameters):
+        parameterInfo = parameterInfos[i]
+        if i != 0:
+            outfile.write(whitespace)
+        printParameter(parameterInfo, maxTypeLength, maxStarsLength, outfile)
+        if i + 1 != numParameters:
+            outfile.write(',\n')
+    outfile.write(')\n')
+
+
+def parseContents(infile, useTabs, outfile):
+    lines = infile.readlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        functionName, _ = matchFunctionName(line)
+        if functionName is None:
+            outfile.write(line)
+            i += 1
+            continue
+        remainingLines = lines[i:]
+        length = getFunctionDeclarationLength(remainingLines)
+        if length == 0:
+            outfile.write(line)
+            i += 1
+            continue
+        printFunctionDeclaration(remainingLines, length, useTabs, outfile)
+        i += length
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description='Line up parameters of C functions')
+    parser.add_argument('infile', nargs='?',
+                        type=argparse.FileType('r'),
+                        default=sys.stdin,
+                        help='input C source file')
+    parser.add_argument('-o', metavar='outfile', nargs='?',
+                        type=argparse.FileType('w'),
+                        default=sys.stdout,
+                        help='where to output modified file')
+    parser.add_argument('--tabs', action='store_true',
+                        help='whether use tab characters in the output')
+    args = parser.parse_args()
+    parseContents(args.infile, args.tabs, args.o)
+    args.infile.close()
+    args.o.close()

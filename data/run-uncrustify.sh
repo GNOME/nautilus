@@ -10,8 +10,7 @@ fi
 
 if [ ! -x "$DATA/lineup-parameters" ];
 then
-    echo "Script lineup-parameters does not exists here in (source directory)/data, probably because Nautilus was built in a different directory than the source directory.
-Copy the program in the (build directory)/data/lineup-parameters here in (source directory)/data and run again run-uncrustify.sh."
+    echo "Script lineup-parameters does not exists."
     exit 1
 fi
 
