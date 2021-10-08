@@ -7,7 +7,6 @@ variables:
 stages:
     - image
     - test
-    - cross environment
     - deploy
 
 flatpak:
@@ -23,20 +22,6 @@ nightly:
     extends: '.publish_nightly'
     dependencies:
         - flatpak
-
-fedora latest:
-    image:
-        name: registry.gitlab.gnome.org/gnome/nautilus:latest
-        entrypoint: ["/bin/sh", "-c"]
-    stage: cross environment
-    script:
-        - meson _build .
-        - cd _build
-        - ninja test
-    only:
-        - web
-        - master
-    allow_failure: true
 
 style check:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
