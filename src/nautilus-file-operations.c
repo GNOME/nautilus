@@ -269,6 +269,8 @@ is_all_button_text (const char *button_text)
            !strcmp (button_text, MERGE_ALL);
 }
 
+static gboolean job_aborted (CommonJob *job);
+
 static void scan_sources (GList      *files,
                           SourceInfo *source_info,
                           CommonJob  *job,
@@ -1119,7 +1121,10 @@ finalize_common (CommonJob *common)
 
     if (common->undo_info != NULL)
     {
-        nautilus_file_undo_manager_set_action (common->undo_info);
+        if (!job_aborted (common))
+        {
+            nautilus_file_undo_manager_set_action (common->undo_info);
+        }
         g_object_unref (common->undo_info);
     }
 
@@ -1619,9 +1624,6 @@ inhibit_power_manager (CommonJob  *job,
 static void
 abort_job (CommonJob *job)
 {
-    /* destroy the undo action data too */
-    g_clear_object (&job->undo_info);
-
     g_cancellable_cancel (job->cancellable);
 }
 
