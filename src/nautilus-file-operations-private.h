@@ -9,8 +9,19 @@
 #include "nautilus-progress-info.h"
 #include "nautilus-file-undo-operations.h"
 
+typedef enum
+{
+    OP_KIND_NOT_SET = 0,
+    OP_KIND_COPY,
+    OP_KIND_MOVE,
+    OP_KIND_DELETE,
+    OP_KIND_TRASH,
+    OP_KIND_COMPRESS
+} OpKind;
+
 typedef struct
 {
+    OpKind kind;
     GTimer *time;
     GtkWindow *parent_window;
     NautilusFileOperationsDBusData *dbus_data;
@@ -85,15 +96,6 @@ typedef struct
     guint32 dir_permissions;
     guint32 dir_mask;
 } SetPermissionsJob;
-
-typedef enum
-{
-    OP_KIND_COPY,
-    OP_KIND_MOVE,
-    OP_KIND_DELETE,
-    OP_KIND_TRASH,
-    OP_KIND_COMPRESS
-} OpKind;
 
 typedef struct
 {

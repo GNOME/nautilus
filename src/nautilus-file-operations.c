@@ -2512,6 +2512,7 @@ setup_delete_job (GList                          *files,
 
     /* TODO: special case desktop icon link files ... */
     job = op_job_new (DeleteJob, parent_window, dbus_data);
+    job->common.kind = try_trash ? OP_KIND_TRASH : OP_KIND_DELETE;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
     job->try_trash = try_trash;
     job->user_cancel = FALSE;
@@ -5832,6 +5833,7 @@ copy_job_setup (GList                          *files,
     g_autoptr (GFile) src_dir = NULL;
 
     job = op_job_new (CopyMoveJob, parent_window, dbus_data);
+    job->common.kind = OP_KIND_COPY;
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -6461,6 +6463,7 @@ move_job_setup (GList                          *files,
     CopyMoveJob *job;
 
     job = op_job_new (CopyMoveJob, parent_window, dbus_data);
+    job->common.kind = OP_KIND_MOVE;
     job->is_move = TRUE;
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
@@ -8818,6 +8821,7 @@ nautilus_file_operations_compress (GList                          *files,
     CompressJob *compress_job;
 
     compress_job = op_job_new (CompressJob, parent_window, dbus_data);
+    compress_job->common.kind = OP_KIND_COMPRESS;
     compress_job->source_files = g_list_copy_deep (files,
                                                    (GCopyFunc) g_object_ref,
                                                    NULL);
