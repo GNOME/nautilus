@@ -3258,8 +3258,7 @@ retry:
 
             if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
             {
-                subdir = g_file_get_child (dir,
-                                           g_file_info_get_name (info));
+                subdir = g_file_enumerator_get_child (enumerator, info);
 
                 subdirs = g_list_prepend (subdirs, subdir);
             }
@@ -4766,8 +4765,7 @@ retry:
         while (!job_aborted (job) &&
                (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error ? NULL : &error)) != NULL)
         {
-            src_file = g_file_get_child (src,
-                                         g_file_info_get_name (info));
+            src_file = g_file_enumerator_get_child (enumerator, info);
             copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
                             source_info, transfer_info, NULL, FALSE, &local_skipped_file,
                             readonly_source_fs);
