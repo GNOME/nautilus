@@ -7113,7 +7113,7 @@ nautilus_file_operations_duplicate (GList                          *files,
         job->common.undo_info =
             nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_DUPLICATE,
                                              g_list_length (files),
-                                             src_dir, src_dir);
+                                             src_dir, NULL);
     }
 
     task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
