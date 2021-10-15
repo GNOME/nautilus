@@ -5961,15 +5961,24 @@ copy_job_setup (GList                          *files,
                 gpointer                        done_callback_data)
 {
     CopyMoveJob *job;
+    GFile *progress_dest = target_dir;
+    g_autoptr (GFile) src_dir = NULL;
 
     job = op_job_new (CopyMoveJob, parent_window, dbus_data);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
-    job->destination = g_object_ref (target_dir);
+    g_set_object (&job->destination, target_dir);
+    if (progress_dest == NULL)
+    {
+        /* Duplication operation doesn't have a destination, but progress info
+         * demands one. */
+        src_dir = g_file_get_parent (files->data);
+        progress_dest = src_dir;
+    }
     /* Need to indicate the destination for the operation notification open
      * button. */
-    nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
+    nautilus_progress_info_set_destination (((CommonJob *) job)->progress, progress_dest);
     job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
 
     return job;
@@ -7090,20 +7099,13 @@ nautilus_file_operations_duplicate (GList                          *files,
 {
     g_autoptr (GTask) task = NULL;
     CopyMoveJob *job;
-    g_autoptr (GFile) parent = NULL;
 
-    job = op_job_new (CopyMoveJob, parent_window, dbus_data);
-    job->done_callback = done_callback;
-    job->done_callback_data = done_callback_data;
-    job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
-    job->destination = NULL;
-    /* Duplicate files doesn't have a destination, since is the same as source.
-     * For that set as destination the source parent folder */
-    parent = g_file_get_parent (files->data);
-    /* Need to indicate the destination for the operation notification open
-     * button. */
-    nautilus_progress_info_set_destination (((CommonJob *) job)->progress, parent);
-    job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
+    job = copy_job_setup (files,
+                          NULL,
+                          parent_window,
+                          dbus_data,
+                          done_callback,
+                          done_callback_data);
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
