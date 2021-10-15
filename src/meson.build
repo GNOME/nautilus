@@ -186,6 +186,7 @@ libnautilus_sources = [
   'nautilus-operations-ui-manager.h',
   'nautilus-file-operations.c',
   'nautilus-file-operations.h',
+  'nautilus-file-operations-private.h',
   'nautilus-file-operations-dbus-data.c',
   'nautilus-file-operations-dbus-data.h',
   'nautilus-file-private.h',
