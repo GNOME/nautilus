@@ -492,6 +492,13 @@ listbox_header_func (GtkListBoxRow             *row,
 {
     GtkWidget *separator;
 
+    if (before == NULL)
+    {
+        /* First row needs no separator */
+        gtk_list_box_row_set_header (row, NULL);
+        return;
+    }
+
     separator = gtk_list_box_row_get_header (row);
     if (separator == NULL)
     {
