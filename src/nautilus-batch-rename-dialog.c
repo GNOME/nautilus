@@ -491,14 +491,14 @@ listbox_header_func (GtkListBoxRow             *row,
                      NautilusBatchRenameDialog *dialog)
 {
     gboolean show_separator;
+    GtkWidget *separator;
 
     show_separator = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row),
                                                          "show-separator"));
 
-    if (show_separator)
+    separator = gtk_list_box_row_get_header (row);
+    if (separator == NULL && show_separator)
     {
-        GtkWidget *separator;
-
         separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
         gtk_widget_show (separator);
 
