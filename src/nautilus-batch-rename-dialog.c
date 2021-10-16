@@ -490,14 +490,10 @@ listbox_header_func (GtkListBoxRow             *row,
                      GtkListBoxRow             *before,
                      NautilusBatchRenameDialog *dialog)
 {
-    gboolean show_separator;
     GtkWidget *separator;
 
-    show_separator = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row),
-                                                         "show-separator"));
-
     separator = gtk_list_box_row_get_header (row);
-    if (separator == NULL && show_separator)
+    if (separator == NULL)
     {
         separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
         gtk_widget_show (separator);
@@ -577,15 +573,12 @@ update_rows_height (NautilusBatchRenameDialog *dialog)
 
 static GtkWidget *
 create_original_name_row_for_label (NautilusBatchRenameDialog *dialog,
-                                    const gchar               *old_text,
-                                    gboolean                   show_separator)
+                                    const gchar               *old_text)
 {
     GtkWidget *row;
     GtkWidget *label_old;
 
     row = gtk_list_box_row_new ();
-
-    g_object_set_data (G_OBJECT (row), "show-separator", GINT_TO_POINTER (show_separator));
 
     label_old = gtk_label_new (old_text);
     gtk_label_set_xalign (GTK_LABEL (label_old), 0.0);
@@ -603,15 +596,12 @@ create_original_name_row_for_label (NautilusBatchRenameDialog *dialog,
 
 static GtkWidget *
 create_result_row_for_label (NautilusBatchRenameDialog *dialog,
-                             const gchar               *new_text,
-                             gboolean                   show_separator)
+                             const gchar               *new_text)
 {
     GtkWidget *row;
     GtkWidget *label_new;
 
     row = gtk_list_box_row_new ();
-
-    g_object_set_data (G_OBJECT (row), "show-separator", GINT_TO_POINTER (show_separator));
 
     label_new = gtk_label_new (new_text);
     gtk_label_set_xalign (GTK_LABEL (label_new), 0.0);
@@ -628,15 +618,12 @@ create_result_row_for_label (NautilusBatchRenameDialog *dialog,
 }
 
 static GtkWidget *
-create_arrow_row_for_label (NautilusBatchRenameDialog *dialog,
-                            gboolean                   show_separator)
+create_arrow_row_for_label (NautilusBatchRenameDialog *dialog)
 {
     GtkWidget *row;
     GtkWidget *icon;
 
     row = gtk_list_box_row_new ();
-
-    g_object_set_data (G_OBJECT (row), "show-separator", GINT_TO_POINTER (show_separator));
 
     if (gtk_widget_get_direction (row) == GTK_TEXT_DIR_RTL)
     {
@@ -739,17 +726,17 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
         new_name = l1->data;
 
         name = nautilus_file_get_name (file);
-        row = create_original_name_row_for_label (dialog, name, TRUE);
+        row = create_original_name_row_for_label (dialog, name);
         gtk_container_add (GTK_CONTAINER (dialog->original_name_listbox), row);
         dialog->original_name_listbox_rows = g_list_prepend (dialog->original_name_listbox_rows,
                                                              row);
 
-        row = create_arrow_row_for_label (dialog, TRUE);
+        row = create_arrow_row_for_label (dialog);
         gtk_container_add (GTK_CONTAINER (dialog->arrow_listbox), row);
         dialog->arrow_listbox_rows = g_list_prepend (dialog->arrow_listbox_rows,
                                                      row);
 
-        row = create_result_row_for_label (dialog, new_name->str, TRUE);
+        row = create_result_row_for_label (dialog, new_name->str);
         gtk_container_add (GTK_CONTAINER (dialog->result_listbox), row);
         dialog->result_listbox_rows = g_list_prepend (dialog->result_listbox_rows,
                                                       row);
