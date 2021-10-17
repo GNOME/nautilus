@@ -7302,7 +7302,7 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
     view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->slot == NULL ||
+    if (priv->in_destruction ||
         !priv->active)
     {
         /* We've been destroyed or became inactive since call */
@@ -7344,7 +7344,7 @@ on_clipboard_targets_received (GtkClipboard *clipboard,
     priv = nautilus_files_view_get_instance_private (view);
     is_data_copied = FALSE;
 
-    if (priv->slot == NULL ||
+    if (priv->in_destruction ||
         !priv->active)
     {
         /* We've been destroyed or became inactive since call */
@@ -8396,7 +8396,7 @@ nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
     /* Don't update after destroy (#349551),
      * or if we are not active.
      */
-    if (priv->slot == NULL ||
+    if (priv->in_destruction ||
         !priv->active)
     {
         return;
@@ -8553,7 +8553,7 @@ schedule_update_context_menus (NautilusFilesView *view)
     /* Don't schedule updates after destroy (#349551),
      * or if we are not active.
      */
-    if (priv->slot == NULL ||
+    if (priv->in_destruction ||
         !priv->active)
     {
         return;
@@ -8604,7 +8604,7 @@ schedule_update_status (NautilusFilesView *view)
     priv = nautilus_files_view_get_instance_private (view);
 
     /* Make sure we haven't already destroyed it */
-    if (priv->slot == NULL)
+    if (priv->in_destruction)
     {
         return;
     }
