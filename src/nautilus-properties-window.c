@@ -86,8 +86,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *icon_button_image;
     GtkWidget *icon_chooser;
 
-    GtkGrid *basic_grid;
-
     GtkLabel *name_title_label;
     GtkStack *name_stack;
     GtkWidget *name_field;
@@ -2168,8 +2166,7 @@ schedule_directory_contents_update (NautilusPropertiesWindow *self)
 }
 
 static void
-setup_contents_field (NautilusPropertiesWindow *self,
-                      GtkGrid                  *grid)
+setup_contents_field (NautilusPropertiesWindow *self)
 {
     g_list_foreach (self->target_files,
                     (GFunc) start_deep_count_for_file,
@@ -2639,17 +2636,11 @@ open_in_disks (GtkButton                *button,
 static void
 setup_basic_page (NautilusPropertiesWindow *self)
 {
-    GtkGrid *grid;
-
     /* Icon pixmap */
 
     setup_image_widget (self, should_show_custom_icon_buttons (self));
 
     self->icon_chooser = NULL;
-
-    /* Grid */
-
-    grid = self->basic_grid;
 
     update_name_field (self);
 
@@ -2685,7 +2676,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
     {
         gtk_widget_show (self->contents_title_label);
         gtk_widget_show (self->contents_value_label);
-        setup_contents_field (self, grid);
+        setup_contents_field (self);
     }
     else
     {
@@ -5328,7 +5319,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button_image);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_grid);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_field);
