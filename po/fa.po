@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2021-08-15 07:12+0000\n"
-"PO-Revision-Date: 2021-09-27 18:28+0330\n"
+"PO-Revision-Date: 2021-10-15 12:17+0330\n"
 "Last-Translator: eshagh <eshagh094@gmail.com>\n"
 "Language-Team: Persian <>\n"
 "Language: fa\n"
@@ -182,8 +182,7 @@ msgstr "چه وقت تصاویر بندانگشتی پرونده‌ها نشان
 #: data/org.gnome.nautilus.gschema.xml:148
 msgid "Speed trade-off for when to show a file as a thumbnail. If set to “always” then always thumbnail, even if the folder is on a remote server. If set to “local-only” then only show thumbnails for local file systems. If set to “never” then never bother to thumbnail files, just use a generic icon. Despite what the name may suggest, this applies to any previewable file type."
 msgstr ""
-"موازنهٔ سرعت در برابر چگونگی نشان دادن پرونده‌های تصویری به شکل بندانگشتی. اگر روی «always» تنظیم شود مسطوره‌سازی همواره انجام می‌شود، حتی اگر پرونده روی یک کارساز دوردست باشد. اگر روی «local-only» تنظیم شود تنها بندانگشتی‌های سامانه‌پرونده‌های محلّی نشان داده می‌شوند. اگر روی «never» تنظیم شود هیچ وقت زحمت بندانگشتی‌سازی از پرونده‌ها را به خود نداده و فقط از یک نقشک عام استفاده می‌کند. بدون در نظر "
-"گرفتن چیزی که نام پرونده می‌گوید، این روی هر پروندهٔ قابل پیش‌نمایشی اعمال می‌شود."
+"موازنهٔ سرعت در برابر چگونگی نشان دادن پرونده‌های تصویری به شکل بندانگشتی. اگر روی «always» تنظیم شود مسطوره‌سازی همواره انجام می‌شود، حتی اگر پرونده روی یک کارساز دوردست باشد. اگر روی «local-only» تنظیم شود تنها بندانگشتی‌های سامانه‌پرونده‌های محلّی نشان داده می‌شوند. اگر روی «never» تنظیم شود هیچ وقت زحمت بندانگشتی‌سازی از پرونده‌ها را به خود نداده و فقط از یک نقشک عام استفاده می‌کند. بدون در نظر گرفتن چیزی که نام پرونده می‌گوید، این روی هر پروندهٔ قابل پیش‌نمایشی اعمال می‌شود."
 
 #: data/org.gnome.nautilus.gschema.xml:153
 msgid "Maximum image size for thumbnailing"
@@ -283,13 +282,12 @@ msgstr "حد حذف متن"
 
 #: data/org.gnome.nautilus.gschema.xml:228
 msgid ""
-"A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form “Zoom Level:Integer”. For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default "
-"entry of the form “Integer” without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 — always display overlong file names; 3 — shorten file names if they exceed three lines; smallest:5,smaller:4,0 — shorten file names if they exceed five lines for zoom level “smallest”. Shorten file names if they exceed four lines for "
-"zoom level “smaller”. Do not shorten file names for other zoom levels. Available zoom levels: small, standard, large."
+"A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form “Zoom Level:Integer”. For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form “Integer” without any specified zoom level is also allowed. "
+"It defines the maximum number of lines for all other zoom levels. Examples: 0 — always display overlong file names; 3 — shorten file names if they exceed three lines; smallest:5,smaller:4,0 — shorten file names if they exceed five lines for zoom level “smallest”. Shorten file names if they exceed four lines for zoom level “smaller”. Do not shorten file names for other zoom levels. Available zoom levels: small, standard, large."
 msgstr ""
-"یک رشته که مشخص می‌کند بسته به بزرگنمایی، چگونه بخش‌های نام پرونده‌های خیلی طولانی با بیضی‌هایی روی رومیزی جایگزین شوند. هر کدام از ورودی‌های فهرستی به شکل «Zoom Level:Integer» هستند. برای هر سطح بزرگ‌نمایی مشخص شده، اگر عدد بزرگتر از صفر باشد، نام پرونده از تعداد خط‌های داده شده بیشتر نخواهد شد. اگر صفر یا کمتر باشد، هیچ مرزی روی تعداد خط‌های نمایش داده شده اعمال نخواهد شد. ورودی پیش فرض به شکل "
-"«Integer» بدون مشخص کردن سطح بزرگ‌نمایی نیز پذیرفته است. که چیزی که مشخص می‌کند تعداد خط‌ها برای همهٔ سطح‌های دیگر بزرگ‌نمایی است. مثال‌ها: ۰ - همیشه نام پرونده‌‌های خیلی طولانی را نشان بده؛ ۳- نام پرونده‌های را کوچک کن اگر از سه خط بیشتر شدند؛ کوچکترین:۵،کوچکتر:۴،۰- نام پرونده‌ها را در صورتی کوچک کن که از ۵ خط بیشتر شوند و سطح بزرگ‌نمایی روی «smallest» باشد. نام پرونده‌ها را در صورتی کوچک کن که از ۴ خط "
-"بیشتر شوند و سطح بزرگ‌نمایی روی «smaller» باشد. برای دیگر سطح‌های بزرگ‌نمایی نام پرونده‌ها را برای دیگر سطوح بزرگ‌نمایی کوچک نکن. سطح بزرگ‌نمایی‌های ممکن عبارتند از: کوچکترین (۳۳٪)، کوچکتر (۵۰٪)، کوچک (۶۶٪)، استاندارد (۱۰۰٪)، بزرگ (۱۵۰٪)، بزرگ‌تر (۲۰۰٪)، بزرگ‌ترین (۴۰۰٪)"
+"یک رشته که مشخص می‌کند بسته به بزرگنمایی، چگونه بخش‌های نام پرونده‌های خیلی طولانی با بیضی‌هایی روی رومیزی جایگزین شوند. هر کدام از ورودی‌های فهرستی به شکل «Zoom Level:Integer» هستند. برای هر سطح بزرگ‌نمایی مشخص شده، اگر عدد بزرگتر از صفر باشد، نام پرونده از تعداد خط‌های داده شده بیشتر نخواهد شد. اگر صفر یا کمتر باشد، هیچ مرزی روی تعداد خط‌های نمایش داده شده اعمال نخواهد شد. ورودی پیش فرض به شکل «Integer» بدون مشخص کردن سطح بزرگ‌نمایی نیز پذیرفته است. که چیزی که مشخص می‌کند "
+"تعداد خط‌ها برای همهٔ سطح‌های دیگر بزرگ‌نمایی است. مثال‌ها: ۰ - همیشه نام پرونده‌‌های خیلی طولانی را نشان بده؛ ۳- نام پرونده‌های را کوچک کن اگر از سه خط بیشتر شدند؛ کوچکترین:۵،کوچکتر:۴،۰- نام پرونده‌ها را در صورتی کوچک کن که از ۵ خط بیشتر شوند و سطح بزرگ‌نمایی روی «smallest» باشد. نام پرونده‌ها را در صورتی کوچک کن که از ۴ خط بیشتر شوند و سطح بزرگ‌نمایی روی «smaller» باشد. برای دیگر سطح‌های بزرگ‌نمایی نام پرونده‌ها را برای دیگر سطوح بزرگ‌نمایی کوچک نکن. سطح بزرگ‌نمایی‌های ممکن عبارتند "
+"از: کوچکترین (۳۳٪)، کوچکتر (۵۰٪)، کوچک (۶۶٪)، استاندارد (۱۰۰٪)، بزرگ (۱۵۰٪)، بزرگ‌تر (۲۰۰٪)، بزرگ‌ترین (۴۰۰٪)"
 
 #: data/org.gnome.nautilus.gschema.xml:235
 msgid "Default list view zoom level"
@@ -361,8 +359,8 @@ msgstr "Y"
 
 #. Put up the timed wait window.
 #. Add buttons
-#: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:360 src/nautilus-file-operations.c:256 src/nautilus-files-view.c:1216 src/nautilus-files-view.c:1788 src/nautilus-files-view.c:6104 src/nautilus-files-view.c:6565 src/nautilus-location-entry.c:284 src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590 src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317
-#: src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300 src/nautilus-search-popover.c:583 src/resources/ui/nautilus-batch-rename-dialog.ui:12 src/resources/ui/nautilus-file-properties-change-permissions.ui:13
+#: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:360 src/nautilus-file-operations.c:256 src/nautilus-files-view.c:1216 src/nautilus-files-view.c:1788 src/nautilus-files-view.c:6104 src/nautilus-files-view.c:6565 src/nautilus-location-entry.c:284 src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590 src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317 src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300
+#: src/nautilus-search-popover.c:583 src/resources/ui/nautilus-batch-rename-dialog.ui:12 src/resources/ui/nautilus-file-properties-change-permissions.ui:13
 msgid "_Cancel"
 msgstr "_لغو"
 
@@ -752,9 +750,10 @@ msgstr ""
 msgid "--check cannot be used with other options."
 msgstr "نمی‌توان از check-- همراه گزینه‌های دیگر استفاده کرد."
 
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #: src/nautilus-application.c:615
 msgid "--quit cannot be used with URIs."
-msgstr "نمی‌توان از ‪--quit‬ با نشانی‌های اینترنتی استفاده کرد."
+msgstr "نمی‌توان از ⁦--quit⁩ با نشانی‌های اینترنتی استفاده کرد."
 
 #: src/nautilus-application.c:624
 msgid "--select must be used with at least an URI."
@@ -1277,13 +1276,13 @@ msgstr "پرونده پیدا نشد"
 msgid "Starred"
 msgstr "ستاره‌دار"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: Time in 24h format
 #: src/nautilus-file.c:5533
 msgid "%H:%M"
 msgstr "⁦%OH:%OM⁩"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: Time in 12h format
 #: src/nautilus-file.c:5538
 msgid "%l:%M %p"
@@ -1294,7 +1293,7 @@ msgstr "⁦%Ol:%OM⁩ %p"
 msgid "Yesterday"
 msgstr "دیروز"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
 #: src/nautilus-file.c:5556
@@ -1302,7 +1301,7 @@ msgstr "دیروز"
 msgid "Yesterday %H:%M"
 msgstr "دیروز، ⁦%OH:%OM⁩"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
 #: src/nautilus-file.c:5563
@@ -1315,7 +1314,7 @@ msgstr "دیروز، ⁦%OI:%OM⁩ %p"
 msgid "%a"
 msgstr "%a"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
 #: src/nautilus-file.c:5582
@@ -1323,7 +1322,7 @@ msgstr "%a"
 msgid "%a %H:%M"
 msgstr "%a ⁦%OH:%OM⁩"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: src/nautilus-file.c:5589
@@ -1338,7 +1337,7 @@ msgstr "%a ⁦%Ol:%OM⁩ %p"
 msgid "%-e %b"
 msgstr "%-Oe %b"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
@@ -1347,7 +1346,7 @@ msgstr "%-Oe %b"
 msgid "%-e %b %H:%M"
 msgstr "%-Oe %b ⁦%OH:%OM⁩"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
@@ -1363,7 +1362,7 @@ msgstr "%-Oe %b ⁦%Ol:%OM⁩ %p"
 msgid "%-e %b %Y"
 msgstr "%-Oe %b %OY"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
@@ -1372,7 +1371,7 @@ msgstr "%-Oe %b %OY"
 msgid "%-e %b %Y %H:%M"
 msgstr "%-Oe %b %OY، ⁦%OH:%OM⁩"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن زمان، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
@@ -1381,10 +1380,15 @@ msgstr "%-Oe %b %OY، ⁦%OH:%OM⁩"
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-Oe %b %OY، ⁦%Ol:%OM⁩ %p"
 
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
+# * استفاده از «‎%c» به عنوان ترجمه باعث اضافه شدن نویسه‌های
+# * زیرمتن راست‌به‌چپ در ابتدا و انتهای خروجی میشود
+# * و زمان درست نشان داده نمی‌شود.
+# * اگر مطمعا هستید که این اشکال برطرف شده، ترجمه را اصلاح کنید
 #: src/nautilus-file.c:5659
 #, no-c-format
 msgid "%c"
-msgstr "%c"
+msgstr "%a %-Oe %b %OY، ⁦%OH:%OM:%OS⁩"
 
 #: src/nautilus-file.c:6085
 #, c-format
@@ -1829,16 +1833,15 @@ msgid_plural "Deleting %'d files"
 msgstr[0] "حذف کردن %'Id پرونده"
 msgstr[1] "حذف کردن %'Id پرونده"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن اعداد، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
-#: src/nautilus-file-operations.c:1837 src/nautilus-file-operations.c:1845 src/nautilus-file-operations.c:1885 src/nautilus-file-operations.c:2228 src/nautilus-file-operations.c:2236 src/nautilus-file-operations.c:2276 src/nautilus-file-operations.c:4158 src/nautilus-file-operations.c:4166 src/nautilus-file-operations.c:4237 src/nautilus-file-operations.c:8840
-#: src/nautilus-file-operations.c:8908
+#: src/nautilus-file-operations.c:1837 src/nautilus-file-operations.c:1845 src/nautilus-file-operations.c:1885 src/nautilus-file-operations.c:2228 src/nautilus-file-operations.c:2236 src/nautilus-file-operations.c:2276 src/nautilus-file-operations.c:4158 src/nautilus-file-operations.c:4166 src/nautilus-file-operations.c:4237 src/nautilus-file-operations.c:8840 src/nautilus-file-operations.c:8908
 #, c-format
 msgid "%'d / %'d"
 msgstr "⁦%'Id / %'Id⁩"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن اعداد، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. To translators: %s will expand to a time duration like "2 minutes".
 #. * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
 #. *
@@ -2172,7 +2175,7 @@ msgid_plural "%s / %s — %s left (%s/sec)"
 msgstr[0] "%s / %s — %s باقی‌مانده (%s/ثانیه)"
 msgstr[1] "%s / %s — %s باقی‌مانده (%s/ثانیه)"
 
-# استفاده از نویسه‌های U+2266 و U+2269 برای ایزوله‌کردن اعداد، تا به درستی نمایش داده شود.
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #. To translators: %s will expand to a time duration like "2 minutes".
 #. * So the whole thing will be something like "1 / 5 -- 2 hours left (4kb/sec)"
 #. *
@@ -2506,9 +2509,10 @@ msgstr "نمی‌توان پرونده‌ها را جای‌گذاری کرد"
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "دسترسی‌ها اجازهٔ جای‌گذاری در این شاخه را نمی‌دهند"
 
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #: src/nautilus-files-view.c:2965
 msgid "Nautilus 3.6 deprecated this directory and tried migrating this configuration to ~/.local/share/nautilus"
-msgstr "ناتیلوس ۳.۶ این شاخه را منسوخ کرده و تلاش می‌کند این پیکربندی را به ‪~/.local/share/nautilus‬ منتقل کند"
+msgstr "ناتیلوس ۳.۶ این شاخه را منسوخ کرده و تلاش می‌کند این پیکربندی را به ⁦~/.local/share/nautilus⁩ منتقل کند"
 
 #: src/nautilus-files-view.c:3467 src/nautilus-files-view.c:3514
 #, c-format
@@ -3370,7 +3374,7 @@ msgstr "در حال گشودن «%s»."
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "در حال گشودن %Id مورد."
-msgstr[1] "باز کردن %Id مورد."
+msgstr[1] "در حال گشودن %Id مورد."
 
 #: src/nautilus-new-folder-dialog-controller.c:55 src/nautilus-rename-file-popover-controller.c:106
 msgid "Folder names cannot contain “/”."
@@ -4104,7 +4108,8 @@ msgstr ""
 "روزبه پورنادر <roozbeh@farsiweb.info>\n"
 "میلاد زکریا <meelad@farsiweb.info>\n"
 "بهنام پورنادر <bp@farsiweb.info>\n"
-"الناز سربر <elnaz@farsiweb.info>"
+"الناز سربر <elnaz@farsiweb.info>\n"
+"سید اسحاق مقیم شهیدانی <eshagh094@gmail.com>"
 
 #: src/nautilus-window-slot.c:1073
 msgid "Searching locations only"
@@ -4566,9 +4571,10 @@ msgstr "جایگزینی"
 msgid "Compatible with all operating systems."
 msgstr "منطبق با همهٔ سیستم‌عامل‌ها."
 
+# در این رشته از نویسه‌های ایزوله چپ‌به‌راست استفاده شده است
 #: src/resources/ui/nautilus-compress-dialog.ui:36
 msgid "Password protected .zip, must be installed on Windows and Mac."
-msgstr "پروندهٔ ‪.zip‬ محافظت‌شده با گذرواژه. باید روی ویندوز و مک نصب باشد."
+msgstr "پروندهٔ ⁦.zip⁩ محافظت‌شده با گذرواژه، باید روی ویندوز و مک نصب باشد."
 
 #: src/resources/ui/nautilus-compress-dialog.ui:56
 msgid "Smaller archives but Linux and Mac only."
@@ -5220,8 +5226,8 @@ msgstr "روی این رایانه"
 #, c-format
 msgid "%s / %s available"
 msgid_plural "%s / %s available"
-msgstr[0] "%s / %s در دسترس"
-msgstr[1] "%s / %s در دسترس"
+msgstr[0] "%s / %s موجود"
+msgstr[1] "%s / %s موجود"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:483
 msgid "Disconnect"
