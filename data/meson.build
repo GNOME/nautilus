@@ -20,7 +20,6 @@ desktop_conf = configuration_data()
 desktop_conf.set('icon', application_id)
 
 desktop = i18n.merge_file(
-  'desktop',
   input: configure_file(
     input: files('org.gnome.Nautilus.desktop.in.in'),
     output: 'org.gnome.Nautilus.desktop.in',
@@ -34,7 +33,6 @@ desktop = i18n.merge_file(
 )
 
 desktop_autorun_software = i18n.merge_file(
-  'desktop-autorun-software',
   input: 'nautilus-autorun-software.desktop.in',
   output: 'nautilus-autorun-software.desktop',
   install: true,
@@ -48,7 +46,6 @@ appdata_conf = configuration_data()
 appdata_conf.set('appid', application_id)
 
 appdata = i18n.merge_file(
-  'appdata',
   input: configure_file(
     input: files('org.gnome.Nautilus.appdata.xml.in.in'),
     output: 'org.gnome.Nautilus.appdata.xml.in',
