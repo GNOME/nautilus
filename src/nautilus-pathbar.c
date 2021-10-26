@@ -236,8 +236,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
     self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
     self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-extensions-section")));
     self->templates_submenu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "templates-submenu")));
-    self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (NULL,
-                                                                                                  G_MENU_MODEL (self->current_view_menu))));
+    self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new (NULL)));
 
     g_object_unref (builder);
 
@@ -946,6 +945,16 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
+    if (!gtk_widget_is_visible (GTK_WIDGET (self->current_view_menu_popover)))
+    {
+        /* Workaround to avoid leaking duplicated GtkStack pages each time the
+         * templates menu is set. Unbinding the model is the only way to clear
+         * all children. For that reason, we need to rebind the popover before
+         * it is shown again.
+         * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
+        gtk_popover_bind_model (self->current_view_menu_popover, NULL, NULL);
+    }
+
     nautilus_gmenu_set_from_model (self->templates_submenu, menu);
 }
 
@@ -1042,6 +1051,14 @@ button_clicked_cb (GtkButton *button,
     {
         if (g_file_equal (button_data->path, self->current_path))
         {
+            /* Workaround to avoid leaking duplicated GtkStack pages each time the
+             * templates menu is set. Unbinding the model is the only way to clear
+             * all children. For that reason, we need to rebind the popover before
+             * it is shown again.
+             * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
+            gtk_popover_bind_model (self->current_view_menu_popover,
+                                    G_MENU_MODEL (self->current_view_menu),
+                                    NULL);
             gtk_popover_popup (self->current_view_menu_popover);
         }
         else
@@ -1169,6 +1186,14 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         {
             if (g_file_equal (button_data->path, self->current_path))
             {
+                /* Workaround to avoid leaking duplicated GtkStack pages each time the
+                 * templates menu is set. Unbinding the model is the only way to clear
+                 * all children. For that reason, we need to rebind the popover before
+                 * it is shown again.
+                 * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
+                gtk_popover_bind_model (self->current_view_menu_popover,
+                                        G_MENU_MODEL (self->current_view_menu),
+                                        NULL);
                 gtk_popover_popup (self->current_view_menu_popover);
             }
             else
