@@ -11,7 +11,6 @@
 typedef struct
 {
     GSourceFunc source_func;
-    gpointer user_data;
     GMutex mutex;
     GCond cond;
     gboolean completed;
@@ -22,68 +21,77 @@ G_LOCK_DEFINE_STATIC (main_context_sync);
 static gboolean
 invoke_main_context_source_func_wrapper (gpointer user_data)
 {
-    ContextInvokeData *data = user_data;
+    ContextInvokeData *data = (ContextInvokeData *) user_data;
 
     g_mutex_lock (&data->mutex);
 
-    while (data->source_func (data->user_data))
+    while (data->source_func (user_data))
     {
     }
+
+    return G_SOURCE_REMOVE;
+}
+
+static void
+invoke_main_context_completed (gpointer user_data)
+{
+    ContextInvokeData *data = (ContextInvokeData *) user_data;
 
     data->completed = TRUE;
 
     g_cond_signal (&data->cond);
     g_mutex_unlock (&data->mutex);
-
-    return G_SOURCE_REMOVE;
 }
 
 /* This function is used to run UI on the main thread in order to ask the user
  * for an action during an operation. Since the operation cannot progress until
  * an action is provided by the user, the current thread needs to be blocked.
  * For this we wait on a condition on the shared data. We proceed further
- * unblocking the thread when the condition is set in the UI thread.
+ * unblocking the thread when invoke_main_context_completed() is called in the
+ * UI thread. The user_data pointer must reference a struct whose first member
+ * is of type ContextInvokeData.
  */
 static void
 invoke_main_context_sync (GMainContext *main_context,
                           GSourceFunc   source_func,
                           gpointer      user_data)
 {
-    ContextInvokeData data;
+    ContextInvokeData *data = (ContextInvokeData *) user_data;
     /* Allow only one thread at a time to invoke the main context so we
      * don't get race conditions which could lead to multiple dialogs being
      * displayed at the same time
      */
     G_LOCK (main_context_sync);
 
-    data.source_func = source_func;
-    data.user_data = user_data;
+    data->source_func = source_func;
 
-    g_mutex_init (&data.mutex);
-    g_cond_init (&data.cond);
-    data.completed = FALSE;
+    g_mutex_init (&data->mutex);
+    g_cond_init (&data->cond);
+    data->completed = FALSE;
 
-    g_mutex_lock (&data.mutex);
+    g_mutex_lock (&data->mutex);
 
     g_main_context_invoke (main_context,
                            invoke_main_context_source_func_wrapper,
-                           &data);
+                           user_data);
 
-    while (!data.completed)
+    while (!data->completed)
     {
-        g_cond_wait (&data.cond, &data.mutex);
+        g_cond_wait (&data->cond, &data->mutex);
     }
 
-    g_mutex_unlock (&data.mutex);
+    g_mutex_unlock (&data->mutex);
 
     G_UNLOCK (main_context_sync);
 
-    g_mutex_clear (&data.mutex);
-    g_cond_clear (&data.cond);
+    g_mutex_clear (&data->mutex);
+    g_cond_clear (&data->cond);
 }
 
 typedef struct
 {
+    ContextInvokeData parent_type;
+
     GFile *source_name;
     GFile *destination_name;
     GFile *destination_directory_name;
@@ -480,6 +488,8 @@ run_file_conflict_dialog (gpointer user_data)
     nautilus_file_unref (data->destination_directory_file);
     g_list_free (files);
 
+    invoke_main_context_completed (user_data);
+
     return G_SOURCE_REMOVE;
 }
 
@@ -517,6 +527,7 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
 
 typedef struct
 {
+    ContextInvokeData parent_type;
     GtkWindow *parent_window;
     NautilusFile *file;
 } HandleUnsupportedFileData;
@@ -557,6 +568,8 @@ open_file_in_application (gpointer user_data)
 
         nautilus_launch_application (application, files, data->parent_window);
     }
+
+    invoke_main_context_completed (user_data);
 
     return G_SOURCE_REMOVE;
 }
