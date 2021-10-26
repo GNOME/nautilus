@@ -183,6 +183,7 @@ typedef struct
 
     GList *scripts_directory_list;
     GList *templates_directory_list;
+    gboolean scripts_menu_updated;
     gboolean templates_menu_updated;
 
     guint display_selection_idle_id;
@@ -221,7 +222,6 @@ typedef struct
      * after it finishes loading the directory and its view.
      */
     gboolean loading;
-    gboolean scripts_present;
 
     gboolean in_destruction;
 
@@ -275,6 +275,9 @@ typedef struct
     /* Exposed menus, for the path bar etc. */
     GMenuModel *extensions_background_menu;
     GMenuModel *templates_menu;
+
+    /* Non exported menu, only for caching */
+    GMenuModel *scripts_menu;
 
     gulong stop_signal_handler;
     gulong reload_signal_handler;
@@ -3032,6 +3035,7 @@ scripts_added_or_changed_callback (NautilusDirectory *directory,
     view = NAUTILUS_FILES_VIEW (callback_data);
     priv = nautilus_files_view_get_instance_private (view);
 
+    priv->scripts_menu_updated = FALSE;
     if (priv->active)
     {
         schedule_update_context_menus (view);
@@ -5607,20 +5611,13 @@ update_scripts_menu (NautilusFilesView *view,
 
     directory = nautilus_directory_get_by_uri (scripts_directory_uri);
     submenu = update_directory_in_scripts_menu (view, directory);
+    g_set_object (&priv->scripts_menu, G_MENU_MODEL (submenu));
     if (submenu != NULL)
     {
-        GObject *object;
-
-        object = gtk_builder_get_object (builder, "scripts-submenu-section");
-        nautilus_gmenu_set_from_model (G_MENU (object),
-                                       G_MENU_MODEL (submenu));
-
         g_object_unref (submenu);
     }
 
     nautilus_directory_unref (directory);
-
-    priv->scripts_present = submenu != NULL;
 }
 
 static void
@@ -7928,7 +7925,7 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "scripts");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 priv->scripts_present);
+                                 priv->scripts_menu != NULL);
 
     /* Background menu actions */
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
@@ -8062,6 +8059,7 @@ static void
 update_selection_menu (NautilusFilesView *view,
                        GtkBuilder        *builder)
 {
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
     gint selection_count;
@@ -8299,7 +8297,13 @@ update_selection_menu (NautilusFilesView *view,
         g_object_unref (menu_item);
     }
 
-    update_scripts_menu (view, builder);
+    if (!priv->scripts_menu_updated)
+    {
+        update_scripts_menu (view, builder);
+        priv->scripts_menu_updated = TRUE;
+    }
+    object = gtk_builder_get_object (builder, "scripts-submenu-section");
+    nautilus_gmenu_set_from_model (G_MENU (object), priv->scripts_menu);
 }
 
 static void
