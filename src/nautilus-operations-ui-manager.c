@@ -425,30 +425,12 @@ copy_move_conflict_on_file_list_ready (GList    *files,
                                                      G_CALLBACK (file_icons_changed), data);
 }
 
-static gboolean
-run_file_conflict_dialog (gpointer user_data)
+static void
+on_conflict_dialog_response (GtkDialog *dialog,
+                             gint       response_id,
+                             gpointer   user_data)
 {
     FileConflictDialogData *data = user_data;
-    int response_id;
-    GList *files = NULL;
-
-    data->source = nautilus_file_get (data->source_name);
-    data->destination = nautilus_file_get (data->destination_name);
-    data->destination_directory_file = nautilus_file_get (data->destination_directory_name);
-
-    data->dialog = nautilus_file_conflict_dialog_new (data->parent);
-
-    files = g_list_prepend (files, data->source);
-    files = g_list_prepend (files, data->destination);
-    files = g_list_prepend (files, data->destination_directory_file);
-
-    nautilus_file_list_call_when_ready (files,
-                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
-                                        &data->handle,
-                                        data->on_file_list_ready,
-                                        data);
-
-    response_id = gtk_dialog_run (GTK_DIALOG (data->dialog));
 
     if (data->handle != NULL)
     {
@@ -486,9 +468,36 @@ run_file_conflict_dialog (gpointer user_data)
     nautilus_file_unref (data->source);
     nautilus_file_unref (data->destination);
     nautilus_file_unref (data->destination_directory_file);
-    g_list_free (files);
 
     invoke_main_context_completed (user_data);
+}
+
+static gboolean
+run_file_conflict_dialog (gpointer user_data)
+{
+    FileConflictDialogData *data = user_data;
+    GList *files = NULL;
+
+    data->source = nautilus_file_get (data->source_name);
+    data->destination = nautilus_file_get (data->destination_name);
+    data->destination_directory_file = nautilus_file_get (data->destination_directory_name);
+
+    data->dialog = nautilus_file_conflict_dialog_new (data->parent);
+
+    files = g_list_prepend (files, data->source);
+    files = g_list_prepend (files, data->destination);
+    files = g_list_prepend (files, data->destination_directory_file);
+
+    nautilus_file_list_call_when_ready (files,
+                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
+                                        &data->handle,
+                                        data->on_file_list_ready,
+                                        data);
+
+    g_signal_connect (data->dialog, "response", G_CALLBACK (on_conflict_dialog_response), data);
+    gtk_widget_show_all (GTK_WIDGET (data->dialog));
+
+    g_list_free (files);
 
     return G_SOURCE_REMOVE;
 }
@@ -532,6 +541,30 @@ typedef struct
     NautilusFile *file;
 } HandleUnsupportedFileData;
 
+static void
+on_app_chooser_response (GtkDialog *dialog,
+                         gint       response_id,
+                         gpointer   user_data)
+{
+    HandleUnsupportedFileData *data = user_data;
+    g_autoptr (GAppInfo) application = NULL;
+
+    if (response_id == GTK_RESPONSE_OK)
+    {
+        application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
+    }
+
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+
+    if (application != NULL)
+    {
+        GList files = {data->file, NULL, NULL};
+        nautilus_launch_application (application, &files, data->parent_window);
+    }
+
+    invoke_main_context_completed (user_data);
+}
+
 static gboolean
 open_file_in_application (gpointer user_data)
 {
@@ -539,7 +572,6 @@ open_file_in_application (gpointer user_data)
     g_autofree gchar *mime_type = NULL;
     GtkWidget *dialog;
     const char *heading;
-    g_autoptr (GAppInfo) application = NULL;
 
     data = user_data;
     mime_type = nautilus_file_get_mime_type (data->file);
@@ -553,23 +585,8 @@ open_file_in_application (gpointer user_data)
 
     gtk_app_chooser_dialog_set_heading (GTK_APP_CHOOSER_DIALOG (dialog), heading);
 
-    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
-    {
-        application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
-    }
-
-    gtk_widget_destroy (dialog);
-
-    if (application != NULL)
-    {
-        g_autoptr (GList) files = NULL;
-
-        files = g_list_append (NULL, data->file);
-
-        nautilus_launch_application (application, files, data->parent_window);
-    }
-
-    invoke_main_context_completed (user_data);
+    g_signal_connect (dialog, "response", G_CALLBACK (on_app_chooser_response), data);
+    gtk_widget_show_all (dialog);
 
     return G_SOURCE_REMOVE;
 }
