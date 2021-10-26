@@ -220,7 +220,6 @@ typedef struct
      * after it finishes loading the directory and its view.
      */
     gboolean loading;
-    gboolean templates_present;
     gboolean scripts_present;
 
     gboolean in_destruction;
@@ -5895,7 +5894,7 @@ update_templates_menu (NautilusFilesView *view,
     }
     else
     {
-        priv->templates_present = FALSE;
+        nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), NULL);
         return;
     }
 
@@ -5928,8 +5927,6 @@ update_templates_menu (NautilusFilesView *view,
     nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), submenu);
 
     nautilus_directory_unref (directory);
-
-    priv->templates_present = submenu != NULL;
 
     g_free (templates_directory_uri);
 }
@@ -7967,7 +7964,7 @@ real_update_actions_state (NautilusFilesView *view)
                                  can_create_files &&
                                  !selection_contains_recent &&
                                  !selection_contains_starred &&
-                                 priv->templates_present);
+                                 priv->templates_menu != NULL);
 
     /* Actions that are related to the clipboard need request, request the data
      * and update them once we have the data */
