@@ -5586,38 +5586,27 @@ update_scripts_menu (NautilusFilesView *view,
                      GtkBuilder        *builder)
 {
     NautilusFilesViewPrivate *priv;
-    GList *sorted_copy, *node;
-    NautilusDirectory *directory;
-    GMenu *submenu;
-    char *uri;
+    g_autolist (NautilusDirectory) sorted_copy = NULL;
+    g_autoptr (NautilusDirectory) directory = NULL;
+    g_autoptr (GMenu) submenu = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
 
     sorted_copy = nautilus_directory_list_sort_by_uri
                       (nautilus_directory_list_copy (priv->scripts_directory_list));
 
-    for (node = sorted_copy; node != NULL; node = node->next)
+    for (GList *dir_l = sorted_copy; dir_l != NULL; dir_l = dir_l->next)
     {
-        directory = node->data;
-
-        uri = nautilus_directory_get_uri (directory);
+        g_autofree char *uri = nautilus_directory_get_uri (dir_l->data);
         if (!directory_belongs_in_scripts_menu (uri))
         {
-            remove_directory_from_scripts_directory_list (view, directory);
+            remove_directory_from_scripts_directory_list (view, dir_l->data);
         }
-        g_free (uri);
     }
-    nautilus_directory_list_free (sorted_copy);
 
     directory = nautilus_directory_get_by_uri (scripts_directory_uri);
     submenu = update_directory_in_scripts_menu (view, directory);
     g_set_object (&priv->scripts_menu, G_MENU_MODEL (submenu));
-    if (submenu != NULL)
-    {
-        g_object_unref (submenu);
-    }
-
-    nautilus_directory_unref (directory);
 }
 
 static void
@@ -5879,49 +5868,36 @@ update_templates_menu (NautilusFilesView *view,
                        GtkBuilder        *builder)
 {
     NautilusFilesViewPrivate *priv;
-    GList *sorted_copy, *node;
-    NautilusDirectory *directory;
+    g_autolist (NautilusDirectory) sorted_copy = NULL;
+    g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (GMenuModel) submenu = NULL;
-    char *uri;
-    char *templates_directory_uri;
+    g_autofree char *templates_directory_uri = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (nautilus_should_use_templates_directory ())
-    {
-        templates_directory_uri = nautilus_get_templates_directory_uri ();
-    }
-    else
+    if (!nautilus_should_use_templates_directory ())
     {
         nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), NULL);
         return;
     }
 
-
+    templates_directory_uri = nautilus_get_templates_directory_uri ();
     sorted_copy = nautilus_directory_list_sort_by_uri
                       (nautilus_directory_list_copy (priv->templates_directory_list));
 
-    for (node = sorted_copy; node != NULL; node = node->next)
+    for (GList *dir_l = sorted_copy; dir_l != NULL; dir_l = dir_l->next)
     {
-        directory = node->data;
-
-        uri = nautilus_directory_get_uri (directory);
+        g_autofree char *uri = nautilus_directory_get_uri (dir_l->data);
         if (!directory_belongs_in_templates_menu (templates_directory_uri, uri))
         {
-            remove_directory_from_templates_directory_list (view, directory);
+            remove_directory_from_templates_directory_list (view, dir_l->data);
         }
-        g_free (uri);
     }
-    nautilus_directory_list_free (sorted_copy);
 
     directory = nautilus_directory_get_by_uri (templates_directory_uri);
     submenu = update_directory_in_templates_menu (view, directory);
 
     nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), submenu);
-
-    nautilus_directory_unref (directory);
-
-    g_free (templates_directory_uri);
 }
 
 
