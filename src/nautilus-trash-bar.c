@@ -212,6 +212,7 @@ static void
 nautilus_trash_bar_init (NautilusTrashBar *bar)
 {
     GtkWidget *content_area, *action_area, *w;
+    const gchar *subtitle_text;
     GtkWidget *label;
     GtkWidget *subtitle;
     PangoAttrList *attrs;
@@ -228,7 +229,10 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
     gtk_label_set_attributes (GTK_LABEL (label), attrs);
     pango_attr_list_unref (attrs);
 
-    subtitle = gtk_label_new (_("Trashed items are automatically deleted after a period of time"));
+    subtitle_text = _("Trashed items are automatically deleted after a period of time");
+    subtitle = gtk_label_new (subtitle_text);
+    gtk_widget_set_tooltip_text (subtitle, subtitle_text);
+    gtk_label_set_ellipsize (GTK_LABEL (subtitle), PANGO_ELLIPSIZE_END);
 
     g_settings_bind (gnome_privacy_preferences,
                      "remove-old-trash-files",
