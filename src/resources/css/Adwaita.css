@@ -219,11 +219,12 @@ flowboxchild:selected {
   outline-color: transparent;
 }
 
-.icon-background {
-  background-color:black;
-  border-color:#4a90d9;
-  border-style:solid;
-  border-width:0px;
+flowboxchild .thumbnail {
+  margin: 4px;
+  box-shadow: 0px 1px 2px 0px alpha(@borders, 0.5),
+              0px 0px 0px 1px alpha(@borders, 0.5),
+              0px 2px 0px 0px alpha(@borders, 0.5);
+  border-radius: 2px;
 }
 
 .icon-ui-labels-box {

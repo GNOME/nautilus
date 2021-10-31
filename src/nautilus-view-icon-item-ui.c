@@ -44,15 +44,15 @@ update_icon (NautilusViewIconItemUi *self)
     gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon), icon_pixbuf);
 
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
-    style_context = gtk_widget_get_style_context (self->fixed_height_box);
+    style_context = gtk_widget_get_style_context (self->icon);
     if (nautilus_can_thumbnail (file) &&
         nautilus_file_should_show_thumbnail (file))
     {
-        gtk_style_context_add_class (style_context, "icon-background");
+        gtk_style_context_add_class (style_context, "thumbnail");
     }
     else
     {
-        gtk_style_context_remove_class (style_context, "icon-background");
+        gtk_style_context_remove_class (style_context, "thumbnail");
     }
 }
 
