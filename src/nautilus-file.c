@@ -5240,9 +5240,6 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         }
         else
         {
-            GdkPixbuf *bg_pixbuf;
-            int bg_size;
-
             pixbuf = gdk_pixbuf_scale_simple (file->details->thumbnail,
                                               MAX (w * thumb_scale, 1),
                                               MAX (h * thumb_scale, 1),
@@ -5264,32 +5261,13 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                 }
             }
 
-            /* Copy to a transparent square pixbuf, aligned to the bottom edge */
-            bg_size = MAX (gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf));
-            bg_pixbuf = gdk_pixbuf_new (gdk_pixbuf_get_colorspace (pixbuf),
-                                        TRUE,
-                                        gdk_pixbuf_get_bits_per_sample (pixbuf),
-                                        bg_size,
-                                        bg_size);
-            gdk_pixbuf_fill (bg_pixbuf, 0);
-            gdk_pixbuf_copy_area (pixbuf,
-                                  0,
-                                  0,
-                                  gdk_pixbuf_get_width (pixbuf),
-                                  gdk_pixbuf_get_height (pixbuf),
-                                  bg_pixbuf,
-                                  (bg_size - gdk_pixbuf_get_width (pixbuf)) / 2,
-                                  (bg_size - gdk_pixbuf_get_height (pixbuf)));
-            g_clear_object (&pixbuf);
-            pixbuf = bg_pixbuf;
-
             g_clear_object (&file->details->scaled_thumbnail);
             file->details->scaled_thumbnail = pixbuf;
             file->details->thumbnail_scale = thumb_scale;
         }
 
         DEBUG ("Returning thumbnailed image, at size %d %d",
-               gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf));
+               (int) (w * thumb_scale), (int) (h * thumb_scale));
     }
     else if (file->details->thumbnail_path == NULL &&
              file->details->can_read &&
