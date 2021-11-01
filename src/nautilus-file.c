@@ -5340,7 +5340,7 @@ nautilus_thumbnail_is_limited_by_zoom (int size,
 
     zoom_level = size * scale;
 
-    if (zoom_level <= NAUTILUS_LIST_ICON_SIZE_STANDARD)
+    if (zoom_level < NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE)
     {
         return TRUE;
     }
