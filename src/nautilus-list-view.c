@@ -30,7 +30,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <libgd/gd.h>
 #include <string.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
@@ -77,6 +76,9 @@ struct SelectionForeachData
 
 /* We wait two seconds after row is collapsed to unload the subdirectory */
 #define COLLAPSE_TO_UNLOAD_DELAY 2
+
+/* According to Pango docs, alpha is a guint16 value between 0 and 65535. */
+#define ALPHA_55_PERCENT ((guint16) (0.55 * 0xffff))
 
 static GdkCursor *hand_cursor = NULL;
 
@@ -2230,18 +2232,18 @@ create_and_set_up_tree_view (NautilusListView *view)
             }
             else
             {
-                /* We need to use libgd */
-                cell = gd_styled_text_renderer_new ();
-                /* FIXME: should be just dim-label.
-                 * See https://bugzilla.gnome.org/show_bug.cgi?id=744397
-                 */
-                gd_styled_text_renderer_add_class (GD_STYLED_TEXT_RENDERER (cell),
-                                                   "nautilus-list-dim-label");
+                PangoAttrList *attr_list = pango_attr_list_new ();
+
+                cell = gtk_cell_renderer_text_new ();
 
                 column = gtk_tree_view_column_new_with_attributes (label,
                                                                    cell,
                                                                    "text", column_num,
                                                                    NULL);
+
+                pango_attr_list_insert (attr_list, pango_attr_foreground_alpha_new (ALPHA_55_PERCENT));
+                g_object_set (cell, "attributes", attr_list, NULL);
+                pango_attr_list_unref (attr_list);
             }
 
             gtk_tree_view_column_set_alignment (column, xalign);
