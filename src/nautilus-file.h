@@ -92,7 +92,7 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM = (1<<7)
 } NautilusFileIconFlags;	
 
-#define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 48
+#define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 32
 
 /* Standard Drag & Drop types. */
 typedef enum {
