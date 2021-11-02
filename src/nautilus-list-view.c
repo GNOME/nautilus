@@ -55,6 +55,7 @@
 #include "nautilus-view.h"
 #include "nautilus-tracker-utilities.h"
 #include "nautilus-gtk4-helpers.h"
+#include "nautilus-thumbnails.h"
 
 struct SelectionForeachData
 {
@@ -1577,6 +1578,16 @@ starred_cell_data_func (GtkTreeViewColumn *column,
     g_autofree gchar *text = NULL;
     g_autofree gchar *uri = NULL;
     NautilusFile *file;
+    GtkStyleContext *context;
+
+    /* The "thumbnail" style class is set before rendering each icon cell with
+     * a thumbnail. However, style classes are not applied to each cell, but
+     * alwyas to the whole GtkTreeView widget. So, before the star icon is
+     * rendered, we must ensure that the style is not set, otherwise the star
+     * icon is going to get the styles meant only for thumbnail icons.
+     */
+    context = gtk_widget_get_style_context (GTK_WIDGET (view));
+    gtk_style_context_remove_class (context, "thumbnail");
 
     gtk_tree_model_get (model, iter,
                         view->details->file_name_column_num, &text,
@@ -1613,6 +1624,71 @@ starred_cell_data_func (GtkTreeViewColumn *column,
     }
 
     nautilus_file_unref (file);
+}
+
+static gboolean
+zoom_level_is_enough_for_thumbnails (NautilusListView *view)
+{
+    NautilusListZoomLevel zoom_level;
+    guint icon_size;
+
+    zoom_level = view->details->zoom_level;
+    icon_size = nautilus_list_model_get_icon_size_for_zoom_level (zoom_level);
+
+    return icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE;
+}
+
+static void
+icon_cell_data_func (GtkTreeViewColumn *column,
+                     GtkCellRenderer   *renderer,
+                     GtkTreeModel      *model,
+                     GtkTreeIter       *iter,
+                     NautilusListView  *view)
+{
+    cairo_surface_t *surface;
+    GtkStyleContext *context;
+    g_autoptr (NautilusFile) file = NULL;
+    gboolean is_thumbnail;
+
+    context = gtk_widget_get_style_context (GTK_WIDGET (view));
+    gtk_tree_model_get (model,
+                        iter,
+                        nautilus_list_model_get_column_id_from_zoom_level (view->details->zoom_level),
+                        &surface,
+                        NAUTILUS_LIST_MODEL_FILE_COLUMN,
+                        &file,
+                        -1);
+
+    /* Hack: Set/unset the style class in advance of rendering. This makes a
+     * major assumption that's all but clearly stated in the documentation of
+     * GtkCellLayout: that the DataFunc is called before rendering each cell.
+     */
+    is_thumbnail = FALSE;
+    if (zoom_level_is_enough_for_thumbnails (view) && file != NULL)
+    {
+        g_autofree gchar *thumbnail_path = NULL;
+
+        thumbnail_path = nautilus_file_get_thumbnail_path (file);
+        if (thumbnail_path != NULL &&
+            nautilus_file_should_show_thumbnail (file))
+        {
+            is_thumbnail = TRUE;
+        }
+    }
+
+    if (is_thumbnail)
+    {
+        gtk_style_context_add_class (context, "thumbnail");
+    }
+    else
+    {
+        gtk_style_context_remove_class (context, "thumbnail");
+    }
+
+    g_object_set (renderer,
+                  "surface", surface,
+                  NULL);
+    cairo_surface_destroy (surface);
 }
 
 static void
@@ -2184,10 +2260,10 @@ create_and_set_up_tree_view (NautilusListView *view)
             set_up_pixbuf_size (view);
 
             gtk_tree_view_column_pack_start (view->details->file_name_column, cell, FALSE);
-            gtk_tree_view_column_set_attributes (view->details->file_name_column,
-                                                 cell,
-                                                 "surface", nautilus_list_model_get_column_id_from_zoom_level (view->details->zoom_level),
-                                                 NULL);
+            /* Skip regular attribute mapping in order to add shadow to thumbnails. */
+            gtk_tree_view_column_set_cell_data_func (view->details->file_name_column, cell,
+                                                     (GtkTreeCellDataFunc) icon_cell_data_func,
+                                                     view, NULL);
 
             cell = gtk_cell_renderer_text_new ();
             view->details->file_name_cell = (GtkCellRendererText *) cell;
