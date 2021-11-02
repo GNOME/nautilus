@@ -28,7 +28,6 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <libgd/gd.h>
 #include <string.h>
 #include <glib/gi18n.h>
 
@@ -66,30 +65,6 @@ nautilus_gmenu_set_from_model (GMenu      *target_menu,
             g_menu_append_item (target_menu, item);
         }
     }
-}
-
-#define NAUTILUS_THUMBNAIL_FRAME_LEFT 3
-#define NAUTILUS_THUMBNAIL_FRAME_TOP 3
-#define NAUTILUS_THUMBNAIL_FRAME_RIGHT 3
-#define NAUTILUS_THUMBNAIL_FRAME_BOTTOM 3
-
-void
-nautilus_ui_frame_image (GdkPixbuf **pixbuf)
-{
-    GtkBorder border;
-    GdkPixbuf *pixbuf_with_frame;
-
-    border.left = NAUTILUS_THUMBNAIL_FRAME_LEFT;
-    border.top = NAUTILUS_THUMBNAIL_FRAME_TOP;
-    border.right = NAUTILUS_THUMBNAIL_FRAME_RIGHT;
-    border.bottom = NAUTILUS_THUMBNAIL_FRAME_BOTTOM;
-
-    pixbuf_with_frame = gd_embed_image_in_frame (*pixbuf,
-                                                 "resource:///org/gnome/nautilus/icons/thumbnail_frame.png",
-                                                 &border, &border);
-    g_object_unref (*pixbuf);
-
-    *pixbuf = pixbuf_with_frame;
 }
 
 static GdkPixbuf *filmholes_left = NULL;

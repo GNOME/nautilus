@@ -28,7 +28,6 @@
 void        nautilus_gmenu_set_from_model           (GMenu             *target_menu,
                                                      GMenuModel        *source_model);
 
-void        nautilus_ui_frame_image                 (GdkPixbuf        **pixbuf);
 void        nautilus_ui_frame_video                 (GdkPixbuf        **pixbuf);
 
 gboolean    nautilus_file_date_in_between           (guint64            file_unix_time,

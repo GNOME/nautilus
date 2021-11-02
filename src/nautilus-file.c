@@ -5261,10 +5261,6 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                     {
                         nautilus_ui_frame_video (&pixbuf);
                     }
-                    else
-                    {
-                        nautilus_ui_frame_image (&pixbuf);
-                    }
                 }
             }
 
