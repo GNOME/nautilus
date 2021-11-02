@@ -116,6 +116,8 @@ struct NautilusCanvasItemDetails
 
     guint is_visible : 1;
 
+    guint is_thumbnail : 1;
+
     /* Cached PangoLayouts. Only used if the icon is visible */
     PangoLayout *editable_text_layout;
     PangoLayout *additional_text_layout;
@@ -472,7 +474,8 @@ get_scaled_icon_size (NautilusCanvasItem *item,
 
 void
 nautilus_canvas_item_set_image (NautilusCanvasItem *item,
-                                GdkPixbuf          *image)
+                                GdkPixbuf          *image,
+                                gboolean            is_thumbnail)
 {
     NautilusCanvasItemDetails *details;
 
@@ -488,6 +491,7 @@ nautilus_canvas_item_set_image (NautilusCanvasItem *item,
     if (image != NULL)
     {
         g_object_ref (image);
+        details->is_thumbnail = is_thumbnail;
     }
     if (details->pixbuf != NULL)
     {
@@ -1358,6 +1362,10 @@ nautilus_canvas_item_draw (EelCanvasItem  *item,
     context = gtk_widget_get_style_context (GTK_WIDGET (container));
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, "nautilus-canvas-item");
+    if (details->is_thumbnail)
+    {
+        gtk_style_context_add_class (context, "thumbnail");
+    }
 
     icon_rect = canvas_item->details->icon_rect;
     temp_surface = map_surface (canvas_item);

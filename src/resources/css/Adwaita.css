@@ -12,6 +12,13 @@
     border-radius: 5px;
 }
 
+.nautilus-canvas-item.thumbnail {
+  -gtk-icon-shadow: 0px 1px 2px @borders,
+                    1px 0px 0px alpha(@borders, 0.25),
+                    -1px 0px 0px alpha(@borders, 0.25),
+                    0px 2px 0px alpha(@borders, 0.5);
+}
+
 .nautilus-canvas-item.dim-label {
     color: mix (@theme_fg_color, @theme_bg_color, 0.50);
 }

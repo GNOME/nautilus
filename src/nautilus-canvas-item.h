@@ -64,7 +64,8 @@ GType       nautilus_canvas_item_get_type                 (void);
 
 /* attributes */
 void        nautilus_canvas_item_set_image                (NautilusCanvasItem       *item,
-							   GdkPixbuf                *image);
+							   GdkPixbuf                *image,
+							   gboolean                  is_thumbnail);
 cairo_surface_t* nautilus_canvas_item_get_drag_surface    (NautilusCanvasItem       *item);
 void        nautilus_canvas_item_set_emblems              (NautilusCanvasItem       *item,
 							   GList                    *emblem_pixbufs);

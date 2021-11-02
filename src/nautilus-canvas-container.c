@@ -4788,14 +4788,15 @@ static NautilusIconInfo *
 nautilus_canvas_container_get_icon_images (NautilusCanvasContainer *container,
                                            NautilusCanvasIconData  *data,
                                            int                      size,
-                                           gboolean                 for_drag_accept)
+                                           gboolean                 for_drag_accept,
+                                           gboolean                *is_thumbnail)
 {
     NautilusCanvasContainerClass *klass;
 
     klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (container);
     g_assert (klass->get_icon_images != NULL);
 
-    return klass->get_icon_images (container, data, size, for_drag_accept);
+    return klass->get_icon_images (container, data, size, for_drag_accept, is_thumbnail);
 }
 
 static void
@@ -4897,6 +4898,7 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
     guint icon_size;
     guint min_image_size, max_image_size;
     NautilusIconInfo *icon_info;
+    gboolean is_thumbnail;
     GdkPixbuf *pixbuf;
     char *editable_text, *additional_text;
 
@@ -4921,7 +4923,8 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
 
     /* Get the icons. */
     icon_info = nautilus_canvas_container_get_icon_images (container, icon->data, icon_size,
-                                                           icon == details->drop_target);
+                                                           icon == details->drop_target,
+                                                           &is_thumbnail);
 
     pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
     g_object_unref (icon_info);
@@ -4938,7 +4941,7 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
                          "highlighted_for_drop", icon == details->drop_target,
                          NULL);
 
-    nautilus_canvas_item_set_image (icon->item, pixbuf);
+    nautilus_canvas_item_set_image (icon->item, pixbuf, is_thumbnail);
 
     /* Let the pixbufs go. */
     g_object_unref (pixbuf);

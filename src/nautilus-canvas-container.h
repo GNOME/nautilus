@@ -134,7 +134,8 @@ typedef struct {
 	NautilusIconInfo *(* get_icon_images)     (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *data,
 						     int canvas_size,
-						     gboolean for_drag_accept);
+						     gboolean for_drag_accept,
+						     gboolean *is_thumbnail);
 	void         (* get_icon_text)            (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *data,
 						     char **editable_text,

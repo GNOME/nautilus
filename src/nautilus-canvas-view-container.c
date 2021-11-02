@@ -53,7 +53,8 @@ static NautilusIconInfo *
 nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *container,
                                                 NautilusCanvasIconData  *data,
                                                 int                      size,
-                                                gboolean                 for_drag_accept)
+                                                gboolean                 for_drag_accept,
+                                                gboolean                *is_thumbnail)
 {
     NautilusCanvasView *canvas_view;
     NautilusFile *file;
@@ -77,6 +78,15 @@ nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *contain
 
     scale = gtk_widget_get_scale_factor (GTK_WIDGET (canvas_view));
     icon_info = nautilus_file_get_icon (file, size, scale, flags);
+
+    if (is_thumbnail != NULL)
+    {
+        g_autofree gchar *thumbnail_path = NULL;
+
+        thumbnail_path = nautilus_file_get_thumbnail_path (file);
+        *is_thumbnail = (thumbnail_path != NULL &&
+                         nautilus_file_should_show_thumbnail (file));
+    }
 
     return icon_info;
 }
