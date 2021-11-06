@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2021-08-15 07:12+0000\n"
-"PO-Revision-Date: 2021-10-15 12:17+0330\n"
+"PO-Revision-Date: 2021-11-03 16:09+0330\n"
 "Last-Translator: eshagh <eshagh094@gmail.com>\n"
 "Language-Team: Persian <>\n"
 "Language: fa\n"
@@ -181,8 +181,7 @@ msgstr "چه وقت تصاویر بندانگشتی پرونده‌ها نشان
 
 #: data/org.gnome.nautilus.gschema.xml:148
 msgid "Speed trade-off for when to show a file as a thumbnail. If set to “always” then always thumbnail, even if the folder is on a remote server. If set to “local-only” then only show thumbnails for local file systems. If set to “never” then never bother to thumbnail files, just use a generic icon. Despite what the name may suggest, this applies to any previewable file type."
-msgstr ""
-"موازنهٔ سرعت در برابر چگونگی نشان دادن پرونده‌های تصویری به شکل بندانگشتی. اگر روی «always» تنظیم شود مسطوره‌سازی همواره انجام می‌شود، حتی اگر پرونده روی یک کارساز دوردست باشد. اگر روی «local-only» تنظیم شود تنها بندانگشتی‌های سامانه‌پرونده‌های محلّی نشان داده می‌شوند. اگر روی «never» تنظیم شود هیچ وقت زحمت بندانگشتی‌سازی از پرونده‌ها را به خود نداده و فقط از یک نقشک عام استفاده می‌کند. بدون در نظر گرفتن چیزی که نام پرونده می‌گوید، این روی هر پروندهٔ قابل پیش‌نمایشی اعمال می‌شود."
+msgstr "موازنهٔ سرعت در برابر چگونگی نشان دادن پرونده‌های تصویری به شکل بندانگشتی. اگر روی «always» تنظیم شود مسطوره‌سازی همواره انجام می‌شود، حتی اگر پرونده روی یک کارساز دوردست باشد. اگر روی «local-only» تنظیم شود تنها بندانگشتی‌های سامانه‌پرونده‌های محلّی نشان داده می‌شوند. اگر روی «never» تنظیم شود هیچ وقت زحمت بندانگشتی‌سازی از پرونده‌ها را به خود نداده و فقط از یک نقشک عام استفاده می‌کند. بدون در نظر گرفتن چیزی که نام پرونده می‌گوید، این روی هر پروندهٔ قابل پیش‌نمایشی اعمال می‌شود."
 
 #: data/org.gnome.nautilus.gschema.xml:153
 msgid "Maximum image size for thumbnailing"
@@ -282,12 +281,11 @@ msgstr "حد حذف متن"
 
 #: data/org.gnome.nautilus.gschema.xml:228
 msgid ""
-"A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form “Zoom Level:Integer”. For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form “Integer” without any specified zoom level is also allowed. "
-"It defines the maximum number of lines for all other zoom levels. Examples: 0 — always display overlong file names; 3 — shorten file names if they exceed three lines; smallest:5,smaller:4,0 — shorten file names if they exceed five lines for zoom level “smallest”. Shorten file names if they exceed four lines for zoom level “smaller”. Do not shorten file names for other zoom levels. Available zoom levels: small, standard, large."
+"A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form “Zoom Level:Integer”. For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form “Integer” without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. "
+"Examples: 0 — always display overlong file names; 3 — shorten file names if they exceed three lines; smallest:5,smaller:4,0 — shorten file names if they exceed five lines for zoom level “smallest”. Shorten file names if they exceed four lines for zoom level “smaller”. Do not shorten file names for other zoom levels. Available zoom levels: small, standard, large."
 msgstr ""
-"یک رشته که مشخص می‌کند بسته به بزرگنمایی، چگونه بخش‌های نام پرونده‌های خیلی طولانی با بیضی‌هایی روی رومیزی جایگزین شوند. هر کدام از ورودی‌های فهرستی به شکل «Zoom Level:Integer» هستند. برای هر سطح بزرگ‌نمایی مشخص شده، اگر عدد بزرگتر از صفر باشد، نام پرونده از تعداد خط‌های داده شده بیشتر نخواهد شد. اگر صفر یا کمتر باشد، هیچ مرزی روی تعداد خط‌های نمایش داده شده اعمال نخواهد شد. ورودی پیش فرض به شکل «Integer» بدون مشخص کردن سطح بزرگ‌نمایی نیز پذیرفته است. که چیزی که مشخص می‌کند "
-"تعداد خط‌ها برای همهٔ سطح‌های دیگر بزرگ‌نمایی است. مثال‌ها: ۰ - همیشه نام پرونده‌‌های خیلی طولانی را نشان بده؛ ۳- نام پرونده‌های را کوچک کن اگر از سه خط بیشتر شدند؛ کوچکترین:۵،کوچکتر:۴،۰- نام پرونده‌ها را در صورتی کوچک کن که از ۵ خط بیشتر شوند و سطح بزرگ‌نمایی روی «smallest» باشد. نام پرونده‌ها را در صورتی کوچک کن که از ۴ خط بیشتر شوند و سطح بزرگ‌نمایی روی «smaller» باشد. برای دیگر سطح‌های بزرگ‌نمایی نام پرونده‌ها را برای دیگر سطوح بزرگ‌نمایی کوچک نکن. سطح بزرگ‌نمایی‌های ممکن عبارتند "
-"از: کوچکترین (۳۳٪)، کوچکتر (۵۰٪)، کوچک (۶۶٪)، استاندارد (۱۰۰٪)، بزرگ (۱۵۰٪)، بزرگ‌تر (۲۰۰٪)، بزرگ‌ترین (۴۰۰٪)"
+"یک رشته که مشخص می‌کند بسته به بزرگنمایی، چگونه بخش‌های نام پرونده‌های خیلی طولانی با بیضی‌هایی روی رومیزی جایگزین شوند. هر کدام از ورودی‌های فهرستی به شکل «Zoom Level:Integer» هستند. برای هر سطح بزرگ‌نمایی مشخص شده، اگر عدد بزرگتر از صفر باشد، نام پرونده از تعداد خط‌های داده شده بیشتر نخواهد شد. اگر صفر یا کمتر باشد، هیچ مرزی روی تعداد خط‌های نمایش داده شده اعمال نخواهد شد. ورودی پیش فرض به شکل «Integer» بدون مشخص کردن سطح بزرگ‌نمایی نیز پذیرفته است. که چیزی که مشخص می‌کند تعداد خط‌ها برای همهٔ سطح‌های دیگر بزرگ‌نمایی است. مثال‌ها: ۰ - همیشه نام "
+"پرونده‌‌های خیلی طولانی را نشان بده؛ ۳- نام پرونده‌های را کوچک کن اگر از سه خط بیشتر شدند؛ کوچکترین:۵،کوچکتر:۴،۰- نام پرونده‌ها را در صورتی کوچک کن که از ۵ خط بیشتر شوند و سطح بزرگ‌نمایی روی «smallest» باشد. نام پرونده‌ها را در صورتی کوچک کن که از ۴ خط بیشتر شوند و سطح بزرگ‌نمایی روی «smaller» باشد. برای دیگر سطح‌های بزرگ‌نمایی نام پرونده‌ها را برای دیگر سطوح بزرگ‌نمایی کوچک نکن. سطح بزرگ‌نمایی‌های ممکن عبارتند از: کوچکترین (۳۳٪)، کوچکتر (۵۰٪)، کوچک (۶۶٪)، استاندارد (۱۰۰٪)، بزرگ (۱۵۰٪)، بزرگ‌تر (۲۰۰٪)، بزرگ‌ترین (۴۰۰٪)"
 
 #: data/org.gnome.nautilus.gschema.xml:235
 msgid "Default list view zoom level"
@@ -359,8 +357,8 @@ msgstr "Y"
 
 #. Put up the timed wait window.
 #. Add buttons
-#: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:360 src/nautilus-file-operations.c:256 src/nautilus-files-view.c:1216 src/nautilus-files-view.c:1788 src/nautilus-files-view.c:6104 src/nautilus-files-view.c:6565 src/nautilus-location-entry.c:284 src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590 src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317 src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300
-#: src/nautilus-search-popover.c:583 src/resources/ui/nautilus-batch-rename-dialog.ui:12 src/resources/ui/nautilus-file-properties-change-permissions.ui:13
+#: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:360 src/nautilus-file-operations.c:256 src/nautilus-files-view.c:1216 src/nautilus-files-view.c:1788 src/nautilus-files-view.c:6104 src/nautilus-files-view.c:6565 src/nautilus-location-entry.c:284 src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590 src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317 src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300 src/nautilus-search-popover.c:583
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:12 src/resources/ui/nautilus-file-properties-change-permissions.ui:13
 msgid "_Cancel"
 msgstr "_لغو"
 
@@ -734,7 +732,7 @@ msgid ""
 "Unable to create a required folder. Please create the following folder, or set permissions such that it can be created:\n"
 "%s"
 msgstr ""
-"نمی‌توان یک شاخهٔ لازم را ایجاد کرد. لطفاً شاخهٔ زیر را ایجاد کنید، یا مجوزها را طوری تنظیم کنید که بتوان آن را ایجاد کرد:\n"
+"نمی‌توان یک شاخهٔ ضروری را ایجاد کرد. لطفاً شاخهٔ زیر را ایجاد کنید، یا مجوزها را طوری تنظیم کنید که بتوان آن را ایجاد کرد:\n"
 "%s"
 
 #: src/nautilus-application.c:192
@@ -743,7 +741,7 @@ msgid ""
 "Unable to create required folders. Please create the following folders, or set permissions such that they can be created:\n"
 "%s"
 msgstr ""
-"نمی‌توان شاخه‌های لازم را ایجاد کرد. لطفاً شاخه‌های زیر را ایجاد کنید، یا مجوزها را طوری تنظیم کنید که بتوان آن‌ها را ایجاد کرد:\n"
+"نمی‌توان شاخه‌های ضروری را ایجاد کرد. لطفاً شاخه‌های زیر را ایجاد کنید، یا مجوزها را طوری تنظیم کنید که بتوان آن‌ها را ایجاد کرد:\n"
 "%s"
 
 #: src/nautilus-application.c:607
@@ -1140,102 +1138,117 @@ msgstr "_پیوند به این‌جا"
 msgid "Cancel"
 msgstr "لغو"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:85
 #, c-format
 msgid "You do not have the permissions necessary to view the contents of “%s”."
-msgstr "شما مجوزهای لازم برای نمایش محتویات «%s» را ندارید."
+msgstr "شما مجوزهای لازم برای نمایش محتویات «⁨%s⁩» را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:92
 #, c-format
 msgid "“%s” could not be found. Perhaps it has recently been deleted."
-msgstr "نمی‌توان «%s» را یافت. شاید اخیراً حذف شده است."
+msgstr "نمی‌توان «⁨%s⁩» را یافت. شاید اخیراً حذف شده است."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:104
 #, c-format
 msgid "Sorry, could not display all the contents of “%s”: %s"
-msgstr "متأسفانه نمایش همهٔ محتویات «%s» ممکن نیست: %s"
+msgstr "متأسفانه نمایش همهٔ محتویات «⁨%s⁩» ممکن نیست: %s"
 
 #: src/nautilus-error-reporting.c:115
 msgid "This location could not be displayed."
 msgstr "نمایش این مکان ممکن نیست."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:142
 #, c-format
 msgid "You do not have the permissions necessary to change the group of “%s”."
-msgstr "شما مجوزهای لازم برای تغییر گروه «%s» را ندارید."
+msgstr "شما مجوزهای لازم برای تغییر گروه «⁨%s⁩» را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. fall through
 #: src/nautilus-error-reporting.c:165
 #, c-format
 msgid "Sorry, could not change the group of “%s”: %s"
-msgstr "متأسفانه تغییر گروه «%s» ممکن نیست: %s"
+msgstr "متأسفانه تغییر گروه «⁨%s⁩» ممکن نیست: %s"
 
 #: src/nautilus-error-reporting.c:170
 msgid "The group could not be changed."
 msgstr "تغییر گروه ممکن نیست."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:191
 #, c-format
 msgid "Sorry, could not change the owner of “%s”: %s"
-msgstr "متأسفانه تغییر مالک «%s» ممکن نیست: %s"
+msgstr "متأسفانه تغییر مالک «⁨%s⁩» ممکن نیست: %s"
 
 #: src/nautilus-error-reporting.c:194
 msgid "The owner could not be changed."
 msgstr "تغییر مالک ممکن نیست."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:215
 #, c-format
 msgid "Sorry, could not change the permissions of “%s”: %s"
-msgstr "متأسفانه تغییر مجوزهای «%s» ممکن نیست: %s"
+msgstr "متأسفانه تغییر مجوزهای «⁨%s⁩» ممکن نیست: %s"
 
 #: src/nautilus-error-reporting.c:218
 msgid "The permissions could not be changed."
 msgstr "تغییر مجوزها ممکن نیست."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:253
 #, c-format
 msgid "The name “%s” is already used in this location. Please use a different name."
-msgstr "نام «%s» هم‌اکنون در این شاخه استفاده شده‌است. لطفاً نام دیگری برگزینید."
+msgstr "نام «⁨%s⁩» هم‌اکنون در این شاخه استفاده شده‌است. لطفاً نام دیگری برگزینید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:261
 #, c-format
 msgid "There is no “%s” in this location. Perhaps it was just moved or deleted?"
-msgstr "هیچ «%s»ی در این شاخه نیست. ممکن است جابه‌جا یا حذف شده باشد؟"
+msgstr "هیچ «⁨%s⁩» در این مکان نیست. ممکن است جابه‌جا یا حذف شده باشد؟"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:269
 #, c-format
 msgid "You do not have the permissions necessary to rename “%s”."
-msgstr "شما مجوزهای لازم برای تغییر نام «%s» را ندارید."
+msgstr "شما مجوزهای لازم برای تغییر نام «⁨%s⁩» را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:278
 #, c-format
 msgid "The name “%s” is not valid because it contains the character “/”. Please use a different name."
-msgstr "نام «%s» معتبر نیست چون شامل نویسهٔ «/» است. لطفاً از نام دیگری استفاده کنید."
+msgstr "نام «⁨%s⁩» معتبر نیست چون شامل نویسهٔ «/» است. لطفاً از نام دیگری استفاده کنید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:284
 #, c-format
 msgid "The name “%s” is not valid. Please use a different name."
-msgstr "نام «%s» معتبر نیست. لطفاً از نام دیگری استفاده کنید."
+msgstr "نام «⁨%s⁩» معتبر نیست. لطفاً از نام دیگری استفاده کنید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:293
 #, c-format
 msgid "The name “%s” is too long. Please use a different name."
-msgstr "نام «%s» بسیار بزرگ است. لطفاً از نام دیگری استفاده کنید."
+msgstr "نام «⁨%s⁩» بسیار بزرگ است. لطفاً از نام دیگری استفاده کنید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. fall through
 #: src/nautilus-error-reporting.c:317
 #, c-format
 msgid "Sorry, could not rename “%s” to “%s”: %s"
-msgstr "متأسفانه تغییر نام از «%s» به «%s» ممکن نیست: %s"
+msgstr "متأسفانه تغییر نام از «⁨%s⁩» به «⁨%s⁩» ممکن نیست: %s"
 
 #: src/nautilus-error-reporting.c:322
 msgid "The item could not be renamed."
 msgstr "تغییر نام مورد ممکن نیست."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-error-reporting.c:431
 #, c-format
 msgid "Renaming “%s” to “%s”."
-msgstr "در حال تغییر نام «%s»‌ به «%s»."
+msgstr "در حال تغییر نام «⁨%s⁩»‌ به «⁨%s⁩»."
 
 #: src/nautilus-file.c:1344 src/nautilus-vfs-file.c:382
 msgid "This file cannot be mounted"
@@ -1773,10 +1786,11 @@ msgstr " ("
 msgid " (%'d"
 msgstr " (%'Id"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:1658
 #, c-format
 msgid "Are you sure you want to permanently delete “%s” from the trash?"
-msgstr "مطمئنید می‌خواهید «%s» را برای همیشه از زباله‌دان حذف کنید؟"
+msgstr "مطمئنید می‌خواهید «⁨%s⁩» را برای همیشه از زباله‌دان حذف کنید؟"
 
 #: src/nautilus-file-operations.c:1663
 #, c-format
@@ -1797,10 +1811,11 @@ msgstr "همهٔ موارد زباله‌دان تخلیه شوند؟"
 msgid "All items in the Trash will be permanently deleted."
 msgstr "تمام موارد زباله‌دان برای همیشه حذف خواهند شد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:1722
 #, c-format
 msgid "Are you sure you want to permanently delete “%s”?"
-msgstr "مطمئنید می‌خواهید «%s» را برای همیشه حذف کنید؟"
+msgstr "مطمئنید می‌خواهید «⁨%s⁩» را برای همیشه حذف کنید؟"
 
 #: src/nautilus-file-operations.c:1727
 #, c-format
@@ -1809,22 +1824,24 @@ msgid_plural "Are you sure you want to permanently delete the %'d selected items
 msgstr[0] "مطمئنید می‌خواهید %'Id مورد گزیده را برای همیشه حذف کنید؟"
 msgstr[1] "مطمئنید می‌خواهید %'Id مورد گزیده را برای همیشه حذف کنید؟"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:1788
 #, c-format
 msgid "Deleted “%s”"
-msgstr "مورد «%s» حذف شد"
+msgstr "مورد «⁨%s⁩» حذف شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:1792
 #, c-format
 msgid "Deleting “%s”"
-msgstr "در حال حذف «%s»"
+msgstr "در حال حذف «⁨%s⁩»"
 
 #: src/nautilus-file-operations.c:1803
 #, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
 msgstr[0] "تعداد %'Id پرونده حذف شد"
-msgstr[1] "تعداد %'Id پرونده حذف شد"
+msgstr[1] "تعداد %'Id پرونده حذف شده"
 
 #: src/nautilus-file-operations.c:1809
 #, c-format
@@ -1865,42 +1882,48 @@ msgstr[1] "(%Id پرونده/ثانیه)"
 msgid "Error while deleting."
 msgstr "خطا هنگام حذف."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2038
 #, c-format
 msgid "There was an error deleting the folder “%s”."
-msgstr "هنگام حذف شاخهٔ «%s» خطایی رخ داد."
+msgstr "هنگام حذف شاخهٔ «⁨%s⁩» خطایی رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2041
 #, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
-msgstr "شما دسترسی کافی برای حذف شاخهٔ «%s» را ندارید."
+msgstr "شما دسترسی کافی برای حذف شاخهٔ «⁨%s⁩» را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2048
 #, c-format
 msgid "There was an error deleting the file “%s”."
-msgstr "هنگام حذف پروندهٔ «%s» خطایی رخ داد."
+msgstr "هنگام حذف پروندهٔ «⁨%s⁩» خطایی رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2051
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
-msgstr "شما دسترسی کافی برای حذف پروندهٔ «%s» را ندارید."
+msgstr "شما دسترسی کافی برای حذف پروندهٔ «⁨%s⁩» را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2178
 #, c-format
 msgid "Trashing “%s”"
-msgstr "دور ریختن «%s»"
+msgstr "در حال دور ریختن «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2182
 #, c-format
 msgid "Trashed “%s”"
-msgstr "مورد «%s» دور انداخته شد"
+msgstr "مورد «⁨%s⁩» دور انداخته شد"
 
 #: src/nautilus-file-operations.c:2193
 #, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
-msgstr[0] "دور ریختن %'Id پرونده"
-msgstr[1] "دور ریختن %'Id پرونده"
+msgstr[0] "در حال دور ریختن %'Id پرونده"
+msgstr[1] "در حال دور ریختن %'Id پرونده"
 
 #: src/nautilus-file-operations.c:2199
 #, c-format
@@ -1909,11 +1932,12 @@ msgid_plural "Trashed %'d files"
 msgstr[0] "تعداد %'Id پرونده دور ریخته شد"
 msgstr[1] "تعداد %'Id پرونده دور ریخته شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name
 #: src/nautilus-file-operations.c:2348
 #, c-format
 msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
-msgstr "نمی‌توان «%s» را به زباله‌دان انداخت. می‌خواهید درجا حذفش کنید؟"
+msgstr "نمی‌توان «⁨%s⁩» را به زباله‌دان انداخت. می‌خواهید بلافاصله حذفش کنید؟"
 
 #: src/nautilus-file-operations.c:2360
 msgid "This remote location does not support sending items to the trash."
@@ -1927,15 +1951,17 @@ msgstr "دور ریختن پرونده‌ها"
 msgid "Deleting Files"
 msgstr "حذف کردن پرونده‌ها"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2818
 #, c-format
 msgid "Unable to eject %s"
-msgstr "ناتوان در بیرون دادن %s"
+msgstr "ناتوان در بیرون دادن ⁨%s⁩"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:2823
 #, c-format
 msgid "Unable to unmount %s"
-msgstr "ناتوان در پیاده کردن %s"
+msgstr "ناتوان در پیاده کردن ⁨%s⁩"
 
 #: src/nautilus-file-operations.c:3003
 msgid "Do you want to empty the trash before you unmount?"
@@ -1949,32 +1975,33 @@ msgstr "برای اینکه فضای خالی بدست بیاورید، باید
 msgid "Do _not Empty Trash"
 msgstr "زباله‌دان را خالی _نکن"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-file-operations.c:3153 src/nautilus-files-view.c:6926
 #, c-format
 msgid "Unable to access “%s”"
-msgstr "ناتوان در دسترسی به «%s»"
+msgstr "ناتوان در دسترسی به «⁨%s⁩»"
 
 #: src/nautilus-file-operations.c:3238
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
-msgstr[0] "آماده شدن برای رونوشت %'Id پرونده (%s)"
-msgstr[1] "آماده شدن برای رونوشت %'Id پرونده (%s)"
+msgstr[0] "در حال آماده‌سازی برای رونوشت %'Id پرونده (%s)"
+msgstr[1] "در حال آماده‌سازی برای رونوشت %'Id پرونده (%s)"
 
 #: src/nautilus-file-operations.c:3251
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
-msgstr[0] "آماده شدن برای جابه‌جایی %'Id پرونده (%s)"
-msgstr[1] "آماده شدن برای جابه‌جایی %'Id پرونده (%s)"
+msgstr[0] "در حال آماده‌سازی برای جابه‌جایی %'Id پرونده (%s)"
+msgstr[1] "در حال آماده‌سازی برای جابه‌جایی %'Id پرونده (%s)"
 
 #: src/nautilus-file-operations.c:3264
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
-msgstr[0] "آماده شدن برای حذف %'Id پرونده‌ (%s)"
-msgstr[1] "آماده شدن برای حذف %'Id پرونده‌ (%s)"
+msgstr[0] "در حال آماده‌سازی برای حذف %'Id پرونده‌ (%s)"
+msgstr[1] "در حال آماده‌سازی برای حذف %'Id پرونده‌ (%s)"
 
 #: src/nautilus-file-operations.c:3274
 #, c-format
@@ -2006,40 +2033,47 @@ msgstr "خطا هنگام انتقال پرونده‌ها به زباله‌د�
 msgid "Error while compressing files."
 msgstr "خطا هنگام فشرده کردن پرونده‌ها."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3438
 #, c-format
 msgid "Files in the folder “%s” cannot be handled because you do not have permissions to see them."
-msgstr "ادارهٔ پرونده‌های درون شاخهٔ «%s» امکان پذیر نیست، چون شما اجازه دیدن آن‌ها را ندارید."
+msgstr "ادارهٔ پرونده‌های درون شاخهٔ «⁨%s⁩» امکان پذیر نیست، چون شما اجازه دیدن آن‌ها را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3444 src/nautilus-file-operations.c:4965
 #, c-format
 msgid "There was an error getting information about the files in the folder “%s”."
-msgstr "یک خطا هنگام دریافت اطّلاعات پرونده‌ها در شاخهٔ «%s» رخ داده است."
+msgstr "یک خطا هنگام دریافت اطّلاعات پرونده‌ها در شاخهٔ «⁨%s⁩» رخ داده است."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3499
 #, c-format
 msgid "The folder “%s” cannot be handled because you do not have permissions to read it."
-msgstr "شاخهٔ «%s» قابل اداره نیست، چون شما اجازه خواندنش را ندارید."
+msgstr "شاخهٔ «⁨%s⁩» قابل اداره نیست، چون شما اجازه خواندنش را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3505 src/nautilus-file-operations.c:5047
 #, c-format
 msgid "There was an error reading the folder “%s”."
-msgstr "هنگام خواندن شاخهٔ «%s» خطایی رخ داد."
+msgstr "هنگام خواندن شاخهٔ «⁨%s⁩» خطایی رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3615
 #, c-format
 msgid "The file “%s” cannot be handled because you do not have permissions to read it."
-msgstr "پروندهٔ «%s» قابل اداره نیست چون شما اجازه خواندنش را ندارید."
+msgstr "پروندهٔ «⁨%s⁩» قابل اداره نیست چون شما اجازه خواندنش را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3620
 #, c-format
 msgid "There was an error getting information about “%s”."
-msgstr "خطایی هنگام دریافت اطّلاعات درباره «%s» رخ داد."
+msgstr "خطایی هنگام دریافت اطّلاعات درباره «⁨%s⁩» رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3742 src/nautilus-file-operations.c:3804 src/nautilus-file-operations.c:3851 src/nautilus-file-operations.c:3895
 #, c-format
 msgid "Error while copying to “%s”."
-msgstr "خطا هنگام رونوشت به «%s»."
+msgstr "هنگام رونویسی به «⁨%s⁩» خطایی رخ داد."
 
 #: src/nautilus-file-operations.c:3747
 msgid "You do not have permissions to access the destination folder."
@@ -2066,77 +2100,89 @@ msgstr "میزان %s فضای بیشتر برای رونوشت به مقصد ا
 msgid "The destination is read-only."
 msgstr "مقصد «فقط-خواندنی» است."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3973
 #, c-format
 msgid "Moving “%s” to “%s”"
-msgstr "جابه‌جا کردن «%s» به «%s»"
+msgstr "در حال جابه‌جایی «⁨%s⁩» به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3977
 #, c-format
 msgid "Moved “%s” to “%s”"
-msgstr "مورد «%s» به «%s» جابجا شد"
+msgstr "مورد «⁨%s⁩» به «⁨%s⁩» جابجا شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3984
 #, c-format
 msgid "Copying “%s” to “%s”"
-msgstr "رونویسی کردن «%s» به «%s»"
+msgstr "در حال رونویسی «⁨%s⁩» به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:3988
 #, c-format
 msgid "Copied “%s” to “%s”"
-msgstr "مورد «%s» به «%s» رونوشت شد"
+msgstr "مورد «⁨%s⁩» به «⁨%s⁩» رونویسی شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4022
 #, c-format
 msgid "Duplicating “%s”"
-msgstr "در حال تکثیر «%s»"
+msgstr "در حال تکثیر «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4026
 #, c-format
 msgid "Duplicated “%s”"
-msgstr "مورد «%s» تکثیر شد"
+msgstr "مورد «⁨%s⁩» تکثیر شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4045
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
-msgstr[0] "جابه‌جا کردن %'Id پرونده‌ به «%s»"
-msgstr[1] "جابه‌جا کردن %'Id پرونده‌ به «%s»"
+msgstr[0] "در حال جابه‌جایی %'Id پرونده‌ به «⁨%s⁩»"
+msgstr[1] "در حال جابه‌جایی %'Id پرونده‌ به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4051
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
-msgstr[0] "رونویسی کردن %'Id پرونده به «%s»"
-msgstr[1] "رونویسی کردن %'Id پرونده به «%s»"
+msgstr[0] "در حال رونویسی %'Id پرونده به «⁨%s⁩»"
+msgstr[1] "در حال رونویسی %'Id پرونده به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4070
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
-msgstr[0] "تعداد %'Id پرونده‌ به «%s» جابجا شد"
-msgstr[1] "تعداد %'Id پرونده‌ به «%s» جابجا شد"
+msgstr[0] "تعداد %'Id پرونده‌ به «⁨%s⁩» جابجا شد"
+msgstr[1] "تعداد %'Id پرونده‌ به «⁨%s⁩» جابجا شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4076
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
-msgstr[0] "تعداد %'Id پرونده به «%s» رونوشت شد"
-msgstr[1] "تعداد %'Id پرونده به «%s» رونوشت شد"
+msgstr[0] "تعداد %'Id پرونده به «⁨%s⁩» رونوشت شد"
+msgstr[1] "تعداد %'Id پرونده به «⁨%s⁩» رونوشت شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4099
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
-msgstr[0] "در حال تکثیر %'Id پرونده در «%s»"
-msgstr[1] "در حال تکثیر %'Id پرونده در «%s»"
+msgstr[0] "در حال تکثیر %'Id پرونده در «⁨%s⁩»"
+msgstr[1] "در حال تکثیر %'Id پرونده در «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4109
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
-msgstr[0] "تعداد %'Id پرونده در «%s» تکثیر شد"
-msgstr[1] "تعداد %'Id پرونده در «%s» تکثیر شد"
+msgstr[0] "تعداد %'Id پرونده در «⁨%s⁩» تکثیر شد"
+msgstr[1] "تعداد %'Id پرونده در «⁨%s⁩» تکثیر شد"
 
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
@@ -2188,34 +2234,39 @@ msgid_plural "%'d / %'d — %s left (%s/sec)"
 msgstr[0] "⁦%'Id / %'Id⁩ — %s باقی‌مانده (%s/ثانیه)"
 msgstr[1] "⁦%'Id / %'Id⁩ — %s باقی‌مانده (%s/ثانیه)"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4767
 #, c-format
 msgid "The folder “%s” cannot be copied because you do not have permissions to create it in the destination."
-msgstr "رونوشت از شاخهٔ «%s» ممکن نیست، چون شما اجازه ساخت آن را در محل مقصد ندارید."
+msgstr "رونویسی از شاخهٔ «⁨%s⁩» ممکن نیست، چون شما اجازه ساخت آن را در محل مقصد ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4773
 #, c-format
 msgid "There was an error creating the folder “%s”."
-msgstr "هنگام ایجاد شاخهٔ «%s» خطایی رخ داد."
+msgstr "هنگام ایجاد شاخهٔ «⁨%s⁩» خطایی رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:4960
 #, c-format
 msgid "Files in the folder “%s” cannot be copied because you do not have permissions to see them."
-msgstr "رونوشت از پرونده‌های شاخهٔ «%s» ممکن نیست، چون شما اجازه دیدن آن‌ها را ندارید."
+msgstr "رونویسی از پرونده‌های شاخهٔ «⁨%s⁩» ممکن نیست، چون شما اجازه دیدن آن‌ها را ندارید."
 
 #: src/nautilus-file-operations.c:4976
 msgid "_Skip files"
 msgstr "_پرش از پرونده‌ها"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:5042
 #, c-format
 msgid "The folder “%s” cannot be copied because you do not have permissions to read it."
-msgstr "رونوشت از شاخهٔ «%s» ممکن نیست، چون شما اجازه خواندنش را ندارید."
+msgstr "رونویسی از شاخهٔ «⁨%s⁩» ممکن نیست، چون شما اجازه خواندنش را ندارید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:5107 src/nautilus-file-operations.c:5732 src/nautilus-file-operations.c:6433
 #, c-format
 msgid "Error while moving “%s”."
-msgstr "خطا هنگام جابه‌جایی «%s»."
+msgstr "هنگام جابه‌جایی «⁨%s⁩» خطایی رخ داد."
 
 #: src/nautilus-file-operations.c:5108
 msgid "Could not remove the source folder."
@@ -2251,36 +2302,40 @@ msgstr "نمی‌توانید از یک پرونده روی خودش رونوش�
 msgid "The source file would be overwritten by the destination."
 msgstr "پروندهٔ منبع با مقصد رونویسی می‌شود."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:5736 src/nautilus-file-operations.c:5824
 #, c-format
 msgid "Error while copying “%s”."
-msgstr "خطا هنگام رونوشت «%s»."
+msgstr "هنگام رونویسی «⁨%s⁩» خطایی رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:5739
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
-msgstr "نمی‌توان پرونده‌ای که هم‌اکنون با نام مشابهی در %s وجود دارد، را برداشت."
+msgstr "نمی‌توان پرونده‌ای که هم‌اکنون با نام مشابه‌ای در ⁨%s⁩ وجود دارد، را برداشت."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:5826
 #, c-format
 msgid "There was an error copying the file into %s."
-msgstr "خطایی هنگام رونوشت پرونده به %s رخ داد."
+msgstr "خطایی هنگام رونویسی پرونده به ⁨%s⁩ رخ داد."
 
 #: src/nautilus-file-operations.c:6016
 msgid "Copying Files"
-msgstr "رونویسی کردن از پرونده‌ها"
+msgstr "در حال رونویسی پرونده‌ها"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:6136
 #, c-format
 msgid "Preparing to move to “%s”"
-msgstr "آماده شدن برای جابه‌جایی به «%s»"
+msgstr "در حال آماده‌سازی برای جابه‌جایی به «⁨%s⁩»"
 
 #: src/nautilus-file-operations.c:6140
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
-msgstr[0] "آماده شدن برای جابه‌جایی %'Id پرونده"
-msgstr[1] "آماده شدن برای جابه‌جایی %'Id پرونده"
+msgstr[0] "در حال آماده‌سازی برای جابه‌جایی %'Id پرونده"
+msgstr[1] "در حال آماده‌سازی برای جابه‌جایی %'Id پرونده"
 
 #: src/nautilus-file-operations.c:6435
 #, c-format
@@ -2291,10 +2346,11 @@ msgstr "خطایی هنگام جابه‌جایی پرونده به %s رخ دا
 msgid "Moving Files"
 msgstr "جابه‌جا کردن پرونده‌ها"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:6789
 #, c-format
 msgid "Creating links in “%s”"
-msgstr "ایجاد کردن پیوندها در «%s»"
+msgstr "در حال ایجاد پیوندها در «⁨%s⁩»"
 
 #: src/nautilus-file-operations.c:6793
 #, c-format
@@ -2303,10 +2359,11 @@ msgid_plural "Making links to %'d files"
 msgstr[0] "ایجاد کردن پیوند به %'Id پرونده"
 msgstr[1] "ایجاد کردن پیوند به %'Id پرونده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:6943
 #, c-format
 msgid "Error while creating link to %s."
-msgstr "خطا هنگام ایجاد پیوند به %s."
+msgstr "هنگام ایجاد پیوند به ⁨%s⁩ خطایی رخ داد."
 
 #: src/nautilus-file-operations.c:6947
 msgid "Symbolic links only supported for local files"
@@ -2316,10 +2373,11 @@ msgstr "پیوندهای نمادین تنها در پرونده‌های محل
 msgid "The target doesn’t support symbolic links."
 msgstr "هدف مورد نظر از پیوندهای نمادین پشتیبانی نمی‌کند."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:6960
 #, c-format
 msgid "There was an error creating the symlink in %s."
-msgstr "خطایی در ایجاد پیوند نمادین در %s رخ داد."
+msgstr "خطایی در ایجاد پیوند نمادین در ⁨%s⁩ رخ داد."
 
 #: src/nautilus-file-operations.c:7290
 msgid "Setting permissions"
@@ -2335,43 +2393,49 @@ msgstr "شاخهٔ بی‌عنوان"
 msgid "Untitled Document"
 msgstr "سند بی‌عنوان"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:7867
 #, c-format
 msgid "Error while creating directory %s."
-msgstr "خطا هنگام ایجاد شاخه %s."
+msgstr "هنگام ایجاد شاخهٔ ⁨%s⁩ خطایی رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:7872
 #, c-format
 msgid "Error while creating file %s."
-msgstr "خطا هنگام ایجاد پرونده %s."
+msgstr "هنگام ایجاد پروندهٔ ⁨%s⁩ خطایی رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:7876
 #, c-format
 msgid "There was an error creating the directory in %s."
-msgstr "خطایی هنگام ساخت شاخه در %s رخ داد."
+msgstr "خطایی هنگام ساخت شاخه در ⁨%s⁩ رخ داد."
 
 #: src/nautilus-file-operations.c:8151
 msgid "Emptying Trash"
-msgstr "خالی کردن زباله‌دان"
+msgstr "در حال تخلیهٔ زباله‌دان"
 
 #: src/nautilus-file-operations.c:8193
 msgid "Verifying destination"
-msgstr "تأیید کردن مقصد"
+msgstr "در حال تصدیق مقصد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8237
 #, c-format
 msgid "Extracting “%s”"
-msgstr "استخراج کردن «%s»"
+msgstr "استخراج کردن «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8341 src/nautilus-file-operations.c:8526
 #, c-format
 msgid "Error extracting “%s”"
-msgstr "خطا هنگام استخراج «%s»"
+msgstr "خطا هنگام استخراج «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8345
 #, c-format
 msgid "There was an error while extracting “%s”."
-msgstr "هنگام استخراج «%s» خطایی رخ داد."
+msgstr "هنگام استخراج «⁨%s⁩» خطایی رخ داد."
 
 #: src/nautilus-file-operations.c:8422
 msgid "Password Required"
@@ -2381,31 +2445,35 @@ msgstr "گذرواژه لازم است"
 msgid "Extract"
 msgstr "استخراج"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8438
 #, c-format
 msgid "“%s” is password-protected."
-msgstr "«%s» با گذرواژه محافظت شده."
+msgstr "«⁨%s⁩» با گذرواژه محافظت شده."
 
 #: src/nautilus-file-operations.c:8448
 msgid "Enter password…"
 msgstr "ورود گذرواژه…"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8529
 #, c-format
 msgid "Not enough free space to extract %s"
-msgstr "فضای کافی برای استخراج %s موجود نیست"
+msgstr "فضای کافی برای استخراج ⁨%s⁩ موجود نیست"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8559
 #, c-format
 msgid "Extracted “%s” to “%s”"
-msgstr "استخراج «%s» به «%s» انجام شد"
+msgstr "استخراج «⁨%s⁩» به «⁨%s⁩» انجام شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8565
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
-msgstr[0] "تعداد %'Id پرونده‌ در «%s» استخراج شد"
-msgstr[1] "تعداد %'Id پرونده‌ در «%s» استخراج شد"
+msgstr[0] "تعداد %'Id پرونده‌ در «⁨%s⁩» استخراج شد"
+msgstr[1] "تعداد %'Id پرونده‌ در «⁨%s⁩» استخراج شد"
 
 #: src/nautilus-file-operations.c:8599
 msgid "Preparing to extract"
@@ -2415,45 +2483,51 @@ msgstr "آماده‌سازی برای استخراج"
 msgid "Extracting Files"
 msgstr "استخراج کردن پرونده‌ها"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8791
 #, c-format
 msgid "Compressing “%s” into “%s”"
-msgstr "فشرده کردن «%s» در «%s»"
+msgstr "فشرده کردن «⁨%s⁩» در «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8797
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
-msgstr[0] "فشرده کردن %'Id پرونده در «%s»"
-msgstr[1] "فشرده کردن %'Id پرونده در «%s»"
+msgstr[0] "فشرده کردن %'Id پرونده در «⁨%s⁩»"
+msgstr[1] "فشرده کردن %'Id پرونده در «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8945
 #, c-format
 msgid "Error compressing “%s” into “%s”"
-msgstr "خطا هنگام فشرده کردن «%s» در «%s»"
+msgstr "خطا هنگام فشرده کردن «⁨%s⁩» در «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8951
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
-msgstr[0] "خطا هنگام فشرده کردن %'Id پرونده در «%s»"
-msgstr[1] "خطا هنگام فشرده کردن %'Id پرونده در «%s»"
+msgstr[0] "خطا هنگام فشرده کردن %'Id پرونده در «⁨%s⁩»"
+msgstr[1] "خطا هنگام فشرده کردن %'Id پرونده در «⁨%s⁩»"
 
 #: src/nautilus-file-operations.c:8961
 msgid "There was an error while compressing files."
-msgstr "خطایی هنگام فشرده کردن پرونده‌ها روی داد."
+msgstr "خطایی هنگام فشرده کردن پرونده‌ها رخ داد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8986
 #, c-format
 msgid "Compressed “%s” into “%s”"
-msgstr "فشرده کردن «%s» در «%s» انجام شد"
+msgstr "فشرده کردن «⁨%s⁩» در «⁨%s⁩» انجام شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-operations.c:8992
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
-msgstr[0] "فشرده‌سازی %'Id پرونده در «%s» انجام شد"
-msgstr[1] "فشرده‌سازی %'Id پرونده در «%s» انجام شد"
+msgstr[0] "فشرده‌سازی %'Id پرونده در «⁨%s⁩» انجام شد"
+msgstr[1] "فشرده‌سازی %'Id پرونده در «⁨%s⁩» انجام شد"
 
 #: src/nautilus-file-operations.c:9087
 msgid "Compressing Files"
@@ -2514,10 +2588,11 @@ msgstr "دسترسی‌ها اجازهٔ جای‌گذاری در این شاخ�
 msgid "Nautilus 3.6 deprecated this directory and tried migrating this configuration to ~/.local/share/nautilus"
 msgstr "ناتیلوس ۳.۶ این شاخه را منسوخ کرده و تلاش می‌کند این پیکربندی را به ⁦~/.local/share/nautilus⁩ منتقل کند"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-files-view.c:3467 src/nautilus-files-view.c:3514
 #, c-format
 msgid "“%s” selected"
-msgstr "مورد «%s» گزیده شد"
+msgstr "مورد «⁨%s⁩» گزیده شد"
 
 #: src/nautilus-files-view.c:3471
 #, c-format
@@ -2593,27 +2668,30 @@ msgstr "مقصد استخراج را برگزینید"
 msgid "Wallpapers"
 msgstr "کاغذدیواری‌ها"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-files-view.c:6956
 #, c-format
 msgid "Unable to remove “%s”"
-msgstr "ناتوان در برداشتن «%s»"
+msgstr "ناتوان در برداشتن «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-files-view.c:6986
 #, c-format
 msgid "Unable to eject “%s”"
-msgstr "ناتوان در بیرون دادن «%s»"
+msgstr "ناتوان در بیرون دادن «⁨%s⁩»"
 
 #: src/nautilus-files-view.c:7011
 msgid "Unable to stop drive"
 msgstr "ناتوان در متوقّف کردن گرداننده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-files-view.c:7124
 #, c-format
 msgid "Unable to start “%s”"
-msgstr "ناتوان در آغاز «%s»"
+msgstr "ناتوان در آغاز «⁨%s⁩»"
 
 #: src/nautilus-files-view.c:8089
 #, c-format
@@ -2622,10 +2700,11 @@ msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "شاخهٔ جدید با گزیده‌ها (%'Id مورد)"
 msgstr[1] "شاخهٔ جدید با گزیده‌ها (%'Id مورد)"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-files-view.c:8147
 #, c-format
 msgid "Open With %s"
-msgstr "گشودن با %s"
+msgstr "گشودن با ⁨%s⁩"
 
 #: src/nautilus-files-view.c:8159
 msgid "Run"
@@ -2649,7 +2728,7 @@ msgstr "_آغاز"
 
 #: src/nautilus-files-view.c:8231 src/gtk/nautilusgtkplacesview.c:1759
 msgid "_Connect"
-msgstr "_اتصال"
+msgstr "_اتّصال"
 
 #: src/nautilus-files-view.c:8237
 msgid "_Start Multi-disk Drive"
@@ -2727,19 +2806,21 @@ msgstr "انجام دوباره"
 msgid "Redo last undone action"
 msgstr "انجام دوبارهٔ آخرین کنش انجام نشده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:452
 #, c-format
 msgid "Move %d item back to “%s”"
 msgid_plural "Move %d items back to “%s”"
-msgstr[0] "بازگرداندن جابه‌جایی %Id مورد به «%s»"
-msgstr[1] "بازگرداندن جابه‌جایی %Id مورد به «%s»"
+msgstr[0] "برگرداندن %Id مورد به «⁨%s⁩»"
+msgstr[1] "برگرداندن %Id مورد به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:455
 #, c-format
 msgid "Move %d item to “%s”"
 msgid_plural "Move %d items to “%s”"
-msgstr[0] "جابه‌جایی %'Id مورد به «%s»"
-msgstr[1] "جابه‌جایی %'Id مورد به «%s»"
+msgstr[0] "جابه‌جایی %'Id مورد به «⁨%s⁩»"
+msgstr[1] "جابه‌جایی %'Id مورد به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:459
 #, c-format
@@ -2755,15 +2836,17 @@ msgid_plural "_Redo Move %d items"
 msgstr[0] "انجام _دوباره جابه‌جایی %Id مورد"
 msgstr[1] "انجام _دوباره جابه‌جایی %Id مورد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:468
 #, c-format
 msgid "Move “%s” back to “%s”"
-msgstr "بازگرداندن جابه‌جایی «%s» به «%s»"
+msgstr "برگرداندن «⁨%s⁩» به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:469
 #, c-format
 msgid "Move “%s” to “%s”"
-msgstr "جابه‌جایی «%s» به «%s»"
+msgstr "جابه‌جایی «⁨%s⁩» به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:471
 msgid "_Undo Move"
@@ -2785,8 +2868,8 @@ msgstr "انجام _دوباره بازگردانی از زباله‌دان"
 #, c-format
 msgid "Move %d item back to trash"
 msgid_plural "Move %d items back to trash"
-msgstr[0] "جابه‌جایی دوباره %Id مورد به زباله‌دان"
-msgstr[1] "جابه‌جایی دوباره %Id مورد به زباله‌دان"
+msgstr[0] "برگرداندن %Id مورد به زباله‌دان"
+msgstr[1] "برگرداندن %Id مورد به زباله‌دان"
 
 #: src/nautilus-file-undo-operations.c:485 src/nautilus-file-undo-operations.c:1610
 #, c-format
@@ -2795,61 +2878,66 @@ msgid_plural "Restore %d items from trash"
 msgstr[0] "بازگردانی %Id مورد از زباله‌دان"
 msgstr[1] "بازگردانی %Id مورد از زباله‌دان"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:491
 #, c-format
 msgid "Move “%s” back to trash"
-msgstr "جابه‌جایی دوباره «%s» به زباله‌دان"
+msgstr "برگرداندن «⁨%s⁩» به زباله‌دان"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:492
 #, c-format
 msgid "Restore “%s” from trash"
-msgstr "بازگردانی «%s» از زباله‌دان"
+msgstr "بازگردانی «⁨%s⁩» از زباله‌دان"
 
 #: src/nautilus-file-undo-operations.c:499
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
-msgstr[0] "حذف %Id مورد رونوشت شده"
-msgstr[1] "حذف %Id مورد رونوشت شده"
+msgstr[0] "حذف %Id مورد رونویسی شده"
+msgstr[1] "حذف %Id مورد رونویسی شده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:502
 #, c-format
 msgid "Copy %d item to “%s”"
 msgid_plural "Copy %d items to “%s”"
-msgstr[0] "رونوشت از %'Id مورد به «%s»"
-msgstr[1] "رونوشت از %'Id مورد به «%s»"
+msgstr[0] "رونویسی %'Id مورد به «⁨%s⁩»"
+msgstr[1] "رونویسی %'Id مورد به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:506
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
-msgstr[0] "_برگردان رونوشت از %Id مورد"
-msgstr[1] "_برگردان رونوشت از %Id مورد"
+msgstr[0] "_برگردان رونویسی %Id مورد"
+msgstr[1] "_برگردان رونویسی %Id مورد"
 
 #: src/nautilus-file-undo-operations.c:509
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
-msgstr[0] "انجام _دوباره رونوشت از %Id مورد"
-msgstr[1] "انجام _دوباره رونوشت از %Id مورد"
+msgstr[0] "انجام _دوباره رونویسی %Id مورد"
+msgstr[1] "انجام _دوباره رونویسی %Id مورد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:515 src/nautilus-file-undo-operations.c:542 src/nautilus-file-undo-operations.c:826 src/nautilus-file-undo-operations.c:2367 src/nautilus-file-undo-operations.c:2530
 #, c-format
 msgid "Delete “%s”"
-msgstr "مورد «%s» حذف شد"
+msgstr "حذف «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:516
 #, c-format
 msgid "Copy “%s” to “%s”"
-msgstr "رونوشت از «%s» به «%s»"
+msgstr "رونویسی «⁨%s⁩» به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:518
 msgid "_Undo Copy"
-msgstr "_برگردان رونوشت"
+msgstr "_برگردان رونویسی"
 
 #: src/nautilus-file-undo-operations.c:519
 msgid "_Redo Copy"
-msgstr "انجام _دوباره رونوشت"
+msgstr "انجام _دوباره رونویسی"
 
 #: src/nautilus-file-undo-operations.c:526
 #, c-format
@@ -2858,12 +2946,13 @@ msgid_plural "Delete %d duplicated items"
 msgstr[0] "حذف %Id مورد تکثیر شده"
 msgstr[1] "حذف %Id مورد تکثیر شده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:529
 #, c-format
 msgid "Duplicate %d item in “%s”"
 msgid_plural "Duplicate %d items in “%s”"
-msgstr[0] "تعداد %Id مورد در «%s» تکثیر شد"
-msgstr[1] "تعداد %Id مورد در «%s» تکثیر شد"
+msgstr[0] "تعداد %Id مورد در «⁨%s⁩» تکثیر شد"
+msgstr[1] "تعداد %Id مورد در «⁨%s⁩» تکثیر شد"
 
 #: src/nautilus-file-undo-operations.c:533
 #, c-format
@@ -2879,10 +2968,11 @@ msgid_plural "_Redo Duplicate %d items"
 msgstr[0] "انجام _دوباره تکثیر %Id مورد"
 msgstr[1] "انجام _دوباره تکثیر %Id مورد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:543
 #, c-format
 msgid "Duplicate “%s” in “%s”"
-msgstr "تکثیر «%s» در «%s»"
+msgstr "تکثیر «⁨%s⁩» در «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:546
 msgid "_Undo Duplicate"
@@ -2906,41 +2996,45 @@ msgid_plural "Create links to %d items"
 msgstr[0] "ایجاد پیوند به %Id مورد"
 msgstr[1] "ایجاد پیوند به %Id مورد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:563
 #, c-format
 msgid "Delete link to “%s”"
-msgstr "حذف پیوند به «%s»"
+msgstr "حذف پیوند به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:564
 #, c-format
 msgid "Create link to “%s”"
-msgstr "ایجاد پیوند به «%s»"
+msgstr "ایجاد پیوند به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:566
 msgid "_Undo Create Link"
-msgstr "_برگردان ساخت پیوند"
+msgstr "_برگردان ایجاد پیوند"
 
 #: src/nautilus-file-undo-operations.c:567
 msgid "_Redo Create Link"
-msgstr "انجام _دوباره ساخت پیوند"
+msgstr "انجام _دوباره ایجاد پیوند"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:830
 #, c-format
 msgid "Create an empty file “%s”"
-msgstr "ساخت یک پرونده خالی «%s»"
+msgstr "ایجاد یک پروندهٔ خالی «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:832
 msgid "_Undo Create Empty File"
-msgstr "_برگردان ساخت پرونده خالی"
+msgstr "_برگردان ایجاد پروندهٔ خالی"
 
 #: src/nautilus-file-undo-operations.c:833
 msgid "_Redo Create Empty File"
-msgstr "انجام _دوباره ساخت پرونده خالی"
+msgstr "انجام _دوباره ایجاد پروندهٔ خالی"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:837
 #, c-format
 msgid "Create a new folder “%s”"
-msgstr "ایجاد یک شاخهٔ جدید «%s»"
+msgstr "ایجاد یک شاخهٔ جدید «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:839
 msgid "_Undo Create Folder"
@@ -2950,10 +3044,11 @@ msgstr "برگردان ایجاد شاخه"
 msgid "_Redo Create Folder"
 msgstr "انجام _دوباره ایجاد شاخه"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:844
 #, c-format
 msgid "Create new file “%s” from template "
-msgstr "ایجاد یک پرونده جدید «%s» از طریق الگو "
+msgstr "ایجاد یک پرونده جدید «⁨%s⁩» از طریق الگو "
 
 #: src/nautilus-file-undo-operations.c:846
 msgid "_Undo Create from Template"
@@ -2963,10 +3058,11 @@ msgstr "_برگردان ساخت از طریق الگو"
 msgid "_Redo Create from Template"
 msgstr "انجام _دوباره ساخت از طریق الگو"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:1047 src/nautilus-file-undo-operations.c:1048
 #, c-format
 msgid "Rename “%s” as “%s”"
-msgstr "در حال تغییر نام «%s»‌ به «%s»"
+msgstr "در حال تغییر نام «⁨%s⁩»‌ به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:1050
 msgid "_Undo Rename"
@@ -3028,33 +3124,37 @@ msgid_plural "Move %d items to trash"
 msgstr[0] "جابه‌جایی %Id مورد به زباله‌دان"
 msgstr[1] "جابه‌جایی %Id مورد به زباله‌دان"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:1627
 #, c-format
 msgid "Restore “%s” to “%s”"
-msgstr "بازگردانی «%s»‌ به «%s»"
+msgstr "بازگردانی «⁨%s⁩»‌ به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:1634
 #, c-format
 msgid "Move “%s” to trash"
-msgstr "جابه‌جایی «%s» به زباله‌دان"
+msgstr "جابه‌جایی «⁨%s⁩» به زباله‌دان"
 
 #: src/nautilus-file-undo-operations.c:1639
 msgid "_Undo Trash"
-msgstr "_برگردانی زباله"
+msgstr "_بازگردانی زباله"
 
 #: src/nautilus-file-undo-operations.c:1640
 msgid "_Redo Trash"
 msgstr "دور انداختن _دوبارهٔ زباله"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:1935
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
-msgstr "بازگردانی مجوزهای اصلیِ موارد ضمیمه شده در «%s»"
+msgstr "بازگردانی مجوزهای اصلی موارد ضمیمه شده در «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:1936
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
-msgstr "تنظیم مجوزهای موارد ضمیمه در «%s»"
+msgstr "تنظیم مجوزهای موارد ضمیمه در «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:1938 src/nautilus-file-undo-operations.c:2091
 msgid "_Undo Change Permissions"
@@ -3064,25 +3164,29 @@ msgstr "_برگردان تغییر مجوزها"
 msgid "_Redo Change Permissions"
 msgstr "انجام _دوباره تغییر مجوزها"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2088
 #, c-format
 msgid "Restore original permissions of “%s”"
-msgstr "بازگردانی مجوزهای اصلی «%s»"
+msgstr "بازگردانی مجوزهای اصلی «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2089
 #, c-format
 msgid "Set permissions of “%s”"
-msgstr "تنظیم مجوزهای «%s»"
+msgstr "تنظیم مجوزهای «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2201
 #, c-format
 msgid "Restore group of “%s” to “%s”"
-msgstr "بازگردانی گروه «%s» به «%s»"
+msgstr "بازگردانی گروه «⁨%s⁩» به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2203
 #, c-format
 msgid "Set group of “%s” to “%s”"
-msgstr "تنظیم گروه «%s»‌ به «%s»"
+msgstr "تنظیم گروه «⁨%s⁩»‌ به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:2206
 msgid "_Undo Change Group"
@@ -3092,15 +3196,17 @@ msgstr "_برگردان تغییر گروه"
 msgid "_Redo Change Group"
 msgstr "انجام _دوباره تغییر گروه"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2211
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
-msgstr "بازگردانی مالک «%s» به «%s»"
+msgstr "بازگردانی مالک «⁨%s⁩» به «⁨%s⁩»"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2213
 #, c-format
 msgid "Set owner of “%s” to “%s”"
-msgstr "تنظیم مالک «%s»‌ به «%s»"
+msgstr "تنظیم مالک «⁨%s⁩»‌ به «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:2216
 msgid "_Undo Change Owner"
@@ -3125,10 +3231,11 @@ msgid_plural "Delete %d extracted files"
 msgstr[0] "حذف %Id پرونده استخراج شده"
 msgstr[1] "حذف %Id پرونده استخراج شده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2385
 #, c-format
 msgid "Extract “%s”"
-msgstr "استخراج «%s»"
+msgstr "استخراج «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:2389
 #, c-format
@@ -3137,10 +3244,11 @@ msgid_plural "Extract %d files"
 msgstr[0] "استخراج %Id پرونده"
 msgstr[1] "استخراج %Id پرونده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-undo-operations.c:2541
 #, c-format
 msgid "Compress “%s”"
-msgstr "فشرده‌سازی «%s»"
+msgstr "فشرده‌سازی «⁨%s⁩»"
 
 #: src/nautilus-file-undo-operations.c:2545
 #, c-format
@@ -3157,10 +3265,11 @@ msgstr "_برگردان فشرده‌سازی"
 msgid "_Redo Compress"
 msgstr "انجام _دوباره فشرده‌سازی"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-file-utilities.c:884
 #, c-format
 msgid "Could not determine original location of “%s” "
-msgstr "نمی‌توان مکان اصلی «%s» را تعیین کرد "
+msgstr "نمی‌توان مکان اصلی «⁨%s⁩» را تعیین کرد "
 
 #: src/nautilus-file-utilities.c:888
 msgid "The item cannot be restored from trash"
@@ -3290,24 +3399,27 @@ msgstr "عکس‌"
 msgid "Text File"
 msgstr "پرونده متنی"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-mime-actions.c:564
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
-msgstr "پیوند «%s» خراب است. به زباله‌دان منتقل شود؟"
+msgstr "پیوند «⁨%s⁩» خراب است. به زباله‌دان منتقل شود؟"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-mime-actions.c:568
 #, c-format
 msgid "The link “%s” is broken."
-msgstr "پیوند «%s» خراب است."
+msgstr "پیوند «⁨%s⁩» خراب است."
 
 #: src/nautilus-mime-actions.c:575
 msgid "This link cannot be used because it has no target."
 msgstr "این پیوند قابل استفاده نیست، چون به هدفی اشاره نمی‌کند."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-mime-actions.c:579
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
-msgstr "این پیوند قابل استفاده نیست،‌ چون هدف آن «%s» وجود ندارد."
+msgstr "این پیوند قابل استفاده نیست،‌ چون هدف آن «⁨%s⁩» وجود ندارد."
 
 #: src/nautilus-mime-actions.c:590 src/resources/ui/nautilus-files-view-context-menus.ui:157
 msgid "Mo_ve to Trash"
@@ -3320,19 +3432,21 @@ msgid_plural "This will open %d separate tabs."
 msgstr[0] "به این ترتیب %Id زبانهٔ جدا باز خواهد شد."
 msgstr[1] "به این ترتیب %Id پنجرهٔ جدا باز خواهد شد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-mime-actions.c:1040
 #, c-format
 msgid "Could Not Display “%s”"
-msgstr "نمی‌توان «%s» را نمایش داد."
+msgstr "نمی‌توان «⁨%s⁩» را نمایش داد."
 
 #: src/nautilus-mime-actions.c:1143
 msgid "The file is of an unknown type"
 msgstr "گونهٔ پرونده ناشناخته است"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-mime-actions.c:1148
 #, c-format
 msgid "There is no application installed for “%s” files"
-msgstr "هیچ برنامه‌ای برای پرونده‌های «%s» نصب نشده است"
+msgstr "هیچ برنامه‌ای برای پرونده‌های «⁨%s⁩» نصب نشده است"
 
 #: src/nautilus-mime-actions.c:1161
 msgid "_Select Application"
@@ -3346,10 +3460,11 @@ msgstr "خطایی داخلی هنگام تلاش برای جست‌وجوی ب�
 msgid "Unable to search for application"
 msgstr "ناتوان در جست‌وجو برای برنامه"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-mime-actions.c:1312
 #, c-format
 msgid "There is no application installed for “%s” files. Do you want to search for an application to open this file?"
-msgstr "هیچ برنامه‌ای برای پرونده‌های «%s» نصب نشده است. می‌خواهید برای برنامه‌ای که این پرونده را بگشاید بگردید؟"
+msgstr "هیچ برنامه‌ای برای پرونده‌های «⁨%s⁩» نصب نشده است. می‌خواهید برای برنامه‌ای که این پرونده را بگشاید بگردید؟"
 
 #: src/nautilus-mime-actions.c:1318
 msgid "_Search in Software"
@@ -3364,10 +3479,11 @@ msgstr "ناتوان در دسترسی به مکان"
 msgid "Unable to start location"
 msgstr "ناتوان در آغاز مکان"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-mime-actions.c:2213
 #, c-format
 msgid "Opening “%s”."
-msgstr "در حال گشودن «%s»."
+msgstr "در حال گشودن «⁨%s⁩»."
 
 #: src/nautilus-mime-actions.c:2218
 #, c-format
@@ -3413,10 +3529,11 @@ msgstr "شاخهٔ جدید"
 msgid "Close tab"
 msgstr "بستن زبانه"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:144
 #, c-format
 msgid "You are trying to replace the destination folder “%s” with a symbolic link."
-msgstr "شما در تلاش برای جایگزینی شاخهٔ مقصد «%s» با یک پیوند نمادین هستید."
+msgstr "شما در تلاش برای جایگزینی شاخهٔ مقصد «⁨%s⁩» با یک پیوند نمادین هستید."
 
 #: src/nautilus-operations-ui-manager.c:146
 #, c-format
@@ -3427,67 +3544,77 @@ msgstr "این کار مجاز نیست تا مانع از حذف اطّلاعا
 msgid "Please rename the symbolic link or press the skip button."
 msgstr "لطفاً نام پیوند نمادین را تغییر دهید یا دکمه پرش را فشار دهید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:151
 #, c-format
 msgid "Merge folder “%s”?"
-msgstr "شاخهٔ «%s» ادغام شود؟"
+msgstr "شاخهٔ «⁨%s⁩» ادغام شود؟"
 
 #: src/nautilus-operations-ui-manager.c:154
 msgid "Merging will ask for confirmation before replacing any files in the folder that conflict with the files being copied."
 msgstr "هنگام ادغام، پیش از جایگزینی هر پرونده‌ای در شاخه که با پرونده‌های رونوشتی تداخل داشته باشد، برای گرفتن تایید سوال خواهد شد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:159
 #, c-format
 msgid "An older folder with the same name already exists in “%s”."
-msgstr "یک شاخهٔ قدیمی با نام مشابه هم‌اکنون در «%s» وجود دارد."
+msgstr "یک شاخهٔ قدیمی‌تر با نام مشابه هم‌اکنون در «⁨%s⁩» وجود دارد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:164
 #, c-format
 msgid "A newer folder with the same name already exists in “%s”."
-msgstr "یک شاخهٔ جدیدتر با نام مشابه هم‌اکنون در «%s» وجود دارد."
+msgstr "یک شاخهٔ جدیدتر با نام مشابه هم‌اکنون در «⁨%s⁩» وجود دارد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:169
 #, c-format
 msgid "Another folder with the same name already exists in “%s”."
-msgstr "شاخهٔ دیگری با نام مشابه هم‌اکنون در «%s» وجود دارد."
+msgstr "شاخهٔ دیگری با نام مشابه هم‌اکنون در «⁨%s⁩» وجود دارد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:175
 #, c-format
 msgid "Replace folder “%s”?"
-msgstr "شاخهٔ «%s» جایگزین شود؟"
+msgstr "شاخهٔ «⁨%s⁩» جایگزین شود؟"
 
 #: src/nautilus-operations-ui-manager.c:177
 msgid "Replacing it will remove all files in the folder."
 msgstr "جایگزینی آن تمام پرونده‌های درون شاخه را پاک خواهد کرد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:178
 #, c-format
 msgid "A folder with the same name already exists in “%s”."
-msgstr "یک شاخه‌ با نام مشابه هم‌اکنون در «%s» وجود دارد."
+msgstr "یک شاخه‌ با نام مشابه هم‌اکنون در «⁨%s⁩» وجود دارد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:184
 #, c-format
 msgid "Replace file “%s”?"
-msgstr "پروندهٔ «%s» جایگزین شود؟"
+msgstr "پروندهٔ «⁨%s⁩» جایگزین شود؟"
 
 #: src/nautilus-operations-ui-manager.c:187
 msgid "Replacing it will overwrite its content."
-msgstr "جایگزینی آن محتوایش را رونویسی خواهد کرد."
+msgstr "جایگزینی آن محتوایش را بازنویسی خواهد کرد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:191
 #, c-format
 msgid "An older file with the same name already exists in “%s”."
-msgstr "پرونده‌ای قدیمی‌تر با نام مشابه هم‌اکنون در «%s» وجود دارد."
+msgstr "یک پروندهٔ قدیمی‌تر با نام مشابه هم‌اکنون در «⁨%s⁩» وجود دارد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:196
 #, c-format
 msgid "A newer file with the same name already exists in “%s”."
-msgstr "پروندهٔ جدیدتری با نام مشابه هم‌اکنون در «%s» وجود دارد."
+msgstr "یک پروندهٔ جدیدتر با نام مشابه هم‌اکنون در «⁨%s⁩» وجود دارد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-operations-ui-manager.c:201
 #, c-format
 msgid "Another file with the same name already exists in “%s”."
-msgstr "پروندهٔ دیگری با نام مشابه هم‌اکنون در «%s» وجود دارد."
+msgstr "پروندهٔ دیگری با نام مشابه هم‌اکنون در «⁨%s⁩» وجود دارد."
 
 #: src/nautilus-operations-ui-manager.c:276 src/resources/ui/nautilus-properties-window.ui:314
 msgid "Original folder"
@@ -3640,7 +3767,7 @@ msgstr "نشان دادن جزییات"
 msgid "%'d file operation active"
 msgid_plural "%'d file operations active"
 msgstr[0] "%'Id عملیات فعال است"
-msgstr[1] "%'Id عملیات فعال هستند"
+msgstr[1] "%'Id عملیات فعال است"
 
 #: src/nautilus-progress-persistence-handler.c:148
 msgid "All file operations have been successfully completed"
@@ -3672,19 +3799,21 @@ msgid_plural "_Names"
 msgstr[0] "_نام"
 msgstr[1] "_نام"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. To translators: %s is the name of the folder.
 #: src/nautilus-properties-window.c:906
 #, c-format
 msgctxt "folder"
 msgid "%s Properties"
-msgstr "ویژگی‌‌های %s"
+msgstr "ویژگی‌‌های ⁨%s⁩"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. To translators: %s is the name of the file.
 #: src/nautilus-properties-window.c:912
 #, c-format
 msgctxt "file"
 msgid "%s Properties"
-msgstr "ویژگی‌‌های %s"
+msgstr "ویژگی‌‌های ⁨%s⁩"
 
 #: src/nautilus-properties-window.c:920
 #, c-format
@@ -3776,54 +3905,60 @@ msgstr "فقط خواندنی"
 msgid "Read and write"
 msgstr "خواندن و نوشتن"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-properties-window.c:4194
 #, c-format
 msgid "The permissions of “%s” could not be determined."
-msgstr "دسترسی‌های «%s» قابل تشخیص نیست."
+msgstr "دسترسی‌های «⁨%s⁩» قابل تشخیص نیست."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-properties-window.c:4438
 #, c-format
 msgid "Error while adding “%s”: %s"
-msgstr "خطا هنگام اضافه‌کردن «%s»: %s"
+msgstr "خطا هنگام افزودن «⁨%s⁩»: %s"
 
 #: src/nautilus-properties-window.c:4440
 msgid "Could not add application"
-msgstr "افزودن برنامه ممکن نیست"
+msgstr "نمی‌توان برنامه را افزود"
 
 #: src/nautilus-properties-window.c:4469
 msgid "Could not forget association"
-msgstr "نمی‌توان وابستگی‌ها را فراموش کرد"
+msgstr "نمی‌توان وابستگی را فراموش کرد"
 
 #: src/nautilus-properties-window.c:4492
 msgid "Forget association"
-msgstr "فراموش‌کردن وابستگی‌ها"
+msgstr "فراموش کردن وابستگی"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-properties-window.c:4532
 #, c-format
 msgid "Error while setting “%s” as default application: %s"
-msgstr "خطا هنگام تنظیم «%s» به عنوان برنامهٔ پیش‌گزیده: %s"
+msgstr "خطا هنگام تنظیم «⁨%s⁩» به عنوان برنامهٔ پیش‌گزیده: %s"
 
 #: src/nautilus-properties-window.c:4534
 msgid "Could not set as default"
 msgstr "عدم امکان در تنظیم به عنوان پیش‌گزیده"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: the %s here is a file extension
 #: src/nautilus-properties-window.c:4610
 #, c-format
 msgid "%s document"
-msgstr "%s سند"
+msgstr "سند ⁨%s⁩"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators; %s here is a mime-type description
 #: src/nautilus-properties-window.c:4620
 #, c-format
 msgid "Open all files of type “%s” with"
-msgstr "گشودن تمام پرونده‌ها از گونهٔ «%s» با"
+msgstr "گشودن تمام پرونده‌های گونهٔ «⁨%s⁩» با"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: first %s is filename, second %s is mime-type description
 #: src/nautilus-properties-window.c:4629
 #, c-format
 msgid "Select an application to open “%s” and other files of type “%s”"
-msgstr "یک برنامه برای گشودن %s و پرونده‌های دیگر از گونهٔ «%s» برگزینید"
+msgstr "یک برنامه برای گشودن «⁨%s⁩» و پرونده‌های دیگر از گونهٔ «⁨%s⁩» برگزینید"
 
 #: src/nautilus-properties-window.c:5078
 msgid "Creating Properties window."
@@ -3842,10 +3977,11 @@ msgstr "_بازگردانی"
 msgid "_Open"
 msgstr "_گشودن"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-query.c:543
 #, c-format
 msgid "Search for “%s”"
-msgstr "جست‌وجو برای «%s»"
+msgstr "جست‌وجو برای «⁨%s⁩»"
 
 #: src/nautilus-rename-file-popover-controller.c:381
 msgid "File name"
@@ -4029,7 +4165,7 @@ msgstr "جلو"
 
 #: src/nautilus-window.c:1239
 msgid "Empty _Trash…"
-msgstr "خالی کردن _زباله‌دان…"
+msgstr "تخلیهٔ _زباله‌دان…"
 
 #: src/nautilus-window.c:1258 src/resources/ui/nautilus-pathbar-context-menu.ui:14
 msgid "_Properties"
@@ -4039,26 +4175,29 @@ msgstr "_ویژگی‌ها"
 msgid "_Format…"
 msgstr "_قالب‌بندی…"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: only one item has been deleted and %s is its name.
 #: src/nautilus-window.c:1525
 #, c-format
 msgid "“%s” deleted"
-msgstr "مورد «%s» حذف شد"
+msgstr "مورد «⁨%s⁩» حذف شد"
 
+# لطفاً مقدار «%d» را به «%Id» تغییر ندهید، زیرا به‌جای نمایش اعداد به فارسی فقط حرف d را نمایش می‌دهد.(مشکل گزارش شده، ولی حل نشده است)
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
 #: src/nautilus-window.c:1532
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
-msgstr[0] "تعداد %Id پرونده حذف شد"
-msgstr[1] "تعداد %Id پرونده حذف شد"
+msgstr[0] "تعداد %d پرونده حذف شد"
+msgstr[1] "تعداد %d پرونده حذف شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: one item has been unstarred and %s is its name.
 #: src/nautilus-window.c:1553
 #, c-format
 msgid "“%s” unstarred"
-msgstr "«%s» بی‌ستاره شد"
+msgstr "«⁨%s⁩» بی‌ستاره شد"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
@@ -4069,10 +4208,11 @@ msgid_plural "%d files unstarred"
 msgstr[0] "تعداد %Id پرونده بی‌ستاره شد"
 msgstr[1] "تعداد %Id پرونده بی‌ستاره شد"
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-window.c:1702
 #, c-format
 msgid "Open %s"
-msgstr "گشودن %s"
+msgstr "گشودن ⁨%s⁩"
 
 #: src/nautilus-window.c:1780
 msgid "_New Tab"
@@ -4135,19 +4275,21 @@ msgstr "نمایش محتویات این شاخه امکان‌پذیر نیست
 msgid "This location doesn’t appear to be a folder."
 msgstr "به نظر نمی‌آید این مکان یک شاخه باشد."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-window-slot.c:1612
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
-msgstr "ناتوان در یافتن «%s». لطفاً نوشتار را بررسی کرده و دوباره تلاش کنید."
+msgstr "ناتوان در یافتن «⁨%s⁩». لطفاً نوشتار را بررسی کرده و دوباره تلاش کنید."
 
 #: src/nautilus-window-slot.c:1617
 msgid "Unable to find the requested file. Please check the spelling and try again."
 msgstr "پروندهٔ درخواست شده پیدا نشد. لطفاً صحت املا را بررسی و دوباره تلاش کنید."
 
+# در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #: src/nautilus-window-slot.c:1628
 #, c-format
 msgid "“%s” locations are not supported."
-msgstr "مکان‌های «%s» پشتیبانی نمی‌شوند."
+msgstr "مکان‌های «⁨%s⁩» پشتیبانی نمی‌شوند."
 
 #: src/nautilus-window-slot.c:1633
 msgid "Unable to handle this kind of location."
