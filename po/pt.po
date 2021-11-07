@@ -1,5 +1,5 @@
 # nautilus's Portuguese Translation
-# Copyright © 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014 Nautilus
+# Copyright © 2001-2021 Nautilus
 # Distributed under the same licence as the nautilus package
 # Duarte Loreto <happyguy_pt@hotmail.com>, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013.
 # Tiago Santos <tiagofsantos81@sapo.pt>, 2014 - 2016.
@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-10-30 12:03+0000\n"
-"PO-Revision-Date: 2021-11-03 12:23+0000\n"
+"POT-Creation-Date: 2021-11-05 18:28+0000\n"
+"PO-Revision-Date: 2021-11-07 19:30+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese (https://l10n.gnome.org/teams/pt/)\n"
 "Language: pt\n"
@@ -107,7 +107,7 @@ msgstr "pasta;gestor;explorar;disco;sistema de ficheiros;ficheiros;nautilus;"
 #: data/org.gnome.Nautilus.desktop.in.in:20
 #: src/resources/ui/nautilus-toolbar.ui:27
 msgid "New Window"
-msgstr "Nova Janela"
+msgstr "Nova janela"
 
 #: data/org.gnome.nautilus.gschema.xml:85
 msgid "Where to position newly open tabs in browser windows"
@@ -1067,40 +1067,40 @@ msgstr ""
 msgid "_Run"
 msgstr "_Executar"
 
-#: src/nautilus-batch-rename-dialog.c:821
+#: src/nautilus-batch-rename-dialog.c:795
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "“%s” não será um nome único."
 
-#: src/nautilus-batch-rename-dialog.c:827
+#: src/nautilus-batch-rename-dialog.c:801
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "“%s” entra em conflito com um ficheiro existente."
 
-#: src/nautilus-batch-rename-dialog.c:1314
+#: src/nautilus-batch-rename-dialog.c:1292
 msgid "Name cannot be empty."
 msgstr "Nomes não podem ser vazios."
 
-#: src/nautilus-batch-rename-dialog.c:1320
+#: src/nautilus-batch-rename-dialog.c:1298
 msgid "Name cannot contain “/”."
 msgstr "Nomes não podem conter \"/\"."
 
-#: src/nautilus-batch-rename-dialog.c:1326
+#: src/nautilus-batch-rename-dialog.c:1304
 msgid "“.” is not a valid name."
 msgstr "“.” não é um nome válido."
 
-#: src/nautilus-batch-rename-dialog.c:1332
+#: src/nautilus-batch-rename-dialog.c:1310
 msgid "“..” is not a valid name."
 msgstr "“..” não é um nome válido."
 
-#: src/nautilus-batch-rename-dialog.c:2067
+#: src/nautilus-batch-rename-dialog.c:2042
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
 msgstr[0] "Mudar o nome de %d pasta"
 msgstr[1] "Mudar o nome de %d pastas"
 
-#: src/nautilus-batch-rename-dialog.c:2075
+#: src/nautilus-batch-rename-dialog.c:2050
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
@@ -1109,7 +1109,7 @@ msgstr[1] "Mudar o nome de %d ficheiros"
 
 #. To translators: %d is the total number of files and folders.
 #. * Singular case of the string is never used
-#: src/nautilus-batch-rename-dialog.c:2085
+#: src/nautilus-batch-rename-dialog.c:2060
 #, c-format
 msgid "Rename %d File and Folder"
 msgid_plural "Rename %d Files and Folders"
@@ -1213,7 +1213,6 @@ msgstr ""
 "Substituir as definições atuais de colunas da lista pelas predefinições"
 
 #: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2288
-#: src/resources/ui/nautilus-rename-file-popover.ui:23
 msgid "Name"
 msgstr "Nome"
 
@@ -3751,7 +3750,6 @@ msgid "Create"
 msgstr "Criar"
 
 #: src/nautilus-new-folder-dialog-controller.c:146
-#: src/nautilus-rename-file-popover-controller.c:380
 msgid "Folder name"
 msgstr "Nome da pasta"
 
@@ -4026,8 +4024,8 @@ msgstr[0] "%'d operação de ficheiro ativa"
 msgstr[1] "%'d operações de ficheiro ativas"
 
 #: src/nautilus-progress-persistence-handler.c:148
-msgid "All file operations have been successfully completed"
-msgstr "Todas as operações de ficheiros terminaram com sucesso"
+msgid "All file operations have been completed"
+msgstr "Todas as operações de ficheiros foram concluídas"
 
 #: src/nautilus-properties-window.c:543
 msgid "You cannot assign more than one custom icon at a time!"
@@ -4233,9 +4231,13 @@ msgstr "_Abrir"
 msgid "Search for “%s”"
 msgstr "Procurar por “%s”"
 
+#: src/nautilus-rename-file-popover-controller.c:380
+msgid "Rename Folder"
+msgstr "Renomear pasta"
+
 #: src/nautilus-rename-file-popover-controller.c:381
-msgid "File name"
-msgstr "Nome do ficheiro"
+msgid "Rename File"
+msgstr "Renomear ficheiro"
 
 #: src/nautilus-search-engine.c:353
 msgid "Unable to complete the requested search"
@@ -4934,7 +4936,7 @@ msgid "Original File Name"
 msgstr "Nome original do ficheiro"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:20
-#: src/resources/ui/nautilus-rename-file-popover.ui:48
+#: src/resources/ui/nautilus-rename-file-popover.ui:53
 msgid "_Rename"
 msgstr "M_udar o nome"
 
@@ -5711,6 +5713,9 @@ msgstr "Ligar ao _servidor"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Insira o endereço do servidor…"
+
+#~ msgid "File name"
+#~ msgstr "Nome do ficheiro"
 
 #~ msgid ""
 #~ "Whether to ask for confirmation when deleting files, or emptying the Trash"
