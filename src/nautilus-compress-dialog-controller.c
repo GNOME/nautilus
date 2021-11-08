@@ -21,6 +21,10 @@
 #include <gnome-autoar/gnome-autoar.h>
 #include <libhandy-1/handy.h>
 
+#ifdef GDK_WINDOWING_X11
+#include <gdk/gdkx.h>
+#endif
+
 #include <eel/eel-vfs-extensions.h>
 
 #include "nautilus-compress-dialog-controller.h"
@@ -394,6 +398,17 @@ popover_on_show (GtkWidget *widget,
         }
         break;
     }
+
+#ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gdk_display_get_default ()))
+    {
+        int w, h;
+
+        /* Workaround for https://gitlab.gnome.org/GNOME/nautilus/-/issues/2018 */
+        gtk_window_get_default_size (GTK_WINDOW (self->compress_dialog), &w, &h);
+        gtk_window_resize (GTK_WINDOW (self->compress_dialog), w, h * 2);
+    }
+#endif
 }
 
 NautilusCompressDialogController *
