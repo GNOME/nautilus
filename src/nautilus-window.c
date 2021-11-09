@@ -645,7 +645,7 @@ nautilus_window_open_location_full (NautilusWindow     *window,
     }
 
     /* Make the opened location the one active if we weren't ask for the
-     * oposite, since it's the most usual use case */
+     * opposite, since it's the most usual use case */
     if (!(flags & NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE))
     {
         gtk_window_present (GTK_WINDOW (window));
@@ -1590,7 +1590,7 @@ const GActionEntry win_entries[] =
     { .name = "bookmark-current-location", .activate = action_bookmark_current_location },
     { .name = "undo", .activate = action_undo },
     { .name = "redo", .activate = action_redo },
-    /* Only accesible by shorcuts */
+    /* Only accessible by shorcuts */
     { .name = "close-current-view", .activate = action_close_current_view },
     { .name = "close-other-tabs", .activate = action_close_other_tabs },
     { .name = "go-home", .activate = action_go_home },
@@ -1642,7 +1642,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
-    /* Only accesible by shorcuts */
+    /* Only accessible by shorcuts */
     nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
     nautilus_application_set_accelerator (app, "win.up", "<alt>Up");
     nautilus_application_set_accelerator (app, "win.down", "<alt>Down");
