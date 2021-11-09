@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <template class="NautilusFileConflictDialog" parent="GtkDialog">
+    <property name="modal">True</property>
+    <property name="resizable">False</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="margin-top">18</property>
+        <property name="margin-bottom">18</property>
+        <property name="margin-start">18</property>
+        <property name="margin-end">18</property>
+        <property name="spacing">12</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="primary_label">
+                <property name="visible">True</property>
+                <property name="max-width-chars">50</property>
+                <property name="wrap">True</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                </attributes>
+                <style>
+                  <class name="conflict-dialog-primary-label"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="secondary_label">
+                <property name="visible">True</property>
+                <property name="max-width-chars">50</property>
+                <property name="wrap">True</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="halign">start</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="spacing">12</property>
+                    <child>
+                      <object class="GtkImage" id="dest_image">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="dest_label">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="spacing">12</property>
+                    <child>
+                      <object class="GtkImage" id="src_image">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="src_label">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkExpander" id="expander">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">_Select a new name for the destination</property>
+                    <property name="use-underline">True</property>
+                    <signal name="notify::expanded" handler="on_expanded_notify"/>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkEntry" id="entry">
+                            <property name="visible">True</property>
+                            <property name="activates-default">True</property>
+                            <property name="hexpand">True</property>
+                            <signal name="changed" handler="entry_text_changed_cb"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">_Reset</property>
+                            <property name="use-underline">True</property>
+                            <signal name="clicked" handler="reset_button_clicked_cb"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="checkbox">
+                <property name="visible">True</property>
+                <signal name="toggled" handler="checkbox_toggled_cb"/>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Apply this action to all files and folders</property>
+                    <property name="use-underline">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="cancel_button">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">_Cancel</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="rename_button">
+        <property name="visible">False</property>
+        <property name="can-default">True</property>
+        <property name="label" translatable="yes">Re_name</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="replace_button">
+        <property name="visible">True</property>
+        <property name="can-default">True</property>
+        <property name="label" translatable="yes">Re_place</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="skip_button">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">_Skip</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="cancel">cancel_button</action-widget>
+      <!-- 3 is CONFLICT_RESPONSE_RENAME -->
+      <action-widget response="3">rename_button</action-widget>
+      <!-- 2 is CONFLICT_RESPONSE_REPLACE -->
+      <action-widget response="2" default="true">replace_button</action-widget>
+      <!-- 1 is CONFLICT_RESPONSE_SKIP -->
+      <action-widget response="1">skip_button</action-widget>
+    </action-widgets>
+  </template>
+</interface>
