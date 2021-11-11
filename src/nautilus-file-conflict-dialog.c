@@ -276,20 +276,10 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 
     dialog = GTK_DIALOG (fcd);
 
-    /* Setup the main hbox */
-    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
-    dialog_area = gtk_dialog_get_content_area (dialog);
-    gtk_box_pack_start (GTK_BOX (dialog_area), hbox, FALSE, FALSE, 0);
-
-    /* Setup the dialog image */
-    widget = gtk_image_new_from_icon_name ("dialog-warning",
-                                           GTK_ICON_SIZE_DIALOG);
-    gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-    gtk_widget_set_valign (widget, GTK_ALIGN_START);
-
     /* Setup the vbox containing the dialog body */
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
-    gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
+    dialog_area = gtk_dialog_get_content_area (dialog);
+    gtk_box_pack_start (GTK_BOX (dialog_area), vbox, FALSE, FALSE, 0);
 
     /* Setup the vbox for the dialog labels */
     widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
