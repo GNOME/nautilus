@@ -87,7 +87,10 @@
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
-                        <property name="spacing">6</property>
+                        <property name="margin-top">6</property>
+                        <style>
+                          <class name="linked"/>
+                        </style>
                         <child>
                           <object class="GtkEntry" id="entry">
                             <property name="visible">True</property>
