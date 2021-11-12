@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-11-03 01:07+0000\n"
-"PO-Revision-Date: 2021-11-05 20:26+0200\n"
+"POT-Creation-Date: 2021-11-11 19:30+0000\n"
+"PO-Revision-Date: 2021-11-12 06:57+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -541,16 +541,15 @@ msgid "Y"
 msgstr "Y"
 
 #. Put up the timed wait window.
-#. Add buttons
-#: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:349
-#: src/nautilus-file-operations.c:257 src/nautilus-files-view.c:1219
-#: src/nautilus-files-view.c:1791 src/nautilus-files-view.c:6070
-#: src/nautilus-files-view.c:6531 src/nautilus-location-entry.c:284
-#: src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590
-#: src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317
-#: src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300
-#: src/nautilus-search-popover.c:583
+#: eel/eel-stock-dialogs.c:204 src/nautilus-file-operations.c:257
+#: src/nautilus-files-view.c:1219 src/nautilus-files-view.c:1791
+#: src/nautilus-files-view.c:6070 src/nautilus-files-view.c:6531
+#: src/nautilus-location-entry.c:284 src/nautilus-mime-actions.c:586
+#: src/nautilus-mime-actions.c:590 src/nautilus-mime-actions.c:977
+#: src/nautilus-mime-actions.c:1317 src/nautilus-mime-actions.c:1673
+#: src/nautilus-properties-window.c:5300 src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:136
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:13
 msgid "_Cancel"
 msgstr "_Скасувати"
@@ -1199,14 +1198,6 @@ msgstr "Прямокутник виділення"
 msgid "Icon View"
 msgstr "Перегляд піктограм"
 
-#: src/nautilus-column-chooser.c:433
-msgid "Reset to De_fault"
-msgstr "_Типово"
-
-#: src/nautilus-column-chooser.c:435
-msgid "Replace the current List Columns settings with the default settings"
-msgstr "Замінити поточні параметри стовпців списку на типові параметри"
-
 #: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2288
 msgid "Name"
 msgstr "Назва"
@@ -1784,33 +1775,6 @@ msgstr "Посилання на %s"
 msgid "Link (broken)"
 msgstr "Посилання (пошкоджено)"
 
-#. Setup the expander for the rename action
-#: src/nautilus-file-conflict-dialog.c:315
-msgid "_Select a new name for the destination"
-msgstr "_Введіть нову назву для призначення"
-
-#: src/nautilus-file-conflict-dialog.c:330
-#: src/resources/ui/nautilus-properties-window.ui:1332
-msgid "Reset"
-msgstr "Скинути"
-
-#. Setup the checkbox to apply the action to all files
-#: src/nautilus-file-conflict-dialog.c:341
-msgid "Apply this action to all files and folders"
-msgstr "Застосувати цю дію до всіх файлів і тек"
-
-#: src/nautilus-file-conflict-dialog.c:352 src/nautilus-file-operations.c:258
-msgid "_Skip"
-msgstr "_Пропустити"
-
-#: src/nautilus-file-conflict-dialog.c:356
-msgid "Re_name"
-msgstr "Перей_менувати"
-
-#: src/nautilus-file-conflict-dialog.c:362
-msgid "Re_place"
-msgstr "За_мінити"
-
 #: src/nautilus-file-name-widget-controller.c:143
 #: src/nautilus-rename-file-popover-controller.c:110
 msgid "File names cannot contain “/”."
@@ -1844,6 +1808,11 @@ msgstr "Тека з такою ж назвою вже існує."
 #: src/nautilus-file-name-widget-controller.c:191
 msgid "A file with that name already exists."
 msgstr "Файл з такою ж назвою вже існує."
+
+#: src/nautilus-file-operations.c:258
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:159
+msgid "_Skip"
+msgstr "_Пропустити"
 
 #: src/nautilus-file-operations.c:259
 msgid "S_kip All"
@@ -3677,14 +3646,10 @@ msgstr "(Порожнє)"
 msgid "Use Default"
 msgstr "Типово"
 
-#: src/nautilus-list-view.c:3412
+#: src/nautilus-list-view.c:3409
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s видимих стовпчиків"
-
-#: src/nautilus-list-view.c:3432
-msgid "Choose the order of information to appear in this folder:"
-msgstr "Виберіть порядок, в якому з'являтиметься інформація у цій теці:"
 
 #: src/nautilus-location-entry.c:269
 #, c-format
@@ -4144,7 +4109,6 @@ msgstr[2] "Тривають %'d дій над файлами"
 msgstr[3] "Триває %'d дія над файлами"
 
 #: src/nautilus-progress-persistence-handler.c:148
-#| msgid "All file operations have been successfully completed"
 msgid "All file operations have been completed"
 msgstr "Всі дії над файлами завершено"
 
@@ -4356,14 +4320,10 @@ msgid "Search for “%s”"
 msgstr "Пошук «%s»"
 
 #: src/nautilus-rename-file-popover-controller.c:380
-#| msgid "Rename %d Folder"
-#| msgid_plural "Rename %d Folders"
 msgid "Rename Folder"
 msgstr "Перейменувати теку"
 
 #: src/nautilus-rename-file-popover-controller.c:381
-#| msgid "Rename %d File"
-#| msgid_plural "Rename %d Files"
 msgid "Rename File"
 msgstr "Перейменувати файл"
 
@@ -5119,6 +5079,14 @@ msgctxt "title"
 msgid "Replace"
 msgstr "Замінити"
 
+#: src/resources/ui/nautilus-column-chooser.ui:139
+msgid "Reset to De_fault"
+msgstr "_Типово"
+
+#: src/resources/ui/nautilus-column-chooser.ui:143
+msgid "Replace the current List Columns settings with the default settings"
+msgstr "Замінити поточні параметри стовпців списку на типові параметри"
+
 #: src/resources/ui/nautilus-compress-dialog.ui:20
 msgid "Compatible with all operating systems."
 msgstr "Сумісно з усіма операційними системами."
@@ -5150,6 +5118,27 @@ msgstr "Пароль"
 #: src/resources/ui/nautilus-compress-dialog.ui:226
 msgid "Enter a password here."
 msgstr "Тут слід ввести пароль."
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:84
+msgid "_Select a new name for the destination"
+msgstr "_Введіть нову назву для призначення"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:105
+#| msgid "Reset"
+msgid "_Reset"
+msgstr "С_кинути"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:123
+msgid "Apply this action to all files and folders"
+msgstr "Застосувати цю дію до всіх файлів і тек"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:144
+msgid "Re_name"
+msgstr "Перей_менувати"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:152
+msgid "Re_place"
+msgstr "За_мінити"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
 msgid "Change Permissions for Enclosed Files"
@@ -5321,6 +5310,10 @@ msgstr "Скасувати позначення зірками"
 #: src/resources/ui/nautilus-folder-is-empty.ui:32
 msgid "Folder is Empty"
 msgstr "Тека — порожня"
+
+#: src/resources/ui/nautilus-list-view-column-editor.ui:31
+msgid "Choose the order of information to appear in this folder:"
+msgstr "Виберіть порядок, в якому з'являтиметься інформація у цій теці:"
 
 #: src/resources/ui/nautilus-no-search-results.ui:31
 msgid "No Results Found"
@@ -5519,6 +5512,10 @@ msgstr "Змінити права для вкладених файлів…"
 #: src/resources/ui/nautilus-properties-window.ui:1219
 msgid "Allow _executing file as program"
 msgstr "Дозволити _виконання файла як програми"
+
+#: src/resources/ui/nautilus-properties-window.ui:1332
+msgid "Reset"
+msgstr "Скинути"
 
 #: src/resources/ui/nautilus-properties-window.ui:1346
 msgid "_Add"
