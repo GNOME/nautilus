@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-11-05 18:28+0000\n"
-"PO-Revision-Date: 2021-11-11 11:39+0100\n"
+"POT-Creation-Date: 2021-11-11 19:30+0000\n"
+"PO-Revision-Date: 2021-11-12 12:03+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.hr>\n"
 "Language: hr\n"
@@ -545,16 +545,15 @@ msgid "Y"
 msgstr "Y"
 
 #. Put up the timed wait window.
-#. Add buttons
-#: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:349
-#: src/nautilus-file-operations.c:257 src/nautilus-files-view.c:1219
-#: src/nautilus-files-view.c:1791 src/nautilus-files-view.c:6070
-#: src/nautilus-files-view.c:6531 src/nautilus-location-entry.c:284
-#: src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590
-#: src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317
-#: src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300
-#: src/nautilus-search-popover.c:583
+#: eel/eel-stock-dialogs.c:204 src/nautilus-file-operations.c:257
+#: src/nautilus-files-view.c:1219 src/nautilus-files-view.c:1791
+#: src/nautilus-files-view.c:6070 src/nautilus-files-view.c:6531
+#: src/nautilus-location-entry.c:284 src/nautilus-mime-actions.c:586
+#: src/nautilus-mime-actions.c:590 src/nautilus-mime-actions.c:977
+#: src/nautilus-mime-actions.c:1317 src/nautilus-mime-actions.c:1673
+#: src/nautilus-properties-window.c:5300 src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:136
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:13
 msgid "_Cancel"
 msgstr "_Odustani"
@@ -1193,14 +1192,6 @@ msgstr "Odabirni okvir"
 msgid "Icon View"
 msgstr "Pogled ikona"
 
-#: src/nautilus-column-chooser.c:433
-msgid "Reset to De_fault"
-msgstr "Vrati za_dano"
-
-#: src/nautilus-column-chooser.c:435
-msgid "Replace the current List Columns settings with the default settings"
-msgstr "Zamijeni trenutne postavke popisa stupaca sa zadanima postavkama"
-
 #: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2288
 msgid "Name"
 msgstr "Naziv"
@@ -1773,33 +1764,6 @@ msgstr "Poveznica na %s"
 msgid "Link (broken)"
 msgstr "Poveznica (nevažeća)"
 
-#. Setup the expander for the rename action
-#: src/nautilus-file-conflict-dialog.c:315
-msgid "_Select a new name for the destination"
-msgstr "_Odaberi novi naziv za odredište"
-
-#: src/nautilus-file-conflict-dialog.c:330
-#: src/resources/ui/nautilus-properties-window.ui:1332
-msgid "Reset"
-msgstr "Vrati na zadano sustavom"
-
-#. Setup the checkbox to apply the action to all files
-#: src/nautilus-file-conflict-dialog.c:341
-msgid "Apply this action to all files and folders"
-msgstr "Primijeni ovu radnju na sve datoteke i mape"
-
-#: src/nautilus-file-conflict-dialog.c:352 src/nautilus-file-operations.c:258
-msgid "_Skip"
-msgstr "_Preskoči"
-
-#: src/nautilus-file-conflict-dialog.c:356
-msgid "Re_name"
-msgstr "Pre_imenuj"
-
-#: src/nautilus-file-conflict-dialog.c:362
-msgid "Re_place"
-msgstr "Za_mijeni"
-
 #: src/nautilus-file-name-widget-controller.c:143
 #: src/nautilus-rename-file-popover-controller.c:110
 msgid "File names cannot contain “/”."
@@ -1833,6 +1797,11 @@ msgstr "Mapa s tim nazivom već postoji."
 #: src/nautilus-file-name-widget-controller.c:191
 msgid "A file with that name already exists."
 msgstr "Datoteka s tim nazivom već postoji."
+
+#: src/nautilus-file-operations.c:258
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:159
+msgid "_Skip"
+msgstr "_Preskoči"
 
 #: src/nautilus-file-operations.c:259
 msgid "S_kip All"
@@ -3607,14 +3576,10 @@ msgstr "(Prazno)"
 msgid "Use Default"
 msgstr "Koristi uobičajeno"
 
-#: src/nautilus-list-view.c:3412
+#: src/nautilus-list-view.c:3409
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s vidljivi stupci"
-
-#: src/nautilus-list-view.c:3432
-msgid "Choose the order of information to appear in this folder:"
-msgstr "Odaberi poredak prikaza informacija u ovoj mapi:"
 
 #: src/nautilus-location-entry.c:269
 #, c-format
@@ -5042,6 +5007,14 @@ msgctxt "title"
 msgid "Replace"
 msgstr "Zamijeni"
 
+#: src/resources/ui/nautilus-column-chooser.ui:139
+msgid "Reset to De_fault"
+msgstr "Vrati za_dano"
+
+#: src/resources/ui/nautilus-column-chooser.ui:143
+msgid "Replace the current List Columns settings with the default settings"
+msgstr "Zamijeni trenutne postavke popisa stupaca sa zadanima postavkama"
+
 #: src/resources/ui/nautilus-compress-dialog.ui:20
 msgid "Compatible with all operating systems."
 msgstr "Kompatibilno sa svim operativnim sustavima."
@@ -5073,6 +5046,26 @@ msgstr "Lozinka"
 #: src/resources/ui/nautilus-compress-dialog.ui:226
 msgid "Enter a password here."
 msgstr "Upišite lozinku ovdje."
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:84
+msgid "_Select a new name for the destination"
+msgstr "_Odaberi novi naziv za odredište"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:105
+msgid "_Reset"
+msgstr "Vrati izvorno"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:123
+msgid "Apply this action to all files and folders"
+msgstr "Primijeni ovu radnju na sve datoteke i mape"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:144
+msgid "Re_name"
+msgstr "Pre_imenuj"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:152
+msgid "Re_place"
+msgstr "Za_mijeni"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
 msgid "Change Permissions for Enclosed Files"
@@ -5244,6 +5237,10 @@ msgstr "Odznači"
 #: src/resources/ui/nautilus-folder-is-empty.ui:32
 msgid "Folder is Empty"
 msgstr "Mapa je prazna"
+
+#: src/resources/ui/nautilus-list-view-column-editor.ui:31
+msgid "Choose the order of information to appear in this folder:"
+msgstr "Odaberi poredak prikaza informacija u ovoj mapi:"
 
 #: src/resources/ui/nautilus-no-search-results.ui:31
 msgid "No Results Found"
@@ -5442,6 +5439,10 @@ msgstr "Promjeni dozvole za sadržane datoteke…"
 #: src/resources/ui/nautilus-properties-window.ui:1219
 msgid "Allow _executing file as program"
 msgstr "Dopusti _pokretanje datoteke kao programa"
+
+#: src/resources/ui/nautilus-properties-window.ui:1332
+msgid "Reset"
+msgstr "Vrati na zadano sustavom"
 
 #: src/resources/ui/nautilus-properties-window.ui:1346
 msgid "_Add"
