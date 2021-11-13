@@ -617,7 +617,7 @@ typedef struct
     ContextInvokeData parent_type;
     GtkWindow *parent_window;
     const gchar *basename;
-    GtkWidget *passphrase_entry;
+    GtkEntry *passphrase_entry;
     gchar *passphrase;
 } PassphraseRequestData;
 
@@ -631,7 +631,7 @@ on_request_passphrase_cb (GtkDialog *dialog,
     if (response_id != GTK_RESPONSE_CANCEL &&
         response_id != GTK_RESPONSE_DELETE_EVENT)
     {
-        data->passphrase = g_strdup (gtk_entry_get_text (GTK_ENTRY (data->passphrase_entry)));
+        data->passphrase = g_strdup (gtk_entry_get_text (data->passphrase_entry));
     }
 
     gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -643,43 +643,21 @@ run_passphrase_dialog (gpointer user_data)
 {
     PassphraseRequestData *data = user_data;
     g_autofree gchar *label_str = NULL;
-    GtkWidget *dialog;
-    GtkWidget *entry;
-    GtkWidget *label;
-    GtkWidget *box;
+    g_autoptr (GtkBuilder) builder = NULL;
+    GObject *dialog;
+    GObject *label;
 
-    dialog = gtk_dialog_new_with_buttons (_("Password Required"),
-                                          data->parent_window,
-                                          GTK_DIALOG_USE_HEADER_BAR | GTK_DIALOG_MODAL,
-                                          _("Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("Extract"), GTK_RESPONSE_OK,
-                                          NULL);
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-
-    box = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-    gtk_widget_set_margin_start (box, 20);
-    gtk_widget_set_margin_end (box, 20);
-    gtk_widget_set_margin_top (box, 20);
-    gtk_widget_set_margin_bottom (box, 20);
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-operations-ui-manager-request-passphrase.ui");
+    dialog = gtk_builder_get_object (builder, "request_passphrase_dialog");
+    label = gtk_builder_get_object (builder, "label");
+    data->passphrase_entry = GTK_ENTRY (gtk_builder_get_object (builder, "entry"));
 
     label_str = g_strdup_printf (_("“%s” is password-protected."), data->basename);
-    label = gtk_label_new (label_str);
-    gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-    gtk_label_set_max_width_chars (GTK_LABEL (label), 60);
-    gtk_container_add (GTK_CONTAINER (box), label);
+    gtk_label_set_text (GTK_LABEL (label), label_str);
 
-    entry = gtk_entry_new ();
-    gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-    gtk_widget_set_valign (entry, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (entry, TRUE);
-    gtk_entry_set_placeholder_text (GTK_ENTRY (entry), _("Enter password…"));
-    gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
-    gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_PASSWORD);
-    gtk_container_add (GTK_CONTAINER (box), entry);
-
-    data->passphrase_entry = entry;
     g_signal_connect (dialog, "response", G_CALLBACK (on_request_passphrase_cb), data);
-    gtk_widget_show_all (dialog);
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), data->parent_window);
+    gtk_widget_show (GTK_WIDGET (dialog));
 
     return G_SOURCE_REMOVE;
 }
