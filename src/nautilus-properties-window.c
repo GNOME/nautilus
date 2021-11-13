@@ -2692,7 +2692,7 @@ static void
 permission_button_toggled (GtkCheckButton           *button,
                            NautilusPropertiesWindow *self)
 {
-    gboolean is_folder, is_special;
+    gboolean is_folder;
     guint32 permission_mask;
     gboolean inconsistent;
     gboolean on;
@@ -2701,8 +2701,6 @@ permission_button_toggled (GtkCheckButton           *button,
                                                           "permission"));
     is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
                                                     "is-folder"));
-    is_special = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                     "is-special"));
 
     if (gtk_check_button_get_active (button)
         && !gtk_check_button_get_inconsistent (button))
@@ -2712,7 +2710,7 @@ permission_button_toggled (GtkCheckButton           *button,
         inconsistent = TRUE;
         on = TRUE;
 
-        if (initial_permission_state_consistent (self, permission_mask, is_folder, is_special))
+        if (initial_permission_state_consistent (self, permission_mask, is_folder, FALSE))
         {
             inconsistent = FALSE;
             on = TRUE;
@@ -2745,7 +2743,7 @@ permission_button_toggled (GtkCheckButton           *button,
                         on ? permission_mask : 0,
                         permission_mask,
                         is_folder,
-                        is_special,
+                        FALSE,
                         inconsistent);
 }
 
@@ -2757,7 +2755,7 @@ permission_button_update (GtkCheckButton           *button,
     gboolean all_set;
     gboolean all_unset;
     gboolean all_cannot_set;
-    gboolean is_folder, is_special;
+    gboolean is_folder;
     gboolean no_match;
     gboolean sensitive;
     guint32 button_permission;
@@ -2766,28 +2764,18 @@ permission_button_update (GtkCheckButton           *button,
                                                             "permission"));
     is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
                                                     "is-folder"));
-    is_special = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                     "is-special"));
-
     all_set = TRUE;
     all_unset = TRUE;
     all_cannot_set = TRUE;
     no_match = TRUE;
     for (l = self->target_files; l != NULL; l = l->next)
     {
-        NautilusFile *file;
+        NautilusFile *file = NAUTILUS_FILE (l->data);
         guint32 file_permissions;
 
-        file = NAUTILUS_FILE (l->data);
-
-        if (!nautilus_file_can_get_permissions (file))
-        {
-            continue;
-        }
-
-        if (!is_special &&
-            ((nautilus_file_is_directory (file) && !is_folder) ||
-             (!nautilus_file_is_directory (file) && is_folder)))
+        if (!nautilus_file_can_get_permissions (file) ||
+            (nautilus_file_is_directory (file) && !is_folder) ||
+            (!nautilus_file_is_directory (file) && is_folder))
         {
             continue;
         }
@@ -2851,8 +2839,6 @@ setup_execute_checkbox_with_label (NautilusPropertiesWindow *self,
     /* Load up the check_button with data we'll need when updating its state. */
     g_object_set_data (G_OBJECT (self->execute_checkbox), "permission",
                        GINT_TO_POINTER (permission_to_check));
-    g_object_set_data (G_OBJECT (self->execute_checkbox), "properties_window",
-                       self);
     g_object_set_data (G_OBJECT (self->execute_checkbox), "is-folder",
                        GINT_TO_POINTER (FALSE));
 
