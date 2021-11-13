@@ -1786,7 +1786,7 @@ select_pattern (NautilusFilesView *view)
     char *example_pattern;
 
     window = nautilus_files_view_get_window (view);
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/select-items.ui");
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-select-items.ui");
     dialog = GTK_WIDGET (gtk_builder_get_object (builder, "select_items_dialog"));
 
     example = GTK_WIDGET (gtk_builder_get_object (builder, "example"));
