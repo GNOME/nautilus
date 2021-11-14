@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-11-11 19:30+0000\n"
-"PO-Revision-Date: 2021-11-12 06:57+0200\n"
+"POT-Creation-Date: 2021-11-13 12:33+0000\n"
+"PO-Revision-Date: 2021-11-14 22:37+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -30,7 +30,7 @@ msgstr "Запустити програму"
 #.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:106
-#: src/nautilus-window.c:2844
+#: src/nautilus-window.c:2836
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "Files"
 msgstr "Файли"
@@ -542,15 +542,16 @@ msgstr "Y"
 
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-operations.c:257
-#: src/nautilus-files-view.c:1219 src/nautilus-files-view.c:1791
-#: src/nautilus-files-view.c:6070 src/nautilus-files-view.c:6531
-#: src/nautilus-location-entry.c:284 src/nautilus-mime-actions.c:586
-#: src/nautilus-mime-actions.c:590 src/nautilus-mime-actions.c:977
-#: src/nautilus-mime-actions.c:1317 src/nautilus-mime-actions.c:1673
-#: src/nautilus-properties-window.c:5300 src/nautilus-search-popover.c:583
+#: src/nautilus-files-view.c:1219 src/nautilus-files-view.c:6039
+#: src/nautilus-files-view.c:6500 src/nautilus-location-entry.c:284
+#: src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590
+#: src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317
+#: src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300
+#: src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:136
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:13
+#: src/resources/ui/nautilus-files-view-select-items.ui:11
 msgid "_Cancel"
 msgstr "_Скасувати"
 
@@ -2211,7 +2212,7 @@ msgid "Do _not Empty Trash"
 msgstr "_Не очищати смітник"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3154 src/nautilus-files-view.c:6901
+#: src/nautilus-file-operations.c:3154 src/nautilus-files-view.c:6870
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Не вдалось доступитись до «%s»"
@@ -2820,32 +2821,19 @@ msgstr[3] "Буде відкрито %'d вікно."
 msgid "_OK"
 msgstr "_Гаразд"
 
-#: src/nautilus-files-view.c:1788
-msgid "Select Items Matching"
-msgstr "Виберіть відповідні об'єкти"
-
-#: src/nautilus-files-view.c:1793 src/nautilus-files-view.c:6071
-#: src/nautilus-files-view.c:6532
-msgid "_Select"
-msgstr "_Вибрати"
-
-#: src/nautilus-files-view.c:1801
-msgid "_Pattern:"
-msgstr "_Шаблон:"
-
-#: src/nautilus-files-view.c:1807
+#: src/nautilus-files-view.c:1794
 msgid "Examples: "
 msgstr "Приклади: "
 
-#: src/nautilus-files-view.c:2803
+#: src/nautilus-files-view.c:2772
 msgid "Could not paste files"
 msgstr "Не вдалося вставити файли"
 
-#: src/nautilus-files-view.c:2804
+#: src/nautilus-files-view.c:2773
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Права доступу забороняють вставлення файлів до цього каталогу"
 
-#: src/nautilus-files-view.c:2968
+#: src/nautilus-files-view.c:2937
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2853,12 +2841,12 @@ msgstr ""
 "Nautilus 3.6 вважає цей каталог застарілим і спробував перемістити "
 "налаштування в ~/.local/share/nautilus"
 
-#: src/nautilus-files-view.c:3472 src/nautilus-files-view.c:3519
+#: src/nautilus-files-view.c:3441 src/nautilus-files-view.c:3488
 #, c-format
 msgid "“%s” selected"
 msgstr "Вибрано «%s»"
 
-#: src/nautilus-files-view.c:3476
+#: src/nautilus-files-view.c:3445
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -2867,7 +2855,7 @@ msgstr[1] "Вибрано %'d теки"
 msgstr[2] "Вибрано %'d тек"
 msgstr[3] "Вибрано %'d тека"
 
-#: src/nautilus-files-view.c:3490
+#: src/nautilus-files-view.c:3459
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2877,7 +2865,7 @@ msgstr[2] "(містить %'d об'єктів)"
 msgstr[3] "(містить %'d об'єкт)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3505
+#: src/nautilus-files-view.c:3474
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -2886,7 +2874,7 @@ msgstr[1] "(загалом містить %'d об'єкти)"
 msgstr[2] "(загалом містить %'d об'єктів)"
 msgstr[3] "(загалом містить %'d об'єкт)"
 
-#: src/nautilus-files-view.c:3524
+#: src/nautilus-files-view.c:3493
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2896,7 +2884,7 @@ msgstr[2] "Вибрано %'d об'єктів"
 msgstr[3] "Вибрано %'d об'єкт"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3533
+#: src/nautilus-files-view.c:3502
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2909,7 +2897,7 @@ msgstr[3] "Вибрано %'d інший об'єкт"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3548
+#: src/nautilus-files-view.c:3517
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2921,50 +2909,55 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3598
+#: src/nautilus-files-view.c:3567
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:6058
+#: src/nautilus-files-view.c:6027
 msgid "Select Move Destination"
 msgstr "Виберіть ціль для перенесення"
 
-#: src/nautilus-files-view.c:6062
+#: src/nautilus-files-view.c:6031
 msgid "Select Copy Destination"
 msgstr "Виберіть ціль для копіювання"
 
-#: src/nautilus-files-view.c:6528
+#: src/nautilus-files-view.c:6040 src/nautilus-files-view.c:6501
+#: src/resources/ui/nautilus-files-view-select-items.ui:18
+msgid "_Select"
+msgstr "_Вибрати"
+
+#: src/nautilus-files-view.c:6497
 msgid "Select Extract Destination"
 msgstr "Виберіть ціль для розпакування"
 
-#: src/nautilus-files-view.c:6831
+#: src/nautilus-files-view.c:6800
 msgid "Wallpapers"
 msgstr "Фонові зображення"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6931
+#: src/nautilus-files-view.c:6900
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Неможливо вилучити «%s»"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6961
+#: src/nautilus-files-view.c:6930
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Неможливо витягнути «%s»"
 
-#: src/nautilus-files-view.c:6986
+#: src/nautilus-files-view.c:6955
 msgid "Unable to stop drive"
 msgstr "Неможливо зупинити пристрій"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7099
+#: src/nautilus-files-view.c:7068
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Неможливо запустити «%s»"
 
-#: src/nautilus-files-view.c:8069
+#: src/nautilus-files-view.c:8038
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2973,69 +2966,69 @@ msgstr[1] "Створити теку з вибраним (%'d об'єкти)"
 msgstr[2] "Створити теку з вибраним (%'d об'єктів)"
 msgstr[3] "Створити теку з вибраним (%'d об'єкт)"
 
-#: src/nautilus-files-view.c:8127
+#: src/nautilus-files-view.c:8096
 #, c-format
 msgid "Open With %s"
 msgstr "Відкрити за допомогою %s"
 
-#: src/nautilus-files-view.c:8139
+#: src/nautilus-files-view.c:8108
 msgid "Run"
 msgstr "Запустити"
 
-#: src/nautilus-files-view.c:8144
+#: src/nautilus-files-view.c:8113
 msgid "Extract Here"
 msgstr "Розпакувати сюди"
 
-#: src/nautilus-files-view.c:8145
+#: src/nautilus-files-view.c:8114
 msgid "Extract to…"
 msgstr "Розпакувати в…"
 
-#: src/nautilus-files-view.c:8149
+#: src/nautilus-files-view.c:8118
 msgid "Open"
 msgstr "Відкрити"
 
-#: src/nautilus-files-view.c:8205
+#: src/nautilus-files-view.c:8174
 #: src/resources/ui/nautilus-files-view-context-menus.ui:108
 msgid "_Start"
 msgstr "З_апустити"
 
-#: src/nautilus-files-view.c:8211 src/gtk/nautilusgtkplacesview.c:1759
+#: src/nautilus-files-view.c:8180 src/gtk/nautilusgtkplacesview.c:1759
 msgid "_Connect"
 msgstr "_З'єднатись"
 
-#: src/nautilus-files-view.c:8217
+#: src/nautilus-files-view.c:8186
 msgid "_Start Multi-disk Drive"
 msgstr "З_апустити багатодисковий пристрій"
 
-#: src/nautilus-files-view.c:8223
+#: src/nautilus-files-view.c:8192
 msgid "U_nlock Drive"
 msgstr "_Розблокувати пристрій"
 
-#: src/nautilus-files-view.c:8241
+#: src/nautilus-files-view.c:8210
 msgid "Stop Drive"
 msgstr "Зупинити пристрій"
 
-#: src/nautilus-files-view.c:8247
+#: src/nautilus-files-view.c:8216
 msgid "_Safely Remove Drive"
 msgstr "_Безпечне вилучення пристрою"
 
-#: src/nautilus-files-view.c:8253 src/gtk/nautilusgtkplacesview.c:1749
+#: src/nautilus-files-view.c:8222 src/gtk/nautilusgtkplacesview.c:1749
 msgid "_Disconnect"
 msgstr "_Від'єднатись"
 
-#: src/nautilus-files-view.c:8259
+#: src/nautilus-files-view.c:8228
 msgid "_Stop Multi-disk Drive"
 msgstr "З_упинити багатодисковий пристрій"
 
-#: src/nautilus-files-view.c:8265
+#: src/nautilus-files-view.c:8234
 msgid "_Lock Drive"
 msgstr "За_блокувати пристрій"
 
-#: src/nautilus-files-view.c:10050
+#: src/nautilus-files-view.c:10019
 msgid "Content View"
 msgstr "Перегляд вмісту"
 
-#: src/nautilus-files-view.c:10051
+#: src/nautilus-files-view.c:10020
 msgid "View of the current folder"
 msgstr "Перегляд теперішньої теки"
 
@@ -3845,31 +3838,31 @@ msgstr "Нову теку"
 msgid "Close tab"
 msgstr "Закрити вкладку"
 
-#: src/nautilus-operations-ui-manager.c:144
+#: src/nautilus-operations-ui-manager.c:152
 #, c-format
 msgid ""
 "You are trying to replace the destination folder “%s” with a symbolic link."
 msgstr "Ви намагаєтеся замінити теку призначення «%s» символічним посиланням."
 
-#: src/nautilus-operations-ui-manager.c:146
+#: src/nautilus-operations-ui-manager.c:154
 #, c-format
 msgid ""
 "This is not allowed in order to avoid the deletion of the destination "
 "folder’s contents."
 msgstr "Таку дію заборонено, щоб запобігти вилученню вмісту теки призначення."
 
-#: src/nautilus-operations-ui-manager.c:147
+#: src/nautilus-operations-ui-manager.c:155
 msgid "Please rename the symbolic link or press the skip button."
 msgstr ""
 "Будь ласка, перейменуйте символічне посилання або натисніть кнопку "
 "«Пропустити»."
 
-#: src/nautilus-operations-ui-manager.c:151
+#: src/nautilus-operations-ui-manager.c:159
 #, c-format
 msgid "Merge folder “%s”?"
 msgstr "Об'єднати теку «%s»?"
 
-#: src/nautilus-operations-ui-manager.c:154
+#: src/nautilus-operations-ui-manager.c:162
 msgid ""
 "Merging will ask for confirmation before replacing any files in the folder "
 "that conflict with the files being copied."
@@ -3877,115 +3870,115 @@ msgstr ""
 "Об'єднання вимагає підтвердження перед заміщенням будь-яких файлів у теці, "
 "яка конфліктує з копійованими файлами."
 
-#: src/nautilus-operations-ui-manager.c:159
+#: src/nautilus-operations-ui-manager.c:167
 #, c-format
 msgid "An older folder with the same name already exists in “%s”."
 msgstr "Старіша тека з такою ж назвою вже існує в «%s»."
 
-#: src/nautilus-operations-ui-manager.c:164
+#: src/nautilus-operations-ui-manager.c:172
 #, c-format
 msgid "A newer folder with the same name already exists in “%s”."
 msgstr "Новіша тека з такою ж назвою вже існує в «%s»."
 
-#: src/nautilus-operations-ui-manager.c:169
+#: src/nautilus-operations-ui-manager.c:177
 #, c-format
 msgid "Another folder with the same name already exists in “%s”."
 msgstr "Інша тека з такою ж назвою вже існує в «%s»."
 
-#: src/nautilus-operations-ui-manager.c:175
+#: src/nautilus-operations-ui-manager.c:183
 #, c-format
 msgid "Replace folder “%s”?"
 msgstr "Замінити теку «%s»?"
 
-#: src/nautilus-operations-ui-manager.c:177
+#: src/nautilus-operations-ui-manager.c:185
 msgid "Replacing it will remove all files in the folder."
 msgstr "Замінивши, ви вилучите всі файли в теці."
 
-#: src/nautilus-operations-ui-manager.c:178
+#: src/nautilus-operations-ui-manager.c:186
 #, c-format
 msgid "A folder with the same name already exists in “%s”."
 msgstr "Тека з такою ж назвою вже існує в «%s»."
 
-#: src/nautilus-operations-ui-manager.c:184
+#: src/nautilus-operations-ui-manager.c:192
 #, c-format
 msgid "Replace file “%s”?"
 msgstr "Замінити файл «%s»?"
 
-#: src/nautilus-operations-ui-manager.c:187
+#: src/nautilus-operations-ui-manager.c:195
 msgid "Replacing it will overwrite its content."
 msgstr "Замінивши, ви перезапишете увесь вміст."
 
-#: src/nautilus-operations-ui-manager.c:191
+#: src/nautilus-operations-ui-manager.c:199
 #, c-format
 msgid "An older file with the same name already exists in “%s”."
 msgstr "Старіший файл з такою ж назвою вже існує в «%s»."
 
-#: src/nautilus-operations-ui-manager.c:196
+#: src/nautilus-operations-ui-manager.c:204
 #, c-format
 msgid "A newer file with the same name already exists in “%s”."
 msgstr "Новіший файл з такою ж назвою вже існує «%s»."
 
-#: src/nautilus-operations-ui-manager.c:201
+#: src/nautilus-operations-ui-manager.c:209
 #, c-format
 msgid "Another file with the same name already exists in “%s”."
 msgstr "Інший файл з такою ж назвою вже існує в «%s»."
 
-#: src/nautilus-operations-ui-manager.c:276
+#: src/nautilus-operations-ui-manager.c:284
 #: src/resources/ui/nautilus-properties-window.ui:314
 msgid "Original folder"
 msgstr "Початкова тека"
 
-#: src/nautilus-operations-ui-manager.c:277
-#: src/nautilus-operations-ui-manager.c:309
+#: src/nautilus-operations-ui-manager.c:285
+#: src/nautilus-operations-ui-manager.c:317
 msgid "Contents:"
 msgstr "Вміст:"
 
-#: src/nautilus-operations-ui-manager.c:281
+#: src/nautilus-operations-ui-manager.c:289
 msgid "Original file"
 msgstr "Початковий файл"
 
-#: src/nautilus-operations-ui-manager.c:282
-#: src/nautilus-operations-ui-manager.c:314
+#: src/nautilus-operations-ui-manager.c:290
+#: src/nautilus-operations-ui-manager.c:322
 msgid "Size:"
 msgstr "Розмір:"
 
-#: src/nautilus-operations-ui-manager.c:287
-#: src/nautilus-operations-ui-manager.c:319
+#: src/nautilus-operations-ui-manager.c:295
+#: src/nautilus-operations-ui-manager.c:327
 msgid "Type:"
 msgstr "Тип:"
 
-#: src/nautilus-operations-ui-manager.c:290
-#: src/nautilus-operations-ui-manager.c:322
+#: src/nautilus-operations-ui-manager.c:298
+#: src/nautilus-operations-ui-manager.c:330
 msgid "Last modified:"
 msgstr "Остання зміна:"
 
-#: src/nautilus-operations-ui-manager.c:308
+#: src/nautilus-operations-ui-manager.c:316
 msgid "Merge with"
 msgstr "Об'єднати з"
 
-#: src/nautilus-operations-ui-manager.c:308
-#: src/nautilus-operations-ui-manager.c:313
+#: src/nautilus-operations-ui-manager.c:316
+#: src/nautilus-operations-ui-manager.c:321
 msgid "Replace with"
 msgstr "Замінити на"
 
-#: src/nautilus-operations-ui-manager.c:365
+#: src/nautilus-operations-ui-manager.c:373
 msgid "Merge"
 msgstr "Об'єднати"
 
-#: src/nautilus-operations-ui-manager.c:389
+#: src/nautilus-operations-ui-manager.c:397
 msgid "Merge Folder"
 msgstr "Об'єднати теку"
 
-#: src/nautilus-operations-ui-manager.c:390
-#: src/nautilus-operations-ui-manager.c:395
+#: src/nautilus-operations-ui-manager.c:398
+#: src/nautilus-operations-ui-manager.c:403
 msgid "File and Folder conflict"
 msgstr "Конфлікт файлів і тек"
 
-#: src/nautilus-operations-ui-manager.c:396
+#: src/nautilus-operations-ui-manager.c:404
 msgid "File conflict"
 msgstr "Конфлікт файлів"
 
-#: src/nautilus-operations-ui-manager.c:540
+#: src/nautilus-operations-ui-manager.c:583
 msgid ""
 "Password-protected archives are not yet supported. This list contains "
 "applications that can open the archive."
@@ -4597,7 +4590,7 @@ msgstr "Перемістити вкладку _праворуч"
 msgid "_Close Tab"
 msgstr "_Закрити вкладку"
 
-#: src/nautilus-window.c:2849
+#: src/nautilus-window.c:2841
 msgid "Access and organize your files"
 msgstr "Доступ і упорядковування ваших файлів"
 
@@ -4605,7 +4598,7 @@ msgstr "Доступ і упорядковування ваших файлів"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2860
+#: src/nautilus-window.c:2852
 msgid "translator-credits"
 msgstr ""
 "Юрій Сирота <yuri@renome.rovno.ua>\n"
@@ -5124,7 +5117,6 @@ msgid "_Select a new name for the destination"
 msgstr "_Введіть нову назву для призначення"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:105
-#| msgid "Reset"
 msgid "_Reset"
 msgstr "С_кинути"
 
@@ -5307,7 +5299,16 @@ msgctxt "menu item"
 msgid "Unstar"
 msgstr "Скасувати позначення зірками"
 
-#: src/resources/ui/nautilus-folder-is-empty.ui:32
+#: src/resources/ui/nautilus-files-view-select-items.ui:5
+msgid "Select Items Matching"
+msgstr "Виберіть відповідні об'єкти"
+
+#: src/resources/ui/nautilus-files-view-select-items.ui:34
+#| msgid "_Pattern:"
+msgid "Pattern"
+msgstr "Шаблон"
+
+#: src/resources/ui/nautilus-folder-is-empty.ui:33
 msgid "Folder is Empty"
 msgstr "Тека — порожня"
 
@@ -5315,11 +5316,11 @@ msgstr "Тека — порожня"
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Виберіть порядок, в якому з'являтиметься інформація у цій теці:"
 
-#: src/resources/ui/nautilus-no-search-results.ui:31
+#: src/resources/ui/nautilus-no-search-results.ui:32
 msgid "No Results Found"
 msgstr "Не знайдено жодного результату"
 
-#: src/resources/ui/nautilus-no-search-results.ui:46
+#: src/resources/ui/nautilus-no-search-results.ui:47
 #: src/gtk/nautilusgtkplacesview.ui:274
 msgid "Try a different search"
 msgstr "Спробуйте пошукати по-іншому"
@@ -5577,7 +5578,7 @@ msgstr "Назва файла"
 msgid "Search only on the file name"
 msgstr "Шукати тільки серед назв файлів"
 
-#: src/resources/ui/nautilus-starred-is-empty.ui:32
+#: src/resources/ui/nautilus-starred-is-empty.ui:33
 msgid "Starred files will appear here"
 msgstr "Тут буде показано позначені зірками файли"
 
@@ -5713,7 +5714,7 @@ msgstr "Відновити масштаб"
 msgid "Zoom in"
 msgstr "Наблизити"
 
-#: src/resources/ui/nautilus-trash-is-empty.ui:32
+#: src/resources/ui/nautilus-trash-is-empty.ui:33
 msgid "Trash is Empty"
 msgstr "Тека — порожня"
 
