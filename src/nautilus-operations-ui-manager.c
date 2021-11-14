@@ -495,7 +495,7 @@ run_file_conflict_dialog (gpointer user_data)
                                         data);
 
     g_signal_connect (data->dialog, "response", G_CALLBACK (on_conflict_dialog_response), data);
-    gtk_widget_show_all (GTK_WIDGET (data->dialog));
+    gtk_widget_show (GTK_WIDGET (data->dialog));
 
     g_list_free (files);
 
@@ -586,7 +586,7 @@ open_file_in_application (gpointer user_data)
     gtk_app_chooser_dialog_set_heading (GTK_APP_CHOOSER_DIALOG (dialog), heading);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_app_chooser_response), data);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 
     return G_SOURCE_REMOVE;
 }
