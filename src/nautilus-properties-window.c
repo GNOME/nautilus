@@ -208,6 +208,14 @@ struct _NautilusPropertiesWindow
     guint64 volume_used;
 };
 
+typedef enum
+{
+    NO_FILES_OR_FOLDERS = (0),
+    FILES_ONLY          = (1 << 0),
+    FOLDERS_ONLY        = (1 << 1),
+    FILES_AND_FOLDERS   = FILES_ONLY | FOLDERS_ONLY,
+} FilterType;
+
 enum
 {
     COLUMN_NAME,
@@ -2354,22 +2362,55 @@ setup_basic_page (NautilusPropertiesWindow *self)
     }
 }
 
-static gboolean
-files_has_directory (NautilusPropertiesWindow *self)
+static FilterType
+files_get_filter_type (NautilusPropertiesWindow *self)
 {
-    GList *l;
+    FilterType filter_type = NO_FILES_OR_FOLDERS;
 
-    for (l = self->target_files; l != NULL; l = l->next)
+    for (GList *l = self->target_files; l != NULL && filter_type != FILES_AND_FOLDERS; l = l->next)
     {
-        NautilusFile *file;
-        file = NAUTILUS_FILE (l->data);
+        NautilusFile *file = NAUTILUS_FILE (l->data);
         if (nautilus_file_is_directory (file))
         {
-            return TRUE;
+            filter_type |= FOLDERS_ONLY;
+        }
+        else
+        {
+            filter_type |= FILES_ONLY;
         }
     }
 
-    return FALSE;
+    return filter_type;
+}
+
+static gboolean
+file_matches_filter_type (NautilusFile *file,
+                          FilterType    filter_type)
+{
+    gboolean is_directory = nautilus_file_is_directory (file);
+
+    switch (filter_type)
+    {
+        case FILES_AND_FOLDERS:
+        {
+            return TRUE;
+        }
+
+        case FILES_ONLY:
+        {
+            return !is_directory;
+        }
+
+        case FOLDERS_ONLY:
+        {
+            return is_directory;
+        }
+
+        default:
+        {
+            return FALSE;
+        }
+    }
 }
 
 static gboolean
@@ -2396,24 +2437,6 @@ files_has_changable_permissions_directory (NautilusPropertiesWindow *self)
     }
 
     return changable;
-}
-
-static gboolean
-files_has_file (NautilusPropertiesWindow *self)
-{
-    GList *l;
-
-    for (l = self->target_files; l != NULL; l = l->next)
-    {
-        NautilusFile *file;
-        file = NAUTILUS_FILE (l->data);
-        if (!nautilus_file_is_directory (file))
-        {
-            return TRUE;
-        }
-    }
-
-    return FALSE;
 }
 
 static void
@@ -2458,27 +2481,20 @@ static void
 update_permissions (NautilusPropertiesWindow *self,
                     guint32                   vfs_new_perm,
                     guint32                   vfs_mask,
-                    gboolean                  is_folder,
-                    gboolean                  apply_to_both_folder_and_dir,
+                    FilterType                filter_type,
                     gboolean                  use_original)
 {
-    GList *l;
-
-    for (l = self->target_files; l != NULL; l = l->next)
+    for (GList *l = self->target_files; l != NULL; l = l->next)
     {
-        NautilusFile *file;
+        NautilusFile *file = NAUTILUS_FILE (l->data);
         guint32 permissions;
-
-        file = NAUTILUS_FILE (l->data);
 
         if (!nautilus_file_can_get_permissions (file))
         {
             continue;
         }
 
-        if (!apply_to_both_folder_and_dir &&
-            ((nautilus_file_is_directory (file) && !is_folder) ||
-             (!nautilus_file_is_directory (file) && is_folder)))
+        if (!nautilus_file_can_get_permissions (file) || !file_matches_filter_type (file, filter_type))
         {
             continue;
         }
@@ -2510,25 +2526,17 @@ update_permissions (NautilusPropertiesWindow *self,
 static gboolean
 initial_permission_state_consistent (NautilusPropertiesWindow *self,
                                      guint32                   mask,
-                                     gboolean                  is_folder,
-                                     gboolean                  both_folder_and_dir)
+                                     FilterType                filter_type)
 {
-    GList *l;
-    gboolean first;
-    guint32 first_permissions;
+    gboolean first = TRUE;
+    guint32 first_permissions = 0;
 
-    first = TRUE;
-    first_permissions = 0;
-    for (l = self->target_files; l != NULL; l = l->next)
+    for (GList *l = self->target_files; l != NULL; l = l->next)
     {
-        NautilusFile *file;
+        NautilusFile *file = l->data;
         guint32 permissions;
 
-        file = l->data;
-
-        if (!both_folder_and_dir &&
-            ((nautilus_file_is_directory (file) && !is_folder) ||
-             (!nautilus_file_is_directory (file) && is_folder)))
+        if (!file_matches_filter_type (file, filter_type))
         {
             continue;
         }
@@ -2561,15 +2569,15 @@ static void
 permission_button_toggled (GtkCheckButton           *button,
                            NautilusPropertiesWindow *self)
 {
-    gboolean is_folder;
+    FilterType filter_type;
     guint32 permission_mask;
     gboolean inconsistent;
     gboolean on;
 
     permission_mask = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
                                                           "permission"));
-    is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                    "is-folder"));
+    filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+                                                      "filter-type"));
 
     if (gtk_check_button_get_active (button)
         && !gtk_check_button_get_inconsistent (button))
@@ -2579,7 +2587,7 @@ permission_button_toggled (GtkCheckButton           *button,
         inconsistent = TRUE;
         on = TRUE;
 
-        if (initial_permission_state_consistent (self, permission_mask, is_folder, FALSE))
+        if (initial_permission_state_consistent (self, permission_mask, filter_type))
         {
             inconsistent = FALSE;
             on = TRUE;
@@ -2611,8 +2619,7 @@ permission_button_toggled (GtkCheckButton           *button,
     update_permissions (self,
                         on ? permission_mask : 0,
                         permission_mask,
-                        is_folder,
-                        FALSE,
+                        filter_type,
                         inconsistent);
 }
 
@@ -2624,15 +2631,15 @@ permission_button_update (GtkCheckButton           *button,
     gboolean all_set;
     gboolean all_unset;
     gboolean all_cannot_set;
-    gboolean is_folder;
+    FilterType filter_type;
     gboolean no_match;
     gboolean sensitive;
     guint32 button_permission;
 
     button_permission = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
                                                             "permission"));
-    is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                    "is-folder"));
+    filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
+                                                      "filter-type"));
     all_set = TRUE;
     all_unset = TRUE;
     all_cannot_set = TRUE;
@@ -2643,8 +2650,7 @@ permission_button_update (GtkCheckButton           *button,
         guint32 file_permissions;
 
         if (!nautilus_file_can_get_permissions (file) ||
-            (nautilus_file_is_directory (file) && !is_folder) ||
-            (!nautilus_file_is_directory (file) && is_folder))
+            !file_matches_filter_type (file, filter_type))
         {
             continue;
         }
@@ -2684,7 +2690,7 @@ permission_button_update (GtkCheckButton           *button,
      *  if no files are selected. (useful for recursive apply) */
     gtk_check_button_set_inconsistent (button,
                                        (!all_unset && !all_set) ||
-                                       (!is_folder && no_match));
+                                       ((filter_type == FILES_ONLY) && no_match));
     gtk_widget_set_sensitive (GTK_WIDGET (button), sensitive);
 
     g_signal_handlers_unblock_by_func (G_OBJECT (button),
@@ -2708,8 +2714,8 @@ setup_execute_checkbox_with_label (NautilusPropertiesWindow *self,
     /* Load up the check_button with data we'll need when updating its state. */
     g_object_set_data (G_OBJECT (self->execute_checkbox), "permission",
                        GINT_TO_POINTER (permission_to_check));
-    g_object_set_data (G_OBJECT (self->execute_checkbox), "is-folder",
-                       GINT_TO_POINTER (FALSE));
+    g_object_set_data (G_OBJECT (self->execute_checkbox), "filter-type",
+                       GINT_TO_POINTER (FILES_ONLY));
 
     self->permission_buttons =
         g_list_prepend (self->permission_buttons,
@@ -2834,21 +2840,19 @@ permission_combo_changed (GtkWidget                *combo,
 {
     GtkTreeIter iter;
     GtkTreeModel *model;
-    gboolean is_folder, use_original;
+    FilterType filter_type;
+    gboolean use_original;
     PermissionType type;
     int new_perm, mask;
     guint32 vfs_new_perm, vfs_mask;
 
-    is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "is-folder"));
+    filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "filter-type"));
     type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
 
-    if (is_folder)
+    mask = PERMISSION_READ | PERMISSION_WRITE;
+    if (filter_type == FOLDERS_ONLY)
     {
-        mask = PERMISSION_READ | PERMISSION_WRITE | PERMISSION_EXEC;
-    }
-    else
-    {
-        mask = PERMISSION_READ | PERMISSION_WRITE;
+        mask |= PERMISSION_EXEC;
     }
 
     vfs_mask = permission_to_vfs (type, mask);
@@ -2864,7 +2868,7 @@ permission_combo_changed (GtkWidget                *combo,
     vfs_new_perm = permission_to_vfs (type, new_perm);
 
     update_permissions (self, vfs_new_perm, vfs_mask,
-                        is_folder, FALSE, use_original);
+                        filter_type, use_original);
 }
 
 static void
@@ -2920,7 +2924,7 @@ permission_combo_update (GtkComboBox              *combo,
 
     model = gtk_combo_box_get_model (combo);
 
-    is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "is-folder"));
+    is_folder = (FOLDERS_ONLY == GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "filter-type")));
     type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
 
     is_multi = FALSE;
@@ -3115,7 +3119,7 @@ permission_combo_update (GtkComboBox              *combo,
 static void
 setup_permissions_combo_box (GtkComboBox    *combo,
                              PermissionType  type,
-                             gboolean        is_folder)
+                             FilterType      filter_type)
 {
     g_autoptr (GtkListStore) store = NULL;
     GtkCellRenderer *cell;
@@ -3125,10 +3129,10 @@ setup_permissions_combo_box (GtkComboBox    *combo,
     gtk_combo_box_set_model (combo, GTK_TREE_MODEL (store));
     gtk_combo_box_set_id_column (GTK_COMBO_BOX (combo), COLUMN_ID);
 
-    g_object_set_data (G_OBJECT (combo), "is-folder", GINT_TO_POINTER (is_folder));
+    g_object_set_data (G_OBJECT (combo), "filter-type", GINT_TO_POINTER (filter_type));
     g_object_set_data (G_OBJECT (combo), "permission-type", GINT_TO_POINTER (type));
 
-    if (is_folder)
+    if (filter_type == FOLDERS_ONLY)
     {
         if (type != PERMISSION_USER)
         {
@@ -3258,15 +3262,13 @@ get_initial_permissions (GList *file_list)
 static void
 create_simple_permissions (NautilusPropertiesWindow *self)
 {
-    gboolean has_directory;
-    gboolean has_file;
     GtkWidget *owner_combo_box;
     GtkWidget *owner_value_label;
     GtkWidget *group_combo_box;
     GtkWidget *group_value_label;
+    FilterType filter_type = files_get_filter_type (self);
 
-    has_directory = files_has_directory (self);
-    has_file = files_has_file (self);
+    g_assert (filter_type != NO_FILES_OR_FOLDERS);
 
     if (!is_multi_file_window (self) && nautilus_file_can_set_owner (get_target_file (self)))
     {
@@ -3288,12 +3290,12 @@ create_simple_permissions (NautilusPropertiesWindow *self)
         self->value_fields = g_list_prepend (self->value_fields,
                                              owner_value_label);
     }
-    if (has_directory && has_file)
+    if (filter_type == FILES_AND_FOLDERS)
     {
         gtk_widget_show (self->owner_folder_access_label);
         gtk_widget_show (self->owner_folder_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->owner_folder_access_combo),
-                                     PERMISSION_USER, TRUE);
+                                     PERMISSION_USER, FOLDERS_ONLY);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->owner_folder_access_combo);
         g_signal_connect (self->owner_folder_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
@@ -3301,7 +3303,7 @@ create_simple_permissions (NautilusPropertiesWindow *self)
         gtk_widget_show (self->owner_file_access_label);
         gtk_widget_show (self->owner_file_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->owner_file_access_combo),
-                                     PERMISSION_USER, FALSE);
+                                     PERMISSION_USER, FILES_ONLY);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->owner_file_access_combo);
         g_signal_connect (self->owner_file_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
@@ -3311,7 +3313,7 @@ create_simple_permissions (NautilusPropertiesWindow *self)
         gtk_widget_show (self->owner_access_label);
         gtk_widget_show (self->owner_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->owner_access_combo),
-                                     PERMISSION_USER, has_directory);
+                                     PERMISSION_USER, filter_type);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->owner_access_combo);
         g_signal_connect (self->owner_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
@@ -3337,12 +3339,12 @@ create_simple_permissions (NautilusPropertiesWindow *self)
                                              group_value_label);
     }
 
-    if (has_directory && has_file)
+    if (filter_type == FILES_AND_FOLDERS)
     {
         gtk_widget_show (self->group_folder_access_label);
         gtk_widget_show (self->group_folder_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->group_folder_access_combo),
-                                     PERMISSION_GROUP, TRUE);
+                                     PERMISSION_GROUP, FOLDERS_ONLY);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->group_folder_access_combo);
         g_signal_connect (self->group_folder_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
@@ -3350,7 +3352,7 @@ create_simple_permissions (NautilusPropertiesWindow *self)
         gtk_widget_show (self->group_file_access_label);
         gtk_widget_show (self->group_file_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->group_file_access_combo),
-                                     PERMISSION_GROUP, FALSE);
+                                     PERMISSION_GROUP, FILES_ONLY);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->group_file_access_combo);
         g_signal_connect (self->group_file_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
@@ -3360,19 +3362,19 @@ create_simple_permissions (NautilusPropertiesWindow *self)
         gtk_widget_show (self->group_access_label);
         gtk_widget_show (self->group_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->group_access_combo),
-                                     PERMISSION_GROUP, has_directory);
+                                     PERMISSION_GROUP, filter_type);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->group_access_combo);
         g_signal_connect (self->group_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
     }
 
     /* Others Row */
-    if (has_directory && has_file)
+    if (filter_type == FILES_AND_FOLDERS)
     {
         gtk_widget_show (self->others_folder_access_label);
         gtk_widget_show (self->others_folder_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->others_folder_access_combo),
-                                     PERMISSION_OTHER, TRUE);
+                                     PERMISSION_OTHER, FOLDERS_ONLY);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->others_folder_access_combo);
         g_signal_connect (self->others_folder_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
@@ -3380,7 +3382,7 @@ create_simple_permissions (NautilusPropertiesWindow *self)
         gtk_widget_show (self->others_file_access_label);
         gtk_widget_show (self->others_file_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->others_file_access_combo),
-                                     PERMISSION_OTHER, FALSE);
+                                     PERMISSION_OTHER, FILES_ONLY);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->others_file_access_combo);
         g_signal_connect (self->others_file_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
@@ -3390,13 +3392,13 @@ create_simple_permissions (NautilusPropertiesWindow *self)
         gtk_widget_show (self->others_access_label);
         gtk_widget_show (self->others_access_combo);
         setup_permissions_combo_box (GTK_COMBO_BOX (self->others_access_combo),
-                                     PERMISSION_OTHER, has_directory);
+                                     PERMISSION_OTHER, filter_type);
         self->permission_combos = g_list_prepend (self->permission_combos,
                                                   self->others_access_combo);
         g_signal_connect (self->others_access_combo, "changed", G_CALLBACK (permission_combo_changed), self);
     }
 
-    if (!has_directory)
+    if (filter_type == FILES_ONLY)
     {
         setup_execute_checkbox_with_label (self,
                                            UNIX_PERM_USER_EXEC | UNIX_PERM_GROUP_EXEC | UNIX_PERM_OTHER_EXEC);
@@ -3420,7 +3422,8 @@ on_change_permissions_response (GtkDialog                *dialog,
     guint32 dir_permission, dir_permission_mask;
     guint32 vfs_mask, vfs_new_perm;
     GtkWidget *combo;
-    gboolean is_folder, use_original;
+    gboolean use_original;
+    FilterType filter_type;
     GList *l;
     GtkTreeModel *model;
     GtkTreeIter iter;
@@ -3450,7 +3453,7 @@ on_change_permissions_response (GtkDialog                *dialog,
         }
 
         type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
-        is_folder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "is-folder"));
+        filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "filter-type"));
 
         model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
         gtk_tree_model_get (model, &iter,
@@ -3462,17 +3465,14 @@ on_change_permissions_response (GtkDialog                *dialog,
         }
         vfs_new_perm = permission_to_vfs (type, new_perm);
 
-        if (is_folder)
+        mask = PERMISSION_READ | PERMISSION_WRITE;
+        if (filter_type == FOLDERS_ONLY)
         {
-            mask = PERMISSION_READ | PERMISSION_WRITE | PERMISSION_EXEC;
-        }
-        else
-        {
-            mask = PERMISSION_READ | PERMISSION_WRITE;
+            mask |= PERMISSION_EXEC;
         }
         vfs_mask = permission_to_vfs (type, mask);
 
-        if (is_folder)
+        if (filter_type == FOLDERS_ONLY)
         {
             dir_permission_mask |= vfs_mask;
             dir_permission |= vfs_new_perm;
@@ -3514,14 +3514,14 @@ on_change_permissions_response (GtkDialog                *dialog,
 static void
 set_active_from_umask (GtkComboBox    *combo,
                        PermissionType  type,
-                       gboolean        is_folder)
+                       FilterType      filter_type)
 {
     mode_t initial;
     mode_t mask;
     mode_t p;
     const char *id;
 
-    if (is_folder)
+    if (filter_type == FOLDERS_ONLY)
     {
         initial = (S_IRWXU | S_IRWXG | S_IRWXO);
     }
@@ -3625,42 +3625,42 @@ on_change_permissions_clicked (GtkWidget                *button,
 
     /* Owner Permissions */
     combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_owner_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_USER, FALSE);
+    setup_permissions_combo_box (combo, PERMISSION_USER, FILES_ONLY);
     self->change_permission_combos = g_list_prepend (self->change_permission_combos,
                                                      combo);
-    set_active_from_umask (combo, PERMISSION_USER, FALSE);
+    set_active_from_umask (combo, PERMISSION_USER, FILES_ONLY);
 
     combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_owner_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_USER, TRUE);
+    setup_permissions_combo_box (combo, PERMISSION_USER, FOLDERS_ONLY);
     self->change_permission_combos = g_list_prepend (self->change_permission_combos,
                                                      combo);
-    set_active_from_umask (combo, PERMISSION_USER, TRUE);
+    set_active_from_umask (combo, PERMISSION_USER, FOLDERS_ONLY);
 
     /* Group Permissions */
     combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_group_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_GROUP, FALSE);
+    setup_permissions_combo_box (combo, PERMISSION_GROUP, FILES_ONLY);
     self->change_permission_combos = g_list_prepend (self->change_permission_combos,
                                                      combo);
-    set_active_from_umask (combo, PERMISSION_GROUP, FALSE);
+    set_active_from_umask (combo, PERMISSION_GROUP, FILES_ONLY);
 
     combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_group_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_GROUP, TRUE);
+    setup_permissions_combo_box (combo, PERMISSION_GROUP, FOLDERS_ONLY);
     self->change_permission_combos = g_list_prepend (self->change_permission_combos,
                                                      combo);
-    set_active_from_umask (combo, PERMISSION_GROUP, TRUE);
+    set_active_from_umask (combo, PERMISSION_GROUP, FOLDERS_ONLY);
 
     /* Others Permissions */
     combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_other_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_OTHER, FALSE);
+    setup_permissions_combo_box (combo, PERMISSION_OTHER, FILES_ONLY);
     self->change_permission_combos = g_list_prepend (self->change_permission_combos,
                                                      combo);
-    set_active_from_umask (combo, PERMISSION_OTHER, FALSE);
+    set_active_from_umask (combo, PERMISSION_OTHER, FILES_ONLY);
 
     combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_other_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_OTHER, TRUE);
+    setup_permissions_combo_box (combo, PERMISSION_OTHER, FOLDERS_ONLY);
     self->change_permission_combos = g_list_prepend (self->change_permission_combos,
                                                      combo);
-    set_active_from_umask (combo, PERMISSION_OTHER, TRUE);
+    set_active_from_umask (combo, PERMISSION_OTHER, FOLDERS_ONLY);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), self);
     gtk_widget_show (dialog);
