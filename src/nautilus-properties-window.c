@@ -2766,6 +2766,7 @@ enum
 
 typedef enum
 {
+    PERMISSION_NONE = (0),
     PERMISSION_READ = (1 << 0),
     PERMISSION_WRITE = (1 << 1),
     PERMISSION_EXEC = (1 << 2)
@@ -2814,10 +2815,10 @@ static PermissionValue
 permission_from_vfs (PermissionType type,
                      guint32        vfs_perm)
 {
-    PermissionValue perm;
+    PermissionValue perm = PERMISSION_NONE;
+
     g_assert (type >= 0 && type < 3);
 
-    perm = 0;
     if (vfs_perm & vfs_perms[type][0])
     {
         perm |= PERMISSION_READ;
@@ -3142,7 +3143,7 @@ setup_permissions_combo_box (GtkComboBox    *combo,
                                  * the user has in a directory.
                                  */
                                 COLUMN_NAME, _("None"),
-                                COLUMN_VALUE, 0,
+                                COLUMN_VALUE, PERMISSION_NONE,
                                 COLUMN_ID, "none",
                                 -1);
         }
@@ -3172,7 +3173,7 @@ setup_permissions_combo_box (GtkComboBox    *combo,
             gtk_list_store_append (store, &iter);
             gtk_list_store_set (store, &iter,
                                 COLUMN_NAME, _("None"),
-                                COLUMN_VALUE, 0,
+                                COLUMN_VALUE, PERMISSION_NONE,
                                 COLUMN_ID, "none",
                                 -1);
         }
