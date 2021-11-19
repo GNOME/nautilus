@@ -712,75 +712,6 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="owner_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Access</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">1</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="owner_folder_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Folder access</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">2</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="owner_file_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">File access</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">3</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="owner_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">1</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="owner_folder_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">2</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="owner_file_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">3</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
                                   <object class="GtkLabel" id="group_label">
                                     <property name="margin_top">12</property>
                                     <property name="label" translatable="yes">_Group</property>
@@ -792,7 +723,7 @@
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
-                                      <property name="row">5</property>
+                                      <property name="row">2</property>
                                     </layout>
                                   </object>
                                 </child>
@@ -825,76 +756,7 @@
                                     </child>
                                     <layout>
                                       <property name="column">1</property>
-                                      <property name="row">5</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="group_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Access</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">6</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="group_folder_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Folder access</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">7</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="group_file_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">File access</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">8</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="group_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">6</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="group_folder_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">7</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="group_file_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">8</property>
+                                      <property name="row">2</property>
                                     </layout>
                                   </object>
                                 </child>
@@ -908,76 +770,109 @@
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
-                                      <property name="row">10</property>
+                                      <property name="row">4</property>
                                     </layout>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="others_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Access</property>
-                                    <property name="xalign">1</property>
+                                  <object class="GtkListBox" id="owner_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <child>
+                                      <object class="AdwComboRow" id="owner_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">Access</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwComboRow" id="owner_folder_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">Folder Access</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwComboRow" id="owner_file_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">File Access</property>
+                                      </object>
+                                    </child>
+                                    <layout>
+                                      <property name="column">0</property>
+                                      <property name="row">1</property>
+                                      <property name="column-span">2</property>
+                                    </layout>
                                     <style>
-                                      <class name="dim-label"/>
+                                      <class name="boxed-list"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkListBox" id="group_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <child>
+                                      <object class="AdwComboRow" id="group_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">Access</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwComboRow" id="group_folder_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">Folder Access</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwComboRow" id="group_file_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">File Access</property>
+                                      </object>
+                                    </child>
+                                    <style>
+                                      <class name="boxed-list"/>
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
-                                      <property name="row">11</property>
+                                      <property name="row">3</property>
+                                      <property name="column-span">2</property>
                                     </layout>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="others_folder_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Folder access</property>
-                                    <property name="xalign">1</property>
+                                  <object class="GtkListBox" id="others_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <child>
+                                      <object class="AdwComboRow" id="others_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">Access</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwComboRow" id="others_folder_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">Folder Access</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwComboRow" id="others_file_access_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">File Access</property>
+                                      </object>
+                                    </child>
                                     <style>
-                                      <class name="dim-label"/>
+                                      <class name="boxed-list"/>
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
-                                      <property name="row">12</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="others_file_access_label">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">File access</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">13</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="others_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">11</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="others_folder_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">12</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkComboBox" id="others_file_access_combo">
-                                    <property name="visible">False</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">13</property>
+                                      <property name="row">5</property>
+                                      <property name="column-span">2</property>
                                     </layout>
                                   </object>
                                 </child>
@@ -992,7 +887,7 @@
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
-                                      <property name="row">15</property>
+                                      <property name="row">6</property>
                                     </layout>
                                   </object>
                                 </child>
@@ -1007,7 +902,7 @@
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
-                                      <property name="row">17</property>
+                                      <property name="row">7</property>
                                     </layout>
                                   </object>
                                 </child>
@@ -1020,7 +915,7 @@
                                     <property name="xalign">0</property>
                                     <layout>
                                       <property name="column">1</property>
-                                      <property name="row">17</property>
+                                      <property name="row">7</property>
                                     </layout>
                                   </object>
                                 </child>
@@ -1037,7 +932,7 @@
                                     </child>
                                     <layout>
                                       <property name="column">0</property>
-                                      <property name="row">19</property>
+                                      <property name="row">8</property>
                                       <property name="column-span">2</property>
                                     </layout>
                                   </object>
@@ -1051,7 +946,7 @@
                                     <property name="margin_top">12</property>
                                     <layout>
                                       <property name="column">1</property>
-                                      <property name="row">15</property>
+                                      <property name="row">6</property>
                                     </layout>
                                   </object>
                                 </child>
