@@ -6393,8 +6393,8 @@ nautilus_file_set_owner (NautilusFile                  *file,
  *
  * Get a list of user names. For users with a different associated
  * "real name", the real name follows the standard user name, separated
- * by a carriage return. The caller is responsible for freeing this list
- * and its contents.
+ * by a dash surrounded by spaces. The caller is responsible for freeing
+ * this list and its contents.
  */
 GList *
 nautilus_get_user_names (void)
@@ -6410,9 +6410,9 @@ nautilus_get_user_names (void)
     while ((user = getpwent ()) != NULL)
     {
         real_name = get_real_name (user->pw_name, user->pw_gecos);
-        if (real_name != NULL)
+        if (real_name != NULL && !g_str_equal (real_name, ""))
         {
-            name = g_strconcat (user->pw_name, "\n", real_name, NULL);
+            name = g_strconcat (user->pw_name, " – ", real_name, NULL);
         }
         else
         {
