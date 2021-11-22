@@ -1389,6 +1389,19 @@ value_field_update (GtkLabel                 *label,
     gtk_label_set_text (label, attribute_value);
 }
 
+static guint
+hash_string_list (GList *list)
+{
+    guint hash_value = 0;
+
+    for (GList *node = list; node != NULL; node = node->next)
+    {
+        hash_value ^= g_str_hash ((gconstpointer) node->data);
+    }
+
+    return hash_value;
+}
+
 static void
 group_change_free (GroupChange *change)
 {
@@ -1534,54 +1547,6 @@ changed_group_callback (GtkComboBox  *combo_box,
     }
 }
 
-/* checks whether the given column at the first level
- * of model has the specified entries in the given order. */
-static gboolean
-tree_model_entries_equal (GtkTreeModel *model,
-                          unsigned int  column,
-                          GList        *entries)
-{
-    GtkTreeIter iter;
-    gboolean empty_model;
-
-    g_assert (GTK_IS_TREE_MODEL (model));
-    g_assert (gtk_tree_model_get_column_type (model, column) == G_TYPE_STRING);
-
-    empty_model = !gtk_tree_model_get_iter_first (model, &iter);
-
-    if (!empty_model && entries != NULL)
-    {
-        GList *l;
-
-        l = entries;
-
-        do
-        {
-            g_autofree char *val = NULL;
-
-            gtk_tree_model_get (model, &iter,
-                                column, &val,
-                                -1);
-            if ((val == NULL && l->data != NULL) ||
-                (val != NULL && l->data == NULL) ||
-                (val != NULL && strcmp (val, l->data)))
-            {
-                return FALSE;
-            }
-
-            l = l->next;
-        }
-        while (gtk_tree_model_iter_next (model, &iter));
-
-        return l == NULL;
-    }
-    else
-    {
-        return (empty_model && entries == NULL) ||
-               (!empty_model && entries != NULL);
-    }
-}
-
 static char *
 combo_box_get_active_entry (GtkComboBox *combo_box,
                             unsigned int column)
@@ -1660,6 +1625,7 @@ synch_groups_combo_box (GtkComboBox  *combo_box,
     g_autofree char *current_group_name = NULL;
     int group_index;
     int current_group_index;
+    guint current_group_hash, stored_group_hash;
 
     g_assert (GTK_IS_COMBO_BOX (combo_box));
     g_assert (NAUTILUS_IS_FILE (file));
@@ -1671,11 +1637,14 @@ synch_groups_combo_box (GtkComboBox  *combo_box,
 
     groups = nautilus_file_get_settable_group_names (file);
 
+    current_group_hash = hash_string_list (groups);
+    stored_group_hash = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (combo_box), "group-hash"));
+
     model = gtk_combo_box_get_model (combo_box);
     store = GTK_LIST_STORE (model);
     g_assert (GTK_IS_LIST_STORE (model));
 
-    if (!tree_model_entries_equal (model, 0, groups))
+    if (stored_group_hash != current_group_hash)
     {
         /* Clear the contents of ComboBox in a wacky way because there
          * is no function to clear all items and also no function to obtain
@@ -1688,6 +1657,8 @@ synch_groups_combo_box (GtkComboBox  *combo_box,
             group_name = (const char *) node->data;
             gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_box), group_name);
         }
+
+        g_object_set_data (G_OBJECT (combo_box), "group-hash", GUINT_TO_POINTER (current_group_hash));
     }
 
     current_group_name = nautilus_file_get_group_name (file);
@@ -1923,6 +1894,7 @@ synch_user_menu (GtkComboBox  *combo_box,
     g_autofree char *nice_owner_name = NULL;
     int user_index;
     int owner_index;
+    guint current_user_hash, stored_user_hash;
 
     g_assert (GTK_IS_COMBO_BOX (combo_box));
     g_assert (NAUTILUS_IS_FILE (file));
@@ -1934,11 +1906,14 @@ synch_user_menu (GtkComboBox  *combo_box,
 
     users = nautilus_get_user_names ();
 
+    current_user_hash = hash_string_list (users);
+    stored_user_hash = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (combo_box), "user-hash"));
+
     model = gtk_combo_box_get_model (combo_box);
     store = GTK_LIST_STORE (model);
     g_assert (GTK_IS_LIST_STORE (model));
 
-    if (!tree_model_entries_equal (model, 1, users))
+    if (stored_user_hash != current_user_hash)
     {
         /* Clear the contents of ComboBox in a wacky way because there
          * is no function to clear all items and also no function to obtain
@@ -1970,6 +1945,8 @@ synch_user_menu (GtkComboBox  *combo_box,
                                 2, name_array[0],
                                 -1);
         }
+
+        g_object_set_data (G_OBJECT (combo_box), "user-hash", GUINT_TO_POINTER (current_user_hash));
     }
 
     owner_name = nautilus_file_get_owner_name (file);
