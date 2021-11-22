@@ -1889,7 +1889,6 @@ synch_user_menu (GtkComboBox  *combo_box,
     GtkTreeModel *model;
     GtkListStore *store;
     GtkTreeIter iter;
-    char *user_name;
     g_autofree char *owner_name = NULL;
     g_autofree char *nice_owner_name = NULL;
     int user_index;
@@ -1923,27 +1922,28 @@ synch_user_menu (GtkComboBox  *combo_box,
 
         for (node = users, user_index = 0; node != NULL; node = node->next, ++user_index)
         {
-            g_auto (GStrv) name_array = NULL;
-            g_autofree char *combo_text = NULL;
+            char *combo_text = (char *) node->data;
+            char *separator_pos = g_strstr_len (combo_text, -1, " – ");
+            char *user_name = combo_text;
 
-            user_name = (char *) node->data;
-
-            name_array = g_strsplit (user_name, "\n", 2);
-            if (name_array[1] != NULL && *name_array[1] != 0)
+            if (separator_pos != NULL)
             {
-                combo_text = g_strdup_printf ("%s - %s", name_array[0], name_array[1]);
-            }
-            else
-            {
-                combo_text = g_strdup (name_array[0]);
+                /* Has display name, extract user name */
+                guint user_name_length = separator_pos - combo_text;
+                user_name = g_strndup (combo_text, user_name_length);
             }
 
             gtk_list_store_append (store, &iter);
             gtk_list_store_set (store, &iter,
                                 0, combo_text,
                                 1, user_name,
-                                2, name_array[0],
+                                2, user_name,
                                 -1);
+            if (separator_pos != NULL)
+            {
+                // only free if copied
+                g_free (user_name);
+            }
         }
 
         g_object_set_data (G_OBJECT (combo_box), "user-hash", GUINT_TO_POINTER (current_user_hash));
