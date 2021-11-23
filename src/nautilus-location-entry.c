@@ -1015,7 +1015,7 @@ nautilus_location_entry_new (void)
 {
     GtkWidget *entry;
 
-    entry = gtk_widget_new (NAUTILUS_TYPE_LOCATION_ENTRY, "max-width-chars", 350, NULL);
+    entry = gtk_widget_new (NAUTILUS_TYPE_LOCATION_ENTRY, NULL);
 
     return entry;
 }

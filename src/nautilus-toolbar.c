@@ -40,7 +40,6 @@
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
-#include "nautilus-container-max-width.h"
 
 #define OPERATION_MINIMUM_TIME 2 /*s */
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
@@ -50,7 +49,6 @@
 #define ANIMATION_Y_GROW 30
 
 /* Just design, context at https://gitlab.gnome.org/GNOME/nautilus/issues/548#note_274131 */
-#define SWITCHER_MAX_WIDTH 840
 
 typedef enum
 {
@@ -70,7 +68,6 @@ struct _NautilusToolbar
     GtkWidget *search_container;
     GtkWidget *toolbar_switcher;
     GtkWidget *toolbar_switcher_container;
-    NautilusContainerMaxWidth *toolbar_switcher_container_max_width;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
 
@@ -903,13 +900,8 @@ nautilus_toolbar_constructed (GObject *object)
     self->path_bar_container = GTK_WIDGET (gtk_builder_get_object (builder, "path_bar_container"));
     self->location_entry_container = GTK_WIDGET (gtk_builder_get_object (builder, "location_entry_container"));
 
-    self->toolbar_switcher_container_max_width = nautilus_container_max_width_new ();
-    nautilus_container_max_width_set_max_width (self->toolbar_switcher_container_max_width,
-                                                SWITCHER_MAX_WIDTH);
-    gtk_container_add (GTK_CONTAINER (self->toolbar_switcher_container_max_width),
-                       self->toolbar_switcher);
     gtk_container_add (GTK_CONTAINER (self->toolbar_switcher_container),
-                       GTK_WIDGET (self->toolbar_switcher_container_max_width));
+                       self->toolbar_switcher);
 
     self->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
     gtk_container_add (GTK_CONTAINER (self->path_bar_container),
@@ -967,6 +959,10 @@ nautilus_toolbar_constructed (GObject *object)
                       G_CALLBACK (on_location_entry_populate_popup), self);
     g_signal_connect (self->location_entry, "notify::has-focus",
                       G_CALLBACK (on_location_entry_focus_changed), self);
+
+    /* Setting a max width on one entry to effectively set a max expansion for
+     * the whole title widget. */
+    gtk_entry_set_max_width_chars (GTK_ENTRY (self->location_entry), 88);
 
     gtk_widget_show_all (GTK_WIDGET (self));
     toolbar_update_appearance (self);
