@@ -48,6 +48,7 @@
 #include <nautilus-extension.h>
 #include "nautilus-ui-utilities.h"
 #include <eel/eel-vfs-extensions.h>
+#include "nautilus-gtk4-helpers.h"
 
 enum
 {
@@ -925,10 +926,10 @@ nautilus_window_slot_constructed (GObject *object)
     self->search_info_label = GTK_LABEL (gtk_label_new (NULL));
     self->search_info_label_revealer = GTK_REVEALER (gtk_revealer_new ());
 
-    gtk_container_add (GTK_CONTAINER (self->search_info_label_revealer),
-                       GTK_WIDGET (self->search_info_label));
-    gtk_container_add (GTK_CONTAINER (self),
-                       GTK_WIDGET (self->search_info_label_revealer));
+    gtk_revealer_set_child (GTK_REVEALER (self->search_info_label_revealer),
+                            GTK_WIDGET (self->search_info_label));
+    gtk_box_append (GTK_BOX (self),
+                    GTK_WIDGET (self->search_info_label_revealer));
 
     gtk_widget_show (GTK_WIDGET (self->search_info_label));
     gtk_widget_show (GTK_WIDGET (self->search_info_label_revealer));
@@ -2854,7 +2855,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         self->new_content_view = NULL;
 
         widget = GTK_WIDGET (self->content_view);
-        gtk_container_add (GTK_CONTAINER (self), widget);
+        gtk_box_append (GTK_BOX (self), widget);
         gtk_widget_set_vexpand (widget, TRUE);
         gtk_widget_show (widget);
         self->searching_binding = g_object_bind_property (self->content_view, "searching",

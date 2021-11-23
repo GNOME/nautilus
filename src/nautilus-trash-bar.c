@@ -32,6 +32,7 @@
 #include "nautilus-file.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 enum
 {
@@ -211,13 +212,12 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 static void
 nautilus_trash_bar_init (NautilusTrashBar *bar)
 {
-    GtkWidget *content_area, *action_area, *w;
+    GtkWidget *action_area, *w;
     const gchar *subtitle_text;
     GtkWidget *label;
     GtkWidget *subtitle;
     PangoAttrList *attrs;
 
-    content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
     action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
     gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area),
@@ -241,9 +241,10 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
                      G_SETTINGS_BIND_GET);
 
     gtk_widget_show (label);
-    gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 0);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), label);
 
-    gtk_box_pack_start (GTK_BOX (content_area), subtitle, FALSE, FALSE, 0);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), subtitle);
+
     w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
                                  _("_Settings"),
                                  TRASH_BAR_RESPONSE_AUTODELETE);

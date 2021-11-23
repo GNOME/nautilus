@@ -44,6 +44,7 @@
 #include "nautilus-canvas-dnd.h"
 #include "nautilus-metadata.h"
 #include "nautilus-clipboard.h"
+#include "nautilus-gtk4-helpers.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_CANVAS_VIEW
 #include "nautilus-debug.h"
@@ -1413,8 +1414,8 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
     g_signal_connect_object (canvas_container, "get-container-uri",
                              G_CALLBACK (canvas_view_get_container_uri), canvas_view, 0);
 
-    gtk_container_add (GTK_CONTAINER (content_widget),
-                       GTK_WIDGET (canvas_container));
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
+                                   GTK_WIDGET (canvas_container));
 
     nautilus_canvas_view_update_click_mode (canvas_view);
     nautilus_canvas_container_set_zoom_level (canvas_container,

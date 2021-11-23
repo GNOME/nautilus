@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "nautilus-floating-bar.h"
+#include "nautilus-gtk4-helpers.h"
 
 #define HOVER_HIDE_TIMEOUT_INTERVAL 100
 
@@ -435,13 +436,13 @@ nautilus_floating_bar_constructed (GObject *obj)
     w = gtk_label_new (NULL);
     gtk_label_set_ellipsize (GTK_LABEL (w), PANGO_ELLIPSIZE_MIDDLE);
     gtk_label_set_single_line_mode (GTK_LABEL (w), TRUE);
-    gtk_container_add (GTK_CONTAINER (labels_box), w);
+    gtk_box_append (GTK_BOX (labels_box), w);
     self->primary_label_widget = w;
     gtk_widget_show (w);
 
     w = gtk_label_new (NULL);
     gtk_label_set_single_line_mode (GTK_LABEL (w), TRUE);
-    gtk_container_add (GTK_CONTAINER (labels_box), w);
+    gtk_box_append (GTK_BOX (labels_box), w);
     self->details_label_widget = w;
     gtk_widget_show (w);
 
@@ -450,7 +451,7 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_style_context_add_class (context, "circular");
     gtk_style_context_add_class (context, "flat");
     gtk_widget_set_valign (w, GTK_ALIGN_CENTER);
-    gtk_container_add (GTK_CONTAINER (self), w);
+    gtk_box_append (GTK_BOX (self), w);
     self->stop_button = w;
     gtk_widget_set_visible (w, FALSE);
     gtk_widget_set_no_show_all (w, TRUE);

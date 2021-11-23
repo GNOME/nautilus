@@ -55,6 +55,7 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
 #include "nautilus-tracker-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 struct SelectionForeachData
 {
@@ -2417,7 +2418,8 @@ create_and_set_up_tree_view (NautilusListView *view)
                             default_visible_columns);
 
     gtk_widget_show (GTK_WIDGET (view->details->tree_view));
-    gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (view->details->tree_view));
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
+                                   GTK_WIDGET (view->details->tree_view));
 
     atk_obj = gtk_widget_get_accessible (GTK_WIDGET (view->details->tree_view));
     atk_object_set_name (atk_obj, _("List View"));

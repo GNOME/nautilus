@@ -59,6 +59,7 @@
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
@@ -1362,7 +1363,7 @@ do_run_simple_dialog (gpointer _data)
         gtk_label_set_max_width_chars (GTK_LABEL (label),
                                        MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
-        gtk_container_add (GTK_CONTAINER (content_area), label);
+        gtk_box_append (GTK_BOX (content_area), label);
 
         gtk_widget_show (label);
     }

@@ -24,6 +24,7 @@
 #include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-gtk4-helpers.h"
 
  #define SEARCH_FILTER_MAX_YEARS 5
 
@@ -404,7 +405,7 @@ create_row_for_label (const gchar *text,
                           "margin-start", 6,
                           NULL);
 
-    gtk_container_add (GTK_CONTAINER (row), label);
+    gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), label);
     gtk_widget_show_all (row);
 
     return row;
@@ -426,7 +427,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
 
     /* Add the no date filter element first */
     row = create_row_for_label (_("Any time"), TRUE);
-    gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
+    gtk_list_box_insert (GTK_LIST_BOX (popover->dates_listbox), row, -1);
 
     /* This is a tricky loop. The main intention here is that each
      * timeslice (day, week, month) have 2 or 3 entries.
@@ -488,7 +489,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
                                 g_date_time_ref (current_date),
                                 (GDestroyNotify) g_date_time_unref);
 
-        gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
+        gtk_list_box_insert (GTK_LIST_BOX (popover->dates_listbox), row, -1);
 
         g_free (label);
         g_date_time_unref (current_date);
@@ -518,13 +519,13 @@ fill_types_listbox (NautilusSearchPopover *popover)
         row = create_row_for_label (nautilus_mime_types_group_get_name (i), i == 3);
         g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (i));
 
-        gtk_container_add (GTK_CONTAINER (popover->type_listbox), row);
+        gtk_list_box_insert (GTK_LIST_BOX (popover->type_listbox), row, -1);
     }
 
     /* Other types */
     row = create_row_for_label (_("Other Type…"), TRUE);
     g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (-1));
-    gtk_container_add (GTK_CONTAINER (popover->type_listbox), row);
+    gtk_list_box_insert (GTK_LIST_BOX (popover->type_listbox), row, -1);
 }
 
 static void
@@ -617,7 +618,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (treeview), FALSE);
 
     gtk_widget_show (treeview);
-    gtk_container_add (GTK_CONTAINER (scrolled), treeview);
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled), treeview);
 
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
     {

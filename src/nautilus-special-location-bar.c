@@ -24,6 +24,7 @@
 
 #include "nautilus-special-location-bar.h"
 #include "nautilus-enum-types.h"
+#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusSpecialLocationBar
 {
@@ -162,11 +163,9 @@ nautilus_special_location_bar_class_init (NautilusSpecialLocationBarClass *klass
 static void
 nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
 {
-    GtkWidget *location_area;
     GtkWidget *action_area;
     PangoAttrList *attrs;
 
-    location_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
     action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
     gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area), GTK_ORIENTATION_HORIZONTAL);
@@ -178,12 +177,12 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
     pango_attr_list_unref (attrs);
 
     gtk_label_set_ellipsize (GTK_LABEL (bar->label), PANGO_ELLIPSIZE_END);
-    gtk_container_add (GTK_CONTAINER (location_area), bar->label);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), bar->label);
 
     bar->learn_more_label = gtk_label_new (NULL);
     gtk_widget_set_hexpand (bar->learn_more_label, TRUE);
     gtk_widget_set_halign (bar->learn_more_label, GTK_ALIGN_END);
-    gtk_container_add (GTK_CONTAINER (location_area), bar->learn_more_label);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), bar->learn_more_label);
 }
 
 GtkWidget *

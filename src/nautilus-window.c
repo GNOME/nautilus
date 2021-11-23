@@ -69,6 +69,7 @@
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-gtk4-helpers.h"
 
 /* Forward and back buttons on the mouse */
 static gboolean mouse_extra_buttons = TRUE;
@@ -1207,7 +1208,7 @@ add_menu_separator (GtkWidget *menu)
     GtkWidget *separator;
 
     separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-    gtk_container_add (GTK_CONTAINER (menu), separator);
+    gtk_box_append (GTK_BOX (menu), separator);
     gtk_widget_show (separator);
 }
 
@@ -1237,7 +1238,7 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
             gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
                                             "win.empty-trash");
             g_object_set (menu_item, "text", _("Empty _Trash…"), NULL);
-            gtk_container_add (GTK_CONTAINER (menu), menu_item);
+            gtk_box_append (GTK_BOX (menu), menu_item);
             gtk_widget_show (menu_item);
 
             action = g_action_map_lookup_action (G_ACTION_MAP (window),
@@ -1256,7 +1257,7 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
             gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
                                             "win.properties");
             g_object_set (menu_item, "text", _("_Properties"), NULL);
-            gtk_container_add (GTK_CONTAINER (menu), menu_item);
+            gtk_box_append (GTK_BOX (menu), menu_item);
             gtk_widget_show (menu_item);
         }
     }
@@ -1272,7 +1273,7 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
             {
                 window->selected_volume = g_object_ref (selected_volume);
             }
-            gtk_container_add (GTK_CONTAINER (menu), menu_item);
+            gtk_box_append (GTK_BOX (menu), menu_item);
             gtk_widget_show (menu_item);
 
             action = g_action_map_lookup_action (G_ACTION_MAP (window),

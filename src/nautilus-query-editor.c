@@ -36,6 +36,7 @@
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusQueryEditor
 {
@@ -557,18 +558,18 @@ setup_widgets (NautilusQueryEditor *editor)
 
     /* vertical box that holds the search entry and the label below */
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-    gtk_container_add (GTK_CONTAINER (editor), vbox);
+    gtk_box_append (GTK_BOX (editor), vbox);
 
     /* horizontal box */
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_style_context_add_class (gtk_widget_get_style_context (hbox), "linked");
-    gtk_container_add (GTK_CONTAINER (vbox), hbox);
+    gtk_box_append (GTK_BOX (vbox), hbox);
 
     /* create the search entry */
     editor->entry = GTK_WIDGET (gd_tagged_entry_new ());
     gtk_widget_set_hexpand (editor->entry, TRUE);
 
-    gtk_container_add (GTK_CONTAINER (hbox), editor->entry);
+    gtk_box_append (GTK_BOX (hbox), editor->entry);
 
     editor->mime_types_tag = gd_tagged_entry_tag_new (NULL);
     editor->date_range_tag = gd_tagged_entry_tag_new (NULL);
@@ -597,7 +598,7 @@ setup_widgets (NautilusQueryEditor *editor)
     /* setup the filter menu button */
     editor->dropdown_button = gtk_menu_button_new ();
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
-    gtk_container_add (GTK_CONTAINER (hbox), editor->dropdown_button);
+    gtk_box_append (GTK_BOX (hbox), editor->dropdown_button);
 
     g_signal_connect (editor->entry, "activate",
                       G_CALLBACK (entry_activate_cb), editor);

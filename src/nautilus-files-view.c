@@ -89,6 +89,7 @@
 #include "nautilus-view-icon-controller.h"
 #include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 #ifdef HAVE_LIBPORTAL
 #include <libportal/portal.h>
@@ -9870,7 +9871,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     priv->overlay = gtk_overlay_new ();
     gtk_widget_set_vexpand (priv->overlay, TRUE);
     gtk_widget_set_hexpand (priv->overlay, TRUE);
-    gtk_container_add (GTK_CONTAINER (view), priv->overlay);
+    gtk_grid_attach_next_to (GTK_GRID (view), priv->overlay, NULL, GTK_POS_BOTTOM, 1, 1);
     gtk_widget_show (priv->overlay);
 
     /* NautilusFloatingBar listen to its parent's 'event' signal
@@ -9896,7 +9897,7 @@ nautilus_files_view_init (NautilusFilesView *view)
                               G_CALLBACK (popup_menu_callback),
                               view);
 
-    gtk_container_add (GTK_CONTAINER (priv->overlay), priv->scrolled_window);
+    gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), priv->scrolled_window);
 
     /* Empty states */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");

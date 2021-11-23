@@ -397,7 +397,7 @@ nautilus_places_view_init (NautilusPlacesView *self)
     gtk_widget_set_hexpand (priv->places_view, TRUE);
     gtk_widget_set_vexpand (priv->places_view, TRUE);
     gtk_widget_show (priv->places_view);
-    gtk_container_add (GTK_CONTAINER (self), priv->places_view);
+    gtk_grid_attach_next_to (GTK_GRID (self), priv->places_view, NULL, GTK_POS_BOTTOM, 1, 1);
 
     g_signal_connect_swapped (priv->places_view,
                               "notify::loading",

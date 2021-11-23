@@ -40,6 +40,7 @@
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
+#include "nautilus-gtk4-helpers.h"
 
 #define OPERATION_MINIMUM_TIME 2 /*s */
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
@@ -900,16 +901,16 @@ nautilus_toolbar_constructed (GObject *object)
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
 
     self->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
-    gtk_container_add (GTK_CONTAINER (self->path_bar_container),
-                       self->path_bar);
+    gtk_box_append (GTK_BOX (self->path_bar_container),
+                    self->path_bar);
 
     self->location_entry = nautilus_location_entry_new ();
-    gtk_container_add (GTK_CONTAINER (self->location_entry_container),
-                       self->location_entry);
+    gtk_box_append (GTK_BOX (self->location_entry_container),
+                    self->location_entry);
     self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic",
                                                                        GTK_ICON_SIZE_BUTTON);
-    gtk_container_add (GTK_CONTAINER (self->location_entry_container),
-                       self->location_entry_close_button);
+    gtk_box_append (GTK_BOX (self->location_entry_container),
+                    self->location_entry_close_button);
     g_signal_connect (self->location_entry_close_button, "clicked",
                       G_CALLBACK (on_location_entry_close), self);
 
@@ -1468,8 +1469,8 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
 
     if (self->window_slot != NULL)
     {
-        gtk_container_add (GTK_CONTAINER (self->search_container),
-                           GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
+        gtk_box_append (GTK_BOX (self->search_container),
+                        GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
     }
 
     toolbar_update_appearance (self);
