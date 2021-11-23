@@ -67,7 +67,6 @@ struct _NautilusToolbar
     GtkWidget *location_entry_container;
     GtkWidget *search_container;
     GtkWidget *toolbar_switcher;
-    GtkWidget *toolbar_switcher_container;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
 
@@ -891,17 +890,7 @@ on_location_entry_focus_changed (GObject    *object,
 static void
 nautilus_toolbar_constructed (GObject *object)
 {
-    g_autoptr (GtkBuilder) builder = NULL;
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
-
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-switcher.ui");
-    self->toolbar_switcher = GTK_WIDGET (gtk_builder_get_object (builder, "toolbar_switcher"));
-    self->search_container = GTK_WIDGET (gtk_builder_get_object (builder, "search_container"));
-    self->path_bar_container = GTK_WIDGET (gtk_builder_get_object (builder, "path_bar_container"));
-    self->location_entry_container = GTK_WIDGET (gtk_builder_get_object (builder, "location_entry_container"));
-
-    gtk_container_add (GTK_CONTAINER (self->toolbar_switcher_container),
-                       self->toolbar_switcher);
 
     self->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
     gtk_container_add (GTK_CONTAINER (self->path_bar_container),
@@ -1231,7 +1220,10 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_zoom_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_undo_redo_section);
