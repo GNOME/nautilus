@@ -42,8 +42,6 @@ static int  nautilus_notebook_insert_page (GtkNotebook *notebook,
                                            GtkWidget   *tab_label,
                                            GtkWidget   *menu_label,
                                            int          position);
-static void nautilus_notebook_remove (GtkContainer *container,
-                                      GtkWidget    *tab_widget);
 
 enum
 {
@@ -78,12 +76,9 @@ static void
 nautilus_notebook_class_init (NautilusNotebookClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
     GtkNotebookClass *notebook_class = GTK_NOTEBOOK_CLASS (klass);
 
     object_class->dispose = nautilus_notebook_dispose;
-
-    container_class->remove = nautilus_notebook_remove;
 
     notebook_class->insert_page = nautilus_notebook_insert_page;
 
@@ -188,11 +183,23 @@ button_press_cb (GtkGestureMultiPress *gesture,
 }
 
 static void
+on_page_removed (GtkNotebook *notebook,
+                 GtkWidget   *child,
+                 guint        page_num,
+                 gpointer     user_data)
+{
+    gtk_notebook_set_show_tabs (notebook,
+                                gtk_notebook_get_n_pages (notebook) > 1);
+}
+
+static void
 nautilus_notebook_init (NautilusNotebook *notebook)
 {
     gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
     gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
+
+    g_signal_connect (notebook, "page-removed", G_CALLBACK (on_page_removed), NULL);
 
     notebook->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (notebook));
 
@@ -207,17 +214,23 @@ gboolean
 nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
                                  NautilusWindowSlot *slot)
 {
-    GList *children;
-    GList *l;
+    GtkNotebook *container = GTK_NOTEBOOK (notebook);
+    GtkWidget *child;
+    gint n_pages;
     gboolean found = FALSE;
 
-    children = gtk_container_get_children (GTK_CONTAINER (notebook));
-    for (l = children; l != NULL && !found; l = l->next)
-    {
-        found = l->data == slot;
-    }
+    g_return_val_if_fail (slot != NULL, FALSE);
 
-    g_list_free (children);
+    n_pages = gtk_notebook_get_n_pages (container);
+    for (gint i = 0; i < n_pages; i++)
+    {
+        child = gtk_notebook_get_nth_page (container, i);
+        if ((gpointer) child == (gpointer) slot)
+        {
+            found = TRUE;
+            break;
+        }
+    }
 
     return found;
 }
@@ -335,7 +348,6 @@ build_tab_label (NautilusNotebook   *notebook,
     GtkWidget *box;
     GtkWidget *label;
     GtkWidget *close_button;
-    GtkWidget *image;
     GtkWidget *spinner;
     GtkWidget *icon;
 
@@ -361,7 +373,7 @@ build_tab_label (NautilusNotebook   *notebook,
     gtk_widget_show (label);
 
     /* Tab close button */
-    close_button = gtk_button_new ();
+    close_button = gtk_button_new_from_icon_name ("window-close-symbolic", GTK_ICON_SIZE_MENU);
     gtk_button_set_relief (GTK_BUTTON (close_button),
                            GTK_RELIEF_NONE);
     /* don't allow focus on the close button */
@@ -369,13 +381,9 @@ build_tab_label (NautilusNotebook   *notebook,
 
     gtk_widget_set_name (close_button, "nautilus-tab-close-button");
 
-    image = gtk_image_new_from_icon_name ("window-close-symbolic", GTK_ICON_SIZE_MENU);
     gtk_widget_set_tooltip_text (close_button, _("Close tab"));
     g_signal_connect_object (close_button, "clicked",
                              G_CALLBACK (close_button_clicked_cb), slot, 0);
-
-    gtk_container_add (GTK_CONTAINER (close_button), image);
-    gtk_widget_show (image);
 
     gtk_box_pack_end (GTK_BOX (box), close_button, FALSE, FALSE, 0);
     gtk_widget_show (close_button);
@@ -448,17 +456,6 @@ nautilus_notebook_add_tab (NautilusNotebook   *notebook,
     }
 
     return position;
-}
-
-static void
-nautilus_notebook_remove (GtkContainer *container,
-                          GtkWidget    *tab_widget)
-{
-    GtkNotebook *gnotebook = GTK_NOTEBOOK (container);
-    GTK_CONTAINER_CLASS (nautilus_notebook_parent_class)->remove (container, tab_widget);
-
-    gtk_notebook_set_show_tabs (gnotebook,
-                                gtk_notebook_get_n_pages (gnotebook) > 1);
 }
 
 void
