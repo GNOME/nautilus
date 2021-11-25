@@ -656,27 +656,13 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
 }
 
 static void
-remove_all_extra_location_widgets (GtkWidget *widget,
-                                   gpointer   data)
-{
-    NautilusWindowSlot *self = data;
-    NautilusDirectory *directory;
-
-    directory = nautilus_directory_get (self->location);
-    if (widget != GTK_WIDGET (self->query_editor))
-    {
-        gtk_container_remove (GTK_CONTAINER (self->extra_location_widgets), widget);
-    }
-
-    nautilus_directory_unref (directory);
-}
-
-static void
 nautilus_window_slot_remove_extra_location_widgets (NautilusWindowSlot *self)
 {
-    gtk_container_foreach (GTK_CONTAINER (self->extra_location_widgets),
-                           remove_all_extra_location_widgets,
-                           self);
+    GtkWidget *widget;
+    while ((widget = gtk_widget_get_first_child (self->extra_location_widgets)) != NULL)
+    {
+        gtk_box_remove (GTK_BOX (self->extra_location_widgets), widget);
+    }
 }
 
 static void

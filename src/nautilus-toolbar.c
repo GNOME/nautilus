@@ -1285,17 +1285,13 @@ nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 }
 
 static void
-container_remove_all_children (GtkContainer *container)
+box_remove_all_children (GtkBox *box)
 {
-    GList *children;
-    GList *child;
-
-    children = gtk_container_get_children (container);
-    for (child = children; child != NULL; child = g_list_next (child))
+    GtkWidget *child;
+    while ((child = gtk_widget_get_first_child (GTK_WIDGET (box))) != NULL)
     {
-        gtk_container_remove (container, GTK_WIDGET (child->data));
+        gtk_box_remove (GTK_BOX (box), child);
     }
-    g_list_free (children);
 }
 
 static void
@@ -1329,8 +1325,8 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
 {
     NautilusToolbarMenuSections *new_sections;
 
-    container_remove_all_children (GTK_CONTAINER (self->view_menu_zoom_section));
-    container_remove_all_children (GTK_CONTAINER (self->view_menu_extended_section));
+    box_remove_all_children (GTK_BOX (self->view_menu_zoom_section));
+    box_remove_all_children (GTK_BOX (self->view_menu_extended_section));
 
     new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
     if (new_sections == NULL)
@@ -1460,12 +1456,7 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                   G_CALLBACK (toolbar_update_appearance), self);
     }
 
-    children = gtk_container_get_children (GTK_CONTAINER (self->search_container));
-    if (children != NULL)
-    {
-        gtk_container_remove (GTK_CONTAINER (self->search_container),
-                              children->data);
-    }
+    box_remove_all_children (GTK_BOX (self->search_container));
 
     if (self->window_slot != NULL)
     {

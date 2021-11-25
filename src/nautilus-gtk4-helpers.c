@@ -19,6 +19,15 @@ gtk_box_append (GtkBox    *box,
 }
 
 void
+gtk_box_remove (GtkBox    *box,
+                GtkWidget *child)
+{
+    g_assert (GTK_IS_BOX (box));
+
+    gtk_container_remove (GTK_CONTAINER (box), child);
+}
+
+void
 gtk_overlay_set_child (GtkOverlay *overlay,
                        GtkWidget  *child)
 {
@@ -62,4 +71,20 @@ gtk_revealer_set_child (GtkRevealer *revealer,
     g_assert (GTK_IS_REVEALER (revealer));
 
     gtk_container_add (GTK_CONTAINER (revealer), child);
+}
+
+GtkWidget *
+gtk_widget_get_first_child (GtkWidget *widget)
+{
+    g_autoptr (GList) children = NULL;
+
+    g_assert (GTK_IS_CONTAINER (widget));
+
+    children = gtk_container_get_children (GTK_CONTAINER (widget));
+    if (children != NULL)
+    {
+        return GTK_WIDGET (children->data);
+    }
+
+    return NULL;
 }
