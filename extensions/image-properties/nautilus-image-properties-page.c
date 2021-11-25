@@ -26,9 +26,9 @@
 
 #define LOAD_BUFFER_SIZE 8192
 
-struct _NautilusImagesPropertiesPage
+typedef struct
 {
-    GtkGrid parent;
+    GtkWidget *page_widget;
 
     GCancellable *cancellable;
     GtkWidget *grid;
@@ -41,36 +41,17 @@ struct _NautilusImagesPropertiesPage
 
     GExiv2Metadata *md;
     gboolean md_ready;
-};
-
-G_DEFINE_TYPE (NautilusImagesPropertiesPage,
-               nautilus_image_properties_page,
-               GTK_TYPE_GRID);
+} NautilusImagesPropertiesPage;
 
 static void
-finalize (GObject *object)
+nautilus_images_properties_page_free (NautilusImagesPropertiesPage *page)
 {
-    NautilusImagesPropertiesPage *page;
-
-    page = NAUTILUS_IMAGE_PROPERTIES_PAGE (object);
-
     if (page->cancellable != NULL)
     {
         g_cancellable_cancel (page->cancellable);
         g_clear_object (&page->cancellable);
     }
-
-    G_OBJECT_CLASS (nautilus_image_properties_page_parent_class)->finalize (object);
-}
-
-static void
-nautilus_image_properties_page_class_init (NautilusImagesPropertiesPageClass *klass)
-{
-    GObjectClass *object_class;
-
-    object_class = G_OBJECT_CLASS (klass);
-
-    object_class->finalize = finalize;
+    g_free (page);
 }
 
 static void
@@ -110,16 +91,18 @@ append_item (NautilusImagesPropertiesPage *page,
 static void
 nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
 {
-    GtkWidget *scrolled_window;
+    self->page_widget = gtk_scrolled_window_new (NULL, NULL);
 
-    scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-
-    gtk_widget_set_vexpand (GTK_WIDGET (scrolled_window), TRUE);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
+    g_object_set (self->page_widget,
+                  "margin-bottom", 6,
+                  "margin-end", 12,
+                  "margin-start", 12,
+                  "margin-top", 6,
+                  NULL);
+    gtk_widget_set_vexpand (self->page_widget, TRUE);
+    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (self->page_widget),
                                     GTK_POLICY_NEVER,
                                     GTK_POLICY_AUTOMATIC);
-
-    gtk_container_add (GTK_CONTAINER (self), scrolled_window);
 
     self->grid = gtk_grid_new ();
 
@@ -127,9 +110,9 @@ nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
     gtk_grid_set_row_spacing (GTK_GRID (self->grid), 6);
     gtk_grid_set_column_spacing (GTK_GRID (self->grid), 18);
     append_item (self, _("Loading…"), NULL);
-    gtk_container_add (GTK_CONTAINER (scrolled_window), self->grid);
+    gtk_container_add (GTK_CONTAINER (self->page_widget), self->grid);
 
-    gtk_widget_show_all (GTK_WIDGET (self));
+    gtk_widget_show_all (GTK_WIDGET (self->page_widget));
 }
 
 static void
@@ -467,7 +450,7 @@ file_open_callback (GObject      *object,
     }
 }
 
-void
+static void
 nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage *self,
                                                     NautilusFileInfo             *file_info)
 {
@@ -476,7 +459,6 @@ nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage
     g_autofree char *path = NULL;
     FileOpenData *data;
 
-    g_return_if_fail (NAUTILUS_IS_IMAGE_PROPERTIES_PAGE (self));
     g_return_if_fail (file_info != NULL);
 
     self->cancellable = g_cancellable_new ();
@@ -522,13 +504,20 @@ nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage
                        data);
 }
 
-NautilusImagesPropertiesPage *
-nautilus_image_properties_page_new (void)
+GtkWidget *
+nautilus_image_properties_page_new (NautilusFileInfo *file_info)
 {
-    return g_object_new (NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE,
-                         "margin-bottom", 6,
-                         "margin-end", 12,
-                         "margin-start", 12,
-                         "margin-top", 6,
-                         NULL);
+    NautilusImagesPropertiesPage *self;
+
+    self = g_new0 (NautilusImagesPropertiesPage, 1);
+
+    nautilus_image_properties_page_init (self);
+    nautilus_image_properties_page_load_from_file_info (self, file_info);
+
+    g_object_set_data_full (G_OBJECT (self->page_widget),
+                            "nautilus-images-properties-page",
+                            self,
+                            (GDestroyNotify) nautilus_images_properties_page_free);
+
+    return self->page_widget;
 }

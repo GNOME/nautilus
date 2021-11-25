@@ -81,7 +81,7 @@ get_pages (NautilusPropertyPageProvider *provider,
 {
     NautilusFileInfo *file_info;
     g_autofree char *mime_type = NULL;
-    NautilusImagesPropertiesPage *image_properties_page;
+    GtkWidget *image_properties_page;
     NautilusPropertyPage *property_page;
 
     if (files == NULL || files->next != NULL)
@@ -95,12 +95,10 @@ get_pages (NautilusPropertyPageProvider *provider,
     {
         return NULL;
     }
-    image_properties_page = nautilus_image_properties_page_new ();
+    image_properties_page = nautilus_image_properties_page_new (file_info);
     property_page = nautilus_property_page_new (NAUTILUS_IMAGE_PROPERTIES_PAGE_NAME,
                                                 gtk_label_new (_("Image")),
-                                                GTK_WIDGET (image_properties_page));
-
-    nautilus_image_properties_page_load_from_file_info (image_properties_page, file_info);
+                                                image_properties_page);
 
     return g_list_prepend (NULL, property_page);
 }
