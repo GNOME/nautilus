@@ -42,6 +42,13 @@
   animation-iteration-count: 3;
 }
 
+/* Remove white background and highlight on hover which GTK adds by default
+ * to GtkListBox. TODO: Switch to GtkListView and drop this CSS hack. */
+.operations-list,
+.operations-list > :hover {
+  background: none;
+}
+
 .disclosure-button {
   padding-left: 4px;
   padding-right: 4px;

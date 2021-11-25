@@ -90,7 +90,8 @@ struct _NautilusToolbar
     GtkWidget *app_menu;
 
     GtkWidget *operations_popover;
-    GtkWidget *operations_container;
+    GtkWidget *operations_list;
+    GListStore *progress_infos_model;
     GtkWidget *operations_revealer;
     GtkWidget *operations_icon;
 
@@ -516,14 +517,10 @@ update_operations (NautilusToolbar *self)
 {
     GList *progress_infos;
     GList *l;
-    GtkWidget *progress;
     gboolean should_show_progress_button = FALSE;
 
-    gtk_container_foreach (GTK_CONTAINER (self->operations_container),
-                           (GtkCallback) gtk_widget_destroy,
-                           NULL);
-
     disconnect_progress_infos (self);
+    g_list_store_remove_all (self->progress_infos_model);
 
     progress_infos = get_filtered_progress_infos (self);
     for (l = progress_infos; l != NULL; l = l->next)
@@ -537,10 +534,7 @@ update_operations (NautilusToolbar *self)
                                   G_CALLBACK (on_progress_info_cancelled), self);
         g_signal_connect_swapped (l->data, "progress-changed",
                                   G_CALLBACK (on_progress_info_progress_changed), self);
-        progress = nautilus_progress_info_widget_new (l->data);
-        gtk_box_pack_start (GTK_BOX (self->operations_container),
-                            progress,
-                            FALSE, FALSE, 0);
+        g_list_store_append (self->progress_infos_model, l->data);
     }
 
     g_list_free (progress_infos);
@@ -887,6 +881,19 @@ on_location_entry_focus_changed (GObject    *object,
     }
 }
 
+static GtkWidget *
+operations_list_create_widget (GObject  *item,
+                               gpointer  user_data)
+{
+    NautilusProgressInfo *info = NAUTILUS_PROGRESS_INFO (item);
+    GtkWidget *widget;
+
+    widget = nautilus_progress_info_widget_new (info);
+    gtk_widget_show_all (widget);
+
+    return widget;
+}
+
 static void
 nautilus_toolbar_constructed (GObject *object)
 {
@@ -912,6 +919,12 @@ nautilus_toolbar_constructed (GObject *object)
     g_signal_connect (self->progress_manager, "has-viewers-changed",
                       G_CALLBACK (on_progress_has_viewers_changed), self);
 
+    self->progress_infos_model = g_list_store_new (NAUTILUS_TYPE_PROGRESS_INFO);
+    gtk_list_box_bind_model (GTK_LIST_BOX (self->operations_list),
+                             G_LIST_MODEL (self->progress_infos_model),
+                             (GtkListBoxCreateWidgetFunc) operations_list_create_widget,
+                             NULL,
+                             NULL);
     update_operations (self);
 
     self->back_button_longpress_gesture = gtk_gesture_long_press_new (self->back_button);
@@ -1149,6 +1162,7 @@ nautilus_toolbar_finalize (GObject *obj)
     unschedule_operations_start (self);
     unschedule_operations_button_attention_style (self);
 
+    g_clear_object (&self->progress_infos_model);
     g_signal_handlers_disconnect_by_data (self->progress_manager, self);
     g_clear_object (&self->progress_manager);
 
@@ -1212,7 +1226,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_list);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_button);
