@@ -38,6 +38,8 @@ struct _NautilusFloatingBar
     GtkWidget *details_label_widget;
     GtkWidget *spinner;
     gboolean show_spinner;
+    GtkWidget *stop_button;
+    gboolean show_stop;
     gboolean is_interactive;
     guint hover_timeout_id;
 };
@@ -47,12 +49,13 @@ enum
     PROP_PRIMARY_LABEL = 1,
     PROP_DETAILS_LABEL,
     PROP_SHOW_SPINNER,
+    PROP_SHOW_STOP,
     NUM_PROPERTIES
 };
 
 enum
 {
-    ACTION,
+    STOP,
     NUM_SIGNALS
 };
 
@@ -63,15 +66,10 @@ G_DEFINE_TYPE (NautilusFloatingBar, nautilus_floating_bar,
                GTK_TYPE_BOX);
 
 static void
-action_button_clicked_cb (GtkButton           *button,
-                          NautilusFloatingBar *self)
+stop_button_clicked_cb (GtkButton           *button,
+                        NautilusFloatingBar *self)
 {
-    gint action_id;
-
-    action_id = GPOINTER_TO_INT
-                    (g_object_get_data (G_OBJECT (button), "action-id"));
-
-    g_signal_emit (self, signals[ACTION], 0, action_id);
+    g_signal_emit (self, signals[STOP], 0);
 }
 
 static void
@@ -114,6 +112,12 @@ nautilus_floating_bar_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SHOW_STOP:
+        {
+            g_value_set_boolean (value, self->show_stop);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -147,6 +151,12 @@ nautilus_floating_bar_set_property (GObject      *object,
         case PROP_SHOW_SPINNER:
         {
             nautilus_floating_bar_set_show_spinner (self, g_value_get_boolean (value));
+        }
+        break;
+
+        case PROP_SHOW_STOP:
+        {
+            nautilus_floating_bar_set_show_stop (self, g_value_get_boolean (value));
         }
         break;
 
@@ -391,6 +401,7 @@ nautilus_floating_bar_constructed (GObject *obj)
 {
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (obj);
     GtkWidget *w, *box, *labels_box;
+    GtkStyleContext *context;
 
     G_OBJECT_CLASS (nautilus_floating_bar_parent_class)->constructed (obj);
 
@@ -433,6 +444,19 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_container_add (GTK_CONTAINER (labels_box), w);
     self->details_label_widget = w;
     gtk_widget_show (w);
+
+    w = gtk_button_new_from_icon_name ("process-stop-symbolic", GTK_ICON_SIZE_MENU);
+    context = gtk_widget_get_style_context (w);
+    gtk_style_context_add_class (context, "circular");
+    gtk_style_context_add_class (context, "flat");
+    gtk_widget_set_valign (w, GTK_ALIGN_CENTER);
+    gtk_container_add (GTK_CONTAINER (self), w);
+    self->stop_button = w;
+    gtk_widget_set_visible (w, FALSE);
+    gtk_widget_set_no_show_all (w, TRUE);
+
+    g_signal_connect (self->stop_button, "clicked",
+                      G_CALLBACK (stop_button_clicked_cb), self);
 }
 
 static void
@@ -479,15 +503,19 @@ nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
                               "Whether a spinner should be shown in the floating bar",
                               FALSE,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_SHOW_STOP] =
+        g_param_spec_boolean ("show-stop",
+                              "Show stop button",
+                              "Whether a stop button should be shown in the floating bar",
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-    signals[ACTION] =
-        g_signal_new ("action",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      0, NULL, NULL,
-                      g_cclosure_marshal_VOID__INT,
-                      G_TYPE_NONE, 1,
-                      G_TYPE_INT);
+    signals[STOP] = g_signal_new ("stop",
+                                  G_TYPE_FROM_CLASS (klass),
+                                  G_SIGNAL_RUN_LAST,
+                                  0, NULL, NULL,
+                                  g_cclosure_marshal_VOID__VOID,
+                                  G_TYPE_NONE, 0);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
@@ -545,6 +573,21 @@ nautilus_floating_bar_set_show_spinner (NautilusFloatingBar *self,
     }
 }
 
+void
+nautilus_floating_bar_set_show_stop (NautilusFloatingBar *self,
+                                     gboolean             show_stop)
+{
+    if (self->show_stop != show_stop)
+    {
+        self->show_stop = show_stop;
+        gtk_widget_set_visible (self->stop_button,
+                                show_stop);
+        self->is_interactive = show_stop;
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SHOW_STOP]);
+    }
+}
+
 GtkWidget *
 nautilus_floating_bar_new (const gchar *primary_label,
                            const gchar *details_label,
@@ -557,57 +600,4 @@ nautilus_floating_bar_new (const gchar *primary_label,
                          "orientation", GTK_ORIENTATION_HORIZONTAL,
                          "spacing", 8,
                          NULL);
-}
-
-void
-nautilus_floating_bar_add_action (NautilusFloatingBar *self,
-                                  const gchar         *icon_name,
-                                  gint                 action_id)
-{
-    GtkWidget *button;
-    GtkStyleContext *context;
-
-    button = gtk_button_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
-    context = gtk_widget_get_style_context (button);
-    gtk_style_context_add_class (context, "circular");
-    gtk_style_context_add_class (context, "flat");
-    gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
-    gtk_box_pack_end (GTK_BOX (self), button, FALSE, FALSE, 0);
-    gtk_widget_show (button);
-
-    g_object_set_data (G_OBJECT (button), "action-id",
-                       GINT_TO_POINTER (action_id));
-
-    g_signal_connect (button, "clicked",
-                      G_CALLBACK (action_button_clicked_cb), self);
-
-    self->is_interactive = TRUE;
-}
-
-void
-nautilus_floating_bar_cleanup_actions (NautilusFloatingBar *self)
-{
-    GtkWidget *widget;
-    GList *children, *l;
-    gpointer data;
-
-    children = gtk_container_get_children (GTK_CONTAINER (self));
-    l = children;
-
-    while (l != NULL)
-    {
-        widget = l->data;
-        data = g_object_get_data (G_OBJECT (widget), "action-id");
-        l = l->next;
-
-        if (data != NULL)
-        {
-            /* destroy this */
-            gtk_widget_destroy (widget);
-        }
-    }
-
-    g_list_free (children);
-
-    self->is_interactive = FALSE;
 }

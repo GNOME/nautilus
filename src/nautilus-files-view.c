@@ -399,7 +399,7 @@ remove_loading_floating_bar (NautilusFilesView *view)
     }
 
     gtk_widget_hide (priv->floating_bar);
-    nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (priv->floating_bar));
+    nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (priv->floating_bar), FALSE);
 }
 
 static void
@@ -409,14 +409,11 @@ real_setup_loading_floating_bar (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (priv->floating_bar));
     nautilus_floating_bar_set_primary_label (NAUTILUS_FLOATING_BAR (priv->floating_bar),
                                              nautilus_view_is_searching (NAUTILUS_VIEW (view)) ? _("Searching…") : _("Loading…"));
     nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (priv->floating_bar), NULL);
     nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (priv->floating_bar), priv->loading);
-    nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (priv->floating_bar),
-                                      "process-stop-symbolic",
-                                      NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
+    nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (priv->floating_bar), priv->loading);
 
     gtk_widget_set_halign (priv->floating_bar, GTK_ALIGN_END);
     gtk_widget_show (priv->floating_bar);
@@ -461,19 +458,15 @@ setup_loading_floating_bar (NautilusFilesView *view)
 }
 
 static void
-floating_bar_action_cb (NautilusFloatingBar *floating_bar,
-                        gint                 action,
-                        NautilusFilesView   *view)
+floating_bar_stop_cb (NautilusFloatingBar *floating_bar,
+                      NautilusFilesView   *view)
 {
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (action == NAUTILUS_FLOATING_BAR_ACTION_ID_STOP)
-    {
-        remove_loading_floating_bar (view);
-        nautilus_window_slot_stop_loading (priv->slot);
-    }
+    remove_loading_floating_bar (view);
+    nautilus_window_slot_stop_loading (priv->slot);
 }
 
 static void
@@ -490,9 +483,10 @@ real_floating_bar_set_short_status (NautilusFilesView *view,
         return;
     }
 
-    nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (priv->floating_bar));
     nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (priv->floating_bar),
                                             FALSE);
+    nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (priv->floating_bar),
+                                         FALSE);
 
     if (primary_status == NULL && detail_status == NULL)
     {
@@ -9944,8 +9938,8 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->floating_bar);
 
     g_signal_connect (priv->floating_bar,
-                      "action",
-                      G_CALLBACK (floating_bar_action_cb),
+                      "stop",
+                      G_CALLBACK (floating_bar_stop_cb),
                       view);
 
     priv->non_ready_files =

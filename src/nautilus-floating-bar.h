@@ -42,10 +42,7 @@ void        nautilus_floating_bar_set_labels        (NautilusFloatingBar *self,
 						     const gchar *detail);
 void        nautilus_floating_bar_set_show_spinner (NautilusFloatingBar *self,
 						    gboolean show_spinner);
-
-void        nautilus_floating_bar_add_action       (NautilusFloatingBar *self,
-						    const gchar *icon_name,
-						    gint action_id);
-void        nautilus_floating_bar_cleanup_actions  (NautilusFloatingBar *self);
+void        nautilus_floating_bar_set_show_stop (NautilusFloatingBar *self,
+						    gboolean show_spinner);
 
 void        nautilus_floating_bar_remove_hover_timeout (NautilusFloatingBar *self);
