@@ -9,6 +9,8 @@ G_BEGIN_DECLS
 
 void gtk_button_set_child          (GtkButton         *button,
                                     GtkWidget         *child);
+void gtk_menu_button_set_child     (GtkMenuButton     *menu_button,
+                                    GtkWidget         *child);
 void gtk_box_append                (GtkBox            *box,
                                     GtkWidget         *child);
 void gtk_box_remove                (GtkBox            *box,

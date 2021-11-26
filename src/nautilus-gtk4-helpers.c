@@ -10,6 +10,15 @@ gtk_button_set_child (GtkButton *button,
 }
 
 void
+gtk_menu_button_set_child (GtkMenuButton *menu_button,
+                           GtkWidget     *child)
+{
+    g_assert (GTK_IS_MENU_BUTTON (menu_button));
+
+    gtk_container_add (GTK_CONTAINER (menu_button), child);
+}
+
+void
 gtk_box_append (GtkBox    *box,
                 GtkWidget *child)
 {

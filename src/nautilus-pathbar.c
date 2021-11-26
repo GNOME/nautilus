@@ -73,7 +73,6 @@ typedef struct
     GtkWidget *image;
     GtkWidget *label;
     GtkWidget *separator;
-    GtkWidget *disclosure_arrow;
     GtkWidget *container;
 
     NautilusPathBar *path_bar;
@@ -101,6 +100,7 @@ struct _NautilusPathBar
 
     NautilusFile *context_menu_file;
     GtkPopover *current_view_menu_popover;
+    GtkWidget *current_view_menu_button;
     GtkPopover *button_menu_popover;
     GMenu *current_view_menu;
     GMenu *extensions_section;
@@ -214,6 +214,15 @@ on_adjustment_changed (GtkAdjustment *adjustment)
     gtk_adjustment_set_value (adjustment, gtk_adjustment_get_upper (adjustment));
 }
 
+static gboolean
+bind_current_view_menu_model_to_popover (NautilusPathBar *self)
+{
+    gtk_popover_bind_model (self->current_view_menu_popover,
+                            G_MENU_MODEL (self->current_view_menu),
+                            NULL);
+    return G_SOURCE_REMOVE;
+}
+
 static void
 nautilus_path_bar_init (NautilusPathBar *self)
 {
@@ -234,6 +243,12 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     self->buttons_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (self->scrolled), self->buttons_box);
+
+    self->current_view_menu_button = gtk_menu_button_new ();
+    gtk_menu_button_set_child (GTK_MENU_BUTTON (self->current_view_menu_button),
+                               gtk_image_new_from_icon_name ("view-more-symbolic",
+                                                             GTK_ICON_SIZE_MENU));
+    gtk_box_append (GTK_BOX (self), self->current_view_menu_button);
 
     builder = gtk_builder_new ();
 
@@ -264,8 +279,16 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     g_object_unref (builder);
 
+    gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->current_view_menu_button),
+                                 GTK_WIDGET (self->current_view_menu_popover));
+    bind_current_view_menu_model_to_popover (self);
+
+    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
+                                 "linked");
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "nautilus-path-bar");
+    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self->buttons_box)),
+                                 "path-buttons-box");
 
     /* Action group */
     self->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
@@ -459,13 +482,13 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
     {
         /* Workaround to avoid leaking duplicated GtkStack pages each time the
          * templates menu is set. Unbinding the model is the only way to clear
-         * all children. For that reason, we need to rebind the popover before
-         * it is shown again.
+         * all children. After that's done, on idle, we rebind it.
          * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
         gtk_popover_bind_model (self->current_view_menu_popover, NULL, NULL);
     }
 
     nautilus_gmenu_set_from_model (self->templates_submenu, menu);
+    g_idle_add ((GSourceFunc) bind_current_view_menu_model_to_popover, self);
 }
 
 /* Changes the icons wherever it is needed */
@@ -564,14 +587,6 @@ button_clicked_cb (GtkButton *button,
     {
         if (g_file_equal (button_data->path, self->current_path))
         {
-            /* Workaround to avoid leaking duplicated GtkStack pages each time the
-             * templates menu is set. Unbinding the model is the only way to clear
-             * all children. For that reason, we need to rebind the popover before
-             * it is shown again.
-             * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
-            gtk_popover_bind_model (self->current_view_menu_popover,
-                                    G_MENU_MODEL (self->current_view_menu),
-                                    NULL);
             gtk_popover_popup (self->current_view_menu_popover);
         }
         else
@@ -699,14 +714,6 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         {
             if (g_file_equal (button_data->path, self->current_path))
             {
-                /* Workaround to avoid leaking duplicated GtkStack pages each time the
-                 * templates menu is set. Unbinding the model is the only way to clear
-                 * all children. For that reason, we need to rebind the popover before
-                 * it is shown again.
-                 * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
-                gtk_popover_bind_model (self->current_view_menu_popover,
-                                        G_MENU_MODEL (self->current_view_menu),
-                                        NULL);
                 gtk_popover_popup (self->current_view_menu_popover);
             }
             else
@@ -1096,15 +1103,12 @@ make_button_data (NautilusPathBar *self,
         case OTHER_LOCATIONS_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_append (GTK_BOX (button_data->container), button_data->button);
 
             gtk_box_append (GTK_BOX (child), button_data->image);
             gtk_box_append (GTK_BOX (child), button_data->label);
-            gtk_box_append (GTK_BOX (child), button_data->disclosure_arrow);
         }
         break;
 
@@ -1118,23 +1122,17 @@ make_button_data (NautilusPathBar *self,
             gtk_style_context_add_class (gtk_widget_get_style_context (separator_label), "dim-label");
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_box_append (GTK_BOX (button_data->container), separator_label);
             gtk_box_append (GTK_BOX (button_data->container), button_data->button);
 
             gtk_box_append (GTK_BOX (child), button_data->label);
-            gtk_box_append (GTK_BOX (child), button_data->disclosure_arrow);
         }
         break;
     }
 
-    gtk_widget_set_no_show_all (button_data->disclosure_arrow, TRUE);
     if (current_dir)
     {
-        gtk_widget_show (button_data->disclosure_arrow);
-        gtk_popover_set_relative_to (self->current_view_menu_popover, button_data->button);
         gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
                                      "current-dir");
     }
