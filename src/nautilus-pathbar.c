@@ -59,6 +59,8 @@ typedef enum
 
 static guint path_bar_signals[LAST_SIGNAL] = { 0 };
 
+#define NAUTILUS_PATH_BAR_BUTTON_ELLISPIZE_MINIMUM_CHARS 7
+
 typedef struct
 {
     GtkWidget *button;
@@ -808,11 +810,41 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
                                             gboolean    current_dir)
 {
     const gchar *dir_name = get_dir_name (button_data);
+    gint min_chars = NAUTILUS_PATH_BAR_BUTTON_ELLISPIZE_MINIMUM_CHARS;
     GIcon *icon;
 
     if (button_data->label != NULL)
     {
         gtk_label_set_text (GTK_LABEL (button_data->label), dir_name);
+
+        if (current_dir)
+        {
+            /* We want to avoid ellipsizing the current directory name, but
+             * still need to set a limit. */
+            min_chars = 4 * min_chars;
+        }
+
+        /* Labels can ellipsize until they become a single ellipsis character.
+         * We don't want that, so we must set a minimum.
+         *
+         * However, for labels shorter than the minimum, setting this minimum
+         * width would make them unnecessarily wide. In that case, just make it
+         * not ellipsize instead.
+         *
+         * Due to variable width fonts, labels can be shorter than the space
+         * that would be reserved by setting a minimum amount of characters.
+         * Compensate for this with a tolerance of +1 characters.
+         */
+        if (g_utf8_strlen (dir_name, -1) > min_chars + 1)
+        {
+            gtk_label_set_width_chars (GTK_LABEL (button_data->label), min_chars);
+            gtk_label_set_ellipsize (GTK_LABEL (button_data->label), PANGO_ELLIPSIZE_MIDDLE);
+        }
+        else
+        {
+            gtk_label_set_width_chars (GTK_LABEL (button_data->label), -1);
+            gtk_label_set_ellipsize (GTK_LABEL (button_data->label), PANGO_ELLIPSIZE_NONE);
+        }
     }
 
     icon = get_gicon (button_data);
@@ -1116,7 +1148,6 @@ make_button_data (NautilusPathBar *self,
 
     if (button_data->label != NULL)
     {
-        gtk_label_set_ellipsize (GTK_LABEL (button_data->label), PANGO_ELLIPSIZE_MIDDLE);
         gtk_label_set_single_line_mode (GTK_LABEL (button_data->label), TRUE);
     }
 
