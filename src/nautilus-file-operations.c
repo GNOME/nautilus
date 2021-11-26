@@ -250,6 +250,7 @@ G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
 #define NSEC_PER_MICROSEC 1000
 #define PROGRESS_NOTIFY_INTERVAL 100 * NSEC_PER_MICROSEC
+#define LONG_JOB_THRESHOLD_IN_SECONDS 2
 
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH 50
 
@@ -1231,6 +1232,7 @@ typedef struct
     const char *details_text;
     const char **button_titles;
     gboolean show_all;
+    gboolean should_start_inactive;
     int result;
     /* Dialogs are ran from operation threads, which need to be blocked until
      * the user gives a valid response
@@ -1300,6 +1302,20 @@ dialog_realize_cb (GtkWidget *widget,
 }
 
 static gboolean
+is_long_job (CommonJob *job)
+{
+    double elapsed = nautilus_progress_info_get_total_elapsed_time (job->progress);
+    return elapsed > LONG_JOB_THRESHOLD_IN_SECONDS ? TRUE : FALSE;
+}
+
+static gboolean
+simple_dialog_button_activate (GtkWidget *button)
+{
+    gtk_widget_set_sensitive (button, TRUE);
+    return G_SOURCE_REMOVE;
+}
+
+static gboolean
 do_run_simple_dialog (gpointer _data)
 {
     RunSimpleDialogData *data = _data;
@@ -1342,6 +1358,14 @@ do_run_simple_dialog (gpointer _data)
         {
             gtk_style_context_add_class (gtk_widget_get_style_context (button),
                                          "destructive-action");
+        }
+
+        if (data->should_start_inactive)
+        {
+            gtk_widget_set_sensitive (button, FALSE);
+            g_timeout_add_seconds (BUTTON_ACTIVATION_DELAY_IN_SECONDS,
+                                   G_SOURCE_FUNC (simple_dialog_button_activate),
+                                   button);
         }
     }
 
@@ -1453,6 +1477,8 @@ run_simple_dialog_va (CommonJob      *job,
     data->button_titles = (const char **) g_ptr_array_free (ptr_array, FALSE);
 
     nautilus_progress_info_pause (job->progress);
+
+    data->should_start_inactive = is_long_job (job);
 
     g_mutex_lock (&data->mutex);
 

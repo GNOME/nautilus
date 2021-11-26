@@ -3,6 +3,8 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
+#define BUTTON_ACTIVATION_DELAY_IN_SECONDS 2
+
 typedef struct {
     int id;
     char *new_name;
