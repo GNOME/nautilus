@@ -100,6 +100,8 @@ typedef struct
 
     GtkWindow *parent;
 
+    gboolean should_start_inactive;
+
     FileConflictResponse *response;
 
     NautilusFile *source;
@@ -484,6 +486,11 @@ run_file_conflict_dialog (gpointer user_data)
 
     data->dialog = nautilus_file_conflict_dialog_new (data->parent);
 
+    if (data->should_start_inactive)
+    {
+        nautilus_file_conflict_dialog_delay_buttons_activation (data->dialog);
+    }
+
     files = g_list_prepend (files, data->source);
     files = g_list_prepend (files, data->destination);
     files = g_list_prepend (files, data->destination_directory_file);
@@ -504,6 +511,7 @@ run_file_conflict_dialog (gpointer user_data)
 
 FileConflictResponse *
 copy_move_conflict_ask_user_action (GtkWindow *parent_window,
+                                    gboolean   should_start_inactive,
                                     GFile     *source_name,
                                     GFile     *destination_name,
                                     GFile     *destination_directory_name,
@@ -514,6 +522,7 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
 
     data = g_slice_new0 (FileConflictDialogData);
     data->parent = parent_window;
+    data->should_start_inactive = should_start_inactive;
     data->source_name = source_name;
     data->destination_name = destination_name;
     data->destination_directory_name = destination_directory_name;

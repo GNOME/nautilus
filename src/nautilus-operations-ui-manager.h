@@ -14,6 +14,7 @@ typedef struct {
 void file_conflict_response_free (FileConflictResponse *data);
 
 FileConflictResponse * copy_move_conflict_ask_user_action (GtkWindow *parent_window,
+                                                           gboolean   should_start_inactive,
                                                            GFile     *src,
                                                            GFile     *dest,
                                                            GFile     *dest_dir,

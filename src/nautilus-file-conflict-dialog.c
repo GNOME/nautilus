@@ -48,6 +48,7 @@ struct _NautilusFileConflictDialog
     GtkWidget *expander;
     GtkWidget *entry;
     GtkWidget *checkbox;
+    GtkWidget *cancel_button;
     GtkWidget *skip_button;
     GtkWidget *rename_button;
     GtkWidget *replace_button;
@@ -245,6 +246,7 @@ nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, expander);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, checkbox);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, cancel_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, rename_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, replace_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, skip_button);
@@ -256,6 +258,31 @@ nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass
     gtk_widget_class_bind_template_callback (widget_class, reset_button_clicked_cb);
 
     G_OBJECT_CLASS (klass)->finalize = do_finalize;
+}
+
+static gboolean
+activate_buttons (NautilusFileConflictDialog *fcd)
+{
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->cancel_button), TRUE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->skip_button), TRUE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->rename_button), TRUE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->replace_button), TRUE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->expander), TRUE);
+    return G_SOURCE_REMOVE;
+}
+
+void
+nautilus_file_conflict_dialog_delay_buttons_activation (NautilusFileConflictDialog *fcd)
+{
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->cancel_button), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->skip_button), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->rename_button), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->replace_button), FALSE);
+    gtk_widget_set_sensitive (GTK_WIDGET (fcd->expander), FALSE);
+
+    g_timeout_add_seconds (BUTTON_ACTIVATION_DELAY_IN_SECONDS,
+                           G_SOURCE_FUNC (activate_buttons),
+                           fcd);
 }
 
 char *

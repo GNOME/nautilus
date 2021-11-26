@@ -5257,15 +5257,19 @@ handle_copy_move_conflict (CommonJob *job,
     g_autofree gchar *basename = NULL;
     g_autoptr (GFile) suggested_file = NULL;
     g_autofree gchar *suggestion = NULL;
+    gboolean should_start_inactive;
 
     g_timer_stop (job->time);
     nautilus_progress_info_pause (job->progress);
+
+    should_start_inactive = is_long_job (job);
 
     basename = g_file_get_basename (dest);
     suggested_file = nautilus_generate_unique_file_in_directory (dest_dir, basename);
     suggestion = g_file_get_basename (suggested_file);
 
     response = copy_move_conflict_ask_user_action (job->parent_window,
+                                                   should_start_inactive,
                                                    src,
                                                    dest,
                                                    dest_dir,

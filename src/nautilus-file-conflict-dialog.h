@@ -54,6 +54,8 @@ void nautilus_file_conflict_dialog_disable_skip (NautilusFileConflictDialog *fcd
 void nautilus_file_conflict_dialog_disable_replace (NautilusFileConflictDialog *fcd);
 void nautilus_file_conflict_dialog_disable_apply_to_all (NautilusFileConflictDialog *fcd);
 
+void nautilus_file_conflict_dialog_delay_buttons_activation (NautilusFileConflictDialog *fdc);
+
 char*      nautilus_file_conflict_dialog_get_new_name     (NautilusFileConflictDialog *dialog);
 gboolean   nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog);
 
