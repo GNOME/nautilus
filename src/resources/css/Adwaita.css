@@ -60,6 +60,13 @@
   border-right-width: 0px;
   background-color: @theme_bg_color;
 }
+.path-bar-box scrolledwindow undershoot.left {
+  border-radius: 5px 0px 0px 5px;
+  background: linear-gradient(to right, @theme_bg_color 6px, alpha(@theme_bg_color, 0) 24px);
+}
+.path-bar-box scrolledwindow undershoot.right {
+  background: linear-gradient(to left, @theme_bg_color 6px, alpha(@theme_bg_color, 0) 24px);
+}
 
 .nautilus-path-bar > button,
 .path-buttons-box button {
