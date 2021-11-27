@@ -2183,14 +2183,14 @@ destroy_slots_foreach (gpointer data,
 }
 
 static void
-nautilus_window_destroy (GtkWidget *object)
+nautilus_window_dispose (GObject *object)
 {
     NautilusWindow *window;
-    NautilusApplication *application;
+    GtkApplication *application;
     GList *slots_copy;
 
     window = NAUTILUS_WINDOW (object);
-    application = NAUTILUS_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
+    application = gtk_window_get_application (GTK_WINDOW (window));
 
     DEBUG ("Destroying window");
 
@@ -2210,21 +2210,15 @@ nautilus_window_destroy (GtkWidget *object)
 
     g_clear_weak_pointer (&window->active_slot);
 
-    g_clear_signal_handler (&window->bookmarks_id, nautilus_application_get_bookmarks (application));
+    if (application != NULL)
+    {
+        g_clear_signal_handler (&window->bookmarks_id,
+                                nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (application)));
+    }
 
     g_clear_handle_id (&window->in_app_notification_undo_timeout_id, g_source_remove);
 
     nautilus_window_unexport_handle (window);
-
-    GTK_WIDGET_CLASS (nautilus_window_parent_class)->destroy (object);
-}
-
-static void
-nautilus_window_dispose (GObject *object)
-{
-    NautilusWindow *window;
-
-    window = NAUTILUS_WINDOW (object);
 
     g_clear_object (&window->notebook_multi_press_gesture);
 
@@ -2745,7 +2739,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     oclass->finalize = nautilus_window_finalize;
     oclass->constructed = nautilus_window_constructed;
 
-    wclass->destroy = nautilus_window_destroy;
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
     wclass->key_press_event = nautilus_window_key_press_event;
