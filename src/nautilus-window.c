@@ -2182,16 +2182,15 @@ destroy_slots_foreach (gpointer data,
     close_slot (window, slot, TRUE);
 }
 
-
 static void
-nautilus_window_dispose (GObject *object)
+nautilus_window_destroy (GtkWidget *object)
 {
     NautilusWindow *window;
-    GtkApplication *application;
+    NautilusApplication *application;
     GList *slots_copy;
 
     window = NAUTILUS_WINDOW (object);
-    application = gtk_window_get_application (GTK_WINDOW (window));
+    application = NAUTILUS_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
 
     DEBUG ("Destroying window");
 
@@ -2211,20 +2210,23 @@ nautilus_window_dispose (GObject *object)
 
     g_clear_weak_pointer (&window->active_slot);
 
-    if (application != NULL)
-    {
-        g_clear_signal_handler (&window->bookmarks_id,
-                                nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (application)));
-    }
+    g_clear_signal_handler (&window->bookmarks_id, nautilus_application_get_bookmarks (application));
 
     g_clear_handle_id (&window->in_app_notification_undo_timeout_id, g_source_remove);
 
     nautilus_window_unexport_handle (window);
 
-    g_clear_object (&window->selected_file);
-    g_clear_object (&window->selected_volume);
+    GTK_WIDGET_CLASS (nautilus_window_parent_class)->destroy (object);
+}
+
+static void
+nautilus_window_dispose (GObject *object)
+{
+    NautilusWindow *window;
+
+    window = NAUTILUS_WINDOW (object);
+
     g_clear_object (&window->notebook_multi_press_gesture);
-    g_clear_object (&window->pad_controller);
 
     G_OBJECT_CLASS (nautilus_window_parent_class)->dispose (object);
 }
@@ -2254,11 +2256,16 @@ nautilus_window_finalize (GObject *object)
         window->notification_operation_timeout_id = 0;
     }
 
+    g_clear_object (&window->selected_file);
+    g_clear_object (&window->selected_volume);
+
     g_signal_handlers_disconnect_by_func (nautilus_file_undo_manager_get (),
                                           G_CALLBACK (nautilus_window_on_undo_changed),
                                           window);
 
     g_queue_free_full (window->tab_data_queue, free_navigation_state);
+
+    g_object_unref (window->pad_controller);
 
     /* nautilus_window_close() should have run */
     g_assert (window->slots == NULL);
@@ -2738,6 +2745,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     oclass->finalize = nautilus_window_finalize;
     oclass->constructed = nautilus_window_constructed;
 
+    wclass->destroy = nautilus_window_destroy;
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
     wclass->key_press_event = nautilus_window_key_press_event;

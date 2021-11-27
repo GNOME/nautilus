@@ -576,14 +576,18 @@ finalize (GObject *object)
     entry = NAUTILUS_LOCATION_ENTRY (object);
     priv = nautilus_location_entry_get_instance_private (entry);
 
+    g_object_unref (priv->completer);
     g_free (priv->special_text);
-    g_free (priv->current_directory);
+
+    g_clear_object (&priv->last_location);
+    g_clear_object (&priv->completion);
+    g_clear_object (&priv->completions_store);
 
     G_OBJECT_CLASS (nautilus_location_entry_parent_class)->finalize (object);
 }
 
 static void
-nautilus_location_entry_dispose (GObject *object)
+destroy (GtkWidget *object)
 {
     NautilusLocationEntry *entry;
     NautilusLocationEntryPrivate *priv;
@@ -598,12 +602,10 @@ nautilus_location_entry_dispose (GObject *object)
         priv->idle_id = 0;
     }
 
-    g_clear_object (&priv->completer);
-    g_clear_object (&priv->last_location);
-    g_clear_object (&priv->completion);
-    g_clear_object (&priv->completions_store);
+    g_free (priv->current_directory);
+    priv->current_directory = NULL;
 
-    G_OBJECT_CLASS (nautilus_location_entry_parent_class)->dispose (object);
+    GTK_WIDGET_CLASS (nautilus_location_entry_parent_class)->destroy (object);
 }
 
 static void
@@ -849,10 +851,10 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
     GtkBindingSet *binding_set;
 
     widget_class = GTK_WIDGET_CLASS (class);
+    widget_class->destroy = destroy;
     widget_class->event = nautilus_location_entry_on_event;
 
     gobject_class = G_OBJECT_CLASS (class);
-    gobject_class->dispose = nautilus_location_entry_dispose;
     gobject_class->finalize = finalize;
 
     entry_class = GTK_ENTRY_CLASS (class);

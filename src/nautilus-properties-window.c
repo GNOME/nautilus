@@ -5087,7 +5087,7 @@ nautilus_properties_window_present (GList                            *original_f
 }
 
 static void
-real_dispose (GObject *object)
+real_destroy (GtkWidget *object)
 {
     NautilusPropertiesWindow *self;
 
@@ -5130,7 +5130,7 @@ real_dispose (GObject *object)
     g_clear_handle_id (&self->update_directory_contents_timeout_id, g_source_remove);
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
 
-    G_OBJECT_CLASS (nautilus_properties_window_parent_class)->dispose (object);
+    GTK_WIDGET_CLASS (nautilus_properties_window_parent_class)->destroy (object);
 }
 
 static void
@@ -5372,8 +5372,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
-    oclass->dispose = real_dispose;
     oclass->finalize = real_finalize;
+    widget_class->destroy = real_destroy;
 
     binding_set = gtk_binding_set_by_class (klass);
     g_signal_new ("close",
