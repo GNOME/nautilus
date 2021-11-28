@@ -43,6 +43,9 @@ G_DECLARE_INTERFACE (NautilusFileInfo, nautilus_file_info, NAUTILUS, FILE_INFO, 
  * NautilusFileInfo used to be an alias for NautilusFile to make it easier to
  * implement the interface,
  */
+/**
+ * NautilusFile: (skip)
+ */
 typedef struct NautilusFile NautilusFile;
 
 /**
