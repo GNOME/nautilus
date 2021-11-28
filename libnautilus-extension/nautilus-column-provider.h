@@ -47,6 +47,9 @@ G_DECLARE_INTERFACE (NautilusColumnProvider, nautilus_column_provider,
                      GObject)
 
 /* For compatibility reasons, remove this once you start introducing breaking changes. */
+/**
+ * NautilusColumnProviderIface: (skip)
+ */
 typedef NautilusColumnProviderInterface NautilusColumnProviderIface;
 
 /**

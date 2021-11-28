@@ -46,6 +46,9 @@ G_DECLARE_INTERFACE (NautilusInfoProvider, nautilus_info_provider,
                      GObject)
 
 /* For compatibility reasons, remove this once you start introducing breaking changes. */
+/**
+ * NautilusInfoProviderIface: (skip)
+ */
 typedef NautilusInfoProviderInterface NautilusInfoProviderIface;
 
 /**

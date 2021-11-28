@@ -48,6 +48,9 @@ G_DECLARE_INTERFACE (NautilusMenuProvider, nautilus_menu_provider,
                      GObject)
 
 /* For compatibility reasons, remove this once you start introducing breaking changes. */
+/**
+ * NautilusMenuProviderIface: (skip)
+ */
 typedef NautilusMenuProviderInterface NautilusMenuProviderIface;
 
 /**
