@@ -666,52 +666,6 @@
                                 <property name="row_spacing">6</property>
                                 <property name="column_spacing">12</property>
                                 <child>
-                                  <object class="GtkLabel" id="owner_label">
-                                    <property name="label" translatable="yes">_Owner</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">owner_combo_box</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">0</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkStack" id="owner_value_stack">
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">combo_box</property>
-                                        <property name="title">page0</property>
-                                        <property name="child">
-                                          <object class="GtkComboBox" id="owner_combo_box">
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">label</property>
-                                        <property name="title">page0</property>
-                                        <property name="child">
-                                          <object class="GtkLabel" id="owner_value_label">
-                                            <property name="selectable">True</property>
-                                            <property name="xalign">0</property>
-                                          </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">0</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
                                   <object class="GtkLabel" id="group_label">
                                     <property name="margin_top">12</property>
                                     <property name="label" translatable="yes">_Group</property>
@@ -777,6 +731,14 @@
                                 <child>
                                   <object class="GtkListBox" id="owner_list_box">
                                     <property name="selection-mode">none</property>
+                                    <child>
+                                      <object class="AdwComboRow" id="owner_row">
+                                        <property name="sensitive">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">_Owner</property>
+                                        <property name="use-underline">True</property>
+                                      </object>
+                                    </child>
                                     <child>
                                       <object class="AdwComboRow" id="owner_access_row">
                                         <property name="visible">False</property>
