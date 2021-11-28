@@ -35,7 +35,7 @@
  */
 
 /**
- * nautilus_module_initialize:
+ * nautilus_module_initialize: (skip)
  * @module: a #GTypeModule used in type registration
  *
  * Called when the extension is begin loaded to register the types it exports
@@ -43,13 +43,13 @@
  */
 void nautilus_module_initialize (GTypeModule  *module);
 /**
- * nautilus_module_shutdown:
+ * nautilus_module_shutdown: (skip)
  *
  * Called when the extension is being unloaded.
  */
 void nautilus_module_shutdown   (void);
 /**
- * nautilus_module_list_types:
+ * nautilus_module_list_types: (skip)
  * @types: (out) (transfer none) (array length=num_types): array of GType *
  * @num_types: the number of types in the array
  *
