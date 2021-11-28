@@ -50,7 +50,7 @@ void nautilus_module_initialize (GTypeModule  *module);
 void nautilus_module_shutdown   (void);
 /**
  * nautilus_module_list_types:
- * @types: (out) (array length=num_types): array of GType *
+ * @types: (out) (transfer none) (array length=num_types): array of GType *
  * @num_types: the number of types in the array
  *
  * Called after the extension has been initialized and has registered all the
