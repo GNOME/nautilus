@@ -144,13 +144,12 @@ struct _NautilusPropertiesWindow
 
     /* Permissions tab Widgets */
 
-    GtkWidget *permissions_box;
-    GtkWidget *permissions_grid;
+    GtkWidget *permissions_stack;
+
+    GtkWidget *unknown_permissions_page;
 
     GtkWidget *bottom_prompt_seperator;
     GtkWidget *not_the_owner_label;
-
-    GtkWidget *permission_indeterminable_label;
 
     GtkWidget *owner_value_stack;
     GtkWidget *owner_access_label;
@@ -3402,8 +3401,7 @@ get_initial_permissions (GList *file_list)
 }
 
 static void
-create_simple_permissions (NautilusPropertiesWindow *self,
-                           GtkGrid                  *page_grid)
+create_simple_permissions (NautilusPropertiesWindow *self)
 {
     gboolean has_directory;
     gboolean has_file;
@@ -3833,8 +3831,8 @@ setup_permissions_page (NautilusPropertiesWindow *self)
             gtk_widget_show (self->bottom_prompt_seperator);
         }
 
-        gtk_widget_show (self->permissions_grid);
-        create_simple_permissions (self, GTK_GRID (self->permissions_grid));
+        gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permission-grid");
+        create_simple_permissions (self);
 
 #ifdef HAVE_SELINUX
         gtk_widget_show (self->security_context_title_label);
@@ -3871,10 +3869,10 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
             file_name = nautilus_file_get_display_name (get_target_file (self));
             prompt_text = g_strdup_printf (_("The permissions of “%s” could not be determined."), file_name);
-            gtk_label_set_text (GTK_LABEL (self->permission_indeterminable_label), prompt_text);
+            adw_status_page_set_description (ADW_STATUS_PAGE (self->unknown_permissions_page), prompt_text);
         }
 
-        gtk_widget_show (self->permission_indeterminable_label);
+        gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permission-indeterminable");
     }
 }
 
@@ -4457,7 +4455,7 @@ create_properties_window (StartupData *startup_data)
     if (should_show_permissions (window))
     {
         setup_permissions_page (window);
-        gtk_widget_show (window->permissions_box);
+        gtk_widget_show (window->permissions_stack);
     }
 
     if (should_show_open_with (window))
@@ -5036,11 +5034,10 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, total_capacity_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, file_system_value);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_grid);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permission_indeterminable_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, unknown_permissions_page);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_value_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_folder_access_label);
