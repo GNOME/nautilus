@@ -230,7 +230,7 @@ void              nautilus_file_info_invalidate_extension_info (NautilusFileInfo
  * nautilus_file_info_lookup:
  * @location: the location for which to look up a corresponding #NautilusFileInfo object
  *
- * Returns: (transfer full): a #NautilusFileInfo
+ * Returns: (nullable) (transfer full): a #NautilusFileInfo
  */
 NautilusFileInfo *nautilus_file_info_lookup                (GFile *location);
 /**
@@ -244,7 +244,7 @@ NautilusFileInfo *nautilus_file_info_create                (GFile *location);
  * nautilus_file_info_lookup_for_uri:
  * @uri: the URI to lookup the file info for
  *
- * Returns: (transfer full): a #NautilusFileInfo
+ * Returns: (nullable) (transfer full): a #NautilusFileInfo
  */
 NautilusFileInfo *nautilus_file_info_lookup_for_uri        (const char *uri);
 /**

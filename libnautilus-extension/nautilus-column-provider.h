@@ -80,7 +80,7 @@ struct _NautilusColumnProviderInterface
  * nautilus_column_provider_get_columns:
  * @provider: a #NautilusColumnProvider
  *
- * Returns: (element-type NautilusColumn) (transfer full): the provided #NautilusColumn objects
+ * Returns: (nullable) (element-type NautilusColumn) (transfer full): the provided #NautilusColumn objects
  */
 GList *nautilus_column_provider_get_columns (NautilusColumnProvider *provider);
 
