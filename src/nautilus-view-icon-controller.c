@@ -20,7 +20,6 @@ struct _NautilusViewIconController
 
     GList *cut_files;
 
-    GIcon *view_icon;
     GActionGroup *action_group;
     gint zoom_level;
     GQuark caption_attributes[NAUTILUS_VIEW_ICON_N_CAPTIONS];
@@ -1186,14 +1185,6 @@ real_get_view_id (NautilusFilesView *files_view)
     return NAUTILUS_VIEW_GRID_ID;
 }
 
-static GIcon *
-real_get_icon (NautilusFilesView *files_view)
-{
-    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-
-    return self->view_icon;
-}
-
 static void
 real_select_first (NautilusFilesView *files_view)
 {
@@ -1505,8 +1496,6 @@ constructed (GObject *object)
                               G_CALLBACK (nautilus_files_view_notify_selection_changed),
                               NAUTILUS_FILES_VIEW (self));
 
-    self->view_icon = g_themed_icon_new ("view-grid-symbolic");
-
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (GTK_WIDGET (content_widget), controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
@@ -1584,7 +1573,6 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->get_view_id = real_get_view_id;
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->scroll_to_file = real_scroll_to_file;
-    files_view_class->get_icon = real_get_icon;
     files_view_class->select_first = real_select_first;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->get_zoom_level_percentage = real_get_zoom_level_percentage;
