@@ -385,6 +385,22 @@ real_select_all (NautilusFilesView *files_view)
     gtk_flow_box_select_all (self->view_ui);
 }
 
+static void
+real_invert_selection (NautilusFilesView *files_view)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    g_autoptr (GList) selected_children = NULL;
+
+    selected_children = gtk_flow_box_get_selected_children (self->view_ui);
+
+    /* First select all, then unselect the previously selected children. */
+    gtk_flow_box_select_all (self->view_ui);
+    for (GList *l = selected_children; l != NULL; l = l->next)
+    {
+        gtk_flow_box_unselect_child (self->view_ui, GTK_FLOW_BOX_CHILD (l->data));
+    }
+}
+
 static GtkWidget *
 get_first_selected_item_ui (NautilusViewIconController *self)
 {
@@ -607,13 +623,17 @@ real_is_zoom_level_default (NautilusFilesView *files_view)
 static gboolean
 real_can_zoom_in (NautilusFilesView *files_view)
 {
-    return TRUE;
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+
+    return self->zoom_level < NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST;
 }
 
 static gboolean
 real_can_zoom_out (NautilusFilesView *files_view)
 {
-    return TRUE;
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+
+    return self->zoom_level > NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL;
 }
 
 static GdkRectangle *
@@ -869,17 +889,22 @@ real_compare_files (NautilusFilesView *files_view,
                     NautilusFile      *file1,
                     NautilusFile      *file2)
 {
-    if (file1 < file2)
-    {
-        return -1;
-    }
+    GActionGroup *view_action_group;
+    GAction *action;
+    const gchar *target_name;
+    const SortConstants *sort_constants;
+    gboolean directories_first;
 
-    if (file1 > file2)
-    {
-        return +1;
-    }
+    view_action_group = nautilus_files_view_get_action_group (files_view);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "sort");
+    target_name = g_variant_get_string (g_action_get_state (action), NULL);
+    sort_constants = get_sorts_constants_from_action_target_name (target_name);
+    directories_first = nautilus_files_view_should_sort_directories_first (files_view);
 
-    return 0;
+    return nautilus_file_compare_for_sort (file1, file2,
+                                           sort_constants->sort_type,
+                                           directories_first,
+                                           sort_constants->reversed);
 }
 
 static void
@@ -891,7 +916,38 @@ real_end_loading (NautilusFilesView *files_view,
 static char *
 real_get_first_visible_file (NautilusFilesView *files_view)
 {
-    return NULL;
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    GtkWidget *content_widget;
+    GtkAdjustment *vadjustment;
+    GtkFlowBoxChild *child;
+    gint x0;
+    gint y0;
+    gint scrolled_y;
+    NautilusViewItemModel *item;
+    gchar *uri = NULL;
+
+    content_widget = nautilus_files_view_get_content_widget (files_view);
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+    scrolled_y = gtk_adjustment_get_value (vadjustment);
+
+    child = gtk_flow_box_get_child_at_index (self->view_ui, 0);
+    if (child == NULL)
+    {
+        return NULL;
+    }
+    gtk_widget_translate_coordinates (GTK_WIDGET (child),
+                                      GTK_WIDGET (self->view_ui),
+                                      0, 0, &x0, &y0);
+    child = gtk_flow_box_get_child_at_pos (self->view_ui,
+                                           x0,
+                                           MAX (y0, scrolled_y));
+    if (child != NULL)
+    {
+        item = g_list_model_get_item (G_LIST_MODEL (self->model),
+                                      gtk_flow_box_child_get_index (child));
+        uri = nautilus_file_get_uri (nautilus_view_item_model_get_file (item));
+    }
+    return uri;
 }
 
 typedef struct
@@ -1033,6 +1089,19 @@ real_get_icon (NautilusFilesView *files_view)
 static void
 real_select_first (NautilusFilesView *files_view)
 {
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    NautilusViewItemModel *item;
+    NautilusFile *file;
+    g_autoptr (GList) selection = NULL;
+
+    item = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (self->model), 0));
+    if (item == NULL)
+    {
+        return;
+    }
+    file = nautilus_view_item_model_get_file (item);
+    selection = g_list_prepend (selection, file);
+    nautilus_view_set_selection (NAUTILUS_VIEW (files_view), selection);
 }
 
 static void
@@ -1263,6 +1332,7 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->update_actions_state = real_update_actions_state;
     files_view_class->reveal_selection = real_reveal_selection;
     files_view_class->select_all = real_select_all;
+    files_view_class->invert_selection = real_invert_selection;
     files_view_class->set_selection = real_set_selection;
     files_view_class->compare_files = real_compare_files;
     files_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
