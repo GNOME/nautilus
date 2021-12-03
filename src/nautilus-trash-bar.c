@@ -241,10 +241,9 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
                      G_SETTINGS_BIND_GET);
 
     gtk_widget_show (label);
-    gtk_container_add (GTK_CONTAINER (content_area), label);
+    gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 0);
 
-    gtk_container_add (GTK_CONTAINER (content_area), subtitle);
-
+    gtk_box_pack_start (GTK_BOX (content_area), subtitle, FALSE, FALSE, 0);
     w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
                                  _("_Settings"),
                                  TRASH_BAR_RESPONSE_AUTODELETE);
