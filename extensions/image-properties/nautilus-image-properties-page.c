@@ -150,7 +150,7 @@ append_basic_info (NautilusImagesPropertiesPage *page)
 
     append_item (page, _("Image Type"), value);
 
-    orientation = gexiv2_metadata_get_orientation (page->md);
+    orientation = gexiv2_metadata_try_get_orientation (page->md, NULL);
 
     if (orientation == GEXIV2_ORIENTATION_ROT_90
         || orientation == GEXIV2_ORIENTATION_ROT_270
@@ -192,7 +192,7 @@ append_gexiv2_tag (NautilusImagesPropertiesPage  *page,
 
     for (const char **i = tag_names; *i != NULL; i++)
     {
-        if (gexiv2_metadata_has_tag (page->md, *i))
+        if (gexiv2_metadata_try_has_tag (page->md, *i, NULL))
         {
             g_autofree char *tag_value = NULL;
 
