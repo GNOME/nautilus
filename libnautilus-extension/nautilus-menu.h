@@ -102,7 +102,7 @@ void              nautilus_menu_item_list_free   (GList            *item_list);
  * nautilus_menu_item_new:
  * @name: the identifier for the menu item
  * @label: the user-visible label of the menu item
- * @tip: the tooltip of the menu item
+ * @tip: (nullable): the tooltip of the menu item
  * @icon: (nullable): the name of the icon to display in the menu item
  *
  * Creates a new menu item that can be added to the toolbar or to a contextual menu.

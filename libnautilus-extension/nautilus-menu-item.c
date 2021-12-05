@@ -69,7 +69,6 @@ nautilus_menu_item_new (const char *name,
 
     g_return_val_if_fail (name != NULL, NULL);
     g_return_val_if_fail (label != NULL, NULL);
-    g_return_val_if_fail (tip != NULL, NULL);
 
     item = g_object_new (NAUTILUS_TYPE_MENU_ITEM,
                          "name", name,
