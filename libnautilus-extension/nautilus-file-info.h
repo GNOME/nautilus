@@ -149,6 +149,12 @@ void              nautilus_file_info_list_free            (GList            *fil
 gboolean          nautilus_file_info_is_gone              (NautilusFileInfo *file_info);
 
 /* Name and Location */
+/**
+ * nautilus_file_info_get_file_type:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: a #GFileType for the location of @file_info
+ */
 GFileType         nautilus_file_info_get_file_type        (NautilusFileInfo *file_info);
 /**
  * nautilus_file_info_get_location:
@@ -157,8 +163,27 @@ GFileType         nautilus_file_info_get_file_type        (NautilusFileInfo *fil
  * Returns: (transfer full): a #GFile for the location of @file_info
  */
 GFile            *nautilus_file_info_get_location         (NautilusFileInfo *file_info);
+/**
+ * nautilus_file_info_get_name:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: the file name of @file_info
+ */
 char             *nautilus_file_info_get_name             (NautilusFileInfo *file_info);
+/**
+ * nautilus_file_info_get_uri:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: the file URI of @file_info
+ */
 char             *nautilus_file_info_get_uri              (NautilusFileInfo *file_info);
+/**
+ * nautilus_file_info_get_activation_uri:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: the activation URI of @file_info, which may differ from the actual
+ *   URI if e.g. the file is a .desktop file or a Nautilus XML link file
+ */
 char             *nautilus_file_info_get_activation_uri   (NautilusFileInfo *file_info);
 /**
  * nautilus_file_info_get_parent_location:
@@ -168,6 +193,13 @@ char             *nautilus_file_info_get_activation_uri   (NautilusFileInfo *fil
  *   or %NULL if @file_info has no parent
  */
 GFile            *nautilus_file_info_get_parent_location  (NautilusFileInfo *file_info);
+/**
+ * nautilus_file_info_get_parent_uri:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: the URI for the parent location of @file_info, or the empty string
+ *   if it has none
+ */
 char             *nautilus_file_info_get_parent_uri       (NautilusFileInfo *file_info);
 /**
  * nautilus_file_info_get_mount:
@@ -177,6 +209,12 @@ char             *nautilus_file_info_get_parent_uri       (NautilusFileInfo *fil
  *                                      or %NULL if @file_info has no mount
  */
 GMount           *nautilus_file_info_get_mount            (NautilusFileInfo *file_info);
+/**
+ * nautilus_file_info_get_uri_scheme:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: the URI scheme of @file_info
+ */
 char             *nautilus_file_info_get_uri_scheme       (NautilusFileInfo *file_info);
 /**
  * nautilus_file_info_get_parent_info:
@@ -197,22 +235,65 @@ NautilusFileInfo *nautilus_file_info_get_parent_info      (NautilusFileInfo *fil
  * Returns: (transfer full): the MIME type of @file_info
  */
 char *            nautilus_file_info_get_mime_type        (NautilusFileInfo *file_info);
+/**
+ * nautilus_file_info_is_mime_type:
+ * @file_info: a #NautilusFileInfo
+ * @mime_type: a MIME type
+ *
+ * Returns: %TRUE when the MIME type of @file_info matches @mime_type, and
+ *   %FALSE otherwise
+ */
 gboolean          nautilus_file_info_is_mime_type         (NautilusFileInfo *file_info,
                                                            const char       *mime_type);
+/**
+ * nautilus_file_info_is_directory:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: %TRUE when @file_info is a directory, and %FALSE otherwise
+ */
 gboolean          nautilus_file_info_is_directory         (NautilusFileInfo *file_info);
+/**
+ * nautilus_file_info_can_write:
+ * @file_info: a #NautilusFileInfo
+ *
+ * Returns: %TRUE when @file_info is writeable, and %FALSE otherwise
+ */
 gboolean          nautilus_file_info_can_write            (NautilusFileInfo *file_info);
 
 
 /* Modifying the NautilusFileInfo */
+/**
+ * nautilus_file_info_add_emblem:
+ * @file_info: a #NautilusFileInfo
+ * @emblem_name: the name of an emblem
+ */
 void              nautilus_file_info_add_emblem           (NautilusFileInfo *file_info,
                                                            const char       *emblem_name);
+/**
+ * nautilus_file_info_get_string_attribute:
+ * @file_info: a #NautilusFileInfo
+ * @attribute_name: the name of an attribute
+ *
+ * Returns: (nullable): the value for the given @attribute_name, or %NULL if
+ *   there is none
+ */
 char             *nautilus_file_info_get_string_attribute (NautilusFileInfo *file_info,
                                                            const char       *attribute_name);
+/**
+ * nautilus_file_info_add_string_attribute:
+ * @file_info: a #NautilusFileInfo
+ * @attribute_name: the name of an attribute
+ * @value: the name of an attribute
+ */
 void              nautilus_file_info_add_string_attribute (NautilusFileInfo *file_info,
                                                            const char       *attribute_name,
                                                            const char       *value);
 
 /* Invalidating file info */
+/**
+ * nautilus_file_info_invalidate_extension_info:
+ * @file_info: a #NautilusFileInfo
+ */
 void              nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file_info);
 
 /**
