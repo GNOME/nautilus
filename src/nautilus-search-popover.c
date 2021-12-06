@@ -51,6 +51,7 @@ struct _NautilusSearchPopover
     GtkWidget *filename_search_button;
 
     NautilusQuery *query;
+    GtkTreeView *treeview;
 
     gboolean fts_enabled;
 };
@@ -545,6 +546,39 @@ show_date_selection_widgets (NautilusSearchPopover *popover,
 }
 
 static void
+on_other_types_dialog_response (GtkDialog             *dialog,
+                                gint                   response_id,
+                                NautilusSearchPopover *popover)
+{
+    if (response_id == GTK_RESPONSE_OK)
+    {
+        GtkTreeIter iter;
+        GtkTreeSelection *selection;
+        GtkTreeModel *store;
+        char *mimetype;
+        char *description;
+
+        store = gtk_tree_view_get_model (popover->treeview);
+        selection = gtk_tree_view_get_selection (popover->treeview);
+
+        gtk_tree_selection_get_selected (selection, NULL, &iter);
+        gtk_tree_model_get (store, &iter,
+                            0, &description,
+                            1, &mimetype,
+                            -1);
+
+        gtk_label_set_label (GTK_LABEL (popover->type_label), description);
+
+        g_signal_emit_by_name (popover, "mime-type", -1, mimetype);
+
+        gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
+    }
+
+    g_clear_object (&popover->treeview);
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+static void
 show_other_types_dialog (NautilusSearchPopover *popover)
 {
     GList *mime_infos, *l;
@@ -607,7 +641,6 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (treeview));
     gtk_tree_selection_set_mode (selection, GTK_SELECTION_BROWSE);
 
-
     renderer = gtk_cell_renderer_text_new ();
     column = gtk_tree_view_column_new_with_attributes ("Name",
                                                        renderer,
@@ -619,27 +652,10 @@ show_other_types_dialog (NautilusSearchPopover *popover)
 
     gtk_widget_show (treeview);
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled), treeview);
+    popover->treeview = GTK_TREE_VIEW (g_object_ref (treeview));
 
-    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
-    {
-        GtkTreeIter iter;
-        char *mimetype;
-        char *description;
-
-        gtk_tree_selection_get_selected (selection, NULL, &iter);
-        gtk_tree_model_get (GTK_TREE_MODEL (store), &iter,
-                            0, &description,
-                            1, &mimetype,
-                            -1);
-
-        gtk_label_set_label (GTK_LABEL (popover->type_label), description);
-
-        g_signal_emit_by_name (popover, "mime-type", -1, mimetype);
-
-        gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
-    }
-
-    gtk_widget_destroy (dialog);
+    g_signal_connect (dialog, "response", G_CALLBACK (on_other_types_dialog_response), popover);
+    gtk_widget_show_all (dialog);
 }
 
 static void
