@@ -698,6 +698,8 @@ on_button_press_event (GtkGestureMultiPress *gesture,
     GdkEventSequence *sequence;
     const GdkEvent *event;
     g_autolist (NautilusFile) selection = NULL;
+    gint view_x;
+    gint view_y;
     GtkFlowBoxChild *child_at_pos;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
@@ -707,7 +709,11 @@ on_button_press_event (GtkGestureMultiPress *gesture,
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, x, y);
+
+    gtk_widget_translate_coordinates (gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture)),
+                                      GTK_WIDGET (self->view_ui),
+                                      x, y, &view_x, &view_y);
+    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, view_x, view_y);
     if (child_at_pos != NULL)
     {
         NautilusFile *selected_file;
@@ -756,6 +762,8 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
     GtkFlowBoxChild *child_at_pos;
     GdkEventSequence *event_sequence;
     GdkEvent *event;
+    gint view_x;
+    gint view_y;
 
     event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
     event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
@@ -764,7 +772,10 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, x, y);
+    gtk_widget_translate_coordinates (gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture)),
+                                      GTK_WIDGET (self->view_ui),
+                                      x, y, &view_x, &view_y);
+    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, view_x, view_y);
     if (child_at_pos != NULL)
     {
         NautilusFile *selected_file;
