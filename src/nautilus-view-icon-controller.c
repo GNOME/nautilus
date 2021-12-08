@@ -20,6 +20,8 @@ struct _NautilusViewIconController
     GActionGroup *action_group;
     gint zoom_level;
 
+    gboolean single_click_mode;
+    gboolean activate_on_release;
     GtkGesture *multi_press_gesture;
 };
 
@@ -674,8 +676,21 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 }
 
 static void
+set_click_mode_from_settings (NautilusViewIconController *self)
+{
+    int click_policy;
+
+    click_policy = g_settings_get_enum (nautilus_preferences,
+                                        NAUTILUS_PREFERENCES_CLICK_POLICY);
+
+    self->single_click_mode = (click_policy == NAUTILUS_CLICK_POLICY_SINGLE);
+}
+
+static void
 real_click_policy_changed (NautilusFilesView *files_view)
 {
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    set_click_mode_from_settings (self);
 }
 
 static void
@@ -730,6 +745,10 @@ on_button_press_event (GtkGestureMultiPress *gesture,
         gboolean selection_mode;
 
         selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
+        self->activate_on_release = (self->single_click_mode &&
+                                     button == GDK_BUTTON_PRIMARY &&
+                                     n_press == 1 &&
+                                     !selection_mode);
 
         /* GtkFlowBox changes selection only with the primary button, but we
          * need that to happen with all buttons, otherwise e.g. opening context
@@ -758,6 +777,7 @@ on_button_press_event (GtkGestureMultiPress *gesture,
         {
             activate_selection_on_click (self, modifiers & GDK_SHIFT_MASK);
             gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+            self->activate_on_release = FALSE;
         }
         else if (button == GDK_BUTTON_MIDDLE && n_press == 1 && !selection_mode)
         {
@@ -779,6 +799,32 @@ on_button_press_event (GtkGestureMultiPress *gesture,
                                                                 event);
         }
     }
+}
+
+static void
+on_click_released (GtkGestureMultiPress *gesture,
+                   gint                  n_press,
+                   gdouble               x,
+                   gdouble               y,
+                   gpointer              user_data)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+
+    if (self->activate_on_release)
+    {
+        activate_selection_on_click (self, FALSE);
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+    }
+    self->activate_on_release = FALSE;
+}
+
+static void
+on_click_stopped (GtkGestureMultiPress *gesture,
+                  gpointer              user_data)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+
+    self->activate_on_release = FALSE;
 }
 
 static void
@@ -1056,6 +1102,8 @@ create_view_ui (NautilusViewIconController *self)
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
     flowbox = GTK_FLOW_BOX (widget);
+    /* We don't use GtkFlowBox's single click mode because it doesn't match our
+     * expected behavior. Instead, we roll our own self->single_click_mode. */
     gtk_flow_box_set_activate_on_single_click (flowbox, FALSE);
     gtk_flow_box_set_max_children_per_line (flowbox, 20);
     gtk_flow_box_set_selection_mode (flowbox, GTK_SELECTION_MULTIPLE);
@@ -1108,6 +1156,10 @@ constructed (GObject *object)
                                    0);
     g_signal_connect (self->multi_press_gesture, "pressed",
                       G_CALLBACK (on_button_press_event), self);
+    g_signal_connect (self->multi_press_gesture, "stopped",
+                      G_CALLBACK (on_click_stopped), self);
+    g_signal_connect (self->multi_press_gesture, "released",
+                      G_CALLBACK (on_click_released), self);
 
     longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (self->view_ui));
     gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
@@ -1188,6 +1240,7 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
 static void
 nautilus_view_icon_controller_init (NautilusViewIconController *self)
 {
+    set_click_mode_from_settings (self);
 }
 
 NautilusViewIconController *
