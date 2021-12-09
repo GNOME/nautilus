@@ -689,7 +689,7 @@ on_button_press_event (GtkGestureMultiPress *gesture,
     guint button;
     GdkEventSequence *sequence;
     const GdkEvent *event;
-    g_autolist (NautilusFile) selection = NULL;
+    GdkModifierType modifiers = 0;
     gint view_x;
     gint view_y;
     GtkFlowBoxChild *child_at_pos;
@@ -698,9 +698,11 @@ on_button_press_event (GtkGestureMultiPress *gesture,
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-
-    /* Need to update the selection so the popup has the right actions enabled */
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+#if GTK_MAJOR_VERSION < 4
+    gtk_get_current_event_state (&modifiers);
+#else
+    modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
+#endif
 
     gtk_widget_translate_coordinates (gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture)),
                                       GTK_WIDGET (self->view_ui),
@@ -708,23 +710,32 @@ on_button_press_event (GtkGestureMultiPress *gesture,
     child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, view_x, view_y);
     if (child_at_pos != NULL)
     {
-        NautilusFile *selected_file;
-        NautilusViewItemModel *item_model;
+        gboolean selection_mode;
 
-        item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
-                                            gtk_flow_box_child_get_index (child_at_pos));
-        selected_file = nautilus_view_item_model_get_file (item_model);
-        if (g_list_find (selection, selected_file) == NULL)
-        {
-            g_list_foreach (selection, (GFunc) g_object_unref, NULL);
-            selection = g_list_append (NULL, g_object_ref (selected_file));
-        }
-        else
-        {
-            selection = g_list_prepend (selection, g_object_ref (selected_file));
-        }
+        selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
 
-        nautilus_view_set_selection (NAUTILUS_VIEW (self), selection);
+        /* GtkFlowBox changes selection only with the primary button, but we
+         * need that to happen with all buttons, otherwise e.g. opening context
+         * menus would require two clicks: a primary click to select the item,
+         * followed by a secondary click to open the menu.
+         * When holding Ctrl and Shift, GtkFlowBox does a good job, let's not
+         * interfere in that case. */
+        if (!selection_mode)
+        {
+            NautilusFile *selected_file;
+            NautilusViewItemModel *item_model;
+            g_autolist (NautilusFile) selection = NULL;
+
+            item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
+                                                gtk_flow_box_child_get_index (child_at_pos));
+            selected_file = nautilus_view_item_model_get_file (item_model);
+            selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+            if (g_list_find (selection, selected_file) == NULL)
+            {
+                nautilus_view_set_selection (NAUTILUS_VIEW (self),
+                                             &(GList){ .data = selected_file });
+            }
+        }
 
         if (button == GDK_BUTTON_SECONDARY)
         {
@@ -750,7 +761,6 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
                                        gpointer             user_data)
 {
     NautilusViewIconController *self;
-    g_autoptr (GList) selection = NULL;
     GtkFlowBoxChild *child_at_pos;
     GdkEventSequence *event_sequence;
     GdkEvent *event;
@@ -762,32 +772,12 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
-    /* Need to update the selection so the popup has the right actions enabled */
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     gtk_widget_translate_coordinates (gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture)),
                                       GTK_WIDGET (self->view_ui),
                                       x, y, &view_x, &view_y);
     child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, view_x, view_y);
     if (child_at_pos != NULL)
     {
-        NautilusFile *selected_file;
-        NautilusViewItemModel *item_model;
-
-        item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
-                                            gtk_flow_box_child_get_index (child_at_pos));
-        selected_file = nautilus_view_item_model_get_file (item_model);
-        if (g_list_find (selection, selected_file) == NULL)
-        {
-            g_list_foreach (selection, (GFunc) g_object_unref, NULL);
-            selection = g_list_append (NULL, g_object_ref (selected_file));
-        }
-        else
-        {
-            selection = g_list_prepend (selection, g_object_ref (selected_file));
-        }
-
-        nautilus_view_set_selection (NAUTILUS_VIEW (self), selection);
-
         nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
                                                            event);
     }
@@ -797,8 +787,6 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
         nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
                                                             event);
     }
-
-    g_list_foreach (selection, (GFunc) g_object_unref, NULL);
 }
 
 static int
