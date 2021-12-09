@@ -404,28 +404,20 @@ static void
 reveal_item_ui (NautilusViewIconController *self,
                 GtkWidget                  *item_ui)
 {
-    GtkAllocation allocation;
     GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
-    int view_height;
+    int item_y;
+    int item_height;
 
-    gtk_widget_get_allocation (item_ui, &allocation);
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    view_height = gtk_widget_get_allocated_height (content_widget);
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
-    /* Scroll only as necessary. TODO: Would be nice to have this as part of
-     * GtkFlowBox. GtkTreeView has something similar. */
-    if (allocation.y < gtk_adjustment_get_value (vadjustment))
-    {
-        gtk_adjustment_set_value (vadjustment, allocation.y);
-    }
-    else if (allocation.y + allocation.height >
-             gtk_adjustment_get_value (vadjustment) + view_height)
-    {
-        gtk_adjustment_set_value (vadjustment,
-                                  allocation.y + allocation.height - view_height);
-    }
+    gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
+                                      0, 0,
+                                      NULL, &item_y);
+    item_height = gtk_widget_get_allocated_height (item_ui);
+
+    gtk_adjustment_clamp_page (vadjustment, item_y, item_y + item_height);
 }
 
 static void
