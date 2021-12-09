@@ -23,6 +23,8 @@ struct _NautilusViewIconController
     gboolean single_click_mode;
     gboolean activate_on_release;
     GtkGesture *multi_press_gesture;
+
+    guint scroll_to_file_handle_id;
 };
 
 G_DEFINE_TYPE (NautilusViewIconController, nautilus_view_icon_controller, NAUTILUS_TYPE_FILES_VIEW)
@@ -892,10 +894,66 @@ real_get_first_visible_file (NautilusFilesView *files_view)
     return NULL;
 }
 
+typedef struct
+{
+    NautilusViewIconController *view;
+    char *uri;
+} ScrollToFileData;
+
+static void
+scroll_to_file_data_free (ScrollToFileData *data)
+{
+    g_free (data->uri);
+    g_free (data);
+}
+
+static gboolean
+scroll_to_file_on_idle (ScrollToFileData *data)
+{
+    NautilusViewIconController *self = data->view;
+    GtkWidget *content_widget;
+    GtkAdjustment *vadjustment;
+    g_autoptr (NautilusFile) file = NULL;
+    NautilusViewItemModel *item;
+    GtkWidget *item_ui;
+    int item_y;
+
+    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+
+    file = nautilus_file_get_existing_by_uri (data->uri);
+    item = nautilus_view_model_get_item_from_file (self->model, file);
+    item_ui = nautilus_view_item_model_get_item_ui (item);
+    gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
+                                      0, 0,
+                                      NULL, &item_y);
+    gtk_adjustment_set_value (vadjustment, item_y);
+
+    self->scroll_to_file_handle_id = 0;
+    return G_SOURCE_REMOVE;
+}
+
 static void
 real_scroll_to_file (NautilusFilesView *files_view,
                      const char        *uri)
 {
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    ScrollToFileData *data;
+    guint handle_id;
+
+    /* Not exactly sure why, but the child widgets are not yet realized when
+     * this is usually called (which is when view finishes loading. Maybe
+     * because GtkFlowBox only generates children at the next GMainContext
+     * iteration? Anyway, doing it on idle as low priority works. */
+
+    data = g_new (ScrollToFileData, 1);
+    data->view = self;
+    data->uri = g_strdup (uri);
+    handle_id = g_idle_add_full (G_PRIORITY_LOW,
+                                 (GSourceFunc) scroll_to_file_on_idle,
+                                 data,
+                                 (GDestroyNotify) scroll_to_file_data_free);
+    self->scroll_to_file_handle_id = handle_id;
 }
 
 static void
@@ -1023,6 +1081,7 @@ dispose (GObject *object)
     self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
 
     g_clear_object (&self->multi_press_gesture);
+    g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_view_icon_controller_parent_class)->dispose (object);
 }
