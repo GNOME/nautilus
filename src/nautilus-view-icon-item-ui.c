@@ -31,6 +31,7 @@ update_icon (NautilusViewIconItemUi *self)
     GtkStyleContext *style_context;
     NautilusFile *file;
     guint icon_size;
+    g_autofree gchar *thumbnail_path = NULL;
 
     file = nautilus_view_item_model_get_file (self->model);
     icon_size = nautilus_view_item_model_get_icon_size (self->model);
@@ -45,7 +46,8 @@ update_icon (NautilusViewIconItemUi *self)
 
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
     style_context = gtk_widget_get_style_context (self->icon);
-    if (nautilus_can_thumbnail (file) &&
+    thumbnail_path = nautilus_file_get_thumbnail_path (file);
+    if (thumbnail_path != NULL &&
         nautilus_file_should_show_thumbnail (file))
     {
         gtk_style_context_add_class (style_context, "thumbnail");
