@@ -679,6 +679,23 @@ real_click_policy_changed (NautilusFilesView *files_view)
 }
 
 static void
+activate_selection_on_click (NautilusViewIconController *self,
+                             gboolean                    open_in_new_tab)
+{
+    g_autolist (NautilusFile) selection = NULL;
+    NautilusOpenFlags flags = 0;
+    NautilusFilesView *files_view = NAUTILUS_FILES_VIEW (self);
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+    if (open_in_new_tab)
+    {
+        flags |= NAUTILUS_OPEN_FLAG_NEW_TAB;
+        flags |= NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
+    }
+    nautilus_files_view_activate_files (files_view, selection, flags, TRUE);
+}
+
+static void
 on_button_press_event (GtkGestureMultiPress *gesture,
                        gint                  n_press,
                        gdouble               x,
@@ -737,7 +754,17 @@ on_button_press_event (GtkGestureMultiPress *gesture,
             }
         }
 
-        if (button == GDK_BUTTON_SECONDARY)
+        if (button == GDK_BUTTON_PRIMARY && n_press == 2)
+        {
+            activate_selection_on_click (self, modifiers & GDK_SHIFT_MASK);
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+        }
+        else if (button == GDK_BUTTON_MIDDLE && n_press == 1 && !selection_mode)
+        {
+            activate_selection_on_click (self, TRUE);
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+        }
+        else if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
                                                                event);
