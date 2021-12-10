@@ -8,10 +8,14 @@ struct _NautilusViewIconItemUi
     GtkFlowBoxChild parent_instance;
 
     NautilusViewItemModel *model;
+    GQuark *caption_attributes;
 
     GtkWidget *fixed_height_box;
     GtkWidget *icon;
     GtkWidget *label;
+    GtkWidget *first_caption;
+    GtkWidget *second_caption;
+    GtkWidget *third_caption;
 };
 
 G_DEFINE_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, GTK_TYPE_FLOW_BOX_CHILD)
@@ -67,6 +71,35 @@ update_icon (NautilusViewIconItemUi *self)
 }
 
 static void
+update_captions (NautilusViewIconItemUi *self)
+{
+    NautilusFile *file;
+    GtkWidget * const caption_labels[] =
+    {
+        self->first_caption,
+        self->second_caption,
+        self->third_caption
+    };
+    G_STATIC_ASSERT (G_N_ELEMENTS (caption_labels) == NAUTILUS_VIEW_ICON_N_CAPTIONS);
+
+    file = nautilus_view_item_model_get_file (self->model);
+    for (guint i = 0; i < NAUTILUS_VIEW_ICON_N_CAPTIONS; i++)
+    {
+        GQuark attribute_q = self->caption_attributes[i];
+        gboolean show_caption;
+
+        show_caption = (attribute_q != 0);
+        gtk_widget_set_visible (caption_labels[i], show_caption);
+        if (show_caption)
+        {
+            g_autofree gchar *string = NULL;
+            string = nautilus_file_get_string_attribute_q (file, attribute_q);
+            gtk_label_set_text (GTK_LABEL (caption_labels[i]), string);
+        }
+    }
+}
+
+static void
 on_file_changed (NautilusViewIconItemUi *self)
 {
     NautilusFile *file;
@@ -77,6 +110,7 @@ on_file_changed (NautilusViewIconItemUi *self)
 
     gtk_label_set_text (GTK_LABEL (self->label),
                         nautilus_file_get_display_name (file));
+    update_captions (self);
 }
 
 static void
@@ -87,6 +121,7 @@ on_view_item_size_changed (GObject    *object,
     NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (user_data);
 
     update_icon (self);
+    update_captions (self);
 }
 
 static void
@@ -152,6 +187,7 @@ set_model (NautilusViewIconItemUi *self,
     update_icon (self);
     gtk_label_set_text (GTK_LABEL (self->label),
                         nautilus_file_get_display_name (file));
+    update_captions (self);
 
     g_signal_connect (self->model, "notify::icon-size",
                       (GCallback) on_view_item_size_changed, self);
@@ -203,6 +239,9 @@ nautilus_view_icon_item_ui_class_init (NautilusViewIconItemUiClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, fixed_height_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, first_caption);
+    gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, second_caption);
+    gtk_widget_class_bind_template_child (widget_class, NautilusViewIconItemUi, third_caption);
 }
 
 static void
@@ -235,4 +274,11 @@ nautilus_view_icon_item_ui_set_model (NautilusViewIconItemUi *self,
                                       NautilusViewItemModel  *model)
 {
     g_object_set (self, "model", model, NULL);
+}
+
+void
+nautilus_view_item_ui_set_caption_attributes (NautilusViewIconItemUi *self,
+                                              GQuark                 *attrs)
+{
+    self->caption_attributes = attrs;
 }

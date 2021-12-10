@@ -19,6 +19,7 @@ struct _NautilusViewIconController
     GIcon *view_icon;
     GActionGroup *action_group;
     gint zoom_level;
+    GQuark caption_attributes[NAUTILUS_VIEW_ICON_N_CAPTIONS];
 
     gboolean single_click_mode;
     gboolean activate_on_release;
@@ -563,6 +564,37 @@ get_default_zoom_level (void)
 }
 
 static void
+set_captions_from_preferences (NautilusViewIconController *self)
+{
+    g_auto (GStrv) value = NULL;
+    gint n_captions_for_zoom_level;
+
+    value = g_settings_get_strv (nautilus_icon_view_preferences,
+                                 NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
+
+    /* Set a celling on the number of captions depending on the zoom level. */
+    n_captions_for_zoom_level = MIN (self->zoom_level,
+                                     G_N_ELEMENTS (self->caption_attributes));
+
+    /* Reset array to zeros beforehand, as we may not refill all elements. */
+    memset (&self->caption_attributes, 0, sizeof (self->caption_attributes));
+    for (gint i = 0, quark_i = 0;
+         value[i] != NULL && quark_i < n_captions_for_zoom_level;
+         i++)
+    {
+        if (g_strcmp0 (value[i], "none") == 0)
+        {
+            continue;
+        }
+
+        /* Convert to quarks in advance, otherwise each NautilusFile attribute
+         * getter would call g_quark_from_string() once for each file. */
+        self->caption_attributes[quark_i] = g_quark_from_string (value[i]);
+        quark_i++;
+    }
+}
+
+static void
 set_icon_size (NautilusViewIconController *self,
                gint                        icon_size)
 {
@@ -582,6 +614,11 @@ set_zoom_level (NautilusViewIconController *self,
                 guint                       new_level)
 {
     self->zoom_level = new_level;
+
+    /* The zoom level may change how many captions are allowed. Update it before
+     * setting the icon size, under the assumption that NautilusViewIconItemUi
+     * updates captions whenever the icon size is set*/
+    set_captions_from_preferences (self);
 
     set_icon_size (self, get_icon_size_for_zoom_level (new_level));
 
@@ -1143,6 +1180,16 @@ action_zoom_to_level (GSimpleAction *action,
 }
 
 static void
+on_captions_preferences_changed (NautilusViewIconController *self)
+{
+    set_captions_from_preferences (self);
+
+    /* Hack: this relies on the assumption that NautilusViewIconItemUi updates
+     * captions whenever the icon size is set (even if it's the same value). */
+    set_icon_size (self, get_icon_size_for_zoom_level (self->zoom_level));
+}
+
+static void
 on_default_sort_order_changed (NautilusViewIconController *self)
 {
     update_sort_order_from_metadata_and_preferences (self);
@@ -1192,7 +1239,13 @@ static void
 setup_item_ui (GtkWidget **child,
                gpointer    user_data)
 {
-    *child = GTK_WIDGET (nautilus_view_icon_item_ui_new ());
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    NautilusViewIconItemUi *item_ui;
+
+    item_ui = nautilus_view_icon_item_ui_new ();
+    nautilus_view_item_ui_set_caption_attributes (item_ui, self->caption_attributes);
+
+    *child = GTK_WIDGET (item_ui);
     gtk_widget_show_all (*child);
 }
 
@@ -1371,6 +1424,12 @@ nautilus_view_icon_controller_init (NautilusViewIconController *self)
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
                               G_CALLBACK (on_default_sort_order_changed),
+                              self);
+
+    set_captions_from_preferences (self);
+    g_signal_connect_swapped (nautilus_icon_view_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+                              G_CALLBACK (on_captions_preferences_changed),
                               self);
 }
 
