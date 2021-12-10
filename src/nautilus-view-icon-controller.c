@@ -1143,6 +1143,12 @@ action_zoom_to_level (GSimpleAction *action,
 }
 
 static void
+on_default_sort_order_changed (NautilusViewIconController *self)
+{
+    update_sort_order_from_metadata_and_preferences (self);
+}
+
+static void
 dispose (GObject *object)
 {
     NautilusViewIconController *self;
@@ -1151,6 +1157,8 @@ dispose (GObject *object)
 
     g_clear_object (&self->multi_press_gesture);
     g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
+
+    g_signal_handlers_disconnect_by_data (nautilus_preferences, self);
 
     G_OBJECT_CLASS (nautilus_view_icon_controller_parent_class)->dispose (object);
 }
@@ -1355,6 +1363,15 @@ static void
 nautilus_view_icon_controller_init (NautilusViewIconController *self)
 {
     set_click_mode_from_settings (self);
+
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
+                              G_CALLBACK (on_default_sort_order_changed),
+                              self);
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
+                              G_CALLBACK (on_default_sort_order_changed),
+                              self);
 }
 
 NautilusViewIconController *
