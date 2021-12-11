@@ -1275,6 +1275,9 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     hdy_init ();
 
+    hdy_style_manager_set_color_scheme (hdy_style_manager_get_default (),
+                                        HDY_COLOR_SCHEME_PREFER_LIGHT);
+
     gtk_window_set_default_icon_name (APPLICATION_ID);
 
     setup_theme_extensions ();
