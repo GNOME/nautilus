@@ -26,6 +26,7 @@ struct _NautilusViewIconController
     GtkGesture *multi_press_gesture;
 
     guint scroll_to_file_handle_id;
+    GtkAdjustment *vadjustment;
 };
 
 G_DEFINE_TYPE (NautilusViewIconController, nautilus_view_icon_controller, NAUTILUS_TYPE_FILES_VIEW)
@@ -425,20 +426,15 @@ static void
 reveal_item_ui (NautilusViewIconController *self,
                 GtkWidget                  *item_ui)
 {
-    GtkWidget *content_widget;
-    GtkAdjustment *vadjustment;
     int item_y;
     int item_height;
-
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
     gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
                                       0, 0,
                                       NULL, &item_y);
     item_height = gtk_widget_get_allocated_height (item_ui);
 
-    gtk_adjustment_clamp_page (vadjustment, item_y, item_y + item_height);
+    gtk_adjustment_clamp_page (self->vadjustment, item_y, item_y + item_height);
 }
 
 static void
@@ -954,8 +950,6 @@ static char *
 real_get_first_visible_file (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    GtkWidget *content_widget;
-    GtkAdjustment *vadjustment;
     GtkFlowBoxChild *child;
     gint x0;
     gint y0;
@@ -963,9 +957,7 @@ real_get_first_visible_file (NautilusFilesView *files_view)
     NautilusViewItemModel *item;
     gchar *uri = NULL;
 
-    content_widget = nautilus_files_view_get_content_widget (files_view);
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
-    scrolled_y = gtk_adjustment_get_value (vadjustment);
+    scrolled_y = gtk_adjustment_get_value (self->vadjustment);
 
     child = gtk_flow_box_get_child_at_index (self->view_ui, 0);
     if (child == NULL)
@@ -1004,15 +996,10 @@ static gboolean
 scroll_to_file_on_idle (ScrollToFileData *data)
 {
     NautilusViewIconController *self = data->view;
-    GtkWidget *content_widget;
-    GtkAdjustment *vadjustment;
     g_autoptr (NautilusFile) file = NULL;
     NautilusViewItemModel *item;
     GtkWidget *item_ui;
     int item_y;
-
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
     file = nautilus_file_get_existing_by_uri (data->uri);
     item = nautilus_view_model_get_item_from_file (self->model, file);
@@ -1020,7 +1007,7 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
                                       0, 0,
                                       NULL, &item_y);
-    gtk_adjustment_set_value (vadjustment, item_y);
+    gtk_adjustment_set_value (self->vadjustment, item_y);
 
     self->scroll_to_file_handle_id = 0;
     return G_SOURCE_REMOVE;
@@ -1306,6 +1293,8 @@ constructed (GObject *object)
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (content_widget));
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+
+    self->vadjustment = vadjustment;
 
     self->model = nautilus_view_model_new ();
 
