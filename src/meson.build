@@ -76,8 +76,6 @@ libnautilus_sources = [
   'nautilus-canvas-view.h',
   'nautilus-canvas-view-container.c',
   'nautilus-canvas-view-container.h',
-  'nautilus-container-max-width.c',
-  'nautilus-container-max-width.h',
   'nautilus-dbus-manager.c',
   'nautilus-dbus-manager.h',
   'nautilus-error-reporting.c',
