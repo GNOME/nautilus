@@ -286,7 +286,8 @@ real_get_selection (NautilusFilesView *files_view)
     {
         NautilusViewItemModel *item_model;
 
-        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (l->data));
+        item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
+                                            gtk_flow_box_child_get_index (l->data));
         selected_files = g_list_prepend (selected_files,
                                          g_object_ref (nautilus_view_item_model_get_file (item_model)));
     }
@@ -704,7 +705,7 @@ on_button_press_event (GtkGestureMultiPress *gesture,
     GdkEventSequence *sequence;
     const GdkEvent *event;
     g_autolist (NautilusFile) selection = NULL;
-    GtkWidget *child_at_pos;
+    GtkFlowBoxChild *child_at_pos;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
@@ -713,14 +714,14 @@ on_button_press_event (GtkGestureMultiPress *gesture,
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (self->view_ui,
-                                                              x, y));
+    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, x, y);
     if (child_at_pos != NULL)
     {
         NautilusFile *selected_file;
         NautilusViewItemModel *item_model;
 
-        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child_at_pos));
+        item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
+                                            gtk_flow_box_child_get_index (child_at_pos));
         selected_file = nautilus_view_item_model_get_file (item_model);
         if (g_list_find (selection, selected_file) == NULL)
         {
@@ -759,7 +760,7 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 {
     NautilusViewIconController *self;
     g_autoptr (GList) selection = NULL;
-    GtkWidget *child_at_pos;
+    GtkFlowBoxChild *child_at_pos;
     GdkEventButton *event_button;
     GdkEventSequence *event_sequence;
     GdkEvent *event;
@@ -772,14 +773,15 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (self->view_ui,
-                                                              event_button->x, event_button->y));
+    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui,
+                                                  event_button->x, event_button->y);
     if (child_at_pos != NULL)
     {
         NautilusFile *selected_file;
         NautilusViewItemModel *item_model;
 
-        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child_at_pos));
+        item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
+                                            gtk_flow_box_child_get_index (child_at_pos));
         selected_file = nautilus_view_item_model_get_file (item_model);
         if (g_list_find (selection, selected_file) == NULL)
         {
@@ -990,7 +992,8 @@ on_child_activated (GtkFlowBox      *flow_box,
     guint keyval;
     gboolean is_preview = FALSE;
 
-    item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child));
+    item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
+                                        gtk_flow_box_child_get_index (child));
     file = nautilus_view_item_model_get_file (item_model);
     list = g_list_append (list, file);
 

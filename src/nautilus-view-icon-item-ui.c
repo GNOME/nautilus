@@ -204,9 +204,3 @@ nautilus_view_icon_item_ui_new (NautilusViewItemModel *model)
                          "model", model,
                          NULL);
 }
-
-NautilusViewItemModel *
-nautilus_view_icon_item_ui_get_model (NautilusViewIconItemUi *self)
-{
-    return self->model;
-}
