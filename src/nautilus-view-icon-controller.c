@@ -8,6 +8,7 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-directory.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-thumbnails.h"
 
 struct _NautilusViewIconController
 {
@@ -26,6 +27,7 @@ struct _NautilusViewIconController
     GtkGesture *multi_press_gesture;
 
     guint scroll_to_file_handle_id;
+    guint prioritize_thumbnailing_handle_id;
     GtkAdjustment *vadjustment;
 };
 
@@ -946,30 +948,38 @@ real_end_loading (NautilusFilesView *files_view,
 {
 }
 
+static GtkFlowBoxChild *
+get_first_visible_item_ui (NautilusViewIconController *self)
+{
+    GtkFlowBoxChild *child_at_0;
+    gint x0;
+    gint y0;
+    gint scrolled_y;
+
+    child_at_0 = gtk_flow_box_get_child_at_index (self->view_ui, 0);
+    if (child_at_0 == NULL)
+    {
+        return NULL;
+    }
+    gtk_widget_translate_coordinates (GTK_WIDGET (child_at_0),
+                                      GTK_WIDGET (self->view_ui),
+                                      0, 0, &x0, &y0);
+    scrolled_y = gtk_adjustment_get_value (self->vadjustment);
+
+    return gtk_flow_box_get_child_at_pos (self->view_ui,
+                                          x0,
+                                          MAX (y0, scrolled_y));
+}
+
 static char *
 real_get_first_visible_file (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     GtkFlowBoxChild *child;
-    gint x0;
-    gint y0;
-    gint scrolled_y;
     NautilusViewItemModel *item;
     gchar *uri = NULL;
 
-    scrolled_y = gtk_adjustment_get_value (self->vadjustment);
-
-    child = gtk_flow_box_get_child_at_index (self->view_ui, 0);
-    if (child == NULL)
-    {
-        return NULL;
-    }
-    gtk_widget_translate_coordinates (GTK_WIDGET (child),
-                                      GTK_WIDGET (self->view_ui),
-                                      0, 0, &x0, &y0);
-    child = gtk_flow_box_get_child_at_pos (self->view_ui,
-                                           x0,
-                                           MAX (y0, scrolled_y));
+    child = get_first_visible_item_ui (self);
     if (child != NULL)
     {
         item = g_list_model_get_item (G_LIST_MODEL (self->model),
@@ -1191,6 +1201,7 @@ dispose (GObject *object)
 
     g_clear_object (&self->multi_press_gesture);
     g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
+    g_clear_handle_id (&self->prioritize_thumbnailing_handle_id, g_source_remove);
 
     g_signal_handlers_disconnect_by_data (nautilus_preferences, self);
 
@@ -1201,6 +1212,78 @@ static void
 finalize (GObject *object)
 {
     G_OBJECT_CLASS (nautilus_view_icon_controller_parent_class)->finalize (object);
+}
+
+static void
+prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
+{
+    gdouble page_size;
+    GtkFlowBoxChild *first_visible_child;
+    GtkFlowBoxChild *next_child;
+    gint first_index;
+    gint next_index;
+    gint y;
+    gint last_index;
+    gpointer item;
+    NautilusFile *file;
+
+    self->prioritize_thumbnailing_handle_id = 0;
+
+    page_size = gtk_adjustment_get_page_size (self->vadjustment);
+    first_visible_child = get_first_visible_item_ui (self);
+    if (first_visible_child == NULL)
+    {
+        return;
+    }
+
+    first_index = gtk_flow_box_child_get_index (first_visible_child);
+    for (next_index = first_index + 1; next_index < G_MAXINT; next_index++)
+    {
+        next_child = gtk_flow_box_get_child_at_index (self->view_ui, next_index);
+        if (next_child == NULL)
+        {
+            break;
+        }
+        if (gtk_widget_translate_coordinates (GTK_WIDGET (next_child),
+                                              GTK_WIDGET (first_visible_child),
+                                              0, 0, NULL, &y))
+        {
+            if (y > page_size)
+            {
+                break;
+            }
+        }
+    }
+    last_index = next_index - 1;
+
+    /* Do the iteration in reverse to give higher priority to the top */
+    for (gint i = last_index; i >= first_index; i--)
+    {
+        item = g_list_model_get_item (G_LIST_MODEL (self->model), i);
+        g_return_if_fail (item != NULL);
+
+        file = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL (item));
+        if (file != NULL && nautilus_file_is_thumbnailing (file))
+        {
+            g_autofree gchar *uri = nautilus_file_get_uri (file);
+            nautilus_thumbnail_prioritize (uri);
+        }
+    }
+}
+
+static void
+on_vadjustment_changed (GtkAdjustment *adjustment,
+                        gpointer       user_data)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    guint handle_id;
+
+    /* Schedule on idle to rate limit and to avoid delaying scrolling. */
+    if (self->prioritize_thumbnailing_handle_id == 0)
+    {
+        handle_id = g_idle_add ((GSourceFunc) prioritize_thumbnailing_on_idle, self);
+        self->prioritize_thumbnailing_handle_id = handle_id;
+    }
 }
 
 static void
@@ -1295,6 +1378,8 @@ constructed (GObject *object)
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
     self->vadjustment = vadjustment;
+    g_signal_connect (vadjustment, "changed", (GCallback) on_vadjustment_changed, self);
+    g_signal_connect (vadjustment, "value-changed", (GCallback) on_vadjustment_changed, self);
 
     self->model = nautilus_view_model_new ();
 
