@@ -5248,16 +5248,9 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
             /* We don't want frames around small icons */
             if (!gdk_pixbuf_get_has_alpha (file->details->thumbnail) || s >= 128 * scale)
             {
-                gboolean use_experimental_views;
-
-                use_experimental_views = g_settings_get_boolean (nautilus_preferences,
-                                                                 NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
-                if (!use_experimental_views)
+                if (nautilus_is_video_file (file))
                 {
-                    if (nautilus_is_video_file (file))
-                    {
-                        nautilus_ui_frame_video (&pixbuf);
-                    }
+                    nautilus_ui_frame_video (&pixbuf);
                 }
             }
 
