@@ -51,7 +51,6 @@
 #include "nautilus-application.h"
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
-#include "nautilus-canvas-view.h"
 #include "nautilus-clipboard.h"
 #include "nautilus-compress-dialog-controller.h"
 #include "nautilus-directory.h"
