@@ -117,7 +117,7 @@ static const SortConstants sorts_constants[] =
     }
 };
 
-static guint get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level);
+static guint get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level);
 
 static const SortConstants *
 get_sorts_constants_from_action_target_name (const gchar *action_target_name)
@@ -499,12 +499,12 @@ real_bump_zoom_level (NautilusFilesView *files_view,
                       int                zoom_increment)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    NautilusCanvasZoomLevel new_level;
+    NautilusGridZoomLevel new_level;
 
     new_level = self->zoom_level + zoom_increment;
 
-    if (new_level >= NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL &&
-        new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST)
+    if (new_level >= NAUTILUS_GRID_ZOOM_LEVEL_SMALL &&
+        new_level <= NAUTILUS_GRID_ZOOM_LEVEL_LARGEST)
     {
         g_action_group_change_action_state (self->action_group,
                                             "zoom-to-level",
@@ -513,47 +513,47 @@ real_bump_zoom_level (NautilusFilesView *files_view,
 }
 
 static guint
-get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level)
+get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level)
 {
     switch (zoom_level)
     {
-        case NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL:
+        case NAUTILUS_GRID_ZOOM_LEVEL_SMALL:
         {
-            return NAUTILUS_CANVAS_ICON_SIZE_SMALL;
+            return NAUTILUS_GRID_ICON_SIZE_SMALL;
         }
         break;
 
-        case NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD:
+        case NAUTILUS_GRID_ZOOM_LEVEL_STANDARD:
         {
-            return NAUTILUS_CANVAS_ICON_SIZE_STANDARD;
+            return NAUTILUS_GRID_ICON_SIZE_STANDARD;
         }
         break;
 
-        case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE:
+        case NAUTILUS_GRID_ZOOM_LEVEL_LARGE:
         {
-            return NAUTILUS_CANVAS_ICON_SIZE_LARGE;
+            return NAUTILUS_GRID_ICON_SIZE_LARGE;
         }
         break;
 
-        case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER:
+        case NAUTILUS_GRID_ZOOM_LEVEL_LARGER:
         {
-            return NAUTILUS_CANVAS_ICON_SIZE_LARGER;
+            return NAUTILUS_GRID_ICON_SIZE_LARGER;
         }
         break;
 
-        case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST:
+        case NAUTILUS_GRID_ZOOM_LEVEL_LARGEST:
         {
-            return NAUTILUS_CANVAS_ICON_SIZE_LARGEST;
+            return NAUTILUS_GRID_ICON_SIZE_LARGEST;
         }
         break;
     }
-    g_return_val_if_reached (NAUTILUS_CANVAS_ICON_SIZE_STANDARD);
+    g_return_val_if_reached (NAUTILUS_GRID_ICON_SIZE_STANDARD);
 }
 
 static gint
 get_default_zoom_level (void)
 {
-    NautilusCanvasZoomLevel default_zoom_level;
+    NautilusGridZoomLevel default_zoom_level;
 
     default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
                                               NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
@@ -631,7 +631,7 @@ real_restore_standard_zoom_level (NautilusFilesView *files_view)
     self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     g_action_group_change_action_state (self->action_group,
                                         "zoom-to-level",
-                                        g_variant_new_int32 (NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE));
+                                        g_variant_new_int32 (NAUTILUS_GRID_ZOOM_LEVEL_LARGE));
 }
 
 static gfloat
@@ -640,7 +640,7 @@ real_get_zoom_level_percentage (NautilusFilesView *files_view)
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
 
     return (gfloat) get_icon_size_for_zoom_level (self->zoom_level) /
-           NAUTILUS_CANVAS_ICON_SIZE_LARGE;
+           NAUTILUS_GRID_ICON_SIZE_LARGE;
 }
 
 static gboolean
@@ -652,7 +652,7 @@ real_is_zoom_level_default (NautilusFilesView *files_view)
     self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     icon_size = get_icon_size_for_zoom_level (self->zoom_level);
 
-    return icon_size == NAUTILUS_CANVAS_ICON_SIZE_LARGE;
+    return icon_size == NAUTILUS_GRID_ICON_SIZE_LARGE;
 }
 
 static gboolean
@@ -660,7 +660,7 @@ real_can_zoom_in (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
 
-    return self->zoom_level < NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST;
+    return self->zoom_level < NAUTILUS_GRID_ZOOM_LEVEL_LARGEST;
 }
 
 static gboolean
@@ -668,7 +668,7 @@ real_can_zoom_out (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
 
-    return self->zoom_level > NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL;
+    return self->zoom_level > NAUTILUS_GRID_ZOOM_LEVEL_SMALL;
 }
 
 static GdkRectangle *

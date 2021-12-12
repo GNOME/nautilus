@@ -5208,7 +5208,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     }
     else
     {
-        modified_size = size * scale * NAUTILUS_CANVAS_ICON_SIZE_STANDARD / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
+        modified_size = size * scale * NAUTILUS_GRID_ICON_SIZE_STANDARD / NAUTILUS_GRID_ICON_SIZE_SMALL;
     }
 
     if (file->details->thumbnail)
@@ -5218,9 +5218,9 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
         s = MAX (w, h);
         /* Don't scale up small thumbnails in the standard view */
-        if (s <= NAUTILUS_CANVAS_ICON_SIZE_STANDARD)
+        if (s <= NAUTILUS_GRID_ICON_SIZE_STANDARD)
         {
-            thumb_scale = (double) size / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
+            thumb_scale = (double) size / NAUTILUS_GRID_ICON_SIZE_SMALL;
         }
         else
         {
