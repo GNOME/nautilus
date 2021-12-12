@@ -193,11 +193,6 @@
       <summary>Whether to open the hovered folder after a timeout when drag and drop operation</summary>
       <description>If this is set to true, when performing a drag and drop operation the hovered folder will open automatically after a timeout.</description>
     </key>
-    <key type="b" name="use-experimental-views">
-      <default>false</default>
-      <summary>Enable new experimental views</summary>
-      <description>Whether to use the new experimental views using the latest GTK+ widgets to help giving feedback and shaping their future.</description>
-    </key>
     <key type="b" name="fts-enabled">
       <default>true</default>
       <summary>Whether to have full text search enabled by default when opening a new window/tab</summary>
@@ -222,11 +217,6 @@
     <key name="default-zoom-level" enum="org.gnome.nautilus.GridZoomLevel">
       <default>'large'</default>
       <summary>Default icon view zoom level</summary>
-    </key>
-    <key type="as" name="text-ellipsis-limit">
-      <default>[ '3' ]</default>
-      <summary>Text Ellipsis Limit</summary>
-      <description>A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form “Zoom Level:Integer”. For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form “Integer” without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 — always display overlong file names; 3 — shorten file names if they exceed three lines; smallest:5,smaller:4,0 — shorten file names if they exceed five lines for zoom level “smallest”. Shorten file names if they exceed four lines for zoom level “smaller”. Do not shorten file names for other zoom levels. Available zoom levels: small, standard, large.</description>
     </key>
   </schema>
 

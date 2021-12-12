@@ -84,14 +84,8 @@ typedef enum
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
 
-/* Experimental views */
-#define NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS "use-experimental-views"
-
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"captions"
-
-/* ellipsization preferences */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
 
 /* List View */
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
