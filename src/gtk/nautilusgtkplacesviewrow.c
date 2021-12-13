@@ -29,14 +29,6 @@
  * instead of including gtk.h
  */
 #ifdef GTK_COMPILATION
-#include "gtkbutton.h"
-#include "gtkeventbox.h"
-#include "gtkimage.h"
-#include "gtkintl.h"
-#include "gtklabel.h"
-#include "gtkspinner.h"
-#include "gtkstack.h"
-#include "gtktypebuiltins.h"
 #else
 #include <gtk/gtk.h>
 #endif

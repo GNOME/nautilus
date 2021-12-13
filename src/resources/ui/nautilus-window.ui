@@ -20,17 +20,6 @@
                 <property name="visible">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
-                <child>
-                  <object class="GtkPlacesSidebar" id="places_sidebar">
-                    <property name="vexpand">True</property>
-                    <property name="visible">True</property>
-                    <property name="populate-all">True</property>
-                    <property name="show-other-locations">True</property>
-                    <property name="show-starred-location">True</property>
-                    <signal name="show-other-locations-with-flags" handler="places_sidebar_show_other_locations_with_flags" object="NautilusWindow" swapped="yes" />
-                    <signal name="show-starred-location" handler="places_sidebar_show_starred_location" object="NautilusWindow" swapped="yes" />
-                  </object>
-                </child>
               </object>
               <packing>
                <property name="resize">False</property>

@@ -50,8 +50,8 @@
 struct _NautilusGtkPlacesViewPrivate
 {
   GVolumeMonitor                *volume_monitor;
-  GtkPlacesOpenFlags             open_flags;
-  GtkPlacesOpenFlags             current_open_flags;
+  NautilusGtkPlacesOpenFlags             open_flags;
+  NautilusGtkPlacesOpenFlags             current_open_flags;
 
   GFile                         *server_list_file;
   GFileMonitor                  *server_list_monitor;
@@ -150,14 +150,14 @@ static GParamSpec *properties [LAST_PROP];
 static void
 emit_open_location (NautilusGtkPlacesView      *view,
                     GFile              *location,
-                    GtkPlacesOpenFlags  open_flags)
+                    NautilusGtkPlacesOpenFlags  open_flags)
 {
   NautilusGtkPlacesViewPrivate *priv;
 
   priv = nautilus_gtk_places_view_get_instance_private (view);
 
   if ((open_flags & priv->open_flags) == 0)
-    open_flags = GTK_PLACES_OPEN_NORMAL;
+    open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
 
   g_signal_emit (view, places_view_signals[OPEN_LOCATION], 0, location, open_flags);
 }
@@ -350,7 +350,7 @@ set_busy_cursor (NautilusGtkPlacesView *view,
 static void
 activate_row (NautilusGtkPlacesView      *view,
               NautilusGtkPlacesViewRow   *row,
-              GtkPlacesOpenFlags  flags)
+              NautilusGtkPlacesOpenFlags  flags)
 {
   NautilusGtkPlacesViewPrivate *priv;
   GVolume *volume;
@@ -1567,7 +1567,7 @@ open_cb (GtkMenuItem      *item,
   NautilusGtkPlacesView *self;
 
   self = NAUTILUS_GTK_PLACES_VIEW (gtk_widget_get_ancestor (GTK_WIDGET (row), NAUTILUS_TYPE_GTK_PLACES_VIEW));
-  activate_row (self, row, GTK_PLACES_OPEN_NORMAL);
+  activate_row (self, row, NAUTILUS_GTK_PLACES_OPEN_NORMAL);
 }
 
 static void
@@ -1577,7 +1577,7 @@ open_in_new_tab_cb (GtkMenuItem      *item,
   NautilusGtkPlacesView *self;
 
   self = NAUTILUS_GTK_PLACES_VIEW (gtk_widget_get_ancestor (GTK_WIDGET (row), NAUTILUS_TYPE_GTK_PLACES_VIEW));
-  activate_row (self, row, GTK_PLACES_OPEN_NEW_TAB);
+  activate_row (self, row, NAUTILUS_GTK_PLACES_OPEN_NEW_TAB);
 }
 
 static void
@@ -1587,7 +1587,7 @@ open_in_new_window_cb (GtkMenuItem      *item,
   NautilusGtkPlacesView *self;
 
   self = NAUTILUS_GTK_PLACES_VIEW (gtk_widget_get_ancestor (GTK_WIDGET (row), NAUTILUS_TYPE_GTK_PLACES_VIEW));
-  activate_row (self, row, GTK_PLACES_OPEN_NEW_WINDOW);
+  activate_row (self, row, NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW);
 }
 
 static void
@@ -1709,7 +1709,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
   gtk_widget_show (item);
   gtk_menu_shell_append (GTK_MENU_SHELL (priv->popup_menu), item);
 
-  if (priv->open_flags & GTK_PLACES_OPEN_NEW_TAB)
+  if (priv->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB)
     {
       item = gtk_menu_item_new_with_mnemonic (_("Open in New _Tab"));
       g_signal_connect (item,
@@ -1720,7 +1720,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
       gtk_menu_shell_append (GTK_MENU_SHELL (priv->popup_menu), item);
     }
 
-  if (priv->open_flags & GTK_PLACES_OPEN_NEW_WINDOW)
+  if (priv->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW)
     {
       item = gtk_menu_item_new_with_mnemonic (_("Open in New _Window"));
       g_signal_connect (item,
@@ -1829,7 +1829,7 @@ on_key_press_event (GtkWidget     *widget,
           GtkWidget *focus_widget;
           GtkWindow *toplevel;
 
-          priv->current_open_flags = GTK_PLACES_OPEN_NORMAL;
+          priv->current_open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
           toplevel = get_toplevel (GTK_WIDGET (view));
 
           if (!toplevel)
@@ -1841,9 +1841,9 @@ on_key_press_event (GtkWidget     *widget,
             return FALSE;
 
           if ((event->state & modifiers) == GDK_SHIFT_MASK)
-            priv->current_open_flags = GTK_PLACES_OPEN_NEW_TAB;
+            priv->current_open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
           else if ((event->state & modifiers) == GDK_CONTROL_MASK)
-            priv->current_open_flags = GTK_PLACES_OPEN_NEW_WINDOW;
+            priv->current_open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW;
 
           activate_row (view, NAUTILUS_GTK_PLACES_VIEW_ROW (focus_widget), priv->current_open_flags);
 
@@ -1981,7 +1981,7 @@ on_listbox_row_activated (NautilusGtkPlacesView    *view,
   NautilusGtkPlacesViewPrivate *priv;
   GdkEvent *event;
   guint button;
-  GtkPlacesOpenFlags open_flags;
+  NautilusGtkPlacesOpenFlags open_flags;
 
   priv = nautilus_gtk_places_view_get_instance_private (view);
 
@@ -1989,7 +1989,7 @@ on_listbox_row_activated (NautilusGtkPlacesView    *view,
   gdk_event_get_button (event, &button);
 
   if (gdk_event_get_event_type (event) == GDK_BUTTON_RELEASE && button == GDK_BUTTON_MIDDLE)
-    open_flags = GTK_PLACES_OPEN_NEW_TAB;
+    open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
   else
     open_flags = priv->current_open_flags;
 
@@ -2291,7 +2291,7 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
    * NautilusGtkPlacesView::open-location:
    * @view: the object which received the signal.
    * @location: (type Gio.File): #GFile to which the caller should switch.
-   * @open_flags: a single value from #GtkPlacesOpenFlags specifying how the @location
+   * @open_flags: a single value from #NautilusGtkPlacesOpenFlags specifying how the @location
    * should be opened.
    *
    * The places view emits this signal when the user selects a location
@@ -2362,7 +2362,7 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
                               "Open Flags",
                               "Modes in which the calling application can open locations selected in the sidebar",
                               GTK_TYPE_PLACES_OPEN_FLAGS,
-                              GTK_PLACES_OPEN_NORMAL,
+                              NAUTILUS_GTK_PLACES_OPEN_NORMAL,
                               G_PARAM_READWRITE);
 
   g_object_class_install_properties (object_class, LAST_PROP, properties);
@@ -2401,7 +2401,7 @@ nautilus_gtk_places_view_init (NautilusGtkPlacesView *self)
   priv = nautilus_gtk_places_view_get_instance_private (self);
 
   priv->volume_monitor = g_volume_monitor_get ();
-  priv->open_flags = GTK_PLACES_OPEN_NORMAL;
+  priv->open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
   priv->path_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
   priv->space_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
@@ -2447,14 +2447,14 @@ nautilus_gtk_places_view_new (void)
  * argument will be set to one of the @flags that was passed in
  * nautilus_gtk_places_view_set_open_flags().
  *
- * Passing 0 for @flags will cause #GTK_PLACES_OPEN_NORMAL to always be sent
+ * Passing 0 for @flags will cause #NAUTILUS_GTK_PLACES_OPEN_NORMAL to always be sent
  * to callbacks for the “open-location” signal.
  *
  * Since: 3.18
  */
 void
 nautilus_gtk_places_view_set_open_flags (NautilusGtkPlacesView      *view,
-                                GtkPlacesOpenFlags  flags)
+                                NautilusGtkPlacesOpenFlags  flags)
 {
   NautilusGtkPlacesViewPrivate *priv;
 
@@ -2471,15 +2471,15 @@ nautilus_gtk_places_view_set_open_flags (NautilusGtkPlacesView      *view,
 
 /**
  * nautilus_gtk_places_view_get_open_flags:
- * @view: a #GtkPlacesSidebar
+ * @view: a #NautilusGtkPlacesSidebar
  *
  * Gets the open flags.
  *
- * Returns: the #GtkPlacesOpenFlags of @view
+ * Returns: the #NautilusGtkPlacesOpenFlags of @view
  *
  * Since: 3.18
  */
-GtkPlacesOpenFlags
+NautilusGtkPlacesOpenFlags
 nautilus_gtk_places_view_get_open_flags (NautilusGtkPlacesView *view)
 {
   NautilusGtkPlacesViewPrivate *priv;
