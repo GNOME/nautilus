@@ -142,8 +142,7 @@ struct _NautilusPropertiesWindow
     AdwComboRow *owner_folder_access_row;
     AdwComboRow *owner_file_access_row;
 
-    GtkWidget *group_value_stack;
-
+    AdwComboRow *group_row;
     AdwComboRow *group_access_row;
     AdwComboRow *group_folder_access_row;
     AdwComboRow *group_file_access_row;
@@ -463,6 +462,8 @@ static void is_directory_ready_callback (NautilusFile *file,
 static void cancel_group_change_callback (GroupChange *change);
 static void cancel_owner_change_callback (OwnerChange *change);
 static void update_owner_row (AdwComboRow       *row,
+                              TargetPermissions *target_perm);
+static void update_group_row (AdwComboRow       *row,
                               TargetPermissions *target_perm);
 static void select_image_button_callback (GtkWidget                *widget,
                                           NautilusPropertiesWindow *self);
@@ -1214,6 +1215,7 @@ properties_window_update (NautilusPropertiesWindow *self,
         g_autofree TargetPermissions *target_perm = get_target_permissions (self);
 
         update_owner_row (self->owner_row, target_perm);
+        update_group_row (self->group_row, target_perm);
         g_list_foreach (self->permission_buttons,
                         (GFunc) permission_button_update,
                         self);
@@ -1569,186 +1571,33 @@ unschedule_or_cancel_group_change (NautilusPropertiesWindow *self)
     }
 }
 
+/** Apply group owner change on user selection. */
 static void
-changed_group_callback (GtkComboBox  *combo_box,
-                        NautilusFile *file)
+changed_group_callback (AdwComboRow              *row,
+                        GParamSpec               *pspec,
+                        NautilusPropertiesWindow *self)
 {
-    NautilusPropertiesWindow *self;
-    g_autofree char *group = NULL;
-    g_autofree char *cur_group = NULL;
+    guint selected_pos = adw_combo_row_get_selected (row);
 
-    g_assert (GTK_IS_COMBO_BOX (combo_box));
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
 
-    group = gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (combo_box));
-    cur_group = nautilus_file_get_group_name (file);
-
-    if (group != NULL && strcmp (group, cur_group) != 0)
+    if (selected_pos >= 0)
     {
-        /* Try to change file group. If this fails, complain to user. */
-        self = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (combo_box), GTK_TYPE_WINDOW));
+        NautilusFile *file = get_target_file (self);
+        GListModel *list = adw_combo_row_get_model (row);
+        const gchar *new_group_name = gtk_string_list_get_string (GTK_STRING_LIST (list), selected_pos);
+        g_autofree char *current_group_name = nautilus_file_get_group_name (file);
 
-        unschedule_or_cancel_group_change (self);
-        schedule_group_change (self, file, group);
-    }
-}
+        g_assert (new_group_name);
+        g_assert (current_group_name);
 
-/* returns the index of the given entry in the the given column
- * at the first level of model. Returns -1 if entry can't be found
- * or entry is NULL.
- * */
-static int
-tree_model_get_entry_index (GtkTreeModel *model,
-                            unsigned int  column,
-                            const char   *entry)
-{
-    GtkTreeIter iter;
-    int index;
-    gboolean empty_model;
-
-    g_assert (GTK_IS_TREE_MODEL (model));
-    g_assert (gtk_tree_model_get_column_type (model, column) == G_TYPE_STRING);
-
-    empty_model = !gtk_tree_model_get_iter_first (model, &iter);
-    if (!empty_model && entry != NULL)
-    {
-        index = 0;
-
-        do
+        if (strcmp (new_group_name, current_group_name) != 0)
         {
-            g_autofree char *val = NULL;
-
-            gtk_tree_model_get (model, &iter,
-                                column, &val,
-                                -1);
-            if (val != NULL && !strcmp (val, entry))
-            {
-                return index;
-            }
-
-            index++;
+            /* Try to change file group. If this fails, complain to user. */
+            unschedule_or_cancel_group_change (self);
+            schedule_group_change (self, file, new_group_name);
         }
-        while (gtk_tree_model_iter_next (model, &iter));
     }
-
-    return GTK_INVALID_LIST_POSITION;
-}
-
-
-static void
-synch_groups_combo_box (GtkComboBox  *combo_box,
-                        NautilusFile *file)
-{
-    GList *groups = NULL;
-    GList *node;
-    GtkTreeModel *model;
-    GtkListStore *store;
-    const char *group_name;
-    g_autofree char *current_group_name = NULL;
-    int group_index;
-    int current_group_index;
-    guint current_group_hash, stored_group_hash;
-
-    g_assert (GTK_IS_COMBO_BOX (combo_box));
-    g_assert (NAUTILUS_IS_FILE (file));
-
-    if (nautilus_file_is_gone (file))
-    {
-        return;
-    }
-
-    groups = nautilus_file_get_settable_group_names (file);
-
-    current_group_hash = hash_string_list (groups);
-    stored_group_hash = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (combo_box), "group-hash"));
-
-    model = gtk_combo_box_get_model (combo_box);
-    store = GTK_LIST_STORE (model);
-    g_assert (GTK_IS_LIST_STORE (model));
-
-    if (stored_group_hash != current_group_hash)
-    {
-        /* Clear the contents of ComboBox in a wacky way because there
-         * is no function to clear all items and also no function to obtain
-         * the number of items in a combobox.
-         */
-        gtk_list_store_clear (store);
-
-        for (node = groups, group_index = 0; node != NULL; node = node->next, ++group_index)
-        {
-            group_name = (const char *) node->data;
-            gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combo_box), group_name);
-        }
-
-        g_object_set_data (G_OBJECT (combo_box), "group-hash", GUINT_TO_POINTER (current_group_hash));
-    }
-
-    current_group_name = nautilus_file_get_group_name (file);
-    current_group_index = tree_model_get_entry_index (model, 0, current_group_name);
-
-    /* If current group wasn't in list, we prepend it (with a separator).
-     * This can happen if the current group is an id with no matching
-     * group in the groups file.
-     */
-    if (current_group_index < 0 && current_group_name != NULL)
-    {
-        if (groups != NULL)
-        {
-            /* add separator */
-            gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (combo_box), "-");
-        }
-
-        gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (combo_box), current_group_name);
-        current_group_index = 0;
-    }
-    gtk_combo_box_set_active (combo_box, current_group_index);
-
-    g_list_free_full (groups, g_free);
-}
-
-static gboolean
-combo_box_row_separator_func (GtkTreeModel *model,
-                              GtkTreeIter  *iter,
-                              gpointer      data)
-{
-    g_autofree gchar *text = NULL;
-
-    gtk_tree_model_get (model, iter, 0, &text, -1);
-
-    if (text == NULL)
-    {
-        return FALSE;
-    }
-
-    if (strcmp (text, "-") == 0)
-    {
-        return TRUE;
-    }
-    else
-    {
-        return FALSE;
-    }
-}
-
-static void
-setup_group_combo_box (GtkWidget    *combo_box,
-                       NautilusFile *file)
-{
-    gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box),
-                                          combo_box_row_separator_func,
-                                          NULL,
-                                          NULL);
-
-    synch_groups_combo_box (GTK_COMBO_BOX (combo_box), file);
-
-    /* Connect to signal to update menu when file changes. */
-    g_signal_connect_object (file, "changed",
-                             G_CALLBACK (synch_groups_combo_box),
-                             combo_box, G_CONNECT_SWAPPED);
-    g_signal_connect_data (combo_box, "changed",
-                           G_CALLBACK (changed_group_callback),
-                           nautilus_file_ref (file),
-                           (GClosureNotify) nautilus_file_unref, 0);
 }
 
 static void
@@ -1914,6 +1763,16 @@ string_list_item_starts_with_word (GListModel *list,
            && strlen (word) == get_first_word_length (entry_str);
 }
 
+static gboolean
+string_list_item_equals_string (GListModel *list,
+                                guint       position,
+                                const char *string)
+{
+    const gchar *entry_str = gtk_string_list_get_string (GTK_STRING_LIST (list), position);
+
+    return strcmp (entry_str, string) == 0;
+}
+
 /* Select correct owner if file permissions have changed. */
 static void
 update_owner_row (AdwComboRow       *row,
@@ -1958,6 +1817,51 @@ update_owner_row (AdwComboRow       *row,
         g_signal_handlers_disconnect_by_func (row, G_CALLBACK (changed_owner_callback), self);
 
         ownership_row_set_single_entry (row, owner_name, string_list_item_starts_with_word);
+    }
+}
+
+/* Select correct group if file permissions have changed. */
+static void
+update_group_row (AdwComboRow       *row,
+                  TargetPermissions *target_perm)
+{
+    NautilusPropertiesWindow *self = target_perm->window;
+    gboolean provide_dropdown = (!target_perm->is_multi_file_window
+                                 && nautilus_file_can_set_group (get_target_file (self)));
+    gboolean had_dropdown = gtk_widget_is_sensitive (GTK_WIDGET (row));
+
+    gtk_widget_set_sensitive (GTK_WIDGET (row), provide_dropdown);
+
+    if (provide_dropdown)
+    {
+        NautilusFile *file = get_target_file (self);
+        g_autofree char *group_name = nautilus_file_get_group_name (file);
+        GList *groups = nautilus_file_get_settable_group_names (file);
+        update_combo_row_dropdown (row, groups);
+
+        /* display current group */
+        select_ownership_row_entry (row, group_name, string_list_item_equals_string);
+
+        if (!had_dropdown)
+        {
+            /* Update file when selection changes. */
+            g_signal_connect (row, "notify::selected",
+                              G_CALLBACK (changed_group_callback),
+                              self);
+        }
+    }
+    else
+    {
+        g_autofree char *group_name = file_list_get_string_attribute (self->target_files,
+                                                                      "group");
+        if (group_name == NULL)
+        {
+            group_name = g_strdup (_("Multiple"));
+        }
+
+        g_signal_handlers_disconnect_by_func (row, G_CALLBACK (changed_group_callback), self);
+
+        ownership_row_set_single_entry (row, group_name, string_list_item_equals_string);
     }
 }
 
@@ -3362,33 +3266,12 @@ create_permissions_row (NautilusPropertiesWindow *self,
 static void
 create_simple_permissions (NautilusPropertiesWindow *self)
 {
-    GtkWidget *group_combo_box;
-    GtkWidget *group_value_label;
     FilterType filter_type = files_get_filter_type (self);
 
     g_assert (filter_type != NO_FILES_OR_FOLDERS);
 
     setup_ownership_row (self, self->owner_row);
-
-    if (!is_multi_file_window (self) && nautilus_file_can_set_group (get_target_file (self)))
-    {
-        /* Combo box in this case. */
-        group_combo_box = gtk_stack_get_child_by_name (GTK_STACK (self->group_value_stack), "combo_box");
-        gtk_stack_set_visible_child (GTK_STACK (self->group_value_stack), group_combo_box);
-        setup_group_combo_box (group_combo_box, get_target_file (self));
-    }
-    else
-    {
-        group_value_label = gtk_stack_get_child_by_name (GTK_STACK (self->group_value_stack), "label");
-        gtk_stack_set_visible_child (GTK_STACK (self->group_value_stack), group_value_label);
-
-        /* Stash a copy of the file attribute name in this field for the callback's sake. */
-        g_object_set_data_full (G_OBJECT (group_value_label), "file_attribute",
-                                g_strdup ("group"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             group_value_label);
-    }
+    setup_ownership_row (self, self->group_row);
 
     if (filter_type == FILES_AND_FOLDERS)
     {
@@ -4912,7 +4795,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_folder_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_file_access_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_value_stack);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_folder_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_file_access_row);

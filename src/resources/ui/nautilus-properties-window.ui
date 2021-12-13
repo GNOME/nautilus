@@ -616,55 +616,6 @@
                                 <property name="row_spacing">6</property>
                                 <property name="column_spacing">12</property>
                                 <child>
-                                  <object class="GtkLabel" id="group_label">
-                                    <property name="margin_top">12</property>
-                                    <property name="label" translatable="yes">_Group</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="mnemonic_widget">group_combo_box</property>
-                                    <property name="xalign">1</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="row">2</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkStack" id="group_value_stack">
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">combo_box</property>
-                                        <property name="title">page0</property>
-                                        <property name="child">
-                                          <object class="GtkComboBoxText" id="group_combo_box">
-                                            <property name="halign">start</property>
-                                            <property name="margin_top">12</property>
-                                          </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">label</property>
-                                        <property name="title">page1</property>
-                                        <property name="child">
-                                          <object class="GtkLabel" id="group_value_label">
-                                            <property name="margin_top">12</property>
-                                            <property name="selectable">True</property>
-                                            <property name="xalign">0</property>
-                                          </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">2</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
                                   <object class="GtkLabel" id="others_label">
                                     <property name="margin_top">12</property>
                                     <property name="label" translatable="yes">Others</property>
@@ -723,6 +674,14 @@
                                 <child>
                                   <object class="GtkListBox" id="group_list_box">
                                     <property name="selection-mode">none</property>
+                                    <child>
+                                      <object class="AdwComboRow" id="group_row">
+                                        <property name="sensitive">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="title" translatable="yes">_Group</property>
+                                        <property name="use-underline">True</property>
+                                      </object>
+                                    </child>
                                     <child>
                                       <object class="AdwComboRow" id="group_access_row">
                                         <property name="visible">False</property>
