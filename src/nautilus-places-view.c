@@ -26,6 +26,7 @@
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-gtk4-helpers.h"
 
 typedef struct
 {
@@ -397,7 +398,7 @@ nautilus_places_view_init (NautilusPlacesView *self)
     gtk_widget_set_hexpand (priv->places_view, TRUE);
     gtk_widget_set_vexpand (priv->places_view, TRUE);
     gtk_widget_show (priv->places_view);
-    gtk_grid_attach_next_to (GTK_GRID (self), priv->places_view, NULL, GTK_POS_BOTTOM, 1, 1);
+    gtk_box_append (GTK_BOX (self), priv->places_view);
 
     g_signal_connect_swapped (priv->places_view,
                               "notify::loading",
