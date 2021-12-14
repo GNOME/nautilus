@@ -541,6 +541,32 @@ trash_or_delete_files (GtkWindow   *parent_window,
     g_list_free_full (locations, g_object_unref);
 }
 
+typedef struct
+{
+    GtkWindow *parent_window;
+    NautilusFile *file;
+} TrashBrokenSymbolicLinkData;
+
+static void
+trash_symbolic_link_cb (GtkDialog *dialog,
+                        gint       response_id,
+                        gpointer   user_data)
+{
+    g_autofree TrashBrokenSymbolicLinkData *data = NULL;
+    GList file_as_list;
+
+    data = user_data;
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+
+    if (response_id == GTK_RESPONSE_YES)
+    {
+        file_as_list.data = data->file;
+        file_as_list.next = NULL;
+        file_as_list.prev = NULL;
+        trash_or_delete_files (data->parent_window, &file_as_list, TRUE);
+    }
+}
+
 static void
 report_broken_symbolic_link (GtkWindow    *parent_window,
                              NautilusFile *file)
@@ -550,8 +576,8 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
     char *prompt;
     char *detail;
     GtkDialog *dialog;
-    GList file_as_list;
-    int response;
+    TrashBrokenSymbolicLinkData *data;
+
     gboolean can_trash;
 
     g_assert (nautilus_file_is_broken_symbolic_link (file));
@@ -582,15 +608,15 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
 
     if (!can_trash)
     {
-        eel_run_simple_dialog (GTK_WIDGET (parent_window), FALSE, GTK_MESSAGE_WARNING,
-                               prompt, detail, _("_Cancel"), NULL);
+        dialog = eel_show_simple_dialog (GTK_WIDGET (parent_window), GTK_MESSAGE_WARNING,
+                                         prompt, detail, _("_Cancel"), NULL);
         goto out;
     }
 
     dialog = eel_show_yes_no_dialog (prompt, detail, _("Mo_ve to Trash"), _("_Cancel"),
                                      parent_window);
 
-    gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
+    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
 
     /* Make this modal to avoid problems with reffing the view & file
      * to keep them around in case the view changes, which would then
@@ -601,16 +627,14 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
      * to change wildly, I don't want to mess with this now.
      */
 
-    response = gtk_dialog_run (dialog);
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    data = g_new0 (TrashBrokenSymbolicLinkData, 1);
+    data->parent_window = parent_window;
+    data->file = file;
 
-    if (response == GTK_RESPONSE_YES)
-    {
-        file_as_list.data = file;
-        file_as_list.next = NULL;
-        file_as_list.prev = NULL;
-        trash_or_delete_files (parent_window, &file_as_list, TRUE);
-    }
+    g_signal_connect (G_OBJECT (dialog),
+                      "response",
+                      G_CALLBACK (trash_symbolic_link_cb),
+                      data);
 
 out:
     g_free (prompt);
