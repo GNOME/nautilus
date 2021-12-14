@@ -161,8 +161,25 @@ out:
          *  there is no way to get it back. */
         gtk_window_set_keep_above (GTK_WINDOW (dialog), TRUE);
 
-        gtk_dialog_run (GTK_DIALOG (dialog));
-        gtk_widget_destroy (dialog);
+        g_signal_connect (dialog,
+                          "response",
+                          G_CALLBACK (gtk_widget_destroy),
+                          NULL);
+
+        gtk_widget_show_all (dialog);
+    }
+}
+
+static void
+autorun_software_dialog_response (GtkDialog *dialog,
+                                  gint       response_id,
+                                  GMount    *mount)
+{
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+
+    if (response_id == GTK_RESPONSE_OK)
+    {
+        autorun (mount);
     }
 }
 
@@ -223,13 +240,12 @@ present_autorun_for_software_dialog (GMount *mount)
                            _("_Run"),
                            GTK_RESPONSE_OK);
 
-    gtk_widget_show_all (dialog);
+    g_signal_connect (dialog,
+                      "response",
+                      G_CALLBACK (autorun_software_dialog_response),
+                      mount);
 
-    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
-    {
-        gtk_widget_destroy (dialog);
-        autorun (mount);
-    }
+    gtk_widget_show_all (dialog);
 }
 
 int
