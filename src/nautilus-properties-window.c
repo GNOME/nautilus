@@ -400,6 +400,8 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
     gint icon_scale;
 
     icon_scale = gtk_widget_get_scale_factor (GTK_WIDGET (self->notebook));
+    /* FIXME: Temporary regression: HiDPI icons not supported, ignore scale. */
+    icon_scale = 1;
 
     for (l = self->original_files; l != NULL; l = l->next)
     {
@@ -451,7 +453,6 @@ static void
 update_properties_window_icon (NautilusPropertiesWindow *self)
 {
     g_autoptr (GdkPixbuf) pixbuf = NULL;
-    cairo_surface_t *surface;
     g_autofree char *name = NULL;
 
     get_image_for_properties_window (self, &name, &pixbuf);
@@ -461,12 +462,8 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
         gtk_window_set_icon_name (GTK_WINDOW (self), name);
     }
 
-    surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, gtk_widget_get_scale_factor (GTK_WIDGET (self)),
-                                                    gtk_widget_get_window (GTK_WIDGET (self)));
-    gtk_image_set_from_surface (GTK_IMAGE (self->icon_image), surface);
-    gtk_image_set_from_surface (GTK_IMAGE (self->icon_button_image), surface);
-
-    cairo_surface_destroy (surface);
+    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon_image), pixbuf);
+    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon_button_image), pixbuf);
 }
 
 /* utility to test if a uri refers to a local image */
