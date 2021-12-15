@@ -174,7 +174,7 @@ nautilus_list_model_get_column_type (GtkTreeModel *tree_model,
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
         {
-            return CAIRO_GOBJECT_TYPE_SURFACE;
+            return GDK_TYPE_PIXBUF;
         }
 
         case NAUTILUS_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
@@ -303,6 +303,9 @@ nautilus_list_model_get_icon_scale (NautilusListModel *model)
         retval = gdk_monitor_get_scale_factor (gdk_display_get_monitor (gdk_display_get_default (), 0));
     }
 
+    /* FIXME: Temporary regression: HiDPI icons not supported, ignore scale. */
+    retval = 1;
+
     return retval;
 }
 
@@ -349,7 +352,6 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
     int icon_size, icon_scale;
     NautilusListZoomLevel zoom_level;
     NautilusFileIconFlags flags;
-    cairo_surface_t *surface;
 
     model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
@@ -383,7 +385,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
         {
-            g_value_init (value, CAIRO_GOBJECT_TYPE_SURFACE);
+            g_value_init (value, GDK_TYPE_PIXBUF);
 
             if (file != NULL)
             {
@@ -432,8 +434,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                     }
                 }
 
-                surface = gdk_cairo_surface_create_from_pixbuf (icon, icon_scale, NULL);
-                g_value_take_boxed (value, surface);
+                g_value_set_object (value, icon);
                 g_object_unref (icon);
             }
         }
