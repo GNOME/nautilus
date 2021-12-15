@@ -25,9 +25,6 @@
 #include <glib/gi18n.h>
 #include <math.h>
 
-#include "animation/ide-box-theatric.h"
-#include "animation/egg-animation.h"
-
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
 #include "nautilus-file-operations.h"
@@ -45,9 +42,6 @@
 #define OPERATION_MINIMUM_TIME 2 /*s */
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
 #define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 /*s */
-
-#define ANIMATION_X_GROW 30
-#define ANIMATION_Y_GROW 30
 
 /* Just design, context at https://gitlab.gnome.org/GNOME/nautilus/issues/548#note_274131 */
 
@@ -547,40 +541,6 @@ update_operations (NautilusToolbar *self)
         gtk_revealer_set_reveal_child (GTK_REVEALER (self->operations_revealer),
                                        TRUE);
         gtk_widget_queue_draw (self->operations_icon);
-
-        /* Show the popover at start to increase visibility.
-         * Check whether the toolbar is visible or not before showing the
-         * popover. This can happens if the window has the disables-chrome
-         * property set. */
-        if (gtk_widget_is_visible (GTK_WIDGET (self)))
-        {
-            GtkAllocation rect;
-            IdeBoxTheatric *theatric;
-
-            gtk_widget_get_allocation (GTK_WIDGET (self->operations_button), &rect);
-            theatric = g_object_new (IDE_TYPE_BOX_THEATRIC,
-                                     "alpha", 0.9,
-                                     "background", "#fdfdfd",
-                                     "target", self->operations_button,
-                                     "height", rect.height,
-                                     "width", rect.width,
-                                     "x", rect.x,
-                                     "y", rect.y,
-                                     NULL);
-
-            egg_object_animate_full (theatric,
-                                     EGG_ANIMATION_EASE_IN_CUBIC,
-                                     250,
-                                     gtk_widget_get_frame_clock (GTK_WIDGET (self->operations_button)),
-                                     g_object_unref,
-                                     theatric,
-                                     "x", rect.x - ANIMATION_X_GROW,
-                                     "width", rect.width + (ANIMATION_X_GROW * 2),
-                                     "y", rect.y - ANIMATION_Y_GROW,
-                                     "height", rect.height + (ANIMATION_Y_GROW * 2),
-                                     "alpha", 0.0,
-                                     NULL);
-        }
     }
 
     /* Since we removed the info widgets, we need to restore the focus */
