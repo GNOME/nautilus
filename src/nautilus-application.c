@@ -1121,11 +1121,11 @@ theme_changed (GtkSettings *settings)
     static GtkCssProvider *provider = NULL;
     static GtkCssProvider *permanent_provider = NULL;
     gchar *theme;
-    GdkScreen *screen;
+    GdkDisplay *display;
     GFile *file;
 
     g_object_get (settings, "gtk-theme-name", &theme, NULL);
-    screen = gdk_screen_get_default ();
+    display = gdk_display_get_default ();
 
     /* CSS that themes can override */
     if (g_str_equal (theme, "Adwaita") || g_str_equal (theme, "Adwaita-dark"))
@@ -1138,14 +1138,14 @@ theme_changed (GtkSettings *settings)
             g_object_unref (file);
         }
 
-        gtk_style_context_add_provider_for_screen (screen,
-                                                   GTK_STYLE_PROVIDER (provider),
-                                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        gtk_style_context_add_provider_for_display (display,
+                                                    GTK_STYLE_PROVIDER (provider),
+                                                    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
     else if (provider != NULL)
     {
-        gtk_style_context_remove_provider_for_screen (screen,
-                                                      GTK_STYLE_PROVIDER (provider));
+        gtk_style_context_remove_provider_for_display (display,
+                                                       GTK_STYLE_PROVIDER (provider));
         g_clear_object (&provider);
     }
 
@@ -1159,9 +1159,9 @@ theme_changed (GtkSettings *settings)
          * undefined and gtk happens to prefer the provider that got added last.
          * Use a higher priority here to avoid this problem.
          */
-        gtk_style_context_add_provider_for_screen (screen,
-                                                   GTK_STYLE_PROVIDER (permanent_provider),
-                                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
+        gtk_style_context_add_provider_for_display (display,
+                                                    GTK_STYLE_PROVIDER (permanent_provider),
+                                                    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
         g_object_unref (file);
     }
 
