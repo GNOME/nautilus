@@ -27,6 +27,13 @@
 
 void        nautilus_gmenu_set_from_model           (GMenu             *target_menu,
                                                      GMenuModel        *source_model);
+gint        nautilus_g_menu_model_find_by_string    (GMenuModel        *model,
+                                                     const gchar       *attribute,
+                                                     const gchar       *string);
+void        nautilus_g_menu_replace_string_in_item  (GMenu             *menu,
+                                                     gint               i,
+                                                     const gchar       *attribute,
+                                                     const gchar       *string);
 
 void        nautilus_ui_frame_video                 (GdkPixbuf        **pixbuf);
 

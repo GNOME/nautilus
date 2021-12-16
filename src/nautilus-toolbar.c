@@ -73,22 +73,19 @@ struct _NautilusToolbar
     guint operations_button_attention_timeout_id;
 
     GtkWidget *operations_button;
-    GtkWidget *view_button;
-    GtkWidget *view_menu_zoom_section;
-    GtkWidget *view_menu_undo_redo_section;
-    GtkWidget *view_menu_extended_section;
-    GtkWidget *undo_button;
-    GtkWidget *redo_button;
-    GtkWidget *view_toggle_button;
-    GtkWidget *view_toggle_icon;
-
-    GtkWidget *app_menu;
-
     GtkWidget *operations_popover;
     GtkWidget *operations_list;
     GListStore *progress_infos_model;
     GtkWidget *operations_revealer;
     GtkWidget *operations_icon;
+
+    GtkWidget *view_toggle_button;
+    GtkWidget *view_toggle_icon;
+    GtkWidget *view_button;
+    GMenuModel *view_menu;
+
+    GtkWidget *app_button;
+    GMenuModel *undo_redo_section;
 
     GtkWidget *forward_button;
     GtkWidget *forward_menu;
@@ -687,28 +684,15 @@ on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
 }
 
 static void
-update_menu_item (GtkWidget       *menu_item,
-                  NautilusToolbar *self,
-                  const char      *action_name,
-                  gboolean         enabled,
-                  char            *label)
+update_action (NautilusToolbar *self,
+               const char      *action_name,
+               gboolean         enabled)
 {
     GAction *action;
-    GValue val = G_VALUE_INIT;
 
     /* Activate/deactivate */
     action = g_action_map_lookup_action (G_ACTION_MAP (self->window), action_name);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
-
-    /* Set the text of the menu item. Can't use gtk_button_set_label here as
-     * we need to set the text property, not the label. There's no equivalent
-     * gtk_model_button_set_text function (refer to #766083 for discussion
-     * on adding a set_text function)
-     */
-    g_value_init (&val, G_TYPE_STRING);
-    g_value_set_string (&val, label);
-    g_object_set_property (G_OBJECT (menu_item), "text", &val);
-    g_value_unset (&val);
 }
 
 static void
@@ -723,6 +707,8 @@ undo_manager_changed (NautilusToolbar *self)
     g_autofree gchar *undo_description = NULL;
     g_autofree gchar *redo_description = NULL;
     gboolean is_undo;
+    g_autoptr (GMenu) updated_section = g_menu_new ();
+    g_autoptr (GMenuItem) menu_item = NULL;
 
     /* Look up the last action from the undo manager, and get the text that
      * describes it, e.g. "Undo Create Folder"/"Redo Create Folder"
@@ -750,14 +736,21 @@ undo_manager_changed (NautilusToolbar *self)
         g_free (undo_label);
         undo_label = g_strdup (_("_Undo"));
     }
-    update_menu_item (self->undo_button, self, "undo", undo_active, undo_label);
+    g_set_object (&menu_item, g_menu_item_new (undo_label, "win.undo"));
+    g_menu_append_item (updated_section, menu_item);
+    update_action (self, "undo", undo_active);
 
     if (!redo_active || redo_label == NULL)
     {
         g_free (redo_label);
         redo_label = g_strdup (_("_Redo"));
     }
-    update_menu_item (self->redo_button, self, "redo", redo_active, redo_label);
+    g_set_object (&menu_item, g_menu_item_new (redo_label, "win.redo"));
+    g_menu_append_item (updated_section, menu_item);
+    update_action (self, "redo", redo_active);
+
+    nautilus_gmenu_set_from_model (G_MENU (self->undo_redo_section),
+                                   G_MENU_MODEL (updated_section));
 }
 
 static void
@@ -1132,9 +1125,11 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_list);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_menu);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_button);
@@ -1143,12 +1138,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
-
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_zoom_section);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_undo_redo_section);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_extended_section);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, redo_button);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
 
@@ -1228,34 +1217,29 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
                                        NautilusWindowSlot *slot)
 {
     NautilusToolbarMenuSections *new_sections;
-
-    box_remove_all_children (GTK_BOX (self->view_menu_zoom_section));
-    box_remove_all_children (GTK_BOX (self->view_menu_extended_section));
+    g_autoptr (GMenuItem) zoom_item = NULL;
+    g_autoptr (GMenuItem) sort_item = NULL;
 
     new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
+
+    gtk_widget_set_sensitive (self->view_button, (new_sections != NULL));
     if (new_sections == NULL)
     {
         return;
     }
 
-    gtk_widget_set_visible (self->view_menu_undo_redo_section,
-                            new_sections->supports_undo_redo);
+    /* Let's assume that zoom and sort sections are the first and second items
+     * in view_menu, as per nautilus-toolbar.ui. */
 
-    if (new_sections->zoom_section != NULL)
-    {
-        gtk_box_pack_start (GTK_BOX (self->view_menu_zoom_section),
-                            new_sections->zoom_section, FALSE, FALSE, 0);
-    }
+    zoom_item = g_menu_item_new_from_model (self->view_menu, 0);
+    g_menu_remove (G_MENU (self->view_menu), 0);
+    g_menu_item_set_section (zoom_item, new_sections->zoom_section);
+    g_menu_insert_item (G_MENU (self->view_menu), 0, zoom_item);
 
-    if (new_sections->extended_section != NULL)
-    {
-        gtk_box_pack_start (GTK_BOX (self->view_menu_extended_section),
-                            new_sections->extended_section, FALSE, FALSE, 0);
-    }
-
-    gtk_widget_set_sensitive (self->view_button, (new_sections->extended_section != NULL ||
-                                                  new_sections->zoom_section != NULL ||
-                                                  new_sections->supports_undo_redo));
+    sort_item = g_menu_item_new_from_model (self->view_menu, 1);
+    g_menu_remove (G_MENU (self->view_menu), 1);
+    g_menu_item_set_section (sort_item, new_sections->sort_section);
+    g_menu_insert_item (G_MENU (self->view_menu), 1, sort_item);
 }
 
 
@@ -1403,9 +1387,14 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
 gboolean
 nautilus_toolbar_is_menu_visible (NautilusToolbar *self)
 {
+    GtkWidget *menu;
+
     g_return_val_if_fail (NAUTILUS_IS_TOOLBAR (self), FALSE);
 
-    return gtk_widget_is_visible (self->app_menu);
+    menu = GTK_WIDGET (gtk_menu_button_get_popover (GTK_MENU_BUTTON (self->app_button)));
+    g_return_val_if_fail (menu != NULL, FALSE);
+
+    return gtk_widget_is_visible (menu);
 }
 
 gboolean

@@ -67,6 +67,72 @@ nautilus_gmenu_set_from_model (GMenu      *target_menu,
     }
 }
 
+/**
+ * nautilus_g_menu_model_find_by_string:
+ * @model: the #GMenuModel with items to search
+ * @attribute: the menu item attribute to compare with
+ * @string: the string to match the value of @attribute
+ *
+ * This will search for an item in the model which has got the @attribute and
+ * whose value is equal to @string.
+ *
+ * It is assumed that @attribute has the a GVariant format string "s".
+ *
+ * Returns: The index of the first match in the model, or -1 if no item matches.
+ */
+gint
+nautilus_g_menu_model_find_by_string (GMenuModel  *model,
+                                      const gchar *attribute,
+                                      const gchar *string)
+{
+    gint item_index = -1;
+    gint n_items;
+
+    n_items = g_menu_model_get_n_items (model);
+    for (gint i = 0; i < n_items; i++)
+    {
+        g_autofree gchar *value = NULL;
+        if (g_menu_model_get_item_attribute (model, i, attribute, "s", &value) &&
+            g_strcmp0 (value, string) == 0)
+        {
+            item_index = i;
+            break;
+        }
+    }
+    return item_index;
+}
+
+/**
+ * nautilus_g_menu_replace_string_in_item:
+ * @menu: the #GMenu to modify
+ * @i: the position of the item to change
+ * @attribute: the menu item attribute to change
+ * @string: the string to change the value of @attribute to
+ *
+ * This will replace the item at @position with a new item which is identical
+ * except that it has @attribute set to @string.
+ *
+ * This is useful e.g. when want to change the menu model of a #GtkPopover and
+ * you have a pointer to its menu model but not to the popover itself, so you
+ * can't just set a new model. With this method, the GtkPopover is notified of
+ * changes in its model and updates its contents accordingly.
+ *
+ * It is assumed that @attribute has the a GVariant format string "s".
+ */
+void
+nautilus_g_menu_replace_string_in_item (GMenu       *menu,
+                                        gint         i,
+                                        const gchar *attribute,
+                                        const gchar *string)
+{
+    g_autoptr (GMenuItem) item = NULL;
+
+    item = g_menu_item_new_from_model (G_MENU_MODEL (menu), i);
+    g_menu_item_set_attribute (item, attribute, "s", string);
+    g_menu_remove (menu, i);
+    g_menu_insert_item (menu, i, item);
+}
+
 static GdkPixbuf *filmholes_left = NULL;
 static GdkPixbuf *filmholes_right = NULL;
 
