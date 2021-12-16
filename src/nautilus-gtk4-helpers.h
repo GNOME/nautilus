@@ -25,6 +25,8 @@ void gtk_info_bar_add_child        (GtkInfoBar        *info_bar,
                                     GtkWidget         *widget);
 void gtk_revealer_set_child        (GtkRevealer       *revealer,
                                     GtkWidget         *child);
+void gtk_popover_set_child         (GtkPopover        *popover,
+                                    GtkWidget         *child);
 
 GtkWidget *gtk_widget_get_first_child (GtkWidget *widget);
 GtkWidget *gtk_widget_get_focus_child (GtkWidget *widget);
