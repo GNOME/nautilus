@@ -1334,8 +1334,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="add_button">
-                        <property name="label" translatable="yes">_Add</property>
+                      <object class="GtkButton" id="forget_button">
+                        <property name="label" translatable="yes">_Forget</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -1346,6 +1346,18 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkButton" id="add_button">
+                        <property name="label" translatable="yes">_Add</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                      <packing>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkButton" id="set_as_default_button">
                         <property name="label" translatable="yes">Set as default</property>
                         <property name="visible">True</property>
@@ -1353,7 +1365,7 @@
                         <property name="receives_default">True</property>
                       </object>
                       <packing>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
