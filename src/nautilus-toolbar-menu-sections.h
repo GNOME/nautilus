@@ -24,9 +24,8 @@ G_BEGIN_DECLS
 typedef struct _NautilusToolbarMenuSections NautilusToolbarMenuSections;
 
 struct _NautilusToolbarMenuSections {
-        GtkWidget *zoom_section;
-        GtkWidget *extended_section;
-        gboolean   supports_undo_redo;
+        GMenuModel *sort_section;
+        GMenuModel *zoom_section;
 };
 
 G_END_DECLS

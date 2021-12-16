@@ -264,13 +264,6 @@ typedef struct
 
     /* Toolbar menu */
     NautilusToolbarMenuSections *toolbar_menu_sections;
-    GtkWidget *sort_menu;
-    GtkWidget *sort_trash_time;
-    GtkWidget *visible_columns;
-    GtkWidget *stop;
-    GtkWidget *reload;
-    GtkWidget *zoom_controls_box;
-    GtkWidget *zoom_level_label;
 
     /* Exposed menus, for the path bar etc. */
     GMenuModel *extensions_background_menu;
@@ -278,9 +271,6 @@ typedef struct
 
     /* Non exported menu, only for caching */
     GMenuModel *scripts_menu;
-
-    gulong stop_signal_handler;
-    gulong reload_signal_handler;
 
     GCancellable *starred_cancellable;
     NautilusTagManager *tag_manager;
@@ -3291,7 +3281,7 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->background_menu_model);
     g_clear_object (&priv->selection_menu_model);
     g_clear_object (&priv->toolbar_menu_sections->zoom_section);
-    g_clear_object (&priv->toolbar_menu_sections->extended_section);
+    g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
     g_clear_object (&priv->rename_file_controller);
@@ -8182,34 +8172,32 @@ nautilus_files_view_update_context_menus (NautilusFilesView *view)
 static void
 nautilus_files_view_reset_view_menu (NautilusFilesView *view)
 {
-    NautilusFilesViewPrivate *priv;
-    GActionGroup *view_action_group;
-    gboolean sort_available;
-    g_autofree gchar *zoom_level_percent = NULL;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
+    GMenuModel *zoom_section = priv->toolbar_menu_sections->zoom_section;
+    GMenuModel *sort_section = priv->toolbar_menu_sections->sort_section;
+    g_autofree gchar *zoom_level_percent = NULL;
+    const gchar *trashed_action;
+    gint i;
 
-    view_action_group = nautilus_files_view_get_action_group (view);
-    priv = nautilus_files_view_get_instance_private (view);
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
 
-    gtk_widget_set_visible (priv->visible_columns,
-                            g_action_group_has_action (view_action_group, "visible-columns"));
-
-    sort_available = g_action_group_get_action_enabled (view_action_group, "sort");
-    gtk_widget_set_visible (priv->sort_menu, sort_available);
-    gtk_widget_set_visible (priv->sort_trash_time,
-                            nautilus_file_is_in_trash (file));
-
-    /* We want to make insensitive available actions but that are not current
-     * available due to the directory
-     */
-    gtk_widget_set_sensitive (priv->sort_menu,
-                              !nautilus_files_view_is_empty (view));
-    gtk_widget_set_sensitive (priv->zoom_controls_box,
-                              !nautilus_files_view_is_empty (view));
-
+    /* We want to show the percentage like this:    [ - | 100% | + ]   */
     zoom_level_percent = g_strdup_printf ("%.0f%%", nautilus_files_view_get_zoom_level_percentage (view) * 100.0);
-    gtk_label_set_label (GTK_LABEL (priv->zoom_level_label), zoom_level_percent);
+    i = nautilus_g_menu_model_find_by_string (zoom_section, "action", "view.zoom-standard");
+    g_return_if_fail (i != -1);
+    nautilus_g_menu_replace_string_in_item (G_MENU (zoom_section), i,
+                                            "label", zoom_level_percent);
+
+    /* When not in Trash, set an inexistant action to hide the menu item. This
+     * works under the assumptiont that the menu item has its "hidden-when"
+     * attribute set to "action-disabled", and that an inexistant action is
+     * treated as a disabled action. */
+    trashed_action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
+    i = nautilus_g_menu_model_find_by_string (sort_section, "target", "trash-time");
+    g_return_if_fail (i != -1);
+    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i,
+                                            "action", trashed_action);
 }
 
 /* Convenience function to reset the menus owned by the view but managed on
@@ -9215,32 +9203,6 @@ on_event (GtkWidget *widget,
 }
 
 static void
-action_reload_enabled_changed (GActionGroup      *action_group,
-                               gchar             *action_name,
-                               gboolean           enabled,
-                               NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    gtk_widget_set_visible (priv->reload, enabled);
-}
-
-static void
-action_stop_enabled_changed (GActionGroup      *action_group,
-                             gchar             *action_name,
-                             gboolean           enabled,
-                             NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    gtk_widget_set_visible (priv->stop, enabled);
-}
-
-static void
 on_parent_changed (GObject    *object,
                    GParamSpec *pspec,
                    gpointer    user_data)
@@ -9258,18 +9220,6 @@ on_parent_changed (GObject    *object,
     parent = gtk_widget_get_parent (widget);
     window = nautilus_files_view_get_window (view);
 
-    if (priv->stop_signal_handler > 0)
-    {
-        g_signal_handler_disconnect (window, priv->stop_signal_handler);
-        priv->stop_signal_handler = 0;
-    }
-
-    if (priv->reload_signal_handler > 0)
-    {
-        g_signal_handler_disconnect (window, priv->reload_signal_handler);
-        priv->reload_signal_handler = 0;
-    }
-
     if (parent != NULL)
     {
         if (priv->slot == nautilus_window_get_active_slot (window))
@@ -9279,17 +9229,6 @@ on_parent_changed (GObject    *object,
                                             "view",
                                             G_ACTION_GROUP (priv->view_action_group));
         }
-
-        priv->stop_signal_handler =
-            g_signal_connect (window,
-                              "action-enabled-changed::stop",
-                              G_CALLBACK (action_stop_enabled_changed),
-                              view);
-        priv->reload_signal_handler =
-            g_signal_connect (window,
-                              "action-enabled-changed::reload",
-                              G_CALLBACK (action_reload_enabled_changed),
-                              view);
     }
     else
     {
@@ -9641,17 +9580,8 @@ nautilus_files_view_init (NautilusFilesView *view)
     /* Toolbar menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
     priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
-    priv->toolbar_menu_sections->supports_undo_redo = TRUE;
-    priv->toolbar_menu_sections->zoom_section = GTK_WIDGET (g_object_ref_sink (gtk_builder_get_object (builder, "zoom_section")));
-    priv->toolbar_menu_sections->extended_section = GTK_WIDGET (g_object_ref_sink (gtk_builder_get_object (builder, "extended_section")));
-    priv->zoom_controls_box = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_controls_box"));
-    priv->zoom_level_label = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_label"));
-
-    priv->sort_menu = GTK_WIDGET (gtk_builder_get_object (builder, "sort_menu"));
-    priv->sort_trash_time = GTK_WIDGET (gtk_builder_get_object (builder, "sort_trash_time"));
-    priv->visible_columns = GTK_WIDGET (gtk_builder_get_object (builder, "visible_columns"));
-    priv->reload = GTK_WIDGET (gtk_builder_get_object (builder, "reload"));
-    priv->stop = GTK_WIDGET (gtk_builder_get_object (builder, "stop"));
+    priv->toolbar_menu_sections->zoom_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "zoom_section")));
+    priv->toolbar_menu_sections->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
 
     g_signal_connect (view,
                       "end-file-changes",

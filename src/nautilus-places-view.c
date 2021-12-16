@@ -32,7 +32,6 @@ typedef struct
 {
     GFile *location;
     NautilusQuery *search_query;
-    NautilusToolbarMenuSections *toolbar_menu_sections;
 
     GtkWidget *places_view;
 } NautilusPlacesViewPrivate;
@@ -149,8 +148,6 @@ nautilus_places_view_finalize (GObject *object)
 
     g_clear_object (&priv->location);
     g_clear_object (&priv->search_query);
-
-    g_free (priv->toolbar_menu_sections);
 
     G_OBJECT_CLASS (nautilus_places_view_parent_class)->finalize (object);
 }
@@ -310,11 +307,7 @@ nautilus_places_view_set_search_query (NautilusView  *view,
 static NautilusToolbarMenuSections *
 nautilus_places_view_get_toolbar_menu_sections (NautilusView *view)
 {
-    NautilusPlacesViewPrivate *priv;
-
-    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
-
-    return priv->toolbar_menu_sections;
+    return NULL;
 }
 
 static gboolean
@@ -413,10 +406,6 @@ nautilus_places_view_init (NautilusPlacesView *self)
                               "show-error-message",
                               G_CALLBACK (show_error_message_cb),
                               self);
-
-    /* Toolbar menu */
-    priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
-    priv->toolbar_menu_sections->supports_undo_redo = FALSE;
 }
 
 NautilusPlacesView *
