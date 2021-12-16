@@ -82,6 +82,15 @@ gtk_revealer_set_child (GtkRevealer *revealer,
     gtk_container_add (GTK_CONTAINER (revealer), child);
 }
 
+void
+gtk_popover_set_child (GtkPopover *popover,
+                       GtkWidget  *child)
+{
+    g_assert (GTK_IS_POPOVER (popover));
+
+    gtk_container_add (GTK_CONTAINER (popover), child);
+}
+
 GtkWidget *
 gtk_widget_get_first_child (GtkWidget *widget)
 {
