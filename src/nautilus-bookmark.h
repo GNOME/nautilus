@@ -51,7 +51,4 @@ void                  nautilus_bookmark_set_scroll_pos         (NautilusBookmark
 								const char            *uri);
 char *                nautilus_bookmark_get_scroll_pos         (NautilusBookmark      *bookmark);
 
-/* Helper functions for displaying bookmarks */
-GtkWidget *           nautilus_bookmark_menu_item_new          (NautilusBookmark      *bookmark);
-
 G_END_DECLS

@@ -53,8 +53,6 @@ enum
     NUM_PROPERTIES
 };
 
-#define ELLIPSISED_MENU_ITEM_MIN_CHARS  32
-
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL };
 static guint signals[LAST_SIGNAL];
 
@@ -805,30 +803,6 @@ nautilus_bookmark_new (GFile       *location,
                                                     NULL));
 
     return new_bookmark;
-}
-
-/**
- * nautilus_bookmark_menu_item_new:
- *
- * Return a menu item representing a bookmark.
- * @bookmark: The bookmark the menu item represents.
- * Return value: A newly-created bookmark, not yet shown.
- **/
-GtkWidget *
-nautilus_bookmark_menu_item_new (NautilusBookmark *bookmark)
-{
-    GtkWidget *menu_item;
-    GtkLabel *label;
-    const char *name;
-
-    name = nautilus_bookmark_get_name (bookmark);
-    menu_item = gtk_menu_item_new_with_label (name);
-    label = GTK_LABEL (gtk_bin_get_child (GTK_BIN (menu_item)));
-    gtk_label_set_use_underline (label, FALSE);
-    gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_END);
-    gtk_label_set_max_width_chars (label, ELLIPSISED_MENU_ITEM_MIN_CHARS);
-
-    return menu_item;
 }
 
 void

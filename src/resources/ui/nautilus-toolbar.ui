@@ -2,6 +2,14 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
+  <object class="GtkPopover" id="back_menu">
+    <property name="position">bottom</property>
+    <property name="relative-to">back_button</property>
+  </object>
+  <object class="GtkPopover" id="forward_menu">
+    <property name="position">bottom</property>
+    <property name="relative-to">forward_button</property>
+  </object>
   <object class="GtkPopoverMenu" id="app_menu">
     <property name="can_focus">False</property>
     <child>
