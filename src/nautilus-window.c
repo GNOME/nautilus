@@ -294,6 +294,26 @@ action_forward (GSimpleAction *action,
 }
 
 static void
+action_back_n (GSimpleAction *action,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+    nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data),
+                                     TRUE,
+                                     g_variant_get_uint32 (parameter));
+}
+
+static void
+action_forward_n (GSimpleAction *action,
+                  GVariant      *parameter,
+                  gpointer       user_data)
+{
+    nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data),
+                                     FALSE,
+                                     g_variant_get_uint32 (parameter));
+}
+
+static void
 action_bookmark_current_location (GSimpleAction *action,
                                   GVariant      *state,
                                   gpointer       user_data)
@@ -1431,12 +1451,16 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
         nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (path_bar), location);
     }
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (window), "back");
     enabled = nautilus_window_slot_get_back_history (slot) != NULL;
+    action = g_action_map_lookup_action (G_ACTION_MAP (window), "back");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+    action = g_action_map_lookup_action (G_ACTION_MAP (window), "back-n");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (window), "forward");
     enabled = nautilus_window_slot_get_forward_history (slot) != NULL;
+    action = g_action_map_lookup_action (G_ACTION_MAP (window), "forward");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+    action = g_action_map_lookup_action (G_ACTION_MAP (window), "forward-n");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
 
     nautilus_window_sync_bookmarks (window);
@@ -1933,6 +1957,8 @@ const GActionEntry win_entries[] =
 {
     { "back", action_back },
     { "forward", action_forward },
+    { "back-n", action_back_n, "u" },
+    { "forward-n", action_forward_n, "u" },
     { "up", action_up },
     { "view-menu", action_toggle_state_view_button, NULL, "false", NULL },
     { "current-location-menu", action_show_current_location_menu },
