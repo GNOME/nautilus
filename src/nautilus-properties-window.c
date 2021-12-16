@@ -199,6 +199,7 @@ struct _NautilusPropertiesWindow
     GtkWidget *app_chooser_widget_box;
     GtkWidget *app_chooser_widget;
     GtkWidget *reset_button;
+    GtkWidget *forget_button;
     GtkWidget *add_button;
     GtkWidget *set_as_default_button;
     char *content_type;
@@ -4451,15 +4452,14 @@ add_clicked_cb (GtkButton *button,
 }
 
 static void
-remove_clicked_cb (GtkMenuItem *item,
-                   gpointer     user_data)
+forget_clicked_cb (GtkButton *button,
+                   gpointer   user_data)
 {
     NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
     g_autoptr (GAppInfo) info = NULL;
 
     info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
-
-    if (info)
+    if (info != NULL)
     {
         g_autoptr (GError) error = NULL;
 
@@ -4477,26 +4477,6 @@ remove_clicked_cb (GtkMenuItem *item,
     }
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
-}
-
-static void
-populate_popup_cb (GtkAppChooserWidget *widget,
-                   GtkMenu             *menu,
-                   GAppInfo            *app,
-                   gpointer             user_data)
-{
-    GtkWidget *item;
-    NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
-
-    if (g_app_info_can_remove_supports_type (app))
-    {
-        item = gtk_menu_item_new_with_label (_("Forget association"));
-        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-        gtk_widget_show (item);
-
-        g_signal_connect (item, "activate",
-                          G_CALLBACK (remove_clicked_cb), self);
-    }
 }
 
 static void
@@ -4579,15 +4559,19 @@ application_selected_cb (GtkAppChooserWidget *widget,
 {
     NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
     g_autoptr (GAppInfo) default_app = NULL;
+    gboolean is_default;
+    gboolean can_add;
+    gboolean can_remove;
 
     default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
-    if (default_app != NULL)
-    {
-        gtk_widget_set_sensitive (self->set_as_default_button,
-                                  !g_app_info_equal (info, default_app));
-    }
-    gtk_widget_set_sensitive (self->add_button,
-                              app_info_can_add (info, self->content_type));
+
+    is_default = default_app != NULL && g_app_info_equal (info, default_app);
+    can_add = app_info_can_add (info, self->content_type);
+    can_remove = !is_default && !can_add && g_app_info_can_remove_supports_type (info);
+
+    gtk_widget_set_sensitive (self->forget_button, can_remove);
+    gtk_widget_set_sensitive (self->add_button, can_add);
+    gtk_widget_set_sensitive (self->set_as_default_button, !is_default);
 }
 
 static void
@@ -4650,6 +4634,9 @@ setup_app_chooser_area (NautilusPropertiesWindow *self)
     g_signal_connect (self->reset_button, "clicked",
                       G_CALLBACK (reset_clicked_cb),
                       self);
+    g_signal_connect (self->forget_button, "clicked",
+                      G_CALLBACK (forget_clicked_cb),
+                      self);
     g_signal_connect (self->add_button, "clicked",
                       G_CALLBACK (add_clicked_cb),
                       self);
@@ -4668,10 +4655,6 @@ setup_app_chooser_area (NautilusPropertiesWindow *self)
     g_signal_connect (self->app_chooser_widget,
                       "application-selected",
                       G_CALLBACK (application_selected_cb),
-                      self);
-    g_signal_connect (self->app_chooser_widget,
-                      "populate-popup",
-                      G_CALLBACK (populate_popup_cb),
                       self);
 
     application_chooser_apply_labels (self);
@@ -5422,6 +5405,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_with_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, app_chooser_widget_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, reset_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, forget_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, add_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, set_as_default_button);
 }
