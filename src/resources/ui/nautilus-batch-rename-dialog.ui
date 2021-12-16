@@ -369,7 +369,6 @@
                     <child>
                       <object class="GtkButton" id="conflict_down">
                         <property name="visible">True</property>
-                        <property name="relief">none</property>
                          <signal name="clicked" handler="select_next_conflict_down" swapped="yes" />
                         <child>
                           <object class="GtkImage">
@@ -378,12 +377,14 @@
                             <property name="icon-size">1</property>
                           </object>
                         </child>
+                        <style>
+                          <class name="flat"/>
+                        </style>
                       </object>
                     </child>
                     <child>
                       <object class="GtkButton" id="conflict_up">
                         <property name="visible">True</property>
-                        <property name="relief">GTK_RELIEF_NONE</property>
                         <signal name="clicked" handler="select_next_conflict_up" swapped="yes" />
                         <child>
                           <object class="GtkImage">
@@ -392,6 +393,9 @@
                             <property name="icon-size">1</property>
                           </object>
                         </child>
+                        <style>
+                          <class name="flat"/>
+                        </style>
                       </object>
                     </child>
                   </object>

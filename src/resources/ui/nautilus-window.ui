@@ -80,7 +80,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="relief">none</property>
                                 <property name="focus_on_click">False</property>
                                 <child>
                                   <object class="GtkImage">
@@ -92,6 +91,7 @@
                                 </child>
                                 <style>
                                   <class name="image-button"/>
+                                  <class name="flat"/>
                                 </style>
                               </object>
                             </child>
@@ -148,7 +148,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="relief">none</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="on_notification_operation_close_clicked" object="NautilusWindow" swapped="no"/>
                                 <child>
@@ -161,6 +160,7 @@
                                 </child>
                                 <style>
                                   <class name="image-button"/>
+                                  <class name="flat"/>
                                 </style>
                               </object>
                             </child>
