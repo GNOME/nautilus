@@ -97,3 +97,20 @@ gtk_widget_get_first_child (GtkWidget *widget)
 
     return NULL;
 }
+
+GdkDisplay *
+gtk_root_get_display (GtkRoot *root)
+{
+    g_assert (GTK_IS_WINDOW (root));
+
+    return gdk_screen_get_display (gtk_window_get_screen (GTK_WINDOW (root)));
+}
+
+void
+gtk_window_set_display (GtkWindow  *window,
+                        GdkDisplay *display)
+{
+    g_assert (GTK_IS_WINDOW (window));
+
+    gtk_window_set_screen (window, gdk_display_get_default_screen (display));
+}

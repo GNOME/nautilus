@@ -28,5 +28,11 @@ void gtk_revealer_set_child        (GtkRevealer       *revealer,
 
 GtkWidget *gtk_widget_get_first_child (GtkWidget *widget);
 
+#define GTK_ROOT(root) ((GtkRoot *) GTK_WINDOW (root))
+typedef GtkWindow GtkRoot;
+GdkDisplay *gtk_root_get_display   (GtkRoot           *root);
+void        gtk_window_set_display (GtkWindow         *window,
+                                    GdkDisplay        *display);
+
 #endif
 G_END_DECLS
