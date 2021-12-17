@@ -98,7 +98,9 @@ static char **get_default_column_order (NautilusListView *list_view);
 static void on_clipboard_owner_changed (GtkClipboard *clipboard,
                                         GdkEvent     *event,
                                         gpointer      user_data);
-
+static void popup_column_header_menu (NautilusListView *list_view,
+                                      gdouble           x,
+                                      gdouble           y);
 
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_FILES_VIEW);
 
@@ -1380,15 +1382,6 @@ on_column_header_event (GtkWidget *widget,
 {
     NautilusListView *list_view;
     guint button;
-    NautilusFile *file;
-    char **visible_columns;
-    char **column_order;
-    GList *all_columns;
-    GHashTable *visible_columns_hash;
-    int i;
-    GList *l;
-    GtkWidget *menu;
-    GtkWidget *menu_item;
 
     list_view = NAUTILUS_LIST_VIEW (user_data);
 
@@ -1403,6 +1396,26 @@ on_column_header_event (GtkWidget *widget,
     {
         return GDK_EVENT_PROPAGATE;
     }
+
+    popup_column_header_menu (list_view, (&event->button)->x, (&event->button)->y);
+
+    return GDK_EVENT_STOP;
+}
+
+static void
+popup_column_header_menu (NautilusListView *list_view,
+                          gdouble           x,
+                          gdouble           y)
+{
+    NautilusFile *file;
+    char **visible_columns;
+    char **column_order;
+    GList *all_columns;
+    GHashTable *visible_columns_hash;
+    int i;
+    GList *l;
+    GtkWidget *menu;
+    GtkWidget *menu_item;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
 
@@ -1482,14 +1495,12 @@ on_column_header_event (GtkWidget *widget,
                       list_view);
 
     gtk_widget_show_all (menu);
-    gtk_menu_popup_at_pointer (GTK_MENU (menu), event);
+    gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
 
     g_hash_table_destroy (visible_columns_hash);
     nautilus_column_list_free (all_columns);
     g_strfreev (column_order);
     g_strfreev (visible_columns);
-
-    return GDK_EVENT_STOP;
 }
 
 static void
