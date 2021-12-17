@@ -14,6 +14,7 @@ libnautilus_sources = [
     c_template: 'nautilus-enum-types.c.template',
     h_template: 'nautilus-enum-types.h.template',
     sources: [
+      'gtk/nautilusgtkplacessidebarprivate.h',
       'nautilus-enums.h',
       'nautilus-search-popover.h',
       'nautilus-special-location-bar.h',
@@ -55,10 +56,9 @@ libnautilus_sources = [
     namespace: 'Nautilus'
   ),
   'gtk/nautilusgtkbookmarksmanager.c',
-  'gtk/nautilusgtkbookmarksmanager.h',
+  'gtk/nautilusgtkbookmarksmanagerprivate.h',
   'gtk/nautilusgtkplacessidebar.c',
   'gtk/nautilusgtkplacessidebarprivate.h',
-  'gtk/nautilusgtkplacessidebar.h',
   'gtk/nautilusgtksidebarrow.c',
   'gtk/nautilusgtksidebarrowprivate.h',
   'gtk/nautilusgtkplacesview.c',

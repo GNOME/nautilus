@@ -38,12 +38,14 @@ typedef struct
 
   gpointer changed_func_data;
   GtkBookmarksChangedFunc changed_func;
+
+  GCancellable *cancellable;
 } NautilusGtkBookmarksManager;
 
 typedef struct
 {
   GFile *file;
-  gchar *label;
+  char *label;
 } GtkBookmark;
 
 NautilusGtkBookmarksManager *_nautilus_gtk_bookmarks_manager_new (GtkBookmarksChangedFunc changed_func,
@@ -56,7 +58,7 @@ GSList *_nautilus_gtk_bookmarks_manager_list_bookmarks (NautilusGtkBookmarksMana
 
 gboolean _nautilus_gtk_bookmarks_manager_insert_bookmark (NautilusGtkBookmarksManager *manager,
 						 GFile               *file,
-						 gint                 position,
+						 int                  position,
 						 GError             **error);
 
 gboolean _nautilus_gtk_bookmarks_manager_remove_bookmark (NautilusGtkBookmarksManager *manager,
@@ -65,23 +67,20 @@ gboolean _nautilus_gtk_bookmarks_manager_remove_bookmark (NautilusGtkBookmarksMa
 
 gboolean _nautilus_gtk_bookmarks_manager_reorder_bookmark (NautilusGtkBookmarksManager *manager,
 						  GFile               *file,
-						  gint                 new_position,
+						  int                  new_position,
 						  GError             **error);
 
 gboolean _nautilus_gtk_bookmarks_manager_has_bookmark (NautilusGtkBookmarksManager *manager,
                                               GFile               *file);
 
-gchar * _nautilus_gtk_bookmarks_manager_get_bookmark_label (NautilusGtkBookmarksManager *manager,
+char * _nautilus_gtk_bookmarks_manager_get_bookmark_label (NautilusGtkBookmarksManager *manager,
 						   GFile               *file);
 
 gboolean _nautilus_gtk_bookmarks_manager_set_bookmark_label (NautilusGtkBookmarksManager *manager,
 						    GFile               *file,
-						    const gchar         *label,
+						    const char          *label,
 						    GError             **error);
 
-gboolean _nautilus_gtk_bookmarks_manager_get_xdg_type (NautilusGtkBookmarksManager *manager,
-                                              GFile               *file,
-                                              GUserDirectory      *directory);
 gboolean _nautilus_gtk_bookmarks_manager_get_is_builtin (NautilusGtkBookmarksManager *manager,
                                                 GFile               *file);
 
