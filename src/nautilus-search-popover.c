@@ -616,7 +616,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
                                           NULL);
     gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);
 
-    scrolled = gtk_scrolled_window_new (NULL, NULL);
+    scrolled = gtk_scrolled_window_new ();
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
                                     GTK_POLICY_AUTOMATIC,
                                     GTK_POLICY_AUTOMATIC);

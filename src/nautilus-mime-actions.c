@@ -1280,7 +1280,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 
     g_assert (parameters_install->proxy != NULL);
 
-    desktop_startup_id = g_strdup_printf ("_TIME%i", gtk_get_current_event_time ());
+    desktop_startup_id = g_strdup_printf ("_TIME%i", (guint32) GDK_CURRENT_TIME);
 
     g_dbus_proxy_call (parameters_install->proxy,
                        "InstallMimeTypes",

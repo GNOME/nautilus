@@ -223,7 +223,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
     GtkBuilder *builder;
     g_autoptr (GError) error = NULL;
 
-    self->scrolled = gtk_scrolled_window_new (NULL, NULL);
+    self->scrolled = gtk_scrolled_window_new ();
     /* Scroll horizontally only and don't use internal scrollbar. */
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (self->scrolled),
                                     /* hscrollbar-policy */ GTK_POLICY_EXTERNAL,
