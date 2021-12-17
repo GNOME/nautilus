@@ -619,7 +619,7 @@ result_list_attributes_ready_cb (GList    *file_list,
     GVariant *meta_variant;
     gint icon_scale;
 
-    icon_scale = gdk_monitor_get_scale_factor (gdk_display_get_monitor (gdk_display_get_default (), 0));
+    icon_scale = gdk_monitor_get_scale_factor (g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0));
 
     for (l = file_list; l != NULL; l = l->next)
     {

@@ -58,7 +58,7 @@ int main (int argc, char **argv)
 
 	totem_gst_disable_display_decoders ();
 	gst_init (&argc, &argv);
-	gtk_init (&argc, &argv);
+	gtk_init ();
 
 	if (argc != 2) {
 		g_print ("Usage: %s [URI]\n", argv[0]);
