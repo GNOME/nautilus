@@ -284,7 +284,7 @@ confirm_multiple_windows_cb (GtkDialog *dialog,
 
     open_multiple = (response_id == GTK_RESPONSE_OK);
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
     do_open_windows (data, open_multiple);
     gtk_drag_finish (data->context, open_multiple, FALSE, data->time);
 }

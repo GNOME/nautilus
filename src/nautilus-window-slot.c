@@ -1862,13 +1862,13 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
                 }
                 else
                 {
-                    gtk_widget_destroy (GTK_WIDGET (window));
+                    gtk_window_destroy (GTK_WINDOW (window));
                 }
             }
             else
             {
                 /* Since this is a window, destroying it will also unref it. */
-                gtk_widget_destroy (GTK_WIDGET (window));
+                gtk_window_destroy (GTK_WINDOW (window));
             }
         }
         else

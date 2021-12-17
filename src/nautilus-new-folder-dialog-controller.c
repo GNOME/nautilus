@@ -172,7 +172,7 @@ nautilus_new_folder_dialog_controller_finalize (GObject *object)
     if (self->new_folder_dialog != NULL)
     {
         g_clear_signal_handler (&self->response_handler_id, self->new_folder_dialog);
-        gtk_widget_destroy (self->new_folder_dialog);
+        gtk_window_destroy (GTK_WINDOW (self->new_folder_dialog));
         self->new_folder_dialog = NULL;
     }
 

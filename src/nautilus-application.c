@@ -776,7 +776,7 @@ action_help (GSimpleAction *action,
                                          _("There was an error displaying help: \n%s"),
                                          error->message);
         g_signal_connect (G_OBJECT (dialog), "response",
-                          G_CALLBACK (gtk_widget_destroy),
+                          G_CALLBACK (gtk_window_destroy),
                           NULL);
 
         gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);

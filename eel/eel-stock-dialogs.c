@@ -101,7 +101,7 @@ timed_wait_delayed_close_timeout_callback (gpointer callback_data)
                                           G_CALLBACK (timed_wait_delayed_close_destroy_dialog_callback),
                                           GUINT_TO_POINTER (handler_id));
 
-    gtk_widget_destroy (GTK_WIDGET (callback_data));
+    gtk_window_destroy (GTK_WINDOW (callback_data));
 
     return FALSE;
 }
@@ -151,7 +151,7 @@ timed_wait_free (TimedWait *wait)
         }
         else
         {
-            gtk_widget_destroy (GTK_WIDGET (wait->dialog));
+            gtk_window_destroy (GTK_WINDOW (wait->dialog));
         }
     }
 
@@ -187,7 +187,7 @@ trash_dialog_response_callback (GtkDialog *dialog,
                                 int        response_id,
                                 TimedWait *wait)
 {
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static gboolean
@@ -414,7 +414,7 @@ show_message_dialog (const char     *primary_text,
     gtk_widget_show (GTK_WIDGET (dialog));
 
     g_signal_connect (dialog, "response",
-                      G_CALLBACK (gtk_widget_destroy), NULL);
+                      G_CALLBACK (gtk_window_destroy), NULL);
 
     return dialog;
 }

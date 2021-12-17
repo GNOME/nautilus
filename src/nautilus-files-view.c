@@ -1435,7 +1435,7 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
 
     g_object_unref (info);
 out:
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -1706,7 +1706,7 @@ pattern_select_response_cb (GtkWidget *dialog,
         case GTK_RESPONSE_DELETE_EVENT:
         case GTK_RESPONSE_CANCEL:
         {
-            gtk_widget_destroy (GTK_WIDGET (dialog));
+            gtk_window_destroy (GTK_WINDOW (dialog));
         }
         break;
 
@@ -5864,7 +5864,7 @@ on_destination_dialog_response (GtkDialog *dialog,
     }
 
     copy_data_free (copy_data);
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -6321,7 +6321,7 @@ on_extract_destination_dialog_response (GtkDialog *dialog,
         extract_files (data->view, data->files, destination_directory);
     }
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
     nautilus_file_list_free (data->files);
     g_free (data);
 }

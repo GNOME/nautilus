@@ -1326,7 +1326,7 @@ simple_dialog_cb (GtkDialog *dialog,
         return;
     }
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 
     data->result = response_id;
     data->completed = TRUE;
@@ -3079,7 +3079,7 @@ empty_trash_prompt_cb (GtkDialog *dialog,
         unmount_data_free (data);
     }
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 void
