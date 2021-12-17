@@ -574,7 +574,7 @@ on_other_types_dialog_response (GtkDialog             *dialog,
     }
 
     g_clear_object (&popover->treeview);
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void

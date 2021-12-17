@@ -533,7 +533,7 @@ nautilus_compress_dialog_controller_finalize (GObject *object)
     if (self->compress_dialog != NULL)
     {
         g_clear_signal_handler (&self->response_handler_id, self->compress_dialog);
-        gtk_widget_destroy (self->compress_dialog);
+        gtk_window_destroy (GTK_WINDOW (self->compress_dialog));
         self->compress_dialog = NULL;
     }
 

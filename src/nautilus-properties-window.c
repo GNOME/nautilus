@@ -1185,7 +1185,7 @@ update_files_callback (gpointer data)
     if (self->original_files == NULL)
     {
         /* Close the window if no files are left */
-        gtk_widget_destroy (GTK_WIDGET (self));
+        gtk_window_destroy (GTK_WINDOW (self));
     }
     else
     {
@@ -3899,7 +3899,7 @@ on_change_permissions_response (GtkDialog                *dialog,
     if (response != GTK_RESPONSE_OK)
     {
         g_clear_pointer (&self->change_permission_combos, g_list_free);
-        gtk_widget_destroy (GTK_WIDGET (dialog));
+        gtk_window_destroy (GTK_WINDOW (dialog));
         return;
     }
 
@@ -3977,7 +3977,7 @@ on_change_permissions_response (GtkDialog                *dialog,
         }
     }
     g_clear_pointer (&self->change_permission_combos, g_list_free);
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void

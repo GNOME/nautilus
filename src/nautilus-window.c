@@ -2259,7 +2259,7 @@ nautilus_window_close (NautilusWindow *window)
     nautilus_window_save_geometry (window);
     nautilus_window_set_active_slot (window, NULL);
 
-    gtk_widget_destroy (GTK_WIDGET (window));
+    gtk_window_destroy (GTK_WINDOW (window));
 }
 
 void

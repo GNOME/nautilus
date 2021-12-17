@@ -668,7 +668,7 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
     gtk_widget_hide (GTK_WIDGET (dialog));
     begin_batch_rename (dialog, dialog->new_names);
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -687,7 +687,7 @@ batch_rename_dialog_on_response (NautilusBatchRenameDialog *dialog,
             cancel_conflict_check (dialog);
         }
 
-        gtk_widget_destroy (GTK_WIDGET (dialog));
+        gtk_window_destroy (GTK_WINDOW (dialog));
     }
 }
 

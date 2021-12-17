@@ -463,7 +463,7 @@ on_conflict_dialog_response (GtkDialog *dialog,
 
     data->response->id = response_id;
 
-    gtk_widget_destroy (GTK_WIDGET (data->dialog));
+    gtk_window_destroy (GTK_WINDOW (data->dialog));
 
     nautilus_file_unref (data->source);
     nautilus_file_unref (data->destination);
@@ -561,7 +561,7 @@ on_app_chooser_response (GtkDialog *dialog,
         application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
     }
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 
     if (application != NULL)
     {
@@ -641,7 +641,7 @@ on_request_passphrase_cb (GtkDialog *dialog,
         data->passphrase = g_strdup (gtk_entry_get_text (data->passphrase_entry));
     }
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
     invoke_main_context_completed (data);
 }
 
