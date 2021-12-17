@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #include <config.h>
 
 #include "nautilus-list-view-dnd.h"
@@ -303,3 +304,4 @@ nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                          -1);
     }
 }
+#endif

@@ -17,6 +17,7 @@
  */
 
 #pragma once
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 
 #include <gdk/gdk.h>
 
@@ -32,3 +33,4 @@ void nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
 NautilusDragInfo *
 nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view,
                                              GdkDragContext   *context);
+#endif

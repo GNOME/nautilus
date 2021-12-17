@@ -44,6 +44,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #define NAUTILUS_DND_URI_LIST_TYPE        "text/uri-list"
 #define NAUTILUS_DND_TEXT_PLAIN_TYPE      "text/plain"
 
@@ -59,6 +60,7 @@ static const GtkTargetEntry drop_types [] =
     { NAUTILUS_DND_URI_LIST_TYPE, 0, NAUTILUS_DND_URI_LIST },
     { NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
 };
+#endif
 
 typedef struct _NautilusLocationEntryPrivate
 {
@@ -228,6 +230,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
     g_free (formatted_uri);
 }
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 typedef struct
 {
     NautilusLocationEntry *self;
@@ -402,7 +405,7 @@ drag_data_get_callback (GtkWidget        *widget,
     g_free (uri);
     g_object_unref (location);
 }
-
+#endif
 
 static void
 set_prefix_dimming (GtkCellRenderer *completion_cell,
@@ -942,6 +945,7 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
     g_signal_connect (priv->completer, "got-completion-data",
                       G_CALLBACK (got_completion_data_callback), entry);
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     /* Drag source */
     g_signal_connect_object (entry, "drag-data-get",
                              G_CALLBACK (drag_data_get_callback), entry, 0);
@@ -953,6 +957,7 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
                        GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
     g_signal_connect (entry, "drag-data-received",
                       G_CALLBACK (drag_data_received_callback), NULL);
+#endif
 
     g_signal_connect_object (entry, "activate",
                              G_CALLBACK (editable_activate_callback), entry, G_CONNECT_AFTER);

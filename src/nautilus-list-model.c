@@ -105,11 +105,13 @@ G_DEFINE_TYPE_WITH_CODE (NautilusListModel, nautilus_list_model, G_TYPE_OBJECT,
                                                 nautilus_list_model_sortable_init)
                          G_ADD_PRIVATE (NautilusListModel));
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 static const GtkTargetEntry drag_types [] =
 {
     { NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
     { NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
 };
+#endif
 
 static void
 file_entry_free (FileEntry *file_entry)
@@ -1625,6 +1627,7 @@ nautilus_list_model_get_drag_view (NautilusListModel *model,
     return priv->drag_view;
 }
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 GtkTargetList *
 nautilus_list_model_get_drag_target_list ()
 {
@@ -1635,6 +1638,7 @@ nautilus_list_model_get_drag_target_list ()
 
     return target_list;
 }
+#endif
 
 int
 nautilus_list_model_add_column (NautilusListModel *model,

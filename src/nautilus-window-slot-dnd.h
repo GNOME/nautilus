@@ -25,6 +25,7 @@
 
 #pragma once
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
@@ -35,3 +36,4 @@
 void nautilus_drag_slot_proxy_init (GtkWidget *widget,
                                     NautilusFile *target_file,
                                     NautilusWindowSlot *target_slot);
+#endif

@@ -944,6 +944,7 @@ places_sidebar_show_starred_location (NautilusWindow             *window,
     g_object_unref (location);
 }
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 static GList *
 build_selection_list_from_gfile_list (GList *gfile_list)
 {
@@ -1083,6 +1084,7 @@ places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
     g_free (dest_uri);
     g_list_free_full (source_uri_list, g_free);
 }
+#endif
 
 /* Callback used in the "empty trash" menu item from the places sidebar */
 static void
@@ -1313,12 +1315,14 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
                               G_CALLBACK (open_location_cb), window);
     g_signal_connect (window->places_sidebar, "show-error-message",
                       G_CALLBACK (places_sidebar_show_error_message_cb), window);
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     g_signal_connect (window->places_sidebar, "drag-action-requested",
                       G_CALLBACK (places_sidebar_drag_action_requested_cb), window);
     g_signal_connect (window->places_sidebar, "drag-action-ask",
                       G_CALLBACK (places_sidebar_drag_action_ask_cb), window);
     g_signal_connect (window->places_sidebar, "drag-perform-drop",
                       G_CALLBACK (places_sidebar_drag_perform_drop_cb), window);
+#endif
     g_signal_connect (window->places_sidebar, "populate-popup",
                       G_CALLBACK (places_sidebar_populate_popup_cb), window);
     g_signal_connect (window->places_sidebar, "unmount",

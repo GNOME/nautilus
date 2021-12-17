@@ -24,6 +24,7 @@
  *                                 contain a hierarchy of files
  */
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #include <config.h>
 
 #include "nautilus-tree-view-drag-dest.h"
@@ -1301,3 +1302,4 @@ nautilus_tree_view_drag_dest_new (GtkTreeView *tree_view)
 
     return dest;
 }
+#endif

@@ -26,6 +26,7 @@
 
 #pragma once
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #include <gtk/gtk.h>
 
 #include "nautilus-file.h"
@@ -94,3 +95,4 @@ GType                     nautilus_tree_view_drag_dest_get_type (void);
 NautilusTreeViewDragDest *nautilus_tree_view_drag_dest_new      (GtkTreeView *tree_view);
 
 G_END_DECLS
+#endif
