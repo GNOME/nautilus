@@ -98,7 +98,7 @@ static void nautilus_window_back_or_forward (NautilusWindow *window,
 
 struct _NautilusWindow
 {
-    HdyApplicationWindow parent_instance;
+    AdwApplicationWindow parent_instance;
 
     GtkWidget *notebook;
 
@@ -168,7 +168,7 @@ enum
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (NautilusWindow, nautilus_window, HDY_TYPE_APPLICATION_WINDOW);
+G_DEFINE_TYPE (NautilusWindow, nautilus_window, ADW_TYPE_APPLICATION_WINDOW);
 
 static const GtkPadActionEntry pad_actions[] =
 {

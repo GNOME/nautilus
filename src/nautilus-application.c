@@ -33,7 +33,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
-#include <libhandy-1/handy.h>
+#include <libadwaita-1/adwaita.h>
 #include <nautilus-extension.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -1272,7 +1272,7 @@ nautilus_application_startup_common (NautilusApplication *self)
      */
     G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
 
-    hdy_init ();
+    adw_init ();
 
     gtk_window_set_default_icon_name (APPLICATION_ID);
 

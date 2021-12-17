@@ -33,7 +33,7 @@
 
 struct _NautilusXContentBar
 {
-    GtkBin parent_instance;
+    AdwBin parent_instance;
     GtkWidget *label;
 
     char **x_content_types;
@@ -189,7 +189,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         }
 
         name = g_app_info_get_name (default_app);
-        info_bar = gtk_bin_get_child (GTK_BIN (bar));
+        info_bar = adw_bin_get_child (ADW_BIN (bar));
         button = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar), name, n);
         box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 

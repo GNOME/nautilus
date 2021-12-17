@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.38.2 -->
 <interface>
-  <object class="HdyWindow" id="window">
+  <object class="AdwWindow" id="window">
     <property name="modal">True</property>
     <property name="type-hint">dialog</property>
     <property name="default-width">300</property>
@@ -11,7 +11,7 @@
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="HdyHeaderBar">
+          <object class="AdwHeaderBar">
             <property name="visible">True</property>
             <property name="title" bind-source="window" bind-property="title" bind-flags="sync-create"/>
             <property name="show-close-button">True</property>
