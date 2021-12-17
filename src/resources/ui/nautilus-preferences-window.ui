@@ -2,18 +2,18 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <object class="HdyPreferencesWindow" id="preferences_window">
+  <object class="AdwPreferencesWindow" id="preferences_window">
     <property name="search_enabled">False</property>
     <child>
-      <object class="HdyPreferencesPage">
+      <object class="AdwPreferencesPage">
         <property name="title" translatable="yes">General</property>
         <property name="visible">True</property>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">General</property>
             <property name="visible">True</property>
             <child>
-              <object class="HdyActionRow">
+              <object class="AdwActionRow">
                 <property name="activatable_widget">sort_folders_first_switch</property>
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Sort _Folders Before Files</property>
@@ -29,7 +29,7 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
+              <object class="AdwActionRow">
                 <property name="activatable_widget">use_tree_view_switch</property>
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">_Expandable Folders in List View</property>
@@ -45,7 +45,7 @@
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="open_action_row">
+              <object class="AdwComboRow" id="open_action_row">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Action to Open Items</property>
                 <property name="title_lines">0</property>
@@ -56,12 +56,12 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Optional Context Menu Actions</property>
             <property name="description" translatable="yes">Show more actions in the menus. Keyboard shortcuts can be used even if the actions are not shown.</property>
             <property name="visible">True</property>
             <child>
-              <object class="HdyActionRow">
+              <object class="AdwActionRow">
                 <property name="activatable_widget">show_create_link_switch</property>
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Create _Link</property>
@@ -77,7 +77,7 @@
               </object>
             </child>
             <child>
-              <object class="HdyActionRow">
+              <object class="AdwActionRow">
                 <property name="activatable_widget">show_delete_permanently_switch</property>
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">_Delete Permanently</property>
@@ -95,12 +95,12 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="yes">Performance</property>
             <property name="description" translatable="yes">These features may cause slowdowns and excess network usage, especially when browsing files outside this computer, such as on a remote server.</property>
             <property name="visible">True</property>
             <child>
-              <object class="HdyComboRow" id="search_recursive_row">
+              <object class="AdwComboRow" id="search_recursive_row">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Search in Subfolders</property>
                 <property name="title_lines">0</property>
@@ -109,7 +109,7 @@
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="thumbnails_row">
+              <object class="AdwComboRow" id="thumbnails_row">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Show Thumbnails</property>
                 <property name="title_lines">0</property>
@@ -118,7 +118,7 @@
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="count_row">
+              <object class="AdwComboRow" id="count_row">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Count Number of Files in Folders</property>
                 <property name="title_lines">0</property>
@@ -129,12 +129,12 @@
           </object>
         </child>
         <child>
-          <object class="HdyPreferencesGroup">
+          <object class="AdwPreferencesGroup">
             <property name="description" translatable="yes">Add information to be displayed beneath file and folder names. More information will appear when zooming closer.</property>
             <property name="title" translatable="yes">Icon View Captions</property>
             <property name="visible">True</property>
             <child>
-              <object class="HdyComboRow" id="captions_0_comborow">
+              <object class="AdwComboRow" id="captions_0_comborow">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">First</property>
                 <property name="title_lines">0</property>
@@ -143,7 +143,7 @@
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="captions_1_comborow">
+              <object class="AdwComboRow" id="captions_1_comborow">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Second</property>
                 <property name="title_lines">0</property>
@@ -152,7 +152,7 @@
               </object>
             </child>
             <child>
-              <object class="HdyComboRow" id="captions_2_comborow">
+              <object class="AdwComboRow" id="captions_2_comborow">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Third</property>
                 <property name="title_lines">0</property>

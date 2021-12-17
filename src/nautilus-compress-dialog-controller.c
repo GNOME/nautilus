@@ -19,7 +19,7 @@
 
 #include <glib/gi18n.h>
 #include <gnome-autoar/gnome-autoar.h>
-#include <libhandy-1/handy.h>
+#include <libadwaita-1/adwaita.h>
 
 #include <eel/eel-vfs-extensions.h>
 
@@ -240,7 +240,7 @@ update_selected_format (NautilusCompressDialogController *self,
 }
 
 static void
-zip_row_on_activated (HdyActionRow *row,
+zip_row_on_activated (AdwActionRow *row,
                       gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
@@ -253,7 +253,7 @@ zip_row_on_activated (HdyActionRow *row,
 }
 
 static void
-encrypted_zip_row_on_activated (HdyActionRow *row,
+encrypted_zip_row_on_activated (AdwActionRow *row,
                                 gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
@@ -266,7 +266,7 @@ encrypted_zip_row_on_activated (HdyActionRow *row,
 }
 
 static void
-tar_xz_row_on_activated (HdyActionRow *row,
+tar_xz_row_on_activated (AdwActionRow *row,
                          gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
@@ -279,7 +279,7 @@ tar_xz_row_on_activated (HdyActionRow *row,
 }
 
 static void
-seven_zip_row_on_activated (HdyActionRow *row,
+seven_zip_row_on_activated (AdwActionRow *row,
                             gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
