@@ -8258,7 +8258,8 @@ nautilus_files_view_reveal_for_selection_context_menu (NautilusFilesView *view)
  **/
 void
 nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
-                                                    const GdkEvent    *event)
+                                                    gdouble            x,
+                                                    gdouble            y)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -8273,37 +8274,28 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
 
     if (NULL == priv->selection_menu)
     {
-        priv->selection_menu = gtk_menu_new ();
-
-        gtk_menu_attach_to_widget (GTK_MENU (priv->selection_menu),
-                                   GTK_WIDGET (view),
-                                   NULL);
+        priv->selection_menu = gtk_popover_new (GTK_WIDGET (view));
     }
 
-    gtk_menu_shell_bind_model (GTK_MENU_SHELL (priv->selection_menu),
-                               G_MENU_MODEL (priv->selection_menu_model),
-                               NULL,
-                               TRUE);
-
-    if (event != NULL)
-    {
-        gtk_menu_popup_at_pointer (GTK_MENU (priv->selection_menu), event);
-    }
-    else
+    gtk_popover_bind_model (GTK_POPOVER (priv->selection_menu),
+                            G_MENU_MODEL (priv->selection_menu_model),
+                            NULL);
+    if (x == -1 && y == -1)
     {
         /* If triggered from the keyboard, popup at selection, not pointer */
         g_autofree GdkRectangle *rectangle = NULL;
 
         rectangle = nautilus_files_view_reveal_for_selection_context_menu (view);
         g_return_if_fail (rectangle != NULL);
-
-        gtk_menu_popup_at_rect (GTK_MENU (priv->selection_menu),
-                                gtk_widget_get_window (GTK_WIDGET (view)),
-                                rectangle,
-                                GDK_GRAVITY_SOUTH_WEST,
-                                GDK_GRAVITY_NORTH_WEST,
-                                NULL);
+        gtk_popover_set_pointing_to (GTK_POPOVER (priv->selection_menu),
+                                     rectangle);
     }
+    else
+    {
+        gtk_popover_set_pointing_to (GTK_POPOVER (priv->selection_menu),
+                                     &(GdkRectangle){x, y, 0, 0});
+    }
+    gtk_popover_popup (GTK_POPOVER (priv->selection_menu));
 }
 
 /**
@@ -8315,7 +8307,8 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
  **/
 void
 nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
-                                                    const GdkEvent    *event)
+                                                    gdouble            x,
+                                                    gdouble            y)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -8330,30 +8323,14 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
 
     if (NULL == priv->background_menu)
     {
-        priv->background_menu = gtk_menu_new ();
-
-        gtk_menu_attach_to_widget (GTK_MENU (priv->background_menu),
-                                   GTK_WIDGET (view),
-                                   NULL);
+        priv->background_menu = gtk_popover_new (GTK_WIDGET (view));
     }
-    gtk_menu_shell_bind_model (GTK_MENU_SHELL (priv->background_menu),
-                               G_MENU_MODEL (priv->background_menu_model),
-                               NULL,
-                               TRUE);
-    if (event != NULL)
-    {
-        gtk_menu_popup_at_pointer (GTK_MENU (priv->background_menu), event);
-    }
-    else
-    {
-        /* It was triggered from the keyboard, so pop up from the center of view.
-         */
-        gtk_menu_popup_at_widget (GTK_MENU (priv->background_menu),
-                                  GTK_WIDGET (view),
-                                  GDK_GRAVITY_CENTER,
-                                  GDK_GRAVITY_CENTER,
-                                  NULL);
-    }
+    gtk_popover_bind_model (GTK_POPOVER (priv->background_menu),
+                            G_MENU_MODEL (priv->background_menu_model),
+                            NULL);
+    gtk_popover_set_pointing_to (GTK_POPOVER (priv->background_menu),
+                                 &(GdkRectangle){x, y, 0, 0});
+    gtk_popover_popup (GTK_POPOVER (priv->background_menu));
 }
 
 static gboolean
@@ -8365,11 +8342,11 @@ popup_menu_callback (NautilusFilesView *view)
 
     if (selection != NULL)
     {
-        nautilus_files_view_pop_up_selection_context_menu (view, NULL);
+        nautilus_files_view_pop_up_selection_context_menu (view, -1, -1);
     }
     else
     {
-        nautilus_files_view_pop_up_background_context_menu (view, NULL);
+        nautilus_files_view_pop_up_background_context_menu (view, 0, 0);
     }
 
     return TRUE;

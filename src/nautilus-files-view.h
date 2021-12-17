@@ -263,9 +263,11 @@ void                nautilus_files_view_notify_selection_changed         (Nautil
 NautilusDirectory  *nautilus_files_view_get_model                        (NautilusFilesView *view);
 NautilusFile       *nautilus_files_view_get_directory_as_file            (NautilusFilesView *view);
 void                nautilus_files_view_pop_up_background_context_menu   (NautilusFilesView *view,
-                                                                          const GdkEvent    *event);
+                                                                          gdouble            x,
+                                                                          gdouble            y);
 void                nautilus_files_view_pop_up_selection_context_menu    (NautilusFilesView *view,
-                                                                          const GdkEvent    *event);
+                                                                          gdouble            x,
+                                                                          gdouble            y);
 gboolean            nautilus_files_view_should_show_file                 (NautilusFilesView *view,
                                                                           NautilusFile      *file);
 gboolean            nautilus_files_view_should_sort_directories_first    (NautilusFilesView *view);
