@@ -24,7 +24,6 @@
 
 #include "nautilus-special-location-bar.h"
 #include "nautilus-enum-types.h"
-#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusSpecialLocationBar
 {

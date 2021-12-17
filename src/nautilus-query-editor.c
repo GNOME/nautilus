@@ -35,7 +35,6 @@
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusQueryEditor
 {

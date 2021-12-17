@@ -48,7 +48,6 @@
 #include <nautilus-extension.h>
 #include "nautilus-ui-utilities.h"
 #include <eel/eel-vfs-extensions.h>
-#include "nautilus-gtk4-helpers.h"
 
 enum
 {
