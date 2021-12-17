@@ -21,6 +21,7 @@
  */
 
 #pragma once
+#if 0 && NAUTILUS_CLIPBOARD_NEEDS_GTK4_REIMPLEMENTATION
 
 #include <gtk/gtk.h>
 
@@ -33,3 +34,4 @@ void nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
                                            GList        *files,
                                            gboolean      cut);
 GdkAtom nautilus_clipboard_get_atom (void);
+#endif

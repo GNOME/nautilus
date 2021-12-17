@@ -24,6 +24,7 @@
  *          Darin Adler <darin@bentspoon.com>
  */
 
+#if 0 && NAUTILUS_CLIPBOARD_NEEDS_GTK4_REIMPLEMENTATION
 #include <config.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-file-utilities.h"
@@ -327,3 +328,4 @@ nautilus_clipboard_get_atom (void)
 
     return copied_files_atom;
 }
+#endif
