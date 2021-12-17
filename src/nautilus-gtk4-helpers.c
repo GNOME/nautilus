@@ -91,6 +91,23 @@ gtk_popover_set_child (GtkPopover *popover,
     gtk_container_add (GTK_CONTAINER (popover), child);
 }
 
+void
+gtk_check_button_set_active (GtkCheckButton *button,
+                             gboolean        setting)
+{
+    g_assert (GTK_IS_CHECK_BUTTON (button));
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), setting);
+}
+
+gboolean
+gtk_check_button_get_active (GtkCheckButton *button)
+{
+    g_assert (GTK_IS_CHECK_BUTTON (button));
+
+    return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button));
+}
+
 GtkWidget *
 gtk_widget_get_first_child (GtkWidget *widget)
 {

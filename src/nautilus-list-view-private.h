@@ -64,6 +64,8 @@ struct NautilusListViewDetails {
 
   GHashTable *columns;
   GtkWidget *column_editor;
+  GtkWidget *columns_popover;
+  GtkWidget *columns_popover_box;
 
   char *original_name;
 
