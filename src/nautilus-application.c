@@ -26,7 +26,6 @@
 
 #include "nautilus-application.h"
 
-#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <fcntl.h>
 #include <gdk/gdk.h>
