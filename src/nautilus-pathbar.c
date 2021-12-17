@@ -33,7 +33,6 @@
 #include "nautilus-icon-names.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-gtk4-helpers.h"
 
 #include "nautilus-window-slot-dnd.h"
 

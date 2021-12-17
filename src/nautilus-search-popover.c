@@ -24,7 +24,6 @@
 #include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-gtk4-helpers.h"
 
  #define SEARCH_FILTER_MAX_YEARS 5
 

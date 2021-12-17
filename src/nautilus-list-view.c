@@ -54,7 +54,6 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
 #include "nautilus-tracker-utilities.h"
-#include "nautilus-gtk4-helpers.h"
 
 struct SelectionForeachData
 {

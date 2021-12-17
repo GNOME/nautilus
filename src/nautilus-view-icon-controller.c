@@ -9,7 +9,6 @@
 #include "nautilus-directory.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-thumbnails.h"
-#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusViewIconController
 {

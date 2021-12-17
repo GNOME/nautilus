@@ -87,11 +87,10 @@
 #include "nautilus-view-icon-controller.h"
 #include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
-#include "nautilus-gtk4-helpers.h"
 
 #ifdef HAVE_LIBPORTAL
 #include <libportal/portal.h>
-#include <libportal-gtk3/portal-gtk3.h>
+#include <libportal-gtk4/portal-gtk4.h>
 #endif
 
 /* Minimum starting update inverval */

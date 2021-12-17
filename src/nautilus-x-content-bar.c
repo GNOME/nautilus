@@ -30,7 +30,6 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-program-choosing.h"
-#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusXContentBar
 {

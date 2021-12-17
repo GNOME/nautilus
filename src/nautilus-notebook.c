@@ -29,7 +29,6 @@
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window-slot-dnd.h"
-#include "nautilus-gtk4-helpers.h"
 
 #include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>

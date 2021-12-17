@@ -26,7 +26,6 @@
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
-#include "nautilus-gtk4-helpers.h"
 
 typedef struct
 {
