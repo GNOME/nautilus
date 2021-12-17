@@ -333,7 +333,7 @@ show_dialog (const gchar    *primary_text,
     gtk_widget_show (dialog);
 
     g_signal_connect (GTK_DIALOG (dialog), "response",
-                      G_CALLBACK (gtk_widget_destroy), NULL);
+                      G_CALLBACK (gtk_window_destroy), NULL);
 
     return GTK_DIALOG (dialog);
 }

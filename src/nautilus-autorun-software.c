@@ -47,7 +47,7 @@ autorun_software_dialog_destroy (AutorunSoftwareDialogData *data)
                                           G_CALLBACK (autorun_software_dialog_mount_unmounted),
                                           data);
 
-    gtk_widget_destroy (GTK_WIDGET (data->dialog));
+    gtk_window_destroy (GTK_WINDOW (data->dialog));
     g_object_unref (data->mount);
     g_free (data);
 }
@@ -159,7 +159,7 @@ out:
 
         g_signal_connect (dialog,
                           "response",
-                          G_CALLBACK (gtk_widget_destroy),
+                          G_CALLBACK (gtk_window_destroy),
                           NULL);
 
         gtk_widget_show_all (dialog);
@@ -171,7 +171,7 @@ autorun_software_dialog_response (GtkDialog *dialog,
                                   gint       response_id,
                                   GMount    *mount)
 {
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 
     if (response_id == GTK_RESPONSE_OK)
     {

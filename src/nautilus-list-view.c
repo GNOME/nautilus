@@ -3615,7 +3615,7 @@ nautilus_list_view_finalize (GObject *object)
 
     if (list_view->details->column_editor != NULL)
     {
-        gtk_widget_destroy (list_view->details->column_editor);
+        gtk_window_destroy (GTK_WINDOW (list_view->details->column_editor));
     }
 
     g_regex_unref (list_view->details->regex);
