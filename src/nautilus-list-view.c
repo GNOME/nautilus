@@ -533,7 +533,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                                event);
+                                                                x, y);
         }
 
         return;
@@ -693,7 +693,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                               event);
+                                                               x, y);
         }
 
         /* Don't open a new tab if we are in single click mode (this would open 2 tabs),
@@ -826,7 +826,7 @@ on_event_controller_key_key_pressed (GtkEventControllerKey *controller,
     {
         if ((state & GDK_CONTROL_MASK) != 0)
         {
-            nautilus_files_view_pop_up_background_context_menu (view, NULL);
+            nautilus_files_view_pop_up_background_context_menu (view, 0, 0);
 
             return GDK_EVENT_STOP;
         }
@@ -1917,27 +1917,17 @@ on_longpress_gesture_pressed_event (GtkGestureLongPress *gesture,
                                     gdouble              y,
                                     gpointer             user_data)
 {
-    GdkEventSequence *event_sequence;
-    const GdkEvent *event;
     NautilusListView *view = user_data;
     g_autolist (NautilusFile) selection = NULL;
-
-    event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
-    if (event_sequence == NULL)
-    {
-        return;
-    }
-
-    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     if (selection != NULL)
     {
-        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view), event);
+        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view), x, y);
     }
     else
     {
-        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view), event);
+        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view), x, y);
     }
 }
 
@@ -3885,6 +3875,7 @@ nautilus_list_view_reveal_for_selection_context_menu (NautilusFilesView *view)
     gtk_tree_view_scroll_to_cell (tree_view, path, NULL, FALSE, 0.0, 0.0);
 
     rect = get_rectangle_for_path (list_view, path);
+    rect->width = rect->height;
 
     gtk_tree_path_free (path);
 
