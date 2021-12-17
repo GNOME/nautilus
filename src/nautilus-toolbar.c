@@ -589,7 +589,7 @@ on_operations_icon_draw (GtkDrawingArea  *drawing_area,
     GtkStyleContext *style_context;
 
     style_context = gtk_widget_get_style_context (widget);
-    gtk_style_context_get_color (style_context, gtk_style_context_get_state (style_context), &foreground);
+    gtk_style_context_get_color (style_context, &foreground);
     background = foreground;
     background.alpha *= 0.3;
 

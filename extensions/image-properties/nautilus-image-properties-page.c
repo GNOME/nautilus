@@ -93,7 +93,7 @@ append_item (NautilusImagesPropertiesPage *page,
 static void
 nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
 {
-    self->page_widget = gtk_scrolled_window_new (NULL, NULL);
+    self->page_widget = gtk_scrolled_window_new ();
 
     g_object_set (self->page_widget,
                   "margin-bottom", 6,

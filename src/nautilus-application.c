@@ -634,7 +634,7 @@ static int
 do_perform_self_checks (void)
 {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-    gtk_init (NULL, NULL);
+    gtk_init ();
 
     nautilus_profile_start (NULL);
     /* Run the checks (each twice) for nautilus and libnautilus-private. */
@@ -1131,7 +1131,7 @@ theme_changed (GtkSettings *settings)
         {
             provider = gtk_css_provider_new ();
             file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/Adwaita.css");
-            gtk_css_provider_load_from_file (provider, file, NULL);
+            gtk_css_provider_load_from_file (provider, file);
             g_object_unref (file);
         }
 
@@ -1151,7 +1151,7 @@ theme_changed (GtkSettings *settings)
     {
         permanent_provider = gtk_css_provider_new ();
         file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
-        gtk_css_provider_load_from_file (permanent_provider, file, NULL);
+        gtk_css_provider_load_from_file (permanent_provider, file);
         /* The behavior of two style providers with the same priority is
          * undefined and gtk happens to prefer the provider that got added last.
          * Use a higher priority here to avoid this problem.
@@ -1304,7 +1304,7 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
 
-    g_signal_connect_object (gtk_icon_theme_get_default (),
+    g_signal_connect_object (gtk_icon_theme_get_for_display (gdk_display_get_default ()),
                              "changed",
                              G_CALLBACK (icon_theme_changed_callback),
                              NULL, 0);
