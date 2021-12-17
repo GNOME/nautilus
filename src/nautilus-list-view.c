@@ -1292,7 +1292,7 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
 #endif
 
 static void
-column_header_menu_toggled (GtkCheckMenuItem *menu_item,
+column_header_menu_toggled (GtkCheckButton   *menu_item,
                             NautilusListView *list_view)
 {
     NautilusFile *file;
@@ -1313,7 +1313,7 @@ column_header_menu_toggled (GtkCheckMenuItem *menu_item,
         list = g_list_prepend (list, visible_columns[i]);
     }
 
-    if (gtk_check_menu_item_get_active (menu_item))
+    if (gtk_check_button_get_active (menu_item))
     {
         list = g_list_prepend (list, g_strdup (column));
     }
@@ -1347,7 +1347,7 @@ column_header_menu_toggled (GtkCheckMenuItem *menu_item,
 }
 
 static void
-column_header_menu_use_default (GtkMenuItem      *menu_item,
+column_header_menu_use_default (GtkButton        *menu_item,
                                 NautilusListView *list_view)
 {
     NautilusFile *file;
@@ -1366,6 +1366,8 @@ column_header_menu_use_default (GtkMenuItem      *menu_item,
      * updated yet.
      */
     apply_columns_settings (list_view, default_order, default_columns);
+    /* Popdown the popover because the checkboxes are not updated. */
+    gtk_popover_popdown (GTK_POPOVER (list_view->details->columns_popover));
 
     g_strfreev (default_columns);
     g_strfreev (default_order);
@@ -1383,6 +1385,7 @@ popup_column_header_menu (NautilusListView *list_view,
     GHashTable *visible_columns_hash;
     int i;
     GList *l;
+    GtkPopover *popover;
     GtkWidget *menu;
     GtkWidget *menu_item;
 
@@ -1411,7 +1414,13 @@ popup_column_header_menu (NautilusListView *list_view,
         }
     }
 
-    menu = gtk_menu_new ();
+    popover = GTK_POPOVER (list_view->details->columns_popover);
+    menu = list_view->details->columns_popover_box;
+    /* Remove all old items before repopulating. */
+    while ((menu_item = gtk_widget_get_first_child (menu)) != NULL)
+    {
+        gtk_box_remove (GTK_BOX (menu), menu_item);
+    }
 
     for (l = all_columns; l != NULL; l = l->next)
     {
@@ -1425,8 +1434,8 @@ popup_column_header_menu (NautilusListView *list_view,
                       NULL);
         lowercase = g_ascii_strdown (name, -1);
 
-        menu_item = gtk_check_menu_item_new_with_label (label);
-        gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+        menu_item = gtk_check_button_new_with_label (label);
+        gtk_box_append (GTK_BOX (menu), menu_item);
 
         g_object_set_data_full (G_OBJECT (menu_item),
                                 "column-name", name, g_free);
@@ -1439,8 +1448,7 @@ popup_column_header_menu (NautilusListView *list_view,
 
         if (g_hash_table_lookup (visible_columns_hash, lowercase) != NULL)
         {
-            gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (menu_item),
-                                            TRUE);
+            gtk_check_button_set_active (GTK_CHECK_BUTTON (menu_item), TRUE);
         }
 
         g_signal_connect (menu_item,
@@ -1452,19 +1460,17 @@ popup_column_header_menu (NautilusListView *list_view,
         g_free (label);
     }
 
-    menu_item = gtk_separator_menu_item_new ();
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-
-    menu_item = gtk_menu_item_new_with_label (_("Use Default"));
-    gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+    menu_item = gtk_button_new_with_label (_("Use Default"));
+    gtk_box_append (GTK_BOX (menu), menu_item);
 
     g_signal_connect (menu_item,
-                      "activate",
+                      "clicked",
                       G_CALLBACK (column_header_menu_use_default),
                       list_view);
 
     gtk_widget_show_all (menu);
-    gtk_menu_popup_at_pointer (GTK_MENU (menu), NULL);
+    gtk_popover_set_pointing_to (popover, &(GdkRectangle){x, y, 0, 0});
+    gtk_popover_popup (popover);
 
     g_hash_table_destroy (visible_columns_hash);
     nautilus_column_list_free (all_columns);
@@ -4001,6 +4007,15 @@ nautilus_list_view_init (NautilusListView *list_view)
 
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (list_view)),
                                  "nautilus-list-view");
+
+    list_view->details->columns_popover = gtk_popover_new (GTK_WIDGET (list_view));
+    list_view->details->columns_popover_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
+    gtk_widget_set_margin_top (list_view->details->columns_popover_box, 6);
+    gtk_widget_set_margin_bottom (list_view->details->columns_popover_box, 6);
+    gtk_widget_set_margin_start (list_view->details->columns_popover_box, 6);
+    gtk_widget_set_margin_end (list_view->details->columns_popover_box, 6);
+    gtk_popover_set_child (GTK_POPOVER (list_view->details->columns_popover),
+                           list_view->details->columns_popover_box);
 
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,

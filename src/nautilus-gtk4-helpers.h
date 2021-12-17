@@ -27,7 +27,10 @@ void gtk_revealer_set_child        (GtkRevealer       *revealer,
                                     GtkWidget         *child);
 void gtk_popover_set_child         (GtkPopover        *popover,
                                     GtkWidget         *child);
+void gtk_check_button_set_active   (GtkCheckButton    *button,
+                                    gboolean           setting);
 
+gboolean gtk_check_button_get_active (GtkCheckButton  *button);
 GtkWidget *gtk_widget_get_first_child (GtkWidget *widget);
 GtkWidget *gtk_widget_get_focus_child (GtkWidget *widget);
 GtkWidget *gtk_scrolled_window_get_child (GtkScrolledWindow *scrolled);
