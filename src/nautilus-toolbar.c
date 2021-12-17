@@ -37,7 +37,6 @@
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
-#include "nautilus-gtk4-helpers.h"
 
 #define OPERATION_MINIMUM_TIME 2 /*s */
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */

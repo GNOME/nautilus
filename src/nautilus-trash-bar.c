@@ -32,7 +32,6 @@
 #include "nautilus-file.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-gtk4-helpers.h"
 
 enum
 {

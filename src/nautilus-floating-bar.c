@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "nautilus-floating-bar.h"
-#include "nautilus-gtk4-helpers.h"
 
 #define HOVER_HIDE_TIMEOUT_INTERVAL 100
 

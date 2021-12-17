@@ -27,7 +27,6 @@
 #include "nautilus-dnd.h"
 
 #include "nautilus-program-choosing.h"
-#include "nautilus-gtk4-helpers.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
