@@ -263,7 +263,7 @@ nautilus_deps = [
   gmodule,
   gnome_autoar,
   gnome_desktop,
-  libhandy,
+  libadwaita,
   libportal,
   libportal_gtk4,
   nautilus_extension,

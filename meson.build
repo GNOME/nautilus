@@ -108,8 +108,8 @@ glib = dependency('glib-2.0', version: glib_ver)
 gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.0')
 gnome_desktop = dependency('gnome-desktop-4', version: '>= 1.0.0')
-libhandy = dependency('libhandy-1', version: '>= 1.1.90')
 gtk = dependency('gtk4', version: '>= 4.4')
+libadwaita = dependency('libadwaita-1', version: '>= 0.0')
 libportal = []
 libportal_gtk4 = []
 if get_option('libportal')
