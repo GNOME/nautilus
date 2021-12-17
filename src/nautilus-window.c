@@ -46,7 +46,7 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
-#include "gtk/nautilusgtkplacessidebar.h"
+#include "gtk/nautilusgtkplacessidebarprivate.h"
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
@@ -1245,6 +1245,7 @@ add_menu_separator (GtkWidget *menu)
     gtk_widget_show (separator);
 }
 
+#if 0 && SIDEBAR_MENU_ITEMS_NEEDS_GTK4_REIMPLEMENTATION
 static void
 places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
                                   GtkWidget                *menu,
@@ -1317,6 +1318,7 @@ places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
         }
     }
 }
+#endif
 
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
@@ -1344,8 +1346,10 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
     g_signal_connect (window->places_sidebar, "drag-perform-drop",
                       G_CALLBACK (places_sidebar_drag_perform_drop_cb), window);
 #endif
+#if 0 && SIDEBAR_MENU_ITEMS_NEEDS_GTK4_REIMPLEMENTATION
     g_signal_connect (window->places_sidebar, "populate-popup",
                       G_CALLBACK (places_sidebar_populate_popup_cb), window);
+#endif
     g_signal_connect (window->places_sidebar, "unmount",
                       G_CALLBACK (places_sidebar_unmount_operation_cb), window);
 }
@@ -2611,7 +2615,6 @@ nautilus_window_init (NautilusWindow *window)
     g_object_set (window->places_sidebar,
                   "vexpand", TRUE,
                   "visible", TRUE,
-                  "populate-all", TRUE,
                   "show-other-locations", TRUE,
                   "show-starred-location", TRUE,
                   NULL);

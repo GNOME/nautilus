@@ -71,20 +71,20 @@ open_location_cb (NautilusPlacesView         *view,
 
     switch (open_flags)
     {
-        case GTK_PLACES_OPEN_NEW_TAB:
+        case NAUTILUS_OPEN_FLAG_NEW_TAB:
         {
             flags = NAUTILUS_OPEN_FLAG_NEW_TAB |
                     NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
         }
         break;
 
-        case GTK_PLACES_OPEN_NEW_WINDOW:
+        case NAUTILUS_OPEN_FLAG_NEW_WINDOW:
         {
             flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
         }
         break;
 
-        case GTK_PLACES_OPEN_NORMAL: /* fall-through */
+        case NAUTILUS_OPEN_FLAG_NORMAL: /* fall-through */
         default:
         {
             flags = 0;
@@ -385,7 +385,7 @@ nautilus_places_view_init (NautilusPlacesView *self)
     /* Places view */
     priv->places_view = nautilus_gtk_places_view_new ();
     nautilus_gtk_places_view_set_open_flags (NAUTILUS_GTK_PLACES_VIEW (priv->places_view),
-                                             GTK_PLACES_OPEN_NEW_TAB | GTK_PLACES_OPEN_NEW_WINDOW | GTK_PLACES_OPEN_NORMAL);
+                                             NAUTILUS_OPEN_FLAG_NEW_TAB | NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NORMAL);
     gtk_widget_set_hexpand (priv->places_view, TRUE);
     gtk_widget_set_vexpand (priv->places_view, TRUE);
     gtk_widget_show (priv->places_view);
