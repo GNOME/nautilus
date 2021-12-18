@@ -1039,19 +1039,6 @@ canvas_container_activate_callback (NautilusCanvasContainer *container,
                                         0, TRUE);
 }
 
-static void
-canvas_container_activate_previewer_callback (NautilusCanvasContainer *container,
-                                              GList                   *file_list,
-                                              GArray                  *locations,
-                                              NautilusCanvasView      *canvas_view)
-{
-    g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
-    g_assert (container == get_canvas_container (canvas_view));
-
-    nautilus_files_view_preview_files (NAUTILUS_FILES_VIEW (canvas_view),
-                                       file_list, locations);
-}
-
 /* this is called in one of these cases:
  * - we activate with enter holding shift
  * - we activate with space holding shift
@@ -1390,8 +1377,6 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
                              G_CALLBACK (canvas_container_activate_callback), canvas_view, 0);
     g_signal_connect_object (canvas_container, "activate-alternate",
                              G_CALLBACK (canvas_container_activate_alternate_callback), canvas_view, 0);
-    g_signal_connect_object (canvas_container, "activate-previewer",
-                             G_CALLBACK (canvas_container_activate_previewer_callback), canvas_view, 0);
     g_signal_connect_object (canvas_container, "band-select-started",
                              G_CALLBACK (band_select_started_callback), canvas_view, 0);
     g_signal_connect_object (canvas_container, "band-select-ended",

@@ -177,21 +177,6 @@ list_selection_changed_callback (GtkTreeSelection *selection,
 }
 
 static void
-preview_selected_items (NautilusListView *view)
-{
-    GList *file_list;
-
-    file_list = nautilus_list_view_get_selection (NAUTILUS_FILES_VIEW (view));
-
-    if (file_list != NULL)
-    {
-        nautilus_files_view_preview_files (NAUTILUS_FILES_VIEW (view),
-                                           file_list, NULL);
-        nautilus_file_list_free (file_list);
-    }
-}
-
-static void
 activate_selected_items (NautilusListView *view)
 {
     GList *file_list;
@@ -894,10 +879,6 @@ on_event_controller_key_key_pressed (GtkEventControllerKey *controller,
         if ((state & GDK_SHIFT_MASK) != 0)
         {
             activate_selected_items_alternate (NAUTILUS_LIST_VIEW (view), NULL, TRUE);
-        }
-        else
-        {
-            preview_selected_items (NAUTILUS_LIST_VIEW (view));
         }
 
         return GDK_EVENT_STOP;

@@ -1228,19 +1228,6 @@ nautilus_files_view_preview (NautilusFilesView *view,
     }
 }
 
-void
-nautilus_files_view_preview_files (NautilusFilesView *view,
-                                   GList             *files,
-                                   GArray            *locations)
-{
-    PreviewExportData *data = g_new0 (PreviewExportData, 1);
-
-    data->uri = nautilus_file_get_uri (files->data);
-    data->is_update = FALSE;
-
-    nautilus_files_view_preview (view, data);
-}
-
 static void
 nautilus_files_view_preview_update (NautilusFilesView *view)
 {
@@ -1666,6 +1653,23 @@ action_invert_selection (GSimpleAction *action,
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     nautilus_files_view_invert_selection (user_data);
+}
+
+static void
+action_preview_selection (GSimpleAction *action,
+                          GVariant      *state,
+                          gpointer       user_data)
+{
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
+    g_autolist (NautilusFile) selection = NULL;
+    PreviewExportData *data = g_new0 (PreviewExportData, 1);
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    data->uri = nautilus_file_get_uri (selection->data);
+    data->is_update = FALSE;
+
+    nautilus_files_view_preview (view, data);
 }
 
 static void
@@ -7057,6 +7061,7 @@ const GActionEntry view_entries[] =
     /* Only accesible by shorcuts */
     { "select-pattern", action_select_pattern },
     { "invert-selection", action_invert_selection },
+    { "preview-selection", action_preview_selection },
 };
 
 static gboolean
@@ -7640,6 +7645,9 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_move_files && !selection_contains_recent &&
                                  !selection_contains_starred);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "preview-selection");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count != 0);
 
     /* Drive menu */
     show_mount = (selection != NULL);
@@ -9849,6 +9857,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
     nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
     nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
+    nautilus_application_set_accelerator (app, "view.preview-selection", "space");
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->tag_manager = nautilus_tag_manager_get ();

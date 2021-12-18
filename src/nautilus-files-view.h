@@ -266,9 +266,6 @@ void                nautilus_files_view_activate_files                   (Nautil
 void                nautilus_files_view_activate_file                    (NautilusFilesView *view,
                                                                           NautilusFile      *file,
                                                                           NautilusOpenFlags  flags);
-void                nautilus_files_view_preview_files                    (NautilusFilesView *view,
-                                                                          GList             *files,
-                                                                          GArray            *locations);
 void                nautilus_files_view_start_batching_selection_changes (NautilusFilesView *view);
 void                nautilus_files_view_stop_batching_selection_changes  (NautilusFilesView *view);
 void                nautilus_files_view_notify_selection_changed         (NautilusFilesView *view);
