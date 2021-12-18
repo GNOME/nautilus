@@ -1034,24 +1034,6 @@ finalize (GObject *object)
 }
 
 static void
-on_child_activated (GtkFlowBox      *flow_box,
-                    GtkFlowBoxChild *child,
-                    gpointer         user_data)
-{
-    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
-    NautilusViewItemModel *item_model;
-    NautilusFile *file;
-    g_autoptr (GList) list = NULL;
-
-    item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
-                                        gtk_flow_box_child_get_index (child));
-    file = nautilus_view_item_model_get_file (item_model);
-    list = g_list_append (list, file);
-
-    nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (self), list, 0, TRUE);
-}
-
-static void
 on_ui_selected_children_changed (GtkFlowBox *box,
                                  gpointer    user_data)
 {
@@ -1102,8 +1084,12 @@ create_view_ui (NautilusViewIconController *self)
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
     flowbox = GTK_FLOW_BOX (widget);
-    /* We don't use GtkFlowBox's single click mode because it doesn't match our
-     * expected behavior. Instead, we roll our own self->single_click_mode. */
+    /* We don't use GtkFlowBox::child-activated because it doesn't fill all our
+     * needs nor does it match our expected behavior. Instead, we roll our own
+     * event handling and double/single click mode.
+     * However, GtkFlowBox::activate-on-single-click has other effects besides
+     * activation, as it affects the selection behavior as well. Setting it to
+     * FALSE gives us the expected range-selection with Shift+click for free. */
     gtk_flow_box_set_activate_on_single_click (flowbox, FALSE);
     gtk_flow_box_set_max_children_per_line (flowbox, 20);
     gtk_flow_box_set_selection_mode (flowbox, GTK_SELECTION_MULTIPLE);
@@ -1139,7 +1125,6 @@ constructed (GObject *object)
     gtk_flow_box_set_vadjustment (self->view_ui, vadjustment);
     gtk_widget_show (GTK_WIDGET (self->view_ui));
 
-    g_signal_connect (self->view_ui, "child-activated", (GCallback) on_child_activated, self);
     g_signal_connect (self->view_ui, "selected-children-changed", (GCallback) on_ui_selected_children_changed, self);
 
     gtk_flow_box_bind_model (self->view_ui,
