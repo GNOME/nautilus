@@ -1178,10 +1178,10 @@ static void load_new_location (NautilusWindowSlot *slot,
                                gboolean            tell_new_content_view);
 
 void
-nautilus_window_slot_open_location_full (NautilusWindowSlot      *self,
-                                         GFile                   *location,
-                                         NautilusWindowOpenFlags  flags,
-                                         GList                   *new_selection)
+nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
+                                         GFile              *location,
+                                         NautilusOpenFlags   flags,
+                                         GList              *new_selection)
 {
     GFile *old_location;
     g_autolist (NautilusFile) old_selection = NULL;
@@ -1468,8 +1468,8 @@ viewed_file_changed_callback (NautilusFile       *file,
 }
 
 static void
-nautilus_window_slot_go_home (NautilusWindowSlot      *self,
-                              NautilusWindowOpenFlags  flags)
+nautilus_window_slot_go_home (NautilusWindowSlot *self,
+                              NautilusOpenFlags   flags)
 {
     GFile *home;
 

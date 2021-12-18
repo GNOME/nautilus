@@ -52,10 +52,10 @@ NautilusWindow * nautilus_window_slot_get_window           (NautilusWindowSlot *
 void             nautilus_window_slot_set_window           (NautilusWindowSlot *slot,
 							    NautilusWindow     *window);
 
-void nautilus_window_slot_open_location_full              (NautilusWindowSlot      *slot,
-                                                           GFile                   *location,
-                                                           NautilusWindowOpenFlags  flags,
-                                                           GList                   *new_selection);
+void nautilus_window_slot_open_location_full               (NautilusWindowSlot *slot,
+                                                            GFile              *location,
+                                                            NautilusOpenFlags   flags,
+                                                            GList              *new_selection);
 
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);

@@ -35,7 +35,7 @@ struct _NautilusApplicationClass {
 
         void  (*open_location_full) (NautilusApplication     *application,
                                      GFile                   *location,
-                                     NautilusWindowOpenFlags  flags,
+                                     NautilusOpenFlags        flags,
                                      GList                   *selection,
                                      NautilusWindow          *target_window,
                                      NautilusWindowSlot      *target_slot);
@@ -63,7 +63,7 @@ void nautilus_application_open_location (NautilusApplication *application,
 
 void nautilus_application_open_location_full (NautilusApplication     *application,
                                               GFile                   *location,
-                                              NautilusWindowOpenFlags  flags,
+                                              NautilusOpenFlags        flags,
                                               GList                   *selection,
                                               NautilusWindow          *target_window,
                                               NautilusWindowSlot      *target_slot);

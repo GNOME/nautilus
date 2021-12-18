@@ -39,16 +39,16 @@ gboolean               nautilus_mime_file_extracts                        (Nauti
 gboolean               nautilus_mime_file_opens_in_external_app           (NautilusFile            *file);
 gboolean               nautilus_mime_file_launches                        (NautilusFile            *file);
 void                   nautilus_mime_activate_files                       (GtkWindow               *parent_window,
-									   NautilusWindowSlot      *slot,
-									   GList                   *files,
-									   const char              *launch_directory,
-									   NautilusWindowOpenFlags  flags,
-									   gboolean                 user_confirmation);
+									   NautilusWindowSlot *slot,
+									   GList              *files,
+									   const char         *launch_directory,
+									   NautilusOpenFlags   flags,
+									   gboolean            user_confirmation);
 void                   nautilus_mime_activate_file                        (GtkWindow               *parent_window,
-									   NautilusWindowSlot      *slot_info,
-									   NautilusFile            *file,
-									   const char              *launch_directory,
-									   NautilusWindowOpenFlags  flags);
+									   NautilusWindowSlot *slot_info,
+									   NautilusFile       *file,
+									   const char         *launch_directory,
+									   NautilusOpenFlags   flags);
 gint                   nautilus_mime_types_get_number_of_groups           (void);
 const gchar*           nautilus_mime_types_group_get_name                 (gint                     group_index);
 GPtrArray*             nautilus_mime_types_group_get_mimetypes            (gint                     group_index);

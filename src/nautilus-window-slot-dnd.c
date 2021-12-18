@@ -94,7 +94,7 @@ switch_location (NautilusDragSlotProxyInfo *drag_info)
 
     location = nautilus_file_get_location (drag_info->target_file);
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                             location, NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                             location, NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
                                              NULL, NAUTILUS_WINDOW (window), NULL);
     g_object_unref (location);
 }

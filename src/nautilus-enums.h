@@ -76,8 +76,9 @@ typedef enum
 
 typedef enum
 {
-    NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW       = 1 << 0,
-    NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB          = 1 << 1,
-    NAUTILUS_WINDOW_OPEN_SLOT_APPEND           = 1 << 2,
-    NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 3,
-} NautilusWindowOpenFlags;
+    NAUTILUS_OPEN_FLAG_NORMAL           = 1 << 0,
+    NAUTILUS_OPEN_FLAG_NEW_WINDOW       = 1 << 1,
+    NAUTILUS_OPEN_FLAG_NEW_TAB          = 1 << 2,
+    NAUTILUS_OPEN_FLAG_SLOT_APPEND      = 1 << 3,
+    NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 4,
+} NautilusOpenFlags;

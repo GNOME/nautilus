@@ -401,7 +401,7 @@ nautilus_files_view_handle_hover (NautilusFilesView *view,
         !(current_location != NULL && g_file_equal (location, current_location)))
     {
         nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                 location, NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                                 location, NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
                                                  NULL, NULL, slot);
     }
     g_object_unref (location);

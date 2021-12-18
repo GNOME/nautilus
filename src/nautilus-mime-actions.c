@@ -76,7 +76,7 @@ typedef struct
     GList *mountables;
     GList *start_mountables;
     GList *not_mounted;
-    NautilusWindowOpenFlags flags;
+    NautilusOpenFlags flags;
     char *timed_wait_prompt;
     gboolean timed_wait_active;
     NautilusFileListHandle *files_handle;
@@ -990,7 +990,7 @@ typedef struct
     GtkWindow *parent_window;
     NautilusFile *file;
     GList *files;
-    NautilusWindowOpenFlags flags;
+    NautilusOpenFlags flags;
     char *activation_directory;
     gboolean user_confirmation;
     char *uri;
@@ -1433,7 +1433,7 @@ static void
 activate_files (ActivateParameters *parameters)
 {
     NautilusFile *file;
-    NautilusWindowOpenFlags flags;
+    NautilusOpenFlags flags;
     g_autoptr (GList) open_in_app_parameters = NULL;
     g_autoptr (GList) unhandled_open_in_app_uris = NULL;
     ApplicationLaunchParameters *one_parameters;
@@ -1563,22 +1563,22 @@ activate_files (ActivateParameters *parameters)
     flags = parameters->flags;
     if (count > 1)
     {
-        if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0)
+        if ((parameters->flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0)
         {
-            flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+            flags |= NAUTILUS_OPEN_FLAG_NEW_TAB;
         }
         else
         {
-            flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+            flags |= NAUTILUS_OPEN_FLAG_NEW_WINDOW;
         }
     }
 
     if (parameters->slot != NULL &&
         (!parameters->user_confirmation ||
          confirm_multiple_windows (parameters->parent_window, count,
-                                   (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0)))
+                                   (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)))
     {
-        if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0 &&
+        if ((flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0 &&
             g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION) ==
             NAUTILUS_NEW_TAB_POSITION_AFTER_CURRENT_TAB)
         {
@@ -2171,12 +2171,12 @@ activation_start_mountables (ActivateParameters *parameters)
  *
  **/
 void
-nautilus_mime_activate_files (GtkWindow               *parent_window,
-                              NautilusWindowSlot      *slot,
-                              GList                   *files,
-                              const char              *launch_directory,
-                              NautilusWindowOpenFlags  flags,
-                              gboolean                 user_confirmation)
+nautilus_mime_activate_files (GtkWindow          *parent_window,
+                              NautilusWindowSlot *slot,
+                              GList              *files,
+                              const char         *launch_directory,
+                              NautilusOpenFlags   flags,
+                              gboolean            user_confirmation)
 {
     ActivateParameters *parameters;
     char *file_name;
@@ -2268,11 +2268,11 @@ nautilus_mime_activate_files (GtkWindow               *parent_window,
  **/
 
 void
-nautilus_mime_activate_file (GtkWindow               *parent_window,
-                             NautilusWindowSlot      *slot,
-                             NautilusFile            *file,
-                             const char              *launch_directory,
-                             NautilusWindowOpenFlags  flags)
+nautilus_mime_activate_file (GtkWindow          *parent_window,
+                             NautilusWindowSlot *slot,
+                             NautilusFile       *file,
+                             const char         *launch_directory,
+                             NautilusOpenFlags   flags)
 {
     GList *files;
 

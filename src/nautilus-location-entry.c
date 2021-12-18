@@ -309,7 +309,7 @@ drag_data_received_callback (GtkWidget        *widget,
         {
             location = g_file_new_for_uri (names[i]);
             nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                     location, NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
+                                                     location, NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
             g_object_unref (location);
         }
     }

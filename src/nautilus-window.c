@@ -507,8 +507,8 @@ disconnect_slot (NautilusWindow     *window,
 }
 
 static NautilusWindowSlot *
-nautilus_window_create_and_init_slot (NautilusWindow          *window,
-                                      NautilusWindowOpenFlags  flags)
+nautilus_window_create_and_init_slot (NautilusWindow    *window,
+                                      NautilusOpenFlags  flags)
 {
     NautilusWindowSlot *slot;
 
@@ -519,9 +519,9 @@ nautilus_window_create_and_init_slot (NautilusWindow          *window,
 }
 
 void
-nautilus_window_initialize_slot (NautilusWindow          *window,
-                                 NautilusWindowSlot      *slot,
-                                 NautilusWindowOpenFlags  flags)
+nautilus_window_initialize_slot (NautilusWindow     *window,
+                                 NautilusWindowSlot *slot,
+                                 NautilusOpenFlags   flags)
 {
     g_assert (NAUTILUS_IS_WINDOW (window));
     g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
@@ -533,7 +533,7 @@ nautilus_window_initialize_slot (NautilusWindow          *window,
                                      window);
     nautilus_notebook_add_tab (NAUTILUS_NOTEBOOK (window->notebook),
                                slot,
-                               (flags & NAUTILUS_WINDOW_OPEN_SLOT_APPEND) != 0 ?
+                               (flags & NAUTILUS_OPEN_FLAG_SLOT_APPEND) != 0 ?
                                -1 :
                                gtk_notebook_get_current_page (GTK_NOTEBOOK (window->notebook)) + 1,
                                FALSE);
@@ -546,24 +546,24 @@ nautilus_window_initialize_slot (NautilusWindow          *window,
 }
 
 void
-nautilus_window_open_location_full (NautilusWindow          *window,
-                                    GFile                   *location,
-                                    NautilusWindowOpenFlags  flags,
-                                    GList                   *selection,
-                                    NautilusWindowSlot      *target_slot)
+nautilus_window_open_location_full (NautilusWindow     *window,
+                                    GFile              *location,
+                                    NautilusOpenFlags   flags,
+                                    GList              *selection,
+                                    NautilusWindowSlot *target_slot)
 {
     NautilusWindowSlot *active_slot;
     gboolean new_tab_at_end;
 
     /* Assert that we are not managing new windows */
-    g_assert (!(flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW));
+    g_assert (!(flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW));
     /* if the flags say we want a new tab, open a slot in the current window */
-    if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0)
+    if ((flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)
     {
         new_tab_at_end = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION) == NAUTILUS_NEW_TAB_POSITION_END;
         if (new_tab_at_end)
         {
-            flags |= NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
+            flags |= NAUTILUS_OPEN_FLAG_SLOT_APPEND;
         }
     }
 
@@ -573,14 +573,14 @@ nautilus_window_open_location_full (NautilusWindow          *window,
         target_slot = active_slot;
     }
 
-    if (target_slot == NULL || (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0)
+    if (target_slot == NULL || (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)
     {
         target_slot = nautilus_window_create_and_init_slot (window, flags);
     }
 
     /* Make the opened location the one active if we weren't ask for the
      * oposite, since it's the most usual use case */
-    if (!(flags & NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE))
+    if (!(flags & NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE))
     {
         gtk_window_present (GTK_WINDOW (window));
         nautilus_window_set_active_slot (window, target_slot);
@@ -716,7 +716,7 @@ nautilus_window_new_tab (NautilusWindow *window)
         }
 
         nautilus_window_open_location_full (window, location,
-                                            NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB,
+                                            NAUTILUS_OPEN_FLAG_NEW_TAB,
                                             NULL, NULL);
         g_object_unref (location);
     }
@@ -860,21 +860,21 @@ open_location_cb (NautilusWindow     *window,
                   GFile              *location,
                   GtkPlacesOpenFlags  open_flags)
 {
-    NautilusWindowOpenFlags flags;
+    NautilusOpenFlags flags;
     NautilusApplication *application;
 
     switch (open_flags)
     {
         case GTK_PLACES_OPEN_NEW_TAB:
         {
-            flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB |
-                    NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+            flags = NAUTILUS_OPEN_FLAG_NEW_TAB |
+                    NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
         }
         break;
 
         case GTK_PLACES_OPEN_NEW_WINDOW:
         {
-            flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+            flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
         }
         break;
 
@@ -1145,7 +1145,7 @@ action_restore_tab (GSimpleAction *action,
                     gpointer       user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    NautilusWindowOpenFlags flags;
+    NautilusOpenFlags flags;
     g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *slot;
     NautilusNavigationState *data;
@@ -1155,7 +1155,7 @@ action_restore_tab (GSimpleAction *action,
         return;
     }
 
-    flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB | NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+    flags = NAUTILUS_OPEN_FLAG_NEW_TAB | NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
 
     data = g_queue_pop_head (window->tab_data_queue);
 

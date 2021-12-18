@@ -66,7 +66,7 @@ open_location_cb (NautilusPlacesView *view,
                   GFile              *location,
                   GtkPlacesOpenFlags  open_flags)
 {
-    NautilusWindowOpenFlags flags;
+    NautilusOpenFlags flags;
     GtkWidget *slot;
 
     slot = gtk_widget_get_ancestor (GTK_WIDGET (view), NAUTILUS_TYPE_WINDOW_SLOT);
@@ -75,14 +75,14 @@ open_location_cb (NautilusPlacesView *view,
     {
         case GTK_PLACES_OPEN_NEW_TAB:
         {
-            flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB |
-                    NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+            flags = NAUTILUS_OPEN_FLAG_NEW_TAB |
+                    NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
         }
         break;
 
         case GTK_PLACES_OPEN_NEW_WINDOW:
         {
-            flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+            flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
         }
         break;
 

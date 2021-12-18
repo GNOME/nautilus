@@ -1074,7 +1074,7 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
     GdkEventButton *button_event;
     GdkEventKey *key_event;
     gboolean open_in_tab, open_in_window;
-    NautilusWindowOpenFlags flags;
+    NautilusOpenFlags flags;
 
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
     g_assert (container == get_canvas_container (canvas_view));
@@ -1102,13 +1102,13 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
 
     if (open_in_tab)
     {
-        flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-        flags |= NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+        flags |= NAUTILUS_OPEN_FLAG_NEW_TAB;
+        flags |= NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
     }
 
     if (open_in_window)
     {
-        flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+        flags |= NAUTILUS_OPEN_FLAG_NEW_WINDOW;
     }
 
     DEBUG ("Activate alternate, open in tab %d, new window %d\n",

@@ -259,13 +259,13 @@ gboolean            nautilus_files_view_get_loading                      (Nautil
 /* Hooks for subclasses to call. These are normally called only by
  * NautilusFilesView and its subclasses
  */
-void                nautilus_files_view_activate_files                   (NautilusFilesView       *view,
-                                                                          GList                   *files,
-                                                                          NautilusWindowOpenFlags  flags,
-                                                                          gboolean                 confirm_multiple);
-void                nautilus_files_view_activate_file                    (NautilusFilesView       *view,
-                                                                          NautilusFile            *file,
-                                                                          NautilusWindowOpenFlags  flags);
+void                nautilus_files_view_activate_files                   (NautilusFilesView *view,
+                                                                          GList             *files,
+                                                                          NautilusOpenFlags  flags,
+                                                                          gboolean           confirm_multiple);
+void                nautilus_files_view_activate_file                    (NautilusFilesView *view,
+                                                                          NautilusFile      *file,
+                                                                          NautilusOpenFlags  flags);
 void                nautilus_files_view_preview_files                    (NautilusFilesView *view,
                                                                           GList             *files,
                                                                           GArray            *locations);

@@ -1335,10 +1335,10 @@ nautilus_files_view_activate_selection (NautilusFilesView *view)
 }
 
 void
-nautilus_files_view_activate_files (NautilusFilesView       *view,
-                                    GList                   *files,
-                                    NautilusWindowOpenFlags  flags,
-                                    gboolean                 confirm_multiple)
+nautilus_files_view_activate_files (NautilusFilesView *view,
+                                    GList             *files,
+                                    NautilusOpenFlags  flags,
+                                    gboolean           confirm_multiple)
 {
     NautilusFilesViewPrivate *priv;
     GList *files_to_extract;
@@ -1389,9 +1389,9 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
 }
 
 void
-nautilus_files_view_activate_file (NautilusFilesView       *view,
-                                   NautilusFile            *file,
-                                   NautilusWindowOpenFlags  flags)
+nautilus_files_view_activate_file (NautilusFilesView *view,
+                                   NautilusFile      *file,
+                                   NautilusOpenFlags  flags)
 {
     g_autoptr (GList) files = NULL;
 
@@ -1473,8 +1473,8 @@ action_open_item_new_tab (GSimpleAction *action,
     {
         nautilus_files_view_activate_files (view,
                                             selection,
-                                            NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB |
-                                            NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                            NAUTILUS_OPEN_FLAG_NEW_TAB |
+                                            NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
                                             FALSE);
     }
 }
@@ -4900,7 +4900,7 @@ open_one_in_new_window (gpointer data,
 
     nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (callback_data),
                                        NAUTILUS_FILE (data),
-                                       NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
+                                       NAUTILUS_OPEN_FLAG_NEW_WINDOW);
 }
 
 NautilusFile *

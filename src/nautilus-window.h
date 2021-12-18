@@ -60,11 +60,11 @@ typedef void (* NautilusWindowHandleExported) (NautilusWindow *window,
 NautilusWindow * nautilus_window_new                  (GdkScreen         *screen);
 void             nautilus_window_close                (NautilusWindow    *window);
 
-void nautilus_window_open_location_full               (NautilusWindow          *window,
-                                                       GFile                   *location,
-                                                       NautilusWindowOpenFlags  flags,
-                                                       GList                   *selection,
-                                                       NautilusWindowSlot      *target_slot);
+void nautilus_window_open_location_full               (NautilusWindow     *window,
+                                                       GFile              *location,
+                                                       NautilusOpenFlags   flags,
+                                                       GList              *selection,
+                                                       NautilusWindowSlot *target_slot);
 
 void             nautilus_window_new_tab              (NautilusWindow    *window);
 NautilusWindowSlot * nautilus_window_get_active_slot       (NautilusWindow *window);
@@ -105,9 +105,9 @@ void nautilus_window_end_dnd (NautilusWindow *window,
 void nautilus_window_search (NautilusWindow *window,
                              NautilusQuery  *query);
 
-void nautilus_window_initialize_slot (NautilusWindow          *window,
-                                      NautilusWindowSlot      *slot,
-                                      NautilusWindowOpenFlags  flags);
+void nautilus_window_initialize_slot (NautilusWindow     *window,
+                                      NautilusWindowSlot *slot,
+                                      NautilusOpenFlags   flags);
 
 gboolean nautilus_window_export_handle (NautilusWindow *window,
                                         NautilusWindowHandleExported callback,

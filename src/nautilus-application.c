@@ -341,12 +341,12 @@ get_window_slot_for_location (NautilusApplication *self,
 }
 
 void
-nautilus_application_open_location_full (NautilusApplication     *self,
-                                         GFile                   *location,
-                                         NautilusWindowOpenFlags  flags,
-                                         GList                   *selection,
-                                         NautilusWindow          *target_window,
-                                         NautilusWindowSlot      *target_slot)
+nautilus_application_open_location_full (NautilusApplication *self,
+                                         GFile               *location,
+                                         NautilusOpenFlags    flags,
+                                         GList               *selection,
+                                         NautilusWindow      *target_window,
+                                         NautilusWindowSlot  *target_slot)
 {
     NAUTILUS_APPLICATION_CLASS (G_OBJECT_GET_CLASS (self))->open_location_full (self,
                                                                                 location,
@@ -357,12 +357,12 @@ nautilus_application_open_location_full (NautilusApplication     *self,
 }
 
 static void
-real_open_location_full (NautilusApplication     *self,
-                         GFile                   *location,
-                         NautilusWindowOpenFlags  flags,
-                         GList                   *selection,
-                         NautilusWindow          *target_window,
-                         NautilusWindowSlot      *target_slot)
+real_open_location_full (NautilusApplication *self,
+                         GFile               *location,
+                         NautilusOpenFlags    flags,
+                         GList               *selection,
+                         NautilusWindow      *target_window,
+                         NautilusWindowSlot  *target_slot)
 {
     NautilusWindowSlot *active_slot = NULL;
     NautilusWindow *active_window;
@@ -415,11 +415,11 @@ real_open_location_full (NautilusApplication     *self,
         target_window = nautilus_window_slot_get_window (target_slot);
     }
 
-    g_assert (!((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0 &&
-                (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
+    g_assert (!((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) != 0 &&
+                (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0));
 
     /* and if the flags specify so, this is overridden */
-    if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0)
+    if ((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) != 0)
     {
         use_same = FALSE;
     }
@@ -454,7 +454,7 @@ real_open_location_full (NautilusApplication     *self,
 
     /* Application is the one that manages windows, so this flag shouldn't use
      * it anymore by any client */
-    flags &= ~NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+    flags &= ~NAUTILUS_OPEN_FLAG_NEW_WINDOW;
     nautilus_window_open_location_full (target_window, location, flags, selection, target_slot);
 }
 
@@ -690,7 +690,7 @@ action_new_window (GSimpleAction *action,
     home = g_file_new_for_path (g_get_home_dir ());
 
     nautilus_application_open_location_full (application, home,
-                                             NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW,
+                                             NAUTILUS_OPEN_FLAG_NEW_WINDOW,
                                              NULL, NULL, NULL);
 }
 
@@ -732,7 +732,7 @@ action_clone_window (GSimpleAction *action,
     }
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), location,
-                                             NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
+                                             NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
 }
 
 static void
