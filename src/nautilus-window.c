@@ -1724,11 +1724,11 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
 }
 
 static void
-path_bar_location_changed_callback (GtkWidget      *widget,
-                                    GFile          *location,
-                                    NautilusWindow *window)
+on_path_bar_open_location (NautilusWindow    *window,
+                           GFile             *location,
+                           NautilusOpenFlags  open_flags)
 {
-    nautilus_window_open_location_full (window, location, 0, NULL, NULL);
+    nautilus_window_open_location_full (window, location, open_flags, NULL, NULL);
 }
 
 static void
@@ -1888,10 +1888,8 @@ setup_toolbar (NautilusWindow *window)
     /* connect to the pathbar signals */
     path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->toolbar));
 
-    g_signal_connect_object (path_bar, "path-clicked",
-                             G_CALLBACK (path_bar_location_changed_callback), window, 0);
     g_signal_connect_swapped (path_bar, "open-location",
-                              G_CALLBACK (open_location_cb), window);
+                              G_CALLBACK (on_path_bar_open_location), window);
 
     /* connect to the location entry signals */
     location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->toolbar));

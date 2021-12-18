@@ -25,6 +25,8 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-properties-window.h"
 
+#include "nautilus-enums.h"
+#include "nautilus-enum-types.h"
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
@@ -38,7 +40,6 @@
 enum
 {
     OPEN_LOCATION,
-    PATH_CLICKED,
     LAST_SIGNAL
 };
 
@@ -158,7 +159,7 @@ action_pathbar_open_item_new_tab (GSimpleAction *action,
 
     if (location)
     {
-        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, GTK_PLACES_OPEN_NEW_TAB);
+        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, NAUTILUS_OPEN_FLAG_NEW_TAB);
         g_object_unref (location);
     }
 }
@@ -182,7 +183,7 @@ action_pathbar_open_item_new_window (GSimpleAction *action,
 
     if (location)
     {
-        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, GTK_PLACES_OPEN_NEW_WINDOW);
+        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, NAUTILUS_OPEN_FLAG_NEW_WINDOW);
         g_object_unref (location);
     }
 }
@@ -451,16 +452,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
                       NULL, NULL, NULL,
                       G_TYPE_NONE, 2,
                       G_TYPE_FILE,
-                      GTK_TYPE_PLACES_OPEN_FLAGS);
-    path_bar_signals [PATH_CLICKED] =
-        g_signal_new ("path-clicked",
-                      G_OBJECT_CLASS_TYPE (path_bar_class),
-                      G_SIGNAL_RUN_FIRST,
-                      0,
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__OBJECT,
-                      G_TYPE_NONE, 1,
-                      G_TYPE_FILE);
+                      NAUTILUS_TYPE_OPEN_FLAGS);
 }
 
 void
@@ -589,7 +581,7 @@ button_clicked_cb (GtkButton *button,
     {
         g_signal_emit (button_data->path_bar, path_bar_signals[OPEN_LOCATION], 0,
                        button_data->path,
-                       GTK_PLACES_OPEN_NEW_WINDOW);
+                       NAUTILUS_OPEN_FLAG_NEW_WINDOW);
     }
     else
     {
@@ -713,7 +705,7 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             {
                 g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
                                button_data->path,
-                               GTK_PLACES_OPEN_NEW_TAB);
+                               NAUTILUS_OPEN_FLAG_NEW_TAB);
             }
         }
         break;
