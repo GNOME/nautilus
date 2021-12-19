@@ -1315,6 +1315,27 @@ simple_dialog_button_activate (GtkWidget *button)
     return G_SOURCE_REMOVE;
 }
 
+static void
+simple_dialog_cb (GtkDialog *dialog,
+                  gint       response_id,
+                  gpointer   user_data)
+{
+    RunSimpleDialogData *data = user_data;
+
+    if ((response_id == GTK_RESPONSE_NONE || response_id == GTK_RESPONSE_DELETE_EVENT) && data->ignore_close_box)
+    {
+        return;
+    }
+
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+
+    data->result = response_id;
+    data->completed = TRUE;
+
+    g_cond_signal (&data->cond);
+    g_mutex_unlock (&data->mutex);
+}
+
 static gboolean
 do_run_simple_dialog (gpointer _data)
 {
@@ -1322,7 +1343,6 @@ do_run_simple_dialog (gpointer _data)
     const char *button_title;
     GtkWidget *dialog;
     GtkWidget *button;
-    int result;
     int response_id;
 
     g_mutex_lock (&data->mutex);
@@ -1417,20 +1437,8 @@ do_run_simple_dialog (gpointer _data)
     }
 
     /* Run it. */
-    result = gtk_dialog_run (GTK_DIALOG (dialog));
-
-    while ((result == GTK_RESPONSE_NONE || result == GTK_RESPONSE_DELETE_EVENT) && data->ignore_close_box)
-    {
-        result = gtk_dialog_run (GTK_DIALOG (dialog));
-    }
-
-    gtk_widget_destroy (dialog);
-
-    data->result = result;
-    data->completed = TRUE;
-
-    g_cond_signal (&data->cond);
-    g_mutex_unlock (&data->mutex);
+    g_signal_connect (dialog, "response", G_CALLBACK (simple_dialog_cb), data);
+    gtk_widget_show_all (dialog);
 
     return FALSE;
 }
