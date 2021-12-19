@@ -78,7 +78,7 @@ content_bar_response_cb (GtkInfoBar *infobar,
     if (default_app != NULL)
     {
         nautilus_launch_application_for_mount (default_app, bar->mount,
-                                               GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
+                                               GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (bar))));
         g_object_unref (default_app);
     }
 }

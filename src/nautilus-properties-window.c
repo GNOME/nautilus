@@ -526,7 +526,7 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
     GtkWindow *window;
 
     image = GTK_IMAGE (widget);
-    window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));
+    window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (image)));
 
     uris = g_strsplit ((const gchar *) gtk_selection_data_get_data (selection_data), "\r\n", 0);
     exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
@@ -4440,7 +4440,7 @@ add_clicked_cb (GtkButton *button,
                                    g_app_info_get_display_name (info), error->message);
         show_dialog (_("Could not add application"),
                      message,
-                     GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
     else
@@ -4468,7 +4468,7 @@ forget_clicked_cb (GtkButton *button,
         {
             show_dialog (_("Could not forget association"),
                          error->message,
-                         GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+                         GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                          GTK_MESSAGE_ERROR);
         }
 
@@ -4513,7 +4513,7 @@ set_as_default_clicked_cb (GtkButton *button,
                                    g_app_info_get_display_name (info), error->message);
         show_dialog (_("Could not set as default"),
                      message,
-                     GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
 

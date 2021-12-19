@@ -3285,7 +3285,7 @@ create_column_editor (NautilusListView *view)
 
     window = GTK_WIDGET (gtk_builder_get_object (builder, "window"));
     gtk_window_set_transient_for (GTK_WINDOW (window),
-                                  GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))));
+                                  GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))));
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
     name = nautilus_file_get_display_name (file);

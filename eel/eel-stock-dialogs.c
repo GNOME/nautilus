@@ -334,7 +334,7 @@ eel_show_simple_dialog (GtkWidget     *parent,
     chosen_parent = NULL;
     if (parent != NULL)
     {
-        top_widget = gtk_widget_get_toplevel (parent);
+        top_widget = GTK_WIDGET (gtk_widget_get_root (parent));
         if (GTK_IS_WINDOW (top_widget))
         {
             chosen_parent = top_widget;

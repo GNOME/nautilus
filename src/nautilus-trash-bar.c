@@ -162,10 +162,10 @@ trash_bar_response_cb (GtkInfoBar *infobar,
                        gpointer    user_data)
 {
     NautilusTrashBar *bar;
-    GtkWidget *window;
+    GtkRoot *window;
 
     bar = NAUTILUS_TRASH_BAR (user_data);
-    window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
+    window = gtk_widget_get_root (GTK_WIDGET (bar));
 
     switch (response_id)
     {
@@ -193,7 +193,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 
         case TRASH_BAR_RESPONSE_EMPTY:
         {
-            nautilus_file_operations_empty_trash (window, TRUE, NULL);
+            nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
         }
         break;
 

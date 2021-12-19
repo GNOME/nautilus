@@ -586,7 +586,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     GtkListStore *store;
     GtkTreeViewColumn *column;
     GtkCellRenderer *renderer;
-    GtkWidget *toplevel;
+    GtkRoot *toplevel;
     GtkTreeSelection *selection;
 
     mime_infos = g_content_types_get_registered ();
@@ -615,7 +615,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     }
     g_list_free (mime_infos);
 
-    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (popover));
+    toplevel = gtk_widget_get_root (GTK_WIDGET (popover));
     dialog = gtk_dialog_new_with_buttons (_("Select type"),
                                           GTK_WINDOW (toplevel),
                                           GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
