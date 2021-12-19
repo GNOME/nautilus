@@ -43,14 +43,6 @@ static int  nautilus_notebook_insert_page (GtkNotebook *notebook,
                                            GtkWidget   *menu_label,
                                            int          position);
 
-enum
-{
-    TAB_CLOSE_REQUEST,
-    LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
-
 struct _NautilusNotebook
 {
     GtkNotebook parent_instance;
@@ -73,17 +65,6 @@ nautilus_notebook_class_init (NautilusNotebookClass *klass)
     object_class->dispose = nautilus_notebook_dispose;
 
     notebook_class->insert_page = nautilus_notebook_insert_page;
-
-    signals[TAB_CLOSE_REQUEST] =
-        g_signal_new ("tab-close-request",
-                      G_OBJECT_CLASS_TYPE (object_class),
-                      G_SIGNAL_RUN_LAST,
-                      0,
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__OBJECT,
-                      G_TYPE_NONE,
-                      1,
-                      NAUTILUS_TYPE_WINDOW_SLOT);
 }
 
 static gint
@@ -272,19 +253,6 @@ nautilus_notebook_sync_tab_label (NautilusNotebook   *notebook,
     }
 }
 
-static void
-close_button_clicked_cb (GtkWidget          *widget,
-                         NautilusWindowSlot *slot)
-{
-    GtkWidget *notebook;
-
-    notebook = gtk_widget_get_ancestor (GTK_WIDGET (slot), NAUTILUS_TYPE_NOTEBOOK);
-    if (notebook != NULL)
-    {
-        g_signal_emit (notebook, signals[TAB_CLOSE_REQUEST], 0, slot);
-    }
-}
-
 static GtkWidget *
 build_tab_label (NautilusNotebook   *notebook,
                  NautilusWindowSlot *slot)
@@ -326,8 +294,7 @@ build_tab_label (NautilusNotebook   *notebook,
     gtk_widget_set_name (close_button, "nautilus-tab-close-button");
 
     gtk_widget_set_tooltip_text (close_button, _("Close tab"));
-    g_signal_connect_object (close_button, "clicked",
-                             G_CALLBACK (close_button_clicked_cb), slot, 0);
+    gtk_actionable_set_action_name (GTK_ACTIONABLE (close_button), "win.close-current-view");
 
     gtk_box_pack_end (GTK_BOX (box), close_button, FALSE, FALSE, 0);
     gtk_widget_show (close_button);
