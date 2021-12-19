@@ -203,7 +203,7 @@ update_selected_format (NautilusCompressDialogController *self,
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
     if (!show_passphrase)
     {
-        gtk_entry_set_text (GTK_ENTRY (self->passphrase_entry), "");
+        gtk_editable_set_text (GTK_EDITABLE (self->passphrase_entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_entry), FALSE);
         gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_entry),
                                            GTK_ENTRY_ICON_SECONDARY,
@@ -301,7 +301,7 @@ passphrase_entry_on_changed (GtkEditable *editable,
     self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
 
     g_free (self->passphrase);
-    self->passphrase = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->passphrase_entry)));
+    self->passphrase = g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->passphrase_entry)));
 
     /* Simulate a change of the name_entry to ensure the correct sensitivity of
      * the activate_button, but only if the name_entry is valid in order to
@@ -508,7 +508,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
     if (initial_name != NULL)
     {
-        gtk_entry_set_text (GTK_ENTRY (name_entry), initial_name);
+        gtk_editable_set_text (GTK_EDITABLE (name_entry), initial_name);
     }
 
     gtk_widget_show_all (compress_dialog);

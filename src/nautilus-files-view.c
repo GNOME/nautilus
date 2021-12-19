@@ -1690,7 +1690,7 @@ pattern_select_response_cb (GtkWidget *dialog,
             entry = g_object_get_data (G_OBJECT (dialog), "entry");
             directory = nautilus_files_view_get_model (view);
             selection = nautilus_directory_match_pattern (directory,
-                                                          gtk_entry_get_text (GTK_ENTRY (entry)));
+                                                          gtk_editable_get_text (GTK_EDITABLE (entry)));
 
             nautilus_files_view_call_set_selection (view, selection);
             nautilus_files_view_reveal_selection (view);

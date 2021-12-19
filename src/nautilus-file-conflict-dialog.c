@@ -97,7 +97,7 @@ nautilus_file_conflict_dialog_set_suggested_name (NautilusFileConflictDialog *fc
                                                   gchar                      *suggested_name)
 {
     fcd->suggested_name = g_strdup (suggested_name);
-    gtk_entry_set_text (GTK_ENTRY (fcd->entry), suggested_name);
+    gtk_editable_set_text (GTK_EDITABLE (fcd->entry), suggested_name);
 }
 
 void
@@ -129,8 +129,8 @@ static void
 entry_text_changed_cb (GtkEditable                *entry,
                        NautilusFileConflictDialog *dialog)
 {
-    if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), "") != 0 &&
-        g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), dialog->conflict_name) != 0)
+    if (g_strcmp0 (gtk_editable_get_text (GTK_EDITABLE (entry)), "") != 0 &&
+        g_strcmp0 (gtk_editable_get_text (GTK_EDITABLE (entry)), dialog->conflict_name) != 0)
     {
         gtk_widget_set_sensitive (dialog->rename_button, TRUE);
     }
@@ -171,7 +171,7 @@ on_expanded_notify (GtkExpander                *w,
         gtk_widget_set_sensitive (dialog->checkbox, FALSE);
 
         gtk_widget_grab_focus (dialog->entry);
-        if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->suggested_name) == 0)
+        if (g_strcmp0 (gtk_editable_get_text (GTK_EDITABLE (dialog->entry)), dialog->suggested_name) == 0)
         {
             /* The suggested name is in the form "original (1).txt", if the
              * the conflicting name was "original.txt". The user may want to
@@ -210,7 +210,7 @@ reset_button_clicked_cb (GtkButton                  *w,
 {
     int start_pos, end_pos;
 
-    gtk_entry_set_text (GTK_ENTRY (dialog->entry), dialog->conflict_name);
+    gtk_editable_set_text (GTK_EDITABLE (dialog->entry), dialog->conflict_name);
     gtk_widget_grab_focus (dialog->entry);
     eel_filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
     gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
@@ -288,7 +288,7 @@ nautilus_file_conflict_dialog_delay_buttons_activation (NautilusFileConflictDial
 char *
 nautilus_file_conflict_dialog_get_new_name (NautilusFileConflictDialog *dialog)
 {
-    return g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->entry)));
+    return g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->entry)));
 }
 
 gboolean

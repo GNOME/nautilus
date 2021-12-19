@@ -638,7 +638,7 @@ on_request_passphrase_cb (GtkDialog *dialog,
     if (response_id != GTK_RESPONSE_CANCEL &&
         response_id != GTK_RESPONSE_DELETE_EVENT)
     {
-        data->passphrase = g_strdup (gtk_entry_get_text (data->passphrase_entry));
+        data->passphrase = g_strdup (gtk_editable_get_text (GTK_EDITABLE (data->passphrase_entry)));
     }
 
     gtk_window_destroy (GTK_WINDOW (dialog));

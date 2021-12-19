@@ -429,14 +429,14 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
-        entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->find_entry)));
+        entry_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry)));
     }
     else
     {
-        entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->name_entry)));
+        entry_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->name_entry)));
     }
 
-    replace_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->replace_entry)));
+    replace_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->replace_entry)));
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
@@ -939,7 +939,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         else
         {
             new_name = batch_rename_replace_label_text (old_name,
-                                                        gtk_entry_get_text (GTK_ENTRY (dialog->find_entry)));
+                                                        gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry)));
             gtk_label_set_markup (GTK_LABEL (label), new_name->str);
 
             g_string_free (new_name, TRUE);
@@ -1227,11 +1227,11 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
     {
-        entry_text = gtk_entry_get_text (GTK_ENTRY (dialog->name_entry));
+        entry_text = gtk_editable_get_text (GTK_EDITABLE (dialog->name_entry));
     }
     else
     {
-        entry_text = gtk_entry_get_text (GTK_ENTRY (dialog->replace_entry));
+        entry_text = gtk_editable_get_text (GTK_EDITABLE (dialog->replace_entry));
     }
 
     if (strstr (entry_text, "/") != NULL)
