@@ -151,8 +151,10 @@ struct _NautilusPropertiesWindow
     AdwComboRow *others_folder_access_row;
     AdwComboRow *others_file_access_row;
 
-    GtkWidget *execute_label;
-    GtkWidget *execute_checkbox;
+    GtkWidget *execution_list_box;
+    AdwComboRow *execution_row;
+    GtkRevealer *execution_inconsistent_revealer;
+    GtkSwitch *execution_switch;
 
     GtkWidget *security_context_title_label;
     GtkWidget *security_context_value_label;
@@ -176,7 +178,6 @@ struct _NautilusPropertiesWindow
     GroupChange *group_change;
     OwnerChange *owner_change;
 
-    GList *permission_buttons;
     GList *permission_rows;
     GList *change_permission_combos;
     GHashTable *initial_permissions;
@@ -250,10 +251,12 @@ typedef struct
 
     PermissionValue folder_permissions[NUM_PERMISSION_TYPE];
     PermissionValue file_permissions[NUM_PERMISSION_TYPE];
+    PermissionValue file_exec_permissions;
     gboolean has_files;
     gboolean has_folders;
     gboolean can_set_all_folder_permission;
     gboolean can_set_all_file_permission;
+    gboolean can_set_any_file_permission;
     gboolean is_multi_file_window;
 } TargetPermissions;
 
@@ -449,8 +452,8 @@ static void schedule_directory_contents_update (NautilusPropertiesWindow *self);
 static void directory_contents_value_field_update (NautilusPropertiesWindow *self);
 static void file_changed_callback (NautilusFile *file,
                                    gpointer      user_data);
-static void permission_button_update (GtkCheckButton           *button,
-                                      NautilusPropertiesWindow *self);
+static void update_execution_row (GtkWidget         *row,
+                                  TargetPermissions *target_perm);
 static void update_permission_row (AdwComboRow       *row,
                                    TargetPermissions *target_perm);
 static void value_field_update (GtkLabel                 *field,
@@ -1087,6 +1090,27 @@ permission_from_vfs (PermissionType type,
     return perm;
 }
 
+static PermissionValue
+exec_permission_from_vfs (guint32 vfs_perm)
+{
+    guint32 perm_user = vfs_perm & UNIX_PERM_USER_EXEC;
+    guint32 perm_group = vfs_perm & UNIX_PERM_GROUP_EXEC;
+    guint32 perm_other = vfs_perm & UNIX_PERM_OTHER_EXEC;
+
+    if (perm_user && perm_group && perm_other)
+    {
+        return PERMISSION_EXEC;
+    }
+    else if (perm_user || perm_group || perm_other)
+    {
+        return PERMISSION_INCONSISTENT;
+    }
+    else
+    {
+        return PERMISSION_NONE;
+    }
+}
+
 static TargetPermissions *
 get_target_permissions (NautilusPropertiesWindow *self)
 {
@@ -1132,6 +1156,16 @@ get_target_permissions (NautilusPropertiesWindow *self)
         }
         else
         {
+            PermissionValue exec_permissions = exec_permission_from_vfs (vfs_permissions);
+
+            if (!p->has_files)
+            {
+                p->file_exec_permissions = exec_permissions;
+            }
+            else if (exec_permissions != p->file_exec_permissions)
+            {
+                p->file_exec_permissions = PERMISSION_INCONSISTENT;
+            }
             for (PermissionType type = PERMISSION_USER ; type < NUM_PERMISSION_TYPE; type += 1)
             {
                 PermissionValue permissions = permission_from_vfs (type, vfs_permissions)
@@ -1149,6 +1183,7 @@ get_target_permissions (NautilusPropertiesWindow *self)
             }
 
             p->can_set_all_file_permission &= can_set_permissions;
+            p->can_set_any_file_permission |= can_set_permissions;
             p->has_files = TRUE;
         }
     }
@@ -1216,9 +1251,7 @@ properties_window_update (NautilusPropertiesWindow *self,
 
         update_owner_row (self->owner_row, target_perm);
         update_group_row (self->group_row, target_perm);
-        g_list_foreach (self->permission_buttons,
-                        (GFunc) permission_button_update,
-                        self);
+        update_execution_row (GTK_WIDGET (self->execution_row), target_perm);
         g_list_foreach (self->permission_rows,
                         (GFunc) update_permission_row,
                         target_perm);
@@ -2779,183 +2812,69 @@ initial_permission_state_consistent (NautilusPropertiesWindow *self,
 }
 
 static void
-permission_button_toggled (GtkCheckButton           *button,
-                           NautilusPropertiesWindow *self)
+execution_bit_changed (NautilusPropertiesWindow *self,
+                       GParamSpec               *params,
+                       GtkWidget                *widget)
 {
-    FilterType filter_type;
-    guint32 permission_mask;
-    gboolean inconsistent;
-    gboolean on;
+    const guint32 permission_mask = UNIX_PERM_USER_EXEC | UNIX_PERM_GROUP_EXEC | UNIX_PERM_OTHER_EXEC;
+    const FilterType filter_type = FILES_ONLY;
 
-    permission_mask = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                          "permission"));
-    filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                      "filter-type"));
+    /* if activated from switch, switch state is already toggled, thus invert value via XOR. */
+    gboolean active = gtk_switch_get_state (self->execution_switch) ^ GTK_IS_SWITCH (widget);
 
-    if (gtk_check_button_get_active (button)
-        && !gtk_check_button_get_inconsistent (button))
+    gboolean inconsistent = gtk_revealer_get_child_revealed (self->execution_inconsistent_revealer);
+    gboolean initial_inconsistent = !initial_permission_state_consistent (self, permission_mask, filter_type);
+
+    /* If original execution permissions were inconsistent, circle through
+     * states: inconsistent -> on -> off -> inconsistent -> … */
+    gboolean set_executable = !active && (inconsistent || !initial_inconsistent);
+    gboolean set_inconsistent = !active && !inconsistent && initial_inconsistent;
+
+    update_permissions (self,
+                        set_executable ? permission_mask : 0,
+                        permission_mask,
+                        filter_type,
+                        set_inconsistent);
+}
+
+static void
+update_execution_row (GtkWidget         *row,
+                      TargetPermissions *target_perm)
+{
+    NautilusPropertiesWindow *self = target_perm->window;
+
+    if (target_perm->has_folders)
     {
-        /* Go to the initial state unless the initial state was
-         *  consistent, or we support recursive apply */
-        inconsistent = TRUE;
-        on = TRUE;
-
-        if (initial_permission_state_consistent (self, permission_mask, filter_type))
-        {
-            inconsistent = FALSE;
-            on = TRUE;
-        }
-    }
-    else if (gtk_check_button_get_inconsistent (button)
-             && !gtk_check_button_get_active (button))
-    {
-        inconsistent = FALSE;
-        on = TRUE;
+        gtk_widget_hide (self->execution_list_box);
     }
     else
     {
-        inconsistent = FALSE;
-        on = FALSE;
+        gboolean inconsistent = target_perm->file_exec_permissions == PERMISSION_INCONSISTENT;
+
+        gtk_revealer_set_reveal_child (self->execution_inconsistent_revealer, inconsistent);
+        gtk_widget_set_has_tooltip (row, inconsistent);
+
+        /* Only toggle switch if permissions are consistent. This still allows switching in case
+         * not all permissions can be set. */
+        if (!inconsistent)
+        {
+            g_signal_handlers_block_by_func (self->execution_switch,
+                                             G_CALLBACK (execution_bit_changed),
+                                             self);
+
+            gtk_switch_set_state (self->execution_switch,
+                                  target_perm->file_exec_permissions == PERMISSION_EXEC);
+
+            g_signal_handlers_unblock_by_func (self->execution_switch,
+                                               G_CALLBACK (execution_bit_changed),
+                                               self);
+        }
+
+        gtk_widget_set_sensitive (row,
+                                  target_perm->can_set_any_file_permission);
+
+        gtk_widget_show (self->execution_list_box);
     }
-
-    g_signal_handlers_block_by_func (G_OBJECT (button),
-                                     G_CALLBACK (permission_button_toggled),
-                                     self);
-
-    gtk_check_button_set_active (button, on);
-    gtk_check_button_set_inconsistent (button, inconsistent);
-
-    g_signal_handlers_unblock_by_func (G_OBJECT (button),
-                                       G_CALLBACK (permission_button_toggled),
-                                       self);
-
-    update_permissions (self,
-                        on ? permission_mask : 0,
-                        permission_mask,
-                        filter_type,
-                        inconsistent);
-}
-
-static void
-permission_button_update (GtkCheckButton           *button,
-                          NautilusPropertiesWindow *self)
-{
-    GList *l;
-    gboolean all_set;
-    gboolean all_unset;
-    gboolean all_cannot_set;
-    FilterType filter_type;
-    gboolean no_match;
-    gboolean sensitive;
-    guint32 button_permission;
-
-    button_permission = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                            "permission"));
-    filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
-                                                      "filter-type"));
-    all_set = TRUE;
-    all_unset = TRUE;
-    all_cannot_set = TRUE;
-    no_match = TRUE;
-    for (l = self->target_files; l != NULL; l = l->next)
-    {
-        NautilusFile *file = NAUTILUS_FILE (l->data);
-        guint32 file_permissions;
-
-        if (!nautilus_file_can_get_permissions (file) ||
-            !file_matches_filter_type (file, filter_type))
-        {
-            continue;
-        }
-
-        no_match = FALSE;
-
-        file_permissions = nautilus_file_get_permissions (file);
-
-        if ((file_permissions & button_permission) == button_permission)
-        {
-            all_unset = FALSE;
-        }
-        else if ((file_permissions & button_permission) == 0)
-        {
-            all_set = FALSE;
-        }
-        else
-        {
-            all_unset = FALSE;
-            all_set = FALSE;
-        }
-
-        if (nautilus_file_can_set_permissions (file))
-        {
-            all_cannot_set = FALSE;
-        }
-    }
-
-    sensitive = !all_cannot_set;
-
-    g_signal_handlers_block_by_func (G_OBJECT (button),
-                                     G_CALLBACK (permission_button_toggled),
-                                     self);
-
-    gtk_check_button_set_active (button, !all_unset);
-    /* if actually inconsistent, or default value for file buttons
-     *  if no files are selected. (useful for recursive apply) */
-    gtk_check_button_set_inconsistent (button,
-                                       (!all_unset && !all_set) ||
-                                       ((filter_type == FILES_ONLY) && no_match));
-    gtk_widget_set_sensitive (GTK_WIDGET (button), sensitive);
-
-    g_signal_handlers_unblock_by_func (G_OBJECT (button),
-                                       G_CALLBACK (permission_button_toggled),
-                                       self);
-}
-
-static void
-setup_execute_checkbox_with_label (NautilusPropertiesWindow *self,
-                                   guint32                   permission_to_check)
-{
-#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
-    gboolean a11y_enabled;
-    GtkLabel *label_for;
-
-    label_for = GTK_LABEL (self->execute_label);
-#endif
-    gtk_widget_show (self->execute_label);
-    gtk_widget_show (self->execute_checkbox);
-
-    /* Load up the check_button with data we'll need when updating its state. */
-    g_object_set_data (G_OBJECT (self->execute_checkbox), "permission",
-                       GINT_TO_POINTER (permission_to_check));
-    g_object_set_data (G_OBJECT (self->execute_checkbox), "filter-type",
-                       GINT_TO_POINTER (FILES_ONLY));
-
-    self->permission_buttons =
-        g_list_prepend (self->permission_buttons,
-                        self->execute_checkbox);
-
-    g_signal_connect_object (self->execute_checkbox, "toggled",
-                             G_CALLBACK (permission_button_toggled),
-                             self,
-                             0);
-
-#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
-    a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (self->execute_checkbox));
-    if (a11y_enabled && label_for != NULL)
-    {
-        AtkObject *atk_widget;
-        AtkObject *atk_label;
-
-        atk_label = gtk_widget_get_accessible (GTK_WIDGET (label_for));
-        atk_widget = gtk_widget_get_accessible (self->execute_checkbox);
-
-        /* Create the label -> widget relation */
-        atk_object_add_relationship (atk_label, ATK_RELATION_LABEL_FOR, atk_widget);
-
-        /* Create the widget -> label relation */
-        atk_object_add_relationship (atk_widget, ATK_RELATION_LABELLED_BY, atk_label);
-    }
-#endif
 }
 
 static void
@@ -3301,11 +3220,13 @@ create_simple_permissions (NautilusPropertiesWindow *self)
                                 PERMISSION_OTHER, filter_type);
     }
 
-    if (filter_type == FILES_ONLY)
-    {
-        setup_execute_checkbox_with_label (self,
-                                           UNIX_PERM_USER_EXEC | UNIX_PERM_GROUP_EXEC | UNIX_PERM_OTHER_EXEC);
-    }
+    /* Connect execution bit switch, independent of whether it will be visible or not. */
+    g_signal_connect_swapped (self->execution_row, "activated",
+                              G_CALLBACK (execution_bit_changed),
+                              self);
+    g_signal_connect_swapped (self->execution_switch, "notify::active",
+                              G_CALLBACK (execution_bit_changed),
+                              self);
 }
 
 static void
@@ -4538,8 +4459,6 @@ real_dispose (GObject *object)
         stop_deep_count_for_file (self, self->deep_count_files->data);
     }
 
-    g_clear_list (&self->permission_buttons, NULL);
-
     g_clear_list (&self->permission_rows, NULL);
 
     g_clear_list (&self->change_permission_combos, NULL);
@@ -4802,8 +4721,10 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_folder_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_checkbox);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_list_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_row);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_inconsistent_revealer);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_switch);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);

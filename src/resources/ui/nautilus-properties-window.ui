@@ -748,17 +748,49 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="execute_label">
+                                  <object class="GtkListBox" id="execution_list_box">
                                     <property name="visible">False</property>
-                                    <property name="margin_top">12</property>
-                                    <property name="label" translatable="yes">Execute</property>
-                                    <property name="xalign">1</property>
+                                    <property name="selection-mode">none</property>
+                                    <child>
+                                      <object class="AdwActionRow" id="execution_row">
+                                        <property name="activatable">True</property>
+                                        <property name="title" translatable="yes">_Executable as Program</property>
+                                        <property name="tooltip-text" translatable="yes">Not all files are marked executable for all users</property>
+                                        <property name="use-underline">True</property>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="spacing">6</property>
+                                            <child>
+                                              <object class="GtkRevealer" id="execution_inconsistent_revealer">
+                                                <property name="transition-type">crossfade</property>
+                                                <property name="reveal-child">False</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="label" translatable="yes">Inconsistent</property>
+                                                    <style>
+                                                      <class name="dim-label"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkSwitch" id="execution_switch">
+                                                <property name="halign">center</property>
+                                                <property name="valign">center</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                     <style>
-                                      <class name="dim-label"/>
+                                      <class name="boxed-list"/>
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
                                       <property name="row">6</property>
+                                      <property name="column-span">2</property>
                                     </layout>
                                   </object>
                                 </child>
@@ -805,19 +837,6 @@
                                       <property name="column">0</property>
                                       <property name="row">8</property>
                                       <property name="column-span">2</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkCheckButton" id="execute_checkbox">
-                                    <property name="visible">False</property>
-                                    <property name="label" translatable="yes">Allow _executing file as program</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="focusable">True</property>
-                                    <property name="margin_top">12</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">6</property>
                                     </layout>
                                   </object>
                                 </child>
