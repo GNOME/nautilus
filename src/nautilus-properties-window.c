@@ -633,7 +633,7 @@ set_name_field (NautilusPropertiesWindow *self,
             g_autofree gchar *displayed_name = gtk_editable_get_chars (GTK_EDITABLE (self->name_field), 0, -1);
             if (strcmp (displayed_name, name) != 0)
             {
-                gtk_entry_set_text (GTK_ENTRY (self->name_field), name);
+                gtk_editable_set_text (GTK_EDITABLE (self->name_field), name);
             }
         }
     }
@@ -742,7 +742,7 @@ name_field_restore_original_name (GtkWidget *name_field)
 
     if (strcmp (original_name, displayed_name) != 0)
     {
-        gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
+        gtk_editable_set_text (GTK_EDITABLE (name_field), original_name);
     }
     gtk_editable_select_region (GTK_EDITABLE (name_field), 0, -1);
 }

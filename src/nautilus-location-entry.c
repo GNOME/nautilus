@@ -134,7 +134,7 @@ nautilus_location_entry_update_action (NautilusLocationEntry *entry)
         return;
     }
 
-    current_text = gtk_entry_get_text (GTK_ENTRY (entry));
+    current_text = gtk_editable_get_text (GTK_EDITABLE (entry));
     location = g_file_parse_name (current_text);
 
     if (g_file_equal (priv->last_location, location))
@@ -184,7 +184,7 @@ nautilus_location_entry_update_current_uri (NautilusLocationEntry *entry,
     g_free (priv->current_directory);
     priv->current_directory = g_strdup (uri);
 
-    gtk_entry_set_text (GTK_ENTRY (entry), uri);
+    gtk_editable_set_text (GTK_EDITABLE (entry), uri);
     set_position_and_selection_to_end (GTK_EDITABLE (entry));
 }
 
@@ -622,7 +622,7 @@ on_has_focus_changed (GObject    *object,
     if (priv->has_special_text)
     {
         priv->setting_special_text = TRUE;
-        gtk_entry_set_text (GTK_ENTRY (entry), "");
+        gtk_editable_set_text (GTK_EDITABLE (entry), "");
         priv->setting_special_text = FALSE;
     }
 }
@@ -665,7 +665,7 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
 
         case NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR:
         {
-            gtk_entry_set_text (gentry, "");
+            gtk_editable_set_text (GTK_EDITABLE (gentry), "");
         }
         break;
 
@@ -709,7 +709,7 @@ nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
         {
             int position;
 
-            position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
+            position = strlen (gtk_editable_get_text (GTK_EDITABLE (editable)));
             gtk_editable_select_region (editable, position, position);
         }
         else
@@ -782,7 +782,7 @@ nautilus_location_entry_activate (GtkEntry *entry)
 
     loc_entry = NAUTILUS_LOCATION_ENTRY (entry);
     priv = nautilus_location_entry_get_instance_private (loc_entry);
-    entry_text = gtk_entry_get_text (entry);
+    entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
     path = g_strdup (entry_text);
     path = g_strchug (path);
     path = g_strchomp (path);
@@ -795,7 +795,7 @@ nautilus_location_entry_activate (GtkEntry *entry)
         {
             /* Fix non absolute paths */
             full_path = g_build_filename (priv->current_directory, path, NULL);
-            gtk_entry_set_text (entry, full_path);
+            gtk_editable_set_text (GTK_EDITABLE (entry), full_path);
             g_free (full_path);
         }
 
@@ -901,14 +901,14 @@ editable_activate_callback (GtkEntry *entry,
     const char *entry_text;
     g_autofree gchar *path = NULL;
 
-    entry_text = gtk_entry_get_text (entry);
+    entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
     path = g_strdup (entry_text);
     path = g_strchug (path);
     path = g_strchomp (path);
 
     if (path != NULL && *path != '\0')
     {
-        gtk_entry_set_text (entry, path);
+        gtk_editable_set_text (GTK_EDITABLE (entry), path);
         emit_location_changed (self);
     }
 }
@@ -1026,6 +1026,6 @@ nautilus_location_entry_set_special_text (NautilusLocationEntry *entry,
     priv->special_text = g_strdup (special_text);
 
     priv->setting_special_text = TRUE;
-    gtk_entry_set_text (GTK_ENTRY (entry), special_text);
+    gtk_editable_set_text (GTK_EDITABLE (entry), special_text);
     priv->setting_special_text = FALSE;
 }
