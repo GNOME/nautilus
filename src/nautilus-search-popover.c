@@ -165,7 +165,7 @@ date_entry_activate (GtkEntry              *entry,
         GDate *date;
 
         date = g_date_new ();
-        g_date_set_parse (date, gtk_entry_get_text (entry));
+        g_date_set_parse (date, gtk_editable_get_text (GTK_EDITABLE (entry)));
 
         /* Invalid date silently does nothing */
         if (!g_date_valid (date))
@@ -676,7 +676,7 @@ update_date_label (NautilusSearchPopover *popover,
 
         label = get_text_for_date_range (date_range, TRUE);
 
-        gtk_entry_set_text (GTK_ENTRY (popover->date_entry), days < 1 ? label : "");
+        gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), days < 1 ? label : "");
 
         gtk_widget_show (popover->clear_date_button);
         gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
@@ -688,7 +688,7 @@ update_date_label (NautilusSearchPopover *popover,
     {
         gtk_label_set_label (GTK_LABEL (popover->select_date_button_label),
                              _("Select Dates…"));
-        gtk_entry_set_text (GTK_ENTRY (popover->date_entry), "");
+        gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), "");
         gtk_widget_hide (popover->clear_date_button);
     }
 }

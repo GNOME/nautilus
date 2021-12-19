@@ -139,7 +139,7 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
 
     if (initial_name != NULL)
     {
-        gtk_entry_set_text (GTK_ENTRY (name_entry), initial_name);
+        gtk_editable_set_text (GTK_EDITABLE (name_entry), initial_name);
     }
 
     gtk_button_set_label (GTK_BUTTON (activate_button), _("Create"));

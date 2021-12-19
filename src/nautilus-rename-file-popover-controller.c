@@ -208,7 +208,7 @@ name_entry_on_f2_pressed (GtkWidget                           *widget,
         gint end_offset;
 
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (gtk_entry_get_text (GTK_ENTRY (widget)),
+        eel_filename_get_rename_region (gtk_editable_get_text (GTK_EDITABLE (widget)),
                                         &start_offset, &end_offset);
         gtk_editable_select_region (GTK_EDITABLE (widget),
                                     start_offset, end_offset);
@@ -225,7 +225,7 @@ name_entry_on_undo (GtkWidget                           *widget,
 
     edit_name = nautilus_file_get_edit_name (self->target_file);
 
-    gtk_entry_set_text (GTK_ENTRY (widget), edit_name);
+    gtk_editable_set_text (GTK_EDITABLE (widget), edit_name);
 
     gtk_editable_select_region (GTK_EDITABLE (widget), 0, -1);
 
@@ -373,7 +373,7 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
 
     edit_name = nautilus_file_get_edit_name (self->target_file);
 
-    gtk_entry_set_text (GTK_ENTRY (self->name_entry), edit_name);
+    gtk_editable_set_text (GTK_EDITABLE (self->name_entry), edit_name);
 
     gtk_popover_set_pointing_to (GTK_POPOVER (self->rename_file_popover), pointing_to);
     gtk_widget_set_parent (self->rename_file_popover, relative_to);
@@ -393,9 +393,9 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
     }
 
     n_chars = g_utf8_strlen (edit_name, -1);
-    gtk_entry_set_width_chars (GTK_ENTRY (self->name_entry),
-                               MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
-                                    RENAME_ENTRY_MAX_CHARS));
+    gtk_editable_set_width_chars (GTK_EDITABLE (self->name_entry),
+                                  MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
+                                       RENAME_ENTRY_MAX_CHARS));
 }
 
 static void

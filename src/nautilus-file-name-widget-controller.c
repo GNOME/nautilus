@@ -122,7 +122,7 @@ real_get_new_name (NautilusFileNameWidgetController *self)
 
     priv = nautilus_file_name_widget_controller_get_instance_private (self);
 
-    return g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->name_entry))));
+    return g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (priv->name_entry))));
 }
 
 static gboolean

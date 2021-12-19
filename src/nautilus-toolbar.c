@@ -860,7 +860,7 @@ nautilus_toolbar_constructed (GObject *object)
 
     /* Setting a max width on one entry to effectively set a max expansion for
      * the whole title widget. */
-    gtk_entry_set_max_width_chars (GTK_ENTRY (self->location_entry), 88);
+    gtk_editable_set_max_width_chars (GTK_EDITABLE (self->location_entry), 88);
 
     gtk_widget_show_all (GTK_WIDGET (self));
     toolbar_update_appearance (self);
