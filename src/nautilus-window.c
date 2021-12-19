@@ -1809,7 +1809,7 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-    gdk_event_get_state (event, &state);
+    state = gdk_event_get_modifier_state (event);
 
     if (button == GDK_BUTTON_SECONDARY &&
         (state & gtk_accelerator_get_default_mod_mask ()) == 0)
