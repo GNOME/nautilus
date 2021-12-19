@@ -54,8 +54,6 @@ static guint signals[LAST_SIGNAL];
 struct _NautilusNotebook
 {
     GtkNotebook parent_instance;
-
-    GtkGesture *multi_press_gesture;
 };
 
 G_DEFINE_TYPE (NautilusNotebook, nautilus_notebook, GTK_TYPE_NOTEBOOK);
@@ -63,12 +61,6 @@ G_DEFINE_TYPE (NautilusNotebook, nautilus_notebook, GTK_TYPE_NOTEBOOK);
 static void
 nautilus_notebook_dispose (GObject *object)
 {
-    NautilusNotebook *notebook;
-
-    notebook = NAUTILUS_NOTEBOOK (object);
-
-    g_clear_object (&notebook->multi_press_gesture);
-
     G_OBJECT_CLASS (nautilus_notebook_parent_class)->dispose (object);
 }
 
@@ -134,55 +126,6 @@ find_tab_num_at_pos (NautilusNotebook *notebook,
 }
 
 static void
-button_press_cb (GtkGestureMultiPress *gesture,
-                 gint                  n_press,
-                 gdouble               x,
-                 gdouble               y,
-                 gpointer              user_data)
-{
-    guint button;
-    GdkEventSequence *sequence;
-    const GdkEvent *event;
-    GtkWidget *widget;
-    NautilusNotebook *notebook;
-    int tab_clicked;
-    GdkModifierType state;
-
-    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
-    notebook = NAUTILUS_NOTEBOOK (widget);
-    tab_clicked = find_tab_num_at_pos (notebook, x, y);
-
-    gdk_event_get_state (event, &state);
-
-    if (n_press != 1)
-    {
-        return;
-    }
-
-    if (tab_clicked == -1)
-    {
-        return;
-    }
-
-    if (button == GDK_BUTTON_SECONDARY &&
-        (state & gtk_accelerator_get_default_mod_mask ()) == 0)
-    {
-        /* switch to the page the mouse is over, but don't consume the event */
-        gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), tab_clicked);
-    }
-    else if (button == GDK_BUTTON_MIDDLE)
-    {
-        GtkWidget *slot;
-
-        slot = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), tab_clicked);
-        g_signal_emit (notebook, signals[TAB_CLOSE_REQUEST], 0, slot);
-    }
-}
-
-static void
 on_page_removed (GtkNotebook *notebook,
                  GtkWidget   *child,
                  guint        page_num,
@@ -200,14 +143,6 @@ nautilus_notebook_init (NautilusNotebook *notebook)
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 
     g_signal_connect (notebook, "page-removed", G_CALLBACK (on_page_removed), NULL);
-
-    notebook->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (notebook));
-
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (notebook->multi_press_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (notebook->multi_press_gesture), 0);
-
-    g_signal_connect (notebook->multi_press_gesture, "pressed", G_CALLBACK (button_press_cb), NULL);
 }
 
 gboolean
@@ -236,11 +171,20 @@ nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
 }
 
 gboolean
-nautilus_notebook_content_area_hit (NautilusNotebook *notebook,
-                                    gint              x,
-                                    gint              y)
+nautilus_notebook_get_tab_clicked (NautilusNotebook *notebook,
+                                   gint              x,
+                                   gint              y,
+                                   gint             *position)
 {
-    return find_tab_num_at_pos (notebook, x, y) == -1;
+    gint tab_num;
+
+    tab_num = find_tab_num_at_pos (notebook, x, y);
+
+    if (position != NULL)
+    {
+        *position = tab_num;
+    }
+    return tab_num != -1;
 }
 
 void
