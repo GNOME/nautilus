@@ -351,7 +351,7 @@ action_tab_previous (GSimpleAction *action,
 {
     NautilusWindow *window = user_data;
 
-    nautilus_notebook_prev_page (NAUTILUS_NOTEBOOK (window->notebook));
+    nautilus_notebook_prev_page (GTK_NOTEBOOK (window->notebook));
 }
 
 static void
@@ -361,7 +361,7 @@ action_tab_next (GSimpleAction *action,
 {
     NautilusWindow *window = user_data;
 
-    nautilus_notebook_next_page (NAUTILUS_NOTEBOOK (window->notebook));
+    nautilus_notebook_next_page (GTK_NOTEBOOK (window->notebook));
 }
 
 static void
@@ -371,7 +371,7 @@ action_tab_move_left (GSimpleAction *action,
 {
     NautilusWindow *window = user_data;
 
-    nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (window->notebook), -1);
+    nautilus_notebook_reorder_current_child_relative (GTK_NOTEBOOK (window->notebook), -1);
 }
 
 static void
@@ -381,7 +381,7 @@ action_tab_move_right (GSimpleAction *action,
 {
     NautilusWindow *window = user_data;
 
-    nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (window->notebook), 1);
+    nautilus_notebook_reorder_current_child_relative (GTK_NOTEBOOK (window->notebook), 1);
 }
 
 static void
@@ -555,7 +555,7 @@ nautilus_window_initialize_slot (NautilusWindow     *window,
     g_signal_handlers_block_by_func (window->notebook,
                                      G_CALLBACK (notebook_switch_page_cb),
                                      window);
-    nautilus_notebook_add_tab (NAUTILUS_NOTEBOOK (window->notebook),
+    nautilus_notebook_add_tab (GTK_NOTEBOOK (window->notebook),
                                slot,
                                (flags & NAUTILUS_OPEN_FLAG_SLOT_APPEND) != 0 ?
                                -1 :
@@ -808,9 +808,9 @@ nautilus_window_sync_allow_stop (NautilusWindow     *window,
 
         /* Avoid updating the notebook if we are calling on dispose or
          * on removal of a notebook tab */
-        if (nautilus_notebook_contains_slot (NAUTILUS_NOTEBOOK (window->notebook), slot))
+        if (nautilus_notebook_contains_slot (GTK_NOTEBOOK (window->notebook), slot))
         {
-            nautilus_notebook_sync_loading (NAUTILUS_NOTEBOOK (window->notebook), slot);
+            nautilus_notebook_sync_loading (GTK_NOTEBOOK (window->notebook), slot);
         }
     }
 }
@@ -1798,7 +1798,7 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
     notebook = GTK_NOTEBOOK (window->notebook);
 
     if (n_press != 1 ||
-        !nautilus_notebook_get_tab_clicked (NAUTILUS_NOTEBOOK (window->notebook), x, y, &tab_clicked))
+        !nautilus_notebook_get_tab_clicked (notebook, x, y, &tab_clicked))
     {
         return;
     }
@@ -2383,7 +2383,7 @@ nautilus_window_sync_title (NautilusWindow     *window,
         gtk_window_set_title (GTK_WINDOW (window), nautilus_window_slot_get_title (slot));
     }
 
-    nautilus_notebook_sync_tab_label (NAUTILUS_NOTEBOOK (window->notebook), slot);
+    nautilus_notebook_sync_tab_label (GTK_NOTEBOOK (window->notebook), slot);
 }
 
 #ifdef GDK_WINDOWING_WAYLAND
@@ -2615,8 +2615,8 @@ nautilus_window_init (NautilusWindow *window)
     GtkWindowGroup *window_group;
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
-    g_type_ensure (NAUTILUS_TYPE_NOTEBOOK);
     gtk_widget_init_template (GTK_WIDGET (window));
+    nautilus_notebook_setup (GTK_NOTEBOOK (window->notebook));
 
     window->places_sidebar = nautilus_gtk_places_sidebar_new ();
     g_object_set (window->places_sidebar,

@@ -31,32 +31,29 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_NOTEBOOK		(nautilus_notebook_get_type ())
-G_DECLARE_FINAL_TYPE (NautilusNotebook, nautilus_notebook, NAUTILUS, NOTEBOOK, GtkNotebook)
-
-int		nautilus_notebook_add_tab	(NautilusNotebook *nb,
+int		nautilus_notebook_add_tab	(GtkNotebook *nb,
 						 NautilusWindowSlot *slot,
 						 int position,
 						 gboolean jump_to);
 	
-void		nautilus_notebook_sync_tab_label (NautilusNotebook *nb,
+void		nautilus_notebook_sync_tab_label (GtkNotebook *nb,
 						  NautilusWindowSlot *slot);
-void		nautilus_notebook_sync_loading   (NautilusNotebook *nb,
+void		nautilus_notebook_sync_loading   (GtkNotebook *nb,
 						  NautilusWindowSlot *slot);
 
-void		nautilus_notebook_reorder_current_child_relative (NautilusNotebook *notebook,
+void		nautilus_notebook_reorder_current_child_relative (GtkNotebook *notebook,
 								  int offset);
-gboolean        nautilus_notebook_can_reorder_current_child_relative (NautilusNotebook *notebook,
+gboolean        nautilus_notebook_can_reorder_current_child_relative (GtkNotebook *notebook,
 								      int offset);
-void            nautilus_notebook_prev_page (NautilusNotebook *notebook);
-void            nautilus_notebook_next_page (NautilusNotebook *notebook);
+void            nautilus_notebook_prev_page (GtkNotebook *notebook);
+void            nautilus_notebook_next_page (GtkNotebook *notebook);
 
-gboolean        nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
+gboolean        nautilus_notebook_contains_slot (GtkNotebook   *notebook,
                                                  NautilusWindowSlot *slot);
 
-gboolean        nautilus_notebook_get_tab_clicked (NautilusNotebook *notebook,
-                                                   gint              x,
-                                                   gint              y,
-                                                   gint             *position);
-
+gboolean        nautilus_notebook_get_tab_clicked (GtkNotebook *notebook,
+                                                   gint         x,
+                                                   gint         y,
+                                                   gint        *position);
+void            nautilus_notebook_setup           (GtkNotebook *notebook);
 G_END_DECLS

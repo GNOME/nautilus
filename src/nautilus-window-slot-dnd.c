@@ -65,7 +65,7 @@ switch_tab (NautilusDragSlotProxyInfo *drag_info)
         return;
     }
 
-    notebook = gtk_widget_get_ancestor (GTK_WIDGET (drag_info->target_slot), NAUTILUS_TYPE_NOTEBOOK);
+    notebook = gtk_widget_get_ancestor (GTK_WIDGET (drag_info->target_slot), GTK_TYPE_NOTEBOOK);
     n_pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
 
     for (idx = 0; idx < n_pages; idx++)
