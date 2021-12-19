@@ -24,7 +24,7 @@ struct _NautilusViewIconController
 
     gboolean single_click_mode;
     gboolean activate_on_release;
-    GtkGesture *multi_press_gesture;
+    GtkGesture *click_gesture;
 
     guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
@@ -768,11 +768,11 @@ activate_selection_on_click (NautilusViewIconController *self,
 }
 
 static void
-on_button_press_event (GtkGestureMultiPress *gesture,
-                       gint                  n_press,
-                       gdouble               x,
-                       gdouble               y,
-                       gpointer              user_data)
+on_button_press_event (GtkGestureClick *gesture,
+                       gint             n_press,
+                       gdouble          x,
+                       gdouble          y,
+                       gpointer         user_data)
 {
     NautilusViewIconController *self;
     guint button;
@@ -855,11 +855,11 @@ on_button_press_event (GtkGestureMultiPress *gesture,
 }
 
 static void
-on_click_released (GtkGestureMultiPress *gesture,
-                   gint                  n_press,
-                   gdouble               x,
-                   gdouble               y,
-                   gpointer              user_data)
+on_click_released (GtkGestureClick *gesture,
+                   gint             n_press,
+                   gdouble          x,
+                   gdouble          y,
+                   gpointer         user_data)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -872,8 +872,8 @@ on_click_released (GtkGestureMultiPress *gesture,
 }
 
 static void
-on_click_stopped (GtkGestureMultiPress *gesture,
-                  gpointer              user_data)
+on_click_stopped (GtkGestureClick *gesture,
+                  gpointer         user_data)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -1190,7 +1190,7 @@ dispose (GObject *object)
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
 
-    g_clear_object (&self->multi_press_gesture);
+    g_clear_object (&self->click_gesture);
     g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&self->prioritize_thumbnailing_handle_id, g_source_remove);
 
@@ -1390,16 +1390,16 @@ constructed (GObject *object)
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 
     /* Compensating for the lack of event boxen to allow clicks outside the flow box. */
-    self->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (content_widget));
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (self->multi_press_gesture),
+    self->click_gesture = gtk_gesture_click_new (GTK_WIDGET (content_widget));
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (self->click_gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->multi_press_gesture),
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->click_gesture),
                                    0);
-    g_signal_connect (self->multi_press_gesture, "pressed",
+    g_signal_connect (self->click_gesture, "pressed",
                       G_CALLBACK (on_button_press_event), self);
-    g_signal_connect (self->multi_press_gesture, "stopped",
+    g_signal_connect (self->click_gesture, "stopped",
                       G_CALLBACK (on_click_stopped), self);
-    g_signal_connect (self->multi_press_gesture, "released",
+    g_signal_connect (self->click_gesture, "released",
                       G_CALLBACK (on_click_released), self);
 
     longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (self->view_ui));

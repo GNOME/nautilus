@@ -153,8 +153,8 @@ struct _NautilusWindow
 
     GtkPadController *pad_controller;
 
-    GtkGesture *multi_press_gesture;
-    GtkGesture *notebook_multi_press_gesture;
+    GtkGesture *click_gesture;
+    GtkGesture *notebook_click_gesture;
     GtkEventController *key_capture_controller;
     GtkEventController *key_bubble_controller;
 };
@@ -1778,11 +1778,11 @@ notebook_popup_menu_show (NautilusWindow *window,
 }
 
 static void
-notebook_button_press_cb (GtkGestureMultiPress *gesture,
-                          gint                  n_press,
-                          gdouble               x,
-                          gdouble               y,
-                          gpointer              user_data)
+notebook_button_press_cb (GtkGestureClick *gesture,
+                          gint             n_press,
+                          gdouble          x,
+                          gdouble          y,
+                          gpointer         user_data)
 {
     NautilusWindow *window;
     GtkNotebook *notebook;
@@ -1957,7 +1957,7 @@ setup_notebook (NautilusWindow *window)
                       G_CALLBACK (notebook_page_removed_cb),
                       window);
 
-    g_signal_connect (window->notebook_multi_press_gesture, "pressed",
+    g_signal_connect (window->notebook_click_gesture, "pressed",
                       G_CALLBACK (notebook_button_press_cb),
                       window);
 }
@@ -2172,7 +2172,7 @@ nautilus_window_dispose (GObject *object)
 
     nautilus_window_unexport_handle (window);
 
-    g_clear_object (&window->notebook_multi_press_gesture);
+    g_clear_object (&window->notebook_click_gesture);
 
     g_clear_object (&window->key_capture_controller);
     g_clear_object (&window->key_bubble_controller);
@@ -2540,11 +2540,11 @@ nautilus_window_back_or_forward (NautilusWindow *window,
 }
 
 static void
-on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
-                                gint                  n_press,
-                                gdouble               x,
-                                gdouble               y,
-                                gpointer              user_data)
+on_click_gesture_pressed (GtkGestureClick *gesture,
+                          gint             n_press,
+                          gdouble          x,
+                          gdouble          y,
+                          gpointer         user_data)
 {
     GtkWidget *widget;
     NautilusWindow *window;
@@ -2661,20 +2661,20 @@ nautilus_window_init (NautilusWindow *window)
     gtk_pad_controller_set_action_entries (window->pad_controller,
                                            pad_actions, G_N_ELEMENTS (pad_actions));
 
-    window->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (window));
+    window->click_gesture = gtk_gesture_click_new (GTK_WIDGET (window));
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->multi_press_gesture),
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->click_gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->multi_press_gesture), 0);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->click_gesture), 0);
 
-    g_signal_connect (window->multi_press_gesture, "pressed",
-                      G_CALLBACK (on_multi_press_gesture_pressed), NULL);
+    g_signal_connect (window->click_gesture, "pressed",
+                      G_CALLBACK (on_click_gesture_pressed), NULL);
 
-    window->notebook_multi_press_gesture = gtk_gesture_multi_press_new (window->notebook);
+    window->notebook_click_gesture = gtk_gesture_click_new (window->notebook);
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->notebook_multi_press_gesture),
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->notebook_click_gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->notebook_multi_press_gesture),
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->notebook_click_gesture),
                                    0);
 }
 

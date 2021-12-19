@@ -89,12 +89,12 @@ struct _NautilusToolbar
     GtkWidget *forward_button;
     GtkWidget *forward_menu;
     GtkGesture *forward_button_longpress_gesture;
-    GtkGesture *forward_button_multi_press_gesture;
+    GtkGesture *forward_button_click_gesture;
 
     GtkWidget *back_button;
     GtkWidget *back_menu;
     GtkGesture *back_button_longpress_gesture;
-    GtkGesture *back_button_multi_press_gesture;
+    GtkGesture *back_button_click_gesture;
 
     GtkWidget *search_button;
 
@@ -220,11 +220,11 @@ show_menu (NautilusToolbar *self,
 }
 
 static void
-navigation_button_press_cb (GtkGestureMultiPress *gesture,
-                            gint                  n_press,
-                            gdouble               x,
-                            gdouble               y,
-                            gpointer              user_data)
+navigation_button_press_cb (GtkGestureClick *gesture,
+                            gint             n_press,
+                            gdouble          x,
+                            gdouble          y,
+                            gpointer         user_data)
 {
     NautilusToolbar *self;
     GtkWidget *widget;
@@ -839,16 +839,16 @@ nautilus_toolbar_constructed (GObject *object)
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_FORWARD));
 
 
-    self->back_button_multi_press_gesture = gtk_gesture_multi_press_new (self->back_button);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->back_button_multi_press_gesture),
+    self->back_button_click_gesture = gtk_gesture_click_new (self->back_button);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->back_button_click_gesture),
                                    GDK_BUTTON_SECONDARY);
-    g_signal_connect (self->back_button_multi_press_gesture, "pressed",
+    g_signal_connect (self->back_button_click_gesture, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
 
-    self->forward_button_multi_press_gesture = gtk_gesture_multi_press_new (self->forward_button);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->forward_button_multi_press_gesture),
+    self->forward_button_click_gesture = gtk_gesture_click_new (self->forward_button);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->forward_button_click_gesture),
                                    GDK_BUTTON_SECONDARY);
-    g_signal_connect (self->forward_button_multi_press_gesture, "pressed",
+    g_signal_connect (self->forward_button_click_gesture, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
 
     g_signal_connect (self->operations_popover, "show",
@@ -1035,8 +1035,8 @@ nautilus_toolbar_dispose (GObject *object)
 
     self = NAUTILUS_TOOLBAR (object);
 
-    g_clear_object (&self->forward_button_multi_press_gesture);
-    g_clear_object (&self->back_button_multi_press_gesture);
+    g_clear_object (&self->forward_button_click_gesture);
+    g_clear_object (&self->back_button_click_gesture);
     g_clear_pointer (&self->icon_binding, g_binding_unbind);
     g_clear_pointer (&self->search_binding, g_binding_unbind);
     g_clear_pointer (&self->back_menu, gtk_widget_unparent);
