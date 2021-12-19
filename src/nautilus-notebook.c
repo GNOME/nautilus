@@ -37,12 +37,6 @@
 
 #define AFTER_ALL_TABS -1
 
-static int  nautilus_notebook_insert_page (GtkNotebook *notebook,
-                                           GtkWidget   *child,
-                                           GtkWidget   *tab_label,
-                                           GtkWidget   *menu_label,
-                                           int          position);
-
 struct _NautilusNotebook
 {
     GtkNotebook parent_instance;
@@ -60,11 +54,8 @@ static void
 nautilus_notebook_class_init (NautilusNotebookClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    GtkNotebookClass *notebook_class = GTK_NOTEBOOK_CLASS (klass);
 
     object_class->dispose = nautilus_notebook_dispose;
-
-    notebook_class->insert_page = nautilus_notebook_insert_page;
 }
 
 static gint
@@ -117,6 +108,18 @@ on_page_removed (GtkNotebook *notebook,
 }
 
 static void
+on_page_added (GtkNotebook *notebook,
+               GtkWidget   *child,
+               guint        page_num,
+               gpointer     user_data)
+{
+    gtk_notebook_set_show_tabs (notebook,
+                                gtk_notebook_get_n_pages (notebook) > 1);
+    gtk_notebook_set_tab_reorderable (notebook, child, TRUE);
+    gtk_notebook_set_tab_detachable (notebook, child, TRUE);
+}
+
+static void
 nautilus_notebook_init (NautilusNotebook *notebook)
 {
     gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
@@ -124,6 +127,7 @@ nautilus_notebook_init (NautilusNotebook *notebook)
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 
     g_signal_connect (notebook, "page-removed", G_CALLBACK (on_page_removed), NULL);
+    g_signal_connect (notebook, "page-added", G_CALLBACK (on_page_added), NULL);
 }
 
 gboolean
@@ -310,29 +314,6 @@ build_tab_label (NautilusNotebook   *notebook,
     g_object_set_data (G_OBJECT (box), "close-button", close_button);
 
     return box;
-}
-
-static int
-nautilus_notebook_insert_page (GtkNotebook *gnotebook,
-                               GtkWidget   *tab_widget,
-                               GtkWidget   *tab_label,
-                               GtkWidget   *menu_label,
-                               int          position)
-{
-    g_assert (GTK_IS_WIDGET (tab_widget));
-
-    position = GTK_NOTEBOOK_CLASS (nautilus_notebook_parent_class)->insert_page (gnotebook,
-                                                                                 tab_widget,
-                                                                                 tab_label,
-                                                                                 menu_label,
-                                                                                 position);
-
-    gtk_notebook_set_show_tabs (gnotebook,
-                                gtk_notebook_get_n_pages (gnotebook) > 1);
-    gtk_notebook_set_tab_reorderable (gnotebook, tab_widget, TRUE);
-    gtk_notebook_set_tab_detachable (gnotebook, tab_widget, TRUE);
-
-    return position;
 }
 
 int
