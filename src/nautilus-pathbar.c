@@ -577,7 +577,7 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     button_data = BUTTON_DATA (user_data);
     self = button_data->path_bar;
     current_button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-    gtk_get_current_event_state (&state);
+    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
 
     switch (current_button)
     {

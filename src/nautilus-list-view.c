@@ -233,7 +233,7 @@ button_event_modifies_selection (const GdkEvent *event)
 {
     GdkModifierType state;
 
-    gdk_event_get_state (event, &state);
+    state = gdk_event_get_modifier_state (event);
 
     return (state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 }
@@ -619,7 +619,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         g_autoptr (GtkTreePath) cursor = NULL;
         GList *selected_rows = NULL;
 
-        gdk_event_get_state (event, &state);
+        state = gdk_event_get_modifier_state (event);
 
         /* We cannot easily match the expected behavior of Shift+click, so we
          * must fall back to GtkTreeView's default event handling.
@@ -770,7 +770,7 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
         return;
     }
 
-    gdk_event_get_state (event, &state);
+    state = gdk_event_get_modifier_state (event);
 
     if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_MIDDLE)
         && ((state & GDK_CONTROL_MASK) != 0 ||
