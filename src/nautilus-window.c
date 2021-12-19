@@ -1791,15 +1791,45 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
                           gpointer              user_data)
 {
     NautilusWindow *window;
+    GtkNotebook *notebook;
+    gint tab_clicked;
+    guint button;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
+    GdkModifierType state;
 
-    window = NAUTILUS_WINDOW (user_data);
-
-    if (nautilus_notebook_content_area_hit (NAUTILUS_NOTEBOOK (window->notebook), x, y))
+    if (n_press != 1)
     {
         return;
     }
 
-    notebook_popup_menu_show (window, x, y);
+    window = NAUTILUS_WINDOW (user_data);
+    notebook = GTK_NOTEBOOK (window->notebook);
+
+    if (!nautilus_notebook_get_tab_clicked (NAUTILUS_NOTEBOOK (notebook), x, y, &tab_clicked))
+    {
+        return;
+    }
+
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    gdk_event_get_state (event, &state);
+
+    if (button == GDK_BUTTON_SECONDARY &&
+        (state & gtk_accelerator_get_default_mod_mask ()) == 0)
+    {
+        /* switch to the page before opening the menu */
+        gtk_notebook_set_current_page (notebook, tab_clicked);
+        notebook_popup_menu_show (window, x, y);
+    }
+    else if (button == GDK_BUTTON_MIDDLE)
+    {
+        GtkWidget *slot;
+
+        slot = gtk_notebook_get_nth_page (notebook, tab_clicked);
+        nautilus_window_slot_close (window, NAUTILUS_WINDOW_SLOT (slot));
+    }
 }
 
 static gboolean
@@ -2664,7 +2694,7 @@ nautilus_window_init (NautilusWindow *window)
     gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->notebook_multi_press_gesture),
                                                 GTK_PHASE_CAPTURE);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->notebook_multi_press_gesture),
-                                   GDK_BUTTON_SECONDARY);
+                                   0);
 
     window->key_capture_controller = gtk_event_controller_key_new (GTK_WIDGET (window));
     gtk_event_controller_set_propagation_phase (window->key_capture_controller,

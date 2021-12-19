@@ -54,8 +54,9 @@ void            nautilus_notebook_next_page (NautilusNotebook *notebook);
 gboolean        nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
                                                  NautilusWindowSlot *slot);
 
-gboolean        nautilus_notebook_content_area_hit (NautilusNotebook *notebook,
-                                                    gint              x,
-                                                    gint              y);
+gboolean        nautilus_notebook_get_tab_clicked (NautilusNotebook *notebook,
+                                                   gint              x,
+                                                   gint              y,
+                                                   gint             *position);
 
 G_END_DECLS
