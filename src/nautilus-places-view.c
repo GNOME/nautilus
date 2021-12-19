@@ -95,12 +95,12 @@ open_location_cb (NautilusPlacesView         *view,
     if (slot)
     {
         NautilusFile *file;
-        GtkWidget *window;
+        GtkRoot *window;
         char *path;
 
         path = "other-locations:///";
         file = nautilus_file_get (location);
-        window = gtk_widget_get_toplevel (GTK_WIDGET (view));
+        window = gtk_widget_get_root (GTK_WIDGET (view));
 
         nautilus_mime_activate_file (GTK_WINDOW (window),
                                      NAUTILUS_WINDOW_SLOT (slot),
@@ -123,9 +123,9 @@ show_error_message_cb (NautilusGtkPlacesView *view,
                        const gchar           *secondary)
 {
     GtkWidget *dialog;
-    GtkWidget *window;
+    GtkRoot *window;
 
-    window = gtk_widget_get_toplevel (GTK_WIDGET (view));
+    window = gtk_widget_get_root (GTK_WIDGET (view));
 
     dialog = gtk_message_dialog_new (GTK_WINDOW (window),
                                      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
