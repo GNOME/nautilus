@@ -83,14 +83,14 @@ static void
 switch_location (NautilusDragSlotProxyInfo *drag_info)
 {
     GFile *location;
-    GtkWidget *window;
+    GtkRoot *window;
 
     if (drag_info->target_file == NULL)
     {
         return;
     }
 
-    window = gtk_widget_get_toplevel (drag_info->widget);
+    window = gtk_widget_get_root (drag_info->widget);
     g_assert (NAUTILUS_IS_WINDOW (window));
 
     location = nautilus_file_get_location (drag_info->target_file);
@@ -153,7 +153,7 @@ slot_proxy_drag_motion (GtkWidget      *widget,
 {
     NautilusDragSlotProxyInfo *drag_info;
     NautilusWindowSlot *target_slot;
-    GtkWidget *window;
+    GtkRoot *window;
     GdkAtom target;
     int action;
     char *target_uri;
@@ -172,7 +172,7 @@ slot_proxy_drag_motion (GtkWidget      *widget,
         goto out;
     }
 
-    window = gtk_widget_get_toplevel (widget);
+    window = gtk_widget_get_root (widget);
     g_assert (NAUTILUS_IS_WINDOW (window));
 
     if (!drag_info->have_data)
@@ -360,7 +360,7 @@ slot_proxy_handle_drop (GtkWidget                 *widget,
                         unsigned int               time,
                         NautilusDragSlotProxyInfo *drag_info)
 {
-    GtkWidget *window;
+    GtkRoot *window;
     NautilusWindowSlot *target_slot;
     NautilusFilesView *target_view;
     char *target_uri;
@@ -375,7 +375,7 @@ slot_proxy_handle_drop (GtkWidget                 *widget,
         return;
     }
 
-    window = gtk_widget_get_toplevel (widget);
+    window = gtk_widget_get_root (widget);
     g_assert (NAUTILUS_IS_WINDOW (window));
 
     if (drag_info->target_slot != NULL)

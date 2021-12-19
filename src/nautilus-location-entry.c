@@ -301,7 +301,7 @@ drag_data_received_callback (GtkWidget        *widget,
 {
     char **names;
     int name_count;
-    GtkWidget *window;
+    GtkRoot *window;
     char *prompt;
     char *detail;
     GtkDialog *dialog;
@@ -320,7 +320,7 @@ drag_data_received_callback (GtkWidget        *widget,
         return;
     }
 
-    window = gtk_widget_get_toplevel (widget);
+    window = gtk_widget_get_root (widget);
 
     op_data = g_new0 (OpenWindowsOnDragData, 1);
     op_data->self = g_object_ref (self);
