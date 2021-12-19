@@ -520,8 +520,7 @@ remove_floating_bar_passthrough (gpointer data)
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (data));
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->floating_bar, FALSE);
+    gtk_widget_set_can_target (priv->floating_bar, TRUE);
     priv->floating_bar_set_passthrough_timeout_id = 0;
 
     return G_SOURCE_REMOVE;
@@ -562,8 +561,7 @@ set_floating_bar_status (NautilusFilesView *view,
     }
     /* Activate passthrough on the floating bar just long enough for a
      * potential double click to happen, so to not interfere with it */
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->floating_bar, TRUE);
+    gtk_widget_set_can_target (priv->floating_bar, FALSE);
     priv->floating_bar_set_passthrough_timeout_id = g_timeout_add ((guint) double_click_time,
                                                                    remove_floating_bar_passthrough,
                                                                    view);
@@ -9625,33 +9623,25 @@ nautilus_files_view_init (NautilusFilesView *view)
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
     priv->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->no_search_results_widget);
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->no_search_results_widget,
-                                          TRUE);
+    gtk_widget_set_can_target (priv->no_search_results_widget, FALSE);
     g_object_unref (builder);
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-folder-is-empty.ui");
     priv->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->folder_is_empty_widget);
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->folder_is_empty_widget,
-                                          TRUE);
+    gtk_widget_set_can_target (priv->folder_is_empty_widget, FALSE);
     g_object_unref (builder);
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-starred-is-empty.ui");
     priv->starred_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "starred_is_empty"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->starred_is_empty_widget);
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->starred_is_empty_widget,
-                                          TRUE);
+    gtk_widget_set_can_target (priv->starred_is_empty_widget, FALSE);
     g_object_unref (builder);
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-trash-is-empty.ui");
     priv->trash_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "trash_is_empty"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->trash_is_empty_widget);
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->trash_is_empty_widget,
-                                          TRUE);
+    gtk_widget_set_can_target (priv->trash_is_empty_widget, FALSE);
     g_object_unref (builder);
 
     /* Floating bar */
