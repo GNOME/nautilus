@@ -88,13 +88,9 @@ struct _NautilusToolbar
 
     GtkWidget *forward_button;
     GtkWidget *forward_menu;
-    GtkGesture *forward_button_longpress_gesture;
-    GtkGesture *forward_button_click_gesture;
 
     GtkWidget *back_button;
     GtkWidget *back_menu;
-    GtkGesture *back_button_longpress_gesture;
-    GtkGesture *back_button_click_gesture;
 
     GtkWidget *search_button;
 
@@ -796,6 +792,7 @@ static void
 nautilus_toolbar_constructed (GObject *object)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
+    GtkEventController *controller;
 
     self->path_bar = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL));
     gtk_box_append (GTK_BOX (self->path_bar_container),
@@ -825,12 +822,14 @@ nautilus_toolbar_constructed (GObject *object)
                              NULL);
     update_operations (self);
 
-    self->back_button_longpress_gesture = gtk_gesture_long_press_new (self->back_button);
-    g_signal_connect (self->back_button_longpress_gesture, "pressed",
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
+    gtk_widget_add_controller (self->back_button, controller);
+    g_signal_connect (controller, "pressed",
                       G_CALLBACK (back_button_longpress_cb), self);
 
-    self->forward_button_longpress_gesture = gtk_gesture_long_press_new (self->forward_button);
-    g_signal_connect (self->forward_button_longpress_gesture, "pressed",
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
+    gtk_widget_add_controller (self->forward_button, controller);
+    g_signal_connect (controller, "pressed",
                       G_CALLBACK (forward_button_longpress_cb), self);
 
     g_object_set_data (G_OBJECT (self->back_button), "nav-direction",
@@ -838,17 +837,16 @@ nautilus_toolbar_constructed (GObject *object)
     g_object_set_data (G_OBJECT (self->forward_button), "nav-direction",
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_FORWARD));
 
-
-    self->back_button_click_gesture = gtk_gesture_click_new (self->back_button);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->back_button_click_gesture),
-                                   GDK_BUTTON_SECONDARY);
-    g_signal_connect (self->back_button_click_gesture, "pressed",
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (self->back_button, controller);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_SECONDARY);
+    g_signal_connect (controller, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
 
-    self->forward_button_click_gesture = gtk_gesture_click_new (self->forward_button);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->forward_button_click_gesture),
-                                   GDK_BUTTON_SECONDARY);
-    g_signal_connect (self->forward_button_click_gesture, "pressed",
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (self->forward_button, controller);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_SECONDARY);
+    g_signal_connect (controller, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
 
     g_signal_connect (self->operations_popover, "show",
@@ -1035,8 +1033,6 @@ nautilus_toolbar_dispose (GObject *object)
 
     self = NAUTILUS_TOOLBAR (object);
 
-    g_clear_object (&self->forward_button_click_gesture);
-    g_clear_object (&self->back_button_click_gesture);
     g_clear_pointer (&self->icon_binding, g_binding_unbind);
     g_clear_pointer (&self->search_binding, g_binding_unbind);
     g_clear_pointer (&self->back_menu, gtk_widget_unparent);
@@ -1071,9 +1067,6 @@ nautilus_toolbar_finalize (GObject *obj)
 
     g_signal_handlers_disconnect_by_func (self->window,
                                           on_window_focus_changed, self);
-
-    g_clear_object (&self->back_button_longpress_gesture);
-    g_clear_object (&self->forward_button_longpress_gesture);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->finalize (obj);
 }

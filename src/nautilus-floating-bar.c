@@ -309,11 +309,25 @@ on_parent_changed (GObject    *object,
 
     parent = gtk_widget_get_parent (GTK_WIDGET (object));
 
-    g_clear_object (&self->motion_controller);
+    if (self->motion_controller != NULL)
+    {
+        GtkWidget *old_parent;
+
+        old_parent = gtk_event_controller_get_widget (self->motion_controller);
+        g_warn_if_fail (old_parent != NULL);
+        if (old_parent != NULL)
+        {
+            gtk_widget_remove_controller (old_parent, self->motion_controller);
+        }
+
+        g_object_unref (self->motion_controller);
+        self->motion_controller = NULL;
+    }
 
     if (parent != NULL)
     {
-        self->motion_controller = gtk_event_controller_motion_new (parent);
+        self->motion_controller = g_object_ref (gtk_event_controller_motion_new ());
+        gtk_widget_add_controller (parent, self->motion_controller);
 
         gtk_event_controller_set_propagation_phase (self->motion_controller,
                                                     GTK_PHASE_CAPTURE);
