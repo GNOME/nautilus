@@ -228,6 +228,63 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
     g_free (formatted_uri);
 }
 
+typedef struct
+{
+    NautilusLocationEntry *self;
+    GdkDragContext *context;
+    char **names;
+} OpenWindowsOnDragData;
+
+static void
+do_open_windows (OpenWindowsOnDragData *data,
+                 gboolean               new_windows_for_extras)
+{
+    GFile *location;
+
+    location = g_file_new_for_uri (data->names[0]);
+    nautilus_location_entry_set_location (data->self, location);
+    emit_location_changed (data->self);
+    g_object_unref (location);
+
+    if (new_windows_for_extras)
+    {
+        int i;
+
+        for (i = 1; data->names[i] != NULL; ++i)
+        {
+            location = g_file_new_for_uri (data->names[i]);
+            nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                     location, NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
+            g_object_unref (location);
+        }
+    }
+
+    g_strfreev (data->names);
+    g_object_unref (data->self);
+    g_object_unref (data->context);
+    g_free (data);
+}
+
+static void
+confirm_multiple_windows_cb (GtkDialog *dialog,
+                             gint       response_id,
+                             gpointer   user_data)
+{
+    OpenWindowsOnDragData *data = user_data;
+    gboolean open_multiple;
+
+    if (response_id == GTK_RESPONSE_NONE || response_id == GTK_RESPONSE_DELETE_EVENT)
+    {
+        return;
+    }
+
+    open_multiple = (response_id == GTK_RESPONSE_OK);
+
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+    do_open_windows (data, open_multiple);
+    gtk_drag_finish (data->context, open_multiple, FALSE, time);
+}
+
 static void
 drag_data_received_callback (GtkWidget        *widget,
                              GdkDragContext   *context,
@@ -241,10 +298,10 @@ drag_data_received_callback (GtkWidget        *widget,
     char **names;
     int name_count;
     GtkWidget *window;
-    gboolean new_windows_for_extras;
     char *prompt;
     char *detail;
-    GFile *location;
+    GtkDialog *dialog;
+    OpenWindowsOnDragData *op_data;
     NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (widget);
 
     g_assert (data != NULL);
@@ -260,7 +317,12 @@ drag_data_received_callback (GtkWidget        *widget,
     }
 
     window = gtk_widget_get_toplevel (widget);
-    new_windows_for_extras = FALSE;
+
+    op_data = g_new0 (OpenWindowsOnDragData, 1);
+    op_data->self = g_object_ref (self);
+    op_data->context = g_object_ref (context);
+    op_data->names = names;
+
     /* Ask user if they really want to open multiple windows
      * for multiple dropped URIs. This is likely to have been
      * a mistake.
@@ -276,46 +338,27 @@ drag_data_received_callback (GtkWidget        *widget,
                                             "This will open %d separate windows.",
                                             name_count),
                                   name_count);
-        /* eel_run_simple_dialog should really take in pairs
+
+        /* eel_show_simple_dialog should really take in pairs
          * like gtk_dialog_new_with_buttons() does. */
-        new_windows_for_extras = eel_run_simple_dialog (GTK_WIDGET (window),
-                                                        TRUE,
-                                                        GTK_MESSAGE_QUESTION,
-                                                        prompt,
-                                                        detail,
-                                                        _("_Cancel"), _("_OK"),
-                                                        NULL) != 0 /* GNOME_OK */;
+        dialog = eel_show_simple_dialog (window,
+                                         GTK_MESSAGE_QUESTION,
+                                         prompt,
+                                         detail,
+                                         _("_Cancel"), _("_OK"),
+                                         NULL);
+
+        /* calls gtk_drag_finish and do_open_windows, frees op_data */
+        g_signal_connect (dialog, "response", G_CALLBACK (confirm_multiple_windows_cb), op_data);
 
         g_free (prompt);
         g_free (detail);
 
-        if (!new_windows_for_extras)
-        {
-            gtk_drag_finish (context, FALSE, FALSE, time);
-            return;
-        }
+        return;
     }
 
-    location = g_file_new_for_uri (names[0]);
-    nautilus_location_entry_set_location (self, location);
-    emit_location_changed (self);
-    g_object_unref (location);
-
-    if (new_windows_for_extras)
-    {
-        int i;
-
-        for (i = 1; names[i] != NULL; ++i)
-        {
-            location = g_file_new_for_uri (names[i]);
-            nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                     location, NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
-            g_object_unref (location);
-        }
-    }
-
-    g_strfreev (names);
-
+    /* frees op_data */
+    do_open_windows (op_data, FALSE);
     gtk_drag_finish (context, TRUE, FALSE, time);
 }
 
