@@ -98,7 +98,7 @@ struct _NautilusPathBar
     GActionGroup *action_group;
 
     NautilusFile *context_menu_file;
-    GtkPopover *current_view_menu_popover;
+    GtkPopoverMenu *current_view_menu_popover;
     GtkWidget *current_view_menu_button;
     GtkWidget *button_menu_popover;
     GMenu *current_view_menu;
@@ -213,9 +213,8 @@ on_adjustment_changed (GtkAdjustment *adjustment)
 static gboolean
 bind_current_view_menu_model_to_popover (NautilusPathBar *self)
 {
-    gtk_popover_bind_model (self->current_view_menu_popover,
-                            G_MENU_MODEL (self->current_view_menu),
-                            NULL);
+    gtk_popover_menu_set_menu_model (self->current_view_menu_popover,
+                                     G_MENU_MODEL (self->current_view_menu));
     return G_SOURCE_REMOVE;
 }
 
@@ -257,8 +256,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
         g_error ("Failed to add pathbar-context-menu.ui: %s", error->message);
     }
     self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "button-menu")));
-    self->button_menu_popover = g_object_ref_sink (gtk_popover_new_from_model (NULL,
-                                                                               G_MENU_MODEL (self->button_menu)));
+    self->button_menu_popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (self->button_menu));
+    gtk_widget_set_parent (self->button_menu_popover, GTK_WIDGET (self));
 
     /* Add current location menu, which matches the view's background context menu */
     gtk_builder_add_from_resource (builder,
@@ -271,7 +270,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
     self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
     self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-extensions-section")));
     self->templates_submenu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "templates-submenu")));
-    self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new (NULL)));
+    self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER_MENU (gtk_popover_menu_new_from_model (NULL)));
 
     g_object_unref (builder);
 
@@ -309,7 +308,7 @@ nautilus_path_bar_finalize (GObject *object)
     g_clear_object (&self->extensions_section);
     g_clear_object (&self->templates_submenu);
     g_clear_object (&self->button_menu);
-    g_clear_object (&self->button_menu_popover);
+    g_clear_pointer (&self->button_menu_popover, gtk_widget_unparent);
     g_clear_object (&self->current_view_menu_popover);
 
     unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
@@ -424,7 +423,7 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
          * templates menu is set. Unbinding the model is the only way to clear
          * all children. After that's done, on idle, we rebind it.
          * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
-        gtk_popover_bind_model (self->current_view_menu_popover, NULL, NULL);
+        gtk_popover_menu_set_menu_model (self->current_view_menu_popover, NULL);
     }
 
     nautilus_gmenu_set_from_model (self->templates_submenu, menu);
@@ -601,8 +600,15 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             }
             else
             {
-                gtk_popover_set_relative_to (GTK_POPOVER (self->button_menu_popover),
-                                             button_data->button);
+                /* Hold a reference to keep the popover from destroying itself
+                 * when unparented. */
+                g_object_ref (self->button_menu_popover);
+                gtk_widget_unparent (self->button_menu_popover);
+                gtk_widget_set_parent (self->button_menu_popover,
+                                       button_data->button);
+                gtk_popover_present (GTK_POPOVER (self->button_menu_popover));
+                g_object_unref (self->button_menu_popover);
+
                 pop_up_pathbar_context_menu (self, button_data->file);
             }
         }

@@ -3581,6 +3581,7 @@ nautilus_list_view_dispose (GObject *object)
     g_clear_object (&list_view->details->motion_controller);
     g_clear_object (&list_view->details->key_controller);
     g_clear_object (&list_view->details->long_press_gesture);
+    g_clear_pointer (&list_view->details->columns_popover, gtk_widget_unparent);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->dispose (object);
 }
@@ -4007,7 +4008,11 @@ nautilus_list_view_init (NautilusListView *list_view)
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (list_view)),
                                  "nautilus-list-view");
 
-    list_view->details->columns_popover = gtk_popover_new (GTK_WIDGET (list_view));
+    list_view->details->columns_popover = gtk_popover_new ();
+    gtk_widget_set_parent (list_view->details->columns_popover,
+                           GTK_WIDGET (list_view));
+    g_signal_connect (list_view->details->columns_popover, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
+
     list_view->details->columns_popover_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
     gtk_widget_set_margin_top (list_view->details->columns_popover_box, 6);
     gtk_widget_set_margin_bottom (list_view->details->columns_popover_box, 6);

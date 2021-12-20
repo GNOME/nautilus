@@ -2140,6 +2140,8 @@ nautilus_window_dispose (GObject *object)
 
     DEBUG ("Destroying window");
 
+    g_clear_pointer (&window->tab_menu, gtk_widget_unparent);
+
     /* close all slots safely */
     slots_copy = g_list_copy (window->slots);
     if (window->active_slot != NULL)
@@ -2626,9 +2628,9 @@ nautilus_window_init (NautilusWindow *window)
                              window,
                              G_CONNECT_SWAPPED);
 
-    gtk_popover_bind_model (GTK_POPOVER (window->tab_menu),
-                            window->tab_menu_model,
-                            NULL);
+    gtk_widget_set_parent (window->tab_menu, GTK_WIDGET (window));
+    gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (window->tab_menu),
+                                     G_MENU_MODEL (window->tab_menu_model));
 
     g_signal_connect (window, "notify::is-maximized",
                       G_CALLBACK (on_is_maximized_changed), NULL);
