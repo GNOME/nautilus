@@ -185,7 +185,7 @@ show_menu (NautilusToolbar *self,
 {
     g_autoptr (GMenu) menu = NULL;
     NautilusNavigationDirection direction;
-    GtkPopover *popover;
+    GtkPopoverMenu *popover;
 
     menu = g_menu_new ();
 
@@ -197,14 +197,14 @@ show_menu (NautilusToolbar *self,
         case NAUTILUS_NAVIGATION_DIRECTION_FORWARD:
         {
             fill_menu (self, menu, FALSE);
-            popover = GTK_POPOVER (self->forward_menu);
+            popover = GTK_POPOVER_MENU (self->forward_menu);
         }
         break;
 
         case NAUTILUS_NAVIGATION_DIRECTION_BACK:
         {
             fill_menu (self, menu, TRUE);
-            popover = GTK_POPOVER (self->back_menu);
+            popover = GTK_POPOVER_MENU (self->back_menu);
         }
         break;
 
@@ -215,8 +215,8 @@ show_menu (NautilusToolbar *self,
         break;
     }
 
-    gtk_popover_bind_model (popover, G_MENU_MODEL (menu), NULL);
-    gtk_popover_popup (popover);
+    gtk_popover_menu_set_menu_model (popover, G_MENU_MODEL (menu));
+    gtk_popover_popup (GTK_POPOVER (popover));
 }
 
 static void
@@ -870,6 +870,11 @@ static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
+
+    gtk_widget_set_parent (self->back_menu, self->back_button);
+    g_signal_connect (self->back_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
+    gtk_widget_set_parent (self->forward_menu, self->forward_button);
+    g_signal_connect (self->forward_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
 }
 
 void
@@ -1034,6 +1039,8 @@ nautilus_toolbar_dispose (GObject *object)
     g_clear_object (&self->back_button_multi_press_gesture);
     g_clear_pointer (&self->icon_binding, g_binding_unbind);
     g_clear_pointer (&self->search_binding, g_binding_unbind);
+    g_clear_pointer (&self->back_menu, gtk_widget_unparent);
+    g_clear_pointer (&self->forward_menu, gtk_widget_unparent);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
 }

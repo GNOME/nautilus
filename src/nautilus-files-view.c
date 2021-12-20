@@ -3190,6 +3190,9 @@ nautilus_files_view_dispose (GObject *object)
     priv->in_destruction = TRUE;
     nautilus_files_view_stop_loading (view);
 
+    g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
+    g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
+
     if (priv->model)
     {
         nautilus_directory_unref (priv->model);
@@ -8268,12 +8271,13 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
 
     if (NULL == priv->selection_menu)
     {
-        priv->selection_menu = gtk_popover_new (GTK_WIDGET (view));
+        priv->selection_menu = gtk_popover_menu_new_from_model (NULL);
+        gtk_widget_set_parent (priv->selection_menu, GTK_WIDGET (view));
+        g_signal_connect (priv->selection_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
     }
 
-    gtk_popover_bind_model (GTK_POPOVER (priv->selection_menu),
-                            G_MENU_MODEL (priv->selection_menu_model),
-                            NULL);
+    gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->selection_menu),
+                                     G_MENU_MODEL (priv->selection_menu_model));
     if (x == -1 && y == -1)
     {
         /* If triggered from the keyboard, popup at selection, not pointer */
@@ -8315,13 +8319,16 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
+
     if (NULL == priv->background_menu)
     {
-        priv->background_menu = gtk_popover_new (GTK_WIDGET (view));
+        priv->background_menu = gtk_popover_menu_new_from_model (NULL);
+        gtk_widget_set_parent (priv->background_menu, GTK_WIDGET (view));
+        g_signal_connect (priv->background_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
     }
-    gtk_popover_bind_model (GTK_POPOVER (priv->background_menu),
-                            G_MENU_MODEL (priv->background_menu_model),
-                            NULL);
+    gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->background_menu),
+                                     G_MENU_MODEL (priv->background_menu_model));
+
     gtk_popover_set_pointing_to (GTK_POPOVER (priv->background_menu),
                                  &(GdkRectangle){x, y, 0, 0});
     gtk_popover_popup (GTK_POPOVER (priv->background_menu));
