@@ -63,8 +63,6 @@ struct _NautilusBatchRenameDialog
     GList *listbox_icons;
     GtkSizeGroup *size_group;
 
-    GList *motion_controllers;
-
     GList *selection;
     GList *new_names;
     NautilusBatchRenameDialogMode mode;
@@ -1859,7 +1857,6 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     nautilus_directory_list_free (dialog->distinct_parent_directories);
 
     g_object_unref (dialog->size_group);
-    g_clear_list (&dialog->motion_controllers, g_object_unref);
 
     g_hash_table_destroy (dialog->tag_info_table);
 
@@ -2007,15 +2004,13 @@ connect_to_pointer_motion_events (NautilusBatchRenameDialog *self,
 {
     GtkEventController *controller;
 
-    controller = gtk_event_controller_motion_new (listbox);
+    controller = gtk_event_controller_motion_new ();
+    gtk_widget_add_controller (listbox, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "leave",
                       G_CALLBACK (on_event_controller_motion_leave), self);
     g_signal_connect (controller, "motion",
                       G_CALLBACK (on_event_controller_motion_motion), self);
-
-    self->motion_controllers = g_list_prepend (self->motion_controllers,
-                                               controller);
 }
 
 static void

@@ -150,13 +150,6 @@ struct _NautilusWindow
     GMenuModel *tab_menu_model;
 
     GQueue *tab_data_queue;
-
-    GtkPadController *pad_controller;
-
-    GtkGesture *click_gesture;
-    GtkGesture *notebook_click_gesture;
-    GtkEventController *key_capture_controller;
-    GtkEventController *key_bubble_controller;
 };
 
 enum
@@ -1943,6 +1936,8 @@ notebook_create_window_cb (GtkNotebook *notebook,
 static void
 setup_notebook (NautilusWindow *window)
 {
+    GtkEventController *controller;
+
     g_signal_connect (window->notebook, "switch-page",
                       G_CALLBACK (notebook_switch_page_cb),
                       window);
@@ -1956,9 +1951,12 @@ setup_notebook (NautilusWindow *window)
                       G_CALLBACK (notebook_page_removed_cb),
                       window);
 
-    g_signal_connect (window->notebook_click_gesture, "pressed",
-                      G_CALLBACK (notebook_button_press_cb),
-                      window);
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (window->notebook), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed",
+                      G_CALLBACK (notebook_button_press_cb), window);
 }
 
 const GActionEntry win_entries[] =
@@ -2171,11 +2169,6 @@ nautilus_window_dispose (GObject *object)
 
     nautilus_window_unexport_handle (window);
 
-    g_clear_object (&window->notebook_click_gesture);
-
-    g_clear_object (&window->key_capture_controller);
-    g_clear_object (&window->key_bubble_controller);
-
     G_OBJECT_CLASS (nautilus_window_parent_class)->dispose (object);
 }
 
@@ -2212,8 +2205,6 @@ nautilus_window_finalize (GObject *object)
                                           window);
 
     g_queue_free_full (window->tab_data_queue, free_navigation_state);
-
-    g_object_unref (window->pad_controller);
 
     /* nautilus_window_close() should have run */
     g_assert (window->slots == NULL);
@@ -2605,6 +2596,8 @@ static void
 nautilus_window_init (NautilusWindow *window)
 {
     GtkWindowGroup *window_group;
+    GtkPadController *pad_controller;
+    GtkEventController *controller;
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     gtk_widget_init_template (GTK_WIDGET (window));
@@ -2654,41 +2647,30 @@ nautilus_window_init (NautilusWindow *window)
 
     window->tab_data_queue = g_queue_new ();
 
-    window->pad_controller = gtk_pad_controller_new (GTK_WINDOW (window),
-                                                     G_ACTION_GROUP (window),
-                                                     NULL);
-    gtk_pad_controller_set_action_entries (window->pad_controller,
+    pad_controller = gtk_pad_controller_new (G_ACTION_GROUP (window), NULL);
+    gtk_pad_controller_set_action_entries (pad_controller,
                                            pad_actions, G_N_ELEMENTS (pad_actions));
+    gtk_widget_add_controller (GTK_WIDGET (window),
+                               GTK_EVENT_CONTROLLER (pad_controller));
 
-    window->click_gesture = gtk_gesture_click_new (GTK_WIDGET (window));
-
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->click_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->click_gesture), 0);
-
-    g_signal_connect (window->click_gesture, "pressed",
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (window), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_click_gesture_pressed), NULL);
 
-    window->notebook_click_gesture = gtk_gesture_click_new (window->notebook);
+    controller = gtk_event_controller_key_new ();
+    gtk_widget_add_controller (GTK_WIDGET (window), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (nautilus_window_key_capture), NULL);
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->notebook_click_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->notebook_click_gesture),
-                                   0);
-
-    window->key_capture_controller = gtk_event_controller_key_new (GTK_WIDGET (window));
-    gtk_event_controller_set_propagation_phase (window->key_capture_controller,
-                                                GTK_PHASE_CAPTURE);
-    g_signal_connect (window->key_capture_controller,
-                      "key-pressed", G_CALLBACK (nautilus_window_key_capture),
-                      NULL);
-
-    window->key_bubble_controller = gtk_event_controller_key_new (GTK_WIDGET (window));
-    gtk_event_controller_set_propagation_phase (window->key_bubble_controller,
-                                                GTK_PHASE_BUBBLE);
-    g_signal_connect (window->key_bubble_controller,
-                      "key-pressed", G_CALLBACK (nautilus_window_key_bubble),
-                      NULL);
+    controller = gtk_event_controller_key_new ();
+    gtk_widget_add_controller (GTK_WIDGET (window), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (nautilus_window_key_bubble), NULL);
 }
 
 static void

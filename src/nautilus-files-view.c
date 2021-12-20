@@ -9557,13 +9557,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_grid_attach_next_to (GTK_GRID (view), priv->overlay, NULL, GTK_POS_BOTTOM, 1, 1);
     gtk_widget_show (priv->overlay);
 
-    /* NautilusFloatingBar listen to its parent's 'event' signal
-     * and GtkOverlay doesn't have it enabled by default, so we have to add them
-     * here.
-     */
-    gtk_widget_add_events (GTK_WIDGET (priv->overlay),
-                           GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
-
     /* Scrolled Window */
     priv->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (priv->scrolled_window),
