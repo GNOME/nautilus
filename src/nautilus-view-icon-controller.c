@@ -24,7 +24,6 @@ struct _NautilusViewIconController
 
     gboolean single_click_mode;
     gboolean activate_on_release;
-    GtkGesture *click_gesture;
 
     guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
@@ -1190,7 +1189,6 @@ dispose (GObject *object)
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
 
-    g_clear_object (&self->click_gesture);
     g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&self->prioritize_thumbnailing_handle_id, g_source_remove);
 
@@ -1364,7 +1362,7 @@ constructed (GObject *object)
     GtkAdjustment *hadjustment;
     GtkAdjustment *vadjustment;
     GActionGroup *view_action_group;
-    GtkGesture *longpress_gesture;
+    GtkEventController *controller;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (content_widget));
@@ -1390,26 +1388,23 @@ constructed (GObject *object)
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 
     /* Compensating for the lack of event boxen to allow clicks outside the flow box. */
-    self->click_gesture = gtk_gesture_click_new (GTK_WIDGET (content_widget));
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (self->click_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->click_gesture),
-                                   0);
-    g_signal_connect (self->click_gesture, "pressed",
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (content_widget), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_button_press_event), self);
-    g_signal_connect (self->click_gesture, "stopped",
+    g_signal_connect (controller, "stopped",
                       G_CALLBACK (on_click_stopped), self);
-    g_signal_connect (self->click_gesture, "released",
+    g_signal_connect (controller, "released",
                       G_CALLBACK (on_click_released), self);
 
-    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (self->view_ui));
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
-                                       TRUE);
-    g_signal_connect (longpress_gesture, "pressed",
-                      (GCallback) on_longpress_gesture_pressed_callback,
-                      self);
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
+    gtk_widget_add_controller (GTK_WIDGET (self->view_ui), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
+    g_signal_connect (controller, "pressed",
+                      (GCallback) on_longpress_gesture_pressed_callback, self);
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
                                    GTK_WIDGET (self->view_ui));

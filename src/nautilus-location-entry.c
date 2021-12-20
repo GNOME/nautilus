@@ -578,8 +578,6 @@ finalize (GObject *object)
     g_clear_object (&priv->completions_store);
     g_free (priv->current_directory);
 
-    g_clear_object (&priv->controller);
-
     G_OBJECT_CLASS (nautilus_location_entry_parent_class)->finalize (object);
 }
 
@@ -924,6 +922,7 @@ static void
 nautilus_location_entry_init (NautilusLocationEntry *entry)
 {
     NautilusLocationEntryPrivate *priv;
+    GtkEventController *controller;
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
@@ -964,15 +963,15 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), entry, 0);
 
-    priv->controller = gtk_event_controller_key_new (GTK_WIDGET (entry));
+    controller = gtk_event_controller_key_new ();
+    gtk_widget_add_controller (GTK_WIDGET (entry), controller);
     /* In GTK3, the Tab key binding (for focus change) happens in the bubble
      * phase, and we want to stop that from happening. After porting to GTK4
      * we need to check whether this is still correct. */
-    gtk_event_controller_set_propagation_phase (priv->controller, GTK_PHASE_BUBBLE);
-    g_signal_connect (priv->controller,
-                      "key-pressed",
-                      G_CALLBACK (nautilus_location_entry_key_pressed),
-                      NULL);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (nautilus_location_entry_key_pressed), NULL);
+
     g_signal_connect_after (entry,
                             "insert-text",
                             G_CALLBACK (on_after_insert_text),
