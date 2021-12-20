@@ -376,7 +376,7 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
     gtk_entry_set_text (GTK_ENTRY (self->name_entry), edit_name);
 
     gtk_popover_set_pointing_to (GTK_POPOVER (self->rename_file_popover), pointing_to);
-    gtk_popover_set_relative_to (GTK_POPOVER (self->rename_file_popover), relative_to);
+    gtk_widget_set_parent (self->rename_file_popover, relative_to);
 
     gtk_popover_popup (GTK_POPOVER (self->rename_file_popover));
 
@@ -423,8 +423,7 @@ nautilus_rename_file_popover_controller_finalize (GObject *object)
 
     reset_state (self);
 
-    gtk_widget_destroy (self->rename_file_popover);
-    g_clear_object (&self->rename_file_popover);
+    g_clear_pointer (&self->rename_file_popover, gtk_widget_unparent);
 
     g_clear_object (&self->key_controller);
 
