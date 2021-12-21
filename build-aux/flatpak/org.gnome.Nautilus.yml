@@ -85,6 +85,7 @@ modules:
   buildsystem: meson
   builddir: true
   config-opts:
+  - "-Ddocs=false"
   - "-Dbackends=gtk3"
   - "--libdir=/app/lib"
   -  "--buildtype=debugoptimized"

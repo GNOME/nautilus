@@ -124,8 +124,8 @@ libhandy = dependency('libhandy-1', version: '>= 1.1.90')
 libportal = []
 libportal_gtk3 = []
 if get_option('libportal')
-  libportal = dependency('libportal', version: '>= 0.3')
-  libportal_gtk3 = dependency('libportal-gtk3', version: '>= 0.3')
+  libportal = dependency('libportal', version: '>= 0.5')
+  libportal_gtk3 = dependency('libportal-gtk3', version: '>= 0.5')
 endif
 selinux = []
 if get_option('selinux')
