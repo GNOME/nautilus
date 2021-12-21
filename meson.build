@@ -122,10 +122,8 @@ gnome_desktop = dependency('gnome-desktop-3.0', version: '>= 3.0.0')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
 libhandy = dependency('libhandy-1', version: '>= 1.1.90')
 libportal = []
-libportal_gtk3 = []
 if get_option('libportal')
-  libportal = dependency('libportal', version: '>= 0.5')
-  libportal_gtk3 = dependency('libportal-gtk3', version: '>= 0.5')
+  libportal = dependency('libportal', version: '>= 0.3')
 endif
 selinux = []
 if get_option('selinux')

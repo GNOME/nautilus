@@ -117,15 +117,14 @@
       "buildsystem": "meson",
       "builddir": true,
       "config-opts": [
-        "-Ddocs=false",
-        "-Dbackends=gtk3",
         "--libdir=/app/lib",
         "--buildtype=debugoptimized"
       ],
       "sources" : [
         {
           "type": "git",
-          "url": "https://github.com/flatpak/libportal.git"
+          "url": "https://github.com/flatpak/libportal.git",
+          "tag": "0.4"
         }
       ]
     },

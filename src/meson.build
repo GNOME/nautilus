@@ -285,7 +285,6 @@ nautilus_deps = [
   libgd_dep,
   libhandy,
   libportal,
-  libportal_gtk3,
   nautilus_extension,
   selinux,
   tracker_sparql,
