@@ -2,7 +2,6 @@
 <interface>
   <requires lib="gtk+" version="3.14"/>
   <object class="GtkPopover" id="extension_popover">
-    <signal name="show" handler="popover_on_show"/>
     <property name="position">bottom</property>
     <property name="constrain-to">none</property>
     <child>
@@ -18,7 +17,6 @@
             <property name="activatable">True</property>
             <property name="title" translatable="no">.zip</property>
             <property name="subtitle" translatable="yes">Compatible with all operating systems.</property>
-            <signal name="activated" handler="zip_row_on_activated"/>
             <child>
               <object class="GtkImage" id="zip_checkmark">
                 <property name="visible">True</property>
@@ -35,7 +33,6 @@
             <property name="activatable">True</property>
             <property name="title" translatable="no">.zip</property>
             <property name="subtitle" translatable="yes">Password protected .zip, must be installed on Windows and Mac.</property>
-            <signal name="activated" handler="encrypted_zip_row_on_activated"/>
             <style>
               <class name="encrypted_zip"/>
             </style>
@@ -55,7 +52,6 @@
             <property name="activatable">True</property>
             <property name="title" translatable="no">.tar.xz</property>
             <property name="subtitle" translatable="yes">Smaller archives but Linux and Mac only.</property>
-            <signal name="activated" handler="tar_xz_row_on_activated"/>
             <child>
               <object class="GtkImage" id="tar_xz_checkmark">
                 <property name="visible">True</property>
@@ -72,7 +68,6 @@
             <property name="activatable">True</property>
             <property name="title" translatable="no">.7z</property>
             <property name="subtitle" translatable="yes">Smaller archives but must be installed on Windows and Mac.</property>
-            <signal name="activated" handler="seven_zip_row_on_activated"/>
             <child>
               <object class="GtkImage" id="seven_zip_checkmark">
                 <property name="visible">True</property>
@@ -215,8 +210,6 @@
             <property name="input-purpose">password</property>
             <property name="visibility">False</property>
             <property name="secondary-icon-name">view-conceal</property>
-            <signal name="changed" handler="passphrase_entry_on_changed"/>
-            <signal name="icon-press" handler="passphrase_entry_on_icon_press"/>
           </object>
           <packing>
             <property name="position">5</property>
@@ -240,7 +233,6 @@
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="sensitive">False</property>
-        <signal name="notify::sensitive" handler="activate_button_on_sensitive_notify"/>
       </object>
     </child>
     <action-widgets>

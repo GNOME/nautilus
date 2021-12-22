@@ -486,25 +486,22 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                                   (GCallback) compress_dialog_controller_on_response,
                                                   self);
 
-    gtk_builder_add_callback_symbols (builder,
-                                      "zip_row_on_activated",
-                                      G_CALLBACK (zip_row_on_activated),
-                                      "encrypted_zip_row_on_activated",
-                                      G_CALLBACK (encrypted_zip_row_on_activated),
-                                      "tar_xz_row_on_activated",
-                                      G_CALLBACK (tar_xz_row_on_activated),
-                                      "seven_zip_row_on_activated",
-                                      G_CALLBACK (seven_zip_row_on_activated),
-                                      "passphrase_entry_on_changed",
-                                      G_CALLBACK (passphrase_entry_on_changed),
-                                      "passphrase_entry_on_icon_press",
-                                      G_CALLBACK (passphrase_entry_on_icon_press),
-                                      "activate_button_on_sensitive_notify",
-                                      G_CALLBACK (activate_button_on_sensitive_notify),
-                                      "popover_on_show",
-                                      G_CALLBACK (popover_on_show),
-                                      NULL);
-    gtk_builder_connect_signals (builder, self);
+    g_signal_connect (self->zip_row, "activated",
+                      G_CALLBACK (zip_row_on_activated), self);
+    g_signal_connect (self->encrypted_zip_row, "activated",
+                      G_CALLBACK (encrypted_zip_row_on_activated), self);
+    g_signal_connect (self->tar_xz_row, "activated",
+                      G_CALLBACK (tar_xz_row_on_activated), self);
+    g_signal_connect (self->seven_zip_row, "activated",
+                      G_CALLBACK (seven_zip_row_on_activated), self);
+    g_signal_connect (self->passphrase_entry, "changed",
+                      G_CALLBACK (passphrase_entry_on_changed), self);
+    g_signal_connect (self->passphrase_entry, "icon-press",
+                      G_CALLBACK (passphrase_entry_on_icon_press), self);
+    g_signal_connect (self->activate_button, "notify::sensitive",
+                      G_CALLBACK (activate_button_on_sensitive_notify), self);
+    g_signal_connect (self->extension_popover, "show",
+                      G_CALLBACK (popover_on_show), self);
 
     format = g_settings_get_enum (nautilus_compression_preferences,
                                   NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
