@@ -1943,10 +1943,12 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, format_mode_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_popover);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_tag_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, scrolled_window);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);
@@ -2077,7 +2079,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 {
     TagData *tag_data;
     guint i;
-    g_autoptr (GtkBuilder) builder = NULL;
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -2096,10 +2097,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
 
     self->mode = NAUTILUS_BATCH_RENAME_DIALOG_FORMAT;
-
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-batch-rename-dialog-menu.ui");
-    self->numbering_order_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "numbering_order_menu")));
-    self->add_tag_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "add_tag_menu")));
 
     gtk_popover_bind_model (GTK_POPOVER (self->numbering_order_popover),
                             G_MENU_MODEL (self->numbering_order_menu),
