@@ -134,6 +134,7 @@
         </child>
       </object>
     </child>
+    <signal name="notify::visible" handler="on_operations_popover_notify_visible" object="NautilusToolbar" swapped="yes"/>
   </object>
   <template class="NautilusToolbar" parent="GtkBin">
     <property name="visible">True</property>
@@ -295,7 +296,6 @@
                     <property name="tooltip_text" translatable="yes">Show operations</property>
                     <property name="margin_end">6</property>
                     <property name="popover">operations_popover</property>
-                    <signal name="toggled" handler="on_operations_button_toggled" object="NautilusToolbar" swapped="yes"/>
                     <child>
                       <object class="GtkDrawingArea" id="operations_icon">
                         <property name="width_request">16</property>
