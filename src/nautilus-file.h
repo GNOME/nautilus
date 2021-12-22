@@ -475,7 +475,6 @@ NautilusIconInfo *      nautilus_file_get_icon                          (Nautilu
 									 NautilusFileIconFlags           flags);
 GdkPixbuf *             nautilus_file_get_icon_pixbuf                   (NautilusFile                   *file,
 									 int                             size,
-									 gboolean                        force_size,
 									 int                             scale,
 									 NautilusFileIconFlags           flags);
 
