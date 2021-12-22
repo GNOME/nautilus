@@ -793,8 +793,8 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     const GdkEvent *event;
     GtkTreeView *tree_view;
     GtkTreeSelection *selection;
-    gdouble event_x;
-    gdouble event_y;
+    gint x_in_bin;
+    gint y_in_bin;
     GtkTreePath *path;
     GdkModifierType state;
 
@@ -828,12 +828,12 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     tree_view = view->details->tree_view;
     selection = gtk_tree_view_get_selection (tree_view);
 
-    if (!gdk_event_get_coords (event, &event_x, &event_y))
-    {
-        return;
-    }
 
-    if (!gtk_tree_view_get_path_at_pos (tree_view, event_x, event_y, &path, NULL, NULL, NULL))
+    gtk_tree_view_convert_widget_to_bin_window_coords (tree_view,
+                                                       x, y,
+                                                       &x_in_bin, &y_in_bin);
+
+    if (!gtk_tree_view_get_path_at_pos (tree_view, x_in_bin, y_in_bin, &path, NULL, NULL, NULL))
     {
         return;
     }
