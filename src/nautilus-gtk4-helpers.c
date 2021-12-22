@@ -98,6 +98,14 @@ gtk_widget_get_first_child (GtkWidget *widget)
     return NULL;
 }
 
+GtkWidget *
+gtk_scrolled_window_get_child (GtkScrolledWindow *scrolled)
+{
+    g_assert (GTK_IS_SCROLLED_WINDOW (scrolled));
+
+    return gtk_bin_get_child (GTK_BIN (scrolled));
+}
+
 GdkDisplay *
 gtk_root_get_display (GtkRoot *root)
 {
