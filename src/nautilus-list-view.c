@@ -256,69 +256,6 @@ get_click_policy (void)
 }
 
 static void
-nautilus_list_view_did_not_drag (NautilusListView *view,
-                                 const GdkEvent   *event)
-{
-    GtkTreeView *tree_view;
-    GtkTreeSelection *selection;
-    gdouble x;
-    gdouble y;
-    GtkTreePath *path;
-    guint button;
-    GdkModifierType state;
-
-    tree_view = view->details->tree_view;
-    selection = gtk_tree_view_get_selection (tree_view);
-
-    if (!gdk_event_get_coords (event, &x, &y))
-    {
-        return;
-    }
-
-    if (!gtk_tree_view_get_path_at_pos (tree_view, x, y, &path, NULL, NULL, NULL))
-    {
-        return;
-    }
-
-    if (!gdk_event_get_button (event, &button))
-    {
-        return;
-    }
-
-    gdk_event_get_state (event, &state);
-
-    if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_MIDDLE)
-        && ((state & GDK_CONTROL_MASK) != 0 ||
-            (state & GDK_SHIFT_MASK) == 0)
-        && view->details->row_selected_on_button_down)
-    {
-        if (!button_event_modifies_selection (event))
-        {
-            gtk_tree_selection_unselect_all (selection);
-            gtk_tree_selection_select_path (selection, path);
-        }
-        else
-        {
-            gtk_tree_selection_unselect_path (selection, path);
-        }
-    }
-
-    if ((get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
-        && !button_event_modifies_selection (event))
-    {
-        if (button == GDK_BUTTON_PRIMARY)
-        {
-            activate_selected_items (view);
-        }
-        else if (button == GDK_BUTTON_MIDDLE)
-        {
-            activate_selected_items_alternate (view, NULL, TRUE);
-        }
-    }
-    gtk_tree_path_free (path);
-}
-
-static void
 on_event_controller_motion_motion (GtkEventControllerMotion *controller,
                                    double                    x,
                                    double                    y,
@@ -852,6 +789,14 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
 {
     NautilusListView *view;
     guint button;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *selection;
+    gdouble event_x;
+    gdouble event_y;
+    GtkTreePath *path;
+    GdkModifierType state;
 
     view = NAUTILUS_LIST_VIEW (callback_data);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
@@ -861,24 +806,69 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     }
 
     view->details->drag_button = 0;
-    if (!view->details->drag_started)
+
+    if (view->details->drag_started)
     {
-        GdkEventSequence *sequence;
-        const GdkEvent *event;
-
-        sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-        event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-        /* Typically will only happen with GTK+ <= 3.22.30 and <= 3.93.0,
-         * where ::released is emitted after ::cancel, but can’t hurt to guard
-         * against it anyway.
-         */
-        if (event == NULL)
-        {
-            return;
-        }
-
-        nautilus_list_view_did_not_drag (view, event);
+        return;
     }
+
+    /* Did not drag. */
+
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    /* Typically will only happen with GTK+ <= 3.22.30 and <= 3.93.0,
+     * where ::released is emitted after ::cancel, but can’t hurt to guard
+     * against it anyway.
+     */
+    if (event == NULL)
+    {
+        return;
+    }
+
+    tree_view = view->details->tree_view;
+    selection = gtk_tree_view_get_selection (tree_view);
+
+    if (!gdk_event_get_coords (event, &event_x, &event_y))
+    {
+        return;
+    }
+
+    if (!gtk_tree_view_get_path_at_pos (tree_view, event_x, event_y, &path, NULL, NULL, NULL))
+    {
+        return;
+    }
+
+    gdk_event_get_state (event, &state);
+
+    if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_MIDDLE)
+        && ((state & GDK_CONTROL_MASK) != 0 ||
+            (state & GDK_SHIFT_MASK) == 0)
+        && view->details->row_selected_on_button_down)
+    {
+        if (!button_event_modifies_selection (event))
+        {
+            gtk_tree_selection_unselect_all (selection);
+            gtk_tree_selection_select_path (selection, path);
+        }
+        else
+        {
+            gtk_tree_selection_unselect_path (selection, path);
+        }
+    }
+
+    if ((get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
+        && !button_event_modifies_selection (event))
+    {
+        if (button == GDK_BUTTON_PRIMARY)
+        {
+            activate_selected_items (view);
+        }
+        else if (button == GDK_BUTTON_MIDDLE)
+        {
+            activate_selected_items_alternate (view, NULL, TRUE);
+        }
+    }
+    gtk_tree_path_free (path);
 }
 
 static gboolean
