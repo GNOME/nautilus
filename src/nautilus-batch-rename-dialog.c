@@ -49,13 +49,9 @@ struct _NautilusBatchRenameDialog
     GtkWidget *replace_entry;
     GtkWidget *format_mode_button;
     GtkWidget *replace_mode_button;
-    GtkWidget *add_button;
-    GtkWidget *add_popover;
     GtkWidget *numbering_order_label;
     GtkWidget *numbering_label;
     GtkWidget *scrolled_window;
-    GtkWidget *numbering_order_popover;
-    GtkWidget *numbering_order_button;
     GtkWidget *numbering_revealer;
     GtkWidget *conflict_box;
     GtkWidget *conflict_label;
@@ -77,7 +73,6 @@ struct _NautilusBatchRenameDialog
     GActionGroup *action_group;
 
     GMenu *numbering_order_menu;
-    GMenu *add_tag_menu;
 
     GHashTable *create_date;
     GList *selection_metadata;
@@ -148,8 +143,6 @@ change_numbering_order (GSimpleAction *action,
     }
 
     g_simple_action_set_state (action, value);
-
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->numbering_order_button), FALSE);
 
     update_display_text (dialog);
 }
@@ -1413,44 +1406,6 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
     update_display_text (dialog);
 }
 
-static void
-add_button_clicked (NautilusBatchRenameDialog *dialog)
-{
-    if (gtk_widget_is_visible (dialog->add_popover))
-    {
-        gtk_widget_set_visible (dialog->add_popover, FALSE);
-    }
-    else
-    {
-        gtk_widget_set_visible (dialog->add_popover, TRUE);
-    }
-}
-
-static void
-add_popover_closed (NautilusBatchRenameDialog *dialog)
-{
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->add_button), FALSE);
-}
-
-static void
-numbering_order_button_clicked (NautilusBatchRenameDialog *dialog)
-{
-    if (gtk_widget_is_visible (dialog->numbering_order_popover))
-    {
-        gtk_widget_set_visible (dialog->numbering_order_popover, FALSE);
-    }
-    else
-    {
-        gtk_widget_set_visible (dialog->numbering_order_popover, TRUE);
-    }
-}
-
-static void
-numbering_order_popover_closed (NautilusBatchRenameDialog *dialog)
-{
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialog->numbering_order_button), FALSE);
-}
-
 void
 nautilus_batch_rename_dialog_query_finished (NautilusBatchRenameDialog *dialog,
                                              GHashTable                *hash_table,
@@ -1870,8 +1825,6 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
         cancel_conflict_check (dialog);
     }
 
-    g_clear_object (&dialog->numbering_order_menu);
-    g_clear_object (&dialog->add_tag_menu);
     g_list_free (dialog->listbox_labels_new);
     g_list_free (dialog->listbox_labels_old);
     g_list_free (dialog->listbox_icons);
@@ -1941,13 +1894,8 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, mode_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, replace_mode_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, format_mode_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_popover);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_tag_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, scrolled_window);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_popover);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_box);
@@ -1959,10 +1907,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_on_activate);
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_entry_on_changed);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_mode_changed);
-    gtk_widget_class_bind_template_callback (widget_class, add_button_clicked);
-    gtk_widget_class_bind_template_callback (widget_class, add_popover_closed);
-    gtk_widget_class_bind_template_callback (widget_class, numbering_order_button_clicked);
-    gtk_widget_class_bind_template_callback (widget_class, numbering_order_popover_closed);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_up);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_down);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_response);
@@ -2097,13 +2041,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
 
     self->mode = NAUTILUS_BATCH_RENAME_DIALOG_FORMAT;
-
-    gtk_popover_bind_model (GTK_POPOVER (self->numbering_order_popover),
-                            G_MENU_MODEL (self->numbering_order_menu),
-                            NULL);
-    gtk_popover_bind_model (GTK_POPOVER (self->add_popover),
-                            G_MENU_MODEL (self->add_tag_menu),
-                            NULL);
 
     gtk_label_set_ellipsize (GTK_LABEL (self->conflict_label), PANGO_ELLIPSIZE_END);
     gtk_label_set_max_width_chars (GTK_LABEL (self->conflict_label), 1);
