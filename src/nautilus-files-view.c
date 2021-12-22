@@ -5952,45 +5952,6 @@ on_destination_dialog_response (GtkDialog *dialog,
     gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
-static gboolean
-destination_dialog_filter_cb (const GtkFileFilterInfo *filter_info,
-                              gpointer                 user_data)
-{
-    GList *selection = user_data;
-    GList *l;
-
-    for (l = selection; l != NULL; l = l->next)
-    {
-        char *uri;
-        uri = nautilus_file_get_uri (l->data);
-        if (strcmp (uri, filter_info->uri) == 0)
-        {
-            g_free (uri);
-            return FALSE;
-        }
-        g_free (uri);
-    }
-
-    return TRUE;
-}
-
-static GList *
-get_selected_folders (GList *selection)
-{
-    GList *folders;
-    GList *l;
-
-    folders = NULL;
-    for (l = selection; l != NULL; l = l->next)
-    {
-        if (nautilus_file_is_directory (l->data))
-        {
-            folders = g_list_prepend (folders, nautilus_file_ref (l->data));
-        }
-    }
-    return g_list_reverse (folders);
-}
-
 static void
 copy_or_move_selection (NautilusFilesView *view,
                         gboolean           is_move)
@@ -6034,23 +5995,6 @@ copy_or_move_selection (NautilusFilesView *view,
     copy_data->view = view;
     copy_data->selection = selection;
     copy_data->is_move = is_move;
-
-    if (selection != NULL)
-    {
-        GtkFileFilter *filter;
-        GList *folders;
-
-        folders = get_selected_folders (selection);
-
-        filter = gtk_file_filter_new ();
-        gtk_file_filter_add_custom (filter,
-                                    GTK_FILE_FILTER_URI,
-                                    destination_dialog_filter_cb,
-                                    folders,
-                                    (GDestroyNotify) nautilus_file_list_free);
-        gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
-    }
-
 
     if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
     {
