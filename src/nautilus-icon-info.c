@@ -471,38 +471,7 @@ nautilus_icon_info_lookup (GIcon *icon,
     }
 }
 
-NautilusIconInfo *
-nautilus_icon_info_lookup_from_name (const char *name,
-                                     int         size,
-                                     int         scale)
-{
-    GIcon *icon;
-    NautilusIconInfo *info;
-
-    icon = g_themed_icon_new (name);
-    info = nautilus_icon_info_lookup (icon, size, scale);
-    g_object_unref (icon);
-    return info;
-}
-
-NautilusIconInfo *
-nautilus_icon_info_lookup_from_path (const char *path,
-                                     int         size,
-                                     int         scale)
-{
-    GFile *icon_file;
-    GIcon *icon;
-    NautilusIconInfo *info;
-
-    icon_file = g_file_new_for_path (path);
-    icon = g_file_icon_new (icon_file);
-    info = nautilus_icon_info_lookup (icon, size, scale);
-    g_object_unref (icon);
-    g_object_unref (icon_file);
-    return info;
-}
-
-GdkPixbuf *
+static GdkPixbuf *
 nautilus_icon_info_get_pixbuf_nodefault (NautilusIconInfo *icon)
 {
     GdkPixbuf *res;
@@ -542,38 +511,6 @@ nautilus_icon_info_get_pixbuf (NautilusIconInfo *icon)
 
     return res;
 }
-
-GdkPixbuf *
-nautilus_icon_info_get_pixbuf_nodefault_at_size (NautilusIconInfo *icon,
-                                                 gsize             forced_size)
-{
-    GdkPixbuf *pixbuf, *scaled_pixbuf;
-    int w, h, s;
-    double scale;
-
-    pixbuf = nautilus_icon_info_get_pixbuf_nodefault (icon);
-
-    if (pixbuf == NULL)
-    {
-        return NULL;
-    }
-
-    w = gdk_pixbuf_get_width (pixbuf) / icon->orig_scale;
-    h = gdk_pixbuf_get_height (pixbuf) / icon->orig_scale;
-    s = MAX (w, h);
-    if (s == forced_size)
-    {
-        return pixbuf;
-    }
-
-    scale = (double) forced_size / s;
-    scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-                                             w * scale, h * scale,
-                                             GDK_INTERP_BILINEAR);
-    g_object_unref (pixbuf);
-    return scaled_pixbuf;
-}
-
 
 GdkPixbuf *
 nautilus_icon_info_get_pixbuf_at_size (NautilusIconInfo *icon,
