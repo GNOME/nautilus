@@ -208,9 +208,9 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkToggleButton" id="add_button">
+                          <object class="GtkMenuButton">
                             <property name="visible">True</property>
-                            <signal name="toggled" handler="add_button_clicked" swapped="yes" />
+                            <property name="menu_model">add_tag_menu</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
@@ -262,9 +262,9 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkToggleButton" id="numbering_order_button">
+                              <object class="GtkMenuButton">
                                 <property name="visible">True</property>
-                                <signal name="toggled" handler="numbering_order_button_clicked" swapped="yes" />
+                                <property name="menu-model">numbering_order_menu</property>
                                 <child>
                                   <object class="GtkBox">
                                     <property name="visible">True</property>
@@ -505,18 +505,8 @@
       </object>
     </child>
   </template>
-  <object class="GtkPopover" id="add_popover">
-    <property name="position">bottom</property>
-    <property name="relative-to">add_button</property>
-    <signal name="closed" handler="add_popover_closed" swapped="yes" />
-  </object>
   <object class="GtkImage" id="done_image">
     <property name="visible">True</property>
     <property name="icon_name">object-select-symbolic</property>
-  </object>
-  <object class="GtkPopover" id="numbering_order_popover">
-    <property name="position">bottom</property>
-    <property name="relative-to">numbering_order_button</property>
-    <signal name="closed" handler="numbering_order_popover_closed" swapped="yes" />
   </object>
 </interface>
