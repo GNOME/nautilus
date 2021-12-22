@@ -49,8 +49,6 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-signaller.h"
 
-#define PREVIEW_IMAGE_WIDTH 96
-
 static GHashTable *windows;
 static GHashTable *pending_lists;
 
@@ -5195,49 +5193,6 @@ set_icon (const char               *icon_uri,
 }
 
 static void
-update_preview_callback (GtkFileChooser           *icon_chooser,
-                         NautilusPropertiesWindow *self)
-{
-    GtkWidget *preview_widget;
-    g_autoptr (GdkPixbuf) pixbuf = NULL;
-    g_autofree char *filename = NULL;
-
-    filename = gtk_file_chooser_get_filename (icon_chooser);
-    if (filename != NULL)
-    {
-        pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-    }
-
-    if (pixbuf != NULL)
-    {
-        preview_widget = gtk_file_chooser_get_preview_widget (icon_chooser);
-        gtk_file_chooser_set_preview_widget_active (icon_chooser, TRUE);
-
-        if (gdk_pixbuf_get_width (pixbuf) > PREVIEW_IMAGE_WIDTH)
-        {
-            double scale;
-            GdkPixbuf *scaled_pixbuf;
-
-            scale = (double) gdk_pixbuf_get_height (pixbuf) /
-                    gdk_pixbuf_get_width (pixbuf);
-
-            scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-                                                     PREVIEW_IMAGE_WIDTH,
-                                                     scale * PREVIEW_IMAGE_WIDTH,
-                                                     GDK_INTERP_BILINEAR);
-            g_object_unref (pixbuf);
-            pixbuf = scaled_pixbuf;
-        }
-
-        gtk_image_set_from_pixbuf (GTK_IMAGE (preview_widget), pixbuf);
-    }
-    else
-    {
-        gtk_file_chooser_set_preview_widget_active (icon_chooser, FALSE);
-    }
-}
-
-static void
 custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
                                       gint                      response,
                                       NautilusPropertiesWindow *self)
@@ -5279,7 +5234,7 @@ static void
 select_image_button_callback (GtkWidget                *widget,
                               NautilusPropertiesWindow *self)
 {
-    GtkWidget *dialog, *preview;
+    GtkWidget *dialog;
     GtkFileFilter *filter;
     GList *l;
     NautilusFile *file;
@@ -5306,15 +5261,6 @@ select_image_button_callback (GtkWidget                *widget,
         filter = gtk_file_filter_new ();
         gtk_file_filter_add_pixbuf_formats (filter);
         gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
-
-        preview = gtk_image_new ();
-        gtk_widget_set_size_request (preview, PREVIEW_IMAGE_WIDTH, -1);
-        gtk_file_chooser_set_preview_widget (GTK_FILE_CHOOSER (dialog), preview);
-        gtk_file_chooser_set_use_preview_label (GTK_FILE_CHOOSER (dialog), FALSE);
-        gtk_file_chooser_set_preview_widget_active (GTK_FILE_CHOOSER (dialog), FALSE);
-
-        g_signal_connect (dialog, "update-preview",
-                          G_CALLBACK (update_preview_callback), self);
 
         self->icon_chooser = dialog;
 
