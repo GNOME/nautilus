@@ -5892,11 +5892,12 @@ on_destination_dialog_response (GtkDialog *dialog,
 
     if (response_id == GTK_RESPONSE_OK)
     {
+        g_autoptr (GFile) target_location = NULL;
         char *target_uri;
         GList *uris, *l;
 
-        target_uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
-
+        target_location = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
+        target_uri = g_file_get_uri (target_location);
         uris = NULL;
         for (l = copy_data->selection; l != NULL; l = l->next)
         {
@@ -5922,7 +5923,7 @@ copy_or_move_selection (NautilusFilesView *view,
 {
     NautilusFilesViewPrivate *priv;
     GtkWidget *dialog;
-    char *uri;
+    g_autoptr (GFile) location = NULL;
     CopyCallbackData *copy_data;
     GList *selection;
     const gchar *title;
@@ -5963,19 +5964,18 @@ copy_or_move_selection (NautilusFilesView *view,
     if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
     {
         directory = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (priv->model));
-        uri = nautilus_directory_get_uri (directory);
+        location = nautilus_directory_get_location (directory);
     }
     else if (showing_starred_directory (view))
     {
-        uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
+        location = nautilus_file_get_parent_location (NAUTILUS_FILE (selection->data));
     }
     else
     {
-        uri = nautilus_directory_get_uri (priv->model);
+        location = nautilus_directory_get_location (priv->model);
     }
 
-    gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (dialog), uri);
-    g_free (uri);
+    gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog), location, NULL);
     g_signal_connect (dialog, "response",
                       G_CALLBACK (on_destination_dialog_response),
                       copy_data);
@@ -6375,7 +6375,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
     NautilusFilesViewPrivate *priv;
     ExtractToData *data;
     GtkWidget *dialog;
-    g_autofree char *uri = NULL;
+    g_autoptr (GFile) location = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -6411,14 +6411,14 @@ extract_files_to_chosen_location (NautilusFilesView *view,
 
         search_directory = NAUTILUS_SEARCH_DIRECTORY (priv->model);
         directory = nautilus_search_directory_get_base_model (search_directory);
-        uri = nautilus_directory_get_uri (directory);
+        location = nautilus_directory_get_location (directory);
     }
     else
     {
-        uri = nautilus_directory_get_uri (priv->model);
+        location = nautilus_directory_get_location (priv->model);
     }
 
-    gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (dialog), uri);
+    gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog), location, NULL);
 
     data->view = view;
     data->files = nautilus_file_list_copy (files);

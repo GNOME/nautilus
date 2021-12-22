@@ -5207,11 +5207,13 @@ custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
 
         case GTK_RESPONSE_OK:
         {
+            g_autoptr (GFile) location = NULL;
             g_autofree gchar *uri = NULL;
 
-            uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
-            if (uri != NULL)
+            location = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
+            if (location != NULL)
             {
+                uri = g_file_get_uri (location);
                 set_icon (uri, self);
             }
             else
@@ -5275,15 +5277,15 @@ select_image_button_callback (GtkWidget                *widget,
 
         if (nautilus_file_is_directory (file))
         {
-            g_autofree gchar *uri = NULL;
-            g_autofree gchar *image_path = NULL;
+            g_autoptr (GFile) image_location = NULL;
 
-            uri = nautilus_file_get_uri (file);
+            image_location = nautilus_file_get_location (file);
 
-            image_path = g_filename_from_uri (uri, NULL, NULL);
-            if (image_path != NULL)
+            if (image_location != NULL)
             {
-                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), image_path);
+                gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog),
+                                                          image_location,
+                                                          NULL);
             }
         }
     }
