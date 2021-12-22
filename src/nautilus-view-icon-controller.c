@@ -1353,6 +1353,8 @@ create_view_ui (NautilusViewIconController *self)
     gtk_flow_box_set_max_children_per_line (flowbox, 20);
     gtk_flow_box_set_selection_mode (flowbox, GTK_SELECTION_MULTIPLE);
     gtk_flow_box_set_homogeneous (flowbox, FALSE);
+    gtk_flow_box_set_column_spacing (flowbox, 6);
+    gtk_flow_box_set_row_spacing (flowbox, 6);
 
     return flowbox;
 }
