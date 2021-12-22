@@ -2875,7 +2875,7 @@ start_long_operation (NautilusPropertiesWindow *self)
         g_autoptr (GdkCursor) cursor = NULL;
 
         display = gtk_widget_get_display (GTK_WIDGET (self));
-        cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
+        cursor = gdk_cursor_new_from_name (display, "wait");
         gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (self)), cursor);
     }
     self->long_operation_underway++;
