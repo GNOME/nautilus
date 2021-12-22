@@ -1420,7 +1420,8 @@ constructed (GObject *object)
                       (GCallback) on_longpress_gesture_pressed_callback,
                       self);
 
-    gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (self->view_ui));
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
+                                   GTK_WIDGET (self->view_ui));
 
     self->action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_map_add_action_entries (G_ACTION_MAP (self->action_group),
