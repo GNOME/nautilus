@@ -570,18 +570,19 @@ on_new_progress_info (NautilusProgressInfoManager *manager,
 }
 
 static void
-on_operations_icon_draw (GtkWidget       *widget,
+on_operations_icon_draw (GtkDrawingArea  *drawing_area,
                          cairo_t         *cr,
+                         int              width,
+                         int              height,
                          NautilusToolbar *self)
 {
+    GtkWidget *widget = GTK_WIDGET (drawing_area);
     gfloat elapsed_progress = 0;
     gint remaining_progress = 0;
     gint total_progress;
     gdouble ratio;
     GList *progress_infos;
     GList *l;
-    guint width;
-    guint height;
     gboolean all_cancelled;
     GdkRGBA background;
     GdkRGBA foreground;
@@ -869,6 +870,11 @@ nautilus_toolbar_init (NautilusToolbar *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->operations_icon),
+                                    (GtkDrawingAreaDrawFunc) on_operations_icon_draw,
+                                    self,
+                                    NULL);
+
     gtk_widget_set_parent (self->back_menu, self->back_button);
     g_signal_connect (self->back_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
     gtk_widget_set_parent (self->forward_menu, self->forward_button);
@@ -1141,7 +1147,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
 
-    gtk_widget_class_bind_template_callback (widget_class, on_operations_icon_draw);
     gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
 }
 

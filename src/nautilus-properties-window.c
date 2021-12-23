@@ -2400,10 +2400,13 @@ should_show_volume_usage (NautilusPropertiesWindow *self)
 }
 
 static void
-paint_legend (GtkWidget *widget,
-              cairo_t   *cr,
-              gpointer   data)
+paint_legend (GtkDrawingArea *drawing_area,
+              cairo_t        *cr,
+              int             width,
+              int             height,
+              gpointer        data)
 {
+    GtkWidget *widget = GTK_WIDGET (drawing_area);
     GtkStyleContext *context;
     GtkAllocation allocation;
 
@@ -2488,11 +2491,14 @@ paint_slice (GtkWidget   *widget,
 }
 
 static void
-paint_pie_chart (GtkWidget *widget,
-                 cairo_t   *cr,
-                 gpointer   data)
+paint_pie_chart (GtkDrawingArea *drawing_area,
+                 cairo_t        *cr,
+                 int             width,
+                 int             height,
+                 gpointer        data)
 {
     NautilusPropertiesWindow *self;
+    GtkWidget *widget = GTK_WIDGET (drawing_area);
     double free, used, reserved;
 
     self = NAUTILUS_PROPERTIES_WINDOW (data);
@@ -2552,12 +2558,12 @@ setup_pie_widget (NautilusPropertiesWindow *self)
         }
     }
 
-    g_signal_connect (self->pie_chart, "draw",
-                      G_CALLBACK (paint_pie_chart), self);
-    g_signal_connect (self->used_color, "draw",
-                      G_CALLBACK (paint_legend), self);
-    g_signal_connect (self->free_color, "draw",
-                      G_CALLBACK (paint_legend), self);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->pie_chart),
+                                    paint_pie_chart, self, NULL);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->used_color),
+                                    paint_legend, self, NULL);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->free_color),
+                                    paint_legend, self, NULL);
 }
 
 static void
