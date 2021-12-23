@@ -1987,7 +1987,9 @@ create_and_set_up_tree_view (NautilusListView *view)
 {
     GtkCellRenderer *cell;
     GtkTreeViewColumn *column;
+#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
     AtkObject *atk_obj;
+#endif
     GList *nautilus_columns;
     GList *l;
     gchar **default_column_order, **default_visible_columns;
@@ -2303,8 +2305,10 @@ create_and_set_up_tree_view (NautilusListView *view)
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
                                    GTK_WIDGET (view->details->tree_view));
 
+#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
     atk_obj = gtk_widget_get_accessible (GTK_WIDGET (view->details->tree_view));
     atk_object_set_name (atk_obj, _("List View"));
+#endif
 
     g_strfreev (default_visible_columns);
     g_strfreev (default_column_order);
