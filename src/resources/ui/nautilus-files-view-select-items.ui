@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.22"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkDialog" id="select_items_dialog">
     <property name="title" translatable="yes">Select Items Matching</property>
     <property name="modal">True</property>
     <property name="use-header-bar">1</property>
     <child type="action">
       <object class="GtkButton" id="cancel">
-        <property name="visible">True</property>
         <property name="label" translatable="yes">_Cancel</property>
         <property name="use-underline">True</property>
       </object>
     </child>
     <child type="action">
       <object class="GtkButton" id="select">
-        <property name="visible">True</property>
         <property name="label" translatable="yes">_Select</property>
         <property name="use-underline">True</property>
-        <property name="can-default">True</property>
       </object>
     </child>
-    <child internal-child="vbox">
+    <child internal-child="content_area">
       <object class="GtkBox">
         <property name="margin-top">18</property>
         <property name="margin-bottom">18</property>
@@ -29,17 +26,15 @@
         <property name="spacing">6</property>
         <child>
           <object class="GtkLabel">
-            <property name="visible">True</property>
             <property name="halign">start</property>
             <property name="label" translatable="yes">Pattern</property>
             <attributes>
-              <attribute name="weight" value="bold"/>
+              <attribute name="weight" value="bold"></attribute>
             </attributes>
           </object>
         </child>
         <child>
           <object class="GtkEntry" id="pattern_entry">
-            <property name="visible">True</property>
             <property name="focusable">True</property>
             <property name="hexpand">True</property>
             <property name="activates_default">True</property>
@@ -47,7 +42,6 @@
         </child>
         <child>
           <object class="GtkLabel" id="example">
-            <property name="visible">True</property>
             <property name="halign">start</property>
           </object>
         </child>

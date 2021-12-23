@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 -->
 <interface>
-  <requires lib="gtk+" version="3.22"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="AdwPreferencesWindow" id="preferences_window">
     <property name="search_enabled">False</property>
     <child>
@@ -23,7 +22,6 @@
                 <child>
                   <object class="GtkSwitch" id="sort_folders_first_switch">
                     <property name="valign">center</property>
-                    <property name="visible">True</property>
                   </object>
                 </child>
               </object>
@@ -39,7 +37,6 @@
                 <child>
                   <object class="GtkSwitch" id="use_tree_view_switch">
                     <property name="valign">center</property>
-                    <property name="visible">True</property>
                   </object>
                 </child>
               </object>
@@ -71,7 +68,6 @@
                 <child>
                   <object class="GtkSwitch" id="show_create_link_switch">
                     <property name="valign">center</property>
-                    <property name="visible">True</property>
                   </object>
                 </child>
               </object>
@@ -87,7 +83,6 @@
                 <child>
                   <object class="GtkSwitch" id="show_delete_permanently_switch">
                     <property name="valign">center</property>
-                    <property name="visible">True</property>
                   </object>
                 </child>
               </object>
