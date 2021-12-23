@@ -731,6 +731,30 @@ handle_get_result_metas (NautilusShellSearchProvider2  *skeleton,
     return TRUE;
 }
 
+typedef struct
+{
+    GFile *file;
+    NautilusShellSearchProvider2 *skeleton;
+    GDBusMethodInvocation *invocation;
+} ShowURIData;
+
+static void
+show_uri_callback (gboolean res,
+                   gpointer user_data)
+{
+    ShowURIData *data = user_data;
+
+    if (!res)
+    {
+        g_application_open (g_application_get_default (), &data->file, 1, "");
+    }
+
+    nautilus_shell_search_provider2_complete_activate_result (data->skeleton, data->invocation);
+
+    g_object_unref (data->file);
+    g_free (data);
+}
+
 static gboolean
 handle_activate_result (NautilusShellSearchProvider2  *skeleton,
                         GDBusMethodInvocation         *invocation,
@@ -739,19 +763,18 @@ handle_activate_result (NautilusShellSearchProvider2  *skeleton,
                         guint32                        timestamp,
                         gpointer                       user_data)
 {
+    ShowURIData *data;
     gboolean res;
-    GFile *file;
+
+    data = g_new (ShowURIData, 1);
+    data->file = g_file_new_for_uri (result);
+    data->skeleton = skeleton;
+    data->invocation = invocation;
 
     res = gtk_show_uri_on_window (NULL, result, timestamp, NULL);
 
-    if (!res)
-    {
-        file = g_file_new_for_uri (result);
-        g_application_open (g_application_get_default (), &file, 1, "");
-        g_object_unref (file);
-    }
+    show_uri_callback (res, data);
 
-    nautilus_shell_search_provider2_complete_activate_result (skeleton, invocation);
     return TRUE;
 }
 
