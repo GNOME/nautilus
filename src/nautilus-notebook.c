@@ -168,7 +168,7 @@ nautilus_notebook_sync_loading (GtkNotebook        *notebook,
     g_return_if_fail (spinner != NULL && icon != NULL);
 
     active = FALSE;
-    g_object_get (spinner, "active", &active, NULL);
+    g_object_get (spinner, "spinning", &active, NULL);
     allow_stop = nautilus_window_slot_get_allow_stop (slot);
 
     if (active == allow_stop)
