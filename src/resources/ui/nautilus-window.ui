@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkPopover" id="tab_menu">
-    <property name="position">bottom</property>
-    <property name="relative-to">notebook</property>
-  </object>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkPopover" id="tab_menu"/>
   <menu id="tab_menu_model">
     <section>
       <item>
@@ -33,53 +31,45 @@
     <property name="title" translatable="yes">_Files</property>
     <child>
       <object class="GtkBox">
-        <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="NautilusToolbar" id="toolbar"/>
         </child>
         <child>
           <object class="GtkPaned" id="content_paned">
-            <property name="visible">True</property>
+            <property name="shrink-end-child">False</property>
+            <property name="shrink-start-child">False</property>
+            <property name="resize-start-child">False</property>
             <property name="vexpand">True</property>
             <property name="hexpand">True</property>
             <child>
               <object class="GtkBox" id="sidebar">
+                <property name="visible">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
               </object>
-              <packing>
-                <property name="resize">False</property>
-                <property name="shrink">False</property>
-              </packing>
             </child>
             <child>
               <object class="GtkOverlay" id="main_view">
-                <property name="visible">True</property>
-                <child>
+                <property name="child">
                   <object class="GtkNotebook" id="notebook">
-                    <property name="visible">True</property>
                     <property name="show-tabs">False</property>
                     <property name="show-border">False</property>
                   </object>
-                </child>
+                </property>
                 <child type="overlay">
                   <object class="GtkRevealer" id="in_app_notification_undo">
-                    <property name="visible">True</property>
                     <property name="halign">center</property>
                     <property name="valign">start</property>
                     <property name="transition_duration">100</property>
-                    <child>
+                    <property name="child">
                       <object class="GtkFrame">
-                        <property name="visible">True</property>
-                        <child>
+                        <property name="child">
                           <object class="GtkBox">
-                            <property name="visible">True</property>
                             <property name="margin_start">12</property>
                             <property name="margin_end">4</property>
                             <child>
                               <object class="GtkLabel" id="in_app_notification_undo_label">
-                                <property name="visible">True</property>
                                 <property name="max_width_chars">50</property>
                                 <property name="ellipsize">middle</property>
                                 <property name="margin_end">30</property>
@@ -88,10 +78,8 @@
                             <child>
                               <object class="GtkButton" id="in_app_notification_undo_undo_button">
                                 <property name="label" translatable="yes">Undo</property>
-                                <property name="visible">True</property>
                                 <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="no_show_all">True</property>
                                 <property name="margin_end">6</property>
                                 <style>
                                   <class name="text-button"/>
@@ -100,13 +88,11 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="in_app_notification_undo_close_button">
-                                <property name="visible">True</property>
                                 <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="focus_on_click">False</property>
                                 <child>
                                   <object class="GtkImage">
-                                    <property name="visible">True</property>
                                     <property name="icon_name">window-close-symbolic</property>
                                     <property name="icon_size">2</property>
                                   </object>
@@ -118,31 +104,27 @@
                               </object>
                             </child>
                           </object>
-                        </child>
+                        </property>
                         <style>
                           <class name="app-notification"/>
                         </style>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
                 <child type="overlay">
                   <object class="GtkRevealer" id="notification_operation">
-                    <property name="visible">True</property>
                     <property name="halign">center</property>
                     <property name="valign">start</property>
                     <property name="transition_duration">100</property>
-                    <child>
+                    <property name="child">
                       <object class="GtkFrame">
-                        <property name="visible">True</property>
-                        <child>
+                        <property name="child">
                           <object class="GtkBox">
-                            <property name="visible">True</property>
                             <property name="margin_start">12</property>
                             <property name="margin_end">4</property>
                             <child>
                               <object class="GtkLabel" id="notification_operation_label">
-                                <property name="visible">True</property>
                                 <property name="max_width_chars">50</property>
                                 <property name="ellipsize">middle</property>
                                 <property name="margin_end">30</property>
@@ -150,10 +132,8 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="notification_operation_open">
-                                <property name="visible">True</property>
                                 <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="no_show_all">True</property>
                                 <property name="margin_end">6</property>
                                 <signal name="clicked" handler="on_notification_operation_open_clicked" object="NautilusWindow" swapped="no"/>
                                 <style>
@@ -163,14 +143,12 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="notification_operation_close">
-                                <property name="visible">True</property>
                                 <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="on_notification_operation_close_clicked" object="NautilusWindow" swapped="no"/>
                                 <child>
                                   <object class="GtkImage">
-                                    <property name="visible">True</property>
                                     <property name="icon_name">window-close-symbolic</property>
                                     <property name="icon_size">2</property>
                                   </object>
@@ -182,18 +160,15 @@
                               </object>
                             </child>
                           </object>
-                        </child>
+                        </property>
                         <style>
                           <class name="app-notification"/>
                         </style>
                       </object>
-                    </child>
+                    </property>
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="shrink">False</property>
-              </packing>
             </child>
           </object>
         </child>
