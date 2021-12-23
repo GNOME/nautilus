@@ -128,8 +128,6 @@
             <property name="row-spacing">6</property>
             <property name="column-spacing">6</property>
             <property name="hexpand">True</property>
-            <property name="row-homogeneous">False</property>
-            <property name="column-homogeneous">False</property>
             <child>
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
@@ -146,7 +144,6 @@
                     <property name="label" translatable="yes">Rename _using a template</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
                     <property name="active">True</property>
                     <signal name="toggled" handler="batch_rename_dialog_mode_changed" swapped="yes" />
@@ -157,7 +154,6 @@
                     <property name="label" translatable="yes">Find and replace _text</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
                     <property name="use_underline">True</property>
                     <property name="active">True</property>
                     <property name="group">format_mode_button</property>
@@ -168,13 +164,11 @@
               <packing>
                 <property name="left-attach">3</property>
                 <property name="top-attach">0</property>
-                <property name="width">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkStack" id="mode_stack">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="vhomogeneous">False</property>
                 <property name="hhomogeneous">True</property>
                 <property name="transition_type">crossfade</property>
@@ -191,7 +185,6 @@
                     <child>
                       <object class="GtkBox">
                         <property name="orientation">horizontal</property>
-                        <property name="spacing">0</property>
                         <property name="visible">True</property>
                         <property name="halign">center</property>
                         <child>
@@ -215,7 +208,6 @@
                               <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="orientation">horizontal</property>
-                                <property name="spacing">0</property>
                                 <child>
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
@@ -228,16 +220,15 @@
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Add</property>
-                                    <property name="can_focus">False</property>
                                   </object>
                                 </child>
                               </object>
                             </child>
                           </object>
                         </child>
-                            <style>
-                              <class name="linked"/>
-                            </style>
+                        <style>
+                          <class name="linked"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="left-attach">0</property>
@@ -258,7 +249,6 @@
                               <object class="GtkLabel" id="numbering_label">
                                 <property name="visible">True</property>
                                 <property name="label" translatable="yes">Automatic Numbering Order</property>
-                                <property name="can_focus">False</property>
                               </object>
                             </child>
                             <child>
@@ -276,7 +266,6 @@
                                         <property name="width-request">180</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Original Name (Ascending)</property>
-                                        <property name="can_focus">False</property>
                                       </object>
                                     </child>
                                     <child>
@@ -320,43 +309,38 @@
                       <object class="GtkLabel" id="existing_text_label">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Existing Text</property>
-                        <property name="can_focus">False</property>
                         <property name="sensitive">False</property>
                       </object>
-                        <packing>
-                          <property name="left-attach">0</property>
-                          <property name="top-attach">0</property>
-                          <property name="width">1</property>
-                        </packing>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">0</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="find_entry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="width_request">375</property>
-                        <property name="hexpand">False</property>
                         <property name="activates-default">True</property>
                         <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
                         <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
                       </object>
-                        <packing>
-                          <property name="left-attach">1</property>
-                          <property name="top-attach">0</property>
-                          <property name="width">3</property>
-                        </packing>
+                      <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">0</property>
+                        <property name="width">3</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkLabel" id="replace_label">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Replace With</property>
-                        <property name="can_focus">False</property>
                         <property name="sensitive">False</property>
                       </object>
-                        <packing>
-                          <property name="left-attach">0</property>
-                          <property name="top-attach">1</property>
-                          <property name="width">1</property>
-                        </packing>
+                      <packing>
+                        <property name="left-attach">0</property>
+                        <property name="top-attach">1</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="replace_entry">
@@ -366,11 +350,11 @@
                         <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
                         <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
                       </object>
-                        <packing>
-                          <property name="left-attach">1</property>
-                          <property name="top-attach">1</property>
-                          <property name="width">3</property>
-                        </packing>
+                      <packing>
+                        <property name="left-attach">1</property>
+                        <property name="top-attach">1</property>
+                        <property name="width">3</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
@@ -388,7 +372,6 @@
             <child>
               <object class="GtkScrolledWindow" id="scrolled_window">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
                 <property name="hexpand">False</property>
                 <property name="vexpand">True</property>
                 <property name="shadow_type">in</property>
@@ -399,28 +382,24 @@
                 <child>
                   <object class="GtkViewport">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkBox" id="a_box">
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkListBox" id="original_name_listbox">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="selection_mode">GTK_SELECTION_NONE</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkListBox" id="arrow_listbox">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="selection_mode">GTK_SELECTION_NONE</property>
                           </object>
                         </child>
                         <child>
                           <object class="GtkListBox" id="result_listbox">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="selection_mode">GTK_SELECTION_NONE</property>
                           </object>
                         </child>
@@ -444,13 +423,9 @@
                 <child>
                   <object class="GtkLabel" id="conflict_label">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="hexpand">True</property>
                     <property name="xalign">0</property>
                   </object>
-                  <packing>
-                    <property name="pack-type">start</property>
-                  </packing>
                 </child>
                 <child>
                   <object class="GtkBox">
@@ -459,7 +434,7 @@
                     <child>
                       <object class="GtkButton" id="conflict_down">
                         <property name="visible">True</property>
-                         <signal name="clicked" handler="select_next_conflict_down" swapped="yes" />
+                        <signal name="clicked" handler="select_next_conflict_down" swapped="yes" />
                         <child>
                           <object class="GtkImage">
                             <property name="visible">True</property>
