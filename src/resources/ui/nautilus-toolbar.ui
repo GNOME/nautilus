@@ -176,46 +176,45 @@
           </object>
         </child>
         <child type="start">
-          <object class="GtkBox" id="navigation_box">
+          <object class="GtkButton" id="back_button">
+            <property name="focusable">True</property>
+            <property name="tooltip_text" translatable="yes">Go back</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="action_name">win.back</property>
             <child>
-              <object class="GtkButton" id="back_button">
-                <property name="focusable">True</property>
-                <property name="tooltip_text" translatable="yes">Go back</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="action_name">win.back</property>
-                <child>
-                  <object class="GtkImage" id="back_icon">
-                    <property name="icon_name">go-previous-symbolic</property>
-                    <property name="icon_size">1</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton" id="forward_button">
-                <property name="focusable">True</property>
-                <property name="tooltip_text" translatable="yes">Go forward</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="action_name">win.forward</property>
-                <child>
-                  <object class="GtkImage" id="forward_icon">
-                    <property name="icon_name">go-next-symbolic</property>
-                    <property name="icon_size">1</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
+              <object class="GtkImage" id="back_icon">
+                <property name="icon_name">go-previous-symbolic</property>
+                <property name="icon_size">1</property>
               </object>
             </child>
             <style>
-              <class name="linked"/>
-              <class name="raised"/>
+              <class name="image-button"/>
+            </style>
+          </object>
+        </child>
+        <child type="start">
+          <object class="GtkButton" id="forward_button">
+            <property name="focusable">True</property>
+            <property name="tooltip_text" translatable="yes">Go forward</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="action_name">win.forward</property>
+            <child>
+              <object class="GtkImage" id="forward_icon">
+                <property name="icon_name">go-next-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+        </child>
+        <child type="start">
+          <object class="GtkSeparator">
+            <style>
+              <class name="spacer"/>
             </style>
           </object>
         </child>
@@ -249,45 +248,19 @@
               </object>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="AdwSplitButton" id="view_split_button">
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="margin_end">6</property>
+                <property name="focusable">True</property>
+                <property name="tooltip_text" translatable="yes">Toggle view</property>
+                <property name="action_name">slot.files-view-mode-toggle</property>
+                <property name="menu-model">view_menu</property>
                 <child>
-                  <object class="GtkButton" id="view_toggle_button">
-                    <property name="focusable">True</property>
-                    <property name="tooltip_text" translatable="yes">Toggle view</property>
-                    <property name="action_name">slot.files-view-mode-toggle</property>
-                    <child>
-                      <object class="GtkImage" id="view_toggle_icon">
-                        <property name="icon_size">1</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="image-button"/>
-                    </style>
+                  <object class="GtkImage" id="view_toggle_icon">
+                    <property name="icon_size">1</property>
                   </object>
                 </child>
-                <child>
-                  <object class="GtkMenuButton" id="view_button">
-                    <property name="focusable">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes" comments="“View” is a noun">View options</property>
-                    <property name="halign">start</property>
-                    <property name="menu-model">view_menu</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="icon_name">pan-down-symbolic</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="disclosure-button"/>
-                    </style>
-                  </object>
-                </child>
-                <style>
-                  <class name="linked"/>
-                </style>
               </object>
             </child>
             <child>

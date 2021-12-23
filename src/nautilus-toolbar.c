@@ -78,9 +78,8 @@ struct _NautilusToolbar
     GtkWidget *operations_revealer;
     GtkWidget *operations_icon;
 
-    GtkWidget *view_toggle_button;
+    GtkWidget *view_split_button;
     GtkWidget *view_toggle_icon;
-    GtkWidget *view_button;
     GMenuModel *view_menu;
 
     GtkWidget *app_button;
@@ -1129,9 +1128,8 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_list);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_split_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
@@ -1226,7 +1224,7 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
 
     new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
 
-    gtk_widget_set_sensitive (self->view_button, (new_sections != NULL));
+    gtk_widget_set_sensitive (self->view_split_button, (new_sections != NULL));
     if (new_sections == NULL)
     {
         return;
@@ -1326,7 +1324,7 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                           NULL);
 
         self->tooltip_binding = g_object_bind_property_full (self->window_slot, "tooltip",
-                                                             self->view_toggle_button, "tooltip-text",
+                                                             self->view_split_button, "tooltip-text",
                                                              G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
                                                              (GBindingTransformFunc) nautilus_toolbar_view_toggle_tooltip_transform_to,
                                                              NULL,
