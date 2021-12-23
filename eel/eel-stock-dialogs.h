@@ -40,6 +40,11 @@ void       eel_timed_wait_stop                (EelCancelCallback  cancel_callbac
 					       gpointer           callback_data);
 
 /* Basic dialog with buttons. */
+GtkDialog *eel_show_simple_dialog             (GtkWidget         *parent,
+					       GtkMessageType     message_type,
+					       const char        *primary_text,
+					       const char        *secondary_text,
+					       ...);
 int        eel_run_simple_dialog              (GtkWidget         *parent,
 					       gboolean           ignore_close_box,
 					       GtkMessageType     message_type,
