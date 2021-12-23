@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.14"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkPopover" id="extension_popover">
-    <property name="position">bottom</property>
-    <property name="constrain-to">none</property>
     <child>
       <object class="AdwPreferencesGroup">
         <property name="visible">True</property>
@@ -19,7 +17,6 @@
             <property name="subtitle" translatable="yes">Compatible with all operating systems.</property>
             <child>
               <object class="GtkImage" id="zip_checkmark">
-                <property name="visible">True</property>
                 <property name="width-request">16</property>
                 <property name="margin-start">12</property>
                 <property name="margin-end">12</property>
@@ -38,7 +35,6 @@
             </style>
             <child>
               <object class="GtkImage" id="encrypted_zip_checkmark">
-                <property name="visible">True</property>
                 <property name="width-request">16</property>
                 <property name="margin-start">12</property>
                 <property name="margin-end">12</property>
@@ -54,7 +50,6 @@
             <property name="subtitle" translatable="yes">Smaller archives but Linux and Mac only.</property>
             <child>
               <object class="GtkImage" id="tar_xz_checkmark">
-                <property name="visible">True</property>
                 <property name="width-request">16</property>
                 <property name="margin-start">12</property>
                 <property name="margin-end">12</property>
@@ -70,7 +65,6 @@
             <property name="subtitle" translatable="yes">Smaller archives but must be installed on Windows and Mac.</property>
             <child>
               <object class="GtkImage" id="seven_zip_checkmark">
-                <property name="visible">True</property>
                 <property name="width-request">16</property>
                 <property name="margin-start">12</property>
                 <property name="margin-end">12</property>
@@ -85,14 +79,12 @@
     <property name="title" translatable="yes">Create Archive</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
-    <property name="window_position">center-on-parent</property>
     <property name="destroy_with_parent">True</property>
-    <property name="type_hint">dialog</property>
     <property name="use-header-bar">1</property>
     <property name="default-width">500</property>
     <property name="default-height">210</property>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="vbox">
+    <child internal-child="content_area">
+      <object class="GtkBox" id="content_area">
         <property name="orientation">vertical</property>
         <property name="margin-top">30</property>
         <property name="margin-bottom">30</property>
@@ -104,20 +96,17 @@
         <child>
           <object class="GtkLabel" id="name_label">
             <property name="label" translatable="yes">Archive name</property>
-            <property name="visible">True</property>
             <property name="xalign">0</property>
             <attributes>
-              <attribute name="weight" value="bold"/>
+              <attribute name="weight" value="bold"></attribute>
             </attributes>
           </object>
         </child>
         <child>
           <object class="GtkBox">
-            <property name="orientation">horizontal</property>
             <property name="spacing">12</property>
             <child>
               <object class="GtkEntry" id="name_entry">
-                <property name="visible">True</property>
                 <property name="focusable">True</property>
                 <property name="hexpand">True</property>
                 <property name="width-chars">30</property>
@@ -128,7 +117,6 @@
                 <property name="popover">extension_popover</property>
                 <child>
                   <object class="GtkBox">
-                    <property name="orientation">horizontal</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkStack" id="extension_stack">
@@ -175,18 +163,18 @@
         </child>
         <child>
           <object class="GtkRevealer" id="error_revealer">
-            <child>
+            <property name="child">
               <object class="GtkLabel" id="error_label">
                 <property name="margin_top">4</property>
                 <property name="margin_bottom">4</property>
-                <property name="visible">True</property>
                 <property name="xalign">0</property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
           <object class="GtkLabel" id="passphrase_label">
+            <property name="visible">False</property>
             <property name="label" translatable="yes">Password</property>
             <property name="margin-top">6</property>
             <property name="xalign">0</property>
@@ -194,6 +182,7 @@
         </child>
         <child>
           <object class="GtkEntry" id="passphrase_entry">
+            <property name="visible">False</property>
             <property name="placeholder-text" translatable="yes">Enter a password here.</property>
             <property name="input-purpose">password</property>
             <property name="visibility">False</property>
@@ -205,7 +194,6 @@
     <child type="action">
       <object class="GtkButton" id="cancel_button">
         <property name="label" translatable="yes">Cancel</property>
-        <property name="visible">True</property>
         <property name="focusable">True</property>
         <property name="receives_default">True</property>
       </object>
@@ -213,9 +201,7 @@
     <child type="action">
       <object class="GtkButton" id="activate_button">
         <property name="label" translatable="yes">Create</property>
-        <property name="visible">True</property>
         <property name="focusable">True</property>
-        <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="sensitive">False</property>
       </object>

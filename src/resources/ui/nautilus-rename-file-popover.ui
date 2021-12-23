@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkPopover" id="rename_file_popover">
-    <property name="position">bottom</property>
-    <child>
+    <property name="child">
       <object class="GtkBox">
-        <property name="visible">True</property>
         <property name="margin-start">18</property>
         <property name="margin-end">18</property>
         <property name="margin-top">18</property>
@@ -14,7 +11,6 @@
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkLabel" id="title_label">
-            <property name="visible">True</property>
             <property name="margin-bottom">12</property>
             <style>
               <class name="title-2"/>
@@ -23,32 +19,27 @@
         </child>
         <child>
           <object class="GtkEntry" id="name_entry">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="can-default">True</property>
+            <property name="focusable">True</property>
             <property name="margin-bottom">12</property>
           </object>
         </child>
         <child>
           <object class="GtkRevealer" id="error_revealer">
-            <property name="visible">True</property>
-            <child>
+            <property name="child">
               <object class="GtkLabel" id="error_label">
-                <property name="visible">True</property>
                 <property name="margin-bottom">12</property>
                 <property name="max-width-chars">0</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0</property>
               </object>
-            </child>
+            </property>
           </object>
         </child>
         <child>
           <object class="GtkButton" id="rename_button">
             <property name="label" translatable="yes">_Rename</property>
-            <property name="visible">True</property>
             <property name="sensitive">False</property>
-            <property name="can-focus">True</property>
+            <property name="focusable">True</property>
             <property name="halign">end</property>
             <property name="use-underline">True</property>
             <style>
@@ -57,6 +48,6 @@
           </object>
         </child>
       </object>
-    </child>
+    </property>
   </object>
 </interface>
