@@ -358,7 +358,7 @@ nautilus_floating_bar_constructed (GObject *obj)
      * ensure the spinner animates if and only if it's visible, to reduce CPU
      * usage. */
     g_object_bind_property (obj, "show-spinner",
-                            w, "active",
+                            w, "spinning",
                             G_BINDING_SYNC_CREATE);
     self->spinner = w;
 
