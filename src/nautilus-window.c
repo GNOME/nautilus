@@ -748,16 +748,11 @@ update_cursor (NautilusWindow *window)
     if (slot != NULL &&
         nautilus_window_slot_get_allow_stop (slot))
     {
-        GdkDisplay *display;
-        g_autoptr (GdkCursor) cursor = NULL;
-
-        display = gtk_widget_get_display (GTK_WIDGET (window));
-        cursor = gdk_cursor_new_from_name (display, "progress");
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
+        gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
     }
     else
     {
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), NULL);
+        gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
     }
 }
 

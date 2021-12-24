@@ -6115,18 +6115,14 @@ real_action_rename (NautilusFilesView *view)
         /* If there is more than one file selected, invoke a batch renamer */
         if (selection->next != NULL)
         {
-            GdkCursor *cursor;
-            GdkDisplay *display;
+            NautilusWindow *window;
 
-            display = gtk_widget_get_display (GTK_WIDGET (nautilus_files_view_get_window (view)));
-            cursor = gdk_cursor_new_from_name (display, "progress");
-            gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (nautilus_files_view_get_window (view))),
-                                   cursor);
-            g_object_unref (cursor);
+            window = nautilus_files_view_get_window (view);
+            gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
 
             dialog = nautilus_batch_rename_dialog_new (selection,
                                                        nautilus_files_view_get_model (view),
-                                                       nautilus_files_view_get_window (view));
+                                                       window);
 
             gtk_widget_show (GTK_WIDGET (dialog));
         }
