@@ -91,12 +91,9 @@ calendar_day_selected (GtkCalendar           *calendar,
                        NautilusSearchPopover *popover)
 {
     GDateTime *date;
-    guint year, month, day;
     GPtrArray *date_range;
 
-    gtk_calendar_get_date (calendar, &year, &month, &day);
-
-    date = g_date_time_new_local (year, month + 1, day, 0, 0, 0);
+    date = gtk_calendar_get_date (calendar);
 
     date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
     g_ptr_array_add (date_range, g_date_time_ref (date));
@@ -126,12 +123,7 @@ setup_date (NautilusSearchPopover *popover,
 
         g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
 
-        gtk_calendar_select_month (GTK_CALENDAR (popover->calendar),
-                                   g_date_time_get_month (date_initial) - 1,
-                                   g_date_time_get_year (date_initial));
-
-        gtk_calendar_select_day (GTK_CALENDAR (popover->calendar),
-                                 g_date_time_get_day_of_month (date_initial));
+        gtk_calendar_select_day (GTK_CALENDAR (popover->calendar), date_initial);
 
         update_date_label (popover, date_range);
 
@@ -724,12 +716,7 @@ nautilus_search_popover_closed (GtkPopover *popover)
     /* Reselect today at the calendar */
     g_signal_handlers_block_by_func (self->calendar, calendar_day_selected, self);
 
-    gtk_calendar_select_month (GTK_CALENDAR (self->calendar),
-                               g_date_time_get_month (now) - 1,
-                               g_date_time_get_year (now));
-
-    gtk_calendar_select_day (GTK_CALENDAR (self->calendar),
-                             g_date_time_get_day_of_month (now));
+    gtk_calendar_select_day (GTK_CALENDAR (self->calendar), now);
 
     g_signal_handlers_unblock_by_func (self->calendar, calendar_day_selected, self);
 }
