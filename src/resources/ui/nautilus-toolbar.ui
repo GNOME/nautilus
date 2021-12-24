@@ -115,7 +115,6 @@
         <property name="focusable">False</property>
         <child type="title">
           <object class="GtkBox" id="header_toolbar">
-            <property name="width_request">270</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkStack" id="toolbar_switcher">
@@ -219,67 +218,69 @@
           </object>
         </child>
         <child type="end">
-          <object class="GtkBox">
-            <property name="margin_start">72</property>
+          <object class="GtkMenuButton" id="app_button">
+            <property name="focusable">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="menu-model">app_menu</property>
             <child>
-              <object class="GtkRevealer" id="operations_revealer">
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="transition_type">slide-right</property>
-                <property name="child">
-                  <object class="GtkMenuButton" id="operations_button">
-                    <property name="focusable">True</property>
-                    <property name="tooltip_text" translatable="yes">Show operations</property>
-                    <property name="margin_end">6</property>
-                    <property name="popover">operations_popover</property>
-                    <child>
-                      <object class="GtkDrawingArea" id="operations_icon">
-                        <property name="width_request">16</property>
-                        <property name="height_request">16</property>
-                        <property name="halign">center</property>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="button"/>
-                    </style>
-                  </object>
-                </property>
+              <object class="GtkImage">
+                <property name="icon_name">open-menu-symbolic</property>
+                <property name="icon_size">1</property>
               </object>
             </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+        </child>
+        <child type="end">
+          <object class="AdwSplitButton" id="view_split_button">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin_end">6</property>
+            <property name="focusable">True</property>
+            <property name="tooltip_text" translatable="yes">Toggle view</property>
+            <property name="action_name">slot.files-view-mode-toggle</property>
+            <property name="menu-model">view_menu</property>
             <child>
-              <object class="AdwSplitButton" id="view_split_button">
-                <property name="halign">center</property>
-                <property name="valign">center</property>
+              <object class="GtkImage" id="view_toggle_icon">
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkRevealer" id="operations_revealer">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="transition_type">slide-right</property>
+            <property name="child">
+              <object class="GtkMenuButton" id="operations_button">
+                <property name="focusable">True</property>
+                <property name="tooltip_text" translatable="yes">Show operations</property>
                 <property name="margin_end">6</property>
-                <property name="focusable">True</property>
-                <property name="tooltip_text" translatable="yes">Toggle view</property>
-                <property name="action_name">slot.files-view-mode-toggle</property>
-                <property name="menu-model">view_menu</property>
+                <property name="popover">operations_popover</property>
                 <child>
-                  <object class="GtkImage" id="view_toggle_icon">
-                    <property name="icon_size">1</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkMenuButton" id="app_button">
-                <property name="focusable">True</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="menu-model">app_menu</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="icon_name">open-menu-symbolic</property>
-                    <property name="icon_size">1</property>
+                  <object class="GtkDrawingArea" id="operations_icon">
+                    <property name="width_request">16</property>
+                    <property name="height_request">16</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
                   </object>
                 </child>
                 <style>
                   <class name="image-button"/>
                 </style>
               </object>
-            </child>
+            </property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkSeparator">
+            <style>
+              <class name="spacer"/>
+            </style>
           </object>
         </child>
       </object>
