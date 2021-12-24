@@ -118,7 +118,7 @@
             <child>
               <object class="GtkEntry" id="name_entry">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="focusable">True</property>
                 <property name="hexpand">True</property>
                 <property name="width-chars">30</property>
               </object>
@@ -206,7 +206,7 @@
       <object class="GtkButton" id="cancel_button">
         <property name="label" translatable="yes">Cancel</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="focusable">True</property>
         <property name="receives_default">True</property>
       </object>
     </child>
@@ -214,7 +214,7 @@
       <object class="GtkButton" id="activate_button">
         <property name="label" translatable="yes">Create</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="focusable">True</property>
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="sensitive">False</property>
