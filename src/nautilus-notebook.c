@@ -29,6 +29,7 @@
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window-slot-dnd.h"
+#include "nautilus-gtk4-helpers.h"
 
 #include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>
@@ -250,11 +251,11 @@ build_tab_label (GtkNotebook        *notebook,
 
     /* Spinner to be shown as load feedback */
     spinner = gtk_spinner_new ();
-    gtk_box_pack_start (GTK_BOX (box), spinner, FALSE, FALSE, 0);
+    gtk_box_append (GTK_BOX (box), spinner);
 
     /* Dummy icon to allocate space for spinner */
     icon = gtk_image_new ();
-    gtk_box_pack_start (GTK_BOX (box), icon, FALSE, FALSE, 0);
+    gtk_box_append (GTK_BOX (box), icon);
     /* don't show the icon */
 
     /* Tab title */
