@@ -145,19 +145,29 @@ nautilus_query_editor_dispose (GObject *object)
     G_OBJECT_CLASS (nautilus_query_editor_parent_class)->dispose (object);
 }
 
-static void
+static gboolean
 nautilus_query_editor_grab_focus (GtkWidget *widget)
 {
     NautilusQueryEditor *editor;
 
     editor = NAUTILUS_QUERY_EDITOR (widget);
 
-    if (gtk_widget_get_visible (widget) && !gtk_widget_is_focus (editor->entry))
+    if (GTK_WIDGET_CLASS (nautilus_query_editor_parent_class)->grab_focus (widget))
+    {
+        return TRUE;
+    }
+
+    if (gtk_widget_get_visible (widget))
     {
         /* avoid selecting the entry text */
-        gtk_widget_grab_focus (editor->entry);
-        gtk_editable_set_position (GTK_EDITABLE (editor->entry), -1);
+        if (gtk_widget_grab_focus (editor->entry))
+        {
+            gtk_editable_set_position (GTK_EDITABLE (editor->entry), -1);
+            return TRUE;
+        }
     }
+
+    return FALSE;
 }
 
 static void
