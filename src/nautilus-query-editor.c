@@ -252,6 +252,7 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 {
     GObjectClass *gobject_class;
     GtkWidgetClass *widget_class;
+    g_autoptr (GtkShortcut) shortcut = NULL;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = nautilus_query_editor_finalize;
@@ -298,11 +299,9 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
-    gtk_binding_entry_add_signal (gtk_binding_set_by_class (class),
-                                  GDK_KEY_Down,
-                                  0,
-                                  "focus-view",
-                                  0);
+    shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Down, 0),
+                                 gtk_signal_action_new ("focus-view"));
+    gtk_widget_class_add_shortcut (widget_class, shortcut);
 
     /**
      * NautilusQueryEditor::location:

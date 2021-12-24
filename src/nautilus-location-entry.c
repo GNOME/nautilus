@@ -818,8 +818,7 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 {
     GObjectClass *gobject_class;
     GtkEntryClass *entry_class;
-    GtkBindingSet *binding_set;
-
+    g_autoptr (GtkShortcut) shortcut = NULL;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->dispose = nautilus_location_entry_dispose;
@@ -848,8 +847,9 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
                                     g_cclosure_marshal_generic,
                                     G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
-    binding_set = gtk_binding_set_by_class (class);
-    gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
+    shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Escape, 0),
+                                 gtk_signal_action_new ("cancel"));
+    gtk_widget_class_add_shortcut (GTK_WIDGET_CLASS (class), shortcut);
 }
 
 void
