@@ -196,9 +196,9 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
 
         if (image != NULL)
         {
-            gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
+            gtk_box_append (GTK_BOX (box), image);
         }
-        gtk_box_pack_start (GTK_BOX (box), gtk_label_new (name), FALSE, FALSE, 0);
+        gtk_box_append (GTK_BOX (box), gtk_label_new (name));
 
         gtk_button_set_child (GTK_BUTTON (button), box);
 

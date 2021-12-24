@@ -47,6 +47,7 @@
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-signaller.h"
+#include "nautilus-gtk4-helpers.h"
 
 static GHashTable *windows;
 static GHashTable *pending_lists;
@@ -4624,7 +4625,7 @@ setup_app_chooser_area (NautilusPropertiesWindow *self)
 
     self->app_chooser_widget = gtk_app_chooser_widget_new (self->content_type);
     gtk_widget_set_vexpand (self->app_chooser_widget, TRUE);
-    gtk_box_pack_start (GTK_BOX (self->app_chooser_widget_box), self->app_chooser_widget, FALSE, TRUE, 0);
+    gtk_box_append (GTK_BOX (self->app_chooser_widget_box), self->app_chooser_widget);
 
     gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
