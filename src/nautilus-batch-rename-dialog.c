@@ -1373,7 +1373,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
 static void
 batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
 {
-    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->format_mode_button)))
+    if (gtk_check_button_get_active (GTK_CHECK_BUTTON (dialog->format_mode_button)))
     {
         gtk_stack_set_visible_child_name (GTK_STACK (dialog->mode_stack), "format");
 
