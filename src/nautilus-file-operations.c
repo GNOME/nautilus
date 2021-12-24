@@ -1393,7 +1393,7 @@ do_run_simple_dialog (gpointer _data)
         content_area = gtk_message_dialog_get_message_area (GTK_MESSAGE_DIALOG (dialog));
 
         label = gtk_label_new (data->details_text);
-        gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+        gtk_label_set_wrap (GTK_LABEL (label), TRUE);
         gtk_label_set_selectable (GTK_LABEL (label), TRUE);
         gtk_label_set_xalign (GTK_LABEL (label), 0);
         /* Ideally, we shouldn’t do this.

@@ -80,7 +80,7 @@ append_item (NautilusImagesPropertiesPage *page,
 
         value_label = gtk_label_new (value);
 
-        gtk_label_set_line_wrap (GTK_LABEL (value_label), TRUE);
+        gtk_label_set_wrap (GTK_LABEL (value_label), TRUE);
         gtk_grid_attach_next_to (GTK_GRID (page->grid), value_label,
                                  name_label, GTK_POS_RIGHT,
                                  1, 1);
