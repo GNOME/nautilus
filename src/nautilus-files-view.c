@@ -3120,7 +3120,7 @@ slot_active_changed (NautilusWindowSlot *slot,
     }
 }
 
-static void
+static gboolean
 nautilus_files_view_grab_focus (GtkWidget *widget)
 {
     /* focus the child of the scrolled window if it exists */
@@ -3132,12 +3132,12 @@ nautilus_files_view_grab_focus (GtkWidget *widget)
     priv = nautilus_files_view_get_instance_private (view);
     child = gtk_scrolled_window_get_child (GTK_SCROLLED_WINDOW (priv->scrolled_window));
 
-    GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->grab_focus (widget);
-
-    if (child)
+    if (child != NULL)
     {
-        gtk_widget_grab_focus (GTK_WIDGET (child));
+        return gtk_widget_grab_focus (GTK_WIDGET (child));
     }
+
+    return GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->grab_focus (widget);
 }
 
 static void

@@ -632,19 +632,19 @@ remember_focus_widget (NautilusWindow *window)
     }
 }
 
-static void
+static gboolean
 nautilus_window_grab_focus (GtkWidget *widget)
 {
     NautilusWindowSlot *slot;
 
     slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (widget));
 
-    GTK_WIDGET_CLASS (nautilus_window_parent_class)->grab_focus (widget);
-
-    if (slot)
+    if (slot != NULL)
     {
-        gtk_widget_grab_focus (GTK_WIDGET (slot));
+        return gtk_widget_grab_focus (GTK_WIDGET (slot));
     }
+
+    return GTK_WIDGET_CLASS (nautilus_window_parent_class)->grab_focus (widget);
 }
 
 static void
