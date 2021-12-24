@@ -5896,7 +5896,6 @@ copy_or_move_selection (NautilusFilesView *view,
                                           _("_Cancel"), GTK_RESPONSE_CANCEL,
                                           _("_Select"), GTK_RESPONSE_OK,
                                           NULL);
-    gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
 
     gtk_dialog_set_default_response (GTK_DIALOG (dialog),
                                      GTK_RESPONSE_OK);
@@ -5923,7 +5922,7 @@ copy_or_move_selection (NautilusFilesView *view,
         location = nautilus_directory_get_location (priv->model);
     }
 
-    gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog), location, NULL);
+    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
     g_signal_connect (dialog, "response",
                       G_CALLBACK (on_destination_dialog_response),
                       copy_data);
@@ -6344,7 +6343,6 @@ extract_files_to_chosen_location (NautilusFilesView *view,
                                           _("_Cancel"), GTK_RESPONSE_CANCEL,
                                           _("_Select"), GTK_RESPONSE_OK,
                                           NULL);
-    gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
 
     gtk_dialog_set_default_response (GTK_DIALOG (dialog),
                                      GTK_RESPONSE_OK);
@@ -6370,7 +6368,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
         location = nautilus_directory_get_location (priv->model);
     }
 
-    gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog), location, NULL);
+    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
 
     data->view = view;
     data->files = nautilus_file_list_copy (files);
