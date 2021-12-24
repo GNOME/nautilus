@@ -565,7 +565,6 @@ button_clicked_cb (GtkButton *button,
 {
     ButtonData *button_data;
     NautilusPathBar *self;
-    GdkModifierType state;
 
     button_data = BUTTON_DATA (data);
     if (button_data->ignore_changes)
@@ -575,26 +574,15 @@ button_clicked_cb (GtkButton *button,
 
     self = button_data->path_bar;
 
-    gtk_get_current_event_state (&state);
-
-    if ((state & GDK_CONTROL_MASK) != 0)
+    if (g_file_equal (button_data->path, self->current_path))
     {
-        g_signal_emit (button_data->path_bar, path_bar_signals[OPEN_LOCATION], 0,
-                       button_data->path,
-                       NAUTILUS_OPEN_FLAG_NEW_WINDOW);
+        nautilus_path_bar_show_current_location_menu (self);
     }
     else
     {
-        if (g_file_equal (button_data->path, self->current_path))
-        {
-            nautilus_path_bar_show_current_location_menu (self);
-        }
-        else
-        {
-            g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
-                           button_data->path,
-                           0);
-        }
+        g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
+                       button_data->path,
+                       0);
     }
 }
 
@@ -683,6 +671,7 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     ButtonData *button_data;
     NautilusPathBar *self;
     guint current_button;
+    GdkModifierType state;
 
     if (n_press != 1)
     {
@@ -692,16 +681,13 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     button_data = BUTTON_DATA (user_data);
     self = button_data->path_bar;
     current_button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    gtk_get_current_event_state (&state);
 
     switch (current_button)
     {
         case GDK_BUTTON_MIDDLE:
         {
-            GdkModifierType state;
-
-            gtk_get_current_event_state (&state);
-            state &= gtk_accelerator_get_default_mod_mask ();
-            if (state == 0)
+            if ((state & gtk_accelerator_get_default_mod_mask ()) == 0)
             {
                 g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
                                button_data->path,
@@ -725,11 +711,27 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         }
         break;
 
+        case GDK_BUTTON_PRIMARY:
+        {
+            if ((state & GDK_CONTROL_MASK) != 0)
+            {
+                g_signal_emit (button_data->path_bar, path_bar_signals[OPEN_LOCATION], 0,
+                               button_data->path,
+                               NAUTILUS_OPEN_FLAG_NEW_WINDOW);
+            }
+            else
+            {
+                /* GtkButton will claim the primary button presses and emit the
+                 * "clicked" signal. Handle it in the singal callback, not here.
+                 */
+                return;
+            }
+        }
+        break;
+
         default:
         {
-            /* Ignore other buttons in this gesture. GtkButton will claim the
-             * primary button presses and emit the "clicked" signal.
-             */
+            /* Ignore other buttons in this gesture. */
             return;
         }
         break;
