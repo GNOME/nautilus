@@ -278,11 +278,11 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     {
         if (view->details->hover_path != NULL)
         {
-            gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
+            gtk_widget_set_cursor (widget, hand_cursor);
         }
         else
         {
-            gdk_window_set_cursor (gtk_widget_get_window (widget), NULL);
+            gtk_widget_set_cursor (widget, NULL);
         }
     }
 
@@ -343,7 +343,7 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
 
     if (view->details->hover_path != NULL)
     {
-        gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
+        gtk_widget_set_cursor (widget, hand_cursor);
     }
 }
 
@@ -3429,7 +3429,6 @@ nautilus_list_view_is_zoom_level_default (NautilusFilesView *view)
 static void
 nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
 {
-    GdkWindow *win;
     GdkDisplay *display;
     NautilusListView *view;
     GtkTreeIter iter;
@@ -3457,8 +3456,7 @@ nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
         tree = view->details->tree_view;
         if (gtk_widget_get_realized (GTK_WIDGET (tree)))
         {
-            win = gtk_widget_get_window (GTK_WIDGET (tree));
-            gdk_window_set_cursor (win, NULL);
+            gtk_widget_set_cursor (GTK_WIDGET (tree), NULL);
 
             if (display != NULL)
             {
@@ -3472,7 +3470,7 @@ nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
     {
         if (hand_cursor == NULL)
         {
-            hand_cursor = gdk_cursor_new_from_name (display, "pointer");
+            hand_cursor = gdk_cursor_new_from_name ("pointer", NULL);
         }
     }
 }
