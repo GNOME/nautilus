@@ -38,7 +38,7 @@ create_props (const char *url)
 	props = totem_properties_view_new (url, label);
 	gtk_container_add (GTK_CONTAINER (window), props);
 
-	gtk_widget_show_all (window);
+	gtk_widget_show (window);
 }
 
 static void

@@ -397,7 +397,6 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_box_append (GTK_BOX (self), w);
     self->stop_button = w;
     gtk_widget_set_visible (w, FALSE);
-    gtk_widget_set_no_show_all (w, TRUE);
 
     g_signal_connect (self->stop_button, "clicked",
                       G_CALLBACK (stop_button_clicked_cb), self);

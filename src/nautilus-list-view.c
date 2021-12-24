@@ -1467,7 +1467,7 @@ popup_column_header_menu (NautilusListView *list_view,
                       G_CALLBACK (column_header_menu_use_default),
                       list_view);
 
-    gtk_widget_show_all (menu);
+    gtk_widget_show (menu);
     gtk_popover_set_pointing_to (popover, &(GdkRectangle){x, y, 0, 0});
     gtk_popover_popup (popover);
 

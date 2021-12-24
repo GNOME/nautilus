@@ -4132,7 +4132,7 @@ on_change_permissions_clicked (GtkWidget                *button,
     set_active_from_umask (combo, PERMISSION_OTHER, TRUE);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), self);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
@@ -4172,7 +4172,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
         if (self->has_recursive_apply)
         {
-            gtk_widget_show_all (self->change_permissions_button_box);
+            gtk_widget_show (self->change_permissions_button_box);
             g_signal_connect (self->change_permissions_button, "clicked",
                               G_CALLBACK (on_change_permissions_clicked),
                               self);

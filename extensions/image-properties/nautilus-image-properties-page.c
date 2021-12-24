@@ -117,7 +117,7 @@ nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
                                    self->grid);
 #endif
 
-    gtk_widget_show_all (GTK_WIDGET (self->page_widget));
+    gtk_widget_show (GTK_WIDGET (self->page_widget));
 }
 
 static void

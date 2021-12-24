@@ -406,7 +406,7 @@ create_row_for_label (const gchar *text,
                           NULL);
 
     gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), label);
-    gtk_widget_show_all (row);
+    gtk_widget_show (row);
 
     return row;
 }
@@ -654,7 +654,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     popover->treeview = GTK_TREE_VIEW (g_object_ref (treeview));
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_other_types_dialog_response), popover);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
