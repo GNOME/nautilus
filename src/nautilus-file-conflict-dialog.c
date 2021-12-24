@@ -198,10 +198,10 @@ on_expanded_notify (GtkExpander                *w,
 }
 
 static void
-checkbox_toggled_cb (GtkToggleButton            *t,
+checkbox_toggled_cb (GtkCheckButton             *t,
                      NautilusFileConflictDialog *dialog)
 {
-    gtk_widget_set_sensitive (dialog->expander, !gtk_toggle_button_get_active (t));
+    gtk_widget_set_sensitive (dialog->expander, !gtk_check_button_get_active (t));
 }
 
 static void
@@ -294,7 +294,7 @@ nautilus_file_conflict_dialog_get_new_name (NautilusFileConflictDialog *dialog)
 gboolean
 nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog)
 {
-    return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->checkbox));
+    return gtk_check_button_get_active (GTK_CHECK_BUTTON (dialog->checkbox));
 }
 
 NautilusFileConflictDialog *
