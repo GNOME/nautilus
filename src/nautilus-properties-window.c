@@ -2871,12 +2871,7 @@ start_long_operation (NautilusPropertiesWindow *self)
     if (self->long_operation_underway == 0)
     {
         /* start long operation */
-        GdkDisplay *display;
-        g_autoptr (GdkCursor) cursor = NULL;
-
-        display = gtk_widget_get_display (GTK_WIDGET (self));
-        cursor = gdk_cursor_new_from_name (display, "wait");
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (self)), cursor);
+        gtk_widget_set_cursor_from_name (GTK_WIDGET (self), "wait");
     }
     self->long_operation_underway++;
 }
@@ -2888,7 +2883,7 @@ end_long_operation (NautilusPropertiesWindow *self)
         self->long_operation_underway == 1)
     {
         /* finished !! */
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (self)), NULL);
+        gtk_widget_set_cursor (GTK_WIDGET (self), NULL);
     }
     self->long_operation_underway--;
 }
