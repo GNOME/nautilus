@@ -739,12 +739,13 @@ typedef struct
 } ShowURIData;
 
 static void
-show_uri_callback (gboolean res,
-                   gpointer user_data)
+show_uri_callback (GObject      *source_object,
+                   GAsyncResult *result,
+                   gpointer      user_data)
 {
     ShowURIData *data = user_data;
 
-    if (!res)
+    if (!gtk_show_uri_full_finish (NULL, result, NULL))
     {
         g_application_open (g_application_get_default (), &data->file, 1, "");
     }
@@ -764,16 +765,13 @@ handle_activate_result (NautilusShellSearchProvider2  *skeleton,
                         gpointer                       user_data)
 {
     ShowURIData *data;
-    gboolean res;
 
     data = g_new (ShowURIData, 1);
     data->file = g_file_new_for_uri (result);
     data->skeleton = skeleton;
     data->invocation = invocation;
 
-    res = gtk_show_uri_on_window (NULL, result, timestamp, NULL);
-
-    show_uri_callback (res, data);
+    gtk_show_uri_full (NULL, result, timestamp, NULL, show_uri_callback, data);
 
     return TRUE;
 }
