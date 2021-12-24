@@ -1242,13 +1242,13 @@ typedef struct
 } RunSimpleDialogData;
 
 static void
-set_transient_for (GdkWindow  *child_window,
+set_transient_for (GdkSurface *child_surface,
                    const char *parent_handle)
 {
     GdkDisplay *display;
     const char *prefix;
 
-    display = gdk_window_get_display (child_window);
+    display = gdk_surface_get_display (child_surface);
 
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (display))
@@ -1258,15 +1258,14 @@ set_transient_for (GdkWindow  *child_window,
         if (g_str_has_prefix (parent_handle, prefix))
         {
             const char *handle;
-            GdkWindow *window;
+            GdkSurface *surface;
 
             handle = parent_handle + strlen (prefix);
-            window = gdk_x11_window_foreign_new_for_display (display, strtol (handle, NULL, 16));
+            surface = gdk_x11_surface_lookup_for_display (display, strtol (handle, NULL, 16));
 
-            if (window != NULL)
+            if (surface != NULL)
             {
-                gdk_window_set_transient_for (child_window, window);
-                g_object_unref (window);
+                gdk_toplevel_set_transient_for (GDK_TOPLEVEL (child_surface), surface);
             }
         }
     }
@@ -1283,7 +1282,7 @@ set_transient_for (GdkWindow  *child_window,
 
             handle = parent_handle + strlen (prefix);
 
-            gdk_wayland_window_set_transient_for_exported (child_window, (char *) handle);
+            gdk_wayland_toplevel_set_transient_for_exported (GDK_TOPLEVEL (child_surface), (char *) handle);
         }
     }
 #endif
@@ -1297,7 +1296,7 @@ dialog_realize_cb (GtkWidget *widget,
     const char *parent_handle;
 
     parent_handle = nautilus_file_operations_dbus_data_get_parent_handle (dbus_data);
-    set_transient_for (gtk_widget_get_window (widget), parent_handle);
+    set_transient_for (gtk_native_get_surface (gtk_widget_get_native (widget)), parent_handle);
 }
 
 static gboolean

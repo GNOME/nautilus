@@ -1188,8 +1188,8 @@ get_window_xid (NautilusWindow *window)
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-        return (guint) gdk_x11_window_get_xid (gdk_window);
+        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
+        return (guint) gdk_x11_surface_get_xid (gdk_surface);
     }
 #endif
     return 0;
@@ -2364,9 +2364,9 @@ typedef struct
 } WaylandWindowHandleExportedData;
 
 static void
-wayland_window_handle_exported (GdkWindow  *window,
-                                const char *wayland_handle_str,
-                                gpointer    user_data)
+wayland_window_handle_exported (GdkToplevel *toplevel,
+                                const char  *wayland_handle_str,
+                                gpointer     user_data)
 {
     WaylandWindowHandleExportedData *data = user_data;
 
@@ -2400,7 +2400,7 @@ nautilus_window_export_handle (NautilusWindow               *window,
 #ifdef GDK_WINDOWING_WAYLAND
     if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
         WaylandWindowHandleExportedData *data;
 
         data = g_new0 (WaylandWindowHandleExportedData, 1);
@@ -2408,10 +2408,10 @@ nautilus_window_export_handle (NautilusWindow               *window,
         data->callback = callback;
         data->user_data = user_data;
 
-        if (!gdk_wayland_window_export_handle (gdk_window,
-                                               wayland_window_handle_exported,
-                                               data,
-                                               g_free))
+        if (!gdk_wayland_toplevel_export_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
+                                                 wayland_window_handle_exported,
+                                                 data,
+                                                 g_free))
         {
             g_free (data);
             return FALSE;
@@ -2439,10 +2439,10 @@ nautilus_window_unexport_handle (NautilusWindow *window)
 #ifdef GDK_WINDOWING_WAYLAND
     if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-        if (gdk_window != NULL)
+        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
+        if (GDK_IS_WAYLAND_TOPLEVEL (gdk_surface))
         {
-            gdk_wayland_window_unexport_handle (gdk_window);
+            gdk_wayland_toplevel_unexport_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface));
         }
     }
 #endif
