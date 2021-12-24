@@ -2879,7 +2879,7 @@ start_long_operation (NautilusPropertiesWindow *self)
 static void
 end_long_operation (NautilusPropertiesWindow *self)
 {
-    if (gtk_widget_get_window (GTK_WIDGET (self)) != NULL &&
+    if (gtk_native_get_surface (GTK_NATIVE (self)) != NULL &&
         self->long_operation_underway == 1)
     {
         /* finished !! */
