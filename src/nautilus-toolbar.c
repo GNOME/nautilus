@@ -900,7 +900,7 @@ nautilus_toolbar_constructed (GObject *object)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
 
-    self->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
+    self->path_bar = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL));
     gtk_box_append (GTK_BOX (self->path_bar_container),
                     self->path_bar);
 
