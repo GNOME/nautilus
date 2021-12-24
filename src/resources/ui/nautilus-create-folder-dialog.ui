@@ -26,7 +26,7 @@
         <child>
           <object class="GtkEntry" id="name_entry">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="focusable">True</property>
           </object>
         </child>
         <child>
@@ -47,14 +47,14 @@
       <object class="GtkButton" id="cancel_button">
         <property name="label" translatable="yes">Cancel</property>
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="focusable">True</property>
         <property name="receives_default">True</property>
       </object>
     </child>
     <child type="action">
       <object class="GtkButton" id="ok_button">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="focusable">True</property>
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="sensitive">False</property>

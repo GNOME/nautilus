@@ -89,7 +89,7 @@
                               <object class="GtkButton" id="in_app_notification_undo_undo_button">
                                 <property name="label" translatable="yes">Undo</property>
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
+                                <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="no_show_all">True</property>
                                 <property name="margin_end">6</property>
@@ -101,7 +101,7 @@
                             <child>
                               <object class="GtkButton" id="in_app_notification_undo_close_button">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
+                                <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="focus_on_click">False</property>
                                 <child>
@@ -151,7 +151,7 @@
                             <child>
                               <object class="GtkButton" id="notification_operation_open">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
+                                <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="no_show_all">True</property>
                                 <property name="margin_end">6</property>
@@ -164,7 +164,7 @@
                             <child>
                               <object class="GtkButton" id="notification_operation_close">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
+                                <property name="focusable">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="on_notification_operation_close_clicked" object="NautilusWindow" swapped="no"/>
