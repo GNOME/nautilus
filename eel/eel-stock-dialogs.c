@@ -368,7 +368,7 @@ eel_show_simple_dialog (GtkWidget     *parent,
     }
     va_end (button_title_args);
 
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 
     return GTK_DIALOG (dialog);
 }

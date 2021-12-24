@@ -162,7 +162,7 @@ out:
                           G_CALLBACK (gtk_window_destroy),
                           NULL);
 
-        gtk_widget_show_all (dialog);
+        gtk_widget_show (dialog);
     }
 }
 
@@ -236,7 +236,7 @@ present_autorun_for_software_dialog (GMount *mount)
                       G_CALLBACK (autorun_software_dialog_response),
                       mount);
 
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 int

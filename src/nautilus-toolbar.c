@@ -783,7 +783,7 @@ operations_list_create_widget (GObject  *item,
     GtkWidget *widget;
 
     widget = nautilus_progress_info_widget_new (info);
-    gtk_widget_show_all (widget);
+    gtk_widget_show (widget);
 
     return widget;
 }
@@ -860,7 +860,7 @@ nautilus_toolbar_constructed (GObject *object)
      * the whole title widget. */
     gtk_editable_set_max_width_chars (GTK_EDITABLE (self->location_entry), 88);
 
-    gtk_widget_show_all (GTK_WIDGET (self));
+    gtk_widget_show (GTK_WIDGET (self));
     toolbar_update_appearance (self);
 }
 

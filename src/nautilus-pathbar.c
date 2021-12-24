@@ -1079,7 +1079,7 @@ make_button_data (NautilusPathBar *self,
     }
 
     gtk_button_set_child (GTK_BUTTON (button_data->button), child);
-    gtk_widget_show_all (button_data->container);
+    gtk_widget_show (button_data->container);
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 

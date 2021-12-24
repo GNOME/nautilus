@@ -5928,7 +5928,7 @@ copy_or_move_selection (NautilusFilesView *view,
                       G_CALLBACK (on_destination_dialog_response),
                       copy_data);
 
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
@@ -6383,7 +6383,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
                       G_CALLBACK (on_extract_destination_dialog_response),
                       data);
 
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
