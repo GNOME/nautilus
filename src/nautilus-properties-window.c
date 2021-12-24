@@ -5306,7 +5306,6 @@ select_image_button_callback (GtkWidget                *widget,
 static void
 nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 {
-    GtkBindingSet *binding_set;
     GtkWidgetClass *widget_class;
     GObjectClass *oclass;
 
@@ -5315,15 +5314,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     oclass->dispose = real_dispose;
     oclass->finalize = real_finalize;
 
-    binding_set = gtk_binding_set_by_class (klass);
-    g_signal_new ("close",
-                  G_OBJECT_CLASS_TYPE (klass),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                  0, NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
-                  G_TYPE_NONE, 0);
-    gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0,
-                                  "close", 0);
+    gtk_widget_class_add_binding (widget_class,
+                                  GDK_KEY_Escape, 0,
+                                  (GtkShortcutFunc) gtk_window_close, NULL);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
@@ -5416,5 +5409,4 @@ static void
 nautilus_properties_window_init (NautilusPropertiesWindow *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
-    g_signal_connect (self, "close", G_CALLBACK (gtk_window_close), NULL);
 }
