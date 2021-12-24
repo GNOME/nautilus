@@ -245,7 +245,7 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
     GtkWidget *parent;
     CheckPointerData *data;
-    gint y_pos;
+    gdouble y_pos;
 
     self->pointer_y_in_parent_coordinates = y;
 
