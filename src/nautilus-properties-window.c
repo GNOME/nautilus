@@ -5232,14 +5232,16 @@ select_image_button_callback (GtkWidget                *widget,
 
     if (dialog == NULL)
     {
+        g_autoptr (GFile) pictures_location = NULL;
         dialog = gtk_file_chooser_dialog_new (_("Select Custom Icon"), GTK_WINDOW (self),
                                               GTK_FILE_CHOOSER_ACTION_OPEN,
                                               _("_Revert"), GTK_RESPONSE_NO,
                                               _("_Cancel"), GTK_RESPONSE_CANCEL,
                                               _("_Open"), GTK_RESPONSE_OK,
                                               NULL);
+        pictures_location = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
         gtk_file_chooser_add_shortcut_folder (GTK_FILE_CHOOSER (dialog),
-                                              g_get_user_special_dir (G_USER_DIRECTORY_PICTURES),
+                                              pictures_location,
                                               NULL);
         gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
         gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -5267,9 +5269,9 @@ select_image_button_callback (GtkWidget                *widget,
 
             if (image_location != NULL)
             {
-                gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog),
-                                                          image_location,
-                                                          NULL);
+                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),
+                                                     image_location,
+                                                     NULL);
             }
         }
     }
