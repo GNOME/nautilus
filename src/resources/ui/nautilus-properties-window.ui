@@ -3,7 +3,7 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <template class="NautilusPropertiesWindow" parent="AdwWindow">
-    <property name="can_focus">False</property>
+    <property name="focusable">False</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <child>
@@ -13,7 +13,7 @@
         <child>
           <object class="AdwHeaderBar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="focusable">False</property>
             <property name="show_close_button">True</property>
             <property name="title" bind-source="NautilusPropertiesWindow" bind-property="title" bind-flags="sync-create"/>
           </object>
@@ -22,7 +22,7 @@
           <object class="GtkNotebook" id="notebook">
             <property name="hexpand">True</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="focusable">True</property>
             <property name="show_border">False</property>
             <child>
               <object class="GtkBox" id="basic_box">
@@ -50,7 +50,7 @@
                     <child>
                       <object class="GtkButton" id="icon_button">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="focusable">True</property>
                         <property name="receives_default">True</property>
                         <child>
                           <object class="GtkImage" id="icon_button_image">
@@ -110,7 +110,7 @@
                             <child>
                               <object class="GtkEntry" id="name_field">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
+                                <property name="focusable">True</property>
                               </object>
                               <packing>
                                 <property name="name">name_value_entry</property>
@@ -612,7 +612,7 @@
                         <child>
                           <object class="GtkButton" id="open_in_disks_button">
                             <property name="label" translatable="yes">Open in Disks</property>
-                            <property name="can_focus">True</property>
+                            <property name="focusable">True</property>
                             <property name="receives_default">True</property>
                           </object>
                           <packing>
@@ -1057,7 +1057,7 @@
                         <child>
                           <object class="GtkButton" id="change_permissions_button">
                             <property name="label" translatable="yes">Change Permissions for Enclosed Files…</property>
-                            <property name="can_focus">True</property>
+                            <property name="focusable">True</property>
                             <property name="receives_default">True</property>
                           </object>
                         </child>
@@ -1072,7 +1072,7 @@
                       <object class="GtkCheckButton" id="execute_checkbox">
                         <property name="label" translatable="yes">Allow _executing file as program</property>
                         <property name="use_underline">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="focusable">True</property>
                         <property name="margin_top">12</property>
                         <property name="draw_indicator">True</property>
                       </object>
@@ -1129,7 +1129,7 @@
                       <object class="GtkButton" id="reset_button">
                         <property name="label" translatable="yes">Reset</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="focusable">True</property>
                         <property name="receives_default">True</property>
                         <property name="hexpand">True</property>
                         <property name="halign">start</property>
@@ -1139,7 +1139,7 @@
                       <object class="GtkButton" id="forget_button">
                         <property name="label" translatable="yes">_Forget</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="focusable">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_underline">True</property>
                       </object>
@@ -1148,7 +1148,7 @@
                       <object class="GtkButton" id="add_button">
                         <property name="label" translatable="yes">_Add</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="focusable">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_underline">True</property>
                       </object>
@@ -1157,7 +1157,7 @@
                       <object class="GtkButton" id="set_as_default_button">
                         <property name="label" translatable="yes">Set as default</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
+                        <property name="focusable">True</property>
                         <property name="receives_default">True</property>
                       </object>
                     </child>

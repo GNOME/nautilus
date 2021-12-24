@@ -109,7 +109,7 @@
     </section>
   </menu>
   <object class="GtkPopover" id="operations_popover">
-    <property name="can_focus">False</property>
+    <property name="focusable">False</property>
     <child>
       <object class="GtkScrolledWindow">
         <property name="visible">True</property>
@@ -139,7 +139,7 @@
     <child>
       <object class="AdwHeaderBar">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="focusable">False</property>
         <property name="show_close_button">True</property>
         <child type="title">
           <object class="GtkBox" id="header_toolbar">
@@ -183,7 +183,7 @@
             <child>
               <object class="GtkToggleButton" id="search_button">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="focusable">True</property>
                 <property name="tooltip_text" translatable="yes">Search</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
@@ -208,7 +208,7 @@
             <child>
               <object class="GtkButton" id="back_button">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="focusable">True</property>
                 <property name="tooltip_text" translatable="yes">Go back</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
@@ -228,7 +228,7 @@
             <child>
               <object class="GtkButton" id="forward_button">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="focusable">True</property>
                 <property name="tooltip_text" translatable="yes">Go forward</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
@@ -263,7 +263,7 @@
                 <property name="transition_type">slide-right</property>
                 <child>
                   <object class="GtkMenuButton" id="operations_button">
-                    <property name="can_focus">True</property>
+                    <property name="focusable">True</property>
                     <property name="tooltip_text" translatable="yes">Show operations</property>
                     <property name="margin_end">6</property>
                     <property name="popover">operations_popover</property>
@@ -293,7 +293,7 @@
                 <child>
                   <object class="GtkButton" id="view_toggle_button">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
+                    <property name="focusable">True</property>
                     <property name="tooltip_text" translatable="yes">Toggle view</property>
                     <property name="action_name">slot.files-view-mode-toggle</property>
                     <child>
@@ -310,7 +310,7 @@
                 <child>
                   <object class="GtkMenuButton" id="view_button">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
+                    <property name="focusable">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes" comments="“View” is a noun">View options</property>
                     <property name="halign">start</property>
@@ -335,7 +335,7 @@
             <child>
               <object class="GtkMenuButton" id="app_button">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="focusable">True</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="menu-model">app_menu</property>

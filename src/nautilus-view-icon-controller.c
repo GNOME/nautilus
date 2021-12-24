@@ -1330,7 +1330,7 @@ create_view_ui (NautilusViewIconController *self)
     GtkFlowBox *flowbox;
 
     widget = gtk_flow_box_new ();
-    gtk_widget_set_can_focus (widget, TRUE);
+    gtk_widget_set_focusable (widget, TRUE);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
     flowbox = GTK_FLOW_BOX (widget);
