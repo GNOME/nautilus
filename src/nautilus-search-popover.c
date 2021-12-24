@@ -342,16 +342,16 @@ types_listbox_row_activated (GtkListBox            *listbox,
 }
 
 static void
-search_time_type_changed (GtkToggleButton       *button,
+search_time_type_changed (GtkCheckButton        *button,
                           NautilusSearchPopover *popover)
 {
     NautilusQuerySearchType type = -1;
 
-    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->last_modified_button)))
+    if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_modified_button)))
     {
         type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED;
     }
-    else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->last_used_button)))
+    else if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_used_button)))
     {
         type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS;
     }
@@ -925,21 +925,21 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
     {
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), TRUE);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), FALSE);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), FALSE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), TRUE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
     }
     else if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
     {
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), TRUE);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), FALSE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), TRUE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
     }
     else
     {
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), FALSE);
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), TRUE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
+        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), TRUE);
     }
 
     self->fts_enabled = g_settings_get_boolean (nautilus_preferences,

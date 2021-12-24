@@ -287,7 +287,7 @@ static void schedule_directory_contents_update (NautilusPropertiesWindow *self);
 static void directory_contents_value_field_update (NautilusPropertiesWindow *self);
 static void file_changed_callback (NautilusFile *file,
                                    gpointer      user_data);
-static void permission_button_update (GtkToggleButton          *button,
+static void permission_button_update (GtkCheckButton           *button,
                                       NautilusPropertiesWindow *self);
 static void permission_combo_update (GtkComboBox              *combo,
                                      NautilusPropertiesWindow *self);
@@ -3007,7 +3007,7 @@ initial_permission_state_consistent (NautilusPropertiesWindow *self,
 }
 
 static void
-permission_button_toggled (GtkToggleButton          *button,
+permission_button_toggled (GtkCheckButton           *button,
                            NautilusPropertiesWindow *self)
 {
     gboolean is_folder, is_special;
@@ -3022,8 +3022,8 @@ permission_button_toggled (GtkToggleButton          *button,
     is_special = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
                                                      "is-special"));
 
-    if (gtk_toggle_button_get_active (button)
-        && !gtk_toggle_button_get_inconsistent (button))
+    if (gtk_check_button_get_active (button)
+        && !gtk_check_button_get_inconsistent (button))
     {
         /* Go to the initial state unless the initial state was
          *  consistent, or we support recursive apply */
@@ -3036,8 +3036,8 @@ permission_button_toggled (GtkToggleButton          *button,
             on = TRUE;
         }
     }
-    else if (gtk_toggle_button_get_inconsistent (button)
-             && !gtk_toggle_button_get_active (button))
+    else if (gtk_check_button_get_inconsistent (button)
+             && !gtk_check_button_get_active (button))
     {
         inconsistent = FALSE;
         on = TRUE;
@@ -3052,8 +3052,8 @@ permission_button_toggled (GtkToggleButton          *button,
                                      G_CALLBACK (permission_button_toggled),
                                      self);
 
-    gtk_toggle_button_set_active (button, on);
-    gtk_toggle_button_set_inconsistent (button, inconsistent);
+    gtk_check_button_set_active (button, on);
+    gtk_check_button_set_inconsistent (button, inconsistent);
 
     g_signal_handlers_unblock_by_func (G_OBJECT (button),
                                        G_CALLBACK (permission_button_toggled),
@@ -3068,7 +3068,7 @@ permission_button_toggled (GtkToggleButton          *button,
 }
 
 static void
-permission_button_update (GtkToggleButton          *button,
+permission_button_update (GtkCheckButton           *button,
                           NautilusPropertiesWindow *self)
 {
     GList *l;
@@ -3140,12 +3140,12 @@ permission_button_update (GtkToggleButton          *button,
                                      G_CALLBACK (permission_button_toggled),
                                      self);
 
-    gtk_toggle_button_set_active (button, !all_unset);
+    gtk_check_button_set_active (button, !all_unset);
     /* if actually inconsistent, or default value for file buttons
      *  if no files are selected. (useful for recursive apply) */
-    gtk_toggle_button_set_inconsistent (button,
-                                        (!all_unset && !all_set) ||
-                                        (!is_folder && no_match));
+    gtk_check_button_set_inconsistent (button,
+                                       (!all_unset && !all_set) ||
+                                       (!is_folder && no_match));
     gtk_widget_set_sensitive (GTK_WIDGET (button), sensitive);
 
     g_signal_handlers_unblock_by_func (G_OBJECT (button),
