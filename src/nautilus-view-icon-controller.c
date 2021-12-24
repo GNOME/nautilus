@@ -427,8 +427,8 @@ static void
 reveal_item_ui (NautilusViewIconController *self,
                 GtkWidget                  *item_ui)
 {
-    int item_y;
-    int item_height;
+    gdouble item_y;
+    gdouble item_height;
 
     gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
                                       0, 0,
@@ -776,8 +776,8 @@ on_button_press_event (GtkGestureClick *gesture,
     NautilusViewIconController *self;
     guint button;
     GdkModifierType modifiers = 0;
-    gint view_x;
-    gint view_y;
+    gdouble view_x;
+    gdouble view_y;
     GtkFlowBoxChild *child_at_pos;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
@@ -887,8 +887,8 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 {
     NautilusViewIconController *self;
     GtkFlowBoxChild *child_at_pos;
-    gint view_x;
-    gint view_y;
+    gdouble view_x;
+    gdouble view_y;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -942,9 +942,9 @@ static GtkFlowBoxChild *
 get_first_visible_item_ui (NautilusViewIconController *self)
 {
     GtkFlowBoxChild *child_at_0;
-    gint x0;
-    gint y0;
-    gint scrolled_y;
+    gdouble x0;
+    gdouble y0;
+    gdouble scrolled_y;
 
     child_at_0 = gtk_flow_box_get_child_at_index (self->view_ui, 0);
     if (child_at_0 == NULL)
@@ -999,7 +999,7 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     g_autoptr (NautilusFile) file = NULL;
     NautilusViewItemModel *item;
     GtkWidget *item_ui;
-    int item_y;
+    gdouble item_y;
 
     file = nautilus_file_get_existing_by_uri (data->uri);
     item = nautilus_view_model_get_item_from_file (self->model, file);
@@ -1211,7 +1211,7 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
     GtkFlowBoxChild *next_child;
     gint first_index;
     gint next_index;
-    gint y;
+    gdouble y;
     gint last_index;
     gpointer item;
     NautilusFile *file;
