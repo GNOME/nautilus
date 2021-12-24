@@ -19,4 +19,4 @@ test_env = [
 ]
 
 subdir('automated')
-subdir('interactive')
+#subdir('interactive')
