@@ -1377,7 +1377,7 @@ pk_proxy_appeared_cb (GObject      *source,
     g_signal_connect (dialog, "response",
                       G_CALLBACK (application_unhandled_file_install),
                       parameters_install);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
     g_free (mime_type);
 }
 

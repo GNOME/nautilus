@@ -136,7 +136,7 @@ show_error_message_cb (NautilusGtkPlacesView *view,
                                               "%s", secondary);
 
     g_signal_connect (dialog, "response", G_CALLBACK (gtk_window_destroy), NULL);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
