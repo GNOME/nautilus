@@ -2146,6 +2146,7 @@ compress_done (GFile    *new_file,
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
     NautilusFile *file;
+    char *uri = NULL;
 
     data = user_data;
     view = data->view;
@@ -2181,6 +2182,9 @@ compress_done (GFile    *new_file,
                              GUINT_TO_POINTER (TRUE));
     }
 
+    uri = nautilus_file_get_uri (file);
+    gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
+
     nautilus_file_unref (file);
 out:
     g_hash_table_destroy (data->added_locations);
@@ -2191,6 +2195,7 @@ out:
                                       (gpointer *) &data->view);
     }
 
+    g_free (uri);
     g_free (data);
 }
 
