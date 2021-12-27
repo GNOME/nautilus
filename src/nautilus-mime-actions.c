@@ -973,29 +973,31 @@ activate_mount_op_active (GtkMountOperation  *operation,
 
 static gboolean
 confirm_multiple_windows (GtkWindow *parent_window,
-                          int        count,
-                          gboolean   use_tabs)
+                          int        window_count,
+                          int        tab_count)
 {
     GtkDialog *dialog;
     char *prompt;
     char *detail;
     int response;
 
-    if (count <= SILENT_WINDOW_OPEN_LIMIT)
-    {
-        return TRUE;
-    }
 
     prompt = _("Are you sure you want to open all files?");
-    if (use_tabs)
+    if (tab_count > 0 && window_count > 0)
+    {
+        int count = tab_count + window_count;
+        detail = g_strdup_printf (ngettext ("This will open %d separate tab and window.",
+                                            "This will open %d separate tabs and windows.", count), count);
+    }
+    else if (tab_count > 0)
     {
         detail = g_strdup_printf (ngettext ("This will open %d separate tab.",
-                                            "This will open %d separate tabs.", count), count);
+                                            "This will open %d separate tabs.", tab_count), tab_count);
     }
     else
     {
         detail = g_strdup_printf (ngettext ("This will open %d separate window.",
-                                            "This will open %d separate windows.", count), count);
+                                            "This will open %d separate windows.", window_count), window_count);
     }
     dialog = eel_show_yes_no_dialog (prompt, detail,
                                      _("_OK"), _("_Cancel"),
@@ -1464,9 +1466,8 @@ activate_files (ActivateParameters *parameters)
     int count;
     g_autofree char *old_working_dir = NULL;
     GdkScreen *screen;
-    gint num_apps;
-    gint num_unhandled;
-    gint num_files;
+    gint num_windows = 0;
+    gint num_tabs = 0;
     gboolean open_files;
     g_autoptr (GQueue) launch_files = NULL;
     g_autoptr (GQueue) launch_in_terminal_files = NULL;
@@ -1534,6 +1535,55 @@ activate_files (ActivateParameters *parameters)
         }
     }
 
+    count = g_queue_get_length (open_in_view_files);
+    flags = parameters->flags;
+    if (count > 1)
+    {
+        if ((parameters->flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0)
+        {
+            flags |= NAUTILUS_OPEN_FLAG_NEW_TAB;
+            num_tabs += count;
+        }
+        else
+        {
+            flags |= NAUTILUS_OPEN_FLAG_NEW_WINDOW;
+            num_windows += count;
+        }
+    }
+
+    if (open_in_app_uris != NULL)
+    {
+        if (is_sandboxed ())
+        {
+            num_windows += g_queue_get_length (open_in_app_uris);
+        }
+        else
+        {
+            open_in_app_parameters = make_activation_parameters (g_queue_peek_head_link (open_in_app_uris),
+                                                                 &unhandled_open_in_app_uris);
+            num_windows += g_list_length (open_in_app_parameters);
+            num_windows += g_list_length (unhandled_open_in_app_uris);
+        }
+    }
+
+    open_files = TRUE;
+    num_windows += g_queue_get_length (launch_files);
+    num_windows += g_queue_get_length (launch_in_terminal_files);
+
+    if (parameters->user_confirmation &&
+        num_tabs + num_windows > SILENT_OPEN_LIMIT)
+    {
+        pause_activation_timed_cancel (parameters);
+        open_files = confirm_multiple_windows (parameters->parent_window, num_windows, num_tabs);
+        unpause_activation_timed_cancel (parameters);
+    }
+
+    if (!open_files)
+    {
+        activation_parameters_free (parameters);
+        return;
+    }
+
     if (parameters->activation_directory &&
         (!g_queue_is_empty (launch_files) ||
          !g_queue_is_empty (launch_in_terminal_files)))
@@ -1582,25 +1632,7 @@ activate_files (ActivateParameters *parameters)
         g_chdir (old_working_dir);
     }
 
-    count = g_queue_get_length (open_in_view_files);
-
-    flags = parameters->flags;
-    if (count > 1)
-    {
-        if ((parameters->flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) == 0)
-        {
-            flags |= NAUTILUS_OPEN_FLAG_NEW_TAB;
-        }
-        else
-        {
-            flags |= NAUTILUS_OPEN_FLAG_NEW_WINDOW;
-        }
-    }
-
-    if (parameters->slot != NULL &&
-        (!parameters->user_confirmation ||
-         confirm_multiple_windows (parameters->parent_window, count,
-                                   (flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)))
+    if (parameters->slot != NULL)
     {
         if ((flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0 &&
             g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION) ==
@@ -1666,48 +1698,7 @@ activate_files (ActivateParameters *parameters)
         return;
     }
 
-    if (open_in_app_uris != NULL)
-    {
-        open_in_app_parameters = make_activation_parameters (g_queue_peek_head_link (open_in_app_uris),
-                                                             &unhandled_open_in_app_uris);
-    }
-
-    num_apps = g_list_length (open_in_app_parameters);
-    num_unhandled = g_list_length (unhandled_open_in_app_uris);
-    num_files = g_queue_get_length (open_in_app_uris);
-    open_files = TRUE;
-
-    if (!g_queue_is_empty (open_in_app_uris) &&
-        (!parameters->user_confirmation ||
-         num_files + num_unhandled > SILENT_OPEN_LIMIT) &&
-        num_apps > 1)
-    {
-        GtkDialog *dialog;
-        char *prompt;
-        g_autofree char *detail = NULL;
-        int response;
-
-        pause_activation_timed_cancel (parameters);
-
-        prompt = _("Are you sure you want to open all files?");
-        /* TODO: Replace 'window' with 'application' after string freeze. */
-        detail = g_strdup_printf (ngettext ("This will open %d separate window.",
-                                            "This will open %d separate windows.", num_apps), num_apps);
-        dialog = eel_show_yes_no_dialog (prompt, detail,
-                                         _("_OK"), _("_Cancel"),
-                                         parameters->parent_window);
-        response = gtk_dialog_run (dialog);
-        gtk_widget_destroy (GTK_WIDGET (dialog));
-
-        unpause_activation_timed_cancel (parameters);
-
-        if (response != GTK_RESPONSE_YES)
-        {
-            open_files = FALSE;
-        }
-    }
-
-    if (open_files)
+    if (!g_queue_is_empty (open_in_app_uris))
     {
         for (l = open_in_app_parameters; l != NULL; l = l->next)
         {
