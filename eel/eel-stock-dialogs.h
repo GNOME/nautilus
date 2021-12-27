@@ -45,12 +45,6 @@ GtkDialog *eel_show_simple_dialog             (GtkWidget         *parent,
 					       const char        *primary_text,
 					       const char        *secondary_text,
 					       ...);
-int        eel_run_simple_dialog              (GtkWidget         *parent,
-					       gboolean           ignore_close_box,
-					       GtkMessageType     message_type,
-					       const char        *primary_text,
-					       const char        *secondary_text,
-					       ...);
 
 /* Variations on gnome stock dialogs; these do line wrapping, we don't
  * bother with non-parented versions, we allow setting the title,

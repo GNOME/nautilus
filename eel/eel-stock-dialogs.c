@@ -318,13 +318,14 @@ eel_timed_wait_stop (EelCancelCallback cancel_callback,
     timed_wait_free (wait);
 }
 
-static GtkDialog *
-eel_show_simple_dialogv (GtkWidget      *parent,
-                         GtkMessageType  message_type,
-                         const char     *primary_text,
-                         const char     *secondary_text,
-                         va_list         button_title_args)
+GtkDialog *
+eel_show_simple_dialog (GtkWidget     *parent,
+                        GtkMessageType message_type,
+                        const char    *primary_text,
+                        const char    *secondary_text,
+                        ...)
 {
+    va_list button_title_args;
     const char *button_title;
     GtkWidget *dialog;
     GtkWidget *top_widget, *chosen_parent;
@@ -370,51 +371,6 @@ eel_show_simple_dialogv (GtkWidget      *parent,
     gtk_widget_show_all (dialog);
 
     return GTK_DIALOG (dialog);
-}
-
-GtkDialog *
-eel_show_simple_dialog (GtkWidget     *parent,
-                        GtkMessageType message_type,
-                        const char    *primary_text,
-                        const char    *secondary_text,
-                        ...)
-{
-    va_list button_title_args;
-    GtkDialog *dialog;
-
-    va_start (button_title_args, secondary_text);
-    dialog = eel_show_simple_dialogv (parent, message_type, primary_text, secondary_text, button_title_args);
-    va_end (button_title_args);
-
-    return dialog;
-}
-
-int
-eel_run_simple_dialog (GtkWidget     *parent,
-                       gboolean       ignore_close_box,
-                       GtkMessageType message_type,
-                       const char    *primary_text,
-                       const char    *secondary_text,
-                       ...)
-{
-    va_list button_title_args;
-    GtkDialog *dialog;
-    int result;
-
-    va_start (button_title_args, secondary_text);
-    dialog = eel_show_simple_dialogv (parent, message_type, primary_text, secondary_text, button_title_args);
-    va_end (button_title_args);
-
-    /* Run it. */
-    result = gtk_dialog_run (GTK_DIALOG (dialog));
-    while ((result == GTK_RESPONSE_NONE || result == GTK_RESPONSE_DELETE_EVENT) && ignore_close_box)
-    {
-        gtk_widget_show (GTK_WIDGET (dialog));
-        result = gtk_dialog_run (GTK_DIALOG (dialog));
-    }
-    gtk_widget_destroy (GTK_WIDGET (dialog));
-
-    return result;
 }
 
 static GtkDialog *
