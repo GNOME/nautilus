@@ -323,8 +323,6 @@ static void     load_directory (NautilusFilesView *view,
 static void on_clipboard_owner_changed (GtkClipboard *clipboard,
                                         GdkEvent     *event,
                                         gpointer      user_data);
-static void     open_one_in_new_window (gpointer data,
-                                        gpointer callback_data);
 static void     schedule_update_context_menus (NautilusFilesView *view);
 static void     remove_update_context_menus_timeout_callback (NautilusFilesView *view);
 static void     schedule_update_status (NautilusFilesView *view);
@@ -1173,43 +1171,6 @@ nautilus_files_view_get_containing_window (NautilusFilesView *view)
     return GTK_WINDOW (window);
 }
 
-static gboolean
-nautilus_files_view_confirm_multiple (GtkWindow *parent_window,
-                                      int        count,
-                                      gboolean   tabs)
-{
-    GtkDialog *dialog;
-    char *prompt;
-    char *detail;
-    int response;
-
-    if (count <= SILENT_WINDOW_OPEN_LIMIT)
-    {
-        return TRUE;
-    }
-
-    prompt = _("Are you sure you want to open all files?");
-    if (tabs)
-    {
-        detail = g_strdup_printf (ngettext ("This will open %'d separate tab.",
-                                            "This will open %'d separate tabs.", count), count);
-    }
-    else
-    {
-        detail = g_strdup_printf (ngettext ("This will open %'d separate window.",
-                                            "This will open %'d separate windows.", count), count);
-    }
-    dialog = eel_show_yes_no_dialog (prompt, detail,
-                                     _("_OK"), _("_Cancel"),
-                                     parent_window);
-    g_free (detail);
-
-    response = gtk_dialog_run (dialog);
-    gtk_widget_destroy (GTK_WIDGET (dialog));
-
-    return response == GTK_RESPONSE_YES;
-}
-
 static char *
 get_view_directory (NautilusFilesView *view)
 {
@@ -1462,21 +1423,15 @@ action_open_item_new_tab (GSimpleAction *action,
 {
     NautilusFilesView *view;
     g_autolist (NautilusFile) selection = NULL;
-    GtkWindow *window;
 
     view = NAUTILUS_FILES_VIEW (user_data);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
-    window = nautilus_files_view_get_containing_window (view);
-
-    if (nautilus_files_view_confirm_multiple (window, g_list_length (selection), TRUE))
-    {
-        nautilus_files_view_activate_files (view,
-                                            selection,
-                                            NAUTILUS_OPEN_FLAG_NEW_TAB |
-                                            NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
-                                            FALSE);
-    }
+    nautilus_files_view_activate_files (view,
+                                        selection,
+                                        NAUTILUS_OPEN_FLAG_NEW_TAB |
+                                        NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                        TRUE);
 }
 
 static void
@@ -2635,17 +2590,15 @@ action_open_item_new_window (GSimpleAction *action,
                              gpointer       user_data)
 {
     NautilusFilesView *view;
-    GtkWindow *window;
     GList *selection;
 
     view = NAUTILUS_FILES_VIEW (user_data);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    window = GTK_WINDOW (nautilus_files_view_get_containing_window (view));
 
-    if (nautilus_files_view_confirm_multiple (window, g_list_length (selection), TRUE))
-    {
-        g_list_foreach (selection, open_one_in_new_window, view);
-    }
+    nautilus_files_view_activate_files (view,
+                                        selection,
+                                        NAUTILUS_OPEN_FLAG_NEW_WINDOW,
+                                        TRUE);
 
     nautilus_file_list_free (selection);
 }
@@ -4889,18 +4842,6 @@ trash_or_delete_files (GtkWindow         *parent_window,
                                                     (NautilusDeleteCallback) trash_or_delete_done_cb,
                                                     view);
     g_list_free_full (locations, g_object_unref);
-}
-
-static void
-open_one_in_new_window (gpointer data,
-                        gpointer callback_data)
-{
-    g_assert (NAUTILUS_IS_FILE (data));
-    g_assert (NAUTILUS_IS_FILES_VIEW (callback_data));
-
-    nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (callback_data),
-                                       NAUTILUS_FILE (data),
-                                       NAUTILUS_OPEN_FLAG_NEW_WINDOW);
 }
 
 NautilusFile *
