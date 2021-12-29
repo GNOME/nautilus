@@ -88,9 +88,7 @@ struct _NautilusPropertiesWindow
     GtkWidget *icon_chooser;
 
     GtkLabel *name_title_label;
-    GtkStack *name_stack;
-    GtkWidget *name_field;
-    char *pending_name;
+    GtkLabel *name_value_label;
 
     guint select_idle_id;
 
@@ -291,11 +289,6 @@ static void remove_pending (StartupData *data,
                             gboolean     cancel_timed_wait);
 static void append_extension_pages (NautilusPropertiesWindow *self);
 
-static void name_field_focus_changed (GObject    *object,
-                                      GParamSpec *pspec,
-                                      gpointer    user_data);
-static void name_field_activate (GtkWidget *name_field,
-                                 gpointer   user_data);
 static void setup_pie_widget (NautilusPropertiesWindow *self);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
@@ -321,25 +314,6 @@ is_multi_file_window (NautilusPropertiesWindow *self)
     }
 
     return FALSE;
-}
-
-static int
-get_not_gone_original_file_count (NautilusPropertiesWindow *self)
-{
-    GList *l;
-    int count;
-
-    count = 0;
-
-    for (l = self->original_files; l != NULL; l = l->next)
-    {
-        if (!nautilus_file_is_gone (NAUTILUS_FILE (l->data)))
-        {
-            count++;
-        }
-    }
-
-    return count;
 }
 
 static NautilusFile *
@@ -582,283 +556,33 @@ setup_image_widget (NautilusPropertiesWindow *self,
 }
 
 static void
-set_name_field (NautilusPropertiesWindow *self,
-                const gchar              *original_name,
-                const gchar              *name)
-{
-    GtkWidget *stack_child_label;
-    GtkWidget *stack_child_entry;
-    gboolean use_label;
-
-    stack_child_label = gtk_stack_get_child_by_name (self->name_stack, "name_value_label");
-    stack_child_entry = gtk_stack_get_child_by_name (self->name_stack, "name_value_entry");
-
-    use_label = is_multi_file_window (self) || !nautilus_file_can_rename (get_original_file (self));
-
-    if (use_label)
-    {
-        gtk_label_set_text (GTK_LABEL (stack_child_label), name);
-        gtk_stack_set_visible_child (self->name_stack, stack_child_label);
-    }
-    else
-    {
-        gtk_stack_set_visible_child (self->name_stack, stack_child_entry);
-    }
-
-    /* Only replace text if the file's name has changed. */
-    if (original_name == NULL || strcmp (original_name, name) != 0)
-    {
-        if (!use_label)
-        {
-            /* Only reset the text if it's different from what is
-             * currently showing. This causes minimal ripples (e.g.
-             * selection change).
-             */
-            g_autofree gchar *displayed_name = gtk_editable_get_chars (GTK_EDITABLE (self->name_field), 0, -1);
-            if (strcmp (displayed_name, name) != 0)
-            {
-                gtk_editable_set_text (GTK_EDITABLE (self->name_field), name);
-            }
-        }
-    }
-}
-
-static void
 update_name_field (NautilusPropertiesWindow *self)
 {
-    NautilusFile *file;
+    g_autoptr (GString) name_str = g_string_new ("");
+    guint file_counter = 0;
 
-    gtk_label_set_text_with_mnemonic (self->name_title_label,
-                                      ngettext ("_Name", "_Names",
-                                                get_not_gone_original_file_count (self)));
-
-    if (is_multi_file_window (self))
+    for (GList *l = self->target_files; l != NULL; l = l->next)
     {
-        /* Multifile property dialog, show all names */
-        g_autoptr (GString) str = NULL;
-        gboolean first;
-        GList *l;
+        NautilusFile *file = NAUTILUS_FILE (l->data);
 
-        str = g_string_new ("");
-
-        first = TRUE;
-
-        for (l = self->target_files; l != NULL; l = l->next)
+        if (!nautilus_file_is_gone (file))
         {
-            g_autofree gchar *name = NULL;
+            g_autofree gchar *file_name;
 
-            file = NAUTILUS_FILE (l->data);
-
-            if (!nautilus_file_is_gone (file))
+            file_counter += 1;
+            if (file_counter > 1)
             {
-                if (!first)
-                {
-                    g_string_append (str, ", ");
-                }
-                first = FALSE;
-
-                name = nautilus_file_get_display_name (file);
-                g_string_append (str, name);
+                g_string_append (name_str, ", ");
             }
-        }
-        set_name_field (self, NULL, str->str);
-    }
-    else
-    {
-        const char *original_name = NULL;
-        g_autofree char *current_name = NULL;
-        gboolean use_label;
 
-        file = get_original_file (self);
-        use_label = !nautilus_file_can_rename (file);
-
-        if (file == NULL || nautilus_file_is_gone (file))
-        {
-            current_name = g_strdup ("");
-        }
-        else
-        {
-            if (use_label)
-            {
-                current_name = nautilus_file_get_display_name (file);
-            }
-            else
-            {
-                current_name = nautilus_file_get_edit_name (file);
-            }
-        }
-
-        /* If the file name has changed since the original name was stored,
-         * update the text in the text field, possibly (deliberately) clobbering
-         * an edit in progress. If the name hasn't changed (but some other
-         * aspect of the file might have), then don't clobber changes.
-         */
-        original_name = (const char *) g_object_get_data (G_OBJECT (self->name_field), "original_name");
-
-        set_name_field (self, original_name, current_name);
-
-        if (original_name == NULL ||
-            g_strcmp0 (original_name, current_name) != 0)
-        {
-            g_object_set_data_full (G_OBJECT (self->name_field),
-                                    "original_name",
-                                    g_steal_pointer (&current_name),
-                                    g_free);
+            file_name = nautilus_file_get_display_name (file);
+            g_string_append (name_str, file_name);
         }
     }
-}
 
-static void
-name_field_restore_original_name (GtkWidget *name_field)
-{
-    const char *original_name;
-    g_autofree char *displayed_name = NULL;
-
-    original_name = (const char *) g_object_get_data (G_OBJECT (name_field),
-                                                      "original_name");
-
-    if (!original_name)
-    {
-        return;
-    }
-
-    displayed_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
-
-    if (strcmp (original_name, displayed_name) != 0)
-    {
-        gtk_editable_set_text (GTK_EDITABLE (name_field), original_name);
-    }
-    gtk_editable_select_region (GTK_EDITABLE (name_field), 0, -1);
-}
-
-static void
-rename_callback (NautilusFile *file,
-                 GFile        *res_loc,
-                 GError       *error,
-                 gpointer      callback_data)
-{
-    g_autoptr (NautilusPropertiesWindow) self = NAUTILUS_PROPERTIES_WINDOW (callback_data);
-
-    /* Complain to user if rename failed. */
-    if (error != NULL)
-    {
-        nautilus_report_error_renaming_file (file,
-                                             self->pending_name,
-                                             error,
-                                             GTK_WINDOW (self));
-        name_field_restore_original_name (self->name_field);
-    }
-}
-
-static void
-set_pending_name (NautilusPropertiesWindow *self,
-                  const char               *name)
-{
-    g_free (self->pending_name);
-    self->pending_name = g_strdup (name);
-}
-
-static void
-name_field_done_editing (GtkWidget                *name_field,
-                         NautilusPropertiesWindow *self)
-{
-    NautilusFile *file;
-    g_autofree char *new_name = NULL;
-    const char *original_name;
-
-    g_return_if_fail (GTK_IS_ENTRY (name_field));
-
-    /* Don't apply if the dialog has more than one file */
-    if (is_multi_file_window (self))
-    {
-        return;
-    }
-
-    file = get_original_file (self);
-
-    /* This gets called when the window is closed, which might be
-     * caused by the file having been deleted.
-     */
-    if (file == NULL || nautilus_file_is_gone (file))
-    {
-        return;
-    }
-
-    new_name = gtk_editable_get_chars (GTK_EDITABLE (name_field), 0, -1);
-
-    /* Special case: silently revert text if new text is empty. */
-    if (strlen (new_name) == 0)
-    {
-        name_field_restore_original_name (name_field);
-    }
-    else
-    {
-        original_name = (const char *) g_object_get_data (G_OBJECT (self->name_field),
-                                                          "original_name");
-        /* Don't rename if not changed since we read the display name.
-         *  This is needed so that we don't save the display name to the
-         *  file when nothing is changed */
-        if (strcmp (new_name, original_name) != 0)
-        {
-            set_pending_name (self, new_name);
-            g_object_ref (self);
-            nautilus_file_rename (file, new_name,
-                                  rename_callback, self);
-        }
-    }
-}
-
-static void
-name_field_focus_changed (GObject    *object,
-                          GParamSpec *pspec,
-                          gpointer    user_data)
-{
-    GtkWidget *widget;
-
-    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (user_data));
-
-    widget = GTK_WIDGET (object);
-
-    if (!gtk_widget_has_focus (widget) && gtk_widget_get_sensitive (widget))
-    {
-        name_field_done_editing (widget, NAUTILUS_PROPERTIES_WINDOW (user_data));
-    }
-}
-
-static gboolean
-select_all_at_idle (gpointer user_data)
-{
-    NautilusPropertiesWindow *self;
-
-    self = NAUTILUS_PROPERTIES_WINDOW (user_data);
-
-    gtk_editable_select_region (GTK_EDITABLE (self->name_field),
-                                0, -1);
-
-    self->select_idle_id = 0;
-
-    return FALSE;
-}
-
-static void
-name_field_activate (GtkWidget *name_field,
-                     gpointer   user_data)
-{
-    NautilusPropertiesWindow *self;
-
-    g_assert (GTK_IS_ENTRY (name_field));
-    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (user_data));
-
-    self = NAUTILUS_PROPERTIES_WINDOW (user_data);
-
-    /* Accept changes. */
-    name_field_done_editing (name_field, self);
-
-    if (self->select_idle_id == 0)
-    {
-        self->select_idle_id = g_idle_add (select_all_at_idle,
-                                           self);
-    }
+    gtk_label_set_text (self->name_title_label,
+                        ngettext ("Name", "Names", file_counter));
+    gtk_label_set_text (self->name_value_label, name_str->str);
 }
 
 static void
@@ -2633,11 +2357,6 @@ setup_basic_page (NautilusPropertiesWindow *self)
     self->icon_chooser = NULL;
 
     update_name_field (self);
-
-    g_signal_connect_object (self->name_field, "notify::has-focus",
-                             G_CALLBACK (name_field_focus_changed), self, 0);
-    g_signal_connect_object (self->name_field, "activate",
-                             G_CALLBACK (name_field_activate), self, 0);
 
     if (should_show_file_type (self))
     {
@@ -5115,7 +4834,6 @@ real_finalize (GObject *object)
 
     g_list_free_full (self->mime_list, g_free);
 
-    g_free (self->pending_name);
     g_free (self->content_type);
     g_list_free (self->open_with_files);
 
@@ -5311,8 +5029,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_title_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_title_label);

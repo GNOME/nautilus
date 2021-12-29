@@ -68,9 +68,7 @@
                             <property name="column_spacing">12</property>
                             <child>
                               <object class="GtkLabel" id="name_title_label">
-                                <property name="label" translatable="yes">_Name</property>
-                                <property name="use_underline">True</property>
-                                <property name="mnemonic_widget">name_field</property>
+                                <property name="label" translatable="yes">Name</property>
                                 <property name="xalign">1</property>
                                 <style>
                                   <class name="dim-label"/>
@@ -82,31 +80,12 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkStack" id="name_stack">
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">name_value_label</property>
-                                    <property name="child">
-                                      <object class="GtkLabel" id="name_value_label">
-                                        <property name="hexpand">True</property>
-                                        <property name="selectable">True</property>
-                                        <property name="ellipsize">end</property>
-                                        <property name="max_width_chars">24</property>
-                                        <property name="xalign">0</property>
-                                      </object>
-                                    </property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkStackPage">
-                                    <property name="name">name_value_entry</property>
-                                    <property name="child">
-                                      <object class="GtkEntry" id="name_field">
-                                        <property name="focusable">True</property>
-                                      </object>
-                                    </property>
-                                  </object>
-                                </child>
+                              <object class="GtkLabel" id="name_value_label">
+                                <property name="hexpand">True</property>
+                                <property name="selectable">True</property>
+                                <property name="ellipsize">end</property>
+                                <property name="max_width_chars">24</property>
+                                <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">1</property>
                                   <property name="row">0</property>
