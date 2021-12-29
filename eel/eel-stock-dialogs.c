@@ -354,6 +354,7 @@ eel_show_simple_dialog (GtkWidget     *parent,
                   "secondary-text", secondary_text,
                   NULL);
 
+    va_start (button_title_args, secondary_text);
     response_id = 0;
     while (1)
     {
@@ -366,7 +367,7 @@ eel_show_simple_dialog (GtkWidget     *parent,
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
         response_id++;
     }
-
+    va_end (button_title_args);
 
     gtk_widget_show_all (dialog);
 
