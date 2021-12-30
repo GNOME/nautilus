@@ -845,30 +845,27 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="security_context_title_label">
+                                  <object class="GtkListBox" id="security_context_list_box">
                                     <property name="visible">False</property>
-                                    <property name="margin_top">12</property>
-                                    <property name="label" translatable="yes">Security context</property>
-                                    <property name="xalign">1</property>
+                                    <child>
+                                      <object class="AdwActionRow">
+                                        <property name="title" translatable="yes">Security Context</property>
+                                        <child>
+                                          <object class="GtkLabel" id="security_context_value_label">
+                                            <property name="selectable">True</property>
+                                            <property name="max-width-chars">24</property>
+                                            <property name="xalign">1</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                     <style>
-                                      <class name="dim-label"/>
+                                      <class name="boxed-list"/>
                                     </style>
                                     <layout>
                                       <property name="column">0</property>
                                       <property name="row">7</property>
-                                    </layout>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="security_context_value_label">
-                                    <property name="visible">False</property>
-                                    <property name="margin_top">12</property>
-                                    <property name="selectable">True</property>
-                                    <property name="max_width_chars">24</property>
-                                    <property name="xalign">0</property>
-                                    <layout>
-                                      <property name="column">1</property>
-                                      <property name="row">7</property>
+                                      <property name="column-span">2</property>
                                     </layout>
                                   </object>
                                 </child>

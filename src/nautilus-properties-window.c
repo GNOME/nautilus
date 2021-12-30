@@ -170,7 +170,7 @@ struct _NautilusPropertiesWindow
     GtkRevealer *execution_inconsistent_revealer;
     GtkSwitch *execution_switch;
 
-    GtkWidget *security_context_title_label;
+    GtkWidget *security_context_list_box;
     GtkWidget *security_context_value_label;
 
     GtkWidget *change_permissions_button_box;
@@ -3645,8 +3645,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
         create_simple_permissions (self);
 
 #ifdef HAVE_SELINUX
-        gtk_widget_show (self->security_context_title_label);
-        gtk_widget_show (self->security_context_value_label);
+        gtk_widget_show (self->security_context_list_box);
 
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (self->security_context_value_label), "file_attribute",
@@ -4861,7 +4860,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_inconsistent_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_switch);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
