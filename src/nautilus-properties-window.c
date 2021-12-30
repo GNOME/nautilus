@@ -87,47 +87,34 @@ struct _NautilusPropertiesWindow
     GtkWidget *icon_button_image;
     GtkWidget *icon_chooser;
 
-    GtkLabel *name_title_label;
     GtkLabel *name_value_label;
-
-    GtkWidget *type_title_label;
     GtkWidget *type_value_label;
 
-    GtkWidget *link_target_title_label;
+    GtkWidget *link_target_row;
     GtkWidget *link_target_value_label;
-
-    GtkWidget *contents_title_label;
+    GtkWidget *size_row;
+    GtkWidget *size_value_label;
+    GtkWidget *contents_row;
     GtkWidget *contents_value_label;
     GtkWidget *contents_spinner;
     guint update_directory_contents_timeout_id;
     guint update_files_timeout_id;
-
-    GtkWidget *size_title_label;
-    GtkWidget *size_value_label;
-
-    GtkWidget *parent_folder_title_label;
+    GtkWidget *parent_folder_row;
     GtkWidget *parent_folder_value_label;
 
-    GtkWidget *original_folder_title_label;
+    GtkWidget *trashed_list_box;
+    GtkWidget *trashed_on_value_label;
     GtkWidget *original_folder_value_label;
 
-    GtkWidget *trashed_on_title_label;
-    GtkWidget *trashed_on_value_label;
-
-    GtkWidget *spacer_2;
-
-    GtkWidget *accessed_title_label;
+    GtkWidget *times_list_box;
+    GtkWidget *modified_row;
+    GtkWidget *modified_value_label;
+    GtkWidget *created_row;
+    GtkWidget *created_value_label;
+    GtkWidget *accessed_row;
     GtkWidget *accessed_value_label;
 
-    GtkWidget *modified_title_label;
-    GtkWidget *modified_value_label;
-
-    GtkWidget *created_title_label;
-    GtkWidget *created_value_label;
-
-    GtkWidget *spacer_3;
-
-    GtkWidget *free_space_title_label;
+    GtkWidget *free_space_list_box;
     GtkWidget *free_space_value_label;
 
     GtkWidget *volume_widget_box;
@@ -575,8 +562,6 @@ update_name_field (NautilusPropertiesWindow *self)
         }
     }
 
-    gtk_label_set_text (self->name_title_label,
-                        ngettext ("Name", "Names", file_counter));
     gtk_label_set_text (self->name_value_label, name_str->str);
 }
 
@@ -1932,7 +1917,7 @@ should_show_location_info (NautilusPropertiesWindow *self)
 }
 
 static gboolean
-should_show_trash_orig_path (NautilusPropertiesWindow *self)
+should_show_trashed_info (NautilusPropertiesWindow *self)
 {
     GList *l;
 
@@ -1973,22 +1958,6 @@ static gboolean
 should_show_created_date (NautilusPropertiesWindow *self)
 {
     return !is_multi_file_window (self);
-}
-
-static gboolean
-should_show_trashed_on (NautilusPropertiesWindow *self)
-{
-    GList *l;
-
-    for (l = self->original_files; l != NULL; l = l->next)
-    {
-        if (!nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
 }
 
 static gboolean
@@ -2315,99 +2284,74 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     if (should_show_file_type (self))
     {
-        gtk_widget_show (self->type_title_label);
         gtk_widget_show (self->type_value_label);
         add_updatable_label (self, self->type_value_label, "detailed_type");
     }
 
     if (should_show_link_target (self))
     {
-        gtk_widget_show (self->link_target_title_label);
-        gtk_widget_show (self->link_target_value_label);
+        gtk_widget_show (self->link_target_row);
         add_updatable_label (self, self->link_target_value_label, "link_target");
     }
 
     if (is_multi_file_window (self) ||
         nautilus_file_is_directory (get_target_file (self)))
     {
-        gtk_widget_show (self->contents_title_label);
-        gtk_widget_show (self->contents_value_label);
+        gtk_widget_show (self->contents_row);
         setup_contents_field (self);
     }
     else
     {
-        gtk_widget_show (self->size_title_label);
-        gtk_widget_show (self->size_value_label);
-
+        gtk_widget_show (self->size_row);
         add_updatable_label (self, self->size_value_label, "size_detail");
     }
 
     if (should_show_location_info (self))
     {
-        gtk_widget_show (self->parent_folder_title_label);
-        gtk_widget_show (self->parent_folder_value_label);
-
+        gtk_widget_show (self->parent_folder_row);
         add_updatable_label (self, self->parent_folder_value_label, "where");
     }
 
-    if (should_show_trash_orig_path (self))
+    if (should_show_trashed_info (self))
     {
-        gtk_widget_show (self->original_folder_title_label);
-        gtk_widget_show (self->original_folder_value_label);
+        gtk_widget_show (self->trashed_list_box);
         add_updatable_label (self, self->original_folder_value_label, "trash_orig_path");
-    }
-
-    if (should_show_trashed_on (self))
-    {
-        gtk_widget_show (self->trashed_on_title_label);
-        gtk_widget_show (self->trashed_on_value_label);
         add_updatable_label (self, self->trashed_on_value_label, "trashed_on_full");
-    }
-
-    if (should_show_accessed_date (self)
-        || should_show_modified_date (self)
-        || should_show_created_date (self))
-    {
-        gtk_widget_show (self->spacer_2);
-    }
-
-    if (should_show_accessed_date (self))
-    {
-        gtk_widget_show (self->accessed_title_label);
-        gtk_widget_show (self->accessed_value_label);
-        add_updatable_label (self, self->accessed_value_label, "date_accessed_full");
     }
 
     if (should_show_modified_date (self))
     {
-        gtk_widget_show (self->modified_title_label);
-        gtk_widget_show (self->modified_value_label);
+        gtk_widget_show (self->times_list_box);
+        gtk_widget_show (self->modified_row);
         add_updatable_label (self, self->modified_value_label, "date_modified_full");
     }
 
     if (should_show_created_date (self))
     {
-        gtk_widget_show (self->created_title_label);
-        gtk_widget_show (self->created_value_label);
+        gtk_widget_show (self->created_row);
+        gtk_widget_show (self->times_list_box);
         add_updatable_label (self, self->created_value_label, "date_created_full");
+    }
+
+    if (should_show_accessed_date (self))
+    {
+        gtk_widget_show (self->times_list_box);
+        gtk_widget_show (self->accessed_row);
+        add_updatable_label (self, self->accessed_value_label, "date_accessed_full");
     }
 
     if (should_show_free_space (self)
         && !should_show_volume_usage (self))
     {
-        gtk_widget_show (self->spacer_3);
-        gtk_widget_show (self->free_space_title_label);
-        gtk_widget_show (self->free_space_value_label);
+        gtk_widget_show (self->free_space_list_box);
         add_updatable_label (self, self->free_space_value_label, "free_space");
     }
 
     if (should_show_volume_usage (self))
     {
         gtk_widget_show (self->volume_widget_box);
-        gtk_widget_show (self->open_in_disks_button);
         g_signal_connect (self->open_in_disks_button, "clicked", G_CALLBACK (open_in_disks), self);
         setup_volume_usage_widget (self);
-        /*Translators: Here Disks mean the name of application GNOME Disks.*/
     }
 }
 
@@ -4924,32 +4868,28 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button_image);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_row);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_spinner);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_title_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_title_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_title_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_2);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, times_list_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_3);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_row);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_widget_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_button);
