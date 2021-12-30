@@ -59,57 +59,420 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkBox" id="grid_box">
+                      <object class="GtkListBox" id="name_list_box">
+                        <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwActionRow" id="name_row">
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <!-- translatable strings are currently still in .c file -->
+                            <property name="title">Name</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="name_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="file_data_list_box">
+                        <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwActionRow" id="type_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Type</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="type_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="link_target_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Link Target</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="link_target_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="size_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Size</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="size_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="contents_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Contents</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="contents_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkSpinner" id="contents_spinner">
+                                    <property name="visible">False</property>
+                                  </object>
+                                </child>
+                               </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="times_list_box">
+                        <property name="selection-mode">none</property>
+                        <property name="visible">False</property>
+                        <child>
+                          <object class="AdwActionRow" id="modified_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Modified</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="modified_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="created_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Created</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="created_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="accessed_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Accessed</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="accessed_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="trashed_list_box">
+                        <property name="visible">False</property>
+                        <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwActionRow" id="trashed_on_row">
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Trashed on</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="trashed_on_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="original_folder_row">
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Original Folder</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="original_folder_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="location_list_box">
+                        <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwActionRow" id="parent_folder_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Parent Folder</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="parent_folder_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="volume_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Volume</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="volume_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwActionRow" id="free_space_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Free Space</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="free_space_value_label">
+                                    <property name="hexpand">True</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <property name="xalign">1</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="volume_widget_box">
+                        <property name="visible">False</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkGrid" id="basic_grid">
-                            <property name="orientation">vertical</property>
-                            <property name="row_spacing">6</property>
-                            <property name="column_spacing">12</property>
+                          <object class="GtkGrid" id="volume_grid">
+                            <property name="hexpand">False</property>
+                            <property name="margin-top">5</property>
+                            <property name="margin-bottom">5</property>
+                            <property name="margin-start">5</property>
+                            <property name="margin-end">5</property>
+                            <property name="row_spacing">10</property>
+                            <property name="column_spacing">10</property>
                             <child>
-                              <object class="GtkLabel" id="name_title_label">
-                                <property name="label" translatable="yes">Name</property>
-                                <property name="xalign">1</property>
+                              <object class="GtkDrawingArea" id="pie_chart">
+                                <property name="width_request">200</property>
+                                <property name="height_request">200</property>
                                 <style>
-                                  <class name="dim-label"/>
+                                  <class name="disk-space-display"/>
                                 </style>
                                 <layout>
                                   <property name="column">0</property>
+                                  <property name="row">0</property>
+                                  <property name="row-span">5</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="spacer_label">
+                                <property name="vexpand">True</property>
+                                <layout>
+                                  <property name="column">1</property>
                                   <property name="row">0</property>
                                 </layout>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="name_value_label">
-                                <property name="hexpand">True</property>
-                                <property name="selectable">True</property>
-                                <property name="ellipsize">end</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="type_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Type</property>
-                                <property name="xalign">1</property>
+                              <object class="GtkDrawingArea" id="used_color">
+                                <property name="width_request">20</property>
+                                <property name="height_request">20</property>
+                                <property name="halign">end</property>
                                 <style>
-                                  <class name="dim-label"/>
+                                  <class name="disk-space-display"/>
+                                  <class name="used"/>
                                 </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">1</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="type_value_label">
-                                <property name="visible">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="selectable">True</property>
-                                <property name="ellipsize">end</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">1</property>
                                   <property name="row">1</property>
@@ -117,27 +480,15 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="link_target_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Link target</property>
-                                <property name="xalign">1</property>
+                              <object class="GtkDrawingArea" id="free_color">
+                                <property name="width_request">20</property>
+                                <property name="height_request">20</property>
+                                <property name="halign">end</property>
+                                <property name="vexpand">False</property>
                                 <style>
-                                  <class name="dim-label"/>
+                                  <class name="disk-space-display"/>
+                                  <class name="free"/>
                                 </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">2</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="link_target_value_label">
-                                <property name="visible">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="selectable">True</property>
-                                <property name="ellipsize">end</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">1</property>
                                   <property name="row">2</property>
@@ -145,27 +496,13 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="contents_title_label">
-                                <property name="visible">False</property>
-                                <property name="valign">start</property>
-                                <property name="label" translatable="yes">Contents</property>
+                              <object class="GtkLabel">
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">Total capacity</property>
                                 <property name="xalign">1</property>
                                 <style>
                                   <class name="dim-label"/>
                                 </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">3</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="contents_value_label">
-                                <property name="visible">False</property>
-                                <property name="wrap">True</property>
-                                <property name="selectable">True</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">1</property>
                                   <property name="row">3</property>
@@ -173,8 +510,23 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkSpinner" id="contents_spinner">
-                                <property name="visible">False</property>
+                              <object class="GtkLabel">
+                                <property name="halign">end</property>
+                                <property name="label" translatable="yes">Filesystem type</property>
+                                <property name="xalign">1</property>
+                                <style>
+                                  <class name="dim-label"/>
+                                </style>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">4</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="total_capacity_value">
+                                <property name="halign">start</property>
+                                <property name="label">0</property>
                                 <layout>
                                   <property name="column">2</property>
                                   <property name="row">3</property>
@@ -182,457 +534,64 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="size_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Size</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
+                              <object class="GtkLabel" id="file_system_value">
+                                <property name="halign">start</property>
+                                <property name="label">0</property>
                                 <layout>
-                                  <property name="column">0</property>
+                                  <property name="column">2</property>
                                   <property name="row">4</property>
                                 </layout>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="size_value_label">
-                                <property name="visible">False</property>
-                                <property name="selectable">True</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
+                              <object class="GtkLabel" id="used_value">
+                                <property name="halign">end</property>
+                                <property name="vexpand">False</property>
+                                <property name="label">0</property>
                                 <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">4</property>
+                                  <property name="column">2</property>
+                                  <property name="row">1</property>
                                 </layout>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="parent_folder_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Parent folder</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
+                              <object class="GtkLabel" id="free_value">
+                                <property name="halign">end</property>
+                                <property name="label">0</property>
                                 <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">6</property>
+                                  <property name="column">2</property>
+                                  <property name="row">2</property>
                                 </layout>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="parent_folder_value_label">
-                                <property name="visible">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="selectable">True</property>
-                                <property name="ellipsize">end</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
+                              <object class="GtkLabel">
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">used</property>
                                 <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">6</property>
+                                  <property name="column">3</property>
+                                  <property name="row">1</property>
                                 </layout>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="created_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Created</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
+                              <object class="GtkLabel">
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">free</property>
                                 <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">11</property>
+                                  <property name="column">3</property>
+                                  <property name="row">2</property>
                                 </layout>
                               </object>
                             </child>
-                            <child>
-                              <object class="GtkLabel" id="created_value_label">
-                                <property name="visible">False</property>
-                                <property name="selectable">True</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">11</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="original_folder_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Original folder</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">12</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="original_folder_value_label">
-                                <property name="visible">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="selectable">True</property>
-                                <property name="ellipsize">end</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">12</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="volume_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Volume</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">7</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="volume_value_label">
-                                <property name="visible">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="selectable">True</property>
-                                <property name="ellipsize">end</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">7</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="trashed_on_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Trashed on</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">13</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="trashed_on_value_label">
-                                <property name="visible">False</property>
-                                <property name="hexpand">True</property>
-                                <property name="selectable">True</property>
-                                <property name="ellipsize">end</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">13</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="accessed_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Accessed</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">9</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="accessed_value_label">
-                                <property name="visible">False</property>
-                                <property name="selectable">True</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">9</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="modified_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Modified</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">10</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="modified_value_label">
-                                <property name="visible">False</property>
-                                <property name="selectable">True</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">10</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="free_space_title_label">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Free space</property>
-                                <property name="xalign">1</property>
-                                <style>
-                                  <class name="dim-label"/>
-                                </style>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">15</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="free_space_value_label">
-                                <property name="visible">False</property>
-                                <property name="selectable">True</property>
-                                <property name="max_width_chars">24</property>
-                                <property name="xalign">0</property>
-                                <layout>
-                                  <property name="column">1</property>
-                                  <property name="row">15</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="volume_widget_box">
-                                <property name="visible">False</property>
-                                <property name="orientation">vertical</property>
-                                <child>
-                                  <object class="GtkGrid" id="volume_grid">
-                                    <property name="hexpand">False</property>
-                                    <property name="margin-top">5</property>
-                                    <property name="margin-bottom">5</property>
-                                    <property name="margin-start">5</property>
-                                    <property name="margin-end">5</property>
-                                    <property name="row_spacing">10</property>
-                                    <property name="column_spacing">10</property>
-                                    <child>
-                                      <object class="GtkDrawingArea" id="pie_chart">
-                                        <property name="width_request">200</property>
-                                        <property name="height_request">200</property>
-                                        <style>
-                                          <class name="disk-space-display"/>
-                                        </style>
-                                        <layout>
-                                          <property name="column">0</property>
-                                          <property name="row">0</property>
-                                          <property name="row-span">5</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="spacer_label">
-                                        <property name="vexpand">True</property>
-                                        <layout>
-                                          <property name="column">1</property>
-                                          <property name="row">0</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkDrawingArea" id="used_color">
-                                        <property name="width_request">20</property>
-                                        <property name="height_request">20</property>
-                                        <property name="halign">end</property>
-                                        <style>
-                                          <class name="disk-space-display"/>
-                                          <class name="used"/>
-                                        </style>
-                                        <layout>
-                                          <property name="column">1</property>
-                                          <property name="row">1</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkDrawingArea" id="free_color">
-                                        <property name="width_request">20</property>
-                                        <property name="height_request">20</property>
-                                        <property name="halign">end</property>
-                                        <property name="vexpand">False</property>
-                                        <style>
-                                          <class name="disk-space-display"/>
-                                          <class name="free"/>
-                                        </style>
-                                        <layout>
-                                          <property name="column">1</property>
-                                          <property name="row">2</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="halign">end</property>
-                                        <property name="label" translatable="yes">Total capacity</property>
-                                        <property name="xalign">1</property>
-                                        <style>
-                                          <class name="dim-label"/>
-                                        </style>
-                                        <layout>
-                                          <property name="column">1</property>
-                                          <property name="row">3</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="halign">end</property>
-                                        <property name="label" translatable="yes">Filesystem type</property>
-                                        <property name="xalign">1</property>
-                                        <style>
-                                          <class name="dim-label"/>
-                                        </style>
-                                        <layout>
-                                          <property name="column">1</property>
-                                          <property name="row">4</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="total_capacity_value">
-                                        <property name="halign">start</property>
-                                        <property name="label">0</property>
-                                        <layout>
-                                          <property name="column">2</property>
-                                          <property name="row">3</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="file_system_value">
-                                        <property name="halign">start</property>
-                                        <property name="label">0</property>
-                                        <layout>
-                                          <property name="column">2</property>
-                                          <property name="row">4</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="used_value">
-                                        <property name="halign">end</property>
-                                        <property name="vexpand">False</property>
-                                        <property name="label">0</property>
-                                        <layout>
-                                          <property name="column">2</property>
-                                          <property name="row">1</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="free_value">
-                                        <property name="halign">end</property>
-                                        <property name="label">0</property>
-                                        <layout>
-                                          <property name="column">2</property>
-                                          <property name="row">2</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="halign">start</property>
-                                        <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">used</property>
-                                        <layout>
-                                          <property name="column">3</property>
-                                          <property name="row">1</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="halign">start</property>
-                                        <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">free</property>
-                                        <layout>
-                                          <property name="column">3</property>
-                                          <property name="row">2</property>
-                                        </layout>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">16</property>
-                                  <property name="column-span">3</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="open_in_disks_button">
-                                <property name="visible">False</property>
-                                <property name="label" translatable="yes">Open in Disks</property>
-                                <property name="focusable">True</property>
-                                <property name="receives_default">True</property>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">17</property>
-                                  <property name="column-span">3</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="spacer_1">
-                                <property name="height_request">6</property>
-                                <property name="orientation">vertical</property>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">5</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="spacer_2">
-                                <property name="visible">False</property>
-                                <property name="height_request">6</property>
-                                <property name="orientation">vertical</property>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">8</property>
-                                </layout>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="spacer_3">
-                                <property name="visible">False</property>
-                                <property name="height_request">6</property>
-                                <property name="orientation">vertical</property>
-                                <layout>
-                                  <property name="column">0</property>
-                                  <property name="row">14</property>
-                                </layout>
-                              </object>
-                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="open_in_disks_button">
+                            <property name="label" translatable="yes">Open in Disks</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="receives-default">True</property>
                           </object>
                         </child>
                       </object>
