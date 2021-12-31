@@ -2276,49 +2276,32 @@ nautilus_window_save_geometry (NautilusWindow *window)
 {
     GdkWindow *gdk_window;
     GdkWindowState window_state;
-    gboolean is_maximized;
+    gint width;
+    gint height;
+    GVariant *initial_size;
 
     g_assert (NAUTILUS_IS_WINDOW (window));
 
     gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-
     if (!gdk_window)
     {
         return;
     }
-
     window_state = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)));
-
-    /* Don't save the window state for tiled windows. This is a special case,
-     * where the geometry only makes sense in combination with other tiled
-     * windows, that we can't possibly restore. */
-    if (window_state & GDK_WINDOW_STATE_TILED)
+    if (window_state & (GDK_WINDOW_STATE_TILED | GDK_WINDOW_STATE_MAXIMIZED))
     {
+        /* Don't save the window state for tiled or maximized windows. In GTK
+         * gtk_window_get_default_size() is going to do this for us.
+         */
         return;
     }
 
-    is_maximized = window_state & GDK_WINDOW_STATE_MAXIMIZED;
+    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+    initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
 
-    /* Only save the initial size when the window is not maximized. If the
-     * window is maximized, a previously stored initial size will be more
-     * appropriate when unmaximizing the window in the future. */
-    if (!is_maximized)
-    {
-        gint width;
-        gint height;
-        GVariant *initial_size;
-
-        gtk_window_get_size (GTK_WINDOW (window), &width, &height);
-        initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
-
-        g_settings_set_value (nautilus_window_state,
-                              NAUTILUS_WINDOW_STATE_INITIAL_SIZE,
-                              initial_size);
-    }
-
-    g_settings_set_boolean (nautilus_window_state,
-                            NAUTILUS_WINDOW_STATE_MAXIMIZED,
-                            is_maximized);
+    g_settings_set_value (nautilus_window_state,
+                          NAUTILUS_WINDOW_STATE_INITIAL_SIZE,
+                          initial_size);
 }
 
 void
