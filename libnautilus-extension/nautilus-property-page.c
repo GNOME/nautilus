@@ -222,3 +222,21 @@ nautilus_property_page_class_init (NautilusPropertyPageClass *class)
                                                           GTK_TYPE_WIDGET,
                                                           G_PARAM_READWRITE));
 }
+
+GtkWidget *
+nautilus_property_page_get_label (NautilusPropertyPage *page)
+{
+    return page->label;
+}
+
+const char *
+nautilus_property_page_get_name (NautilusPropertyPage *page)
+{
+    return page->name;
+}
+
+GtkWidget *
+nautilus_property_page_get_widget (NautilusPropertyPage *page)
+{
+    return page->page;
+}

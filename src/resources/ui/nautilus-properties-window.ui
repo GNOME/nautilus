@@ -5,27 +5,29 @@
     <property name="focusable">False</property>
     <property name="modal">True</property>
     <child>
-      <object class="GtkBox" id="content_box">
-        <property name="orientation">vertical</property>
+      <object class="GtkStack" id="page_stack">
+        <property name="hexpand">True</property>
+        <property name="transition-type">over-left-right</property>
         <child>
-          <object class="AdwHeaderBar"/>
-        </child>
-        <child>
-          <object class="GtkNotebook" id="notebook">
-            <property name="hexpand">True</property>
-            <property name="focusable">True</property>
-            <property name="show_border">False</property>
-            <child>
-              <object class="GtkNotebookPage">
-                <property name="tab_expand">True</property>
-                <property name="child">
+          <object class="GtkStackPage">
+            <property name="name">main</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkHeaderBar"/>
+                </child>
+                <child>
                   <object class="GtkBox" id="basic_box">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">12</property>
                     <property name="margin-top">18</property>
                     <property name="margin-bottom">18</property>
                     <property name="margin-start">18</property>
                     <property name="margin-end">18</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">12</property>
+                    <style>
+                      <class name="background"/>
+                    </style>
                     <child>
                       <object class="GtkStack" id="icon_stack">
                         <property name="halign">center</property>
@@ -243,6 +245,21 @@
                     <child>
                       <object class="GtkListBox" id="file_data_list_box">
                         <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwActionRow" id="open_with_navigation_row">
+                            <property name="visible">False</property>
+                            <property name="activatable">True</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">_Open With</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activated" handler="navigate_open_with_page" object="NautilusPropertiesWindow" swapped="yes"/>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">go-next-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                         <child>
                           <object class="AdwActionRow" id="link_target_row">
                             <property name="visible">False</property>
@@ -507,6 +524,40 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkListBox" id="permissions_list_box">
+                        <property name="selection-mode">none</property>
+                        <child>
+                          <object class="AdwActionRow" id="permissions_navigation_row">
+                            <property name="activatable">True</property>
+                            <property name="selectable">False</property>
+                            <property name="title" translatable="yes">Set Custom _Permissions</property>
+                            <property name="use-underline">True</property>
+                            <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWindow" swapped="yes"/>
+                            <child>
+                              <object class="GtkBox" id="permissions_navigation_action_box">
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">go-next-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="extension_list_box">
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkListBox" id="free_space_list_box">
                         <property name="visible">False</property>
                         <property name="selection-mode">none</property>
@@ -702,24 +753,41 @@
                       </object>
                     </child>
                   </object>
-                </property>
-                <property name="tab">
-                  <object class="GtkLabel" id="basic_label">
-                    <property name="label" translatable="yes">Basic</property>
-                  </object>
-                </property>
+                </child>
               </object>
-            </child>
-            <child>
-              <object class="GtkNotebookPage">
-                <property name="tab_expand">True</property>
-                <property name="child">
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">permissions</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkHeaderBar">
+                    <property name="title-widget">
+                      <object class="AdwWindowTitle">
+                        <property name="title" translatable="yes">Set Custom Permissions</property>
+                      </object>
+                    </property>
+                    <child type="start">
+                      <object class="GtkButton">
+                        <property name="icon-name">go-previous-symbolic</property>
+                        <signal name="clicked" handler="navigate_main_page" object="NautilusPropertiesWindow" swapped="yes"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkStack" id="permissions_stack">
-                    <property name="visible">True</property>
                     <property name="margin-top">18</property>
                     <property name="margin-bottom">18</property>
                     <property name="margin-start">18</property>
                     <property name="margin-end">18</property>
+                    <style>
+                      <class name="background"/>
+                    </style>
                     <child>
                       <object class="GtkStackPage">
                         <property name="name">permission-indeterminable</property>
@@ -953,24 +1021,41 @@
                       </object>
                     </child>
                   </object>
-                </property>
-                <property name="tab">
-                  <object class="GtkLabel" id="permissions_label">
-                    <property name="label" translatable="yes">Permissions</property>
-                  </object>
-                </property>
+                </child>
               </object>
-            </child>
-            <child>
-              <object class="GtkNotebookPage">
-                <property name="tab_expand">True</property>
-                <property name="child">
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkStackPage">
+            <property name="name">open-with</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkHeaderBar">
+                    <property name="title-widget">
+                      <object class="AdwWindowTitle">
+                        <property name="title" translatable="yes">Open With</property>
+                      </object>
+                    </property>
+                    <child type="start">
+                      <object class="GtkButton">
+                        <property name="icon-name">go-previous-symbolic</property>
+                        <signal name="clicked" handler="navigate_main_page" object="NautilusPropertiesWindow" swapped="yes"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkBox" id="open_with_box">
-                    <property name="visible">False</property>
                     <property name="margin-top">18</property>
                     <property name="margin-bottom">18</property>
                     <property name="margin-start">18</property>
                     <property name="margin-end">18</property>
+                    <style>
+                      <class name="background"/>
+                    </style>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
@@ -1025,19 +1110,11 @@
                       </object>
                     </child>
                   </object>
-                </property>
-                <property name="tab">
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes">Open With</property>
-                  </object>
-                </property>
+                </child>
               </object>
-            </child>
+            </property>
           </object>
         </child>
-        <style>
-          <class name="view"/>
-        </style>
       </object>
     </child>
   </template>

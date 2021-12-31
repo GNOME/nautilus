@@ -68,4 +68,29 @@ NautilusPropertyPage *nautilus_property_page_new (const char *name,
  *   page (widget)        - the property page to display
  */
 
+/**
+ * nautilus_property_page_get_label:
+ * @page: the property page
+ *
+ * Returns: (transfer none): the label of this #NautilusPropertyPage
+ */
+GtkWidget * nautilus_property_page_get_label (NautilusPropertyPage *page);
+
+/**
+ * nautilus_property_page_get_name:
+ * @page: the property page
+ *
+ * Returns: (transfer none): the name of this #NautilusPropertyPage
+ */
+const char *nautilus_property_page_get_name (NautilusPropertyPage *page);
+
+/**
+ * nautilus_property_page_get_widget:
+ * @page: the property page
+ *
+ * Returns: (transfer none): the widget associated wtih this #NautilusPropertyPage
+ */
+GtkWidget * nautilus_property_page_get_widget (NautilusPropertyPage *page);
+
+
 G_END_DECLS
