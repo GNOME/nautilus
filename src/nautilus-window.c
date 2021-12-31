@@ -1789,7 +1789,7 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
     gint tab_clicked;
     guint button;
     GdkEventSequence *sequence;
-    const GdkEvent *event;
+    GdkEvent *event;
     GdkModifierType state;
 
     if (n_press != 1)
