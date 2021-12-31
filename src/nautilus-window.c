@@ -2499,10 +2499,9 @@ on_is_maximized_changed (GObject    *object,
 }
 
 static gboolean
-nautilus_window_delete_event (GtkWidget   *widget,
-                              GdkEventAny *event)
+nautilus_window_close_request (GtkWindow *window)
 {
-    nautilus_window_close (NAUTILUS_WINDOW (widget));
+    nautilus_window_close (NAUTILUS_WINDOW (window));
     return FALSE;
 }
 
@@ -2677,6 +2676,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 {
     GObjectClass *oclass = G_OBJECT_CLASS (class);
     GtkWidgetClass *wclass = GTK_WIDGET_CLASS (class);
+    GtkWindowClass *winclass = GTK_WINDOW_CLASS (class);
 
     oclass->dispose = nautilus_window_dispose;
     oclass->finalize = nautilus_window_finalize;
@@ -2684,8 +2684,9 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
-    wclass->delete_event = nautilus_window_delete_event;
     wclass->grab_focus = nautilus_window_grab_focus;
+
+    winclass->close_request = nautilus_window_close_request;
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
