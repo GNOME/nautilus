@@ -2207,29 +2207,11 @@ nautilus_window_finalize (GObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
-    GdkWindow *gdk_window;
-    GdkWindowState window_state;
     gint width;
     gint height;
     GVariant *initial_size;
 
-    g_assert (NAUTILUS_IS_WINDOW (window));
-
-    gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-    if (!gdk_window)
-    {
-        return;
-    }
-    window_state = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)));
-    if (window_state & (GDK_WINDOW_STATE_TILED | GDK_WINDOW_STATE_MAXIMIZED))
-    {
-        /* Don't save the window state for tiled or maximized windows. In GTK
-         * gtk_window_get_default_size() is going to do this for us.
-         */
-        return;
-    }
-
-    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+    gtk_window_get_default_size (GTK_WINDOW (window), &width, &height);
     initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
 
     g_settings_set_value (nautilus_window_state,
