@@ -232,6 +232,40 @@ typedef enum
 
 enum
 {
+    UNIX_PERM_SUID = S_ISUID,
+    UNIX_PERM_SGID = S_ISGID,
+    UNIX_PERM_STICKY = 01000,           /* S_ISVTX not defined on all systems */
+    UNIX_PERM_USER_READ = S_IRUSR,
+    UNIX_PERM_USER_WRITE = S_IWUSR,
+    UNIX_PERM_USER_EXEC = S_IXUSR,
+    UNIX_PERM_USER_ALL = S_IRUSR | S_IWUSR | S_IXUSR,
+    UNIX_PERM_GROUP_READ = S_IRGRP,
+    UNIX_PERM_GROUP_WRITE = S_IWGRP,
+    UNIX_PERM_GROUP_EXEC = S_IXGRP,
+    UNIX_PERM_GROUP_ALL = S_IRGRP | S_IWGRP | S_IXGRP,
+    UNIX_PERM_OTHER_READ = S_IROTH,
+    UNIX_PERM_OTHER_WRITE = S_IWOTH,
+    UNIX_PERM_OTHER_EXEC = S_IXOTH,
+    UNIX_PERM_OTHER_ALL = S_IROTH | S_IWOTH | S_IXOTH
+};
+
+typedef enum
+{
+    PERMISSION_NONE = (0),
+    PERMISSION_READ = (1 << 0),
+    PERMISSION_WRITE = (1 << 1),
+    PERMISSION_EXEC = (1 << 2)
+} PermissionValue;
+
+typedef enum
+{
+    PERMISSION_USER,
+    PERMISSION_GROUP,
+    PERMISSION_OTHER
+} PermissionType;
+
+enum
+{
     COLUMN_NAME,
     COLUMN_VALUE,
     COLUMN_USE_ORIGINAL,
@@ -818,6 +852,61 @@ start_deep_count_for_file (NautilusFile             *file,
             schedule_start_spinner (self);
         }
     }
+}
+
+static guint32 vfs_perms[3][3] =
+{
+    {UNIX_PERM_USER_READ, UNIX_PERM_USER_WRITE, UNIX_PERM_USER_EXEC},
+    {UNIX_PERM_GROUP_READ, UNIX_PERM_GROUP_WRITE, UNIX_PERM_GROUP_EXEC},
+    {UNIX_PERM_OTHER_READ, UNIX_PERM_OTHER_WRITE, UNIX_PERM_OTHER_EXEC},
+};
+
+static guint32
+permission_to_vfs (PermissionType  type,
+                   PermissionValue perm)
+{
+    guint32 vfs_perm;
+    g_assert (type >= 0 && type < 3);
+
+    vfs_perm = 0;
+    if (perm & PERMISSION_READ)
+    {
+        vfs_perm |= vfs_perms[type][0];
+    }
+    if (perm & PERMISSION_WRITE)
+    {
+        vfs_perm |= vfs_perms[type][1];
+    }
+    if (perm & PERMISSION_EXEC)
+    {
+        vfs_perm |= vfs_perms[type][2];
+    }
+
+    return vfs_perm;
+}
+
+static PermissionValue
+permission_from_vfs (PermissionType type,
+                     guint32        vfs_perm)
+{
+    PermissionValue perm = PERMISSION_NONE;
+
+    g_assert (type >= 0 && type < 3);
+
+    if (vfs_perm & vfs_perms[type][0])
+    {
+        perm |= PERMISSION_READ;
+    }
+    if (vfs_perm & vfs_perms[type][1])
+    {
+        perm |= PERMISSION_WRITE;
+    }
+    if (vfs_perm & vfs_perms[type][2])
+    {
+        perm |= PERMISSION_EXEC;
+    }
+
+    return perm;
 }
 
 static void
@@ -2874,96 +2963,6 @@ setup_execute_checkbox_with_label (NautilusPropertiesWindow *self,
         atk_object_add_relationship (atk_widget, ATK_RELATION_LABELLED_BY, atk_label);
     }
 #endif
-}
-
-enum
-{
-    UNIX_PERM_SUID = S_ISUID,
-    UNIX_PERM_SGID = S_ISGID,
-    UNIX_PERM_STICKY = 01000,           /* S_ISVTX not defined on all systems */
-    UNIX_PERM_USER_READ = S_IRUSR,
-    UNIX_PERM_USER_WRITE = S_IWUSR,
-    UNIX_PERM_USER_EXEC = S_IXUSR,
-    UNIX_PERM_USER_ALL = S_IRUSR | S_IWUSR | S_IXUSR,
-    UNIX_PERM_GROUP_READ = S_IRGRP,
-    UNIX_PERM_GROUP_WRITE = S_IWGRP,
-    UNIX_PERM_GROUP_EXEC = S_IXGRP,
-    UNIX_PERM_GROUP_ALL = S_IRGRP | S_IWGRP | S_IXGRP,
-    UNIX_PERM_OTHER_READ = S_IROTH,
-    UNIX_PERM_OTHER_WRITE = S_IWOTH,
-    UNIX_PERM_OTHER_EXEC = S_IXOTH,
-    UNIX_PERM_OTHER_ALL = S_IROTH | S_IWOTH | S_IXOTH
-};
-
-typedef enum
-{
-    PERMISSION_NONE = (0),
-    PERMISSION_READ = (1 << 0),
-    PERMISSION_WRITE = (1 << 1),
-    PERMISSION_EXEC = (1 << 2)
-} PermissionValue;
-
-typedef enum
-{
-    PERMISSION_USER,
-    PERMISSION_GROUP,
-    PERMISSION_OTHER
-} PermissionType;
-
-static guint32 vfs_perms[3][3] =
-{
-    {UNIX_PERM_USER_READ, UNIX_PERM_USER_WRITE, UNIX_PERM_USER_EXEC},
-    {UNIX_PERM_GROUP_READ, UNIX_PERM_GROUP_WRITE, UNIX_PERM_GROUP_EXEC},
-    {UNIX_PERM_OTHER_READ, UNIX_PERM_OTHER_WRITE, UNIX_PERM_OTHER_EXEC},
-};
-
-static guint32
-permission_to_vfs (PermissionType  type,
-                   PermissionValue perm)
-{
-    guint32 vfs_perm;
-    g_assert (type >= 0 && type < 3);
-
-    vfs_perm = 0;
-    if (perm & PERMISSION_READ)
-    {
-        vfs_perm |= vfs_perms[type][0];
-    }
-    if (perm & PERMISSION_WRITE)
-    {
-        vfs_perm |= vfs_perms[type][1];
-    }
-    if (perm & PERMISSION_EXEC)
-    {
-        vfs_perm |= vfs_perms[type][2];
-    }
-
-    return vfs_perm;
-}
-
-
-static PermissionValue
-permission_from_vfs (PermissionType type,
-                     guint32        vfs_perm)
-{
-    PermissionValue perm = PERMISSION_NONE;
-
-    g_assert (type >= 0 && type < 3);
-
-    if (vfs_perm & vfs_perms[type][0])
-    {
-        perm |= PERMISSION_READ;
-    }
-    if (vfs_perm & vfs_perms[type][1])
-    {
-        perm |= PERMISSION_WRITE;
-    }
-    if (vfs_perm & vfs_perms[type][2])
-    {
-        perm |= PERMISSION_EXEC;
-    }
-
-    return perm;
 }
 
 static void
