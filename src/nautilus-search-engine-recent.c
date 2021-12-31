@@ -232,9 +232,8 @@ recent_thread_func (gpointer user_data)
         if (rank > 0)
         {
             NautilusSearchHit *hit;
-            time_t modified, visited;
-            g_autoptr (GDateTime) gmodified = NULL;
-            g_autoptr (GDateTime) gvisited = NULL;
+            GDateTime *modified;
+            GDateTime *visited;
 
             if (gtk_recent_info_is_local (info))
             {
@@ -281,9 +280,6 @@ recent_thread_func (gpointer user_data)
             modified = gtk_recent_info_get_modified (info);
             visited = gtk_recent_info_get_visited (info);
 
-            gmodified = g_date_time_new_from_unix_local (modified);
-            gvisited = g_date_time_new_from_unix_local (visited);
-
             if (date_range != NULL)
             {
                 NautilusQuerySearchType type;
@@ -297,11 +293,11 @@ recent_thread_func (gpointer user_data)
 
                 if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
                 {
-                    target_time = visited;
+                    target_time = g_date_time_to_unix (visited);
                 }
                 else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
                 {
-                    target_time = modified;
+                    target_time = g_date_time_to_unix (modified);
                 }
 
                 if (!nautilus_file_date_in_between (target_time,
@@ -313,8 +309,8 @@ recent_thread_func (gpointer user_data)
 
             hit = nautilus_search_hit_new (uri);
             nautilus_search_hit_set_fts_rank (hit, rank);
-            nautilus_search_hit_set_modification_time (hit, gmodified);
-            nautilus_search_hit_set_access_time (hit, gvisited);
+            nautilus_search_hit_set_modification_time (hit, modified);
+            nautilus_search_hit_set_access_time (hit, visited);
 
             hits = g_list_prepend (hits, hit);
         }
