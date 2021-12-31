@@ -9317,13 +9317,11 @@ on_parent_changed (GObject    *object,
     else
     {
         remove_update_context_menus_timeout_callback (view);
-        /* Only remove the action group if it matchs the current view
-         * action group. If not, we can remove an action group set by
-         * a different view i.e. if the slot_active function is called
-         * before this one
+        /* Only remove the action group if this is still the active view.
+         * Otherwise we might be removing an action group set by a different
+         * view i.e. if slot_active_changed() is called before this one.
          */
-        if (gtk_widget_get_action_group (GTK_WIDGET (window), "view") ==
-            priv->view_action_group)
+        if (priv->active)
         {
             gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
                                             "view",
