@@ -239,8 +239,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     self->current_view_menu_button = gtk_menu_button_new ();
     gtk_menu_button_set_child (GTK_MENU_BUTTON (self->current_view_menu_button),
-                               gtk_image_new_from_icon_name ("view-more-symbolic",
-                                                             GTK_ICON_SIZE_MENU));
+                               gtk_image_new_from_icon_name ("view-more-symbolic"));
     gtk_box_append (GTK_BOX (self), self->current_view_menu_button);
 
     builder = gtk_builder_new ();
@@ -756,7 +755,7 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
     icon = get_gicon (button_data);
     if (icon != NULL)
     {
-        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon, GTK_ICON_SIZE_MENU);
+        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon);
         gtk_widget_show (GTK_WIDGET (button_data->image));
         g_object_unref (icon);
     }
