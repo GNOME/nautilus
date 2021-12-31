@@ -233,6 +233,7 @@ typedef struct
     NautilusLocationEntry *self;
     GdkDragContext *context;
     char **names;
+    guint time;
 } OpenWindowsOnDragData;
 
 static void
@@ -282,7 +283,7 @@ confirm_multiple_windows_cb (GtkDialog *dialog,
 
     gtk_widget_destroy (GTK_WIDGET (dialog));
     do_open_windows (data, open_multiple);
-    gtk_drag_finish (data->context, open_multiple, FALSE, time);
+    gtk_drag_finish (data->context, open_multiple, FALSE, data->time);
 }
 
 static void
@@ -322,6 +323,7 @@ drag_data_received_callback (GtkWidget        *widget,
     op_data->self = g_object_ref (self);
     op_data->context = g_object_ref (context);
     op_data->names = names;
+    op_data->time = time;
 
     /* Ask user if they really want to open multiple windows
      * for multiple dropped URIs. This is likely to have been
