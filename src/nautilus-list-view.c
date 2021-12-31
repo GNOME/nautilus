@@ -229,7 +229,7 @@ activate_selected_items_alternate (NautilusListView *view,
 }
 
 static gboolean
-button_event_modifies_selection (const GdkEvent *event)
+button_event_modifies_selection (GdkEvent *event)
 {
     GdkModifierType state;
 
@@ -464,7 +464,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     gint bin_x;
     gint bin_y;
     GdkEventSequence *sequence;
-    const GdkEvent *event;
+    GdkEvent *event;
     gboolean on_expander, show_expanders;
     gboolean is_simple_click, path_selected;
     NautilusFile *file;
@@ -722,7 +722,7 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     NautilusListView *view;
     guint button;
     GdkEventSequence *sequence;
-    const GdkEvent *event;
+    GdkEvent *event;
     GtkTreeView *tree_view;
     GtkTreeSelection *selection;
     gint x_in_bin;
@@ -1955,7 +1955,7 @@ on_tree_view_drag_gesture_drag_update (GtkGestureDrag *gesture,
 {
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     GdkEventSequence *sequence;
-    const GdkEvent *event;
+    GdkEvent *event;
     NautilusListView *list_view;
 
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
