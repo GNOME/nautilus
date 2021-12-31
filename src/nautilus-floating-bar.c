@@ -389,7 +389,7 @@ nautilus_floating_bar_constructed (GObject *obj)
     self->details_label_widget = w;
     gtk_widget_show (w);
 
-    w = gtk_button_new_from_icon_name ("process-stop-symbolic", GTK_ICON_SIZE_MENU);
+    w = gtk_button_new_from_icon_name ("process-stop-symbolic");
     context = gtk_widget_get_style_context (w);
     gtk_style_context_add_class (context, "circular");
     gtk_style_context_add_class (context, "flat");
