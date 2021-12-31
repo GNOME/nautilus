@@ -254,15 +254,30 @@ typedef enum
     PERMISSION_NONE = (0),
     PERMISSION_READ = (1 << 0),
     PERMISSION_WRITE = (1 << 1),
-    PERMISSION_EXEC = (1 << 2)
+    PERMISSION_EXEC = (1 << 2),
+    PERMISSION_INCONSISTENT = (1 << 3)
 } PermissionValue;
 
 typedef enum
 {
     PERMISSION_USER,
     PERMISSION_GROUP,
-    PERMISSION_OTHER
+    PERMISSION_OTHER,
+    NUM_PERMISSION_TYPE
 } PermissionType;
+
+/** Contains permissions for files and folders for each PermissionType */
+typedef struct
+{
+    NautilusPropertiesWindow *window;
+
+    PermissionValue folder_permissions[NUM_PERMISSION_TYPE];
+    PermissionValue file_permissions[NUM_PERMISSION_TYPE];
+    gboolean has_files;
+    gboolean has_folders;
+    gboolean can_set_all_folder_permission;
+    gboolean can_set_all_file_permission;
+} TargetPermissions;
 
 enum
 {
@@ -324,7 +339,7 @@ static void file_changed_callback (NautilusFile *file,
 static void permission_button_update (GtkCheckButton           *button,
                                       NautilusPropertiesWindow *self);
 static void permission_combo_update (GtkComboBox              *combo,
-                                     NautilusPropertiesWindow *self);
+                                     TargetPermissions        *target_perm);
 static void value_field_update (GtkLabel                 *field,
                                 NautilusPropertiesWindow *self);
 static void properties_window_update (NautilusPropertiesWindow *self,
@@ -909,6 +924,75 @@ permission_from_vfs (PermissionType type,
     return perm;
 }
 
+static TargetPermissions *
+get_target_permissions (NautilusPropertiesWindow *self)
+{
+    TargetPermissions *p = g_new0 (TargetPermissions, 1);
+    p->window = self;
+    p->can_set_all_folder_permission = TRUE;
+    p->can_set_all_file_permission = TRUE;
+
+    for (GList *entry = self->target_files; entry != NULL; entry = entry->next)
+    {
+        guint32 vfs_permissions;
+        gboolean can_set_permissions;
+        NautilusFile *file = NAUTILUS_FILE (entry->data);
+
+        if (nautilus_file_is_gone (file) || !nautilus_file_can_get_permissions (file))
+        {
+            continue;
+        }
+
+        vfs_permissions = nautilus_file_get_permissions (file);
+        can_set_permissions = nautilus_file_can_set_permissions (file);
+
+        if (nautilus_file_is_directory (file))
+        {
+            /* Gather permissions for each type (owner, group, other) */
+            for (PermissionType type = PERMISSION_USER ; type < NUM_PERMISSION_TYPE; type += 1)
+            {
+                PermissionValue permissions = permission_from_vfs (type, vfs_permissions)
+                                              & (PERMISSION_READ | PERMISSION_WRITE | PERMISSION_EXEC);
+                if (!p->has_folders)
+                {
+                    /* first found folder, initialize with its permissions */
+                    p->folder_permissions[type] = permissions;
+                }
+                else if (permissions != p->folder_permissions[type])
+                {
+                    p->folder_permissions[type] = PERMISSION_INCONSISTENT;
+                }
+            }
+
+            p->can_set_all_folder_permission &= can_set_permissions;
+            p->has_folders = TRUE;
+        }
+        else
+        {
+            for (PermissionType type = PERMISSION_USER ; type < NUM_PERMISSION_TYPE; type += 1)
+            {
+                PermissionValue permissions = permission_from_vfs (type, vfs_permissions)
+                                              & (PERMISSION_READ | PERMISSION_WRITE);
+
+                if (!p->has_files)
+                {
+                    /* first found file, initialize with its permissions */
+                    p->file_permissions[type] = permissions;
+                }
+                else if (permissions != p->file_permissions[type])
+                {
+                    p->file_permissions[type] = PERMISSION_INCONSISTENT;
+                }
+            }
+
+            p->can_set_all_file_permission &= can_set_permissions;
+            p->has_files = TRUE;
+        }
+    }
+
+    return p;
+}
+
 static void
 properties_window_update (NautilusPropertiesWindow *self,
                           GList                    *files)
@@ -963,15 +1047,17 @@ properties_window_update (NautilusPropertiesWindow *self,
 
     if (dirty_target)
     {
+        TargetPermissions *target_perm = get_target_permissions(self);
         g_list_foreach (self->permission_buttons,
                         (GFunc) permission_button_update,
                         self);
         g_list_foreach (self->permission_combos,
                         (GFunc) permission_combo_update,
-                        self);
+                        target_perm);
         g_list_foreach (self->value_fields,
                         (GFunc) value_field_update,
                         self);
+        free(target_perm);
     }
 
     mime_list = get_mime_list (self);
@@ -3033,124 +3119,39 @@ permission_combo_add_multiple_choice (GtkComboBox *combo,
         gtk_list_store_append (store, iter);
         gtk_list_store_set (store, iter,
                             COLUMN_NAME, "---",
-                            COLUMN_VALUE, 0,
+                            COLUMN_VALUE, PERMISSION_INCONSISTENT,
                             COLUMN_USE_ORIGINAL, TRUE, -1);
     }
 }
 
 static void
-permission_combo_update (GtkComboBox              *combo,
-                         NautilusPropertiesWindow *self)
+permission_combo_update (GtkComboBox       *combo,
+                         TargetPermissions *target_perm)
 {
-    PermissionType type;
-    PermissionValue perm, all_dir_perm, all_file_perm, all_perm;
-    gboolean is_folder, no_files, no_dirs, all_file_same, all_dir_same, all_same;
-    gboolean all_dir_cannot_set, all_file_cannot_set, sensitive;
+    PermissionValue all_perm;
+    gboolean all_same;
     GtkTreeIter iter;
-    int mask;
-    GtkTreeModel *model;
-    GtkListStore *store;
-    GList *l;
-    gboolean is_multi;
 
-    model = gtk_combo_box_get_model (combo);
-
-    is_folder = (FOLDERS_ONLY == GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "filter-type")));
-    type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
-
-    is_multi = FALSE;
-    if (gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter))
-    {
-        gtk_tree_model_get (model, &iter, COLUMN_USE_ORIGINAL, &is_multi, -1);
-    }
-
-    no_files = TRUE;
-    no_dirs = TRUE;
-    all_dir_same = TRUE;
-    all_file_same = TRUE;
-    all_dir_perm = 0;
-    all_file_perm = 0;
-    all_dir_cannot_set = TRUE;
-    all_file_cannot_set = TRUE;
-
-    for (l = self->target_files; l != NULL; l = l->next)
-    {
-        NautilusFile *file;
-        guint32 file_permissions;
-
-        file = NAUTILUS_FILE (l->data);
-
-        if (!nautilus_file_can_get_permissions (file))
-        {
-            continue;
-        }
-
-        if (nautilus_file_is_directory (file))
-        {
-            mask = PERMISSION_READ | PERMISSION_WRITE | PERMISSION_EXEC;
-        }
-        else
-        {
-            mask = PERMISSION_READ | PERMISSION_WRITE;
-        }
-
-        file_permissions = nautilus_file_get_permissions (file);
-
-        perm = permission_from_vfs (type, file_permissions) & mask;
-
-        if (nautilus_file_is_directory (file))
-        {
-            if (no_dirs)
-            {
-                all_dir_perm = perm;
-                no_dirs = FALSE;
-            }
-            else if (perm != all_dir_perm)
-            {
-                all_dir_same = FALSE;
-            }
-
-            if (nautilus_file_can_set_permissions (file))
-            {
-                all_dir_cannot_set = FALSE;
-            }
-        }
-        else
-        {
-            if (no_files)
-            {
-                all_file_perm = perm;
-                no_files = FALSE;
-            }
-            else if (perm != all_file_perm)
-            {
-                all_file_same = FALSE;
-            }
-
-            if (nautilus_file_can_set_permissions (file))
-            {
-                all_file_cannot_set = FALSE;
-            }
-        }
-    }
+    NautilusPropertiesWindow *self = target_perm->window;
+    gboolean is_folder = (FOLDERS_ONLY == GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "filter-type")));
+    PermissionType type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
 
     if (is_folder)
     {
-        all_same = all_dir_same;
-        all_perm = all_dir_perm;
+        all_perm = target_perm->folder_permissions[type];
+        all_same = all_perm != PERMISSION_INCONSISTENT;
     }
     else
     {
-        all_same = all_file_same && !no_files;
-        all_perm = all_file_perm;
+        all_perm = target_perm->file_permissions[type];
+        all_same = all_perm != PERMISSION_INCONSISTENT && target_perm->has_files;
     }
 
-    store = GTK_LIST_STORE (model);
     if (all_same)
     {
-        gboolean found;
+        GtkTreeModel *model = gtk_combo_box_get_model (combo);
+        gboolean found = FALSE;
 
-        found = FALSE;
         gtk_tree_model_get_iter_first (model, &iter);
         do
         {
@@ -3167,9 +3168,8 @@ permission_combo_update (GtkComboBox              *combo,
 
         if (!found)
         {
-            g_autoptr (GString) str = NULL;
-
-            str = g_string_new ("");
+            GtkListStore *store = GTK_LIST_STORE (model);
+            g_autoptr (GString) str = g_string_new ("");
 
             if (!(all_perm & PERMISSION_READ))
             {
@@ -3232,15 +3232,9 @@ permission_combo_update (GtkComboBox              *combo,
 
     /* Also enable if no files found (for recursive
      *  file changes when only selecting folders) */
-    if (is_folder)
-    {
-        sensitive = !all_dir_cannot_set;
-    }
-    else
-    {
-        sensitive = !all_file_cannot_set;
-    }
-    gtk_widget_set_sensitive (GTK_WIDGET (combo), sensitive);
+    gtk_widget_set_sensitive (GTK_WIDGET (combo), is_folder ?
+                                                  target_perm->can_set_all_folder_permission :
+                                                  target_perm->can_set_all_file_permission);
 
     g_signal_handlers_unblock_by_func (G_OBJECT (combo),
                                        G_CALLBACK (permission_combo_changed),
