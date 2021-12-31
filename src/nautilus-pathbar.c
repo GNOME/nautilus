@@ -101,7 +101,7 @@ struct _NautilusPathBar
     NautilusFile *context_menu_file;
     GtkPopover *current_view_menu_popover;
     GtkWidget *current_view_menu_button;
-    GtkPopover *button_menu_popover;
+    GtkWidget *button_menu_popover;
     GMenu *current_view_menu;
     GMenu *extensions_section;
     GMenu *templates_submenu;
@@ -258,8 +258,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
         g_error ("Failed to add pathbar-context-menu.ui: %s", error->message);
     }
     self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "button-menu")));
-    self->button_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (NULL,
-                                                                                            G_MENU_MODEL (self->button_menu))));
+    self->button_menu_popover = g_object_ref_sink (gtk_popover_new_from_model (NULL,
+                                                                               G_MENU_MODEL (self->button_menu)));
 
     /* Add current location menu, which matches the view's background context menu */
     gtk_builder_add_from_resource (builder,
@@ -487,7 +487,7 @@ button_clicked_cb (GtkButton *button,
 static void
 real_pop_up_pathbar_context_menu (NautilusPathBar *self)
 {
-    gtk_popover_popup (self->button_menu_popover);
+    gtk_popover_popup (GTK_POPOVER (self->button_menu_popover));
 }
 
 static void
@@ -602,7 +602,7 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             }
             else
             {
-                gtk_popover_set_relative_to (self->button_menu_popover,
+                gtk_popover_set_relative_to (GTK_POPOVER (self->button_menu_popover),
                                              button_data->button);
                 pop_up_pathbar_context_menu (self, button_data->file);
             }
