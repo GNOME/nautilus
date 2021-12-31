@@ -213,21 +213,11 @@ update_selected_format (NautilusCompressDialogController *self,
     gtk_stack_set_visible_child (GTK_STACK (self->extension_stack),
                                  active_label);
 
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->zip_checkmark),
-                                  NULL,
-                                  GTK_ICON_SIZE_BUTTON);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->encrypted_zip_checkmark),
-                                  NULL,
-                                  GTK_ICON_SIZE_BUTTON);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->tar_xz_checkmark),
-                                  NULL,
-                                  GTK_ICON_SIZE_BUTTON);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->seven_zip_checkmark),
-                                  NULL,
-                                  GTK_ICON_SIZE_BUTTON);
-    gtk_image_set_from_icon_name (GTK_IMAGE (active_checkmark),
-                                  "object-select-symbolic",
-                                  GTK_ICON_SIZE_BUTTON);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->zip_checkmark), NULL);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->encrypted_zip_checkmark), NULL);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->tar_xz_checkmark), NULL);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->seven_zip_checkmark), NULL);
+    gtk_image_set_from_icon_name (GTK_IMAGE (active_checkmark), "object-select-symbolic");
 
     g_settings_set_enum (nautilus_compression_preferences,
                          NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT,
