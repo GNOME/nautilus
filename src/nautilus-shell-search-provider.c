@@ -658,9 +658,9 @@ result_list_attributes_ready_cb (GList    *file_list,
 
         if (gicon == NULL)
         {
-            gicon = G_ICON (nautilus_file_get_icon_pixbuf (file, 128,
-                                                           icon_scale,
-                                                           NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
+            gicon = G_ICON (nautilus_file_get_icon_texture (file, 128,
+                                                            icon_scale,
+                                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
         }
 
         g_variant_builder_add (&meta, "{sv}",
