@@ -1478,6 +1478,7 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
 static void
 nautilus_view_icon_controller_init (NautilusViewIconController *self)
 {
+    gtk_widget_add_css_class (GTK_WIDGET (self), "view");
     set_click_mode_from_settings (self);
 
     g_signal_connect_swapped (nautilus_preferences,
