@@ -1,9 +1,3 @@
-.nautilus-window,
-.nautilus-window notebook,
-.nautilus-window notebook > stack {
-    background: @theme_base_color;
-}
-
 .nautilus-empty-state-icon {
     opacity: 0.50;
 }
@@ -76,32 +70,6 @@
 
 .path-buttons-box button:not(.current-dir):not(:backdrop):hover * {
   opacity: 1;
-}
-
-/* Make the tags fit into the box */
-entry.search > * {
-  margin: 5px;
-}
-
-/* Sidebar */
-
-.nautilus-window .sidebar-row:selected {
-    background: mix(@theme_bg_color, @theme_fg_color, 0.07);
-}
-
-.nautilus-window .sidebar-row:selected,
-.nautilus-window .sidebar-row:selected image,
-.nautilus-window .sidebar-row:selected label {
-    color: mix(@theme_fg_color, @theme_text_color, 0.5);
-}
-
-.nautilus-window .sidebar-row:selected:backdrop {
-    background: mix(@theme_unfocused_bg_color, @theme_unfocused_fg_color, 0.07);
-}
-
-.nautilus-window .sidebar-row:selected:backdrop,
-.nautilus-window .sidebar-row:selected:backdrop label {
-    color: mix(@theme_unfocused_fg_color, @theme_unfocused_text_color, 0.15);
 }
 
 /* Floating status bar */
@@ -230,9 +198,6 @@ flowboxchild:selected .icon-ui-labels-box {
 }
 
 flowboxchild:selected image {
-  -gtk-icon-effect: dim; /* GTK 3 only */
-  /* GTK 4 TODO: Replace previous line with the following one:
   -gtk-icon-filter: opacity(0.5);
-  */
   -gtk-icon-shadow: 0px 0px @theme_selected_bg_color;
 }
