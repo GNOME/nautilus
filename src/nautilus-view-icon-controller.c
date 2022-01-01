@@ -9,6 +9,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-thumbnails.h"
+#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusViewIconController
 {
@@ -718,7 +719,7 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 
     /* Get the focused item_ui, if selected.
      * Otherwise, get the selected item_ui which is sorted the lowest.*/
-    item_ui = gtk_container_get_focus_child (GTK_CONTAINER (self->view_ui));
+    item_ui = gtk_widget_get_focus_child (GTK_WIDGET (self->view_ui));
     if (item_ui == NULL || !gtk_flow_box_child_is_selected (GTK_FLOW_BOX_CHILD (item_ui)))
     {
         g_autoptr (GList) list = gtk_flow_box_get_selected_children (self->view_ui);
