@@ -69,11 +69,11 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
 
 void
 nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
-                                          GdkPixbuf                  *destination_pixbuf,
-                                          GdkPixbuf                  *source_pixbuf)
+                                          GdkPaintable               *destination_paintable,
+                                          GdkPaintable               *source_paintable)
 {
-    gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->dest_image), destination_pixbuf);
-    gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->src_image), source_pixbuf);
+    gtk_image_set_from_paintable (GTK_IMAGE (fcd->dest_image), destination_paintable);
+    gtk_image_set_from_paintable (GTK_IMAGE (fcd->src_image), source_paintable);
 }
 
 void

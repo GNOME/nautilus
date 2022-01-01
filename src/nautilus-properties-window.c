@@ -395,7 +395,7 @@ get_target_file (NautilusPropertiesWindow *self)
 static void
 get_image_for_properties_window (NautilusPropertiesWindow  *self,
                                  char                     **icon_name,
-                                 GdkPixbuf                **icon_pixbuf)
+                                 GdkPaintable             **icon_paintable)
 {
     g_autoptr (NautilusIconInfo) icon = NULL;
     GList *l;
@@ -444,9 +444,9 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
         *icon_name = g_strdup (nautilus_icon_info_get_used_name (icon));
     }
 
-    if (icon_pixbuf != NULL)
+    if (icon_paintable != NULL)
     {
-        *icon_pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_GRID_ICON_SIZE_STANDARD);
+        *icon_paintable = nautilus_icon_info_get_paintable (icon);
     }
 }
 
@@ -454,18 +454,18 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
 static void
 update_properties_window_icon (NautilusPropertiesWindow *self)
 {
-    g_autoptr (GdkPixbuf) pixbuf = NULL;
+    g_autoptr (GdkPaintable) paintable = NULL;
     g_autofree char *name = NULL;
 
-    get_image_for_properties_window (self, &name, &pixbuf);
+    get_image_for_properties_window (self, &name, &paintable);
 
     if (name != NULL)
     {
         gtk_window_set_icon_name (GTK_WINDOW (self), name);
     }
 
-    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon_image), pixbuf);
-    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon_button_image), pixbuf);
+    gtk_image_set_from_paintable (GTK_IMAGE (self->icon_image), paintable);
+    gtk_image_set_from_paintable (GTK_IMAGE (self->icon_button_image), paintable);
 }
 
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
