@@ -314,11 +314,11 @@ nautilus_notebook_add_tab (GtkNotebook        *notebook,
                                          tab_label,
                                          position);
 
-    gtk_container_child_set (GTK_CONTAINER (notebook),
-                             GTK_WIDGET (slot),
-                             "tab-expand", TRUE,
-                             "detachable", FALSE,
-                             NULL);
+    g_object_set (gtk_notebook_get_page (GTK_NOTEBOOK (notebook),
+                                         GTK_WIDGET (slot)),
+                  "tab-expand", TRUE,
+                  "detachable", FALSE,
+                  NULL);
 
     nautilus_notebook_sync_tab_label (notebook, slot);
     nautilus_notebook_sync_loading (notebook, slot);
