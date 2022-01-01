@@ -544,7 +544,7 @@ set_floating_bar_status (NautilusFilesView *view,
         priv->floating_bar_set_status_timeout_id = 0;
     }
 
-    settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (view)));
+    settings = gtk_settings_get_for_display (gtk_widget_get_display (GTK_WIDGET (view)));
     g_object_get (settings,
                   "gtk-double-click-time", &double_click_time,
                   NULL);

@@ -4696,8 +4696,8 @@ create_properties_window (StartupData *startup_data)
 
     if (startup_data->parent_widget)
     {
-        gtk_window_set_screen (GTK_WINDOW (window),
-                               gtk_widget_get_screen (startup_data->parent_widget));
+        gtk_window_set_display (GTK_WINDOW (window),
+                                gtk_widget_get_display (startup_data->parent_widget));
     }
 
     if (startup_data->parent_window)
@@ -4991,8 +4991,8 @@ nautilus_properties_window_present (GList                            *original_f
     {
         if (parent_widget)
         {
-            gtk_window_set_screen (GTK_WINDOW (existing_window),
-                                   gtk_widget_get_screen (parent_widget));
+            gtk_window_set_display (GTK_WINDOW (existing_window),
+                                    gtk_widget_get_display (parent_widget));
         }
         else if (startup_id)
         {
