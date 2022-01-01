@@ -809,20 +809,6 @@ on_location_entry_close (GtkWidget       *close_button,
     nautilus_toolbar_set_show_location_entry (self, FALSE);
 }
 
-static gboolean
-on_location_entry_populate_popup (GtkEntry  *entry,
-                                  GtkWidget *widget,
-                                  gpointer   user_data)
-{
-    NautilusToolbar *toolbar;
-
-    toolbar = user_data;
-
-    toolbar->location_entry_should_auto_hide = FALSE;
-
-    return GDK_EVENT_PROPAGATE;
-}
-
 static void
 on_location_entry_focus_changed (GObject    *object,
                                  GParamSpec *pspec,
@@ -918,8 +904,6 @@ nautilus_toolbar_constructed (GObject *object)
                       (GCallback) gtk_widget_grab_focus, NULL);
     g_signal_connect_swapped (self->operations_popover, "closed",
                               (GCallback) gtk_widget_grab_focus, self);
-    g_signal_connect (self->location_entry, "populate-popup",
-                      G_CALLBACK (on_location_entry_populate_popup), self);
     g_signal_connect (self->location_entry, "notify::has-focus",
                       G_CALLBACK (on_location_entry_focus_changed), self);
 
