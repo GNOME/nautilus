@@ -302,7 +302,7 @@ nautilus_list_model_get_icon_scale (NautilusListModel *model)
 
     if (retval == -1)
     {
-        retval = gdk_monitor_get_scale_factor (gdk_display_get_monitor (gdk_display_get_default (), 0));
+        retval = gdk_monitor_get_scale_factor (g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0));
     }
 
     /* FIXME: Temporary regression: HiDPI icons not supported, ignore scale. */
