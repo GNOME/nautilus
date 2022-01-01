@@ -4228,10 +4228,10 @@ append_extension_pages (NautilusPropertiesWindow *self)
 
             gtk_notebook_append_page (self->notebook,
                                       page_widget, label);
-            gtk_container_child_set (GTK_CONTAINER (self->notebook),
-                                     page_widget,
-                                     "tab-expand", TRUE,
-                                     NULL);
+            g_object_set (gtk_notebook_get_page (GTK_NOTEBOOK (self->notebook),
+                                                 GTK_WIDGET (page_widget)),
+                          "tab-expand", TRUE,
+                          NULL);
 
             g_object_set_data (G_OBJECT (page_widget),
                                "is-extension-page",
