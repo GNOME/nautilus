@@ -9,8 +9,8 @@
 @keyframes needs_attention_keyframes {
     0% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0); border-color: @borders; }
     /* can't do animation-direction, so holding the color on two keyframes */
-    30% {background-image: linear-gradient(to bottom, @theme_base_color, @theme_base_color, @theme_base_color); border-color: @theme_fg_color; }
-    90% {background-image: linear-gradient(to bottom, @theme_base_color, @theme_base_color, @theme_base_color); border-color: @theme_fg_color; }
+    30% {background-image: linear-gradient(to bottom, @view_bg_color, @view_bg_color, @view_bg_color); border-color: @window_fg_color; }
+    90% {background-image: linear-gradient(to bottom, @view_bg_color, @view_bg_color, @view_bg_color); border-color: @window_fg_color; }
     100% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0); border-color: @borders; }
 }
 
@@ -76,7 +76,7 @@
 /* Floating status bar */
 .floating-bar {
   padding: 3px;
-  background-color: @theme_base_color;
+  background-color: @view_bg_color;
   border-width: 1px;
   border-style: solid solid none;
   border-color: @borders;
@@ -93,7 +93,7 @@
 }
 
 .floating-bar:backdrop {
-  background-color: @theme_unfocused_base_color;
+  background-color: @view_bg_color;
   border-color: @unfocused_borders;
 }
 
@@ -141,29 +141,18 @@
  * horizontal grid lines are enabled, we add them using CSS instead. Exclude the
  * drop targets to let through the default feedback style. */
 .nautilus-list-view .view:not(:drop(active)) {
-    border-bottom: 1px solid @theme_bg_color;
+    border-bottom: 1px solid @window_bg_color;
 }
 
 .search-information {
-  background-color: @theme_selected_bg_color;
+  background-color: @accent_bg_color;
   color:white;
   padding:2px;
 }
 
-@define-color conflict_bg #fef6b6;
-
 .conflict-row {
-    background: @conflict_bg;
-    color: black;
-}
-
-.conflict-row:hover {
-    background-color: shade(@conflict_bg, 0.9);
-}
-
-.conflict-row:selected {
-  background: @theme_selected_bg_color;
-  color: @theme_selected_fg_color;
+    background: @warning_bg_color;
+    color: @warning_fg_color;
 }
 
 /* Icon view */
@@ -181,9 +170,9 @@ flowboxchild:selected {
 
 flowboxchild .thumbnail {
   margin: 4px;
-  box-shadow: 0px 1px 2px 0px alpha(@borders, 0.5),
-              0px 0px 0px 1px alpha(@borders, 0.5),
-              0px 2px 0px 0px alpha(@borders, 0.5);
+  box-shadow: 0px 1px 2px 0px @shade_color,
+              0px 0px 0px 1px @shade_color,
+              0px 2px 0px 0px @shade_color;
   border-radius: 2px;
 }
 
@@ -193,11 +182,11 @@ flowboxchild .thumbnail {
 }
 
 flowboxchild:selected .icon-ui-labels-box {
-  color: @theme_selected_fg_color;
-  background-color: @theme_selected_bg_color;
+  background-color: @accent_bg_color;
+  color: @accent_fg_color;
 }
 
 flowboxchild:selected image {
   -gtk-icon-filter: opacity(0.5);
-  -gtk-icon-shadow: 0px 0px @theme_selected_bg_color;
+  -gtk-icon-shadow: 0px 0px @accent_bg_color;
 }
