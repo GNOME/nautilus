@@ -4872,13 +4872,13 @@ nautilus_files_view_get_directory_as_file (NautilusFilesView *view)
     return priv->directory_as_file;
 }
 
-static GdkPixbuf *
+static GdkTexture *
 get_menu_icon_for_file (NautilusFile *file,
                         GtkWidget    *widget)
 {
     int scale = gtk_widget_get_scale_factor (widget);
 
-    return nautilus_file_get_icon_pixbuf (file, 16, scale, 0);
+    return nautilus_file_get_icon_texture (file, 16, scale, 0);
 }
 
 static GList *
@@ -5284,7 +5284,7 @@ add_script_to_scripts_menus (NautilusFilesView *view,
     gchar *name;
     g_autofree gchar *uri = NULL;
     g_autofree gchar *escaped_uri = NULL;
-    GdkPixbuf *mimetype_icon;
+    GdkTexture *mimetype_icon;
     gchar *action_name, *detailed_action_name;
     ScriptLaunchParameters *launch_parameters;
     GAction *action;
@@ -5529,7 +5529,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
     NautilusFilesViewPrivate *priv;
     char *tmp, *uri, *name;
     g_autofree gchar *escaped_uri = NULL;
-    GdkPixbuf *mimetype_icon;
+    GdkTexture *mimetype_icon;
     char *action_name, *detailed_action_name;
     CreateTemplateParameters *parameters;
     GAction *action;

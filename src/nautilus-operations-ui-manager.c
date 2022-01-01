@@ -223,25 +223,25 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
 static void
 set_images (FileConflictDialogData *data)
 {
-    GdkPixbuf *source_pixbuf;
-    GdkPixbuf *destination_pixbuf;
+    GdkPaintable *source_paintable;
+    GdkPaintable *destination_paintable;
 
-    destination_pixbuf = nautilus_file_get_icon_pixbuf (data->destination,
-                                                        NAUTILUS_GRID_ICON_SIZE_SMALL,
-                                                        1,
-                                                        NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    destination_paintable = nautilus_file_get_icon_paintable (data->destination,
+                                                              NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                                              1,
+                                                              NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
-    source_pixbuf = nautilus_file_get_icon_pixbuf (data->source,
-                                                   NAUTILUS_GRID_ICON_SIZE_SMALL,
-                                                   1,
-                                                   NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    source_paintable = nautilus_file_get_icon_paintable (data->source,
+                                                         NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                                         1,
+                                                         NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
     nautilus_file_conflict_dialog_set_images (data->dialog,
-                                              destination_pixbuf,
-                                              source_pixbuf);
+                                              destination_paintable,
+                                              source_paintable);
 
-    g_object_unref (destination_pixbuf);
-    g_object_unref (source_pixbuf);
+    g_object_unref (destination_paintable);
+    g_object_unref (source_paintable);
 }
 
 static void
