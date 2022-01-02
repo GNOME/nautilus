@@ -3641,7 +3641,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
             gtk_widget_show (self->bottom_prompt_seperator);
         }
 
-        gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permission-grid");
+        gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permissions-box");
         create_simple_permissions (self);
 
 #ifdef HAVE_SELINUX
