@@ -24,7 +24,6 @@
  *          Darin Adler <darin@bentspoon.com>
  */
 
-#if 0 && NAUTILUS_CLIPBOARD_NEEDS_GTK4_REIMPLEMENTATION
 #include <config.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-file-utilities.h"
@@ -34,12 +33,18 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-typedef struct
+/* The .files member contains elements of type NautilusFile. */
+struct _NautilusClipboard
 {
     gboolean cut;
     GList *files;
-} ClipboardInfo;
+};
 
+/* Boxed type used to wrap this struct in a clipboard GValue. */
+G_DEFINE_BOXED_TYPE (NautilusClipboard, nautilus_clipboard,
+                     nautilus_clipboard_copy, nautilus_clipboard_free)
+
+#if 0 && NAUTILUS_CLIPBOARD_NEEDS_GTK4_REIMPLEMENTATION
 static GList *
 convert_lines_to_str_list (char **lines)
 {
@@ -200,51 +205,68 @@ nautilus_clipboard_clear_if_colliding_uris (GtkWidget   *widget,
         g_list_free_full (clipboard_item_uris, g_free);
     }
 }
+#endif
+
+/**
+ * nautilus_clipboard_get_uri_list:
+ * @clip: The current local clipboard value.
+ *
+ * Returns: (transfer full): A GList of URI strings.
+ */
+GList *
+nautilus_clipboard_get_uri_list (NautilusClipboard *clip)
+{
+    GList *uris = NULL;
+
+    for (GList *l = clip->files; l != NULL; l = l->next)
+    {
+        uris = g_list_prepend (uris, nautilus_file_get_uri (l->data));
+    }
+
+    return g_list_reverse (uris);
+}
 
 gboolean
-nautilus_clipboard_is_cut_from_selection_data (GtkSelectionData *selection_data)
+nautilus_clipboard_is_cut (NautilusClipboard *clip)
 {
-    GList *items;
-    gboolean is_cut_from_selection_data;
+    return clip->cut;
+}
 
-    items = get_item_list_from_selection_data (selection_data);
-    is_cut_from_selection_data = items != NULL &&
-                                 g_strcmp0 ((gchar *) items->data, "cut") == 0;
+NautilusClipboard *
+nautilus_clipboard_copy (NautilusClipboard *clip)
+{
+    NautilusClipboard *new_clip = g_new0 (NautilusClipboard, 1);
 
-    g_list_free_full (items, g_free);
+    new_clip->cut = clip->cut;
+    new_clip->files = nautilus_file_list_copy (clip->files);
 
-    return is_cut_from_selection_data;
+    return new_clip;
 }
 
 void
-nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
+nautilus_clipboard_free (NautilusClipboard *clip)
+{
+    nautilus_file_list_free (clip->files);
+    g_free (clip);
+}
+
+void
+nautilus_clipboard_prepare_for_files (GdkClipboard *clipboard,
                                       GList        *files,
                                       gboolean      cut)
 {
-    GtkTargetList *target_list;
-    GtkTargetEntry *targets;
-    int n_targets;
-    ClipboardInfo *clipboard_info;
+    g_autoptr (NautilusClipboard) clip = NULL;
+    GdkContentProvider *provider;
 
-    clipboard_info = g_new (ClipboardInfo, 1);
-    clipboard_info->cut = cut;
-    clipboard_info->files = nautilus_file_list_copy (files);
+    clip = g_new (NautilusClipboard, 1);
+    clip->cut = cut;
+    clip->files = nautilus_file_list_copy (files);
 
-    target_list = gtk_target_list_new (NULL, 0);
-    gtk_target_list_add (target_list, copied_files_atom, 0, 0);
-    gtk_target_list_add_uri_targets (target_list, 0);
-    gtk_target_list_add_text_targets (target_list, 0);
-
-    targets = gtk_target_table_new_from_list (target_list, &n_targets);
-    gtk_target_list_unref (target_list);
-
-    gtk_clipboard_set_with_data (clipboard,
-                                 targets, n_targets,
-                                 on_get_clipboard, on_clear_clipboard,
-                                 clipboard_info);
-    gtk_target_table_free (targets, n_targets);
+    provider = gdk_content_provider_new_typed (NAUTILUS_TYPE_CLIPBOARD, clip);
+    gdk_clipboard_set_content (clipboard, provider);
 }
 
+#if 0 && NAUTILUS_CLIPBOARD_NEEDS_GTK4_REIMPLEMENTATION
 GdkAtom
 nautilus_clipboard_get_atom (void)
 {
