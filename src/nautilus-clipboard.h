@@ -42,3 +42,5 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusClipboard, nautilus_clipboard_free)
 void nautilus_clipboard_prepare_for_files (GdkClipboard *clipboard,
                                            GList        *files,
                                            gboolean      cut);
+
+void               nautilus_clipboard_register     (void);

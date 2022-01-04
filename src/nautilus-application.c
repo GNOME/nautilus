@@ -42,6 +42,7 @@
 #include "nautilus-debug.h"
 
 #include "nautilus-bookmark-list.h"
+#include "nautilus-clipboard.h"
 #include "nautilus-dbus-manager.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
@@ -1110,6 +1111,8 @@ nautilus_application_init (NautilusApplication *self)
 
     nautilus_ensure_extension_points ();
     nautilus_ensure_extension_builtins ();
+
+    nautilus_clipboard_register ();
 }
 
 static void
