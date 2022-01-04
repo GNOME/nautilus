@@ -293,6 +293,14 @@ void              nautilus_files_view_new_file_with_initial_contents (NautilusFi
                                                                       const char         *initial_contents,
                                                                       int                 length);
 
+/* clipboard reading */
+void               nautilus_files_view_get_clipboard_async  (NautilusFilesView   *self,
+                                                             GAsyncReadyCallback  callback,
+                                                             gpointer             callback_data);
+NautilusClipboard *nautilus_files_view_get_clipboard_finish (NautilusFilesView  *self,
+                                                             GAsyncResult       *result,
+                                                             GError            **error);
+
 /* selection handling */
 void              nautilus_files_view_activate_selection         (NautilusFilesView      *view);
 void              nautilus_files_view_preview_selection_event    (NautilusFilesView      *view,
