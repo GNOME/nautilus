@@ -32,6 +32,7 @@ GType              nautilus_clipboard_get_type     (void);
 void nautilus_clipboard_clear_if_colliding_uris    (GtkWidget          *widget,
                                                     const GList        *item_uris);
 #endif
+GList             *nautilus_clipboard_peek_files   (NautilusClipboard *clip);
 GList             *nautilus_clipboard_get_uri_list (NautilusClipboard *clip);
 gboolean           nautilus_clipboard_is_cut       (NautilusClipboard *clip);
 

@@ -222,6 +222,18 @@ nautilus_clipboard_deserialize (GdkContentDeserializer *deserializer)
 }
 
 /**
+ * nautilus_clipboard_peek_files:
+ * @clip: The current local clipboard value.
+ *
+ * Returns: (transfer none): The internal GList of GFile objects.
+ */
+GList *
+nautilus_clipboard_peek_files (NautilusClipboard *clip)
+{
+    return clip->files;
+}
+
+/**
  * nautilus_clipboard_get_uri_list:
  * @clip: The current local clipboard value.
  *
