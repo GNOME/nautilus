@@ -24,6 +24,8 @@
 #include <gexiv2/gexiv2.h>
 #include <glib/gi18n.h>
 
+#include <math.h>
+
 #define LOAD_BUFFER_SIZE 8192
 
 typedef struct
@@ -254,8 +256,16 @@ append_gexiv2_info (NautilusImagesPropertiesPage *page)
     {
         g_autofree char *gps_coords = NULL;
 
-        /* Translators: These are the coordinates of a position where a picture was taken. */
-        gps_coords = g_strdup_printf (_("%f N / %f W (%.0f m)"), latitude, longitude, altitude);
+        gps_coords = g_strdup_printf ("%f° %s %f° %s (%.0f m)",
+                                      fabs (latitude),
+                                      /* Translators: "N" and "S" stand for
+                                       * north and south in GPS coordinates. */
+                                      latitude >= 0 ? _("N") : _("S"),
+                                      fabs (longitude),
+                                      /* Translators: "E" and "W" stand for
+                                       * east and west in GPS coordinates. */
+                                      longitude >= 0 ? _("E") : _("W"),
+                                      altitude);
 
         append_item (page, _("Coordinates"), gps_coords);
     }
