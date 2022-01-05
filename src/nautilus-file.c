@@ -3389,6 +3389,7 @@ compare_by_directory_name (NautilusFile *file_1,
                    file_2->details->directory_name_collation_key);
 }
 
+#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
 static GList *
 prepend_automatic_keywords (NautilusFile *file,
                             GList        *names)
@@ -3426,6 +3427,7 @@ prepend_automatic_keywords (NautilusFile *file,
 
     return names;
 }
+#endif
 
 static int
 compare_by_type (NautilusFile *file_1,
@@ -4856,6 +4858,7 @@ nautilus_is_video_file (NautilusFile *file)
     return FALSE;
 }
 
+#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
 static GList *
 sort_keyword_list_and_remove_duplicates (GList *keywords)
 {
@@ -4966,7 +4969,6 @@ nautilus_file_get_keywords (NautilusFile *file)
     return sort_keyword_list_and_remove_duplicates (keywords);
 }
 
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
 /**
  * nautilus_file_get_emblem_icons
  *
