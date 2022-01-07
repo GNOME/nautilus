@@ -834,12 +834,12 @@ save_sidebar_width_cb (gpointer user_data)
 
 /* side pane helpers */
 static void
-side_pane_size_allocate_callback (GtkWidget     *widget,
-                                  GtkAllocation *allocation,
-                                  gpointer       user_data)
+side_pane_notify_position_callback (GObject    *object,
+                                    GParamSpec *pspec,
+                                    gpointer    user_data)
 {
     NautilusWindow *window = user_data;
-
+    gint position;
 
     if (window->sidebar_width_handler_id != 0)
     {
@@ -847,10 +847,11 @@ side_pane_size_allocate_callback (GtkWidget     *widget,
         window->sidebar_width_handler_id = 0;
     }
 
-    if (allocation->width != window->side_pane_width &&
-        allocation->width > 1)
+    position = gtk_paned_get_position (GTK_PANED (window->content_paned));
+    if (position != window->side_pane_width &&
+        position > 1)
     {
-        window->side_pane_width = allocation->width;
+        window->side_pane_width = position;
 
         window->sidebar_width_handler_id =
             g_idle_add (save_sidebar_width_cb, window);
@@ -1317,9 +1318,9 @@ static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
     setup_side_pane_width (window);
-    g_signal_connect (window->sidebar,
-                      "size-allocate",
-                      G_CALLBACK (side_pane_size_allocate_callback),
+    g_signal_connect (window->content_paned,
+                      "notify::position",
+                      G_CALLBACK (side_pane_notify_position_callback),
                       window);
 
     nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
