@@ -563,7 +563,7 @@ trash_symbolic_link_cb (GtkDialog *dialog,
     GList file_as_list;
 
     data = user_data;
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 
     if (response_id == GTK_RESPONSE_YES)
     {
@@ -1023,7 +1023,7 @@ on_confirm_multiple_windows_response (GtkDialog          *dialog,
                                       int                 response_id,
                                       ActivateParameters *parameters)
 {
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 
     if (response_id == GTK_RESPONSE_YES)
     {
@@ -1109,7 +1109,7 @@ open_with_response_cb (GtkDialog *dialog,
 
     if (response_id != GTK_RESPONSE_OK)
     {
-        gtk_widget_destroy (GTK_WIDGET (dialog));
+        gtk_window_destroy (GTK_WINDOW (dialog));
         return;
     }
 
@@ -1117,7 +1117,7 @@ open_with_response_cb (GtkDialog *dialog,
     file = g_object_get_data (G_OBJECT (dialog), "mime-action:file");
     info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
@@ -1143,7 +1143,7 @@ choose_program (GtkDialog *message_dialog,
 
     if (response != GTK_RESPONSE_ACCEPT)
     {
-        gtk_widget_destroy (GTK_WIDGET (message_dialog));
+        gtk_window_destroy (GTK_WINDOW (message_dialog));
         activate_parameters_install_free (parameters);
         return;
     }
@@ -1156,7 +1156,7 @@ choose_program (GtkDialog *message_dialog,
     nautilus_file_ref (file);
 
     /* Destroy the message dialog after ref:ing the file */
-    gtk_widget_destroy (GTK_WIDGET (message_dialog));
+    gtk_window_destroy (GTK_WINDOW (message_dialog));
 
     dialog = gtk_app_chooser_dialog_new (parameters->parent_window,
                                          GTK_DIALOG_MODAL,
@@ -1280,7 +1280,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 
     g_assert (parameters_install->proxy != NULL);
 
-    desktop_startup_id = g_strdup_printf ("_TIME%i", gtk_get_current_event_time ());
+    desktop_startup_id = g_strdup_printf ("_TIME%i", (guint32) GDK_CURRENT_TIME);
 
     g_dbus_proxy_call (parameters_install->proxy,
                        "InstallMimeTypes",
@@ -1306,7 +1306,7 @@ application_unhandled_file_install (GtkDialog                 *dialog,
 {
     char *mime_type;
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
     parameters_install->dialog = NULL;
 
     if (response_id == GTK_RESPONSE_YES)
@@ -1377,7 +1377,7 @@ pk_proxy_appeared_cb (GObject      *source,
     g_signal_connect (dialog, "response",
                       G_CALLBACK (application_unhandled_file_install),
                       parameters_install);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
     g_free (mime_type);
 }
 

@@ -619,7 +619,7 @@ result_list_attributes_ready_cb (GList    *file_list,
     GVariant *meta_variant;
     gint icon_scale;
 
-    icon_scale = gdk_monitor_get_scale_factor (gdk_display_get_monitor (gdk_display_get_default (), 0));
+    icon_scale = gdk_monitor_get_scale_factor (g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0));
 
     for (l = file_list; l != NULL; l = l->next)
     {
@@ -658,9 +658,9 @@ result_list_attributes_ready_cb (GList    *file_list,
 
         if (gicon == NULL)
         {
-            gicon = G_ICON (nautilus_file_get_icon_pixbuf (file, 128,
-                                                           icon_scale,
-                                                           NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
+            gicon = G_ICON (nautilus_file_get_icon_texture (file, 128,
+                                                            icon_scale,
+                                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
         }
 
         g_variant_builder_add (&meta, "{sv}",
@@ -739,12 +739,13 @@ typedef struct
 } ShowURIData;
 
 static void
-show_uri_callback (gboolean res,
-                   gpointer user_data)
+show_uri_callback (GObject      *source_object,
+                   GAsyncResult *result,
+                   gpointer      user_data)
 {
     ShowURIData *data = user_data;
 
-    if (!res)
+    if (!gtk_show_uri_full_finish (NULL, result, NULL))
     {
         g_application_open (g_application_get_default (), &data->file, 1, "");
     }
@@ -764,16 +765,13 @@ handle_activate_result (NautilusShellSearchProvider2  *skeleton,
                         gpointer                       user_data)
 {
     ShowURIData *data;
-    gboolean res;
 
     data = g_new (ShowURIData, 1);
     data->file = g_file_new_for_uri (result);
     data->skeleton = skeleton;
     data->invocation = invocation;
 
-    res = gtk_show_uri_on_window (NULL, result, timestamp, NULL);
-
-    show_uri_callback (res, data);
+    gtk_show_uri_full (NULL, result, timestamp, NULL, show_uri_callback, data);
 
     return TRUE;
 }

@@ -48,7 +48,6 @@
 #include <nautilus-extension.h>
 #include "nautilus-ui-utilities.h"
 #include <eel/eel-vfs-extensions.h>
-#include "nautilus-gtk4-helpers.h"
 
 enum
 {
@@ -1863,13 +1862,13 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
                 }
                 else
                 {
-                    gtk_widget_destroy (GTK_WIDGET (window));
+                    gtk_window_destroy (GTK_WINDOW (window));
                 }
             }
             else
             {
                 /* Since this is a window, destroying it will also unref it. */
-                gtk_widget_destroy (GTK_WIDGET (window));
+                gtk_window_destroy (GTK_WINDOW (window));
             }
         }
         else
@@ -2945,25 +2944,26 @@ nautilus_window_slot_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_window_slot_parent_class)->finalize (object);
 }
 
-static void
+static gboolean
 nautilus_window_slot_grab_focus (GtkWidget *widget)
 {
     NautilusWindowSlot *self;
     self = NAUTILUS_WINDOW_SLOT (widget);
-    GTK_WIDGET_CLASS (nautilus_window_slot_parent_class)->grab_focus (widget);
 
     if (nautilus_window_slot_get_search_visible (self))
     {
-        gtk_widget_grab_focus (GTK_WIDGET (self->query_editor));
+        return gtk_widget_grab_focus (GTK_WIDGET (self->query_editor));
     }
-    else if (self->content_view)
+    else if (self->content_view != NULL)
     {
-        gtk_widget_grab_focus (GTK_WIDGET (self->content_view));
+        return gtk_widget_grab_focus (GTK_WIDGET (self->content_view));
     }
-    else if (self->new_content_view)
+    else if (self->new_content_view != NULL)
     {
-        gtk_widget_grab_focus (GTK_WIDGET (self->new_content_view));
+        return gtk_widget_grab_focus (GTK_WIDGET (self->new_content_view));
     }
+
+    return GTK_WIDGET_CLASS (nautilus_window_slot_parent_class)->grab_focus (widget);
 }
 
 static void

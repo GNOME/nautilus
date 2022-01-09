@@ -47,7 +47,6 @@
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-signaller.h"
-#include "nautilus-gtk4-helpers.h"
 
 static GHashTable *windows;
 static GHashTable *pending_lists;
@@ -72,7 +71,7 @@ typedef struct
 
 struct _NautilusPropertiesWindow
 {
-    HdyWindow parent_instance;
+    AdwWindow parent_instance;
 
     GList *original_files;
     GList *target_files;
@@ -288,7 +287,7 @@ static void schedule_directory_contents_update (NautilusPropertiesWindow *self);
 static void directory_contents_value_field_update (NautilusPropertiesWindow *self);
 static void file_changed_callback (NautilusFile *file,
                                    gpointer      user_data);
-static void permission_button_update (GtkToggleButton          *button,
+static void permission_button_update (GtkCheckButton           *button,
                                       NautilusPropertiesWindow *self);
 static void permission_combo_update (GtkComboBox              *combo,
                                      NautilusPropertiesWindow *self);
@@ -316,7 +315,7 @@ static void name_field_activate (GtkWidget *name_field,
                                  gpointer   user_data);
 static void setup_pie_widget (NautilusPropertiesWindow *self);
 
-G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, HDY_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
 
 static gboolean
 is_multi_file_window (NautilusPropertiesWindow *self)
@@ -396,7 +395,7 @@ get_target_file (NautilusPropertiesWindow *self)
 static void
 get_image_for_properties_window (NautilusPropertiesWindow  *self,
                                  char                     **icon_name,
-                                 GdkPixbuf                **icon_pixbuf)
+                                 GdkPaintable             **icon_paintable)
 {
     g_autoptr (NautilusIconInfo) icon = NULL;
     GList *l;
@@ -445,9 +444,9 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
         *icon_name = g_strdup (nautilus_icon_info_get_used_name (icon));
     }
 
-    if (icon_pixbuf != NULL)
+    if (icon_paintable != NULL)
     {
-        *icon_pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_GRID_ICON_SIZE_STANDARD);
+        *icon_paintable = nautilus_icon_info_get_paintable (icon);
     }
 }
 
@@ -455,18 +454,18 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
 static void
 update_properties_window_icon (NautilusPropertiesWindow *self)
 {
-    g_autoptr (GdkPixbuf) pixbuf = NULL;
+    g_autoptr (GdkPaintable) paintable = NULL;
     g_autofree char *name = NULL;
 
-    get_image_for_properties_window (self, &name, &pixbuf);
+    get_image_for_properties_window (self, &name, &paintable);
 
     if (name != NULL)
     {
         gtk_window_set_icon_name (GTK_WINDOW (self), name);
     }
 
-    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon_image), pixbuf);
-    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon_button_image), pixbuf);
+    gtk_image_set_from_paintable (GTK_IMAGE (self->icon_image), paintable);
+    gtk_image_set_from_paintable (GTK_IMAGE (self->icon_button_image), paintable);
 }
 
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
@@ -527,7 +526,7 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
     GtkWindow *window;
 
     image = GTK_IMAGE (widget);
-    window = GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (image)));
+    window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (image)));
 
     uris = g_strsplit ((const gchar *) gtk_selection_data_get_data (selection_data), "\r\n", 0);
     exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
@@ -634,7 +633,7 @@ set_name_field (NautilusPropertiesWindow *self,
             g_autofree gchar *displayed_name = gtk_editable_get_chars (GTK_EDITABLE (self->name_field), 0, -1);
             if (strcmp (displayed_name, name) != 0)
             {
-                gtk_entry_set_text (GTK_ENTRY (self->name_field), name);
+                gtk_editable_set_text (GTK_EDITABLE (self->name_field), name);
             }
         }
     }
@@ -743,7 +742,7 @@ name_field_restore_original_name (GtkWidget *name_field)
 
     if (strcmp (original_name, displayed_name) != 0)
     {
-        gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
+        gtk_editable_set_text (GTK_EDITABLE (name_field), original_name);
     }
     gtk_editable_select_region (GTK_EDITABLE (name_field), 0, -1);
 }
@@ -1186,7 +1185,7 @@ update_files_callback (gpointer data)
     if (self->original_files == NULL)
     {
         /* Close the window if no files are left */
-        gtk_widget_destroy (GTK_WIDGET (self));
+        gtk_window_destroy (GTK_WINDOW (self));
     }
     else
     {
@@ -2401,10 +2400,13 @@ should_show_volume_usage (NautilusPropertiesWindow *self)
 }
 
 static void
-paint_legend (GtkWidget *widget,
-              cairo_t   *cr,
-              gpointer   data)
+paint_legend (GtkDrawingArea *drawing_area,
+              cairo_t        *cr,
+              int             width,
+              int             height,
+              gpointer        data)
 {
+    GtkWidget *widget = GTK_WIDGET (drawing_area);
     GtkStyleContext *context;
     GtkAllocation allocation;
 
@@ -2428,7 +2430,6 @@ paint_slice (GtkWidget   *widget,
     double offset = G_PI / 2.0;
     GdkRGBA fill;
     GdkRGBA stroke;
-    GtkStateFlags state;
     GtkBorder border;
     GtkStyleContext *context;
     double x, y, radius;
@@ -2440,14 +2441,13 @@ paint_slice (GtkWidget   *widget,
     }
 
     context = gtk_widget_get_style_context (widget);
-    state = gtk_style_context_get_state (context);
-    gtk_style_context_get_border (context, state, &border);
+    gtk_style_context_get_border (context, &border);
 
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, style_class);
-    gtk_style_context_get_color (context, state, &fill);
+    gtk_style_context_get_color (context, &fill);
     gtk_style_context_add_class (context, "border");
-    gtk_style_context_get_color (context, state, &stroke);
+    gtk_style_context_get_color (context, &stroke);
     gtk_style_context_restore (context);
 
     width = gtk_widget_get_allocated_width (widget);
@@ -2489,11 +2489,14 @@ paint_slice (GtkWidget   *widget,
 }
 
 static void
-paint_pie_chart (GtkWidget *widget,
-                 cairo_t   *cr,
-                 gpointer   data)
+paint_pie_chart (GtkDrawingArea *drawing_area,
+                 cairo_t        *cr,
+                 int             width,
+                 int             height,
+                 gpointer        data)
 {
     NautilusPropertiesWindow *self;
+    GtkWidget *widget = GTK_WIDGET (drawing_area);
     double free, used, reserved;
 
     self = NAUTILUS_PROPERTIES_WINDOW (data);
@@ -2553,12 +2556,12 @@ setup_pie_widget (NautilusPropertiesWindow *self)
         }
     }
 
-    g_signal_connect (self->pie_chart, "draw",
-                      G_CALLBACK (paint_pie_chart), self);
-    g_signal_connect (self->used_color, "draw",
-                      G_CALLBACK (paint_legend), self);
-    g_signal_connect (self->free_color, "draw",
-                      G_CALLBACK (paint_legend), self);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->pie_chart),
+                                    paint_pie_chart, self, NULL);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->used_color),
+                                    paint_legend, self, NULL);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->free_color),
+                                    paint_legend, self, NULL);
 }
 
 static void
@@ -2872,12 +2875,7 @@ start_long_operation (NautilusPropertiesWindow *self)
     if (self->long_operation_underway == 0)
     {
         /* start long operation */
-        GdkDisplay *display;
-        g_autoptr (GdkCursor) cursor = NULL;
-
-        display = gtk_widget_get_display (GTK_WIDGET (self));
-        cursor = gdk_cursor_new_from_name (display, "wait");
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (self)), cursor);
+        gtk_widget_set_cursor_from_name (GTK_WIDGET (self), "wait");
     }
     self->long_operation_underway++;
 }
@@ -2885,11 +2883,11 @@ start_long_operation (NautilusPropertiesWindow *self)
 static void
 end_long_operation (NautilusPropertiesWindow *self)
 {
-    if (gtk_widget_get_window (GTK_WIDGET (self)) != NULL &&
+    if (gtk_native_get_surface (GTK_NATIVE (self)) != NULL &&
         self->long_operation_underway == 1)
     {
         /* finished !! */
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (self)), NULL);
+        gtk_widget_set_cursor (GTK_WIDGET (self), NULL);
     }
     self->long_operation_underway--;
 }
@@ -3013,7 +3011,7 @@ initial_permission_state_consistent (NautilusPropertiesWindow *self,
 }
 
 static void
-permission_button_toggled (GtkToggleButton          *button,
+permission_button_toggled (GtkCheckButton           *button,
                            NautilusPropertiesWindow *self)
 {
     gboolean is_folder, is_special;
@@ -3028,8 +3026,8 @@ permission_button_toggled (GtkToggleButton          *button,
     is_special = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button),
                                                      "is-special"));
 
-    if (gtk_toggle_button_get_active (button)
-        && !gtk_toggle_button_get_inconsistent (button))
+    if (gtk_check_button_get_active (button)
+        && !gtk_check_button_get_inconsistent (button))
     {
         /* Go to the initial state unless the initial state was
          *  consistent, or we support recursive apply */
@@ -3042,8 +3040,8 @@ permission_button_toggled (GtkToggleButton          *button,
             on = TRUE;
         }
     }
-    else if (gtk_toggle_button_get_inconsistent (button)
-             && !gtk_toggle_button_get_active (button))
+    else if (gtk_check_button_get_inconsistent (button)
+             && !gtk_check_button_get_active (button))
     {
         inconsistent = FALSE;
         on = TRUE;
@@ -3058,8 +3056,8 @@ permission_button_toggled (GtkToggleButton          *button,
                                      G_CALLBACK (permission_button_toggled),
                                      self);
 
-    gtk_toggle_button_set_active (button, on);
-    gtk_toggle_button_set_inconsistent (button, inconsistent);
+    gtk_check_button_set_active (button, on);
+    gtk_check_button_set_inconsistent (button, inconsistent);
 
     g_signal_handlers_unblock_by_func (G_OBJECT (button),
                                        G_CALLBACK (permission_button_toggled),
@@ -3074,7 +3072,7 @@ permission_button_toggled (GtkToggleButton          *button,
 }
 
 static void
-permission_button_update (GtkToggleButton          *button,
+permission_button_update (GtkCheckButton           *button,
                           NautilusPropertiesWindow *self)
 {
     GList *l;
@@ -3146,12 +3144,12 @@ permission_button_update (GtkToggleButton          *button,
                                      G_CALLBACK (permission_button_toggled),
                                      self);
 
-    gtk_toggle_button_set_active (button, !all_unset);
+    gtk_check_button_set_active (button, !all_unset);
     /* if actually inconsistent, or default value for file buttons
      *  if no files are selected. (useful for recursive apply) */
-    gtk_toggle_button_set_inconsistent (button,
-                                        (!all_unset && !all_set) ||
-                                        (!is_folder && no_match));
+    gtk_check_button_set_inconsistent (button,
+                                       (!all_unset && !all_set) ||
+                                       (!is_folder && no_match));
     gtk_widget_set_sensitive (GTK_WIDGET (button), sensitive);
 
     g_signal_handlers_unblock_by_func (G_OBJECT (button),
@@ -3900,7 +3898,7 @@ on_change_permissions_response (GtkDialog                *dialog,
     if (response != GTK_RESPONSE_OK)
     {
         g_clear_pointer (&self->change_permission_combos, g_list_free);
-        gtk_widget_destroy (GTK_WIDGET (dialog));
+        gtk_window_destroy (GTK_WINDOW (dialog));
         return;
     }
 
@@ -3978,7 +3976,7 @@ on_change_permissions_response (GtkDialog                *dialog,
         }
     }
     g_clear_pointer (&self->change_permission_combos, g_list_free);
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -4133,7 +4131,7 @@ on_change_permissions_clicked (GtkWidget                *button,
     set_active_from_umask (combo, PERMISSION_OTHER, TRUE);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), self);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
@@ -4173,7 +4171,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
         if (self->has_recursive_apply)
         {
-            gtk_widget_show_all (self->change_permissions_button_box);
+            gtk_widget_show (self->change_permissions_button_box);
             g_signal_connect (self->change_permissions_button, "clicked",
                               G_CALLBACK (on_change_permissions_clicked),
                               self);
@@ -4234,10 +4232,10 @@ append_extension_pages (NautilusPropertiesWindow *self)
 
             gtk_notebook_append_page (self->notebook,
                                       page_widget, label);
-            gtk_container_child_set (GTK_CONTAINER (self->notebook),
-                                     page_widget,
-                                     "tab-expand", TRUE,
-                                     NULL);
+            g_object_set (gtk_notebook_get_page (GTK_NOTEBOOK (self->notebook),
+                                                 GTK_WIDGET (page_widget)),
+                          "tab-expand", TRUE,
+                          NULL);
 
             g_object_set_data (G_OBJECT (page_widget),
                                "is-extension-page",
@@ -4441,7 +4439,7 @@ add_clicked_cb (GtkButton *button,
                                    g_app_info_get_display_name (info), error->message);
         show_dialog (_("Could not add application"),
                      message,
-                     GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
     else
@@ -4469,7 +4467,7 @@ forget_clicked_cb (GtkButton *button,
         {
             show_dialog (_("Could not forget association"),
                          error->message,
-                         GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+                         GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                          GTK_MESSAGE_ERROR);
         }
 
@@ -4514,7 +4512,7 @@ set_as_default_clicked_cb (GtkButton *button,
                                    g_app_info_get_display_name (info), error->message);
         show_dialog (_("Could not set as default"),
                      message,
-                     GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
 
@@ -4702,8 +4700,8 @@ create_properties_window (StartupData *startup_data)
 
     if (startup_data->parent_widget)
     {
-        gtk_window_set_screen (GTK_WINDOW (window),
-                               gtk_widget_get_screen (startup_data->parent_widget));
+        gtk_window_set_display (GTK_WINDOW (window),
+                                gtk_widget_get_display (startup_data->parent_widget));
     }
 
     if (startup_data->parent_window)
@@ -4997,8 +4995,8 @@ nautilus_properties_window_present (GList                            *original_f
     {
         if (parent_widget)
         {
-            gtk_window_set_screen (GTK_WINDOW (existing_window),
-                                   gtk_widget_get_screen (parent_widget));
+            gtk_window_set_display (GTK_WINDOW (existing_window),
+                                    gtk_widget_get_display (parent_widget));
         }
         else if (startup_id)
         {
@@ -5238,14 +5236,16 @@ select_image_button_callback (GtkWidget                *widget,
 
     if (dialog == NULL)
     {
+        g_autoptr (GFile) pictures_location = NULL;
         dialog = gtk_file_chooser_dialog_new (_("Select Custom Icon"), GTK_WINDOW (self),
                                               GTK_FILE_CHOOSER_ACTION_OPEN,
                                               _("_Revert"), GTK_RESPONSE_NO,
                                               _("_Cancel"), GTK_RESPONSE_CANCEL,
                                               _("_Open"), GTK_RESPONSE_OK,
                                               NULL);
+        pictures_location = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
         gtk_file_chooser_add_shortcut_folder (GTK_FILE_CHOOSER (dialog),
-                                              g_get_user_special_dir (G_USER_DIRECTORY_PICTURES),
+                                              pictures_location,
                                               NULL);
         gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
         gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
@@ -5273,9 +5273,9 @@ select_image_button_callback (GtkWidget                *widget,
 
             if (image_location != NULL)
             {
-                gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog),
-                                                          image_location,
-                                                          NULL);
+                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),
+                                                     image_location,
+                                                     NULL);
             }
         }
     }
@@ -5304,7 +5304,6 @@ select_image_button_callback (GtkWidget                *widget,
 static void
 nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 {
-    GtkBindingSet *binding_set;
     GtkWidgetClass *widget_class;
     GObjectClass *oclass;
 
@@ -5313,15 +5312,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     oclass->dispose = real_dispose;
     oclass->finalize = real_finalize;
 
-    binding_set = gtk_binding_set_by_class (klass);
-    g_signal_new ("close",
-                  G_OBJECT_CLASS_TYPE (klass),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                  0, NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
-                  G_TYPE_NONE, 0);
-    gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0,
-                                  "close", 0);
+    gtk_widget_class_add_binding (widget_class,
+                                  GDK_KEY_Escape, 0,
+                                  (GtkShortcutFunc) gtk_window_close, NULL);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
@@ -5414,5 +5407,4 @@ static void
 nautilus_properties_window_init (NautilusPropertiesWindow *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
-    g_signal_connect (self, "close", G_CALLBACK (gtk_window_close), NULL);
 }

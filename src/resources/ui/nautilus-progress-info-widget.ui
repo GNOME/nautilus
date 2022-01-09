@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.0 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkImage" id="cancel_image">
-    <property name="visible">True</property>
     <property name="icon_name">window-close-symbolic</property>
   </object>
   <template class="NautilusProgressInfoWidget" parent="GtkGrid">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <property name="margin_start">6</property>
     <property name="margin_end">6</property>
     <property name="margin_top">6</property>
@@ -16,37 +12,34 @@
     <child>
       <object class="GtkLabel" id="status">
         <property name="width_request">300</property>
-        <property name="visible">True</property>
         <property name="margin_bottom">6</property>
         <property name="hexpand">True</property>
         <property name="label">status</property>
         <property name="ellipsize">middle</property>
         <property name="max_width_chars">40</property>
         <property name="xalign">0</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">0</property>
+        </layout>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkProgressBar" id="progress_bar">
-        <property name="visible">True</property>
         <property name="valign">center</property>
         <property name="margin_start">2</property>
         <property name="margin_bottom">4</property>
         <property name="hexpand">True</property>
         <property name="pulse_step">0.050000000000000003</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">1</property>
+        </layout>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
     </child>
     <child>
       <object class="GtkButton" id="button">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
+        <property name="focusable">True</property>
         <property name="receives_default">True</property>
         <property name="valign">center</property>
         <property name="margin_start">20</property>
@@ -59,16 +52,15 @@
             <property name="icon-name">window-close-symbolic</property>
           </object>
         </child>
+        <layout>
+          <property name="column">1</property>
+          <property name="row">0</property>
+          <property name="row-span">3</property>
+        </layout>
       </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">0</property>
-        <property name="height">3</property>
-      </packing>
     </child>
     <child>
       <object class="GtkLabel" id="details">
-        <property name="visible">True</property>
         <property name="label">label</property>
         <property name="wrap">True</property>
         <property name="wrap_mode">word-char</property>
@@ -78,13 +70,13 @@
           <class name="dim-label"/>
         </style>
         <attributes>
-          <attribute name="font-features" value="tnum"/>
+          <attribute name="font-features" value="tnum"></attribute>
         </attributes>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">2</property>
+        </layout>
       </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
-      </packing>
     </child>
   </template>
 </interface>

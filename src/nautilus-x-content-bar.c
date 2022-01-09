@@ -30,11 +30,10 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-program-choosing.h"
-#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusXContentBar
 {
-    GtkBin parent_instance;
+    AdwBin parent_instance;
     GtkWidget *label;
 
     char **x_content_types;
@@ -79,7 +78,7 @@ content_bar_response_cb (GtkInfoBar *infobar,
     if (default_app != NULL)
     {
         nautilus_launch_application_for_mount (default_app, bar->mount,
-                                               GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
+                                               GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (bar))));
         g_object_unref (default_app);
     }
 }
@@ -182,7 +181,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         icon = g_app_info_get_icon (default_app);
         if (icon != NULL)
         {
-            image = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_BUTTON);
+            image = gtk_image_new_from_gicon (icon);
         }
         else
         {
@@ -190,7 +189,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         }
 
         name = g_app_info_get_name (default_app);
-        info_bar = gtk_bin_get_child (GTK_BIN (bar));
+        info_bar = adw_bin_get_child (ADW_BIN (bar));
         button = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar), name, n);
         box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 

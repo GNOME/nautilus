@@ -273,7 +273,7 @@ void
 nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                    gdouble           offset_x,
                                    gdouble           offset_y,
-                                   const GdkEvent   *event)
+                                   GdkEvent         *event)
 {
     if (list_view->details->drag_button == 0)
     {

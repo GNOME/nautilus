@@ -33,7 +33,7 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
-#include <libhandy-1/handy.h>
+#include <libadwaita-1/adwaita.h>
 #include <nautilus-extension.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -65,7 +65,6 @@
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window.h"
-#include "nautilus-gtk4-helpers.h"
 
 typedef struct
 {
@@ -635,7 +634,7 @@ static int
 do_perform_self_checks (void)
 {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-    gtk_init (NULL, NULL);
+    gtk_init ();
 
     nautilus_profile_start (NULL);
     /* Run the checks (each twice) for nautilus and libnautilus-private. */
@@ -765,8 +764,7 @@ action_help (GSimpleAction *action,
     GError *error = NULL;
 
     window = gtk_application_get_active_window (application);
-    gtk_show_uri_on_window (window, "help:gnome-help/files",
-                            gtk_get_current_event_time (), &error);
+    gtk_show_uri (window, "help:gnome-help/files", GDK_CURRENT_TIME);
 
     if (error)
     {
@@ -777,7 +775,7 @@ action_help (GSimpleAction *action,
                                          _("There was an error displaying help: \n%s"),
                                          error->message);
         g_signal_connect (G_OBJECT (dialog), "response",
-                          G_CALLBACK (gtk_widget_destroy),
+                          G_CALLBACK (gtk_window_destroy),
                           NULL);
 
         gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
@@ -1133,7 +1131,7 @@ theme_changed (GtkSettings *settings)
         {
             provider = gtk_css_provider_new ();
             file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/Adwaita.css");
-            gtk_css_provider_load_from_file (provider, file, NULL);
+            gtk_css_provider_load_from_file (provider, file);
             g_object_unref (file);
         }
 
@@ -1153,7 +1151,7 @@ theme_changed (GtkSettings *settings)
     {
         permanent_provider = gtk_css_provider_new ();
         file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
-        gtk_css_provider_load_from_file (permanent_provider, file, NULL);
+        gtk_css_provider_load_from_file (permanent_provider, file);
         /* The behavior of two style providers with the same priority is
          * undefined and gtk happens to prefer the provider that got added last.
          * Use a higher priority here to avoid this problem.
@@ -1273,7 +1271,7 @@ nautilus_application_startup_common (NautilusApplication *self)
      */
     G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
 
-    hdy_init ();
+    adw_init ();
 
     gtk_window_set_default_icon_name (APPLICATION_ID);
 
@@ -1306,7 +1304,7 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
 
-    g_signal_connect_object (gtk_icon_theme_get_default (),
+    g_signal_connect_object (gtk_icon_theme_get_for_display (gdk_display_get_default ()),
                              "changed",
                              G_CALLBACK (icon_theme_changed_callback),
                              NULL, 0);

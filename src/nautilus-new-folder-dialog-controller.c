@@ -139,14 +139,14 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
 
     if (initial_name != NULL)
     {
-        gtk_entry_set_text (GTK_ENTRY (name_entry), initial_name);
+        gtk_editable_set_text (GTK_EDITABLE (name_entry), initial_name);
     }
 
     gtk_button_set_label (GTK_BUTTON (activate_button), _("Create"));
     gtk_label_set_text (GTK_LABEL (name_label), _("Folder name"));
     gtk_window_set_title (GTK_WINDOW (new_folder_dialog), _("New Folder"));
 
-    gtk_widget_show_all (new_folder_dialog);
+    gtk_widget_show (new_folder_dialog);
 
     return self;
 }
@@ -172,7 +172,7 @@ nautilus_new_folder_dialog_controller_finalize (GObject *object)
     if (self->new_folder_dialog != NULL)
     {
         g_clear_signal_handler (&self->response_handler_id, self->new_folder_dialog);
-        gtk_widget_destroy (self->new_folder_dialog);
+        gtk_window_destroy (GTK_WINDOW (self->new_folder_dialog));
         self->new_folder_dialog = NULL;
     }
 

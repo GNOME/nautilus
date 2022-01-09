@@ -176,7 +176,7 @@ nautilus_list_model_get_column_type (GtkTreeModel *tree_model,
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
         {
-            return GDK_TYPE_PIXBUF;
+            return GDK_TYPE_TEXTURE;
         }
 
         case NAUTILUS_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
@@ -302,7 +302,7 @@ nautilus_list_model_get_icon_scale (NautilusListModel *model)
 
     if (retval == -1)
     {
-        retval = gdk_monitor_get_scale_factor (gdk_display_get_monitor (gdk_display_get_default (), 0));
+        retval = gdk_monitor_get_scale_factor (g_list_model_get_item (gdk_display_get_monitors (gdk_display_get_default ()), 0));
     }
 
     /* FIXME: Temporary regression: HiDPI icons not supported, ignore scale. */
@@ -350,7 +350,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
     FileEntry *file_entry;
     NautilusFile *file;
     char *str;
-    GdkPixbuf *icon, *rendered_icon;
+    GdkTexture *icon;
     int icon_size, icon_scale;
     NautilusListZoomLevel zoom_level;
     NautilusFileIconFlags flags;
@@ -387,7 +387,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
         {
-            g_value_init (value, GDK_TYPE_PIXBUF);
+            g_value_init (value, GDK_TYPE_TEXTURE);
 
             if (file != NULL)
             {
@@ -421,8 +421,9 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                     }
                 }
 
-                icon = nautilus_file_get_icon_pixbuf (file, icon_size, icon_scale, flags);
+                icon = nautilus_file_get_icon_texture (file, icon_size, icon_scale, flags);
 
+#if 0 && NAUTILUS_CLIPBOARD_NEEDS_GTK4_REIMPLEMENTATION
                 if (priv->highlight_files != NULL &&
                     g_list_find_custom (priv->highlight_files,
                                         file, (GCompareFunc) nautilus_file_compare_location))
@@ -435,6 +436,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                         icon = rendered_icon;
                     }
                 }
+#endif
 
                 g_value_set_object (value, icon);
                 g_object_unref (icon);

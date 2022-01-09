@@ -33,7 +33,7 @@ static void
 update_icon (NautilusViewIconItemUi *self)
 {
     NautilusFileIconFlags flags;
-    g_autoptr (GdkPixbuf) icon_pixbuf = NULL;
+    g_autoptr (GdkPaintable) icon_paintable = NULL;
     GtkStyleContext *style_context;
     NautilusFile *file;
     guint icon_size;
@@ -46,8 +46,8 @@ update_icon (NautilusViewIconItemUi *self)
             NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
             NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
 
-    icon_pixbuf = nautilus_file_get_icon_pixbuf (file, icon_size, 1, flags);
-    gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon), icon_pixbuf);
+    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, 1, flags);
+    gtk_image_set_from_paintable (GTK_IMAGE (self->icon), icon_paintable);
 
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
     if (icon_size < NAUTILUS_GRID_ICON_SIZE_LARGEST)

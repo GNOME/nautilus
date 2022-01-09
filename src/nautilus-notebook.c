@@ -29,7 +29,6 @@
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window-slot-dnd.h"
-#include "nautilus-gtk4-helpers.h"
 
 #include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>
@@ -169,7 +168,7 @@ nautilus_notebook_sync_loading (GtkNotebook        *notebook,
     g_return_if_fail (spinner != NULL && icon != NULL);
 
     active = FALSE;
-    g_object_get (spinner, "active", &active, NULL);
+    g_object_get (spinner, "spinning", &active, NULL);
     allow_stop = nautilus_window_slot_get_allow_stop (slot);
 
     if (active == allow_stop)
@@ -270,7 +269,7 @@ build_tab_label (GtkNotebook        *notebook,
     gtk_widget_show (label);
 
     /* Tab close button */
-    close_button = gtk_button_new_from_icon_name ("window-close-symbolic", GTK_ICON_SIZE_MENU);
+    close_button = gtk_button_new_from_icon_name ("window-close-symbolic");
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (close_button)),
                                  "flat");
     /* don't allow focus on the close button */
@@ -315,11 +314,11 @@ nautilus_notebook_add_tab (GtkNotebook        *notebook,
                                          tab_label,
                                          position);
 
-    gtk_container_child_set (GTK_CONTAINER (notebook),
-                             GTK_WIDGET (slot),
-                             "tab-expand", TRUE,
-                             "detachable", FALSE,
-                             NULL);
+    g_object_set (gtk_notebook_get_page (GTK_NOTEBOOK (notebook),
+                                         GTK_WIDGET (slot)),
+                  "tab-expand", TRUE,
+                  "detachable", FALSE,
+                  NULL);
 
     nautilus_notebook_sync_tab_label (notebook, slot);
     nautilus_notebook_sync_loading (notebook, slot);

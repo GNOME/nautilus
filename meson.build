@@ -107,14 +107,14 @@ gio_unix = dependency('gio-unix-2.0', version: glib_ver)
 glib = dependency('glib-2.0', version: glib_ver)
 gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.0')
-gnome_desktop = dependency('gnome-desktop-3.0', version: '>= 3.0.0')
-gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
-libhandy = dependency('libhandy-1', version: '>= 1.1.90')
+gnome_desktop = dependency('gnome-desktop-4', version: '>= 1.0.0')
+gtk = dependency('gtk4', version: '>= 4.6')
+libadwaita = dependency('libadwaita-1', version: '>= 1.0')
 libportal = []
-libportal_gtk3 = []
+libportal_gtk4 = []
 if get_option('libportal')
   libportal = dependency('libportal', version: '>= 0.5')
-  libportal_gtk3 = dependency('libportal-gtk3', version: '>= 0.5')
+  libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
 endif
 selinux = []
 if get_option('selinux')

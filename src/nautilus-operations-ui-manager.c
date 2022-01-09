@@ -223,25 +223,25 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
 static void
 set_images (FileConflictDialogData *data)
 {
-    GdkPixbuf *source_pixbuf;
-    GdkPixbuf *destination_pixbuf;
+    GdkPaintable *source_paintable;
+    GdkPaintable *destination_paintable;
 
-    destination_pixbuf = nautilus_file_get_icon_pixbuf (data->destination,
-                                                        NAUTILUS_GRID_ICON_SIZE_SMALL,
-                                                        1,
-                                                        NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    destination_paintable = nautilus_file_get_icon_paintable (data->destination,
+                                                              NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                                              1,
+                                                              NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
-    source_pixbuf = nautilus_file_get_icon_pixbuf (data->source,
-                                                   NAUTILUS_GRID_ICON_SIZE_SMALL,
-                                                   1,
-                                                   NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    source_paintable = nautilus_file_get_icon_paintable (data->source,
+                                                         NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                                         1,
+                                                         NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
     nautilus_file_conflict_dialog_set_images (data->dialog,
-                                              destination_pixbuf,
-                                              source_pixbuf);
+                                              destination_paintable,
+                                              source_paintable);
 
-    g_object_unref (destination_pixbuf);
-    g_object_unref (source_pixbuf);
+    g_object_unref (destination_paintable);
+    g_object_unref (source_paintable);
 }
 
 static void
@@ -463,7 +463,7 @@ on_conflict_dialog_response (GtkDialog *dialog,
 
     data->response->id = response_id;
 
-    gtk_widget_destroy (GTK_WIDGET (data->dialog));
+    gtk_window_destroy (GTK_WINDOW (data->dialog));
 
     nautilus_file_unref (data->source);
     nautilus_file_unref (data->destination);
@@ -561,7 +561,7 @@ on_app_chooser_response (GtkDialog *dialog,
         application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
     }
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 
     if (application != NULL)
     {
@@ -638,10 +638,10 @@ on_request_passphrase_cb (GtkDialog *dialog,
     if (response_id != GTK_RESPONSE_CANCEL &&
         response_id != GTK_RESPONSE_DELETE_EVENT)
     {
-        data->passphrase = g_strdup (gtk_entry_get_text (data->passphrase_entry));
+        data->passphrase = g_strdup (gtk_editable_get_text (GTK_EDITABLE (data->passphrase_entry)));
     }
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
     invoke_main_context_completed (data);
 }
 

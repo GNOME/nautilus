@@ -134,7 +134,7 @@ nautilus_location_entry_update_action (NautilusLocationEntry *entry)
         return;
     }
 
-    current_text = gtk_entry_get_text (GTK_ENTRY (entry));
+    current_text = gtk_editable_get_text (GTK_EDITABLE (entry));
     location = g_file_parse_name (current_text);
 
     if (g_file_equal (priv->last_location, location))
@@ -184,7 +184,7 @@ nautilus_location_entry_update_current_uri (NautilusLocationEntry *entry,
     g_free (priv->current_directory);
     priv->current_directory = g_strdup (uri);
 
-    gtk_entry_set_text (GTK_ENTRY (entry), uri);
+    gtk_editable_set_text (GTK_EDITABLE (entry), uri);
     set_position_and_selection_to_end (GTK_EDITABLE (entry));
 }
 
@@ -284,7 +284,7 @@ confirm_multiple_windows_cb (GtkDialog *dialog,
 
     open_multiple = (response_id == GTK_RESPONSE_OK);
 
-    gtk_widget_destroy (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
     do_open_windows (data, open_multiple);
     gtk_drag_finish (data->context, open_multiple, FALSE, data->time);
 }
@@ -301,7 +301,7 @@ drag_data_received_callback (GtkWidget        *widget,
 {
     char **names;
     int name_count;
-    GtkWidget *window;
+    GtkRoot *window;
     char *prompt;
     char *detail;
     GtkDialog *dialog;
@@ -320,7 +320,7 @@ drag_data_received_callback (GtkWidget        *widget,
         return;
     }
 
-    window = gtk_widget_get_toplevel (widget);
+    window = gtk_widget_get_root (widget);
 
     op_data = g_new0 (OpenWindowsOnDragData, 1);
     op_data->self = g_object_ref (self);
@@ -578,8 +578,6 @@ finalize (GObject *object)
     g_clear_object (&priv->completions_store);
     g_free (priv->current_directory);
 
-    g_clear_object (&priv->controller);
-
     G_OBJECT_CLASS (nautilus_location_entry_parent_class)->finalize (object);
 }
 
@@ -622,7 +620,7 @@ on_has_focus_changed (GObject    *object,
     if (priv->has_special_text)
     {
         priv->setting_special_text = TRUE;
-        gtk_entry_set_text (GTK_ENTRY (entry), "");
+        gtk_editable_set_text (GTK_EDITABLE (entry), "");
         priv->setting_special_text = FALSE;
     }
 }
@@ -665,7 +663,7 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
 
         case NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR:
         {
-            gtk_entry_set_text (gentry, "");
+            gtk_editable_set_text (GTK_EDITABLE (gentry), "");
         }
         break;
 
@@ -709,7 +707,7 @@ nautilus_location_entry_key_pressed (GtkEventControllerKey *controller,
         {
             int position;
 
-            position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
+            position = strlen (gtk_editable_get_text (GTK_EDITABLE (editable)));
             gtk_editable_select_region (editable, position, position);
         }
         else
@@ -782,7 +780,7 @@ nautilus_location_entry_activate (GtkEntry *entry)
 
     loc_entry = NAUTILUS_LOCATION_ENTRY (entry);
     priv = nautilus_location_entry_get_instance_private (loc_entry);
-    entry_text = gtk_entry_get_text (entry);
+    entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
     path = g_strdup (entry_text);
     path = g_strchug (path);
     path = g_strchomp (path);
@@ -795,7 +793,7 @@ nautilus_location_entry_activate (GtkEntry *entry)
         {
             /* Fix non absolute paths */
             full_path = g_build_filename (priv->current_directory, path, NULL);
-            gtk_entry_set_text (entry, full_path);
+            gtk_editable_set_text (GTK_EDITABLE (entry), full_path);
             g_free (full_path);
         }
 
@@ -820,8 +818,7 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 {
     GObjectClass *gobject_class;
     GtkEntryClass *entry_class;
-    GtkBindingSet *binding_set;
-
+    g_autoptr (GtkShortcut) shortcut = NULL;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->dispose = nautilus_location_entry_dispose;
@@ -850,8 +847,9 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
                                     g_cclosure_marshal_generic,
                                     G_TYPE_NONE, 1, G_TYPE_OBJECT);
 
-    binding_set = gtk_binding_set_by_class (class);
-    gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "cancel", 0);
+    shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Escape, 0),
+                                 gtk_signal_action_new ("cancel"));
+    gtk_widget_class_add_shortcut (GTK_WIDGET_CLASS (class), shortcut);
 }
 
 void
@@ -901,14 +899,14 @@ editable_activate_callback (GtkEntry *entry,
     const char *entry_text;
     g_autofree gchar *path = NULL;
 
-    entry_text = gtk_entry_get_text (entry);
+    entry_text = gtk_editable_get_text (GTK_EDITABLE (entry));
     path = g_strdup (entry_text);
     path = g_strchug (path);
     path = g_strchomp (path);
 
     if (path != NULL && *path != '\0')
     {
-        gtk_entry_set_text (entry, path);
+        gtk_editable_set_text (GTK_EDITABLE (entry), path);
         emit_location_changed (self);
     }
 }
@@ -924,6 +922,7 @@ static void
 nautilus_location_entry_init (NautilusLocationEntry *entry)
 {
     NautilusLocationEntryPrivate *priv;
+    GtkEventController *controller;
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
@@ -964,15 +963,15 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), entry, 0);
 
-    priv->controller = gtk_event_controller_key_new (GTK_WIDGET (entry));
+    controller = gtk_event_controller_key_new ();
+    gtk_widget_add_controller (GTK_WIDGET (entry), controller);
     /* In GTK3, the Tab key binding (for focus change) happens in the bubble
      * phase, and we want to stop that from happening. After porting to GTK4
      * we need to check whether this is still correct. */
-    gtk_event_controller_set_propagation_phase (priv->controller, GTK_PHASE_BUBBLE);
-    g_signal_connect (priv->controller,
-                      "key-pressed",
-                      G_CALLBACK (nautilus_location_entry_key_pressed),
-                      NULL);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (nautilus_location_entry_key_pressed), NULL);
+
     g_signal_connect_after (entry,
                             "insert-text",
                             G_CALLBACK (on_after_insert_text),
@@ -1026,6 +1025,6 @@ nautilus_location_entry_set_special_text (NautilusLocationEntry *entry,
     priv->special_text = g_strdup (special_text);
 
     priv->setting_special_text = TRUE;
-    gtk_entry_set_text (GTK_ENTRY (entry), special_text);
+    gtk_editable_set_text (GTK_EDITABLE (entry), special_text);
     priv->setting_special_text = FALSE;
 }

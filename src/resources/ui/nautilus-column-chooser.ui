@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkListStore" id="store">
     <columns>
       <!-- column-name COLUMN_VISIBLE -->
@@ -15,16 +14,12 @@
     </columns>
   </object>
   <template class="NautilusColumnChooser" parent="GtkBox">
-    <property name="visible">True</property>
-    <property name="can-focus">False</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkScrolledWindow">
-        <property name="visible">True</property>
-        <child>
+        <property name="child">
           <object class="GtkTreeView" id="view">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
+            <property name="focusable">True</property>
             <property name="vexpand">True</property>
             <property name="model">store</property>
             <property name="headers-visible">False</property>
@@ -60,7 +55,7 @@
               </object>
             </child>
           </object>
-        </child>
+        </property>
         <style>
           <class name="frame"/>
         </style>
@@ -68,19 +63,15 @@
     </child>
     <child>
       <object class="GtkBox">
-        <property name="visible">True</property>
         <child>
           <object class="GtkBox">
-            <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="move_up_button">
-                <property name="visible">True</property>
                 <property name="sensitive">False</property>
-                <property name="can-focus">True</property>
+                <property name="focusable">True</property>
                 <signal name="clicked" handler="move_up_clicked_callback" swapped="no"/>
                 <child>
                   <object class="GtkImage">
-                    <property name="visible">True</property>
                     <property name="icon-name">go-up-symbolic</property>
                   </object>
                 </child>
@@ -88,13 +79,11 @@
             </child>
             <child>
               <object class="GtkButton" id="move_down_button">
-                <property name="visible">True</property>
                 <property name="sensitive">False</property>
-                <property name="can-focus">True</property>
+                <property name="focusable">True</property>
                 <signal name="clicked" handler="move_down_clicked_callback" swapped="no"/>
                 <child>
                   <object class="GtkImage">
-                    <property name="visible">True</property>
                     <property name="icon-name">go-down-symbolic</property>
                   </object>
                 </child>
@@ -107,12 +96,10 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="visible">True</property>
             <child>
               <object class="GtkButton" id="use_default_button">
                 <property name="label" translatable="yes">Reset to De_fault</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
+                <property name="focusable">True</property>
                 <property name="tooltip-text" translatable="yes">Replace the current List Columns settings with the default settings</property>
                 <property name="use-underline">True</property>
                 <signal name="clicked" handler="use_default_clicked_callback" swapped="no"/>

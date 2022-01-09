@@ -80,7 +80,7 @@ append_item (NautilusImagesPropertiesPage *page,
 
         value_label = gtk_label_new (value);
 
-        gtk_label_set_line_wrap (GTK_LABEL (value_label), TRUE);
+        gtk_label_set_wrap (GTK_LABEL (value_label), TRUE);
         gtk_grid_attach_next_to (GTK_GRID (page->grid), value_label,
                                  name_label, GTK_POS_RIGHT,
                                  1, 1);
@@ -93,7 +93,7 @@ append_item (NautilusImagesPropertiesPage *page,
 static void
 nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
 {
-    self->page_widget = gtk_scrolled_window_new (NULL, NULL);
+    self->page_widget = gtk_scrolled_window_new ();
 
     g_object_set (self->page_widget,
                   "margin-bottom", 6,
@@ -119,7 +119,7 @@ nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
                                    self->grid);
 #endif
 
-    gtk_widget_show_all (GTK_WIDGET (self->page_widget));
+    gtk_widget_show (GTK_WIDGET (self->page_widget));
 }
 
 static void

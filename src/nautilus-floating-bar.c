@@ -24,7 +24,6 @@
 #include <string.h>
 
 #include "nautilus-floating-bar.h"
-#include "nautilus-gtk4-helpers.h"
 
 #define HOVER_HIDE_TIMEOUT_INTERVAL 100
 
@@ -246,7 +245,7 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
     GtkWidget *parent;
     CheckPointerData *data;
-    gint y_pos;
+    gdouble y_pos;
 
     self->pointer_y_in_parent_coordinates = y;
 
@@ -310,11 +309,25 @@ on_parent_changed (GObject    *object,
 
     parent = gtk_widget_get_parent (GTK_WIDGET (object));
 
-    g_clear_object (&self->motion_controller);
+    if (self->motion_controller != NULL)
+    {
+        GtkWidget *old_parent;
+
+        old_parent = gtk_event_controller_get_widget (self->motion_controller);
+        g_warn_if_fail (old_parent != NULL);
+        if (old_parent != NULL)
+        {
+            gtk_widget_remove_controller (old_parent, self->motion_controller);
+        }
+
+        g_object_unref (self->motion_controller);
+        self->motion_controller = NULL;
+    }
 
     if (parent != NULL)
     {
-        self->motion_controller = gtk_event_controller_motion_new (parent);
+        self->motion_controller = g_object_ref (gtk_event_controller_motion_new ());
+        gtk_widget_add_controller (parent, self->motion_controller);
 
         gtk_event_controller_set_propagation_phase (self->motion_controller,
                                                     GTK_PHASE_CAPTURE);
@@ -345,7 +358,7 @@ nautilus_floating_bar_constructed (GObject *obj)
      * ensure the spinner animates if and only if it's visible, to reduce CPU
      * usage. */
     g_object_bind_property (obj, "show-spinner",
-                            w, "active",
+                            w, "spinning",
                             G_BINDING_SYNC_CREATE);
     self->spinner = w;
 
@@ -376,7 +389,7 @@ nautilus_floating_bar_constructed (GObject *obj)
     self->details_label_widget = w;
     gtk_widget_show (w);
 
-    w = gtk_button_new_from_icon_name ("process-stop-symbolic", GTK_ICON_SIZE_MENU);
+    w = gtk_button_new_from_icon_name ("process-stop-symbolic");
     context = gtk_widget_get_style_context (w);
     gtk_style_context_add_class (context, "circular");
     gtk_style_context_add_class (context, "flat");
@@ -384,7 +397,6 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_box_append (GTK_BOX (self), w);
     self->stop_button = w;
     gtk_widget_set_visible (w, FALSE);
-    gtk_widget_set_no_show_all (w, TRUE);
 
     g_signal_connect (self->stop_button, "clicked",
                       G_CALLBACK (stop_button_clicked_cb), self);

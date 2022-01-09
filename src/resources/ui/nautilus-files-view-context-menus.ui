@@ -1,5 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <requires lib="gtk" version="4.0"/>
   <menu id="background-menu">
     <item>
       <attribute name="label" translatable="yes">New _Folder</attribute>
@@ -31,8 +32,7 @@
         <attribute name="action">view.select-all</attribute>
       </item>
     </section>
-    <section id="background-extensions-section">
-    </section>
+    <section id="background-extensions-section"/>
     <section>
       <item>
         <attribute name="label" translatable="yes">P_roperties</attribute>
@@ -42,8 +42,7 @@
     </section>
   </menu>
   <menu id="selection-menu">
-    <section id="new-folder-with-selection-section">
-    </section>
+    <section id="new-folder-with-selection-section"/>
     <section id="open-with-application-section">
       <item>
         <attribute name="label" translatable="yes">Open With Other _Application</attribute>
@@ -55,7 +54,7 @@
       <attribute name="label" translatable="yes">_Scripts</attribute>
       <attribute name="action">view.scripts</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
-      <section id="scripts-submenu-section" />
+      <section id="scripts-submenu-section"/>
       <section>
         <item>
           <attribute name="label" translatable="yes">_Open Scripts Folder</attribute>
@@ -217,8 +216,7 @@
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>
-    <section id="selection-extensions-section">
-    </section>
+    <section id="selection-extensions-section"/>
     <section>
       <item>
         <attribute name="label" translatable="yes">Tags</attribute>

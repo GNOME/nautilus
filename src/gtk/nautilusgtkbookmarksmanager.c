@@ -24,12 +24,13 @@
 #include "config.h"
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include "nautilus-enum-types.h"
 
 #include <string.h>
 
 #include <glib/gi18n-lib.h>
 
-#include "nautilusgtkbookmarksmanager.h"
+#include "nautilusgtkbookmarksmanagerprivate.h"
 
 static void
 _gtk_bookmark_free (gpointer data)
@@ -44,7 +45,7 @@ _gtk_bookmark_free (gpointer data)
 static void
 set_error_bookmark_doesnt_exist (GFile *file, GError **error)
 {
-  gchar *uri = g_file_get_uri (file);
+  char *uri = g_file_get_uri (file);
 
   g_set_error (error,
                GTK_FILE_CHOOSER_ERROR,
@@ -59,7 +60,7 @@ static GFile *
 get_legacy_bookmarks_file (void)
 {
   GFile *file;
-  gchar *filename;
+  char *filename;
 
   filename = g_build_filename (g_get_home_dir (), ".gtk-bookmarks", NULL);
   file = g_file_new_for_path (filename);
@@ -72,8 +73,12 @@ static GFile *
 get_bookmarks_file (void)
 {
   GFile *file;
-  gchar *filename;
+  char *filename;
 
+  /* Use gtk-3.0's bookmarks file as the format didn't change.
+   * Add the 3.0 file format to get_legacy_bookmarks_file() when
+   * the format does change.
+   */
   filename = g_build_filename (g_get_user_config_dir (), "gtk-3.0", "bookmarks", NULL);
   file = g_file_new_for_path (filename);
   g_free (filename);
@@ -82,16 +87,11 @@ get_bookmarks_file (void)
 }
 
 static GSList *
-read_bookmarks (GFile *file)
+parse_bookmarks (const char *contents)
 {
-  gchar *contents;
-  gchar **lines, *space;
+  char **lines, *space;
   GSList *bookmarks = NULL;
-  gint i;
-
-  if (!g_file_load_contents (file, NULL, &contents,
-			     NULL, NULL, NULL))
-    return NULL;
+  int i;
 
   lines = g_strsplit (contents, "\n", -1);
 
@@ -119,9 +119,58 @@ read_bookmarks (GFile *file)
 
   bookmarks = g_slist_reverse (bookmarks);
   g_strfreev (lines);
+
+  return bookmarks;
+}
+
+static GSList *
+read_bookmarks (GFile *file)
+{
+  char *contents;
+  GSList *bookmarks = NULL;
+
+  if (!g_file_load_contents (file, NULL, &contents,
+			     NULL, NULL, NULL))
+    return NULL;
+
+  bookmarks = parse_bookmarks (contents);
+
   g_free (contents);
 
   return bookmarks;
+}
+
+static void
+notify_changed (NautilusGtkBookmarksManager *manager)
+{
+  if (manager->changed_func)
+    manager->changed_func (manager->changed_func_data);
+}
+
+static void
+read_bookmarks_finish (GObject      *source,
+                       GAsyncResult *result,
+                       gpointer      data)
+{
+  GFile *file = G_FILE (source);
+  NautilusGtkBookmarksManager *manager = data;
+  char *contents = NULL;
+  GError *error = NULL;
+
+  if (!g_file_load_contents_finish (file, result, &contents, NULL, NULL, &error)) 
+    {
+      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        g_warning ("Failed to load '%s': %s", g_file_peek_path (file), error->message);
+      g_error_free (error);
+      return;
+    }
+
+  g_slist_free_full (manager->bookmarks, _gtk_bookmark_free);
+  manager->bookmarks = parse_bookmarks (contents);
+
+  g_free (contents);
+
+  notify_changed (manager);
 }
 
 static void
@@ -138,7 +187,7 @@ save_bookmarks (GFile  *bookmarks_file,
   for (l = bookmarks; l; l = l->next)
     {
       GtkBookmark *bookmark = l->data;
-      gchar *uri;
+      char *uri;
 
       uri = g_file_get_uri (bookmark->file);
       if (!uri)
@@ -179,13 +228,6 @@ save_bookmarks (GFile  *bookmarks_file,
 }
 
 static void
-notify_changed (NautilusGtkBookmarksManager *manager)
-{
-  if (manager->changed_func)
-    manager->changed_func (manager->changed_func_data);
-}
-
-static void
 bookmarks_file_changed (GFileMonitor      *monitor,
 			GFile             *file,
 			GFile             *other_file,
@@ -199,15 +241,17 @@ bookmarks_file_changed (GFileMonitor      *monitor,
     case G_FILE_MONITOR_EVENT_CHANGED:
     case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
     case G_FILE_MONITOR_EVENT_CREATED:
-    case G_FILE_MONITOR_EVENT_DELETED:
-      g_slist_free_full (manager->bookmarks, _gtk_bookmark_free);
-      manager->bookmarks = read_bookmarks (file);
-
-      gdk_threads_enter ();
-      notify_changed (manager);
-      gdk_threads_leave ();
+      g_file_load_contents_async (file, manager->cancellable, read_bookmarks_finish, manager);
       break;
 
+    case G_FILE_MONITOR_EVENT_DELETED:
+    case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED:
+    case G_FILE_MONITOR_EVENT_PRE_UNMOUNT:
+    case G_FILE_MONITOR_EVENT_UNMOUNTED:
+    case G_FILE_MONITOR_EVENT_MOVED:
+    case G_FILE_MONITOR_EVENT_RENAMED:
+    case G_FILE_MONITOR_EVENT_MOVED_IN:
+    case G_FILE_MONITOR_EVENT_MOVED_OUT:
     default:
       /* ignore at the moment */
       break;
@@ -226,9 +270,10 @@ _nautilus_gtk_bookmarks_manager_new (GtkBookmarksChangedFunc changed_func, gpoin
   manager->changed_func = changed_func;
   manager->changed_func_data = changed_func_data;
 
+  manager->cancellable = g_cancellable_new ();
+
   bookmarks_file = get_bookmarks_file ();
-  manager->bookmarks = read_bookmarks (bookmarks_file);
-  if (!manager->bookmarks)
+  if (!g_file_query_exists (bookmarks_file, NULL))
     {
       GFile *legacy_bookmarks_file;
 
@@ -240,6 +285,8 @@ _nautilus_gtk_bookmarks_manager_new (GtkBookmarksChangedFunc changed_func, gpoin
 
       g_object_unref (legacy_bookmarks_file);
     }
+  else
+    g_file_load_contents_async (bookmarks_file, manager->cancellable, read_bookmarks_finish, manager);
 
   error = NULL;
   manager->bookmarks_monitor = g_file_monitor_file (bookmarks_file,
@@ -254,6 +301,7 @@ _nautilus_gtk_bookmarks_manager_new (GtkBookmarksChangedFunc changed_func, gpoin
     manager->bookmarks_monitor_changed_id = g_signal_connect (manager->bookmarks_monitor, "changed",
 							      G_CALLBACK (bookmarks_file_changed), manager);
 
+
   g_object_unref (bookmarks_file);
 
   return manager;
@@ -263,6 +311,9 @@ void
 _nautilus_gtk_bookmarks_manager_free (NautilusGtkBookmarksManager *manager)
 {
   g_return_if_fail (manager != NULL);
+
+  g_cancellable_cancel (manager->cancellable);
+  g_object_unref (manager->cancellable);
 
   if (manager->bookmarks_monitor)
     {
@@ -339,7 +390,7 @@ _nautilus_gtk_bookmarks_manager_has_bookmark (NautilusGtkBookmarksManager *manag
 gboolean
 _nautilus_gtk_bookmarks_manager_insert_bookmark (NautilusGtkBookmarksManager *manager,
 					GFile               *file,
-					gint                 position,
+					int                  position,
 					GError             **error)
 {
   GSList *link;
@@ -353,7 +404,7 @@ _nautilus_gtk_bookmarks_manager_insert_bookmark (NautilusGtkBookmarksManager *ma
 
   if (link)
     {
-      gchar *uri;
+      char *uri;
       bookmark = link->data;
       uri = g_file_get_uri (bookmark->file);
 
@@ -423,7 +474,7 @@ _nautilus_gtk_bookmarks_manager_remove_bookmark (NautilusGtkBookmarksManager *ma
 gboolean
 _nautilus_gtk_bookmarks_manager_reorder_bookmark (NautilusGtkBookmarksManager *manager,
 					 GFile               *file,
-					 gint                 new_position,
+					 int                  new_position,
 					 GError             **error)
 {
   GSList *link;
@@ -468,12 +519,12 @@ _nautilus_gtk_bookmarks_manager_reorder_bookmark (NautilusGtkBookmarksManager *m
   return TRUE;
 }
 
-gchar *
+char *
 _nautilus_gtk_bookmarks_manager_get_bookmark_label (NautilusGtkBookmarksManager *manager,
 					   GFile               *file)
 {
   GSList *bookmarks;
-  gchar *label = NULL;
+  char *label = NULL;
 
   g_return_val_if_fail (manager != NULL, NULL);
   g_return_val_if_fail (file != NULL, NULL);
@@ -500,7 +551,7 @@ _nautilus_gtk_bookmarks_manager_get_bookmark_label (NautilusGtkBookmarksManager 
 gboolean
 _nautilus_gtk_bookmarks_manager_set_bookmark_label (NautilusGtkBookmarksManager *manager,
 					   GFile               *file,
-					   const gchar         *label,
+					   const char          *label,
 					   GError             **error)
 {
   GFile *bookmarks_file;
@@ -532,7 +583,7 @@ _nautilus_gtk_bookmarks_manager_set_bookmark_label (NautilusGtkBookmarksManager 
   return TRUE;
 }
 
-gboolean
+static gboolean
 _nautilus_gtk_bookmarks_manager_get_xdg_type (NautilusGtkBookmarksManager *manager,
                                      GFile               *file,
                                      GUserDirectory      *directory)
@@ -540,7 +591,7 @@ _nautilus_gtk_bookmarks_manager_get_xdg_type (NautilusGtkBookmarksManager *manag
   GSList *link;
   gboolean match;
   GFile *location;
-  const gchar *path;
+  const char *path;
   GUserDirectory dir;
   GtkBookmark *bookmark;
 

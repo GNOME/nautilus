@@ -44,11 +44,10 @@ NautilusGtkSidebarRow *nautilus_gtk_sidebar_row_clone  (NautilusGtkSidebarRow *s
 
 /* Use these methods instead of gtk_widget_hide/show to use an animation */
 void           nautilus_gtk_sidebar_row_hide   (NautilusGtkSidebarRow *self,
-                                       gboolean       inmediate);
+                                       gboolean       immediate);
 void           nautilus_gtk_sidebar_row_reveal (NautilusGtkSidebarRow *self);
 
 GtkWidget     *nautilus_gtk_sidebar_row_get_eject_button (NautilusGtkSidebarRow *self);
-GtkWidget     *nautilus_gtk_sidebar_row_get_event_box    (NautilusGtkSidebarRow *self);
 void           nautilus_gtk_sidebar_row_set_start_icon   (NautilusGtkSidebarRow *self,
                                                  GIcon         *icon);
 void           nautilus_gtk_sidebar_row_set_end_icon     (NautilusGtkSidebarRow *self,

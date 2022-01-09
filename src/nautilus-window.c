@@ -36,17 +36,17 @@
 #include <sys/time.h>
 
 #ifdef GDK_WINDOWING_WAYLAND
-#include <gdk/gdkwayland.h>
+#include <gdk/wayland/gdkwayland.h>
 #endif
 
 #ifdef GDK_WINDOWING_X11
-#include <gdk/gdkx.h>
+#include <gdk/x11/gdkx.h>
 #endif
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
-#include "gtk/nautilusgtkplacessidebar.h"
+#include "gtk/nautilusgtkplacessidebarprivate.h"
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
@@ -70,7 +70,6 @@
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
-#include "nautilus-gtk4-helpers.h"
 
 /* Forward and back buttons on the mouse */
 static gboolean mouse_extra_buttons = TRUE;
@@ -99,7 +98,7 @@ static void nautilus_window_back_or_forward (NautilusWindow *window,
 
 struct _NautilusWindow
 {
-    HdyApplicationWindow parent_instance;
+    AdwApplicationWindow parent_instance;
 
     GtkWidget *notebook;
 
@@ -151,13 +150,6 @@ struct _NautilusWindow
     GMenuModel *tab_menu_model;
 
     GQueue *tab_data_queue;
-
-    GtkPadController *pad_controller;
-
-    GtkGesture *multi_press_gesture;
-    GtkGesture *notebook_multi_press_gesture;
-    GtkEventController *key_capture_controller;
-    GtkEventController *key_bubble_controller;
 };
 
 enum
@@ -169,7 +161,7 @@ enum
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (NautilusWindow, nautilus_window, HDY_TYPE_APPLICATION_WINDOW);
+G_DEFINE_TYPE (NautilusWindow, nautilus_window, ADW_TYPE_APPLICATION_WINDOW);
 
 static const GtkPadActionEntry pad_actions[] =
 {
@@ -640,19 +632,19 @@ remember_focus_widget (NautilusWindow *window)
     }
 }
 
-static void
+static gboolean
 nautilus_window_grab_focus (GtkWidget *widget)
 {
     NautilusWindowSlot *slot;
 
     slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (widget));
 
-    GTK_WIDGET_CLASS (nautilus_window_parent_class)->grab_focus (widget);
-
-    if (slot)
+    if (slot != NULL)
     {
-        gtk_widget_grab_focus (GTK_WIDGET (slot));
+        return gtk_widget_grab_focus (GTK_WIDGET (slot));
     }
+
+    return GTK_WIDGET_CLASS (nautilus_window_parent_class)->grab_focus (widget);
 }
 
 static void
@@ -756,16 +748,11 @@ update_cursor (NautilusWindow *window)
     if (slot != NULL &&
         nautilus_window_slot_get_allow_stop (slot))
     {
-        GdkDisplay *display;
-        g_autoptr (GdkCursor) cursor = NULL;
-
-        display = gtk_widget_get_display (GTK_WIDGET (window));
-        cursor = gdk_cursor_new_from_name (display, "progress");
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
+        gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
     }
     else
     {
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), NULL);
+        gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
     }
 }
 
@@ -1201,8 +1188,8 @@ get_window_xid (NautilusWindow *window)
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-        return (guint) gdk_x11_window_get_xid (gdk_window);
+        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
+        return (guint) gdk_x11_surface_get_xid (gdk_surface);
     }
 #endif
     return 0;
@@ -1246,6 +1233,7 @@ add_menu_separator (GtkWidget *menu)
     gtk_widget_show (separator);
 }
 
+#if 0 && SIDEBAR_MENU_ITEMS_NEEDS_GTK4_REIMPLEMENTATION
 static void
 places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
                                   GtkWidget                *menu,
@@ -1318,6 +1306,7 @@ places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
         }
     }
 }
+#endif
 
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
@@ -1345,8 +1334,10 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
     g_signal_connect (window->places_sidebar, "drag-perform-drop",
                       G_CALLBACK (places_sidebar_drag_perform_drop_cb), window);
 #endif
+#if 0 && SIDEBAR_MENU_ITEMS_NEEDS_GTK4_REIMPLEMENTATION
     g_signal_connect (window->places_sidebar, "populate-popup",
                       G_CALLBACK (places_sidebar_populate_popup_cb), window);
+#endif
     g_signal_connect (window->places_sidebar, "unmount",
                       G_CALLBACK (places_sidebar_unmount_operation_cb), window);
 }
@@ -1775,18 +1766,18 @@ notebook_popup_menu_show (NautilusWindow *window,
 }
 
 static void
-notebook_button_press_cb (GtkGestureMultiPress *gesture,
-                          gint                  n_press,
-                          gdouble               x,
-                          gdouble               y,
-                          gpointer              user_data)
+notebook_button_press_cb (GtkGestureClick *gesture,
+                          gint             n_press,
+                          gdouble          x,
+                          gdouble          y,
+                          gpointer         user_data)
 {
     NautilusWindow *window;
     GtkNotebook *notebook;
     gint tab_clicked;
     guint button;
     GdkEventSequence *sequence;
-    const GdkEvent *event;
+    GdkEvent *event;
     GdkModifierType state;
 
     if (n_press != 1)
@@ -1805,7 +1796,7 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-    gdk_event_get_state (event, &state);
+    state = gdk_event_get_modifier_state (event);
 
     if (button == GDK_BUTTON_SECONDARY &&
         (state & gtk_accelerator_get_default_mod_mask ()) == 0)
@@ -1940,6 +1931,8 @@ notebook_create_window_cb (GtkNotebook *notebook,
 static void
 setup_notebook (NautilusWindow *window)
 {
+    GtkEventController *controller;
+
     g_signal_connect (window->notebook, "switch-page",
                       G_CALLBACK (notebook_switch_page_cb),
                       window);
@@ -1953,9 +1946,12 @@ setup_notebook (NautilusWindow *window)
                       G_CALLBACK (notebook_page_removed_cb),
                       window);
 
-    g_signal_connect (window->notebook_multi_press_gesture, "pressed",
-                      G_CALLBACK (notebook_button_press_cb),
-                      window);
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (window->notebook), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed",
+                      G_CALLBACK (notebook_button_press_cb), window);
 }
 
 const GActionEntry win_entries[] =
@@ -2140,6 +2136,8 @@ nautilus_window_dispose (GObject *object)
 
     DEBUG ("Destroying window");
 
+    g_clear_pointer (&window->tab_menu, gtk_widget_unparent);
+
     /* close all slots safely */
     slots_copy = g_list_copy (window->slots);
     if (window->active_slot != NULL)
@@ -2165,11 +2163,6 @@ nautilus_window_dispose (GObject *object)
     g_clear_handle_id (&window->in_app_notification_undo_timeout_id, g_source_remove);
 
     nautilus_window_unexport_handle (window);
-
-    g_clear_object (&window->notebook_multi_press_gesture);
-
-    g_clear_object (&window->key_capture_controller);
-    g_clear_object (&window->key_bubble_controller);
 
     G_OBJECT_CLASS (nautilus_window_parent_class)->dispose (object);
 }
@@ -2208,8 +2201,6 @@ nautilus_window_finalize (GObject *object)
 
     g_queue_free_full (window->tab_data_queue, free_navigation_state);
 
-    g_object_unref (window->pad_controller);
-
     /* nautilus_window_close() should have run */
     g_assert (window->slots == NULL);
 
@@ -2219,29 +2210,11 @@ nautilus_window_finalize (GObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
-    GdkWindow *gdk_window;
-    GdkWindowState window_state;
     gint width;
     gint height;
     GVariant *initial_size;
 
-    g_assert (NAUTILUS_IS_WINDOW (window));
-
-    gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-    if (!gdk_window)
-    {
-        return;
-    }
-    window_state = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)));
-    if (window_state & (GDK_WINDOW_STATE_TILED | GDK_WINDOW_STATE_MAXIMIZED))
-    {
-        /* Don't save the window state for tiled or maximized windows. In GTK
-         * gtk_window_get_default_size() is going to do this for us.
-         */
-        return;
-    }
-
-    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+    gtk_window_get_default_size (GTK_WINDOW (window), &width, &height);
     initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
 
     g_settings_set_value (nautilus_window_state,
@@ -2257,7 +2230,7 @@ nautilus_window_close (NautilusWindow *window)
     nautilus_window_save_geometry (window);
     nautilus_window_set_active_slot (window, NULL);
 
-    gtk_widget_destroy (GTK_WIDGET (window));
+    gtk_window_destroy (GTK_WINDOW (window));
 }
 
 void
@@ -2382,9 +2355,9 @@ typedef struct
 } WaylandWindowHandleExportedData;
 
 static void
-wayland_window_handle_exported (GdkWindow  *window,
-                                const char *wayland_handle_str,
-                                gpointer    user_data)
+wayland_window_handle_exported (GdkToplevel *toplevel,
+                                const char  *wayland_handle_str,
+                                gpointer     user_data)
 {
     WaylandWindowHandleExportedData *data = user_data;
 
@@ -2418,7 +2391,7 @@ nautilus_window_export_handle (NautilusWindow               *window,
 #ifdef GDK_WINDOWING_WAYLAND
     if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
         WaylandWindowHandleExportedData *data;
 
         data = g_new0 (WaylandWindowHandleExportedData, 1);
@@ -2426,10 +2399,10 @@ nautilus_window_export_handle (NautilusWindow               *window,
         data->callback = callback;
         data->user_data = user_data;
 
-        if (!gdk_wayland_window_export_handle (gdk_window,
-                                               wayland_window_handle_exported,
-                                               data,
-                                               g_free))
+        if (!gdk_wayland_toplevel_export_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
+                                                 wayland_window_handle_exported,
+                                                 data,
+                                                 g_free))
         {
             g_free (data);
             return FALSE;
@@ -2457,10 +2430,10 @@ nautilus_window_unexport_handle (NautilusWindow *window)
 #ifdef GDK_WINDOWING_WAYLAND
     if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-        if (gdk_window != NULL)
+        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
+        if (GDK_IS_WAYLAND_TOPLEVEL (gdk_surface))
         {
-            gdk_wayland_window_unexport_handle (gdk_window);
+            gdk_wayland_toplevel_unexport_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface));
         }
     }
 #endif
@@ -2511,10 +2484,9 @@ on_is_maximized_changed (GObject    *object,
 }
 
 static gboolean
-nautilus_window_delete_event (GtkWidget   *widget,
-                              GdkEventAny *event)
+nautilus_window_close_request (GtkWindow *window)
 {
-    nautilus_window_close (NAUTILUS_WINDOW (widget));
+    nautilus_window_close (NAUTILUS_WINDOW (window));
     return FALSE;
 }
 
@@ -2534,11 +2506,11 @@ nautilus_window_back_or_forward (NautilusWindow *window,
 }
 
 static void
-on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
-                                gint                  n_press,
-                                gdouble               x,
-                                gdouble               y,
-                                gpointer              user_data)
+on_click_gesture_pressed (GtkGestureClick *gesture,
+                          gint             n_press,
+                          gdouble          x,
+                          gdouble          y,
+                          gpointer         user_data)
 {
     GtkWidget *widget;
     NautilusWindow *window;
@@ -2600,6 +2572,8 @@ static void
 nautilus_window_init (NautilusWindow *window)
 {
     GtkWindowGroup *window_group;
+    GtkPadController *pad_controller;
+    GtkEventController *controller;
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     gtk_widget_init_template (GTK_WIDGET (window));
@@ -2609,7 +2583,6 @@ nautilus_window_init (NautilusWindow *window)
     g_object_set (window->places_sidebar,
                   "vexpand", TRUE,
                   "visible", TRUE,
-                  "populate-all", TRUE,
                   "show-other-locations", TRUE,
                   "show-starred-location", TRUE,
                   NULL);
@@ -2626,9 +2599,9 @@ nautilus_window_init (NautilusWindow *window)
                              window,
                              G_CONNECT_SWAPPED);
 
-    gtk_popover_bind_model (GTK_POPOVER (window->tab_menu),
-                            window->tab_menu_model,
-                            NULL);
+    gtk_widget_set_parent (window->tab_menu, GTK_WIDGET (window));
+    gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (window->tab_menu),
+                                     G_MENU_MODEL (window->tab_menu_model));
 
     g_signal_connect (window, "notify::is-maximized",
                       G_CALLBACK (on_is_maximized_changed), NULL);
@@ -2650,41 +2623,30 @@ nautilus_window_init (NautilusWindow *window)
 
     window->tab_data_queue = g_queue_new ();
 
-    window->pad_controller = gtk_pad_controller_new (GTK_WINDOW (window),
-                                                     G_ACTION_GROUP (window),
-                                                     NULL);
-    gtk_pad_controller_set_action_entries (window->pad_controller,
+    pad_controller = gtk_pad_controller_new (G_ACTION_GROUP (window), NULL);
+    gtk_pad_controller_set_action_entries (pad_controller,
                                            pad_actions, G_N_ELEMENTS (pad_actions));
+    gtk_widget_add_controller (GTK_WIDGET (window),
+                               GTK_EVENT_CONTROLLER (pad_controller));
 
-    window->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (window));
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (window), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed",
+                      G_CALLBACK (on_click_gesture_pressed), NULL);
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->multi_press_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->multi_press_gesture), 0);
+    controller = gtk_event_controller_key_new ();
+    gtk_widget_add_controller (GTK_WIDGET (window), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (nautilus_window_key_capture), NULL);
 
-    g_signal_connect (window->multi_press_gesture, "pressed",
-                      G_CALLBACK (on_multi_press_gesture_pressed), NULL);
-
-    window->notebook_multi_press_gesture = gtk_gesture_multi_press_new (window->notebook);
-
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->notebook_multi_press_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->notebook_multi_press_gesture),
-                                   0);
-
-    window->key_capture_controller = gtk_event_controller_key_new (GTK_WIDGET (window));
-    gtk_event_controller_set_propagation_phase (window->key_capture_controller,
-                                                GTK_PHASE_CAPTURE);
-    g_signal_connect (window->key_capture_controller,
-                      "key-pressed", G_CALLBACK (nautilus_window_key_capture),
-                      NULL);
-
-    window->key_bubble_controller = gtk_event_controller_key_new (GTK_WIDGET (window));
-    gtk_event_controller_set_propagation_phase (window->key_bubble_controller,
-                                                GTK_PHASE_BUBBLE);
-    g_signal_connect (window->key_bubble_controller,
-                      "key-pressed", G_CALLBACK (nautilus_window_key_bubble),
-                      NULL);
+    controller = gtk_event_controller_key_new ();
+    gtk_widget_add_controller (GTK_WIDGET (window), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (nautilus_window_key_bubble), NULL);
 }
 
 static void
@@ -2692,6 +2654,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 {
     GObjectClass *oclass = G_OBJECT_CLASS (class);
     GtkWidgetClass *wclass = GTK_WIDGET_CLASS (class);
+    GtkWindowClass *winclass = GTK_WINDOW_CLASS (class);
 
     oclass->dispose = nautilus_window_dispose;
     oclass->finalize = nautilus_window_finalize;
@@ -2699,8 +2662,9 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
-    wclass->delete_event = nautilus_window_delete_event;
     wclass->grab_focus = nautilus_window_grab_focus;
+
+    winclass->close_request = nautilus_window_close_request;
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");

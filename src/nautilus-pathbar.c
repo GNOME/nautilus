@@ -33,7 +33,6 @@
 #include "nautilus-icon-names.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-gtk4-helpers.h"
 
 #include "nautilus-window-slot-dnd.h"
 
@@ -78,8 +77,6 @@ typedef struct
 
     NautilusPathBar *path_bar;
 
-    GtkGesture *multi_press_gesture;
-
     guint ignore_changes : 1;
     guint is_root : 1;
 } ButtonData;
@@ -99,7 +96,7 @@ struct _NautilusPathBar
     GActionGroup *action_group;
 
     NautilusFile *context_menu_file;
-    GtkPopover *current_view_menu_popover;
+    GtkPopoverMenu *current_view_menu_popover;
     GtkWidget *current_view_menu_button;
     GtkWidget *button_menu_popover;
     GMenu *current_view_menu;
@@ -214,9 +211,8 @@ on_adjustment_changed (GtkAdjustment *adjustment)
 static gboolean
 bind_current_view_menu_model_to_popover (NautilusPathBar *self)
 {
-    gtk_popover_bind_model (self->current_view_menu_popover,
-                            G_MENU_MODEL (self->current_view_menu),
-                            NULL);
+    gtk_popover_menu_set_menu_model (self->current_view_menu_popover,
+                                     G_MENU_MODEL (self->current_view_menu));
     return G_SOURCE_REMOVE;
 }
 
@@ -227,7 +223,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
     GtkBuilder *builder;
     g_autoptr (GError) error = NULL;
 
-    self->scrolled = gtk_scrolled_window_new (NULL, NULL);
+    self->scrolled = gtk_scrolled_window_new ();
     /* Scroll horizontally only and don't use internal scrollbar. */
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (self->scrolled),
                                     /* hscrollbar-policy */ GTK_POLICY_EXTERNAL,
@@ -243,8 +239,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     self->current_view_menu_button = gtk_menu_button_new ();
     gtk_menu_button_set_child (GTK_MENU_BUTTON (self->current_view_menu_button),
-                               gtk_image_new_from_icon_name ("view-more-symbolic",
-                                                             GTK_ICON_SIZE_MENU));
+                               gtk_image_new_from_icon_name ("view-more-symbolic"));
     gtk_box_append (GTK_BOX (self), self->current_view_menu_button);
 
     builder = gtk_builder_new ();
@@ -258,8 +253,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
         g_error ("Failed to add pathbar-context-menu.ui: %s", error->message);
     }
     self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "button-menu")));
-    self->button_menu_popover = g_object_ref_sink (gtk_popover_new_from_model (NULL,
-                                                                               G_MENU_MODEL (self->button_menu)));
+    self->button_menu_popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (self->button_menu));
+    gtk_widget_set_parent (self->button_menu_popover, GTK_WIDGET (self));
 
     /* Add current location menu, which matches the view's background context menu */
     gtk_builder_add_from_resource (builder,
@@ -272,7 +267,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
     self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
     self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-extensions-section")));
     self->templates_submenu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "templates-submenu")));
-    self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new (NULL)));
+    self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER_MENU (gtk_popover_menu_new_from_model (NULL)));
 
     g_object_unref (builder);
 
@@ -310,7 +305,7 @@ nautilus_path_bar_finalize (GObject *object)
     g_clear_object (&self->extensions_section);
     g_clear_object (&self->templates_submenu);
     g_clear_object (&self->button_menu);
-    g_clear_object (&self->button_menu_popover);
+    g_clear_pointer (&self->button_menu_popover, gtk_widget_unparent);
     g_clear_object (&self->current_view_menu_popover);
 
     unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
@@ -378,8 +373,6 @@ button_data_free (ButtonData *button_data)
         nautilus_file_unref (button_data->file);
     }
 
-    g_clear_object (&button_data->multi_press_gesture);
-
     g_free (button_data);
 }
 
@@ -425,7 +418,7 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
          * templates menu is set. Unbinding the model is the only way to clear
          * all children. After that's done, on idle, we rebind it.
          * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
-        gtk_popover_bind_model (self->current_view_menu_popover, NULL, NULL);
+        gtk_popover_menu_set_menu_model (self->current_view_menu_popover, NULL);
     }
 
     nautilus_gmenu_set_from_model (self->templates_submenu, menu);
@@ -560,11 +553,11 @@ pop_up_pathbar_context_menu (NautilusPathBar *self,
 
 
 static void
-on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
-                                gint                  n_press,
-                                gdouble               x,
-                                gdouble               y,
-                                gpointer              user_data)
+on_click_gesture_pressed (GtkGestureClick *gesture,
+                          gint             n_press,
+                          gdouble          x,
+                          gdouble          y,
+                          gpointer         user_data)
 {
     ButtonData *button_data;
     NautilusPathBar *self;
@@ -579,7 +572,7 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     button_data = BUTTON_DATA (user_data);
     self = button_data->path_bar;
     current_button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-    gtk_get_current_event_state (&state);
+    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
 
     switch (current_button)
     {
@@ -602,8 +595,15 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             }
             else
             {
-                gtk_popover_set_relative_to (GTK_POPOVER (self->button_menu_popover),
-                                             button_data->button);
+                /* Hold a reference to keep the popover from destroying itself
+                 * when unparented. */
+                g_object_ref (self->button_menu_popover);
+                gtk_widget_unparent (self->button_menu_popover);
+                gtk_widget_set_parent (self->button_menu_popover,
+                                       button_data->button);
+                gtk_popover_present (GTK_POPOVER (self->button_menu_popover));
+                g_object_unref (self->button_menu_popover);
+
                 pop_up_pathbar_context_menu (self, button_data->file);
             }
         }
@@ -755,7 +755,7 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
     icon = get_gicon (button_data);
     if (icon != NULL)
     {
-        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon, GTK_ICON_SIZE_MENU);
+        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon);
         gtk_widget_show (GTK_WIDGET (button_data->image));
         g_object_unref (icon);
     }
@@ -976,6 +976,7 @@ make_button_data (NautilusPathBar *self,
 {
     GFile *path;
     GtkWidget *child = NULL;
+    GtkEventController *controller;
     ButtonData *button_data;
 
     path = nautilus_file_get_location (file);
@@ -1077,7 +1078,7 @@ make_button_data (NautilusPathBar *self,
     }
 
     gtk_button_set_child (GTK_BUTTON (button_data->button), child);
-    gtk_widget_show_all (button_data->container);
+    gtk_widget_show (button_data->container);
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 
@@ -1088,12 +1089,11 @@ make_button_data (NautilusPathBar *self,
     /* A gesture is needed here, because GtkButton doesn’t react to middle- or
      * secondary-clicking.
      */
-    button_data->multi_press_gesture = gtk_gesture_multi_press_new (button_data->button);
-
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (button_data->multi_press_gesture), 0);
-
-    g_signal_connect (button_data->multi_press_gesture, "pressed",
-                      G_CALLBACK (on_multi_press_gesture_pressed), button_data);
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (button_data->button, controller);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed",
+                      G_CALLBACK (on_click_gesture_pressed), button_data);
 
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     nautilus_drag_slot_proxy_init (button_data->button, button_data->file, NULL);

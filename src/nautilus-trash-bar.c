@@ -32,7 +32,6 @@
 #include "nautilus-file.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-gtk4-helpers.h"
 
 enum
 {
@@ -49,13 +48,13 @@ enum
 
 struct _NautilusTrashBar
 {
-    GtkBin parent_instance;
+    AdwBin parent_instance;
 
     NautilusFilesView *view;
     gulong selection_handler_id;
 };
 
-G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_BIN)
+G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, ADW_TYPE_BIN)
 
 static void
 selection_changed_cb (NautilusFilesView *view,
@@ -68,7 +67,7 @@ selection_changed_cb (NautilusFilesView *view,
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     count = g_list_length (selection);
 
-    info_bar = gtk_bin_get_child (GTK_BIN (bar));
+    info_bar = adw_bin_get_child (ADW_BIN (bar));
     gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (info_bar),
                                          TRASH_BAR_RESPONSE_RESTORE,
                                          (count > 0));
@@ -130,7 +129,7 @@ nautilus_trash_bar_trash_state_changed (NautilusTrashMonitor *trash_monitor,
 
     bar = NAUTILUS_TRASH_BAR (data);
 
-    info_bar = gtk_bin_get_child (GTK_BIN (bar));
+    info_bar = adw_bin_get_child (ADW_BIN (bar));
     gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (info_bar),
                                          TRASH_BAR_RESPONSE_EMPTY,
                                          !nautilus_trash_monitor_is_empty ());
@@ -163,10 +162,10 @@ trash_bar_response_cb (GtkInfoBar *infobar,
                        gpointer    user_data)
 {
     NautilusTrashBar *bar;
-    GtkWidget *window;
+    GtkRoot *window;
 
     bar = NAUTILUS_TRASH_BAR (user_data);
-    window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
+    window = gtk_widget_get_root (GTK_WIDGET (bar));
 
     switch (response_id)
     {
@@ -194,7 +193,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 
         case TRASH_BAR_RESPONSE_EMPTY:
         {
-            nautilus_file_operations_empty_trash (window, TRUE, NULL);
+            nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
         }
         break;
 
