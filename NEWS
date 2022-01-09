@@ -1,3 +1,37 @@
+Major changes in 42.alpha
+=========================
+* Improve design of the file renaming UI (Peter Eisenmann, Allan Day)
+* Improve visuals of the file conflict UI (Joshua Lee)
+* Use GtkBuilder UI definitions for more components (António Fernandes, Apoorv Sachan)
+* Fix "Move to"/"Copy to" from Starred (DillyPickly)
+* Improve disposition of shell search provider (Marco Trevisan)
+* Sort by subtype within type (rajat jain)
+* Allow searching by creation time (Nishit Patel)
+* Replace deprecated gexiv2 functions (Nishal Kulkarni)
+* Fix extension API introspection annotations (Aaron Jacobs)
+* Expand on extension API documentation (Aaron Jacobs)
+* Add compressed archives to Recent files (Manny)
+* Preparations for GTK 4 switch (Ernestas Kulik, António Fernandes, Matt Jakeman, Álvaro Costa, Suhaas Joshi)
+* Complete the GtkFlowBox-based grid view (António Fernandes)
+* Remove EelCanvas-based grid view (António Fernandes)
+* Improve design of the path bar (António Fernandes)
+* Fix geographical coordinates displayed format (Michael von Gunten)
+* Port to GTK 4 (António Fernandes)
+* Fix some GTK 4 switch regressions/warnings (António Fernandes, Ondrej Holy)
+* Translation updates (GNOME Translation Project contributors)
+
+Known major regressions in 42.alpha
+  - Lacks Drag-and-Drop interatcion
+  - Lacks clipboard interaction
+  - Lacks HiDPI icons
+  - Lacks MIME-type icons in list view
+  - Has poor performance for large directories in grid view
+  - Lacks attention-grabbing animation on operations button.
+  - Doesn't display emblems
+  - Doesn't display file filters as tags
+  - Lacks "Format" context menu item in sidebar
+  - Lacks Audio/Video properties page
+
 Major changes in 41.1
 =====================
 * Cache Scripts and New Document menus to avoid lags (António Fernandes)
