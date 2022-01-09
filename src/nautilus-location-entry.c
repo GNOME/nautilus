@@ -798,8 +798,6 @@ nautilus_location_entry_activate (GtkEntry *entry)
 
         g_free (uri_scheme);
     }
-
-    GTK_ENTRY_CLASS (nautilus_location_entry_parent_class)->activate (entry);
 }
 
 static void
