@@ -33,21 +33,15 @@
   </menu>
   <menu id="app_menu">
     <section>
-      <attribute name="display-hint">horizontal-buttons</attribute>
       <item>
         <attribute name="label" translatable="yes">New Window</attribute>
-        <attribute name="action">app.new-window</attribute>
+        <attribute name="action">app.clone-window</attribute>
         <attribute name="verb-icon">window-new-symbolic</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">New Tab</attribute>
         <attribute name="action">win.new-tab</attribute>
         <attribute name="verb-icon">tab-new-symbolic</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">New Folder</attribute>
-        <attribute name="action">view.new-folder</attribute>
-        <attribute name="verb-icon">folder-new-symbolic</attribute>
       </item>
     </section>
     <section>
