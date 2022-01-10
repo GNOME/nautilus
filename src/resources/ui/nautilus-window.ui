@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkPopoverMenu" id="tab_menu"/>
   <menu id="tab_menu_model">
     <section>
       <item>
@@ -26,6 +25,9 @@
       </item>
     </section>
   </menu>
+  <object class="GtkPopoverMenu" id="tab_menu">
+    <property name="menu-model">tab_menu_model</property>
+  </object>
   <template class="NautilusWindow" parent="AdwApplicationWindow">
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>

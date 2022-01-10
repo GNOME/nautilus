@@ -147,7 +147,6 @@ struct _NautilusWindow
     gulong bookmarks_id;
 
     GtkWidget *tab_menu;
-    GMenuModel *tab_menu_model;
 
     GQueue *tab_data_queue;
 };
@@ -2601,8 +2600,6 @@ nautilus_window_init (NautilusWindow *window)
                              G_CONNECT_SWAPPED);
 
     gtk_widget_set_parent (window->tab_menu, GTK_WIDGET (window));
-    gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (window->tab_menu),
-                                     G_MENU_MODEL (window->tab_menu_model));
 
     g_signal_connect (window, "notify::is-maximized",
                       G_CALLBACK (on_is_maximized_changed), NULL);
@@ -2675,7 +2672,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, main_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, notebook);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_menu);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_menu_model);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, in_app_notification_undo);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, in_app_notification_undo_label);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, in_app_notification_undo_undo_button);
