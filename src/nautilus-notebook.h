@@ -51,9 +51,9 @@ void            nautilus_notebook_next_page (GtkNotebook *notebook);
 gboolean        nautilus_notebook_contains_slot (GtkNotebook   *notebook,
                                                  NautilusWindowSlot *slot);
 
-gboolean        nautilus_notebook_get_tab_clicked (GtkNotebook *notebook,
-                                                   gint         x,
-                                                   gint         y,
+GtkWidget *     nautilus_notebook_get_tab_clicked (GtkNotebook *notebook,
+                                                   gdouble      x,
+                                                   gdouble      y,
                                                    gint        *position);
 void            nautilus_notebook_setup           (GtkNotebook *notebook);
 G_END_DECLS

@@ -1756,12 +1756,18 @@ on_path_bar_open_location (NautilusWindow    *window,
 
 static void
 notebook_popup_menu_show (NautilusWindow *window,
-                          gdouble         x,
-                          gdouble         y)
+                          GtkWidget      *tab)
 {
     GtkPopover *popover = GTK_POPOVER (window->tab_menu);
+    GtkAllocation allocation;
+    gdouble x, y;
 
-    gtk_popover_set_pointing_to (popover, &(GdkRectangle){x, y, 0, 0});
+    gtk_widget_get_allocation (tab, &allocation);
+    gtk_widget_translate_coordinates (tab, GTK_WIDGET (window),
+                                      allocation.x, allocation.y, &x, &y);
+    allocation.x = x;
+    allocation.y = y;
+    gtk_popover_set_pointing_to (popover, (GdkRectangle *) &allocation);
     gtk_popover_popup (popover);
 }
 
@@ -1775,9 +1781,8 @@ notebook_button_press_cb (GtkGestureClick *gesture,
     NautilusWindow *window;
     GtkNotebook *notebook;
     gint tab_clicked;
+    GtkWidget *tab_widget;
     guint button;
-    GdkEventSequence *sequence;
-    GdkEvent *event;
     GdkModifierType state;
 
     if (n_press != 1)
@@ -1788,22 +1793,21 @@ notebook_button_press_cb (GtkGestureClick *gesture,
     window = NAUTILUS_WINDOW (user_data);
     notebook = GTK_NOTEBOOK (window->notebook);
 
-    if (!nautilus_notebook_get_tab_clicked (notebook, x, y, &tab_clicked))
+    tab_widget = nautilus_notebook_get_tab_clicked (notebook, x, y, &tab_clicked);
+    if (tab_widget == NULL)
     {
         return;
     }
 
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-    state = gdk_event_get_modifier_state (event);
+    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
 
     if (button == GDK_BUTTON_SECONDARY &&
         (state & gtk_accelerator_get_default_mod_mask ()) == 0)
     {
         /* switch to the page before opening the menu */
         gtk_notebook_set_current_page (notebook, tab_clicked);
-        notebook_popup_menu_show (window, x, y);
+        notebook_popup_menu_show (window, tab_widget);
     }
     else if (button == GDK_BUTTON_MIDDLE)
     {

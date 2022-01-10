@@ -37,14 +37,17 @@
 
 #define AFTER_ALL_TABS -1
 
-static gint
-find_tab_num_at_pos (GtkNotebook *notebook,
-                     gint         abs_x,
-                     gint         abs_y)
+static GtkWidget *
+find_tab_at_pos (GtkNotebook *notebook,
+                 gdouble      abs_x,
+                 gdouble      abs_y,
+                 gint        *tab_num)
 {
     int page_num = 0;
     GtkWidget *page;
     GtkAllocation allocation;
+
+    *tab_num = AFTER_ALL_TABS;
 
     while ((page = gtk_notebook_get_nth_page (notebook, page_num)))
     {
@@ -52,7 +55,7 @@ find_tab_num_at_pos (GtkNotebook *notebook,
         gdouble tab_x, tab_y;
 
         tab = gtk_notebook_get_tab_label (notebook, page);
-        g_return_val_if_fail (tab != NULL, -1);
+        g_return_val_if_fail (tab != NULL, NULL);
 
         if (!gtk_widget_get_mapped (GTK_WIDGET (tab)))
         {
@@ -67,12 +70,13 @@ find_tab_num_at_pos (GtkNotebook *notebook,
         if (tab_x >= allocation.x && tab_x <= allocation.x + allocation.width &&
             tab_y >= allocation.y && tab_y <= allocation.y + allocation.height)
         {
-            return page_num;
+            *tab_num = page_num;
+            return tab;
         }
 
         page_num++;
     }
-    return AFTER_ALL_TABS;
+    return NULL;
 }
 
 static void
@@ -132,21 +136,22 @@ nautilus_notebook_contains_slot (GtkNotebook        *notebook,
     return found;
 }
 
-gboolean
+GtkWidget *
 nautilus_notebook_get_tab_clicked (GtkNotebook *notebook,
-                                   gint         x,
-                                   gint         y,
+                                   gdouble      x,
+                                   gdouble      y,
                                    gint        *position)
 {
+    GtkWidget *tab;
     gint tab_num;
 
-    tab_num = find_tab_num_at_pos (notebook, x, y);
+    tab = find_tab_at_pos (notebook, x, y, &tab_num);
 
     if (position != NULL)
     {
         *position = tab_num;
     }
-    return tab_num != -1;
+    return tab;
 }
 
 void
