@@ -8175,20 +8175,11 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
-    GMenuModel *zoom_section = priv->toolbar_menu_sections->zoom_section;
     GMenuModel *sort_section = priv->toolbar_menu_sections->sort_section;
-    g_autofree gchar *zoom_level_percent = NULL;
     const gchar *trashed_action;
     gint i;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
-
-    /* We want to show the percentage like this:    [ - | 100% | + ]   */
-    zoom_level_percent = g_strdup_printf ("%.0f%%", nautilus_files_view_get_zoom_level_percentage (view) * 100.0);
-    i = nautilus_g_menu_model_find_by_string (zoom_section, "action", "view.zoom-standard");
-    g_return_if_fail (i != -1);
-    nautilus_g_menu_replace_string_in_item (G_MENU (zoom_section), i,
-                                            "label", zoom_level_percent);
 
     /* When not in Trash, set an inexistant action to hide the menu item. This
      * works under the assumptiont that the menu item has its "hidden-when"
