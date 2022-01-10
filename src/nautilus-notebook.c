@@ -49,7 +49,7 @@ find_tab_num_at_pos (GtkNotebook *notebook,
     while ((page = gtk_notebook_get_nth_page (notebook, page_num)))
     {
         GtkWidget *tab;
-        gint max_x, max_y;
+        gdouble tab_x, tab_y;
 
         tab = gtk_notebook_get_tab_label (notebook, page);
         g_return_val_if_fail (tab != NULL, -1);
@@ -61,11 +61,11 @@ find_tab_num_at_pos (GtkNotebook *notebook,
         }
 
         gtk_widget_get_allocation (tab, &allocation);
+        gtk_widget_translate_coordinates (GTK_WIDGET (notebook), tab,
+                                          abs_x, abs_y, &tab_x, &tab_y);
 
-        max_x = allocation.x + allocation.width;
-        max_y = allocation.y + allocation.height;
-
-        if (abs_x <= max_x && abs_y <= max_y)
+        if (tab_x >= allocation.x && tab_x <= allocation.x + allocation.width &&
+            tab_y >= allocation.y && tab_y <= allocation.y + allocation.height)
         {
             return page_num;
         }
