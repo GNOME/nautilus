@@ -3289,7 +3289,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->view_action_group);
     g_clear_object (&priv->background_menu_model);
     g_clear_object (&priv->selection_menu_model);
-    g_clear_object (&priv->toolbar_menu_sections->zoom_section);
     g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
@@ -9518,7 +9517,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     /* Toolbar menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
     priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
-    priv->toolbar_menu_sections->zoom_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "zoom_section")));
     priv->toolbar_menu_sections->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
 
     g_signal_connect (view,

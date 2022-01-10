@@ -7,12 +7,16 @@
     <section>
       <attribute name="label" translatable="yes">Icon size</attribute>
       <attribute name="display-hint">inline-buttons</attribute>
-      <!--
-           Zoom section.
-
-           The toolbar code assumes this is the first item of this menu model.
-           Its contents is provided by the view.
-      -->
+      <item>
+        <attribute name="label" translatable="yes">Zoom out</attribute>
+        <attribute name="action">view.zoom-out</attribute>
+        <attribute name="verb-icon">zoom-out-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Zoom in</attribute>
+        <attribute name="action">view.zoom-in</attribute>
+        <attribute name="verb-icon">zoom-in-symbolic</attribute>
+      </item>
     </section>
     <section>
       <attribute name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</attribute>
