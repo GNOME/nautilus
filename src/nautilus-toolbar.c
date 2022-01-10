@@ -1230,18 +1230,13 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
         return;
     }
 
-    /* Let's assume that zoom and sort sections are the first and second items
+    /* Let's assume that sort section is the first item
      * in view_menu, as per nautilus-toolbar.ui. */
 
-    zoom_item = g_menu_item_new_from_model (self->view_menu, 0);
+    sort_item = g_menu_item_new_from_model (self->view_menu, 0);
     g_menu_remove (G_MENU (self->view_menu), 0);
-    g_menu_item_set_section (zoom_item, new_sections->zoom_section);
-    g_menu_insert_item (G_MENU (self->view_menu), 0, zoom_item);
-
-    sort_item = g_menu_item_new_from_model (self->view_menu, 1);
-    g_menu_remove (G_MENU (self->view_menu), 1);
     g_menu_item_set_section (sort_item, new_sections->sort_section);
-    g_menu_insert_item (G_MENU (self->view_menu), 1, sort_item);
+    g_menu_insert_item (G_MENU (self->view_menu), 0, sort_item);
 }
 
 
