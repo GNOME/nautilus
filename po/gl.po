@@ -19,7 +19,7 @@ msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2022-01-09 02:04+0000\n"
-"PO-Revision-Date: 2022-01-11 14:24+0100\n"
+"PO-Revision-Date: 2022-01-11 15:27+0100\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -876,21 +876,21 @@ msgstr "Puntuación"
 #. * north and south in GPS coordinates.
 #: extensions/image-properties/nautilus-image-properties-page.c:263
 msgid "N"
-msgstr ""
+msgstr "N"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:263
 msgid "S"
-msgstr ""
+msgstr "S"
 
 #. Translators: "E" and "W" stand for
 #. * east and west in GPS coordinates.
 #: extensions/image-properties/nautilus-image-properties-page.c:267
 msgid "E"
-msgstr ""
+msgstr "E"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:267
 msgid "W"
-msgstr ""
+msgstr "O"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:270
 msgid "Coordinates"
@@ -3548,13 +3548,13 @@ msgid "Are you sure you want to open all files?"
 msgstr "Está seguro de que quere abrir todos os ficheiros?"
 
 #: src/nautilus-mime-actions.c:1000
-#, fuzzy, c-format
+#, c-format
 #| msgid "This will open %d separate window."
 #| msgid_plural "This will open %d separate windows."
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
-msgstr[0] "Isto abrirá %d xanela separada."
-msgstr[1] "Isto abrirá %d xanelas separadas."
+msgstr[0] "Isto abrirá %d lapela e xanela separada."
+msgstr[1] "Isto abrirá %d lapelas e xanelas separadas."
 
 #: src/nautilus-mime-actions.c:1005
 #, c-format
@@ -5347,7 +5347,7 @@ msgstr "Restaurar"
 
 #: src/resources/ui/nautilus-properties-window.ui:1159
 msgid "_Forget"
-msgstr ""
+msgstr "_Esquecer"
 
 #: src/resources/ui/nautilus-properties-window.ui:1167
 msgid "_Add"
@@ -5641,175 +5641,157 @@ msgstr "Desmontar"
 #: src/gtk/nautilusgtkbookmarksmanager.c:53
 #, c-format
 msgid "%s does not exist in the bookmarks list"
-msgstr ""
+msgstr "%s non existe na lista de marcadores"
 
 #: src/gtk/nautilusgtkbookmarksmanager.c:414
 #, c-format
 msgid "%s already exists in the bookmarks list"
-msgstr ""
+msgstr "%s xa existe na lista de marcadores"
 
 #: src/gtk/nautilusgtkplacessidebar.c:979
-#, fuzzy
 #| msgid "Recency"
 msgid "Recent"
-msgstr "Frescura"
+msgstr "Recentes"
 
 #: src/gtk/nautilusgtkplacessidebar.c:981
-#, fuzzy
 #| msgid "Recent Servers"
 msgid "Recent files"
-msgstr "Servidores recentes"
+msgstr "Ficheiros recentes"
 
 #: src/gtk/nautilusgtkplacessidebar.c:992
-#, fuzzy
 #| msgid "Star %d file"
 #| msgid_plural "Star %d files"
 msgid "Starred files"
-msgstr "Marcar %d ficheiro como favorito"
+msgstr "Ficheiros marcados"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1003
-#, fuzzy
 #| msgid "_Open Scripts Folder"
 msgid "Open your personal folder"
-msgstr "_Abrir o cartafol de scripts"
+msgstr "Abrir o seu cartafol persoal"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1016
 msgid "Desktop"
-msgstr ""
+msgstr "Escritorio"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1018
-#, fuzzy
 #| msgid "When to show number of items in a folder"
 msgid "Open the contents of your desktop in a folder"
-msgstr "Cando mostrar o número de elementos dun cartafol"
+msgstr "Abrir os contidos do seu escritorio nun cartafol"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1032
-#, fuzzy
 #| msgctxt "shortcut window"
 #| msgid "Enter location"
 msgid "Enter Location"
-msgstr "Escribir unha localización"
+msgstr "Escriba unha localización"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1034
-#, fuzzy
 #| msgid "Unable to load location"
 msgid "Manually enter a location"
-msgstr "Non é posíbel cargar a localización"
+msgstr "Escriba unha localización manualmente"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1046
-#, fuzzy
 #| msgid "Open With %s"
 msgid "Open the trash"
-msgstr "Abrir con %s"
+msgstr "Abrir o lixo"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1157
 #: src/gtk/nautilusgtkplacessidebar.c:1185
 #: src/gtk/nautilusgtkplacessidebar.c:1385
-#, fuzzy, c-format
+#, c-format
 #| msgid "Moving %'d file to “%s”"
 #| msgid_plural "Moving %'d files to “%s”"
 msgid "Mount and open “%s”"
-msgstr "Movendo %'d ficheiro a «%s»"
+msgstr "Montar e abrir «%s»"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1280
-#, fuzzy
 #| msgid "The owner of the file."
 msgid "Open the contents of the file system"
-msgstr "O propietario do ficheiro."
+msgstr "Abrir os contidos do sistema de ficheiros"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1363
 msgid "New bookmark"
-msgstr ""
+msgstr "Novo marcador"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1365
-#, fuzzy
 #| msgid "Add to _Bookmarks"
 msgid "Add a new bookmark"
-msgstr "Engadir un _marcador"
+msgstr "Engadir un novo marcador"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1431
-#, fuzzy
 #| msgid "Show operations"
 msgid "Show other locations"
-msgstr "Mostrar operacións"
+msgstr "Mostrar outras localizacións"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
 #: src/gtk/nautilusgtkplacessidebar.c:1972
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error extracting “%s”"
 msgid "Error unlocking “%s”"
-msgstr "Produciuse un erro ao extraer «%s»."
+msgstr "Produciuse un erro ao desbloquear «%s»."
 
 #: src/gtk/nautilusgtkplacessidebar.c:2205
 msgid "This name is already taken"
-msgstr ""
+msgstr "Este nome xa está collido"
 
 #: src/gtk/nautilusgtkplacessidebar.c:2478
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to unmount %s"
 msgid "Unable to unmount “%s”"
-msgstr "Non é posíbel desmontar %s"
+msgstr "Non é posíbel desmontar «%s»"
 
 #: src/gtk/nautilusgtkplacessidebar.c:2654
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to start “%s”"
 msgid "Unable to stop “%s”"
-msgstr "Non foi posíbel iniciar «%s»"
+msgstr "Non é posíbel deter «%s»"
 
 #: src/gtk/nautilusgtkplacessidebar.c:2889
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to remove “%s”"
 msgid "Unable to poll “%s” for media changes"
-msgstr "Non foi posíbel extraer «%s»"
+msgstr "Non é posíbel consultarlle a «%s» por cambios no media"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3215
-#, fuzzy
 #| msgid "Add to _Bookmarks"
 msgid "_Add Bookmark"
-msgstr "Engadir un _marcador"
+msgstr "Engadir _marcador"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3219
 msgid "_Remove"
-msgstr ""
+msgstr "_Quitar"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3272
 msgid "_Power On"
-msgstr ""
+msgstr "_Encender"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3273
-#, fuzzy
 #| msgid "_Connect"
 msgid "_Connect Drive"
-msgstr "_Conectar"
+msgstr "_Conectar unidade"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3274
-#, fuzzy
 #| msgid "_Start Multi-disk Drive"
 msgid "_Start Multi-disk Device"
 msgstr "_Iniciar unidade multidisco"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3275
-#, fuzzy
 #| msgid "U_nlock Drive"
 msgid "_Unlock Device"
 msgstr "De_sbloquear unidade"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3288
-#, fuzzy
 #| msgid "_Disconnect"
 msgid "_Disconnect Drive"
-msgstr "_Desconectar"
+msgstr "_Desconectar unidade"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3289
-#, fuzzy
 #| msgid "_Stop Multi-disk Drive"
 msgid "_Stop Multi-disk Device"
 msgstr "_Deter unidade multidisco"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3290
-#, fuzzy
 #| msgid "_Lock Drive"
 msgid "_Lock Device"
 msgstr "_Bloquear unidade"
