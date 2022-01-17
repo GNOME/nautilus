@@ -35,20 +35,8 @@ struct _NautilusCompressDialogController
     GtkWidget *activate_button;
     GtkWidget *error_label;
     GtkWidget *name_entry;
-    GtkWidget *extension_stack;
-    GtkWidget *zip_row;
-    GtkWidget *zip_label;
-    GtkWidget *encrypted_zip_row;
-    GtkWidget *encrypted_zip_label;
-    GtkWidget *tar_xz_row;
-    GtkWidget *tar_xz_label;
-    GtkWidget *seven_zip_row;
-    GtkWidget *seven_zip_label;
-    GtkWidget *extension_popover;
-    GtkWidget *zip_checkmark;
-    GtkWidget *encrypted_zip_checkmark;
-    GtkWidget *tar_xz_checkmark;
-    GtkWidget *seven_zip_checkmark;
+    GtkWidget *extension_dropdown;
+    GtkSizeGroup *extension_sizegroup;
     GtkWidget *passphrase_label;
     GtkWidget *passphrase_entry;
 
@@ -59,6 +47,57 @@ struct _NautilusCompressDialogController
 };
 
 G_DEFINE_TYPE (NautilusCompressDialogController, nautilus_compress_dialog_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER);
+
+#define NAUTILUS_TYPE_COMPRESS_ITEM (nautilus_compress_item_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusCompressItem, nautilus_compress_item, NAUTILUS, COMPRESS_ITEM, GObject)
+
+struct _NautilusCompressItem
+{
+    GObject parent_instance;
+    NautilusCompressionFormat format;
+    char *extension;
+    char *description;
+};
+
+G_DEFINE_TYPE (NautilusCompressItem, nautilus_compress_item, G_TYPE_OBJECT);
+
+static void
+nautilus_compress_item_init (NautilusCompressItem *item)
+{
+}
+
+static void
+nautilus_compress_item_finalize (GObject *object)
+{
+    NautilusCompressItem *item = NAUTILUS_COMPRESS_ITEM (object);
+
+    g_free (item->extension);
+    g_free (item->description);
+
+    G_OBJECT_CLASS (nautilus_compress_item_parent_class)->finalize (object);
+}
+
+static void
+nautilus_compress_item_class_init (NautilusCompressItemClass *class)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
+
+    object_class->finalize = nautilus_compress_item_finalize;
+}
+
+static NautilusCompressItem *
+nautilus_compress_item_new (NautilusCompressionFormat  format,
+                            const char                *extension,
+                            const char                *description)
+{
+    NautilusCompressItem *item = g_object_new (NAUTILUS_TYPE_COMPRESS_ITEM, NULL);
+
+    item->format = format;
+    item->extension = g_strdup (extension);
+    item->description = g_strdup (description);
+
+    return item;
+}
 
 static gboolean
 nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetController  *self,
@@ -147,57 +186,32 @@ compress_dialog_controller_on_response (GtkDialog *dialog,
 }
 
 static void
-update_selected_format (NautilusCompressDialogController *self,
-                        NautilusCompressionFormat         format)
+update_selected_format (NautilusCompressDialogController *self)
 {
-    const char *extension;
-    GtkWidget *active_label;
-    GtkWidget *active_checkmark;
     gboolean show_passphrase = FALSE;
+    guint selected;
+    GListModel *model;
+    NautilusCompressItem *item;
 
-    switch (format)
+    selected = gtk_drop_down_get_selected (GTK_DROP_DOWN (self->extension_dropdown));
+    if (selected == GTK_INVALID_LIST_POSITION)
     {
-        case NAUTILUS_COMPRESSION_ZIP:
-        {
-            extension = ".zip";
-            active_label = self->zip_label;
-            active_checkmark = self->zip_checkmark;
-        }
-        break;
-
-        case NAUTILUS_COMPRESSION_ENCRYPTED_ZIP:
-        {
-            extension = ".zip";
-            active_label = self->encrypted_zip_label;
-            active_checkmark = self->encrypted_zip_checkmark;
-            show_passphrase = TRUE;
-        }
-        break;
-
-        case NAUTILUS_COMPRESSION_TAR_XZ:
-        {
-            extension = ".tar.xz";
-            active_label = self->tar_xz_label;
-            active_checkmark = self->tar_xz_checkmark;
-        }
-        break;
-
-        case NAUTILUS_COMPRESSION_7ZIP:
-        {
-            extension = ".7z";
-            active_label = self->seven_zip_label;
-            active_checkmark = self->seven_zip_checkmark;
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
+        return;
     }
 
-    self->extension = extension;
+    model = gtk_drop_down_get_model (GTK_DROP_DOWN (self->extension_dropdown));
+    item = g_list_model_get_item (model, selected);
+    if (item == NULL)
+    {
+        return;
+    }
+
+    if (item->format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP)
+    {
+        show_passphrase = TRUE;
+    }
+
+    self->extension = item->extension;
 
     gtk_widget_set_visible (self->passphrase_label, show_passphrase);
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
@@ -210,18 +224,10 @@ update_selected_format (NautilusCompressDialogController *self,
                                            "view-conceal");
     }
 
-    gtk_stack_set_visible_child (GTK_STACK (self->extension_stack),
-                                 active_label);
-
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->zip_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->encrypted_zip_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->tar_xz_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->seven_zip_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (active_checkmark), "object-select-symbolic");
-
     g_settings_set_enum (nautilus_compression_preferences,
                          NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT,
-                         format);
+                         item->format);
+
     /* Since the extension changes when the button is toggled, force a
      * verification of the new file name by simulating an entry change
      */
@@ -230,55 +236,132 @@ update_selected_format (NautilusCompressDialogController *self,
 }
 
 static void
-zip_row_on_activated (AdwActionRow *row,
-                      gpointer      user_data)
+extension_dropdown_setup_item (GtkSignalListItemFactory *factory,
+                               GtkListItem              *item,
+                               gpointer                  user_data)
 {
-    NautilusCompressDialogController *controller;
+    GtkWidget *title;
 
-    controller = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    title = gtk_label_new ("");
+    gtk_label_set_xalign (GTK_LABEL (title), 0.0);
 
-    gtk_popover_popdown (GTK_POPOVER (controller->extension_popover));
-    update_selected_format (controller,
-                            NAUTILUS_COMPRESSION_ZIP);
+    g_object_set_data (G_OBJECT (item), "title", title);
+    gtk_list_item_set_child (item, title);
+}
+
+
+static void
+extension_dropdown_setup_item_full (GtkSignalListItemFactory *factory,
+                                    GtkListItem              *item,
+                                    gpointer                  user_data)
+{
+    GtkWidget *hbox, *vbox, *title, *subtitle, *checkmark;
+
+    title = gtk_label_new ("");
+    gtk_label_set_xalign (GTK_LABEL (title), 0.0);
+    gtk_widget_set_halign (title, GTK_ALIGN_START);
+
+    subtitle = gtk_label_new ("");
+    gtk_label_set_xalign (GTK_LABEL (subtitle), 0.0);
+    gtk_widget_add_css_class (subtitle, "dim-label");
+    gtk_widget_add_css_class (subtitle, "caption");
+
+    checkmark = gtk_image_new_from_icon_name ("object-select-symbolic");
+
+    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
+    gtk_widget_set_hexpand (vbox, TRUE);
+
+    gtk_box_append (GTK_BOX (hbox), vbox);
+    gtk_box_append (GTK_BOX (vbox), title);
+    gtk_box_append (GTK_BOX (vbox), subtitle);
+    gtk_box_append (GTK_BOX (hbox), checkmark);
+
+    g_object_set_data (G_OBJECT (item), "title", title);
+    g_object_set_data (G_OBJECT (item), "subtitle", subtitle);
+    g_object_set_data (G_OBJECT (item), "checkmark", checkmark);
+
+    gtk_list_item_set_child (item, hbox);
 }
 
 static void
-encrypted_zip_row_on_activated (AdwActionRow *row,
-                                gpointer      user_data)
+extension_dropdown_on_selected_item_notify (GtkDropDown *dropdown,
+                                            GParamSpec  *pspec,
+                                            GtkListItem *item)
 {
-    NautilusCompressDialogController *controller;
+    GtkWidget *checkmark;
 
-    controller = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    checkmark = g_object_get_data (G_OBJECT (item), "checkmark");
 
-    gtk_popover_popdown (GTK_POPOVER (controller->extension_popover));
-    update_selected_format (controller,
-                            NAUTILUS_COMPRESSION_ENCRYPTED_ZIP);
+    if (gtk_drop_down_get_selected_item (dropdown) == gtk_list_item_get_item (item))
+    {
+        gtk_widget_set_opacity (checkmark, 1.0);
+    }
+    else
+    {
+        gtk_widget_set_opacity (checkmark, 0.0);
+    }
 }
 
 static void
-tar_xz_row_on_activated (AdwActionRow *row,
-                         gpointer      user_data)
+extension_dropdown_bind (GtkSignalListItemFactory *factory,
+                         GtkListItem              *list_item,
+                         gpointer                  user_data)
 {
-    NautilusCompressDialogController *controller;
+    NautilusCompressDialogController *self;
+    GtkWidget *title, *subtitle, *checkmark;
+    NautilusCompressItem *item;
 
-    controller = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    item = gtk_list_item_get_item (list_item);
 
-    gtk_popover_popdown (GTK_POPOVER (controller->extension_popover));
-    update_selected_format (controller,
-                            NAUTILUS_COMPRESSION_TAR_XZ);
+    title = g_object_get_data (G_OBJECT (list_item), "title");
+    subtitle = g_object_get_data (G_OBJECT (list_item), "subtitle");
+    checkmark = g_object_get_data (G_OBJECT (list_item), "checkmark");
+
+    gtk_label_set_label (GTK_LABEL (title), item->extension);
+    gtk_size_group_add_widget (self->extension_sizegroup, title);
+
+    if (item->format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP)
+    {
+        gtk_widget_add_css_class (title, "encrypted_zip");
+    }
+
+    if (subtitle)
+    {
+        gtk_label_set_label (GTK_LABEL (subtitle), item->description);
+    }
+
+    if (checkmark)
+    {
+        g_signal_connect (self->extension_dropdown,
+                          "notify::selected-item",
+                          G_CALLBACK (extension_dropdown_on_selected_item_notify),
+                          list_item);
+        extension_dropdown_on_selected_item_notify (GTK_DROP_DOWN (self->extension_dropdown),
+                                                    NULL,
+                                                    list_item);
+    }
 }
 
 static void
-seven_zip_row_on_activated (AdwActionRow *row,
-                            gpointer      user_data)
+extension_dropdown_unbind (GtkSignalListItemFactory *factory,
+                           GtkListItem              *item,
+                           gpointer                  user_data)
 {
-    NautilusCompressDialogController *controller;
+    NautilusCompressDialogController *self;
+    GtkWidget *title;
 
-    controller = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    g_signal_handlers_disconnect_by_func (self->extension_dropdown,
+                                          extension_dropdown_on_selected_item_notify,
+                                          item);
 
-    gtk_popover_popdown (GTK_POPOVER (controller->extension_popover));
-    update_selected_format (controller,
-                            NAUTILUS_COMPRESSION_7ZIP);
+    title = g_object_get_data (G_OBJECT (item), "title");
+    if (title)
+    {
+        gtk_widget_remove_css_class (title, "encrypted_zip");
+    }
 }
 
 static void
@@ -342,47 +425,75 @@ activate_button_on_sensitive_notify (GObject    *gobject,
 }
 
 static void
-popover_on_show (GtkWidget *widget,
-                 gpointer   user_data)
+extension_dropdown_setup (NautilusCompressDialogController *self)
 {
-    NautilusCompressDialogController *self;
+    GtkListItemFactory *factory, *list_factory;
+    GListStore *store;
+    NautilusCompressItem *item;
     NautilusCompressionFormat format;
+    gint i;
 
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    store = g_list_store_new (NAUTILUS_TYPE_COMPRESS_ITEM);
+    item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_ZIP,
+                                       ".zip",
+                                       _("Compatible with all operating systems."));
+    g_list_store_append (store, item);
+    g_object_unref (item);
+    item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_ENCRYPTED_ZIP,
+                                       ".zip",
+                                       _("Password protected .zip, must be installed on Windows and Mac."));
+    g_list_store_append (store, item);
+    g_object_unref (item);
+    item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_TAR_XZ,
+                                       ".tar.xz",
+                                       _("Smaller archives but Linux and Mac only."));
+    g_list_store_append (store, item);
+    g_object_unref (item);
+    item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_7ZIP,
+                                       ".7z",
+                                       _("Smaller archives but must be installed on Windows and Mac."));
+    g_list_store_append (store, item);
+    g_object_unref (item);
+
+    factory = gtk_signal_list_item_factory_new ();
+    g_signal_connect_object (factory, "setup",
+                             G_CALLBACK (extension_dropdown_setup_item), self, 0);
+    g_signal_connect_object (factory, "bind",
+                             G_CALLBACK (extension_dropdown_bind), self, 0);
+    g_signal_connect_object (factory, "unbind",
+                             G_CALLBACK (extension_dropdown_unbind), self, 0);
+
+    list_factory = gtk_signal_list_item_factory_new ();
+    g_signal_connect_object (list_factory, "setup",
+                             G_CALLBACK (extension_dropdown_setup_item_full), self, 0);
+    g_signal_connect_object (list_factory, "bind",
+                             G_CALLBACK (extension_dropdown_bind), self, 0);
+    g_signal_connect_object (list_factory, "unbind",
+                             G_CALLBACK (extension_dropdown_unbind), self, 0);
+
+    gtk_drop_down_set_factory (GTK_DROP_DOWN (self->extension_dropdown), factory);
+    gtk_drop_down_set_list_factory (GTK_DROP_DOWN (self->extension_dropdown), list_factory);
+    gtk_drop_down_set_model (GTK_DROP_DOWN (self->extension_dropdown), G_LIST_MODEL (store));
+
     format = g_settings_get_enum (nautilus_compression_preferences,
                                   NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
-    switch (format)
+    for (i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (store)); i++)
     {
-        case NAUTILUS_COMPRESSION_ZIP:
+        item = g_list_model_get_item (G_LIST_MODEL (store), i);
+        if (item->format == format)
         {
-            gtk_widget_grab_focus (self->zip_row);
+            gtk_drop_down_set_selected (GTK_DROP_DOWN (self->extension_dropdown), i);
+            update_selected_format (self);
+            g_object_unref (item);
+            break;
         }
-        break;
 
-        case NAUTILUS_COMPRESSION_ENCRYPTED_ZIP:
-        {
-            gtk_widget_grab_focus (self->encrypted_zip_row);
-        }
-        break;
-
-        case NAUTILUS_COMPRESSION_TAR_XZ:
-        {
-            gtk_widget_grab_focus (self->tar_xz_row);
-        }
-        break;
-
-        case NAUTILUS_COMPRESSION_7ZIP:
-        {
-            gtk_widget_grab_focus (self->seven_zip_row);
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
+        g_object_unref (item);
     }
+
+    g_object_unref (store);
+    g_object_unref (factory);
+    g_object_unref (list_factory);
 }
 
 NautilusCompressDialogController *
@@ -397,23 +508,10 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     GtkWidget *error_label;
     GtkWidget *name_entry;
     GtkWidget *activate_button;
-    GtkWidget *extension_stack;
-    GtkWidget *zip_row;
-    GtkWidget *zip_label;
-    GtkWidget *encrypted_zip_row;
-    GtkWidget *encrypted_zip_label;
-    GtkWidget *tar_xz_row;
-    GtkWidget *tar_xz_label;
-    GtkWidget *seven_zip_row;
-    GtkWidget *seven_zip_label;
-    GtkWidget *extension_popover;
-    GtkWidget *zip_checkmark;
-    GtkWidget *encrypted_zip_checkmark;
-    GtkWidget *tar_xz_checkmark;
-    GtkWidget *seven_zip_checkmark;
+    GtkWidget *extension_dropdown;
+    GtkSizeGroup *extension_sizegroup;
     GtkWidget *passphrase_label;
     GtkWidget *passphrase_entry;
-    NautilusCompressionFormat format;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
     compress_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "compress_dialog"));
@@ -421,22 +519,10 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
     name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
     activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "activate_button"));
-    extension_stack = GTK_WIDGET (gtk_builder_get_object (builder, "extension_stack"));
-    zip_label = GTK_WIDGET (gtk_builder_get_object (builder, "zip_label"));
-    encrypted_zip_label = GTK_WIDGET (gtk_builder_get_object (builder, "encrypted_zip_label"));
-    tar_xz_label = GTK_WIDGET (gtk_builder_get_object (builder, "tar_xz_label"));
-    seven_zip_label = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_label"));
-    extension_popover = GTK_WIDGET (gtk_builder_get_object (builder, "extension_popover"));
-    zip_checkmark = GTK_WIDGET (gtk_builder_get_object (builder, "zip_checkmark"));
-    encrypted_zip_checkmark = GTK_WIDGET (gtk_builder_get_object (builder, "encrypted_zip_checkmark"));
-    tar_xz_checkmark = GTK_WIDGET (gtk_builder_get_object (builder, "tar_xz_checkmark"));
-    seven_zip_checkmark = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_checkmark"));
+    extension_dropdown = GTK_WIDGET (gtk_builder_get_object (builder, "extension_dropdown"));
+    extension_sizegroup = GTK_SIZE_GROUP (gtk_builder_get_object (builder, "extension_sizegroup"));
     passphrase_label = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_label"));
     passphrase_entry = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_entry"));
-    zip_row = GTK_WIDGET (gtk_builder_get_object (builder, "zip_row"));
-    encrypted_zip_row = GTK_WIDGET (gtk_builder_get_object (builder, "encrypted_zip_row"));
-    tar_xz_row = GTK_WIDGET (gtk_builder_get_object (builder, "tar_xz_row"));
-    seven_zip_row = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_row"));
 
     gtk_window_set_transient_for (GTK_WINDOW (compress_dialog),
                                   parent_window);
@@ -451,49 +537,27 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     self->compress_dialog = compress_dialog;
     self->activate_button = activate_button;
     self->error_label = error_label;
-    self->extension_stack = extension_stack;
-    self->zip_label = zip_label;
-    self->encrypted_zip_label = encrypted_zip_label;
-    self->tar_xz_label = tar_xz_label;
-    self->seven_zip_label = seven_zip_label;
     self->name_entry = name_entry;
-    self->extension_popover = extension_popover;
-    self->zip_checkmark = zip_checkmark;
-    self->encrypted_zip_checkmark = encrypted_zip_checkmark;
-    self->tar_xz_checkmark = tar_xz_checkmark;
-    self->seven_zip_checkmark = seven_zip_checkmark;
-    self->name_entry = name_entry;
+    self->extension_dropdown = extension_dropdown;
+    self->extension_sizegroup = extension_sizegroup;
     self->passphrase_label = passphrase_label;
     self->passphrase_entry = passphrase_entry;
-    self->zip_row = zip_row;
-    self->encrypted_zip_row = encrypted_zip_row;
-    self->tar_xz_row = tar_xz_row;
-    self->seven_zip_row = seven_zip_row;
+
+    extension_dropdown_setup (self);
 
     self->response_handler_id = g_signal_connect (compress_dialog,
                                                   "response",
                                                   (GCallback) compress_dialog_controller_on_response,
                                                   self);
 
-    g_signal_connect (self->zip_row, "activated",
-                      G_CALLBACK (zip_row_on_activated), self);
-    g_signal_connect (self->encrypted_zip_row, "activated",
-                      G_CALLBACK (encrypted_zip_row_on_activated), self);
-    g_signal_connect (self->tar_xz_row, "activated",
-                      G_CALLBACK (tar_xz_row_on_activated), self);
-    g_signal_connect (self->seven_zip_row, "activated",
-                      G_CALLBACK (seven_zip_row_on_activated), self);
     g_signal_connect (self->passphrase_entry, "changed",
                       G_CALLBACK (passphrase_entry_on_changed), self);
     g_signal_connect (self->passphrase_entry, "icon-press",
                       G_CALLBACK (passphrase_entry_on_icon_press), self);
     g_signal_connect (self->activate_button, "notify::sensitive",
                       G_CALLBACK (activate_button_on_sensitive_notify), self);
-    g_signal_connect (self->extension_popover, "show",
-                      G_CALLBACK (popover_on_show), self);
-
-    format = g_settings_get_enum (nautilus_compression_preferences,
-                                  NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
+    g_signal_connect_swapped (self->extension_dropdown, "notify::selected-item",
+                              G_CALLBACK (update_selected_format), self);
 
     if (initial_name != NULL)
     {
@@ -501,8 +565,6 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     }
 
     gtk_widget_show (compress_dialog);
-
-    update_selected_format (self, format);
 
     return self;
 }
