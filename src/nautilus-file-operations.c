@@ -9037,7 +9037,10 @@ compress_task_thread_func (GTask        *task,
                                         compress_job->format,
                                         compress_job->filter,
                                         FALSE);
-    autoar_compressor_set_passphrase (compressor, compress_job->passphrase);
+    if (compress_job->passphrase && compress_job->passphrase[0] != '\0')
+    {
+        autoar_compressor_set_passphrase (compressor, compress_job->passphrase);
+    }
 
     autoar_compressor_set_output_is_dest (compressor, TRUE);
 
