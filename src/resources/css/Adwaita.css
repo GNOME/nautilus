@@ -150,16 +150,16 @@
     color: @warning_fg_color;
 }
 
-/* Icon view */
-flowbox {
+/* Grid view */
+.nautilus-grid-view flowbox {
   padding: 18px;
 }
 
-flowbox flowboxchild {
+.nautilus-grid-view flowboxchild {
   padding: 6px;
 }
 
-flowboxchild .thumbnail {
+.nautilus-grid-view .thumbnail {
   box-shadow: 0px 1px 2px 0px @shade_color,
               0px 0px 0px 1px @shade_color,
               0px 2px 0px 0px @shade_color;
