@@ -20,9 +20,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 3.24\n"
+"Project-Id-Version: nautilus 41.2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-01-10 17:45+0000\n"
+"POT-Creation-Date: 2022-01-23 13:48+0000\n"
 "PO-Revision-Date: 2022-01-12 13:26+0800\n"
 "Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
@@ -4942,6 +4942,7 @@ msgid "No Results Found"
 msgstr "未找到结果"
 
 #: src/resources/ui/nautilus-no-search-results.ui:39
+#: src/gtk/nautilusgtkplacesview.ui:230
 msgid "Try a different search"
 msgstr "尝试不同的搜索"
 
@@ -5356,7 +5357,7 @@ msgid "No network locations found"
 msgstr "未找到网络位置"
 
 #. Restore from Cancel to Connect
-#: src/gtk/nautilusgtkplacesview.c:1224
+#: src/gtk/nautilusgtkplacesview.c:1224 src/gtk/nautilusgtkplacesview.ui:262
 msgid "Con_nect"
 msgstr "连接(_N)"
 
@@ -5436,8 +5437,47 @@ msgid "Disconnect"
 msgstr "断开连接"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:478
+#: src/gtk/nautilusgtkplacesviewrow.ui:53 src/gtk/nautilusgtksidebarrow.ui:50
 msgid "Unmount"
 msgstr "卸载"
+
+#: src/gtk/nautilusgtkplacesview.ui:28
+msgid "Server Addresses"
+msgstr "服务器地址"
+
+#: src/gtk/nautilusgtkplacesview.ui:40
+msgid ""
+"Server addresses are made up of a protocol prefix and an address. Examples:"
+msgstr "服务器由协议前缀和地址组成。示例："
+
+#: src/gtk/nautilusgtkplacesview.ui:66
+msgid "Available Protocols"
+msgstr "可用协议"
+
+#: src/gtk/nautilusgtkplacesview.ui:79
+msgid "Prefix"
+msgstr "前缀"
+
+#. Translators: Server as any successfully connected network address
+#: src/gtk/nautilusgtkplacesview.ui:118
+msgid "No recent servers found"
+msgstr "没有最近连接过的服务器"
+
+#: src/gtk/nautilusgtkplacesview.ui:141
+msgid "Recent Servers"
+msgstr "最近连接过的服务器"
+
+#: src/gtk/nautilusgtkplacesview.ui:221
+msgid "No results found"
+msgstr "无结果"
+
+#: src/gtk/nautilusgtkplacesview.ui:252
+msgid "Connect to _Server"
+msgstr "连接到服务器(_S)"
+
+#: src/gtk/nautilusgtkplacesview.ui:277
+msgid "Enter server address…"
+msgstr "输入服务器地址…"
 
 #: src/gtk/nautilusgtkbookmarksmanager.c:53
 #, c-format
@@ -5573,35 +5613,6 @@ msgstr "锁定设备(_L)"
 
 #~ msgid "View options"
 #~ msgstr "视图选项"
-
-#~ msgid "Server Addresses"
-#~ msgstr "服务器地址"
-
-#~ msgid ""
-#~ "Server addresses are made up of a protocol prefix and an address. "
-#~ "Examples:"
-#~ msgstr "服务器由协议前缀和地址组成。示例："
-
-#~ msgid "Available Protocols"
-#~ msgstr "可用协议"
-
-#~ msgid "Prefix"
-#~ msgstr "前缀"
-
-#~ msgid "No recent servers found"
-#~ msgstr "没有最近连接过的服务器"
-
-#~ msgid "Recent Servers"
-#~ msgstr "最近连接过的服务器"
-
-#~ msgid "No results found"
-#~ msgstr "无结果"
-
-#~ msgid "Connect to _Server"
-#~ msgstr "连接到服务器(_S)"
-
-#~ msgid "Enter server address…"
-#~ msgstr "输入服务器地址…"
 
 #~ msgid "Favorite files"
 #~ msgstr "收藏文件"
