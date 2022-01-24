@@ -35,5 +35,7 @@ void nautilus_view_model_add_item (NautilusViewModel     *self,
                                    NautilusViewItemModel *item);
 void nautilus_view_model_add_items (NautilusViewModel *self,
                                     GQueue            *items);
+guint nautilus_view_model_get_index (NautilusViewModel     *self,
+                                     NautilusViewItemModel *item);
 
 G_END_DECLS

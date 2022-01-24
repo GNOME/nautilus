@@ -372,10 +372,12 @@ real_set_selection (NautilusFilesView *files_view,
     gtk_flow_box_unselect_all (self->view_ui);
     for (GList *l = g_queue_peek_head_link (selection_item_models); l != NULL ; l = l->next)
     {
-        GtkWidget *item_ui;
+        guint i;
+        GtkFlowBoxChild *child;
 
-        item_ui = nautilus_view_item_model_get_item_ui (NAUTILUS_VIEW_ITEM_MODEL (l->data));
-        gtk_flow_box_select_child (self->view_ui, GTK_FLOW_BOX_CHILD (item_ui));
+        i = nautilus_view_model_get_index (self->model, l->data);
+        child = gtk_flow_box_get_child_at_index (self->view_ui, i);
+        gtk_flow_box_select_child (self->view_ui, child);
     }
 
     nautilus_files_view_notify_selection_changed (files_view);
@@ -410,6 +412,7 @@ get_first_selected_item_ui (NautilusViewIconController *self)
     g_autolist (NautilusFile) selection = NULL;
     NautilusFile *file;
     NautilusViewItemModel *item_model;
+    guint i;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     if (selection == NULL)
@@ -419,8 +422,8 @@ get_first_selected_item_ui (NautilusViewIconController *self)
 
     file = NAUTILUS_FILE (selection->data);
     item_model = nautilus_view_model_get_item_from_file (self->model, file);
-
-    return nautilus_view_item_model_get_item_ui (item_model);
+    i = nautilus_view_model_get_index (self->model, item_model);
+    return GTK_WIDGET (gtk_flow_box_get_child_at_index (self->view_ui, i));
 }
 
 static void
@@ -998,12 +1001,14 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     NautilusViewIconController *self = data->view;
     g_autoptr (NautilusFile) file = NULL;
     NautilusViewItemModel *item;
+    guint i;
     GtkWidget *item_ui;
     gdouble item_y;
 
     file = nautilus_file_get_existing_by_uri (data->uri);
     item = nautilus_view_model_get_item_from_file (self->model, file);
-    item_ui = nautilus_view_item_model_get_item_ui (item);
+    i = nautilus_view_model_get_index (self->model, item);
+    item_ui = GTK_WIDGET (gtk_flow_box_get_child_at_index (self->view_ui, i));
     gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
                                       0, 0,
                                       NULL, &item_y);

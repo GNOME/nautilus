@@ -321,3 +321,16 @@ nautilus_view_model_add_items (NautilusViewModel *self,
 
     g_list_store_sort (self->internal_model, compare_data_func, self);
 }
+
+guint
+nautilus_view_model_get_index (NautilusViewModel     *self,
+                               NautilusViewItemModel *item)
+{
+    guint i = G_MAXUINT;
+    gboolean found;
+
+    found = g_list_store_find (self->internal_model, item, &i);
+    g_warn_if_fail (found);
+
+    return i;
+}
