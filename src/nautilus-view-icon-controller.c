@@ -423,7 +423,7 @@ get_first_selected_item_ui (NautilusViewIconController *self)
     file = NAUTILUS_FILE (selection->data);
     item_model = nautilus_view_model_get_item_from_file (self->model, file);
     i = nautilus_view_model_get_index (self->model, item_model);
-    return GTK_WIDGET (gtk_flow_box_get_child_at_index (self->view_ui, i));
+    return gtk_flow_box_child_get_child (gtk_flow_box_get_child_at_index (self->view_ui, i));
 }
 
 static void
@@ -1008,7 +1008,7 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     file = nautilus_file_get_existing_by_uri (data->uri);
     item = nautilus_view_model_get_item_from_file (self->model, file);
     i = nautilus_view_model_get_index (self->model, item);
-    item_ui = GTK_WIDGET (gtk_flow_box_get_child_at_index (self->view_ui, i));
+    item_ui = gtk_flow_box_child_get_child (gtk_flow_box_get_child_at_index (self->view_ui, i));
     gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
                                       0, 0,
                                       NULL, &item_y);
@@ -1294,7 +1294,11 @@ bind_item_ui (GtkWidget             **child,
               NautilusViewItemModel  *item_model,
               gpointer                user_data)
 {
-    nautilus_view_icon_item_ui_set_model (NAUTILUS_VIEW_ICON_ITEM_UI (*child),
+    GtkWidget *item_ui;
+
+    item_ui = gtk_flow_box_child_get_child (GTK_FLOW_BOX_CHILD (*child));
+
+    nautilus_view_icon_item_ui_set_model (NAUTILUS_VIEW_ICON_ITEM_UI (item_ui),
                                           item_model);
     nautilus_view_item_model_set_item_ui (item_model, *child);
 }
@@ -1309,8 +1313,12 @@ setup_item_ui (GtkWidget **child,
     item_ui = nautilus_view_icon_item_ui_new ();
     nautilus_view_item_ui_set_caption_attributes (item_ui, self->caption_attributes);
 
-    *child = GTK_WIDGET (item_ui);
-    gtk_widget_show (*child);
+    *child = gtk_flow_box_child_new ();
+    gtk_flow_box_child_set_child (GTK_FLOW_BOX_CHILD (*child),
+                                  GTK_WIDGET (item_ui));
+
+    gtk_widget_set_halign (*child, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (*child, GTK_ALIGN_START);
 }
 
 static GtkWidget *

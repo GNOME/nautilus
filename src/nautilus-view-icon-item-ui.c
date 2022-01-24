@@ -5,7 +5,7 @@
 
 struct _NautilusViewIconItemUi
 {
-    GtkFlowBoxChild parent_instance;
+    GtkBox parent_instance;
 
     NautilusViewItemModel *model;
     GQuark *caption_attributes;
@@ -18,7 +18,7 @@ struct _NautilusViewIconItemUi
     GtkWidget *third_caption;
 };
 
-G_DEFINE_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, GTK_TYPE_FLOW_BOX_CHILD)
+G_DEFINE_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, GTK_TYPE_BOX)
 
 enum
 {

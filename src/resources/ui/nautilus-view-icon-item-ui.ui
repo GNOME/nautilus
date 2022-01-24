@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusViewIconItemUi" parent="GtkFlowBoxChild">
-    <property name="halign">center</property>
-    <property name="valign">start</property>
-    <property name="child">
+  <template class="NautilusViewIconItemUi" parent="GtkBox">
+    <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <property name="halign">center</property>
@@ -90,6 +88,6 @@
           </object>
         </child>
       </object>
-    </property>
+    </child>
   </template>
 </interface>
