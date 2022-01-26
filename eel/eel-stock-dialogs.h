@@ -51,15 +51,6 @@ GtkDialog *eel_show_simple_dialog             (GtkWidget         *parent,
  * primary, and secondary messages, and we return GtkDialog pointers 
  * instead of GtkWidget pointers.
  */
-GtkDialog *eel_show_info_dialog               (const char        *primary_text,
-					       const char        *secondary_text,
-					       GtkWindow         *parent);
-GtkDialog *eel_show_warning_dialog            (const char        *primary_text,
-					       const char        *secondary_text,
-					       GtkWindow         *parent);
-GtkDialog *eel_show_error_dialog              (const char        *primary_text,
-					       const char        *secondary_text,
-					       GtkWindow         *parent);
 GtkDialog *eel_show_yes_no_dialog             (const char        *primary_text,
 					       const char        *secondary_text,
 					       const char        *yes_label,
