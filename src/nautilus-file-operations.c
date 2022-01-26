@@ -1347,7 +1347,7 @@ do_run_simple_dialog (gpointer _data)
 
     /* Create the dialog. */
     dialog = gtk_message_dialog_new (*data->parent_window,
-                                     0,
+                                     GTK_DIALOG_MODAL,
                                      data->message_type,
                                      GTK_BUTTONS_NONE,
                                      NULL);
