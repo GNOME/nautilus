@@ -1,5 +1,5 @@
 # nautilus ja.po.
-# Copyright (C) 2000-2021 Free Software Foundation, Inc.
+# Copyright (C) 2000-2022 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2002.
 # Takuo Kitame <kitame@debian.org>, 2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
@@ -14,7 +14,7 @@
 # Hajime Taira <htaira@redhat.com>, 2015, 2019.
 # Akira Tanaka <root.167d36d4acb91@gmail.com>, 2017.
 # sujiniku <sujinikusityuu@gmail.com>, 2018, 2021.
-# sicklylife <translation@sicklylife.jp>, 2019-2021.
+# sicklylife <translation@sicklylife.jp>, 2019-2022.
 # Yuki Okushi <huyuumi.dev@gmail.com>, 2020.
 # Peniel Vargas <tsuneake.kaemitsu@gmail.com>, 2021.
 #
@@ -27,7 +27,7 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2021-11-06 17:19+0000\n"
-"PO-Revision-Date: 2021-07-11 19:30+0900\n"
+"PO-Revision-Date: 2022-01-30 21:00+0900\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -2824,10 +2824,9 @@ msgstr "(%s)"
 #. * total size of those items.
 #.
 #: src/nautilus-files-view.c:3598
-#, fuzzy, c-format
-#| msgid "%s %s, %s %s"
+#, c-format
 msgid "%s, %s"
-msgstr "%s %s, %s %s"
+msgstr "%s, %s"
 
 #: src/nautilus-files-view.c:6058
 msgid "Select Move Destination"
@@ -4213,14 +4212,15 @@ msgstr "やり直す(_R)"
 #: src/nautilus-trash-bar.c:232
 msgid "Trashed items are automatically deleted after a period of time"
 msgstr ""
+"ゴミ箱へ移動したアイテムは一定の期間が経過すると自動的に削除されます"
 
 #: src/nautilus-trash-bar.c:249
 msgid "_Settings"
-msgstr ""
+msgstr "設定(_S)"
 
 #: src/nautilus-trash-bar.c:252
 msgid "Display system controls for trash content"
-msgstr ""
+msgstr "ゴミ箱の内容に関するシステム設定を表示します"
 
 #: src/nautilus-trash-bar.c:255
 msgid "_Restore"
@@ -4886,12 +4886,10 @@ msgid "Compatible with all operating systems."
 msgstr "すべてのオペレーティングシステムで使用可能です。"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:37
-#, fuzzy
-#| msgid "Smaller archives but must be installed on Windows and Mac."
 msgid "Password protected .zip, must be installed on Windows and Mac."
 msgstr ""
-"アーカイブは小さくなりますが、Windows と Mac では別途アーカイバーのインストー"
-"ルが必要です。"
+"パスワードで保護された .zip です。Windows と Mac では別途アーカイバーのインス"
+"トールが必要です。"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:57
 msgid "Smaller archives but Linux and Mac only."
@@ -4912,16 +4910,12 @@ msgid "Archive name"
 msgstr "アーカイブ名"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:214
-#, fuzzy
-#| msgid "Password Required"
 msgid "Password"
-msgstr "パスワードが必要です"
+msgstr "パスワード"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:226
-#, fuzzy
-#| msgid "Enter password…"
 msgid "Enter a password here."
-msgstr "パスワードを入力…"
+msgstr "ここにパスワードを入力してください。"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
 msgid "Change Permissions for Enclosed Files"
