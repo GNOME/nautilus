@@ -22,6 +22,7 @@ G_DECLARE_FINAL_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, NAUTIL
 NautilusViewIconItemUi * nautilus_view_icon_item_ui_new (void);
 void nautilus_view_icon_item_ui_set_model (NautilusViewIconItemUi *self,
                                            NautilusViewItemModel  *model);
+NautilusViewItemModel *nautilus_view_icon_item_ui_get_model (NautilusViewIconItemUi *self);
 void nautilus_view_item_ui_set_caption_attributes (NautilusViewIconItemUi *self,
                                                    GQuark                 *attrs);
 

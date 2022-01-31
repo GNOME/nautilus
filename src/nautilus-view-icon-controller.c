@@ -770,32 +770,28 @@ activate_selection_on_click (NautilusViewIconController *self,
 }
 
 static void
-on_button_press_event (GtkGestureClick *gesture,
-                       gint             n_press,
-                       gdouble          x,
-                       gdouble          y,
-                       gpointer         user_data)
+on_click_pressed (GtkGestureClick *gesture,
+                  gint             n_press,
+                  gdouble          x,
+                  gdouble          y,
+                  gpointer         user_data)
 {
     NautilusViewIconController *self;
+    GtkWidget *event_widget;
     guint button;
-    GdkModifierType modifiers = 0;
+    GdkModifierType modifiers;
     gdouble view_x;
     gdouble view_y;
-    GtkFlowBoxChild *child_at_pos;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-#if GTK_MAJOR_VERSION < 4
-    gtk_get_current_event_state (&modifiers);
-#else
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
-#endif
 
-    gtk_widget_translate_coordinates (gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture)),
-                                      GTK_WIDGET (self->view_ui),
-                                      x, y, &view_x, &view_y);
-    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, view_x, view_y);
-    if (child_at_pos != NULL)
+    gtk_widget_translate_coordinates (event_widget, GTK_WIDGET (self),
+                                      x, y,
+                                      &view_x, &view_y);
+    if (NAUTILUS_IS_VIEW_ICON_ITEM_UI (event_widget))
     {
         gboolean selection_mode;
 
@@ -817,8 +813,7 @@ on_button_press_event (GtkGestureClick *gesture,
             NautilusViewItemModel *item_model;
             g_autolist (NautilusFile) selection = NULL;
 
-            item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
-                                                gtk_flow_box_child_get_index (child_at_pos));
+            item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
             selected_file = nautilus_view_item_model_get_file (item_model);
             selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
             if (g_list_find (selection, selected_file) == NULL)
@@ -842,16 +837,21 @@ on_button_press_event (GtkGestureClick *gesture,
         else if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                               x, y);
+                                                               view_x, view_y);
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
         }
     }
     else
     {
-        nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
+        if (!self->activate_on_release)
+        {
+            nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
+        }
+
         if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                                x, y);
+                                                                view_x, view_y);
         }
     }
 }
@@ -889,26 +889,27 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
                                        gpointer             user_data)
 {
     NautilusViewIconController *self;
-    GtkFlowBoxChild *child_at_pos;
+    GtkWidget *event_widget;
     gdouble view_x;
     gdouble view_y;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
 
-    gtk_widget_translate_coordinates (gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture)),
-                                      GTK_WIDGET (self->view_ui),
+    gtk_widget_translate_coordinates (event_widget,
+                                      GTK_WIDGET (self),
                                       x, y, &view_x, &view_y);
-    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, view_x, view_y);
-    if (child_at_pos != NULL)
+    if (NAUTILUS_IS_VIEW_ICON_ITEM_UI (event_widget))
     {
         nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                           x, y);
+                                                           view_x, view_y);
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
     else
     {
         nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
         nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                            x, y);
+                                                            view_x, view_y);
     }
 }
 
@@ -1309,9 +1310,23 @@ setup_item_ui (GtkWidget **child,
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     NautilusViewIconItemUi *item_ui;
+    GtkEventController *controller;
 
     item_ui = nautilus_view_icon_item_ui_new ();
     nautilus_view_item_ui_set_caption_attributes (item_ui, self->caption_attributes);
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (item_ui), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed", G_CALLBACK (on_click_pressed), self);
+    g_signal_connect (controller, "stopped", G_CALLBACK (on_click_stopped), self);
+    g_signal_connect (controller, "released", G_CALLBACK (on_click_released), self);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
+    gtk_widget_add_controller (GTK_WIDGET (item_ui), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
+    g_signal_connect (controller, "pressed", G_CALLBACK (on_longpress_gesture_pressed_callback), self);
 
     *child = gtk_flow_box_child_new ();
     gtk_flow_box_child_set_child (GTK_FLOW_BOX_CHILD (*child),
@@ -1400,13 +1415,12 @@ constructed (GObject *object)
 
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 
-    /* Compensating for the lack of event boxen to allow clicks outside the flow box. */
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (GTK_WIDGET (content_widget), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed",
-                      G_CALLBACK (on_button_press_event), self);
+                      G_CALLBACK (on_click_pressed), self);
     g_signal_connect (controller, "stopped",
                       G_CALLBACK (on_click_stopped), self);
     g_signal_connect (controller, "released",
@@ -1414,7 +1428,7 @@ constructed (GObject *object)
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
     gtk_widget_add_controller (GTK_WIDGET (self->view_ui), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
     g_signal_connect (controller, "pressed",
                       (GCallback) on_longpress_gesture_pressed_callback, self);

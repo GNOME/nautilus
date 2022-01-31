@@ -277,6 +277,16 @@ nautilus_view_icon_item_ui_set_model (NautilusViewIconItemUi *self,
     g_object_set (self, "model", model, NULL);
 }
 
+NautilusViewItemModel *
+nautilus_view_icon_item_ui_get_model (NautilusViewIconItemUi *self)
+{
+    NautilusViewItemModel *model = NULL;
+
+    g_object_get (self, "model", &model, NULL);
+
+    return model;
+}
+
 void
 nautilus_view_item_ui_set_caption_attributes (NautilusViewIconItemUi *self,
                                               GQuark                 *attrs)
