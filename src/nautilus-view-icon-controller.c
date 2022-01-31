@@ -406,24 +406,23 @@ real_invert_selection (NautilusFilesView *files_view)
     }
 }
 
-static GtkWidget *
-get_first_selected_item_ui (NautilusViewIconController *self)
+static guint
+get_first_selected_item (NautilusViewIconController *self)
 {
     g_autolist (NautilusFile) selection = NULL;
     NautilusFile *file;
     NautilusViewItemModel *item_model;
-    guint i;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     if (selection == NULL)
     {
-        return NULL;
+        return G_MAXUINT;
     }
 
     file = NAUTILUS_FILE (selection->data);
     item_model = nautilus_view_model_get_item_from_file (self->model, file);
-    i = nautilus_view_model_get_index (self->model, item_model);
-    return gtk_flow_box_child_get_child (gtk_flow_box_get_child_at_index (self->view_ui, i));
+
+    return nautilus_view_model_get_index (self->model, item_model);
 }
 
 static void
@@ -445,9 +444,12 @@ static void
 real_reveal_selection (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    NautilusViewItemModel *item;
     GtkWidget *item_ui;
 
-    item_ui = get_first_selected_item_ui (self);
+    item = g_list_model_get_item (G_LIST_MODEL (self->view_ui),
+                                  get_first_selected_item (self));
+    item_ui = nautilus_view_item_model_get_item_ui (item);
 
     if (item_ui != NULL)
     {
@@ -699,10 +701,13 @@ static GdkRectangle *
 real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    NautilusViewItemModel *item;
     GtkWidget *item_ui;
 
     /* We only allow one item to be renamed with a popover */
-    item_ui = get_first_selected_item_ui (self);
+    item = g_list_model_get_item (G_LIST_MODEL (self->model),
+                                  get_first_selected_item (self));
+    item_ui = nautilus_view_item_model_get_item_ui (item);
     g_return_val_if_fail (item_ui != NULL, NULL);
 
     return get_rectangle_for_item_ui (self, item_ui);
