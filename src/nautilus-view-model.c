@@ -8,6 +8,7 @@ struct _NautilusViewModel
 
     GHashTable *map_files_to_model;
     GListStore *internal_model;
+    GtkMultiSelection *selection_model;
     NautilusViewModelSortData *sort_data;
 };
 
@@ -52,9 +53,53 @@ nautilus_view_model_list_model_init (GListModelInterface *iface)
     iface->get_item = nautilus_view_model_get_item;
 }
 
+
+static gboolean
+nautilus_view_model_is_selected (GtkSelectionModel *model,
+                                 guint              position)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
+    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->selection_model);
+
+    return gtk_selection_model_is_selected (selection_model, position);
+}
+
+static GtkBitset *
+nautilus_view_model_get_selection_in_range (GtkSelectionModel *model,
+                                            guint              pos,
+                                            guint              n_items)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
+    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->selection_model);
+
+    return gtk_selection_model_get_selection_in_range (selection_model, pos, n_items);
+}
+
+static gboolean
+nautilus_view_model_set_selection (GtkSelectionModel *model,
+                                   GtkBitset         *selected,
+                                   GtkBitset         *mask)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
+    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->selection_model);
+
+    return gtk_selection_model_set_selection (selection_model, selected, mask);
+}
+
+
+static void
+nautilus_view_model_selection_model_init (GtkSelectionModelInterface *iface)
+{
+    iface->is_selected = nautilus_view_model_is_selected;
+    iface->get_selection_in_range = nautilus_view_model_get_selection_in_range;
+    iface->set_selection = nautilus_view_model_set_selection;
+}
+
 G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL,
-                                                nautilus_view_model_list_model_init))
+                                                nautilus_view_model_list_model_init)
+                         G_IMPLEMENT_INTERFACE (GTK_TYPE_SELECTION_MODEL,
+                                                nautilus_view_model_selection_model_init))
 
 enum
 {
@@ -67,6 +112,15 @@ static void
 dispose (GObject *object)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (object);
+
+    if (self->selection_model != NULL)
+    {
+        g_signal_handlers_disconnect_by_func (self->selection_model,
+                                              gtk_selection_model_selection_changed,
+                                              self);
+        g_object_unref (self->selection_model);
+        self->selection_model = NULL;
+    }
 
     if (self->internal_model != NULL)
     {
@@ -148,10 +202,13 @@ constructed (GObject *object)
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->constructed (object);
 
     self->internal_model = g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM_MODEL);
+    self->selection_model = gtk_multi_selection_new (G_LIST_MODEL (self->internal_model));
     self->map_files_to_model = g_hash_table_new (NULL, NULL);
 
     g_signal_connect_swapped (self->internal_model, "items-changed",
                               G_CALLBACK (g_list_model_items_changed), self);
+    g_signal_connect_swapped (self->selection_model, "selection-changed",
+                              G_CALLBACK (gtk_selection_model_selection_changed), self);
 }
 
 static void
