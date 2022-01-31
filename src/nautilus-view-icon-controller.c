@@ -14,7 +14,7 @@ struct _NautilusViewIconController
 {
     NautilusFilesView parent_instance;
 
-    GtkFlowBox *view_ui;
+    GtkGridView *view_ui;
     NautilusViewModel *model;
 
     GIcon *view_icon;
@@ -276,18 +276,18 @@ static GList *
 real_get_selection (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self;
+    g_autoptr (GtkSelectionFilterModel) selection = NULL;
+    guint n_selected;
     GList *selected_files = NULL;
-    GList *l;
-    g_autoptr (GList) selected_items = NULL;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    selected_items = gtk_flow_box_get_selected_children (self->view_ui);
-    for (l = selected_items; l != NULL; l = l->next)
+    selection = gtk_selection_filter_model_new (GTK_SELECTION_MODEL (self->model));
+    n_selected = g_list_model_get_n_items (G_LIST_MODEL (selection));
+    for (guint i = 0; i < n_selected; i++)
     {
         NautilusViewItemModel *item_model;
 
-        item_model = g_list_model_get_item (G_LIST_MODEL (self->model),
-                                            gtk_flow_box_child_get_index (l->data));
+        item_model = g_list_model_get_item (G_LIST_MODEL (selection), i);
         selected_files = g_list_prepend (selected_files,
                                          g_object_ref (nautilus_view_item_model_get_file (item_model)));
     }
@@ -365,20 +365,25 @@ real_set_selection (NautilusFilesView *files_view,
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     g_autoptr (GQueue) selection_files = NULL;
     g_autoptr (GQueue) selection_item_models = NULL;
+    g_autoptr (GtkBitset) update_set = NULL;
+    g_autoptr (GtkBitset) selection_set = NULL;
 
+    update_set = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (self->model));
+    selection_set = gtk_bitset_new_empty ();
+
+    /* Convert file list into set of model indices */
     selection_files = convert_glist_to_queue (selection);
     selection_item_models = nautilus_view_model_get_items_from_files (self->model, selection_files);
-
-    gtk_flow_box_unselect_all (self->view_ui);
     for (GList *l = g_queue_peek_head_link (selection_item_models); l != NULL ; l = l->next)
     {
-        guint i;
-        GtkFlowBoxChild *child;
-
-        i = nautilus_view_model_get_index (self->model, l->data);
-        child = gtk_flow_box_get_child_at_index (self->view_ui, i);
-        gtk_flow_box_select_child (self->view_ui, child);
+        gtk_bitset_add (selection_set,
+                        nautilus_view_model_get_index (self->model, l->data));
     }
+
+    gtk_bitset_union (update_set, selection_set);
+    gtk_selection_model_set_selection (GTK_SELECTION_MODEL (self->model),
+                                       selection_set,
+                                       update_set);
 
     nautilus_files_view_notify_selection_changed (files_view);
 }
@@ -387,23 +392,28 @@ static void
 real_select_all (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    gtk_flow_box_select_all (self->view_ui);
+    gtk_selection_model_select_all (GTK_SELECTION_MODEL (self->model));
 }
 
 static void
 real_invert_selection (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    g_autoptr (GList) selected_children = NULL;
+    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->model);
+    g_autoptr (GtkBitset) selected = NULL;
+    g_autoptr (GtkBitset) all = NULL;
+    g_autoptr (GtkBitset) new_selected = NULL;
 
-    selected_children = gtk_flow_box_get_selected_children (self->view_ui);
+    selected = gtk_selection_model_get_selection (selection_model);
 
-    /* First select all, then unselect the previously selected children. */
-    gtk_flow_box_select_all (self->view_ui);
-    for (GList *l = selected_children; l != NULL; l = l->next)
-    {
-        gtk_flow_box_unselect_child (self->view_ui, GTK_FLOW_BOX_CHILD (l->data));
-    }
+    /* We are going to flip the selection state of every item in the model. */
+    all = gtk_bitset_new_range (0, g_list_model_get_n_items (G_LIST_MODEL (self->model)));
+
+    /* The new selection is all items minus the ones currently selected. */
+    new_selected = gtk_bitset_copy (all);
+    gtk_bitset_subtract (new_selected, selected);
+
+    gtk_selection_model_set_selection (selection_model, new_selected, all);
 }
 
 static guint
@@ -426,35 +436,14 @@ get_first_selected_item (NautilusViewIconController *self)
 }
 
 static void
-reveal_item_ui (NautilusViewIconController *self,
-                GtkWidget                  *item_ui)
-{
-    gdouble item_y;
-    gdouble item_height;
-
-    gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
-                                      0, 0,
-                                      NULL, &item_y);
-    item_height = gtk_widget_get_allocated_height (item_ui);
-
-    gtk_adjustment_clamp_page (self->vadjustment, item_y, item_y + item_height);
-}
-
-static void
 real_reveal_selection (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    NautilusViewItemModel *item;
-    GtkWidget *item_ui;
 
-    item = g_list_model_get_item (G_LIST_MODEL (self->view_ui),
-                                  get_first_selected_item (self));
-    item_ui = nautilus_view_item_model_get_item_ui (item);
-
-    if (item_ui != NULL)
-    {
-        reveal_item_ui (self, item_ui);
-    }
+    gtk_widget_activate_action (GTK_WIDGET (self->view_ui),
+                                "list.scroll-to-item",
+                                "u",
+                                get_first_selected_item (self));
 }
 
 static gboolean
@@ -716,25 +705,35 @@ real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
 static GdkRectangle *
 real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 {
-    g_autolist (NautilusFile) selection = NULL;
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    g_autoptr (GtkSelectionFilterModel) selection = NULL;
+    guint n_selected;
+    GtkWidget *focus_child;
+    guint i;
+    NautilusViewItemModel *item;
     GtkWidget *item_ui;
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
-    g_return_val_if_fail (selection != NULL, NULL);
+    selection = gtk_selection_filter_model_new (GTK_SELECTION_MODEL (self->model));
+    n_selected = g_list_model_get_n_items (G_LIST_MODEL (selection));
+    g_return_val_if_fail (n_selected > 0, NULL);
 
     /* Get the focused item_ui, if selected.
      * Otherwise, get the selected item_ui which is sorted the lowest.*/
-    item_ui = gtk_widget_get_focus_child (GTK_WIDGET (self->view_ui));
-    if (item_ui == NULL || !gtk_flow_box_child_is_selected (GTK_FLOW_BOX_CHILD (item_ui)))
+    focus_child = gtk_widget_get_focus_child (GTK_WIDGET (self->view_ui));
+    for (i = 0; i < n_selected; i++)
     {
-        g_autoptr (GList) list = gtk_flow_box_get_selected_children (self->view_ui);
-
-        list = g_list_last (list);
-        item_ui = GTK_WIDGET (list->data);
+        item = g_list_model_get_item (G_LIST_MODEL (selection), i);
+        item_ui = nautilus_view_item_model_get_item_ui (item);
+        if (item_ui != NULL && gtk_widget_get_parent (item_ui) == focus_child)
+        {
+            break;
+        }
     }
 
-    reveal_item_ui (self, item_ui);
+    gtk_widget_activate_action (GTK_WIDGET (self->view_ui),
+                                "list.scroll-to-item",
+                                "u",
+                                i);
 
     return get_rectangle_for_item_ui (self, item_ui);
 }
@@ -806,7 +805,7 @@ on_click_pressed (GtkGestureClick *gesture,
                                      n_press == 1 &&
                                      !selection_mode);
 
-        /* GtkFlowBox changes selection only with the primary button, but we
+        /* GtkGridView changes selection only with the primary button, but we
          * need that to happen with all buttons, otherwise e.g. opening context
          * menus would require two clicks: a primary click to select the item,
          * followed by a secondary click to open the menu.
@@ -814,17 +813,15 @@ on_click_pressed (GtkGestureClick *gesture,
          * interfere in that case. */
         if (!selection_mode)
         {
-            NautilusFile *selected_file;
+            GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->model);
             NautilusViewItemModel *item_model;
-            g_autolist (NautilusFile) selection = NULL;
+            guint position;
 
             item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
-            selected_file = nautilus_view_item_model_get_file (item_model);
-            selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-            if (g_list_find (selection, selected_file) == NULL)
+            position = nautilus_view_model_get_index (self->model, item_model);
+            if (!gtk_selection_model_is_selected (selection_model, position))
             {
-                nautilus_view_set_selection (NAUTILUS_VIEW (self),
-                                             &(GList){ .data = selected_file });
+                gtk_selection_model_select_item (selection_model, position, TRUE);
             }
         }
 
@@ -1015,17 +1012,15 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     g_autoptr (NautilusFile) file = NULL;
     NautilusViewItemModel *item;
     guint i;
-    GtkWidget *item_ui;
-    gdouble item_y;
 
     file = nautilus_file_get_existing_by_uri (data->uri);
     item = nautilus_view_model_get_item_from_file (self->model, file);
     i = nautilus_view_model_get_index (self->model, item);
-    item_ui = gtk_flow_box_child_get_child (gtk_flow_box_get_child_at_index (self->view_ui, i));
-    gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
-                                      0, 0,
-                                      NULL, &item_y);
-    gtk_adjustment_set_value (self->vadjustment, item_y);
+
+    gtk_widget_activate_action (GTK_WIDGET (self->view_ui),
+                                "list.scroll-to-item",
+                                "u",
+                                i);
 
     self->scroll_to_file_handle_id = 0;
     return G_SOURCE_REMOVE;
@@ -1298,31 +1293,56 @@ on_vadjustment_changed (GtkAdjustment *adjustment,
 }
 
 static void
-on_ui_selected_children_changed (GtkFlowBox *box,
-                                 gpointer    user_data)
-{
-    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
-
-    nautilus_files_view_notify_selection_changed (NAUTILUS_FILES_VIEW (self));
-}
-
-static void
-bind_item_ui (GtkWidget             **child,
-              NautilusViewItemModel  *item_model,
-              gpointer                user_data)
+bind_item_ui (GtkSignalListItemFactory *factory,
+              GtkListItem              *listitem,
+              gpointer                  user_data)
 {
     GtkWidget *item_ui;
+    NautilusViewItemModel *item_model;
 
-    item_ui = gtk_flow_box_child_get_child (GTK_FLOW_BOX_CHILD (*child));
+    item_ui = gtk_list_item_get_child (listitem);
+    item_model = NAUTILUS_VIEW_ITEM_MODEL (gtk_list_item_get_item (listitem));
 
     nautilus_view_icon_item_ui_set_model (NAUTILUS_VIEW_ICON_ITEM_UI (item_ui),
                                           item_model);
-    nautilus_view_item_model_set_item_ui (item_model, *child);
+    nautilus_view_item_model_set_item_ui (item_model, item_ui);
+
+    if (nautilus_view_icon_item_ui_once (NAUTILUS_VIEW_ICON_ITEM_UI (item_ui)))
+    {
+        GtkWidget *parent;
+
+        /* At the time of ::setup emission, the item ui has got no parent yet,
+         * that's why we need to complete the widget setup process here, on the
+         * first time ::bind is emitted. */
+        parent = gtk_widget_get_parent (item_ui);
+        gtk_widget_set_halign (parent, GTK_ALIGN_CENTER);
+        gtk_widget_set_valign (parent, GTK_ALIGN_START);
+        gtk_widget_set_margin_top (parent, 3);
+        gtk_widget_set_margin_bottom (parent, 3);
+        gtk_widget_set_margin_start (parent, 3);
+        gtk_widget_set_margin_end (parent, 3);
+    }
 }
 
 static void
-setup_item_ui (GtkWidget **child,
-               gpointer    user_data)
+unbind_item_ui (GtkSignalListItemFactory *factory,
+                GtkListItem              *listitem,
+                gpointer                  user_data)
+{
+    NautilusViewIconItemUi *item_ui;
+    NautilusViewItemModel *item_model;
+
+    item_ui = NAUTILUS_VIEW_ICON_ITEM_UI (gtk_list_item_get_child (listitem));
+    item_model = NAUTILUS_VIEW_ITEM_MODEL (gtk_list_item_get_item (listitem));
+
+    nautilus_view_icon_item_ui_set_model (item_ui, NULL);
+    nautilus_view_item_model_set_item_ui (item_model, NULL);
+}
+
+static void
+setup_item_ui (GtkSignalListItemFactory *factory,
+               GtkListItem              *listitem,
+               gpointer                  user_data)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     NautilusViewIconItemUi *item_ui;
@@ -1330,6 +1350,8 @@ setup_item_ui (GtkWidget **child,
 
     item_ui = nautilus_view_icon_item_ui_new ();
     nautilus_view_item_ui_set_caption_attributes (item_ui, self->caption_attributes);
+    gtk_list_item_set_child (listitem, GTK_WIDGET (item_ui));
+
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (GTK_WIDGET (item_ui), controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
@@ -1343,55 +1365,34 @@ setup_item_ui (GtkWidget **child,
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
     g_signal_connect (controller, "pressed", G_CALLBACK (on_longpress_gesture_pressed_callback), self);
-
-    *child = gtk_flow_box_child_new ();
-    gtk_flow_box_child_set_child (GTK_FLOW_BOX_CHILD (*child),
-                                  GTK_WIDGET (item_ui));
-
-    gtk_widget_set_halign (*child, GTK_ALIGN_CENTER);
-    gtk_widget_set_valign (*child, GTK_ALIGN_START);
-    gtk_widget_set_margin_top (*child, 3);
-    gtk_widget_set_margin_bottom (*child, 3);
-    gtk_widget_set_margin_start (*child, 3);
-    gtk_widget_set_margin_end (*child, 3);
 }
 
-static GtkWidget *
-create_widget_func (gpointer item,
-                    gpointer user_data)
-{
-    NautilusViewItemModel *item_model = NAUTILUS_VIEW_ITEM_MODEL (item);
-    GtkWidget *child = NULL;
-
-    setup_item_ui (&child, user_data);
-    bind_item_ui (&child, item_model, user_data);
-
-    return child;
-}
-
-static GtkFlowBox *
+static GtkGridView *
 create_view_ui (NautilusViewIconController *self)
 {
+    GtkListItemFactory *factory;
     GtkWidget *widget;
-    GtkFlowBox *flowbox;
 
-    widget = gtk_flow_box_new ();
+    factory = gtk_signal_list_item_factory_new ();
+    g_signal_connect (factory, "setup", G_CALLBACK (setup_item_ui), self);
+    g_signal_connect (factory, "bind", G_CALLBACK (bind_item_ui), self);
+    g_signal_connect (factory, "unbind", G_CALLBACK (unbind_item_ui), self);
+
+    widget = gtk_grid_view_new (GTK_SELECTION_MODEL (self->model), factory);
     gtk_widget_set_focusable (widget, TRUE);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
-    flowbox = GTK_FLOW_BOX (widget);
-    /* We don't use GtkFlowBox::child-activated because it doesn't fill all our
-     * needs nor does it match our expected behavior. Instead, we roll our own
-     * event handling and double/single click mode.
-     * However, GtkFlowBox::activate-on-single-click has other effects besides
-     * activation, as it affects the selection behavior as well. Setting it to
-     * FALSE gives us the expected range-selection with Shift+click for free. */
-    gtk_flow_box_set_activate_on_single_click (flowbox, FALSE);
-    gtk_flow_box_set_max_children_per_line (flowbox, 20);
-    gtk_flow_box_set_selection_mode (flowbox, GTK_SELECTION_MULTIPLE);
-    gtk_flow_box_set_homogeneous (flowbox, FALSE);
+    /* We don't use the built-in child activation feature because it doesn't
+     * fill all our needs nor does it match our expected behavior. Instead, we
+     * roll our own event handling and double/single click mode.
+     * However, GtkGridView:single-click-activate has other effects besides
+     * activation, as it affects the selection behavior as well (e.g. selects on
+     * hover). Setting it to FALSE gives us the expected behavior. */
+    gtk_grid_view_set_single_click_activate (GTK_GRID_VIEW (widget), FALSE);
+    gtk_grid_view_set_max_columns (GTK_GRID_VIEW (widget), 20);
+    gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (widget), TRUE);
 
-    return flowbox;
+    return GTK_GRID_VIEW (widget);
 }
 
 const GActionEntry view_icon_actions[] =
@@ -1405,13 +1406,11 @@ constructed (GObject *object)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
     GtkWidget *content_widget;
-    GtkAdjustment *hadjustment;
     GtkAdjustment *vadjustment;
     GActionGroup *view_action_group;
     GtkEventController *controller;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (content_widget));
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
     self->vadjustment = vadjustment;
@@ -1421,15 +1420,12 @@ constructed (GObject *object)
     self->model = nautilus_view_model_new ();
 
     self->view_ui = create_view_ui (self);
-    gtk_flow_box_set_hadjustment (self->view_ui, hadjustment);
-    gtk_flow_box_set_vadjustment (self->view_ui, vadjustment);
     gtk_widget_show (GTK_WIDGET (self->view_ui));
 
-    g_signal_connect (self->view_ui, "selected-children-changed", (GCallback) on_ui_selected_children_changed, self);
-
-    gtk_flow_box_bind_model (self->view_ui,
-                             G_LIST_MODEL (self->model),
-                             create_widget_func, self, NULL);
+    g_signal_connect_swapped (GTK_SELECTION_MODEL (self->model),
+                              "selection-changed",
+                              G_CALLBACK (nautilus_files_view_notify_selection_changed),
+                              NAUTILUS_FILES_VIEW (self));
 
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 

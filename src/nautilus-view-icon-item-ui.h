@@ -25,5 +25,6 @@ void nautilus_view_icon_item_ui_set_model (NautilusViewIconItemUi *self,
 NautilusViewItemModel *nautilus_view_icon_item_ui_get_model (NautilusViewIconItemUi *self);
 void nautilus_view_item_ui_set_caption_attributes (NautilusViewIconItemUi *self,
                                                    GQuark                 *attrs);
+gboolean nautilus_view_icon_item_ui_once (NautilusViewIconItemUi *self);
 
 G_END_DECLS

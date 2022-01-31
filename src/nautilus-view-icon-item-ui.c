@@ -16,6 +16,8 @@ struct _NautilusViewIconItemUi
     GtkWidget *first_caption;
     GtkWidget *second_caption;
     GtkWidget *third_caption;
+
+    gboolean called_once;
 };
 
 G_DEFINE_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, GTK_TYPE_BOX)
@@ -292,4 +294,16 @@ nautilus_view_item_ui_set_caption_attributes (NautilusViewIconItemUi *self,
                                               GQuark                 *attrs)
 {
     self->caption_attributes = attrs;
+}
+
+gboolean
+nautilus_view_icon_item_ui_once (NautilusViewIconItemUi *self)
+{
+    if (self->called_once)
+    {
+        return FALSE;
+    }
+
+    self->called_once = TRUE;
+    return TRUE;
 }
