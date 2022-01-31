@@ -1350,6 +1350,10 @@ setup_item_ui (GtkWidget **child,
 
     gtk_widget_set_halign (*child, GTK_ALIGN_CENTER);
     gtk_widget_set_valign (*child, GTK_ALIGN_START);
+    gtk_widget_set_margin_top (*child, 3);
+    gtk_widget_set_margin_bottom (*child, 3);
+    gtk_widget_set_margin_start (*child, 3);
+    gtk_widget_set_margin_end (*child, 3);
 }
 
 static GtkWidget *
@@ -1386,8 +1390,6 @@ create_view_ui (NautilusViewIconController *self)
     gtk_flow_box_set_max_children_per_line (flowbox, 20);
     gtk_flow_box_set_selection_mode (flowbox, GTK_SELECTION_MULTIPLE);
     gtk_flow_box_set_homogeneous (flowbox, FALSE);
-    gtk_flow_box_set_column_spacing (flowbox, 6);
-    gtk_flow_box_set_row_spacing (flowbox, 6);
 
     return flowbox;
 }
