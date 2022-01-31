@@ -947,42 +947,49 @@ real_end_loading (NautilusFilesView *files_view,
 {
 }
 
-static GtkFlowBoxChild *
-get_first_visible_item_ui (NautilusViewIconController *self)
+static guint
+get_first_visible_item (NautilusViewIconController *self)
 {
-    GtkFlowBoxChild *child_at_0;
-    gdouble x0;
-    gdouble y0;
+    guint n_items;
     gdouble scrolled_y;
 
-    child_at_0 = gtk_flow_box_get_child_at_index (self->view_ui, 0);
-    if (child_at_0 == NULL)
-    {
-        return NULL;
-    }
-    gtk_widget_translate_coordinates (GTK_WIDGET (child_at_0),
-                                      GTK_WIDGET (self->view_ui),
-                                      0, 0, &x0, &y0);
+    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->model));
     scrolled_y = gtk_adjustment_get_value (self->vadjustment);
+    for (guint i = 0; i < n_items; i++)
+    {
+        NautilusViewItemModel *item;
+        GtkWidget *item_ui;
 
-    return gtk_flow_box_get_child_at_pos (self->view_ui,
-                                          x0,
-                                          MAX (y0, scrolled_y));
+        item = g_list_model_get_item (G_LIST_MODEL (self->model), i);
+        item_ui = nautilus_view_item_model_get_item_ui (item);
+        if (item_ui != NULL)
+        {
+            gdouble y;
+
+            gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
+                                              0, 0, NULL, &y);
+            if (gtk_widget_is_visible (item_ui) && y >= scrolled_y)
+            {
+                return i;
+            }
+        }
+    }
+
+    return G_MAXUINT;
 }
 
 static char *
 real_get_first_visible_file (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    GtkFlowBoxChild *child;
+    guint i;
     NautilusViewItemModel *item;
     gchar *uri = NULL;
 
-    child = get_first_visible_item_ui (self);
-    if (child != NULL)
+    i = get_first_visible_item (self);
+    if (i < G_MAXUINT)
     {
-        item = g_list_model_get_item (G_LIST_MODEL (self->model),
-                                      gtk_flow_box_child_get_index (child));
+        item = g_list_model_get_item (G_LIST_MODEL (self->model), i);
         uri = nautilus_file_get_uri (nautilus_view_item_model_get_file (item));
     }
     return uri;
@@ -1218,34 +1225,38 @@ static void
 prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
 {
     gdouble page_size;
-    GtkFlowBoxChild *first_visible_child;
-    GtkFlowBoxChild *next_child;
-    gint first_index;
-    gint next_index;
+    GtkWidget *first_visible_child;
+    GtkWidget *next_child;
+    guint first_index;
+    guint next_index;
     gdouble y;
-    gint last_index;
-    gpointer item;
+    guint last_index;
+    NautilusViewItemModel *item;
     NautilusFile *file;
 
     self->prioritize_thumbnailing_handle_id = 0;
 
     page_size = gtk_adjustment_get_page_size (self->vadjustment);
-    first_visible_child = get_first_visible_item_ui (self);
-    if (first_visible_child == NULL)
+    first_index = get_first_visible_item (self);
+    if (first_index == G_MAXUINT)
     {
         return;
     }
 
-    first_index = gtk_flow_box_child_get_index (first_visible_child);
-    for (next_index = first_index + 1; next_index < G_MAXINT; next_index++)
+    item = g_list_model_get_item (G_LIST_MODEL (self->model), first_index);
+
+    first_visible_child = nautilus_view_item_model_get_item_ui (item);
+
+    for (next_index = first_index + 1; next_index < g_list_model_get_n_items (G_LIST_MODEL (self->model)); next_index++)
     {
-        next_child = gtk_flow_box_get_child_at_index (self->view_ui, next_index);
+        item = g_list_model_get_item (G_LIST_MODEL (self->model), next_index);
+
+        next_child = nautilus_view_item_model_get_item_ui (item);
         if (next_child == NULL)
         {
             break;
         }
-        if (gtk_widget_translate_coordinates (GTK_WIDGET (next_child),
-                                              GTK_WIDGET (first_visible_child),
+        if (gtk_widget_translate_coordinates (next_child, first_visible_child,
                                               0, 0, NULL, &y))
         {
             if (y > page_size)
@@ -1257,9 +1268,9 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
     last_index = next_index - 1;
 
     /* Do the iteration in reverse to give higher priority to the top */
-    for (gint i = last_index; i >= first_index; i--)
+    for (gint i = 0; i <= last_index - first_index; i++)
     {
-        item = g_list_model_get_item (G_LIST_MODEL (self->model), i);
+        item = g_list_model_get_item (G_LIST_MODEL (self->model), last_index - i);
         g_return_if_fail (item != NULL);
 
         file = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL (item));
