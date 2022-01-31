@@ -155,32 +155,13 @@ flowbox {
   padding: 18px;
 }
 
-flowboxchild {
-  padding: 0px;
-}
-
-flowboxchild:selected {
-  background-color:transparent;
+flowbox flowboxchild {
+  padding: 6px;
 }
 
 flowboxchild .thumbnail {
-  margin: 4px;
   box-shadow: 0px 1px 2px 0px @shade_color,
               0px 0px 0px 1px @shade_color,
               0px 2px 0px 0px @shade_color;
   border-radius: 2px;
-}
-
-.icon-ui-labels-box {
-  padding: 2px 4px;
-  border-radius: 5px;
-}
-
-flowboxchild:selected .icon-ui-labels-box {
-  background-color: @accent_bg_color;
-  color: @accent_fg_color;
-}
-
-flowboxchild:selected picture {
-  filter: sepia(1.5) hue-rotate(180deg) brightness(0.5) saturate(2.0);
 }
