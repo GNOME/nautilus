@@ -676,18 +676,18 @@ get_rectangle_for_item_ui (NautilusViewIconController *self,
 {
     GdkRectangle *rectangle;
     GtkWidget *content_widget;
-    GtkAdjustment *vadjustment;
-    GtkAdjustment *hadjustment;
+    gdouble view_x;
+    gdouble view_y;
 
     rectangle = g_new0 (GdkRectangle, 1);
     gtk_widget_get_allocation (item_ui, rectangle);
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
-    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (content_widget));
-
-    rectangle->x -= gtk_adjustment_get_value (hadjustment);
-    rectangle->y -= gtk_adjustment_get_value (vadjustment);
+    gtk_widget_translate_coordinates (GTK_WIDGET (self->view_ui), content_widget,
+                                      rectangle->x, rectangle->y,
+                                      &view_x, &view_y);
+    rectangle->x = view_x;
+    rectangle->y = view_y;
 
     return rectangle;
 }
