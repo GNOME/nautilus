@@ -90,8 +90,6 @@ struct _NautilusPropertiesWindow
     GtkLabel *name_title_label;
     GtkLabel *name_value_label;
 
-    guint select_idle_id;
-
     GtkWidget *type_title_label;
     GtkWidget *type_value_label;
 
@@ -4836,8 +4834,6 @@ real_finalize (GObject *object)
 
     g_free (self->content_type);
     g_list_free (self->open_with_files);
-
-    g_clear_handle_id (&self->select_idle_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
