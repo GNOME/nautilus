@@ -784,6 +784,7 @@ on_click_pressed (GtkGestureClick *gesture,
     GtkWidget *event_widget;
     guint button;
     GdkModifierType modifiers;
+    gboolean selection_mode;
     gdouble view_x;
     gdouble view_y;
 
@@ -792,14 +793,13 @@ on_click_pressed (GtkGestureClick *gesture,
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
 
+    selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
+
     gtk_widget_translate_coordinates (event_widget, GTK_WIDGET (self),
                                       x, y,
                                       &view_x, &view_y);
     if (NAUTILUS_IS_VIEW_ICON_ITEM_UI (event_widget))
     {
-        gboolean selection_mode;
-
-        selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
         self->activate_on_release = (self->single_click_mode &&
                                      button == GDK_BUTTON_PRIMARY &&
                                      n_press == 1 &&
@@ -809,7 +809,7 @@ on_click_pressed (GtkGestureClick *gesture,
          * need that to happen with all buttons, otherwise e.g. opening context
          * menus would require two clicks: a primary click to select the item,
          * followed by a secondary click to open the menu.
-         * When holding Ctrl and Shift, GtkFlowBox does a good job, let's not
+         * When holding Ctrl and Shift, GtkGridView does a good job, let's not
          * interfere in that case. */
         if (!selection_mode)
         {
@@ -845,7 +845,9 @@ on_click_pressed (GtkGestureClick *gesture,
     }
     else
     {
-        if (!self->activate_on_release)
+        /* Don't interfere with GtkGridView default selection handling when
+         * holding Ctrl and Shift. */
+        if (!selection_mode && !self->activate_on_release)
         {
             nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
         }
