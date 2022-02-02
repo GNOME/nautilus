@@ -49,6 +49,8 @@ update_icon (NautilusViewIconItemUi *self)
     icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, 1, flags);
     gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
+    /* Set the same height and width for all icons regardless of aspect ratio.
+     */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
     if (icon_size < NAUTILUS_GRID_ICON_SIZE_LARGEST)
     {

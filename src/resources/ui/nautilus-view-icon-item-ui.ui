@@ -3,90 +3,86 @@
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusViewIconItemUi" parent="GtkBox">
     <child>
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <property name="halign">center</property>
-        <property name="valign">start</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkBox" id="fixed_height_box">
-            <property name="orientation">vertical</property>
-            <property name="halign">center</property>
-            <property name="height-request">96</property>
-            <property name="valign">center</property>
-            <property name="width-request">96</property>
-            <child>
-              <object class="GtkPicture" id="icon">
-                <property name="halign">center</property>
-                <property name="hexpand">True</property>
-                <property name="valign">center</property>
-                <property name="vexpand">True</property>
-                <property name="can-shrink">False</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
+      <object class="AdwClamp">
+        <property name="maximum-size">0</property>
+        <property name="child">
           <object class="GtkBox">
             <property name="orientation">vertical</property>
-            <property name="valign">start</property>
+            <property name="spacing">6</property>
             <child>
-              <object class="GtkLabel" id="label">
-                <property name="ellipsize">middle</property>
-                <property name="justify">center</property>
-                <property name="lines">3</property>
-                <property name="max-width-chars">0</property>
-                <property name="wrap">True</property>
-                <property name="wrap-mode">word-char</property>
-                <attributes>
-                  <attribute name="insert-hyphens" value="false"></attribute>
-                </attributes>
+              <object class="GtkBox" id="fixed_height_box">
+                <property name="orientation">vertical</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkPicture" id="icon">
+                    <property name="halign">center</property>
+                    <property name="hexpand">True</property>
+                    <property name="valign">center</property>
+                    <property name="vexpand">True</property>
+                    <property name="can-shrink">False</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="first_caption">
-                <property name="ellipsize">end</property>
-                <property name="justify">center</property>
-                <property name="lines">2</property>
-                <property name="max-width-chars">0</property>
-                <property name="wrap">True</property>
-                <property name="wrap-mode">word-char</property>
-                <property name="valign">start</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
                 <style>
-                  <class name="caption"/>
+                  <class name="icon-ui-labels-box"/>
                 </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="second_caption">
-                <property name="ellipsize">end</property>
-                <property name="justify">center</property>
-                <property name="lines">2</property>
-                <property name="max-width-chars">0</property>
-                <property name="wrap">True</property>
-                <property name="wrap-mode">word-char</property>
-                <property name="valign">start</property>
-                <style>
-                  <class name="caption"/>
-                </style>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="third_caption">
-                <property name="ellipsize">end</property>
-                <property name="justify">center</property>
-                <property name="lines">2</property>
-                <property name="max-width-chars">0</property>
-                <property name="wrap">True</property>
-                <property name="wrap-mode">word-char</property>
-                <property name="valign">start</property>
-                <style>
-                  <class name="caption"/>
-                </style>
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="ellipsize">middle</property>
+                    <property name="justify">center</property>
+                    <property name="lines">3</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <attributes>
+                      <attribute name="insert-hyphens" value="false"></attribute>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="first_caption">
+                    <property name="ellipsize">end</property>
+                    <property name="justify">center</property>
+                    <property name="lines">2</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="valign">start</property>
+                    <style>
+                      <class name="caption"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="second_caption">
+                    <property name="ellipsize">end</property>
+                    <property name="justify">center</property>
+                    <property name="lines">2</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <style>
+                      <class name="caption"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="third_caption">
+                    <property name="ellipsize">end</property>
+                    <property name="justify">center</property>
+                    <property name="lines">2</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word-char</property>
+                    <style>
+                      <class name="caption"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>
