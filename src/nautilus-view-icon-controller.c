@@ -1104,10 +1104,20 @@ real_add_files (NautilusFilesView *files_view,
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     g_autoptr (GQueue) files_queue = NULL;
     g_autoptr (GQueue) item_models = NULL;
+    gdouble adjustment_value;
 
     files_queue = convert_glist_to_queue (files);
     item_models = convert_files_to_item_models (self, files_queue);
     nautilus_view_model_add_items (self->model, item_models);
+
+    /* GtkListBase anchoring doesn't cope well with our lazy loading.
+     * Assuming that GtkListBase|list.scroll-to-item resets the anchor to 0, use
+     * that as a workaround to prevent scrolling while we are at the top. */
+    adjustment_value = gtk_adjustment_get_value (self->vadjustment);
+    if (G_APPROX_VALUE (adjustment_value, 0.0, DBL_EPSILON))
+    {
+        gtk_widget_activate_action (GTK_WIDGET (self->view_ui), "list.scroll-to-item", "u", 0);
+    }
 }
 
 
