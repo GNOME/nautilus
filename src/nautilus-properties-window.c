@@ -111,9 +111,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *original_folder_title_label;
     GtkWidget *original_folder_value_label;
 
-    GtkWidget *volume_title_label;
-    GtkWidget *volume_value_label;
-
     GtkWidget *trashed_on_title_label;
     GtkWidget *trashed_on_value_label;
 
@@ -2048,36 +2045,6 @@ should_show_free_space (NautilusPropertiesWindow *self)
 }
 
 static gboolean
-should_show_volume_info (NautilusPropertiesWindow *self)
-{
-    NautilusFile *file;
-
-    if (is_multi_file_window (self))
-    {
-        return FALSE;
-    }
-
-    file = get_original_file (self);
-
-    if (file == NULL)
-    {
-        return FALSE;
-    }
-
-    if (is_root_directory (file) && nautilus_application_is_sandboxed ())
-    {
-        return FALSE;
-    }
-
-    if (nautilus_file_can_unmount (file))
-    {
-        return TRUE;
-    }
-
-    return FALSE;
-}
-
-static gboolean
 should_show_volume_usage (NautilusPropertiesWindow *self)
 {
     NautilusFile *file;
@@ -2419,17 +2386,6 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
         self->value_fields = g_list_prepend (self->value_fields,
                                              self->original_folder_value_label);
-    }
-
-    if (should_show_volume_info (self))
-    {
-        gtk_widget_show (self->volume_title_label);
-        gtk_widget_show (self->volume_value_label);
-        g_object_set_data_full (G_OBJECT (self->volume_value_label), "file_attribute",
-                                g_strdup ("volume"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->volume_value_label);
     }
 
     if (should_show_trashed_on (self))
@@ -5039,8 +4995,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_title_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_title_label);
