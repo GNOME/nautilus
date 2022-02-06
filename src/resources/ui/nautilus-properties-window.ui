@@ -83,6 +83,161 @@
                             </style>
                           </object>
                         </child>
+                        <child>
+                          <object class="GtkLabel" id="type_file_system_label">
+                            <property name="ellipsize">end</property>
+                            <property name="label" translatable="yes">Unknown Filesystem</property>
+                            <property name="max-width-chars">24</property>
+                            <property name="selectable">True</property>
+                            <property name="visible">False</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkListBox" id="disk_list_box">
+                        <property name="selection-mode">none</property>
+                        <property name="visible">False</property>
+                        <signal name="row-activated" handler="open_in_disks" object="NautilusPropertiesWindow" swapped="yes"/>
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="activatable">False</property>
+                            <property name="selectable">False</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="margin-bottom">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-start">12</property>
+                                <property name="margin-top">18</property>
+                                <property name="spacing">12</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkLevelBar" id="disk_space_level_bar">
+                                    <property name="hexpand">True</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox">
+                                    <property name="spacing">12</property>
+                                    <property name="halign">center</property>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="spacing">3</property>
+                                        <child>
+                                          <object class="GtkLabel" id="disk_space_capacity_value">
+                                            <style>
+                                              <class name="dim-label"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes">total</property>
+                                            <style>
+                                              <class name="dim-label"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="spacing">3</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">●</property>
+                                            <style>
+                                              <class name="disk-space-used"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="disk_space_used_value">
+                                            <style>
+                                              <class name="caption-style"/>
+                                              <class name="dim-label"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">used</property>
+                                            <style>
+                                              <class name="caption-style"/>
+                                              <class name="dim-label"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="spacing">3</property>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label">●</property>
+                                            <style>
+                                              <class name="disk-space-free"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="disk_space_free_value">
+                                            <style>
+                                              <class name="caption-style"/>
+                                              <class name="dim-label"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">free</property>
+                                            <style>
+                                              <class name="caption-style"/>
+                                              <class name="dim-label"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkListBoxRow">
+                            <property name="activatable">True</property>
+                            <property name="selectable">False</property>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="margin-bottom">12</property>
+                                <property name="margin-end">12</property>
+                                <property name="margin-start">12</property>
+                                <property name="margin-top">12</property>
+                                <property name="halign">center</property>
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel">
+                                    <property name="label" translatable="yes" comments="Disks refers to GNOME Disks.">Open in Disks</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">external-link-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
                       </object>
                     </child>
                     <child>
