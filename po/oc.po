@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-01-23 13:48+0000\n"
-"PO-Revision-Date: 2022-01-27 23:35+0100\n"
+"POT-Creation-Date: 2022-01-30 15:25+0000\n"
+"PO-Revision-Date: 2022-02-09 18:50+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -2117,8 +2117,8 @@ msgstr[1] "Mesa a l'escobilhièr de %'d fichièrs"
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
-msgstr[0] "Mes a l'escobilhièr de %'d fichièr"
-msgstr[1] "Mes a l'escobilhièr de %'d fichièrs"
+msgstr[0] "%'d fichièr mes a l'escobilhièr"
+msgstr[1] "%'d fichièrs meses a l'escobilhièr"
 
 #. Translators: %s is a file name
 #: src/nautilus-file-operations.c:2375
@@ -2953,14 +2953,14 @@ msgstr "Restablir"
 
 #: src/nautilus-file-undo-operations.c:189
 msgid "Redo last undone action"
-msgstr "Restablís la darrièra accion anullada"
+msgstr "Restablir la darrièra accion anullada"
 
 #: src/nautilus-file-undo-operations.c:452
 #, c-format
 msgid "Move %d item back to “%s”"
 msgid_plural "Move %d items back to “%s”"
-msgstr[0] "Restablís %d element cap a « %s »"
-msgstr[1] "Restablís %d elements cap a « %s »"
+msgstr[0] "Restablir %d element cap a « %s »"
+msgstr[1] "Restablir %d elements cap a « %s »"
 
 #: src/nautilus-file-undo-operations.c:455
 #, c-format
@@ -2986,7 +2986,7 @@ msgstr[1] "_Restablir lo desplaçament de %d elements"
 #: src/nautilus-file-undo-operations.c:468
 #, c-format
 msgid "Move “%s” back to “%s”"
-msgstr "Restablís « %s » cap a « %s »"
+msgstr "Desplaçar « %s » cap a « %s »"
 
 #: src/nautilus-file-undo-operations.c:469
 #, c-format
@@ -3032,7 +3032,7 @@ msgstr "Remet « %s » a l'escobilhièr"
 #: src/nautilus-file-undo-operations.c:492
 #, c-format
 msgid "Restore “%s” from trash"
-msgstr "Restablís « %s » dempuèi l'escobilhièr"
+msgstr "Restablir « %s » dempuèi l'escobilhièr"
 
 #: src/nautilus-file-undo-operations.c:499
 #, c-format
@@ -3200,7 +3200,7 @@ msgstr "_Restablir la creacion dempuèi lo modèl"
 #: src/nautilus-file-undo-operations.c:1048
 #, c-format
 msgid "Rename “%s” as “%s”"
-msgstr "Renomena « %s » en « %s »"
+msgstr "Renomenar « %s » en « %s »"
 
 #: src/nautilus-file-undo-operations.c:1050
 msgid "_Undo Rename"
@@ -3268,7 +3268,7 @@ msgstr[1] "Desplaçar %d elements cap a l'escobilhièr"
 #: src/nautilus-file-undo-operations.c:1627
 #, c-format
 msgid "Restore “%s” to “%s”"
-msgstr "Restablís « %s » cap a « %s »"
+msgstr "Restablir « %s » cap a « %s »"
 
 #: src/nautilus-file-undo-operations.c:1634
 #, c-format
@@ -3286,7 +3286,7 @@ msgstr "_Restablir la mesa a l'escobilhièr"
 #: src/nautilus-file-undo-operations.c:1935
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
-msgstr "Restablís las permissions d’origina dels elements incluses dins « %s »"
+msgstr "Restablir las permissions d’origina dels elements incluses dins « %s »"
 
 #: src/nautilus-file-undo-operations.c:1936
 #, c-format
@@ -3306,7 +3306,7 @@ msgstr "_Restablir lo cambiament de permissions"
 #: src/nautilus-file-undo-operations.c:2088
 #, c-format
 msgid "Restore original permissions of “%s”"
-msgstr "Restablís las permissions d’origine de « %s »"
+msgstr "Restablir las permissions d’origine de « %s »"
 
 #: src/nautilus-file-undo-operations.c:2089
 #, c-format
@@ -3316,7 +3316,7 @@ msgstr "Definís las permissions de « %s »"
 #: src/nautilus-file-undo-operations.c:2201
 #, c-format
 msgid "Restore group of “%s” to “%s”"
-msgstr "Restablís lo grop de « %s » a « %s »"
+msgstr "Restablir lo grop de « %s » a « %s »"
 
 #: src/nautilus-file-undo-operations.c:2203
 #, c-format
@@ -3334,7 +3334,7 @@ msgstr "_Restablir lo cambiament de grop"
 #: src/nautilus-file-undo-operations.c:2211
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
-msgstr "Restablís lo proprietari de « %s » a « %s »"
+msgstr "Restablir lo proprietari de « %s » a « %s »"
 
 #: src/nautilus-file-undo-operations.c:2213
 #, c-format
@@ -4258,7 +4258,7 @@ msgstr "_Restablir"
 
 #: src/nautilus-trash-bar.c:262
 msgid "Restore selected items to their original position"
-msgstr "Restablís cada icòna seleccionada a sa talha iniciala"
+msgstr "Restablir cada icòna seleccionada a sa talha iniciala"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: src/nautilus-trash-bar.c:266
@@ -4280,8 +4280,8 @@ msgstr[1] "Dempuèi %d jorns"
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] "I a %d jorn"
-msgstr[1] "I a %d jorns"
+msgstr[0] "fa %d jorn"
+msgstr[1] "fa %d jorns"
 
 #: src/nautilus-ui-utilities.c:234
 #, c-format
@@ -5102,7 +5102,7 @@ msgstr "Definir coma papièr pintrat"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:197
 msgid "_Remove from Recent"
-msgstr "_Levar dels Utilizats recentament"
+msgstr "_Levar dels Recents"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:204
 msgid "_Extract Here"
