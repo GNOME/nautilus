@@ -31,6 +31,10 @@ struct _NautilusViewIconController
     guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
     GtkAdjustment *vadjustment;
+
+    NautilusFileSortType sort_type;
+    gboolean directories_first;
+    gboolean reversed;
 };
 
 G_DEFINE_TYPE (NautilusViewIconController, nautilus_view_icon_controller, NAUTILUS_TYPE_FILES_VIEW)
@@ -234,6 +238,24 @@ update_sort_order_from_metadata_and_preferences (NautilusViewIconController *sel
     g_action_group_change_action_state (view_action_group,
                                         "sort",
                                         g_variant_new_string (get_sorts_constants_from_sort_type (default_directory_sort->sort_type, default_directory_sort->reversed)->action_target_name));
+}
+
+static gint
+nautilus_view_icon_controller_sort (gconstpointer a,
+                                    gconstpointer b,
+                                    gpointer      user_data)
+{
+    NautilusViewIconController *self = user_data;
+    NautilusFile *file_a;
+    NautilusFile *file_b;
+
+    file_a = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL ((gpointer) a));
+    file_b = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL ((gpointer) b));
+
+    return nautilus_file_compare_for_sort (file_a, file_b,
+                                           self->sort_type,
+                                           self->directories_first,
+                                           self->reversed);
 }
 
 static void
@@ -1167,17 +1189,14 @@ real_scroll_to_file (NautilusFilesView *files_view,
 static void
 real_sort_directories_first_changed (NautilusFilesView *files_view)
 {
-    NautilusViewModelSortData sort_data;
-    NautilusViewModelSortData *current_sort_data;
     NautilusViewIconController *self;
+    g_autoptr (GtkCustomSorter) sorter = NULL;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    current_sort_data = nautilus_view_model_get_sort_type (self->model);
-    sort_data.sort_type = current_sort_data->sort_type;
-    sort_data.reversed = current_sort_data->reversed;
-    sort_data.directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
+    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
 
-    nautilus_view_model_set_sort_type (self->model, &sort_data);
+    sorter = gtk_custom_sorter_new (nautilus_view_icon_controller_sort, self, NULL);
+    nautilus_view_model_set_sorter (self->model, GTK_SORTER (sorter));
 }
 
 static void
@@ -1187,8 +1206,8 @@ action_sort_order_changed (GSimpleAction *action,
 {
     const gchar *target_name;
     const SortConstants *sort_constants;
-    NautilusViewModelSortData sort_data;
     NautilusViewIconController *self;
+    g_autoptr (GtkCustomSorter) sorter = NULL;
 
     /* Don't resort if the action is in the same state as before */
     if (g_strcmp0 (g_variant_get_string (value, NULL), g_variant_get_string (g_action_get_state (G_ACTION (action)), NULL)) == 0)
@@ -1199,11 +1218,12 @@ action_sort_order_changed (GSimpleAction *action,
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     target_name = g_variant_get_string (value, NULL);
     sort_constants = get_sorts_constants_from_action_target_name (target_name);
-    sort_data.sort_type = sort_constants->sort_type;
-    sort_data.reversed = sort_constants->reversed;
-    sort_data.directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
+    self->sort_type = sort_constants->sort_type;
+    self->reversed = sort_constants->reversed;
+    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
 
-    nautilus_view_model_set_sort_type (self->model, &sort_data);
+    sorter = gtk_custom_sorter_new (nautilus_view_icon_controller_sort, self, NULL);
+    nautilus_view_model_set_sorter (self->model, GTK_SORTER (sorter));
     set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
                                  sort_constants);
 

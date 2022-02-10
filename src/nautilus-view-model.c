@@ -9,7 +9,8 @@ struct _NautilusViewModel
     GHashTable *map_files_to_model;
     GListStore *internal_model;
     GtkMultiSelection *selection_model;
-    NautilusViewModelSortData *sort_data;
+    GtkSorter *sorter;
+    gulong sorter_changed_id;
 };
 
 static GType
@@ -116,9 +117,11 @@ G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
 enum
 {
     PROP_0,
-    PROP_SORT_TYPE,
+    PROP_SORTER,
     N_PROPS
 };
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static void
 dispose (GObject *object)
@@ -143,6 +146,8 @@ dispose (GObject *object)
         self->internal_model = NULL;
     }
 
+    g_clear_signal_handler (&self->sorter_changed_id, self->sorter);
+
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->dispose (object);
 }
 
@@ -154,10 +159,7 @@ finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->finalize (object);
 
     g_hash_table_destroy (self->map_files_to_model);
-    if (self->sort_data)
-    {
-        g_free (self->sort_data);
-    }
+    g_clear_object (&self->sorter);
 }
 
 static void
@@ -170,9 +172,9 @@ get_property (GObject    *object,
 
     switch (prop_id)
     {
-        case PROP_SORT_TYPE:
+        case PROP_SORTER:
         {
-            g_value_set_object (value, self->sort_data);
+            g_value_set_object (value, self->sorter);
         }
         break;
 
@@ -193,9 +195,9 @@ set_property (GObject      *object,
 
     switch (prop_id)
     {
-        case PROP_SORT_TYPE:
+        case PROP_SORTER:
         {
-            nautilus_view_model_set_sort_type (self, g_value_get_object (value));
+            nautilus_view_model_set_sorter (self, g_value_get_object (value));
         }
         break;
 
@@ -233,6 +235,14 @@ nautilus_view_model_class_init (NautilusViewModelClass *klass)
     object_class->get_property = get_property;
     object_class->set_property = set_property;
     object_class->constructed = constructed;
+
+    properties[PROP_SORTER] =
+        g_param_spec_object ("sorter",
+                             "", "",
+                             GTK_TYPE_SORTER,
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
@@ -246,16 +256,20 @@ compare_data_func (gconstpointer a,
                    gpointer      user_data)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (user_data);
-    NautilusFile *file_a;
-    NautilusFile *file_b;
 
-    file_a = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL ((gpointer) a));
-    file_b = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL ((gpointer) b));
+    g_return_val_if_fail (self->sorter != NULL, GTK_ORDERING_EQUAL);
 
-    return nautilus_file_compare_for_sort (file_a, file_b,
-                                           self->sort_data->sort_type,
-                                           self->sort_data->directories_first,
-                                           self->sort_data->reversed);
+    return gtk_sorter_compare (self->sorter, (gpointer) a, (gpointer) b);
+}
+
+static void
+on_sorter_changed (GtkSorter       *sorter,
+                   GtkSorterChange  change,
+                   gpointer         user_data)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (user_data);
+
+    g_list_store_sort (self->internal_model, compare_data_func, self);
 }
 
 NautilusViewModel *
@@ -265,26 +279,19 @@ nautilus_view_model_new ()
 }
 
 void
-nautilus_view_model_set_sort_type (NautilusViewModel         *self,
-                                   NautilusViewModelSortData *sort_data)
+nautilus_view_model_set_sorter (NautilusViewModel *self,
+                                GtkSorter         *sorter)
 {
-    if (self->sort_data)
+    if (g_set_object (&self->sorter, sorter))
     {
-        g_free (self->sort_data);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORTER]);
+
+        g_clear_signal_handler (&self->sorter_changed_id, self->sorter);
+        self->sorter_changed_id = g_signal_connect (self->sorter, "changed",
+                                                    G_CALLBACK (on_sorter_changed), self);
     }
 
-    self->sort_data = g_new (NautilusViewModelSortData, 1);
-    self->sort_data->sort_type = sort_data->sort_type;
-    self->sort_data->reversed = sort_data->reversed;
-    self->sort_data->directories_first = sort_data->directories_first;
-
     g_list_store_sort (self->internal_model, compare_data_func, self);
-}
-
-NautilusViewModelSortData *
-nautilus_view_model_get_sort_type (NautilusViewModel *self)
-{
-    return self->sort_data;
 }
 
 GQueue *

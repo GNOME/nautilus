@@ -10,18 +10,10 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusViewModel, nautilus_view_model, NAUTILUS, VIEW_MODEL, GObject)
 
-typedef struct
-{
-    NautilusFileSortType sort_type;
-    gboolean reversed;
-    gboolean directories_first;
-} NautilusViewModelSortData;
-
 NautilusViewModel * nautilus_view_model_new (void);
 
-void nautilus_view_model_set_sort_type (NautilusViewModel         *self,
-                                        NautilusViewModelSortData *sort_data);
-NautilusViewModelSortData * nautilus_view_model_get_sort_type (NautilusViewModel *self);
+void nautilus_view_model_set_sorter (NautilusViewModel *self,
+                                     GtkSorter         *sorter);
 NautilusViewItemModel * nautilus_view_model_get_item_from_file (NautilusViewModel *self,
                                                                 NautilusFile      *file);
 GQueue * nautilus_view_model_get_items_from_files (NautilusViewModel *self,
