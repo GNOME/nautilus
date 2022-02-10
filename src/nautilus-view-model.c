@@ -292,22 +292,24 @@ nautilus_view_model_get_items_from_files (NautilusViewModel *self,
                                           GQueue            *files)
 {
     GList *l;
-    NautilusViewItemModel *item_model;
+    guint n_items;
     GQueue *item_models;
 
+    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->internal_model));
     item_models = g_queue_new ();
     for (l = g_queue_peek_head_link (files); l != NULL; l = l->next)
     {
         NautilusFile *file1;
-        gint i = 0;
 
         file1 = NAUTILUS_FILE (l->data);
-        while ((item_model = g_list_model_get_item (G_LIST_MODEL (self->internal_model), i)))
+        for (guint i = 0; i < n_items; i++)
         {
+            g_autoptr (NautilusViewItemModel) item_model = NULL;
             NautilusFile *file2;
             g_autofree gchar *file1_uri = NULL;
             g_autofree gchar *file2_uri = NULL;
 
+            item_model = g_list_model_get_item (G_LIST_MODEL (self->internal_model), i);
             file2 = nautilus_view_item_model_get_file (item_model);
             file1_uri = nautilus_file_get_uri (file1);
             file2_uri = nautilus_file_get_uri (file2);
@@ -316,8 +318,6 @@ nautilus_view_model_get_items_from_files (NautilusViewModel *self,
                 g_queue_push_tail (item_models, item_model);
                 break;
             }
-
-            i++;
         }
     }
 

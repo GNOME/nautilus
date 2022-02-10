@@ -288,7 +288,7 @@ real_get_selection (NautilusFilesView *files_view)
     n_selected = g_list_model_get_n_items (G_LIST_MODEL (selection));
     for (guint i = 0; i < n_selected; i++)
     {
-        NautilusViewItemModel *item_model;
+        g_autoptr (NautilusViewItemModel) item_model = NULL;
 
         item_model = g_list_model_get_item (G_LIST_MODEL (selection), i);
         selected_files = g_list_prepend (selected_files,
@@ -590,14 +590,16 @@ static void
 set_icon_size (NautilusViewIconController *self,
                gint                        icon_size)
 {
-    NautilusViewItemModel *current_item_model;
-    guint i = 0;
+    guint n_items;
 
-    while ((current_item_model = NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (G_LIST_MODEL (self->model), i))))
+    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->model));
+    for (guint i = 0; i < n_items; i++)
     {
+        g_autoptr (NautilusViewItemModel) current_item_model = NULL;
+
+        current_item_model = g_list_model_get_item (G_LIST_MODEL (self->model), i);
         nautilus_view_item_model_set_icon_size (current_item_model,
                                                 get_icon_size_for_zoom_level (self->zoom_level));
-        i++;
     }
 }
 
@@ -691,7 +693,7 @@ static GdkRectangle *
 real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    NautilusViewItemModel *item;
+    g_autoptr (NautilusViewItemModel) item = NULL;
     GtkWidget *item_ui;
 
     /* We only allow one item to be renamed with a popover */
@@ -711,7 +713,6 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
     guint n_selected;
     GtkWidget *focus_child;
     guint i;
-    NautilusViewItemModel *item;
     GtkWidget *item_ui;
 
     selection = gtk_selection_filter_model_new (GTK_SELECTION_MODEL (self->model));
@@ -723,6 +724,8 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
     focus_child = gtk_widget_get_focus_child (GTK_WIDGET (self->view_ui));
     for (i = 0; i < n_selected; i++)
     {
+        g_autoptr (NautilusViewItemModel) item = NULL;
+
         item = g_list_model_get_item (G_LIST_MODEL (selection), i);
         item_ui = nautilus_view_item_model_get_item_ui (item);
         if (item_ui != NULL && gtk_widget_get_parent (item_ui) == focus_child)
@@ -1012,7 +1015,7 @@ get_first_visible_item (NautilusViewIconController *self)
     scrolled_y = gtk_adjustment_get_value (self->vadjustment);
     for (guint i = 0; i < n_items; i++)
     {
-        NautilusViewItemModel *item;
+        g_autoptr (NautilusViewItemModel) item = NULL;
         GtkWidget *item_ui;
 
         item = g_list_model_get_item (G_LIST_MODEL (self->model), i);
@@ -1038,7 +1041,7 @@ real_get_first_visible_file (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     guint i;
-    NautilusViewItemModel *item;
+    g_autoptr (NautilusViewItemModel) item = NULL;
     gchar *uri = NULL;
 
     i = get_first_visible_item (self);
@@ -1195,7 +1198,7 @@ static void
 real_select_first (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    NautilusViewItemModel *item;
+    g_autoptr (NautilusViewItemModel) item = NULL;
     NautilusFile *file;
     g_autoptr (GList) selection = NULL;
 
@@ -1298,7 +1301,7 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
     guint next_index;
     gdouble y;
     guint last_index;
-    NautilusViewItemModel *item;
+    g_autoptr (NautilusViewItemModel) first_item = NULL;
     NautilusFile *file;
 
     self->prioritize_thumbnailing_handle_id = 0;
@@ -1310,15 +1313,16 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
         return;
     }
 
-    item = g_list_model_get_item (G_LIST_MODEL (self->model), first_index);
+    first_item = g_list_model_get_item (G_LIST_MODEL (self->model), first_index);
 
-    first_visible_child = nautilus_view_item_model_get_item_ui (item);
+    first_visible_child = nautilus_view_item_model_get_item_ui (first_item);
 
     for (next_index = first_index + 1; next_index < g_list_model_get_n_items (G_LIST_MODEL (self->model)); next_index++)
     {
-        item = g_list_model_get_item (G_LIST_MODEL (self->model), next_index);
+        g_autoptr (NautilusViewItemModel) next_item = NULL;
 
-        next_child = nautilus_view_item_model_get_item_ui (item);
+        next_item = g_list_model_get_item (G_LIST_MODEL (self->model), next_index);
+        next_child = nautilus_view_item_model_get_item_ui (next_item);
         if (next_child == NULL)
         {
             break;
@@ -1337,6 +1341,8 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
     /* Do the iteration in reverse to give higher priority to the top */
     for (gint i = 0; i <= last_index - first_index; i++)
     {
+        g_autoptr (NautilusViewItemModel) item = NULL;
+
         item = g_list_model_get_item (G_LIST_MODEL (self->model), last_index - i);
         g_return_if_fail (item != NULL);
 
