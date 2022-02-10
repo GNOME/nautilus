@@ -387,8 +387,6 @@ real_set_selection (NautilusFilesView *files_view,
     gtk_selection_model_set_selection (GTK_SELECTION_MODEL (self->model),
                                        selection_set,
                                        update_set);
-
-    nautilus_files_view_notify_selection_changed (files_view);
 }
 
 static void
