@@ -3,6 +3,7 @@
   <requires lib="gtk" version="4.0"/>
   <object class="AdwPreferencesWindow" id="preferences_window">
     <property name="search_enabled">False</property>
+    <property name="hide_on_close">True</property>
     <child>
       <object class="AdwPreferencesPage">
         <property name="title" translatable="yes">General</property>
