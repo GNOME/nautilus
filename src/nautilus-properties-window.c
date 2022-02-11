@@ -435,9 +435,9 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
 
     if (!icon)
     {
-        g_autoptr (GIcon) gicon = g_themed_icon_new ("text-x-generic");
-
-        icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_STANDARD, icon_scale);
+        icon = nautilus_icon_info_lookup_from_name ("text-x-generic",
+                                                    NAUTILUS_GRID_ICON_SIZE_STANDARD,
+                                                    icon_scale);
     }
 
     if (icon_name != NULL)
