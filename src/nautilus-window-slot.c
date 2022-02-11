@@ -2817,7 +2817,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         g_binding_unbind (self->extensions_background_menu_binding);
         g_binding_unbind (self->templates_menu_binding);
         widget = GTK_WIDGET (self->content_view);
-        gtk_box_remove (GTK_BOX (self), widget);
+        gtk_widget_destroy (widget);
         g_clear_object (&self->content_view);
     }
 
@@ -2903,13 +2903,13 @@ nautilus_window_slot_dispose (GObject *object)
 
     if (self->content_view)
     {
-        gtk_box_remove (GTK_BOX (self), GTK_WIDGET (self->content_view));
+        gtk_widget_destroy (GTK_WIDGET (self->content_view));
         g_clear_object (&self->content_view);
     }
 
     if (self->new_content_view)
     {
-        gtk_box_remove (GTK_BOX (self), GTK_WIDGET (self->new_content_view));
+        gtk_widget_destroy (GTK_WIDGET (self->new_content_view));
         g_clear_object (&self->new_content_view);
     }
 
@@ -2928,6 +2928,7 @@ nautilus_window_slot_dispose (GObject *object)
 
     if (self->query_editor)
     {
+        gtk_widget_destroy (GTK_WIDGET (self->query_editor));
         g_clear_object (&self->query_editor);
     }
 
