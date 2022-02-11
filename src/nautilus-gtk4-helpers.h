@@ -32,7 +32,7 @@ void gtk_check_button_set_active   (GtkCheckButton    *button,
 
 gboolean gtk_check_button_get_active (GtkCheckButton  *button);
 GtkWidget *gtk_widget_get_first_child (GtkWidget *widget);
-GtkWidget *gtk_scrolled_window_get_child (GtkScrolledWindow *scrolled);
+
 
 void gtk_style_context_add_provider_for_display    (GdkDisplay       *display,
                                                     GtkStyleProvider *provider,

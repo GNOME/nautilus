@@ -3124,7 +3124,7 @@ nautilus_files_view_grab_focus (GtkWidget *widget)
 
     view = NAUTILUS_FILES_VIEW (widget);
     priv = nautilus_files_view_get_instance_private (view);
-    child = gtk_scrolled_window_get_child (GTK_SCROLLED_WINDOW (priv->scrolled_window));
+    child = gtk_bin_get_child (GTK_BIN (priv->scrolled_window));
 
     GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->grab_focus (widget);
 
