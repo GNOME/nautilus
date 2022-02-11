@@ -195,7 +195,7 @@ void
 nautilus_notebook_sync_tab_label (GtkNotebook        *notebook,
                                   NautilusWindowSlot *slot)
 {
-    GtkWidget *cbox, *label;
+    GtkWidget *hbox, *label;
     char *location_name;
     GFile *location;
     const gchar *title_name;
@@ -203,10 +203,10 @@ nautilus_notebook_sync_tab_label (GtkNotebook        *notebook,
     g_return_if_fail (GTK_IS_NOTEBOOK (notebook));
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-    cbox = gtk_notebook_get_tab_label (notebook, GTK_WIDGET (slot));
-    g_return_if_fail (GTK_IS_WIDGET (cbox));
+    hbox = gtk_notebook_get_tab_label (notebook, GTK_WIDGET (slot));
+    g_return_if_fail (GTK_IS_WIDGET (hbox));
 
-    label = GTK_WIDGET (g_object_get_data (G_OBJECT (cbox), "label"));
+    label = GTK_WIDGET (g_object_get_data (G_OBJECT (hbox), "label"));
     g_return_if_fail (GTK_IS_WIDGET (label));
 
     gtk_label_set_text (GTK_LABEL (label), nautilus_window_slot_get_title (slot));
@@ -214,7 +214,7 @@ nautilus_notebook_sync_tab_label (GtkNotebook        *notebook,
 
     if (location != NULL)
     {
-        /* Set the tooltip on the label's parent (the tab label cbox),
+        /* Set the tooltip on the label's parent (the tab label hbox),
          * so it covers all of the tab label.
          */
         location_name = g_file_get_parse_name (location);
@@ -239,26 +239,23 @@ static GtkWidget *
 build_tab_label (GtkNotebook        *notebook,
                  NautilusWindowSlot *slot)
 {
-    GtkWidget *tab_label;
-    GtkWidget *start_box;
+    GtkWidget *box;
     GtkWidget *label;
     GtkWidget *close_button;
     GtkWidget *spinner;
     GtkWidget *icon;
 
-    tab_label = gtk_center_box_new ();
-    gtk_widget_show (tab_label);
-
-    start_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-    gtk_center_box_set_start_widget (GTK_CENTER_BOX (tab_label), start_box);
+    /* When porting to Gtk+4, use GtkCenterBox instead */
+    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+    gtk_widget_show (box);
 
     /* Spinner to be shown as load feedback */
     spinner = gtk_spinner_new ();
-    gtk_box_append (GTK_BOX (start_box), spinner);
+    gtk_box_append (GTK_BOX (box), spinner);
 
     /* Dummy icon to allocate space for spinner */
     icon = gtk_image_new ();
-    gtk_box_append (GTK_BOX (start_box), icon);
+    gtk_box_append (GTK_BOX (box), icon);
     /* don't show the icon */
 
     /* Tab title */
@@ -266,7 +263,7 @@ build_tab_label (GtkNotebook        *notebook,
     gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
     gtk_label_set_single_line_mode (GTK_LABEL (label), TRUE);
     gtk_label_set_width_chars (GTK_LABEL (label), 6);
-    gtk_center_box_set_center_widget (GTK_CENTER_BOX (tab_label), label);
+    gtk_box_set_center_widget (GTK_BOX (box), label);
     gtk_widget_show (label);
 
     /* Tab close button */
@@ -281,20 +278,20 @@ build_tab_label (GtkNotebook        *notebook,
     gtk_widget_set_tooltip_text (close_button, _("Close tab"));
     gtk_actionable_set_action_name (GTK_ACTIONABLE (close_button), "win.close-current-view");
 
-    gtk_center_box_set_end_widget (GTK_CENTER_BOX (tab_label), close_button);
+    gtk_box_pack_end (GTK_BOX (box), close_button, FALSE, FALSE, 0);
     gtk_widget_show (close_button);
 
-    g_object_set_data (G_OBJECT (tab_label), "nautilus-notebook-tab", GINT_TO_POINTER (1));
+    g_object_set_data (G_OBJECT (box), "nautilus-notebook-tab", GINT_TO_POINTER (1));
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     nautilus_drag_slot_proxy_init (box, NULL, slot);
 #endif
 
-    g_object_set_data (G_OBJECT (tab_label), "label", label);
-    g_object_set_data (G_OBJECT (tab_label), "spinner", spinner);
-    g_object_set_data (G_OBJECT (tab_label), "icon", icon);
-    g_object_set_data (G_OBJECT (tab_label), "close-button", close_button);
+    g_object_set_data (G_OBJECT (box), "label", label);
+    g_object_set_data (G_OBJECT (box), "spinner", spinner);
+    g_object_set_data (G_OBJECT (box), "icon", icon);
+    g_object_set_data (G_OBJECT (box), "close-button", close_button);
 
-    return tab_label;
+    return box;
 }
 
 int
