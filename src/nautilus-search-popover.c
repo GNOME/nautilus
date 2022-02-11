@@ -24,6 +24,7 @@
 #include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-gtk4-helpers.h"
 
  #define SEARCH_FILTER_MAX_YEARS 5
 
@@ -91,9 +92,12 @@ calendar_day_selected (GtkCalendar           *calendar,
                        NautilusSearchPopover *popover)
 {
     GDateTime *date;
+    guint year, month, day;
     GPtrArray *date_range;
 
-    date = gtk_calendar_get_date (calendar);
+    gtk_calendar_get_date (calendar, &year, &month, &day);
+
+    date = g_date_time_new_local (year, month + 1, day, 0, 0, 0);
 
     date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
     g_ptr_array_add (date_range, g_date_time_ref (date));
@@ -123,7 +127,12 @@ setup_date (NautilusSearchPopover *popover,
 
         g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
 
-        gtk_calendar_select_day (GTK_CALENDAR (popover->calendar), date_initial);
+        gtk_calendar_select_month (GTK_CALENDAR (popover->calendar),
+                                   g_date_time_get_month (date_initial) - 1,
+                                   g_date_time_get_year (date_initial));
+
+        gtk_calendar_select_day (GTK_CALENDAR (popover->calendar),
+                                 g_date_time_get_day_of_month (date_initial));
 
         update_date_label (popover, date_range);
 
@@ -157,7 +166,7 @@ date_entry_activate (GtkEntry              *entry,
         GDate *date;
 
         date = g_date_new ();
-        g_date_set_parse (date, gtk_editable_get_text (GTK_EDITABLE (entry)));
+        g_date_set_parse (date, gtk_entry_get_text (entry));
 
         /* Invalid date silently does nothing */
         if (!g_date_valid (date))
@@ -334,16 +343,16 @@ types_listbox_row_activated (GtkListBox            *listbox,
 }
 
 static void
-search_time_type_changed (GtkCheckButton        *button,
+search_time_type_changed (GtkToggleButton       *button,
                           NautilusSearchPopover *popover)
 {
     NautilusQuerySearchType type = -1;
 
-    if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_modified_button)))
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->last_modified_button)))
     {
         type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED;
     }
-    else if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_used_button)))
+    else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->last_used_button)))
     {
         type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS;
     }
@@ -398,7 +407,7 @@ create_row_for_label (const gchar *text,
                           NULL);
 
     gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), label);
-    gtk_widget_show (row);
+    gtk_widget_show_all (row);
 
     return row;
 }
@@ -566,7 +575,7 @@ on_other_types_dialog_response (GtkDialog             *dialog,
     }
 
     g_clear_object (&popover->treeview);
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
@@ -578,7 +587,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     GtkListStore *store;
     GtkTreeViewColumn *column;
     GtkCellRenderer *renderer;
-    GtkRoot *toplevel;
+    GtkWidget *toplevel;
     GtkTreeSelection *selection;
 
     mime_infos = g_content_types_get_registered ();
@@ -607,7 +616,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     }
     g_list_free (mime_infos);
 
-    toplevel = gtk_widget_get_root (GTK_WIDGET (popover));
+    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (popover));
     dialog = gtk_dialog_new_with_buttons (_("Select type"),
                                           GTK_WINDOW (toplevel),
                                           GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
@@ -616,7 +625,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
                                           NULL);
     gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);
 
-    scrolled = gtk_scrolled_window_new ();
+    scrolled = gtk_scrolled_window_new (NULL, NULL);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
                                     GTK_POLICY_AUTOMATIC,
                                     GTK_POLICY_AUTOMATIC);
@@ -646,7 +655,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     popover->treeview = GTK_TREE_VIEW (g_object_ref (treeview));
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_other_types_dialog_response), popover);
-    gtk_widget_show (dialog);
+    gtk_widget_show_all (dialog);
 }
 
 static void
@@ -668,7 +677,7 @@ update_date_label (NautilusSearchPopover *popover,
 
         label = get_text_for_date_range (date_range, TRUE);
 
-        gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), days < 1 ? label : "");
+        gtk_entry_set_text (GTK_ENTRY (popover->date_entry), days < 1 ? label : "");
 
         gtk_widget_show (popover->clear_date_button);
         gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
@@ -680,7 +689,7 @@ update_date_label (NautilusSearchPopover *popover,
     {
         gtk_label_set_label (GTK_LABEL (popover->select_date_button_label),
                              _("Select Dates…"));
-        gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), "");
+        gtk_entry_set_text (GTK_ENTRY (popover->date_entry), "");
         gtk_widget_hide (popover->clear_date_button);
     }
 }
@@ -716,7 +725,12 @@ nautilus_search_popover_closed (GtkPopover *popover)
     /* Reselect today at the calendar */
     g_signal_handlers_block_by_func (self->calendar, calendar_day_selected, self);
 
-    gtk_calendar_select_day (GTK_CALENDAR (self->calendar), now);
+    gtk_calendar_select_month (GTK_CALENDAR (self->calendar),
+                               g_date_time_get_month (now) - 1,
+                               g_date_time_get_year (now));
+
+    gtk_calendar_select_day (GTK_CALENDAR (self->calendar),
+                             g_date_time_get_day_of_month (now));
 
     g_signal_handlers_unblock_by_func (self->calendar, calendar_day_selected, self);
 }
@@ -912,21 +926,21 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
     {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), TRUE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), TRUE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), FALSE);
     }
     else if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
     {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), TRUE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), TRUE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), FALSE);
     }
     else
     {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), TRUE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), FALSE);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->created_button), TRUE);
     }
 
     self->fts_enabled = g_settings_get_boolean (nautilus_preferences,

@@ -5378,30 +5378,17 @@ out:
     return icon;
 }
 
-GdkTexture *
-nautilus_file_get_icon_texture (NautilusFile          *file,
-                                int                    size,
-                                int                    scale,
-                                NautilusFileIconFlags  flags)
+GdkPixbuf *
+nautilus_file_get_icon_pixbuf (NautilusFile          *file,
+                               int                    size,
+                               int                    scale,
+                               NautilusFileIconFlags  flags)
 {
     g_autoptr (NautilusIconInfo) info = NULL;
 
     info = nautilus_file_get_icon (file, size, scale, flags);
 
-    return nautilus_icon_info_get_texture (info);
-}
-
-GdkPaintable *
-nautilus_file_get_icon_paintable (NautilusFile          *file,
-                                  int                    size,
-                                  int                    scale,
-                                  NautilusFileIconFlags  flags)
-{
-    g_autoptr (NautilusIconInfo) info = NULL;
-
-    info = nautilus_file_get_icon (file, size, scale, flags);
-
-    return nautilus_icon_info_get_paintable (info);
+    return nautilus_icon_info_get_pixbuf_at_size (info, size);
 }
 
 gboolean

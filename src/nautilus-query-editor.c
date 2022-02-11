@@ -35,6 +35,7 @@
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusQueryEditor
 {
@@ -145,7 +146,7 @@ nautilus_query_editor_dispose (GObject *object)
     G_OBJECT_CLASS (nautilus_query_editor_parent_class)->dispose (object);
 }
 
-static gboolean
+static void
 nautilus_query_editor_grab_focus (GtkWidget *widget)
 {
     NautilusQueryEditor *editor;
@@ -155,10 +156,9 @@ nautilus_query_editor_grab_focus (GtkWidget *widget)
     if (gtk_widget_get_visible (widget) && !gtk_widget_is_focus (editor->entry))
     {
         /* avoid selecting the entry text */
-        return gtk_entry_grab_focus_without_selecting (GTK_ENTRY (editor->entry));
+        gtk_widget_grab_focus (editor->entry);
+        gtk_editable_set_position (GTK_EDITABLE (editor->entry), -1);
     }
-
-    return FALSE;
 }
 
 static void
@@ -243,7 +243,6 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 {
     GObjectClass *gobject_class;
     GtkWidgetClass *widget_class;
-    g_autoptr (GtkShortcut) shortcut = NULL;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = nautilus_query_editor_finalize;
@@ -290,9 +289,11 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
-    shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Down, 0),
-                                 gtk_signal_action_new ("focus-view"));
-    gtk_widget_class_add_shortcut (widget_class, shortcut);
+    gtk_binding_entry_add_signal (gtk_binding_set_by_class (class),
+                                  GDK_KEY_Down,
+                                  0,
+                                  "focus-view",
+                                  0);
 
     /**
      * NautilusQueryEditor::location:
@@ -351,7 +352,7 @@ create_query (NautilusQueryEditor *editor)
 
     nautilus_query_set_search_content (query, fts_enabled);
 
-    nautilus_query_set_text (query, gtk_editable_get_text (GTK_EDITABLE (editor->entry)));
+    nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (editor->entry)));
     nautilus_query_set_location (query, editor->location);
 
     /* We only set the query using the global setting for recursivity here,
@@ -386,7 +387,7 @@ entry_changed_cb (GtkWidget           *entry,
     {
         g_autofree gchar *text = NULL;
 
-        text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (editor->entry)));
+        text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editor->entry)));
         text = g_strstrip (text);
 
         nautilus_query_set_text (editor->query, text);
@@ -636,7 +637,7 @@ setup_widgets (NautilusQueryEditor *editor)
                       G_CALLBACK (search_popover_fts_changed_cb), editor);
 
     /* show everything */
-    gtk_widget_show (vbox);
+    gtk_widget_show_all (vbox);
 }
 
 static void
@@ -739,11 +740,11 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
 
     self->change_frozen = TRUE;
 
-    current_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->entry)));
+    current_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->entry)));
     current_text = g_strstrip (current_text);
     if (!g_str_equal (current_text, text))
     {
-        gtk_editable_set_text (GTK_EDITABLE (self->entry), text);
+        gtk_entry_set_text (GTK_ENTRY (self->entry), text);
     }
 
     if (g_set_object (&self->query, query))
@@ -762,7 +763,7 @@ nautilus_query_editor_set_text (NautilusQueryEditor *self,
     g_return_if_fail (text != NULL);
 
     /* The handler of the entry will take care of everything */
-    gtk_editable_set_text (GTK_EDITABLE (self->entry), text);
+    gtk_entry_set_text (GTK_ENTRY (self->entry), text);
 }
 
 static gboolean
@@ -778,7 +779,7 @@ nautilus_gtk_search_entry_is_keynav_event (guint           keyval,
         keyval == GDK_KEY_End || keyval == GDK_KEY_KP_End ||
         keyval == GDK_KEY_Page_Up || keyval == GDK_KEY_KP_Page_Up ||
         keyval == GDK_KEY_Page_Down || keyval == GDK_KEY_KP_Page_Down ||
-        ((state & (GDK_CONTROL_MASK | GDK_ALT_MASK)) != 0))
+        ((state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) != 0))
     {
         return TRUE;
     }

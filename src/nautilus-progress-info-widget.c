@@ -49,7 +49,9 @@ G_DEFINE_TYPE_WITH_PRIVATE (NautilusProgressInfoWidget, nautilus_progress_info_w
 static void
 info_finished (NautilusProgressInfoWidget *self)
 {
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->image), "object-select-symbolic");
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->image),
+                                  "object-select-symbolic",
+                                  GTK_ICON_SIZE_BUTTON);
     gtk_widget_set_sensitive (self->priv->button, FALSE);
 }
 
@@ -125,7 +127,9 @@ nautilus_progress_info_widget_constructed (GObject *obj)
 
     if (nautilus_progress_info_get_is_finished (self->priv->info))
     {
-        gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->image), "object-select-symbolic");
+        gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->image),
+                                      "object-select-symbolic",
+                                      GTK_ICON_SIZE_BUTTON);
     }
 
     gtk_widget_set_sensitive (self->priv->button,

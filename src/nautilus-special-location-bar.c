@@ -24,10 +24,11 @@
 
 #include "nautilus-special-location-bar.h"
 #include "nautilus-enum-types.h"
+#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusSpecialLocationBar
 {
-    AdwBin parent_instance;
+    GtkBin parent_instance;
 
     GtkWidget *label;
     GtkWidget *learn_more_label;
@@ -40,7 +41,7 @@ enum
     PROP_SPECIAL_LOCATION,
 };
 
-G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, ADW_TYPE_BIN)
+G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, GTK_TYPE_BIN)
 
 static void
 set_special_location (NautilusSpecialLocationBar *bar,

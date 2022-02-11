@@ -473,11 +473,7 @@ NautilusIconInfo *      nautilus_file_get_icon                          (Nautilu
 									 int                             size,
 									 int                             scale,
 									 NautilusFileIconFlags           flags);
-GdkTexture *            nautilus_file_get_icon_texture                  (NautilusFile                   *file,
-									 int                             size,
-									 int                             scale,
-									 NautilusFileIconFlags           flags);
-GdkPaintable *          nautilus_file_get_icon_paintable                (NautilusFile                   *file,
+GdkPixbuf *             nautilus_file_get_icon_pixbuf                   (NautilusFile                   *file,
 									 int                             size,
 									 int                             scale,
 									 NautilusFileIconFlags           flags);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0 -->
 <interface>
-  <requires lib="gtk" version="4.0"/>
+  <requires lib="gtk+" version="3.20"/>
   <object class="GtkGrid" id="starred_is_empty">
     <property name="halign">center</property>
     <property name="valign">center</property>
@@ -10,29 +11,31 @@
     <property name="visible">False</property>
     <child>
       <object class="GtkImage">
+        <property name="visible">True</property>
         <property name="pixel_size">128</property>
         <property name="icon_name">starred-symbolic</property>
         <style>
           <class name="dim-label"/>
           <class name="nautilus-empty-state-icon"/>
         </style>
-        <layout>
-          <property name="column">0</property>
-          <property name="row">0</property>
-        </layout>
       </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
     </child>
     <child>
       <object class="GtkLabel">
+        <property name="visible">True</property>
         <property name="label" translatable="yes">Starred files will appear here</property>
         <style>
           <class name="large-title"/>
         </style>
-        <layout>
-          <property name="column">0</property>
-          <property name="row">1</property>
-        </layout>
       </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
     </child>
   </object>
 </interface>

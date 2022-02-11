@@ -9,6 +9,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-thumbnails.h"
+#include "nautilus-gtk4-helpers.h"
 
 struct _NautilusViewIconController
 {
@@ -24,6 +25,7 @@ struct _NautilusViewIconController
 
     gboolean single_click_mode;
     gboolean activate_on_release;
+    GtkGesture *multi_press_gesture;
 
     guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
@@ -427,8 +429,8 @@ static void
 reveal_item_ui (NautilusViewIconController *self,
                 GtkWidget                  *item_ui)
 {
-    gdouble item_y;
-    gdouble item_height;
+    int item_y;
+    int item_height;
 
     gtk_widget_translate_coordinates (item_ui, GTK_WIDGET (self->view_ui),
                                       0, 0,
@@ -767,17 +769,17 @@ activate_selection_on_click (NautilusViewIconController *self,
 }
 
 static void
-on_button_press_event (GtkGestureClick *gesture,
-                       gint             n_press,
-                       gdouble          x,
-                       gdouble          y,
-                       gpointer         user_data)
+on_button_press_event (GtkGestureMultiPress *gesture,
+                       gint                  n_press,
+                       gdouble               x,
+                       gdouble               y,
+                       gpointer              user_data)
 {
     NautilusViewIconController *self;
     guint button;
     GdkModifierType modifiers = 0;
-    gdouble view_x;
-    gdouble view_y;
+    gint view_x;
+    gint view_y;
     GtkFlowBoxChild *child_at_pos;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
@@ -854,11 +856,11 @@ on_button_press_event (GtkGestureClick *gesture,
 }
 
 static void
-on_click_released (GtkGestureClick *gesture,
-                   gint             n_press,
-                   gdouble          x,
-                   gdouble          y,
-                   gpointer         user_data)
+on_click_released (GtkGestureMultiPress *gesture,
+                   gint                  n_press,
+                   gdouble               x,
+                   gdouble               y,
+                   gpointer              user_data)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -871,8 +873,8 @@ on_click_released (GtkGestureClick *gesture,
 }
 
 static void
-on_click_stopped (GtkGestureClick *gesture,
-                  gpointer         user_data)
+on_click_stopped (GtkGestureMultiPress *gesture,
+                  gpointer              user_data)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -887,8 +889,8 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 {
     NautilusViewIconController *self;
     GtkFlowBoxChild *child_at_pos;
-    gdouble view_x;
-    gdouble view_y;
+    gint view_x;
+    gint view_y;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -942,9 +944,9 @@ static GtkFlowBoxChild *
 get_first_visible_item_ui (NautilusViewIconController *self)
 {
     GtkFlowBoxChild *child_at_0;
-    gdouble x0;
-    gdouble y0;
-    gdouble scrolled_y;
+    gint x0;
+    gint y0;
+    gint scrolled_y;
 
     child_at_0 = gtk_flow_box_get_child_at_index (self->view_ui, 0);
     if (child_at_0 == NULL)
@@ -999,7 +1001,7 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     g_autoptr (NautilusFile) file = NULL;
     NautilusViewItemModel *item;
     GtkWidget *item_ui;
-    gdouble item_y;
+    int item_y;
 
     file = nautilus_file_get_existing_by_uri (data->uri);
     item = nautilus_view_model_get_item_from_file (self->model, file);
@@ -1189,6 +1191,7 @@ dispose (GObject *object)
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
 
+    g_clear_object (&self->multi_press_gesture);
     g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&self->prioritize_thumbnailing_handle_id, g_source_remove);
 
@@ -1211,7 +1214,7 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
     GtkFlowBoxChild *next_child;
     gint first_index;
     gint next_index;
-    gdouble y;
+    gint y;
     gint last_index;
     gpointer item;
     NautilusFile *file;
@@ -1305,7 +1308,7 @@ setup_item_ui (GtkWidget **child,
     nautilus_view_item_ui_set_caption_attributes (item_ui, self->caption_attributes);
 
     *child = GTK_WIDGET (item_ui);
-    gtk_widget_show (*child);
+    gtk_widget_show_all (*child);
 }
 
 static GtkWidget *
@@ -1328,7 +1331,7 @@ create_view_ui (NautilusViewIconController *self)
     GtkFlowBox *flowbox;
 
     widget = gtk_flow_box_new ();
-    gtk_widget_set_focusable (widget, TRUE);
+    gtk_widget_set_can_focus (widget, TRUE);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
     flowbox = GTK_FLOW_BOX (widget);
@@ -1362,7 +1365,7 @@ constructed (GObject *object)
     GtkAdjustment *hadjustment;
     GtkAdjustment *vadjustment;
     GActionGroup *view_action_group;
-    GtkEventController *controller;
+    GtkGesture *longpress_gesture;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (content_widget));
@@ -1388,23 +1391,26 @@ constructed (GObject *object)
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 
     /* Compensating for the lack of event boxen to allow clicks outside the flow box. */
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (GTK_WIDGET (content_widget), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
-    g_signal_connect (controller, "pressed",
+    self->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (content_widget));
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (self->multi_press_gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->multi_press_gesture),
+                                   0);
+    g_signal_connect (self->multi_press_gesture, "pressed",
                       G_CALLBACK (on_button_press_event), self);
-    g_signal_connect (controller, "stopped",
+    g_signal_connect (self->multi_press_gesture, "stopped",
                       G_CALLBACK (on_click_stopped), self);
-    g_signal_connect (controller, "released",
+    g_signal_connect (self->multi_press_gesture, "released",
                       G_CALLBACK (on_click_released), self);
 
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
-    gtk_widget_add_controller (GTK_WIDGET (self->view_ui), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
-    g_signal_connect (controller, "pressed",
-                      (GCallback) on_longpress_gesture_pressed_callback, self);
+    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (self->view_ui));
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
+                                       TRUE);
+    g_signal_connect (longpress_gesture, "pressed",
+                      (GCallback) on_longpress_gesture_pressed_callback,
+                      self);
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
                                    GTK_WIDGET (self->view_ui));
@@ -1415,7 +1421,7 @@ constructed (GObject *object)
                                      G_N_ELEMENTS (view_icon_actions),
                                      self);
 
-    gtk_widget_show (GTK_WIDGET (self));
+    gtk_widget_show_all (GTK_WIDGET (self));
 
     view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),

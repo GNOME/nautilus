@@ -24,13 +24,12 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <libadwaita-1/adwaita.h>
 
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_X_CONTENT_BAR (nautilus_x_content_bar_get_type ())
 
-G_DECLARE_FINAL_TYPE (NautilusXContentBar, nautilus_x_content_bar, NAUTILUS, X_CONTENT_BAR, AdwBin)
+G_DECLARE_FINAL_TYPE (NautilusXContentBar, nautilus_x_content_bar, NAUTILUS, X_CONTENT_BAR, GtkBin)
 
 GtkWidget *nautilus_x_content_bar_new (GMount             *mount,
                                        const char * const *x_content_types);

@@ -26,6 +26,7 @@
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-gtk4-helpers.h"
 
 typedef struct
 {
@@ -71,20 +72,20 @@ open_location_cb (NautilusPlacesView         *view,
 
     switch (open_flags)
     {
-        case NAUTILUS_OPEN_FLAG_NEW_TAB:
+        case GTK_PLACES_OPEN_NEW_TAB:
         {
             flags = NAUTILUS_OPEN_FLAG_NEW_TAB |
                     NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
         }
         break;
 
-        case NAUTILUS_OPEN_FLAG_NEW_WINDOW:
+        case GTK_PLACES_OPEN_NEW_WINDOW:
         {
             flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
         }
         break;
 
-        case NAUTILUS_OPEN_FLAG_NORMAL: /* fall-through */
+        case GTK_PLACES_OPEN_NORMAL: /* fall-through */
         default:
         {
             flags = 0;
@@ -95,12 +96,12 @@ open_location_cb (NautilusPlacesView         *view,
     if (slot)
     {
         NautilusFile *file;
-        GtkRoot *window;
+        GtkWidget *window;
         char *path;
 
         path = "other-locations:///";
         file = nautilus_file_get (location);
-        window = gtk_widget_get_root (GTK_WIDGET (view));
+        window = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
         nautilus_mime_activate_file (GTK_WINDOW (window),
                                      NAUTILUS_WINDOW_SLOT (slot),
@@ -123,9 +124,9 @@ show_error_message_cb (NautilusGtkPlacesView *view,
                        const gchar           *secondary)
 {
     GtkWidget *dialog;
-    GtkRoot *window;
+    GtkWidget *window;
 
-    window = gtk_widget_get_root (GTK_WIDGET (view));
+    window = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
     dialog = gtk_message_dialog_new (GTK_WINDOW (window),
                                      GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
@@ -135,8 +136,8 @@ show_error_message_cb (NautilusGtkPlacesView *view,
     gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                               "%s", secondary);
 
-    g_signal_connect (dialog, "response", G_CALLBACK (gtk_window_destroy), NULL);
-    gtk_widget_show (dialog);
+    g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+    gtk_widget_show_all (dialog);
 }
 
 static void
@@ -385,7 +386,7 @@ nautilus_places_view_init (NautilusPlacesView *self)
     /* Places view */
     priv->places_view = nautilus_gtk_places_view_new ();
     nautilus_gtk_places_view_set_open_flags (NAUTILUS_GTK_PLACES_VIEW (priv->places_view),
-                                             NAUTILUS_OPEN_FLAG_NEW_TAB | NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NORMAL);
+                                             GTK_PLACES_OPEN_NEW_TAB | GTK_PLACES_OPEN_NEW_WINDOW | GTK_PLACES_OPEN_NORMAL);
     gtk_widget_set_hexpand (priv->places_view, TRUE);
     gtk_widget_set_vexpand (priv->places_view, TRUE);
     gtk_widget_show (priv->places_view);

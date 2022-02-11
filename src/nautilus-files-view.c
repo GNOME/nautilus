@@ -87,10 +87,11 @@
 #include "nautilus-view-icon-controller.h"
 #include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 #ifdef HAVE_LIBPORTAL
 #include <libportal/portal.h>
-#include <libportal-gtk4/portal-gtk4.h>
+#include <libportal-gtk3/portal-gtk3.h>
 #endif
 
 /* Minimum starting update inverval */
@@ -520,7 +521,8 @@ remove_floating_bar_passthrough (gpointer data)
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (data));
-    gtk_widget_set_can_target (priv->floating_bar, TRUE);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->floating_bar, FALSE);
     priv->floating_bar_set_passthrough_timeout_id = 0;
 
     return G_SOURCE_REMOVE;
@@ -544,7 +546,7 @@ set_floating_bar_status (NautilusFilesView *view,
         priv->floating_bar_set_status_timeout_id = 0;
     }
 
-    settings = gtk_settings_get_for_display (gtk_widget_get_display (GTK_WIDGET (view)));
+    settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (view)));
     g_object_get (settings,
                   "gtk-double-click-time", &double_click_time,
                   NULL);
@@ -561,7 +563,8 @@ set_floating_bar_status (NautilusFilesView *view,
     }
     /* Activate passthrough on the floating bar just long enough for a
      * potential double click to happen, so to not interfere with it */
-    gtk_widget_set_can_target (priv->floating_bar, FALSE);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->floating_bar, TRUE);
     priv->floating_bar_set_passthrough_timeout_id = g_timeout_add ((guint) double_click_time,
                                                                    remove_floating_bar_passthrough,
                                                                    view);
@@ -1433,7 +1436,7 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
 
     g_object_unref (info);
 out:
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
@@ -1688,7 +1691,7 @@ pattern_select_response_cb (GtkWidget *dialog,
             entry = g_object_get_data (G_OBJECT (dialog), "entry");
             directory = nautilus_files_view_get_model (view);
             selection = nautilus_directory_match_pattern (directory,
-                                                          gtk_editable_get_text (GTK_EDITABLE (entry)));
+                                                          gtk_entry_get_text (GTK_ENTRY (entry)));
 
             nautilus_files_view_call_set_selection (view, selection);
             nautilus_files_view_reveal_selection (view);
@@ -1704,7 +1707,7 @@ pattern_select_response_cb (GtkWidget *dialog,
         case GTK_RESPONSE_DELETE_EVENT:
         case GTK_RESPONSE_CANCEL:
         {
-            gtk_window_destroy (GTK_WINDOW (dialog));
+            gtk_widget_destroy (GTK_WIDGET (dialog));
         }
         break;
 
@@ -3120,7 +3123,7 @@ slot_active_changed (NautilusWindowSlot *slot,
     }
 }
 
-static gboolean
+static void
 nautilus_files_view_grab_focus (GtkWidget *widget)
 {
     /* focus the child of the scrolled window if it exists */
@@ -3132,12 +3135,12 @@ nautilus_files_view_grab_focus (GtkWidget *widget)
     priv = nautilus_files_view_get_instance_private (view);
     child = gtk_scrolled_window_get_child (GTK_SCROLLED_WINDOW (priv->scrolled_window));
 
-    if (child != NULL)
-    {
-        return gtk_widget_grab_focus (GTK_WIDGET (child));
-    }
+    GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->grab_focus (widget);
 
-    return GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->grab_focus (widget);
+    if (child)
+    {
+        gtk_widget_grab_focus (GTK_WIDGET (child));
+    }
 }
 
 static void
@@ -3187,9 +3190,6 @@ nautilus_files_view_dispose (GObject *object)
 
     priv->in_destruction = TRUE;
     nautilus_files_view_stop_loading (view);
-
-    g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
-    g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
 
     if (priv->model)
     {
@@ -4872,13 +4872,13 @@ nautilus_files_view_get_directory_as_file (NautilusFilesView *view)
     return priv->directory_as_file;
 }
 
-static GdkTexture *
+static GdkPixbuf *
 get_menu_icon_for_file (NautilusFile *file,
                         GtkWidget    *widget)
 {
     int scale = gtk_widget_get_scale_factor (widget);
 
-    return nautilus_file_get_icon_texture (file, 16, scale, 0);
+    return nautilus_file_get_icon_pixbuf (file, 16, scale, 0);
 }
 
 static GList *
@@ -5284,7 +5284,7 @@ add_script_to_scripts_menus (NautilusFilesView *view,
     gchar *name;
     g_autofree gchar *uri = NULL;
     g_autofree gchar *escaped_uri = NULL;
-    GdkTexture *mimetype_icon;
+    GdkPixbuf *mimetype_icon;
     gchar *action_name, *detailed_action_name;
     ScriptLaunchParameters *launch_parameters;
     GAction *action;
@@ -5529,7 +5529,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
     NautilusFilesViewPrivate *priv;
     char *tmp, *uri, *name;
     g_autofree gchar *escaped_uri = NULL;
-    GdkTexture *mimetype_icon;
+    GdkPixbuf *mimetype_icon;
     char *action_name, *detailed_action_name;
     CreateTemplateParameters *parameters;
     GAction *action;
@@ -5862,7 +5862,7 @@ on_destination_dialog_response (GtkDialog *dialog,
     }
 
     copy_data_free (copy_data);
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
@@ -5896,6 +5896,7 @@ copy_or_move_selection (NautilusFilesView *view,
                                           _("_Cancel"), GTK_RESPONSE_CANCEL,
                                           _("_Select"), GTK_RESPONSE_OK,
                                           NULL);
+    gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
 
     gtk_dialog_set_default_response (GTK_DIALOG (dialog),
                                      GTK_RESPONSE_OK);
@@ -5922,12 +5923,12 @@ copy_or_move_selection (NautilusFilesView *view,
         location = nautilus_directory_get_location (priv->model);
     }
 
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
+    gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog), location, NULL);
     g_signal_connect (dialog, "response",
                       G_CALLBACK (on_destination_dialog_response),
                       copy_data);
 
-    gtk_widget_show (dialog);
+    gtk_widget_show_all (dialog);
 }
 
 static void
@@ -6114,14 +6115,18 @@ real_action_rename (NautilusFilesView *view)
         /* If there is more than one file selected, invoke a batch renamer */
         if (selection->next != NULL)
         {
-            NautilusWindow *window;
+            GdkCursor *cursor;
+            GdkDisplay *display;
 
-            window = nautilus_files_view_get_window (view);
-            gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
+            display = gtk_widget_get_display (GTK_WIDGET (nautilus_files_view_get_window (view)));
+            cursor = gdk_cursor_new_from_name (display, "progress");
+            gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (nautilus_files_view_get_window (view))),
+                                   cursor);
+            g_object_unref (cursor);
 
             dialog = nautilus_batch_rename_dialog_new (selection,
                                                        nautilus_files_view_get_model (view),
-                                                       window);
+                                                       nautilus_files_view_get_window (view));
 
             gtk_widget_show (GTK_WIDGET (dialog));
         }
@@ -6314,7 +6319,7 @@ on_extract_destination_dialog_response (GtkDialog *dialog,
         extract_files (data->view, data->files, destination_directory);
     }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
     nautilus_file_list_free (data->files);
     g_free (data);
 }
@@ -6343,6 +6348,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
                                           _("_Cancel"), GTK_RESPONSE_CANCEL,
                                           _("_Select"), GTK_RESPONSE_OK,
                                           NULL);
+    gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
 
     gtk_dialog_set_default_response (GTK_DIALOG (dialog),
                                      GTK_RESPONSE_OK);
@@ -6368,7 +6374,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
         location = nautilus_directory_get_location (priv->model);
     }
 
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
+    gtk_file_chooser_set_current_folder_file (GTK_FILE_CHOOSER (dialog), location, NULL);
 
     data->view = view;
     data->files = nautilus_file_list_copy (files);
@@ -6377,7 +6383,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
                       G_CALLBACK (on_extract_destination_dialog_response),
                       data);
 
-    gtk_widget_show (dialog);
+    gtk_widget_show_all (dialog);
 }
 
 static void
@@ -8263,13 +8269,12 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
 
     if (NULL == priv->selection_menu)
     {
-        priv->selection_menu = gtk_popover_menu_new_from_model (NULL);
-        gtk_widget_set_parent (priv->selection_menu, GTK_WIDGET (view));
-        g_signal_connect (priv->selection_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
+        priv->selection_menu = gtk_popover_new (GTK_WIDGET (view));
     }
 
-    gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->selection_menu),
-                                     G_MENU_MODEL (priv->selection_menu_model));
+    gtk_popover_bind_model (GTK_POPOVER (priv->selection_menu),
+                            G_MENU_MODEL (priv->selection_menu_model),
+                            NULL);
     if (x == -1 && y == -1)
     {
         /* If triggered from the keyboard, popup at selection, not pointer */
@@ -8311,16 +8316,13 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-
     if (NULL == priv->background_menu)
     {
-        priv->background_menu = gtk_popover_menu_new_from_model (NULL);
-        gtk_widget_set_parent (priv->background_menu, GTK_WIDGET (view));
-        g_signal_connect (priv->background_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
+        priv->background_menu = gtk_popover_new (GTK_WIDGET (view));
     }
-    gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->background_menu),
-                                     G_MENU_MODEL (priv->background_menu_model));
-
+    gtk_popover_bind_model (GTK_POPOVER (priv->background_menu),
+                            G_MENU_MODEL (priv->background_menu_model),
+                            NULL);
     gtk_popover_set_pointing_to (GTK_POPOVER (priv->background_menu),
                                  &(GdkRectangle){x, y, 0, 0});
     gtk_popover_popup (GTK_POPOVER (priv->background_menu));
@@ -9116,29 +9118,71 @@ nautilus_files_view_set_property (GObject      *object,
 
 /* handle Ctrl+Scroll, which will cause a zoom-in/out */
 static gboolean
-on_scroll (GtkEventControllerScroll *scroll,
-           gdouble                   dx,
-           gdouble                   dy,
-           gpointer                  user_data)
+on_event (GtkWidget *widget,
+          GdkEvent  *event,
+          gpointer   user_data)
 {
     NautilusFilesView *directory_view;
+    static gdouble total_delta_y = 0;
     GdkModifierType state;
+    GdkScrollDirection direction;
+    gdouble delta_x, delta_y;
 
-    directory_view = NAUTILUS_FILES_VIEW (user_data);
+    directory_view = NAUTILUS_FILES_VIEW (widget);
 
-    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
-    if (state & GDK_CONTROL_MASK)
+    if (gdk_event_get_event_type (event) != GDK_SCROLL)
     {
-        if (dy <= -1)
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (!gdk_event_get_state (event, &state))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (!(state & GDK_CONTROL_MASK))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (gdk_event_get_scroll_direction (event, &direction))
+    {
+        if (direction == GDK_SCROLL_UP)
         {
             /* Zoom In */
             nautilus_files_view_bump_zoom_level (directory_view, 1);
             return GDK_EVENT_STOP;
         }
-        else if (dy >= 1)
+        else if (direction == GDK_SCROLL_DOWN)
         {
             /* Zoom Out */
             nautilus_files_view_bump_zoom_level (directory_view, -1);
+            return GDK_EVENT_STOP;
+        }
+    }
+
+    if (gdk_event_get_scroll_deltas (event, &delta_x, &delta_y))
+    {
+        /* try to emulate a normal scrolling event by summing deltas */
+        total_delta_y += delta_y;
+
+        if (total_delta_y >= 1)
+        {
+            total_delta_y = 0;
+            /* emulate scroll down */
+            nautilus_files_view_bump_zoom_level (directory_view, -1);
+            return GDK_EVENT_STOP;
+        }
+        else if (total_delta_y <= -1)
+        {
+            total_delta_y = 0;
+            /* emulate scroll up */
+            nautilus_files_view_bump_zoom_level (directory_view, 1);
+            return GDK_EVENT_STOP;
+        }
+        else
+        {
+            /* eat event */
             return GDK_EVENT_STOP;
         }
     }
@@ -9464,7 +9508,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 #endif
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
-    GtkEventController *controller;
     gchar *templates_uri;
 #if 0 && NAUTILUS_CLIPBOARD_NEEDS_GTK4_REIMPLEMENTATION
     GtkClipboard *clipboard;
@@ -9551,18 +9594,24 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_grid_attach_next_to (GTK_GRID (view), priv->overlay, NULL, GTK_POS_BOTTOM, 1, 1);
     gtk_widget_show (priv->overlay);
 
+    /* NautilusFloatingBar listen to its parent's 'event' signal
+     * and GtkOverlay doesn't have it enabled by default, so we have to add them
+     * here.
+     */
+    gtk_widget_add_events (GTK_WIDGET (priv->overlay),
+                           GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK);
+
     /* Scrolled Window */
-    priv->scrolled_window = gtk_scrolled_window_new ();
+    priv->scrolled_window = gtk_scrolled_window_new (NULL, NULL);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (priv->scrolled_window),
                                     GTK_POLICY_AUTOMATIC,
                                     GTK_POLICY_AUTOMATIC);
     gtk_widget_show (priv->scrolled_window);
 
-    controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
-                                                  GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
-    gtk_widget_add_controller (priv->scrolled_window, controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
-    g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), view);
+    g_signal_connect_swapped (priv->scrolled_window,
+                              "event",
+                              G_CALLBACK (on_event),
+                              view);
 
     gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), priv->scrolled_window);
 
@@ -9570,25 +9619,33 @@ nautilus_files_view_init (NautilusFilesView *view)
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
     priv->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->no_search_results_widget);
-    gtk_widget_set_can_target (priv->no_search_results_widget, FALSE);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->no_search_results_widget,
+                                          TRUE);
     g_object_unref (builder);
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-folder-is-empty.ui");
     priv->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->folder_is_empty_widget);
-    gtk_widget_set_can_target (priv->folder_is_empty_widget, FALSE);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->folder_is_empty_widget,
+                                          TRUE);
     g_object_unref (builder);
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-starred-is-empty.ui");
     priv->starred_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "starred_is_empty"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->starred_is_empty_widget);
-    gtk_widget_set_can_target (priv->starred_is_empty_widget, FALSE);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->starred_is_empty_widget,
+                                          TRUE);
     g_object_unref (builder);
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-trash-is-empty.ui");
     priv->trash_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "trash_is_empty"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->trash_is_empty_widget);
-    gtk_widget_set_can_target (priv->trash_is_empty_widget, FALSE);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->trash_is_empty_widget,
+                                          TRUE);
     g_object_unref (builder);
 
     /* Floating bar */

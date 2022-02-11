@@ -63,6 +63,8 @@ struct _NautilusBatchRenameDialog
     GList *listbox_icons;
     GtkSizeGroup *size_group;
 
+    GList *motion_controllers;
+
     GList *selection;
     GList *new_names;
     NautilusBatchRenameDialogMode mode;
@@ -427,14 +429,14 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
-        entry_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry)));
+        entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->find_entry)));
     }
     else
     {
-        entry_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->name_entry)));
+        entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->name_entry)));
     }
 
-    replace_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->replace_entry)));
+    replace_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->replace_entry)));
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
@@ -472,7 +474,7 @@ begin_batch_rename (NautilusBatchRenameDialog *dialog,
     /* do the actual rename here */
     nautilus_file_batch_rename (dialog->selection, new_names, NULL, NULL);
 
-    gtk_widget_set_cursor (GTK_WIDGET (dialog->window), NULL);
+    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog->window)), NULL);
 }
 
 static void
@@ -582,7 +584,7 @@ create_original_name_label (NautilusBatchRenameDialog *dialog,
 
     dialog->listbox_labels_old = g_list_prepend (dialog->listbox_labels_old, label_old);
 
-    gtk_widget_show (label_old);
+    gtk_widget_show_all (label_old);
 
     return label_old;
 }
@@ -601,7 +603,7 @@ create_result_label (NautilusBatchRenameDialog *dialog,
 
     dialog->listbox_labels_new = g_list_prepend (dialog->listbox_labels_new, label_new);
 
-    gtk_widget_show (label_new);
+    gtk_widget_show_all (label_new);
 
     return label_new;
 }
@@ -627,7 +629,7 @@ create_arrow (NautilusBatchRenameDialog *dialog,
 
     dialog->listbox_icons = g_list_prepend (dialog->listbox_icons, icon);
 
-    gtk_widget_show (icon);
+    gtk_widget_show_all (icon);
 
     return icon;
 }
@@ -635,6 +637,9 @@ create_arrow (NautilusBatchRenameDialog *dialog,
 static void
 prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 {
+    GdkCursor *cursor;
+    GdkDisplay *display;
+
     /* wait for checking conflicts to finish, to be sure that
      * the rename can actually take place */
     if (dialog->directories_pending_conflict_check != NULL)
@@ -648,14 +653,22 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
         return;
     }
 
-    gtk_widget_set_cursor_from_name (GTK_WIDGET (dialog->window), "progress");
+    display = gtk_widget_get_display (GTK_WIDGET (dialog->window));
+    cursor = gdk_cursor_new_from_name (display, "progress");
+    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog->window)),
+                           cursor);
+    g_object_unref (cursor);
 
-    gtk_widget_set_cursor_from_name (GTK_WIDGET (dialog), "progress");
+    display = gtk_widget_get_display (GTK_WIDGET (dialog));
+    cursor = gdk_cursor_new_from_name (display, "progress");
+    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog)),
+                           cursor);
+    g_object_unref (cursor);
 
     gtk_widget_hide (GTK_WIDGET (dialog));
     begin_batch_rename (dialog, dialog->new_names);
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
@@ -674,7 +687,7 @@ batch_rename_dialog_on_response (NautilusBatchRenameDialog *dialog,
             cancel_conflict_check (dialog);
         }
 
-        gtk_window_destroy (GTK_WINDOW (dialog));
+        gtk_widget_destroy (GTK_WIDGET (dialog));
     }
 }
 
@@ -926,7 +939,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         else
         {
             new_name = batch_rename_replace_label_text (old_name,
-                                                        gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry)));
+                                                        gtk_entry_get_text (GTK_ENTRY (dialog->find_entry)));
             gtk_label_set_markup (GTK_LABEL (label), new_name->str);
 
             g_string_free (new_name, TRUE);
@@ -1214,11 +1227,11 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
     {
-        entry_text = gtk_editable_get_text (GTK_EDITABLE (dialog->name_entry));
+        entry_text = gtk_entry_get_text (GTK_ENTRY (dialog->name_entry));
     }
     else
     {
-        entry_text = gtk_editable_get_text (GTK_EDITABLE (dialog->replace_entry));
+        entry_text = gtk_entry_get_text (GTK_ENTRY (dialog->replace_entry));
     }
 
     if (strstr (entry_text, "/") != NULL)
@@ -1373,7 +1386,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
 static void
 batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
 {
-    if (gtk_check_button_get_active (GTK_CHECK_BUTTON (dialog->format_mode_button)))
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->format_mode_button)))
     {
         gtk_stack_set_visible_child_name (GTK_STACK (dialog->mode_stack), "format");
 
@@ -1846,6 +1859,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     nautilus_directory_list_free (dialog->distinct_parent_directories);
 
     g_object_unref (dialog->size_group);
+    g_clear_list (&dialog->motion_controllers, g_object_unref);
 
     g_hash_table_destroy (dialog->tag_info_table);
 
@@ -1980,7 +1994,7 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     fill_display_listbox (dialog);
 
-    gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
+    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), NULL);
 
     g_string_free (dialog_title, TRUE);
 
@@ -1993,13 +2007,15 @@ connect_to_pointer_motion_events (NautilusBatchRenameDialog *self,
 {
     GtkEventController *controller;
 
-    controller = gtk_event_controller_motion_new ();
-    gtk_widget_add_controller (listbox, controller);
+    controller = gtk_event_controller_motion_new (listbox);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "leave",
                       G_CALLBACK (on_event_controller_motion_leave), self);
     g_signal_connect (controller, "motion",
                       G_CALLBACK (on_event_controller_motion_motion), self);
+
+    self->motion_controllers = g_list_prepend (self->motion_controllers,
+                                               controller);
 }
 
 static void

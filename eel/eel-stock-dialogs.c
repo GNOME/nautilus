@@ -101,7 +101,7 @@ timed_wait_delayed_close_timeout_callback (gpointer callback_data)
                                           G_CALLBACK (timed_wait_delayed_close_destroy_dialog_callback),
                                           GUINT_TO_POINTER (handler_id));
 
-    gtk_window_destroy (GTK_WINDOW (callback_data));
+    gtk_widget_destroy (GTK_WIDGET (callback_data));
 
     return FALSE;
 }
@@ -151,7 +151,7 @@ timed_wait_free (TimedWait *wait)
         }
         else
         {
-            gtk_window_destroy (GTK_WINDOW (wait->dialog));
+            gtk_widget_destroy (GTK_WIDGET (wait->dialog));
         }
     }
 
@@ -187,7 +187,7 @@ trash_dialog_response_callback (GtkDialog *dialog,
                                 int        response_id,
                                 TimedWait *wait)
 {
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static gboolean
@@ -334,7 +334,7 @@ eel_show_simple_dialog (GtkWidget     *parent,
     chosen_parent = NULL;
     if (parent != NULL)
     {
-        top_widget = GTK_WIDGET (gtk_widget_get_root (parent));
+        top_widget = gtk_widget_get_toplevel (parent);
         if (GTK_IS_WINDOW (top_widget))
         {
             chosen_parent = top_widget;
@@ -368,7 +368,7 @@ eel_show_simple_dialog (GtkWidget     *parent,
     }
     va_end (button_title_args);
 
-    gtk_widget_show (dialog);
+    gtk_widget_show_all (dialog);
 
     return GTK_DIALOG (dialog);
 }
@@ -414,7 +414,7 @@ show_message_dialog (const char     *primary_text,
     gtk_widget_show (GTK_WIDGET (dialog));
 
     g_signal_connect (dialog, "response",
-                      G_CALLBACK (gtk_window_destroy), NULL);
+                      G_CALLBACK (gtk_widget_destroy), NULL);
 
     return dialog;
 }

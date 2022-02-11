@@ -23,8 +23,9 @@ NautilusIconInfo *    nautilus_icon_info_lookup                       (GIcon    
 								       int                size,
 								       int                scale);
 gboolean              nautilus_icon_info_is_fallback                  (NautilusIconInfo  *icon);
-GdkPaintable *        nautilus_icon_info_get_paintable                (NautilusIconInfo  *icon);
-GdkTexture *          nautilus_icon_info_get_texture                  (NautilusIconInfo  *icon);
+GdkPixbuf *           nautilus_icon_info_get_pixbuf                   (NautilusIconInfo  *icon);
+GdkPixbuf *           nautilus_icon_info_get_pixbuf_at_size           (NautilusIconInfo  *icon,
+								       gsize              forced_size);
 const char *          nautilus_icon_info_get_used_name                (NautilusIconInfo  *icon);
 
 void                  nautilus_icon_info_clear_caches                 (void);

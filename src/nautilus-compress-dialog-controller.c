@@ -19,7 +19,7 @@
 
 #include <glib/gi18n.h>
 #include <gnome-autoar/gnome-autoar.h>
-#include <libadwaita-1/adwaita.h>
+#include <libhandy-1/handy.h>
 
 #include <eel/eel-vfs-extensions.h>
 
@@ -203,7 +203,7 @@ update_selected_format (NautilusCompressDialogController *self,
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
     if (!show_passphrase)
     {
-        gtk_editable_set_text (GTK_EDITABLE (self->passphrase_entry), "");
+        gtk_entry_set_text (GTK_ENTRY (self->passphrase_entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_entry), FALSE);
         gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_entry),
                                            GTK_ENTRY_ICON_SECONDARY,
@@ -213,11 +213,21 @@ update_selected_format (NautilusCompressDialogController *self,
     gtk_stack_set_visible_child (GTK_STACK (self->extension_stack),
                                  active_label);
 
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->zip_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->encrypted_zip_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->tar_xz_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (self->seven_zip_checkmark), NULL);
-    gtk_image_set_from_icon_name (GTK_IMAGE (active_checkmark), "object-select-symbolic");
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->zip_checkmark),
+                                  NULL,
+                                  GTK_ICON_SIZE_BUTTON);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->encrypted_zip_checkmark),
+                                  NULL,
+                                  GTK_ICON_SIZE_BUTTON);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->tar_xz_checkmark),
+                                  NULL,
+                                  GTK_ICON_SIZE_BUTTON);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->seven_zip_checkmark),
+                                  NULL,
+                                  GTK_ICON_SIZE_BUTTON);
+    gtk_image_set_from_icon_name (GTK_IMAGE (active_checkmark),
+                                  "object-select-symbolic",
+                                  GTK_ICON_SIZE_BUTTON);
 
     g_settings_set_enum (nautilus_compression_preferences,
                          NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT,
@@ -230,7 +240,7 @@ update_selected_format (NautilusCompressDialogController *self,
 }
 
 static void
-zip_row_on_activated (AdwActionRow *row,
+zip_row_on_activated (HdyActionRow *row,
                       gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
@@ -243,7 +253,7 @@ zip_row_on_activated (AdwActionRow *row,
 }
 
 static void
-encrypted_zip_row_on_activated (AdwActionRow *row,
+encrypted_zip_row_on_activated (HdyActionRow *row,
                                 gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
@@ -256,7 +266,7 @@ encrypted_zip_row_on_activated (AdwActionRow *row,
 }
 
 static void
-tar_xz_row_on_activated (AdwActionRow *row,
+tar_xz_row_on_activated (HdyActionRow *row,
                          gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
@@ -269,7 +279,7 @@ tar_xz_row_on_activated (AdwActionRow *row,
 }
 
 static void
-seven_zip_row_on_activated (AdwActionRow *row,
+seven_zip_row_on_activated (HdyActionRow *row,
                             gpointer      user_data)
 {
     NautilusCompressDialogController *controller;
@@ -291,7 +301,7 @@ passphrase_entry_on_changed (GtkEditable *editable,
     self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
 
     g_free (self->passphrase);
-    self->passphrase = g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->passphrase_entry)));
+    self->passphrase = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->passphrase_entry)));
 
     /* Simulate a change of the name_entry to ensure the correct sensitivity of
      * the activate_button, but only if the name_entry is valid in order to
@@ -498,10 +508,10 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
     if (initial_name != NULL)
     {
-        gtk_editable_set_text (GTK_EDITABLE (name_entry), initial_name);
+        gtk_entry_set_text (GTK_ENTRY (name_entry), initial_name);
     }
 
-    gtk_widget_show (compress_dialog);
+    gtk_widget_show_all (compress_dialog);
 
     update_selected_format (self, format);
 
@@ -523,7 +533,7 @@ nautilus_compress_dialog_controller_finalize (GObject *object)
     if (self->compress_dialog != NULL)
     {
         g_clear_signal_handler (&self->response_handler_id, self->compress_dialog);
-        gtk_window_destroy (GTK_WINDOW (self->compress_dialog));
+        gtk_widget_destroy (self->compress_dialog);
         self->compress_dialog = NULL;
     }
 

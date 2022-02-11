@@ -19,7 +19,6 @@
 #include "config.h"
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include "nautilus-enum-types.h"
 
 #include <gio/gio.h>
 
@@ -43,6 +42,7 @@ struct _NautilusGtkPlacesViewRow
   GtkSpinner    *busy_spinner;
   GtkButton     *eject_button;
   GtkImage      *eject_icon;
+  GtkEventBox   *event_box;
   GtkImage      *icon_image;
   GtkLabel      *name_label;
   GtkLabel      *path_label;
@@ -53,7 +53,7 @@ struct _NautilusGtkPlacesViewRow
 
   GCancellable  *cancellable;
 
-  int            is_network : 1;
+  gint           is_network : 1;
 };
 
 G_DEFINE_TYPE (NautilusGtkPlacesViewRow, nautilus_gtk_places_view_row, GTK_TYPE_LIST_BOX_ROW)
@@ -82,9 +82,9 @@ measure_available_space_finished (GObject      *object,
   GError *error;
   guint64 free_space;
   guint64 total_space;
-  char *formatted_free_size;
-  char *formatted_total_size;
-  char *label;
+  gchar *formatted_free_size;
+  gchar *formatted_total_size;
+  gchar *label;
   guint plural_form;
 
   error = NULL;
@@ -210,13 +210,16 @@ nautilus_gtk_places_view_row_get_property (GObject    *object,
                                   GParamSpec *pspec)
 {
   NautilusGtkPlacesViewRow *self;
+  GIcon *icon;
 
   self = NAUTILUS_GTK_PLACES_VIEW_ROW (object);
+  icon = NULL;
 
   switch (prop_id)
     {
     case PROP_ICON:
-      g_value_set_object (value, gtk_image_get_gicon (self->icon_image));
+      gtk_image_get_gicon (self->icon_image, &icon, NULL);
+      g_value_set_object (value, icon);
       break;
 
     case PROP_NAME:
@@ -259,7 +262,9 @@ nautilus_gtk_places_view_row_set_property (GObject      *object,
   switch (prop_id)
     {
     case PROP_ICON:
-      gtk_image_set_from_gicon (self->icon_image, g_value_get_object (value));
+      gtk_image_set_from_gicon (self->icon_image,
+                                g_value_get_object (value),
+                                GTK_ICON_SIZE_LARGE_TOOLBAR);
       break;
 
     case PROP_NAME:
@@ -304,19 +309,6 @@ nautilus_gtk_places_view_row_set_property (GObject      *object,
 }
 
 static void
-nautilus_gtk_places_view_row_size_allocate (GtkWidget *widget,
-                                   int        width,
-                                   int        height,
-                                   int        baseline)
-{
-  GtkWidget *menu = GTK_WIDGET (g_object_get_data (G_OBJECT (widget), "menu"));
-
-  GTK_WIDGET_CLASS (nautilus_gtk_places_view_row_parent_class)->size_allocate (widget, width, height, baseline);
-  if (menu)
-    gtk_popover_present (GTK_POPOVER (menu));
-}
-
-static void
 nautilus_gtk_places_view_row_class_init (NautilusGtkPlacesViewRowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -325,8 +317,6 @@ nautilus_gtk_places_view_row_class_init (NautilusGtkPlacesViewRowClass *klass)
   object_class->finalize = nautilus_gtk_places_view_row_finalize;
   object_class->get_property = nautilus_gtk_places_view_row_get_property;
   object_class->set_property = nautilus_gtk_places_view_row_set_property;
-
-  widget_class->size_allocate = nautilus_gtk_places_view_row_size_allocate;
 
   properties[PROP_ICON] =
           g_param_spec_object ("icon",
@@ -386,6 +376,7 @@ nautilus_gtk_places_view_row_class_init (NautilusGtkPlacesViewRowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, busy_spinner);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, eject_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, eject_icon);
+  gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, event_box);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, icon_image);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, name_label);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, path_label);
@@ -439,6 +430,14 @@ nautilus_gtk_places_view_row_get_eject_button (NautilusGtkPlacesViewRow *row)
   return GTK_WIDGET (row->eject_button);
 }
 
+GtkWidget*
+nautilus_gtk_places_view_row_get_event_box (NautilusGtkPlacesViewRow *row)
+{
+  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_VIEW_ROW (row), NULL);
+
+  return GTK_WIDGET (row->event_box);
+}
+
 void
 nautilus_gtk_places_view_row_set_busy (NautilusGtkPlacesViewRow *row,
                               gboolean          is_busy)
@@ -449,12 +448,10 @@ nautilus_gtk_places_view_row_set_busy (NautilusGtkPlacesViewRow *row,
     {
       gtk_stack_set_visible_child (row->mount_stack, GTK_WIDGET (row->busy_spinner));
       gtk_widget_set_child_visible (GTK_WIDGET (row->mount_stack), TRUE);
-      gtk_spinner_start (row->busy_spinner);
     }
   else
     {
       gtk_widget_set_child_visible (GTK_WIDGET (row->mount_stack), FALSE);
-      gtk_spinner_stop (row->busy_spinner);
     }
 }
 
@@ -474,7 +471,7 @@ nautilus_gtk_places_view_row_set_is_network (NautilusGtkPlacesViewRow *row,
     {
       row->is_network = is_network;
 
-      gtk_image_set_from_icon_name (row->eject_icon, "media-eject-symbolic");
+      gtk_image_set_from_icon_name (row->eject_icon, "media-eject-symbolic", GTK_ICON_SIZE_BUTTON);
       gtk_widget_set_tooltip_text (GTK_WIDGET (row->eject_button), is_network ? _("Disconnect") : _("Unmount"));
     }
 }

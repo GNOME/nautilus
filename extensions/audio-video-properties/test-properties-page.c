@@ -38,7 +38,7 @@ create_props (const char *url)
 	props = totem_properties_view_new (url, label);
 	gtk_container_add (GTK_CONTAINER (window), props);
 
-	gtk_widget_show (window);
+	gtk_widget_show_all (window);
 }
 
 static void
@@ -58,7 +58,7 @@ int main (int argc, char **argv)
 
 	totem_gst_disable_display_decoders ();
 	gst_init (&argc, &argv);
-	gtk_init ();
+	gtk_init (&argc, &argv);
 
 	if (argc != 2) {
 		g_print ("Usage: %s [URI]\n", argv[0]);

@@ -276,7 +276,7 @@ bacon_video_widget_properties_new (void)
 
 	g_object_unref (group);
 
-	gtk_widget_show (GTK_WIDGET (props));
+	gtk_widget_show_all (GTK_WIDGET (props));
 
 	return GTK_WIDGET (props);
 }

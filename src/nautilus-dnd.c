@@ -27,6 +27,7 @@
 #include "nautilus-dnd.h"
 
 #include "nautilus-program-choosing.h"
+#include "nautilus-gtk4-helpers.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -413,7 +414,7 @@ nautilus_drag_get_source_data (GdkDragContext *context)
         NautilusWindowSlot *active_slot;
         NautilusView *view;
 
-        window = NAUTILUS_WINDOW (gtk_widget_get_root (source_widget));
+        window = NAUTILUS_WINDOW (gtk_widget_get_toplevel (source_widget));
         active_slot = nautilus_window_get_active_slot (window);
         view = nautilus_window_slot_get_current_view (active_slot);
         if (NAUTILUS_IS_LIST_VIEW (view))
