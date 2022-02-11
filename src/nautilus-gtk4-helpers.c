@@ -125,14 +125,6 @@ gtk_widget_get_first_child (GtkWidget *widget)
 }
 
 GtkWidget *
-gtk_widget_get_focus_child (GtkWidget *widget)
-{
-    g_assert (GTK_IS_CONTAINER (widget));
-
-    return gtk_container_get_focus_child (GTK_CONTAINER (widget));
-}
-
-GtkWidget *
 gtk_scrolled_window_get_child (GtkScrolledWindow *scrolled)
 {
     g_assert (GTK_IS_SCROLLED_WINDOW (scrolled));
