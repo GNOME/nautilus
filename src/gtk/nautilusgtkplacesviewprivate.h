@@ -22,7 +22,7 @@
 #if !defined (__GTK_H_INSIDE__) && !defined (GTK_COMPILATION)
 #endif
 
-#include "nautilusgtkplacessidebarprivate.h"
+#include "nautilusgtkplacessidebar.h"
 
 G_BEGIN_DECLS
 
@@ -35,6 +35,30 @@ G_BEGIN_DECLS
 
 typedef struct _NautilusGtkPlacesView NautilusGtkPlacesView;
 typedef struct _NautilusGtkPlacesViewClass NautilusGtkPlacesViewClass;
+typedef struct _NautilusGtkPlacesViewPrivate NautilusGtkPlacesViewPrivate;
+
+struct _NautilusGtkPlacesViewClass
+{
+  GtkBoxClass parent_class;
+
+  void     (* open_location)        (NautilusGtkPlacesView          *view,
+                                     GFile                  *location,
+                                     NautilusGtkPlacesOpenFlags  open_flags);
+
+  void    (* show_error_message)     (NautilusGtkPlacesSidebar      *sidebar,
+                                      const gchar           *primary,
+                                      const gchar           *secondary);
+
+  /*< private >*/
+
+  /* Padding for future expansion */
+  gpointer reserved[10];
+};
+
+struct _NautilusGtkPlacesView
+{
+  GtkBox parent_instance;
+};
 
 GType              nautilus_gtk_places_view_get_type                      (void) G_GNUC_CONST;
 
@@ -42,9 +66,14 @@ NautilusGtkPlacesOpenFlags nautilus_gtk_places_view_get_open_flags              
 void               nautilus_gtk_places_view_set_open_flags                (NautilusGtkPlacesView      *view,
                                                                   NautilusGtkPlacesOpenFlags  flags);
 
-const char *       nautilus_gtk_places_view_get_search_query              (NautilusGtkPlacesView      *view);
+const gchar*       nautilus_gtk_places_view_get_search_query              (NautilusGtkPlacesView      *view);
 void               nautilus_gtk_places_view_set_search_query              (NautilusGtkPlacesView      *view,
-                                                                  const char         *query_text);
+                                                                  const gchar        *query_text);
+
+gboolean           nautilus_gtk_places_view_get_local_only                (NautilusGtkPlacesView         *view);
+
+void               nautilus_gtk_places_view_set_local_only                (NautilusGtkPlacesView         *view,
+                                                                  gboolean               local_only);
 
 gboolean           nautilus_gtk_places_view_get_loading                   (NautilusGtkPlacesView         *view);
 

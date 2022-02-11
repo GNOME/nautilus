@@ -24,7 +24,7 @@
 #pragma once
 
 #include <gtk/gtk.h>
-#include <libadwaita-1/adwaita.h>
+#include <libhandy-1/handy.h>
 
 #include "nautilus-window-slot.h"
 
@@ -32,7 +32,7 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_TOOLBAR nautilus_toolbar_get_type()
 
-G_DECLARE_FINAL_TYPE (NautilusToolbar, nautilus_toolbar, NAUTILUS, TOOLBAR, AdwBin)
+G_DECLARE_FINAL_TYPE (NautilusToolbar, nautilus_toolbar, NAUTILUS, TOOLBAR, GtkBin)
 
 GtkWidget *nautilus_toolbar_new (void);
 

@@ -34,6 +34,8 @@ GtkWidget*         nautilus_gtk_places_view_row_new                       (GVolu
 
 GtkWidget*         nautilus_gtk_places_view_row_get_eject_button          (NautilusGtkPlacesViewRow   *row);
 
+GtkWidget*         nautilus_gtk_places_view_row_get_event_box             (NautilusGtkPlacesViewRow   *row);
+
 GMount*            nautilus_gtk_places_view_row_get_mount                 (NautilusGtkPlacesViewRow   *row);
 
 GVolume*           nautilus_gtk_places_view_row_get_volume                (NautilusGtkPlacesViewRow   *row);

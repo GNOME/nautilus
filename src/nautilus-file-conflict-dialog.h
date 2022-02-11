@@ -38,8 +38,8 @@ void nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
                                              gchar *primary_text,
                                              gchar *secondary_text);
 void nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
-                                               GdkPaintable *source_paintable,
-                                               GdkPaintable *destination_paintable);
+                                               GdkPixbuf *source_pixbuf,
+                                               GdkPixbuf *destination_pixbuf);
 void nautilus_file_conflict_dialog_set_file_labels (NautilusFileConflictDialog *fcd,
                                                     gchar *destination_label,
                                                     gchar *source_label);

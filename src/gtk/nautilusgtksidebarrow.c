@@ -19,14 +19,14 @@
 #include "config.h"
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include "nautilus-enum-types.h"
 
 #include "nautilusgtksidebarrowprivate.h"
 /* For section and place type enums */
 #include "nautilusgtkplacessidebarprivate.h"
+#include "nautilusgtkplacessidebar.h"
 
 #ifdef HAVE_CLOUDPROVIDERS
-#include <cloudproviders.h>
+#include <cloudproviders/cloudprovidersaccount.h>
 #endif
 
 struct _NautilusGtkSidebarRow
@@ -36,21 +36,22 @@ struct _NautilusGtkSidebarRow
   GIcon *end_icon;
   GtkWidget *start_icon_widget;
   GtkWidget *end_icon_widget;
-  char *label;
-  char *tooltip;
+  gchar *label;
+  gchar *tooltip;
   GtkWidget *label_widget;
   gboolean ejectable;
   GtkWidget *eject_button;
-  int order_index;
-  NautilusGtkPlacesSectionType section_type;
-  NautilusGtkPlacesPlaceType place_type;
-  char *uri;
+  gint order_index;
+  NautilusGtkPlacesSidebarSectionType section_type;
+  NautilusGtkPlacesSidebarPlaceType place_type;
+  gchar *uri;
   GDrive *drive;
   GVolume *volume;
   GMount *mount;
   GObject *cloud_provider_account;
   gboolean placeholder;
   NautilusGtkPlacesSidebar *sidebar;
+  GtkWidget *event_box;
   GtkWidget *revealer;
   GtkWidget *busy_spinner;
 };
@@ -87,7 +88,7 @@ cloud_row_update (NautilusGtkSidebarRow *self)
 {
   CloudProvidersAccount *account;
   GIcon *end_icon;
-  int provider_status;
+  gint provider_status;
 
   account = CLOUD_PROVIDERS_ACCOUNT (self->cloud_provider_account);
   provider_status = cloud_providers_account_get_status (account);
@@ -164,11 +165,11 @@ nautilus_gtk_sidebar_row_get_property (GObject    *object,
       break;
 
     case PROP_SECTION_TYPE:
-      g_value_set_enum (value, self->section_type);
+      g_value_set_int (value, self->section_type);
       break;
 
     case PROP_PLACE_TYPE:
-      g_value_set_enum (value, self->place_type);
+      g_value_set_int (value, self->place_type);
       break;
 
     case PROP_URI:
@@ -207,6 +208,7 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
                               GParamSpec   *pspec)
 {
   NautilusGtkSidebarRow *self = NAUTILUS_GTK_SIDEBAR_ROW (object);
+  GtkStyleContext *context;
 
   switch (prop_id)
     {
@@ -221,7 +223,9 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
         if (object != NULL)
           {
             self->start_icon = G_ICON (g_object_ref (object));
-            gtk_image_set_from_gicon (GTK_IMAGE (self->start_icon_widget), self->start_icon);
+            gtk_image_set_from_gicon (GTK_IMAGE (self->start_icon_widget),
+                                      self->start_icon,
+                                      GTK_ICON_SIZE_MENU);
           }
         else
           {
@@ -237,7 +241,9 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
         if (object != NULL)
           {
             self->end_icon = G_ICON (g_object_ref (object));
-            gtk_image_set_from_gicon (GTK_IMAGE (self->end_icon_widget), self->end_icon);
+            gtk_image_set_from_gicon (GTK_IMAGE (self->end_icon_widget),
+                                      self->end_icon,
+                                      GTK_ICON_SIZE_MENU);
             gtk_widget_show (self->end_icon_widget);
           }
         else
@@ -273,16 +279,16 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
       break;
 
     case PROP_SECTION_TYPE:
-      self->section_type = g_value_get_enum (value);
-      if (self->section_type == NAUTILUS_GTK_PLACES_SECTION_COMPUTER ||
-          self->section_type == NAUTILUS_GTK_PLACES_SECTION_OTHER_LOCATIONS)
+      self->section_type = g_value_get_int (value);
+      if (self->section_type == SECTION_COMPUTER ||
+          self->section_type == SECTION_OTHER_LOCATIONS)
         gtk_label_set_ellipsize (GTK_LABEL (self->label_widget), PANGO_ELLIPSIZE_NONE);
       else
         gtk_label_set_ellipsize (GTK_LABEL (self->label_widget), PANGO_ELLIPSIZE_END);
       break;
 
     case PROP_PLACE_TYPE:
-      self->place_type = g_value_get_enum (value);
+      self->place_type = g_value_get_int (value);
       break;
 
     case PROP_URI:
@@ -334,8 +340,8 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
             self->tooltip = NULL;
             gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
             self->ejectable = FALSE;
-            self->section_type = NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
-            self->place_type = NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER;
+            self->section_type = SECTION_BOOKMARKS;
+            self->place_type = PLACES_BOOKMARK_PLACEHOLDER;
             g_free (self->uri);
             self->uri = NULL;
             g_clear_object (&self->drive);
@@ -343,9 +349,12 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
             g_clear_object (&self->mount);
             g_clear_object (&self->cloud_provider_account);
 
-            gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (self), NULL);
+            gtk_container_foreach (GTK_CONTAINER (self),
+                                   (GtkCallback) gtk_widget_destroy,
+                                   NULL);
 
-            gtk_widget_add_css_class (GTK_WIDGET (self), "sidebar-placeholder-row");
+            context = gtk_widget_get_style_context (GTK_WIDGET (self));
+            gtk_style_context_add_class (context, "sidebar-placeholder-row");
           }
 
         break;
@@ -371,18 +380,18 @@ on_child_revealed (GObject    *self,
 void
 nautilus_gtk_sidebar_row_reveal (NautilusGtkSidebarRow *self)
 {
-  gtk_widget_show (GTK_WIDGET (self));
+  gtk_widget_show_all (GTK_WIDGET (self));
   gtk_revealer_set_reveal_child (GTK_REVEALER (self->revealer), TRUE);
 }
 
 void
 nautilus_gtk_sidebar_row_hide (NautilusGtkSidebarRow *self,
-                      gboolean       immediate)
+                      gboolean       inmediate)
 {
   guint transition_duration;
 
   transition_duration = gtk_revealer_get_transition_duration (GTK_REVEALER (self->revealer));
-  if (immediate)
+  if (inmediate)
       gtk_revealer_set_transition_duration (GTK_REVEALER (self->revealer), 0);
 
   gtk_revealer_set_reveal_child (GTK_REVEALER (self->revealer), FALSE);
@@ -400,7 +409,8 @@ nautilus_gtk_sidebar_row_set_start_icon (NautilusGtkSidebarRow *self,
     {
       g_set_object (&self->start_icon, icon);
       if (self->start_icon != NULL)
-        gtk_image_set_from_gicon (GTK_IMAGE (self->start_icon_widget), self->start_icon);
+        gtk_image_set_from_gicon (GTK_IMAGE (self->start_icon_widget), self->start_icon,
+                                  GTK_ICON_SIZE_MENU);
       else
         gtk_image_clear (GTK_IMAGE (self->start_icon_widget));
 
@@ -418,7 +428,8 @@ nautilus_gtk_sidebar_row_set_end_icon (NautilusGtkSidebarRow *self,
     {
       g_set_object (&self->end_icon, icon);
       if (self->end_icon != NULL)
-        gtk_image_set_from_gicon (GTK_IMAGE (self->end_icon_widget), self->end_icon);
+        gtk_image_set_from_gicon (GTK_IMAGE (self->end_icon_widget), self->end_icon,
+                                  GTK_ICON_SIZE_MENU);
       else
         if (self->end_icon_widget != NULL)
           gtk_image_clear (GTK_IMAGE (self->end_icon_widget));
@@ -456,8 +467,6 @@ static void
 nautilus_gtk_sidebar_row_init (NautilusGtkSidebarRow *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
-
-  gtk_widget_set_focus_on_click (GTK_WIDGET (self), FALSE);
 }
 
 static void
@@ -528,24 +537,22 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
                        G_PARAM_STATIC_STRINGS));
 
   properties [PROP_SECTION_TYPE] =
-    g_param_spec_enum ("section-type",
-                       "section type",
-                       "The section type.",
-                       NAUTILUS_TYPE_GTK_PLACES_SECTION_TYPE,
-                       NAUTILUS_GTK_PLACES_SECTION_INVALID,
-                       (G_PARAM_READWRITE |
-                        G_PARAM_STATIC_STRINGS |
-                        G_PARAM_CONSTRUCT_ONLY));
+    g_param_spec_int ("section-type",
+                      "section type",
+                      "The section type.",
+                      SECTION_INVALID, N_SECTIONS, SECTION_INVALID,
+                      (G_PARAM_READWRITE |
+                       G_PARAM_STATIC_STRINGS |
+                       G_PARAM_CONSTRUCT_ONLY));
 
   properties [PROP_PLACE_TYPE] =
-    g_param_spec_enum ("place-type",
-                       "place type",
-                       "The place type.",
-                       NAUTILUS_TYPE_GTK_PLACES_PLACE_TYPE,
-                       NAUTILUS_GTK_PLACES_INVALID,
-                       (G_PARAM_READWRITE |
-                        G_PARAM_STATIC_STRINGS |
-                        G_PARAM_CONSTRUCT_ONLY));
+    g_param_spec_int ("place-type",
+                      "place type",
+                      "The place type.",
+                      PLACES_INVALID, N_PLACES, PLACES_INVALID,
+                      (G_PARAM_READWRITE |
+                       G_PARAM_STATIC_STRINGS |
+                       G_PARAM_CONSTRUCT_ONLY));
 
   properties [PROP_URI] =
     g_param_spec_string ("uri",
@@ -609,6 +616,7 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, end_icon_widget);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, label_widget);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, eject_button);
+  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, event_box);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, revealer);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, busy_spinner);
 
@@ -641,6 +649,12 @@ GtkWidget*
 nautilus_gtk_sidebar_row_get_eject_button (NautilusGtkSidebarRow *self)
 {
   return self->eject_button;
+}
+
+GtkWidget*
+nautilus_gtk_sidebar_row_get_event_box (NautilusGtkSidebarRow *self)
+{
+  return self->event_box;
 }
 
 void

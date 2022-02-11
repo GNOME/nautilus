@@ -27,7 +27,7 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <libadwaita-1/adwaita.h>
+#include <libhandy-1/handy.h>
 
 #include <glib/gi18n.h>
 
@@ -74,7 +74,7 @@ static GtkWidget *preferences_window = NULL;
 static void list_store_append_string (GListStore  *list_store,
                                       const gchar *string)
 {
-    g_autoptr (GtkStringObject) obj = gtk_string_object_new (string);
+    g_autoptr (HdyValueObject) obj = hdy_value_object_new_string (string);
     g_list_store_append (list_store, obj);
 }
 
@@ -84,10 +84,10 @@ static void free_column_names_array(GPtrArray *column_names)
     g_ptr_array_free (column_names, TRUE);
 }
 
-static void create_icon_caption_combo_row_items(AdwComboRow *combo_row,
+static void create_icon_caption_combo_row_items(HdyComboRow *combo_row,
                                                 GList       *columns)
 {
-    GListStore *list_store = g_list_store_new (GTK_TYPE_STRING_OBJECT);
+    GListStore *list_store = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
     GList *l;
     GPtrArray *column_names;
 
@@ -120,12 +120,14 @@ static void create_icon_caption_combo_row_items(AdwComboRow *combo_row,
 
         g_free (label);
     }
-    adw_combo_row_set_model (combo_row, G_LIST_MODEL (list_store));
+    hdy_combo_row_bind_name_model (combo_row, G_LIST_MODEL (list_store),
+                                   (HdyComboRowGetNameFunc) hdy_value_object_dup_string,
+                                   NULL, NULL);
     g_object_set_data_full (G_OBJECT (combo_row), "column_names", column_names,
                             (GDestroyNotify) free_column_names_array);
 }
 
-static void icon_captions_changed_callback(AdwComboRow *widget,
+static void icon_captions_changed_callback(HdyComboRow *widget,
                                            GParamSpec  *pspec,
                                            gpointer     user_data)
 {
@@ -146,7 +148,7 @@ static void icon_captions_changed_callback(AdwComboRow *widget,
 
         combo_row = GTK_WIDGET (
             gtk_builder_get_object (builder, icon_captions_components[i]));
-        selected_index = adw_combo_row_get_selected (ADW_COMBO_ROW (combo_row));
+        selected_index = hdy_combo_row_get_selected_index (HDY_COMBO_ROW (combo_row));
 
         column_names = g_object_get_data (G_OBJECT (combo_row), "column_names");
 
@@ -180,7 +182,7 @@ static void update_caption_combo_row(GtkBuilder *builder,
     {
         if (!strcmp (name, g_ptr_array_index (column_names, i)))
         {
-            adw_combo_row_set_selected (ADW_COMBO_ROW (combo_row), i);
+            hdy_combo_row_set_selected_index (HDY_COMBO_ROW (combo_row), i);
             break;
         }
     }
@@ -240,11 +242,11 @@ nautilus_preferences_window_setup_icon_caption_page (GtkBuilder *builder)
         combo_row = GTK_WIDGET (
             gtk_builder_get_object (builder, icon_captions_components[i]));
 
-        create_icon_caption_combo_row_items (ADW_COMBO_ROW (combo_row), columns);
+        create_icon_caption_combo_row_items (HDY_COMBO_ROW (combo_row), columns);
         gtk_widget_set_sensitive (combo_row, writable);
 
         g_signal_connect_data (
-            combo_row, "notify::selected", G_CALLBACK (icon_captions_changed_callback),
+            combo_row, "notify::selected-index", G_CALLBACK (icon_captions_changed_callback),
             g_object_ref (builder), (GClosureNotify) g_object_unref, 0);
     }
 
@@ -300,7 +302,7 @@ static void bind_builder_combo_row(GtkBuilder  *builder,
                                    const char **values)
 {
     g_settings_bind_with_mapping (settings, prefs, gtk_builder_get_object (builder, widget_name),
-                                  "selected", G_SETTINGS_BIND_DEFAULT,
+                                  "selected-index", G_SETTINGS_BIND_DEFAULT,
                                   combo_row_mapping_get, combo_row_mapping_set,
                                   (gpointer) values, NULL);
 }
@@ -309,20 +311,20 @@ static void setup_combo (GtkBuilder  *builder,
                          const char  *widget_name,
                          const char **strings)
 {
-    AdwComboRow *combo_row;
+    HdyComboRow *combo_row;
     GListStore *list_store;
 
-    combo_row = (AdwComboRow *) gtk_builder_get_object (builder, widget_name);
-    g_assert (ADW_IS_COMBO_ROW (combo_row));
+    combo_row = (HdyComboRow *) gtk_builder_get_object (builder, widget_name);
+    g_assert (HDY_IS_COMBO_ROW (combo_row));
 
-    list_store = g_list_store_new (GTK_TYPE_STRING_OBJECT);
+    list_store = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
 
     for (gsize i = 0; strings[i]; i++)
     {
         list_store_append_string (list_store, strings[i]);
     }
 
-    adw_combo_row_set_model (combo_row, G_LIST_MODEL (list_store));
+    hdy_combo_row_bind_name_model (combo_row, G_LIST_MODEL (list_store), (HdyComboRowGetNameFunc) hdy_value_object_dup_string, NULL, NULL);
 }
 
 static void nautilus_preferences_window_setup(GtkBuilder *builder,

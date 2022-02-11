@@ -24,26 +24,31 @@
 #include "config.h"
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include "nautilus-enum-types.h"
 
 #include <gio/gio.h>
 #ifdef HAVE_CLOUDPROVIDERS
-#include <cloudproviders.h>
+#include <cloudproviders/cloudproviderscollector.h>
+#include <cloudproviders/cloudprovidersaccount.h>
+#include <cloudproviders/cloudprovidersprovider.h>
 #endif
 
 #include "nautilusgtkplacessidebarprivate.h"
 #include "nautilusgtksidebarrowprivate.h"
 #include "gdk/gdkkeysyms.h"
-#include "nautilusgtkbookmarksmanagerprivate.h"
+#include "nautilusgtkbookmarksmanager.h"
+#include "nautilusgtkplacessidebar.h"
 #include "nautilus-trash-monitor.h"
 #pragma GCC diagnostic ignored "-Wshadow"
 
-/*< private >
- * NautilusGtkPlacesSidebar:
+/**
+ * SECTION:nautilusgtkplacessidebar
+ * @Short_description: Sidebar that displays frequently-used places in the file system
+ * @Title: NautilusGtkPlacesSidebar
+ * @See_also: #GtkFileChooser
  *
- * NautilusGtkPlacesSidebar is a widget that displays a list of frequently-used places in the
+ * #NautilusGtkPlacesSidebar is a widget that displays a list of frequently-used places in the
  * file system:  the user’s home directory, the user’s bookmarks, and volumes and drives.
- * This widget is used as a sidebar in GtkFileChooser and may be used by file managers
+ * This widget is used as a sidebar in #GtkFileChooser and may be used by file managers
  * and similar programs.
  *
  * The places sidebar displays drives and volumes, and will automatically mount
@@ -59,7 +64,7 @@
  * for a Clipart folder.  You can do this with nautilus_gtk_places_sidebar_add_shortcut().
  *
  * To make use of the places sidebar, an application at least needs to connect
- * to the NautilusGtkPlacesSidebar::open-location signal.  This is emitted when the
+ * to the #NautilusGtkPlacesSidebar::open-location signal.  This is emitted when the
  * user selects in the sidebar a location to open.  The application should also
  * call nautilus_gtk_places_sidebar_set_location() when it changes the currently-viewed
  * location.
@@ -90,15 +95,12 @@ typedef enum {
 } DropState;
 
 struct _NautilusGtkPlacesSidebar {
-  GtkWidget parent;
+  GtkScrolledWindow parent;
 
-  GtkWidget *swin;
   GtkWidget *list_box;
   GtkWidget *new_bookmark_row;
 
   NautilusGtkBookmarksManager     *bookmarks_manager;
-
-  GActionGroup *row_actions;
 
 #ifdef HAVE_CLOUDPROVIDERS
   CloudProvidersCollector *cloud_manager;
@@ -114,19 +116,25 @@ struct _NautilusGtkPlacesSidebar {
   GtkWidget *rename_entry;
   GtkWidget *rename_button;
   GtkWidget *rename_error;
-  char *rename_uri;
+  gchar *rename_uri;
 
   gulong trash_monitor_changed_id;
   GtkWidget *trash_row;
 
   /* DND */
+  GList     *drag_list; /* list of GFile */
+  gint       drag_data_info;
   gboolean   dragging_over;
+  GtkTargetList *source_targets;
   GtkWidget *drag_row;
-  int drag_row_height;
-  int drag_row_x;
-  int drag_row_y;
+  gint drag_row_height;
+  gint drag_row_x;
+  gint drag_row_y;
+  gint drag_root_x;
+  gint drag_root_y;
   GtkWidget *row_placeholder;
   DropState drop_state;
+  GtkGesture *long_press_gesture;
 
   /* volume mounting - delayed open process */
   NautilusGtkPlacesOpenFlags go_to_after_mount_open_flags;
@@ -134,37 +142,50 @@ struct _NautilusGtkPlacesSidebar {
 
   GtkWidget *popover;
   NautilusGtkSidebarRow *context_row;
-  GListStore *shortcuts;
+  GSList *shortcuts;
 
   GDBusProxy *hostnamed_proxy;
   GCancellable *hostnamed_cancellable;
-  char *hostname;
+  gchar *hostname;
 
   NautilusGtkPlacesOpenFlags open_flags;
 
+  GActionGroup *action_group;
+
   guint mounting               : 1;
+  guint  drag_data_received    : 1;
+  guint drop_occurred          : 1;
   guint show_recent_set        : 1;
   guint show_recent            : 1;
   guint show_desktop_set       : 1;
   guint show_desktop           : 1;
+  guint show_connect_to_server : 1;
   guint show_enter_location    : 1;
   guint show_other_locations   : 1;
   guint show_trash             : 1;
   guint show_starred_location  : 1;
+  guint local_only             : 1;
+  guint populate_all           : 1;
 };
 
 struct _NautilusGtkPlacesSidebarClass {
-  GtkWidgetClass parent_class;
+  GtkScrolledWindowClass parent;
 
   void    (* open_location)          (NautilusGtkPlacesSidebar   *sidebar,
                                       GFile              *location,
                                       NautilusGtkPlacesOpenFlags  open_flags);
+  void    (* populate_popup)         (NautilusGtkPlacesSidebar   *sidebar,
+                                      GtkMenu            *menu,
+                                      GFile              *selected_item,
+                                      GVolume            *selected_volume);
   void    (* show_error_message)     (NautilusGtkPlacesSidebar   *sidebar,
-                                      const char         *primary,
-                                      const char         *secondary);
+                                      const gchar        *primary,
+                                      const gchar        *secondary);
+  void    (* show_connect_to_server) (NautilusGtkPlacesSidebar   *sidebar);
   GdkDragAction (* drag_action_requested)  (NautilusGtkPlacesSidebar   *sidebar,
+                                      GdkDragContext     *context,
                                       GFile              *dest_file,
-                                      GSList             *source_file_list);
+                                      GList              *source_file_list);
   GdkDragAction (* drag_action_ask)  (NautilusGtkPlacesSidebar   *sidebar,
                                       GdkDragAction       actions);
   void    (* drag_perform_drop)      (NautilusGtkPlacesSidebar   *sidebar,
@@ -172,6 +193,8 @@ struct _NautilusGtkPlacesSidebarClass {
                                       GList              *source_file_list,
                                       GdkDragAction       action);
   void    (* show_enter_location)    (NautilusGtkPlacesSidebar   *sidebar);
+
+  void    (* show_other_locations)   (NautilusGtkPlacesSidebar   *sidebar);
 
   void    (* show_other_locations_with_flags)   (NautilusGtkPlacesSidebar   *sidebar,
                                                  NautilusGtkPlacesOpenFlags  open_flags);
@@ -186,11 +209,14 @@ struct _NautilusGtkPlacesSidebarClass {
 
 enum {
   OPEN_LOCATION,
+  POPULATE_POPUP,
   SHOW_ERROR_MESSAGE,
+  SHOW_CONNECT_TO_SERVER,
   SHOW_ENTER_LOCATION,
   DRAG_ACTION_REQUESTED,
   DRAG_ACTION_ASK,
   DRAG_PERFORM_DROP,
+  SHOW_OTHER_LOCATIONS,
   SHOW_OTHER_LOCATIONS_WITH_FLAGS,
   SHOW_STARRED_LOCATION,
   MOUNT,
@@ -203,10 +229,13 @@ enum {
   PROP_OPEN_FLAGS,
   PROP_SHOW_RECENT,
   PROP_SHOW_DESKTOP,
+  PROP_SHOW_CONNECT_TO_SERVER,
   PROP_SHOW_ENTER_LOCATION,
   PROP_SHOW_TRASH,
   PROP_SHOW_STARRED_LOCATION,
+  PROP_LOCAL_ONLY,
   PROP_SHOW_OTHER_LOCATIONS,
+  PROP_POPULATE_ALL,
   NUM_PROPERTIES
 };
 
@@ -241,32 +270,40 @@ static void  check_unmount_and_eject       (GMount   *mount,
                                             GDrive   *drive,
                                             gboolean *show_unmount,
                                             gboolean *show_eject);
-static void on_row_pressed  (GtkGestureClick *gesture,
-                             int                   n_press,
-                             double                x,
-                             double                y,
-                             NautilusGtkSidebarRow        *row);
-static void on_row_released (GtkGestureClick *gesture,
-                             int                   n_press,
-                             double                x,
-                             double                y,
-                             NautilusGtkSidebarRow        *row);
-static void on_row_dragged  (GtkGestureDrag *gesture,
-                             double          x,
-                             double          y,
-                             NautilusGtkSidebarRow  *row);
-
+static gboolean on_button_press_event (GtkWidget      *widget,
+                                       GdkEventButton *event,
+                                       NautilusGtkSidebarRow  *sidebar);
+static gboolean on_button_release_event (GtkWidget      *widget,
+                                         GdkEventButton *event,
+                                         NautilusGtkSidebarRow  *sidebar);
 static void popup_menu_cb    (NautilusGtkSidebarRow   *row);
 static void long_press_cb    (GtkGesture      *gesture,
-                              double           x,
-                              double           y,
+                              gdouble          x,
+                              gdouble          y,
                               NautilusGtkPlacesSidebar *sidebar);
 static void stop_drop_feedback (NautilusGtkPlacesSidebar *sidebar);
 static GMountOperation * get_mount_operation (NautilusGtkPlacesSidebar *sidebar);
 static GMountOperation * get_unmount_operation (NautilusGtkPlacesSidebar *sidebar);
 
 
-G_DEFINE_TYPE (NautilusGtkPlacesSidebar, nautilus_gtk_places_sidebar, GTK_TYPE_WIDGET);
+/* Identifiers for target types */
+enum {
+  DND_UNKNOWN,
+  DND_NAUTILUS_GTK_SIDEBAR_ROW,
+  DND_TEXT_URI_LIST
+};
+
+/* Target types for dragging from the shortcuts list */
+static const GtkTargetEntry dnd_source_targets[] = {
+  { "DND_NAUTILUS_GTK_SIDEBAR_ROW", GTK_TARGET_SAME_WIDGET, DND_NAUTILUS_GTK_SIDEBAR_ROW }
+};
+
+/* Target types for dropping into the shortcuts list */
+static const GtkTargetEntry dnd_drop_targets [] = {
+  { "DND_NAUTILUS_GTK_SIDEBAR_ROW", GTK_TARGET_SAME_WIDGET, DND_NAUTILUS_GTK_SIDEBAR_ROW }
+};
+
+G_DEFINE_TYPE (NautilusGtkPlacesSidebar, nautilus_gtk_places_sidebar, GTK_TYPE_SCROLLED_WINDOW);
 
 static void
 emit_open_location (NautilusGtkPlacesSidebar   *sidebar,
@@ -282,17 +319,29 @@ emit_open_location (NautilusGtkPlacesSidebar   *sidebar,
 
 static void
 emit_show_error_message (NautilusGtkPlacesSidebar *sidebar,
-                         const char       *primary,
-                         const char       *secondary)
+                         const gchar      *primary,
+                         const gchar      *secondary)
 {
   g_signal_emit (sidebar, places_sidebar_signals[SHOW_ERROR_MESSAGE], 0,
                  primary, secondary);
 }
 
 static void
+emit_show_connect_to_server (NautilusGtkPlacesSidebar *sidebar)
+{
+  g_signal_emit (sidebar, places_sidebar_signals[SHOW_CONNECT_TO_SERVER], 0);
+}
+
+static void
 emit_show_enter_location (NautilusGtkPlacesSidebar *sidebar)
 {
   g_signal_emit (sidebar, places_sidebar_signals[SHOW_ENTER_LOCATION], 0);
+}
+
+static void
+emit_show_other_locations (NautilusGtkPlacesSidebar *sidebar)
+{
+  g_signal_emit (sidebar, places_sidebar_signals[SHOW_OTHER_LOCATIONS], 0);
 }
 
 static void
@@ -328,13 +377,26 @@ emit_unmount_operation (NautilusGtkPlacesSidebar *sidebar,
 
 static GdkDragAction
 emit_drag_action_requested (NautilusGtkPlacesSidebar *sidebar,
+                            GdkDragContext   *context,
                             GFile            *dest_file,
-                            GSList           *source_file_list)
+                            GList            *source_file_list)
 {
   GdkDragAction ret_action = 0;
 
   g_signal_emit (sidebar, places_sidebar_signals[DRAG_ACTION_REQUESTED], 0,
-                 dest_file, source_file_list, &ret_action);
+                 context, dest_file, source_file_list, &ret_action);
+
+  return ret_action;
+}
+
+static GdkDragAction
+emit_drag_action_ask (NautilusGtkPlacesSidebar *sidebar,
+                      GdkDragAction     actions)
+{
+  GdkDragAction ret_action = 0;
+
+  g_signal_emit (sidebar, places_sidebar_signals[DRAG_ACTION_ASK], 0,
+                 actions, &ret_action);
 
   return ret_action;
 }
@@ -342,7 +404,7 @@ emit_drag_action_requested (NautilusGtkPlacesSidebar *sidebar,
 static void
 emit_drag_perform_drop (NautilusGtkPlacesSidebar *sidebar,
                         GFile            *dest_file,
-                        GSList           *source_file_list,
+                        GList            *source_file_list,
                         GdkDragAction     action)
 {
   g_signal_emit (sidebar, places_sidebar_signals[DRAG_PERFORM_DROP], 0,
@@ -353,8 +415,8 @@ list_box_header_func (GtkListBoxRow *row,
                       GtkListBoxRow *before,
                       gpointer       user_data)
 {
-  NautilusGtkPlacesSectionType row_section_type;
-  NautilusGtkPlacesSectionType before_section_type;
+  NautilusGtkPlacesSidebarSectionType row_section_type;
+  NautilusGtkPlacesSidebarSectionType before_section_type;
   GtkWidget *separator;
 
   gtk_list_box_row_set_header (row, NULL);
@@ -366,24 +428,27 @@ list_box_header_func (GtkListBoxRow *row,
     }
   else
     {
-      before_section_type = NAUTILUS_GTK_PLACES_SECTION_INVALID;
+      before_section_type = SECTION_INVALID;
+      gtk_widget_set_margin_top (GTK_WIDGET (row), 4);
     }
 
   if (before && before_section_type != row_section_type)
     {
       separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+      gtk_widget_set_margin_top (separator, 4);
+      gtk_widget_set_margin_bottom (separator, 4);
       gtk_list_box_row_set_header (row, separator);
     }
 }
 
 static GtkWidget*
 add_place (NautilusGtkPlacesSidebar            *sidebar,
-           NautilusGtkPlacesPlaceType           place_type,
-           NautilusGtkPlacesSectionType         section_type,
-           const char                  *name,
+           NautilusGtkPlacesSidebarPlaceType    place_type,
+           NautilusGtkPlacesSidebarSectionType  section_type,
+           const gchar                 *name,
            GIcon                       *start_icon,
            GIcon                       *end_icon,
-           const char                  *uri,
+           const gchar                 *uri,
            GDrive                      *drive,
            GVolume                     *volume,
            GMount                      *mount,
@@ -392,20 +457,20 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
 #else
            gpointer                    *cloud_provider_account,
 #endif
-           const int                    index,
-           const char                  *tooltip)
+           const gint                   index,
+           const gchar                 *tooltip)
 {
   gboolean show_eject, show_unmount;
   gboolean show_eject_button;
   GtkWidget *row;
   GtkWidget *eject_button;
-  GtkGesture *gesture;
+  GtkWidget *event_box;
 
   check_unmount_and_eject (mount, volume, drive,
                            &show_unmount, &show_eject);
 
   if (show_unmount || show_eject)
-    g_assert (place_type != NAUTILUS_GTK_PLACES_BOOKMARK);
+    g_assert (place_type != PLACES_BOOKMARK);
 
   show_eject_button = (show_unmount || show_eject);
 
@@ -429,24 +494,17 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
                       NULL);
 
   eject_button = nautilus_gtk_sidebar_row_get_eject_button (NAUTILUS_GTK_SIDEBAR_ROW (row));
+  event_box = nautilus_gtk_sidebar_row_get_event_box (NAUTILUS_GTK_SIDEBAR_ROW (row));
 
   g_signal_connect_swapped (eject_button, "clicked",
                             G_CALLBACK (eject_or_unmount_bookmark), row);
+  g_signal_connect (event_box, "button-press-event",
+                    G_CALLBACK (on_button_press_event), row);
+  g_signal_connect (event_box, "button-release-event",
+                    G_CALLBACK (on_button_release_event), row);
 
-  gesture = gtk_gesture_click_new ();
-  gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
-  g_signal_connect (gesture, "pressed",
-                    G_CALLBACK (on_row_pressed), row);
-  g_signal_connect (gesture, "released",
-                    G_CALLBACK (on_row_released), row);
-  gtk_widget_add_controller (row, GTK_EVENT_CONTROLLER (gesture));
-
-  gesture = gtk_gesture_drag_new ();
-  g_signal_connect (gesture, "drag-update",
-                    G_CALLBACK (on_row_dragged), row);
-  gtk_widget_add_controller (row, GTK_EVENT_CONTROLLER (gesture));
-
-  gtk_list_box_insert (GTK_LIST_BOX (sidebar->list_box), GTK_WIDGET (row), -1);
+  gtk_container_add (GTK_CONTAINER (sidebar->list_box), GTK_WIDGET (row));
+  gtk_widget_show_all (row);
 
   return row;
 }
@@ -470,7 +528,6 @@ special_directory_get_gicon (GUserDirectory directory)
     ICON_CASE (TEMPLATES);
     ICON_CASE (VIDEOS);
 
-    case G_USER_N_DIRECTORIES:
     default:
       return g_themed_icon_new_with_default_fallbacks (ICON_NAME_FOLDER);
     }
@@ -493,7 +550,7 @@ recent_files_setting_is_enabled (NautilusGtkPlacesSidebar *sidebar)
 static gboolean
 recent_scheme_is_supported (void)
 {
-  const char * const *supported;
+  const gchar * const *supported;
 
   supported = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
   if (supported != NULL)
@@ -511,11 +568,11 @@ should_show_recent (NautilusGtkPlacesSidebar *sidebar)
 }
 
 static gboolean
-path_is_home_dir (const char *path)
+path_is_home_dir (const gchar *path)
 {
   GFile *home_dir;
   GFile *location;
-  const char *home_path;
+  const gchar *home_path;
   gboolean res;
 
   home_path = g_get_home_dir ();
@@ -535,7 +592,7 @@ path_is_home_dir (const char *path)
 static void
 open_home (NautilusGtkPlacesSidebar *sidebar)
 {
-  const char *home_path;
+  const gchar *home_path;
   GFile       *home_dir;
 
   home_path = g_get_home_dir ();
@@ -552,17 +609,17 @@ static void
 add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
 {
   GList *dirs;
-  int index;
+  gint index;
 
   dirs = NULL;
   for (index = 0; index < G_USER_N_DIRECTORIES; index++)
     {
-      const char *path;
+      const gchar *path;
       GFile *root;
       GIcon *start_icon;
-      char *name;
-      char *mount_uri;
-      char *tooltip;
+      gchar *name;
+      gchar *mount_uri;
+      gchar *tooltip;
 
       if (!_nautilus_gtk_bookmarks_manager_get_is_xdg_dir_builtin (index))
         continue;
@@ -588,8 +645,8 @@ add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
       mount_uri = g_file_get_uri (root);
       tooltip = g_file_get_parse_name (root);
 
-      add_place (sidebar, NAUTILUS_GTK_PLACES_XDG_DIR,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+      add_place (sidebar, PLACES_XDG_DIR,
+                 SECTION_COMPUTER,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, NULL, NULL, 0,
                  tooltip);
@@ -599,16 +656,16 @@ add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
       g_free (mount_uri);
       g_free (tooltip);
 
-      dirs = g_list_prepend (dirs, (char *)path);
+      dirs = g_list_prepend (dirs, (gchar *)path);
     }
 
   g_list_free (dirs);
 }
 
-static char *
+static gchar *
 get_home_directory_uri (void)
 {
-  const char *home;
+  const gchar *home;
 
   home = g_get_home_dir ();
   if (!home)
@@ -617,10 +674,10 @@ get_home_directory_uri (void)
   return g_filename_to_uri (home, NULL, NULL);
 }
 
-static char *
+static gchar *
 get_desktop_directory_uri (void)
 {
-  const char *name;
+  const gchar *name;
 
   name = g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP);
 
@@ -634,21 +691,38 @@ get_desktop_directory_uri (void)
 }
 
 static gboolean
+should_show_file (NautilusGtkPlacesSidebar *sidebar,
+                  GFile            *file)
+{
+  gchar *path;
+
+  if (!sidebar->local_only)
+    return TRUE;
+
+  path = g_file_get_path (file);
+  if (path)
+    {
+      g_free (path);
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
 file_is_shown (NautilusGtkPlacesSidebar *sidebar,
                GFile            *file)
 {
-  char *uri;
-  GtkWidget *row;
+  gchar *uri;
+  GList *rows;
+  GList *l;
   gboolean found = FALSE;
 
-  for (row = gtk_widget_get_first_child (GTK_WIDGET (sidebar->list_box));
-       row != NULL && !found;
-       row = gtk_widget_get_next_sibling (row))
+  rows = gtk_container_get_children (GTK_CONTAINER (sidebar->list_box));
+  l = rows;
+  while (l != NULL && !found)
     {
-      if (!GTK_IS_LIST_BOX_ROW (row))
-        continue;
-
-      g_object_get (row, "uri", &uri, NULL);
+      g_object_get (l->data, "uri", &uri, NULL);
       if (uri)
         {
           GFile *other;
@@ -657,46 +731,47 @@ file_is_shown (NautilusGtkPlacesSidebar *sidebar,
           g_object_unref (other);
           g_free (uri);
         }
+      l = l->next;
     }
+
+  g_list_free (rows);
 
   return found;
 }
-
-typedef struct
-{
-  NautilusGtkPlacesSidebar *sidebar;
-  guint position;
-} ShortcutData;
 
 static void
 on_app_shortcuts_query_complete (GObject      *source,
                                  GAsyncResult *result,
                                  gpointer      data)
 {
-  ShortcutData *sdata = data;
-  NautilusGtkPlacesSidebar *sidebar = sdata->sidebar;
-  guint pos = sdata->position;
+  NautilusGtkPlacesSidebar *sidebar = data;
   GFile *file = G_FILE (source);
   GFileInfo *info;
-
-  g_free (sdata);
 
   info = g_file_query_info_finish (file, result, NULL);
 
   if (info)
     {
-      char *uri;
-      char *tooltip;
-      const char *name;
+      gchar *uri;
+      gchar *tooltip;
+      const gchar *name;
       GIcon *start_icon;
+      int pos = 0;
 
       name = g_file_info_get_display_name (info);
       start_icon = g_file_info_get_symbolic_icon (info);
       uri = g_file_get_uri (file);
       tooltip = g_file_get_parse_name (file);
 
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+      /* XXX: we could avoid this by using an ancillary closure
+       * with the index coming from add_application_shortcuts(),
+       * but in terms of algorithmic overhead, the application
+       * shortcuts is not going to be really big
+       */
+      pos = g_slist_index (sidebar->shortcuts, file);
+
+      add_place (sidebar, PLACES_BUILT_IN,
+                 SECTION_COMPUTER,
                  name, start_icon, NULL, uri,
                  NULL, NULL, NULL, NULL,
                  pos,
@@ -712,29 +787,25 @@ on_app_shortcuts_query_complete (GObject      *source,
 static void
 add_application_shortcuts (NautilusGtkPlacesSidebar *sidebar)
 {
-  guint i, n;
+  GSList *l;
 
-  n = g_list_model_get_n_items (G_LIST_MODEL (sidebar->shortcuts));
-  for (i = 0; i < n; i++)
+  for (l = sidebar->shortcuts; l; l = l->next)
     {
-      GFile *file = g_list_model_get_item (G_LIST_MODEL (sidebar->shortcuts), i);
-      ShortcutData *data;
+      GFile *file = l->data;
 
-      g_object_unref (file);
+      if (!should_show_file (sidebar, file))
+        continue;
 
       if (file_is_shown (sidebar, file))
         continue;
 
-      data = g_new (ShortcutData, 1);
-      data->sidebar = sidebar;
-      data->position = i;
       g_file_query_info_async (file,
                                "standard::display-name,standard::symbolic-icon",
                                G_FILE_QUERY_INFO_NONE,
                                G_PRIORITY_DEFAULT,
                                sidebar->cancellable,
                                on_app_shortcuts_query_complete,
-                               data);
+                               sidebar);
     }
 }
 
@@ -754,9 +825,9 @@ on_bookmark_query_info_complete (GObject      *source,
   GFile *root = G_FILE (source);
   GError *error = NULL;
   GFileInfo *info;
-  char *bookmark_name;
-  char *mount_uri;
-  char *tooltip;
+  gchar *bookmark_name;
+  gchar *mount_uri;
+  gchar *tooltip;
   GIcon *start_icon;
 
   info = g_file_query_info_finish (root, result, &error);
@@ -770,9 +841,6 @@ on_bookmark_query_info_complete (GObject      *source,
     {
       /* Don't add non-UTF-8 bookmarks */
       bookmark_name = g_file_get_basename (root);
-      if (bookmark_name == NULL)
-        goto out;
-
       if (!g_utf8_validate (bookmark_name, -1, NULL))
         {
           g_free (bookmark_name);
@@ -788,8 +856,8 @@ on_bookmark_query_info_complete (GObject      *source,
   mount_uri = g_file_get_uri (root);
   tooltip = g_file_get_parse_name (root);
 
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BOOKMARK,
-             NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
+  add_place (sidebar, PLACES_BOOKMARK,
+             SECTION_BOOKMARKS,
              bookmark_name, start_icon, NULL, mount_uri,
              NULL, NULL, NULL, NULL, clos->index,
              tooltip);
@@ -810,7 +878,7 @@ is_external_volume (GVolume *volume)
 {
   gboolean is_external;
   GDrive *drive;
-  char *id;
+  gchar *id;
 
   drive = g_volume_get_drive (volume);
   id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_CLASS);
@@ -850,20 +918,19 @@ create_cloud_provider_account_row (NautilusGtkPlacesSidebar      *sidebar,
 {
   GIcon *end_icon;
   GIcon *start_icon;
-  const char *mount_path;
-  const char *name;
-  char *mount_uri;
-  char *tooltip;
+  gchar *mount_uri;
+  gchar *name;
+  gchar *tooltip;
   guint provider_account_status;
 
   start_icon = cloud_providers_account_get_icon (account);
   name = cloud_providers_account_get_name (account);
   provider_account_status = cloud_providers_account_get_status (account);
-  mount_path = cloud_providers_account_get_path (account);
+  mount_uri = cloud_providers_account_get_path (account);
   if (start_icon != NULL
       && name != NULL
       && provider_account_status != CLOUD_PROVIDERS_ACCOUNT_STATUS_INVALID
-      && mount_path != NULL)
+      && mount_uri != NULL)
     {
       switch (provider_account_status)
         {
@@ -883,20 +950,17 @@ create_cloud_provider_account_row (NautilusGtkPlacesSidebar      *sidebar,
             return FALSE;
         }
 
-      mount_uri = g_strconcat ("file://", mount_path, NULL);
+      mount_uri = g_strconcat ("file://", mount_uri, NULL);
 
       /* translators: %s is the name of a cloud provider for files */
       tooltip = g_strdup_printf (_("Open %s"), name);
 
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_CLOUD,
+      add_place (sidebar, PLACES_BUILT_IN,
+                 SECTION_CLOUD,
                  name, start_icon, end_icon, mount_uri,
                  NULL, NULL, NULL, account, 0,
                  tooltip);
 
-      g_free (tooltip);
-      g_free (mount_uri);
-      g_object_unref (end_icon);
       return TRUE;
     }
   else
@@ -933,22 +997,22 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   GList *volumes;
   GVolume *volume;
   GSList *bookmarks, *sl;
-  int index;
-  char *original_uri, *name, *identifier;
+  gint index;
+  gchar *original_uri, *mount_uri, *name, *identifier;
   GtkListBoxRow *selected;
-  char *home_uri;
+  gchar *home_uri;
   GIcon *start_icon;
   GFile *root;
-  char *tooltip;
+  gchar *tooltip;
   GList *network_mounts, *network_volumes;
   GIcon *new_bookmark_icon;
-  GtkWidget *child;
 #ifdef HAVE_CLOUDPROVIDERS
   GList *cloud_providers;
   GList *cloud_providers_accounts;
   CloudProvidersAccount *cloud_provider_account;
   CloudProvidersProvider *cloud_provider;
 #endif
+  GtkStyleContext *context;
 
   /* save original selection */
   selected = gtk_list_box_get_selected_row (GTK_LIST_BOX (sidebar->list_box));
@@ -965,18 +1029,20 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   /* Reset drag state, just in case we update the places while dragging or
    * ending a drag */
   stop_drop_feedback (sidebar);
-  while ((child = gtk_widget_get_first_child (GTK_WIDGET (sidebar->list_box))))
-    gtk_list_box_remove (GTK_LIST_BOX (sidebar->list_box), child);
+  gtk_container_foreach (GTK_CONTAINER (sidebar->list_box),
+                         (GtkCallback) gtk_widget_destroy,
+                         NULL);
 
   network_mounts = network_volumes = NULL;
 
   /* add built-in places */
   if (should_show_recent (sidebar))
     {
+      mount_uri = "recent:///";
       start_icon = g_themed_icon_new_with_default_fallbacks ("document-open-recent-symbolic");
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                 _("Recent"), start_icon, NULL, "recent:///",
+      add_place (sidebar, PLACES_BUILT_IN,
+                 SECTION_COMPUTER,
+                 _("Recent"), start_icon, NULL, mount_uri,
                  NULL, NULL, NULL, NULL, 0,
                  _("Recent files"));
       g_object_unref (start_icon);
@@ -984,20 +1050,22 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   if (sidebar->show_starred_location)
     {
+      mount_uri = "starred:///";
       start_icon = g_themed_icon_new_with_default_fallbacks ("starred-symbolic");
-      add_place (sidebar, NAUTILUS_GTK_PLACES_STARRED_LOCATION,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                 _("Starred"), start_icon, NULL, "starred:///",
+      add_place (sidebar, PLACES_STARRED_LOCATION,
+                 SECTION_COMPUTER,
+                 _("Starred"), start_icon, NULL, mount_uri,
                  NULL, NULL, NULL, NULL, 0,
-                 _("Starred files"));
+                /* TODO: Rename to 'Starred files' */
+                 _("Favorite files"));
       g_object_unref (start_icon);
     }
 
   /* home folder */
   home_uri = get_home_directory_uri ();
   start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_HOME);
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+  add_place (sidebar, PLACES_BUILT_IN,
+             SECTION_COMPUTER,
              _("Home"), start_icon, NULL, home_uri,
              NULL, NULL, NULL, NULL, 0,
              _("Open your personal folder"));
@@ -1007,12 +1075,12 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   /* desktop */
   if (sidebar->show_desktop)
     {
-      char *mount_uri = get_desktop_directory_uri ();
+      mount_uri = get_desktop_directory_uri ();
       if (mount_uri)
         {
           start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_DESKTOP);
-          add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                     NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+          add_place (sidebar, PLACES_BUILT_IN,
+                     SECTION_COMPUTER,
                      _("Desktop"), start_icon, NULL, mount_uri,
                      NULL, NULL, NULL, NULL, 0,
                      _("Open the contents of your desktop in a folder"));
@@ -1027,8 +1095,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   if (sidebar->show_enter_location)
     {
       start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_NETWORK_SERVER);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_ENTER_LOCATION,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+      add_place (sidebar, PLACES_ENTER_LOCATION,
+                 SECTION_COMPUTER,
                  _("Enter Location"), start_icon, NULL, NULL,
                  NULL, NULL, NULL, NULL, 0,
                  _("Manually enter a location"));
@@ -1036,11 +1104,11 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     }
 
   /* Trash */
-  if (sidebar->show_trash)
+  if (!sidebar->local_only && sidebar->show_trash)
     {
       start_icon = nautilus_trash_monitor_get_symbolic_icon ();
-      sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                                      NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+      sidebar->trash_row = add_place (sidebar, PLACES_BUILT_IN,
+                                      SECTION_COMPUTER,
                                       _("Trash"), start_icon, NULL, "trash:///",
                                       NULL, NULL, NULL, NULL, 0,
                                       _("Open the trash"));
@@ -1122,8 +1190,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
               mount = g_volume_get_mount (volume);
               if (mount != NULL)
                 {
-                  char *mount_uri;
-
                   /* Show mounted volume in the sidebar */
                   start_icon = g_mount_get_symbolic_icon (mount);
                   root = g_mount_get_default_location (mount);
@@ -1131,8 +1197,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   name = g_mount_get_name (mount);
                   tooltip = g_file_get_parse_name (root);
 
-                  add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                             NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+                  add_place (sidebar, PLACES_MOUNTED_VOLUME,
+                             SECTION_MOUNTS,
                              name, start_icon, NULL, mount_uri,
                              drive, volume, mount, NULL, 0, tooltip);
                   g_object_unref (root);
@@ -1156,8 +1222,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   name = g_volume_get_name (volume);
                   tooltip = g_strdup_printf (_("Mount and open “%s”"), name);
 
-                  add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                             NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+                  add_place (sidebar, PLACES_MOUNTED_VOLUME,
+                             SECTION_MOUNTS,
                              name, start_icon, NULL, NULL,
                              drive, volume, NULL, NULL, 0, tooltip);
                   g_object_unref (start_icon);
@@ -1184,8 +1250,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
               name = g_drive_get_name (drive);
               tooltip = g_strdup_printf (_("Mount and open “%s”"), name);
 
-              add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                         NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+              add_place (sidebar, PLACES_BUILT_IN,
+                         SECTION_MOUNTS,
                          name, start_icon, NULL, NULL,
                          drive, NULL, NULL, NULL, 0, tooltip);
               g_object_unref (start_icon);
@@ -1236,14 +1302,13 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       if (mount != NULL)
         {
           char *mount_uri;
-
           start_icon = g_mount_get_symbolic_icon (mount);
           root = g_mount_get_default_location (mount);
           mount_uri = g_file_get_uri (root);
           tooltip = g_file_get_parse_name (root);
           name = g_mount_get_name (mount);
-          add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                     NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+          add_place (sidebar, PLACES_MOUNTED_VOLUME,
+                     SECTION_MOUNTS,
                      name, start_icon, NULL, mount_uri,
                      NULL, volume, mount, NULL, 0, tooltip);
           g_object_unref (mount);
@@ -1258,8 +1323,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           /* see comment above in why we add an icon for an unmounted mountable volume */
           start_icon = g_volume_get_symbolic_icon (volume);
           name = g_volume_get_name (volume);
-          add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                     NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
+          add_place (sidebar, PLACES_MOUNTED_VOLUME,
+                     SECTION_MOUNTS,
                      name, start_icon, NULL, NULL,
                      NULL, volume, NULL, NULL, 0, name);
           g_object_unref (start_icon);
@@ -1272,10 +1337,11 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   /* file system root */
   if (!sidebar->show_other_locations)
     {
+      mount_uri = "file:///"; /* No need to strdup */
       start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_FILESYSTEM);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
-                 sidebar->hostname, start_icon, NULL, "file:///",
+      add_place (sidebar, PLACES_BUILT_IN,
+                 SECTION_MOUNTS,
+                 sidebar->hostname, start_icon, NULL, mount_uri,
                  NULL, NULL, NULL, NULL, 0,
                  _("Open the contents of the file system"));
       g_object_unref (start_icon);
@@ -1286,8 +1352,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   for (l = mounts; l != NULL; l = l->next)
     {
-      char *mount_uri;
-
       mount = l->data;
       if (g_mount_is_shadowed (mount))
         {
@@ -1314,8 +1378,8 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       mount_uri = g_file_get_uri (root);
       name = g_mount_get_name (mount);
       tooltip = g_file_get_parse_name (root);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+      add_place (sidebar, PLACES_MOUNTED_VOLUME,
+                 SECTION_COMPUTER,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, mount, NULL, 0, tooltip);
       g_object_unref (root);
@@ -1341,6 +1405,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       if (_nautilus_gtk_bookmarks_manager_get_is_builtin (sidebar->bookmarks_manager, root))
         continue;
 
+      if (sidebar->local_only && !is_native)
+        continue;
+
       clos = g_slice_new (BookmarkQueryClosure);
       clos->sidebar = sidebar;
       clos->index = index;
@@ -1358,64 +1425,76 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   /* Add new bookmark row */
   new_bookmark_icon = g_themed_icon_new ("bookmark-new-symbolic");
-  sidebar->new_bookmark_row = add_place (sidebar, NAUTILUS_GTK_PLACES_DROP_FEEDBACK,
-                                         NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
+  sidebar->new_bookmark_row = add_place (sidebar, PLACES_DROP_FEEDBACK,
+                                         SECTION_BOOKMARKS,
                                          _("New bookmark"), new_bookmark_icon, NULL, NULL,
                                          NULL, NULL, NULL, NULL, 0,
                                          _("Add a new bookmark"));
-  gtk_widget_add_css_class (sidebar->new_bookmark_row, "sidebar-new-bookmark-row");
+  context = gtk_widget_get_style_context (sidebar->new_bookmark_row);
+  gtk_style_context_add_class (context, "sidebar-new-bookmark-row");
   g_object_unref (new_bookmark_icon);
 
   /* network */
-  network_volumes = g_list_reverse (network_volumes);
-  for (l = network_volumes; l != NULL; l = l->next)
+  if (!sidebar->local_only)
     {
-      volume = l->data;
-      mount = g_volume_get_mount (volume);
-
-      if (mount != NULL)
+      if (sidebar->show_connect_to_server)
         {
-          network_mounts = g_list_prepend (network_mounts, mount);
-          continue;
+          start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_NETWORK_SERVER);
+          add_place (sidebar, PLACES_CONNECT_TO_SERVER,
+                     SECTION_MOUNTS,
+                     _("Connect to Server"), start_icon, NULL,
+                     NULL, NULL, NULL, NULL, NULL, 0,
+                     _("Connect to a network server address"));
+          g_object_unref (start_icon);
         }
-      else
-        {
-          start_icon = g_volume_get_symbolic_icon (volume);
-          name = g_volume_get_name (volume);
-          tooltip = g_strdup_printf (_("Mount and open “%s”"), name);
 
-          add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                     NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
-                     name, start_icon, NULL, NULL,
-                     NULL, volume, NULL, NULL, 0, tooltip);
+      network_volumes = g_list_reverse (network_volumes);
+      for (l = network_volumes; l != NULL; l = l->next)
+        {
+          volume = l->data;
+          mount = g_volume_get_mount (volume);
+
+          if (mount != NULL)
+            {
+              network_mounts = g_list_prepend (network_mounts, mount);
+              continue;
+            }
+          else
+            {
+              start_icon = g_volume_get_symbolic_icon (volume);
+              name = g_volume_get_name (volume);
+              tooltip = g_strdup_printf (_("Mount and open “%s”"), name);
+
+              add_place (sidebar, PLACES_MOUNTED_VOLUME,
+                         SECTION_MOUNTS,
+                         name, start_icon, NULL, NULL,
+                         NULL, volume, NULL, NULL, 0, tooltip);
+              g_object_unref (start_icon);
+              g_free (name);
+              g_free (tooltip);
+            }
+        }
+
+      network_mounts = g_list_reverse (network_mounts);
+      for (l = network_mounts; l != NULL; l = l->next)
+        {
+          mount = l->data;
+          root = g_mount_get_default_location (mount);
+          start_icon = g_mount_get_symbolic_icon (mount);
+          mount_uri = g_file_get_uri (root);
+          name = g_mount_get_name (mount);
+          tooltip = g_file_get_parse_name (root);
+          add_place (sidebar, PLACES_MOUNTED_VOLUME,
+                     SECTION_MOUNTS,
+                     name, start_icon, NULL, mount_uri,
+                     NULL, NULL, mount, NULL, 0, tooltip);
+          g_object_unref (root);
           g_object_unref (start_icon);
           g_free (name);
+          g_free (mount_uri);
           g_free (tooltip);
         }
     }
-
-  network_mounts = g_list_reverse (network_mounts);
-  for (l = network_mounts; l != NULL; l = l->next)
-    {
-      char *mount_uri;
-
-      mount = l->data;
-      root = g_mount_get_default_location (mount);
-      start_icon = g_mount_get_symbolic_icon (mount);
-      mount_uri = g_file_get_uri (root);
-      name = g_mount_get_name (mount);
-      tooltip = g_file_get_parse_name (root);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                 NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
-                 name, start_icon, NULL, mount_uri,
-                 NULL, NULL, mount, NULL, 0, tooltip);
-      g_object_unref (root);
-      g_object_unref (start_icon);
-      g_free (name);
-      g_free (mount_uri);
-      g_free (tooltip);
-    }
-  
 
   g_list_free_full (network_volumes, g_object_unref);
   g_list_free_full (network_mounts, g_object_unref);
@@ -1425,15 +1504,15 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     {
       start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_OTHER_LOCATIONS);
 
-      add_place (sidebar, NAUTILUS_GTK_PLACES_OTHER_LOCATIONS,
-                 NAUTILUS_GTK_PLACES_SECTION_OTHER_LOCATIONS,
+      add_place (sidebar, PLACES_OTHER_LOCATIONS,
+                 SECTION_OTHER_LOCATIONS,
                  _("Other Locations"), start_icon, NULL, "other-locations:///",
                  NULL, NULL, NULL, NULL, 0, _("Show other locations"));
 
       g_object_unref (start_icon);
     }
 
-  gtk_widget_show (GTK_WIDGET (sidebar));
+  gtk_widget_show_all (GTK_WIDGET (sidebar));
   /* We want this hidden by default, but need to do it after the show_all call */
   nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), TRUE);
 
@@ -1452,16 +1531,14 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 static gboolean
 check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                          NautilusGtkSidebarRow    *row,
-                         const GValue     *value)
+                         GdkDragContext   *context)
 {
-  NautilusGtkPlacesPlaceType place_type;
-  NautilusGtkPlacesSectionType section_type;
+  NautilusGtkPlacesSidebarPlaceType place_type;
+  NautilusGtkPlacesSidebarSectionType section_type;
   gboolean valid = FALSE;
-  char *uri;
+  gchar *uri;
   GFile *dest_file;
-  int drag_action;
-
-  g_return_val_if_fail (value != NULL, TRUE);
+  gint drag_action;
 
   if (row == NULL)
     return FALSE;
@@ -1472,26 +1549,26 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                 "uri", &uri,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_STARRED_LOCATION)
+  if (place_type == PLACES_STARRED_LOCATION)
     {
       g_free (uri);
       return FALSE;
     }
 
-  if (place_type == NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
+  if (place_type == PLACES_CONNECT_TO_SERVER)
     {
       g_free (uri);
       return FALSE;
     }
 
-  if (place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
+  if (place_type == PLACES_DROP_FEEDBACK)
     {
       g_free (uri);
       return TRUE;
     }
 
   /* Disallow drops on recent:/// */
-  if (place_type == NAUTILUS_GTK_PLACES_BUILT_IN)
+  if (place_type == PLACES_BUILT_IN)
     {
       if (g_strcmp0 (uri, "recent:///") == 0)
         {
@@ -1501,31 +1578,39 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
     }
 
   /* Dragging a bookmark? */
-  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  if (sidebar->drag_data_received &&
+      sidebar->drag_data_info == DND_NAUTILUS_GTK_SIDEBAR_ROW)
     {
       /* Don't allow reordering bookmarks into non-bookmark areas */
-      valid = section_type == NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
-    }
-  else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-    {
-      /* Dragging a file */
-      if (uri != NULL)
-        {
-          dest_file = g_file_new_for_uri (uri);
-          drag_action = emit_drag_action_requested (sidebar, dest_file, g_value_get_boxed (value));
-          valid = drag_action > 0;
-
-          g_object_unref (dest_file);
-        }
-      else
-        {
-          valid = FALSE;
-        }
+      valid = section_type == SECTION_BOOKMARKS;
     }
   else
     {
-      g_assert_not_reached ();
-      valid = TRUE;
+      /* Dragging a file */
+      if (context)
+        {
+          if (uri != NULL)
+            {
+              dest_file = g_file_new_for_uri (uri);
+              drag_action = emit_drag_action_requested (sidebar, context, dest_file, sidebar->drag_list);
+              valid = drag_action > 0;
+
+              g_object_unref (dest_file);
+            }
+          else
+            {
+              valid = FALSE;
+            }
+        }
+      else
+        {
+          /* We cannot discern if it is valid or not because there is not drag
+           * context available to ask the client.
+           * Simply make insensitive the drop targets we know are not valid for
+           * files, that are the ones remaining.
+           */
+          valid = TRUE;
+        }
     }
 
   g_free (uri);
@@ -1534,30 +1619,60 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
 
 static void
 update_possible_drop_targets (NautilusGtkPlacesSidebar *sidebar,
-                              const GValue     *value)
+                              gboolean          dragging,
+                              GdkDragContext   *context)
 {
-  GtkWidget *row;
+  GList *rows;
+  GList *l;
+  gboolean sensitive;
 
-  for (row = gtk_widget_get_first_child (GTK_WIDGET (sidebar->list_box));
-       row != NULL;
-       row = gtk_widget_get_next_sibling (row))
+  rows = gtk_container_get_children (GTK_CONTAINER (sidebar->list_box));
+
+  for (l = rows; l != NULL; l = l->next)
     {
-      gboolean sensitive;
-
-      if (!GTK_IS_LIST_BOX_ROW (row))
-        continue;
-
-      sensitive = value == NULL ||
-                  check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (row), value);
-      gtk_widget_set_sensitive (row, sensitive);
+      sensitive = !dragging || check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (l->data), context);
+      gtk_widget_set_sensitive (GTK_WIDGET (l->data), sensitive);
     }
+
+  g_list_free (rows);
+}
+
+static gboolean
+get_drag_data (GtkWidget      *list_box,
+               GdkDragContext *context,
+               guint           time)
+{
+  GdkAtom target;
+
+  target = gtk_drag_dest_find_target (list_box, context, NULL);
+
+  if (target == GDK_NONE)
+    return FALSE;
+
+  gtk_drag_get_data (list_box, context, target, time);
+
+  return TRUE;
+}
+
+static void
+free_drag_data (NautilusGtkPlacesSidebar *sidebar)
+{
+  sidebar->drag_data_received = FALSE;
+
+  if (sidebar->drag_list)
+    {
+      g_list_free_full (sidebar->drag_list, g_object_unref);
+      sidebar->drag_list = NULL;
+    }
+
 }
 
 static void
 start_drop_feedback (NautilusGtkPlacesSidebar *sidebar,
-                     const GValue     *value)
+                     NautilusGtkSidebarRow    *row,
+                     GdkDragContext   *context)
 {
-  if (value && !G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  if (sidebar->drag_data_info != DND_NAUTILUS_GTK_SIDEBAR_ROW)
     {
       nautilus_gtk_sidebar_row_reveal (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row));
       /* If the state is permanent, don't change it. The application controls it. */
@@ -1565,13 +1680,15 @@ start_drop_feedback (NautilusGtkPlacesSidebar *sidebar,
         sidebar->drop_state = DROP_STATE_NEW_BOOKMARK_ARMED;
     }
 
-  update_possible_drop_targets (sidebar, value);
+  update_possible_drop_targets (sidebar, TRUE, context);
 }
 
 static void
 stop_drop_feedback (NautilusGtkPlacesSidebar *sidebar)
 {
-  update_possible_drop_targets (sidebar, NULL);
+  update_possible_drop_targets (sidebar, FALSE, NULL);
+
+  free_drag_data (sidebar);
 
   if (sidebar->drop_state != DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT &&
       sidebar->new_bookmark_row != NULL)
@@ -1588,33 +1705,92 @@ stop_drop_feedback (NautilusGtkPlacesSidebar *sidebar)
 
   if (sidebar->row_placeholder != NULL)
     {
-      if (gtk_widget_get_parent (sidebar->row_placeholder) != NULL)
-        gtk_list_box_remove (GTK_LIST_BOX (sidebar->list_box), sidebar->row_placeholder);
+      gtk_widget_destroy (sidebar->row_placeholder);
       sidebar->row_placeholder = NULL;
     }
 
   sidebar->dragging_over = FALSE;
+  sidebar->drag_data_info = DND_UNKNOWN;
+}
+
+static gboolean
+on_motion_notify_event (GtkWidget      *widget,
+                        GdkEventMotion *event,
+                        gpointer        user_data)
+{
+  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+
+  if (sidebar->drag_row == NULL || sidebar->dragging_over)
+    return FALSE;
+
+  if (!(event->state & GDK_BUTTON1_MASK))
+    return FALSE;
+
+  if (gtk_drag_check_threshold (widget,
+                                sidebar->drag_root_x, sidebar->drag_root_y,
+                                event->x_root, event->y_root))
+    {
+      sidebar->dragging_over = TRUE;
+
+      gtk_drag_begin_with_coordinates (widget, sidebar->source_targets, GDK_ACTION_MOVE,
+                                       GDK_BUTTON_PRIMARY, (GdkEvent*)event,
+                                       -1, -1);
+    }
+
+  return FALSE;
+}
+
+static void
+drag_begin_callback (GtkWidget      *widget,
+                     GdkDragContext *context,
+                     gpointer        user_data)
+{
+  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+  GtkAllocation allocation;
+  GtkWidget *drag_widget;
+  GtkWidget *window;
+
+  gtk_widget_get_allocation (sidebar->drag_row, &allocation);
+  gtk_widget_hide (sidebar->drag_row);
+
+  drag_widget = GTK_WIDGET (nautilus_gtk_sidebar_row_clone (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->drag_row)));
+  window = gtk_window_new (GTK_WINDOW_POPUP);
+  sidebar->drag_row_height = allocation.height;
+  gtk_widget_set_size_request (window, allocation.width, allocation.height);
+
+  gtk_container_add (GTK_CONTAINER (window), drag_widget);
+  gtk_widget_show_all (window);
+  gtk_widget_set_opacity (window, 0.8);
+
+  gtk_drag_set_icon_widget (context,
+                            window,
+                            sidebar->drag_row_x,
+                            sidebar->drag_row_y);
 }
 
 static GtkWidget *
 create_placeholder_row (NautilusGtkPlacesSidebar *sidebar)
 {
-  return g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW, "placeholder", TRUE, NULL);
+  return 	g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW,
+                        "placeholder", TRUE,
+                        NULL);
 }
 
-static GdkDragAction
-drag_motion_callback (GtkDropTarget    *target,
-                      double            x,
-                      double            y,
-                      NautilusGtkPlacesSidebar *sidebar)
+static gboolean
+drag_motion_callback (GtkWidget      *widget,
+                      GdkDragContext *context,
+                      gint            x,
+                      gint            y,
+                      guint           time,
+                      gpointer        user_data)
 {
-  GdkDragAction action;
+  gint action;
   GtkListBoxRow *row;
-  NautilusGtkPlacesPlaceType place_type;
-  char *drop_target_uri = NULL;
-  int row_index;
-  int row_placeholder_index;
-  const GValue *value;
+  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+  NautilusGtkPlacesSidebarPlaceType place_type;
+  gchar *drop_target_uri = NULL;
+  gint row_index;
+  gint row_placeholder_index;
 
   sidebar->dragging_over = TRUE;
   action = 0;
@@ -1622,22 +1798,24 @@ drag_motion_callback (GtkDropTarget    *target,
 
   gtk_list_box_drag_unhighlight_row (GTK_LIST_BOX (sidebar->list_box));
 
-  /* Nothing to do if no value yet */
-  value = gtk_drop_target_get_value (target);
-  if (value == NULL)
+  /* Nothing to do if no drag data */
+  if (!sidebar->drag_data_received &&
+      !get_drag_data (sidebar->list_box, context, time))
     goto out;
 
   /* Nothing to do if the target is not valid drop destination */
-  if (!check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (row), value))
+  if (!check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (row), context))
     goto out;
 
-  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  if (sidebar->drag_data_received &&
+      sidebar->drag_data_info == DND_NAUTILUS_GTK_SIDEBAR_ROW)
     {
       /* Dragging bookmarks always moves them to another position in the bookmarks list */
       action = GDK_ACTION_MOVE;
       if (sidebar->row_placeholder == NULL)
         {
           sidebar->row_placeholder = create_placeholder_row (sidebar);
+          gtk_widget_show (sidebar->row_placeholder);
           g_object_ref_sink (sidebar->row_placeholder);
         }
       else if (GTK_WIDGET (row) == sidebar->row_placeholder)
@@ -1646,10 +1824,15 @@ drag_motion_callback (GtkDropTarget    *target,
         }
 
       if (gtk_widget_get_parent (sidebar->row_placeholder) != NULL)
-        gtk_list_box_remove (GTK_LIST_BOX (sidebar->list_box), sidebar->row_placeholder);
+        {
+          gtk_container_remove (GTK_CONTAINER (sidebar->list_box),
+                                sidebar->row_placeholder);
+        }
 
       if (row != NULL)
         {
+          gint dest_y, dest_x;
+
           g_object_get (row, "order-index", &row_index, NULL);
           g_object_get (sidebar->row_placeholder, "order-index", &row_placeholder_index, NULL);
           /* We order the bookmarks sections based on the bookmark index that we
@@ -1663,11 +1846,11 @@ drag_motion_callback (GtkDropTarget    *target,
            * of the row, we need to increase the order-index.
            */
           row_placeholder_index = row_index;
-          gtk_widget_translate_coordinates (GTK_WIDGET (sidebar), GTK_WIDGET (row),
+          gtk_widget_translate_coordinates (widget, GTK_WIDGET (row),
 		                            x, y,
-		                            &x, &y);
+		                            &dest_x, &dest_y);
 
-          if (y > sidebar->drag_row_height / 2 && row_index > 0)
+          if (dest_y > sidebar->drag_row_height / 2 && row_index > 0)
             row_placeholder_index++;
         }
       else
@@ -1683,7 +1866,7 @@ drag_motion_callback (GtkDropTarget    *target,
       gtk_list_box_prepend (GTK_LIST_BOX (sidebar->list_box),
                             sidebar->row_placeholder);
     }
-  else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+  else
     {
       gtk_list_box_drag_highlight_row (GTK_LIST_BOX (sidebar->list_box), row);
 
@@ -1695,42 +1878,65 @@ drag_motion_callback (GtkDropTarget    *target,
        * file move/copy operation itself, or if we should only try to
        * create bookmarks out of the dragged URIs.
        */
-      if (place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
+      if (sidebar->drag_list != NULL)
         {
-          action = GDK_ACTION_COPY;
-        }
-      else
-        {
-          /* uri may be NULL for unmounted volumes, for example, so we don't allow drops there */
-          if (drop_target_uri != NULL)
+          if (place_type == PLACES_DROP_FEEDBACK)
             {
-              GFile *dest_file = g_file_new_for_uri (drop_target_uri);
+              action = GDK_ACTION_COPY;
+            }
+          else
+            {
+              /* uri may be NULL for unmounted volumes, for example, so we don't allow drops there */
+              if (drop_target_uri != NULL)
+                {
+                  GFile *dest_file = g_file_new_for_uri (drop_target_uri);
 
-              action = emit_drag_action_requested (sidebar, dest_file, g_value_get_boxed (value));
+                  action = emit_drag_action_requested (sidebar, context, dest_file, sidebar->drag_list);
 
-              g_object_unref (dest_file);
+                  g_object_unref (dest_file);
+                }
             }
         }
 
       g_free (drop_target_uri);
     }
-  else
-    {
-      g_assert_not_reached ();
-    }
 
  out:
-  start_drop_feedback (sidebar, value);
-  return action;
+  start_drop_feedback (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (row), context);
+
+  g_signal_stop_emission_by_name (sidebar->list_box, "drag-motion");
+
+  gdk_drag_status (context, action, time);
+
+  return TRUE;
+}
+
+/* Takes an array of URIs and turns it into a list of GFile */
+static GList *
+build_file_list_from_uris (const gchar **uris)
+{
+  GList *result;
+  gint i;
+
+  result = NULL;
+  for (i = 0; uris && uris[i]; i++)
+    {
+      GFile *file;
+
+      file = g_file_new_for_uri (uris[i]);
+      result = g_list_prepend (result, file);
+    }
+
+  return g_list_reverse (result);
 }
 
 /* Reorders the bookmark to the specified position */
 static void
 reorder_bookmarks (NautilusGtkPlacesSidebar *sidebar,
                    NautilusGtkSidebarRow    *row,
-                   int               new_position)
+                   gint              new_position)
 {
-  char *uri;
+  gchar *uri;
   GFile *file;
 
   g_object_get (row, "uri", &uri, NULL);
@@ -1744,10 +1950,10 @@ reorder_bookmarks (NautilusGtkPlacesSidebar *sidebar,
 /* Creates bookmarks for the specified files at the given position in the bookmarks list */
 static void
 drop_files_as_bookmarks (NautilusGtkPlacesSidebar *sidebar,
-                         GSList           *files,
-                         int               position)
+                         GList            *files,
+                         gint              position)
 {
-  GSList *l;
+  GList *l;
 
   for (l = files; l; l = l->next)
     {
@@ -1768,26 +1974,76 @@ drop_files_as_bookmarks (NautilusGtkPlacesSidebar *sidebar,
     }
 }
 
-static gboolean
-drag_drop_callback (GtkDropTarget    *target,
-                    const GValue     *value,
-                    double            x,
-                    double            y,
-                    NautilusGtkPlacesSidebar *sidebar)
+static void
+drag_data_get_callback (GtkWidget        *widget,
+                        GdkDragContext   *context,
+                        GtkSelectionData *data,
+                        guint             info,
+                        guint             time,
+                        gpointer          user_data)
 {
-  int target_order_index;
-  NautilusGtkPlacesPlaceType target_place_type;
-  NautilusGtkPlacesSectionType target_section_type;
-  char *target_uri;
+  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+  GdkAtom target = gtk_selection_data_get_target (data);
+
+  if (target == gdk_atom_intern_static_string ("DND_NAUTILUS_GTK_SIDEBAR_ROW"))
+    {
+      gtk_selection_data_set (data,
+                              target,
+                              8,
+                              (void*)&sidebar->drag_row,
+                              sizeof (gpointer));
+    }
+}
+
+static void
+drag_data_received_callback (GtkWidget        *list_box,
+                             GdkDragContext   *context,
+                             int               x,
+                             int               y,
+                             GtkSelectionData *selection_data,
+                             guint             info,
+                             guint             time,
+                             gpointer          user_data)
+{
+  gint target_order_index;
+  NautilusGtkPlacesSidebarPlaceType target_place_type;
+  NautilusGtkPlacesSidebarSectionType target_section_type;
+  gchar *target_uri;
+  gboolean success;
+  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
   GtkListBoxRow *target_row;
-  gboolean result;
+
+  if (!sidebar->drag_data_received)
+    {
+      if (gtk_selection_data_get_target (selection_data) != GDK_NONE &&
+          info == DND_TEXT_URI_LIST)
+        {
+          gchar **uris;
+
+          uris = gtk_selection_data_get_uris (selection_data);
+          /* Free spurious drag data from previous drags if present */
+          if (sidebar->drag_list != NULL)
+            g_list_free_full (sidebar->drag_list, g_object_unref);
+          sidebar->drag_list = build_file_list_from_uris ((const char **) uris);
+          g_strfreev (uris);
+        }
+      else
+        {
+          sidebar->drag_list = NULL;
+        }
+      sidebar->drag_data_received = TRUE;
+      sidebar->drag_data_info = info;
+    }
+
+  g_signal_stop_emission_by_name (list_box, "drag-data-received");
+
+  if (!sidebar->drop_occurred)
+    return;
 
   target_row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (sidebar->list_box), y);
-  if (target_row == NULL)
-    return FALSE;
 
-  if (!check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (target_row), value))
-    return FALSE;
+  if (target_row == NULL)
+    return;
 
   g_object_get (target_row,
                 "place-type", &target_place_type,
@@ -1795,67 +2051,79 @@ drag_drop_callback (GtkDropTarget    *target,
                 "order-index", &target_order_index,
                 "uri", &target_uri,
                 NULL);
-  result = FALSE;
 
-  if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
+  success = FALSE;
+
+  if (!check_valid_drop_target (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (target_row), context))
+    goto out;
+
+  if (sidebar->drag_data_info == DND_NAUTILUS_GTK_SIDEBAR_ROW)
     {
-      GtkWidget *source_row;
+      GtkWidget **source_row;
       /* A bookmark got reordered */
-      if (target_section_type != NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS)
+      if (target_section_type != SECTION_BOOKMARKS)
         goto out;
 
-      source_row = g_value_get_object (value);
+      source_row = (void*) gtk_selection_data_get_data (selection_data);
 
       if (sidebar->row_placeholder != NULL)
         g_object_get (sidebar->row_placeholder, "order-index", &target_order_index, NULL);
 
-      reorder_bookmarks (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (source_row), target_order_index);
-      result = TRUE;
-    }
-  else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-    {
-      /* Dropping URIs! */
-      if (target_place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
-        {
-          drop_files_as_bookmarks (sidebar, g_value_get_boxed (value), target_order_index);
-        }
-      else
-        {
-          GFile *dest_file = g_file_new_for_uri (target_uri);
-          
-          emit_drag_perform_drop (sidebar,
-                                  dest_file,
-                                  g_value_get_boxed (value),
-                                  gdk_drop_get_actions (gtk_drop_target_get_current_drop (target)));
-
-          g_object_unref (dest_file);
-        }
-      result = TRUE;
+      reorder_bookmarks (sidebar, NAUTILUS_GTK_SIDEBAR_ROW (*source_row), target_order_index);
+      success = TRUE;
     }
   else
     {
-      g_assert_not_reached ();
+      /* Dropping URIs! */
+      GdkDragAction real_action;
+      gchar **uris;
+      GList *source_file_list;
+
+      /* file transfer requested */
+      real_action = gdk_drag_context_get_selected_action (context);
+
+      if (real_action == GDK_ACTION_ASK)
+        real_action = emit_drag_action_ask (sidebar, gdk_drag_context_get_actions (context));
+
+      if (real_action > 0)
+        {
+          GFile *dest_file;
+
+          uris = gtk_selection_data_get_uris (selection_data);
+          source_file_list = build_file_list_from_uris ((const gchar **) uris);
+
+          if (target_place_type == PLACES_DROP_FEEDBACK)
+            {
+                drop_files_as_bookmarks (sidebar, source_file_list, target_order_index);
+            }
+          else
+            {
+              dest_file = g_file_new_for_uri (target_uri);
+
+              emit_drag_perform_drop (sidebar, dest_file, source_file_list, real_action);
+
+              g_object_unref (dest_file);
+            }
+
+          success = TRUE;
+          g_list_free_full (source_file_list, g_object_unref);
+          g_strfreev (uris);
+        }
     }
 
 out:
+  sidebar->drop_occurred = FALSE;
+  gtk_drag_finish (context, success, FALSE, time);
   stop_drop_feedback (sidebar);
   g_free (target_uri);
-  return result;
 }
 
 static void
-dnd_finished_cb (GdkDrag          *drag,
-                 NautilusGtkPlacesSidebar *sidebar)
+drag_end_callback (GtkWidget      *widget,
+                   GdkDragContext *context,
+                   gpointer        user_data)
 {
-  stop_drop_feedback (sidebar);
-}
-
-static void
-dnd_cancel_cb (GdkDrag             *drag,
-               GdkDragCancelReason  reason,
-               NautilusGtkPlacesSidebar    *sidebar)
-{
-  stop_drop_feedback (sidebar);
+  stop_drop_feedback (NAUTILUS_GTK_PLACES_SIDEBAR (user_data));
 }
 
 /* This functions is called every time the drag source leaves
@@ -1868,28 +2136,50 @@ dnd_cancel_cb (GdkDrag             *drag,
  * but that's not true, because this function is called also before drag_drop,
  * which needs the data from the drag so we cannot free the drag data here.
  * So now one could think we could just do nothing here, and wait for
- * drag-end or drag-cancel signals and just stop_drop_feedback there. But that
- * is also not true, since when the drag comes from a different widget than the
+ * drag-end or drag-failed signals and just stop_drop_feedback there. But that
+ * is also not true, since when the drag comes from a diferent widget than the
  * sidebar, when the drag stops the last drag signal we receive is drag-leave.
  * So here what we will do is restore the state of the sidebar as if no drag
- * is being done (and if the application didn't request for permanent hints with
+ * is being done (and if the application didnt request for permanent hints with
  * nautilus_gtk_places_sidebar_show_drop_hints) and we will free the drag data next time
  * we build new drag data in drag_data_received.
  */
 static void
-drag_leave_callback (GtkDropTarget *dest,
-                     gpointer       user_data)
+drag_leave_callback (GtkWidget      *widget,
+                     GdkDragContext *context,
+                     guint           time,
+                     gpointer        user_data)
 {
   NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
 
   if (sidebar->drop_state != DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT)
     {
-      update_possible_drop_targets (sidebar, FALSE);
+      update_possible_drop_targets (sidebar, FALSE, context);
       nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), FALSE);
       sidebar->drop_state = DROP_STATE_NORMAL;
     }
 
+  sidebar->drag_data_received = FALSE;
   sidebar->dragging_over = FALSE;
+  sidebar->drag_data_info = DND_UNKNOWN;
+}
+
+static gboolean
+drag_drop_callback (GtkWidget      *list_box,
+                    GdkDragContext *context,
+                    gint            x,
+                    gint            y,
+                    guint           time,
+                    gpointer        user_data)
+{
+  gboolean retval = FALSE;
+  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+
+  sidebar->drop_occurred = TRUE;
+  retval = get_drag_data (sidebar->list_box, context, time);
+  g_signal_stop_emission_by_name (sidebar->list_box, "drag-drop");
+
+  return retval;
 }
 
 static void
@@ -1916,14 +2206,160 @@ check_unmount_and_eject (GMount   *mount,
 }
 
 static void
+check_visibility (GMount   *mount,
+                  GVolume  *volume,
+                  GDrive   *drive,
+                  gboolean *show_mount,
+                  gboolean *show_unmount,
+                  gboolean *show_eject,
+                  gboolean *show_rescan,
+                  gboolean *show_start,
+                  gboolean *show_stop)
+{
+  *show_mount = FALSE;
+  *show_rescan = FALSE;
+  *show_start = FALSE;
+  *show_stop = FALSE;
+
+  check_unmount_and_eject (mount, volume, drive, show_unmount, show_eject);
+
+  if (drive != NULL)
+    {
+      if (g_drive_is_media_removable (drive) &&
+          !g_drive_is_media_check_automatic (drive) &&
+          g_drive_can_poll_for_media (drive))
+        *show_rescan = TRUE;
+
+      *show_start = g_drive_can_start (drive) || g_drive_can_start_degraded (drive);
+      *show_stop  = g_drive_can_stop (drive);
+
+      if (*show_stop)
+        *show_unmount = FALSE;
+    }
+
+  if (volume != NULL)
+    {
+      if (mount == NULL)
+        *show_mount = g_volume_can_mount (volume);
+    }
+}
+
+typedef struct {
+  GtkWidget *add_shortcut_item;
+  GtkWidget *remove_item;
+  GtkWidget *rename_item;
+  GtkWidget *separator_item;
+  GtkWidget *mount_item;
+  GtkWidget *unmount_item;
+  GtkWidget *eject_item;
+  GtkWidget *rescan_item;
+  GtkWidget *start_item;
+  GtkWidget *stop_item;
+} PopoverData;
+
+static void
+check_popover_sensitivity (NautilusGtkSidebarRow *row,
+                           PopoverData   *data)
+{
+  gboolean show_mount;
+  gboolean show_unmount;
+  gboolean show_eject;
+  gboolean show_rescan;
+  gboolean show_start;
+  gboolean show_stop;
+  NautilusGtkPlacesSidebarPlaceType type;
+  GDrive *drive;
+  GVolume *volume;
+  GMount *mount;
+  GtkWidget *sidebar;
+  GActionGroup *actions;
+  GAction *action;
+
+  g_object_get (row,
+                "sidebar", &sidebar,
+                "place-type", &type,
+                "drive", &drive,
+                "volume", &volume,
+                "mount", &mount,
+                NULL);
+
+  gtk_widget_set_visible (data->add_shortcut_item, (type == PLACES_MOUNTED_VOLUME));
+
+  actions = gtk_widget_get_action_group (sidebar, "row");
+  action = g_action_map_lookup_action (G_ACTION_MAP (actions), "remove");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == PLACES_BOOKMARK));
+  action = g_action_map_lookup_action (G_ACTION_MAP (actions), "rename");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == PLACES_BOOKMARK ||
+                                                          type == PLACES_XDG_DIR));
+  action = g_action_map_lookup_action (G_ACTION_MAP (actions), "open");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
+
+  check_visibility (mount, volume, drive,
+                    &show_mount, &show_unmount, &show_eject, &show_rescan, &show_start, &show_stop);
+
+  gtk_widget_set_visible (data->separator_item, show_mount || show_unmount || show_eject);
+  gtk_widget_set_visible (data->mount_item, show_mount);
+  gtk_widget_set_visible (data->unmount_item, show_unmount);
+  gtk_widget_set_visible (data->eject_item, show_eject);
+  gtk_widget_set_visible (data->rescan_item, show_rescan);
+  gtk_widget_set_visible (data->start_item, show_start);
+  gtk_widget_set_visible (data->stop_item, show_stop);
+
+  /* Adjust start/stop items to reflect the type of the drive */
+  g_object_set (data->start_item, "text", _("_Start"), NULL);
+  g_object_set (data->stop_item, "text", _("_Stop"), NULL);
+  if ((show_start || show_stop) && drive != NULL)
+    {
+      switch (g_drive_get_start_stop_type (drive))
+        {
+        case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
+          /* start() for type G_DRIVE_START_STOP_TYPE_SHUTDOWN is normally not used */
+          g_object_set (data->start_item, "text", _("_Power On"), NULL);
+          g_object_set (data->stop_item, "text", _("_Safely Remove Drive"), NULL);
+          break;
+
+        case G_DRIVE_START_STOP_TYPE_NETWORK:
+          g_object_set (data->start_item, "text", _("_Connect Drive"), NULL);
+          g_object_set (data->stop_item, "text", _("_Disconnect Drive"), NULL);
+          break;
+
+        case G_DRIVE_START_STOP_TYPE_MULTIDISK:
+          g_object_set (data->start_item, "text", _("_Start Multi-disk Device"), NULL);
+          g_object_set (data->stop_item, "text", _("_Stop Multi-disk Device"), NULL);
+          break;
+
+        case G_DRIVE_START_STOP_TYPE_PASSWORD:
+          /* stop() for type G_DRIVE_START_STOP_TYPE_PASSWORD is normally not used */
+          g_object_set (data->start_item, "text", _("_Unlock Device"), NULL);
+          g_object_set (data->stop_item, "text", _("_Lock Device"), NULL);
+          break;
+
+        default:
+        case G_DRIVE_START_STOP_TYPE_UNKNOWN:
+          /* uses defaults set above */
+          break;
+        }
+    }
+
+  if (drive)
+    g_object_unref (drive);
+  if (volume)
+    g_object_unref (volume);
+  if (mount)
+    g_object_unref (mount);
+
+  g_object_unref (sidebar);
+}
+
+static void
 drive_start_from_bookmark_cb (GObject      *source_object,
                               GAsyncResult *res,
                               gpointer      user_data)
 {
   NautilusGtkPlacesSidebar *sidebar;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
 
   sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
 
@@ -1951,8 +2387,8 @@ volume_mount_cb (GObject      *source_object,
   NautilusGtkPlacesSidebar *sidebar;
   GVolume *volume;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
   GMount *mount;
 
   volume = G_VOLUME (source_object);
@@ -1966,9 +2402,6 @@ volume_mount_cb (GObject      *source_object,
         {
           name = g_volume_get_name (G_VOLUME (source_object));
           if (g_str_has_prefix (error->message, "Error unlocking"))
-            /* Translators: This means that unlocking an encrypted storage
-             * device failed. %s is the name of the device.
-             */
             primary = g_strdup_printf (_("Error unlocking “%s”"), name);
           else
             primary = g_strdup_printf (_("Unable to access “%s”"), name);
@@ -2056,7 +2489,7 @@ open_volume (NautilusGtkSidebarRow      *row,
 
 static void
 open_uri (NautilusGtkPlacesSidebar   *sidebar,
-          const char         *uri,
+          const gchar        *uri,
           NautilusGtkPlacesOpenFlags  open_flags)
 {
   GFile *location;
@@ -2070,10 +2503,10 @@ static void
 open_row (NautilusGtkSidebarRow      *row,
           NautilusGtkPlacesOpenFlags  open_flags)
 {
-  char *uri;
+  gchar *uri;
   GDrive *drive;
   GVolume *volume;
-  NautilusGtkPlacesPlaceType place_type;
+  NautilusGtkPlacesSidebarPlaceType place_type;
   NautilusGtkPlacesSidebar *sidebar;
 
   g_object_get (row,
@@ -2084,11 +2517,12 @@ open_row (NautilusGtkSidebarRow      *row,
                 "volume", &volume,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_OTHER_LOCATIONS)
+  if (place_type == PLACES_OTHER_LOCATIONS)
     {
+      emit_show_other_locations (sidebar);
       emit_show_other_locations_with_flags (sidebar, open_flags);
     }
-  else if (place_type == NAUTILUS_GTK_PLACES_STARRED_LOCATION)
+  else if (place_type == PLACES_STARRED_LOCATION)
     {
       emit_show_starred_location (sidebar, open_flags);
     }
@@ -2096,7 +2530,11 @@ open_row (NautilusGtkSidebarRow      *row,
     {
       open_uri (sidebar, uri, open_flags);
     }
-  else if (place_type == NAUTILUS_GTK_PLACES_ENTER_LOCATION)
+  else if (place_type == PLACES_CONNECT_TO_SERVER)
+    {
+      emit_show_connect_to_server (sidebar);
+    }
+  else if (place_type == PLACES_ENTER_LOCATION)
     {
       emit_show_enter_location (sidebar);
     }
@@ -2137,8 +2575,8 @@ add_shortcut_cb (GSimpleAction *action,
                  gpointer       data)
 {
   NautilusGtkPlacesSidebar *sidebar = data;
-  char *uri;
-  char *name;
+  gchar *uri;
+  gchar *name;
   GFile *location;
 
   g_object_get (sidebar->context_row,
@@ -2162,14 +2600,15 @@ static void
 rename_entry_changed (GtkEntry         *entry,
                       NautilusGtkPlacesSidebar *sidebar)
 {
-  NautilusGtkPlacesPlaceType type;
-  char *name;
-  char *uri;
-  const char *new_name;
+  NautilusGtkPlacesSidebarPlaceType type;
+  gchar *name;
+  gchar *uri;
+  const gchar *new_name;
   gboolean found = FALSE;
-  GtkWidget *row;
+  GList *rows;
+  GList *l;
 
-  new_name = gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry));
+  new_name = gtk_entry_get_text (GTK_ENTRY (sidebar->rename_entry));
 
   if (strcmp (new_name, "") == 0)
     {
@@ -2178,20 +2617,16 @@ rename_entry_changed (GtkEntry         *entry,
       return;
     }
 
-  for (row = gtk_widget_get_first_child (GTK_WIDGET (sidebar->list_box));
-       row != NULL && !found;
-       row = gtk_widget_get_next_sibling (row))
+  rows = gtk_container_get_children (GTK_CONTAINER (sidebar->list_box));
+  for (l = rows; l && !found; l = l->next)
     {
-      if (!GTK_IS_LIST_BOX_ROW (row))
-        continue;
-
-      g_object_get (row,
+      g_object_get (l->data,
                     "place-type", &type,
                     "uri", &uri,
                     "label", &name,
                     NULL);
 
-      if ((type == NAUTILUS_GTK_PLACES_XDG_DIR || type == NAUTILUS_GTK_PLACES_BOOKMARK) &&
+      if ((type == PLACES_XDG_DIR || type == PLACES_BOOKMARK) &&
           strcmp (uri, sidebar->rename_uri) != 0 &&
           strcmp (new_name, name) == 0)
         found = TRUE;
@@ -2199,6 +2634,7 @@ rename_entry_changed (GtkEntry         *entry,
       g_free (uri);
       g_free (name);
     }
+  g_list_free (rows);
 
   gtk_widget_set_sensitive (sidebar->rename_button, !found);
   gtk_label_set_label (GTK_LABEL (sidebar->rename_error),
@@ -2209,10 +2645,10 @@ static void
 do_rename (GtkButton        *button,
            NautilusGtkPlacesSidebar *sidebar)
 {
-  char *new_text;
+  gchar *new_text;
   GFile *file;
 
-  new_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry)));
+  new_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (sidebar->rename_entry)));
 
   file = g_file_new_for_uri (sidebar->rename_uri);
   if (!_nautilus_gtk_bookmarks_manager_has_bookmark (sidebar->bookmarks_manager, file))
@@ -2251,24 +2687,20 @@ create_rename_popover (NautilusGtkPlacesSidebar *sidebar)
   GtkWidget *entry;
   GtkWidget *button;
   GtkWidget *error;
-  char *str;
+  gchar *str;
 
   if (sidebar->rename_popover)
     return;
 
-  popover = gtk_popover_new ();
-  gtk_widget_set_parent (popover, GTK_WIDGET (sidebar));
+  popover = gtk_popover_new (GTK_WIDGET (sidebar));
   /* Clean sidebar pointer when its destroyed, most of the times due to its
    * relative_to associated row being destroyed */
   g_signal_connect (popover, "destroy", G_CALLBACK (on_rename_popover_destroy), sidebar);
   gtk_popover_set_position (GTK_POPOVER (popover), GTK_POS_RIGHT);
   grid = gtk_grid_new ();
-  gtk_popover_set_child (GTK_POPOVER (popover), grid);
+  gtk_container_add (GTK_CONTAINER (popover), grid);
   g_object_set (grid,
-                "margin-start", 10,
-                "margin-end", 10,
-                "margin-top", 10,
-                "margin-bottom", 10,
+                "margin", 10,
                 "row-spacing", 6,
                 "column-spacing", 6,
                 NULL);
@@ -2282,7 +2714,8 @@ create_rename_popover (NautilusGtkPlacesSidebar *sidebar)
   gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
   g_free (str);
   button = gtk_button_new_with_mnemonic (_("_Rename"));
-  gtk_widget_add_css_class (button, "suggested-action");
+  gtk_widget_set_can_default (button, TRUE);
+  gtk_style_context_add_class (gtk_widget_get_style_context (button), "suggested-action");
   g_signal_connect (button, "clicked", G_CALLBACK (do_rename), sidebar);
   error = gtk_label_new ("");
   gtk_widget_set_halign (error, GTK_ALIGN_START);
@@ -2290,6 +2723,7 @@ create_rename_popover (NautilusGtkPlacesSidebar *sidebar)
   gtk_grid_attach (GTK_GRID (grid), entry, 0, 1, 1, 1);
   gtk_grid_attach (GTK_GRID (grid), button,1, 1, 1, 1);
   gtk_grid_attach (GTK_GRID (grid), error, 0, 2, 2, 1);
+  gtk_widget_show_all (grid);
   gtk_popover_set_default_widget (GTK_POPOVER (popover), button);
 
   sidebar->rename_popover = popover;
@@ -2312,28 +2746,30 @@ static void
 update_popover_shadowing (GtkWidget *row,
                           gboolean   shown)
 {
-  int count;
+  GtkStyleContext *context;
+  gint count;
 
   count = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "popover-count"));
   count = shown ? count + 1 : count - 1;
   g_object_set_data (G_OBJECT (row), "popover-count", GINT_TO_POINTER (count));
 
+  context = gtk_widget_get_style_context (row);
   if (count > 0)
-    gtk_widget_add_css_class (row, "has-open-popup");
+    gtk_style_context_add_class (context, "has-open-popup");
   else
-    gtk_widget_remove_css_class (row, "has-open-popup");
+    gtk_style_context_remove_class (context, "has-open-popup");
 }
 
 static void
 set_prelight (GtkPopover *popover)
 {
-  update_popover_shadowing (gtk_widget_get_parent (GTK_WIDGET (popover)), TRUE);
+  update_popover_shadowing (gtk_popover_get_relative_to (popover), TRUE);
 }
 
 static void
 unset_prelight (GtkPopover *popover)
 {
-  update_popover_shadowing (gtk_widget_get_parent (GTK_WIDGET (popover)), FALSE);
+  update_popover_shadowing (gtk_popover_get_relative_to (popover), FALSE);
 }
 
 static void
@@ -2346,8 +2782,8 @@ setup_popover_shadowing (GtkWidget *popover)
 static void
 show_rename_popover (NautilusGtkSidebarRow *row)
 {
-  char *name;
-  char *uri;
+  gchar *name;
+  gchar *uri;
   NautilusGtkPlacesSidebar *sidebar;
 
   g_object_get (row,
@@ -2362,12 +2798,8 @@ show_rename_popover (NautilusGtkSidebarRow *row)
     g_free (sidebar->rename_uri);
   sidebar->rename_uri = g_strdup (uri);
 
-  gtk_editable_set_text (GTK_EDITABLE (sidebar->rename_entry), name);
-  g_object_ref (sidebar->rename_popover);
-  gtk_widget_unparent (sidebar->rename_popover);
-  gtk_widget_set_parent (sidebar->rename_popover, GTK_WIDGET (row));
-  g_object_unref (sidebar->rename_popover);
-
+  gtk_entry_set_text (GTK_ENTRY (sidebar->rename_entry), name);
+  gtk_popover_set_relative_to (GTK_POPOVER (sidebar->rename_popover), GTK_WIDGET (row));
   setup_popover_shadowing (sidebar->rename_popover);
 
   gtk_popover_popup (GTK_POPOVER (sidebar->rename_popover));
@@ -2381,11 +2813,11 @@ show_rename_popover (NautilusGtkSidebarRow *row)
 static void
 rename_bookmark (NautilusGtkSidebarRow *row)
 {
-  NautilusGtkPlacesPlaceType type;
+  NautilusGtkPlacesSidebarPlaceType type;
 
   g_object_get (row, "place-type", &type, NULL);
 
-  if (type != NAUTILUS_GTK_PLACES_BOOKMARK && type != NAUTILUS_GTK_PLACES_XDG_DIR)
+  if (type != PLACES_BOOKMARK && type != PLACES_XDG_DIR)
     return;
 
   show_rename_popover (row);
@@ -2404,8 +2836,8 @@ rename_shortcut_cb (GSimpleAction *action,
 static void
 remove_bookmark (NautilusGtkSidebarRow *row)
 {
-  NautilusGtkPlacesPlaceType type;
-  char *uri;
+  NautilusGtkPlacesSidebarPlaceType type;
+  gchar *uri;
   GFile *file;
   NautilusGtkPlacesSidebar *sidebar;
 
@@ -2415,7 +2847,7 @@ remove_bookmark (NautilusGtkSidebarRow *row)
                 "uri", &uri,
                 NULL);
 
-  if (type == NAUTILUS_GTK_PLACES_BOOKMARK)
+  if (type == PLACES_BOOKMARK)
     {
       file = g_file_new_for_uri (uri);
       _nautilus_gtk_bookmarks_manager_remove_bookmark (sidebar->bookmarks_manager, file, NULL);
@@ -2471,8 +2903,8 @@ unmount_mount_cb (GObject      *source_object,
     {
       if (error->code != G_IO_ERROR_FAILED_HANDLED)
         {
-          char *name;
-          char *primary;
+          gchar *name;
+          gchar *primary;
 
           name = g_mount_get_name (mount);
           primary = g_strdup_printf (_("Unable to unmount “%s”"), name);
@@ -2492,7 +2924,7 @@ get_mount_operation (NautilusGtkPlacesSidebar *sidebar)
 {
   GMountOperation *mount_op;
 
-  mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (sidebar))));
+  mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
 
   emit_mount_operation (sidebar, mount_op);
 
@@ -2504,7 +2936,7 @@ get_unmount_operation (NautilusGtkPlacesSidebar *sidebar)
 {
   GMountOperation *mount_op;
 
-  mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (sidebar))));
+  mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (sidebar))));
 
   emit_unmount_operation (sidebar, mount_op);
 
@@ -2640,8 +3072,8 @@ drive_stop_cb (GObject      *source_object,
 {
   NautilusGtkPlacesSidebar *sidebar;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
 
   sidebar = user_data;
 
@@ -2669,8 +3101,8 @@ drive_eject_cb (GObject      *source_object,
 {
   NautilusGtkPlacesSidebar *sidebar;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
 
   sidebar = user_data;
 
@@ -2698,8 +3130,8 @@ volume_eject_cb (GObject      *source_object,
 {
   NautilusGtkPlacesSidebar *sidebar;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
 
   sidebar = user_data;
 
@@ -2727,8 +3159,8 @@ mount_eject_cb (GObject      *source_object,
 {
   NautilusGtkPlacesSidebar *sidebar;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
 
   sidebar = user_data;
 
@@ -2875,8 +3307,8 @@ drive_poll_for_media_cb (GObject      *source_object,
 {
   NautilusGtkPlacesSidebar *sidebar;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
 
   sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
 
@@ -2923,8 +3355,8 @@ drive_start_cb (GObject      *source_object,
 {
   NautilusGtkPlacesSidebar *sidebar;
   GError *error;
-  char *primary;
-  char *name;
+  gchar *primary;
+  gchar *name;
 
   sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
 
@@ -2996,62 +3428,64 @@ stop_shortcut_cb (GSimpleAction *action,
 }
 
 static gboolean
-on_key_pressed (GtkEventControllerKey *controller,
-                guint                  keyval,
-                guint                  keycode,
-                GdkModifierType        state,
-                NautilusGtkPlacesSidebar      *sidebar)
+on_key_press_event (GtkWidget        *widget,
+                    GdkEventKey      *event,
+                    NautilusGtkPlacesSidebar *sidebar)
 {
   guint modifiers;
   GtkListBoxRow *row;
 
-  row = gtk_list_box_get_selected_row (GTK_LIST_BOX (sidebar->list_box));
-  if (row)
+  if (event)
     {
-      modifiers = gtk_accelerator_get_default_mod_mask ();
-
-      if (keyval == GDK_KEY_Return ||
-          keyval == GDK_KEY_KP_Enter ||
-          keyval == GDK_KEY_ISO_Enter ||
-          keyval == GDK_KEY_space)
+      row = gtk_list_box_get_selected_row (GTK_LIST_BOX (sidebar->list_box));
+      if (row)
         {
-          NautilusGtkPlacesOpenFlags open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
+          modifiers = gtk_accelerator_get_default_mod_mask ();
 
-          if ((state & modifiers) == GDK_SHIFT_MASK)
-            open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
-          else if ((state & modifiers) == GDK_CONTROL_MASK)
-            open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW;
+          if (event->keyval == GDK_KEY_Return ||
+              event->keyval == GDK_KEY_KP_Enter ||
+              event->keyval == GDK_KEY_ISO_Enter ||
+              event->keyval == GDK_KEY_space)
+            {
+              NautilusGtkPlacesOpenFlags open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
 
-          open_row (NAUTILUS_GTK_SIDEBAR_ROW (row), open_flags);
+              if ((event->state & modifiers) == GDK_SHIFT_MASK)
+                open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
+              else if ((event->state & modifiers) == GDK_CONTROL_MASK)
+                open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW;
 
-          return TRUE;
-        }
+              open_row (NAUTILUS_GTK_SIDEBAR_ROW (row), open_flags);
 
-      if (keyval == GDK_KEY_Down &&
-          (state & modifiers) == GDK_ALT_MASK)
-        return eject_or_unmount_selection (sidebar);
+              return TRUE;
+            }
 
-      if ((keyval == GDK_KEY_Delete ||
-           keyval == GDK_KEY_KP_Delete) &&
-          (state & modifiers) == 0)
-        {
-          remove_bookmark (NAUTILUS_GTK_SIDEBAR_ROW (row));
-          return TRUE;
-        }
+          if (event->keyval == GDK_KEY_Down &&
+              (event->state & modifiers) == GDK_MOD1_MASK)
+            return eject_or_unmount_selection (sidebar);
 
-      if ((keyval == GDK_KEY_F2) &&
-          (state & modifiers) == 0)
-        {
-          rename_bookmark (NAUTILUS_GTK_SIDEBAR_ROW (row));
-          return TRUE;
-        }
+          if ((event->keyval == GDK_KEY_Delete ||
+               event->keyval == GDK_KEY_KP_Delete) &&
+              (event->state & modifiers) == 0)
+            {
+              remove_bookmark (NAUTILUS_GTK_SIDEBAR_ROW (row));
+              return TRUE;
+            }
 
-      if ((keyval == GDK_KEY_Menu) ||
-          ((keyval == GDK_KEY_F10) &&
-           (state & modifiers) == GDK_SHIFT_MASK))
-        {
-          popup_menu_cb (NAUTILUS_GTK_SIDEBAR_ROW (row));
-          return TRUE;
+          if ((event->keyval == GDK_KEY_F2) &&
+              (event->state & modifiers) == 0)
+            {
+              rename_bookmark (NAUTILUS_GTK_SIDEBAR_ROW (row));
+              return TRUE;
+            }
+
+          if ((event->keyval == GDK_KEY_Menu) ||
+              ((event->keyval == GDK_KEY_F10) &&
+               (event->state & modifiers) == GDK_SHIFT_MASK))
+
+            {
+              popup_menu_cb (NAUTILUS_GTK_SIDEBAR_ROW (row));
+              return TRUE;
+            }
         }
     }
 
@@ -3071,6 +3505,70 @@ static GActionEntry entries[] = {
   { "start", start_shortcut_cb, NULL, NULL, NULL },
   { "stop", stop_shortcut_cb, NULL, NULL, NULL },
 };
+
+static void
+add_actions (NautilusGtkPlacesSidebar *sidebar)
+{
+  GActionGroup *actions;
+
+  actions = G_ACTION_GROUP (g_simple_action_group_new ());
+  g_action_map_add_action_entries (G_ACTION_MAP (actions),
+                                   entries, G_N_ELEMENTS (entries),
+                                   sidebar);
+  gtk_widget_insert_action_group (GTK_WIDGET (sidebar), "row", actions);
+  g_object_unref (actions);
+}
+
+static GtkWidget *
+append_separator (GtkWidget *box)
+{
+  GtkWidget *separator;
+
+  separator = g_object_new (GTK_TYPE_SEPARATOR,
+                            "orientation", GTK_ORIENTATION_HORIZONTAL,
+                            "visible", TRUE,
+                            "margin-top", 6,
+                            "margin-bottom", 6,
+                            NULL);
+  gtk_container_add (GTK_CONTAINER (box), separator);
+
+  return separator;
+}
+
+static GtkWidget *
+add_button (GtkWidget   *box,
+            const gchar *label,
+            const gchar *action)
+{
+  GtkWidget *item;
+
+  item = g_object_new (GTK_TYPE_MODEL_BUTTON,
+                       "visible", TRUE,
+                       "action-name", action,
+                       "text", label,
+                       NULL);
+  gtk_container_add (GTK_CONTAINER (box), item);
+
+  return item;
+}
+
+static GtkWidget *
+add_open_button (GtkWidget          *box,
+                 const gchar        *label,
+                 NautilusGtkPlacesOpenFlags  flags)
+{
+  GtkWidget *item;
+
+  item = g_object_new (GTK_TYPE_MODEL_BUTTON,
+                       "visible", TRUE,
+                       "action-name", flags == NAUTILUS_GTK_PLACES_OPEN_NORMAL ? "row.open" : "row.open-other",
+                       "action-target", g_variant_new_int32 (flags),
+                       "text", label,
+                       NULL);
+  gtk_container_add (GTK_CONTAINER (box), item);
+
+  return item;
+}
 
 static void
 on_row_popover_destroy (GtkWidget        *row_popover,
@@ -3100,8 +3598,7 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
       GMenu *menu = g_menu_new ();
       GMenuItem *item;
       item = g_menu_item_new (_("_Open"), "row.open");
-      g_menu_item_set_action_and_target_value (item, "row.open",
-                                               g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NORMAL));
+      g_menu_item_set_action_and_target_value (item, "row.open", g_variant_new_int32(NAUTILUS_GTK_PLACES_OPEN_NORMAL));
       g_menu_append_item (menu, item);
       if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB)
         {
@@ -3124,11 +3621,12 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
                                           "cloudprovider",
                                           G_ACTION_GROUP (cloud_provider_action_group));
         }
+      add_actions (sidebar);
       if (sidebar->popover)
-        gtk_widget_unparent (sidebar->popover);
+        gtk_widget_destroy (sidebar->popover);
 
-      sidebar->popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (menu));
-      gtk_widget_set_parent (sidebar->popover, GTK_WIDGET (sidebar));
+      sidebar->popover = gtk_popover_new_from_model (GTK_WIDGET (sidebar),
+                                                     G_MENU_MODEL (menu));
       g_signal_connect (sidebar->popover, "destroy",
                         G_CALLBACK (on_row_popover_destroy), sidebar);
       g_object_unref (sidebar);
@@ -3142,24 +3640,8 @@ static void
 create_row_popover (NautilusGtkPlacesSidebar *sidebar,
                     NautilusGtkSidebarRow    *row)
 {
-  NautilusGtkPlacesPlaceType type;
-  GMenu *menu, *section;
-  GMenuItem *item;
-  GMount *mount;
-  GVolume *volume;
-  GDrive *drive;
-  GAction *action;
-  gboolean show_unmount, show_eject;
-  gboolean show_stop;
-
-  g_object_get (row,
-                "place-type", &type,
-                "drive", &drive,
-                "volume", &volume,
-                "mount", &mount,
-                NULL);
-
-  check_unmount_and_eject (mount, volume, drive, &show_unmount, &show_eject);
+  PopoverData data;
+  GtkWidget *box;
 
 #ifdef HAVE_CLOUDPROVIDERS
   CloudProvidersAccount *cloud_provider_account;
@@ -3169,139 +3651,72 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   if (cloud_provider_account)
     {
       build_popup_menu_using_gmenu (row);
-       return;
+      return;
     }
 #endif
 
-  action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "remove");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK));
-  action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "rename");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK ||
-                                                          type == NAUTILUS_GTK_PLACES_XDG_DIR));
-  action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "open");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
+  sidebar->popover = gtk_popover_new (GTK_WIDGET (sidebar));
+  /* Clean sidebar pointer when its destroyed, most of the times due to its
+   * relative_to associated row being destroyed */
+  g_signal_connect (sidebar->popover, "destroy", G_CALLBACK (on_row_popover_destroy), sidebar);
+  setup_popover_shadowing (sidebar->popover);
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+  g_object_set (box, "margin", 10, NULL);
+  gtk_widget_show (box);
+  gtk_container_add (GTK_CONTAINER (sidebar->popover), box);
 
-  menu = g_menu_new ();
-  section = g_menu_new ();
-
-  item = g_menu_item_new (_("_Open"), "row.open");
-  g_menu_item_set_action_and_target_value (item, "row.open",
-                                           g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NORMAL));
-  g_menu_append_item (section, item);
-  g_object_unref (item);
+  add_open_button (box, _("_Open"), NAUTILUS_GTK_PLACES_OPEN_NORMAL);
 
   if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB)
-    {
-      item = g_menu_item_new (_("Open in New _Tab"), "row.open");
-      g_menu_item_set_action_and_target_value (item, "row.open",
-                                               g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NEW_TAB));
-      g_menu_append_item (section, item);
-      g_object_unref (item);
-    }
+    add_open_button (box, _("Open in New _Tab"), NAUTILUS_GTK_PLACES_OPEN_NEW_TAB);
 
   if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW)
+    add_open_button (box, _("Open in New _Window"), NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW);
+
+  append_separator (box);
+
+  data.add_shortcut_item = add_button (box, _("_Add Bookmark"), "row.bookmark");
+  data.remove_item = add_button (box, _("_Remove"), "row.remove");
+  data.rename_item = add_button (box, _("Rename…"), "row.rename");
+
+  data.separator_item = append_separator (box);
+
+  data.mount_item = add_button (box, _("_Mount"), "row.mount");
+  data.unmount_item = add_button (box, _("_Unmount"), "row.unmount");
+  data.eject_item = add_button (box, _("_Eject"), "row.eject");
+  data.rescan_item = add_button (box, _("_Detect Media"), "row.rescan");
+  data.start_item = add_button (box, _("_Start"), "row.start");
+  data.stop_item = add_button (box, _("_Stop"), "row.stop");
+
+  /* Update everything! */
+  check_popover_sensitivity (row, &data);
+
+  if (sidebar->populate_all)
     {
-      item = g_menu_item_new (_("Open in New _Window"), "row.open");
-      g_menu_item_set_action_and_target_value (item, "row.open",
-                                               g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW));
-      g_menu_append_item (section, item);
-      g_object_unref (item);
+      gchar *uri;
+      GVolume *volume;
+      GFile *file;
+
+      g_object_get (row,
+                    "uri", &uri,
+                    "volume", &volume,
+                    NULL);
+
+      if (uri)
+        file = g_file_new_for_uri (uri);
+      else
+        file = NULL;
+
+      g_signal_emit (sidebar, places_sidebar_signals[POPULATE_POPUP], 0,
+                     box, file, volume);
+
+      if (file)
+        g_object_unref (file);
+
+      g_free (uri);
+      if (volume)
+        g_object_unref (volume);
     }
-
-  g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
-  g_object_unref (section);
-
-  section = g_menu_new ();
-  item = g_menu_item_new (_("_Add Bookmark"), "row.add-bookmark");
-  g_menu_append_item (section, item);
-  g_object_unref (item);
-
-  item = g_menu_item_new (_("_Remove"), "row.remove");
-  g_menu_append_item (section, item);
-  g_object_unref (item);
-
-  item = g_menu_item_new (_("_Rename"), "row.rename");
-  g_menu_append_item (section, item);
-  g_object_unref (item);
-
-  g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
-  g_object_unref (section);
-
-  section = g_menu_new ();
-
-  if (volume != NULL && mount == NULL &&
-      g_volume_can_mount (volume))
-    {
-      item = g_menu_item_new (_("_Mount"), "row.mount");
-      g_menu_append_item (section, item);
-      g_object_unref (item);
-    }
-
-  show_stop = (drive != NULL && g_drive_can_stop (drive));
-
-  if (show_unmount && !show_stop)
-    {
-      item = g_menu_item_new (_("_Unmount"), "row.unmount");
-      g_menu_append_item (section, item);
-      g_object_unref (item);
-    }
-
-  if (show_eject)
-    {
-      item = g_menu_item_new (_("_Eject"), "row.eject");
-      g_menu_append_item (section, item);
-      g_object_unref (item);
-    }
-
-  if (drive != NULL &&
-      g_drive_is_media_removable (drive) &&
-      !g_drive_is_media_check_automatic (drive) &&
-      g_drive_can_poll_for_media (drive))
-    {
-      item = g_menu_item_new (_("_Detect Media"), "row.rescan");
-      g_menu_append_item (section, item);
-      g_object_unref (item);
-    }
-
-  if (drive != NULL &&
-      (g_drive_can_start (drive) || g_drive_can_start_degraded (drive)))
-    {
-      const guint ss_type = g_drive_get_start_stop_type (drive);
-      const char *start_label = _("_Start");
-
-      if (ss_type == G_DRIVE_START_STOP_TYPE_SHUTDOWN) start_label = _("_Power On");
-      else if (ss_type == G_DRIVE_START_STOP_TYPE_NETWORK) start_label = _("_Connect Drive");
-      else if (ss_type == G_DRIVE_START_STOP_TYPE_MULTIDISK) start_label = _("_Start Multi-disk Device");
-      else if (ss_type == G_DRIVE_START_STOP_TYPE_PASSWORD) start_label = _("_Unlock Device");
-
-      item = g_menu_item_new (start_label, "row.start");
-      g_menu_append_item (section, item);
-      g_object_unref (item);
-    }
-
-  if (show_stop && !show_unmount)
-    {
-      const guint ss_type = g_drive_get_start_stop_type (drive);
-      const char *stop_label = _("_Stop");
-
-      if (ss_type == G_DRIVE_START_STOP_TYPE_SHUTDOWN) stop_label = _("_Safely Remove Drive");
-      else if (ss_type == G_DRIVE_START_STOP_TYPE_NETWORK) stop_label = _("_Disconnect Drive");
-      else if (ss_type == G_DRIVE_START_STOP_TYPE_MULTIDISK) stop_label = _("_Stop Multi-disk Device");
-      else if (ss_type == G_DRIVE_START_STOP_TYPE_PASSWORD) stop_label = _("_Lock Device");
-
-      item = g_menu_item_new (stop_label, "row.stop");
-      g_menu_append_item (section, item);
-      g_object_unref (item);
-    }
-
-  g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
-  g_object_unref (section);
-
-  sidebar->popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (menu));
-  g_object_unref (menu);
-  g_signal_connect (sidebar->popover, "destroy", G_CALLBACK (on_row_popover_destroy), sidebar);
-
-  setup_popover_shadowing (sidebar->popover);
 }
 
 static void
@@ -3311,11 +3726,12 @@ show_row_popover (NautilusGtkSidebarRow *row)
 
   g_object_get (row, "sidebar", &sidebar, NULL);
 
-  g_clear_pointer (&sidebar->popover, gtk_widget_unparent);
+  if (sidebar->popover)
+    gtk_widget_destroy (sidebar->popover);
 
   create_row_popover (sidebar, row);
 
-  gtk_widget_set_parent (sidebar->popover, GTK_WIDGET (row));
+  gtk_popover_set_relative_to (GTK_POPOVER (sidebar->popover), GTK_WIDGET (row));
 
   sidebar->context_row = row;
   gtk_popover_popup (GTK_POPOVER (sidebar->popover));
@@ -3341,154 +3757,84 @@ on_row_activated (GtkListBox    *list_box,
   open_row (selected_row, 0);
 }
 
-static void
-on_row_pressed (GtkGestureClick *gesture,
-                int              n_press,
-                double           x,
-                double           y,
-                NautilusGtkSidebarRow   *row)
+static gboolean
+on_button_press_event (GtkWidget      *widget,
+                       GdkEventButton *event,
+                       NautilusGtkSidebarRow  *row)
 {
   NautilusGtkPlacesSidebar *sidebar;
-  NautilusGtkPlacesSectionType section_type;
-  NautilusGtkPlacesPlaceType row_type;
+  NautilusGtkPlacesSidebarSectionType section_type;
 
-  g_object_get (row,
+  g_object_get (NAUTILUS_GTK_SIDEBAR_ROW (row),
                 "sidebar", &sidebar,
                 "section_type", &section_type,
-                "place-type", &row_type,
                 NULL);
 
-  if (section_type == NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS)
+  if (section_type == SECTION_BOOKMARKS)
     {
       sidebar->drag_row = GTK_WIDGET (row);
-      sidebar->drag_row_x = (int)x;
-      sidebar->drag_row_y = (int)y;
+      sidebar->drag_row_x = (gint)event->x;
+      sidebar->drag_row_y = (gint)event->y;
+
+      sidebar->drag_root_x = event->x_root;
+      sidebar->drag_root_y = event->y_root;
     }
 
   g_object_unref (sidebar);
+
+  return FALSE;
 }
 
-static void
-on_row_released (GtkGestureClick *gesture,
-                 int              n_press,
-                 double           x,
-                 double           y,
-                 NautilusGtkSidebarRow   *row)
+static gboolean
+on_button_release_event (GtkWidget      *widget,
+                         GdkEventButton *event,
+                         NautilusGtkSidebarRow  *row)
 {
-  NautilusGtkPlacesSidebar *sidebar;
-  NautilusGtkPlacesSectionType section_type;
-  NautilusGtkPlacesPlaceType row_type;
-  guint button, state;
+  gboolean ret = FALSE;
+  NautilusGtkPlacesSidebarPlaceType row_type;
 
-  g_object_get (row,
-                "sidebar", &sidebar,
-                "section_type", &section_type,
-                "place-type", &row_type,
-                NULL);
-
-  button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-  state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
-
-  if (row)
+  if (event && row)
     {
-      if (button == 2)
+      g_object_get (row, "place-type", &row_type, NULL);
+
+      if (event->button == 1)
+        ret = FALSE;
+      else if (event->button == 2)
         {
           NautilusGtkPlacesOpenFlags open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
 
-          open_flags = (state & GDK_CONTROL_MASK) ?
-            NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW :
-            NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
+          open_flags = (event->state & GDK_CONTROL_MASK) ?
+                        NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW :
+                        NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
 
           open_row (NAUTILUS_GTK_SIDEBAR_ROW (row), open_flags);
-          gtk_gesture_set_state (GTK_GESTURE (gesture),
-                                 GTK_EVENT_SEQUENCE_CLAIMED);
+          ret = TRUE;
         }
-      else if (button == 3)
+      else if (event->button == 3)
         {
-          if (row_type != NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
+          if (row_type != PLACES_CONNECT_TO_SERVER)
             show_row_popover (NAUTILUS_GTK_SIDEBAR_ROW (row));
         }
     }
-}
 
-static void
-on_row_dragged (GtkGestureDrag *gesture,
-                double          x,
-                double          y,
-                NautilusGtkSidebarRow  *row)
-{
-  NautilusGtkPlacesSidebar *sidebar;
-
-  g_object_get (row, "sidebar", &sidebar, NULL);
-
-  if (sidebar->drag_row == NULL || sidebar->dragging_over)
-    {
-      g_object_unref (sidebar);
-      return;
-    }
-
-  if (gtk_drag_check_threshold (GTK_WIDGET (row), 0, 0, x, y))
-    {
-      double start_x, start_y;
-      double drag_x, drag_y;
-      GdkContentProvider *content;
-      GdkSurface *surface;
-      GdkDevice *device;
-      GtkAllocation allocation;
-      GtkWidget *drag_widget;
-      GdkDrag *drag;
-
-      gtk_gesture_drag_get_start_point (gesture, &start_x, &start_y);
-      gtk_widget_translate_coordinates (GTK_WIDGET (row),
-                                        GTK_WIDGET (sidebar),
-                                        start_x, start_y,
-                                        &drag_x, &drag_y);
-
-      sidebar->dragging_over = TRUE;
-
-      content = gdk_content_provider_new_typed (NAUTILUS_TYPE_GTK_SIDEBAR_ROW, sidebar->drag_row);
-
-      surface = gtk_native_get_surface (gtk_widget_get_native (GTK_WIDGET (sidebar)));
-      device = gtk_gesture_get_device (GTK_GESTURE (gesture));
-
-      drag = gdk_drag_begin (surface, device, content, GDK_ACTION_MOVE, drag_x, drag_y);
-
-      g_object_unref (content);
-
-      g_signal_connect (drag, "dnd-finished", G_CALLBACK (dnd_finished_cb), sidebar);
-      g_signal_connect (drag, "cancel", G_CALLBACK (dnd_cancel_cb), sidebar);
-
-      gtk_widget_get_allocation (sidebar->drag_row, &allocation);
-      gtk_widget_hide (sidebar->drag_row);
-
-      drag_widget = GTK_WIDGET (nautilus_gtk_sidebar_row_clone (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->drag_row)));
-      sidebar->drag_row_height = allocation.height;
-      gtk_widget_set_size_request (drag_widget, allocation.width, allocation.height);
-      gtk_widget_set_opacity (drag_widget, 0.8);
-
-      gtk_drag_icon_set_child (GTK_DRAG_ICON (gtk_drag_icon_get_for_drag (drag)), drag_widget);
-
-      g_object_unref (drag);
-    }
-
-  g_object_unref (sidebar);
+  return ret;
 }
 
 static void
 popup_menu_cb (NautilusGtkSidebarRow *row)
 {
-  NautilusGtkPlacesPlaceType row_type;
+  NautilusGtkPlacesSidebarPlaceType row_type;
 
   g_object_get (row, "place-type", &row_type, NULL);
 
-  if (row_type != NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
+  if (row_type != PLACES_CONNECT_TO_SERVER)
     show_row_popover (row);
 }
 
 static void
 long_press_cb (GtkGesture       *gesture,
-               double            x,
-               double            y,
+               gdouble           x,
+               gdouble           y,
                NautilusGtkPlacesSidebar *sidebar)
 {
   GtkWidget *row;
@@ -3498,16 +3844,16 @@ long_press_cb (GtkGesture       *gesture,
     popup_menu_cb (NAUTILUS_GTK_SIDEBAR_ROW (row));
 }
 
-static int
+static gint
 list_box_sort_func (GtkListBoxRow *row1,
                     GtkListBoxRow *row2,
                     gpointer       user_data)
 {
-  NautilusGtkPlacesSectionType section_type_1, section_type_2;
-  NautilusGtkPlacesPlaceType place_type_1, place_type_2;
-  char *label_1, *label_2;
-  int index_1, index_2;
-  int retval = 0;
+  NautilusGtkPlacesSidebarSectionType section_type_1, section_type_2;
+  NautilusGtkPlacesSidebarPlaceType place_type_1, place_type_2;
+  gchar *label_1, *label_2;
+  gint index_1, index_2;
+  gint retval = 0;
 
   g_object_get (row1,
                 "label", &label_1,
@@ -3523,11 +3869,11 @@ list_box_sort_func (GtkListBoxRow *row1,
                 NULL);
 
   /* Always last position for "connect to server" */
-  if (place_type_1 == NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
+  if (place_type_1 == PLACES_CONNECT_TO_SERVER)
     {
       retval = 1;
     }
-  else if (place_type_2 == NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
+  else if (place_type_2 == PLACES_CONNECT_TO_SERVER)
     {
       retval = -1;
     }
@@ -3535,20 +3881,20 @@ list_box_sort_func (GtkListBoxRow *row1,
     {
       if (section_type_1 == section_type_2)
         {
-          if ((section_type_1 == NAUTILUS_GTK_PLACES_SECTION_COMPUTER &&
+          if ((section_type_1 == SECTION_COMPUTER &&
                place_type_1 == place_type_2 &&
-               place_type_1 == NAUTILUS_GTK_PLACES_XDG_DIR) ||
-              section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
+               place_type_1 == PLACES_XDG_DIR) ||
+              section_type_1 == SECTION_MOUNTS)
             {
               retval = g_utf8_collate (label_1, label_2);
             }
-          else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK) &&
-                   (place_type_1 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
+          else if ((place_type_1 == PLACES_BOOKMARK || place_type_2 == PLACES_DROP_FEEDBACK) &&
+                   (place_type_1 == PLACES_DROP_FEEDBACK || place_type_2 == PLACES_BOOKMARK))
             {
               retval = index_1 - index_2;
             }
           /* We order the bookmarks sections based on the bookmark index that we
-           * set on the row as an order-index property, but we have to deal with
+           * set on the row as a order-index property, but we have to deal with
            * the placeholder row wanted to be between two consecutive bookmarks,
            * with two consecutive order-index values which is the usual case.
            * For that, in the list box sort func we give priority to the placeholder row,
@@ -3557,14 +3903,14 @@ list_box_sort_func (GtkListBoxRow *row1,
            * the current row, for instance when the cursor is in the lower half
            * of the row, we need to increase the order-index.
            */
-          else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK)
+          else if (place_type_1 == PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == PLACES_BOOKMARK)
             {
               if (index_1 == index_2)
                 retval =  index_1 - index_2 - 1;
               else
                 retval = index_1 - index_2;
             }
-          else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+          else if (place_type_1 == PLACES_BOOKMARK && place_type_2 == PLACES_BOOKMARK_PLACEHOLDER)
             {
               if (index_1 == index_2)
                 retval =  index_1 - index_2 + 1;
@@ -3591,7 +3937,7 @@ update_hostname (NautilusGtkPlacesSidebar *sidebar)
 {
   GVariant *variant;
   gsize len;
-  const char *hostname;
+  const gchar *hostname;
 
   if (sidebar->hostnamed_proxy == NULL)
     return;
@@ -3700,19 +4046,13 @@ shell_shows_desktop_changed (GtkSettings *settings,
 static void
 nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 {
-  GtkDropTarget *target;
+  GtkTargetList *target_list;
   gboolean show_desktop;
-  GtkEventController *controller;
-  GtkGesture *gesture;
+  GtkStyleContext *context;
 
   sidebar->cancellable = g_cancellable_new ();
 
   sidebar->show_trash = TRUE;
-  sidebar->show_other_locations = TRUE;
-  sidebar->show_recent = TRUE;
-  sidebar->show_desktop = TRUE;
-
-  sidebar->shortcuts = g_list_store_new (G_TYPE_FILE);
 
   create_volume_monitor (sidebar);
 
@@ -3724,19 +4064,19 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
   sidebar->trash_monitor_changed_id = g_signal_connect_swapped (sidebar->trash_monitor, "trash-state-changed",
                                                                 G_CALLBACK (update_trash_icon), sidebar);
 
-  sidebar->swin = gtk_scrolled_window_new ();
-  gtk_widget_set_parent (sidebar->swin, GTK_WIDGET (sidebar));
-  gtk_widget_set_size_request (sidebar->swin, 140, 280);
+  gtk_widget_set_size_request (GTK_WIDGET (sidebar), 140, 280);
 
-  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar->swin),
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar),
                                   GTK_POLICY_NEVER,
                                   GTK_POLICY_AUTOMATIC);
+  gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sidebar), GTK_SHADOW_IN);
 
-  gtk_widget_add_css_class (GTK_WIDGET (sidebar), "sidebar");
+  context = gtk_widget_get_style_context (GTK_WIDGET (sidebar));
+  gtk_style_context_add_class (context, GTK_STYLE_CLASS_SIDEBAR);
+  gtk_style_context_set_junction_sides (context, GTK_JUNCTION_RIGHT | GTK_JUNCTION_LEFT);
 
   /* list box */
   sidebar->list_box = gtk_list_box_new ();
-  gtk_widget_add_css_class (sidebar->list_box, "navigation-sidebar");
 
   gtk_list_box_set_header_func (GTK_LIST_BOX (sidebar->list_box),
                                 list_box_header_func, sidebar, NULL);
@@ -3747,33 +4087,48 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   g_signal_connect (sidebar->list_box, "row-activated",
                     G_CALLBACK (on_row_activated), sidebar);
+  g_signal_connect (sidebar->list_box, "key-press-event",
+                    G_CALLBACK (on_key_press_event), sidebar);
 
-  controller = gtk_event_controller_key_new ();
-  g_signal_connect (controller, "key-pressed",
-                    G_CALLBACK (on_key_pressed), sidebar);
-  gtk_widget_add_controller (sidebar->list_box, controller);
-
-  gesture = gtk_gesture_long_press_new ();
-  gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (gesture), TRUE);
-  g_signal_connect (gesture, "pressed",
+  sidebar->long_press_gesture = gtk_gesture_long_press_new (GTK_WIDGET (sidebar));
+  gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (sidebar->long_press_gesture), TRUE);
+  g_signal_connect (sidebar->long_press_gesture, "pressed",
                     G_CALLBACK (long_press_cb), sidebar);
-  gtk_widget_add_controller (GTK_WIDGET (sidebar), GTK_EVENT_CONTROLLER (gesture));
 
   /* DND support */
-  target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
-  gtk_drop_target_set_preload (target, TRUE);
-  gtk_drop_target_set_gtypes (target, (GType[2]) { NAUTILUS_TYPE_GTK_SIDEBAR_ROW, GDK_TYPE_FILE_LIST }, 2);
-  g_signal_connect (target, "enter", G_CALLBACK (drag_motion_callback), sidebar);
-  g_signal_connect (target, "motion", G_CALLBACK (drag_motion_callback), sidebar);
-  g_signal_connect (target, "drop", G_CALLBACK (drag_drop_callback), sidebar);
-  g_signal_connect (target, "leave", G_CALLBACK (drag_leave_callback), sidebar);
-  gtk_widget_add_controller (sidebar->list_box, GTK_EVENT_CONTROLLER (target));
+  gtk_drag_dest_set (sidebar->list_box,
+                     0,
+                     NULL, 0,
+                     GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+  target_list = gtk_target_list_new  (dnd_drop_targets, G_N_ELEMENTS (dnd_drop_targets));
+  gtk_target_list_add_uri_targets (target_list, DND_TEXT_URI_LIST);
+  gtk_drag_dest_set_target_list (sidebar->list_box, target_list);
+  gtk_target_list_unref (target_list);
+  sidebar->source_targets = gtk_target_list_new (dnd_source_targets, G_N_ELEMENTS (dnd_source_targets));
+  gtk_target_list_add_text_targets (sidebar->source_targets, 0);
 
+  g_signal_connect (sidebar->list_box, "motion-notify-event",
+                    G_CALLBACK (on_motion_notify_event), sidebar);
+  g_signal_connect (sidebar->list_box, "drag-begin",
+                    G_CALLBACK (drag_begin_callback), sidebar);
+  g_signal_connect (sidebar->list_box, "drag-motion",
+                    G_CALLBACK (drag_motion_callback), sidebar);
+  g_signal_connect (sidebar->list_box, "drag-data-get",
+                    G_CALLBACK (drag_data_get_callback), sidebar);
+  g_signal_connect (sidebar->list_box, "drag-data-received",
+                    G_CALLBACK (drag_data_received_callback), sidebar);
+  g_signal_connect (sidebar->list_box, "drag-drop",
+                    G_CALLBACK (drag_drop_callback), sidebar);
+  g_signal_connect (sidebar->list_box, "drag-end",
+                    G_CALLBACK (drag_end_callback), sidebar);
+  g_signal_connect (sidebar->list_box, "drag-leave",
+                    G_CALLBACK (drag_leave_callback), sidebar);
   sidebar->drag_row = NULL;
   sidebar->row_placeholder = NULL;
   sidebar->dragging_over = FALSE;
+  sidebar->drag_data_info = DND_UNKNOWN;
 
-  gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (sidebar->swin), sidebar->list_box);
+  gtk_container_add (GTK_CONTAINER (sidebar), sidebar->list_box);
 
   sidebar->hostname = g_strdup (_("Computer"));
   sidebar->hostnamed_cancellable = g_cancellable_new ();
@@ -3808,11 +4163,7 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
   /* populate the sidebar */
   update_places (sidebar);
 
-  sidebar->row_actions = G_ACTION_GROUP (g_simple_action_group_new ());
-  g_action_map_add_action_entries (G_ACTION_MAP (sidebar->row_actions),
-                                   entries, G_N_ELEMENTS (entries),
-                                   sidebar);
-  gtk_widget_insert_action_group (GTK_WIDGET (sidebar), "row", sidebar->row_actions);
+  add_actions (sidebar);
 }
 
 static void
@@ -3841,6 +4192,12 @@ nautilus_gtk_places_sidebar_set_property (GObject      *obj,
       nautilus_gtk_places_sidebar_set_show_desktop (sidebar, g_value_get_boolean (value));
       break;
 
+    case PROP_SHOW_CONNECT_TO_SERVER:
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+      nautilus_gtk_places_sidebar_set_show_connect_to_server (sidebar, g_value_get_boolean (value));
+G_GNUC_END_IGNORE_DEPRECATIONS
+      break;
+
     case PROP_SHOW_ENTER_LOCATION:
       nautilus_gtk_places_sidebar_set_show_enter_location (sidebar, g_value_get_boolean (value));
       break;
@@ -3855,6 +4212,18 @@ nautilus_gtk_places_sidebar_set_property (GObject      *obj,
 
     case PROP_SHOW_STARRED_LOCATION:
       nautilus_gtk_places_sidebar_set_show_starred_location (sidebar, g_value_get_boolean (value));
+      break;
+
+    case PROP_LOCAL_ONLY:
+      nautilus_gtk_places_sidebar_set_local_only (sidebar, g_value_get_boolean (value));
+      break;
+
+    case PROP_POPULATE_ALL:
+      if (sidebar->populate_all != g_value_get_boolean (value))
+        {
+          sidebar->populate_all = g_value_get_boolean (value);
+          g_object_notify_by_pspec (obj, pspec);
+        }
       break;
 
     default:
@@ -3889,6 +4258,12 @@ nautilus_gtk_places_sidebar_get_property (GObject    *obj,
       g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_desktop (sidebar));
       break;
 
+    case PROP_SHOW_CONNECT_TO_SERVER:
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_connect_to_server (sidebar));
+G_GNUC_END_IGNORE_DEPRECATIONS
+      break;
+
     case PROP_SHOW_ENTER_LOCATION:
       g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_enter_location (sidebar));
       break;
@@ -3903,6 +4278,14 @@ nautilus_gtk_places_sidebar_get_property (GObject    *obj,
 
     case PROP_SHOW_STARRED_LOCATION:
       g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_starred_location (sidebar));
+      break;
+
+    case PROP_LOCAL_ONLY:
+      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_local_only (sidebar));
+      break;
+
+    case PROP_POPULATE_ALL:
+      g_value_set_boolean (value, sidebar->populate_all);
       break;
 
     default:
@@ -3928,17 +4311,23 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
       sidebar->cancellable = NULL;
     }
 
+  free_drag_data (sidebar);
+
   if (sidebar->bookmarks_manager != NULL)
     {
       _nautilus_gtk_bookmarks_manager_free (sidebar->bookmarks_manager);
       sidebar->bookmarks_manager = NULL;
     }
 
-  g_clear_pointer (&sidebar->popover, gtk_widget_unparent);
+  if (sidebar->popover)
+    {
+      gtk_widget_destroy (sidebar->popover);
+      sidebar->popover = NULL;
+    }
 
   if (sidebar->rename_popover)
     {
-      gtk_widget_unparent (sidebar->rename_popover);
+      gtk_widget_destroy (sidebar->rename_popover);
       sidebar->rename_popover = NULL;
       sidebar->rename_entry = NULL;
       sidebar->rename_button = NULL;
@@ -3984,7 +4373,17 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
 
   g_clear_object (&sidebar->current_location);
   g_clear_pointer (&sidebar->rename_uri, g_free);
-  g_clear_object (&sidebar->shortcuts);
+
+  g_clear_object (&sidebar->long_press_gesture);
+
+  if (sidebar->source_targets)
+    {
+      gtk_target_list_unref (sidebar->source_targets);
+      sidebar->source_targets = NULL;
+    }
+
+  g_slist_free_full (sidebar->shortcuts, g_object_unref);
+  sidebar->shortcuts = NULL;
 
 #ifdef HAVE_CLOUDPROVIDERS
   for (l = sidebar->unready_accounts; l != NULL; l = l->next)
@@ -3993,6 +4392,7 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
     }
   g_list_free_full (sidebar->unready_accounts, g_object_unref);
   sidebar->unready_accounts = NULL;
+
   if (sidebar->cloud_manager)
     {
       g_signal_handlers_disconnect_by_data (sidebar->cloud_manager, sidebar);
@@ -4012,50 +4412,7 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
 static void
 nautilus_gtk_places_sidebar_finalize (GObject *object)
 {
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (object);
-
-  g_clear_object (&sidebar->row_actions);
-
-  g_clear_pointer (&sidebar->swin, gtk_widget_unparent);
-
   G_OBJECT_CLASS (nautilus_gtk_places_sidebar_parent_class)->finalize (object);
-}
-
-static void
-nautilus_gtk_places_sidebar_measure (GtkWidget      *widget,
-                            GtkOrientation  orientation,
-                            int             for_size,
-                            int            *minimum,
-                            int            *natural,
-                            int            *minimum_baseline,
-                            int            *natural_baseline)
-{
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (widget);
-
-  gtk_widget_measure (sidebar->swin,
-                      orientation,
-                      for_size,
-                      minimum, natural,
-                      minimum_baseline, natural_baseline);
-}
-
-static void
-nautilus_gtk_places_sidebar_size_allocate (GtkWidget *widget,
-                                  int        width,
-                                  int        height,
-                                  int        baseline)
-{
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (widget);
-
-  gtk_widget_size_allocate (sidebar->swin,
-                            &(GtkAllocation) { 0, 0, width, height },
-                            baseline);
-
-  if (sidebar->popover)
-    gtk_popover_present (GTK_POPOVER (sidebar->popover));
-
-  if (sidebar->rename_popover)
-    gtk_popover_present (GTK_POPOVER (sidebar->rename_popover));
 }
 
 static void
@@ -4070,19 +4427,18 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
   gobject_class->set_property = nautilus_gtk_places_sidebar_set_property;
   gobject_class->get_property = nautilus_gtk_places_sidebar_get_property;
 
-  widget_class->measure = nautilus_gtk_places_sidebar_measure;
-  widget_class->size_allocate = nautilus_gtk_places_sidebar_size_allocate;
-
-  /*
+  /**
    * NautilusGtkPlacesSidebar::open-location:
    * @sidebar: the object which received the signal.
-   * @location: (type Gio.File): GFile to which the caller should switch.
-   * @open_flags: a single value from NautilusGtkPlacesOpenFlags specifying how the @location should be opened.
+   * @location: (type Gio.File): #GFile to which the caller should switch.
+   * @open_flags: a single value from #NautilusGtkPlacesOpenFlags specifying how the @location should be opened.
    *
    * The places sidebar emits this signal when the user selects a location
    * in it.  The calling application should display the contents of that
    * location; for example, a file manager should show a list of files in
    * the specified location.
+   *
+   * Since: 3.10
    */
   places_sidebar_signals [OPEN_LOCATION] =
           g_signal_new ("open-location",
@@ -4093,9 +4449,58 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         NULL,
                         G_TYPE_NONE, 2,
                         G_TYPE_OBJECT,
-                        NAUTILUS_TYPE_OPEN_FLAGS);
+                        GTK_TYPE_PLACES_OPEN_FLAGS);
 
-  /*
+  /**
+   * NautilusGtkPlacesSidebar::populate-popup:
+   * @sidebar: the object which received the signal.
+   * @container: (type Gtk.Widget): a #GtkMenu or another #GtkContainer
+   * @selected_item: (type Gio.File) (nullable): #GFile with the item to which
+   *     the popup should refer, or %NULL in the case of a @selected_volume.
+   * @selected_volume: (type Gio.Volume) (nullable): #GVolume if the selected
+   *     item is a volume, or %NULL if it is a file.
+   *
+   * The places sidebar emits this signal when the user invokes a contextual
+   * popup on one of its items. In the signal handler, the application may
+   * add extra items to the menu as appropriate. For example, a file manager
+   * may want to add a "Properties" command to the menu.
+   *
+   * It is not necessary to store the @selected_item for each menu item;
+   * during their callbacks, the application can use nautilus_gtk_places_sidebar_get_location()
+   * to get the file to which the item refers.
+   *
+   * The @selected_item argument may be %NULL in case the selection refers to
+   * a volume. In this case, @selected_volume will be non-%NULL. In this case,
+   * the calling application will have to g_object_ref() the @selected_volume and
+   * keep it around to use it in the callback.
+   *
+   * The @container and all its contents are destroyed after the user
+   * dismisses the popup. The popup is re-created (and thus, this signal is
+   * emitted) every time the user activates the contextual menu.
+   *
+   * Before 3.18, the @container always was a #GtkMenu, and you were expected
+   * to add your items as #GtkMenuItems. Since 3.18, the popup may be implemented
+   * as a #GtkPopover, in which case @container will be something else, e.g. a
+   * #GtkBox, to which you may add #GtkModelButtons or other widgets, such as
+   * #GtkEntries, #GtkSpinButtons, etc. If your application can deal with this
+   * situation, you can set #NautilusGtkPlacesSidebar::populate-all to %TRUE to request
+   * that this signal is emitted for populating popovers as well.
+   *
+   * Since: 3.10
+   */
+  places_sidebar_signals [POPULATE_POPUP] =
+          g_signal_new ("populate-popup",
+                        G_OBJECT_CLASS_TYPE (gobject_class),
+                        G_SIGNAL_RUN_FIRST,
+                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, populate_popup),
+                        NULL, NULL,
+                        NULL,
+                        G_TYPE_NONE, 3,
+                        GTK_TYPE_WIDGET,
+                        G_TYPE_FILE,
+                        G_TYPE_VOLUME);
+
+  /**
    * NautilusGtkPlacesSidebar::show-error-message:
    * @sidebar: the object which received the signal.
    * @primary: primary message with a summary of the error to show.
@@ -4105,6 +4510,8 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
    * application to present an error message.  Most of these messages
    * refer to mounting or unmounting media, for example, when a drive
    * cannot be started for some reason.
+   *
+   * Since: 3.10
    */
   places_sidebar_signals [SHOW_ERROR_MESSAGE] =
           g_signal_new ("show-error-message",
@@ -4117,14 +4524,38 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         G_TYPE_STRING,
                         G_TYPE_STRING);
 
-  /*
+  /**
+   * NautilusGtkPlacesSidebar::show-connect-to-server:
+   * @sidebar: the object which received the signal.
+   *
+   * The places sidebar emits this signal when it needs the calling
+   * application to present an way to connect directly to a network server.
+   * For example, the application may bring up a dialog box asking for
+   * a URL like "sftp://ftp.example.com".  It is up to the application to create
+   * the corresponding mount by using, for example, g_file_mount_enclosing_volume().
+   *
+   * Deprecated: 3.18: use the #NautilusGtkPlacesSidebar::show-other-locations signal
+   *     to connect to network servers.
+   */
+  places_sidebar_signals [SHOW_CONNECT_TO_SERVER] =
+          g_signal_new ("show-connect-to-server",
+                        G_OBJECT_CLASS_TYPE (gobject_class),
+                        G_SIGNAL_RUN_FIRST,
+                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, show_connect_to_server),
+                        NULL, NULL,
+                        NULL,
+                        G_TYPE_NONE, 0);
+
+  /**
    * NautilusGtkPlacesSidebar::show-enter-location:
    * @sidebar: the object which received the signal.
    *
    * The places sidebar emits this signal when it needs the calling
-   * application to present a way to directly enter a location.
+   * application to present an way to directly enter a location.
    * For example, the application may bring up a dialog box asking for
    * a URL like "http://http.example.com".
+   *
+   * Since: 3.14
    */
   places_sidebar_signals [SHOW_ENTER_LOCATION] =
           g_signal_new ("show-enter-location",
@@ -4135,13 +4566,13 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         NULL,
                         G_TYPE_NONE, 0);
 
-  /*
+  /**
    * NautilusGtkPlacesSidebar::drag-action-requested:
    * @sidebar: the object which received the signal.
-   * @drop: (type Gdk.Drop): GdkDrop with information about the drag operation
-   * @dest_file: (type Gio.File): GFile with the tentative location that is being hovered for a drop
-   * @source_file_list: (type GLib.SList) (element-type GFile) (transfer none):
-   *   List of GFile that are being dragged
+   * @context: (type Gdk.DragContext): #GdkDragContext with information about the drag operation
+   * @dest_file: (type Gio.File): #GFile with the tentative location that is being hovered for a drop
+   * @source_file_list: (type GLib.List) (element-type GFile) (transfer none):
+	 *   List of #GFile that are being dragged
    *
    * When the user starts a drag-and-drop operation and the sidebar needs
    * to ask the application for which drag action to perform, then the
@@ -4153,9 +4584,11 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
    *
    * The drag action to use must be the return value of the signal handler.
    *
-   * Returns: The drag action to use, for example, GDK_ACTION_COPY
-   * or GDK_ACTION_MOVE, or 0 if no action is allowed here (i.e. drops
+   * Returns: The drag action to use, for example, #GDK_ACTION_COPY
+   * or #GDK_ACTION_MOVE, or 0 if no action is allowed here (i.e. drops
    * are not allowed in the specified @dest_file).
+   *
+   * Since: 3.10
    */
   places_sidebar_signals [DRAG_ACTION_REQUESTED] =
           g_signal_new ("drag-action-requested",
@@ -4164,11 +4597,12 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, drag_action_requested),
                         NULL, NULL,
                         NULL,
-                        GDK_TYPE_DRAG_ACTION, 2,
+                        G_TYPE_INT, 3,
+                        GDK_TYPE_DRAG_CONTEXT,
                         G_TYPE_OBJECT,
-                        GDK_TYPE_FILE_LIST);
+                        G_TYPE_POINTER /* GList of GFile */ );
 
-  /*
+  /**
    * NautilusGtkPlacesSidebar::drag-action-ask:
    * @sidebar: the object which received the signal.
    * @actions: Possible drag actions that need to be asked for.
@@ -4178,6 +4612,8 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
    *
    * Returns: the final drag action that the sidebar should pass to the drag side
    * of the drag-and-drop operation.
+   *
+   * Since: 3.10
    */
   places_sidebar_signals [DRAG_ACTION_ASK] =
           g_signal_new ("drag-action-ask",
@@ -4186,15 +4622,15 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, drag_action_ask),
                         NULL, NULL,
                         NULL,
-                        GDK_TYPE_DRAG_ACTION, 1,
-                        GDK_TYPE_DRAG_ACTION);
+                        G_TYPE_INT, 1,
+                        G_TYPE_INT);
 
-  /*
+  /**
    * NautilusGtkPlacesSidebar::drag-perform-drop:
    * @sidebar: the object which received the signal.
-   * @dest_file: (type Gio.File): Destination GFile.
-   * @source_file_list: (type GLib.SList) (element-type GFile) (transfer none):
-   *   GSList of GFile that got dropped.
+   * @dest_file: (type Gio.File): Destination #GFile.
+   * @source_file_list: (type GLib.List) (element-type GFile) (transfer none):
+   *   #GList of #GFile that got dropped.
    * @action: Drop action to perform.
    *
    * The places sidebar emits this signal when the user completes a
@@ -4202,6 +4638,8 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
    * destination.  This item is in the @dest_file, and the
    * @source_file_list has the list of files that are dropped into it and
    * which should be copied/moved/etc. based on the specified @action.
+   *
+   * Since: 3.10
    */
   places_sidebar_signals [DRAG_PERFORM_DROP] =
           g_signal_new ("drag-perform-drop",
@@ -4212,19 +4650,46 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         NULL,
                         G_TYPE_NONE, 3,
                         G_TYPE_OBJECT,
-                        GDK_TYPE_FILE_LIST,
-                        GDK_TYPE_DRAG_ACTION);
+                        G_TYPE_POINTER, /* GList of GFile */
+                        G_TYPE_INT);
 
-  /*
-   * NautilusGtkPlacesSidebar::show-other-locations-with-flags:
+  /**
+   * NautilusGtkPlacesSidebar::show-other-locations:
    * @sidebar: the object which received the signal.
-   * @open_flags: a single value from NautilusGtkPlacesOpenFlags specifying how it should be opened.
    *
    * The places sidebar emits this signal when it needs the calling
    * application to present a way to show other locations e.g. drives
    * and network access points.
    * For example, the application may bring up a page showing persistent
    * volumes and discovered network addresses.
+   *
+   * Deprecated: 3.20: use the #NautilusGtkPlacesSidebar::show-other-locations-with-flags
+   * which includes the open flags in order to allow the user to specify to open
+   * in a new tab or window, in a similar way than #NautilusGtkPlacesSidebar::open-location
+   *
+   * Since: 3.18
+   */
+  places_sidebar_signals [SHOW_OTHER_LOCATIONS] =
+          g_signal_new ("show-other-locations",
+                        G_OBJECT_CLASS_TYPE (gobject_class),
+                        G_SIGNAL_RUN_FIRST | G_SIGNAL_DEPRECATED,
+                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, show_other_locations),
+                        NULL, NULL,
+                        NULL,
+                        G_TYPE_NONE, 0);
+
+  /**
+   * NautilusGtkPlacesSidebar::show-other-locations-with-flags:
+   * @sidebar: the object which received the signal.
+   * @open_flags: a single value from #NautilusGtkPlacesOpenFlags specifying how it should be opened.
+   *
+   * The places sidebar emits this signal when it needs the calling
+   * application to present a way to show other locations e.g. drives
+   * and network access points.
+   * For example, the application may bring up a page showing persistent
+   * volumes and discovered network addresses.
+   *
+   * Since: 3.20
    */
   places_sidebar_signals [SHOW_OTHER_LOCATIONS_WITH_FLAGS] =
           g_signal_new ("show-other-locations-with-flags",
@@ -4234,17 +4699,19 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         NULL, NULL,
                         NULL,
                         G_TYPE_NONE, 1,
-                        NAUTILUS_TYPE_OPEN_FLAGS);
+                        GTK_TYPE_PLACES_OPEN_FLAGS);
 
-  /*
+  /**
    * NautilusGtkPlacesSidebar::mount:
    * @sidebar: the object which received the signal.
-   * @mount_operation: the GMountOperation that is going to start.
+   * @mount_operation: the #GMountOperation that is going to start.
    *
    * The places sidebar emits this signal when it starts a new operation
    * because the user clicked on some location that needs mounting.
-   * In this way the application using the NautilusGtkPlacesSidebar can track the
+   * In this way the application using the #NautilusGtkPlacesSidebar can track the
    * progress of the operation and, for example, show a notification.
+   *
+   * Since: 3.20
    */
   places_sidebar_signals [MOUNT] =
           g_signal_new ("mount",
@@ -4256,15 +4723,17 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         G_TYPE_NONE,
                         1,
                         G_TYPE_MOUNT_OPERATION);
-  /*
+  /**
    * NautilusGtkPlacesSidebar::unmount:
    * @sidebar: the object which received the signal.
-   * @mount_operation: the GMountOperation that is going to start.
+   * @mount_operation: the #GMountOperation that is going to start.
    *
    * The places sidebar emits this signal when it starts a new operation
    * because the user for example ejected some drive or unmounted a mount.
-   * In this way the application using the NautilusGtkPlacesSidebar can track the
+   * In this way the application using the #NautilusGtkPlacesSidebar can track the
    * progress of the operation and, for example, show a notification.
+   *
+   * Since: 3.20
    */
   places_sidebar_signals [UNMOUNT] =
           g_signal_new ("unmount",
@@ -4277,15 +4746,18 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         1,
                         G_TYPE_MOUNT_OPERATION);
 
-  /*
+  /**
    * NautilusGtkPlacesSidebar::show-starred-location:
-   * @sidebar: the object which received the signal
-   * @flags: the flags for the operation
+   * @sidebar: the object which received the signal.
+   * @open_flags: a single value from #NautilusGtkPlacesOpenFlags specifying how the
+   *   starred file should be opened.
    *
    * The places sidebar emits this signal when it needs the calling
    * application to present a way to show the starred files. In GNOME,
    * starred files are implemented by setting the nao:predefined-tag-favorite
    * tag in the tracker database.
+   *
+   * Since: 3.22.26
    */
   places_sidebar_signals [SHOW_STARRED_LOCATION] =
           g_signal_new ("show-starred-location",
@@ -4295,73 +4767,103 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         NULL, NULL,
                         NULL,
                         G_TYPE_NONE, 1,
-                        NAUTILUS_TYPE_OPEN_FLAGS);
+                        GTK_TYPE_PLACES_OPEN_FLAGS);
 
   properties[PROP_LOCATION] =
           g_param_spec_object ("location",
                                "Location to Select",
                                "The location to highlight in the sidebar",
                                G_TYPE_FILE,
-                               G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                               G_PARAM_READWRITE);
   properties[PROP_OPEN_FLAGS] =
           g_param_spec_flags ("open-flags",
                               "Open Flags",
                               "Modes in which the calling application can open locations selected in the sidebar",
-                              NAUTILUS_TYPE_OPEN_FLAGS,
+                              GTK_TYPE_PLACES_OPEN_FLAGS,
                               NAUTILUS_GTK_PLACES_OPEN_NORMAL,
-                              G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                              G_PARAM_READWRITE);
   properties[PROP_SHOW_RECENT] =
           g_param_spec_boolean ("show-recent",
                                 "Show recent files",
                                 "Whether the sidebar includes a builtin shortcut for recent files",
                                 TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                                G_PARAM_READWRITE);
   properties[PROP_SHOW_DESKTOP] =
           g_param_spec_boolean ("show-desktop",
-                                "Show “Desktop”",
+                                "Show 'Desktop'",
                                 "Whether the sidebar includes a builtin shortcut to the Desktop folder",
                                 TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                                G_PARAM_READWRITE);
+  properties[PROP_SHOW_CONNECT_TO_SERVER] =
+          g_param_spec_boolean ("show-connect-to-server",
+                                "Show 'Connect to Server'",
+                                "Whether the sidebar includes a builtin shortcut to a 'Connect to server' dialog",
+                                FALSE,
+                                G_PARAM_READWRITE | G_PARAM_DEPRECATED);
   properties[PROP_SHOW_ENTER_LOCATION] =
           g_param_spec_boolean ("show-enter-location",
-                                "Show “Enter Location”",
+                                "Show 'Enter Location'",
                                 "Whether the sidebar includes a builtin shortcut to manually enter a location",
                                 FALSE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                                G_PARAM_READWRITE);
+  properties[PROP_LOCAL_ONLY] =
+          g_param_spec_boolean ("local-only",
+                                "Local Only",
+                                "Whether the sidebar only includes local files",
+                                FALSE,
+                                G_PARAM_READWRITE);
   properties[PROP_SHOW_TRASH] =
           g_param_spec_boolean ("show-trash",
-                                "Show “Trash”",
+                                "Show 'Trash'",
                                 "Whether the sidebar includes a builtin shortcut to the Trash location",
                                 TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                                G_PARAM_READWRITE);
   properties[PROP_SHOW_OTHER_LOCATIONS] =
           g_param_spec_boolean ("show-other-locations",
-                                "Show “Other locations”",
+                                "Show 'Other locations'",
                                 "Whether the sidebar includes an item to show external locations",
-                                TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                                FALSE,
+                                G_PARAM_READWRITE);
   properties[PROP_SHOW_STARRED_LOCATION] =
           g_param_spec_boolean ("show-starred-location",
                                 "Show “Starred Location”",
                                 "Whether the sidebar includes an item to show starred files",
                                 FALSE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+                                G_PARAM_READWRITE);
+
+
+  /**
+   * NautilusGtkPlacesSidebar:populate-all:
+   *
+   * If :populate-all is %TRUE, the #NautilusGtkPlacesSidebar::populate-popup signal
+   * is also emitted for popovers.
+   *
+   * Since: 3.18
+   */
+  properties[PROP_POPULATE_ALL] =
+          g_param_spec_boolean ("populate-all",
+                                "Populate all",
+                                "Whether to emit ::populate-popup for popups that are not menus",
+                                FALSE,
+                                G_PARAM_READWRITE);
 
   g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
 
   gtk_widget_class_set_css_name (widget_class, "placessidebar");
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_new:
  *
- * Creates a new NautilusGtkPlacesSidebar widget.
+ * Creates a new #NautilusGtkPlacesSidebar widget.
  *
  * The application should connect to at least the
- * NautilusGtkPlacesSidebar::open-location signal to be notified
+ * #NautilusGtkPlacesSidebar::open-location signal to be notified
  * when the user makes a selection in the sidebar.
  *
- * Returns: a newly created NautilusGtkPlacesSidebar
+ * Returns: a newly created #NautilusGtkPlacesSidebar
+ *
+ * Since: 3.10
  */
 GtkWidget *
 nautilus_gtk_places_sidebar_new (void)
@@ -4369,7 +4871,9 @@ nautilus_gtk_places_sidebar_new (void)
   return GTK_WIDGET (g_object_new (nautilus_gtk_places_sidebar_get_type (), NULL));
 }
 
-/*
+/* Public methods for NautilusGtkPlacesSidebar */
+
+/**
  * nautilus_gtk_places_sidebar_set_open_flags:
  * @sidebar: a places sidebar
  * @flags: Bitmask of modes in which the calling application can open locations
@@ -4383,12 +4887,14 @@ nautilus_gtk_places_sidebar_new (void)
  * application can open new locations, so that the sidebar can display (or not)
  * the “Open in new tab” and “Open in new window” menu items as appropriate.
  *
- * When the NautilusGtkPlacesSidebar::open-location signal is emitted, its flags
+ * When the #NautilusGtkPlacesSidebar::open-location signal is emitted, its flags
  * argument will be set to one of the @flags that was passed in
  * nautilus_gtk_places_sidebar_set_open_flags().
  *
- * Passing 0 for @flags will cause NAUTILUS_GTK_PLACES_OPEN_NORMAL to always be sent
+ * Passing 0 for @flags will cause #NAUTILUS_GTK_PLACES_OPEN_NORMAL to always be sent
  * to callbacks for the “open-location” signal.
+ *
+ * Since: 3.10
  */
 void
 nautilus_gtk_places_sidebar_set_open_flags (NautilusGtkPlacesSidebar   *sidebar,
@@ -4403,13 +4909,15 @@ nautilus_gtk_places_sidebar_set_open_flags (NautilusGtkPlacesSidebar   *sidebar,
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_open_flags:
- * @sidebar: a NautilusGtkPlacesSidebar
+ * @sidebar: a #NautilusGtkPlacesSidebar
  *
  * Gets the open flags.
  *
- * Returns: the NautilusGtkPlacesOpenFlags of @sidebar
+ * Returns: the #NautilusGtkPlacesOpenFlags of @sidebar
+ *
+ * Since: 3.10
  */
 NautilusGtkPlacesOpenFlags
 nautilus_gtk_places_sidebar_get_open_flags (NautilusGtkPlacesSidebar *sidebar)
@@ -4419,7 +4927,7 @@ nautilus_gtk_places_sidebar_get_open_flags (NautilusGtkPlacesSidebar *sidebar)
   return sidebar->open_flags;
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_set_location:
  * @sidebar: a places sidebar
  * @location: (nullable): location to select, or %NULL for no current path
@@ -4429,14 +4937,17 @@ nautilus_gtk_places_sidebar_get_open_flags (NautilusGtkPlacesSidebar *sidebar)
  * @sidebar will highlight that location if it is being shown in the list of
  * places, or it will unhighlight everything if the @location is not among the
  * places in the list.
+ *
+ * Since: 3.10
  */
 void
 nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
                                  GFile            *location)
 {
-  GtkWidget *row;
-  char *row_uri;
-  char *uri;
+  GList *children;
+  GList *child;
+  gchar *row_uri;
+  gchar *uri;
   gboolean found = FALSE;
 
   g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
@@ -4454,18 +4965,14 @@ nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
 
   uri = g_file_get_uri (location);
 
-  for (row = gtk_widget_get_first_child (GTK_WIDGET (sidebar->list_box));
-       row != NULL && !found;
-       row = gtk_widget_get_next_sibling (row))
+  children = gtk_container_get_children (GTK_CONTAINER (sidebar->list_box));
+  for (child = children; child != NULL && !found; child = child->next)
     {
-      if (!GTK_IS_LIST_BOX_ROW (row))
-        continue;
-
-      g_object_get (row, "uri", &row_uri, NULL);
+      g_object_get (child->data, "uri", &row_uri, NULL);
       if (row_uri != NULL && g_strcmp0 (row_uri, uri) == 0)
         {
           gtk_list_box_select_row (GTK_LIST_BOX (sidebar->list_box),
-                                   GTK_LIST_BOX_ROW (row));
+                                   GTK_LIST_BOX_ROW (child->data));
           found = TRUE;
         }
 
@@ -4473,12 +4980,13 @@ nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
     }
 
   g_free (uri);
+  g_list_free (children);
 
  out:
   g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_LOCATION]);
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_location:
  * @sidebar: a places sidebar
  *
@@ -4487,10 +4995,15 @@ nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
  * been called with a location that is not among the sidebar’s list of places to
  * show.
  *
- * You can use this function to get the selection in the @sidebar.
+ * You can use this function to get the selection in the @sidebar.  Also, if you
+ * connect to the #NautilusGtkPlacesSidebar::populate-popup signal, you can use this
+ * function to get the location that is being referred to during the callbacks
+ * for your menu items.
  *
- * Returns: (nullable) (transfer full): a GFile with the selected location, or
+ * Returns: (nullable) (transfer full): a #GFile with the selected location, or
  * %NULL if nothing is visually selected.
+ *
+ * Since: 3.10
  */
 GFile *
 nautilus_gtk_places_sidebar_get_location (NautilusGtkPlacesSidebar *sidebar)
@@ -4505,7 +5018,7 @@ nautilus_gtk_places_sidebar_get_location (NautilusGtkPlacesSidebar *sidebar)
 
   if (selected)
     {
-      char *uri;
+      gchar *uri;
 
       g_object_get (selected, "uri", &uri, NULL);
       file = g_file_new_for_uri (uri);
@@ -4515,11 +5028,11 @@ nautilus_gtk_places_sidebar_get_location (NautilusGtkPlacesSidebar *sidebar)
   return file;
 }
 
-char *
+gchar *
 nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sidebar)
 {
   GtkListBoxRow *selected;
-  char *title;
+  gchar *title;
 
   g_return_val_if_fail (sidebar != NULL, NULL);
 
@@ -4532,7 +5045,7 @@ nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sideba
   return title;
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_set_show_recent:
  * @sidebar: a places sidebar
  * @show_recent: whether to show an item for recent files
@@ -4541,6 +5054,8 @@ nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sideba
  * The default value for this option is determined by the desktop
  * environment, but this function can be used to override it on a
  * per-application basis.
+ *
+ * Since: 3.18
  */
 void
 nautilus_gtk_places_sidebar_set_show_recent (NautilusGtkPlacesSidebar *sidebar,
@@ -4559,13 +5074,15 @@ nautilus_gtk_places_sidebar_set_show_recent (NautilusGtkPlacesSidebar *sidebar,
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_show_recent:
  * @sidebar: a places sidebar
  *
  * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_recent()
  *
  * Returns: %TRUE if the sidebar will display a builtin shortcut for recent files
+ *
+ * Since: 3.18
  */
 gboolean
 nautilus_gtk_places_sidebar_get_show_recent (NautilusGtkPlacesSidebar *sidebar)
@@ -4575,7 +5092,7 @@ nautilus_gtk_places_sidebar_get_show_recent (NautilusGtkPlacesSidebar *sidebar)
   return sidebar->show_recent;
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_set_show_desktop:
  * @sidebar: a places sidebar
  * @show_desktop: whether to show an item for the Desktop folder
@@ -4584,6 +5101,8 @@ nautilus_gtk_places_sidebar_get_show_recent (NautilusGtkPlacesSidebar *sidebar)
  * The default value for this option is determined by the desktop
  * environment and the user’s configuration, but this function can be
  * used to override it on a per-application basis.
+ *
+ * Since: 3.10
  */
 void
 nautilus_gtk_places_sidebar_set_show_desktop (NautilusGtkPlacesSidebar *sidebar,
@@ -4606,13 +5125,15 @@ nautilus_gtk_places_sidebar_set_show_desktop (NautilusGtkPlacesSidebar *sidebar,
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_show_desktop:
  * @sidebar: a places sidebar
  *
  * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_desktop()
  *
  * Returns: %TRUE if the sidebar will display a builtin shortcut to the desktop folder.
+ *
+ * Since: 3.10
  */
 gboolean
 nautilus_gtk_places_sidebar_get_show_desktop (NautilusGtkPlacesSidebar *sidebar)
@@ -4622,7 +5143,58 @@ nautilus_gtk_places_sidebar_get_show_desktop (NautilusGtkPlacesSidebar *sidebar)
   return sidebar->show_desktop;
 }
 
-/*
+/**
+ * nautilus_gtk_places_sidebar_set_show_connect_to_server:
+ * @sidebar: a places sidebar
+ * @show_connect_to_server: whether to show an item for the Connect to Server command
+ *
+ * Sets whether the @sidebar should show an item for connecting to a network server;
+ * this is off by default. An application may want to turn this on if it implements
+ * a way for the user to connect to network servers directly.
+ *
+ * If you enable this, you should connect to the
+ * #NautilusGtkPlacesSidebar::show-connect-to-server signal.
+ *
+ * Since: 3.10
+ *
+ * Deprecated: 3.18: It is recommended to group this functionality with the drives
+ *     and network location under the new 'Other Location' item
+ */
+void
+nautilus_gtk_places_sidebar_set_show_connect_to_server (NautilusGtkPlacesSidebar *sidebar,
+                                               gboolean          show_connect_to_server)
+{
+  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
+
+  show_connect_to_server = !!show_connect_to_server;
+  if (sidebar->show_connect_to_server != show_connect_to_server)
+    {
+      sidebar->show_connect_to_server = show_connect_to_server;
+      update_places (sidebar);
+      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_CONNECT_TO_SERVER]);
+    }
+}
+
+/**
+ * nautilus_gtk_places_sidebar_get_show_connect_to_server:
+ * @sidebar: a places sidebar
+ *
+ * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_connect_to_server()
+ *
+ * Returns: %TRUE if the sidebar will display a “Connect to Server” item.
+ *
+ * Deprecated: 3.18: It is recommended to group this functionality with the drives
+ *     and network location under the new 'Other Location' item
+ */
+gboolean
+nautilus_gtk_places_sidebar_get_show_connect_to_server (NautilusGtkPlacesSidebar *sidebar)
+{
+  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
+
+  return sidebar->show_connect_to_server;
+}
+
+/**
  * nautilus_gtk_places_sidebar_set_show_enter_location:
  * @sidebar: a places sidebar
  * @show_enter_location: whether to show an item to enter a location
@@ -4632,7 +5204,9 @@ nautilus_gtk_places_sidebar_get_show_desktop (NautilusGtkPlacesSidebar *sidebar)
  * entering URLs is an expected user action.
  *
  * If you enable this, you should connect to the
- * NautilusGtkPlacesSidebar::show-enter-location signal.
+ * #NautilusGtkPlacesSidebar::show-enter-location signal.
+ *
+ * Since: 3.14
  */
 void
 nautilus_gtk_places_sidebar_set_show_enter_location (NautilusGtkPlacesSidebar *sidebar,
@@ -4649,13 +5223,15 @@ nautilus_gtk_places_sidebar_set_show_enter_location (NautilusGtkPlacesSidebar *s
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_show_enter_location:
  * @sidebar: a places sidebar
  *
  * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_enter_location()
  *
  * Returns: %TRUE if the sidebar will display an “Enter Location” item.
+ *
+ * Since: 3.14
  */
 gboolean
 nautilus_gtk_places_sidebar_get_show_enter_location (NautilusGtkPlacesSidebar *sidebar)
@@ -4665,7 +5241,7 @@ nautilus_gtk_places_sidebar_get_show_enter_location (NautilusGtkPlacesSidebar *s
   return sidebar->show_enter_location;
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_set_show_other_locations:
  * @sidebar: a places sidebar
  * @show_other_locations: whether to show an item for the Other Locations view
@@ -4677,7 +5253,9 @@ nautilus_gtk_places_sidebar_get_show_enter_location (NautilusGtkPlacesSidebar *s
  * see and interact with drives and network servers directly.
  *
  * If you enable this, you should connect to the
- * NautilusGtkPlacesSidebar::show-other-locations-with-flags signal.
+ * #NautilusGtkPlacesSidebar::show-other-locations signal.
+ *
+ * Since: 3.18
  */
 void
 nautilus_gtk_places_sidebar_set_show_other_locations (NautilusGtkPlacesSidebar *sidebar,
@@ -4694,13 +5272,15 @@ nautilus_gtk_places_sidebar_set_show_other_locations (NautilusGtkPlacesSidebar *
     }
   }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_show_other_locations:
  * @sidebar: a places sidebar
  *
  * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_other_locations()
  *
  * Returns: %TRUE if the sidebar will display an “Other Locations” item.
+ *
+ * Since: 3.18
  */
 gboolean
 nautilus_gtk_places_sidebar_get_show_other_locations (NautilusGtkPlacesSidebar *sidebar)
@@ -4710,12 +5290,14 @@ nautilus_gtk_places_sidebar_get_show_other_locations (NautilusGtkPlacesSidebar *
   return sidebar->show_other_locations;
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_set_show_trash:
  * @sidebar: a places sidebar
  * @show_trash: whether to show an item for the Trash location
  *
  * Sets whether the @sidebar should show an item for the Trash location.
+ *
+ * Since: 3.18
  */
 void
 nautilus_gtk_places_sidebar_set_show_trash (NautilusGtkPlacesSidebar *sidebar,
@@ -4732,13 +5314,15 @@ nautilus_gtk_places_sidebar_set_show_trash (NautilusGtkPlacesSidebar *sidebar,
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_show_trash:
  * @sidebar: a places sidebar
  *
  * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_trash()
  *
  * Returns: %TRUE if the sidebar will display a “Trash” item.
+ *
+ * Since: 3.18
  */
 gboolean
 nautilus_gtk_places_sidebar_get_show_trash (NautilusGtkPlacesSidebar *sidebar)
@@ -4748,7 +5332,67 @@ nautilus_gtk_places_sidebar_get_show_trash (NautilusGtkPlacesSidebar *sidebar)
   return sidebar->show_trash;
 }
 
-/*
+/**
+ * nautilus_gtk_places_sidebar_set_local_only:
+ * @sidebar: a places sidebar
+ * @local_only: whether to show only local files
+ *
+ * Sets whether the @sidebar should only show local files.
+ *
+ * Since: 3.12
+ */
+void
+nautilus_gtk_places_sidebar_set_local_only (NautilusGtkPlacesSidebar *sidebar,
+                                   gboolean          local_only)
+{
+  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
+
+  local_only = !!local_only;
+  if (sidebar->local_only != local_only)
+    {
+      sidebar->local_only = local_only;
+      update_places (sidebar);
+      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_LOCAL_ONLY]);
+    }
+}
+
+/**
+ * nautilus_gtk_places_sidebar_get_local_only:
+ * @sidebar: a places sidebar
+ *
+ * Returns the value previously set with nautilus_gtk_places_sidebar_set_local_only().
+ *
+ * Returns: %TRUE if the sidebar will only show local files.
+ *
+ * Since: 3.12
+ */
+gboolean
+nautilus_gtk_places_sidebar_get_local_only (NautilusGtkPlacesSidebar *sidebar)
+{
+  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
+
+  return sidebar->local_only;
+}
+
+static GSList *
+find_shortcut_link (NautilusGtkPlacesSidebar *sidebar,
+                    GFile            *location)
+{
+  GSList *l;
+
+  for (l = sidebar->shortcuts; l; l = l->next)
+    {
+      GFile *shortcut;
+
+      shortcut = G_FILE (l->data);
+      if (g_file_equal (shortcut, location))
+        return l;
+    }
+
+  return NULL;
+}
+
+/**
  * nautilus_gtk_places_sidebar_add_shortcut:
  * @sidebar: a places sidebar
  * @location: location to add as an application-specific shortcut
@@ -4763,6 +5407,8 @@ nautilus_gtk_places_sidebar_get_show_trash (NautilusGtkPlacesSidebar *sidebar)
  * across applications, and they are not persistent.  If this function
  * is called multiple times with different locations, then they are added
  * to the sidebar’s list in the same order as the function is called.
+ *
+ * Since: 3.10
  */
 void
 nautilus_gtk_places_sidebar_add_shortcut (NautilusGtkPlacesSidebar *sidebar,
@@ -4771,12 +5417,13 @@ nautilus_gtk_places_sidebar_add_shortcut (NautilusGtkPlacesSidebar *sidebar,
   g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
   g_return_if_fail (G_IS_FILE (location));
 
-  g_list_store_append (sidebar->shortcuts, location);
+  g_object_ref (location);
+  sidebar->shortcuts = g_slist_append (sidebar->shortcuts, location);
 
   update_places (sidebar);
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_remove_shortcut:
  * @sidebar: a places sidebar
  * @location: location to remove
@@ -4784,93 +5431,95 @@ nautilus_gtk_places_sidebar_add_shortcut (NautilusGtkPlacesSidebar *sidebar,
  * Removes an application-specific shortcut that has been previously been
  * inserted with nautilus_gtk_places_sidebar_add_shortcut().  If the @location is not a
  * shortcut in the sidebar, then nothing is done.
+ *
+ * Since: 3.10
  */
 void
 nautilus_gtk_places_sidebar_remove_shortcut (NautilusGtkPlacesSidebar *sidebar,
                                     GFile            *location)
 {
-  guint i, n;
+  GSList *link;
+  GFile *shortcut;
 
   g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
   g_return_if_fail (G_IS_FILE (location));
 
-  n = g_list_model_get_n_items (G_LIST_MODEL (sidebar->shortcuts));
-  for (i = 0; i < n; i++)
-    {
-      GFile *shortcut = g_list_model_get_item (G_LIST_MODEL (sidebar->shortcuts), i);
+  link = find_shortcut_link (sidebar, location);
+  if (!link)
+    return;
 
-      if (shortcut == location)
-        {
-          g_list_store_remove (sidebar->shortcuts, i);
-          g_object_unref (shortcut);
-          update_places (sidebar);
-          return;
-        }
+  shortcut = G_FILE (link->data);
+  g_object_unref (shortcut);
 
-      g_object_unref (shortcut);
-    }
+  sidebar->shortcuts = g_slist_delete_link (sidebar->shortcuts, link);
+  update_places (sidebar);
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_list_shortcuts:
  * @sidebar: a places sidebar
  *
- * Gets the list of shortcuts, as a list model containing GFile objects.
+ * Gets the list of shortcuts.
  *
- * You should not modify the returned list model. Future changes to
- * @sidebar may or may not affect the returned model.
+ * Returns: (element-type GFile) (transfer full):
+ *     A #GSList of #GFile of the locations that have been added as
+ *     application-specific shortcuts with nautilus_gtk_places_sidebar_add_shortcut().
+ *     To free this list, you can use
+ * |[<!-- language="C" -->
+ * g_slist_free_full (list, (GDestroyNotify) g_object_unref);
+ * ]|
  *
- * Returns: (transfer full): a list model of GFiles that have been added as
- *   application-specific shortcuts with nautilus_gtk_places_sidebar_add_shortcut()
+ * Since: 3.10
  */
-GListModel *
-nautilus_gtk_places_sidebar_get_shortcuts (NautilusGtkPlacesSidebar *sidebar)
+GSList *
+nautilus_gtk_places_sidebar_list_shortcuts (NautilusGtkPlacesSidebar *sidebar)
 {
   g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), NULL);
 
-  return G_LIST_MODEL (g_object_ref (sidebar->shortcuts));
+  return g_slist_copy_deep (sidebar->shortcuts, (GCopyFunc) g_object_ref, NULL);
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_nth_bookmark:
  * @sidebar: a places sidebar
  * @n: index of the bookmark to query
  *
  * This function queries the bookmarks added by the user to the places sidebar,
- * and returns one of them.  This function is used by GtkFileChooser to implement
- * the “Alt-1”, “Alt-2”, etc. shortcuts, which activate the corresponding bookmark.
+ * and returns one of them.  This function is used by #GtkFileChooser to implement
+ * the “Alt-1”, “Alt-2”, etc. shortcuts, which activate the cooresponding bookmark.
  *
  * Returns: (nullable) (transfer full): The bookmark specified by the index @n, or
  * %NULL if no such index exist.  Note that the indices start at 0, even though
  * the file chooser starts them with the keyboard shortcut "Alt-1".
+ *
+ * Since: 3.10
  */
 GFile *
 nautilus_gtk_places_sidebar_get_nth_bookmark (NautilusGtkPlacesSidebar *sidebar,
-                                     int               n)
+                                     gint              n)
 {
-  GtkWidget *row;
+  GList *rows;
+  GList *l;
   int k;
   GFile *file;
 
   g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), NULL);
 
   file = NULL;
+  rows = gtk_container_get_children (GTK_CONTAINER (sidebar->list_box));
+  l = rows;
+
   k = 0;
-  for (row = gtk_widget_get_first_child (GTK_WIDGET (sidebar->list_box));
-       row != NULL;
-       row = gtk_widget_get_next_sibling (row))
+  while (l != NULL)
     {
-      NautilusGtkPlacesPlaceType place_type;
-      char *uri;
+      NautilusGtkPlacesSidebarPlaceType place_type;
+      gchar *uri;
 
-      if (!GTK_IS_LIST_BOX_ROW (row))
-        continue;
-
-      g_object_get (row,
+      g_object_get (l->data,
                     "place-type", &place_type,
                     "uri", &uri,
                     NULL);
-      if (place_type == NAUTILUS_GTK_PLACES_BOOKMARK)
+      if (place_type == PLACES_BOOKMARK)
         {
           if (k == n)
             {
@@ -4881,15 +5530,20 @@ nautilus_gtk_places_sidebar_get_nth_bookmark (NautilusGtkPlacesSidebar *sidebar,
           k++;
         }
       g_free (uri);
+      l = l->next;
     }
+
+  g_list_free (rows);
 
   return file;
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_set_drop_targets_visible:
  * @sidebar: a places sidebar.
  * @visible: whether to show the valid targets or not.
+ * @context: drag context used to ask the source about the action that wants to
+ *     perform, so hints are more accurate.
  *
  * Make the NautilusGtkPlacesSidebar show drop targets, so it can show the available
  * drop targets and a "new bookmark" row. This improves the Drag-and-Drop
@@ -4900,17 +5554,18 @@ nautilus_gtk_places_sidebar_get_nth_bookmark (NautilusGtkPlacesSidebar *sidebar,
  * that might target the sidebar. The drop-targets-visible state will be unset
  * automatically if the drag finishes in the NautilusGtkPlacesSidebar. You only need
  * to unset the state when the drag ends on some other widget on your application.
+ *
+ * Since: 3.18
  */
 void
 nautilus_gtk_places_sidebar_set_drop_targets_visible (NautilusGtkPlacesSidebar *sidebar,
-                                             gboolean          visible)
+                                             gboolean          visible,
+                                             GdkDragContext   *context)
 {
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-
   if (visible)
     {
       sidebar->drop_state = DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT;
-      start_drop_feedback (sidebar, NULL);
+      start_drop_feedback (sidebar, NULL, context);
     }
   else
     {
@@ -4934,13 +5589,15 @@ nautilus_gtk_places_sidebar_set_drop_targets_visible (NautilusGtkPlacesSidebar *
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_set_show_starred_location:
  * @sidebar: a places sidebar
  * @show_starred_location: whether to show an item for Starred files
  *
  * If you enable this, you should connect to the
- * NautilusGtkPlacesSidebar::show-starred-location signal.
+ * #NautilusGtkPlacesSidebar::show-starred-location signal.
+ *
+ * Since: 3.22.26
  */
 void
 nautilus_gtk_places_sidebar_set_show_starred_location (NautilusGtkPlacesSidebar *sidebar,
@@ -4957,13 +5614,15 @@ nautilus_gtk_places_sidebar_set_show_starred_location (NautilusGtkPlacesSidebar 
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_sidebar_get_show_starred_location:
  * @sidebar: a places sidebar
  *
  * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_starred_location()
  *
  * Returns: %TRUE if the sidebar will display a Starred item.
+ *
+ * Since: 3.22.26
  */
 gboolean
 nautilus_gtk_places_sidebar_get_show_starred_location (NautilusGtkPlacesSidebar *sidebar)

@@ -40,7 +40,8 @@ main (int   argc,
 
 
     LIBXML_TEST_VERSION
-    gtk_init ();
+    gtk_init (&argc,
+              &argv);
 
     /* Run the checks for eel twice. */
 

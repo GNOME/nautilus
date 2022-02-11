@@ -59,13 +59,14 @@
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-gtk4-helpers.h"
 
 #ifdef GDK_WINDOWING_X11
-#include <gdk/x11/gdkx.h>
+#include <gdk/gdkx.h>
 #endif
 
 #ifdef GDK_WINDOWING_WAYLAND
-#include <gdk/wayland/gdkwayland.h>
+#include <gdk/gdkwayland.h>
 #endif
 
 typedef struct
@@ -1242,13 +1243,13 @@ typedef struct
 } RunSimpleDialogData;
 
 static void
-set_transient_for (GdkSurface *child_surface,
+set_transient_for (GdkWindow  *child_window,
                    const char *parent_handle)
 {
     GdkDisplay *display;
     const char *prefix;
 
-    display = gdk_surface_get_display (child_surface);
+    display = gdk_window_get_display (child_window);
 
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (display))
@@ -1258,14 +1259,15 @@ set_transient_for (GdkSurface *child_surface,
         if (g_str_has_prefix (parent_handle, prefix))
         {
             const char *handle;
-            GdkSurface *surface;
+            GdkWindow *window;
 
             handle = parent_handle + strlen (prefix);
-            surface = gdk_x11_surface_lookup_for_display (display, strtol (handle, NULL, 16));
+            window = gdk_x11_window_foreign_new_for_display (display, strtol (handle, NULL, 16));
 
-            if (surface != NULL)
+            if (window != NULL)
             {
-                gdk_toplevel_set_transient_for (GDK_TOPLEVEL (child_surface), surface);
+                gdk_window_set_transient_for (child_window, window);
+                g_object_unref (window);
             }
         }
     }
@@ -1282,7 +1284,7 @@ set_transient_for (GdkSurface *child_surface,
 
             handle = parent_handle + strlen (prefix);
 
-            gdk_wayland_toplevel_set_transient_for_exported (GDK_TOPLEVEL (child_surface), (char *) handle);
+            gdk_wayland_window_set_transient_for_exported (child_window, (char *) handle);
         }
     }
 #endif
@@ -1296,7 +1298,7 @@ dialog_realize_cb (GtkWidget *widget,
     const char *parent_handle;
 
     parent_handle = nautilus_file_operations_dbus_data_get_parent_handle (dbus_data);
-    set_transient_for (gtk_native_get_surface (gtk_widget_get_native (widget)), parent_handle);
+    set_transient_for (gtk_widget_get_window (widget), parent_handle);
 }
 
 static gboolean
@@ -1325,7 +1327,7 @@ simple_dialog_cb (GtkDialog *dialog,
         return;
     }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 
     data->result = response_id;
     data->completed = TRUE;
@@ -1393,7 +1395,7 @@ do_run_simple_dialog (gpointer _data)
         content_area = gtk_message_dialog_get_message_area (GTK_MESSAGE_DIALOG (dialog));
 
         label = gtk_label_new (data->details_text);
-        gtk_label_set_wrap (GTK_LABEL (label), TRUE);
+        gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
         gtk_label_set_selectable (GTK_LABEL (label), TRUE);
         gtk_label_set_xalign (GTK_LABEL (label), 0);
         /* Ideally, we shouldn’t do this.
@@ -1429,7 +1431,7 @@ do_run_simple_dialog (gpointer _data)
 
     /* Run it. */
     g_signal_connect (dialog, "response", G_CALLBACK (simple_dialog_cb), data);
-    gtk_widget_show (dialog);
+    gtk_widget_show_all (dialog);
 
     return FALSE;
 }
@@ -3078,7 +3080,7 @@ empty_trash_prompt_cb (GtkDialog *dialog,
         unmount_data_free (data);
     }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 void
@@ -3114,7 +3116,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
         dialog = create_empty_trash_prompt (parent_window);
 
         g_signal_connect (dialog, "response", G_CALLBACK (empty_trash_prompt_cb), data);
-        gtk_widget_show (dialog);
+        gtk_widget_show_all (dialog);
         return;
     }
 

@@ -29,7 +29,7 @@ void nautilus_list_view_dnd_init (NautilusListView *list_view);
 void nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                         gdouble           offset_x,
                                         gdouble           offset_y,
-                                        GdkEvent         *event);
+                                        const GdkEvent   *event);
 NautilusDragInfo *
 nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view,
                                              GdkDragContext   *context);

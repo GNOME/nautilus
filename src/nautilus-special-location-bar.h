@@ -20,12 +20,11 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <libadwaita-1/adwaita.h>
 
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_SPECIAL_LOCATION_BAR (nautilus_special_location_bar_get_type ())
-G_DECLARE_FINAL_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, NAUTILUS, SPECIAL_LOCATION_BAR, AdwBin)
+G_DECLARE_FINAL_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, NAUTILUS, SPECIAL_LOCATION_BAR, GtkBin)
 
 typedef enum {
 	NAUTILUS_SPECIAL_LOCATION_TEMPLATES,
