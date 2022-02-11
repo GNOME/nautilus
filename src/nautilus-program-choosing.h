@@ -39,15 +39,16 @@ void nautilus_launch_application_by_uri             (GAppInfo                   
 void nautilus_launch_application_for_mount          (GAppInfo                          *app_info,
                                                      GMount                            *mount,
                                                      GtkWindow                         *parent_window);
-void nautilus_launch_application_from_command       (GdkDisplay                        *display,
+void nautilus_launch_application_from_command       (GdkScreen                         *screen,
                                                      const char                        *command_string,
                                                      gboolean                           use_terminal,
                                                      ...) G_GNUC_NULL_TERMINATED;
-void nautilus_launch_application_from_command_array (GdkDisplay                        *display,
+void nautilus_launch_application_from_command_array (GdkScreen                         *screen,
                                                      const char                        *command_string,
                                                      gboolean                           use_terminal,
                                                      const char * const *               parameters);
-void nautilus_launch_desktop_file                   (const char                        *desktop_file_uri,
+void nautilus_launch_desktop_file                   (GdkScreen                         *screen,
+                                                     const char                        *desktop_file_uri,
                                                      const GList                       *parameter_uris,
                                                      GtkWindow                         *parent_window);
 void nautilus_launch_default_for_uri_async          (const char                        *uri,

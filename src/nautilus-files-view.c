@@ -5243,7 +5243,7 @@ run_script (GSimpleAction *action,
     g_autofree gchar *old_working_dir = NULL;
     g_autolist (NautilusFile) selection = NULL;
     g_auto (GStrv) parameters = NULL;
-    GdkDisplay *display;
+    GdkScreen *screen;
 
     launch_parameters = (ScriptLaunchParameters *) user_data;
     priv = nautilus_files_view_get_instance_private (launch_parameters->directory_view);
@@ -5260,12 +5260,12 @@ run_script (GSimpleAction *action,
 
     parameters = get_file_names_as_parameter_array (selection, priv->model);
 
-    display = gtk_widget_get_display (GTK_WIDGET (launch_parameters->directory_view));
+    screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
 
     DEBUG ("run_script, script_path=“%s” (omitting script parameters)",
            local_file_path);
 
-    nautilus_launch_application_from_command_array (display, quoted_path, FALSE,
+    nautilus_launch_application_from_command_array (screen, quoted_path, FALSE,
                                                     (const char * const *) parameters);
 
     unset_script_environment_variables ();
@@ -6473,7 +6473,7 @@ action_run_in_terminal (GSimpleAction *action,
     g_autofree char *executable_path = NULL;
     g_autofree char *quoted_path = NULL;
     GtkWindow *parent_window;
-    GdkDisplay *display;
+    GdkScreen *screen;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
@@ -6493,11 +6493,11 @@ action_run_in_terminal (GSimpleAction *action,
     quoted_path = g_shell_quote (executable_path);
 
     parent_window = nautilus_files_view_get_containing_window (view);
-    display = gtk_widget_get_display (GTK_WIDGET (parent_window));
+    screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
 
     DEBUG ("Launching in terminal %s", quoted_path);
 
-    nautilus_launch_application_from_command (display, quoted_path, TRUE, NULL);
+    nautilus_launch_application_from_command (screen, quoted_path, TRUE, NULL);
 
     g_chdir (old_working_dir);
 }
@@ -8930,7 +8930,7 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
     {
         char *command, *quoted_uri, *tmp;
         const GList *l;
-        GdkDisplay *display;
+        GdkScreen *screen;
 
         /* Handle dropping onto a file-roller archiver file, instead of starting a move/copy */
 
@@ -8951,13 +8951,13 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
             g_free (quoted_uri);
         }
 
-        display = gtk_widget_get_display (GTK_WIDGET (view));
-        if (display == NULL)
+        screen = gtk_widget_get_screen (GTK_WIDGET (view));
+        if (screen == NULL)
         {
-            display = gdk_display_get_default ();
+            screen = gdk_screen_get_default ();
         }
 
-        nautilus_launch_application_from_command (display, command, FALSE, NULL);
+        nautilus_launch_application_from_command (screen, command, FALSE, NULL);
         g_free (command);
 
         return;

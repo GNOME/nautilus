@@ -143,6 +143,12 @@ get_launch_context (GtkWindow *parent_window)
 
     launch_context = gdk_display_get_app_launch_context (display);
 
+    if (parent_window != NULL)
+    {
+        gdk_app_launch_context_set_screen (launch_context,
+                                           gtk_window_get_screen (parent_window));
+    }
+
     return launch_context;
 }
 
@@ -231,7 +237,7 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
 
 static void
 launch_application_from_command_internal (const gchar *full_command,
-                                          GdkDisplay  *display,
+                                          GdkScreen   *screen,
                                           gboolean     use_terminal)
 {
     GAppInfoCreateFlags flags;
@@ -245,11 +251,14 @@ launch_application_from_command_internal (const gchar *full_command,
     }
 
     app = g_app_info_create_from_commandline (full_command, NULL, flags, &error);
-    if (app != NULL && !(use_terminal && display == NULL))
+    if (app != NULL && !(use_terminal && screen == NULL))
     {
+        GdkDisplay *display;
         g_autoptr (GdkAppLaunchContext) context = NULL;
 
+        display = gdk_screen_get_display (screen);
         context = gdk_display_get_app_launch_context (display);
+        gdk_app_launch_context_set_screen (context, screen);
 
         g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (context), &error);
     }
@@ -271,7 +280,7 @@ launch_application_from_command_internal (const gchar *full_command,
  * @...: Passed as parameters to the application after quoting each of them.
  */
 void
-nautilus_launch_application_from_command (GdkDisplay *display,
+nautilus_launch_application_from_command (GdkScreen  *screen,
                                           const char *command_string,
                                           gboolean    use_terminal,
                                           ...)
@@ -297,7 +306,7 @@ nautilus_launch_application_from_command (GdkDisplay *display,
 
     va_end (ap);
 
-    launch_application_from_command_internal (full_command, display, use_terminal);
+    launch_application_from_command_internal (full_command, screen, use_terminal);
 
     g_free (full_command);
 }
@@ -313,7 +322,7 @@ nautilus_launch_application_from_command (GdkDisplay *display,
  * @parameters: Passed as parameters to the application after quoting each of them.
  */
 void
-nautilus_launch_application_from_command_array (GdkDisplay         *display,
+nautilus_launch_application_from_command_array (GdkScreen          *screen,
                                                 const char         *command_string,
                                                 gboolean            use_terminal,
                                                 const char * const *parameters)
@@ -337,13 +346,14 @@ nautilus_launch_application_from_command_array (GdkDisplay         *display,
         }
     }
 
-    launch_application_from_command_internal (full_command, display, use_terminal);
+    launch_application_from_command_internal (full_command, screen, use_terminal);
 
     g_free (full_command);
 }
 
 void
-nautilus_launch_desktop_file (const char  *desktop_file_uri,
+nautilus_launch_desktop_file (GdkScreen   *screen,
+                              const char  *desktop_file_uri,
                               const GList *parameter_uris,
                               GtkWindow   *parent_window)
 {
@@ -432,6 +442,8 @@ nautilus_launch_desktop_file (const char  *desktop_file_uri,
     context = gdk_display_get_app_launch_context (gtk_widget_get_display (GTK_WIDGET (parent_window)));
     /* TODO: Ideally we should accept a timestamp here instead of using GDK_CURRENT_TIME */
     gdk_app_launch_context_set_timestamp (context, GDK_CURRENT_TIME);
+    gdk_app_launch_context_set_screen (context,
+                                       gtk_window_get_screen (parent_window));
     if (count == total)
     {
         /* All files are local, so we can use g_app_info_launch () with
