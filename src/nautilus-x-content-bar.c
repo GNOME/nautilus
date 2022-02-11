@@ -34,7 +34,7 @@
 
 struct _NautilusXContentBar
 {
-    GtkBin parent_instance;
+    GtkInfoBar parent_instance;
     GtkWidget *label;
 
     char **x_content_types;
@@ -154,7 +154,6 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         const char *name;
         GIcon *icon;
         GtkWidget *image;
-        GtkWidget *info_bar;
         GtkWidget *button;
         GAppInfo *app;
         gboolean has_app;
@@ -190,8 +189,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         }
 
         name = g_app_info_get_name (default_app);
-        info_bar = gtk_bin_get_child (GTK_BIN (bar));
-        button = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar), name, n);
+        button = gtk_info_bar_add_button (GTK_INFO_BAR (bar), name, n);
         box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 
         if (image != NULL)
@@ -325,13 +323,12 @@ nautilus_x_content_bar_class_init (NautilusXContentBarClass *klass)
 static void
 nautilus_x_content_bar_init (NautilusXContentBar *bar)
 {
-    GtkWidget *info_bar;
+    GtkWidget *action_area;
     PangoAttrList *attrs;
 
-    info_bar = gtk_info_bar_new ();
-    gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar), GTK_MESSAGE_QUESTION);
-    gtk_widget_show (info_bar);
-    adw_bin_set_child (ADW_BIN (bar), info_bar);
+    action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
+
+    gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area), GTK_ORIENTATION_HORIZONTAL);
 
     attrs = pango_attr_list_new ();
     pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
@@ -340,9 +337,9 @@ nautilus_x_content_bar_init (NautilusXContentBar *bar)
     pango_attr_list_unref (attrs);
 
     gtk_label_set_ellipsize (GTK_LABEL (bar->label), PANGO_ELLIPSIZE_END);
-    gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), bar->label);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), bar->label);
 
-    g_signal_connect (info_bar, "response",
+    g_signal_connect (bar, "response",
                       G_CALLBACK (content_bar_response_cb),
                       bar);
 }
@@ -352,6 +349,7 @@ nautilus_x_content_bar_new (GMount             *mount,
                             const char * const *x_content_types)
 {
     return g_object_new (NAUTILUS_TYPE_X_CONTENT_BAR,
+                         "message-type", GTK_MESSAGE_QUESTION,
                          "mount", mount,
                          "x-content-types", x_content_types,
                          NULL);

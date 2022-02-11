@@ -28,7 +28,7 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_TRASH_BAR (nautilus_trash_bar_get_type ())
 
-G_DECLARE_FINAL_TYPE (NautilusTrashBar, nautilus_trash_bar, NAUTILUS, TRASH_BAR, GtkBin)
+G_DECLARE_FINAL_TYPE (NautilusTrashBar, nautilus_trash_bar, NAUTILUS, TRASH_BAR, GtkInfoBar)
 
 GtkWidget *nautilus_trash_bar_new (NautilusFilesView *view);
 

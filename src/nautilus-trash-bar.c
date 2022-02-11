@@ -49,27 +49,25 @@ enum
 
 struct _NautilusTrashBar
 {
-    GtkBin parent_instance;
+    GtkInfoBar parent_instance;
 
     NautilusFilesView *view;
     gulong selection_handler_id;
 };
 
-G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_BIN)
+G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_INFO_BAR)
 
 static void
 selection_changed_cb (NautilusFilesView *view,
                       NautilusTrashBar  *bar)
 {
     g_autolist (NautilusFile) selection = NULL;
-    GtkWidget *info_bar;
     int count;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     count = g_list_length (selection);
 
-    info_bar = gtk_bin_get_child (GTK_BIN (bar));
-    gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (info_bar),
+    gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
                                          TRASH_BAR_RESPONSE_RESTORE,
                                          (count > 0));
 }
@@ -126,12 +124,10 @@ nautilus_trash_bar_trash_state_changed (NautilusTrashMonitor *trash_monitor,
                                         gpointer              data)
 {
     NautilusTrashBar *bar;
-    GtkWidget *info_bar;
 
     bar = NAUTILUS_TRASH_BAR (data);
 
-    info_bar = gtk_bin_get_child (GTK_BIN (bar));
-    gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (info_bar),
+    gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
                                          TRASH_BAR_RESPONSE_EMPTY,
                                          !nautilus_trash_monitor_is_empty ());
 }
@@ -165,7 +161,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
     NautilusTrashBar *bar;
     GtkWidget *window;
 
-    bar = NAUTILUS_TRASH_BAR (user_data);
+    bar = NAUTILUS_TRASH_BAR (infobar);
     window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
 
     switch (response_id)
@@ -216,17 +212,16 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 static void
 nautilus_trash_bar_init (NautilusTrashBar *bar)
 {
-    GtkWidget *info_bar;
-    GtkWidget *w;
+    GtkWidget *action_area, *w;
     const gchar *subtitle_text;
     GtkWidget *label;
     GtkWidget *subtitle;
     PangoAttrList *attrs;
 
-    info_bar = gtk_info_bar_new ();
-    gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar), GTK_MESSAGE_QUESTION);
-    gtk_widget_show (info_bar);
-    adw_bin_set_child (ADW_BIN (bar), info_bar);
+    action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
+
+    gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area),
+                                    GTK_ORIENTATION_HORIZONTAL);
 
     attrs = pango_attr_list_new ();
     pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
@@ -246,23 +241,23 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
                      G_SETTINGS_BIND_GET);
 
     gtk_widget_show (label);
-    gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), label);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), label);
 
-    gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), subtitle);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), subtitle);
 
-    w = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar),
+    w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
                                  _("_Settings"),
                                  TRASH_BAR_RESPONSE_AUTODELETE);
     gtk_widget_set_tooltip_text (w,
                                  _("Display system controls for trash content"));
 
-    w = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar),
+    w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
                                  _("_Restore"),
                                  TRASH_BAR_RESPONSE_RESTORE);
     gtk_widget_set_tooltip_text (w,
                                  _("Restore selected items to their original position"));
 
-    w = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar),
+    w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
                                  /* Translators: "Empty" is an action (for the trash) , not a state */
                                  _("_Empty…"),
                                  TRASH_BAR_RESPONSE_EMPTY);
@@ -277,7 +272,7 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
     nautilus_trash_bar_trash_state_changed (nautilus_trash_monitor_get (),
                                             FALSE, bar);
 
-    g_signal_connect (info_bar, "response",
+    g_signal_connect (bar, "response",
                       G_CALLBACK (trash_bar_response_cb), bar);
 }
 
@@ -286,5 +281,6 @@ nautilus_trash_bar_new (NautilusFilesView *view)
 {
     return g_object_new (NAUTILUS_TYPE_TRASH_BAR,
                          "view", view,
+                         "message-type", GTK_MESSAGE_QUESTION,
                          NULL);
 }

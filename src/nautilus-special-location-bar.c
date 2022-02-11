@@ -28,7 +28,7 @@
 
 struct _NautilusSpecialLocationBar
 {
-    GtkBin parent_instance;
+    GtkInfoBar parent_instance;
 
     GtkWidget *label;
     GtkWidget *learn_more_label;
@@ -41,7 +41,7 @@ enum
     PROP_SPECIAL_LOCATION,
 };
 
-G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, GTK_TYPE_BIN)
+G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, GTK_TYPE_INFO_BAR)
 
 static void
 set_special_location (NautilusSpecialLocationBar *bar,
@@ -163,13 +163,12 @@ nautilus_special_location_bar_class_init (NautilusSpecialLocationBarClass *klass
 static void
 nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
 {
-    GtkWidget *info_bar;
+    GtkWidget *action_area;
     PangoAttrList *attrs;
 
-    info_bar = gtk_info_bar_new ();
-    gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar), GTK_MESSAGE_QUESTION);
-    gtk_widget_show (info_bar);
-    adw_bin_set_child (ADW_BIN (bar), info_bar);
+    action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
+
+    gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area), GTK_ORIENTATION_HORIZONTAL);
 
     attrs = pango_attr_list_new ();
     pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
@@ -178,18 +177,19 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
     pango_attr_list_unref (attrs);
 
     gtk_label_set_ellipsize (GTK_LABEL (bar->label), PANGO_ELLIPSIZE_END);
-    gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), bar->label);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), bar->label);
 
     bar->learn_more_label = gtk_label_new (NULL);
     gtk_widget_set_hexpand (bar->learn_more_label, TRUE);
     gtk_widget_set_halign (bar->learn_more_label, GTK_ALIGN_END);
-    gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), bar->learn_more_label);
+    gtk_info_bar_add_child (GTK_INFO_BAR (bar), bar->learn_more_label);
 }
 
 GtkWidget *
 nautilus_special_location_bar_new (NautilusSpecialLocation location)
 {
     return g_object_new (NAUTILUS_TYPE_SPECIAL_LOCATION_BAR,
+                         "message-type", GTK_MESSAGE_QUESTION,
                          "special-location", location,
                          NULL);
 }
