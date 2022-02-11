@@ -37,21 +37,43 @@
 
 #define AFTER_ALL_TABS -1
 
+struct _NautilusNotebook
+{
+    GtkNotebook parent_instance;
+};
+
+G_DEFINE_TYPE (NautilusNotebook, nautilus_notebook, GTK_TYPE_NOTEBOOK);
+
+static void
+nautilus_notebook_dispose (GObject *object)
+{
+    G_OBJECT_CLASS (nautilus_notebook_parent_class)->dispose (object);
+}
+
+static void
+nautilus_notebook_class_init (NautilusNotebookClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    object_class->dispose = nautilus_notebook_dispose;
+}
+
 static gint
-find_tab_num_at_pos (GtkNotebook *notebook,
-                     gint         abs_x,
-                     gint         abs_y)
+find_tab_num_at_pos (NautilusNotebook *notebook,
+                     gint              abs_x,
+                     gint              abs_y)
 {
     int page_num = 0;
+    GtkNotebook *nb = GTK_NOTEBOOK (notebook);
     GtkWidget *page;
     GtkAllocation allocation;
 
-    while ((page = gtk_notebook_get_nth_page (notebook, page_num)))
+    while ((page = gtk_notebook_get_nth_page (nb, page_num)))
     {
         GtkWidget *tab;
         gint max_x, max_y;
 
-        tab = gtk_notebook_get_tab_label (notebook, page);
+        tab = gtk_notebook_get_tab_label (nb, page);
         g_return_val_if_fail (tab != NULL, -1);
 
         if (!gtk_widget_get_mapped (GTK_WIDGET (tab)))
@@ -97,31 +119,32 @@ on_page_added (GtkNotebook *notebook,
     gtk_notebook_set_tab_detachable (notebook, child, TRUE);
 }
 
-void
-nautilus_notebook_setup (GtkNotebook *notebook)
+static void
+nautilus_notebook_init (NautilusNotebook *notebook)
 {
-    gtk_notebook_set_scrollable (notebook, TRUE);
-    gtk_notebook_set_show_border (notebook, FALSE);
-    gtk_notebook_set_show_tabs (notebook, FALSE);
+    gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
+    gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
+    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 
     g_signal_connect (notebook, "page-removed", G_CALLBACK (on_page_removed), NULL);
     g_signal_connect (notebook, "page-added", G_CALLBACK (on_page_added), NULL);
 }
 
 gboolean
-nautilus_notebook_contains_slot (GtkNotebook        *notebook,
+nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
                                  NautilusWindowSlot *slot)
 {
+    GtkNotebook *container = GTK_NOTEBOOK (notebook);
     GtkWidget *child;
     gint n_pages;
     gboolean found = FALSE;
 
     g_return_val_if_fail (slot != NULL, FALSE);
 
-    n_pages = gtk_notebook_get_n_pages (notebook);
+    n_pages = gtk_notebook_get_n_pages (container);
     for (gint i = 0; i < n_pages; i++)
     {
-        child = gtk_notebook_get_nth_page (notebook, i);
+        child = gtk_notebook_get_nth_page (container, i);
         if ((gpointer) child == (gpointer) slot)
         {
             found = TRUE;
@@ -133,10 +156,10 @@ nautilus_notebook_contains_slot (GtkNotebook        *notebook,
 }
 
 gboolean
-nautilus_notebook_get_tab_clicked (GtkNotebook *notebook,
-                                   gint         x,
-                                   gint         y,
-                                   gint        *position)
+nautilus_notebook_get_tab_clicked (NautilusNotebook *notebook,
+                                   gint              x,
+                                   gint              y,
+                                   gint             *position)
 {
     gint tab_num;
 
@@ -150,16 +173,16 @@ nautilus_notebook_get_tab_clicked (GtkNotebook *notebook,
 }
 
 void
-nautilus_notebook_sync_loading (GtkNotebook        *notebook,
+nautilus_notebook_sync_loading (NautilusNotebook   *notebook,
                                 NautilusWindowSlot *slot)
 {
     GtkWidget *tab_label, *spinner, *icon;
     gboolean active, allow_stop;
 
-    g_return_if_fail (GTK_IS_NOTEBOOK (notebook));
+    g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-    tab_label = gtk_notebook_get_tab_label (notebook,
+    tab_label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (notebook),
                                             GTK_WIDGET (slot));
     g_return_if_fail (GTK_IS_WIDGET (tab_label));
 
@@ -191,7 +214,7 @@ nautilus_notebook_sync_loading (GtkNotebook        *notebook,
 }
 
 void
-nautilus_notebook_sync_tab_label (GtkNotebook        *notebook,
+nautilus_notebook_sync_tab_label (NautilusNotebook   *notebook,
                                   NautilusWindowSlot *slot)
 {
     GtkWidget *hbox, *label;
@@ -199,10 +222,10 @@ nautilus_notebook_sync_tab_label (GtkNotebook        *notebook,
     GFile *location;
     const gchar *title_name;
 
-    g_return_if_fail (GTK_IS_NOTEBOOK (notebook));
+    g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-    hbox = gtk_notebook_get_tab_label (notebook, GTK_WIDGET (slot));
+    hbox = gtk_notebook_get_tab_label (GTK_NOTEBOOK (notebook), GTK_WIDGET (slot));
     g_return_if_fail (GTK_IS_WIDGET (hbox));
 
     label = GTK_WIDGET (g_object_get_data (G_OBJECT (hbox), "label"));
@@ -235,7 +258,7 @@ nautilus_notebook_sync_tab_label (GtkNotebook        *notebook,
 }
 
 static GtkWidget *
-build_tab_label (GtkNotebook        *notebook,
+build_tab_label (NautilusNotebook   *notebook,
                  NautilusWindowSlot *slot)
 {
     GtkWidget *box;
@@ -294,19 +317,20 @@ build_tab_label (GtkNotebook        *notebook,
 }
 
 int
-nautilus_notebook_add_tab (GtkNotebook        *notebook,
+nautilus_notebook_add_tab (NautilusNotebook   *notebook,
                            NautilusWindowSlot *slot,
                            int                 position,
                            gboolean            jump_to)
 {
+    GtkNotebook *gnotebook = GTK_NOTEBOOK (notebook);
     GtkWidget *tab_label;
 
-    g_return_val_if_fail (GTK_IS_NOTEBOOK (notebook), -1);
+    g_return_val_if_fail (NAUTILUS_IS_NOTEBOOK (notebook), -1);
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot), -1);
 
     tab_label = build_tab_label (notebook, slot);
 
-    position = gtk_notebook_insert_page (notebook,
+    position = gtk_notebook_insert_page (GTK_NOTEBOOK (notebook),
                                          GTK_WIDGET (slot),
                                          tab_label,
                                          position);
@@ -322,40 +346,46 @@ nautilus_notebook_add_tab (GtkNotebook        *notebook,
 
     if (jump_to)
     {
-        gtk_notebook_set_current_page (notebook, position);
+        gtk_notebook_set_current_page (gnotebook, position);
     }
 
     return position;
 }
 
 void
-nautilus_notebook_reorder_current_child_relative (GtkNotebook *notebook,
-                                                  int          offset)
+nautilus_notebook_reorder_current_child_relative (NautilusNotebook *notebook,
+                                                  int               offset)
 {
+    GtkNotebook *gnotebook;
     GtkWidget *child;
     int page;
 
-    g_return_if_fail (GTK_IS_NOTEBOOK (notebook));
+    g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
 
     if (!nautilus_notebook_can_reorder_current_child_relative (notebook, offset))
     {
         return;
     }
 
-    page = gtk_notebook_get_current_page (notebook);
-    child = gtk_notebook_get_nth_page (notebook, page);
-    gtk_notebook_reorder_child (notebook, child, page + offset);
+    gnotebook = GTK_NOTEBOOK (notebook);
+
+    page = gtk_notebook_get_current_page (gnotebook);
+    child = gtk_notebook_get_nth_page (gnotebook, page);
+    gtk_notebook_reorder_child (gnotebook, child, page + offset);
 }
 
 static gboolean
-nautilus_notebook_is_valid_relative_position (GtkNotebook *notebook,
-                                              int          offset)
+nautilus_notebook_is_valid_relative_position (NautilusNotebook *notebook,
+                                              int               offset)
 {
+    GtkNotebook *gnotebook;
     int page;
     int n_pages;
 
-    page = gtk_notebook_get_current_page (notebook);
-    n_pages = gtk_notebook_get_n_pages (notebook) - 1;
+    gnotebook = GTK_NOTEBOOK (notebook);
+
+    page = gtk_notebook_get_current_page (gnotebook);
+    n_pages = gtk_notebook_get_n_pages (gnotebook) - 1;
     if (page < 0 ||
         (offset < 0 && page < -offset) ||
         (offset > 0 && page > n_pages - offset))
@@ -367,27 +397,27 @@ nautilus_notebook_is_valid_relative_position (GtkNotebook *notebook,
 }
 
 gboolean
-nautilus_notebook_can_reorder_current_child_relative (GtkNotebook *notebook,
-                                                      int          offset)
+nautilus_notebook_can_reorder_current_child_relative (NautilusNotebook *notebook,
+                                                      int               offset)
 {
-    g_return_val_if_fail (GTK_IS_NOTEBOOK (notebook), FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_NOTEBOOK (notebook), FALSE);
 
     return nautilus_notebook_is_valid_relative_position (notebook, offset);
 }
 
 void
-nautilus_notebook_next_page (GtkNotebook *notebook)
+nautilus_notebook_next_page (NautilusNotebook *notebook)
 {
     gint current_page, n_pages;
 
-    g_return_if_fail (GTK_IS_NOTEBOOK (notebook));
+    g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
 
-    current_page = gtk_notebook_get_current_page (notebook);
-    n_pages = gtk_notebook_get_n_pages (notebook);
+    current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
+    n_pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
 
     if (current_page < n_pages - 1)
     {
-        gtk_notebook_next_page (notebook);
+        gtk_notebook_next_page (GTK_NOTEBOOK (notebook));
     }
     else
     {
@@ -399,23 +429,23 @@ nautilus_notebook_next_page (GtkNotebook *notebook)
 
         if (wrap_around)
         {
-            gtk_notebook_set_current_page (notebook, 0);
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 0);
         }
     }
 }
 
 void
-nautilus_notebook_prev_page (GtkNotebook *notebook)
+nautilus_notebook_prev_page (NautilusNotebook *notebook)
 {
     gint current_page;
 
-    g_return_if_fail (GTK_IS_NOTEBOOK (notebook));
+    g_return_if_fail (NAUTILUS_IS_NOTEBOOK (notebook));
 
-    current_page = gtk_notebook_get_current_page (notebook);
+    current_page = gtk_notebook_get_current_page (GTK_NOTEBOOK (notebook));
 
     if (current_page > 0)
     {
-        gtk_notebook_prev_page (notebook);
+        gtk_notebook_prev_page (GTK_NOTEBOOK (notebook));
     }
     else
     {
@@ -427,7 +457,7 @@ nautilus_notebook_prev_page (GtkNotebook *notebook)
 
         if (wrap_around)
         {
-            gtk_notebook_set_current_page (notebook, -1);
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), -1);
         }
     }
 }
