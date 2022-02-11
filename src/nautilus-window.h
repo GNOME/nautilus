@@ -57,7 +57,7 @@ typedef void (* NautilusWindowHandleExported) (NautilusWindow *window,
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH		890
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT		550
 
-NautilusWindow * nautilus_window_new                  (void);
+NautilusWindow * nautilus_window_new                  (GdkScreen         *screen);
 void             nautilus_window_close                (NautilusWindow    *window);
 
 void nautilus_window_open_location_full               (NautilusWindow     *window,

@@ -2002,9 +2002,8 @@ notebook_create_window_cb (GtkNotebook *notebook,
     }
 
     app = NAUTILUS_APPLICATION (g_application_get_default ());
-    new_window = nautilus_application_create_window (app);
-    gtk_window_set_display (GTK_WINDOW (new_window),
-                            gtk_widget_get_display (GTK_WIDGET (notebook)));
+    new_window = nautilus_application_create_window
+                     (app, gtk_widget_get_screen (GTK_WIDGET (notebook)));
 
     slot = NAUTILUS_WINDOW_SLOT (page);
     g_object_set_data (G_OBJECT (slot), "dnd-window-slot",
@@ -2850,10 +2849,11 @@ nautilus_window_class_init (NautilusWindowClass *class)
 }
 
 NautilusWindow *
-nautilus_window_new (void)
+nautilus_window_new (GdkScreen *screen)
 {
     return g_object_new (NAUTILUS_TYPE_WINDOW,
                          "icon-name", APPLICATION_ID,
+                         "screen", screen,
                          NULL);
 }
 

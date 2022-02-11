@@ -66,7 +66,6 @@
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window.h"
-#include "nautilus-gtk4-helpers.h"
 
 typedef struct
 {
@@ -241,7 +240,8 @@ menu_provider_init_callback (void)
 }
 
 NautilusWindow *
-nautilus_application_create_window (NautilusApplication *self)
+nautilus_application_create_window (NautilusApplication *self,
+                                    GdkScreen           *screen)
 {
     NautilusWindow *window;
     gboolean maximized;
@@ -252,7 +252,7 @@ nautilus_application_create_window (NautilusApplication *self)
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
     nautilus_profile_start (NULL);
 
-    window = nautilus_window_new ();
+    window = nautilus_window_new (screen);
 
     maximized = g_settings_get_boolean
                     (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED);
@@ -369,7 +369,7 @@ real_open_location_full (NautilusApplication *self,
     GFile *old_location = NULL;
     char *old_uri, *new_uri;
     gboolean use_same;
-    GdkDisplay *display;
+    GdkScreen *screen;
 
     use_same = TRUE;
     /* FIXME: We are having problems on getting the current focused window with
@@ -441,13 +441,12 @@ real_open_location_full (NautilusApplication *self,
     }
     else
     {
-        display = active_window != NULL ?
-                  gtk_root_get_display (GTK_ROOT (active_window)) :
-                  gdk_display_get_default ();
+        screen = active_window != NULL ?
+                 gtk_window_get_screen (GTK_WINDOW (active_window)) :
+                 gdk_screen_get_default ();
 
-        target_window = nautilus_application_create_window (self);
+        target_window = nautilus_application_create_window (self, screen);
         /* Whatever the caller says, the slot won't be the same */
-        gtk_window_set_display (GTK_WINDOW (target_window), display);
         target_slot = NULL;
     }
 
@@ -466,7 +465,7 @@ open_window (NautilusApplication *self,
     NautilusWindow *window;
 
     nautilus_profile_start (NULL);
-    window = nautilus_application_create_window (self);
+    window = nautilus_application_create_window (self, gdk_screen_get_default ());
 
     if (location != NULL)
     {
@@ -507,7 +506,7 @@ nautilus_application_open_location (NautilusApplication *self,
 
     if (!slot)
     {
-        window = nautilus_application_create_window (self);
+        window = nautilus_application_create_window (self, gdk_screen_get_default ());
     }
     else
     {
