@@ -282,9 +282,7 @@ build_tab_label (GtkNotebook        *notebook,
     gtk_widget_show (close_button);
 
     g_object_set_data (G_OBJECT (box), "nautilus-notebook-tab", GINT_TO_POINTER (1));
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     nautilus_drag_slot_proxy_init (box, NULL, slot);
-#endif
 
     g_object_set_data (G_OBJECT (box), "label", label);
     g_object_set_data (G_OBJECT (box), "spinner", spinner);

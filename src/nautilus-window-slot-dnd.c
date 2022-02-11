@@ -23,7 +23,6 @@
  *      Ettore Perazzoli <ettore@gnu.org>
  */
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #include <config.h>
 
 #include "nautilus-notebook.h"
@@ -560,4 +559,3 @@ nautilus_drag_slot_proxy_init (GtkWidget          *widget,
                       G_CALLBACK (slot_proxy_drag_leave),
                       drag_info);
 }
-#endif

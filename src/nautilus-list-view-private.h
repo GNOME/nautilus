@@ -38,9 +38,7 @@ struct NautilusListViewDetails {
 
   NautilusListZoomLevel zoom_level;
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
   NautilusTreeViewDragDest *drag_dest;
-#endif
 
   GtkTreePath *first_click_path; /* Both clicks in a double click need to be on the same row */
 
@@ -58,9 +56,7 @@ struct NautilusListViewDetails {
   gboolean drag_started;
   gboolean row_selected_on_button_down;
   gboolean active;
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
   NautilusDragInfo *drag_source_info;
-#endif
 
   GHashTable *columns;
   GtkWidget *column_editor;

@@ -1202,7 +1202,6 @@ sort_column_changed_callback (GtkTreeSortable  *sortable,
     view->details->last_sort_attr = sort_attr;
 }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 static char *
 get_root_uri_callback (NautilusTreeViewDragDest *dest,
                        gpointer                  user_data)
@@ -1287,7 +1286,6 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
                                          target_uri,
                                          action);
 }
-#endif
 
 static void
 column_header_menu_toggled (GtkCheckButton   *menu_item,
@@ -1941,9 +1939,7 @@ on_tree_view_drag_gesture_drag_begin (GtkGestureDrag *gesture,
                                       gdouble         start_y,
                                       gpointer        user_data)
 {
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     nautilus_list_view_dnd_init (NAUTILUS_LIST_VIEW (user_data));
-#endif
 }
 
 static void
@@ -1952,7 +1948,6 @@ on_tree_view_drag_gesture_drag_update (GtkGestureDrag *gesture,
                                        gdouble         offset_y,
                                        gpointer        user_data)
 {
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     GdkEventSequence *sequence;
     const GdkEvent *event;
     NautilusListView *list_view;
@@ -1962,7 +1957,6 @@ on_tree_view_drag_gesture_drag_update (GtkGestureDrag *gesture,
     list_view = NAUTILUS_LIST_VIEW (user_data);
 
     nautilus_list_view_dnd_drag_begin (list_view, offset_x, offset_y, event);
-#endif
 }
 
 static void
@@ -1997,10 +1991,8 @@ create_and_set_up_tree_view (NautilusListView *view)
                                                     NULL);
     gtk_tree_view_set_enable_search (view->details->tree_view, FALSE);
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     view->details->drag_dest =
         nautilus_tree_view_drag_dest_new (view->details->tree_view);
-#endif
 
     /* Stop the tree view from performing select-all actions.
      * It is desireable that the action is disabled while directory
@@ -2009,7 +2001,6 @@ create_and_set_up_tree_view (NautilusListView *view)
     g_signal_connect (view->details->tree_view, "select-all",
                       G_CALLBACK (g_signal_stop_emission_by_name), "select-all");
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     g_signal_connect_object (view->details->drag_dest,
                              "get-root-uri",
                              G_CALLBACK (get_root_uri_callback),
@@ -2030,7 +2021,6 @@ create_and_set_up_tree_view (NautilusListView *view)
                              G_CALLBACK (list_view_handle_raw), view, 0);
     g_signal_connect_object (view->details->drag_dest, "handle-hover",
                              G_CALLBACK (list_view_handle_hover), view, 0);
-#endif
 
     g_signal_connect_object (gtk_tree_view_get_selection (view->details->tree_view),
                              "changed",
@@ -3547,13 +3537,11 @@ nautilus_list_view_dispose (GObject *object)
         list_view->details->model = NULL;
     }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     if (list_view->details->drag_dest)
     {
         g_object_unref (list_view->details->drag_dest);
         list_view->details->drag_dest = NULL;
     }
-#endif
 
     clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
     g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, list_view);
