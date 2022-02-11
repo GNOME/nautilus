@@ -228,11 +228,13 @@ set_images (FileConflictDialogData *data)
 
     destination_pixbuf = nautilus_file_get_icon_pixbuf (data->destination,
                                                         NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                                        TRUE,
                                                         1,
                                                         NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
     source_pixbuf = nautilus_file_get_icon_pixbuf (data->source,
                                                    NAUTILUS_GRID_ICON_SIZE_SMALL,
+                                                   TRUE,
                                                    1,
                                                    NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 

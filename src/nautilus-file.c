@@ -5380,14 +5380,25 @@ out:
 GdkPixbuf *
 nautilus_file_get_icon_pixbuf (NautilusFile          *file,
                                int                    size,
+                               gboolean               force_size,
                                int                    scale,
                                NautilusFileIconFlags  flags)
 {
-    g_autoptr (NautilusIconInfo) info = NULL;
+    NautilusIconInfo *info;
+    GdkPixbuf *pixbuf;
 
     info = nautilus_file_get_icon (file, size, scale, flags);
+    if (force_size)
+    {
+        pixbuf = nautilus_icon_info_get_pixbuf_at_size (info, size);
+    }
+    else
+    {
+        pixbuf = nautilus_icon_info_get_pixbuf (info);
+    }
+    g_object_unref (info);
 
-    return nautilus_icon_info_get_pixbuf_at_size (info, size);
+    return pixbuf;
 }
 
 gboolean

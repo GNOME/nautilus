@@ -658,7 +658,7 @@ result_list_attributes_ready_cb (GList    *file_list,
 
         if (gicon == NULL)
         {
-            gicon = G_ICON (nautilus_file_get_icon_pixbuf (file, 128,
+            gicon = G_ICON (nautilus_file_get_icon_pixbuf (file, 128, TRUE,
                                                            icon_scale,
                                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
         }

@@ -46,7 +46,8 @@ update_icon (NautilusViewIconItemUi *self)
             NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
             NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
 
-    icon_pixbuf = nautilus_file_get_icon_pixbuf (file, icon_size, 1, flags);
+    icon_pixbuf = nautilus_file_get_icon_pixbuf (file, icon_size,
+                                                 TRUE, 1, flags);
     gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon), icon_pixbuf);
 
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
