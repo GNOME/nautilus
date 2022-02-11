@@ -3492,7 +3492,7 @@ nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
     {
         if (hand_cursor == NULL)
         {
-            hand_cursor = gdk_cursor_new_from_name (display, "pointer");
+            hand_cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
         }
     }
 }
