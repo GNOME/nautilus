@@ -257,7 +257,6 @@ typedef struct
 
 /* drag and drop definitions */
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 enum
 {
     TARGET_URI_LIST,
@@ -269,7 +268,6 @@ static const GtkTargetEntry target_table[] =
     { "text/uri-list", 0, TARGET_URI_LIST },
     { "x-special/gnome-icon-list", 0, TARGET_GNOME_URI_LIST },
 };
-#endif
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL      200 /* milliseconds */
 #define FILES_UPDATE_INTERVAL                   200 /* milliseconds */
@@ -469,7 +467,6 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
     gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon_button_image), pixbuf);
 }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 /* utility to test if a uri refers to a local image */
 static gboolean
 uri_is_local_image (const char *uri)
@@ -492,7 +489,7 @@ uri_is_local_image (const char *uri)
 
     return TRUE;
 }
-#endif
+
 
 static void
 reset_icon (NautilusPropertiesWindow *self)
@@ -511,7 +508,7 @@ reset_icon (NautilusPropertiesWindow *self)
     }
 }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
+
 static void
 nautilus_properties_window_drag_data_received (GtkWidget        *widget,
                                                GdkDragContext   *context,
@@ -568,7 +565,6 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
         }
     }
 }
-#endif
 
 static void
 setup_image_widget (NautilusPropertiesWindow *self,
@@ -578,7 +574,6 @@ setup_image_widget (NautilusPropertiesWindow *self,
 
     if (is_customizable)
     {
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
         /* prepare the image to receive dropped objects to assign custom images */
         gtk_drag_dest_set (self->icon_button_image,
                            GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP,
@@ -587,7 +582,6 @@ setup_image_widget (NautilusPropertiesWindow *self,
 
         g_signal_connect (self->icon_button_image, "drag-data-received",
                           G_CALLBACK (nautilus_properties_window_drag_data_received), NULL);
-#endif
         g_signal_connect (self->icon_button, "clicked",
                           G_CALLBACK (select_image_button_callback), self);
         gtk_stack_set_visible_child (self->icon_stack, self->icon_button);

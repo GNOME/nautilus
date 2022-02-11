@@ -23,7 +23,6 @@
  *          Pavel Cisler <pavel@eazel.com>
  */
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #include <config.h>
 
 #include "nautilus-files-view-dnd.h"
@@ -408,4 +407,3 @@ nautilus_files_view_handle_hover (NautilusFilesView *view,
     g_object_unref (location);
     nautilus_file_unref (target_file);
 }
-#endif

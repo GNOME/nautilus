@@ -96,9 +96,7 @@ GtkTreeView *     nautilus_list_model_get_drag_view (NautilusListModel *model,
 						     int *drag_begin_x,
 						     int *drag_begin_y);
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 GtkTargetList *   nautilus_list_model_get_drag_target_list (void);
-#endif
 
 int               nautilus_list_model_compare_func (NautilusListModel *model,
 						    NautilusFile *file1,

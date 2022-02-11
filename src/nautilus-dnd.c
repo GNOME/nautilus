@@ -21,8 +21,6 @@
  *           Ettore Perazzoli <ettore@gnu.org>
  */
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
-
 #include <config.h>
 #include "nautilus-dnd.h"
 
@@ -974,5 +972,3 @@ nautilus_drag_autoscroll_stop (NautilusDragInfo *drag_info)
         drag_info->auto_scroll_timeout_id = 0;
     }
 }
-
-#endif
