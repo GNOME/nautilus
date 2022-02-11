@@ -278,6 +278,7 @@ select_type_button_clicked (GtkButton             *button,
 static void
 toggle_calendar_icon_clicked (GtkEntry              *entry,
                               GtkEntryIconPosition   position,
+                              GdkEvent              *event,
                               NautilusSearchPopover *popover)
 {
     const gchar *current_visible_child;

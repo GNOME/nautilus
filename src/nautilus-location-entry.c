@@ -644,6 +644,7 @@ nautilus_location_entry_text_changed (NautilusLocationEntry *entry,
 static void
 nautilus_location_entry_icon_release (GtkEntry             *gentry,
                                       GtkEntryIconPosition  position,
+                                      GdkEvent             *event,
                                       gpointer              unused)
 {
     NautilusLocationEntry *entry;

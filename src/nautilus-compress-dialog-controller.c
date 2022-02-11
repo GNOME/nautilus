@@ -308,6 +308,7 @@ passphrase_entry_on_changed (GtkEditable *editable,
 static void
 passphrase_entry_on_icon_press (GtkEntry             *entry,
                                 GtkEntryIconPosition  icon_pos,
+                                GdkEvent             *event,
                                 gpointer              user_data)
 {
     NautilusCompressDialogController *self;
