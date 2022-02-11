@@ -3163,12 +3163,10 @@ static void
 setup_execute_checkbox_with_label (NautilusPropertiesWindow *self,
                                    guint32                   permission_to_check)
 {
-#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
     gboolean a11y_enabled;
     GtkLabel *label_for;
 
     label_for = GTK_LABEL (self->execute_label);
-#endif
     gtk_widget_show (self->execute_label);
     gtk_widget_show (self->execute_checkbox);
 
@@ -3189,7 +3187,6 @@ setup_execute_checkbox_with_label (NautilusPropertiesWindow *self,
                              self,
                              0);
 
-#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
     a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (self->execute_checkbox));
     if (a11y_enabled && label_for != NULL)
     {
@@ -3205,7 +3202,6 @@ setup_execute_checkbox_with_label (NautilusPropertiesWindow *self,
         /* Create the widget -> label relation */
         atk_object_add_relationship (atk_widget, ATK_RELATION_LABELLED_BY, atk_label);
     }
-#endif
 }
 
 enum
