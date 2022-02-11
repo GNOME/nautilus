@@ -3216,7 +3216,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   g_menu_append_item (section, item);
   g_object_unref (item);
 
-  item = g_menu_item_new (_("_Remove"), "row.remove");
+  item = g_menu_item_new (_("_Remove from Bookmarks"), "row.remove");
   g_menu_append_item (section, item);
   g_object_unref (item);
 
