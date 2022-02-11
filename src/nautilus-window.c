@@ -148,9 +148,6 @@ struct _NautilusWindow
     guint sidebar_width_handler_id;
     gulong bookmarks_id;
 
-    GtkWidget *tab_menu;
-    GMenuModel *tab_menu_model;
-
     GQueue *tab_data_queue;
 
     GtkPadController *pad_controller;
@@ -1766,14 +1763,98 @@ on_path_bar_open_location (NautilusWindow    *window,
 }
 
 static void
-notebook_popup_menu_show (NautilusWindow *window,
-                          gdouble         x,
-                          gdouble         y)
+notebook_popup_menu_new_tab_cb (GtkMenuItem *menuitem,
+                                gpointer     user_data)
 {
-    GtkPopover *popover = GTK_POPOVER (window->tab_menu);
+    NautilusWindow *window = user_data;
 
-    gtk_popover_set_pointing_to (popover, &(GdkRectangle){x, y, 0, 0});
-    gtk_popover_popup (popover);
+    nautilus_window_new_tab (window);
+}
+
+static void
+notebook_popup_menu_move_left_cb (GtkMenuItem *menuitem,
+                                  gpointer     user_data)
+{
+    NautilusWindow *window = user_data;
+
+    nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (window->notebook), -1);
+}
+
+static void
+notebook_popup_menu_move_right_cb (GtkMenuItem *menuitem,
+                                   gpointer     user_data)
+{
+    NautilusWindow *window = user_data;
+
+
+    nautilus_notebook_reorder_current_child_relative (NAUTILUS_NOTEBOOK (window->notebook), 1);
+}
+
+static void
+notebook_popup_menu_close_cb (GtkMenuItem *menuitem,
+                              gpointer     user_data)
+{
+    NautilusWindow *window = user_data;
+    NautilusWindowSlot *slot;
+
+    slot = window->active_slot;
+    nautilus_window_slot_close (window, slot);
+}
+
+static void
+notebook_popup_menu_show (NautilusWindow *window,
+                          const GdkEvent *event)
+{
+    GtkWidget *popup;
+    GtkWidget *item;
+    gboolean can_move_left, can_move_right;
+    NautilusNotebook *notebook;
+
+    notebook = NAUTILUS_NOTEBOOK (window->notebook);
+
+    can_move_left = nautilus_notebook_can_reorder_current_child_relative (notebook, -1);
+    can_move_right = nautilus_notebook_can_reorder_current_child_relative (notebook, 1);
+
+    popup = gtk_menu_new ();
+
+    item = gtk_menu_item_new_with_mnemonic (_("_New Tab"));
+    g_signal_connect (item, "activate",
+                      G_CALLBACK (notebook_popup_menu_new_tab_cb),
+                      window);
+    gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+                           item);
+
+    gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+                           gtk_separator_menu_item_new ());
+
+    item = gtk_menu_item_new_with_mnemonic (_("Move Tab _Left"));
+    g_signal_connect (item, "activate",
+                      G_CALLBACK (notebook_popup_menu_move_left_cb),
+                      window);
+    gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+                           item);
+    gtk_widget_set_sensitive (item, can_move_left);
+
+    item = gtk_menu_item_new_with_mnemonic (_("Move Tab _Right"));
+    g_signal_connect (item, "activate",
+                      G_CALLBACK (notebook_popup_menu_move_right_cb),
+                      window);
+    gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+                           item);
+    gtk_widget_set_sensitive (item, can_move_right);
+
+    gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+                           gtk_separator_menu_item_new ());
+
+    item = gtk_menu_item_new_with_mnemonic (_("_Close Tab"));
+    g_signal_connect (item, "activate",
+                      G_CALLBACK (notebook_popup_menu_close_cb), window);
+    gtk_menu_shell_append (GTK_MENU_SHELL (popup),
+                           item);
+
+    gtk_widget_show_all (popup);
+
+    gtk_menu_popup_at_pointer (GTK_MENU (popup), event);
 }
 
 /* emitted when the user clicks the "close" button of tabs */
@@ -1793,6 +1874,8 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
                           gpointer              user_data)
 {
     NautilusWindow *window;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
 
     window = NAUTILUS_WINDOW (user_data);
 
@@ -1801,7 +1884,10 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
         return;
     }
 
-    notebook_popup_menu_show (window, x, y);
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+
+    notebook_popup_menu_show (window, event);
 }
 
 static gboolean
@@ -1809,7 +1895,7 @@ notebook_popup_menu_cb (GtkWidget *widget,
                         gpointer   user_data)
 {
     NautilusWindow *window = user_data;
-    notebook_popup_menu_show (window, 0, 0);
+    notebook_popup_menu_show (window, NULL);
     return TRUE;
 }
 
@@ -2622,10 +2708,6 @@ nautilus_window_init (NautilusWindow *window)
                              window,
                              G_CONNECT_SWAPPED);
 
-    gtk_popover_bind_model (GTK_POPOVER (window->tab_menu),
-                            window->tab_menu_model,
-                            NULL);
-
     g_signal_connect (window, "notify::is-maximized",
                       G_CALLBACK (on_is_maximized_changed), NULL);
 
@@ -2705,8 +2787,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, main_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, notebook);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_menu);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_menu_model);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, in_app_notification_undo);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, in_app_notification_undo_label);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, in_app_notification_undo_undo_button);

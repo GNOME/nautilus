@@ -1,33 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkPopover" id="tab_menu">
-    <property name="position">bottom</property>
-    <property name="relative-to">notebook</property>
-  </object>
-  <menu id="tab_menu_model">
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">_New Tab</attribute>
-        <attribute name="action">win.new-tab</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">Move Tab _Left</attribute>
-        <attribute name="action">win.tab-move-left</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Move Tab _Right</attribute>
-        <attribute name="action">win.tab-move-right</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">_Close Tab</attribute>
-        <attribute name="action">win.close-current-view</attribute>
-      </item>
-    </section>
-  </menu>
   <template class="NautilusWindow" parent="HdyApplicationWindow">
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>
