@@ -417,7 +417,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                     }
                 }
 
-                icon = nautilus_file_get_icon_pixbuf (file, icon_size, icon_scale, flags);
+                icon = nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, icon_scale, flags);
 
                 if (priv->highlight_files != NULL &&
                     g_list_find_custom (priv->highlight_files,
