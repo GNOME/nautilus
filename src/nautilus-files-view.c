@@ -9753,12 +9753,22 @@ nautilus_files_view_new (guint               id,
                          NautilusWindowSlot *slot)
 {
     NautilusFilesView *view = NULL;
+    gboolean use_experimental_views;
 
+    use_experimental_views = g_settings_get_boolean (nautilus_preferences,
+                                                     NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
     switch (id)
     {
         case NAUTILUS_VIEW_GRID_ID:
         {
-            view = NAUTILUS_FILES_VIEW (nautilus_view_icon_controller_new (slot));
+            if (use_experimental_views)
+            {
+                view = NAUTILUS_FILES_VIEW (nautilus_view_icon_controller_new (slot));
+            }
+            else
+            {
+                view = nautilus_canvas_view_new (slot);
+            }
         }
         break;
 

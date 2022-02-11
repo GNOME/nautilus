@@ -406,7 +406,12 @@ nautilus_drag_get_source_data (GdkDragContext *context)
         return NULL;
     }
 
-    if (GTK_IS_TREE_VIEW (source_widget))
+    if (NAUTILUS_IS_CANVAS_CONTAINER (source_widget))
+    {
+        source_data = nautilus_canvas_dnd_get_drag_source_data (NAUTILUS_CANVAS_CONTAINER (source_widget),
+                                                                context);
+    }
+    else if (GTK_IS_TREE_VIEW (source_widget))
     {
         NautilusWindow *window;
         NautilusWindowSlot *active_slot;

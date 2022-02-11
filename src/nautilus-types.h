@@ -32,6 +32,8 @@
 
 typedef struct _NautilusBookmark            NautilusBookmark;
 typedef struct _NautilusBookmarkList        NautilusBookmarkList;
+typedef struct _NautilusCanvasContainer     NautilusCanvasContainer;
+typedef struct _NautilusCanvasView          NautilusCanvasView;
 typedef struct _NautilusDirectory           NautilusDirectory;
 typedef struct  NautilusFile                NautilusFile;
 typedef struct  NautilusFileQueue           NautilusFileQueue;
