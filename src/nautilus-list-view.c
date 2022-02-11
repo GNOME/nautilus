@@ -1909,8 +1909,7 @@ static gint
 get_icon_scale_callback (NautilusListModel *model,
                          NautilusListView  *view)
 {
-    /* FIXME: Temporary regression: HiDPI icons not supported, ignore scale. */
-    return 1;
+    return gtk_widget_get_scale_factor (GTK_WIDGET (view->details->tree_view));
 }
 
 static void
@@ -2187,7 +2186,7 @@ create_and_set_up_tree_view (NautilusListView *view)
             gtk_tree_view_column_pack_start (view->details->file_name_column, cell, FALSE);
             gtk_tree_view_column_set_attributes (view->details->file_name_column,
                                                  cell,
-                                                 "pixbuf", nautilus_list_model_get_column_id_from_zoom_level (view->details->zoom_level),
+                                                 "surface", nautilus_list_model_get_column_id_from_zoom_level (view->details->zoom_level),
                                                  NULL);
 
             cell = gtk_cell_renderer_text_new ();
@@ -3358,7 +3357,7 @@ nautilus_list_view_set_zoom_level (NautilusListView      *view,
     column = nautilus_list_model_get_column_id_from_zoom_level (new_level);
     gtk_tree_view_column_set_attributes (view->details->file_name_column,
                                          GTK_CELL_RENDERER (view->details->pixbuf_cell),
-                                         "pixbuf", column,
+                                         "surface", column,
                                          NULL);
     set_up_pixbuf_size (view);
 }
