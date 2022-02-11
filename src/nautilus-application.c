@@ -1113,29 +1113,45 @@ nautilus_application_init (NautilusApplication *self)
 }
 
 static void
-setup_theme_extensions (void)
+theme_changed (GtkSettings *settings)
 {
     static GtkCssProvider *provider = NULL;
     static GtkCssProvider *permanent_provider = NULL;
+    gchar *theme;
     GdkDisplay *display;
+    GFile *file;
 
+    g_object_get (settings, "gtk-theme-name", &theme, NULL);
     display = gdk_display_get_default ();
 
     /* CSS that themes can override */
-    if (provider == NULL)
+    if (g_str_equal (theme, "Adwaita") || g_str_equal (theme, "Adwaita-dark"))
     {
-        provider = gtk_css_provider_new ();
-        gtk_css_provider_load_from_resource (provider, "/org/gnome/nautilus/css/Adwaita.css");
+        if (provider == NULL)
+        {
+            provider = gtk_css_provider_new ();
+            file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/Adwaita.css");
+            gtk_css_provider_load_from_file (provider, file);
+            g_object_unref (file);
+        }
+
         gtk_style_context_add_provider_for_display (display,
                                                     GTK_STYLE_PROVIDER (provider),
                                                     GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    }
+    else if (provider != NULL)
+    {
+        gtk_style_context_remove_provider_for_display (display,
+                                                       GTK_STYLE_PROVIDER (provider));
+        g_clear_object (&provider);
     }
 
     /* CSS we want to always load for any theme */
     if (permanent_provider == NULL)
     {
         permanent_provider = gtk_css_provider_new ();
-        gtk_css_provider_load_from_resource (permanent_provider, "/org/gnome/nautilus/css/nautilus.css");
+        file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
+        gtk_css_provider_load_from_file (permanent_provider, file);
         /* The behavior of two style providers with the same priority is
          * undefined and gtk happens to prefer the provider that got added last.
          * Use a higher priority here to avoid this problem.
@@ -1143,7 +1159,24 @@ setup_theme_extensions (void)
         gtk_style_context_add_provider_for_display (display,
                                                     GTK_STYLE_PROVIDER (permanent_provider),
                                                     GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
+        g_object_unref (file);
     }
+
+    g_free (theme);
+}
+
+static void
+setup_theme_extensions (void)
+{
+    GtkSettings *settings;
+
+    /* Set up a handler to load our custom css for Adwaita.
+     * See https://bugzilla.gnome.org/show_bug.cgi?id=732959
+     * for a more automatic solution that is still under discussion.
+     */
+    settings = gtk_settings_get_default ();
+    g_signal_connect (settings, "notify::gtk-theme-name", G_CALLBACK (theme_changed), NULL);
+    theme_changed (settings);
 }
 
 NautilusApplication *
