@@ -4864,9 +4864,17 @@ static GdkPixbuf *
 get_menu_icon_for_file (NautilusFile *file,
                         GtkWidget    *widget)
 {
-    int scale = gtk_widget_get_scale_factor (widget);
+    NautilusIconInfo *info;
+    GdkPixbuf *pixbuf;
+    int scale;
 
-    return nautilus_file_get_icon_pixbuf (file, 16, scale, 0);
+    scale = gtk_widget_get_scale_factor (widget);
+
+    info = nautilus_file_get_icon (file, 16, scale, 0);
+    pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, NAUTILUS_LIST_ICON_SIZE_SMALL);
+    g_object_unref (info);
+
+    return pixbuf;
 }
 
 static GList *
