@@ -199,6 +199,15 @@ struct _NautilusFilesViewClass {
          */
         gboolean (* is_empty)                (NautilusFilesView *view);
 
+        /* convert *point from widget's coordinate system to a coordinate
+         * system used for specifying file operation positions, which is view-specific.
+         *
+         * This is used by the the icon view, which converts the screen position to a zoom
+         * level-independent coordinate system.
+         */
+        void (* widget_to_file_operation_position) (NautilusFilesView *view,
+                                                    GdkPoint     *position);
+
         /* Preference change callbacks, overridden by icon and list views.
          * Icon and list views respond by synchronizing to the new preference
          * values and forcing an update if appropriate.
