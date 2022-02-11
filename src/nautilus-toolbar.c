@@ -1416,5 +1416,5 @@ nautilus_toolbar_is_menu_visible (NautilusToolbar *self)
 gboolean
 nautilus_toolbar_is_operations_button_active (NautilusToolbar *self)
 {
-    return gtk_widget_is_visible (GTK_WIDGET (self->operations_popover));
+    return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->operations_button));
 }
