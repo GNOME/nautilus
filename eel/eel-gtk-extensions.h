@@ -1,7 +1,9 @@
 
-/* eel.h
+/* eel-gtk-extensions.h - interface for new functions that operate on
+  			       gtk classes. Perhaps some of these should be
+  			       rolled into gtk someday.
 
-   Copyright (C) 2001 Eazel, Inc.
+   Copyright (C) 1999, 2000, 2001 Eazel, Inc.
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -17,16 +19,16 @@
    License along with the Gnome Library; see the file COPYING.LIB.  If not,
    see <http://www.gnu.org/licenses/>.
 
-   Authors: Maciej Stachowiak <mjs@eazel.com>
+   Authors: John Sullivan <sullivan@eazel.com>
+            Ramiro Estrugo <ramiro@eazel.com>
 */
 
 #pragma once
 
-#include <eel/eel-art-extensions.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-graphic-effects.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-self-checks.h>
-#include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <gtk/gtk.h>
+
+/* GtkMenu and GtkMenuItem */
+GtkMenuItem *         eel_gtk_menu_append_separator                   (GtkMenu              *menu);
+GtkMenuItem *         eel_gtk_menu_insert_separator                   (GtkMenu              *menu,
+								       int                   index);

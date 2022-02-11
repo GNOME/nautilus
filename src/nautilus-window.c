@@ -27,6 +27,7 @@
 #include "nautilus-window.h"
 
 #include <eel/eel-debug.h>
+#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkkeysyms.h>
