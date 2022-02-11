@@ -339,7 +339,7 @@ nautilus_floating_bar_constructed (GObject *obj)
     box = GTK_WIDGET (obj);
 
     w = gtk_spinner_new ();
-    gtk_box_append (GTK_BOX (box), w);
+    gtk_box_pack_start (GTK_BOX (box), w, FALSE, FALSE, 0);
     gtk_widget_set_visible (w, self->show_spinner);
     /* As a workaround for https://gitlab.gnome.org/GNOME/gtk/-/issues/1025,
      * ensure the spinner animates if and only if it's visible, to reduce CPU
@@ -353,7 +353,7 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_widget_set_margin_start (w, 8);
 
     labels_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-    gtk_box_append (GTK_BOX (box), labels_box);
+    gtk_box_pack_start (GTK_BOX (box), labels_box, FALSE, TRUE, 0);
     g_object_set (labels_box,
                   "hexpand", TRUE,
                   "margin-top", 2,

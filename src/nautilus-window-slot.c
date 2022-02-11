@@ -669,7 +669,8 @@ static void
 nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
                                                 GtkWidget          *widget)
 {
-    gtk_box_append (GTK_BOX (self->extra_location_widgets), widget);
+    gtk_box_pack_start (GTK_BOX (self->extra_location_widgets),
+                        widget, FALSE, TRUE, 0);
     gtk_widget_show (self->extra_location_widgets);
 }
 
@@ -899,7 +900,7 @@ nautilus_window_slot_constructed (GObject *object)
 
     extras_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     self->extra_location_widgets = extras_vbox;
-    gtk_box_append (GTK_BOX (self), extras_vbox);
+    gtk_box_pack_start (GTK_BOX (self), extras_vbox, FALSE, FALSE, 0);
     gtk_widget_show (extras_vbox);
 
     self->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
