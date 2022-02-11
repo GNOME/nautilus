@@ -5201,6 +5201,7 @@ set_script_environment_variables (NautilusFilesView *view,
     g_autofree gchar *file_paths = NULL;
     g_autofree gchar *uris = NULL;
     g_autofree gchar *uri = NULL;
+    g_autofree gchar *geometry_string = NULL;
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -5213,6 +5214,10 @@ set_script_environment_variables (NautilusFilesView *view,
 
     uri = nautilus_directory_get_uri (priv->model);
     g_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
+
+    geometry_string = eel_gtk_window_get_geometry_string
+                          (GTK_WINDOW (nautilus_files_view_get_containing_window (view)));
+    g_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
 }
 
 /* Unset all the special script environment variables. */
@@ -5222,6 +5227,7 @@ unset_script_environment_variables (void)
     g_unsetenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS");
     g_unsetenv ("NAUTILUS_SCRIPT_SELECTED_URIS");
     g_unsetenv ("NAUTILUS_SCRIPT_CURRENT_URI");
+    g_unsetenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY");
 }
 
 static void

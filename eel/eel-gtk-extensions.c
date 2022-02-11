@@ -46,6 +46,33 @@
 #define MINIMUM_ON_SCREEN_HEIGHT        100
 
 
+/**
+ * eel_gtk_window_get_geometry_string:
+ * @window: a #GtkWindow
+ *
+ * Obtains the geometry string for this window, suitable for
+ * set_geometry_string(); assumes the window has NorthWest gravity
+ *
+ * Return value: geometry string, must be freed
+ **/
+char *
+eel_gtk_window_get_geometry_string (GtkWindow *window)
+{
+    char *str;
+    int w, h, x, y;
+
+    g_return_val_if_fail (GTK_IS_WINDOW (window), NULL);
+    g_return_val_if_fail (gtk_window_get_gravity (window) ==
+                          GDK_GRAVITY_NORTH_WEST, NULL);
+
+    gtk_window_get_position (window, &x, &y);
+    gtk_window_get_size (window, &w, &h);
+
+    str = g_strdup_printf ("%dx%d+%d+%d", w, h, x, y);
+
+    return str;
+}
+
 GtkMenuItem *
 eel_gtk_menu_append_separator (GtkMenu *menu)
 {

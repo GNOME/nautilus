@@ -28,6 +28,9 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 
+/* GtkWindow */
+char *                eel_gtk_window_get_geometry_string              (GtkWindow            *window);
+
 /* GtkMenu and GtkMenuItem */
 GtkMenuItem *         eel_gtk_menu_append_separator                   (GtkMenu              *menu);
 GtkMenuItem *         eel_gtk_menu_insert_separator                   (GtkMenu              *menu,
