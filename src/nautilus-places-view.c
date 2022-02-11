@@ -61,9 +61,9 @@ enum
 };
 
 static void
-open_location_cb (NautilusPlacesView         *view,
-                  GFile                      *location,
-                  NautilusGtkPlacesOpenFlags  open_flags)
+open_location_cb (NautilusPlacesView *view,
+                  GFile              *location,
+                  GtkPlacesOpenFlags  open_flags)
 {
     NautilusOpenFlags flags;
     GtkWidget *slot;

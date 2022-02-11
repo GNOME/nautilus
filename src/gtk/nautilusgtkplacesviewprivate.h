@@ -22,7 +22,6 @@
 #if !defined (__GTK_H_INSIDE__) && !defined (GTK_COMPILATION)
 #endif
 
-#include "nautilusgtkplacessidebar.h"
 
 G_BEGIN_DECLS
 
@@ -43,9 +42,9 @@ struct _NautilusGtkPlacesViewClass
 
   void     (* open_location)        (NautilusGtkPlacesView          *view,
                                      GFile                  *location,
-                                     NautilusGtkPlacesOpenFlags  open_flags);
+                                     GtkPlacesOpenFlags  open_flags);
 
-  void    (* show_error_message)     (NautilusGtkPlacesSidebar      *sidebar,
+  void    (* show_error_message)     (GtkPlacesSidebar      *sidebar,
                                       const gchar           *primary,
                                       const gchar           *secondary);
 
@@ -62,9 +61,9 @@ struct _NautilusGtkPlacesView
 
 GType              nautilus_gtk_places_view_get_type                      (void) G_GNUC_CONST;
 
-NautilusGtkPlacesOpenFlags nautilus_gtk_places_view_get_open_flags                (NautilusGtkPlacesView      *view);
+GtkPlacesOpenFlags nautilus_gtk_places_view_get_open_flags                (NautilusGtkPlacesView      *view);
 void               nautilus_gtk_places_view_set_open_flags                (NautilusGtkPlacesView      *view,
-                                                                  NautilusGtkPlacesOpenFlags  flags);
+                                                                  GtkPlacesOpenFlags  flags);
 
 const gchar*       nautilus_gtk_places_view_get_search_query              (NautilusGtkPlacesView      *view);
 void               nautilus_gtk_places_view_set_search_query              (NautilusGtkPlacesView      *view,
