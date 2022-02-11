@@ -186,6 +186,7 @@ flowboxchild:selected .icon-ui-labels-box {
   color: @accent_fg_color;
 }
 
-flowboxchild:selected picture {
-  filter: sepia(1.5) hue-rotate(180deg) brightness(0.5) saturate(2.0);
+flowboxchild:selected image {
+  -gtk-icon-filter: opacity(0.5);
+  -gtk-icon-shadow: 0px 0px @accent_bg_color;
 }
