@@ -32,6 +32,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include "nautilus-file-utilities.h"
+#include "nautilus-canvas-dnd.h"
 #include <src/nautilus-list-view-dnd.h>
 #include <stdio.h>
 #include <string.h>

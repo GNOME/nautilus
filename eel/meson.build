@@ -1,6 +1,8 @@
 libeel_2_sources = [
   'eel-art-extensions.h',
   'eel-art-extensions.c',
+  'eel-canvas.h',
+  'eel-canvas.c',
   'eel-debug.h',
   'eel-debug.c',
   'eel-glib-extensions.h',
