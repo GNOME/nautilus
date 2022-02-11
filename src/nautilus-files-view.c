@@ -8316,8 +8316,6 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
     {
         priv->background_menu = gtk_popover_menu_new_from_model (NULL);
         gtk_widget_set_parent (priv->background_menu, GTK_WIDGET (view));
-        gtk_popover_set_has_arrow (GTK_POPOVER (priv->background_menu), FALSE);
-        gtk_widget_set_halign (priv->background_menu, GTK_ALIGN_START);
         g_signal_connect (priv->background_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
     }
     gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->background_menu),
