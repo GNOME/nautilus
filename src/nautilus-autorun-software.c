@@ -156,6 +156,10 @@ out:
                                                      GTK_BUTTONS_OK,
                                                      _("Oops! There was a problem running this software."));
         gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", error_string);
+        /* This is required because we don't show dialogs in the
+         *  window picker and if the window pops under another window
+         *  there is no way to get it back. */
+        gtk_window_set_keep_above (GTK_WINDOW (dialog), TRUE);
 
         g_signal_connect (dialog,
                           "response",
@@ -198,6 +202,11 @@ present_autorun_for_software_dialog (GMount *mount)
     gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                               "%s",
                                               _("If you don’t trust this location or aren’t sure, press Cancel."));
+
+    /* This is required because we don't show dialogs in the
+     *  window picker and if the window pops under another window
+     *  there is no way to get it back. */
+    gtk_window_set_keep_above (GTK_WINDOW (dialog), TRUE);
 
     /* TODO: in a star trek future add support for verifying
      * software on media (e.g. if it has a certificate, check it

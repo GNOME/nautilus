@@ -1418,6 +1418,13 @@ do_run_simple_dialog (gpointer _data)
 
         timestamp = nautilus_file_operations_dbus_data_get_timestamp (data->dbus_data);
 
+        /* Assuming this is used for desktop implementations, we want the
+         * dialog to be centered on the screen rather than the parent window,
+         * which could extend to all monitors. This is the case for
+         * gnome-flashback.
+         */
+        gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+
         if (nautilus_file_operations_dbus_data_get_parent_handle (data->dbus_data) != NULL)
         {
             g_signal_connect (dialog, "realize", G_CALLBACK (dialog_realize_cb), data->dbus_data);
