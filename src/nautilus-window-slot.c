@@ -1092,6 +1092,24 @@ recursive_search_preferences_changed (GSettings *settings,
 }
 
 static void
+use_experimental_views_changed_callback (GSettings *settings,
+                                         gchar     *key,
+                                         gpointer   callback_data)
+{
+    NautilusWindowSlot *self;
+
+    self = callback_data;
+
+    if (nautilus_window_slot_content_view_matches (self, NAUTILUS_VIEW_GRID_ID))
+    {
+        /* Note that although this call does not change the view id,
+         * it changes the canvas view between new and old.
+         */
+        nautilus_window_slot_set_content_view (self, NAUTILUS_VIEW_GRID_ID);
+    }
+}
+
+static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     GApplication *app;
@@ -1107,6 +1125,9 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect (nautilus_trash_monitor_get (),
                       "trash-state-changed",
                       G_CALLBACK (trash_state_changed_cb), self);
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS,
+                             G_CALLBACK (use_experimental_views_changed_callback), self, 0);
 
     g_signal_connect_object (nautilus_preferences,
                              "changed::recursive-search",
