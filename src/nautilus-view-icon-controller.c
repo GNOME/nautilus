@@ -777,6 +777,8 @@ on_button_press_event (GtkGestureMultiPress *gesture,
 {
     NautilusViewIconController *self;
     guint button;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
     GdkModifierType modifiers = 0;
     gint view_x;
     gint view_y;
@@ -784,6 +786,8 @@ on_button_press_event (GtkGestureMultiPress *gesture,
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 #if GTK_MAJOR_VERSION < 4
     gtk_get_current_event_state (&modifiers);
 #else
@@ -841,7 +845,7 @@ on_button_press_event (GtkGestureMultiPress *gesture,
         else if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                               x, y);
+                                                               event);
         }
     }
     else
@@ -850,7 +854,7 @@ on_button_press_event (GtkGestureMultiPress *gesture,
         if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                                x, y);
+                                                                event);
         }
     }
 }
@@ -889,8 +893,13 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
 {
     NautilusViewIconController *self;
     GtkFlowBoxChild *child_at_pos;
+    GdkEventSequence *event_sequence;
+    GdkEvent *event;
     gint view_x;
     gint view_y;
+
+    event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
+    event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -901,13 +910,13 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
     if (child_at_pos != NULL)
     {
         nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                           x, y);
+                                                           event);
     }
     else
     {
         nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
         nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                            x, y);
+                                                            event);
     }
 }
 
