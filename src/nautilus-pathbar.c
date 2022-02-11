@@ -95,6 +95,7 @@ struct _NautilusPathBar
     gpointer current_button_data;
 
     GList *button_list;
+    gulong settings_signal_id;
 
     GActionGroup *action_group;
 
@@ -110,6 +111,9 @@ struct _NautilusPathBar
 
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_BOX);
 
+static void nautilus_path_bar_check_icon_theme (NautilusPathBar *self);
+static void nautilus_path_bar_update_button_appearance (ButtonData *button_data,
+                                                        gboolean    current_dir);
 static void nautilus_path_bar_update_button_state (ButtonData *button_data,
                                                    gboolean    current_dir);
 static void nautilus_path_bar_update_path (NautilusPathBar *self,
@@ -318,9 +322,27 @@ nautilus_path_bar_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
 }
 
+/* Removes the settings signal handler.  It's safe to call multiple times */
+static void
+remove_settings_signal (NautilusPathBar *self,
+                        GdkScreen       *screen)
+{
+    GtkSettings *settings;
+
+    settings = gtk_settings_get_for_screen (screen);
+
+    g_clear_signal_handler (&self->settings_signal_id, settings);
+}
+
 static void
 nautilus_path_bar_dispose (GObject *object)
 {
+    NautilusPathBar *self;
+
+    self = NAUTILUS_PATH_BAR (object);
+
+    remove_settings_signal (self, gtk_widget_get_screen (GTK_WIDGET (object)));
+
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->dispose (object);
 }
 
@@ -366,6 +388,30 @@ get_dir_name (ButtonData *button_data)
 }
 
 static void
+nautilus_path_bar_style_updated (GtkWidget *widget)
+{
+    GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->style_updated (widget);
+
+    nautilus_path_bar_check_icon_theme (NAUTILUS_PATH_BAR (widget));
+}
+
+static void
+nautilus_path_bar_screen_changed (GtkWidget *widget,
+                                  GdkScreen *previous_screen)
+{
+    if (GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->screen_changed)
+    {
+        GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->screen_changed (widget, previous_screen);
+    }
+    /* We might nave a new settings, so we remove the old one */
+    if (previous_screen)
+    {
+        remove_settings_signal (NAUTILUS_PATH_BAR (widget), previous_screen);
+    }
+    nautilus_path_bar_check_icon_theme (NAUTILUS_PATH_BAR (widget));
+}
+
+static void
 button_data_free (ButtonData *button_data)
 {
     g_object_unref (button_data->path);
@@ -387,11 +433,16 @@ static void
 nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
 {
     GObjectClass *gobject_class;
+    GtkWidgetClass *widget_class;
 
     gobject_class = (GObjectClass *) path_bar_class;
+    widget_class = (GtkWidgetClass *) path_bar_class;
 
     gobject_class->finalize = nautilus_path_bar_finalize;
     gobject_class->dispose = nautilus_path_bar_dispose;
+
+    widget_class->style_updated = nautilus_path_bar_style_updated;
+    widget_class->screen_changed = nautilus_path_bar_screen_changed;
 
     path_bar_signals [OPEN_LOCATION] =
         g_signal_new ("open-location",
@@ -430,6 +481,57 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
 
     nautilus_gmenu_set_from_model (self->templates_submenu, menu);
     g_idle_add ((GSourceFunc) bind_current_view_menu_model_to_popover, self);
+}
+
+/* Changes the icons wherever it is needed */
+static void
+reload_icons (NautilusPathBar *self)
+{
+    GList *list;
+
+    for (list = self->button_list; list; list = list->next)
+    {
+        ButtonData *button_data;
+
+        button_data = BUTTON_DATA (list->data);
+        if (button_data->type != NORMAL_BUTTON || button_data->is_root)
+        {
+            nautilus_path_bar_update_button_appearance (button_data,
+                                                        list->next == NULL);
+        }
+    }
+}
+
+/* Callback used when a GtkSettings value changes */
+static void
+settings_notify_cb (GObject         *object,
+                    GParamSpec      *pspec,
+                    NautilusPathBar *self)
+{
+    const char *name;
+
+    name = g_param_spec_get_name (pspec);
+
+    if (!strcmp (name, "gtk-icon-theme-name") || !strcmp (name, "gtk-icon-sizes"))
+    {
+        reload_icons (self);
+    }
+}
+
+static void
+nautilus_path_bar_check_icon_theme (NautilusPathBar *self)
+{
+    GtkSettings *settings;
+
+    if (self->settings_signal_id)
+    {
+        return;
+    }
+
+    settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (self)));
+    self->settings_signal_id = g_signal_connect (settings, "notify", G_CALLBACK (settings_notify_cb), self);
+
+    reload_icons (self);
 }
 
 /* Public functions and their helpers */
