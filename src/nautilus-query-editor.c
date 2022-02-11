@@ -775,7 +775,6 @@ nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
                                     guint                  keyval,
                                     GdkModifierType        state)
 {
-    GtkWidget *text;
     g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (self), GDK_EVENT_PROPAGATE);
     g_return_val_if_fail (controller != NULL, GDK_EVENT_PROPAGATE);
 
@@ -787,19 +786,5 @@ nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
         return GDK_EVENT_PROPAGATE;
     }
 
-    text = gtk_widget_get_first_child (GTK_WIDGET (self->entry));
-    while (text != NULL)
-    {
-        if (GTK_IS_TEXT (text))
-        {
-            break;
-        }
-        text = gtk_widget_get_next_sibling (text);
-    }
-
-    if (text == NULL)
-    {
-        return FALSE;
-    }
-    return gtk_event_controller_key_forward (controller, text);
+    return gtk_event_controller_key_forward (controller, GTK_WIDGET (self->entry));
 }
