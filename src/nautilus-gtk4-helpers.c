@@ -140,21 +140,3 @@ gtk_window_set_display (GtkWindow  *window,
 
     gtk_window_set_screen (window, gdk_display_get_default_screen (display));
 }
-
-void
-gtk_style_context_add_provider_for_display (GdkDisplay       *display,
-                                            GtkStyleProvider *provider,
-                                            guint             priority)
-{
-    gtk_style_context_add_provider_for_screen (gdk_display_get_default_screen (display),
-                                               provider,
-                                               priority);
-}
-
-void
-gtk_style_context_remove_provider_for_display (GdkDisplay       *display,
-                                               GtkStyleProvider *provider)
-{
-    gtk_style_context_remove_provider_for_screen (gdk_display_get_default_screen (display),
-                                                  provider);
-}
