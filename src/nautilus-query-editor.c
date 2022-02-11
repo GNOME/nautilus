@@ -26,6 +26,7 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <libgd/gd.h>
 #include <string.h>
 
 #include "nautilus-file.h"
@@ -45,10 +46,8 @@ struct _NautilusQueryEditor
     GtkWidget *popover;
     GtkWidget *dropdown_button;
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     GdTaggedEntryTag *mime_types_tag;
     GdTaggedEntryTag *date_range_tag;
-#endif
 
     gboolean change_frozen;
 
@@ -226,14 +225,12 @@ nautilus_query_editor_set_property (GObject      *object,
 static void
 nautilus_query_editor_finalize (GObject *object)
 {
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     NautilusQueryEditor *editor;
 
     editor = NAUTILUS_QUERY_EDITOR (object);
 
     g_clear_object (&editor->date_range_tag);
     g_clear_object (&editor->mime_types_tag);
-#endif
 
     G_OBJECT_CLASS (nautilus_query_editor_parent_class)->finalize (object);
 }
@@ -428,7 +425,6 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
         create_query (editor);
     }
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     gd_tagged_entry_remove_tag (GD_TAGGED_ENTRY (editor->entry),
                                 editor->date_range_tag);
     if (date_range)
@@ -441,7 +437,6 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
         gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->entry),
                                  GD_TAGGED_ENTRY_TAG (editor->date_range_tag));
     }
-#endif
 
     nautilus_query_set_date_range (editor->query, date_range);
 
@@ -464,10 +459,8 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
         create_query (editor);
     }
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     gd_tagged_entry_remove_tag (GD_TAGGED_ENTRY (editor->entry),
                                 editor->mime_types_tag);
-#endif
     /* group 0 is anything */
     if (mimetype_group == 0)
     {
@@ -476,27 +469,21 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
     else if (mimetype_group > 0)
     {
         mimetypes = nautilus_mime_types_group_get_mimetypes (mimetype_group);
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
         gd_tagged_entry_tag_set_label (editor->mime_types_tag,
                                        nautilus_mime_types_group_get_name (mimetype_group));
         gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->entry),
                                  GD_TAGGED_ENTRY_TAG (editor->mime_types_tag));
-#endif
     }
     else
     {
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
         g_autofree gchar *display_name = NULL;
-#endif
 
         mimetypes = g_ptr_array_new_full (1, g_free);
         g_ptr_array_add (mimetypes, g_strdup (mimetype));
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
         display_name = g_content_type_get_description (mimetype);
         gd_tagged_entry_tag_set_label (editor->mime_types_tag, display_name);
         gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->entry),
                                  GD_TAGGED_ENTRY_TAG (editor->mime_types_tag));
-#endif
     }
     nautilus_query_set_mime_types (editor->query, mimetypes);
 
@@ -542,7 +529,6 @@ search_popover_fts_changed_cb (GObject    *popover,
     nautilus_query_editor_changed (editor);
 }
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
 static void
 entry_tag_clicked (NautilusQueryEditor *editor)
 {
@@ -563,7 +549,6 @@ entry_tag_close_button_clicked (NautilusQueryEditor *editor,
         nautilus_search_popover_reset_date_range (NAUTILUS_SEARCH_POPOVER (editor->popover));
     }
 }
-#endif
 
 static void
 setup_widgets (NautilusQueryEditor *editor)
@@ -581,16 +566,11 @@ setup_widgets (NautilusQueryEditor *editor)
     gtk_box_append (GTK_BOX (vbox), hbox);
 
     /* create the search entry */
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     editor->entry = GTK_WIDGET (gd_tagged_entry_new ());
-#else
-    editor->entry = gtk_search_entry_new ();
-#endif
     gtk_widget_set_hexpand (editor->entry, TRUE);
 
     gtk_box_append (GTK_BOX (hbox), editor->entry);
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     editor->mime_types_tag = gd_tagged_entry_tag_new (NULL);
     editor->date_range_tag = gd_tagged_entry_tag_new (NULL);
 
@@ -602,7 +582,6 @@ setup_widgets (NautilusQueryEditor *editor)
                               "tag-button-clicked",
                               G_CALLBACK (entry_tag_close_button_clicked),
                               editor);
-#endif
 
     /* setup the search popover */
     editor->popover = nautilus_search_popover_new ();
