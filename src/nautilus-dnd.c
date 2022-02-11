@@ -27,7 +27,6 @@
 #include "nautilus-dnd.h"
 
 #include "nautilus-program-choosing.h"
-#include "nautilus-gtk4-helpers.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
@@ -760,17 +759,15 @@ append_drop_action_menu_item (GtkWidget          *menu,
 {
     GtkWidget *menu_item;
 
-    menu_item = gtk_button_new_with_mnemonic (text);
+    menu_item = gtk_menu_item_new_with_mnemonic (text);
     gtk_widget_set_sensitive (menu_item, sensitive);
-    gtk_box_append (GTK_BOX (menu), menu_item);
-
-    gtk_style_context_add_class (gtk_widget_get_style_context (menu_item), "flat");
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
 
     g_object_set_data (G_OBJECT (menu_item),
                        "action",
                        GINT_TO_POINTER (action));
 
-    g_signal_connect (menu_item, "clicked",
+    g_signal_connect (menu_item, "activate",
                       G_CALLBACK (drop_action_activated_callback),
                       damd);
 
@@ -782,7 +779,6 @@ GdkDragAction
 nautilus_drag_drop_action_ask (GtkWidget     *widget,
                                GdkDragAction  actions)
 {
-    GtkWidget *popover;
     GtkWidget *menu;
     GtkWidget *menu_item;
     DropActionMenuData damd;
@@ -790,16 +786,8 @@ nautilus_drag_drop_action_ask (GtkWidget     *widget,
     /* Create the menu and set the sensitivity of the items based on the
      * allowed actions.
      */
-    popover = gtk_popover_new (widget);
-    gtk_popover_set_position (GTK_POPOVER (popover), GTK_POS_TOP);
-
-    menu = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_margin_top (menu, 6);
-    gtk_widget_set_margin_bottom (menu, 6);
-    gtk_widget_set_margin_start (menu, 6);
-    gtk_widget_set_margin_end (menu, 6);
-    gtk_popover_set_child (GTK_POPOVER (popover), menu);
-    gtk_widget_show (menu);
+    menu = gtk_menu_new ();
+    gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
 
     append_drop_action_menu_item (menu, _("_Move Here"),
                                   GDK_ACTION_MOVE,
@@ -816,37 +804,32 @@ nautilus_drag_drop_action_ask (GtkWidget     *widget,
                                   (actions & GDK_ACTION_LINK) != 0,
                                   &damd);
 
-    menu_item = gtk_separator_new (GTK_ORIENTATION_VERTICAL);
-    gtk_box_append (GTK_BOX (menu), menu_item);
-    gtk_widget_show (menu_item);
+    eel_gtk_menu_append_separator (GTK_MENU (menu));
 
-    append_drop_action_menu_item (menu, _("Cancel"), 0, TRUE, &damd);
+    menu_item = gtk_menu_item_new_with_mnemonic (_("Cancel"));
+    gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
+    gtk_widget_show (menu_item);
 
     damd.chosen = 0;
     damd.loop = g_main_loop_new (NULL, FALSE);
 
-    g_signal_connect (popover, "closed",
+    g_signal_connect (menu, "deactivate",
                       G_CALLBACK (menu_deactivate_callback),
                       &damd);
 
-    gtk_grab_add (popover);
+    gtk_grab_add (menu);
 
-    /* We don't have pointer coords here. Just pick the center of the widget. */
-    gtk_popover_set_pointing_to (GTK_POPOVER (popover),
-                                 &(GdkRectangle){ .x = 0.5 * gtk_widget_get_allocated_width (widget),
-                                                  .y = 0.5 * gtk_widget_get_allocated_height (widget),
-                                                  .width = 0, .height = 0 });
-
-    gtk_popover_popup (GTK_POPOVER (popover));
+    gtk_menu_popup_at_pointer (GTK_MENU (menu),
+                               NULL);
 
     g_main_loop_run (damd.loop);
 
-    gtk_grab_remove (popover);
+    gtk_grab_remove (menu);
 
     g_main_loop_unref (damd.loop);
 
-    g_object_ref_sink (popover);
-    g_object_unref (popover);
+    g_object_ref_sink (menu);
+    g_object_unref (menu);
 
     return damd.chosen;
 }
