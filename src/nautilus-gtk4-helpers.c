@@ -109,39 +109,6 @@ gtk_check_button_set_active (GtkCheckButton *button,
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), setting);
 }
 
-
-void
-gtk_center_box_set_start_widget (GtkCenterBox *center_box,
-                                 GtkWidget    *widget)
-{
-    g_assert (GTK_IS_BOX (center_box));
-
-    gtk_box_pack_start (GTK_BOX (center_box), widget, FALSE, TRUE, 0);
-}
-
-void
-gtk_center_box_set_center_widget (GtkCenterBox *center_box,
-                                  GtkWidget    *widget)
-{
-    g_assert (GTK_IS_BOX (center_box));
-
-    gtk_box_set_center_widget (GTK_BOX (center_box), widget);
-}
-void
-gtk_center_box_set_end_widget (GtkCenterBox *center_box,
-                               GtkWidget    *widget)
-{
-    g_assert (GTK_IS_BOX (center_box));
-
-    gtk_box_pack_end (GTK_BOX (center_box), widget, FALSE, TRUE, 0);
-}
-
-GtkWidget *
-gtk_center_box_new (void)
-{
-    return gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-}
-
 gboolean
 gtk_check_button_get_active (GtkCheckButton *button)
 {

@@ -9,8 +9,6 @@ G_BEGIN_DECLS
 
 #define AdwBin GtkBin
 #define ADW_BIN GTK_BIN
-#define GtkCenterBox GtkBox
-#define GTK_CENTER_BOX GTK_BOX
 
 void adw_bin_set_child             (AdwBin            *bin,
                                     GtkWidget         *child);
@@ -36,14 +34,6 @@ void gtk_popover_set_child         (GtkPopover        *popover,
                                     GtkWidget         *child);
 void gtk_check_button_set_active   (GtkCheckButton    *button,
                                     gboolean           setting);
-void gtk_center_box_set_start_widget (GtkCenterBox    *center_box,
-                                      GtkWidget       *widget);
-void gtk_center_box_set_center_widget (GtkCenterBox   *center_box,
-                                       GtkWidget      *widget);
-void gtk_center_box_set_end_widget (GtkCenterBox      *center_box,
-                                    GtkWidget         *widget);
-
-GtkWidget *gtk_center_box_new (void);
 
 gboolean gtk_check_button_get_active (GtkCheckButton  *button);
 GtkWidget *gtk_widget_get_first_child (GtkWidget *widget);
