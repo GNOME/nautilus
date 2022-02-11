@@ -650,11 +650,10 @@ on_operations_icon_draw (GtkWidget       *widget,
 }
 
 static void
-on_operations_popover_notify_visible (NautilusToolbar *self,
-                                      GParamSpec      *pspec,
-                                      GObject         *popover)
+on_operations_button_toggled (NautilusToolbar *self,
+                              GtkToggleButton *button)
 {
-    if (gtk_widget_get_visible (GTK_WIDGET (popover)))
+    if (gtk_toggle_button_get_active (button))
     {
         unschedule_remove_finished_operations (self);
         nautilus_progress_manager_add_viewer (self->progress_manager,
@@ -1143,7 +1142,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
 
     gtk_widget_class_bind_template_callback (widget_class, on_operations_icon_draw);
-    gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
+    gtk_widget_class_bind_template_callback (widget_class, on_operations_button_toggled);
 }
 
 GtkWidget *
