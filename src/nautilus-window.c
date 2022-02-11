@@ -1775,6 +1775,15 @@ notebook_popup_menu_show (NautilusWindow *window,
     gtk_popover_popup (popover);
 }
 
+/* emitted when the user clicks the "close" button of tabs */
+static void
+notebook_tab_close_requested (NautilusNotebook   *notebook,
+                              NautilusWindowSlot *slot,
+                              NautilusWindow     *window)
+{
+    nautilus_window_slot_close (window, slot);
+}
+
 static void
 notebook_button_press_cb (GtkGestureMultiPress *gesture,
                           gint                  n_press,
@@ -1950,6 +1959,9 @@ notebook_create_window_cb (GtkNotebook *notebook,
 static void
 setup_notebook (NautilusWindow *window)
 {
+    g_signal_connect (window->notebook, "tab-close-request",
+                      G_CALLBACK (notebook_tab_close_requested),
+                      window);
     g_signal_connect (window->notebook, "popup-menu",
                       G_CALLBACK (notebook_popup_menu_cb),
                       window);
