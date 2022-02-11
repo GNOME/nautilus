@@ -36,7 +36,7 @@
     <value value="6" nick="starred"/>
   </enum>
 
-  <enum id="org.gnome.nautilus.GridZoomLevel">
+  <enum id="org.gnome.nautilus.CanvasZoomLevel">
     <value value="0" nick="small"/>
     <value value="1" nick="standard"/>
     <value value="2" nick="large"/>
@@ -219,7 +219,7 @@
       <summary>List of possible captions on icons</summary>
       <description>A list of captions below an icon in the icon view. The actual number of captions shown depends on the zoom level. Some possible values are: “size”, “type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”.</description>
     </key>
-    <key name="default-zoom-level" enum="org.gnome.nautilus.GridZoomLevel">
+    <key name="default-zoom-level" enum="org.gnome.nautilus.CanvasZoomLevel">
       <default>'large'</default>
       <summary>Default icon view zoom level</summary>
     </key>
