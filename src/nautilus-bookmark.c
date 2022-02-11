@@ -172,7 +172,6 @@ static void
 apply_warning_emblem (GIcon    **base,
                       gboolean   symbolic)
 {
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
     GIcon *emblemed_icon;
     g_autoptr (GIcon) warning = NULL;
     g_autoptr (GEmblem) emblem = NULL;
@@ -192,10 +191,6 @@ apply_warning_emblem (GIcon    **base,
     g_object_unref (*base);
 
     *base = emblemed_icon;
-#else
-    /* GTK 4 doesn't draw emblemed icons. Use the warning icon itself. */
-    g_set_object (base, g_themed_icon_new (symbolic ? "dialog-warning-symbolic" : "dialog-warning"));
-#endif
 }
 
 gboolean

@@ -4966,7 +4966,6 @@ nautilus_file_get_keywords (NautilusFile *file)
     return sort_keyword_list_and_remove_duplicates (keywords);
 }
 
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
 /**
  * nautilus_file_get_emblem_icons
  *
@@ -5019,7 +5018,6 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
 
     return icons;
 }
-#endif
 
 static void
 prepend_icon_name (const char  *name,
@@ -5033,9 +5031,7 @@ apply_emblems_to_icon (NautilusFile           *file,
                        GIcon                 **icon,
                        NautilusFileIconFlags   flags)
 {
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
     GIcon *emblemed_icon = NULL;
-
     g_autolist (GIcon) emblems = NULL;
 
     emblems = nautilus_file_get_emblem_icons (file);
@@ -5072,7 +5068,6 @@ apply_emblems_to_icon (NautilusFile           *file,
         g_object_unref (*icon);
         *icon = emblemed_icon;
     }
-#endif
 }
 
 GIcon *
