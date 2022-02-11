@@ -54,7 +54,7 @@ typedef enum
 
 struct _NautilusToolbar
 {
-    GtkBin parent_instance;
+    GtkHeaderBar parent_instance;
 
     NautilusWindow *window;
 
@@ -121,7 +121,7 @@ enum
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
-G_DEFINE_TYPE (NautilusToolbar, nautilus_toolbar, GTK_TYPE_BIN);
+G_DEFINE_TYPE (NautilusToolbar, nautilus_toolbar, HDY_TYPE_HEADER_BAR);
 
 static void nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                    NautilusWindowSlot *slot);

@@ -7,11 +7,6 @@
 G_BEGIN_DECLS
 #if GTK_MAJOR_VERSION < 4
 
-#define AdwBin GtkBin
-#define ADW_BIN GTK_BIN
-
-void adw_bin_set_child             (AdwBin            *bin,
-                                    GtkWidget         *child);
 void gtk_button_set_child          (GtkButton         *button,
                                     GtkWidget         *child);
 void gtk_menu_button_set_child     (GtkMenuButton     *menu_button,

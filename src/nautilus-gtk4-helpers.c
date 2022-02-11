@@ -1,15 +1,6 @@
 #include "nautilus-gtk4-helpers.h"
 
 void
-adw_bin_set_child (AdwBin    *bin,
-                   GtkWidget *child)
-{
-    g_assert (GTK_IS_BIN (bin));
-
-    gtk_container_add (GTK_CONTAINER (bin), child);
-}
-
-void
 gtk_button_set_child (GtkButton *button,
                       GtkWidget *child)
 {
