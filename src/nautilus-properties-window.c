@@ -456,7 +456,6 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
 {
     g_autoptr (GdkPaintable) paintable = NULL;
     g_autofree char *name = NULL;
-    gint pixel_size;
 
     get_image_for_properties_window (self, &name, &paintable);
 
@@ -465,13 +464,8 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
         gtk_window_set_icon_name (GTK_WINDOW (self), name);
     }
 
-    pixel_size = MAX (gdk_paintable_get_intrinsic_width (paintable),
-                      gdk_paintable_get_intrinsic_width (paintable));
-
     gtk_image_set_from_paintable (GTK_IMAGE (self->icon_image), paintable);
     gtk_image_set_from_paintable (GTK_IMAGE (self->icon_button_image), paintable);
-    gtk_image_set_pixel_size (GTK_IMAGE (self->icon_image), pixel_size);
-    gtk_image_set_pixel_size (GTK_IMAGE (self->icon_button_image), pixel_size);
 }
 
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
