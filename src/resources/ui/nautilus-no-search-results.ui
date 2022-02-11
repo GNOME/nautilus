@@ -3,6 +3,7 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkGrid" id="no_search_results">
+    <property name="can_focus">False</property>
     <property name="halign">center</property>
     <property name="valign">center</property>
     <property name="hexpand">True</property>
@@ -12,6 +13,7 @@
     <child>
       <object class="GtkImage">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="pixel_size">80</property>
         <property name="icon_name">edit-find-symbolic</property>
         <style>
@@ -26,6 +28,7 @@
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="label" translatable="yes">No Results Found</property>
         <attributes>
           <attribute name="weight" value="bold"/>
@@ -40,6 +43,7 @@
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="label" translatable="yes">Try a different search</property>
         <style>
           <class name="dim-label"/>

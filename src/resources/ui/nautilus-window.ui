@@ -45,12 +45,13 @@
             <property name="hexpand">True</property>
             <child>
               <object class="GtkBox" id="sidebar">
+                <property name="visible">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
               </object>
               <packing>
-                <property name="resize">False</property>
-                <property name="shrink">False</property>
+               <property name="resize">False</property>
+               <property name="shrink">False</property>
               </packing>
             </child>
             <child>
@@ -66,20 +67,24 @@
                 <child type="overlay">
                   <object class="GtkRevealer" id="in_app_notification_undo">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">start</property>
                     <property name="transition_duration">100</property>
                     <child>
                       <object class="GtkFrame">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="margin_start">12</property>
                             <property name="margin_end">4</property>
                             <child>
                               <object class="GtkLabel" id="in_app_notification_undo_label">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="max_width_chars">50</property>
                                 <property name="ellipsize">middle</property>
                                 <property name="margin_end">30</property>
@@ -107,6 +112,7 @@
                                 <child>
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="icon_name">window-close-symbolic</property>
                                     <property name="icon_size">2</property>
                                   </object>
@@ -129,20 +135,24 @@
                 <child type="overlay">
                   <object class="GtkRevealer" id="notification_operation">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="halign">center</property>
                     <property name="valign">start</property>
                     <property name="transition_duration">100</property>
                     <child>
                       <object class="GtkFrame">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="margin_start">12</property>
                             <property name="margin_end">4</property>
                             <child>
                               <object class="GtkLabel" id="notification_operation_label">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="max_width_chars">50</property>
                                 <property name="ellipsize">middle</property>
                                 <property name="margin_end">30</property>
@@ -171,6 +181,7 @@
                                 <child>
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="icon_name">window-close-symbolic</property>
                                     <property name="icon_size">2</property>
                                   </object>

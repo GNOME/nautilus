@@ -113,12 +113,14 @@
     <child>
       <object class="GtkScrolledWindow">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="hscrollbar_policy">never</property>
         <property name="max_content_height">270</property>
         <property name="propagate_natural_height">True</property>
         <child>
           <object class="GtkListBox" id="operations_list">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="margin_start">6</property>
             <property name="margin_end">6</property>
             <property name="margin_top">6</property>
@@ -145,14 +147,18 @@
           <object class="GtkBox" id="header_toolbar">
             <property name="width_request">270</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkStack" id="toolbar_switcher">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="valign">center</property>
+                <property name="hexpand">False</property>
                 <property name="transition_type">crossfade</property>
                 <child>
                   <object class="GtkBox" id="path_bar_container">
+                    <property name="can_focus">False</property>
                     <property name="valign">center</property>
                   </object>
                   <packing>
@@ -161,21 +167,25 @@
                 </child>
                 <child>
                   <object class="GtkBox" id="location_entry_container">
+                    <property name="can_focus">False</property>
                     <style>
                       <class name="linked"/>
                     </style>
                   </object>
                   <packing>
                     <property name="name">location</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="search_container">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                   </object>
                   <packing>
                     <property name="name">search</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -184,6 +194,7 @@
               <object class="GtkToggleButton" id="search_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Search</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
@@ -191,6 +202,7 @@
                 <child>
                   <object class="GtkImage" id="search_icon">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="icon_name">edit-find-symbolic</property>
                     <property name="icon_size">1</property>
                   </object>
@@ -199,16 +211,21 @@
                   <class name="image-button"/>
                 </style>
               </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
             </child>
           </object>
         </child>
         <child>
           <object class="GtkBox" id="navigation_box">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkButton" id="back_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Go back</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
@@ -216,6 +233,7 @@
                 <child>
                   <object class="GtkImage" id="back_icon">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="icon_name">go-previous-symbolic</property>
                     <property name="icon_size">1</property>
                   </object>
@@ -224,11 +242,15 @@
                   <class name="image-button"/>
                 </style>
               </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkButton" id="forward_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Go forward</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
@@ -236,6 +258,7 @@
                 <child>
                   <object class="GtkImage" id="forward_icon">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="icon_name">go-next-symbolic</property>
                     <property name="icon_size">1</property>
                   </object>
@@ -244,6 +267,9 @@
                   <class name="image-button"/>
                 </style>
               </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
             </child>
             <style>
               <class name="linked"/>
@@ -254,16 +280,19 @@
         <child>
           <object class="GtkBox">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="margin_start">72</property>
             <child>
               <object class="GtkRevealer" id="operations_revealer">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="transition_type">slide-right</property>
                 <child>
                   <object class="GtkMenuButton" id="operations_button">
                     <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
                     <property name="tooltip_text" translatable="yes">Show operations</property>
                     <property name="margin_end">6</property>
                     <property name="popover">operations_popover</property>
@@ -272,6 +301,7 @@
                         <property name="width_request">16</property>
                         <property name="height_request">16</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <signal name="draw" handler="on_operations_icon_draw" object="NautilusToolbar" swapped="no"/>
@@ -283,10 +313,14 @@
                   </object>
                 </child>
               </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="margin_end">6</property>
@@ -294,11 +328,13 @@
                   <object class="GtkButton" id="view_toggle_button">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
                     <property name="tooltip_text" translatable="yes">Toggle view</property>
                     <property name="action_name">slot.files-view-mode-toggle</property>
                     <child>
                       <object class="GtkImage" id="view_toggle_icon">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="icon_size">1</property>
                       </object>
                     </child>
@@ -306,6 +342,9 @@
                       <class name="image-button"/>
                     </style>
                   </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkMenuButton" id="view_button">
@@ -319,6 +358,7 @@
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="icon_name">pan-down-symbolic</property>
                       </object>
                     </child>
@@ -326,22 +366,30 @@
                       <class name="disclosure-button"/>
                     </style>
                   </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
                 <style>
                   <class name="linked"/>
                 </style>
               </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
             </child>
             <child>
               <object class="GtkMenuButton" id="app_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="menu-model">app_menu</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="icon_name">open-menu-symbolic</property>
                     <property name="icon_size">1</property>
                   </object>
@@ -350,10 +398,14 @@
                   <class name="image-button"/>
                 </style>
               </object>
+              <packing>
+                <property name="position">3</property>
+              </packing>
             </child>
           </object>
           <packing>
             <property name="pack_type">end</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>

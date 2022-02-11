@@ -3,10 +3,12 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkPopover" id="rename_file_popover">
+    <property name="can-focus">False</property>
     <property name="position">bottom</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
+        <property name="can-focus">False</property>
         <property name="margin-start">18</property>
         <property name="margin-end">18</property>
         <property name="margin-top">18</property>
@@ -15,6 +17,7 @@
         <child>
           <object class="GtkLabel" id="title_label">
             <property name="visible">True</property>
+            <property name="can-focus">False</property>
             <property name="margin-bottom">12</property>
             <style>
               <class name="title-2"/>
@@ -32,9 +35,11 @@
         <child>
           <object class="GtkRevealer" id="error_revealer">
             <property name="visible">True</property>
+            <property name="can-focus">False</property>
             <child>
               <object class="GtkLabel" id="error_label">
                 <property name="visible">True</property>
+                <property name="can-focus">False</property>
                 <property name="margin-bottom">12</property>
                 <property name="max-width-chars">0</property>
                 <property name="wrap">True</property>
@@ -49,6 +54,7 @@
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
             <property name="halign">end</property>
             <property name="use-underline">True</property>
             <style>

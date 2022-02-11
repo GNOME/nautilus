@@ -23,6 +23,7 @@
     </child>
     <child internal-child="vbox">
       <object class="GtkBox">
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <style>
           <class name="view"/>
@@ -30,6 +31,7 @@
         <child>
           <object class="GtkGrid" id="change_permissions_grid">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="halign">center</property>
             <property name="margin-top">6</property>
             <property name="margin-bottom">6</property>
@@ -41,6 +43,7 @@
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Files</property>
                 <style>
                   <class name="dim-label"/>
@@ -54,6 +57,7 @@
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Folders</property>
                 <style>
                   <class name="dim-label"/>
@@ -67,6 +71,7 @@
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Owner</property>
                 <property name="xalign">1</property>
                 <style>
@@ -81,6 +86,7 @@
             <child>
               <object class="GtkComboBox" id="file_owner_combo">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -90,6 +96,7 @@
             <child>
               <object class="GtkComboBox" id="folder_owner_combo">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -99,6 +106,7 @@
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Group</property>
                 <property name="xalign">1</property>
                 <style>
@@ -113,6 +121,7 @@
             <child>
               <object class="GtkComboBox" id="file_group_combo">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -122,6 +131,7 @@
             <child>
               <object class="GtkComboBox" id="folder_group_combo">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -131,6 +141,7 @@
             <child>
               <object class="GtkComboBox" id="file_other_combo">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -140,6 +151,7 @@
             <child>
               <object class="GtkComboBox" id="folder_other_combo">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -149,6 +161,7 @@
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Others</property>
                 <property name="xalign">1</property>
                 <style>
@@ -159,6 +172,9 @@
                 <property name="left_attach">0</property>
                 <property name="top_attach">3</property>
               </packing>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
         </child>

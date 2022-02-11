@@ -3,6 +3,7 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkGrid" id="folder_is_empty">
+    <property name="can_focus">False</property>
     <property name="halign">center</property>
     <property name="valign">center</property>
     <property name="hexpand">True</property>
@@ -12,6 +13,7 @@
     <child>
       <object class="GtkImage">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="pixel_size">128</property>
         <property name="icon_name">folder-symbolic</property>
         <style>
@@ -27,6 +29,7 @@
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="label" translatable="yes">Folder is Empty</property>
         <style>
           <class name="large-title"/>
