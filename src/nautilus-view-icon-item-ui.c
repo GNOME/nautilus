@@ -51,7 +51,7 @@ update_icon (NautilusViewIconItemUi *self)
     gtk_image_set_from_pixbuf (GTK_IMAGE (self->icon), icon_pixbuf);
 
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
-    if (icon_size < NAUTILUS_GRID_ICON_SIZE_LARGEST)
+    if (icon_size < NAUTILUS_CANVAS_ICON_SIZE_LARGEST)
     {
         int extra_margins = 0.5 * EXTRA_WIDTH_FOR_TEXT;
         gtk_widget_set_margin_start (self->fixed_height_box, extra_margins);
