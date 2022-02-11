@@ -1824,6 +1824,15 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
     }
 }
 
+static gboolean
+notebook_popup_menu_cb (GtkWidget *widget,
+                        gpointer   user_data)
+{
+    NautilusWindow *window = user_data;
+    notebook_popup_menu_show (window, 0, 0);
+    return TRUE;
+}
+
 GtkWidget *
 nautilus_window_get_toolbar (NautilusWindow *window)
 {
@@ -1941,6 +1950,9 @@ notebook_create_window_cb (GtkNotebook *notebook,
 static void
 setup_notebook (NautilusWindow *window)
 {
+    g_signal_connect (window->notebook, "popup-menu",
+                      G_CALLBACK (notebook_popup_menu_cb),
+                      window);
     g_signal_connect (window->notebook, "switch-page",
                       G_CALLBACK (notebook_switch_page_cb),
                       window);

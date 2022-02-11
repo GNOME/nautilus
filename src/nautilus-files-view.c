@@ -1663,16 +1663,6 @@ action_preview_selection (GSimpleAction *action,
 }
 
 static void
-action_popup_menu (GSimpleAction *action,
-                   GVariant      *state,
-                   gpointer       user_data)
-{
-    NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
-
-    nautilus_files_view_pop_up_selection_context_menu (view, -1, -1);
-}
-
-static void
 pattern_select_response_cb (GtkWidget *dialog,
                             int        response,
                             gpointer   user_data)
@@ -7068,7 +7058,6 @@ const GActionEntry view_entries[] =
     { "select-pattern", action_select_pattern },
     { "invert-selection", action_invert_selection },
     { "preview-selection", action_preview_selection },
-    { "popup-menu", action_popup_menu },
 };
 
 static gboolean
@@ -7658,9 +7647,6 @@ real_update_actions_state (NautilusFilesView *view)
                                  !selection_contains_starred);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "preview-selection");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count != 0);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "popup-menu");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count != 0);
 
     /* Drive menu */
@@ -8326,6 +8312,25 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
     gtk_popover_set_pointing_to (GTK_POPOVER (priv->background_menu),
                                  &(GdkRectangle){x, y, 0, 0});
     gtk_popover_popup (GTK_POPOVER (priv->background_menu));
+}
+
+static gboolean
+popup_menu_callback (NautilusFilesView *view)
+{
+    g_autolist (NautilusFile) selection = NULL;
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    if (selection != NULL)
+    {
+        nautilus_files_view_pop_up_selection_context_menu (view, -1, -1);
+    }
+    else
+    {
+        nautilus_files_view_pop_up_background_context_menu (view, 0, 0);
+    }
+
+    return TRUE;
 }
 
 static void
@@ -9612,6 +9617,10 @@ nautilus_files_view_init (NautilusFilesView *view)
                               "event",
                               G_CALLBACK (on_event),
                               view);
+    g_signal_connect_swapped (priv->scrolled_window,
+                              "popup-menu",
+                              G_CALLBACK (popup_menu_callback),
+                              view);
 
     gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), priv->scrolled_window);
 
@@ -9774,7 +9783,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
     nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
     nautilus_application_set_accelerator (app, "view.preview-selection", "space");
-    nautilus_application_set_accelerator (app, "view.popup-menu", "Menu");
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->tag_manager = nautilus_tag_manager_get ();
