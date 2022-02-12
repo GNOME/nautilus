@@ -1487,6 +1487,27 @@ action_open_with_other_application (GSimpleAction *action,
 }
 
 static void
+action_open_current_directory_with_other_application (GSimpleAction *action,
+                                                      GVariant      *state,
+                                                      gpointer       user_data)
+{
+    NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+    GList *files;
+
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+
+    if (priv->directory_as_file != NULL)
+    {
+        files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+        choose_program (view, files);
+    }
+}
+
+static void
 trash_or_delete_selected_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -7018,6 +7039,7 @@ const GActionEntry view_entries[] =
     { "open-item-location", action_open_item_location },
     { "open-with-default-application", action_open_with_default_application },
     { "open-with-other-application", action_open_with_other_application },
+    { "open-current-directory-with-other-application", action_open_current_directory_with_other_application },
     { "open-item-new-window", action_open_item_new_window },
     { "open-item-new-tab", action_open_item_new_tab },
     { "cut", action_cut},
@@ -7727,6 +7749,12 @@ real_update_actions_state (NautilusFilesView *view)
                                  priv->scripts_menu != NULL);
 
     /* Background menu actions */
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "open-current-directory-with-other-application");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !selection_contains_recent &&
+                                 !selection_contains_search &&
+                                 !selection_contains_starred);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "new-folder");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
