@@ -8062,7 +8062,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
      * attribute set to "action-disabled", and that an inexistant action is
      * treated as a disabled action. */
     trashed_action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
-    i = nautilus_g_menu_model_find_by_string (sort_section, "target", "trash-time");
+    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "last_trashed");
     g_return_if_fail (i != -1);
     nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i,
                                             "action", trashed_action);
