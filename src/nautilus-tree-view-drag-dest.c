@@ -950,6 +950,20 @@ receive_xds (NautilusTreeViewDragDest *dest,
     return TRUE;
 }
 
+static void
+cache_selection_list (NautilusTreeViewDragDest *dest)
+{
+    g_autolist (NautilusFile) files = NULL;
+
+    /* File selection list information (mostly the file system info, in order to
+     * know if we want to copy or move the files) about the files being dragged,
+     * that can come from another process, like desktop icons extension. */
+
+    files = nautilus_drag_file_list_from_selection_list (dest->details->drag_list);
+    nautilus_file_list_call_when_ready (files,
+                                        NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                        NULL, NULL, NULL);
+}
 
 static gboolean
 drag_data_received_callback (GtkWidget        *widget,
@@ -978,6 +992,7 @@ drag_data_received_callback (GtkWidget        *widget,
         {
             dest->details->drag_list =
                 nautilus_drag_build_selection_list (selection_data);
+            cache_selection_list (dest);
         }
     }
 
