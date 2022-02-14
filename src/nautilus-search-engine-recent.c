@@ -140,7 +140,6 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
                          GFile                       *file,
                          GError                     **error)
 {
-    g_autofree gchar *path = NULL;
     g_autoptr (GFileInfo) file_info = NULL;
 
     file_info = g_file_query_info (file, FILE_ATTRIBS,
@@ -157,7 +156,6 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
         return FALSE;
     }
 
-    path = g_file_get_path (file);
 
     if (!nautilus_query_get_show_hidden_files (self->query))
     {
