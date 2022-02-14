@@ -43,7 +43,6 @@ typedef struct
 {
     const NautilusFileSortType sort_type;
     const gchar *metadata_name;
-    const gchar *action_target_name;
 } SortConstants;
 
 static const SortConstants sorts_constants[] =
@@ -51,62 +50,38 @@ static const SortConstants sorts_constants[] =
     {
         NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
         "name",
-        "name",
     },
     {
         NAUTILUS_FILE_SORT_BY_SIZE,
-        "size",
         "size",
     },
     {
         NAUTILUS_FILE_SORT_BY_TYPE,
         "type",
-        "type",
     },
     {
         NAUTILUS_FILE_SORT_BY_MTIME,
         "modification date",
-        "modification-date",
     },
     {
         NAUTILUS_FILE_SORT_BY_ATIME,
         "access date",
-        "access-date",
     },
     {
         NAUTILUS_FILE_SORT_BY_BTIME,
         "creation date",
-        "creation-date",
     },
     {
         NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
         "trashed",
-        "trash-time",
     },
     {
         NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
         "search_relevance",
-        "search-relevance",
     }
 };
 
 static guint get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level);
-
-static const SortConstants *
-get_sorts_constants_from_action_target_name (const gchar *action_target_name)
-{
-    int i;
-
-    for (i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
-    {
-        if (g_strcmp0 (sorts_constants[i].action_target_name, action_target_name) == 0)
-        {
-            return &sorts_constants[i];
-        }
-    }
-
-    return &sorts_constants[0];
-}
 
 static const SortConstants *
 get_sorts_constants_from_sort_type (NautilusFileSortType sort_type)
@@ -205,7 +180,7 @@ update_sort_order_from_metadata_and_preferences (NautilusViewIconController *sel
     g_action_group_change_action_state (view_action_group,
                                         "sort",
                                         g_variant_new ("(sb)",
-                                                       default_directory_sort->action_target_name,
+                                                       default_directory_sort->metadata_name,
                                                        reversed));
 }
 
@@ -981,7 +956,7 @@ real_compare_files (NautilusFilesView *files_view,
     view_action_group = nautilus_files_view_get_action_group (files_view);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "sort");
     g_variant_get (g_action_get_state (action), "(&sb)", &target_name, &reversed);
-    sort_constants = get_sorts_constants_from_action_target_name (target_name);
+    sort_constants = get_sorts_constants_from_metadata_text (target_name);
     directories_first = nautilus_files_view_should_sort_directories_first (files_view);
 
     return nautilus_file_compare_for_sort (file1, file2,
@@ -1187,7 +1162,7 @@ action_sort_order_changed (GSimpleAction *action,
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     g_variant_get (value, "(&sb)", &target_name, &self->reversed);
-    sort_constants = get_sorts_constants_from_action_target_name (target_name);
+    sort_constants = get_sorts_constants_from_metadata_text (target_name);
     self->sort_type = sort_constants->sort_type;
     self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
 
