@@ -33,7 +33,9 @@
 
 #define FILE_ATTRIBS G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN "," \
     G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP "," \
-    G_FILE_ATTRIBUTE_ACCESS_CAN_READ ","
+    G_FILE_ATTRIBUTE_ACCESS_CAN_READ "," \
+    G_FILE_ATTRIBUTE_TIME_MODIFIED "," \
+    G_FILE_ATTRIBUTE_TIME_ACCESS
 
 struct _NautilusSearchEngineRecent
 {
@@ -138,6 +140,8 @@ search_add_hits_idle (NautilusSearchEngineRecent *self,
 static gboolean
 is_file_valid_recursive (NautilusSearchEngineRecent  *self,
                          GFile                       *file,
+                         GDateTime                  **mtime,
+                         GDateTime                  **atime,
                          GError                     **error)
 {
     g_autoptr (GFileInfo) file_info = NULL;
@@ -156,6 +160,11 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
         return FALSE;
     }
 
+    if (mtime && atime)
+    {
+        *mtime = g_file_info_get_modification_date_time (file_info);
+        *atime = g_file_info_get_access_date_time (file_info);
+    }
 
     if (!nautilus_query_get_show_hidden_files (self->query))
     {
@@ -166,7 +175,7 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
 
             if (parent)
             {
-                return is_file_valid_recursive (self, parent, error);
+                return is_file_valid_recursive (self, parent, NULL, NULL, error);
             }
         }
         else
@@ -230,8 +239,8 @@ recent_thread_func (gpointer user_data)
         if (rank > 0)
         {
             NautilusSearchHit *hit;
-            GDateTime *modified;
-            GDateTime *visited;
+            g_autoptr (GDateTime) mtime = NULL;
+            g_autoptr (GDateTime) atime = NULL;
             g_autoptr (GError) error = NULL;
 
             if (!gtk_recent_info_is_local (info))
@@ -239,7 +248,7 @@ recent_thread_func (gpointer user_data)
                 continue;
             }
 
-            if (!is_file_valid_recursive (self, file, &error))
+            if (!is_file_valid_recursive (self, file, &mtime, &atime, &error))
             {
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 {
@@ -276,9 +285,6 @@ recent_thread_func (gpointer user_data)
                 }
             }
 
-            modified = gtk_recent_info_get_modified (info);
-            visited = gtk_recent_info_get_visited (info);
-
             if (date_range != NULL)
             {
                 NautilusQuerySearchType type;
@@ -292,11 +298,11 @@ recent_thread_func (gpointer user_data)
 
                 if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
                 {
-                    target_time = g_date_time_to_unix (visited);
+                    target_time = g_date_time_to_unix (atime);
                 }
                 else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
                 {
-                    target_time = g_date_time_to_unix (modified);
+                    target_time = g_date_time_to_unix (mtime);
                 }
 
                 if (!nautilus_file_date_in_between (target_time,
@@ -308,8 +314,8 @@ recent_thread_func (gpointer user_data)
 
             hit = nautilus_search_hit_new (uri);
             nautilus_search_hit_set_fts_rank (hit, rank);
-            nautilus_search_hit_set_modification_time (hit, modified);
-            nautilus_search_hit_set_access_time (hit, visited);
+            nautilus_search_hit_set_modification_time (hit, mtime);
+            nautilus_search_hit_set_access_time (hit, atime);
 
             hits = g_list_prepend (hits, hit);
         }
