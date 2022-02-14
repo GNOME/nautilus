@@ -44,7 +44,6 @@ typedef struct
     const NautilusFileSortType sort_type;
     const gchar *metadata_name;
     const gchar *action_target_name;
-    gboolean reversed;
 } SortConstants;
 
 static const SortConstants sorts_constants[] =
@@ -53,73 +52,41 @@ static const SortConstants sorts_constants[] =
         NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
         "name",
         "name",
-        FALSE,
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-        "name",
-        "name-desc",
-        TRUE,
     },
     {
         NAUTILUS_FILE_SORT_BY_SIZE,
         "size",
         "size",
-        TRUE,
     },
     {
         NAUTILUS_FILE_SORT_BY_TYPE,
         "type",
         "type",
-        FALSE,
     },
     {
         NAUTILUS_FILE_SORT_BY_MTIME,
         "modification date",
         "modification-date",
-        FALSE,
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_MTIME,
-        "modification date",
-        "modification-date-desc",
-        TRUE,
     },
     {
         NAUTILUS_FILE_SORT_BY_ATIME,
         "access date",
         "access-date",
-        FALSE,
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_ATIME,
-        "access date",
-        "access-date-desc",
-        TRUE,
     },
     {
         NAUTILUS_FILE_SORT_BY_BTIME,
         "creation date",
         "creation-date",
-        FALSE,
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_BTIME,
-        "creation date",
-        "creation-date-desc",
-        TRUE,
     },
     {
         NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
         "trashed",
         "trash-time",
-        TRUE,
     },
     {
         NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
         "search_relevance",
         "search-relevance",
-        TRUE,
     }
 };
 
@@ -142,15 +109,13 @@ get_sorts_constants_from_action_target_name (const gchar *action_target_name)
 }
 
 static const SortConstants *
-get_sorts_constants_from_sort_type (NautilusFileSortType sort_type,
-                                    gboolean             reversed)
+get_sorts_constants_from_sort_type (NautilusFileSortType sort_type)
 {
     guint i;
 
     for (i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
     {
-        if (sort_type == sorts_constants[i].sort_type
-            && reversed == sorts_constants[i].reversed)
+        if (sort_type == sorts_constants[i].sort_type)
         {
             return &sorts_constants[i];
         }
@@ -160,15 +125,13 @@ get_sorts_constants_from_sort_type (NautilusFileSortType sort_type,
 }
 
 static const SortConstants *
-get_sorts_constants_from_metadata_text (const char *metadata_name,
-                                        gboolean    reversed)
+get_sorts_constants_from_metadata_text (const char *metadata_name)
 {
     guint i;
 
     for (i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
     {
-        if (g_strcmp0 (sorts_constants[i].metadata_name, metadata_name) == 0
-            && reversed == sorts_constants[i].reversed)
+        if (g_strcmp0 (sorts_constants[i].metadata_name, metadata_name) == 0)
         {
             return &sorts_constants[i];
         }
@@ -178,44 +141,46 @@ get_sorts_constants_from_metadata_text (const char *metadata_name,
 }
 
 static const SortConstants *
-get_default_sort_order (NautilusFile *file)
+get_default_sort_order (NautilusFile *file,
+                        gboolean     *reversed)
 {
     NautilusFileSortType sort_type;
-    gboolean reversed;
 
-    sort_type = nautilus_file_get_default_sort_type (file, &reversed);
+    sort_type = nautilus_file_get_default_sort_type (file, reversed);
 
-    return get_sorts_constants_from_sort_type (sort_type, reversed);
+    return get_sorts_constants_from_sort_type (sort_type);
 }
 
 static const SortConstants *
-get_directory_sort_by (NautilusFile *file)
+get_directory_sort_by (NautilusFile *file,
+                       gboolean     *reversed)
 {
     const SortConstants *default_sort;
     g_autofree char *sort_by = NULL;
-    gboolean reversed;
 
-    default_sort = get_default_sort_order (file);
+    default_sort = get_default_sort_order (file, reversed);
     g_return_val_if_fail (default_sort != NULL, NULL);
 
     sort_by = nautilus_file_get_metadata (file,
                                           NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
                                           default_sort->metadata_name);
 
-    reversed = nautilus_file_get_boolean_metadata (file,
-                                                   NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-                                                   default_sort->reversed);
+    *reversed = nautilus_file_get_boolean_metadata (file,
+                                                    NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+                                                    *reversed);
 
-    return get_sorts_constants_from_metadata_text (sort_by, reversed);
+    return get_sorts_constants_from_metadata_text (sort_by);
 }
 
 static void
 set_directory_sort_metadata (NautilusFile        *file,
-                             const SortConstants *sort)
+                             const SortConstants *sort,
+                             gboolean             reversed)
 {
     const SortConstants *default_sort;
+    gboolean default_reversed;
 
-    default_sort = get_default_sort_order (file);
+    default_sort = get_default_sort_order (file, &default_reversed);
 
     nautilus_file_set_metadata (file,
                                 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
@@ -223,8 +188,8 @@ set_directory_sort_metadata (NautilusFile        *file,
                                 sort->metadata_name);
     nautilus_file_set_boolean_metadata (file,
                                         NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-                                        default_sort->reversed,
-                                        sort->reversed);
+                                        default_reversed,
+                                        reversed);
 }
 
 static void
@@ -232,12 +197,16 @@ update_sort_order_from_metadata_and_preferences (NautilusViewIconController *sel
 {
     const SortConstants *default_directory_sort;
     GActionGroup *view_action_group;
+    gboolean reversed;
 
-    default_directory_sort = get_directory_sort_by (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)));
+    default_directory_sort = get_directory_sort_by (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
+                                                    &reversed);
     view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_group_change_action_state (view_action_group,
                                         "sort",
-                                        g_variant_new_string (get_sorts_constants_from_sort_type (default_directory_sort->sort_type, default_directory_sort->reversed)->action_target_name));
+                                        g_variant_new ("(sb)",
+                                                       default_directory_sort->action_target_name,
+                                                       reversed));
 }
 
 static gint
@@ -1005,19 +974,20 @@ real_compare_files (NautilusFilesView *files_view,
     GActionGroup *view_action_group;
     GAction *action;
     const gchar *target_name;
+    gboolean reversed;
     const SortConstants *sort_constants;
     gboolean directories_first;
 
     view_action_group = nautilus_files_view_get_action_group (files_view);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "sort");
-    target_name = g_variant_get_string (g_action_get_state (action), NULL);
+    g_variant_get (g_action_get_state (action), "(&sb)", &target_name, &reversed);
     sort_constants = get_sorts_constants_from_action_target_name (target_name);
     directories_first = nautilus_files_view_should_sort_directories_first (files_view);
 
     return nautilus_file_compare_for_sort (file1, file2,
                                            sort_constants->sort_type,
                                            directories_first,
-                                           sort_constants->reversed);
+                                           reversed);
 }
 
 static void
@@ -1210,22 +1180,22 @@ action_sort_order_changed (GSimpleAction *action,
     g_autoptr (GtkCustomSorter) sorter = NULL;
 
     /* Don't resort if the action is in the same state as before */
-    if (g_strcmp0 (g_variant_get_string (value, NULL), g_variant_get_string (g_action_get_state (G_ACTION (action)), NULL)) == 0)
+    if (g_variant_equal (value, g_action_get_state (G_ACTION (action))))
     {
         return;
     }
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
-    target_name = g_variant_get_string (value, NULL);
+    g_variant_get (value, "(&sb)", &target_name, &self->reversed);
     sort_constants = get_sorts_constants_from_action_target_name (target_name);
     self->sort_type = sort_constants->sort_type;
-    self->reversed = sort_constants->reversed;
     self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
 
     sorter = gtk_custom_sorter_new (nautilus_view_icon_controller_sort, self, NULL);
     nautilus_view_model_set_sorter (self->model, GTK_SORTER (sorter));
     set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                 sort_constants);
+                                 sort_constants,
+                                 self->reversed);
 
     g_simple_action_set_state (action, value);
 }
@@ -1548,7 +1518,7 @@ create_view_ui (NautilusViewIconController *self)
 
 const GActionEntry view_icon_actions[] =
 {
-    { "sort", NULL, "s", "'invalid'", action_sort_order_changed },
+    { "sort", NULL, "(sb)", "('invalid',false)", action_sort_order_changed },
     { "zoom-to-level", NULL, NULL, "100", action_zoom_to_level }
 };
 
