@@ -35,7 +35,8 @@
     G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP "," \
     G_FILE_ATTRIBUTE_ACCESS_CAN_READ "," \
     G_FILE_ATTRIBUTE_TIME_MODIFIED "," \
-    G_FILE_ATTRIBUTE_TIME_ACCESS
+    G_FILE_ATTRIBUTE_TIME_ACCESS "," \
+    G_FILE_ATTRIBUTE_TIME_CREATED
 
 struct _NautilusSearchEngineRecent
 {
@@ -142,6 +143,7 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
                          GFile                       *file,
                          GDateTime                  **mtime,
                          GDateTime                  **atime,
+                         GDateTime                  **ctime,
                          GError                     **error)
 {
     g_autoptr (GFileInfo) file_info = NULL;
@@ -160,10 +162,11 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
         return FALSE;
     }
 
-    if (mtime && atime)
+    if (mtime && atime && ctime)
     {
         *mtime = g_file_info_get_modification_date_time (file_info);
         *atime = g_file_info_get_access_date_time (file_info);
+        *ctime = g_file_info_get_creation_date_time (file_info);
     }
 
     if (!nautilus_query_get_show_hidden_files (self->query))
@@ -175,7 +178,9 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
 
             if (parent)
             {
-                return is_file_valid_recursive (self, parent, NULL, NULL, error);
+                return is_file_valid_recursive (self, parent,
+                                                NULL, NULL, NULL,
+                                                error);
             }
         }
         else
@@ -241,6 +246,7 @@ recent_thread_func (gpointer user_data)
             NautilusSearchHit *hit;
             g_autoptr (GDateTime) mtime = NULL;
             g_autoptr (GDateTime) atime = NULL;
+            g_autoptr (GDateTime) ctime = NULL;
             g_autoptr (GError) error = NULL;
 
             if (!gtk_recent_info_is_local (info))
@@ -248,7 +254,7 @@ recent_thread_func (gpointer user_data)
                 continue;
             }
 
-            if (!is_file_valid_recursive (self, file, &mtime, &atime, &error))
+            if (!is_file_valid_recursive (self, file, &mtime, &atime, &ctime, &error))
             {
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 {
@@ -304,6 +310,10 @@ recent_thread_func (gpointer user_data)
                 {
                     target_time = g_date_time_to_unix (mtime);
                 }
+                else if (type == NAUTILUS_QUERY_SEARCH_TYPE_CREATED)
+                {
+                    target_time = g_date_time_to_unix (ctime);
+                }
 
                 if (!nautilus_file_date_in_between (target_time,
                                                     initial_date, end_date))
@@ -316,6 +326,7 @@ recent_thread_func (gpointer user_data)
             nautilus_search_hit_set_fts_rank (hit, rank);
             nautilus_search_hit_set_modification_time (hit, mtime);
             nautilus_search_hit_set_access_time (hit, atime);
+            nautilus_search_hit_set_creation_time (hit, ctime);
 
             hits = g_list_prepend (hits, hit);
         }
