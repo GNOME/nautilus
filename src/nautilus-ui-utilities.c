@@ -189,20 +189,17 @@ nautilus_ui_frame_video (GdkPixbuf **pixbuf)
 }
 
 gboolean
-nautilus_file_date_in_between (guint64    unix_file_time,
-                               GDateTime *initial_date,
-                               GDateTime *end_date)
+nautilus_date_time_is_between_dates (GDateTime *date,
+                                     GDateTime *initial_date,
+                                     GDateTime *end_date)
 {
-    GDateTime *date;
     gboolean in_between;
 
     /* Silently ignore errors */
-    if (unix_file_time == 0)
+    if (date == NULL || g_date_time_to_unix (date) == 0)
     {
         return FALSE;
     }
-
-    date = g_date_time_new_from_unix_local (unix_file_time);
 
     /* For the end date, we want to make end_date inclusive,
      * for that the difference between the start of the day and the in_between
@@ -210,8 +207,6 @@ nautilus_file_date_in_between (guint64    unix_file_time,
      */
     in_between = g_date_time_difference (date, initial_date) > 0 &&
                  g_date_time_difference (end_date, date) / G_TIME_SPAN_DAY > -1;
-
-    g_date_time_unref (date);
 
     return in_between;
 }
