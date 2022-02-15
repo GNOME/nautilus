@@ -185,17 +185,30 @@ model_directory_ready_cb (NautilusDirectory *directory,
             initial_date = g_ptr_array_index (date_range, 0);
             end_date = g_ptr_array_index (date_range, 1);
 
-            if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
+            switch (type)
             {
-                target_date = atime;
-            }
-            else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
-            {
-                target_date = mtime;
-            }
-            else
-            {
-                target_date = ctime;
+                case NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS:
+                {
+                    target_date = atime;
+                }
+                break;
+
+                case NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED:
+                {
+                    target_date = mtime;
+                }
+                break;
+
+                case NAUTILUS_QUERY_SEARCH_TYPE_CREATED:
+                {
+                    target_date = ctime;
+                }
+                break;
+
+                default:
+                {
+                    target_date = NULL;
+                }
             }
 
             found = nautilus_date_time_is_between_dates (target_date,
