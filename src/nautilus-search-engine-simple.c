@@ -295,9 +295,6 @@ visit_directory (GFile            *dir,
     gboolean is_hidden, found;
     const char *id;
     gboolean visited;
-    guint64 atime;
-    guint64 mtime;
-    guint64 ctime;
     GDateTime *initial_date;
     GDateTime *end_date;
     gchar *uri;
@@ -323,6 +320,10 @@ visit_directory (GFile            *dir,
 
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
     {
+        g_autoptr (GDateTime) mtime = NULL;
+        g_autoptr (GDateTime) atime = NULL;
+        g_autoptr (GDateTime) ctime = NULL;
+
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
@@ -354,9 +355,9 @@ visit_directory (GFile            *dir,
             }
         }
 
-        mtime = g_file_info_get_attribute_uint64 (info, "time::modified");
-        atime = g_file_info_get_attribute_uint64 (info, "time::access");
-        ctime = g_file_info_get_attribute_uint64 (info, "time::created");
+        mtime = g_file_info_get_modification_date_time (info);
+        atime = g_file_info_get_access_date_time (info);
+        ctime = g_file_info_get_creation_date_time (info);
 
         if (found && date_range != NULL)
         {
@@ -367,15 +368,15 @@ visit_directory (GFile            *dir,
 
             if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
             {
-                current_file_time = atime;
+                current_file_time = g_date_time_to_unix (atime);
             }
             else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
             {
-                current_file_time = mtime;
+                current_file_time = g_date_time_to_unix (mtime);
             }
             else
             {
-                current_file_time = ctime;
+                current_file_time = g_date_time_to_unix (ctime);
             }
             found = nautilus_file_date_in_between (current_file_time,
                                                    initial_date,
@@ -385,15 +386,14 @@ visit_directory (GFile            *dir,
         if (found)
         {
             NautilusSearchHit *hit;
-            GDateTime *date;
 
             uri = g_file_get_uri (child);
             hit = nautilus_search_hit_new (uri);
             g_free (uri);
             nautilus_search_hit_set_fts_rank (hit, match);
-            date = g_date_time_new_from_unix_local (mtime);
-            nautilus_search_hit_set_modification_time (hit, date);
-            g_date_time_unref (date);
+            nautilus_search_hit_set_modification_time (hit, mtime);
+            nautilus_search_hit_set_access_time (hit, atime);
+            nautilus_search_hit_set_creation_time (hit, ctime);
 
             data->hits = g_list_prepend (data->hits, hit);
         }
