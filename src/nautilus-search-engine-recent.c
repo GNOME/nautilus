@@ -294,7 +294,7 @@ recent_thread_func (gpointer user_data)
             if (date_range != NULL)
             {
                 NautilusQuerySearchType type;
-                guint64 target_time;
+                GDateTime *target_date;
                 GDateTime *initial_date;
                 GDateTime *end_date;
 
@@ -304,19 +304,20 @@ recent_thread_func (gpointer user_data)
 
                 if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
                 {
-                    target_time = g_date_time_to_unix (atime);
+                    target_date = atime;
                 }
                 else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
                 {
-                    target_time = g_date_time_to_unix (mtime);
+                    target_date = mtime;
                 }
                 else if (type == NAUTILUS_QUERY_SEARCH_TYPE_CREATED)
                 {
-                    target_time = g_date_time_to_unix (ctime);
+                    target_date = ctime;
                 }
 
-                if (!nautilus_file_date_in_between (target_time,
-                                                    initial_date, end_date))
+                if (!nautilus_date_time_is_between_dates (target_date,
+                                                          initial_date,
+                                                          end_date))
                 {
                     continue;
                 }

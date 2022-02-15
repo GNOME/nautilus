@@ -179,7 +179,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
         if (found && date_range != NULL)
         {
             NautilusQuerySearchType type;
-            guint64 current_file_unix_time;
+            GDateTime *target_date;
 
             type = nautilus_query_get_search_type (model->query);
             initial_date = g_ptr_array_index (date_range, 0);
@@ -187,20 +187,20 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
             if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
             {
-                current_file_unix_time = g_date_time_to_unix (atime);
+                target_date = atime;
             }
             else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
             {
-                current_file_unix_time = g_date_time_to_unix (mtime);
+                target_date = mtime;
             }
             else
             {
-                current_file_unix_time = g_date_time_to_unix (ctime);
+                target_date = ctime;
             }
 
-            found = nautilus_file_date_in_between (current_file_unix_time,
-                                                   initial_date,
-                                                   end_date);
+            found = nautilus_date_time_is_between_dates (target_date,
+                                                         initial_date,
+                                                         end_date);
             g_ptr_array_unref (date_range);
         }
 
