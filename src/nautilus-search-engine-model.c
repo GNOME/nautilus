@@ -147,6 +147,10 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
     for (l = files; l != NULL; l = l->next)
     {
+        g_autoptr (GDateTime) mtime = NULL;
+        g_autoptr (GDateTime) atime = NULL;
+        g_autoptr (GDateTime) ctime = NULL;
+
         file = l->data;
 
         display_name = nautilus_file_get_display_name (file);
@@ -167,6 +171,10 @@ model_directory_ready_cb (NautilusDirectory *directory,
             }
         }
 
+        mtime = g_date_time_new_from_unix_local (nautilus_file_get_mtime (file));
+        atime = g_date_time_new_from_unix_local (nautilus_file_get_atime (file));
+        ctime = g_date_time_new_from_unix_local (nautilus_file_get_btime (file));
+
         date_range = nautilus_query_get_date_range (model->query);
         if (found && date_range != NULL)
         {
@@ -179,15 +187,15 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
             if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
             {
-                current_file_unix_time = nautilus_file_get_atime (file);
+                current_file_unix_time = g_date_time_to_unix (atime);
             }
             else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
             {
-                current_file_unix_time = nautilus_file_get_mtime (file);
+                current_file_unix_time = g_date_time_to_unix (mtime);
             }
             else
             {
-                current_file_unix_time = nautilus_file_get_btime (file);
+                current_file_unix_time = g_date_time_to_unix (ctime);
             }
 
             found = nautilus_file_date_in_between (current_file_unix_time,
@@ -201,6 +209,10 @@ model_directory_ready_cb (NautilusDirectory *directory,
             uri = nautilus_file_get_uri (file);
             hit = nautilus_search_hit_new (uri);
             nautilus_search_hit_set_fts_rank (hit, match);
+            nautilus_search_hit_set_modification_time (hit, mtime);
+            nautilus_search_hit_set_access_time (hit, atime);
+            nautilus_search_hit_set_creation_time (hit, ctime);
+
             hits = g_list_prepend (hits, hit);
 
             g_free (uri);
