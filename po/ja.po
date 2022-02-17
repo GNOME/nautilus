@@ -1,5 +1,5 @@
 # nautilus ja.po.
-# Copyright (C) 2000-2021 Free Software Foundation, Inc.
+# Copyright (C) 2000-2022 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2002.
 # Takuo Kitame <kitame@debian.org>, 2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
@@ -14,7 +14,7 @@
 # Hajime Taira <htaira@redhat.com>, 2015, 2019.
 # Akira Tanaka <root.167d36d4acb91@gmail.com>, 2017.
 # sujiniku <sujinikusityuu@gmail.com>, 2018, 2021.
-# sicklylife <translation@sicklylife.jp>, 2019-2021.
+# sicklylife <translation@sicklylife.jp>, 2019-2022.
 # Yuki Okushi <huyuumi.dev@gmail.com>, 2020.
 # Peniel Vargas <tsuneake.kaemitsu@gmail.com>, 2021.
 #
@@ -27,7 +27,7 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2021-07-09 07:59+0000\n"
-"PO-Revision-Date: 2021-07-11 19:30+0900\n"
+"PO-Revision-Date: 2022-02-17 20:55+0900\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -906,6 +906,26 @@ msgstr "著作権"
 #: extensions/image-properties/nautilus-image-properties-page.c:263
 msgid "Rating"
 msgstr "評価"
+
+#. Translators: "N" and "S" stand for
+#. * north and south in GPS coordinates.
+#: extensions/image-properties/nautilus-image-properties-page.c:263
+msgid "N"
+msgstr "N"
+
+#: extensions/image-properties/nautilus-image-properties-page.c:263
+msgid "S"
+msgstr "S"
+
+#. Translators: "E" and "W" stand for
+#. * east and west in GPS coordinates.
+#: extensions/image-properties/nautilus-image-properties-page.c:267
+msgid "E"
+msgstr "E"
+
+#: extensions/image-properties/nautilus-image-properties-page.c:267
+msgid "W"
+msgstr "W"
 
 #. Translators: These are the coordinates of a position where a picture was taken.
 #: extensions/image-properties/nautilus-image-properties-page.c:270
@@ -2719,6 +2739,12 @@ msgstr "検索中…"
 msgid "Are you sure you want to open all files?"
 msgstr "本当にすべてのファイルを開きますか?"
 
+#: src/nautilus-mime-actions.c:1000
+#, c-format
+msgid "This will open %d separate tab and window."
+msgid_plural "This will open %d separate tabs and windows."
+msgstr[0] "%d 個のタブとウィンドウを別々に開きます。"
+
 #: src/nautilus-files-view.c:1201
 #, c-format
 msgid "This will open %'d separate tab."
@@ -2740,6 +2766,10 @@ msgstr "OK(_O)"
 #: src/nautilus-files-view.c:1777
 msgid "Select Items Matching"
 msgstr "パターンを指定してアイテムを選択"
+
+#: src/resources/ui/nautilus-files-view-select-items.ui:34
+msgid "Pattern"
+msgstr "パターン"
 
 #: src/nautilus-files-view.c:1782 src/nautilus-files-view.c:6053
 #: src/nautilus-files-view.c:6514
@@ -2823,10 +2853,10 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3541
+#: src/nautilus-files-view.c:3503
 #, c-format
-msgid "%s %s, %s %s"
-msgstr "%s %s, %s %s"
+msgid "%s, %s"
+msgstr "%s, %s"
 
 #: src/nautilus-files-view.c:6040
 msgid "Select Move Destination"
@@ -3932,6 +3962,10 @@ msgid_plural "%'d file operations active"
 msgstr[0] "%'d 個のファイル操作を実行中です"
 
 #: src/nautilus-progress-persistence-handler.c:148
+msgid "All file operations have been completed"
+msgstr "すべてのファイル操作が完了しました"
+
+#: src/nautilus-progress-persistence-handler.c:148
 msgid "All file operations have been successfully completed"
 msgstr "すべてのファイル操作が正常に完了しました"
 
@@ -4136,6 +4170,14 @@ msgstr "開く(_O)"
 msgid "Search for “%s”"
 msgstr "“%s”の検索"
 
+#: src/nautilus-rename-file-popover-controller.c:371
+msgid "Rename Folder"
+msgstr "フォルダー名を変更"
+
+#: src/nautilus-rename-file-popover-controller.c:372
+msgid "Rename File"
+msgstr "ファイル名を変更"
+
 #: src/nautilus-rename-file-popover-controller.c:381
 msgid "File name"
 msgstr "ファイル名"
@@ -4208,6 +4250,19 @@ msgstr "元に戻す(_U)"
 #: src/nautilus-toolbar.c:849 src/resources/ui/nautilus-toolbar.ui:410
 msgid "_Redo"
 msgstr "やり直す(_R)"
+
+#: src/nautilus-trash-bar.c:232
+msgid "Trashed items are automatically deleted after a period of time"
+msgstr ""
+"ゴミ箱へ移動したアイテムは一定の期間が経過すると自動的に削除されます"
+
+#: src/nautilus-trash-bar.c:249
+msgid "_Settings"
+msgstr "設定(_S)"
+
+#: src/nautilus-trash-bar.c:252
+msgid "Display system controls for trash content"
+msgstr "ゴミ箱の内容に関するシステム設定を表示します"
 
 #: src/nautilus-trash-bar.c:209
 msgid "_Restore"
@@ -4877,9 +4932,27 @@ msgstr "アーカイブを作成"
 msgid "Archive name"
 msgstr "アーカイブ名"
 
+#: src/resources/ui/nautilus-compress-dialog.ui:214
+msgid "Password"
+msgstr "パスワード"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:226
+msgid "Enter a password here."
+msgstr "ここにパスワードを入力してください。"
+
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:105
+msgid "_Reset"
+msgstr "リセット(_R)"
+
 #: src/resources/ui/nautilus-compress-dialog.ui:118
 msgid "Compatible with all operating systems."
 msgstr "すべてのオペレーティングシステムで使用可能です。"
+
+#: src/resources/ui/nautilus-compress-dialog.ui:37
+msgid "Password protected .zip, must be installed on Windows and Mac."
+msgstr ""
+"パスワードで保護された .zip です。Windows と Mac では別途アーカイバーのインス"
+"トールが必要です。"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:131
 msgid "Smaller archives but Linux and Mac only."
