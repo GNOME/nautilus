@@ -13,7 +13,7 @@ install_data(
   rename: '@0@-symbolic.svg'.format(application_id)
 )
 
-po_dir = join_paths(meson.source_root(), 'po')
+po_dir = join_paths(meson.project_source_root(), 'po')
 
 desktop_conf = configuration_data()
 

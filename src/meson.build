@@ -26,7 +26,7 @@ libnautilus_sources = [
   gnome.gdbus_codegen(
     'nautilus-freedesktop-generated',
     join_paths(
-      meson.source_root(), 'data', 'freedesktop-dbus-interfaces.xml'
+      meson.project_source_root(), 'data', 'freedesktop-dbus-interfaces.xml'
     ),
     interface_prefix: 'org.freedesktop',
     namespace: 'NautilusFreedesktop'
@@ -34,7 +34,7 @@ libnautilus_sources = [
   gnome.gdbus_codegen(
     'nautilus-generated',
     join_paths(
-      meson.source_root(), 'data', 'dbus-interfaces.xml'
+      meson.project_source_root(), 'data', 'dbus-interfaces.xml'
     ),
     interface_prefix: 'org.gnome.Nautilus',
     namespace: 'NautilusDBus'
@@ -42,7 +42,7 @@ libnautilus_sources = [
   gnome.gdbus_codegen(
     'nautilus-generated2',
     join_paths(
-      meson.source_root(), 'data', 'dbus-interfaces2.xml'
+      meson.project_source_root(), 'data', 'dbus-interfaces2.xml'
     ),
     interface_prefix: 'org.gnome.Nautilus',
     namespace: 'NautilusDBus'
@@ -50,7 +50,7 @@ libnautilus_sources = [
   gnome.gdbus_codegen(
     'nautilus-shell-search-provider-generated',
     join_paths(
-      meson.source_root(), 'data', 'shell-search-provider-dbus-interfaces.xml'
+      meson.project_source_root(), 'data', 'shell-search-provider-dbus-interfaces.xml'
     ),
     interface_prefix: 'org.gnome',
     namespace: 'Nautilus'
@@ -310,7 +310,7 @@ if get_option('tests') == 'all'
     ],
     env: [
       'G_DEBUG=fatal-warnings',
-      'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.build_root(), 'data'))
+      'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data'))
     ]
   )
 endif

@@ -6,7 +6,7 @@ project('nautilus', 'c',
   #  * Update GTK-based codes over src/gtk/gtk-code-generator.sh
   version: '43.alpha',
 
-  meson_version: '>= 0.49.0',
+  meson_version: '>= 0.59.0',
   license: 'GPL-3.0-or-later'
 )
 

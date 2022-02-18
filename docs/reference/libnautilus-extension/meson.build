@@ -10,7 +10,7 @@ configure_file(
 gnome.gtkdoc(
   'libnautilus-extension',
   main_xml: 'libnautilus-extension-docs.xml',
-  src_dir: join_paths(meson.source_root(), 'libnautilus-extension'),
+  src_dir: join_paths(meson.project_source_root(), 'libnautilus-extension'),
   dependencies: nautilus_extension,
   install: true,
   scan_args: [
