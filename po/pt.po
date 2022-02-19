@@ -12,16 +12,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-02-16 17:58+0000\n"
-"PO-Revision-Date: 2022-02-19 09:54-0300\n"
-"Last-Translator: Juliano de Souza Camargo <julianosc@protonmail.com>\n"
+"POT-Creation-Date: 2022-02-19 12:56+0000\n"
+"PO-Revision-Date: 2022-02-19 17:34+0000\n"
+"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese < https://l10n.gnome.org/teams/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 40.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Language: pt_PT\n"
 "X-Source-Language: C\n"
 "X-Project-Style: gnome\n"
@@ -33,7 +33,7 @@ msgstr ""
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
-msgstr "Executar Aplicações"
+msgstr "Executar Software"
 
 #. “Files” is the generic application name and the suffix is
 #. * an arbitrary and deliberately unlocalized string only shown
@@ -355,7 +355,7 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:183
 msgid "Whether to show hidden files"
-msgstr "Se deve mostrar ficheiros escondidos"
+msgstr "Se deve mostrar ficheiros ocultos"
 
 #: data/org.gnome.nautilus.gschema.xml:184
 msgid ""
@@ -867,7 +867,7 @@ msgstr "Tempo de exposição"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:240
 msgid "Exposure Program"
-msgstr "Aplicação de exposição"
+msgstr "Programa de exposição"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:241
 msgid "Aperture Value"
@@ -891,7 +891,7 @@ msgstr "Distância focal"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:246
 msgid "Software"
-msgstr "Aplicação"
+msgstr "Software"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:247
 #: src/nautilus-batch-rename-dialog.h:163
@@ -1031,7 +1031,7 @@ msgstr "Realizar um conjunto rápido de testes de autoanálise."
 
 #: src/nautilus-application.c:1072
 msgid "Show the version of the program."
-msgstr "Ver versão da aplicação."
+msgstr "Ver versão do programa."
 
 #: src/nautilus-application.c:1074
 msgid "Always open a new window for browsing specified URIs"
@@ -1055,17 +1055,17 @@ msgid ""
 "Unable to start the program:\n"
 "%s"
 msgstr ""
-"Impossível iniciar a aplicação:\n"
+"Impossível iniciar o programa:\n"
 "%s"
 
 #: src/nautilus-autorun-software.c:147
 #, c-format
 msgid "Unable to locate the program"
-msgstr "Impossível localizar a aplicação"
+msgstr "Impossível localizar o programa"
 
 #: src/nautilus-autorun-software.c:157
 msgid "Oops! There was a problem running this software."
-msgstr "Oops! Ocorreu um problema ao executar esta aplicação."
+msgstr "Oops! Ocorreu um problema ao executar este software."
 
 #: src/nautilus-autorun-software.c:200
 #, c-format
@@ -1073,8 +1073,8 @@ msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
 "to run it?"
 msgstr ""
-"“%s” contém uma aplicação cujo propósito é ser iniciada automaticamente. "
-"Deseja executá-la?"
+"“%s” contém um software cujo propósito é ser iniciado automaticamente. "
+"Deseja executá-lo?"
 
 #: src/nautilus-autorun-software.c:204
 msgid "If you don’t trust this location or aren’t sure, press Cancel."
@@ -1381,7 +1381,7 @@ msgstr "Nome do arquivo é demasiado extenso."
 #. We must warn about the side effect
 #: src/nautilus-compress-dialog-controller.c:99
 msgid "Archives with “.” at the beginning of their name are hidden."
-msgstr "Arquios com \".\" no começo de seus nomes são escondidos."
+msgstr "Arquivos com \".\" no começo de seus nomes são ocultados."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
 #: src/nautilus-directory.c:673
@@ -1726,7 +1726,7 @@ msgstr "desconhecido"
 
 #: src/nautilus-file.c:7465 src/nautilus-file.c:7473 src/nautilus-file.c:7532
 msgid "Program"
-msgstr "Aplicação"
+msgstr "Programa"
 
 #: src/nautilus-file.c:7467
 msgid "Font"
@@ -1738,7 +1738,7 @@ msgstr "Arquivo"
 
 #: src/nautilus-file.c:7470
 msgid "Markup"
-msgstr "Marcação"
+msgstr "Markup"
 
 #: src/nautilus-file.c:7471 src/nautilus-file.c:7472
 msgid "Text"
@@ -1819,7 +1819,7 @@ msgstr "Nome do ficheiro é demasiado extenso."
 #: src/nautilus-file-name-widget-controller.c:164
 #: src/nautilus-rename-file-popover-controller.c:161
 msgid "Files with “.” at the beginning of their name are hidden."
-msgstr "Ficheiros com \".\" no começo de seus nomes são escondidos."
+msgstr "Ficheiros com \".\" no começo de seus nomes são ocultados."
 
 #: src/nautilus-file-name-widget-controller.c:186
 msgid "A folder with that name already exists."
@@ -1832,11 +1832,11 @@ msgstr "Já existe um ficheiro com o mesmo nome."
 #: src/nautilus-file-operations.c:260
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:159
 msgid "_Skip"
-msgstr "_Saltar"
+msgstr "_Ignorar"
 
 #: src/nautilus-file-operations.c:261
 msgid "S_kip All"
-msgstr "Saltar t_odos"
+msgstr "Ignorar t_udo"
 
 #: src/nautilus-file-operations.c:262
 msgid "_Retry"
@@ -1848,7 +1848,7 @@ msgstr "_Eliminar"
 
 #: src/nautilus-file-operations.c:264
 msgid "Delete _All"
-msgstr "Elimin_ar todos"
+msgstr "Elimin_ar tudo"
 
 #: src/nautilus-file-operations.c:265
 msgid "_Replace"
@@ -1856,7 +1856,7 @@ msgstr "_Substituir"
 
 #: src/nautilus-file-operations.c:266
 msgid "Replace _All"
-msgstr "Substituir _todos"
+msgstr "Substituir _tudo"
 
 #: src/nautilus-file-operations.c:267
 msgid "_Merge"
@@ -3475,11 +3475,11 @@ msgstr "Contém música"
 
 #: src/nautilus-file-utilities.c:1039
 msgid "Contains software to run"
-msgstr "Contém aplicações para executar"
+msgstr "Contém software a executar"
 
 #: src/nautilus-file-utilities.c:1043
 msgid "Contains software to install"
-msgstr "Contém aplicações para instalar"
+msgstr "Contém software a instalar"
 
 #. fallback to generic greeting
 #: src/nautilus-file-utilities.c:1048
@@ -3641,7 +3641,7 @@ msgstr ""
 
 #: src/nautilus-mime-actions.c:1370
 msgid "_Search in Software"
-msgstr "_Procurar em Aplicações"
+msgstr "_Procurar em Software"
 
 #. if it wasn't cancelled show a dialog
 #: src/nautilus-mime-actions.c:1769 src/nautilus-mime-actions.c:2068
@@ -3689,7 +3689,7 @@ msgstr "Nome da pasta é demasiado extenso."
 #: src/nautilus-new-folder-dialog-controller.c:76
 #: src/nautilus-rename-file-popover-controller.c:157
 msgid "Folders with “.” at the beginning of their name are hidden."
-msgstr "Pastas com \".\" no começo de seus nomes são escondidas."
+msgstr "Pastas com \".\" no começo de seus nomes são ocultadas."
 
 #: src/nautilus-new-folder-dialog-controller.c:145
 #: src/resources/ui/nautilus-compress-dialog.ui:230
@@ -5219,7 +5219,7 @@ msgid ""
 "Show more actions in the menus. Keyboard shortcuts can be used even if the "
 "actions are not shown."
 msgstr ""
-"Mostra mais ações nos menus. Os atalhos do teclado podem ser usados mesmo se "
+"Mostra mais ações nos menus. As teclas de atalho podem ser usadas mesmo se "
 "as ações não forem mostradas."
 
 #: src/resources/ui/nautilus-preferences-window.ui:89
@@ -5375,7 +5375,7 @@ msgstr "Alterar permissões nos ficheiros contidos…"
 
 #: src/resources/ui/nautilus-properties-window.ui:1215
 msgid "Allow _executing file as program"
-msgstr "Permitir executar o ficheiro como uma aplicação"
+msgstr "Permitir executar o ficheiro como um programa"
 
 #: src/resources/ui/nautilus-properties-window.ui:1325
 msgid "Reset"
