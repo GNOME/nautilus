@@ -6,26 +6,31 @@
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
 # Sérgio Cardeira <scardeira.sergio@gmail.com>, 2016.
 # Juliano Camargo <julianosc@pm.me>, 2020.
-# Juliano de Souza Camargo <julianosc@protonmail.com>, 2020.
 # Hugo Carvalho <hugokarvalho@hotmail.com>, 2020, 2021.
+# Juliano de Souza Camargo <julianosc@protonmail.com>, 2020-2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-10-30 12:03+0000\n"
-"PO-Revision-Date: 2021-11-03 12:23+0000\n"
-"Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
-"Language-Team: Portuguese (https://l10n.gnome.org/teams/pt/)\n"
+"POT-Creation-Date: 2022-02-11 13:55+0000\n"
+"PO-Revision-Date: 2022-02-19 09:52-0300\n"
+"Last-Translator: Juliano de Souza Camargo <julianosc@protonmail.com>\n"
+"Language-Team: Portuguese < https://l10n.gnome.org/teams/pt/>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Generator: Gtranslator 40.0\n"
 "X-Language: pt_PT\n"
 "X-Source-Language: C\n"
 "X-Project-Style: gnome\n"
+"X-DL-Team: pt\n"
+"X-DL-Module: nautilus\n"
+"X-DL-Branch: gnome-41\n"
+"X-DL-Domain: po\n"
+"X-DL-State: Translating\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -95,7 +100,7 @@ msgstr "Procurar"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:111
 #: src/nautilus-file.c:4466 src/nautilus-file-utilities.c:323
-#: src/nautilus-pathbar.c:333
+#: src/nautilus-pathbar.c:332
 msgid "Other Locations"
 msgstr "Outras localizações"
 
@@ -564,7 +569,7 @@ msgstr "Y"
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:349
 #: src/nautilus-file-operations.c:257 src/nautilus-files-view.c:1219
 #: src/nautilus-files-view.c:1791 src/nautilus-files-view.c:6070
-#: src/nautilus-files-view.c:6531 src/nautilus-location-entry.c:284
+#: src/nautilus-files-view.c:6535 src/nautilus-location-entry.c:284
 #: src/nautilus-mime-actions.c:586 src/nautilus-mime-actions.c:590
 #: src/nautilus-mime-actions.c:977 src/nautilus-mime-actions.c:1317
 #: src/nautilus-mime-actions.c:1673 src/nautilus-properties-window.c:5300
@@ -1190,7 +1195,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:115 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1943 src/nautilus-pathbar.c:328
+#: src/nautilus-list-view.c:1943 src/nautilus-pathbar.c:327
 #: src/nautilus-shell-search-provider.c:315 src/nautilus-window.c:191
 msgid "Home"
 msgstr "Pasta pessoal"
@@ -1353,24 +1358,24 @@ msgstr "Relevância"
 msgid "Relevance rank for search"
 msgstr "Grau de relevância para a pesquisa"
 
-#: src/nautilus-compress-dialog-controller.c:78
+#: src/nautilus-compress-dialog-controller.c:82
 msgid "Archive names cannot contain “/”."
 msgstr "Nomes de arquivos não podem conter \"/\"."
 
-#: src/nautilus-compress-dialog-controller.c:83
+#: src/nautilus-compress-dialog-controller.c:87
 msgid "An archive cannot be called “.”."
 msgstr "Um arquivo não se pode chamar \".\"."
 
-#: src/nautilus-compress-dialog-controller.c:88
+#: src/nautilus-compress-dialog-controller.c:92
 msgid "An archive cannot be called “..”."
 msgstr "Um arquivo não se pode chamar \"..\"."
 
-#: src/nautilus-compress-dialog-controller.c:93
+#: src/nautilus-compress-dialog-controller.c:97
 msgid "Archive name is too long."
 msgstr "Nome do arquivo é demasiado extenso."
 
 #. We must warn about the side effect
-#: src/nautilus-compress-dialog-controller.c:99
+#: src/nautilus-compress-dialog-controller.c:103
 msgid "Archives with “.” at the beginning of their name are hidden."
 msgstr "Arquios com \".\" no começo de seus nomes são escondidos."
 
@@ -1541,7 +1546,7 @@ msgid "File not found"
 msgstr "Ficheiro não encontrado"
 
 #: src/nautilus-file.c:4470 src/nautilus-file-utilities.c:327
-#: src/nautilus-pathbar.c:338
+#: src/nautilus-pathbar.c:337
 msgid "Starred"
 msgstr "Marcado como favorito"
 
@@ -1730,7 +1735,7 @@ msgstr "Arquivo"
 
 #: src/nautilus-file.c:7490
 msgid "Markup"
-msgstr "Marcado"
+msgstr "Marcação"
 
 #: src/nautilus-file.c:7491 src/nautilus-file.c:7492
 msgid "Text"
@@ -2231,7 +2236,7 @@ msgid "Do _not Empty Trash"
 msgstr "_Não esvaziar o lixo"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3154 src/nautilus-files-view.c:6901
+#: src/nautilus-file-operations.c:3154 src/nautilus-files-view.c:6905
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Impossível aceder a “%s”"
@@ -2768,7 +2773,7 @@ msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "Comprimido %'d ficheiro em “%s”"
 msgstr[1] "Comprimido %'d ficheiros em “%s”"
 
-#: src/nautilus-file-operations.c:9120
+#: src/nautilus-file-operations.c:9123
 msgid "Compressing Files"
 msgstr "A comprimir ficheiros"
 
@@ -2806,7 +2811,7 @@ msgid "Select Items Matching"
 msgstr "Selecionar itens equivalentes"
 
 #: src/nautilus-files-view.c:1793 src/nautilus-files-view.c:6071
-#: src/nautilus-files-view.c:6532
+#: src/nautilus-files-view.c:6536
 msgid "_Select"
 msgstr "_Selecionar"
 
@@ -2905,106 +2910,106 @@ msgstr "Selecione o destino para mover"
 msgid "Select Copy Destination"
 msgstr "Selecione o destino da cópia"
 
-#: src/nautilus-files-view.c:6528
+#: src/nautilus-files-view.c:6532
 msgid "Select Extract Destination"
 msgstr "Selecione o destino para extração"
 
-#: src/nautilus-files-view.c:6831
+#: src/nautilus-files-view.c:6835
 msgid "Wallpapers"
 msgstr "Papéis de parede"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6931
+#: src/nautilus-files-view.c:6935
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Impossível remover “%s”"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6961
+#: src/nautilus-files-view.c:6965
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Impossível ejetar “%s”"
 
-#: src/nautilus-files-view.c:6986
+#: src/nautilus-files-view.c:6990
 msgid "Unable to stop drive"
 msgstr "Impossível parar a unidade"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7099
+#: src/nautilus-files-view.c:7103
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Impossível iniciar “%s”"
 
-#: src/nautilus-files-view.c:8069
+#: src/nautilus-files-view.c:8073
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Nova Pasta com Seleção (%'d Item)"
 msgstr[1] "Nova pasta com seleção (%'d itens)"
 
-#: src/nautilus-files-view.c:8127
+#: src/nautilus-files-view.c:8131
 #, c-format
 msgid "Open With %s"
 msgstr "Abrir com %s"
 
-#: src/nautilus-files-view.c:8139
+#: src/nautilus-files-view.c:8143
 msgid "Run"
 msgstr "Executar"
 
-#: src/nautilus-files-view.c:8144
+#: src/nautilus-files-view.c:8148
 msgid "Extract Here"
 msgstr "Extrair aqui"
 
-#: src/nautilus-files-view.c:8145
+#: src/nautilus-files-view.c:8149
 msgid "Extract to…"
 msgstr "Extrair para…"
 
-#: src/nautilus-files-view.c:8149
+#: src/nautilus-files-view.c:8153
 msgid "Open"
 msgstr "Abrir"
 
-#: src/nautilus-files-view.c:8205
+#: src/nautilus-files-view.c:8209
 #: src/resources/ui/nautilus-files-view-context-menus.ui:108
 msgid "_Start"
 msgstr "_Iniciar"
 
-#: src/nautilus-files-view.c:8211 src/gtk/nautilusgtkplacesview.c:1759
+#: src/nautilus-files-view.c:8215 src/gtk/nautilusgtkplacesview.c:1759
 msgid "_Connect"
 msgstr "_Ligar"
 
-#: src/nautilus-files-view.c:8217
+#: src/nautilus-files-view.c:8221
 msgid "_Start Multi-disk Drive"
 msgstr "_Iniciar unidade multi-disco"
 
-#: src/nautilus-files-view.c:8223
+#: src/nautilus-files-view.c:8227
 msgid "U_nlock Drive"
 msgstr "_Desbloquear unidade"
 
-#: src/nautilus-files-view.c:8241
+#: src/nautilus-files-view.c:8245
 msgid "Stop Drive"
 msgstr "Para unidade"
 
-#: src/nautilus-files-view.c:8247
+#: src/nautilus-files-view.c:8251
 msgid "_Safely Remove Drive"
 msgstr "Remover unidade em _segurança"
 
-#: src/nautilus-files-view.c:8253 src/gtk/nautilusgtkplacesview.c:1749
+#: src/nautilus-files-view.c:8257 src/gtk/nautilusgtkplacesview.c:1749
 msgid "_Disconnect"
 msgstr "_Desligar"
 
-#: src/nautilus-files-view.c:8259
+#: src/nautilus-files-view.c:8263
 msgid "_Stop Multi-disk Drive"
 msgstr "_Parar unidade multi-disco"
 
-#: src/nautilus-files-view.c:8265
+#: src/nautilus-files-view.c:8269
 msgid "_Lock Drive"
 msgstr "_Bloquear a unidade"
 
-#: src/nautilus-files-view.c:10050
+#: src/nautilus-files-view.c:10054
 msgid "Content View"
 msgstr "Vista de conteúdo"
 
-#: src/nautilus-files-view.c:10051
+#: src/nautilus-files-view.c:10055
 msgid "View of the current folder"
 msgstr "Vista da pasta atual"
 
@@ -3914,13 +3919,13 @@ msgstr ""
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:316 src/gtk/nautilusgtkplacesview.c:1121
+#: src/nautilus-pathbar.c:315 src/gtk/nautilusgtkplacesview.c:1121
 msgid "Computer"
 msgstr "Computador"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:323
+#: src/nautilus-pathbar.c:322
 msgid "Administrator Root"
 msgstr "Administrador da raiz"
 
