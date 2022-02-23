@@ -8293,6 +8293,8 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
     {
         priv->selection_menu = gtk_popover_menu_new_from_model (NULL);
         gtk_widget_set_parent (priv->selection_menu, GTK_WIDGET (view));
+        gtk_popover_set_has_arrow (GTK_POPOVER (priv->selection_menu), FALSE);
+        gtk_widget_set_halign (priv->selection_menu, GTK_ALIGN_START);
         g_signal_connect (priv->selection_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
     }
 
