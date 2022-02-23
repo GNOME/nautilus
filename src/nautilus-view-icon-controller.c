@@ -677,7 +677,7 @@ get_rectangle_for_item_ui (NautilusViewIconController *self,
     gtk_widget_get_allocation (item_ui, rectangle);
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    gtk_widget_translate_coordinates (GTK_WIDGET (self->view_ui), content_widget,
+    gtk_widget_translate_coordinates (item_ui, content_widget,
                                       rectangle->x, rectangle->y,
                                       &view_x, &view_y);
     rectangle->x = view_x;
