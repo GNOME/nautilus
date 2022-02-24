@@ -1686,6 +1686,13 @@ action_popup_menu (GSimpleAction *action,
                    gpointer       user_data)
 {
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
+    g_autolist (NautilusFile) selection = nautilus_files_view_get_selection (NAUTILUS_VIEW (view));
+
+    if (selection == NULL)
+    {
+        nautilus_files_view_pop_up_background_context_menu (view, 0, 0);
+        return;
+    }
 
     nautilus_files_view_pop_up_selection_context_menu (view, -1, -1);
 }
@@ -7674,9 +7681,6 @@ real_update_actions_state (NautilusFilesView *view)
                                  !selection_contains_starred);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "preview-selection");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count != 0);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "popup-menu");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count != 0);
 
     /* Drive menu */
