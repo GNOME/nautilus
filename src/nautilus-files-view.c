@@ -9549,6 +9549,12 @@ nautilus_files_view_init (NautilusFilesView *view)
         "<shift>KP_Delete",
         NULL
     };
+    const gchar *popup_menu_accels[] =
+    {
+        "Menu",
+        "<shift>F10",
+        NULL
+    };
 
     nautilus_profile_start (NULL);
 
@@ -9749,7 +9755,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
     nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
     nautilus_application_set_accelerator (app, "view.preview-selection", "space");
-    nautilus_application_set_accelerator (app, "view.popup-menu", "Menu");
+    nautilus_application_set_accelerators (app, "view.popup-menu", popup_menu_accels);
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->tag_manager = nautilus_tag_manager_get ();
