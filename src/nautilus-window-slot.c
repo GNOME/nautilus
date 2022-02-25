@@ -26,13 +26,12 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
+#include "nautilus-files-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-toolbar.h"
-#include "nautilus-trash-bar.h"
-#include "nautilus-trash-monitor.h"
 #include "nautilus-view.h"
 #include "nautilus-window.h"
 #include "nautilus-x-content-bar.h"
@@ -172,9 +171,6 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
 static gboolean nautilus_window_slot_get_search_visible (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
-static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
-                                    gboolean              is_empty,
-                                    gpointer              user_data);
 static void update_search_information (NautilusWindowSlot *self);
 static void real_set_extensions_background_menu (NautilusWindowSlot *self,
                                                  GMenuModel         *menu);
@@ -1117,10 +1113,6 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     };
 
     app = g_application_get_default ();
-
-    g_signal_connect (nautilus_trash_monitor_get (),
-                      "trash-state-changed",
-                      G_CALLBACK (trash_state_changed_cb), self);
 
     g_signal_connect_object (nautilus_preferences,
                              "changed::recursive-search",
@@ -2531,55 +2523,6 @@ out:
 }
 
 static void
-trash_state_changed_cb (NautilusTrashMonitor *monitor,
-                        gboolean              is_empty,
-                        gpointer              user_data)
-{
-    GFile *location;
-    NautilusDirectory *directory;
-    NautilusView *view;
-
-    location = nautilus_window_slot_get_current_location (user_data);
-    view = nautilus_window_slot_get_current_view (user_data);
-
-    /* The signal 'trash-state-changed' could be emitted by NautilusTrashMonitor
-     * while a NautilusWindowSlot is still initializing the content view.
-     */
-    if (location == NULL || view == NULL)
-    {
-        return;
-    }
-
-    directory = nautilus_directory_get (location);
-
-    if (nautilus_directory_is_in_trash (directory))
-    {
-        if (nautilus_trash_monitor_is_empty ())
-        {
-            nautilus_window_slot_remove_extra_location_widgets (user_data);
-        }
-        else
-        {
-            nautilus_window_slot_setup_extra_location_widgets (user_data);
-        }
-    }
-}
-
-static void
-nautilus_window_slot_show_trash_bar (NautilusWindowSlot *self)
-{
-    GtkWidget *bar;
-    NautilusView *view;
-
-    view = nautilus_window_slot_get_current_view (self);
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-    bar = nautilus_trash_bar_new (NAUTILUS_FILES_VIEW (view));
-    gtk_widget_show (bar);
-
-    nautilus_window_slot_add_extra_location_widget (self, bar);
-}
-
-static void
 nautilus_window_slot_show_special_location_bar (NautilusWindowSlot      *self,
                                                 NautilusSpecialLocation  special_location)
 {
@@ -2694,6 +2637,11 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
     GFile *location;
     FindMountData *data;
     NautilusDirectory *directory;
+    NautilusFile *file;
+    GFile *scripts_file;
+    char *scripts_path;
+
+    scripts_path = nautilus_get_scripts_directory_path ();
     location = nautilus_window_slot_get_current_location (self);
 
     if (location == NULL)
@@ -2703,42 +2651,28 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
 
     directory = nautilus_directory_get (location);
 
-    if (nautilus_directory_is_in_trash (directory))
+    scripts_file = g_file_new_for_path (scripts_path);
+    g_free (scripts_path);
+
+    file = nautilus_file_get (location);
+
+    if (nautilus_should_use_templates_directory () &&
+        nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_TEMPLATES))
     {
-        if (!nautilus_trash_monitor_is_empty ())
-        {
-            nautilus_window_slot_show_trash_bar (self);
-        }
+        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
     }
-    else
+    else if (g_file_equal (location, scripts_file))
     {
-        NautilusFile *file;
-        GFile *scripts_file;
-        char *scripts_path = nautilus_get_scripts_directory_path ();
-
-        scripts_file = g_file_new_for_path (scripts_path);
-        g_free (scripts_path);
-
-        file = nautilus_file_get (location);
-
-        if (nautilus_should_use_templates_directory () &&
-            nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_TEMPLATES))
-        {
-            nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
-        }
-        else if (g_file_equal (location, scripts_file))
-        {
-            nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
-        }
-        else if (check_schema_available (FILE_SHARING_SCHEMA_ID) &&
-                 nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_PUBLIC_SHARE))
-        {
-            nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
-        }
-
-        g_object_unref (scripts_file);
-        nautilus_file_unref (file);
+        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
     }
+    else if (check_schema_available (FILE_SHARING_SCHEMA_ID) &&
+             nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_PUBLIC_SHARE))
+    {
+        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
+    }
+
+    g_object_unref (scripts_file);
+    nautilus_file_unref (file);
 
     /* need the mount to determine if we should put up the x-content cluebar */
     if (self->find_mount_cancellable != NULL)
@@ -2874,7 +2808,6 @@ nautilus_window_slot_dispose (GObject *object)
 {
     NautilusWindowSlot *self;
     self = NAUTILUS_WINDOW_SLOT (object);
-    g_signal_handlers_disconnect_by_data (nautilus_trash_monitor_get (), self);
 
     g_signal_handlers_disconnect_by_data (nautilus_preferences, self);
 
