@@ -237,10 +237,10 @@ check_pointer_timeout (gpointer user_data)
 }
 
 static void
-on_event_controller_motion_enter (GtkEventControllerMotion *controller,
-                                  double                    x,
-                                  double                    y,
-                                  gpointer                  user_data)
+on_event_controller_motion_motion (GtkEventControllerMotion *controller,
+                                   double                    x,
+                                   double                    y,
+                                   gpointer                  user_data)
 {
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
     GtkWidget *parent;
@@ -264,7 +264,7 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
 
     if (self->hover_timeout_id != 0)
     {
-        g_source_remove (self->hover_timeout_id);
+        return;
     }
 
     data = g_slice_new (CheckPointerData);
@@ -276,7 +276,7 @@ on_event_controller_motion_enter (GtkEventControllerMotion *controller,
                                                  check_pointer_timeout, data,
                                                  check_pointer_data_free);
 
-    g_source_set_name_by_id (self->hover_timeout_id, "[nautilus-floating-bar] on_event_controller_motion_enter");
+    g_source_set_name_by_id (self->hover_timeout_id, "[nautilus-floating-bar] on_event_controller_motion_motion");
 }
 
 static void
@@ -286,17 +286,6 @@ on_event_controller_motion_leave (GtkEventControllerMotion *controller,
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
 
     self->pointer_y_in_parent_coordinates = -1;
-}
-
-static void
-on_event_controller_motion_motion (GtkEventControllerMotion *controller,
-                                   double                    x,
-                                   double                    y,
-                                   gpointer                  user_data)
-{
-    NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
-
-    self->pointer_y_in_parent_coordinates = y;
 }
 
 static void
@@ -331,8 +320,6 @@ on_parent_changed (GObject    *object,
 
         gtk_event_controller_set_propagation_phase (self->motion_controller,
                                                     GTK_PHASE_CAPTURE);
-        g_signal_connect (self->motion_controller, "enter",
-                          G_CALLBACK (on_event_controller_motion_enter), self);
         g_signal_connect (self->motion_controller, "leave",
                           G_CALLBACK (on_event_controller_motion_leave), self);
         g_signal_connect (self->motion_controller, "motion",
