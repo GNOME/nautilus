@@ -1364,6 +1364,7 @@ nautilus_canvas_item_draw (EelCanvasItem  *item,
     gtk_style_context_add_class (context, "nautilus-canvas-item");
     if (details->is_thumbnail)
     {
+        gtk_style_context_save (context);
         gtk_style_context_add_class (context, "thumbnail");
     }
 
@@ -1374,6 +1375,10 @@ nautilus_canvas_item_draw (EelCanvasItem  *item,
                              temp_surface,
                              icon_rect.x0, icon_rect.y0);
     cairo_surface_destroy (temp_surface);
+    if (details->is_thumbnail)
+    {
+        gtk_style_context_restore (context);
+    }
 
     /* Draw the label text. */
     draw_label_text (canvas_item, cr, icon_rect);
