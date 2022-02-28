@@ -1,6 +1,6 @@
 trackertestutils = dependency('tracker-testutils-3.0')
 
-tracker_sandbox = find_program(trackertestutils.get_pkgconfig_variable('command'))
+tracker_sandbox = find_program(trackertestutils.get_variable('command'))
 
 tests = [
   ['test-file-utilities-get-common-filename-prefix', [
