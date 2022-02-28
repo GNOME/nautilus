@@ -13,10 +13,12 @@
 }
 
 .nautilus-canvas-item.thumbnail {
-  -gtk-icon-shadow: 0px 1px 2px @borders,
-                    1px 0px 0px alpha(@borders, 0.25),
-                    -1px 0px 0px alpha(@borders, 0.25),
-                    0px 2px 0px alpha(@borders, 0.5);
+  -gtk-icon-shadow:  0px -1px  alpha(@borders, 0.2),
+                     2px  0px  alpha(@borders, 0.2),
+                    -2px  0px  alpha(@borders, 0.2),
+                     0px  3px  alpha(@borders, 0.2),
+                     1px  2px  alpha(@borders, 0.4),
+                    -1px  2px  alpha(@borders, 0.4);
 }
 
 .nautilus-canvas-item.dim-label {
@@ -195,10 +197,12 @@ entry.search > * {
 }
 
 .nautilus-list-view.thumbnail {
-  -gtk-icon-shadow: 0px 1px 2px @borders,
-                    1px 0px 0px alpha(@borders, 0.25),
-                    -1px 0px 0px alpha(@borders, 0.25),
-                    0px 2px 0px alpha(@borders, 0.5);
+  -gtk-icon-shadow:  0px -1px  alpha(@borders, 0.2),
+                     2px  0px  alpha(@borders, 0.2),
+                    -2px  0px  alpha(@borders, 0.2),
+                     0px  3px  alpha(@borders, 0.2),
+                     1px  2px  alpha(@borders, 0.4),
+                    -1px  2px  alpha(@borders, 0.4);
 }
 
 .search-information {
