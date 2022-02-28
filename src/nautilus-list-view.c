@@ -1578,16 +1578,6 @@ starred_cell_data_func (GtkTreeViewColumn *column,
     g_autofree gchar *text = NULL;
     g_autofree gchar *uri = NULL;
     NautilusFile *file;
-    GtkStyleContext *context;
-
-    /* The "thumbnail" style class is set before rendering each icon cell with
-     * a thumbnail. However, style classes are not applied to each cell, but
-     * alwyas to the whole GtkTreeView widget. So, before the star icon is
-     * rendered, we must ensure that the style is not set, otherwise the star
-     * icon is going to get the styles meant only for thumbnail icons.
-     */
-    context = gtk_widget_get_style_context (GTK_WIDGET (view));
-    gtk_style_context_remove_class (context, "thumbnail");
 
     gtk_tree_model_get (model, iter,
                         view->details->file_name_column_num, &text,
@@ -1659,10 +1649,6 @@ icon_cell_data_func (GtkTreeViewColumn *column,
                         &file,
                         -1);
 
-    /* Hack: Set/unset the style class in advance of rendering. This makes a
-     * major assumption that's all but clearly stated in the documentation of
-     * GtkCellLayout: that the DataFunc is called before rendering each cell.
-     */
     is_thumbnail = FALSE;
     if (zoom_level_is_enough_for_thumbnails (view) && file != NULL)
     {
@@ -1678,11 +1664,52 @@ icon_cell_data_func (GtkTreeViewColumn *column,
 
     if (is_thumbnail)
     {
+        cairo_surface_t *new_surface;
+        cairo_t *cr;
+        int w, h;
+
+        /* The shadow extends 1px up, 3px down, and 2px left and right. For that
+         * reason, the final surface must be 4px taller and 4px wider, with the
+         * original icon starting at (2, 1).
+         *
+         *        *************************        -+
+         *        *#.                    #* -+      |
+         *        *# \                   #*  |      |
+         *        *#  \                  #*  |      |
+         *        *#   (2, 1)            #*  |      |
+         *        *#                     #*  | h    |
+         *        *#                     #*  |      | h + 4
+         *        *#                     #*  |      |
+         *        *#                     #*  |      |
+         *        *#                     #* -+      |
+         *        *#######################*         |
+         *        *#######################*         |
+         *        *************************        -+
+         *          |                   |
+         *          +-------------------+            :¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨:
+         *                    w                      : #### --> Solid shadow :
+         *        |                       |          :                       :
+         *        +-----------------------+          : **** --> Blur shadow  :
+         *                  w + 4                    '.......................'
+         */
+        w = cairo_image_surface_get_width (surface);
+        h = cairo_image_surface_get_height (surface);
+
+        new_surface = cairo_surface_create_similar (surface,
+                                                    CAIRO_CONTENT_COLOR_ALPHA,
+                                                    w + 4,
+                                                    h + 4);
+        cr = cairo_create (new_surface);
+
+        gtk_style_context_save (context);
         gtk_style_context_add_class (context, "thumbnail");
-    }
-    else
-    {
-        gtk_style_context_remove_class (context, "thumbnail");
+        gtk_render_icon_surface (context, cr, surface, 2, 1);
+        gtk_style_context_restore (context);
+
+        cairo_destroy (cr);
+
+        cairo_surface_destroy (surface);
+        surface = new_surface;
     }
 
     g_object_set (renderer,
