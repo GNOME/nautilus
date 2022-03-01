@@ -1384,6 +1384,7 @@ nautilus_canvas_item_draw (EelCanvasItem  *item,
     cairo_surface_destroy (temp_surface);
 
     /* Draw the label text. */
+    gtk_style_context_add_class (context, "label-text");
     draw_label_text (canvas_item, cr, icon_rect);
 
     gtk_style_context_restore (context);
