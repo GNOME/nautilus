@@ -1672,7 +1672,7 @@ icon_cell_data_func (GtkTreeViewColumn *column,
          * reason, the final surface must be 4px taller and 4px wider, with the
          * original icon starting at (2, 1).
          *
-         *        *************************        -+
+         *        *#######################*        -+
          *        *#.                    #* -+      |
          *        *# \                   #*  |      |
          *        *#  \                  #*  |      |
@@ -1703,6 +1703,7 @@ icon_cell_data_func (GtkTreeViewColumn *column,
 
         gtk_style_context_save (context);
         gtk_style_context_add_class (context, "thumbnail");
+        gtk_render_background (context, cr, 2, 1, w, h);
         gtk_render_icon_surface (context, cr, surface, 2, 1);
         gtk_style_context_restore (context);
 

@@ -1362,14 +1362,22 @@ nautilus_canvas_item_draw (EelCanvasItem  *item,
     context = gtk_widget_get_style_context (GTK_WIDGET (container));
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, "nautilus-canvas-item");
-    if (details->is_thumbnail)
-    {
-        gtk_style_context_add_class (context, "thumbnail");
-    }
 
     icon_rect = canvas_item->details->icon_rect;
     temp_surface = map_surface (canvas_item);
 
+    if (details->is_thumbnail)
+    {
+        /* Draw box shadow before drawing the thumbnail. */
+        gtk_style_context_save (context);
+        gtk_style_context_add_class (context, "thumbnail");
+        gtk_render_background (context, cr,
+                               icon_rect.x0,
+                               icon_rect.y0,
+                               icon_rect.x1 - icon_rect.x0,
+                               icon_rect.y1 - icon_rect.y0);
+        gtk_style_context_restore (context);
+    }
     gtk_render_icon_surface (context, cr,
                              temp_surface,
                              icon_rect.x0, icon_rect.y0);

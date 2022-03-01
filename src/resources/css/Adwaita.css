@@ -12,11 +12,6 @@
     border-radius: 5px;
 }
 
-.nautilus-canvas-item.thumbnail {
-  -gtk-icon-shadow: 0px 1px 2px @borders,
-                    1px 0px 0px alpha(@borders, 0.25),
-                    -1px 0px 0px alpha(@borders, 0.25),
-                    0px 2px 0px alpha(@borders, 0.5);
 }
 
 .nautilus-canvas-item.dim-label {
@@ -194,13 +189,6 @@ entry.search > * {
     border-bottom: 1px solid @theme_bg_color;
 }
 
-.nautilus-list-view.thumbnail {
-  -gtk-icon-shadow: 0px 1px 2px @borders,
-                    1px 0px 0px alpha(@borders, 0.25),
-                    -1px 0px 0px alpha(@borders, 0.25),
-                    0px 2px 0px alpha(@borders, 0.5);
-}
-
 .search-information {
   background-color: @theme_selected_bg_color;
   color:white;
@@ -239,10 +227,6 @@ flowboxchild:selected {
 
 flowboxchild .thumbnail {
   margin: 4px;
-  box-shadow: 0px 1px 2px 0px alpha(@borders, 0.5),
-              0px 0px 0px 1px alpha(@borders, 0.5),
-              0px 2px 0px 0px alpha(@borders, 0.5);
-  border-radius: 2px;
 }
 
 .icon-ui-labels-box {
@@ -261,4 +245,13 @@ flowboxchild:selected image {
   -gtk-icon-filter: opacity(0.5);
   */
   -gtk-icon-shadow: 0px 0px @theme_selected_bg_color;
+}
+
+.thumbnail {
+  box-shadow: 0px 1px 2px 0px alpha(@borders, 0.5),
+              0px 0px 0px 1px alpha(@borders, 0.5),
+              0px 2px 0px 0px alpha(@borders, 0.5);
+  border-radius: 2px;
+  /* Opaque background for thumbnails with transparent areas. */
+  background-color: #fafafa;
 }
