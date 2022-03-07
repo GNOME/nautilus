@@ -5555,7 +5555,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
                                  GMenu             *menu)
 {
     NautilusFilesViewPrivate *priv;
-    char *tmp, *uri, *name;
+    char *uri, *name;
     g_autofree gchar *escaped_uri = NULL;
     GdkTexture *mimetype_icon;
     char *action_name, *detailed_action_name;
@@ -5565,10 +5565,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
     GMenuItem *menu_item;
 
     priv = nautilus_files_view_get_instance_private (view);
-    tmp = nautilus_file_get_display_name (file);
-    name = eel_filename_strip_extension (tmp);
-    g_free (tmp);
-
+    name = nautilus_file_get_display_name (file);
     uri = nautilus_file_get_uri (file);
     escaped_uri = g_uri_escape_string (uri, NULL, TRUE);
     action_name = g_strconcat ("template_", escaped_uri, NULL);
