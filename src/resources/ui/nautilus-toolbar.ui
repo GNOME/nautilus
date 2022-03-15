@@ -253,7 +253,6 @@
           <object class="AdwSplitButton" id="view_split_button">
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="margin_end">6</property>
             <property name="focusable">True</property>
             <property name="tooltip_text" translatable="yes">Toggle view</property>
             <property name="action_name">slot.files-view-mode-toggle</property>
@@ -274,7 +273,6 @@
               <object class="GtkMenuButton" id="operations_button">
                 <property name="focusable">True</property>
                 <property name="tooltip_text" translatable="yes">Show operations</property>
-                <property name="margin_end">6</property>
                 <property name="popover">operations_popover</property>
                 <child>
                   <object class="GtkDrawingArea" id="operations_icon">
