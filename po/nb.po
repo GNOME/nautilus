@@ -1,16 +1,16 @@
 # Norwegian bokmål translation of nautilus.
 # Copyright (C) 2000-2005 Free Software Foundation, Inc.
-# Kjartan Maraas <kmaraas@gnome.org>, 2000-2021.
+# Kjartan Maraas <kmaraas@gnome.org>, 2000-2022.
 # Åsmund Skjæveland <aasmunds@fys.uio.no>, 2003.
 # Terance Edward Sola <terance@lyse.net>, 2005.
 # Øivind Hoel <ohoel@cvs.gnome.org>, 2006.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 4.0\n"
+"Project-Id-Version: nautilus 4.2\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-02-12 07:55+0000\n"
-"PO-Revision-Date: 2022-03-10 15:33+0100\n"
+"POT-Creation-Date: 2022-03-13 23:48+0000\n"
+"PO-Revision-Date: 2022-03-15 16:10+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -71,7 +71,7 @@ msgstr "GNOME prosjektet"
 msgid "Tile View"
 msgstr "Flisvisning"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2376
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2404
 msgid "List View"
 msgstr "Listevisning"
 
@@ -1172,7 +1172,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1883 src/nautilus-pathbar.c:370
+#: src/nautilus-list-view.c:1911 src/nautilus-pathbar.c:370
 #: src/nautilus-shell-search-provider.c:330 src/nautilus-window.c:173
 msgid "Home"
 msgstr "Hjem"
@@ -1185,7 +1185,7 @@ msgstr "Utvalgsrektangelet"
 msgid "Icon View"
 msgstr "Ikonvisning"
 
-#: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2245
+#: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2273
 msgid "Name"
 msgstr "Navn"
 
@@ -3461,7 +3461,7 @@ msgstr "(Tom)"
 msgid "Use Default"
 msgstr "Bruk forvalg"
 
-#: src/nautilus-list-view.c:3362
+#: src/nautilus-list-view.c:3390
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s synlige kolonner"
@@ -4236,56 +4236,56 @@ msgstr "_Tøm …"
 msgid "Delete all items in the Trash"
 msgstr "Slett alt som ligger i papirkurven"
 
-#: src/nautilus-ui-utilities.c:227
+#: src/nautilus-ui-utilities.c:222
 #, c-format
 msgid "Since %d day ago"
 msgid_plural "Since %d days ago"
 msgstr[0] "%d dag siden"
 msgstr[1] "%d dager siden"
 
-#: src/nautilus-ui-utilities.c:228
+#: src/nautilus-ui-utilities.c:223
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d dag siden"
 msgstr[1] "%d dager siden"
 
-#: src/nautilus-ui-utilities.c:234
+#: src/nautilus-ui-utilities.c:229
 #, c-format
 msgid "Since last week"
 msgid_plural "Since %d weeks ago"
 msgstr[0] "Forrige uke"
 msgstr[1] "%d uker siden"
 
-#: src/nautilus-ui-utilities.c:235
+#: src/nautilus-ui-utilities.c:230
 #, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
 msgstr[0] "Forrige uke"
 msgstr[1] "%d uker siden"
 
-#: src/nautilus-ui-utilities.c:241
+#: src/nautilus-ui-utilities.c:236
 #, c-format
 msgid "Since last month"
 msgid_plural "Since %d months ago"
 msgstr[0] "Forrige måned"
 msgstr[1] "%d måneder siden"
 
-#: src/nautilus-ui-utilities.c:242
+#: src/nautilus-ui-utilities.c:237
 #, c-format
 msgid "Last month"
 msgid_plural "%d months ago"
 msgstr[0] "Forrige måned"
 msgstr[1] "%d måneder siden"
 
-#: src/nautilus-ui-utilities.c:247
+#: src/nautilus-ui-utilities.c:242
 #, c-format
 msgid "Since last year"
 msgid_plural "Since %d years ago"
 msgstr[0] "I fjor"
 msgstr[1] "%d år siden"
 
-#: src/nautilus-ui-utilities.c:248
+#: src/nautilus-ui-utilities.c:243
 #, c-format
 msgid "Last year"
 msgid_plural "%d years ago"
@@ -5644,37 +5644,3 @@ msgstr "Koble til _tjener"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Skriv inn tjeneradresse …"
-
-#~ msgid "%f N / %f W (%.0f m)"
-#~ msgstr "%f N / %f W (%.0f m)"
-
-#~ msgid "This will open %'d separate tab."
-#~ msgid_plural "This will open %'d separate tabs."
-#~ msgstr[0] "Dette åpner %'d separat fane."
-#~ msgstr[1] "Dette åpner %'d separate faner."
-
-#~ msgid "This will open %'d separate window."
-#~ msgid_plural "This will open %'d separate windows."
-#~ msgstr[0] "Dette åpner %'d separat vindu."
-#~ msgstr[1] "Dette åpner %'d separate vinduer."
-
-#~ msgid "Forget association"
-#~ msgstr "Ta bort assosiasjon"
-
-#~ msgid "File name"
-#~ msgstr "Filnavn"
-
-#~ msgid "Edit"
-#~ msgstr "Rediger"
-
-#~ msgid "Cut"
-#~ msgstr "Klipp ut"
-
-#~ msgid "Copy"
-#~ msgstr "Kopier"
-
-#~ msgid "Paste"
-#~ msgstr "Lim inn"
-
-#~ msgid "Select All"
-#~ msgstr "Velg alle"
