@@ -1127,7 +1127,10 @@ theme_changed (GtkSettings *settings)
     screen = gdk_screen_get_default ();
 
     /* CSS that themes can override */
-    if (g_str_equal (theme, "Adwaita") || g_str_equal (theme, "Adwaita-dark"))
+    if (g_str_equal (theme, "Adwaita") ||
+        g_str_equal (theme, "Adwaita-dark") ||
+        g_str_equal (theme, "HighContrast") ||
+        g_str_equal (theme, "HighContrastInverse"))
     {
         if (provider == NULL)
         {
