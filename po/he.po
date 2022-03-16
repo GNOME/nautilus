@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-02-24 11:54+0000\n"
-"PO-Revision-Date: 2022-02-24 15:39+0200\n"
+"POT-Creation-Date: 2022-03-15 15:11+0000\n"
+"PO-Revision-Date: 2022-03-16 11:29+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "Language: he\n"
@@ -82,7 +82,7 @@ msgstr "מיזם GNOME"
 msgid "Tile View"
 msgstr "תצוגת אריחים"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2376
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2404
 msgid "List View"
 msgstr "תצוגת רשימה"
 
@@ -1196,7 +1196,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1883 src/nautilus-pathbar.c:370
+#: src/nautilus-list-view.c:1911 src/nautilus-pathbar.c:370
 #: src/nautilus-shell-search-provider.c:330 src/nautilus-window.c:173
 msgid "Home"
 msgstr "בית"
@@ -1209,7 +1209,7 @@ msgstr "ריבוע הבחירה"
 msgid "Icon View"
 msgstr "תצוגת סמלים"
 
-#: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2245
+#: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2273
 msgid "Name"
 msgstr "שם"
 
@@ -1543,7 +1543,7 @@ msgstr "‎%H:%M"
 #. Translators: Time in 12h format
 #: src/nautilus-file.c:5518
 msgid "%l:%M %p"
-msgstr "%l∶%M %p"
+msgstr "‏‎%l∶%M ‏%p"
 
 #: src/nautilus-file.c:5527
 #, no-c-format
@@ -1555,14 +1555,14 @@ msgstr "אתמול"
 #: src/nautilus-file.c:5536
 #, no-c-format
 msgid "Yesterday %H:%M"
-msgstr "אתמול, %H∶%M"
+msgstr "אתמול, ‎%H∶%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
 #: src/nautilus-file.c:5543
 #, no-c-format
 msgid "Yesterday %l:%M %p"
-msgstr "אתמול, %l∶%M %p"
+msgstr "אתמול, ‏‎%l∶%M ‏%p"
 
 #: src/nautilus-file.c:5553
 #, no-c-format
@@ -1581,7 +1581,7 @@ msgstr "%a, ‎%H:%M"
 #: src/nautilus-file.c:5569
 #, no-c-format
 msgid "%a %l:%M %p"
-msgstr "%a, %l∶%M %p"
+msgstr "‏%a, ‏‎%l∶%M ‏%p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
@@ -1604,7 +1604,7 @@ msgstr "‏%-e ב%b, ‎%H:%M"
 #: src/nautilus-file.c:5598
 #, no-c-format
 msgid "%-e %b %l:%M %p"
-msgstr "‏%-e ב%b, ‎%l∶%M %p"
+msgstr "‏%-e ב%b, ‏‎%l∶%M ‏%p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
@@ -1619,7 +1619,7 @@ msgstr "%-e ב%b %Y"
 #: src/nautilus-file.c:5619
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
-msgstr "‏‎‏%-e ב%b %Y ‎‎%H:%M"
+msgstr "‏‎‏%-e ב%b %Y, ‎‎%H:%M"
 
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
@@ -1627,7 +1627,7 @@ msgstr "‏‎‏%-e ב%b %Y ‎‎%H:%M"
 #: src/nautilus-file.c:5627
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
-msgstr "‏%-e ב%b %Y ‎%l∶%M %p"
+msgstr "‏%-e ב%b ‏%Y, ‏‎%l∶%M ‏%p"
 
 #: src/nautilus-file.c:5639
 #, no-c-format
@@ -3601,7 +3601,7 @@ msgstr "(ריק)"
 msgid "Use Default"
 msgstr "שימוש בבררת המחדל"
 
-#: src/nautilus-list-view.c:3362
+#: src/nautilus-list-view.c:3390
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s עמודות גלויות"
@@ -4387,7 +4387,7 @@ msgstr "_פינוי…"
 msgid "Delete all items in the Trash"
 msgstr "מחיקת כל הפריטים מהאשפה"
 
-#: src/nautilus-ui-utilities.c:227
+#: src/nautilus-ui-utilities.c:222
 #, c-format
 msgid "Since %d day ago"
 msgid_plural "Since %d days ago"
@@ -4396,7 +4396,7 @@ msgstr[1] "משלשום"
 msgstr[2] "מלפני %d ימים"
 msgstr[3] "מלפני %d ימים"
 
-#: src/nautilus-ui-utilities.c:228
+#: src/nautilus-ui-utilities.c:223
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -4405,7 +4405,7 @@ msgstr[1] "שלשום"
 msgstr[2] "לפני %d ימים"
 msgstr[3] "לפני %d ימים"
 
-#: src/nautilus-ui-utilities.c:234
+#: src/nautilus-ui-utilities.c:229
 #, c-format
 msgid "Since last week"
 msgid_plural "Since %d weeks ago"
@@ -4414,7 +4414,7 @@ msgstr[1] "מלפני שבועיים"
 msgstr[2] "מלפני %d שבועות"
 msgstr[3] "מלפני %d שבועות"
 
-#: src/nautilus-ui-utilities.c:235
+#: src/nautilus-ui-utilities.c:230
 #, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
@@ -4423,7 +4423,7 @@ msgstr[1] "לפני שבועיים"
 msgstr[2] "לפני %d שבועות"
 msgstr[3] "לפני %d שבועות"
 
-#: src/nautilus-ui-utilities.c:241
+#: src/nautilus-ui-utilities.c:236
 #, c-format
 msgid "Since last month"
 msgid_plural "Since %d months ago"
@@ -4432,7 +4432,7 @@ msgstr[1] "מלפני חודשיים"
 msgstr[2] "מלפני %d חודשים"
 msgstr[3] "מלפני %d חודשים"
 
-#: src/nautilus-ui-utilities.c:242
+#: src/nautilus-ui-utilities.c:237
 #, c-format
 msgid "Last month"
 msgid_plural "%d months ago"
@@ -4441,7 +4441,7 @@ msgstr[1] "לפני חודשיים"
 msgstr[2] "לפני %d חודשים"
 msgstr[3] "לפני %d חודשים"
 
-#: src/nautilus-ui-utilities.c:247
+#: src/nautilus-ui-utilities.c:242
 #, c-format
 msgid "Since last year"
 msgid_plural "Since %d years ago"
@@ -4450,7 +4450,7 @@ msgstr[1] "מלפני שנתיים"
 msgstr[2] "מלפני %d שנים"
 msgstr[3] "מלפני %d שנים"
 
-#: src/nautilus-ui-utilities.c:248
+#: src/nautilus-ui-utilities.c:243
 #, c-format
 msgid "Last year"
 msgid_plural "%d years ago"
