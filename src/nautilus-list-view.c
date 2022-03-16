@@ -1666,6 +1666,7 @@ icon_cell_data_func (GtkTreeViewColumn *column,
     {
         cairo_surface_t *new_surface;
         cairo_t *cr;
+        double x_scale, y_scale;
         int w, h;
 
         /* The shadow extends 1px up, 3px down, and 2px left and right. For that
@@ -1691,9 +1692,13 @@ icon_cell_data_func (GtkTreeViewColumn *column,
          *        |                       |          :                       :
          *        +-----------------------+          : **** --> Blur shadow  :
          *                  w + 4                    '.......................'
+         *
+         * In HiDPI, our thumbnails are in data pixels, so we must divide by
+         * device scale factor to get the logical draw units.
          */
-        w = cairo_image_surface_get_width (surface);
-        h = cairo_image_surface_get_height (surface);
+        cairo_surface_get_device_scale (surface, &x_scale, &y_scale);
+        w = cairo_image_surface_get_width (surface) / x_scale;
+        h = cairo_image_surface_get_height (surface) / y_scale;
 
         new_surface = cairo_surface_create_similar (surface,
                                                     CAIRO_CONTENT_COLOR_ALPHA,
