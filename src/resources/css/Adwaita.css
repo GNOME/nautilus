@@ -64,6 +64,12 @@
   border-right-width: 0px;
   background-color: @theme_bg_color;
 }
+
+.nautilus-path-bar scrolledwindow:backdrop {
+  background-color: @theme_unfocused_bg_color;
+  border-color: @unfocused_borders;
+}
+
 .nautilus-path-bar scrolledwindow undershoot.left {
   border-radius: 5px 0px 0px 5px;
   background: linear-gradient(to right, @theme_bg_color 6px, alpha(@theme_bg_color, 0) 24px);
