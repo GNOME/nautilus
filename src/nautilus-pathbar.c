@@ -131,6 +131,7 @@ static void     action_pathbar_properties (GSimpleAction *action,
                                            gpointer       user_data);
 static void     pop_up_pathbar_context_menu (NautilusPathBar *self,
                                              NautilusFile    *file);
+static void nautilus_path_bar_clear_buttons (NautilusPathBar *self);
 
 const GActionEntry path_bar_actions[] =
 {
@@ -309,7 +310,6 @@ nautilus_path_bar_finalize (GObject *object)
 
     self = NAUTILUS_PATH_BAR (object);
 
-    g_list_free (self->button_list);
     g_clear_object (&self->current_view_menu);
     g_clear_object (&self->extensions_section);
     g_clear_object (&self->templates_submenu);
@@ -342,6 +342,7 @@ nautilus_path_bar_dispose (GObject *object)
     self = NAUTILUS_PATH_BAR (object);
 
     remove_settings_signal (self, gtk_widget_get_screen (GTK_WIDGET (object)));
+    nautilus_path_bar_clear_buttons (self);
 
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->dispose (object);
 }
