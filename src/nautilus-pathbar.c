@@ -1151,13 +1151,16 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
     }
 
     nautilus_path_bar_clear_buttons (self);
-    self->button_list = new_buttons;
+
+    /* Buttons are listed in reverse order such that the current location is
+     * always the first link. */
+    self->button_list = g_list_reverse (new_buttons);
 
     for (l = self->button_list; l; l = l->next)
     {
         GtkWidget *container;
         container = BUTTON_DATA (l->data)->container;
-        gtk_box_append (GTK_BOX (self->buttons_box), container);
+        gtk_box_prepend (GTK_BOX (self->buttons_box), container);
     }
 }
 
