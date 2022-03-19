@@ -268,7 +268,7 @@ static GVariant *combo_row_mapping_set(const GValue       *gvalue,
 {
     const gchar **values = user_data;
 
-    return g_variant_new_string (values[g_value_get_int (gvalue)]);
+    return g_variant_new_string (values[g_value_get_uint (gvalue)]);
 }
 
 static gboolean combo_row_mapping_get(GValue   *gvalue,
@@ -284,7 +284,7 @@ static gboolean combo_row_mapping_get(GValue   *gvalue,
     {
         if (g_strcmp0 (value, values[i]) == 0)
         {
-            g_value_set_int (gvalue, i);
+            g_value_set_uint (gvalue, i);
 
             return TRUE;
         }
