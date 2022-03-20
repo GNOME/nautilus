@@ -117,7 +117,6 @@ struct _NautilusWindow
 
     /* Notifications */
     AdwToastOverlay *toast_overlay;
-    GFile *folder_to_open;
 
     /* Toolbar */
     GtkWidget *toolbar;
@@ -460,9 +459,11 @@ action_open_location (GSimpleAction *action,
                       gpointer       user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+    g_autoptr (GFile) folder_to_open = NULL;
 
-    nautilus_window_open_location_full (window, window->folder_to_open,
-                                        0, NULL, NULL);
+    folder_to_open = g_file_new_for_uri (g_variant_get_string (state, NULL));
+
+    nautilus_window_open_location_full (window, folder_to_open, 0, NULL, NULL);
 }
 
 static void
@@ -1584,15 +1585,6 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
     }
 }
 
-static void
-on_operation_toast_dismissed (AdwToast *toast,
-                              gpointer  user_data)
-{
-    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-
-    g_clear_object (&window->folder_to_open);
-}
-
 void
 nautilus_window_show_operation_notification (NautilusWindow *window,
                                              gchar          *main_label,
@@ -1601,6 +1593,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     gchar *button_label;
     gchar *folder_name;
     NautilusFile *folder;
+    GVariant *target;
     GFile *current_location;
     AdwToast *toast;
 
@@ -1617,14 +1610,13 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     {
         if (!g_file_equal (folder_to_open, current_location))
         {
-            window->folder_to_open = g_object_ref (folder_to_open);
+            target = g_variant_new_take_string (g_file_get_uri (folder_to_open));
             folder = nautilus_file_get (folder_to_open);
             folder_name = nautilus_file_get_display_name (folder);
             button_label = g_strdup_printf (_("Open %s"), folder_name);
             adw_toast_set_button_label (toast, button_label);
             adw_toast_set_action_name (toast, "win.open-location");
-            g_signal_connect (toast, "dismissed",
-                              G_CALLBACK (on_operation_toast_dismissed), window);
+            adw_toast_set_action_target_value (toast, target);
             nautilus_file_unref (folder);
             g_free (folder_name);
             g_free (button_label);
@@ -1855,7 +1847,7 @@ const GActionEntry win_entries[] =
     { "up", action_up },
     { "view-menu", action_toggle_state_view_button, NULL, "false", NULL },
     { "current-location-menu", action_show_current_location_menu },
-    { "open-location", action_open_location },
+    { "open-location", action_open_location, "s" },
     { "reload", action_reload },
     { "stop", action_stop },
     { "new-tab", action_new_tab },
