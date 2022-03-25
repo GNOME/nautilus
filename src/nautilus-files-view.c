@@ -349,8 +349,6 @@ static void     set_search_query_internal (NautilusFilesView *files_view,
                                            NautilusDirectory *base_model);
 
 static gboolean nautilus_files_view_is_read_only (NautilusFilesView *view);
-static void     set_wallpaper_fallback (NautilusFile *file,
-                                        gpointer      user_data);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
@@ -6530,60 +6528,14 @@ action_run_in_terminal (GSimpleAction *action,
     g_chdir (old_working_dir);
 }
 
-#define BG_KEY_PRIMARY_COLOR      "primary-color"
-#define BG_KEY_SECONDARY_COLOR    "secondary-color"
-#define BG_KEY_COLOR_TYPE         "color-shading-type"
-#define BG_KEY_PICTURE_PLACEMENT  "picture-options"
-#define BG_KEY_PICTURE_URI        "picture-uri"
-
-static void
-set_uri_as_wallpaper (const char *uri)
-{
-    GSettings *settings;
-
-    settings = gnome_background_preferences;
-
-    g_settings_delay (settings);
-
-    if (uri == NULL)
-    {
-        uri = "";
-    }
-
-    g_settings_set_string (settings, BG_KEY_PICTURE_URI, uri);
-    g_settings_set_string (settings, BG_KEY_PRIMARY_COLOR, "#000000");
-    g_settings_set_string (settings, BG_KEY_SECONDARY_COLOR, "#000000");
-    g_settings_set_enum (settings, BG_KEY_COLOR_TYPE, G_DESKTOP_BACKGROUND_SHADING_SOLID);
-    g_settings_set_enum (settings, BG_KEY_PICTURE_PLACEMENT, G_DESKTOP_BACKGROUND_STYLE_ZOOM);
-
-    /* Apply changes atomically. */
-    g_settings_apply (settings);
-}
-
-static void
-wallpaper_copy_done_callback (GHashTable *debuting_files,
-                              gboolean    success,
-                              gpointer    data)
-{
-    GHashTableIter iter;
-    gpointer key, value;
-
-    g_hash_table_iter_init (&iter, debuting_files);
-    while (g_hash_table_iter_next (&iter, &key, &value))
-    {
-        char *uri;
-        uri = g_file_get_uri (G_FILE (key));
-        set_uri_as_wallpaper (uri);
-        g_free (uri);
-        break;
-    }
-}
-
 static gboolean
 can_set_wallpaper (GList *selection)
 {
     NautilusFile *file;
 
+#ifndef HAVE_LIBPORTAL
+    return FALSE;
+#else
     if (g_list_length (selection) != 1)
     {
         return FALSE;
@@ -6598,15 +6550,10 @@ can_set_wallpaper (GList *selection)
     /* FIXME: check file size? */
 
     return TRUE;
+#endif
 }
 
 #ifdef HAVE_LIBPORTAL
-typedef struct
-{
-    NautilusFile *file;
-    NautilusFilesView *view;
-} WallpaperData;
-
 static void
 set_wallpaper_with_portal_cb (GObject      *source,
                               GAsyncResult *result,
@@ -6614,18 +6561,12 @@ set_wallpaper_with_portal_cb (GObject      *source,
 {
     XdpPortal *portal = XDP_PORTAL (source);
     g_autoptr (GError) error = NULL;
-    WallpaperData *data = user_data;
 
     if (!xdp_portal_set_wallpaper_finish (portal, result, &error)
         && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
         g_warning ("Failed to set wallpaper via portal: %s", error->message);
-        set_wallpaper_fallback (data->file, data->view);
     }
-
-    nautilus_file_unref (data->file);
-    g_object_unref (data->view);
-    g_free (data);
 }
 
 static void
@@ -6636,11 +6577,6 @@ set_wallpaper_with_portal (NautilusFile *file,
     g_autofree gchar *uri = NULL;
     XdpParent *parent = NULL;
     GtkWidget *toplevel;
-    WallpaperData *data;
-
-    data = g_new0 (WallpaperData, 1);
-    data->file = nautilus_file_ref (file);
-    data->view = g_object_ref (user_data);
 
     portal = xdp_portal_new ();
     toplevel = gtk_widget_get_ancestor (GTK_WIDGET (user_data), GTK_TYPE_WINDOW);
@@ -6653,48 +6589,10 @@ set_wallpaper_with_portal (NautilusFile *file,
                               XDP_WALLPAPER_FLAG_BACKGROUND | XDP_WALLPAPER_FLAG_PREVIEW,
                               NULL,
                               set_wallpaper_with_portal_cb,
-                              data);
+                              NULL);
     xdp_parent_free (parent);
 }
 #endif /* HAVE_LIBPORTAL */
-
-static void
-set_wallpaper_fallback (NautilusFile *file,
-                        gpointer      user_data)
-{
-    g_autoptr (GFile) target = NULL;
-    g_autofree char *file_uri = NULL;
-    g_autoptr (GFile) file_parent = NULL;
-
-    /* Copy the item to Pictures/Wallpaper (internationalized),
-     * if it's not already there, since it may be remote.
-     * Then set it as the current wallpaper. */
-    target = g_file_new_build_filename (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES),
-                                        _("Wallpapers"),
-                                        NULL);
-    g_file_make_directory_with_parents (target, NULL, NULL);
-
-    file_parent = nautilus_file_get_parent_location (file);
-    file_uri = nautilus_file_get_uri (file);
-
-    if (!g_file_equal (file_parent, target))
-    {
-        g_autofree char *target_uri = g_file_get_uri (target);
-        g_autoptr (GList) uris = g_list_prepend (NULL, file_uri);
-
-        nautilus_file_operations_copy_move (uris,
-                                            target_uri,
-                                            GDK_ACTION_COPY,
-                                            GTK_WIDGET (user_data),
-                                            NULL,
-                                            wallpaper_copy_done_callback,
-                                            NULL);
-    }
-    else
-    {
-        set_uri_as_wallpaper (file_uri);
-    }
-}
 
 static void
 action_set_as_wallpaper (GSimpleAction *action,
@@ -6714,8 +6612,6 @@ action_set_as_wallpaper (GSimpleAction *action,
 
 #ifdef HAVE_LIBPORTAL
         set_wallpaper_with_portal (file, user_data);
-#else
-        set_wallpaper_fallback (file, user_data);
 #endif
     }
 }
