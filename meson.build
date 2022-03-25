@@ -119,6 +119,7 @@ glib = dependency('glib-2.0', version: glib_ver)
 gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.0')
 gnome_desktop = dependency('gnome-desktop-3.0', version: '>= 3.0.0')
+gsettings_desktop_schemas_dep = dependency('gsettings-desktop-schemas', version: '>= 42')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
 libhandy = dependency('libhandy-1', version: '>= 1.5.0')
 libportal = []

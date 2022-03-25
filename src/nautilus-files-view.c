@@ -6589,6 +6589,7 @@ action_run_in_terminal (GSimpleAction *action,
 #define BG_KEY_COLOR_TYPE         "color-shading-type"
 #define BG_KEY_PICTURE_PLACEMENT  "picture-options"
 #define BG_KEY_PICTURE_URI        "picture-uri"
+#define BG_KEY_DARK_PICTURE_URI   "picture-uri-dark"
 
 static void
 set_uri_as_wallpaper (const char *uri)
@@ -6605,6 +6606,7 @@ set_uri_as_wallpaper (const char *uri)
     }
 
     g_settings_set_string (settings, BG_KEY_PICTURE_URI, uri);
+    g_settings_set_string (settings, BG_KEY_DARK_PICTURE_URI, uri);
     g_settings_set_string (settings, BG_KEY_PRIMARY_COLOR, "#000000");
     g_settings_set_string (settings, BG_KEY_SECONDARY_COLOR, "#000000");
     g_settings_set_enum (settings, BG_KEY_COLOR_TYPE, G_DESKTOP_BACKGROUND_SHADING_SOLID);
