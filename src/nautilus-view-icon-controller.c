@@ -7,6 +7,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-directory.h"
+#include "nautilus-clipboard.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-thumbnails.h"
 
@@ -16,6 +17,8 @@ struct _NautilusViewIconController
 
     GtkGridView *view_ui;
     NautilusViewModel *model;
+
+    GList *cut_files;
 
     GIcon *view_icon;
     GActionGroup *action_group;
@@ -941,9 +944,64 @@ real_compare_files (NautilusFilesView *files_view,
 }
 
 static void
+on_clipboard_contents_received (GObject      *source_object,
+                                GAsyncResult *res,
+                                gpointer      user_data)
+{
+    NautilusFilesView *files_view = NAUTILUS_FILES_VIEW (source_object);
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    NautilusClipboard *clip;
+    NautilusViewItemModel *item;
+
+    for (GList *l = self->cut_files; l != NULL; l = l->next)
+    {
+        item = nautilus_view_model_get_item_from_file (self->model, l->data);
+        if (item != NULL)
+        {
+            nautilus_view_item_model_set_cut (item, FALSE);
+        }
+    }
+    g_clear_list (&self->cut_files, g_object_unref);
+
+    clip = nautilus_files_view_get_clipboard_finish (files_view, res, NULL);
+    if (clip != NULL && nautilus_clipboard_is_cut (clip))
+    {
+        self->cut_files = g_list_copy_deep (nautilus_clipboard_peek_files (clip),
+                                            (GCopyFunc) g_object_ref,
+                                            NULL);
+    }
+
+    for (GList *l = self->cut_files; l != NULL; l = l->next)
+    {
+        item = nautilus_view_model_get_item_from_file (self->model, l->data);
+        if (item != NULL)
+        {
+            nautilus_view_item_model_set_cut (item, TRUE);
+        }
+    }
+}
+
+static void
+update_clipboard_status (NautilusFilesView *files_view)
+{
+    nautilus_files_view_get_clipboard_async (files_view,
+                                             on_clipboard_contents_received,
+                                             NULL);
+}
+
+static void
+on_clipboard_owner_changed (GdkClipboard *clipboard,
+                            gpointer      user_data)
+{
+    update_clipboard_status (NAUTILUS_FILES_VIEW (user_data));
+}
+
+
+static void
 real_end_loading (NautilusFilesView *files_view,
                   gboolean           all_files_seen)
 {
+    update_clipboard_status (files_view);
 }
 
 static guint
@@ -1225,6 +1283,10 @@ dispose (GObject *object)
 static void
 finalize (GObject *object)
 {
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
+
+    g_clear_list (&self->cut_files, g_object_unref);
+
     G_OBJECT_CLASS (nautilus_view_icon_controller_parent_class)->finalize (object);
 }
 
@@ -1531,6 +1593,8 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
 static void
 nautilus_view_icon_controller_init (NautilusViewIconController *self)
 {
+    GdkClipboard *clipboard;
+
     gtk_widget_add_css_class (GTK_WIDGET (self), "view");
     gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-grid-view");
     set_click_mode_from_settings (self);
@@ -1549,6 +1613,10 @@ nautilus_view_icon_controller_init (NautilusViewIconController *self)
                               "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
                               G_CALLBACK (on_captions_preferences_changed),
                               self);
+
+    clipboard = gdk_display_get_clipboard (gdk_display_get_default ());
+    g_signal_connect_object (clipboard, "changed",
+                             G_CALLBACK (on_clipboard_owner_changed), self, 0);
 }
 
 NautilusViewIconController *

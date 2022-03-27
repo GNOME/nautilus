@@ -5,6 +5,7 @@ struct _NautilusViewItemModel
 {
     GObject parent_instance;
     guint icon_size;
+    gboolean is_cut;
     NautilusFile *file;
     GtkWidget *item_ui;
 };
@@ -16,6 +17,7 @@ enum
     PROP_0,
     PROP_FILE,
     PROP_ICON_SIZE,
+    PROP_IS_CUT,
     PROP_ITEM_UI,
     N_PROPS
 };
@@ -70,6 +72,12 @@ nautilus_view_item_model_get_property (GObject    *object,
         }
         break;
 
+        case PROP_IS_CUT:
+        {
+            g_value_set_boolean (value, self->is_cut);
+        }
+        break;
+
         case PROP_ITEM_UI:
         {
             g_value_set_object (value, self->item_ui);
@@ -102,6 +110,12 @@ nautilus_view_item_model_set_property (GObject      *object,
         case PROP_ICON_SIZE:
         {
             self->icon_size = g_value_get_int (value);
+        }
+        break;
+
+        case PROP_IS_CUT:
+        {
+            self->is_cut = g_value_get_boolean (value);
         }
         break;
 
@@ -142,6 +156,12 @@ nautilus_view_item_model_class_init (NautilusViewItemModelClass *klass)
                                                        NAUTILUS_GRID_ICON_SIZE_LARGEST,
                                                        NAUTILUS_GRID_ICON_SIZE_LARGE,
                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+    g_object_class_install_property (object_class,
+                                     PROP_IS_CUT,
+                                     g_param_spec_boolean ("is-cut",
+                                                           "", "",
+                                                           FALSE,
+                                                           G_PARAM_READWRITE));
     g_object_class_install_property (object_class,
                                      PROP_FILE,
                                      g_param_spec_object ("file",
@@ -192,6 +212,15 @@ nautilus_view_item_model_set_icon_size (NautilusViewItemModel *self,
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
 
     g_object_set (self, "icon-size", icon_size, NULL);
+}
+
+void
+nautilus_view_item_model_set_cut (NautilusViewItemModel *self,
+                                  gboolean               is_cut)
+{
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
+
+    g_object_set (self, "is-cut", is_cut, NULL);
 }
 
 NautilusFile *

@@ -128,6 +128,25 @@ on_view_item_size_changed (GObject    *object,
 }
 
 static void
+on_view_item_is_cut_changed (GObject    *object,
+                             GParamSpec *pspec,
+                             gpointer    user_data)
+{
+    NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (user_data);
+    gboolean is_cut;
+
+    g_object_get (object, "is-cut", &is_cut, NULL);
+    if (is_cut)
+    {
+        gtk_widget_add_css_class (self->icon, "cut");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (self->icon, "cut");
+    }
+}
+
+static void
 set_model (NautilusViewIconItemUi *self,
            NautilusViewItemModel  *model);
 
@@ -194,6 +213,8 @@ set_model (NautilusViewIconItemUi *self,
 
     g_signal_connect (self->model, "notify::icon-size",
                       (GCallback) on_view_item_size_changed, self);
+    g_signal_connect (self->model, "notify::is-cut",
+                      (GCallback) on_view_item_is_cut_changed, self);
     g_signal_connect_swapped (self->model, "file-changed",
                               (GCallback) on_file_changed, self);
 }

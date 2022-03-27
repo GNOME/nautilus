@@ -18,6 +18,8 @@ void nautilus_view_item_model_set_icon_size (NautilusViewItemModel *self,
                                              guint                 icon_size);
 
 guint nautilus_view_item_model_get_icon_size (NautilusViewItemModel *self);
+void nautilus_view_item_model_set_cut (NautilusViewItemModel *self,
+                                       gboolean               is_cut);
 
 NautilusFile * nautilus_view_item_model_get_file (NautilusViewItemModel *self);
 
