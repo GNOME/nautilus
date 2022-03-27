@@ -33,21 +33,29 @@
 
 .nautilus-path-bar > scrolledwindow {
   margin: 6px 0px 6px 0px;
-  border-radius: 6px 0px 0px 6px;
-  border-right-width: 0px;
   background-color: alpha(currentColor, 0.1);
 }
-.nautilus-path-bar > scrolledwindow undershoot.left {
+
+.nautilus-path-bar scrolledwindow:dir(ltr),
+.nautilus-path-bar scrolledwindow:dir(ltr) undershoot.left {
   border-radius: 6px 0px 0px 6px;
+}
+
+.nautilus-path-bar scrolledwindow:dir(rtl),
+.nautilus-path-bar scrolledwindow:dir(rtl) undershoot.right {
+  border-radius: 0px 6px 6px 0px;
+}
+
+/* Linked look */
+.nautilus-path-bar scrolledwindow:dir(rtl) {
+  margin-left: -1px;
+}
+
+.nautilus-path-bar scrolledwindow undershoot.left {
   background: linear-gradient(to right, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
 }
 .nautilus-path-bar > scrolledwindow undershoot.right {
   background: linear-gradient(to left, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
-}
-
-.nautilus-path-bar > button,
-.path-buttons-box button {
-  margin: 0px;
 }
 
 .path-buttons-box button {
