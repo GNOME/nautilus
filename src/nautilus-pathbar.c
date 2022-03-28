@@ -742,9 +742,9 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
          *
          * Due to variable width fonts, labels can be shorter than the space
          * that would be reserved by setting a minimum amount of characters.
-         * Compensate for this with a tolerance of +1 characters.
+         * Compensate for this with a tolerance of +50% characters.
          */
-        if (g_utf8_strlen (dir_name, -1) > min_chars + 1)
+        if (g_utf8_strlen (dir_name, -1) > min_chars * 1.5)
         {
             gtk_label_set_width_chars (GTK_LABEL (button_data->label), min_chars);
             gtk_label_set_ellipsize (GTK_LABEL (button_data->label), PANGO_ELLIPSIZE_MIDDLE);
