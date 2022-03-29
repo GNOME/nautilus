@@ -352,7 +352,7 @@ static gboolean nautilus_files_view_is_read_only (NautilusFilesView *view);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
-                         GTK_TYPE_GRID,
+                         ADW_TYPE_BIN,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW, nautilus_files_view_iface_init)
                          G_ADD_PRIVATE (NautilusFilesView));
 
@@ -9439,11 +9439,10 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_object_unref (builder);
 
     /* Main widgets */
-    gtk_orientable_set_orientation (GTK_ORIENTABLE (view), GTK_ORIENTATION_VERTICAL);
     priv->overlay = gtk_overlay_new ();
     gtk_widget_set_vexpand (priv->overlay, TRUE);
     gtk_widget_set_hexpand (priv->overlay, TRUE);
-    gtk_grid_attach_next_to (GTK_GRID (view), priv->overlay, NULL, GTK_POS_BOTTOM, 1, 1);
+    adw_bin_set_child (ADW_BIN (view), priv->overlay);
     gtk_widget_show (priv->overlay);
 
     /* Scrolled Window */

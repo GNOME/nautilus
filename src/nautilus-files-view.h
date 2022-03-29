@@ -38,10 +38,10 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_FILES_VIEW nautilus_files_view_get_type()
 
-G_DECLARE_DERIVABLE_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILES_VIEW, GtkGrid)
+G_DECLARE_DERIVABLE_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILES_VIEW, AdwBin)
 
 struct _NautilusFilesViewClass {
-        GtkGridClass parent_class;
+        AdwBinClass parent_class;
 
         /* The 'clear' signal is emitted to empty the view of its contents.
          * It must be replaced by each subclass.
