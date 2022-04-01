@@ -6009,6 +6009,30 @@ action_cut (GSimpleAction *action,
 }
 
 static void
+action_copy_current_location (GSimpleAction *action,
+                              GVariant      *state,
+                              gpointer       user_data)
+{
+    NautilusFilesView *view;
+    GdkClipboard *clipboard;
+    GList *files;
+    NautilusFilesViewPrivate *priv;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+
+    if (priv->directory_as_file != NULL)
+    {
+        files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+
+        clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
+        nautilus_clipboard_prepare_for_files (clipboard, files, FALSE);
+
+        nautilus_file_list_free (files);
+    }
+}
+
+static void
 action_create_links_in_place (GSimpleAction *action,
                               GVariant      *state,
                               gpointer       user_data)
@@ -7015,6 +7039,7 @@ const GActionEntry view_entries[] =
     { "new-folder", action_new_folder },
     { "select-all", action_select_all },
     { "paste", action_paste_files },
+    { "copy-current-location", action_copy_current_location },
     { "paste_accel", action_paste_files_accel },
     { "create-link", action_create_links },
     { "new-document" },
@@ -7630,6 +7655,10 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "preview-selection");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count != 0);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "copy-current-location");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !selection_contains_search);
 
     /* Drive menu */
     show_mount = (selection != NULL);
