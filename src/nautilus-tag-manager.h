@@ -30,9 +30,6 @@ G_DECLARE_FINAL_TYPE (NautilusTagManager, nautilus_tag_manager, NAUTILUS, TAG_MA
 
 NautilusTagManager* nautilus_tag_manager_get                (void);
 
-void                nautilus_tag_manager_set_cancellable    (NautilusTagManager *tag_manager,
-                                                             GCancellable *cancellable);
-
 GList*              nautilus_tag_manager_get_starred_files (NautilusTagManager *self);
 
 void                nautilus_tag_manager_star_files         (NautilusTagManager  *self,

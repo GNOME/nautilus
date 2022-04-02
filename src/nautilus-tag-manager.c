@@ -300,8 +300,6 @@ nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
         return;
     }
 
-    self->cancellable = cancellable;
-
     tracker_sparql_statement_execute_async (self->query_starred_files,
                                             cancellable,
                                             on_get_starred_files_query_callback,
@@ -533,6 +531,8 @@ nautilus_tag_manager_finalize (GObject *object)
                                               self);
     }
 
+    g_cancellable_cancel (self->cancellable);
+    g_clear_object (&self->cancellable);
     g_clear_object (&self->notifier);
     g_clear_object (&self->db);
     g_clear_object (&self->query_file_is_starred);
@@ -647,15 +647,20 @@ setup_database (NautilusTagManager  *self,
     return TRUE;
 }
 
-/* Initialize the tag mananger. */
-void
-nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
-                                      GCancellable       *cancellable)
+static void
+nautilus_tag_manager_init (NautilusTagManager *self)
 {
     g_autoptr (GError) error = NULL;
 
-    self->database_ok = setup_database (self, cancellable, &error);
+    self->starred_file_uris = g_hash_table_new_full (g_str_hash,
+                                                     g_str_equal,
+                                                     (GDestroyNotify) g_free,
+                                                     /* values are keys */
+                                                     NULL);
+    self->home = g_file_new_for_path (g_get_home_dir ());
 
+    self->cancellable = g_cancellable_new ();
+    self->database_ok = setup_database (self, self->cancellable, &error);
     if (error)
     {
         g_warning ("Unable to initialize tag manager: %s", error->message);
@@ -664,7 +669,7 @@ nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
 
     self->notifier = tracker_sparql_connection_create_notifier (self->db);
 
-    nautilus_tag_manager_query_starred_files (self, cancellable);
+    nautilus_tag_manager_query_starred_files (self, self->cancellable);
 
     g_signal_connect (self->notifier,
                       "events",
@@ -672,26 +677,15 @@ nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
                       self);
 }
 
-static void
-nautilus_tag_manager_init (NautilusTagManager *self)
-{
-    self->starred_file_uris = g_hash_table_new_full (g_str_hash,
-                                                     g_str_equal,
-                                                     (GDestroyNotify) g_free,
-                                                     /* values are keys */
-                                                     NULL);
-    self->home = g_file_new_for_path (g_get_home_dir ());
-}
-
 gboolean
-nautilus_tag_manager_can_star_contents (NautilusTagManager *tag_manager,
+nautilus_tag_manager_can_star_contents (NautilusTagManager *self,
                                         GFile              *directory)
 {
     /* We only allow files to be starred inside the home directory for now.
      * This avoids the starred files database growing too big.
      * See https://gitlab.gnome.org/GNOME/nautilus/-/merge_requests/553#note_903108
      */
-    return g_file_has_prefix (directory, tag_manager->home) || g_file_equal (directory, tag_manager->home);
+    return g_file_has_prefix (directory, self->home) || g_file_equal (directory, self->home);
 }
 
 static void
