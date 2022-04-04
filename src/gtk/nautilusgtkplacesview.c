@@ -27,6 +27,8 @@
 
 #include "nautilusgtkplacesviewprivate.h"
 #include "nautilusgtkplacesviewrowprivate.h"
+#include "nautilus-file.h"
+#include "nautilus-properties-window.h"
 
 /*< private >
  * NautilusGtkPlacesView:
@@ -1530,6 +1532,25 @@ open_cb (GtkWidget  *widget,
 }
 
 static void
+properties_cb (GtkWidget  *widget,
+               const char *action_name,
+               GVariant   *parameter)
+{
+  NautilusGtkPlacesView *view = NAUTILUS_GTK_PLACES_VIEW (widget);
+  GList *list;
+  NautilusFile *file;
+
+  if (view->row_for_action == NULL)
+    return;
+
+  file = nautilus_file_get (nautilus_gtk_places_view_row_get_file (view->row_for_action));
+  list = g_list_append (NULL, file);
+  nautilus_properties_window_present (list, widget, NULL, NULL, NULL);
+
+  nautilus_file_list_unref (list);
+}
+
+static void
 mount_cb (GtkWidget  *widget,
           const char *action_name,
           GVariant   *parameter)
@@ -1690,6 +1711,11 @@ get_menu_model (void)
   g_menu_append_item (section, item);
   g_object_unref (item);
 
+  item = g_menu_item_new (_("_Properties"), "location.properties");
+  g_menu_item_set_attribute (item, "hidden-when", "s", "action-disabled");
+  g_menu_append_item (section, item);
+  g_object_unref (item);
+
   g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
   g_object_unref (section);
 
@@ -1721,6 +1747,8 @@ on_row_popup_menu (GtkWidget *widget,
                                  !file && !mount && is_network);
   gtk_widget_action_set_enabled (GTK_WIDGET (view), "location.mount",
                                  !file && !mount && !is_network);
+  gtk_widget_action_set_enabled (GTK_WIDGET (view), "location.properties",
+                                 file && !is_network);
 
   if (!view->popup_menu)
     {
@@ -2330,6 +2358,13 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
    * Disconnect the location.
    */
   gtk_widget_class_install_action (widget_class, "location.disconnect", NULL, unmount_cb);
+
+  /**
+   * NautilusGtkPlacesView|location.properties:
+   *
+   * Show location properties.
+   */
+  gtk_widget_class_install_action (widget_class, "location.properties", NULL, properties_cb);
 
   gtk_widget_class_set_css_name (widget_class, "placesview");
 }
