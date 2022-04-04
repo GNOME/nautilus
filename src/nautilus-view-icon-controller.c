@@ -1328,7 +1328,7 @@ finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_view_icon_controller_parent_class)->finalize (object);
 }
 
-static void
+static gboolean
 prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
 {
     gdouble page_size;
@@ -1347,7 +1347,7 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
     first_index = get_first_visible_item (self);
     if (first_index == G_MAXUINT)
     {
-        return;
+        return G_SOURCE_REMOVE;
     }
 
     first_item = g_list_model_get_item (G_LIST_MODEL (self->model), first_index);
@@ -1381,7 +1381,7 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
         g_autoptr (NautilusViewItemModel) item = NULL;
 
         item = g_list_model_get_item (G_LIST_MODEL (self->model), last_index - i);
-        g_return_if_fail (item != NULL);
+        g_return_val_if_fail (item != NULL, G_SOURCE_REMOVE);
 
         file = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL (item));
         if (file != NULL && nautilus_file_is_thumbnailing (file))
@@ -1390,6 +1390,8 @@ prioritize_thumbnailing_on_idle (NautilusViewIconController *self)
             nautilus_thumbnail_prioritize (uri);
         }
     }
+
+    return G_SOURCE_REMOVE;
 }
 
 static void
