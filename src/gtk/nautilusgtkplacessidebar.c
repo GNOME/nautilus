@@ -35,6 +35,8 @@
 #include "nautilusgtksidebarrowprivate.h"
 #include "gdk/gdkkeysyms.h"
 #include "nautilusgtkbookmarksmanagerprivate.h"
+#include "nautilus-file.h"
+#include "nautilus-properties-window.h"
 #include "nautilus-trash-monitor.h"
 #pragma GCC diagnostic ignored "-Wshadow"
 
@@ -2414,6 +2416,24 @@ rename_shortcut_cb (GSimpleAction *action,
 }
 
 static void
+properties_cb (GSimpleAction *action,
+               GVariant      *parameter,
+               gpointer       data)
+{
+  NautilusGtkPlacesSidebar *sidebar = data;
+  GList *list;
+  NautilusFile *file;
+  g_autofree gchar *uri = NULL;
+
+  g_object_get (sidebar->context_row, "uri", &uri, NULL);
+  file = nautilus_file_get_by_uri (uri);
+  list = g_list_append (NULL, file);
+  nautilus_properties_window_present (list, GTK_WIDGET (sidebar), NULL, NULL, NULL);
+
+  nautilus_file_list_free (list);
+}
+
+static void
 remove_bookmark (NautilusGtkSidebarRow *row)
 {
   NautilusGtkPlacesPlaceType type;
@@ -3083,6 +3103,7 @@ static GActionEntry entries[] = {
   { "rescan", rescan_shortcut_cb, NULL, NULL, NULL },
   { "start", start_shortcut_cb, NULL, NULL, NULL },
   { "stop", stop_shortcut_cb, NULL, NULL, NULL },
+  { "properties", properties_cb, NULL, NULL, NULL },
 };
 
 static void
@@ -3164,15 +3185,28 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   GAction *action;
   gboolean show_unmount, show_eject;
   gboolean show_stop;
+  g_autofree gchar *uri = NULL;
+  g_autoptr (GFile) file = NULL;
+  gboolean show_properties;
 
   g_object_get (row,
                 "place-type", &type,
                 "drive", &drive,
                 "volume", &volume,
                 "mount", &mount,
+                "uri", &uri,
                 NULL);
 
   check_unmount_and_eject (mount, volume, drive, &show_unmount, &show_eject);
+  if (uri != NULL)
+    {
+      file = g_file_new_for_uri (uri);
+      show_properties = (g_file_is_native (file) || mount != NULL);
+    }
+  else
+    {
+      show_properties = FALSE;
+    }
 
 #ifdef HAVE_CLOUDPROVIDERS
   CloudProvidersAccount *cloud_provider_account;
@@ -3309,6 +3343,16 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
   g_object_unref (section);
+
+  if (show_properties) {
+    section = g_menu_new ();
+    item = g_menu_item_new (_("Properties"), "row.properties");
+    g_menu_append_item (section, item);
+    g_object_unref (item);
+
+    g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
+    g_object_unref (section);
+  }
 
   sidebar->popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (menu));
   g_object_unref (menu);

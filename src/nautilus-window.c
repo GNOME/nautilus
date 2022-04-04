@@ -64,7 +64,6 @@
 #include "nautilus-notebook.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-profile.h"
-#include "nautilus-properties-window.h"
 #include "nautilus-signaller.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-trash-monitor.h"
@@ -1104,26 +1103,6 @@ action_empty_trash (GSimpleAction *action,
     nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
 }
 
-/* Callback used for the "properties" menu item from the places sidebar */
-static void
-action_properties (GSimpleAction *action,
-                   GVariant      *variant,
-                   gpointer       user_data)
-{
-    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    GList *list;
-    NautilusFile *file;
-
-    file = nautilus_file_get (window->selected_file);
-
-    list = g_list_append (NULL, file);
-    nautilus_properties_window_present (list, GTK_WIDGET (window), NULL, NULL,
-                                        NULL);
-    nautilus_file_list_free (list);
-
-    g_clear_object (&window->selected_file);
-}
-
 static gboolean
 check_have_gnome_disks (void)
 {
@@ -1267,19 +1246,6 @@ places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
                                          !nautilus_trash_monitor_is_empty ());
         }
         g_object_unref (trash);
-
-        if (g_file_is_native (selected_file))
-        {
-            window->selected_file = g_object_ref (selected_file);
-            add_menu_separator (menu);
-
-            menu_item = gtk_model_button_new ();
-            gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
-                                            "win.properties");
-            g_object_set (menu_item, "text", _("_Properties"), NULL);
-            gtk_box_append (GTK_BOX (menu), menu_item);
-            gtk_widget_show (menu_item);
-        }
     }
     if (selected_volume)
     {
@@ -1875,7 +1841,6 @@ const GActionEntry win_entries[] =
     { "prompt-home-location", action_prompt_for_location_home },
     { "go-to-tab", NULL, "i", "0", action_go_to_tab },
     { "empty-trash", action_empty_trash },
-    { "properties", action_properties },
     { "format", action_format },
     { "restore-tab", action_restore_tab },
 };
