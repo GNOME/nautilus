@@ -1291,8 +1291,6 @@ dispose (GObject *object)
     g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&self->prioritize_thumbnailing_handle_id, g_source_remove);
 
-    g_signal_handlers_disconnect_by_data (nautilus_preferences, self);
-
     G_OBJECT_CLASS (nautilus_view_icon_controller_parent_class)->dispose (object);
 }
 
@@ -1611,30 +1609,33 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
 static void
 nautilus_view_icon_controller_init (NautilusViewIconController *self)
 {
-    GdkClipboard *clipboard;
-
     gtk_widget_add_css_class (GTK_WIDGET (self), "view");
     gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-grid-view");
     set_click_mode_from_settings (self);
 
-    g_signal_connect_swapped (nautilus_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
-                              G_CALLBACK (on_default_sort_order_changed),
-                              self);
-    g_signal_connect_swapped (nautilus_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
-                              G_CALLBACK (on_default_sort_order_changed),
-                              self);
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
+                             G_CALLBACK (on_default_sort_order_changed),
+                             self,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
+                             G_CALLBACK (on_default_sort_order_changed),
+                             self,
+                             G_CONNECT_SWAPPED);
 
     set_captions_from_preferences (self);
-    g_signal_connect_swapped (nautilus_icon_view_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-                              G_CALLBACK (on_captions_preferences_changed),
-                              self);
+    g_signal_connect_object (nautilus_icon_view_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
+                             G_CALLBACK (on_captions_preferences_changed),
+                             self,
+                             G_CONNECT_SWAPPED);
 
-    clipboard = gdk_display_get_clipboard (gdk_display_get_default ());
-    g_signal_connect_object (clipboard, "changed",
-                             G_CALLBACK (on_clipboard_owner_changed), self, 0);
+    g_signal_connect_object (gdk_display_get_clipboard (gdk_display_get_default ()),
+                             "changed",
+                             G_CALLBACK (on_clipboard_owner_changed),
+                             self,
+                             0);
 }
 
 NautilusViewIconController *
