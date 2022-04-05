@@ -8,9 +8,8 @@ struct _NautilusViewModel
 
     GHashTable *map_files_to_model;
     GListStore *internal_model;
+    GtkSortListModel *sort_model;
     GtkMultiSelection *selection_model;
-    GtkSorter *sorter;
-    gulong sorter_changed_id;
 };
 
 static GType
@@ -38,12 +37,12 @@ nautilus_view_model_get_item (GListModel *list,
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (list);
 
-    if (self->internal_model == NULL)
+    if (self->sort_model == NULL)
     {
         return NULL;
     }
 
-    return g_list_model_get_item (G_LIST_MODEL (self->internal_model), position);
+    return g_list_model_get_item (G_LIST_MODEL (self->sort_model), position);
 }
 
 static void
@@ -128,16 +127,16 @@ dispose (GObject *object)
         self->selection_model = NULL;
     }
 
-    if (self->internal_model != NULL)
+    if (self->sort_model != NULL)
     {
-        g_signal_handlers_disconnect_by_func (self->internal_model,
+        g_signal_handlers_disconnect_by_func (self->sort_model,
                                               g_list_model_items_changed,
                                               self);
-        g_object_unref (self->internal_model);
-        self->internal_model = NULL;
+        g_object_unref (self->sort_model);
+        self->sort_model = NULL;
     }
 
-    g_clear_signal_handler (&self->sorter_changed_id, self->sorter);
+    g_clear_object (&self->internal_model);
 
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->dispose (object);
 }
@@ -150,7 +149,6 @@ finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->finalize (object);
 
     g_hash_table_destroy (self->map_files_to_model);
-    g_clear_object (&self->sorter);
 }
 
 static void
@@ -207,10 +205,11 @@ constructed (GObject *object)
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->constructed (object);
 
     self->internal_model = g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM);
-    self->selection_model = gtk_multi_selection_new (g_object_ref (G_LIST_MODEL (self->internal_model)));
+    self->sort_model = gtk_sort_list_model_new (g_object_ref (G_LIST_MODEL (self->internal_model)), NULL);
+    self->selection_model = gtk_multi_selection_new (g_object_ref (G_LIST_MODEL (self->sort_model)));
     self->map_files_to_model = g_hash_table_new (NULL, NULL);
 
-    g_signal_connect_swapped (self->internal_model, "items-changed",
+    g_signal_connect_swapped (self->sort_model, "items-changed",
                               G_CALLBACK (g_list_model_items_changed), self);
     g_signal_connect_swapped (self->selection_model, "selection-changed",
                               G_CALLBACK (gtk_selection_model_selection_changed), self);
@@ -248,22 +247,12 @@ compare_data_func (gconstpointer a,
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (user_data);
 
-    if (self->sorter == NULL)
+    if (nautilus_view_model_get_sorter (self) == NULL)
     {
         return GTK_ORDERING_EQUAL;
     }
 
-    return gtk_sorter_compare (self->sorter, (gpointer) a, (gpointer) b);
-}
-
-static void
-on_sorter_changed (GtkSorter       *sorter,
-                   GtkSorterChange  change,
-                   gpointer         user_data)
-{
-    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (user_data);
-
-    g_list_store_sort (self->internal_model, compare_data_func, self);
+    return gtk_sorter_compare (nautilus_view_model_get_sorter (self), (gpointer) a, (gpointer) b);
 }
 
 NautilusViewModel *
@@ -275,29 +264,24 @@ nautilus_view_model_new (void)
 GtkSorter *
 nautilus_view_model_get_sorter (NautilusViewModel *self)
 {
-    return self->sorter;
+    return gtk_sort_list_model_get_sorter (self->sort_model);
 }
 
 void
 nautilus_view_model_set_sorter (NautilusViewModel *self,
                                 GtkSorter         *sorter)
 {
-    if (self->sorter != NULL)
-    {
-        g_clear_signal_handler (&self->sorter_changed_id, self->sorter);
-    }
+    gtk_sort_list_model_set_sorter (self->sort_model, sorter);
 
-    if (g_set_object (&self->sorter, sorter))
-    {
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORTER]);
-    }
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORTER]);
+}
 
-    if (self->sorter != NULL)
-    {
-        self->sorter_changed_id = g_signal_connect (self->sorter, "changed",
-                                                    G_CALLBACK (on_sorter_changed), self);
-        g_list_store_sort (self->internal_model, compare_data_func, self);
-    }
+void
+nautilus_view_model_sort (NautilusViewModel *self)
+{
+    /* Hack: Reset the sorter to trigger ressorting. */
+    gtk_sort_list_model_set_sorter (self->sort_model,
+                                    gtk_sort_list_model_get_sorter (self->sort_model));
 }
 
 GQueue *
@@ -374,7 +358,7 @@ nautilus_view_model_add_item (NautilusViewModel *self,
     g_hash_table_insert (self->map_files_to_model,
                          nautilus_view_item_get_file (item),
                          item);
-    g_list_store_insert_sorted (self->internal_model, item, compare_data_func, self);
+    g_list_store_append (self->internal_model, item);
 }
 
 void
@@ -404,19 +388,29 @@ nautilus_view_model_add_items (NautilusViewModel *self,
     g_list_store_splice (self->internal_model,
                          g_list_model_get_n_items (G_LIST_MODEL (self->internal_model)),
                          0, array, g_queue_get_length (items));
-
-    g_list_store_sort (self->internal_model, compare_data_func, self);
 }
 
 guint
 nautilus_view_model_get_index (NautilusViewModel *self,
                                NautilusViewItem  *item)
 {
-    guint i = G_MAXUINT;
-    gboolean found;
+    guint n_items;
+    guint i = 0;
 
-    found = g_list_store_find (self->internal_model, item, &i);
-    g_warn_if_fail (found);
+    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
+    while (i < n_items)
+    {
+        g_autoptr (NautilusViewItem) item_i = NULL;
 
-    return i;
+        item_i = NAUTILUS_VIEW_ITEM (g_list_model_get_item (G_LIST_MODEL (self->sort_model), i));
+        g_warn_if_fail (item_i != NULL);
+
+        if (item_i == item)
+        {
+            return i;
+        }
+        i++;
+    }
+
+    return G_MAXUINT;
 }

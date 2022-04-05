@@ -15,8 +15,9 @@ NautilusViewModel * nautilus_view_model_new (void);
 GtkSorter *nautilus_view_model_get_sorter (NautilusViewModel *self);
 void nautilus_view_model_set_sorter (NautilusViewModel *self,
                                      GtkSorter         *sorter);
+void nautilus_view_model_sort (NautilusViewModel *self);
 NautilusViewItem * nautilus_view_model_get_item_from_file (NautilusViewModel *self,
-                                                                NautilusFile      *file);
+                                                           NautilusFile      *file);
 GQueue * nautilus_view_model_get_items_from_files (NautilusViewModel *self,
                                                    GQueue            *files);
 /* Don't use inside a loop, use nautilus_view_model_remove_all_items instead. */
