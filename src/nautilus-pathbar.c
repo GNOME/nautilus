@@ -367,6 +367,15 @@ get_dir_name (ButtonData *button_data)
 static void
 button_data_free (ButtonData *button_data)
 {
+    NautilusPathBar *self;
+    self = button_data->path_bar;
+    if (self != NULL && self->button_menu_popover != NULL)
+    {
+        g_object_ref (self->button_menu_popover);
+        gtk_widget_unparent (self->button_menu_popover);
+        gtk_widget_set_parent (self->button_menu_popover, GTK_WIDGET (self));
+        g_object_unref (self->button_menu_popover);
+    }
     g_object_unref (button_data->path);
     g_free (button_data->dir_name);
     if (button_data->file != NULL)
