@@ -78,7 +78,11 @@ static const SortConstants sorts_constants[] =
     {
         NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
         "search_relevance",
-    }
+    },
+    {
+        NAUTILUS_FILE_SORT_BY_RECENCY,
+        "recency",
+    },
 };
 
 static guint get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level);
