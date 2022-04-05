@@ -6,106 +6,111 @@
       <relation name="labelled-by">label</relation>
     </accessibility>
     <child>
-      <object class="GtkBox">
-        <property name="spacing">6</property>
-        <property name="orientation">horizontal</property>
-        <property name="halign">fill</property>
-        <property name="valign">center</property>
-        <child>
-          <object class="GtkBox" id="fixed_height_box">
-            <property name="orientation">vertical</property>
-            <property name="halign">center</property>
-            <property name="height-request">16</property>
+      <object class="GtkTreeExpander" id="expander">
+        <property name="indent-for-icon">False</property>
+        <property name="child">
+          <object class="GtkBox">
+            <property name="spacing">6</property>
+            <property name="orientation">horizontal</property>
+            <property name="halign">fill</property>
             <property name="valign">center</property>
             <child>
-              <object class="GtkPicture" id="icon">
+              <object class="GtkBox" id="fixed_height_box">
+                <property name="orientation">vertical</property>
                 <property name="halign">center</property>
+                <property name="height-request">16</property>
                 <property name="valign">center</property>
-                <property name="can-shrink">False</property>
+                <child>
+                  <object class="GtkPicture" id="icon">
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="can-shrink">False</property>
+                  </object>
+                </child>
               </object>
             </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <property name="halign">fill</property>
-            <property name="hexpand">True</property>
-            <property name="valign">center</property>
-            <style>
-              <class name="column-name-labels-box"/>
-            </style>
             <child>
               <object class="GtkBox">
-                <property name="orientation">horizontal</property>
+                <property name="orientation">vertical</property>
                 <property name="halign">fill</property>
                 <property name="hexpand">True</property>
-                <property name="spacing">6</property>
+                <property name="valign">center</property>
+                <style>
+                  <class name="column-name-labels-box"/>
+                </style>
                 <child>
-                  <object class="GtkLabel" id="label">
-                    <property name="ellipsize">middle</property>
-                    <property name="lines">1</property>
-                    <property name="max-width-chars">-1</property>
-                    <property name="wrap">False</property>
-                    <property name="wrap-mode">word-char</property>
-                    <property name="halign">start</property>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="halign">fill</property>
+                    <property name="hexpand">True</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel" id="label">
+                        <property name="ellipsize">middle</property>
+                        <property name="lines">1</property>
+                        <property name="max-width-chars">-1</property>
+                        <property name="wrap">False</property>
+                        <property name="wrap-mode">word-char</property>
+                        <property name="halign">start</property>
+                        <attributes>
+                          <attribute name="insert-hyphens" value="false"></attribute>
+                        </attributes>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="emblems_box">
+                        <property name="orientation">horizontal</property>
+                        <property name="halign">start</property>
+                        <property name="spacing">6</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="path">
+                    <property name="visible">False</property>
+                    <property name="ellipsize">start</property>
+                    <property name="justify">left</property>
+                    <property name="halign">fill</property>
+                    <property name="xalign">0.0</property>
                     <attributes>
                       <attribute name="insert-hyphens" value="false"></attribute>
                     </attributes>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox" id="emblems_box">
-                    <property name="orientation">horizontal</property>
-                    <property name="halign">start</property>
-                    <property name="spacing">6</property>
+                    <style>
+                      <class name="caption"/>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                 </child>
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="path">
+              <object class="GtkMenuButton" id="snippet_button">
+                <property name="tooltip-text" translatable="yes">Full text match</property>
                 <property name="visible">False</property>
-                <property name="ellipsize">start</property>
-                <property name="justify">left</property>
-                <property name="halign">fill</property>
-                <property name="xalign">0.0</property>
-                <attributes>
-                  <attribute name="insert-hyphens" value="false"></attribute>
-                </attributes>
+                <property name="icon-name">quotation-symbolic</property>
+                <property name="valign">center</property>
                 <style>
-                  <class name="caption"/>
-                  <class name="dim-label"/>
+                  <class name="fts-snippet"/>
                 </style>
+                <property name="popover">
+                  <object class="GtkPopover">
+                    <child>
+                      <object class="GtkLabel" id="snippet">
+                        <property name="ellipsize">none</property>
+                        <property name="justify">left</property>
+                        <property name="max-width-chars">65</property>
+                        <property name="lines">10</property>
+                        <property name="wrap">True</property>
+                        <property name="wrap-mode">word</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
               </object>
             </child>
           </object>
-        </child>
-        <child>
-          <object class="GtkMenuButton" id="snippet_button">
-            <property name="tooltip-text" translatable="yes">Full text match</property>
-            <property name="visible">False</property>
-            <property name="icon-name">quotation-symbolic</property>
-            <property name="valign">center</property>
-            <style>
-              <class name="fts-snippet"/>
-            </style>
-            <property name="popover">
-              <object class="GtkPopover">
-                <child>
-                  <object class="GtkLabel" id="snippet">
-                    <property name="ellipsize">none</property>
-                    <property name="justify">left</property>
-                    <property name="max-width-chars">65</property>
-                    <property name="lines">10</property>
-                    <property name="wrap">True</property>
-                    <property name="wrap-mode">word</property>
-                  </object>
-                </child>
-              </object>
-            </property>
-          </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>

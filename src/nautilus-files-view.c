@@ -4796,6 +4796,16 @@ load_error_callback (NautilusDirectory *directory,
         nautilus_files_view_get_containing_window (view));
 }
 
+gboolean
+nautilus_files_view_has_subdirectory (NautilusFilesView *view,
+                                      NautilusDirectory *directory)
+{
+    NautilusFilesViewPrivate *priv;
+    priv = nautilus_files_view_get_instance_private (view);
+
+    return g_list_find (priv->subdirectory_list, directory) != NULL;
+}
+
 void
 nautilus_files_view_add_subdirectory (NautilusFilesView *view,
                                       NautilusDirectory *directory)

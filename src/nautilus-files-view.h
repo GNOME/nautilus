@@ -258,6 +258,8 @@ gboolean            nautilus_files_view_should_show_file                 (Nautil
 gboolean            nautilus_files_view_should_sort_directories_first    (NautilusFilesView *view);
 void                nautilus_files_view_ignore_hidden_file_preferences   (NautilusFilesView *view);
 
+gboolean            nautilus_files_view_has_subdirectory                (NautilusFilesView *view,
+                                                                         NautilusDirectory *directory);
 void                nautilus_files_view_add_subdirectory                (NautilusFilesView *view,
                                                                          NautilusDirectory *directory);
 void                nautilus_files_view_remove_subdirectory             (NautilusFilesView *view,
