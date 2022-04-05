@@ -7,10 +7,44 @@ struct _NautilusViewModel
     GObject parent_instance;
 
     GHashTable *map_files_to_model;
-    GListStore *internal_model;
+    GHashTable *directory_reverse_map;
+
+    GtkTreeListModel *tree_model;
     GtkSortListModel *sort_model;
     GtkMultiSelection *selection_model;
+
+    gboolean expand_as_a_tree;
 };
+
+static inline GListStore *
+get_directory_store (NautilusViewModel *self,
+                     NautilusFile      *directory)
+{
+    GListStore *store;
+
+    store = g_hash_table_lookup (self->directory_reverse_map, directory);
+    if (store == NULL)
+    {
+        store = G_LIST_STORE (gtk_tree_list_model_get_model (self->tree_model));
+    }
+
+    return store;
+}
+
+static inline GtkTreeListRow *
+get_child_row (NautilusViewModel *self,
+               GtkTreeListRow    *parent,
+               guint              position)
+{
+    if (parent != NULL)
+    {
+        return gtk_tree_list_row_get_child_row (parent, position);
+    }
+    else
+    {
+        return gtk_tree_list_model_get_child_row (self->tree_model, position);
+    }
+}
 
 static GType
 nautilus_view_model_get_item_type (GListModel *list)
@@ -23,12 +57,12 @@ nautilus_view_model_get_n_items (GListModel *list)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (list);
 
-    if (self->internal_model == NULL)
+    if (self->tree_model == NULL)
     {
         return 0;
     }
 
-    return g_list_model_get_n_items (G_LIST_MODEL (self->internal_model));
+    return g_list_model_get_n_items (G_LIST_MODEL (self->tree_model));
 }
 
 static gpointer
@@ -36,13 +70,15 @@ nautilus_view_model_get_item (GListModel *list,
                               guint       position)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (list);
+    g_autoptr (GtkTreeListRow) row = NULL;
 
     if (self->sort_model == NULL)
     {
         return NULL;
     }
 
-    return g_list_model_get_item (G_LIST_MODEL (self->sort_model), position);
+    row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), position);
+    return gtk_tree_list_row_get_item (row);
 }
 
 static void
@@ -136,7 +172,7 @@ dispose (GObject *object)
         self->sort_model = NULL;
     }
 
-    g_clear_object (&self->internal_model);
+    g_clear_object (&self->tree_model);
 
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->dispose (object);
 }
@@ -149,6 +185,7 @@ finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->finalize (object);
 
     g_hash_table_destroy (self->map_files_to_model);
+    g_hash_table_destroy (self->directory_reverse_map);
 }
 
 static void
@@ -197,6 +234,34 @@ set_property (GObject      *object,
     }
 }
 
+static GListModel *
+create_model_func (GObject           *item,
+                   NautilusViewModel *self)
+{
+    NautilusFile *file;
+    GListStore *store;
+
+    if (!self->expand_as_a_tree)
+    {
+        return NULL;
+    }
+
+    file = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM (item));
+    if (!nautilus_file_is_directory (file))
+    {
+        return NULL;
+    }
+
+    store = g_hash_table_lookup (self->directory_reverse_map, file);
+    if (store == NULL)
+    {
+        store = g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM);
+        g_hash_table_insert (self->directory_reverse_map, file, store);
+    }
+
+    return g_object_ref (G_LIST_MODEL (store));
+}
+
 static void
 constructed (GObject *object)
 {
@@ -204,10 +269,15 @@ constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->constructed (object);
 
-    self->internal_model = g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM);
-    self->sort_model = gtk_sort_list_model_new (g_object_ref (G_LIST_MODEL (self->internal_model)), NULL);
+    self->tree_model = gtk_tree_list_model_new (G_LIST_MODEL (g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM)),
+                                                FALSE, FALSE,
+                                                (GtkTreeListModelCreateModelFunc) create_model_func,
+                                                self, NULL);
+    self->sort_model = gtk_sort_list_model_new (g_object_ref (G_LIST_MODEL (self->tree_model)), NULL);
     self->selection_model = gtk_multi_selection_new (g_object_ref (G_LIST_MODEL (self->sort_model)));
+
     self->map_files_to_model = g_hash_table_new (NULL, NULL);
+    self->directory_reverse_map = g_hash_table_new_full (NULL, NULL, NULL, g_object_unref);
 
     g_signal_connect_swapped (self->sort_model, "items-changed",
                               G_CALLBACK (g_list_model_items_changed), self);
@@ -264,14 +334,23 @@ nautilus_view_model_new (void)
 GtkSorter *
 nautilus_view_model_get_sorter (NautilusViewModel *self)
 {
-    return gtk_sort_list_model_get_sorter (self->sort_model);
+    GtkTreeListRowSorter *row_sorter;
+
+    row_sorter = GTK_TREE_LIST_ROW_SORTER (gtk_sort_list_model_get_sorter (self->sort_model));
+
+    return gtk_tree_list_row_sorter_get_sorter (row_sorter);
 }
 
 void
 nautilus_view_model_set_sorter (NautilusViewModel *self,
                                 GtkSorter         *sorter)
 {
-    gtk_sort_list_model_set_sorter (self->sort_model, sorter);
+    g_autoptr (GtkTreeListRowSorter) row_sorter = NULL;
+
+    row_sorter = gtk_tree_list_row_sorter_new (NULL);
+
+    gtk_tree_list_row_sorter_set_sorter (row_sorter, sorter);
+    gtk_sort_list_model_set_sorter (self->sort_model, GTK_SORTER (row_sorter));
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORTER]);
 }
@@ -289,33 +368,15 @@ nautilus_view_model_get_items_from_files (NautilusViewModel *self,
                                           GQueue            *files)
 {
     GList *l;
-    guint n_items;
     GQueue *items;
 
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->internal_model));
     items = g_queue_new ();
     for (l = g_queue_peek_head_link (files); l != NULL; l = l->next)
     {
-        NautilusFile *file1;
+        NautilusViewItem *item;
 
-        file1 = NAUTILUS_FILE (l->data);
-        for (guint i = 0; i < n_items; i++)
-        {
-            g_autoptr (NautilusViewItem) item = NULL;
-            NautilusFile *file2;
-            g_autofree gchar *file1_uri = NULL;
-            g_autofree gchar *file2_uri = NULL;
-
-            item = g_list_model_get_item (G_LIST_MODEL (self->internal_model), i);
-            file2 = nautilus_view_item_get_file (item);
-            file1_uri = nautilus_file_get_uri (file1);
-            file2_uri = nautilus_file_get_uri (file2);
-            if (g_strcmp0 (file1_uri, file2_uri) == 0)
-            {
-                g_queue_push_tail (items, item);
-                break;
-            }
-        }
+        item = nautilus_view_model_get_item_from_file (self, l->data);
+        g_queue_push_tail (items, item);
     }
 
     return items;
@@ -332,62 +393,100 @@ void
 nautilus_view_model_remove_item (NautilusViewModel *self,
                                  NautilusViewItem  *item)
 {
+    NautilusFile *file;
+    g_autoptr (NautilusFile) parent = NULL;
+    GListStore *dir_store;
     guint i;
 
-    if (g_list_store_find (self->internal_model, item, &i))
+    file = nautilus_view_item_get_file (item);
+    parent = nautilus_file_get_parent (file);
+    dir_store = get_directory_store (self, parent);
+    if (g_list_store_find (dir_store, item, &i))
     {
-        NautilusFile *file;
-
-        file = nautilus_view_item_get_file (item);
-        g_list_store_remove (self->internal_model, i);
+        g_list_store_remove (dir_store, i);
         g_hash_table_remove (self->map_files_to_model, file);
+        if (nautilus_file_is_directory (file))
+        {
+            g_hash_table_remove (self->directory_reverse_map, file);
+        }
     }
 }
 
 void
 nautilus_view_model_remove_all_items (NautilusViewModel *self)
 {
-    g_list_store_remove_all (self->internal_model);
+    g_list_store_remove_all (G_LIST_STORE (gtk_tree_list_model_get_model (self->tree_model)));
     g_hash_table_remove_all (self->map_files_to_model);
+    g_hash_table_remove_all (self->directory_reverse_map);
 }
 
 void
 nautilus_view_model_add_item (NautilusViewModel *self,
                               NautilusViewItem  *item)
 {
-    g_hash_table_insert (self->map_files_to_model,
-                         nautilus_view_item_get_file (item),
-                         item);
-    g_list_store_append (self->internal_model, item);
+    NautilusFile *file;
+    g_autoptr (NautilusFile) parent = NULL;
+
+    file = nautilus_view_item_get_file (item);
+    parent = nautilus_file_get_parent (file);
+
+    g_list_store_append (get_directory_store (self, parent), item);
+    g_hash_table_insert (self->map_files_to_model, file, item);
+}
+
+static void
+splice_items_into_common_parent (NautilusViewModel *self,
+                                 GPtrArray         *items,
+                                 NautilusFile      *common_parent)
+{
+    GListStore *dir_store;
+
+    dir_store = get_directory_store (self, common_parent);
+    g_list_store_splice (dir_store,
+                         g_list_model_get_n_items (G_LIST_MODEL (dir_store)),
+                         0, items->pdata, items->len);
 }
 
 void
 nautilus_view_model_add_items (NautilusViewModel *self,
                                GQueue            *items)
 {
-    g_autofree gpointer *array = NULL;
+    g_autoptr (GPtrArray) array = g_ptr_array_new ();
+    g_autoptr (NautilusFile) previous_parent = NULL;
     GList *l;
-    int i = 0;
+    NautilusViewItem *item;
 
-    /* Sort items before adding them to the internal model. This ensures that
-     * the first sorted item is become the initial focus and scroll anchor. */
     g_queue_sort (items, compare_data_func, self);
-
-    array = g_malloc_n (g_queue_get_length (items),
-                        sizeof (NautilusViewItem *));
 
     for (l = g_queue_peek_head_link (items); l != NULL; l = l->next)
     {
-        array[i] = l->data;
+        g_autoptr (NautilusFile) parent = NULL;
+
+        item = NAUTILUS_VIEW_ITEM (l->data);
+        parent = nautilus_file_get_parent (nautilus_view_item_get_file (item));
+
+        if (previous_parent != NULL && previous_parent != parent)
+        {
+            /* The pending items share a common parent. */
+            splice_items_into_common_parent (self, array, previous_parent);
+
+            /* Clear pending items and start a new with a new parent. */
+            g_ptr_array_unref (array);
+            array = g_ptr_array_new ();
+        }
+        g_set_object (&previous_parent, parent);
+
+        g_ptr_array_add (array, item);
         g_hash_table_insert (self->map_files_to_model,
-                             nautilus_view_item_get_file (l->data),
-                             l->data);
-        i++;
+                             nautilus_view_item_get_file (item),
+                             item);
     }
 
-    g_list_store_splice (self->internal_model,
-                         g_list_model_get_n_items (G_LIST_MODEL (self->internal_model)),
-                         0, array, g_queue_get_length (items));
+    if (previous_parent != NULL)
+    {
+        /* Flush the pending items. */
+        splice_items_into_common_parent (self, array, previous_parent);
+    }
 }
 
 guint
@@ -400,10 +499,14 @@ nautilus_view_model_get_index (NautilusViewModel *self,
     n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
     while (i < n_items)
     {
+        g_autoptr (GtkTreeListRow) row = NULL;
         g_autoptr (NautilusViewItem) item_i = NULL;
 
-        item_i = NAUTILUS_VIEW_ITEM (g_list_model_get_item (G_LIST_MODEL (self->sort_model), i));
-        g_warn_if_fail (item_i != NULL);
+        row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), i);
+        g_warn_if_fail (GTK_IS_TREE_LIST_ROW (row));
+
+        item_i = gtk_tree_list_row_get_item (row);
+        g_warn_if_fail (NAUTILUS_IS_VIEW_ITEM (item_i));
 
         if (item_i == item)
         {
@@ -413,4 +516,38 @@ nautilus_view_model_get_index (NautilusViewModel *self,
     }
 
     return G_MAXUINT;
+}
+
+void
+nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
+                                        NautilusViewItem  *item)
+{
+    NautilusFile *file;
+    GListModel *children;
+    guint n_children = 0;
+
+    g_return_if_fail (NAUTILUS_IS_VIEW_MODEL (self));
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (item));
+
+    file = nautilus_view_item_get_file (item);
+    children = G_LIST_MODEL (g_hash_table_lookup (self->directory_reverse_map, file));
+    n_children = (children != NULL) ? g_list_model_get_n_items (children) : 0;
+    for (guint i = 0; i < n_children; i++)
+    {
+        g_autoptr (NautilusViewItem) child = g_list_model_get_item (children, i);
+
+        if (nautilus_file_is_directory (nautilus_view_item_get_file (child)))
+        {
+            /* Clear recursively */
+            nautilus_view_model_clear_subdirectory (self, child);
+        }
+    }
+    g_hash_table_remove (self->directory_reverse_map, file);
+}
+
+void
+nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
+                                      gboolean           expand_as_a_tree)
+{
+    self->expand_as_a_tree = expand_as_a_tree;
 }

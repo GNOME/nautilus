@@ -29,7 +29,11 @@ void nautilus_view_model_add_item (NautilusViewModel     *self,
                                    NautilusViewItem *item);
 void nautilus_view_model_add_items (NautilusViewModel *self,
                                     GQueue            *items);
-guint nautilus_view_model_get_index (NautilusViewModel     *self,
-                                     NautilusViewItem *item);
+guint nautilus_view_model_get_index (NautilusViewModel *self,
+                                     NautilusViewItem  *item);
+void nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
+                                             NautilusViewItem  *item);
+void nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
+                                           gboolean           expand_as_a_tree);
 
 G_END_DECLS
