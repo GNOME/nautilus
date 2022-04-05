@@ -4741,7 +4741,7 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    g_assert (!g_list_find (priv->subdirectory_list, directory));
+    g_return_if_fail (!g_list_find (priv->subdirectory_list, directory));
 
     nautilus_directory_ref (directory);
 
@@ -4776,7 +4776,7 @@ nautilus_files_view_remove_subdirectory (NautilusFilesView *view,
     NautilusFilesViewPrivate *priv;
     priv = nautilus_files_view_get_instance_private (view);
 
-    g_assert (g_list_find (priv->subdirectory_list, directory));
+    g_return_if_fail (g_list_find (priv->subdirectory_list, directory));
 
     priv->subdirectory_list = g_list_remove (
         priv->subdirectory_list, directory);
