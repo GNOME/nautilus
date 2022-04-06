@@ -28,6 +28,8 @@ void               nautilus_view_item_set_cut       (NautilusViewItem *self,
                                                      gboolean          is_cut);
 void               nautilus_view_item_set_drag_accept (NautilusViewItem *self,
                                                        gboolean          drag_accept);
+void               nautilus_view_item_set_loading   (NautilusViewItem *self,
+                                                     gboolean          is_loading);
 
 NautilusFile *     nautilus_view_item_get_file      (NautilusViewItem *self);
 

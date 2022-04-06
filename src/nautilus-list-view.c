@@ -936,6 +936,18 @@ unload_file_timeout (gpointer data)
 }
 
 static void
+on_subdirectory_done_loading (NautilusDirectory *directory,
+                              GtkTreeListRow    *row)
+{
+    NautilusViewItem *item;
+
+    g_signal_handlers_disconnect_by_func (directory, on_subdirectory_done_loading, row);
+
+    item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
+    nautilus_view_item_set_loading (item, FALSE);
+}
+
+static void
 on_row_expanded_changed (GObject    *gobject,
                          GParamSpec *pspec,
                          gpointer    user_data)
@@ -961,9 +973,19 @@ on_row_expanded_changed (GObject    *gobject,
         {
             nautilus_files_view_add_subdirectory (NAUTILUS_FILES_VIEW (self), directory);
         }
+        if (!nautilus_directory_are_all_files_seen (directory))
+        {
+            nautilus_view_item_set_loading (item, TRUE);
+            g_signal_connect_object (directory,
+                                     "done-loading",
+                                     G_CALLBACK (on_subdirectory_done_loading),
+                                     row,
+                                     0);
+        }
     }
     else
     {
+        nautilus_view_item_set_loading (item, FALSE);
         g_timeout_add_seconds (COLLAPSE_TO_UNLOAD_DELAY,
                                unload_file_timeout,
                                unload_delay_data_new (self, item, directory));

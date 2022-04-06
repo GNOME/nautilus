@@ -7,6 +7,8 @@
 #include "nautilus-name-cell.h"
 #include "nautilus-file-utilities.h"
 
+#define LOADING_TIMEOUT_SECONDS 1
+
 struct _NautilusNameCell
 {
     NautilusViewCell parent_instance;
@@ -18,6 +20,7 @@ struct _NautilusNameCell
 
     GtkWidget *expander;
     GtkWidget *fixed_height_box;
+    GtkWidget *spinner;
     GtkWidget *icon;
     GtkWidget *label;
     GtkWidget *emblems_box;
@@ -26,6 +29,7 @@ struct _NautilusNameCell
     GtkWidget *path;
 
     gboolean show_snippet;
+    guint loading_timeout_id;
 };
 
 G_DEFINE_TYPE (NautilusNameCell, nautilus_name_cell, NAUTILUS_TYPE_VIEW_CELL)
@@ -262,6 +266,52 @@ on_item_is_cut_changed (NautilusNameCell *self)
     }
 }
 
+static gboolean
+on_loading_timeout (gpointer user_data)
+{
+    NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
+    gboolean is_loading;
+
+    g_object_get (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self)),
+                  "is-loading", &is_loading,
+                  NULL);
+    if (is_loading)
+    {
+        gtk_widget_set_visible (self->spinner, TRUE);
+        gtk_spinner_start (GTK_SPINNER (self->spinner));
+    }
+
+    return G_SOURCE_REMOVE;
+}
+
+static void
+on_item_is_loading_changed (GObject    *object,
+                            GParamSpec *pspec,
+                            gpointer    user_data)
+{
+    NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
+    gboolean is_loading;
+
+    if (object != G_OBJECT (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self))))
+    {
+        return;
+    }
+
+    g_clear_handle_id (&self->loading_timeout_id, g_source_remove);
+    g_object_get (object, "is-loading", &is_loading, NULL);
+    if (is_loading)
+    {
+        self->loading_timeout_id = g_timeout_add_seconds (LOADING_TIMEOUT_SECONDS,
+                                                          G_SOURCE_FUNC (on_loading_timeout),
+                                                          self);
+    }
+    else
+    {
+        gtk_widget_set_visible (self->spinner, FALSE);
+        gtk_spinner_stop (GTK_SPINNER (self->spinner));
+    }
+}
+
 static void
 nautilus_name_cell_init (NautilusNameCell *self)
 {
@@ -275,6 +325,8 @@ nautilus_name_cell_init (NautilusNameCell *self)
                                     (GCallback) on_item_drag_accept_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
                                     (GCallback) on_item_is_cut_changed, self);
+    g_signal_group_connect_swapped (self->item_signal_group, "notify::is-loading",
+                                    (GCallback) on_item_is_loading_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
     g_signal_connect_object (self->item_signal_group, "bind",
@@ -308,6 +360,7 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, expander);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, fixed_height_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, spinner);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, label);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, emblems_box);

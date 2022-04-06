@@ -12,6 +12,7 @@ struct _NautilusViewItem
     guint icon_size;
     gboolean is_cut;
     gboolean drag_accept;
+    gboolean is_loading;
     NautilusFile *file;
     GtkWidget *item_ui;
 };
@@ -25,6 +26,7 @@ enum
     PROP_ICON_SIZE,
     PROP_IS_CUT,
     PROP_DRAG_ACCEPT,
+    PROP_IS_LOADING,
     PROP_ITEM_UI,
     N_PROPS
 };
@@ -93,6 +95,12 @@ nautilus_view_item_get_property (GObject    *object,
         }
         break;
 
+        case PROP_IS_LOADING:
+        {
+            g_value_set_boolean (value, self->is_loading);
+        }
+        break;
+
         case PROP_ITEM_UI:
         {
             g_value_set_object (value, self->item_ui);
@@ -137,6 +145,12 @@ nautilus_view_item_set_property (GObject      *object,
         case PROP_DRAG_ACCEPT:
         {
             self->drag_accept = g_value_get_boolean (value);
+        }
+        break;
+
+        case PROP_IS_LOADING:
+        {
+            self->is_loading = g_value_get_boolean (value);
         }
         break;
 
@@ -186,6 +200,10 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
                                                  "", "",
                                                  NAUTILUS_TYPE_FILE,
                                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_IS_LOADING] = g_param_spec_boolean ("is-loading",
+                                                        "", "",
+                                                        FALSE,
+                                                        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_ITEM_UI] = g_param_spec_object ("item-ui",
                                                     "", "",
                                                     GTK_TYPE_WIDGET,
@@ -244,6 +262,15 @@ nautilus_view_item_set_drag_accept (NautilusViewItem *self,
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
     g_object_set (self, "drag-accept", drag_accept, NULL);
+}
+
+void
+nautilus_view_item_set_loading (NautilusViewItem *self,
+                                gboolean          loading)
+{
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
+
+    g_object_set (self, "is-loading", loading, NULL);
 }
 
 NautilusFile *
