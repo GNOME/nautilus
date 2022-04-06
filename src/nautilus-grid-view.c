@@ -444,7 +444,8 @@ bind_cell (GtkSignalListItemFactory *factory,
     NautilusViewItem *item;
 
     cell = gtk_list_item_get_child (listitem);
-    item = NAUTILUS_VIEW_ITEM (gtk_list_item_get_item (listitem));
+    item = listitem_get_view_item (listitem);
+    g_return_if_fail (item != NULL);
 
     nautilus_view_item_set_item_ui (item, cell);
 
@@ -476,9 +477,13 @@ unbind_cell (GtkSignalListItemFactory *factory,
 {
     NautilusViewItem *item;
 
-    item = NAUTILUS_VIEW_ITEM (gtk_list_item_get_item (listitem));
+    item = listitem_get_view_item (listitem);
 
-    nautilus_view_item_set_item_ui (item, NULL);
+    /* item may be NULL when row has just been destroyed. */
+    if (item != NULL)
+    {
+        nautilus_view_item_set_item_ui (item, NULL);
+    }
 }
 
 static void

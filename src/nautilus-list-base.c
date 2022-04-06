@@ -125,7 +125,10 @@ static inline NautilusViewItem *
 get_view_item (GListModel *model,
                guint       position)
 {
-    return NAUTILUS_VIEW_ITEM (g_list_model_get_item (model, position));
+    g_autoptr (GtkTreeListRow) row = g_list_model_get_item (model, position);
+
+    g_return_val_if_fail (GTK_IS_TREE_LIST_ROW (row), NULL);
+    return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (row)));
 }
 
 static char *
@@ -886,12 +889,14 @@ void
 setup_cell_common (GtkListItem      *listitem,
                    NautilusViewCell *cell)
 {
+    GtkExpression *expression;
     GtkEventController *controller;
     GtkDropTarget *drop_target;
 
-    g_object_bind_property (listitem, "item",
-                            cell, "item",
-                            G_BINDING_SYNC_CREATE);
+    expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
+    expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
+    gtk_expression_bind (expression, cell, "item", listitem);
+
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());

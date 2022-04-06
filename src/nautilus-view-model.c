@@ -49,7 +49,7 @@ get_child_row (NautilusViewModel *self,
 static GType
 nautilus_view_model_get_item_type (GListModel *list)
 {
-    return NAUTILUS_TYPE_VIEW_ITEM;
+    return GTK_TYPE_TREE_LIST_ROW;
 }
 
 static guint
@@ -70,15 +70,13 @@ nautilus_view_model_get_item (GListModel *list,
                               guint       position)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (list);
-    g_autoptr (GtkTreeListRow) row = NULL;
 
     if (self->sort_model == NULL)
     {
         return NULL;
     }
 
-    row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), position);
-    return gtk_tree_list_row_get_item (row);
+    return g_list_model_get_item (G_LIST_MODEL (self->sort_model), position);
 }
 
 static void
@@ -338,7 +336,7 @@ nautilus_view_model_get_sorter (NautilusViewModel *self)
 
     row_sorter = GTK_TREE_LIST_ROW_SORTER (gtk_sort_list_model_get_sorter (self->sort_model));
 
-    return gtk_tree_list_row_sorter_get_sorter (row_sorter);
+    return row_sorter != NULL ? gtk_tree_list_row_sorter_get_sorter (row_sorter) : NULL;
 }
 
 void
