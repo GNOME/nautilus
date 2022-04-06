@@ -1422,7 +1422,7 @@ popup_column_header_menu (NautilusListView *list_view,
                                 "column-name", name, g_free);
 
         /* name is always visible */
-        if (strcmp (lowercase, "name") == 0)
+        if (strcmp (lowercase, "name") == 0 || strcmp (lowercase, "starred") == 0)
         {
             gtk_widget_set_sensitive (menu_item, FALSE);
         }
@@ -1468,11 +1468,13 @@ apply_columns_settings (NautilusListView  *list_view,
     NautilusFile *file;
     GList *old_view_columns, *view_columns;
     GHashTable *visible_columns_hash;
+    g_autoptr (GFile) location = NULL;
     GtkTreeViewColumn *prev_view_column;
     GList *l;
     int i;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
+    location = nautilus_file_get_location (file);
 
     /* prepare ordered list of view columns using column_order and visible_columns */
     view_columns = NULL;
@@ -1487,6 +1489,14 @@ apply_columns_settings (NautilusListView  *list_view,
                                                   (GDestroyNotify) g_free);
     /* always show name column */
     g_hash_table_insert (visible_columns_hash, g_strdup ("name"), g_strdup ("name"));
+
+    /* always show star column if supported */
+    if (nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (), location) ||
+        nautilus_is_starred_directory (location))
+    {
+        g_hash_table_insert (visible_columns_hash, g_strdup ("starred"), g_strdup ("starred"));
+    }
+
     if (visible_columns != NULL)
     {
         for (i = 0; visible_columns[i] != NULL; ++i)
@@ -2337,40 +2347,17 @@ get_visible_columns (NautilusListView *list_view)
 {
     NautilusFile *file;
     g_autofree gchar **visible_columns = NULL;
-    g_autoptr (GFile) location = NULL;
-    GPtrArray *res;
-    g_autofree gchar *uri = NULL;
-    gboolean can_star_current_directory;
-    gboolean is_starred;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
-    uri = nautilus_file_get_uri (file);
-
-    location = g_file_new_for_uri (uri);
-    can_star_current_directory = nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (),
-                                                                         location);
-    is_starred = eel_uri_is_starred (uri);
 
     visible_columns = nautilus_file_get_metadata_list (file,
                                                        NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
     if (visible_columns == NULL)
     {
-        visible_columns = get_default_visible_columns (list_view);
+        return get_default_visible_columns (list_view);
     }
 
-    res = g_ptr_array_new ();
-    for (gint i = 0; visible_columns[i] != NULL; i++)
-    {
-        if (g_strcmp0 (visible_columns[i], "starred") != 0 ||
-            (g_strcmp0 (visible_columns[i], "starred") == 0 && (can_star_current_directory || is_starred)))
-        {
-            g_ptr_array_add (res, visible_columns[i]);
-        }
-    }
-
-    g_ptr_array_add (res, NULL);
-
-    return (char **) g_ptr_array_free (res, FALSE);
+    return g_steal_pointer (&visible_columns);
 }
 
 static char **

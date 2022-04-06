@@ -298,6 +298,12 @@ populate_tree (NautilusColumnChooser *chooser)
             visible = TRUE;
             sensitive = FALSE;
         }
+        if (strcmp (name, "starred") == 0)
+        {
+            g_free (name);
+            g_free (label);
+            continue;
+        }
 
         gtk_list_store_append (chooser->store, &iter);
         gtk_list_store_set (chooser->store, &iter,
