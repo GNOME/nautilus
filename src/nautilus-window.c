@@ -56,7 +56,6 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-list-view.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
