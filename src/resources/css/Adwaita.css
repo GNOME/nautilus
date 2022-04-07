@@ -138,13 +138,6 @@
     color: shade(@disk_space_free, 0.7);
 }
 
-/* As a workaround for GtkTreeView showing thick border above first row when
- * horizontal grid lines are enabled, we add them using CSS instead. Exclude the
- * drop targets to let through the default feedback style. */
-.nautilus-list-view .view:not(:drop(active)) {
-    border-bottom: 1px solid @window_bg_color;
-}
-
 .search-information {
   background-color: @accent_bg_color;
   color:white;
@@ -165,7 +158,53 @@
   padding: 6px;
 }
 
-.nautilus-grid-view .thumbnail {
+/* Column view */
+
+/* Setup padding on the list. Horizontal padding must be set on the columnview
+ * for it to calculate column widths correctly. */
+.nautilus-list-view columnview {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+.nautilus-list-view columnview > listview {
+  padding-top: 12px;
+  padding-bottom: 24px;
+}
+
+/* Use negative margins to extend rubberbanding area into the columnview's
+ * padding, then apply positive margin on rows to reestablish positioning. */
+.nautilus-list-view columnview > listview {
+  margin-left: -24px;
+  margin-right: -24px;
+}
+.nautilus-list-view columnview > listview > row {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+.nautilus-list-view columnview > listview > row {
+  border-radius: 6px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+/* GTK unconditionally sets padding on GtkColumnViewCell, even with .data-table.
+ * We don't want this to hpappen because we have event controllers on the child,
+ * which should thus cover the whole area of the row. */
+.nautilus-list-view columnview > listview > row > cell {
+  padding: 0px;
+}
+
+.nautilus-list-view #NautilusViewCell {
+  padding: 6px;
+}
+
+.nautilus-list-view image.star {
+  padding: 6px;
+}
+
+/* Both views */
+.view .thumbnail {
   background: url('/org/gnome/nautilus/Checkerboard.png') repeat;
   box-shadow: 0px 1px 2px 0px @shade_color,
               0px 0px 0px 1px @shade_color,
@@ -173,6 +212,19 @@
   border-radius: 2px;
 }
 
-.nautilus-grid-view .cut {
+.view .cut {
   opacity: 0.55;
+}
+
+.view image.star:hover {
+  opacity: 1;
+}
+
+@keyframes rotate_star {
+  from { -gtk-icon-transform: rotate(-72deg); }
+  to {}
+}
+
+.view image.star.added {
+  animation: rotate_star 0.4s ease;
 }

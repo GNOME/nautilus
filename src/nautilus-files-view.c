@@ -9611,7 +9611,7 @@ nautilus_files_view_new (guint               id,
 
         case NAUTILUS_VIEW_LIST_ID:
         {
-            view = nautilus_list_view_new (slot);
+            view = NAUTILUS_FILES_VIEW (nautilus_list_view_new (slot));
         }
         break;
     }
