@@ -86,7 +86,7 @@
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
-#include "nautilus-view-icon-controller.h"
+#include "nautilus-grid-view.h"
 #include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
 
@@ -3718,7 +3718,7 @@ done_loading (NautilusFilesView *view,
 
         if (do_reveal)
         {
-            if (NAUTILUS_IS_LIST_VIEW (view) || NAUTILUS_IS_VIEW_ICON_CONTROLLER (view))
+            if (NAUTILUS_IS_LIST_VIEW (view) || NAUTILUS_IS_GRID_VIEW (view))
             {
                 /* HACK: We should be able to directly call reveal_selection here,
                  * but at this point the GtkTreeView hasn't allocated the new nodes
@@ -9605,7 +9605,7 @@ nautilus_files_view_new (guint               id,
     {
         case NAUTILUS_VIEW_GRID_ID:
         {
-            view = NAUTILUS_FILES_VIEW (nautilus_view_icon_controller_new (slot));
+            view = NAUTILUS_FILES_VIEW (nautilus_grid_view_new (slot));
         }
         break;
 
