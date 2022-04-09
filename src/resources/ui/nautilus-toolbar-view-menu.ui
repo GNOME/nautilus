@@ -45,5 +45,19 @@
       <attribute name="hidden-when">action-disabled</attribute>
       <attribute name="nautilus-menu-item">last_trashed</attribute>
     </item>
+    <item>
+      <attribute name="action">view.sort</attribute>
+      <attribute name="target" type="(sb)">('recency',true)</attribute>
+      <attribute name="label" translatable="yes">Recency</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+      <attribute name="nautilus-menu-item">recency</attribute>
+    </item>
+    <item>
+      <attribute name="action">view.sort</attribute>
+      <attribute name="target" type="(sb)">('search_relevance',true)</attribute>
+      <attribute name="label" translatable="yes">Relevance</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+      <attribute name="nautilus-menu-item">relevance</attribute>
+    </item>
   </menu>
 </interface>

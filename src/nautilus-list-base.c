@@ -738,48 +738,6 @@ real_reveal_selection (NautilusFilesView *files_view)
     nautilus_list_base_scroll_to_item (self, get_first_selected_item (self));
 }
 
-static gboolean
-showing_recent_directory (NautilusFilesView *view)
-{
-    NautilusFile *file;
-
-    file = nautilus_files_view_get_directory_as_file (view);
-    if (file != NULL)
-    {
-        return nautilus_file_is_in_recent (file);
-    }
-    return FALSE;
-}
-
-static gboolean
-showing_search_directory (NautilusFilesView *view)
-{
-    NautilusFile *file;
-
-    file = nautilus_files_view_get_directory_as_file (view);
-    if (file != NULL)
-    {
-        return nautilus_file_is_in_search (file);
-    }
-    return FALSE;
-}
-
-static void
-real_update_actions_state (NautilusFilesView *files_view)
-{
-    GAction *action;
-    GActionGroup *view_action_group;
-
-    NAUTILUS_FILES_VIEW_CLASS (nautilus_list_base_parent_class)->update_actions_state (files_view);
-
-    view_action_group = nautilus_files_view_get_action_group (files_view);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "sort");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !showing_recent_directory (files_view) &&
-                                 !showing_search_directory (files_view));
-}
-
-
 static int
 real_compare_files (NautilusFilesView *files_view,
                     NautilusFile      *file1,
@@ -1242,7 +1200,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->end_loading = real_end_loading;
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->reveal_selection = real_reveal_selection;
-    files_view_class->update_actions_state = real_update_actions_state;
     files_view_class->scroll_to_file = real_scroll_to_file;
     files_view_class->select_first = real_select_first;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;

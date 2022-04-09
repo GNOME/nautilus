@@ -127,7 +127,9 @@ nautilus_g_menu_replace_string_in_item (GMenu       *menu,
 {
     g_autoptr (GMenuItem) item = NULL;
 
+    g_return_if_fail (i != -1);
     item = g_menu_item_new_from_model (G_MENU_MODEL (menu), i);
+    g_return_if_fail (item != NULL);
     g_menu_item_set_attribute (item, attribute, "s", string);
     g_menu_remove (menu, i);
     g_menu_insert_item (menu, i, item);

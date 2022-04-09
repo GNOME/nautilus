@@ -8052,20 +8052,26 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
     GMenuModel *sort_section = priv->toolbar_menu_sections->sort_section;
-    const gchar *trashed_action;
+    const gchar *action;
     gint i;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
 
-    /* When not in Trash, set an inexistant action to hide the menu item. This
-     * works under the assumptiont that the menu item has its "hidden-when"
-     * attribute set to "action-disabled", and that an inexistant action is
-     * treated as a disabled action. */
-    trashed_action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
+    /* When not in the special location, set an inexistant action to hide the
+     * menu item. This works under the assumptiont that the menu item has its
+     * "hidden-when" attribute set to "action-disabled", and that an inexistant
+     * action is treated as a disabled action. */
+    action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
     i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "last_trashed");
-    g_return_if_fail (i != -1);
-    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i,
-                                            "action", trashed_action);
+    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+
+    action = nautilus_file_is_in_recent (file) ? "view.sort" : "doesnt-exist";
+    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "recency");
+    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+
+    action = nautilus_file_is_in_search (file) ? "view.sort" : "doesnt-exist";
+    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "relevance");
+    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
 }
 
 /* Convenience function to reset the menus owned by the view but managed on
