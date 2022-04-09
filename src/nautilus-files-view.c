@@ -991,14 +991,6 @@ nautilus_files_view_restore_standard_zoom_level (NautilusFilesView *view)
     NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_standard_zoom_level (view);
 }
 
-static gfloat
-nautilus_files_view_get_zoom_level_percentage (NautilusFilesView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), 1);
-
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_zoom_level_percentage (view);
-}
-
 static gboolean
 nautilus_files_view_is_zoom_level_default (NautilusFilesView *view)
 {

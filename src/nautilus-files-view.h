@@ -165,9 +165,6 @@ struct _NautilusFilesViewClass {
          * return whether the view is at minimum size (furthest-out zoom level) */
         gboolean (* can_zoom_out)            (NautilusFilesView *view);
 
-        /* The current zoom level as a percentage of the default. */
-        gfloat   (* get_zoom_level_percentage) (NautilusFilesView *view);
-
         gboolean (*is_zoom_level_default)      (NautilusFilesView *view);
 
         /* reveal_selection is a function pointer that subclasses may
