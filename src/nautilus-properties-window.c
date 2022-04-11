@@ -414,13 +414,13 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
 
         if (!icon)
         {
-            icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_STANDARD, icon_scale,
+            icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
                                            NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
         }
         else
         {
-            new_icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_STANDARD, icon_scale,
+            new_icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
                                                NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
                                                NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
             if (!new_icon || new_icon != icon)
@@ -436,7 +436,7 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
     {
         g_autoptr (GIcon) gicon = g_themed_icon_new ("text-x-generic");
 
-        icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_STANDARD, icon_scale);
+        icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale);
     }
 
     if (icon_name != NULL)

@@ -59,7 +59,7 @@ real_bump_zoom_level (NautilusFilesView *files_view,
     new_level = self->zoom_level + zoom_increment;
 
     if (new_level >= NAUTILUS_GRID_ZOOM_LEVEL_SMALL &&
-        new_level <= NAUTILUS_GRID_ZOOM_LEVEL_LARGEST)
+        new_level <= NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE)
     {
         g_action_group_change_action_state (self->action_group,
                                             "zoom-to-level",
@@ -78,9 +78,9 @@ get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level)
         }
         break;
 
-        case NAUTILUS_GRID_ZOOM_LEVEL_STANDARD:
+        case NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM:
         {
-            return NAUTILUS_GRID_ICON_SIZE_STANDARD;
+            return NAUTILUS_GRID_ICON_SIZE_MEDIUM;
         }
         break;
 
@@ -90,19 +90,13 @@ get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level)
         }
         break;
 
-        case NAUTILUS_GRID_ZOOM_LEVEL_LARGER:
+        case NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE:
         {
-            return NAUTILUS_GRID_ICON_SIZE_LARGER;
-        }
-        break;
-
-        case NAUTILUS_GRID_ZOOM_LEVEL_LARGEST:
-        {
-            return NAUTILUS_GRID_ICON_SIZE_LARGEST;
+            return NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE;
         }
         break;
     }
-    g_return_val_if_reached (NAUTILUS_GRID_ICON_SIZE_STANDARD);
+    g_return_val_if_reached (NAUTILUS_GRID_ICON_SIZE_MEDIUM);
 }
 
 static gint
@@ -113,7 +107,10 @@ get_default_zoom_level (void)
     default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
                                               NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
 
-    return default_zoom_level;
+    /* Sanitize preference value */
+    return CLAMP (default_zoom_level,
+                  NAUTILUS_GRID_ZOOM_LEVEL_SMALL,
+                  NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE);
 }
 
 static void
@@ -192,7 +189,7 @@ real_can_zoom_in (NautilusFilesView *files_view)
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (files_view);
 
-    return self->zoom_level < NAUTILUS_GRID_ZOOM_LEVEL_LARGEST;
+    return self->zoom_level < NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE;
 }
 
 static gboolean

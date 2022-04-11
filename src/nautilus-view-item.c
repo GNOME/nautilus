@@ -157,7 +157,7 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
     properties[PROP_ICON_SIZE] = g_param_spec_int ("icon-size",
                                                    "", "",
                                                    NAUTILUS_LIST_ICON_SIZE_SMALL,
-                                                   NAUTILUS_GRID_ICON_SIZE_LARGEST,
+                                                   NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
                                                    NAUTILUS_GRID_ICON_SIZE_LARGE,
                                                    G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
     properties[PROP_IS_CUT] = g_param_spec_boolean ("is-cut",

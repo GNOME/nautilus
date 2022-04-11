@@ -3704,7 +3704,7 @@ thumbnail_loader_size_prepared (GdkPixbufLoader *loader,
     aspect_ratio = ((double) width) / height;
 
     /* cf. nautilus_file_get_icon() */
-    max_thumbnail_size = NAUTILUS_GRID_ICON_SIZE_LARGEST * NAUTILUS_GRID_ICON_SIZE_STANDARD / NAUTILUS_GRID_ICON_SIZE_SMALL;
+    max_thumbnail_size = NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE * NAUTILUS_GRID_ICON_SIZE_MEDIUM / NAUTILUS_GRID_ICON_SIZE_SMALL;
     if (MAX (width, height) > max_thumbnail_size)
     {
         if (width > height)
