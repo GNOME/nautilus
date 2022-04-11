@@ -169,7 +169,7 @@ real_restore_standard_zoom_level (NautilusFilesView *files_view)
     self = NAUTILUS_GRID_VIEW (files_view);
     g_action_group_change_action_state (self->action_group,
                                         "zoom-to-level",
-                                        g_variant_new_int32 (NAUTILUS_GRID_ZOOM_LEVEL_LARGE));
+                                        g_variant_new_int32 (NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM));
 }
 
 static gboolean
@@ -181,7 +181,7 @@ real_is_zoom_level_default (NautilusFilesView *files_view)
     self = NAUTILUS_GRID_VIEW (files_view);
     icon_size = get_icon_size_for_zoom_level (self->zoom_level);
 
-    return icon_size == NAUTILUS_GRID_ICON_SIZE_LARGE;
+    return icon_size == NAUTILUS_GRID_ICON_SIZE_MEDIUM;
 }
 
 static gboolean
