@@ -447,6 +447,7 @@ thumbnail_thread_func (GTask        *task,
     time_t current_orig_mtime = 0;
     time_t current_time;
     GList *node;
+    GError *error = NULL;
 
     thumbnail_factory = get_thumbnail_factory ();
 
@@ -529,7 +530,9 @@ thumbnail_thread_func (GTask        *task,
 
         pixbuf = gnome_desktop_thumbnail_factory_generate_thumbnail (thumbnail_factory,
                                                                      info->image_uri,
-                                                                     info->mime_type);
+                                                                     info->mime_type,
+                                                                     NULL,
+                                                                     &error);
 
         if (pixbuf)
         {
@@ -539,17 +542,27 @@ thumbnail_thread_func (GTask        *task,
             gnome_desktop_thumbnail_factory_save_thumbnail (thumbnail_factory,
                                                             pixbuf,
                                                             info->image_uri,
-                                                            current_orig_mtime);
+                                                            current_orig_mtime,
+                                                            NULL,
+                                                            &error);
+            if (error)
+            {
+                DEBUG ("(Thumbnail Thread) Saving thumbnail failed: %s (%s)\n",
+                       info->image_uri, error->message);
+                g_clear_error (&error);
+            }
             g_object_unref (pixbuf);
         }
         else
         {
-            DEBUG ("(Thumbnail Thread) Thumbnail failed: %s\n",
-                   info->image_uri);
+            DEBUG ("(Thumbnail Thread) Thumbnail failed: %s (%s)\n",
+                   info->image_uri, error->message);
+            g_clear_error (&error);
 
             gnome_desktop_thumbnail_factory_create_failed_thumbnail (thumbnail_factory,
                                                                      info->image_uri,
-                                                                     current_orig_mtime);
+                                                                     current_orig_mtime,
+                                                                     NULL, NULL);
         }
         /* We need to call nautilus_file_changed(), but I don't think that is
          *  thread safe. So add an idle handler and do it from the main loop. */
