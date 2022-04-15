@@ -71,20 +71,20 @@ open_location_cb (NautilusPlacesView         *view,
 
     switch (open_flags)
     {
-        case NAUTILUS_OPEN_FLAG_NEW_TAB:
+        case NAUTILUS_GTK_PLACES_OPEN_NEW_TAB:
         {
             flags = NAUTILUS_OPEN_FLAG_NEW_TAB |
                     NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
         }
         break;
 
-        case NAUTILUS_OPEN_FLAG_NEW_WINDOW:
+        case NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW:
         {
             flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
         }
         break;
 
-        case NAUTILUS_OPEN_FLAG_NORMAL: /* fall-through */
+        case NAUTILUS_GTK_PLACES_OPEN_NORMAL: /* fall-through */
         default:
         {
             flags = 0;
