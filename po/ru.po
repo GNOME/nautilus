@@ -18,9 +18,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-03-27 14:19+0000\n"
-"PO-Revision-Date: 2022-03-30 17:19+1000\n"
-"Last-Translator: Ser82-png <sw@atrus.ru>\n"
+"POT-Creation-Date: 2022-04-14 20:28+0000\n"
+"PO-Revision-Date: 2022-04-16 03:49+0300\n"
+"Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -506,7 +506,7 @@ msgstr ""
 
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:203 src/nautilus-file-operations.c:258
-#: src/nautilus-files-view.c:5938 src/nautilus-files-view.c:6350
+#: src/nautilus-files-view.c:5938 src/nautilus-files-view.c:6374
 #: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:619
 #: src/nautilus-mime-actions.c:623 src/nautilus-mime-actions.c:1014
 #: src/nautilus-mime-actions.c:1369 src/nautilus-properties-window.c:5249
@@ -2194,7 +2194,7 @@ msgid "Do _not Empty Trash"
 msgstr "Не о_чищать корзину"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3169 src/nautilus-files-view.c:6719
+#: src/nautilus-file-operations.c:3169 src/nautilus-files-view.c:6743
 #: src/gtk/nautilusgtkplacessidebar.c:1974
 #, c-format
 msgid "Unable to access “%s”"
@@ -2836,44 +2836,44 @@ msgstr "Выбрать место для перемещения"
 msgid "Select Copy Destination"
 msgstr "Выбрать место для копирования"
 
-#: src/nautilus-files-view.c:5939 src/nautilus-files-view.c:6351
+#: src/nautilus-files-view.c:5939 src/nautilus-files-view.c:6375
 #: src/resources/ui/nautilus-files-view-select-items.ui:16
 msgid "_Select"
 msgstr "_Выбрать"
 
-#: src/nautilus-files-view.c:6347
+#: src/nautilus-files-view.c:6371
 msgid "Select Extract Destination"
 msgstr "Выбрать место для распаковки"
 
-#: src/nautilus-files-view.c:6649
+#: src/nautilus-files-view.c:6673
 msgid "Wallpapers"
 msgstr "Обои"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6749
+#: src/nautilus-files-view.c:6773
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Не удалось удалить «%s»"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6779 src/gtk/nautilusgtkplacessidebar.c:2683
+#: src/nautilus-files-view.c:6803 src/gtk/nautilusgtkplacessidebar.c:2683
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Не удалось извлечь «%s»"
 
-#: src/nautilus-files-view.c:6804
+#: src/nautilus-files-view.c:6828
 msgid "Unable to stop drive"
 msgstr "Не удалось остановить привод"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6917 src/gtk/nautilusgtkplacessidebar.c:1936
+#: src/nautilus-files-view.c:6941 src/gtk/nautilusgtkplacessidebar.c:1936
 #: src/gtk/nautilusgtkplacessidebar.c:2937
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Не удалось запустить «%s»"
 
 # Может быть "создать папку из выделенных объектов"
-#: src/nautilus-files-view.c:7866
+#: src/nautilus-files-view.c:7895
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2883,70 +2883,70 @@ msgstr[2] "Создать папку из выделенного (%'d объек
 
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
-#: src/nautilus-files-view.c:7924
+#: src/nautilus-files-view.c:7953
 #, c-format
 msgid "Open With %s"
 msgstr "Открыть в приложении %s"
 
-#: src/nautilus-files-view.c:7936
+#: src/nautilus-files-view.c:7965
 msgid "Run"
 msgstr "Запустить"
 
-#: src/nautilus-files-view.c:7941
+#: src/nautilus-files-view.c:7970
 msgid "Extract Here"
 msgstr "Распаковать здесь"
 
-#: src/nautilus-files-view.c:7942
+#: src/nautilus-files-view.c:7971
 msgid "Extract to…"
 msgstr "Распаковать в…"
 
-#: src/nautilus-files-view.c:7946
+#: src/nautilus-files-view.c:7975
 msgid "Open"
 msgstr "Открыть"
 
-#: src/nautilus-files-view.c:8002
-#: src/resources/ui/nautilus-files-view-context-menus.ui:113
+#: src/nautilus-files-view.c:8031
+#: src/resources/ui/nautilus-files-view-context-menus.ui:117
 #: src/gtk/nautilusgtkplacessidebar.c:3270
 msgid "_Start"
 msgstr "_Запустить"
 
-#: src/nautilus-files-view.c:8008 src/gtk/nautilusgtkplacesview.c:1683
+#: src/nautilus-files-view.c:8037 src/gtk/nautilusgtkplacesview.c:1683
 msgid "_Connect"
 msgstr "_Подключиться"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8043
 msgid "_Start Multi-disk Drive"
 msgstr "_Запустить мультидисковый привод"
 
-#: src/nautilus-files-view.c:8020
+#: src/nautilus-files-view.c:8049
 msgid "U_nlock Drive"
 msgstr "_Разблокировать привод"
 
-#: src/nautilus-files-view.c:8038
+#: src/nautilus-files-view.c:8067
 msgid "Stop Drive"
 msgstr "Остановить привод"
 
-#: src/nautilus-files-view.c:8044 src/gtk/nautilusgtkplacessidebar.c:3287
+#: src/nautilus-files-view.c:8073 src/gtk/nautilusgtkplacessidebar.c:3287
 msgid "_Safely Remove Drive"
 msgstr "_Безопасно удалить привод"
 
-#: src/nautilus-files-view.c:8050 src/gtk/nautilusgtkplacesview.c:1672
+#: src/nautilus-files-view.c:8079 src/gtk/nautilusgtkplacesview.c:1672
 msgid "_Disconnect"
 msgstr "_Отсоединить"
 
-#: src/nautilus-files-view.c:8056
+#: src/nautilus-files-view.c:8085
 msgid "_Stop Multi-disk Drive"
 msgstr "_Остановить мультидисковый привод"
 
-#: src/nautilus-files-view.c:8062
+#: src/nautilus-files-view.c:8091
 msgid "_Lock Drive"
 msgstr "Б_локировать привод"
 
-#: src/nautilus-files-view.c:9642
+#: src/nautilus-files-view.c:9671
 msgid "Content View"
 msgstr "Просмотр содержимого"
 
-#: src/nautilus-files-view.c:9643
+#: src/nautilus-files-view.c:9672
 msgid "View of the current folder"
 msgstr "Просмотр текущей папки"
 
@@ -3614,7 +3614,7 @@ msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr "Эту ссылку нельзя использовать, потому что её цель «%s» не существует."
 
 #: src/nautilus-mime-actions.c:623
-#: src/resources/ui/nautilus-files-view-context-menus.ui:160
+#: src/resources/ui/nautilus-files-view-context-menus.ui:164
 msgid "Mo_ve to Trash"
 msgstr "_Переместить в корзину"
 
@@ -5048,147 +5048,151 @@ msgstr "_Добавить в закладки"
 msgid "_Open With Other Application"
 msgstr "Открыть в другом _приложении"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:26
-#: src/resources/ui/nautilus-files-view-context-menus.ui:138
+#: src/resources/ui/nautilus-files-view-context-menus.ui:24
+msgid "_Copy Location"
+msgstr "_Копировать адрес"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:30
+#: src/resources/ui/nautilus-files-view-context-menus.ui:142
 #: src/resources/ui/nautilus-preferences-window.ui:65
 msgid "Create _Link"
 msgstr "_Создать ссылку"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:33
+#: src/resources/ui/nautilus-files-view-context-menus.ui:37
 msgid "_Paste"
 msgstr "_Вставить"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:37
+#: src/resources/ui/nautilus-files-view-context-menus.ui:41
 msgid "Select _All"
 msgstr "Выделить _всё"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:44
-#: src/resources/ui/nautilus-files-view-context-menus.ui:242
+#: src/resources/ui/nautilus-files-view-context-menus.ui:48
+#: src/resources/ui/nautilus-files-view-context-menus.ui:246
 msgid "P_roperties"
 msgstr "С_войства"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:54
+#: src/resources/ui/nautilus-files-view-context-menus.ui:58
 msgid "Open With Other _Application"
 msgstr "Открыть в другом _приложении"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:60
+#: src/resources/ui/nautilus-files-view-context-menus.ui:64
 msgid "_Scripts"
 msgstr "С_ценарии"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:66
+#: src/resources/ui/nautilus-files-view-context-menus.ui:70
 msgid "_Open Scripts Folder"
 msgstr "Открыть папку с_ценариев"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:74
+#: src/resources/ui/nautilus-files-view-context-menus.ui:78
 msgid "_Open Item Location"
 msgstr "Открыть _расположение объектов"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:79
+#: src/resources/ui/nautilus-files-view-context-menus.ui:83
 msgid "Open In New _Tab"
 msgstr "Открыть в новой вк_ладке"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:84
+#: src/resources/ui/nautilus-files-view-context-menus.ui:88
 msgid "Open In New _Window"
 msgstr "Открыть в _новом окне"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:91
+#: src/resources/ui/nautilus-files-view-context-menus.ui:95
 msgid "_Run as a Program"
 msgstr "_Запустить как программу"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:98
+#: src/resources/ui/nautilus-files-view-context-menus.ui:102
 #: src/gtk/nautilusgtkplacesview.c:1688 src/gtk/nautilusgtkplacessidebar.c:3235
 msgid "_Mount"
 msgstr "_Присоединить"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:103
+#: src/resources/ui/nautilus-files-view-context-menus.ui:107
 #: src/gtk/nautilusgtkplacesview.c:1677 src/gtk/nautilusgtkplacessidebar.c:3244
 msgid "_Unmount"
 msgstr "О_тсоединить том"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:108
+#: src/resources/ui/nautilus-files-view-context-menus.ui:112
 #: src/gtk/nautilusgtkplacessidebar.c:3251
 msgid "_Eject"
 msgstr "_Извлечь"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:118
+#: src/resources/ui/nautilus-files-view-context-menus.ui:122
 #: src/gtk/nautilusgtkplacessidebar.c:3285
 msgid "_Stop"
 msgstr "Ос_тановить"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:123
+#: src/resources/ui/nautilus-files-view-context-menus.ui:127
 #: src/gtk/nautilusgtkplacessidebar.c:3261
 msgid "_Detect Media"
 msgstr "Опреде_лить носитель"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:130
+#: src/resources/ui/nautilus-files-view-context-menus.ui:134
 msgid "Cu_t"
 msgstr "В_ырезать"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:134
+#: src/resources/ui/nautilus-files-view-context-menus.ui:138
 msgid "_Copy"
 msgstr "_Копировать"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:143
+#: src/resources/ui/nautilus-files-view-context-menus.ui:147
 msgid "_Paste Into Folder"
 msgstr "Вст_авить в папку"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:150
+#: src/resources/ui/nautilus-files-view-context-menus.ui:154
 msgid "Move to…"
 msgstr "Переместить в…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:154
+#: src/resources/ui/nautilus-files-view-context-menus.ui:158
 msgid "Copy to…"
 msgstr "Копировать в…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:165
+#: src/resources/ui/nautilus-files-view-context-menus.ui:169
 msgid "_Delete from Trash"
 msgstr "Удалить из _корзины"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:170
-#: src/resources/ui/nautilus-files-view-context-menus.ui:175
+#: src/resources/ui/nautilus-files-view-context-menus.ui:174
+#: src/resources/ui/nautilus-files-view-context-menus.ui:179
 msgid "_Delete Permanently…"
 msgstr "_Удалить безвозвратно…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:180
+#: src/resources/ui/nautilus-files-view-context-menus.ui:184
 msgid "_Restore From Trash"
 msgstr "_Восстановить из корзины"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:187
+#: src/resources/ui/nautilus-files-view-context-menus.ui:191
 msgid "Rena_me…"
 msgstr "_Переименовать…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:193
+#: src/resources/ui/nautilus-files-view-context-menus.ui:197
 msgid "Set As Wallpaper"
 msgstr "Установить как фон"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:200
+#: src/resources/ui/nautilus-files-view-context-menus.ui:204
 msgid "_Remove from Recent"
 msgstr "_Убрать из недавних"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:207
+#: src/resources/ui/nautilus-files-view-context-menus.ui:211
 msgid "_Extract Here"
 msgstr "_Извлечь в текущую папку"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:212
+#: src/resources/ui/nautilus-files-view-context-menus.ui:216
 msgid "E_xtract to…"
 msgstr "И_звлечь в…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:217
+#: src/resources/ui/nautilus-files-view-context-menus.ui:221
 msgid "C_ompress…"
 msgstr "_Сжать…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:225
+#: src/resources/ui/nautilus-files-view-context-menus.ui:229
 msgid "Tags"
 msgstr "Метки"
 
 #. Marks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:230
+#: src/resources/ui/nautilus-files-view-context-menus.ui:234
 msgctxt "menu item"
 msgid "Star"
 msgstr "Добавить в избранное"
 
 #. Unmarks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:235
+#: src/resources/ui/nautilus-files-view-context-menus.ui:239
 msgctxt "menu item"
 msgid "Unstar"
 msgstr "Убрать из избранных"
@@ -5492,7 +5496,7 @@ msgstr "Поиск только по имени файла"
 
 #: src/resources/ui/nautilus-starred-is-empty.ui:27
 msgid "Starred files will appear here"
-msgstr "Здесь будут появляться добавленные в избранные файлы"
+msgstr "Здесь появятся избранные файлы"
 
 #. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
 #: src/resources/ui/nautilus-toolbar.ui:8
