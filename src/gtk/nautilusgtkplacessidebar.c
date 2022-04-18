@@ -2497,39 +2497,6 @@ mount_shortcut_cb (GSimpleAction *action,
   g_object_unref (volume);
 }
 
-/* Callback used from g_mount_unmount_with_operation() */
-static void
-unmount_mount_cb (GObject      *source_object,
-                  GAsyncResult *result,
-                  gpointer      user_data)
-{
-  NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
-  GMount *mount;
-  GError *error;
-
-  mount = G_MOUNT (source_object);
-
-  error = NULL;
-  if (!g_mount_unmount_with_operation_finish (mount, result, &error))
-    {
-      if (error->code != G_IO_ERROR_FAILED_HANDLED)
-        {
-          char *name;
-          char *primary;
-
-          name = g_mount_get_name (mount);
-          primary = g_strdup_printf (_("Unable to unmount “%s”"), name);
-          g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
-          g_free (primary);
-        }
-
-      g_error_free (error);
-    }
-
-  g_object_unref (sidebar);
-}
-
 static GMountOperation *
 get_mount_operation (NautilusGtkPlacesSidebar *sidebar)
 {
@@ -2643,17 +2610,15 @@ do_unmount (GMount           *mount,
   if (mount != NULL)
     {
       GMountOperation *mount_op;
+      GtkWindow *parent;
 
       if (is_current_location_on_volume (sidebar, mount, NULL, NULL))
         open_home (sidebar);
 
       mount_op = get_unmount_operation (sidebar);
-      g_mount_unmount_with_operation (mount,
-                                      0,
-                                      mount_op,
-                                      NULL,
-                                      unmount_mount_cb,
-                                      g_object_ref (sidebar));
+      parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
+      nautilus_file_operations_unmount_mount_full (parent, mount, mount_op,
+                                                   FALSE, TRUE, NULL, NULL);
       g_object_unref (mount_op);
     }
 }
@@ -2764,41 +2729,13 @@ volume_eject_cb (GObject      *source_object,
 }
 
 static void
-mount_eject_cb (GObject      *source_object,
-                GAsyncResult *res,
-                gpointer      user_data)
-{
-  NautilusGtkPlacesSidebar *sidebar;
-  GError *error;
-  char *primary;
-  char *name;
-
-  sidebar = user_data;
-
-  error = NULL;
-  if (!g_mount_eject_with_operation_finish (G_MOUNT (source_object), res, &error))
-    {
-      if (error->code != G_IO_ERROR_FAILED_HANDLED)
-        {
-          name = g_mount_get_name (G_MOUNT (source_object));
-          primary = g_strdup_printf (_("Unable to eject %s"), name);
-          g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
-          g_free (primary);
-        }
-      g_error_free (error);
-    }
-
-  g_object_unref (sidebar);
-}
-
-static void
 do_eject (GMount           *mount,
           GVolume          *volume,
           GDrive           *drive,
           NautilusGtkPlacesSidebar *sidebar)
 {
   GMountOperation *mount_op;
+  GtkWindow *parent;
 
   mount_op = get_unmount_operation (sidebar);
 
@@ -2806,8 +2743,11 @@ do_eject (GMount           *mount,
     open_home (sidebar);
 
   if (mount != NULL)
-    g_mount_eject_with_operation (mount, 0, mount_op, NULL, mount_eject_cb,
-                                  g_object_ref (sidebar));
+    {
+      parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
+      nautilus_file_operations_unmount_mount_full (parent, mount, mount_op,
+                                                   TRUE, TRUE, NULL, NULL);
+    }
   /* This code path is probably never reached since mount always exists,
    * and if it doesn't exists we don't offer a way to eject a volume or
    * drive in the UI. Do it for defensive programming
