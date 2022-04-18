@@ -3077,6 +3077,10 @@ empty_trash_prompt_cb (GtkDialog *dialog,
 
         unmount_data_free (data);
     }
+    else if (response_id == GTK_RESPONSE_REJECT)
+    {
+        do_unmount (data);
+    }
 
     gtk_window_destroy (GTK_WINDOW (dialog));
 }
