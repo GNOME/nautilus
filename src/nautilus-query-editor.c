@@ -401,17 +401,6 @@ nautilus_query_editor_on_stop_search (GtkWidget           *entry,
     g_signal_emit (editor, signals[CANCEL], 0);
 }
 
-/* Type */
-
-static void
-nautilus_query_editor_init (NautilusQueryEditor *editor)
-{
-    g_signal_connect (nautilus_preferences,
-                      "changed::recursive-search",
-                      G_CALLBACK (recursive_search_preferences_changed),
-                      editor);
-}
-
 static void
 search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
                                       GPtrArray             *date_range,
@@ -564,8 +553,13 @@ entry_tag_close_button_clicked (NautilusQueryEditor *editor,
 #endif
 
 static void
-setup_widgets (NautilusQueryEditor *editor)
+nautilus_query_editor_init (NautilusQueryEditor *editor)
 {
+    g_signal_connect (nautilus_preferences,
+                      "changed::recursive-search",
+                      G_CALLBACK (recursive_search_preferences_changed),
+                      editor);
+
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (editor)), "linked");
 
     /* create the search entry */
@@ -652,13 +646,7 @@ nautilus_query_editor_get_query (NautilusQueryEditor *editor)
 GtkWidget *
 nautilus_query_editor_new (void)
 {
-    NautilusQueryEditor *editor;
-
-    editor = g_object_new (NAUTILUS_TYPE_QUERY_EDITOR, NULL);
-
-    setup_widgets (editor);
-
-    return GTK_WIDGET (editor);
+    return GTK_WIDGET (g_object_new (NAUTILUS_TYPE_QUERY_EDITOR, NULL));
 }
 
 void
