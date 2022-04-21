@@ -1372,6 +1372,7 @@ unmount_ready_cb (GObject      *source_mount,
     return;
   }
 
+  view->row_for_action = NULL;
   view->unmounting_mount = FALSE;
   update_loading (view);
 
