@@ -38,7 +38,7 @@
 
 struct _NautilusQueryEditor
 {
-    GtkBox parent_instance;
+    GtkWidget parent_instance;
 
     GtkWidget *entry;
     GtkWidget *popover;
@@ -81,7 +81,7 @@ static void entry_changed_cb (GtkWidget           *entry,
                               NautilusQueryEditor *editor);
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
-G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_BOX);
+G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
 
 static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
@@ -134,6 +134,9 @@ nautilus_query_editor_dispose (GObject *object)
     NautilusQueryEditor *editor;
 
     editor = NAUTILUS_QUERY_EDITOR (object);
+
+    g_clear_pointer (&editor->entry, gtk_widget_unparent);
+    g_clear_pointer (&editor->dropdown_button, gtk_widget_unparent);
 
     g_clear_object (&editor->location);
     g_clear_object (&editor->query);
@@ -319,6 +322,8 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
                                                           "The query that the editor is handling",
                                                           NAUTILUS_TYPE_QUERY,
                                                           G_PARAM_READWRITE));
+
+    gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BOX_LAYOUT);
 }
 
 GFile *
@@ -570,7 +575,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 #endif
     gtk_widget_set_hexpand (editor->entry, TRUE);
 
-    gtk_box_append (GTK_BOX (editor), editor->entry);
+    gtk_widget_set_parent (editor->entry, GTK_WIDGET (editor));
 
 #if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     editor->mime_types_tag = gd_tagged_entry_tag_new (NULL);
@@ -601,7 +606,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     /* setup the filter menu button */
     editor->dropdown_button = gtk_menu_button_new ();
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
-    gtk_box_append (GTK_BOX (editor), editor->dropdown_button);
+    gtk_widget_set_parent (editor->dropdown_button, GTK_WIDGET (editor));
 
     g_signal_connect (editor->entry, "activate",
                       G_CALLBACK (entry_activate_cb), editor);
