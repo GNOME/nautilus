@@ -27,7 +27,7 @@
 
 #define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
 
-G_DECLARE_FINAL_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkBox)
+G_DECLARE_FINAL_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkWidget)
 
 GtkWidget     *nautilus_query_editor_new          (void);
 
