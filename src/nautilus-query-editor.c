@@ -154,8 +154,7 @@ nautilus_query_editor_grab_focus (GtkWidget *widget)
 
     if (gtk_widget_get_visible (widget) && !gtk_widget_is_focus (editor->entry))
     {
-        /* avoid selecting the entry text */
-        return gtk_entry_grab_focus_without_selecting (GTK_ENTRY (editor->entry));
+        return gtk_widget_grab_focus (editor->entry);
     }
 
     return FALSE;
