@@ -212,8 +212,12 @@ action_pathbar_properties (GSimpleAction *action,
 static void
 on_adjustment_changed (GtkAdjustment *adjustment)
 {
+    gboolean rtl = (gtk_widget_get_default_direction () == GTK_TEXT_DIR_RTL);
+
     /* Automatically scroll to the end, to keep the current folder visible */
-    gtk_adjustment_set_value (adjustment, gtk_adjustment_get_upper (adjustment));
+    gtk_adjustment_set_value (adjustment, (rtl ?
+                                           gtk_adjustment_get_lower (adjustment) :
+                                           gtk_adjustment_get_upper (adjustment)));
 }
 
 static gboolean
