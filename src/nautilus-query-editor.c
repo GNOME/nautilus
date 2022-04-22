@@ -41,6 +41,7 @@ struct _NautilusQueryEditor
     GtkWidget parent_instance;
 
     GtkWidget *entry;
+    GtkWidget *clear_icon;
     GtkWidget *popover;
     GtkWidget *dropdown_button;
 
@@ -49,6 +50,7 @@ struct _NautilusQueryEditor
     GdTaggedEntryTag *date_range_tag;
 #endif
 
+    guint search_changed_timeout_id;
     gboolean change_frozen;
 
     GFile *location;
@@ -82,6 +84,8 @@ static void entry_changed_cb (GtkWidget           *entry,
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
+
+#define SEARCH_CHANGED_TIMEOUT 150
 
 static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
@@ -135,8 +139,12 @@ nautilus_query_editor_dispose (GObject *object)
 
     editor = NAUTILUS_QUERY_EDITOR (object);
 
+    g_clear_handle_id (&editor->search_changed_timeout_id, g_source_remove);
+
+    gtk_widget_unparent (gtk_widget_get_first_child (GTK_WIDGET (editor)));
     g_clear_pointer (&editor->entry, gtk_widget_unparent);
     g_clear_pointer (&editor->dropdown_button, gtk_widget_unparent);
+    g_clear_pointer (&editor->clear_icon, gtk_widget_unparent);
 
     g_clear_object (&editor->location);
     g_clear_object (&editor->query);
@@ -157,7 +165,7 @@ nautilus_query_editor_grab_focus (GtkWidget *widget)
 
     if (gtk_widget_get_visible (widget) && !gtk_widget_is_focus (editor->entry))
     {
-        return gtk_widget_grab_focus (editor->entry);
+        return gtk_text_grab_focus_without_selecting (GTK_TEXT (editor->entry));
     }
 
     return FALSE;
@@ -296,6 +304,10 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
                                  gtk_signal_action_new ("focus-view"));
     gtk_widget_class_add_shortcut (widget_class, shortcut);
 
+    gtk_widget_class_add_binding_signal (widget_class,
+                                         GDK_KEY_Escape, 0, "cancel",
+                                         NULL);
+
     /**
      * NautilusQueryEditor::location:
      *
@@ -324,6 +336,8 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
                                                           G_PARAM_READWRITE));
 
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BOX_LAYOUT);
+    gtk_widget_class_set_css_name (widget_class, "entry");
+    gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TEXT_BOX);
 }
 
 GFile *
@@ -373,6 +387,31 @@ entry_activate_cb (GtkWidget           *entry,
     g_signal_emit (editor, signals[ACTIVATED], 0);
 }
 
+static gboolean
+entry_changed_internal (NautilusQueryEditor *editor)
+{
+    const gchar *text = gtk_editable_get_text (GTK_EDITABLE (editor->entry));
+    gboolean is_empty = (text == NULL && *text == '\0');
+
+    editor->search_changed_timeout_id = 0;
+
+    gtk_widget_set_child_visible (editor->clear_icon, !is_empty);
+
+    if (editor->query == NULL)
+    {
+        create_query (editor);
+    }
+    else
+    {
+        g_autofree gchar *stripped_text = g_strstrip (g_strdup (text));
+        nautilus_query_set_text (editor->query, stripped_text);
+    }
+
+    nautilus_query_editor_changed (editor);
+
+    return G_SOURCE_REMOVE;
+}
+
 static void
 entry_changed_cb (GtkWidget           *entry,
                   NautilusQueryEditor *editor)
@@ -382,28 +421,10 @@ entry_changed_cb (GtkWidget           *entry,
         return;
     }
 
-    if (editor->query == NULL)
-    {
-        create_query (editor);
-    }
-    else
-    {
-        g_autofree gchar *text = NULL;
-
-        text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (editor->entry)));
-        text = g_strstrip (text);
-
-        nautilus_query_set_text (editor->query, text);
-    }
-
-    nautilus_query_editor_changed (editor);
-}
-
-static void
-nautilus_query_editor_on_stop_search (GtkWidget           *entry,
-                                      NautilusQueryEditor *editor)
-{
-    g_signal_emit (editor, signals[CANCEL], 0);
+    g_clear_handle_id (&editor->search_changed_timeout_id, g_source_remove);
+    editor->search_changed_timeout_id = g_timeout_add (SEARCH_CHANGED_TIMEOUT,
+                                                       G_SOURCE_FUNC (entry_changed_internal),
+                                                       editor);
 }
 
 static void
@@ -558,24 +579,61 @@ entry_tag_close_button_clicked (NautilusQueryEditor *editor,
 #endif
 
 static void
+on_clear_icon_pressed (GtkGestureClick     *gesture,
+                       int                  n_press,
+                       double               x,
+                       double               y,
+                       NautilusQueryEditor *self)
+{
+    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+}
+
+static void
+on_clear_icon_released (GtkGestureClick     *gesture,
+                        int                  n_press,
+                        double               x,
+                        double               y,
+                        NautilusQueryEditor *self)
+{
+    gtk_editable_set_text (GTK_EDITABLE (self->entry), "");
+}
+
+static void
 nautilus_query_editor_init (NautilusQueryEditor *editor)
 {
+    gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (editor)) == GTK_TEXT_DIR_RTL);
+    GtkWidget *image;
+    GtkEventController *controller;
+
+    gtk_widget_set_name (GTK_WIDGET (editor), "NautilusQueryEditor");
+    gtk_widget_add_css_class (GTK_WIDGET (editor), "search");
+
     g_signal_connect (nautilus_preferences,
                       "changed::recursive-search",
                       G_CALLBACK (recursive_search_preferences_changed),
                       editor);
 
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (editor)), "linked");
-
     /* create the search entry */
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-    editor->entry = GTK_WIDGET (gd_tagged_entry_new ());
-#else
-    editor->entry = gtk_search_entry_new ();
-#endif
-    gtk_widget_set_hexpand (editor->entry, TRUE);
+    image = gtk_image_new_from_icon_name ("system-search-symbolic");
+    g_object_set (image, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
+    gtk_widget_set_margin_start (image, 4);
+    gtk_widget_set_parent (image, GTK_WIDGET (editor));
 
+    editor->entry = gtk_text_new ();
+    gtk_widget_set_hexpand (editor->entry, TRUE);
     gtk_widget_set_parent (editor->entry, GTK_WIDGET (editor));
+
+    editor->clear_icon = gtk_image_new_from_icon_name (rtl ? "edit-clear-rtl-symbolic" :
+                                                             "edit-clear-symbolic");
+    g_object_set (editor->clear_icon, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
+    gtk_widget_set_tooltip_text (editor->clear_icon, _("Clear entry"));
+    gtk_widget_set_child_visible (editor->clear_icon, FALSE);
+    gtk_widget_set_parent (editor->clear_icon, GTK_WIDGET (editor));
+
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    g_signal_connect (controller, "pressed", G_CALLBACK (on_clear_icon_pressed), editor);
+    g_signal_connect (controller, "released", G_CALLBACK (on_clear_icon_released), editor);
+    gtk_widget_add_controller (editor->clear_icon, controller);
 
 #if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
     editor->mime_types_tag = gd_tagged_entry_tag_new (NULL);
@@ -607,13 +665,12 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     editor->dropdown_button = gtk_menu_button_new ();
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
     gtk_widget_set_parent (editor->dropdown_button, GTK_WIDGET (editor));
+    gtk_widget_add_css_class (editor->dropdown_button, "circular");
 
     g_signal_connect (editor->entry, "activate",
                       G_CALLBACK (entry_activate_cb), editor);
-    g_signal_connect (editor->entry, "search-changed",
+    g_signal_connect (editor->entry, "changed",
                       G_CALLBACK (entry_changed_cb), editor);
-    g_signal_connect (editor->entry, "stop-search",
-                      G_CALLBACK (nautilus_query_editor_on_stop_search), editor);
     g_signal_connect (editor->popover, "date-range",
                       G_CALLBACK (search_popover_date_range_changed_cb), editor);
     g_signal_connect (editor->popover, "mime-type",
@@ -774,7 +831,6 @@ nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
                                     guint                  keyval,
                                     GdkModifierType        state)
 {
-    GtkWidget *text;
     g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (self), GDK_EVENT_PROPAGATE);
     g_return_val_if_fail (controller != NULL, GDK_EVENT_PROPAGATE);
 
@@ -786,19 +842,5 @@ nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
         return GDK_EVENT_PROPAGATE;
     }
 
-    text = gtk_widget_get_first_child (GTK_WIDGET (self->entry));
-    while (text != NULL)
-    {
-        if (GTK_IS_TEXT (text))
-        {
-            break;
-        }
-        text = gtk_widget_get_next_sibling (text);
-    }
-
-    if (text == NULL)
-    {
-        return FALSE;
-    }
-    return gtk_event_controller_key_forward (controller, text);
+    return gtk_event_controller_key_forward (controller, self->entry);
 }
