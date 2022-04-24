@@ -40,15 +40,14 @@ struct _NautilusQueryEditor
 {
     GtkWidget parent_instance;
 
+    GtkWidget *tags_box;
     GtkWidget *text;
     GtkWidget *clear_icon;
     GtkWidget *popover;
     GtkWidget *dropdown_button;
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-    GdTaggedEntryTag *mime_types_tag;
-    GdTaggedEntryTag *date_range_tag;
-#endif
+    GtkWidget *mime_types_tag;
+    GtkWidget *date_range_tag;
 
     guint search_changed_timeout_id;
     gboolean change_frozen;
@@ -142,6 +141,7 @@ nautilus_query_editor_dispose (GObject *object)
     g_clear_handle_id (&editor->search_changed_timeout_id, g_source_remove);
 
     gtk_widget_unparent (gtk_widget_get_first_child (GTK_WIDGET (editor)));
+    g_clear_pointer (&editor->tags_box, gtk_widget_unparent);
     g_clear_pointer (&editor->text, gtk_widget_unparent);
     g_clear_pointer (&editor->dropdown_button, gtk_widget_unparent);
     g_clear_pointer (&editor->clear_icon, gtk_widget_unparent);
@@ -236,15 +236,6 @@ nautilus_query_editor_set_property (GObject      *object,
 static void
 nautilus_query_editor_finalize (GObject *object)
 {
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-    NautilusQueryEditor *editor;
-
-    editor = NAUTILUS_QUERY_EDITOR (object);
-
-    g_clear_object (&editor->date_range_tag);
-    g_clear_object (&editor->mime_types_tag);
-#endif
-
     G_OBJECT_CLASS (nautilus_query_editor_parent_class)->finalize (object);
 }
 
@@ -427,6 +418,35 @@ entry_changed_cb (GtkWidget           *entry,
                                                        editor);
 }
 
+static GtkWidget *
+create_tag (NautilusQueryEditor *self,
+            const gchar         *text_for_date_range,
+            GCallback            reset_callback)
+{
+    GtkWidget *tag;
+    GtkWidget *label;
+    GtkWidget *button;
+
+    tag = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+    gtk_widget_set_margin_end (tag, 6);
+    gtk_widget_set_name (tag, "NautilusQueryEditorTag");
+
+    label = gtk_label_new (text_for_date_range);
+    gtk_widget_add_css_class (label, "caption-heading");
+    gtk_widget_set_margin_start (label, 12);
+    gtk_box_append (GTK_BOX (tag), label);
+
+    button = gtk_button_new ();
+    gtk_button_set_icon_name (GTK_BUTTON (button), "window-close-symbolic");
+    gtk_widget_add_css_class (button, "flat");
+    gtk_widget_add_css_class (button, "circular");
+    g_signal_connect_object (button, "clicked",
+                             reset_callback, self->popover, G_CONNECT_SWAPPED);
+    gtk_box_append (GTK_BOX (tag), button);
+
+    return tag;
+}
+
 static void
 search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
                                       GPtrArray             *date_range,
@@ -441,24 +461,28 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
         create_query (editor);
     }
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-    gd_tagged_entry_remove_tag (GD_TAGGED_ENTRY (editor->text),
-                                editor->date_range_tag);
+    if (editor->date_range_tag != NULL)
+    {
+        gtk_box_remove (GTK_BOX (editor->tags_box), editor->date_range_tag);
+        editor->date_range_tag = NULL;
+    }
+
     if (date_range)
     {
         g_autofree gchar *text_for_date_range = NULL;
 
         text_for_date_range = get_text_for_date_range (date_range, TRUE);
-        gd_tagged_entry_tag_set_label (editor->date_range_tag,
-                                       text_for_date_range);
-        gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->text),
-                                 GD_TAGGED_ENTRY_TAG (editor->date_range_tag));
+        editor->date_range_tag = create_tag (editor,
+                                             text_for_date_range,
+                                             G_CALLBACK (nautilus_search_popover_reset_date_range));
+        gtk_box_append (GTK_BOX (editor->tags_box), editor->date_range_tag);
     }
-#endif
 
     nautilus_query_set_date_range (editor->query, date_range);
 
     nautilus_query_editor_changed (editor);
+    gtk_widget_set_visible (editor->tags_box,
+                            (gtk_widget_get_first_child (editor->tags_box) != NULL));
 }
 
 static void
@@ -477,10 +501,12 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
         create_query (editor);
     }
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-    gd_tagged_entry_remove_tag (GD_TAGGED_ENTRY (editor->text),
-                                editor->mime_types_tag);
-#endif
+    if (editor->mime_types_tag != NULL)
+    {
+        gtk_box_remove (GTK_BOX (editor->tags_box), editor->mime_types_tag);
+        editor->mime_types_tag = NULL;
+    }
+
     /* group 0 is anything */
     if (mimetype_group == 0)
     {
@@ -489,31 +515,29 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
     else if (mimetype_group > 0)
     {
         mimetypes = nautilus_mime_types_group_get_mimetypes (mimetype_group);
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-        gd_tagged_entry_tag_set_label (editor->mime_types_tag,
-                                       nautilus_mime_types_group_get_name (mimetype_group));
-        gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->text),
-                                 GD_TAGGED_ENTRY_TAG (editor->mime_types_tag));
-#endif
+        editor->mime_types_tag = create_tag (editor,
+                                             nautilus_mime_types_group_get_name (mimetype_group),
+                                             G_CALLBACK (nautilus_search_popover_reset_mime_types));
+        gtk_box_append (GTK_BOX (editor->tags_box), editor->mime_types_tag);
     }
     else
     {
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
         g_autofree gchar *display_name = NULL;
-#endif
 
         mimetypes = g_ptr_array_new_full (1, g_free);
         g_ptr_array_add (mimetypes, g_strdup (mimetype));
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
+
         display_name = g_content_type_get_description (mimetype);
-        gd_tagged_entry_tag_set_label (editor->mime_types_tag, display_name);
-        gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->text),
-                                 GD_TAGGED_ENTRY_TAG (editor->mime_types_tag));
-#endif
+        editor->mime_types_tag = create_tag (editor,
+                                             display_name,
+                                             G_CALLBACK (nautilus_search_popover_reset_mime_types));
+        gtk_box_remove (GTK_BOX (editor->tags_box), editor->mime_types_tag);
     }
     nautilus_query_set_mime_types (editor->query, mimetypes);
 
     nautilus_query_editor_changed (editor);
+    gtk_widget_set_visible (editor->tags_box,
+                            (gtk_widget_get_first_child (editor->tags_box) != NULL));
 }
 
 static void
@@ -555,29 +579,6 @@ search_popover_fts_changed_cb (GObject    *popover,
     nautilus_query_editor_changed (editor);
 }
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-static void
-entry_tag_clicked (NautilusQueryEditor *editor)
-{
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->dropdown_button),
-                                  TRUE);
-}
-
-static void
-entry_tag_close_button_clicked (NautilusQueryEditor *editor,
-                                GdTaggedEntryTag    *tag)
-{
-    if (tag == editor->mime_types_tag)
-    {
-        nautilus_search_popover_reset_mime_types (NAUTILUS_SEARCH_POPOVER (editor->popover));
-    }
-    else
-    {
-        nautilus_search_popover_reset_date_range (NAUTILUS_SEARCH_POPOVER (editor->popover));
-    }
-}
-#endif
-
 static void
 on_clear_icon_pressed (GtkGestureClick     *gesture,
                        int                  n_press,
@@ -617,7 +618,12 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     image = gtk_image_new_from_icon_name ("system-search-symbolic");
     g_object_set (image, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
     gtk_widget_set_margin_start (image, 4);
+    gtk_widget_set_margin_end (image, 6);
     gtk_widget_set_parent (image, GTK_WIDGET (editor));
+
+    editor->tags_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_widget_hide (editor->tags_box);
+    gtk_widget_set_parent (editor->tags_box, GTK_WIDGET (editor));
 
     editor->text = gtk_text_new ();
     gtk_widget_set_hexpand (editor->text, TRUE);
@@ -635,20 +641,6 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     g_signal_connect (controller, "released", G_CALLBACK (on_clear_icon_released), editor);
     gtk_widget_add_controller (editor->clear_icon, controller);
 
-#if 0 && TAGGED_ENTRY_NEEDS_GTK4_REIMPLEMENTATION
-    editor->mime_types_tag = gd_tagged_entry_tag_new (NULL);
-    editor->date_range_tag = gd_tagged_entry_tag_new (NULL);
-
-    g_signal_connect_swapped (editor->text,
-                              "tag-clicked",
-                              G_CALLBACK (entry_tag_clicked),
-                              editor);
-    g_signal_connect_swapped (editor->text,
-                              "tag-button-clicked",
-                              G_CALLBACK (entry_tag_close_button_clicked),
-                              editor);
-#endif
-
     /* setup the search popover */
     editor->popover = nautilus_search_popover_new ();
 
@@ -663,6 +655,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 
     /* setup the filter menu button */
     editor->dropdown_button = gtk_menu_button_new ();
+    gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->dropdown_button), "funnel-symbolic");
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
     gtk_widget_set_parent (editor->dropdown_button, GTK_WIDGET (editor));
     gtk_widget_add_css_class (editor->dropdown_button, "circular");
