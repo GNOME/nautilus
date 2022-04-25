@@ -3101,6 +3101,31 @@ on_key_pressed (GtkEventControllerKey *controller,
   return FALSE;
 }
 
+static void
+format_cb (GSimpleAction *action,
+               GVariant      *variant,
+               gpointer       data)
+{
+    NautilusGtkPlacesSidebar *sidebar = data;
+    g_autoptr (GVolume) volume = NULL;
+    GAppInfo *app_info;
+    gchar *cmdline, *device_identifier;
+
+    g_object_get (sidebar->context_row, "volume", &volume, NULL);
+    device_identifier = g_volume_get_identifier (volume,
+                                                 G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+    cmdline = g_strconcat ("gnome-disks ",
+                           "--block-device ", device_identifier, " ",
+                           "--format-device ",
+                           NULL);
+    app_info = g_app_info_create_from_commandline (cmdline, NULL, 0, NULL);
+    g_app_info_launch (app_info, NULL, NULL, NULL);
+
+    g_free (cmdline);
+    g_free (device_identifier);
+    g_clear_object (&app_info);
+}
+
 static GActionEntry entries[] = {
   { "open", open_shortcut_cb, "i", NULL, NULL },
   { "open-other", open_shortcut_cb, "i", NULL, NULL },
@@ -3115,7 +3140,34 @@ static GActionEntry entries[] = {
   { "stop", stop_shortcut_cb, NULL, NULL, NULL },
   { "properties", properties_cb, NULL, NULL, NULL },
   { "empty-trash", empty_trash_cb, NULL, NULL, NULL },
+  { "format", format_cb, NULL, NULL, NULL },
 };
+
+static gboolean
+check_have_gnome_disks (void)
+{
+    gchar *disks_path;
+    gboolean res;
+
+    disks_path = g_find_program_in_path ("gnome-disks");
+    res = (disks_path != NULL);
+    g_free (disks_path);
+
+    return res;
+}
+
+static gboolean
+should_show_format_command (GVolume *volume)
+{
+    gchar *unix_device_id;
+    gboolean show_format;
+
+    unix_device_id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+    show_format = (unix_device_id != NULL) && check_have_gnome_disks ();
+    g_free (unix_device_id);
+
+    return show_format;
+}
 
 static void
 on_row_popover_destroy (GtkWidget        *row_popover,
@@ -3365,6 +3417,13 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
       else if (ss_type == G_DRIVE_START_STOP_TYPE_PASSWORD) stop_label = _("_Lock Device");
 
       item = g_menu_item_new (stop_label, "row.stop");
+      g_menu_append_item (section, item);
+      g_object_unref (item);
+    }
+
+  if (volume != NULL && G_IS_VOLUME (volume) && should_show_format_command (volume))
+    {
+      item = g_menu_item_new (_("Format…"), "row.format");
       g_menu_append_item (section, item);
       g_object_unref (item);
     }

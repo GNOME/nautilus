@@ -1091,32 +1091,6 @@ places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
 }
 #endif
 
-static gboolean
-check_have_gnome_disks (void)
-{
-    gchar *disks_path;
-    gboolean res;
-
-    disks_path = g_find_program_in_path ("gnome-disks");
-    res = (disks_path != NULL);
-    g_free (disks_path);
-
-    return res;
-}
-
-static gboolean
-should_show_format_command (GVolume *volume)
-{
-    gchar *unix_device_id;
-    gboolean show_format;
-
-    unix_device_id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-    show_format = (unix_device_id != NULL) && check_have_gnome_disks ();
-    g_free (unix_device_id);
-
-    return show_format;
-}
-
 static void
 action_restore_tab (GSimpleAction *action,
                     GVariant      *state,
@@ -1161,34 +1135,6 @@ get_window_xid (NautilusWindow *window)
 }
 
 static void
-action_format (GSimpleAction *action,
-               GVariant      *variant,
-               gpointer       user_data)
-{
-    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    GAppInfo *app_info;
-    gchar *cmdline, *device_identifier, *xid_string;
-
-    device_identifier = g_volume_get_identifier (window->selected_volume,
-                                                 G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-    xid_string = g_strdup_printf ("%x", get_window_xid (window));
-
-    cmdline = g_strconcat ("gnome-disks ",
-                           "--block-device ", device_identifier, " ",
-                           "--format-device ",
-                           "--xid ", xid_string,
-                           NULL);
-    app_info = g_app_info_create_from_commandline (cmdline, NULL, 0, NULL);
-    g_app_info_launch (app_info, NULL, NULL, NULL);
-
-    g_free (cmdline);
-    g_free (device_identifier);
-    g_free (xid_string);
-    g_clear_object (&app_info);
-    g_clear_object (&window->selected_volume);
-}
-
-static void
 add_menu_separator (GtkWidget *menu)
 {
     GtkWidget *separator;
@@ -1212,29 +1158,6 @@ places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
 
     g_clear_object (&window->selected_file);
     g_clear_object (&window->selected_volume);
-
-    if (selected_volume)
-    {
-        if (should_show_format_command (selected_volume))
-        {
-            menu_item = gtk_model_button_new ();
-            gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
-                                            "win.format");
-            g_object_set (menu_item, "text", _("_Format…"), NULL);
-            if (selected_volume != NULL && G_IS_VOLUME (selected_volume))
-            {
-                window->selected_volume = g_object_ref (selected_volume);
-            }
-            gtk_box_append (GTK_BOX (menu), menu_item);
-            gtk_widget_show (menu_item);
-
-            action = g_action_map_lookup_action (G_ACTION_MAP (window),
-                                                 "format");
-            g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                         selected_volume != NULL &&
-                                         G_IS_VOLUME (selected_volume));
-        }
-    }
 }
 #endif
 
@@ -1806,7 +1729,6 @@ const GActionEntry win_entries[] =
     { "prompt-root-location", action_prompt_for_location_root },
     { "prompt-home-location", action_prompt_for_location_home },
     { "go-to-tab", NULL, "i", "0", action_go_to_tab },
-    { "format", action_format },
     { "restore-tab", action_restore_tab },
 };
 
