@@ -901,16 +901,6 @@ open_location_cb (NautilusWindow             *window,
                                              NULL, window, NULL);
 }
 
-static void
-places_sidebar_unmount_operation_cb (NautilusWindow  *window,
-                                     GMountOperation *mount_operation)
-{
-    g_signal_connect (mount_operation, "show-unmount-progress",
-                      G_CALLBACK (show_unmount_progress_cb), NULL);
-    g_signal_connect (mount_operation, "aborted",
-                      G_CALLBACK (show_unmount_progress_aborted_cb), NULL);
-}
-
 /* Callback used when the places sidebar needs us to present an error message */
 static void
 places_sidebar_show_error_message_cb (NautilusGtkPlacesSidebar *sidebar,
@@ -1135,33 +1125,6 @@ get_window_xid (NautilusWindow *window)
 }
 
 static void
-add_menu_separator (GtkWidget *menu)
-{
-    GtkWidget *separator;
-
-    separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-    gtk_box_append (GTK_BOX (menu), separator);
-    gtk_widget_show (separator);
-}
-
-#if 0 && SIDEBAR_MENU_ITEMS_NEEDS_GTK4_REIMPLEMENTATION
-static void
-places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
-                                  GtkWidget                *menu,
-                                  GFile                    *selected_file,
-                                  GVolume                  *selected_volume,
-                                  gpointer                  user_data)
-{
-    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    GtkWidget *menu_item;
-    GAction *action;
-
-    g_clear_object (&window->selected_file);
-    g_clear_object (&window->selected_volume);
-}
-#endif
-
-static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
     setup_side_pane_width (window);
@@ -1187,12 +1150,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
     g_signal_connect (window->places_sidebar, "drag-perform-drop",
                       G_CALLBACK (places_sidebar_drag_perform_drop_cb), window);
 #endif
-#if 0 && SIDEBAR_MENU_ITEMS_NEEDS_GTK4_REIMPLEMENTATION
-    g_signal_connect (window->places_sidebar, "populate-popup",
-                      G_CALLBACK (places_sidebar_populate_popup_cb), window);
-#endif
-    g_signal_connect (window->places_sidebar, "unmount",
-                      G_CALLBACK (places_sidebar_unmount_operation_cb), window);
 }
 
 void
