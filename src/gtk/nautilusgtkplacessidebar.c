@@ -36,6 +36,7 @@
 #include "gdk/gdkkeysyms.h"
 #include "nautilusgtkbookmarksmanagerprivate.h"
 #include "nautilus-file.h"
+#include "nautilus-file-operations.h"
 #include "nautilus-properties-window.h"
 #include "nautilus-trash-monitor.h"
 #pragma GCC diagnostic ignored "-Wshadow"
@@ -2434,6 +2435,15 @@ properties_cb (GSimpleAction *action,
 }
 
 static void
+empty_trash_cb (GSimpleAction *action,
+                GVariant      *parameter,
+                gpointer       data)
+{
+  NautilusGtkPlacesSidebar *sidebar = data;
+  nautilus_file_operations_empty_trash (GTK_WIDGET (sidebar), TRUE, NULL);
+}
+
+static void
 remove_bookmark (NautilusGtkSidebarRow *row)
 {
   NautilusGtkPlacesPlaceType type;
@@ -3104,6 +3114,7 @@ static GActionEntry entries[] = {
   { "start", start_shortcut_cb, NULL, NULL, NULL },
   { "stop", stop_shortcut_cb, NULL, NULL, NULL },
   { "properties", properties_cb, NULL, NULL, NULL },
+  { "empty-trash", empty_trash_cb, NULL, NULL, NULL },
 };
 
 static void
@@ -3188,6 +3199,8 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   g_autofree gchar *uri = NULL;
   g_autoptr (GFile) file = NULL;
   gboolean show_properties;
+  g_autoptr (GFile) trash = NULL;
+  gboolean is_trash;
 
   g_object_get (row,
                 "place-type", &type,
@@ -3201,11 +3214,14 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   if (uri != NULL)
     {
       file = g_file_new_for_uri (uri);
-      show_properties = (g_file_is_native (file) || mount != NULL);
+      trash = g_file_new_for_uri("trash:///");
+      is_trash = g_file_equal (trash, file);
+      show_properties = (g_file_is_native (file) || is_trash || mount != NULL);
     }
   else
     {
       show_properties = FALSE;
+      is_trash = FALSE;
     }
 
 #ifdef HAVE_CLOUDPROVIDERS
@@ -3227,6 +3243,8 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
                                                           type == NAUTILUS_GTK_PLACES_XDG_DIR));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "open");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
+  action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "empty-trash");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !nautilus_trash_monitor_is_empty());
 
   menu = g_menu_new ();
   section = g_menu_new ();
@@ -3273,6 +3291,16 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
   g_object_unref (section);
+
+  if (is_trash) {
+    section = g_menu_new ();
+    item = g_menu_item_new (_("Empty Trash"), "row.empty-trash");
+    g_menu_append_item (section, item);
+    g_object_unref (item);
+
+    g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
+    g_object_unref (section);
+  }
 
   section = g_menu_new ();
 

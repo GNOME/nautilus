@@ -53,7 +53,6 @@
 #include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
-#include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
@@ -1092,17 +1091,6 @@ places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
 }
 #endif
 
-/* Callback used in the "empty trash" menu item from the places sidebar */
-static void
-action_empty_trash (GSimpleAction *action,
-                    GVariant      *variant,
-                    gpointer       user_data)
-{
-    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-
-    nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
-}
-
 static gboolean
 check_have_gnome_disks (void)
 {
@@ -1219,34 +1207,12 @@ places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
                                   gpointer                  user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    GFile *trash;
     GtkWidget *menu_item;
     GAction *action;
 
     g_clear_object (&window->selected_file);
     g_clear_object (&window->selected_volume);
 
-    if (selected_file)
-    {
-        trash = g_file_new_for_uri ("trash:///");
-        if (g_file_equal (trash, selected_file))
-        {
-            add_menu_separator (menu);
-
-            menu_item = gtk_model_button_new ();
-            gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
-                                            "win.empty-trash");
-            g_object_set (menu_item, "text", _("Empty _Trash…"), NULL);
-            gtk_box_append (GTK_BOX (menu), menu_item);
-            gtk_widget_show (menu_item);
-
-            action = g_action_map_lookup_action (G_ACTION_MAP (window),
-                                                 "empty-trash");
-            g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                         !nautilus_trash_monitor_is_empty ());
-        }
-        g_object_unref (trash);
-    }
     if (selected_volume)
     {
         if (should_show_format_command (selected_volume))
@@ -1840,7 +1806,6 @@ const GActionEntry win_entries[] =
     { "prompt-root-location", action_prompt_for_location_root },
     { "prompt-home-location", action_prompt_for_location_home },
     { "go-to-tab", NULL, "i", "0", action_go_to_tab },
-    { "empty-trash", action_empty_trash },
     { "format", action_format },
     { "restore-tab", action_restore_tab },
 };
