@@ -113,7 +113,7 @@ static const SortConstants sorts_constants[] =
     },
     {
         NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
-        NULL,
+        "search_relevance",
         "search-relevance",
         TRUE,
     }
