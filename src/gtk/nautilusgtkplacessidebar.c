@@ -403,6 +403,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
   GtkWidget *row;
   GtkWidget *eject_button;
   GtkGesture *gesture;
+  char *eject_tooltip;
 
   check_unmount_and_eject (mount, volume, drive,
                            &show_unmount, &show_eject);
@@ -411,6 +412,12 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
     g_assert (place_type != NAUTILUS_GTK_PLACES_BOOKMARK);
 
   show_eject_button = (show_unmount || show_eject);
+  if (mount != NULL && volume == NULL && drive == NULL)
+    eject_tooltip = _("Disconnect");
+  else if (show_eject)
+    eject_tooltip = _("Eject");
+  else
+    eject_tooltip = _("Unmount");
 
   row = g_object_new (NAUTILUS_TYPE_GTK_SIDEBAR_ROW,
                       "sidebar", sidebar,
@@ -419,6 +426,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
                       "label", name,
                       "tooltip", tooltip,
                       "ejectable", show_eject_button,
+                      "eject-tooltip", eject_tooltip,
                       "order-index", index,
                       "section-type", section_type,
                       "place-type", place_type,
