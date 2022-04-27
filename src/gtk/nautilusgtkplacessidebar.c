@@ -2206,6 +2206,16 @@ rename_entry_changed (GtkEntry         *entry,
 }
 
 static void
+reparent_popover (GtkWidget *widget,
+                  GtkWidget *parent)
+{
+  g_object_ref (widget);
+  gtk_widget_unparent (widget);
+  gtk_widget_set_parent (widget, parent);
+  g_object_unref (widget);
+}
+
+static void
 do_rename (GtkButton        *button,
            NautilusGtkPlacesSidebar *sidebar)
 {
@@ -2218,6 +2228,13 @@ do_rename (GtkButton        *button,
   if (!_nautilus_gtk_bookmarks_manager_has_bookmark (sidebar->bookmarks_manager, file))
     _nautilus_gtk_bookmarks_manager_insert_bookmark (sidebar->bookmarks_manager, file, -1, NULL);
 
+  if (sidebar->rename_popover)
+    {
+      gtk_popover_popdown (GTK_POPOVER (sidebar->rename_popover));
+      reparent_popover (sidebar->rename_popover, GTK_WIDGET (sidebar));
+      reparent_popover (sidebar->popover, GTK_WIDGET (sidebar));
+    }
+
   _nautilus_gtk_bookmarks_manager_set_bookmark_label (sidebar->bookmarks_manager, file, new_text, NULL);
 
   g_object_unref (file);
@@ -2225,8 +2242,6 @@ do_rename (GtkButton        *button,
 
   g_clear_pointer (&sidebar->rename_uri, g_free);
 
-  if (sidebar->rename_popover)
-    gtk_popover_popdown (GTK_POPOVER (sidebar->rename_popover));
 }
 
 static void
@@ -2363,10 +2378,7 @@ show_rename_popover (NautilusGtkSidebarRow *row)
   sidebar->rename_uri = g_strdup (uri);
 
   gtk_editable_set_text (GTK_EDITABLE (sidebar->rename_entry), name);
-  g_object_ref (sidebar->rename_popover);
-  gtk_widget_unparent (sidebar->rename_popover);
-  gtk_widget_set_parent (sidebar->rename_popover, GTK_WIDGET (row));
-  g_object_unref (sidebar->rename_popover);
+  reparent_popover (sidebar->rename_popover, GTK_WIDGET (row));
 
   setup_popover_shadowing (sidebar->rename_popover);
 
@@ -2417,6 +2429,7 @@ remove_bookmark (NautilusGtkSidebarRow *row)
 
   if (type == NAUTILUS_GTK_PLACES_BOOKMARK)
     {
+      reparent_popover (sidebar->popover, GTK_WIDGET (sidebar));
       file = g_file_new_for_uri (uri);
       _nautilus_gtk_bookmarks_manager_remove_bookmark (sidebar->bookmarks_manager, file, NULL);
       g_object_unref (file);
