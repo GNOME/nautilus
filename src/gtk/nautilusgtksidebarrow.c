@@ -38,6 +38,7 @@ struct _NautilusGtkSidebarRow
   GtkWidget *end_icon_widget;
   char *label;
   char *tooltip;
+  char *eject_tooltip;
   GtkWidget *label_widget;
   gboolean ejectable;
   GtkWidget *eject_button;
@@ -64,6 +65,7 @@ enum
   PROP_END_ICON,
   PROP_LABEL,
   PROP_TOOLTIP,
+  PROP_EJECT_TOOLTIP,
   PROP_EJECTABLE,
   PROP_SIDEBAR,
   PROP_ORDER_INDEX,
@@ -153,6 +155,10 @@ nautilus_gtk_sidebar_row_get_property (GObject    *object,
 
     case PROP_TOOLTIP:
       g_value_set_string (value, self->tooltip);
+      break;
+
+    case PROP_EJECT_TOOLTIP:
+      g_value_set_string (value, self->eject_tooltip);
       break;
 
     case PROP_EJECTABLE:
@@ -260,6 +266,12 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
       gtk_widget_set_tooltip_text (GTK_WIDGET (self), self->tooltip);
       break;
 
+    case PROP_EJECT_TOOLTIP:
+      g_free (self->eject_tooltip);
+      self->eject_tooltip = g_strdup (g_value_get_string (value));
+      gtk_widget_set_tooltip_text (GTK_WIDGET (self->eject_button), self->eject_tooltip);
+      break;
+
     case PROP_EJECTABLE:
       self->ejectable = g_value_get_boolean (value);
       if (self->ejectable)
@@ -332,6 +344,7 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
             self->label = NULL;
             g_free (self->tooltip);
             self->tooltip = NULL;
+            self->eject_tooltip = NULL;
             gtk_widget_set_tooltip_text (GTK_WIDGET (self), NULL);
             self->ejectable = FALSE;
             self->section_type = NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS;
@@ -438,6 +451,8 @@ nautilus_gtk_sidebar_row_finalize (GObject *object)
   self->label = NULL;
   g_free (self->tooltip);
   self->tooltip = NULL;
+  g_free (self->eject_tooltip);
+  self->eject_tooltip = NULL;
   g_free (self->uri);
   self->uri = NULL;
   g_clear_object (&self->drive);
@@ -507,6 +522,14 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
     g_param_spec_string ("tooltip",
                          "Tooltip",
                          "Tooltip",
+                         NULL,
+                         (G_PARAM_READWRITE |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties [PROP_EJECT_TOOLTIP] =
+    g_param_spec_string ("eject-tooltip",
+                         "Eject Tooltip",
+                         "Eject Tooltip",
                          NULL,
                          (G_PARAM_READWRITE |
                           G_PARAM_STATIC_STRINGS));
@@ -625,6 +648,7 @@ nautilus_gtk_sidebar_row_clone (NautilusGtkSidebarRow *self)
                       "end-icon", self->end_icon,
                       "label", self->label,
                       "tooltip", self->tooltip,
+                      "eject-tooltip", self->eject_tooltip,
                       "ejectable", self->ejectable,
                       "order-index", self->order_index,
                       "section-type", self->section_type,
