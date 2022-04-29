@@ -1,27 +1,9 @@
-<!--
-     Do you have a feature request?
-     Ideas for new features are welcome and there is a nicer place for them:
-     
-     https://discourse.gnome.org/tag/nautilus
+# Ideas for new features are welcome!
 
-     Add your feature suggestion as a new topic in the above website.
--->
-<!--
-     While you are here, please report how the existing features have failed
-     to meet your needs or made it too difficult to perform some tasks.
--->
-### Use cases
-<!-- Describe your needs and constraints. Examples from real world situations are useful. -->
+Please share your feature ideas in our Discourse in order to discuss them with our community:
 
+https://discourse.gnome.org/tag/nautilus
 
-### Available features and workarounds
-<!-- How do you manage with the current version of the application? -->
+Quite some evaluation plus refinement has to happen between an idea and creating an actual and detailed plan for a potential implementation. We found that they develop into actionable issues best when they are discussed beforehand.
 
-
-### Difficulties or shortcomings
-<!-- Why is the current experience unsatisfying? -->
-
-
-### Possible enhancements
-<!-- What could improve the situation? -->
-
+However, if you've got this idea because of an existing problem in the application, please don't forget to report the bug or shortcoming using the respective template.
