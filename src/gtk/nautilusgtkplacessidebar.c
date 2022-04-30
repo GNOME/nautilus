@@ -3400,21 +3400,34 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   sidebar->popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (menu));
   g_object_unref (menu);
   gtk_widget_set_parent (sidebar->popover, GTK_WIDGET (sidebar));
+  gtk_widget_set_halign (sidebar->popover, GTK_ALIGN_START);
+  gtk_popover_set_has_arrow (GTK_POPOVER (sidebar->popover), FALSE);
   g_signal_connect (sidebar->popover, "destroy", G_CALLBACK (on_row_popover_destroy), sidebar);
 
   setup_popover_shadowing (sidebar->popover, sidebar);
 }
 
 static void
-show_row_popover (NautilusGtkSidebarRow *row)
+show_row_popover (NautilusGtkSidebarRow *row,
+                  double x,
+                  double y)
 {
   NautilusGtkPlacesSidebar *sidebar;
+  double x_in_sidebar, y_in_sidebar;
 
   g_object_get (row, "sidebar", &sidebar, NULL);
 
   create_row_popover (sidebar, row);
 
-  _popover_set_pointing_to_widget (GTK_POPOVER (sidebar->popover), GTK_WIDGET (row));
+  if (x == -1 && y == -1)
+    _popover_set_pointing_to_widget (GTK_POPOVER (sidebar->popover), GTK_WIDGET (row));
+  else
+    {
+      gtk_widget_translate_coordinates (GTK_WIDGET (row), GTK_WIDGET (sidebar),
+                                        x, y, &x_in_sidebar, &y_in_sidebar);
+      gtk_popover_set_pointing_to (GTK_POPOVER (sidebar->popover),
+                                   &(GdkRectangle){x_in_sidebar, y_in_sidebar, 0, 0});
+    }
 
   sidebar->context_row = row;
   gtk_popover_popup (GTK_POPOVER (sidebar->popover));
@@ -3505,7 +3518,7 @@ on_row_released (GtkGestureClick *gesture,
       else if (button == 3)
         {
           if (row_type != NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
-            show_row_popover (NAUTILUS_GTK_SIDEBAR_ROW (row));
+            show_row_popover (NAUTILUS_GTK_SIDEBAR_ROW (row), x, y);
         }
     }
 }
@@ -3581,7 +3594,7 @@ popup_menu_cb (NautilusGtkSidebarRow *row)
   g_object_get (row, "place-type", &row_type, NULL);
 
   if (row_type != NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
-    show_row_popover (row);
+    show_row_popover (row, -1, -1);
 }
 
 static void
