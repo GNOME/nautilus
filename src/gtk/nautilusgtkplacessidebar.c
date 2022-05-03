@@ -3160,12 +3160,13 @@ static GActionEntry entries[] = {
 };
 
 static gboolean
-should_show_format_command (GVolume *volume)
+should_show_format_command (GVolume *volume,
+                            gchar   *uri)
 {
     g_autofree gchar *unix_device_id = NULL;
     gboolean disks_available;
 
-    if (volume == NULL || !G_IS_VOLUME (volume))
+    if (volume == NULL || !G_IS_VOLUME (volume) || g_str_has_prefix (uri, "mtp://"))
       return FALSE;
 
     unix_device_id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
@@ -3437,7 +3438,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
       g_object_unref (item);
     }
 
-  if (should_show_format_command (volume))
+  if (should_show_format_command (volume, uri))
     {
       item = g_menu_item_new (_("Format…"), "row.format");
       g_menu_append_item (section, item);
