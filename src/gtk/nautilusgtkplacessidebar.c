@@ -3162,17 +3162,17 @@ static GActionEntry entries[] = {
 static gboolean
 should_show_format_command (GVolume *volume)
 {
-    gchar *unix_device_id;
-    gboolean show_format;
+    g_autofree gchar *unix_device_id = NULL;
     gboolean disks_available;
+
+    if (volume == NULL || !G_IS_VOLUME (volume))
+      return FALSE;
 
     unix_device_id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
     disks_available = nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get(),
                                                            NAUTILUS_DBUS_LAUNCHER_DISKS);
-    show_format = (unix_device_id != NULL);
-    g_free (unix_device_id);
 
-    return show_format && disks_available;
+    return unix_device_id != NULL && disks_available;
 }
 
 static void
@@ -3437,7 +3437,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
       g_object_unref (item);
     }
 
-  if (volume != NULL && G_IS_VOLUME (volume) && should_show_format_command (volume))
+  if (should_show_format_command (volume))
     {
       item = g_menu_item_new (_("Format…"), "row.format");
       g_menu_append_item (section, item);
