@@ -3417,6 +3417,8 @@ show_row_popover (NautilusGtkSidebarRow *row,
 
   g_object_get (row, "sidebar", &sidebar, NULL);
 
+  g_clear_pointer (&sidebar->popover, gtk_widget_unparent);
+
   create_row_popover (sidebar, row);
 
   if (x == -1 && y == -1)
