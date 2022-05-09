@@ -36,6 +36,7 @@
 #include <libgnome-desktop/gnome-desktop-thumbnail.h>
 
 #include "nautilus-application.h"
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-operations.h"
@@ -2604,25 +2605,25 @@ static void
 open_in_disks (GtkButton                *button,
                NautilusPropertiesWindow *self)
 {
-    g_autofree char *message = NULL;
-    g_autoptr (GError) error = NULL;
-    g_autoptr (GAppInfo) app_info = NULL;
+    NautilusDBusLauncher *launcher = nautilus_dbus_launcher_get ();
+    g_autoptr (GMount) mount = NULL;
+    g_autoptr (GVolume) volume = NULL;
+    g_autofree gchar *device_identifier = NULL;
+    GVariant *parameters;
 
-    app_info = g_app_info_create_from_commandline ("gnome-disks",
-                                                   NULL,
-                                                   G_APP_INFO_CREATE_NONE,
-                                                   NULL);
+    mount = nautilus_file_get_mount (get_original_file (self));
+    volume = (mount != NULL) ? g_mount_get_volume (mount) : NULL;
+    device_identifier = g_volume_get_identifier (volume,
+                                                 G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 
-    g_app_info_launch (app_info, NULL, NULL, &error);
+    parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', "
+                                       "@aay [], {'options': <{'block-device': <%s>}> })",
+                                       device_identifier);
 
-    if (error != NULL)
-    {
-        message = g_strdup_printf (_("Details: %s"), error->message);
-        show_dialog (_("There was an error launching the application."),
-                     message,
-                     GTK_WINDOW (self),
-                     GTK_MESSAGE_ERROR);
-    }
+    nautilus_dbus_launcher_call (launcher,
+                                 NAUTILUS_DBUS_LAUNCHER_DISKS,
+                                 "CommandLine", parameters,
+                                 GTK_WINDOW (self));
 }
 
 static void
@@ -2796,9 +2797,9 @@ setup_basic_page (NautilusPropertiesWindow *self)
     {
         gtk_widget_show (self->volume_widget_box);
         gtk_widget_show (self->open_in_disks_button);
+        g_signal_connect (self->open_in_disks_button, "clicked", G_CALLBACK (open_in_disks), self);
         setup_volume_usage_widget (self);
         /*Translators: Here Disks mean the name of application GNOME Disks.*/
-        g_signal_connect (self->open_in_disks_button, "clicked", G_CALLBACK (open_in_disks), NULL);
     }
 }
 
