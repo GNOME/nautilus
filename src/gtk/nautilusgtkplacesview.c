@@ -1542,16 +1542,31 @@ properties_cb (GtkWidget  *widget,
 {
   NautilusGtkPlacesView *view = NAUTILUS_GTK_PLACES_VIEW (widget);
   GList *list;
+  GMount *mount;
+  g_autoptr (GFile) location = NULL;
   NautilusFile *file;
 
   if (view->row_for_action == NULL)
     return;
 
-  file = nautilus_file_get (nautilus_gtk_places_view_row_get_file (view->row_for_action));
-  list = g_list_append (NULL, file);
-  nautilus_properties_window_present (list, widget, NULL, NULL, NULL);
+  file = NULL;
+  mount = nautilus_gtk_places_view_row_get_mount (view->row_for_action);
 
-  nautilus_file_list_unref (list);
+  if (mount)
+    {
+      location = g_mount_get_root (mount);
+      file = nautilus_file_get (location);
+    }
+  else
+    file = nautilus_file_get (nautilus_gtk_places_view_row_get_file (view->row_for_action));
+
+  if (file)
+    {
+      list = g_list_append (NULL, file);
+      nautilus_properties_window_present (list, widget, NULL, NULL, NULL);
+
+      nautilus_file_list_unref (list);
+    }
 }
 
 static void
@@ -1771,7 +1786,7 @@ real_popup_menu (GtkWidget *widget,
   gtk_widget_action_set_enabled (GTK_WIDGET (view), "location.mount",
                                  !file && !mount && !is_network);
   gtk_widget_action_set_enabled (GTK_WIDGET (view), "location.properties",
-                                 file && !is_network);
+                                 !(file && is_network));
 
   if (!view->popup_menu)
     {
