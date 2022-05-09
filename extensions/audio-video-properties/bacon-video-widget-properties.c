@@ -246,6 +246,7 @@ bacon_video_widget_properties_new (void)
 	GtkBuilder *xml;
 	GtkWidget *vbox;
 	GtkSizeGroup *group;
+	g_autoptr (GError) error = NULL;
 	const char *labels[] = { "title_label", "artist_label", "album_label",
 			"year_label", "duration_label", "comment_label", "container_label",
 			"dimensions_label", "vcodec_label", "framerate_label",
@@ -255,9 +256,9 @@ bacon_video_widget_properties_new (void)
 
 	xml = gtk_builder_new ();
 	gtk_builder_set_translation_domain (xml, GETTEXT_PACKAGE);
-	if (gtk_builder_add_from_resource (xml, "/org/gnome/nautilus/audio-video-properties/ui/properties.ui", NULL) == 0) {
-		g_object_unref (xml);
-		return NULL;
+	gtk_builder_add_from_resource (xml, "/org/gnome/nautilus/audio-video-properties/ui/properties.ui", &error);
+	if (error != NULL) {
+		g_error ("Failed to add nautilus-audio-video-properties properties.ui: %s", error->message);
 	}
 
 	props = BACON_VIDEO_WIDGET_PROPERTIES (g_object_new
@@ -265,7 +266,7 @@ bacon_video_widget_properties_new (void)
 
 	props->priv->xml = xml;
 	vbox = GTK_WIDGET (gtk_builder_get_object (props->priv->xml, "vbox1"));
-	gtk_box_pack_start (GTK_BOX (props), vbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (props), vbox);
 
 	bacon_video_widget_properties_reset (props);
 
