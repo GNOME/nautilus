@@ -35,19 +35,19 @@ libtotem_properties_page = shared_module(
   install_dir: extensiondir
 )
 
-test_properties_page_sources = files(
-  'totem-properties-main.c',
-  'totem-properties-view.c',
-  'bacon-video-widget-properties.c',
-  'totem-gst-helpers.c',
-  'test-properties-page.c'
-) + resources
+# test_properties_page_sources = files(
+#   'totem-properties-main.c',
+#   'totem-properties-view.c',
+#   'bacon-video-widget-properties.c',
+#   'totem-gst-helpers.c',
+#   'test-properties-page.c'
+# ) + resources
 
-executable(
-  'test-properties-page',
-  test_properties_page_sources,
-  dependencies: libtotem_properties_page_deps + [
-    nautilus_extension
-  ],
-)
+# executable(
+#   'test-properties-page',
+#   test_properties_page_sources,
+#   dependencies: libtotem_properties_page_deps + [
+#     nautilus_extension
+#   ],
+# )
 
