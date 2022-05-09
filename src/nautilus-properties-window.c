@@ -35,6 +35,7 @@
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include <libgnome-desktop/gnome-desktop-thumbnail.h>
 
+#include "nautilus-application.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-operations.h"
@@ -2343,6 +2344,11 @@ should_show_volume_info (NautilusPropertiesWindow *self)
         return FALSE;
     }
 
+    if (is_root_directory (file) && nautilus_application_is_sandboxed ())
+    {
+        return FALSE;
+    }
+
     if (nautilus_file_can_unmount (file))
     {
         return TRUE;
@@ -2365,6 +2371,11 @@ should_show_volume_usage (NautilusPropertiesWindow *self)
     file = get_original_file (self);
 
     if (file == NULL)
+    {
+        return FALSE;
+    }
+
+    if (is_root_directory (file) && nautilus_application_is_sandboxed ())
     {
         return FALSE;
     }
