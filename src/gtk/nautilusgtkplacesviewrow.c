@@ -19,6 +19,7 @@
 #include "config.h"
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include "nautilus-application.h"
 #include "nautilus-enum-types.h"
 
 #include <gio/gio.h>
@@ -141,9 +142,20 @@ out:
 static void
 measure_available_space (NautilusGtkPlacesViewRow *row)
 {
+  gboolean skip_measure;
   gboolean should_measure;
+  g_autoptr (GFile) root = NULL;
 
-  should_measure = (!row->is_network && (row->volume || row->mount || row->file));
+  skip_measure = FALSE;
+  if (nautilus_application_is_sandboxed ())
+    {
+      root = g_file_new_for_uri ("file:///");
+      if (row->file != NULL)
+        skip_measure = g_file_equal (root, row->file);
+    }
+
+  should_measure = ((row->volume || row->mount || row->file) &&
+                    !row->is_network && !skip_measure);
 
   gtk_label_set_label (row->available_space_label, "");
   gtk_widget_set_visible (GTK_WIDGET (row->available_space_label), should_measure);
