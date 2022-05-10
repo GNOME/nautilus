@@ -4745,7 +4745,7 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
 {
     g_assert (NAUTILUS_IS_FILE (file));
 
-    if (nautilus_file_is_directory (file))
+    if (nautilus_file_is_directory (file) && file->details->filesystem_info_is_up_to_date)
     {
         return file->details->filesystem_remote;
     }
