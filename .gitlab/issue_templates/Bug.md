@@ -12,7 +12,7 @@
 -->
 
 # Affected version
-- Nightly flatpak: Yes / No / Can't test it because <!-- Delete the unwanted anwsers -->
+- Nightly flatpak: Yes / No / Can't test it because <!-- Delete the unwanted answers -->
 - Other: <!-- Write the distribution you’re using and the version of the app. -->
 
 # Steps to reproduce

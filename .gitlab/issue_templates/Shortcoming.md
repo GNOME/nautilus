@@ -12,13 +12,13 @@
 -->
 
 # Affected version
-- Nightly flatpak: Yes / No / Can't test it because <!-- Delete the unwanted anwsers -->
+- Nightly flatpak: Yes / No / Can't test it because <!-- Delete the unwanted answers -->
 - Other: <!-- Write the distribution you’re using and the version of the app. -->
 
 ### Use cases
 <!-- Describe concrete situations in which this application isn't helpful enough.
      Focus is on the end goal, not the means to get there. 
-     Don't forget to mention any applicable requirements or constrants.
+     Don't forget to mention any applicable requirements or constraints.
      Examples from your daily usage are the most useful. -->
 
 ### Available features and workarounds
