@@ -1574,9 +1574,19 @@ static void
 start_drop_feedback (NautilusGtkPlacesSidebar *sidebar,
                      const GValue     *value)
 {
+  if (value != NULL && G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+      GSList *source_list = g_value_get_boxed (value);
+      if (g_slist_length (source_list) == 1)
+        {
+          g_autoptr (NautilusFile) file = NULL;
+          file = nautilus_file_get (source_list->data);
+          if (nautilus_file_is_directory (file))
+            nautilus_gtk_sidebar_row_reveal (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row));
+        }
+    }
   if (value && !G_VALUE_HOLDS (value, NAUTILUS_TYPE_GTK_SIDEBAR_ROW))
     {
-      nautilus_gtk_sidebar_row_reveal (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row));
       /* If the state is permanent, don't change it. The application controls it. */
       if (sidebar->drop_state != DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT)
         sidebar->drop_state = DROP_STATE_NEW_BOOKMARK_ARMED;
