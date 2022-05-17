@@ -53,6 +53,7 @@
 #include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
+#include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
@@ -938,76 +939,15 @@ places_sidebar_show_starred_location (NautilusWindow             *window,
     g_object_unref (location);
 }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
-static GList *
-build_selection_list_from_gfile_list (GList *gfile_list)
-{
-    GList *result;
-    GList *l;
-
-    result = NULL;
-    for (l = gfile_list; l; l = l->next)
-    {
-        GFile *file;
-        NautilusDragSelectionItem *item;
-
-        file = l->data;
-
-        item = nautilus_drag_selection_item_new ();
-        item->uri = g_file_get_uri (file);
-        item->file = nautilus_file_get_existing (file);
-        item->got_icon_position = FALSE;
-        result = g_list_prepend (result, item);
-    }
-
-    return g_list_reverse (result);
-}
-
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
-                                         GdkDragContext           *context,
-                                         GFile                    *dest_file,
-                                         GList                    *source_file_list,
-                                         gpointer                  user_data)
+                                         NautilusFile             *dest_file,
+                                         GList                    *source_file_list)
 {
-    GList *items;
-    char *uri;
-    int action = 0;
-    NautilusDragInfo *info;
-    guint32 source_actions;
-
-    info = nautilus_drag_get_source_data (context);
-    if (info != NULL)
-    {
-        items = info->selection_cache;
-        source_actions = info->source_actions;
-    }
-    else
-    {
-        items = build_selection_list_from_gfile_list (source_file_list);
-        source_actions = 0;
-    }
-    uri = g_file_get_uri (dest_file);
-
-    if (items == NULL)
-    {
-        goto out;
-    }
-
-    nautilus_drag_default_drop_action_for_icons (context, uri, items, source_actions, &action);
-
-out:
-    if (info == NULL)
-    {
-        nautilus_drag_destroy_selection_list (items);
-    }
-
-    g_free (uri);
-
-    return action;
+    return nautilus_dnd_get_prefered_action (dest_file, source_file_list->data);
 }
-
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 /* Callback used when the places sidebar needs us to pop up a menu with possible drag actions */
 static GdkDragAction
 places_sidebar_drag_action_ask_cb (NautilusGtkPlacesSidebar *sidebar,
@@ -1016,7 +956,7 @@ places_sidebar_drag_action_ask_cb (NautilusGtkPlacesSidebar *sidebar,
 {
     return nautilus_drag_drop_action_ask (GTK_WIDGET (sidebar), actions);
 }
-
+#endif
 static GList *
 build_uri_list_from_gfile_list (GList *file_list)
 {
@@ -1056,7 +996,6 @@ places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
     g_free (dest_uri);
     g_list_free_full (source_uri_list, g_free);
 }
-#endif
 
 static void
 action_restore_tab (GSimpleAction *action,
@@ -1119,14 +1058,15 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
                               G_CALLBACK (open_location_cb), window);
     g_signal_connect (window->places_sidebar, "show-error-message",
                       G_CALLBACK (places_sidebar_show_error_message_cb), window);
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
+
     g_signal_connect (window->places_sidebar, "drag-action-requested",
                       G_CALLBACK (places_sidebar_drag_action_requested_cb), window);
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     g_signal_connect (window->places_sidebar, "drag-action-ask",
                       G_CALLBACK (places_sidebar_drag_action_ask_cb), window);
+  #endif
     g_signal_connect (window->places_sidebar, "drag-perform-drop",
                       G_CALLBACK (places_sidebar_drag_perform_drop_cb), window);
-#endif
 }
 
 void
