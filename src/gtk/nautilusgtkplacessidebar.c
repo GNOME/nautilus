@@ -1647,6 +1647,7 @@ drag_motion_callback (GtkDropTarget    *target,
   action = 0;
   row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (sidebar->list_box), y);
 
+  /* Workaround https://gitlab.gnome.org/GNOME/gtk/-/issues/5023 */
   gtk_list_box_drag_unhighlight_row (GTK_LIST_BOX (sidebar->list_box));
 
   /* Nothing to do if no value yet */
@@ -1908,6 +1909,8 @@ drag_leave_callback (GtkDropTarget *dest,
                      gpointer       user_data)
 {
   NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (user_data);
+
+  gtk_list_box_drag_unhighlight_row (GTK_LIST_BOX (sidebar->list_box));
 
   if (sidebar->drop_state != DROP_STATE_NEW_BOOKMARK_ARMED_PERMANENT)
     {
