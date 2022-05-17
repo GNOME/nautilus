@@ -1487,3 +1487,19 @@ location_settings_search_get_recursive_for_location (GFile *location)
 
     return recursive;
 }
+
+/*
+ * This asumes the implementation of GDK_TYPE_FILE_LIST is a GSList<GFile>.
+ * As of writing this, the API docs don't provide for this assumption.
+ */
+GSList *
+convert_file_list_to_gdk_file_list (GList *source_list)
+{
+    GSList *file_list = NULL;
+    for (GList *l = source_list; l != NULL; l = l->next)
+    {
+        file_list = g_slist_prepend (file_list,
+                                     nautilus_file_get_location (l->data));
+    }
+    return g_slist_reverse (file_list);
+}

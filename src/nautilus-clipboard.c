@@ -132,22 +132,6 @@ nautilus_clipboard_clear_if_colliding_uris (GtkWidget   *widget,
 }
 #endif
 
-/*
- * This asumes the implementation of GTK_TYPE_FILE_LIST is a GSList<GFile>.
- * As of writing this, the API docs don't provide for this assumption.
- */
-static GSList *
-convert_file_list_to_gdk_file_list (NautilusClipboard *clip)
-{
-    GSList *file_list = NULL;
-    for (GList *l = clip->files; l != NULL; l = l->next)
-    {
-        file_list = g_slist_prepend (file_list,
-                                     nautilus_file_get_location (l->data));
-    }
-    return g_slist_reverse (file_list);
-}
-
 static void
 nautilus_clipboard_serialize (GdkContentSerializer *serializer)
 {
@@ -290,7 +274,7 @@ nautilus_clipboard_prepare_for_files (GdkClipboard *clipboard,
     clip->cut = cut;
     clip->files = nautilus_file_list_copy (files);
 
-    file_list = convert_file_list_to_gdk_file_list (clip);
+    file_list = convert_file_list_to_gdk_file_list (clip->files);
 
     providers[0] = gdk_content_provider_new_typed (NAUTILUS_TYPE_CLIPBOARD, clip);
     providers[1] = gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
