@@ -963,28 +963,6 @@ build_selection_list_from_gfile_list (GList *gfile_list)
     return g_list_reverse (result);
 }
 
-void
-nautilus_window_start_dnd (NautilusWindow *window,
-                           GdkDragContext *context)
-{
-    g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-    nautilus_gtk_places_sidebar_set_drop_targets_visible (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                                          TRUE,
-                                                          context);
-}
-
-void
-nautilus_window_end_dnd (NautilusWindow *window,
-                         GdkDragContext *context)
-{
-    g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-    nautilus_gtk_places_sidebar_set_drop_targets_visible (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                                          FALSE,
-                                                          context);
-}
-
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
