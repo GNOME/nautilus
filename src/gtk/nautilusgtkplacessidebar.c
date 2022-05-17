@@ -1495,6 +1495,12 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
       return FALSE;
     }
 
+  if (place_type == NAUTILUS_GTK_PLACES_OTHER_LOCATIONS)
+    {
+      g_free (uri);
+      return FALSE;
+    }
+
   if (place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
     {
       g_free (uri);
