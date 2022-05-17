@@ -7,6 +7,7 @@
 #include "nautilus-list-base-private.h"
 
 #include "nautilus-clipboard.h"
+#include "nautilus-dnd.h"
 #include "nautilus-view-cell.h"
 #include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
@@ -227,7 +228,7 @@ nautilus_list_base_set_icon_size (NautilusListBase *self,
 }
 
 /* GtkListBase changes selection only with the primary button, and only after
- * release. But we need to antecipate selection earlier if we are to activate it
+ * release. But we need to anticipate selection earlier if we are to activate it
  * or open its context menu. This helper should be used in these situations if
  * it's desirable to act on a multi-item selection, because it preserves it. */
 static void
@@ -327,7 +328,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
         NautilusViewItem *item = nautilus_view_cell_get_item (cell);
         g_return_if_fail (item != NULL);
 
-        /* Antecipate selection, if necessary, to activate it. */
+        /* Anticipate selection, if necessary, to activate it. */
         select_single_item_if_not_selected (self, item);
         activate_selection_on_click (self, TRUE);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
@@ -361,7 +362,7 @@ on_item_click_released (GtkGestureClick *gesture,
         g_return_if_fail (item != NULL);
         i = nautilus_view_model_get_index (model, item);
 
-        /* Antecipate selection, enforcing single selection of target item. */
+        /* Anticipate selection, enforcing single selection of target item. */
         gtk_selection_model_select_item (GTK_SELECTION_MODEL (model), i, TRUE);
 
         activate_selection_on_click (self, FALSE);
@@ -463,6 +464,45 @@ on_view_longpress_pressed (GtkGestureLongPress *gesture,
                                                         view_x, view_y);
 }
 
+static GdkContentProvider *
+on_item_drag_prepare (GtkDragSource *source,
+                      double         x,
+                      double         y,
+                      gpointer       user_data)
+{
+    NautilusViewCell *cell = user_data;
+    NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
+    g_autolist (NautilusFile) selection = NULL;
+    g_autoslist (GFile) file_list = NULL;
+    g_autoptr (GdkPaintable) paintable = NULL;
+    GdkDragAction actions;
+    gint scale_factor;
+
+    /* Anticipate selection, if necessary, for dragging the clicked item. */
+    select_single_item_if_not_selected (self, nautilus_view_cell_get_item (cell));
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+    g_return_val_if_fail (selection != NULL, NULL);
+
+    gtk_gesture_set_state (GTK_GESTURE (source), GTK_EVENT_SEQUENCE_CLAIMED);
+
+    /* Convert to GTK_TYPE_FILE_LIST, which is assumed to be a GSList<GFile>. */
+    for (GList *l = selection; l != NULL; l = l->next)
+    {
+        file_list = g_slist_prepend (file_list, nautilus_file_get_location (l->data));
+    }
+    file_list = g_slist_reverse (file_list);
+
+    actions = GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK | GDK_ACTION_MOVE;
+    gtk_drag_source_set_actions (source, actions);
+
+    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
+    paintable = get_paintable_for_drag_selection (selection, scale_factor);
+    gtk_drag_source_set_icon (source, paintable, 0, 0);
+
+    return gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
+}
+
 void
 setup_cell_common (GtkListItem      *listitem,
                    NautilusViewCell *cell)
@@ -487,6 +527,11 @@ setup_cell_common (GtkListItem      *listitem,
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
     g_signal_connect (controller, "pressed", G_CALLBACK (on_item_longpress_pressed), cell);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_drag_source_new ());
+    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    g_signal_connect (controller, "prepare", G_CALLBACK (on_item_drag_prepare), cell);
 }
 
 static void
