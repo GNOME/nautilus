@@ -38,7 +38,6 @@ GSettings *nautilus_list_view_preferences;
 GSettings *nautilus_window_state;
 GSettings *gtk_filechooser_preferences;
 GSettings *gnome_lockdown_preferences;
-GSettings *gnome_background_preferences;
 GSettings *gnome_interface_preferences;
 GSettings *gnome_privacy_preferences;
 
@@ -63,7 +62,6 @@ nautilus_global_preferences_init (void)
     gtk_filechooser_preferences = g_settings_new_with_path ("org.gtk.Settings.FileChooser",
                                                             "/org/gtk/settings/file-chooser/");
     gnome_lockdown_preferences = g_settings_new ("org.gnome.desktop.lockdown");
-    gnome_background_preferences = g_settings_new ("org.gnome.desktop.background");
     gnome_interface_preferences = g_settings_new ("org.gnome.desktop.interface");
     gnome_privacy_preferences = g_settings_new ("org.gnome.desktop.privacy");
 }
