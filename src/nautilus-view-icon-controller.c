@@ -26,6 +26,7 @@ struct _NautilusViewIconController
 
     gboolean single_click_mode;
     gboolean activate_on_release;
+    gboolean deny_background_click;
 
     guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
@@ -802,6 +803,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
                                       x, y,
                                       &view_x, &view_y);
 
+    self->deny_background_click = TRUE;
     self->activate_on_release = (self->single_click_mode &&
                                  button == GDK_BUTTON_PRIMARY &&
                                  n_press == 1 &&
@@ -864,6 +866,7 @@ on_item_click_released (GtkGestureClick *gesture,
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
     self->activate_on_release = FALSE;
+    self->deny_background_click = FALSE;
 }
 
 static void
@@ -873,6 +876,7 @@ on_item_click_stopped (GtkGestureClick *gesture,
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
     self->activate_on_release = FALSE;
+    self->deny_background_click = FALSE;
 }
 
 static void
@@ -887,11 +891,18 @@ on_view_click_pressed (GtkGestureClick *gesture,
     GdkModifierType modifiers;
     gboolean selection_mode;
 
+    if (self->deny_background_click)
+    {
+        /* Item was clicked. */
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
+        return;
+    }
+
     /* Don't interfere with GtkGridView default selection handling when
      * holding Ctrl and Shift. */
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
     selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
-    if (!selection_mode && !self->activate_on_release)
+    if (!selection_mode)
     {
         nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
     }
