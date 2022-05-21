@@ -613,15 +613,16 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
                                     "“%s” doesn’t exist."), target_path);
     }
 
-    if (!can_trash)
+    if (can_trash)
+    {
+        dialog = eel_show_yes_no_dialog (prompt, detail, _("Mo_ve to Trash"), _("_Cancel"),
+                                         parent_window);
+    }
+    else
     {
         dialog = eel_show_simple_dialog (GTK_WIDGET (parent_window), GTK_MESSAGE_WARNING,
                                          prompt, detail, _("_Cancel"), NULL);
-        goto out;
     }
-
-    dialog = eel_show_yes_no_dialog (prompt, detail, _("Mo_ve to Trash"), _("_Cancel"),
-                                     parent_window);
 
     gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
 
@@ -643,7 +644,6 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
                       G_CALLBACK (trash_symbolic_link_cb),
                       data);
 
-out:
     g_free (prompt);
     g_free (target_path);
     g_free (detail);
