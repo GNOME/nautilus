@@ -777,11 +777,11 @@ activate_selection_on_click (NautilusViewIconController *self,
 }
 
 static void
-on_click_pressed (GtkGestureClick *gesture,
-                  gint             n_press,
-                  gdouble          x,
-                  gdouble          y,
-                  gpointer         user_data)
+on_item_click_pressed (GtkGestureClick *gesture,
+                       gint             n_press,
+                       gdouble          x,
+                       gdouble          y,
+                       gpointer         user_data)
 {
     NautilusViewIconController *self;
     GtkWidget *event_widget;
@@ -801,74 +801,60 @@ on_click_pressed (GtkGestureClick *gesture,
     gtk_widget_translate_coordinates (event_widget, GTK_WIDGET (self),
                                       x, y,
                                       &view_x, &view_y);
-    if (NAUTILUS_IS_VIEW_ICON_ITEM_UI (event_widget))
+
+    self->activate_on_release = (self->single_click_mode &&
+                                 button == GDK_BUTTON_PRIMARY &&
+                                 n_press == 1 &&
+                                 !selection_mode);
+
+    /* GtkGridView changes selection only with the primary button, but we
+     * need that to happen with all buttons, otherwise e.g. opening context
+     * menus would require two clicks: a primary click to select the item,
+     * followed by a secondary click to open the menu.
+     * When holding Ctrl and Shift, GtkGridView does a good job, let's not
+     * interfere in that case. */
+    if (!selection_mode)
     {
-        self->activate_on_release = (self->single_click_mode &&
-                                     button == GDK_BUTTON_PRIMARY &&
-                                     n_press == 1 &&
-                                     !selection_mode);
+        GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->model);
+        NautilusViewItemModel *item_model;
+        guint position;
 
-        /* GtkGridView changes selection only with the primary button, but we
-         * need that to happen with all buttons, otherwise e.g. opening context
-         * menus would require two clicks: a primary click to select the item,
-         * followed by a secondary click to open the menu.
-         * When holding Ctrl and Shift, GtkGridView does a good job, let's not
-         * interfere in that case. */
-        if (!selection_mode)
-        {
-            GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->model);
-            NautilusViewItemModel *item_model;
-            guint position;
+        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
+        position = nautilus_view_model_get_index (self->model, item_model);
 
-            item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
-            position = nautilus_view_model_get_index (self->model, item_model);
-            if (!gtk_selection_model_is_selected (selection_model, position))
-            {
-                gtk_selection_model_select_item (selection_model, position, TRUE);
-            }
-        }
-
-        if (button == GDK_BUTTON_PRIMARY && n_press == 2)
+        if (!gtk_selection_model_is_selected (selection_model, position))
         {
-            activate_selection_on_click (self, modifiers & GDK_SHIFT_MASK);
-            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
-            self->activate_on_release = FALSE;
-        }
-        else if (button == GDK_BUTTON_MIDDLE && n_press == 1 && !selection_mode)
-        {
-            activate_selection_on_click (self, TRUE);
-            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
-        }
-        else if (button == GDK_BUTTON_SECONDARY)
-        {
-            nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                               view_x, view_y);
-            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+            gtk_selection_model_select_item (selection_model, position, TRUE);
         }
     }
-    else
-    {
-        /* Don't interfere with GtkGridView default selection handling when
-         * holding Ctrl and Shift. */
-        if (!selection_mode && !self->activate_on_release)
-        {
-            nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
-        }
 
-        if (button == GDK_BUTTON_SECONDARY)
-        {
-            nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                                view_x, view_y);
-        }
+    /* It's safe to claim event sequence on press in the following cases because
+     * they don't interfere with touch scrolling. */
+    if (button == GDK_BUTTON_PRIMARY && n_press == 2)
+    {
+        activate_selection_on_click (self, modifiers & GDK_SHIFT_MASK);
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+        self->activate_on_release = FALSE;
+    }
+    else if (button == GDK_BUTTON_MIDDLE && n_press == 1 && !selection_mode)
+    {
+        activate_selection_on_click (self, TRUE);
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+    }
+    else if (button == GDK_BUTTON_SECONDARY)
+    {
+        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
+                                                           view_x, view_y);
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
 }
 
 static void
-on_click_released (GtkGestureClick *gesture,
-                   gint             n_press,
-                   gdouble          x,
-                   gdouble          y,
-                   gpointer         user_data)
+on_item_click_released (GtkGestureClick *gesture,
+                        gint             n_press,
+                        gdouble          x,
+                        gdouble          y,
+                        gpointer         user_data)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
@@ -881,12 +867,49 @@ on_click_released (GtkGestureClick *gesture,
 }
 
 static void
-on_click_stopped (GtkGestureClick *gesture,
-                  gpointer         user_data)
+on_item_click_stopped (GtkGestureClick *gesture,
+                       gpointer         user_data)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
 
     self->activate_on_release = FALSE;
+}
+
+static void
+on_view_click_pressed (GtkGestureClick *gesture,
+                       gint             n_press,
+                       gdouble          x,
+                       gdouble          y,
+                       gpointer         user_data)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    guint button;
+    GdkModifierType modifiers;
+    gboolean selection_mode;
+
+    /* Don't interfere with GtkGridView default selection handling when
+     * holding Ctrl and Shift. */
+    modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
+    selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
+    if (!selection_mode && !self->activate_on_release)
+    {
+        nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
+    }
+
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    if (button == GDK_BUTTON_SECONDARY)
+    {
+        GtkWidget *event_widget;
+        gdouble view_x;
+        gdouble view_y;
+
+        event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+        gtk_widget_translate_coordinates (event_widget, GTK_WIDGET (self),
+                                          x, y,
+                                          &view_x, &view_y);
+        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
+                                                            view_x, view_y);
+    }
 }
 
 static void
@@ -1425,9 +1448,9 @@ setup_item_ui (GtkSignalListItemFactory *factory,
     gtk_widget_add_controller (GTK_WIDGET (item_ui), controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
-    g_signal_connect (controller, "pressed", G_CALLBACK (on_click_pressed), self);
-    g_signal_connect (controller, "stopped", G_CALLBACK (on_click_stopped), self);
-    g_signal_connect (controller, "released", G_CALLBACK (on_click_released), self);
+    g_signal_connect (controller, "pressed", G_CALLBACK (on_item_click_pressed), self);
+    g_signal_connect (controller, "released", G_CALLBACK (on_item_click_released), self);
+    g_signal_connect (controller, "stopped", G_CALLBACK (on_item_click_stopped), self);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
     gtk_widget_add_controller (GTK_WIDGET (item_ui), controller);
@@ -1501,11 +1524,7 @@ constructed (GObject *object)
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed",
-                      G_CALLBACK (on_click_pressed), self);
-    g_signal_connect (controller, "stopped",
-                      G_CALLBACK (on_click_stopped), self);
-    g_signal_connect (controller, "released",
-                      G_CALLBACK (on_click_released), self);
+                      G_CALLBACK (on_view_click_pressed), self);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
     gtk_widget_add_controller (GTK_WIDGET (self->view_ui), controller);
