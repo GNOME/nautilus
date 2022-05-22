@@ -760,6 +760,24 @@ real_click_policy_changed (NautilusFilesView *files_view)
     set_click_mode_from_settings (self);
 }
 
+/* GtkListBase changes selection only with the primary button, and only after
+ * release. But we need to antecipate selection earlier if we are to activate it
+ * or open its context menu. This helper should be used in these situations if
+ * it's desirable to act on a multi-item selection, because it preserves it. */
+static void
+select_single_item_if_not_selected (NautilusViewIconController *self,
+                                    NautilusViewItemModel      *item)
+{
+    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->model);
+    guint position;
+
+    position = nautilus_view_model_get_index (self->model, item);
+    if (!gtk_selection_model_is_selected (selection_model, position))
+    {
+        gtk_selection_model_select_item (selection_model, position, TRUE);
+    }
+}
+
 static void
 activate_selection_on_click (NautilusViewIconController *self,
                              gboolean                    open_in_new_tab)
@@ -786,6 +804,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
 {
     NautilusViewIconController *self;
     GtkWidget *event_widget;
+    NautilusViewItemModel *item_model;
     guint button;
     GdkModifierType modifiers;
     gboolean selection_mode;
@@ -794,6 +813,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+    item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
 
@@ -809,27 +829,6 @@ on_item_click_pressed (GtkGestureClick *gesture,
                                  n_press == 1 &&
                                  !selection_mode);
 
-    /* GtkGridView changes selection only with the primary button, but we
-     * need that to happen with all buttons, otherwise e.g. opening context
-     * menus would require two clicks: a primary click to select the item,
-     * followed by a secondary click to open the menu.
-     * When holding Ctrl and Shift, GtkGridView does a good job, let's not
-     * interfere in that case. */
-    if (!selection_mode)
-    {
-        GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->model);
-        NautilusViewItemModel *item_model;
-        guint position;
-
-        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
-        position = nautilus_view_model_get_index (self->model, item_model);
-
-        if (!gtk_selection_model_is_selected (selection_model, position))
-        {
-            gtk_selection_model_select_item (selection_model, position, TRUE);
-        }
-    }
-
     /* It's safe to claim event sequence on press in the following cases because
      * they don't interfere with touch scrolling. */
     if (button == GDK_BUTTON_PRIMARY && n_press == 2 && !self->single_click_mode)
@@ -840,11 +839,15 @@ on_item_click_pressed (GtkGestureClick *gesture,
     }
     else if (button == GDK_BUTTON_MIDDLE && n_press == 1)
     {
+        /* Antecipate selection, if necessary, to activate it. */
+        select_single_item_if_not_selected (self, item_model);
         activate_selection_on_click (self, TRUE);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
     else if (button == GDK_BUTTON_SECONDARY && n_press == 1)
     {
+        /* Antecipate selection, if necessary, for the context menu. */
+        select_single_item_if_not_selected (self, item_model);
         nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
                                                            view_x, view_y);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
@@ -862,9 +865,21 @@ on_item_click_released (GtkGestureClick *gesture,
 
     if (self->activate_on_release)
     {
+        GtkWidget *event_widget;
+        NautilusViewItemModel *item_model;
+        guint i;
+
+        event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
+        i = nautilus_view_model_get_index (self->model, item_model);
+
+        /* Antecipate selection, enforcing single selection of target item. */
+        gtk_selection_model_select_item (GTK_SELECTION_MODEL (self->model), i, TRUE);
+
         activate_selection_on_click (self, FALSE);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
+
     self->activate_on_release = FALSE;
     self->deny_background_click = FALSE;
 }
