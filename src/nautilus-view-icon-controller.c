@@ -832,18 +832,18 @@ on_item_click_pressed (GtkGestureClick *gesture,
 
     /* It's safe to claim event sequence on press in the following cases because
      * they don't interfere with touch scrolling. */
-    if (button == GDK_BUTTON_PRIMARY && n_press == 2)
+    if (button == GDK_BUTTON_PRIMARY && n_press == 2 && !self->single_click_mode)
     {
         activate_selection_on_click (self, modifiers & GDK_SHIFT_MASK);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
         self->activate_on_release = FALSE;
     }
-    else if (button == GDK_BUTTON_MIDDLE && n_press == 1 && !selection_mode)
+    else if (button == GDK_BUTTON_MIDDLE && n_press == 1)
     {
         activate_selection_on_click (self, TRUE);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
-    else if (button == GDK_BUTTON_SECONDARY)
+    else if (button == GDK_BUTTON_SECONDARY && n_press == 1)
     {
         nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
                                                            view_x, view_y);
