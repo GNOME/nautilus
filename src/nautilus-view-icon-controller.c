@@ -802,27 +802,20 @@ on_item_click_pressed (GtkGestureClick *gesture,
                        gdouble          y,
                        gpointer         user_data)
 {
-    NautilusViewIconController *self;
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     GtkWidget *event_widget;
     NautilusViewItemModel *item_model;
     guint button;
     GdkModifierType modifiers;
     gboolean selection_mode;
-    gdouble view_x;
-    gdouble view_y;
 
-    self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
     item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (event_widget));
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
-
     selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
 
-    gtk_widget_translate_coordinates (event_widget, GTK_WIDGET (self),
-                                      x, y,
-                                      &view_x, &view_y);
-
+    /* Before anything else, store event state to be read by other handlers. */
     self->deny_background_click = TRUE;
     self->activate_on_release = (self->single_click_mode &&
                                  button == GDK_BUTTON_PRIMARY &&
@@ -835,7 +828,6 @@ on_item_click_pressed (GtkGestureClick *gesture,
     {
         activate_selection_on_click (self, modifiers & GDK_SHIFT_MASK);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
-        self->activate_on_release = FALSE;
     }
     else if (button == GDK_BUTTON_MIDDLE && n_press == 1)
     {
@@ -846,8 +838,14 @@ on_item_click_pressed (GtkGestureClick *gesture,
     }
     else if (button == GDK_BUTTON_SECONDARY && n_press == 1)
     {
+        gdouble view_x, view_y;
+
         /* Antecipate selection, if necessary, for the context menu. */
         select_single_item_if_not_selected (self, item_model);
+
+        gtk_widget_translate_coordinates (event_widget, GTK_WIDGET (self),
+                                          x, y,
+                                          &view_x, &view_y);
         nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
                                                            view_x, view_y);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
