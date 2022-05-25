@@ -877,7 +877,6 @@ on_item_click_released (GtkGestureClick *gesture,
         gtk_selection_model_select_item (GTK_SELECTION_MODEL (self->model), i, TRUE);
 
         activate_selection_on_click (self, FALSE);
-        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
 
     self->activate_on_release = FALSE;
