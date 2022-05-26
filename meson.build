@@ -109,12 +109,8 @@ gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.0')
 gnome_desktop = dependency('gnome-desktop-4', version: '>= 43')
 gtk = dependency('gtk4', version: '>= 4.6')
 libadwaita = dependency('libadwaita-1', version: '>= 1.0')
-libportal = []
-libportal_gtk4 = []
-if get_option('libportal')
-  libportal = dependency('libportal', version: '>= 0.5')
-  libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
-endif
+libportal = dependency('libportal', version: '>= 0.5')
+libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
 selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
@@ -160,7 +156,6 @@ conf.set_quoted('VERSION', version_string)
 
 conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
-conf.set('HAVE_LIBPORTAL', get_option('libportal'))
 conf.set('HAVE_SELINUX', get_option('selinux'))
 
 #############################################################

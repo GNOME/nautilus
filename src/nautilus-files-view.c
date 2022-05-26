@@ -38,6 +38,8 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <gnome-autoar/gnome-autoar.h>
+#include <libportal/portal.h>
+#include <libportal-gtk4/portal-gtk4.h>
 #include <math.h>
 #include <nautilus-extension.h>
 #include <string.h>
@@ -87,11 +89,6 @@
 #include "nautilus-view-icon-controller.h"
 #include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
-
-#ifdef HAVE_LIBPORTAL
-#include <libportal/portal.h>
-#include <libportal-gtk4/portal-gtk4.h>
-#endif
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100
@@ -6525,9 +6522,6 @@ can_set_wallpaper (GList *selection)
 {
     NautilusFile *file;
 
-#ifndef HAVE_LIBPORTAL
-    return FALSE;
-#else
     if (g_list_length (selection) != 1)
     {
         return FALSE;
@@ -6542,10 +6536,8 @@ can_set_wallpaper (GList *selection)
     /* FIXME: check file size? */
 
     return TRUE;
-#endif
 }
 
-#ifdef HAVE_LIBPORTAL
 static void
 set_wallpaper_with_portal_cb (GObject      *source,
                               GAsyncResult *result,
@@ -6584,7 +6576,6 @@ set_wallpaper_with_portal (NautilusFile *file,
                               NULL);
     xdp_parent_free (parent);
 }
-#endif /* HAVE_LIBPORTAL */
 
 static void
 action_set_as_wallpaper (GSimpleAction *action,
@@ -6602,9 +6593,7 @@ action_set_as_wallpaper (GSimpleAction *action,
 
         file = NAUTILUS_FILE (selection->data);
 
-#ifdef HAVE_LIBPORTAL
         set_wallpaper_with_portal (file, user_data);
-#endif
     }
 }
 
