@@ -214,7 +214,7 @@ constructed (GObject *object)
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->constructed (object);
 
     self->internal_model = g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM_MODEL);
-    self->selection_model = gtk_multi_selection_new (G_LIST_MODEL (self->internal_model));
+    self->selection_model = gtk_multi_selection_new (g_object_ref (G_LIST_MODEL (self->internal_model)));
     self->map_files_to_model = g_hash_table_new (NULL, NULL);
 
     g_signal_connect_swapped (self->internal_model, "items-changed",
