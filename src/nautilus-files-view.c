@@ -9341,8 +9341,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     GApplication *app;
     const gchar *open_accels[] =
     {
-        "Return",
-        "KP_Enter",
         "<control>o",
         "<alt>Down",
         NULL

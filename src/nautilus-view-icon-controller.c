@@ -786,6 +786,24 @@ activate_selection_on_click (NautilusViewIconController *self,
     nautilus_files_view_activate_files (files_view, selection, flags, TRUE);
 }
 
+/* We only care about the keyboard activation part that GtkGridView provides,
+ * but we don't need any special filtering here. Indeed, we ask GtkGridView
+ * to not activate on single click, and we get to handle double clicks before
+ * GtkGridView does (as one of widget subclassing's goal is to modify the parent
+ * class's behavior), while claiming the click gestures, so it means GtkGridView
+ * will never react to a click event to emit this signal. So we should be pretty
+ * safe here with regards to our custom item click handling.
+ */
+static void
+on_grid_view_item_activated (GtkGridView *grid_view,
+                             guint        position,
+                             gpointer     user_data)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+
+    nautilus_files_view_activate_selection (NAUTILUS_FILES_VIEW (self));
+}
+
 static void
 on_item_click_pressed (GtkGestureClick *gesture,
                        gint             n_press,
@@ -1490,15 +1508,20 @@ create_view_ui (NautilusViewIconController *self)
     gtk_widget_set_focusable (widget, TRUE);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
-    /* We don't use the built-in child activation feature because it doesn't
-     * fill all our needs nor does it match our expected behavior. Instead, we
-     * roll our own event handling and double/single click mode.
+    /* We don't use the built-in child activation feature for clicks because it
+     * doesn't fill all our needs nor does it match our expected behavior.
+     * Instead, we roll our own event handling and double/single click mode.
      * However, GtkGridView:single-click-activate has other effects besides
      * activation, as it affects the selection behavior as well (e.g. selects on
      * hover). Setting it to FALSE gives us the expected behavior. */
     gtk_grid_view_set_single_click_activate (GTK_GRID_VIEW (widget), FALSE);
     gtk_grid_view_set_max_columns (GTK_GRID_VIEW (widget), 20);
     gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (widget), TRUE);
+
+    /* While we don't want to use GTK's click activation, we'll let it handle
+     * the key activation part (with Enter).
+     */
+    g_signal_connect (widget, "activate", G_CALLBACK (on_grid_view_item_activated), self);
 
     return GTK_GRID_VIEW (widget);
 }
