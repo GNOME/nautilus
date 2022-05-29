@@ -817,16 +817,6 @@ on_event_controller_key_key_pressed (GtkEventControllerKey *controller,
     NAUTILUS_LIST_VIEW (view)->details->last_event_button_x = -1;
     NAUTILUS_LIST_VIEW (view)->details->last_event_button_y = -1;
 
-    if (keyval == GDK_KEY_F10)
-    {
-        if ((state & GDK_CONTROL_MASK) != 0)
-        {
-            nautilus_files_view_pop_up_background_context_menu (view, 0, 0);
-
-            return GDK_EVENT_STOP;
-        }
-    }
-
     if (keyval == GDK_KEY_Right)
     {
         g_autoptr (GtkTreePath) path = NULL;

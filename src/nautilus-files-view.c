@@ -9323,6 +9323,47 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
     g_object_class_override_property (oclass, PROP_EXTENSIONS_BACKGROUND_MENU, "extensions-background-menu");
     g_object_class_override_property (oclass, PROP_TEMPLATES_MENU, "templates-menu");
+
+    /* See also the global accelerators in init() in addition to all the local
+     * ones defined below.
+     */
+
+    /* Only one delete action is enabled at a time, so we can just activate several
+     * delete or trash actions with the same shortcut without worrying: only the
+     * enabled one will be activated.
+     */
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_SHIFT_MASK, "view.delete-permanently-shortcut", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_SHIFT_MASK, "view.delete-permanently-shortcut", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, GDK_SHIFT_MASK, "view.permanent-delete-permanently-menu-item", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, GDK_SHIFT_MASK, "view.permanent-delete-permanently-menu-item", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, 0, "view.move-to-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, 0, "view.move-to-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, 0, "view.delete-from-trash", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, 0, "view.delete-from-trash", NULL);
+    /* When trash is not available, allow the "Delete" keys to delete permanently, that is, when
+     * the menu item is available, since we never make both the trash and delete-permanently-menu-item
+     * actions active.
+     */
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Delete, 0, "view.delete-permanently-menu-item", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_KP_Delete, 0, "view.delete-permanently-menu-item", NULL);
+
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F2, 0, "view.rename", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Menu, 0, "view.popup-menu", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F10, GDK_SHIFT_MASK, "view.popup-menu", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_o, GDK_CONTROL_MASK, "view.open-with-default-application", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Down, GDK_ALT_MASK, "view.open-with-default-application", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_i, GDK_CONTROL_MASK, "view.properties", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_ALT_MASK, "view.properties", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_a, GDK_CONTROL_MASK, "view.select-all", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_i, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.invert-selection", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_space, 0, "view.preview-selection", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK, "view.create-link", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.create-link-in-place", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_CONTROL_MASK, "view.open-item-new-tab", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_SHIFT_MASK, "view.open-item-new-window", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_o, GDK_CONTROL_MASK | GDK_ALT_MASK, "view.open-item-location", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_c, GDK_CONTROL_MASK, "view.copy", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_x, GDK_CONTROL_MASK, "view.cut", NULL);
 }
 
 static void
@@ -9339,18 +9380,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     gchar *templates_uri;
     GdkClipboard *clipboard;
     GApplication *app;
-    const gchar *open_accels[] =
-    {
-        "<control>o",
-        "<alt>Down",
-        NULL
-    };
-    const gchar *open_properties[] =
-    {
-        "<control>i",
-        "<alt>Return",
-        NULL
-    };
     const gchar *zoom_in_accels[] =
     {
         "<control>equal",
@@ -9370,24 +9399,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     {
         "<control>0",
         "<control>KP_0",
-        NULL
-    };
-    const gchar *move_to_trash_accels[] =
-    {
-        "Delete",
-        "KP_Delete",
-        NULL
-    };
-    const gchar *delete_permanently_accels[] =
-    {
-        "<shift>Delete",
-        "<shift>KP_Delete",
-        NULL
-    };
-    const gchar *popup_menu_accels[] =
-    {
-        "Menu",
-        "<shift>F10",
         NULL
     };
 
@@ -9554,39 +9565,28 @@ nautilus_files_view_init (NautilusFilesView *view)
                                     G_ACTION_GROUP (priv->view_action_group));
     app = g_application_get_default ();
 
-    /* Toolbar menu */
+    /* NOTE: Please do not add any key here that could interfere with
+     * the rest of the app's use of those keys. Some example of keys set here
+     * that broke keynav include Enter/Return, Menu, F2 and Delete keys.
+     * The accelerators below are set on the whole app level for the sole purpose
+     * of making it more convenient when you don't have the focus exactly on the
+     * files view, but some keys are used in a contextual way, and those should
+     * should be added in nautilus_files_view_class_init() above instead of a
+     * global accelerator, unless it really makes sense to have them globally
+     * (e.g. Zoom in/out shortcuts).
+     */
     nautilus_application_set_accelerators (app, "view.zoom-in", zoom_in_accels);
     nautilus_application_set_accelerators (app, "view.zoom-out", zoom_out_accels);
     nautilus_application_set_accelerator (app, "view.show-hidden-files", "<control>h");
-    /* Background menu */
-    nautilus_application_set_accelerator (app, "view.select-all", "<control>a");
+    /* Despite putting copy/cut at the widget scope instead of the global one,
+     * we're putting paste globally so that it's easy to switch between apps
+     * with e.g. Alt+Tab and paste directly the copied file without having to
+     * make sure the focus is on the files view.
+     */
     nautilus_application_set_accelerator (app, "view.paste_accel", "<control>v");
-    nautilus_application_set_accelerator (app, "view.create-link", "<control>m");
-    /* Selection menu */
-    nautilus_application_set_accelerators (app, "view.open-with-default-application", open_accels);
-    nautilus_application_set_accelerator (app, "view.open-item-new-tab", "<control>Return");
-    nautilus_application_set_accelerator (app, "view.open-item-new-window", "<Shift>Return");
-    nautilus_application_set_accelerators (app, "view.move-to-trash", move_to_trash_accels);
-    nautilus_application_set_accelerators (app, "view.delete-from-trash", move_to_trash_accels);
-    nautilus_application_set_accelerators (app, "view.delete-permanently-shortcut", delete_permanently_accels);
-    /* When trash is not available, allow the "Delete" keys to delete permanently, that is, when
-     * the menu item is available, since we never make both the trash and delete-permanently-menu-item
-     * actions active */
-    nautilus_application_set_accelerators (app, "view.delete-permanently-menu-item", move_to_trash_accels);
-    nautilus_application_set_accelerators (app, "view.permanent-delete-permanently-menu-item", delete_permanently_accels);
-    nautilus_application_set_accelerators (app, "view.properties", open_properties);
-    nautilus_application_set_accelerator (app, "view.open-item-location", "<control><alt>o");
-    nautilus_application_set_accelerator (app, "view.rename", "F2");
-    nautilus_application_set_accelerator (app, "view.cut", "<control>x");
-    nautilus_application_set_accelerator (app, "view.copy", "<control>c");
-    nautilus_application_set_accelerator (app, "view.create-link-in-place", "<control><shift>m");
     nautilus_application_set_accelerator (app, "view.new-folder", "<control><shift>n");
-    /* Only accesible by shorcuts */
     nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
     nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
-    nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
-    nautilus_application_set_accelerator (app, "view.preview-selection", "space");
-    nautilus_application_set_accelerators (app, "view.popup-menu", popup_menu_accels);
 
     priv->starred_cancellable = g_cancellable_new ();
 
