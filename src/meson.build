@@ -310,7 +310,8 @@ if get_option('tests') == 'all'
     ],
     env: [
       'G_DEBUG=fatal-warnings',
-      'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data'))
+      'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data')),
+      'RUNNING_TESTS=@0@'.format('TRUE')
     ]
   )
 endif
