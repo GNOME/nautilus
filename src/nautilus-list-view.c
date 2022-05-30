@@ -408,6 +408,7 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
     NautilusFile *file;
     g_autofree gchar *uri = NULL;
     GList *selection;
+    NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
 
     list_model = list_view->details->model;
 
@@ -422,9 +423,9 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
     uri = nautilus_file_get_uri (file);
     selection = g_list_prepend (NULL, file);
 
-    if (nautilus_tag_manager_file_is_starred (list_view->details->tag_manager, uri))
+    if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
     {
-        nautilus_tag_manager_unstar_files (list_view->details->tag_manager,
+        nautilus_tag_manager_unstar_files (tag_manager,
                                            G_OBJECT (list_view),
                                            selection,
                                            NULL,
@@ -432,7 +433,7 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
     }
     else
     {
-        nautilus_tag_manager_star_files (list_view->details->tag_manager,
+        nautilus_tag_manager_star_files (tag_manager,
                                          G_OBJECT (list_view),
                                          selection,
                                          NULL,
@@ -1593,7 +1594,7 @@ starred_cell_data_func (GtkTreeViewColumn *column,
 
     uri = nautilus_file_get_uri (file);
 
-    if (nautilus_tag_manager_file_is_starred (view->details->tag_manager, uri))
+    if (nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (), uri))
     {
         g_object_set (renderer,
                       "icon-name", "starred-symbolic",
@@ -2356,7 +2357,7 @@ get_visible_columns (NautilusListView *list_view)
     uri = nautilus_file_get_uri (file);
 
     location = g_file_new_for_uri (uri);
-    can_star_current_directory = nautilus_tag_manager_can_star_contents (list_view->details->tag_manager,
+    can_star_current_directory = nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (),
                                                                          location);
     is_starred = eel_uri_is_starred (uri);
 
@@ -3527,10 +3528,9 @@ nautilus_list_view_finalize (GObject *object)
     g_cancellable_cancel (list_view->details->starred_cancellable);
     g_clear_object (&list_view->details->starred_cancellable);
 
-    g_signal_handlers_disconnect_by_func (list_view->details->tag_manager,
+    g_signal_handlers_disconnect_by_func (nautilus_tag_manager_get (),
                                           on_starred_files_changed,
                                           list_view);
-    g_clear_object (&list_view->details->tag_manager);
 
     g_free (list_view->details);
 
@@ -3944,10 +3944,9 @@ nautilus_list_view_init (NautilusListView *list_view)
 
     list_view->details->regex = g_regex_new ("\\R+", 0, G_REGEX_MATCH_NEWLINE_ANY, NULL);
 
-    list_view->details->tag_manager = nautilus_tag_manager_get ();
     list_view->details->starred_cancellable = g_cancellable_new ();
 
-    g_signal_connect (list_view->details->tag_manager,
+    g_signal_connect (nautilus_tag_manager_get (),
                       "starred-changed",
                       (GCallback) on_starred_files_changed,
                       list_view);

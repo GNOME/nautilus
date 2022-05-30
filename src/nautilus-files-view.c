@@ -270,7 +270,6 @@ typedef struct
     GCancellable *clipboard_cancellable;
 
     GCancellable *starred_cancellable;
-    NautilusTagManager *tag_manager;
 
     gulong name_accepted_handler_id;
     gulong cancelled_handler_id;
@@ -1639,7 +1638,7 @@ action_star (GSimpleAction *action,
     priv = nautilus_files_view_get_instance_private (view);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
-    nautilus_tag_manager_star_files (priv->tag_manager,
+    nautilus_tag_manager_star_files (nautilus_tag_manager_get (),
                                      G_OBJECT (view),
                                      selection,
                                      NULL,
@@ -1659,7 +1658,7 @@ action_unstar (GSimpleAction *action,
     priv = nautilus_files_view_get_instance_private (view);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
-    nautilus_tag_manager_unstar_files (priv->tag_manager,
+    nautilus_tag_manager_unstar_files (nautilus_tag_manager_get (),
                                        G_OBJECT (view),
                                        selection,
                                        NULL,
@@ -3338,7 +3337,6 @@ nautilus_files_view_finalize (GObject *object)
 
     g_cancellable_cancel (priv->starred_cancellable);
     g_clear_object (&priv->starred_cancellable);
-    g_clear_object (&priv->tag_manager);
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
 }
@@ -7682,7 +7680,7 @@ real_update_actions_state (NautilusFilesView *view)
 
     current_location = nautilus_file_get_location (nautilus_files_view_get_directory_as_file (view));
     current_uri = g_file_get_uri (current_location);
-    can_star_current_directory = nautilus_tag_manager_can_star_contents (priv->tag_manager, current_location);
+    can_star_current_directory = nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (), current_location);
 
     show_star = (selection != NULL) &&
                 (can_star_current_directory || selection_contains_starred);
@@ -7700,7 +7698,7 @@ real_update_actions_state (NautilusFilesView *view)
             break;
         }
 
-        if (nautilus_tag_manager_file_is_starred (priv->tag_manager, uri))
+        if (nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (), uri))
         {
             show_star = FALSE;
         }
@@ -9593,7 +9591,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerators (app, "view.popup-menu", popup_menu_accels);
 
     priv->starred_cancellable = g_cancellable_new ();
-    priv->tag_manager = nautilus_tag_manager_get ();
 
     priv->rename_file_controller = nautilus_rename_file_popover_controller_new ();
 

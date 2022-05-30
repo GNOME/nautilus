@@ -75,7 +75,6 @@ struct NautilusListViewDetails {
 
   GRegex *regex;
 
-  NautilusTagManager *tag_manager;
   GCancellable *starred_cancellable;
 };
 

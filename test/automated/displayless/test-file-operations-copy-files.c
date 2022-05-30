@@ -1,4 +1,5 @@
 #include "test-utilities.h"
+#include <src/nautilus-tag-manager.h>
 
 static void
 test_copy_one_file (void)
@@ -1304,9 +1305,11 @@ main (int   argc,
       char *argv[])
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    g_autoptr (NautilusTagManager) tag_manager = NULL;
     int ret;
 
     undo_manager = nautilus_file_undo_manager_new ();
+    tag_manager = nautilus_tag_manager_new ();
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
     nautilus_ensure_extension_points ();

@@ -26,7 +26,6 @@ struct _NautilusFavoriteDirectory
 {
     NautilusDirectory parent_slot;
 
-    NautilusTagManager *tag_manager;
     GList *files;
 
     GList *monitor_list;
@@ -96,6 +95,7 @@ disconnect_and_unmonitor_file (NautilusFile              *file,
 static void
 nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
 {
+    NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
     GList *l;
     GList *tmp_l;
     GList *new_starred_files;
@@ -120,7 +120,7 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
         g_hash_table_add (uri_table, nautilus_file_get_uri (NAUTILUS_FILE (l->data)));
     }
 
-    new_starred_files = nautilus_tag_manager_get_starred_files (self->tag_manager);
+    new_starred_files = nautilus_tag_manager_get_starred_files (tag_manager);
 
     for (l = new_starred_files; l != NULL; l = l->next)
     {
@@ -147,7 +147,7 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
     {
         uri = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
 
-        if (!nautilus_tag_manager_file_is_starred (self->tag_manager, uri))
+        if (!nautilus_tag_manager_file_is_starred (tag_manager, uri))
         {
             files_removed = g_list_prepend (files_removed,
                                             nautilus_file_ref (NAUTILUS_FILE (l->data)));
@@ -217,7 +217,7 @@ real_contains_file (NautilusDirectory *directory,
 
     uri = nautilus_file_get_uri (file);
 
-    return nautilus_tag_manager_file_is_starred (self->tag_manager, uri);
+    return nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (), uri);
 }
 
 static gboolean
@@ -451,7 +451,7 @@ nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
 
     file_list = NULL;
 
-    starred_files = nautilus_tag_manager_get_starred_files (self->tag_manager);
+    starred_files = nautilus_tag_manager_get_starred_files (nautilus_tag_manager_get ());
 
     for (l = starred_files; l != NULL; l = l->next)
     {
@@ -495,11 +495,10 @@ nautilus_starred_directory_finalize (GObject *object)
 
     self = NAUTILUS_STARRED_DIRECTORY (object);
 
-    g_signal_handlers_disconnect_by_func (self->tag_manager,
+    g_signal_handlers_disconnect_by_func (nautilus_tag_manager_get (),
                                           on_starred_files_changed,
                                           self);
 
-    g_object_unref (self->tag_manager);
     nautilus_file_list_free (self->files);
 
     G_OBJECT_CLASS (nautilus_starred_directory_parent_class)->finalize (object);
@@ -568,9 +567,7 @@ nautilus_starred_directory_new ()
 static void
 nautilus_starred_directory_init (NautilusFavoriteDirectory *self)
 {
-    self->tag_manager = nautilus_tag_manager_get ();
-
-    g_signal_connect (self->tag_manager,
+    g_signal_connect (nautilus_tag_manager_get (),
                       "starred-changed",
                       (GCallback) on_starred_files_changed,
                       self);

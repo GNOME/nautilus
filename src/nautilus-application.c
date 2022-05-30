@@ -1097,7 +1097,7 @@ nautilus_application_init (NautilusApplication *self)
                                                  NULL);
 
     priv->undo_manager = nautilus_file_undo_manager_new ();
-    priv->tag_manager = nautilus_tag_manager_get ();
+    priv->tag_manager = nautilus_tag_manager_new ();
 
     g_application_add_main_option_entries (G_APPLICATION (self), options);
 

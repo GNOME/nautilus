@@ -1437,11 +1437,10 @@ starred_redo_func (NautilusFileUndoInfo           *info,
                    NautilusFileOperationsDBusData *dbus_data)
 {
     NautilusFileUndoInfoStarred *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
-    g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
 
     if (self->starred)
     {
-        nautilus_tag_manager_star_files (tag_manager,
+        nautilus_tag_manager_star_files (nautilus_tag_manager_get (),
                                          G_OBJECT (info),
                                          self->files,
                                          on_undo_starred_tags_updated,
@@ -1449,7 +1448,7 @@ starred_redo_func (NautilusFileUndoInfo           *info,
     }
     else
     {
-        nautilus_tag_manager_unstar_files (tag_manager,
+        nautilus_tag_manager_unstar_files (nautilus_tag_manager_get (),
                                            G_OBJECT (info),
                                            self->files,
                                            on_undo_starred_tags_updated,
@@ -1463,11 +1462,10 @@ starred_undo_func (NautilusFileUndoInfo           *info,
                    NautilusFileOperationsDBusData *dbus_data)
 {
     NautilusFileUndoInfoStarred *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
-    g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
 
     if (self->starred)
     {
-        nautilus_tag_manager_unstar_files (tag_manager,
+        nautilus_tag_manager_unstar_files (nautilus_tag_manager_get (),
                                            G_OBJECT (info),
                                            self->files,
                                            on_undo_starred_tags_updated,
@@ -1475,7 +1473,7 @@ starred_undo_func (NautilusFileUndoInfo           *info,
     }
     else
     {
-        nautilus_tag_manager_star_files (tag_manager,
+        nautilus_tag_manager_star_files (nautilus_tag_manager_get (),
                                          G_OBJECT (info),
                                          self->files,
                                          on_undo_starred_tags_updated,

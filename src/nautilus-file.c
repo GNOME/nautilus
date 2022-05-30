@@ -1863,7 +1863,6 @@ rename_get_info_callback (GObject      *source_object,
     new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
     if (new_info != NULL)
     {
-        g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
         g_autoptr (GFile) old_location = NULL;
         g_autoptr (GFile) new_location = NULL;
 
@@ -1891,7 +1890,9 @@ rename_get_info_callback (GObject      *source_object,
         new_uri = g_file_get_uri (new_location);
 
         nautilus_directory_moved (old_uri, new_uri);
-        nautilus_tag_manager_update_moved_uris (tag_manager, old_location, new_location);
+        nautilus_tag_manager_update_moved_uris (nautilus_tag_manager_get (),
+                                                old_location,
+                                                new_location);
 
         g_free (new_uri);
         g_free (old_uri);
@@ -3505,7 +3506,7 @@ static int
 compare_by_starred (NautilusFile *file_1,
                     NautilusFile *file_2)
 {
-    g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
+    NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
     g_autofree gchar *uri_1 = NULL;
     g_autofree gchar *uri_2 = NULL;
     gboolean file_1_is_starred;
