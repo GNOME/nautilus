@@ -1260,7 +1260,10 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     nautilus_init_application_actions (self);
 
-    nautilus_tag_manager_maybe_migrate_tracker2_data (priv->tag_manager);
+    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
+    {
+        nautilus_tag_manager_maybe_migrate_tracker2_data (priv->tag_manager);
+    }
 
     nautilus_profile_end (NULL);
 
