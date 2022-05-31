@@ -29,6 +29,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusTagManager, nautilus_tag_manager, NAUTILUS, TAG_MANAGER, GObject);
 
 NautilusTagManager* nautilus_tag_manager_new                (void);
+NautilusTagManager* nautilus_tag_manager_new_dummy          (void);
 NautilusTagManager* nautilus_tag_manager_get                (void);
 
 GList*              nautilus_tag_manager_get_starred_files (NautilusTagManager *self);

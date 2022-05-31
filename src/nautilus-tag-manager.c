@@ -51,6 +51,9 @@ G_DEFINE_TYPE (NautilusTagManager, nautilus_tag_manager, G_TYPE_OBJECT);
 
 static NautilusTagManager *tag_manager = NULL;
 
+/* See nautilus_tag_manager_new_dummy() documentation for details. */
+static gboolean make_dummy_instance = FALSE;
+
 typedef struct
 {
     NautilusTagManager *tag_manager;
@@ -587,6 +590,23 @@ nautilus_tag_manager_new (void)
 }
 
 /**
+ * nautilus_tag_manager_new_dummy:
+ *
+ * Creates a dummy tag manager without database.
+ *
+ * Useful only for tests where the tag manager is needed but not being tested
+ * and we don't want to fail the tests due to irrelevant D-Bus failures.
+ *
+ * Returns: (transfer full): the #NautilusTagManager singleton object.
+ */
+NautilusTagManager *
+nautilus_tag_manager_new_dummy (void)
+{
+    make_dummy_instance = TRUE;
+    return nautilus_tag_manager_new ();
+}
+
+/**
  * nautilus_tag_manager_get:
  *
  * Returns: (transfer none): the #NautilusTagManager singleton object.
@@ -664,6 +684,12 @@ nautilus_tag_manager_init (NautilusTagManager *self)
                                                      /* values are keys */
                                                      NULL);
     self->home = g_file_new_for_path (g_get_home_dir ());
+
+    if (make_dummy_instance)
+    {
+        /* Skip database initiation for nautilus_tag_manager_new_dummy(). */
+        return;
+    }
 
     self->cancellable = g_cancellable_new ();
     self->database_ok = setup_database (self, self->cancellable, &error);

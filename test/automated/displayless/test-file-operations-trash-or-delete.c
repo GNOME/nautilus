@@ -578,7 +578,7 @@ main (int   argc,
     g_test_set_nonfatal_assertions ();
     nautilus_ensure_extension_points ();
     undo_manager = nautilus_file_undo_manager_new ();
-    tag_manager = nautilus_tag_manager_new ();
+    tag_manager = nautilus_tag_manager_new_dummy ();
 
     setup_test_suite ();
 
