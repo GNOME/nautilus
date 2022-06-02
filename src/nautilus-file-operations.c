@@ -3726,6 +3726,7 @@ verify_destination (CommonJob  *job,
 {
     GFileInfo *info, *fsinfo;
     GError *error;
+    const char *fs_type;
     guint64 free_size;
     guint64 size_difference;
     char *primary, *secondary, *details;
@@ -3844,9 +3845,11 @@ retry:
 
     fsinfo = g_file_query_filesystem_info (dest,
                                            G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
-                                           G_FILE_ATTRIBUTE_FILESYSTEM_READONLY,
+                                           G_FILE_ATTRIBUTE_FILESYSTEM_READONLY ","
+                                           G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
                                            job->cancellable,
                                            NULL);
+
     if (fsinfo == NULL)
     {
         /* All sorts of things can go wrong getting the fs info (like not supported)
@@ -3855,7 +3858,13 @@ retry:
         return;
     }
 
+    /* ramfs reports a free size, but that size is always 0. If we're copying to ramfs,
+     * skip the free size check. */
+    fs_type = g_file_info_get_attribute_string (fsinfo,
+                                                G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+
     if (required_size > 0 &&
+        g_strcmp0 (fs_type, "ramfs") != 0 &&
         g_file_info_has_attribute (fsinfo, G_FILE_ATTRIBUTE_FILESYSTEM_FREE))
     {
         free_size = g_file_info_get_attribute_uint64 (fsinfo,
