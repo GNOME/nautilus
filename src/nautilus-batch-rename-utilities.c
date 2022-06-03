@@ -189,9 +189,11 @@ batch_rename_sort_lists_for_rename (GList    **selection,
              new_names_list = new_names_list->next, files = files->next)
         {
             g_autofree gchar *old_file_name = NULL;
+            g_autoptr (NautilusFile) parent = NULL;
 
             old_file_name = nautilus_file_get_name (NAUTILUS_FILE (files->data));
             new_file_name = new_names_list->data;
+            parent = nautilus_file_get_parent (NAUTILUS_FILE (files->data));
 
             if (is_undo_redo)
             {
@@ -205,11 +207,15 @@ batch_rename_sort_lists_for_rename (GList    **selection,
                  files2 = files2->next, new_names_list2 = new_names_list2->next)
             {
                 g_autofree gchar *file_name = NULL;
+                g_autoptr (NautilusFile) parent2 = NULL;
 
                 file_name = nautilus_file_get_name (NAUTILUS_FILE (files2->data));
                 new_name = new_names_list2->data;
 
-                if (files2 != files && g_strcmp0 (file_name, new_file_name->str) == 0)
+                parent2 = nautilus_file_get_parent (NAUTILUS_FILE (files2->data));
+
+                if (files2 != files && g_strcmp0 (file_name, new_file_name->str) == 0 &&
+                    parent == parent2)
                 {
                     file = NAUTILUS_FILE (files2->data);
 
