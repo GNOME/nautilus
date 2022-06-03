@@ -188,6 +188,11 @@
   margin-bottom: 4px;
 }
 
+.nautilus-list-view.compact columnview > listview > row {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 /* GTK unconditionally sets padding on GtkColumnViewCell, even with .data-table.
  * We don't want this to hpappen because we have event controllers on the child,
  * which should thus cover the whole area of the row. */
@@ -199,7 +204,12 @@
   padding: 6px;
 }
 
-.nautilus-list-view image.star {
+.nautilus-list-view.compact #NautilusViewCell {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.nautilus-list-view:not(.compact) image.star {
   padding: 6px;
 }
 

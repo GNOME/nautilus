@@ -700,6 +700,15 @@ set_zoom_level (NautilusListView *self,
     nautilus_list_base_set_icon_size (NAUTILUS_LIST_BASE (self),
                                       get_icon_size_for_zoom_level (new_level));
 
+    if (self->zoom_level == NAUTILUS_LIST_ZOOM_LEVEL_SMALL)
+    {
+        gtk_widget_add_css_class (GTK_WIDGET (self), "compact");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (GTK_WIDGET (self), "compact");
+    }
+
     nautilus_files_view_update_toolbar_menus (NAUTILUS_FILES_VIEW (self));
 }
 
