@@ -673,6 +673,19 @@ real_set_selection (NautilusFilesView *files_view,
                         nautilus_view_model_get_index (priv->model, l->data));
     }
 
+    /* Set focus on the first selected row. */
+    if (!g_queue_is_empty (selection_items))
+    {
+        NautilusViewItem *item = g_queue_peek_head (selection_items);
+        GtkWidget *parent = gtk_widget_get_parent (nautilus_view_item_get_item_ui (item));
+
+        if (!gtk_widget_grab_focus (parent))
+        {
+            /* In GtkColumnView, the parent is a cell; its parent is the row. */
+            gtk_widget_grab_focus (gtk_widget_get_parent (parent));
+        }
+    }
+
     gtk_bitset_union (update_set, selection_set);
     gtk_selection_model_set_selection (GTK_SELECTION_MODEL (priv->model),
                                        selection_set,
