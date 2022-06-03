@@ -15,6 +15,16 @@
       <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
       <attribute name="action">win.bookmark-current-location</attribute>
     </item>
+    <item>
+      <attribute name="label" translatable="yes">R_eload</attribute>
+      <attribute name="action">win.reload</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">St_op</attribute>
+      <attribute name="action">win.stop</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
     <section>
       <item>
         <attribute name="label" translatable="yes">_Open With Other Application</attribute>
