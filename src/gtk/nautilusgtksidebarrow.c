@@ -20,6 +20,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include "nautilus-enum-types.h"
+#include "nautilus-file.h"
 
 #include "nautilusgtksidebarrowprivate.h"
 /* For section and place type enums */
@@ -46,6 +47,7 @@ struct _NautilusGtkSidebarRow
   NautilusGtkPlacesSectionType section_type;
   NautilusGtkPlacesPlaceType place_type;
   char *uri;
+  NautilusFile *file;
   GDrive *drive;
   GVolume *volume;
   GMount *mount;
@@ -72,6 +74,7 @@ enum
   PROP_SECTION_TYPE,
   PROP_PLACE_TYPE,
   PROP_URI,
+  PROP_NAUTILUS_FILE,
   PROP_DRIVE,
   PROP_VOLUME,
   PROP_MOUNT,
@@ -179,6 +182,10 @@ nautilus_gtk_sidebar_row_get_property (GObject    *object,
 
     case PROP_URI:
       g_value_set_string (value, self->uri);
+      break;
+
+    case PROP_NAUTILUS_FILE:
+      g_value_set_object (value, self->file);
       break;
 
     case PROP_DRIVE:
@@ -300,6 +307,12 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
     case PROP_URI:
       g_free (self->uri);
       self->uri = g_strdup (g_value_get_string (value));
+      if (self->uri != NULL)
+        {
+          self->file = nautilus_file_get_by_uri (self->uri);
+          if (self->file != NULL)
+            nautilus_file_call_when_ready (self->file, NAUTILUS_FILE_ATTRIBUTE_MOUNT, NULL, NULL);
+        }
       break;
 
     case PROP_DRIVE:
@@ -455,6 +468,7 @@ nautilus_gtk_sidebar_row_finalize (GObject *object)
   self->eject_tooltip = NULL;
   g_free (self->uri);
   self->uri = NULL;
+  nautilus_file_unref (self->file);
   g_clear_object (&self->drive);
   g_clear_object (&self->volume);
   g_clear_object (&self->mount);
@@ -473,6 +487,8 @@ nautilus_gtk_sidebar_row_init (NautilusGtkSidebarRow *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 
   gtk_widget_set_focus_on_click (GTK_WIDGET (self), FALSE);
+
+  self->file = NULL;
 }
 
 static void
@@ -579,6 +595,14 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
                           G_PARAM_CONSTRUCT_ONLY |
                           G_PARAM_STATIC_STRINGS));
 
+  properties [PROP_NAUTILUS_FILE] =
+    g_param_spec_object ("file",
+                       "File",
+                       "Nautilus File",
+                       NAUTILUS_TYPE_FILE,
+                       (G_PARAM_READABLE |
+                        G_PARAM_STATIC_STRINGS ));
+
   properties [PROP_DRIVE] =
     g_param_spec_object ("drive",
                          "Drive",
@@ -654,6 +678,7 @@ nautilus_gtk_sidebar_row_clone (NautilusGtkSidebarRow *self)
                       "section-type", self->section_type,
                       "place-type", self->place_type,
                       "uri", self->uri,
+                      "file", self->file,
                       "drive", self->drive,
                       "volume", self->volume,
                       "mount", self->mount,

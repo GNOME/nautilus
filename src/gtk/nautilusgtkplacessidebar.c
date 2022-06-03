@@ -331,7 +331,7 @@ emit_unmount_operation (NautilusGtkPlacesSidebar *sidebar,
 
 static GdkDragAction
 emit_drag_action_requested (NautilusGtkPlacesSidebar *sidebar,
-                            GFile            *dest_file,
+                            NautilusFile            *dest_file,
                             GSList           *source_file_list)
 {
   GdkDragAction ret_action = 0;
@@ -1467,9 +1467,9 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
 {
   NautilusGtkPlacesPlaceType place_type;
   NautilusGtkPlacesSectionType section_type;
+  g_autoptr (NautilusFile) dest_file = NULL;
   gboolean valid = FALSE;
   char *uri;
-  GFile *dest_file;
   int drag_action;
 
   g_return_val_if_fail (value != NULL, TRUE);
@@ -1481,6 +1481,7 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                 "place-type", &place_type,
                 "section_type", &section_type,
                 "uri", &uri,
+                "file", &dest_file,
                 NULL);
 
   if (place_type == NAUTILUS_GTK_PLACES_STARRED_LOCATION)
@@ -1528,11 +1529,8 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
       /* Dragging a file */
       if (uri != NULL)
         {
-          dest_file = g_file_new_for_uri (uri);
           drag_action = emit_drag_action_requested (sidebar, dest_file, g_value_get_boxed (value));
           valid = drag_action > 0;
-
-          g_object_unref (dest_file);
         }
       else
         {
@@ -1713,11 +1711,13 @@ drag_motion_callback (GtkDropTarget    *target,
     }
   else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
+      NautilusFile *file;
       gtk_list_box_drag_highlight_row (GTK_LIST_BOX (sidebar->list_box), row);
 
       g_object_get (row,
                     "place-type", &place_type,
                     "uri", &drop_target_uri,
+                    "file", &file,
                     NULL);
       /* URIs are being dragged.  See if the caller wants to handle a
        * file move/copy operation itself, or if we should only try to
@@ -1734,12 +1734,13 @@ drag_motion_callback (GtkDropTarget    *target,
             {
               GFile *dest_file = g_file_new_for_uri (drop_target_uri);
 
-              action = emit_drag_action_requested (sidebar, dest_file, g_value_get_boxed (value));
+              action = emit_drag_action_requested (sidebar, file, g_value_get_boxed (value));
 
               g_object_unref (dest_file);
             }
         }
 
+      nautilus_file_unref (file);
       g_free (drop_target_uri);
     }
   else
