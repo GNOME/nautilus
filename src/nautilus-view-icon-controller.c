@@ -4,6 +4,7 @@
 #include "nautilus-view-model.h"
 #include "nautilus-files-view.h"
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-metadata.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-directory.h"
@@ -27,6 +28,7 @@ struct _NautilusViewIconController
     gboolean single_click_mode;
     gboolean activate_on_release;
     gboolean deny_background_click;
+    NautilusViewItemModel *clicked_item;
 
     guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
@@ -807,6 +809,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
     selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
 
     /* Before anything else, store event state to be read by other handlers. */
+    g_set_weak_pointer (&self->clicked_item, item_model);
     self->deny_background_click = TRUE;
     self->activate_on_release = (self->single_click_mode &&
                                  button == GDK_BUTTON_PRIMARY &&
@@ -901,6 +904,7 @@ on_view_click_pressed (GtkGestureClick *gesture,
         return;
     }
 
+    g_clear_weak_pointer (&self->clicked_item);
     /* Don't interfere with GtkGridView default selection handling when
      * holding Ctrl and Shift. */
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
@@ -924,6 +928,125 @@ on_view_click_pressed (GtkGestureClick *gesture,
         nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
                                                             view_x, view_y);
     }
+}
+
+#define MAX_DRAWN_DRAG_ICONS 10
+
+static GdkPaintable *
+get_paintable_for_drag_selection (GList *selection)
+{
+    g_autoqueue (GdkPaintable) icons = g_queue_new ();
+    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+    guint n_icons;
+    float dy;
+    /* A wide shadow for the pile of icons gives a sense of floating. */
+    GskShadow stack_shadow = {.color = {0, 0, 0, .alpha = 0.15}, .dx = 0, .dy = 2, .radius = 10 };
+    /* A slight shadow swhich makes each icon in the stack look separate. */
+    GskShadow icon_shadow = {.color = {0, 0, 0, .alpha = 0.20}, .dx = 0, .dy = 1, .radius = 1 };
+    GskRoundedRect rounded_rect;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (selection->data), NULL);
+
+    /* The selection list is reversed compared to what the user sees. Get the
+     * first items by starting from the end of the list. */
+    for (GList *l = g_list_last (selection);
+         l != NULL && g_queue_get_length (icons) <= MAX_DRAWN_DRAG_ICONS;
+         l = l->prev)
+    {
+        g_queue_push_tail (icons,
+                           nautilus_file_get_icon_paintable (l->data,
+                                                             NAUTILUS_GRID_ICON_SIZE_LARGE,
+                                                             1,
+                                                             NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS | NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE));
+    }
+
+    /* When there are 2 or 3 identical icons, we need to space them more,
+     * otherwise it would be hard to tell there is more than one icon at all.
+     * The more icons we have, the easier it is to notice multiple icons are
+     * stacked, and the more compact we want to be.
+     *
+     *  1 icon          2 icons         3 icons         4+ icons
+     *  .--------.      .--------.      .--------.      .--------.
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  '--------'      |--------|      |--------|      |--------|
+     *                  |        |      |        |      |--------|
+     *                  |        |      |--------|      |--------|
+     *                  '--------'      |        |      |--------|
+     *                                  '--------'      '--------'
+     */
+    n_icons = g_queue_get_length (icons);
+    dy = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
+
+    /* We want the first icon on top of every other. So we need to start drawing
+     * the stack from the bottom, that is, from the last icon. This requires us
+     * to jump to the last position and then move upwards one step at a time.
+     * Also, add 10px horizontal offset, for shadow, to workaround this GTK bug:
+     * https://gitlab.gnome.org/GNOME/gtk/-/issues/2341
+     */
+    gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (10, dy * n_icons));
+    gtk_snapshot_push_shadow (snapshot, &stack_shadow, 1);
+    for (GList *l = g_queue_peek_tail_link (icons); l != NULL; l = l->prev)
+    {
+        double w = gdk_paintable_get_intrinsic_width (l->data);
+        double h = gdk_paintable_get_intrinsic_height (l->data);
+        /* Offsets needed to center thumbnails. Floored to keep images sharp. */
+        float x = floor ((NAUTILUS_GRID_ICON_SIZE_LARGE - w) / 2);
+        float y = floor ((NAUTILUS_GRID_ICON_SIZE_LARGE - h) / 2);
+        gsk_rounded_rect_init_from_rect (&rounded_rect, &GRAPHENE_RECT_INIT (0, 0, w, h), 6);
+
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (0, -dy));
+
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (x, y));
+        gtk_snapshot_push_shadow (snapshot, &icon_shadow, 1);
+        gtk_snapshot_push_rounded_clip (snapshot, &rounded_rect);
+
+        gdk_paintable_snapshot (l->data, snapshot, w, h);
+
+        gtk_snapshot_pop (snapshot); /* Pop rounded clip */
+        gtk_snapshot_pop (snapshot); /* Pop icon shadow */
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (-x, -y));
+    }
+    gtk_snapshot_pop (snapshot); /* Pop stack shadow */
+
+    return gtk_snapshot_to_paintable (snapshot, NULL);
+}
+
+static GdkContentProvider *
+on_drag_prepare (GtkDragSource              *source,
+                 double                      x,
+                 double                      y,
+                 NautilusViewIconController *self)
+{
+    g_autolist (NautilusFile) selection = NULL;
+    g_autoslist (GFile) file_list = NULL;
+    g_autoptr (GdkPaintable) paintable = NULL;
+    GdkDragAction actions;
+
+    /* Antecipate selection, if necessary, for dragging the clicked item. */
+    if (self->clicked_item != NULL)
+    {
+        select_single_item_if_not_selected (self, self->clicked_item);
+    }
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+    if (selection == NULL)
+    {
+        return NULL;
+    }
+
+    gtk_gesture_set_state (GTK_GESTURE (source), GTK_EVENT_SEQUENCE_CLAIMED);
+
+    file_list = convert_file_list_to_gdk_file_list (selection);
+    actions = GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK | GDK_ACTION_MOVE;
+    gtk_drag_source_set_actions (source, actions);
+
+    paintable = get_paintable_for_drag_selection (selection);
+    gtk_drag_source_set_icon (source, paintable, 0, 0);
+
+    return gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
 }
 
 static void
@@ -1301,6 +1424,7 @@ dispose (GObject *object)
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
 
+    g_clear_weak_pointer (&self->clicked_item);
     g_clear_handle_id (&self->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&self->prioritize_thumbnailing_handle_id, g_source_remove);
 
@@ -1541,6 +1665,11 @@ constructed (GObject *object)
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_view_click_pressed), self);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_drag_source_new ());
+    g_signal_connect (controller, "prepare", G_CALLBACK (on_drag_prepare), self);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
     gtk_widget_add_controller (GTK_WIDGET (self->view_ui), controller);

@@ -4198,47 +4198,6 @@ on_end_file_changes (NautilusFilesView *view)
     }
 }
 
-static GdkContentProvider *
-on_drag_prepare (GtkDragSource     *source,
-                 double             x,
-                 double             y,
-                 NautilusFilesView *self)
-{
-    g_autolist (NautilusFile) selection = NULL;
-    g_autoslist (GFile) file_list = NULL;
-    g_autoptr (GdkPaintable) paintable = NULL;
-    g_autoptr (GtkSnapshot) snapshot = NULL;
-    GdkDragAction actions;
-
-    selection = nautilus_files_view_get_selection (NAUTILUS_VIEW (self));
-    if (selection != NULL)
-    {
-        file_list = convert_file_list_to_gdk_file_list (selection);
-        actions = GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK | GDK_ACTION_MOVE;
-        gtk_drag_source_set_actions (source, actions);
-        paintable = nautilus_file_get_icon_paintable (selection->data, NAUTILUS_GRID_ICON_SIZE_LARGE, 1, 0);
-        for (GList *cur_file = selection->next; cur_file != NULL; cur_file = cur_file->next)
-        {
-            g_autoptr (GdkPaintable) paintable2 = NULL;
-            paintable2 = nautilus_file_get_icon_paintable (cur_file->data, NAUTILUS_GRID_ICON_SIZE_LARGE, 1, 0);
-            if (paintable2 != paintable || cur_file->next == NULL)
-            {
-                snapshot = gtk_snapshot_new ();
-                gdk_paintable_snapshot (paintable, snapshot, NAUTILUS_GRID_ICON_SIZE_LARGE, NAUTILUS_GRID_ICON_SIZE_LARGE);
-                gdk_paintable_snapshot (paintable2, snapshot, NAUTILUS_GRID_ICON_SIZE_LARGE * 0.5, NAUTILUS_GRID_ICON_SIZE_LARGE * 0.5);
-                g_object_unref (paintable);
-                paintable = gtk_snapshot_to_paintable (snapshot, NULL);
-                break;
-            }
-        }
-
-        gtk_drag_source_set_icon (source, paintable, 0, 0);
-        return gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
-    }
-
-    return NULL;
-}
-
 static int
 compare_pointers (gconstpointer pointer_1,
                   gconstpointer pointer_2)
@@ -9389,7 +9348,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 #endif
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
-    GtkDragSource *drag_source;
     GtkEventController *controller;
     gchar *templates_uri;
     GdkClipboard *clipboard;
@@ -9593,10 +9551,6 @@ nautilus_files_view_init (NautilusFilesView *view)
                               G_CALLBACK (schedule_update_context_menus), view);
 
     priv->in_destruction = FALSE;
-
-    drag_source = gtk_drag_source_new ();
-    g_signal_connect (drag_source, "prepare", G_CALLBACK (on_drag_prepare), view);
-    gtk_widget_add_controller (GTK_WIDGET (view), GTK_EVENT_CONTROLLER (drag_source));
 
 #if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
     /* Accessibility */
