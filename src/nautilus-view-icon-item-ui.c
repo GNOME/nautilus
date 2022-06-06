@@ -1,13 +1,11 @@
 #include "nautilus-view-icon-item-ui.h"
-#include "nautilus-view-item-model.h"
-#include "nautilus-file.h"
-#include "nautilus-thumbnails.h"
 
 struct _NautilusViewIconItemUi
 {
-    GtkBox parent_instance;
+    NautilusViewCell parent_instance;
 
-    NautilusViewItemModel *model;
+    GSignalGroup *item_signal_group;
+
     GQuark *caption_attributes;
 
     GtkWidget *fixed_height_box;
@@ -16,24 +14,16 @@ struct _NautilusViewIconItemUi
     GtkWidget *first_caption;
     GtkWidget *second_caption;
     GtkWidget *third_caption;
-
-    gboolean called_once;
 };
 
-G_DEFINE_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, GTK_TYPE_BOX)
-
-enum
-{
-    PROP_0,
-    PROP_MODEL,
-    N_PROPS
-};
+G_DEFINE_TYPE (NautilusViewIconItemUi, nautilus_view_icon_item_ui, NAUTILUS_TYPE_VIEW_CELL)
 
 #define EXTRA_WIDTH_FOR_TEXT 36
 
 static void
 update_icon (NautilusViewIconItemUi *self)
 {
+    NautilusViewItemModel *item;
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
     GtkStyleContext *style_context;
@@ -41,8 +31,10 @@ update_icon (NautilusViewIconItemUi *self)
     guint icon_size;
     g_autofree gchar *thumbnail_path = NULL;
 
-    file = nautilus_view_item_model_get_file (self->model);
-    icon_size = nautilus_view_item_model_get_icon_size (self->model);
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_return_if_fail (item != NULL);
+    file = nautilus_view_item_model_get_file (item);
+    icon_size = nautilus_view_item_model_get_icon_size (item);
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
             NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
             NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
@@ -76,6 +68,7 @@ update_icon (NautilusViewIconItemUi *self)
 static void
 update_captions (NautilusViewIconItemUi *self)
 {
+    NautilusViewItemModel *item;
     NautilusFile *file;
     GtkWidget * const caption_labels[] =
     {
@@ -85,7 +78,9 @@ update_captions (NautilusViewIconItemUi *self)
     };
     G_STATIC_ASSERT (G_N_ELEMENTS (caption_labels) == NAUTILUS_VIEW_ICON_N_CAPTIONS);
 
-    file = nautilus_view_item_model_get_file (self->model);
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_return_if_fail (item != NULL);
+    file = nautilus_view_item_model_get_file (item);
     for (guint i = 0; i < NAUTILUS_VIEW_ICON_N_CAPTIONS; i++)
     {
         GQuark attribute_q = self->caption_attributes[i];
@@ -105,9 +100,12 @@ update_captions (NautilusViewIconItemUi *self)
 static void
 on_file_changed (NautilusViewIconItemUi *self)
 {
+    NautilusViewItemModel *item;
     NautilusFile *file;
 
-    file = nautilus_view_item_model_get_file (self->model);
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_return_if_fail (item != NULL);
+    file = nautilus_view_item_model_get_file (item);
 
     update_icon (self);
 
@@ -117,25 +115,18 @@ on_file_changed (NautilusViewIconItemUi *self)
 }
 
 static void
-on_view_item_size_changed (GObject    *object,
-                           GParamSpec *pspec,
-                           gpointer    user_data)
+on_item_size_changed (NautilusViewIconItemUi *self)
 {
-    NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (user_data);
-
     update_icon (self);
     update_captions (self);
 }
 
 static void
-on_view_item_is_cut_changed (GObject    *object,
-                             GParamSpec *pspec,
-                             gpointer    user_data)
+on_item_is_cut_changed (NautilusViewIconItemUi *self)
 {
-    NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (user_data);
     gboolean is_cut;
 
-    g_object_get (object, "is-cut", &is_cut, NULL);
+    g_object_get (self, "is-cut", &is_cut, NULL);
     if (is_cut)
     {
         gtk_widget_add_css_class (self->icon, "cut");
@@ -147,97 +138,12 @@ on_view_item_is_cut_changed (GObject    *object,
 }
 
 static void
-set_model (NautilusViewIconItemUi *self,
-           NautilusViewItemModel  *model);
-
-static void
 finalize (GObject *object)
 {
     NautilusViewIconItemUi *self = (NautilusViewIconItemUi *) object;
 
-    set_model (self, NULL);
+    g_object_unref (self->item_signal_group);
     G_OBJECT_CLASS (nautilus_view_icon_item_ui_parent_class)->finalize (object);
-}
-
-static void
-get_property (GObject    *object,
-              guint       prop_id,
-              GValue     *value,
-              GParamSpec *pspec)
-{
-    NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (object);
-
-    switch (prop_id)
-    {
-        case PROP_MODEL:
-        {
-            g_value_set_object (value, self->model);
-        }
-        break;
-
-        default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-set_model (NautilusViewIconItemUi *self,
-           NautilusViewItemModel  *model)
-{
-    NautilusFile *file;
-
-    if (self->model == model)
-    {
-        return;
-    }
-
-    if (self->model != NULL)
-    {
-        g_signal_handlers_disconnect_by_data (self->model, self);
-        g_clear_object (&self->model);
-    }
-
-    if (model == NULL)
-    {
-        return;
-    }
-
-    self->model = g_object_ref (model);
-
-    file = nautilus_view_item_model_get_file (self->model);
-
-    update_icon (self);
-    gtk_label_set_text (GTK_LABEL (self->label),
-                        nautilus_file_get_display_name (file));
-    update_captions (self);
-
-    g_signal_connect (self->model, "notify::icon-size",
-                      (GCallback) on_view_item_size_changed, self);
-    g_signal_connect (self->model, "notify::is-cut",
-                      (GCallback) on_view_item_is_cut_changed, self);
-    g_signal_connect_swapped (self->model, "file-changed",
-                              (GCallback) on_file_changed, self);
-}
-
-static void
-set_property (GObject      *object,
-              guint         prop_id,
-              const GValue *value,
-              GParamSpec   *pspec)
-{
-    NautilusViewIconItemUi *self = NAUTILUS_VIEW_ICON_ITEM_UI (object);
-
-    switch (prop_id)
-    {
-        case PROP_MODEL:
-        {
-            set_model (self, g_value_get_object (value));
-        }
-        break;
-
-        default:
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
 }
 
 static void
@@ -247,16 +153,6 @@ nautilus_view_icon_item_ui_class_init (NautilusViewIconItemUiClass *klass)
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
     object_class->finalize = finalize;
-    object_class->get_property = get_property;
-    object_class->set_property = set_property;
-
-    g_object_class_install_property (object_class,
-                                     PROP_MODEL,
-                                     g_param_spec_object ("model",
-                                                          "Item model",
-                                                          "The item model that this UI reprensents",
-                                                          NAUTILUS_TYPE_VIEW_ITEM_MODEL,
-                                                          G_PARAM_READWRITE));
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-view-icon-item-ui.ui");
 
@@ -273,6 +169,22 @@ nautilus_view_icon_item_ui_init (NautilusViewIconItemUi *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    /* Connect automatically to an item. */
+    self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM_MODEL);
+    g_signal_group_connect_swapped (self->item_signal_group, "notify::icon-size",
+                                    (GCallback) on_item_size_changed, self);
+    g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
+                                    (GCallback) on_item_is_cut_changed, self);
+    g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
+                                    (GCallback) on_file_changed, self);
+    g_signal_connect_object (self->item_signal_group, "bind",
+                             (GCallback) on_file_changed, self,
+                             G_CONNECT_SWAPPED);
+
+    g_object_bind_property (self, "item",
+                            self->item_signal_group, "target",
+                            G_BINDING_SYNC_CREATE);
+
 #if PANGO_VERSION_CHECK (1, 44, 4)
     {
         PangoAttrList *attr_list;
@@ -288,26 +200,11 @@ nautilus_view_icon_item_ui_init (NautilusViewIconItemUi *self)
 }
 
 NautilusViewIconItemUi *
-nautilus_view_icon_item_ui_new (void)
+nautilus_view_icon_item_ui_new (NautilusListBase *view)
 {
-    return g_object_new (NAUTILUS_TYPE_VIEW_ICON_ITEM_UI, NULL);
-}
-
-void
-nautilus_view_icon_item_ui_set_model (NautilusViewIconItemUi *self,
-                                      NautilusViewItemModel  *model)
-{
-    g_object_set (self, "model", model, NULL);
-}
-
-NautilusViewItemModel *
-nautilus_view_icon_item_ui_get_model (NautilusViewIconItemUi *self)
-{
-    NautilusViewItemModel *model = NULL;
-
-    g_object_get (self, "model", &model, NULL);
-
-    return model;
+    return g_object_new (NAUTILUS_TYPE_VIEW_ICON_ITEM_UI,
+                         "view", view,
+                         NULL);
 }
 
 void
@@ -315,16 +212,4 @@ nautilus_view_item_ui_set_caption_attributes (NautilusViewIconItemUi *self,
                                               GQuark                 *attrs)
 {
     self->caption_attributes = attrs;
-}
-
-gboolean
-nautilus_view_icon_item_ui_once (NautilusViewIconItemUi *self)
-{
-    if (self->called_once)
-    {
-        return FALSE;
-    }
-
-    self->called_once = TRUE;
-    return TRUE;
 }

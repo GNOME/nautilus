@@ -174,7 +174,7 @@ get_property (GObject    *object,
     {
         case PROP_SORTER:
         {
-            g_value_set_object (value, self->sorter);
+            g_value_set_object (value, nautilus_view_model_get_sorter (self));
         }
         break;
 
@@ -276,6 +276,12 @@ NautilusViewModel *
 nautilus_view_model_new ()
 {
     return g_object_new (NAUTILUS_TYPE_VIEW_MODEL, NULL);
+}
+
+GtkSorter *
+nautilus_view_model_get_sorter (NautilusViewModel *self)
+{
+    return self->sorter;
 }
 
 void
