@@ -1152,6 +1152,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     nautilus_application_set_accelerators (app, "slot.search-visible", search_visible_accels);
 
     self->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
+    self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
 }
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
