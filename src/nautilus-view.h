@@ -25,11 +25,11 @@
 #include "nautilus-toolbar-menu-sections.h"
 
 /* Keep values in sync with the org.gnome.nautilus.FolderView schema enums: */
-#define NAUTILUS_VIEW_GRID_ID            0
 #define NAUTILUS_VIEW_LIST_ID            1
+#define NAUTILUS_VIEW_GRID_ID            2
 /* Special ids, not used by GSettings schemas: */
+#define NAUTILUS_VIEW_INVALID_ID         0
 #define NAUTILUS_VIEW_OTHER_LOCATIONS_ID 3
-#define NAUTILUS_VIEW_INVALID_ID         4
 
 G_BEGIN_DECLS
 
