@@ -7,7 +7,7 @@
 #include "nautilus-list-base-private.h"
 #include "nautilus-grid-view.h"
 
-#include "nautilus-view-icon-item-ui.h"
+#include "nautilus-grid-cell.h"
 #include "nautilus-global-preferences.h"
 
 struct _NautilusGridView
@@ -21,7 +21,7 @@ struct _NautilusGridView
 
     gboolean directories_first;
 
-    GQuark caption_attributes[NAUTILUS_VIEW_ICON_N_CAPTIONS];
+    GQuark caption_attributes[NAUTILUS_GRID_CELL_N_CAPTIONS];
 
     NautilusFileSortType sort_type;
     gboolean reversed;
@@ -154,7 +154,7 @@ set_zoom_level (NautilusGridView *self,
     self->zoom_level = new_level;
 
     /* The zoom level may change how many captions are allowed. Update it before
-     * setting the icon size, under the assumption that NautilusViewIconItemUi
+     * setting the icon size, under the assumption that NautilusGridCell
      * updates captions whenever the icon size is set*/
     set_captions_from_preferences (self);
 
@@ -325,7 +325,7 @@ on_captions_preferences_changed (NautilusGridView *self)
 {
     set_captions_from_preferences (self);
 
-    /* Hack: this relies on the assumption that NautilusViewIconItemUi updates
+    /* Hack: this relies on the assumption that NautilusGridCell updates
      * captions whenever the icon size is set (even if it's the same value). */
     nautilus_list_base_set_icon_size (NAUTILUS_LIST_BASE (self),
                                       get_icon_size_for_zoom_level (self->zoom_level));
@@ -344,26 +344,26 @@ finalize (GObject *object)
 }
 
 static void
-bind_item_ui (GtkSignalListItemFactory *factory,
-              GtkListItem              *listitem,
-              gpointer                  user_data)
+bind_cell (GtkSignalListItemFactory *factory,
+           GtkListItem              *listitem,
+           gpointer                  user_data)
 {
-    GtkWidget *item_ui;
+    GtkWidget *cell;
     NautilusViewItemModel *item_model;
 
-    item_ui = gtk_list_item_get_child (listitem);
+    cell = gtk_list_item_get_child (listitem);
     item_model = NAUTILUS_VIEW_ITEM_MODEL (gtk_list_item_get_item (listitem));
 
-    nautilus_view_item_model_set_item_ui (item_model, item_ui);
+    nautilus_view_item_model_set_item_ui (item_model, cell);
 
-    if (nautilus_view_cell_once (NAUTILUS_VIEW_CELL (item_ui)))
+    if (nautilus_view_cell_once (NAUTILUS_VIEW_CELL (cell)))
     {
         GtkWidget *parent;
 
         /* At the time of ::setup emission, the item ui has got no parent yet,
          * that's why we need to complete the widget setup process here, on the
          * first time ::bind is emitted. */
-        parent = gtk_widget_get_parent (item_ui);
+        parent = gtk_widget_get_parent (cell);
         gtk_widget_set_halign (parent, GTK_ALIGN_CENTER);
         gtk_widget_set_valign (parent, GTK_ALIGN_START);
         gtk_widget_set_margin_top (parent, 3);
@@ -374,9 +374,9 @@ bind_item_ui (GtkSignalListItemFactory *factory,
 }
 
 static void
-unbind_item_ui (GtkSignalListItemFactory *factory,
-                GtkListItem              *listitem,
-                gpointer                  user_data)
+unbind_cell (GtkSignalListItemFactory *factory,
+             GtkListItem              *listitem,
+             gpointer                  user_data)
 {
     NautilusViewItemModel *item_model;
 
@@ -386,17 +386,17 @@ unbind_item_ui (GtkSignalListItemFactory *factory,
 }
 
 static void
-setup_item_ui (GtkSignalListItemFactory *factory,
-               GtkListItem              *listitem,
-               gpointer                  user_data)
+setup_cell (GtkSignalListItemFactory *factory,
+            GtkListItem              *listitem,
+            gpointer                  user_data)
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (user_data);
-    NautilusViewIconItemUi *item_ui;
+    NautilusGridCell *cell;
 
-    item_ui = nautilus_view_icon_item_ui_new (NAUTILUS_LIST_BASE (self));
-    setup_cell_common (listitem, NAUTILUS_VIEW_CELL (item_ui));
+    cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
+    setup_cell_common (listitem, NAUTILUS_VIEW_CELL (cell));
 
-    nautilus_view_item_ui_set_caption_attributes (item_ui, self->caption_attributes);
+    nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);
 }
 
 static GtkGridView *
@@ -409,9 +409,9 @@ create_view_ui (NautilusGridView *self)
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
     factory = gtk_signal_list_item_factory_new ();
-    g_signal_connect (factory, "setup", G_CALLBACK (setup_item_ui), self);
-    g_signal_connect (factory, "bind", G_CALLBACK (bind_item_ui), self);
-    g_signal_connect (factory, "unbind", G_CALLBACK (unbind_item_ui), self);
+    g_signal_connect (factory, "setup", G_CALLBACK (setup_cell), self);
+    g_signal_connect (factory, "bind", G_CALLBACK (bind_cell), self);
+    g_signal_connect (factory, "unbind", G_CALLBACK (unbind_cell), self);
 
     widget = gtk_grid_view_new (GTK_SELECTION_MODEL (model), factory);
     gtk_widget_set_focusable (widget, TRUE);
