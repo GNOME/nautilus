@@ -43,6 +43,7 @@
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-dbus-manager.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
@@ -84,6 +85,8 @@ typedef struct
     NautilusFileUndoManager *undo_manager;
 
     NautilusTagManager *tag_manager;
+
+    NautilusDBusLauncher *dbus_launcher;
 
     guint previewer_selection_id;
 } NautilusApplicationPrivate;
@@ -586,6 +589,8 @@ nautilus_application_finalize (GObject *object)
 
     g_clear_object (&priv->tag_manager);
 
+    g_clear_object (&priv->dbus_launcher);
+
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
@@ -1038,6 +1043,8 @@ nautilus_application_init (NautilusApplication *self)
 
     priv->undo_manager = nautilus_file_undo_manager_new ();
     priv->tag_manager = nautilus_tag_manager_new ();
+
+    priv->dbus_launcher = nautilus_dbus_launcher_new ();
 
     g_application_add_main_option_entries (G_APPLICATION (self), options);
 
