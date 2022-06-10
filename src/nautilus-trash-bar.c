@@ -25,6 +25,7 @@
 
 #include "nautilus-trash-bar.h"
 
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-files-view.h"
 #include "nautilus-file-operations.h"
@@ -171,23 +172,14 @@ trash_bar_response_cb (GtkInfoBar *infobar,
     {
         case TRASH_BAR_RESPONSE_AUTODELETE:
         {
-            g_autoptr (GAppInfo) app_info = NULL;
-            g_autoptr (GError) error = NULL;
+            GVariant *parameters;
 
-            app_info = g_app_info_create_from_commandline ("gnome-control-center usage",
-                                                           NULL,
-                                                           G_APP_INFO_CREATE_NONE,
-                                                           NULL);
-
-            g_app_info_launch (app_info, NULL, NULL, &error);
-
-            if (error)
-            {
-                show_dialog (_("There was an error launching the application."),
-                             error->message,
-                             GTK_WINDOW (window),
-                             GTK_MESSAGE_ERROR);
-            }
+            parameters = g_variant_new_parsed ("('launch-panel', [<('usage', @av [])>], "
+                                               "@a{sv} {})");
+            nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                         NAUTILUS_DBUS_LAUNCHER_SETTINGS,
+                                         "Activate",
+                                         parameters, GTK_WINDOW (window));
         }
         break;
 
