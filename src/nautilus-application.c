@@ -1520,3 +1520,18 @@ nautilus_application_search (NautilusApplication *self,
     window = open_window (self, location);
     nautilus_window_search (window, query);
 }
+
+gboolean
+nautilus_application_is_sandboxed (void)
+{
+    static gboolean ret;
+
+    static gsize init = 0;
+    if (g_once_init_enter (&init))
+    {
+        ret = g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
+        g_once_init_leave (&init, 1);
+    }
+
+    return ret;
+}

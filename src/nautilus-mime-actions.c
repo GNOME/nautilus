@@ -251,21 +251,6 @@ static void activate_callback (GList   *files,
                                gpointer callback_data);
 static void activation_mount_not_mounted (ActivateParameters *parameters);
 
-static gboolean
-is_sandboxed (void)
-{
-    static gboolean ret;
-
-    static gsize init = 0;
-    if (g_once_init_enter (&init))
-    {
-        ret = g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
-        g_once_init_leave (&init, 1);
-    }
-
-    return ret;
-}
-
 static void
 launch_location_free (LaunchLocation *location)
 {
@@ -1567,7 +1552,7 @@ activate_files (ActivateParameters *parameters)
 
     if (parameters->open_in_app_uris != NULL)
     {
-        if (is_sandboxed ())
+        if (nautilus_application_is_sandboxed ())
         {
             num_windows += g_queue_get_length (parameters->open_in_app_uris);
         }
@@ -1703,7 +1688,7 @@ activate_files_internal (ActivateParameters *parameters)
         }
     }
 
-    if (!g_queue_is_empty (parameters->open_in_app_uris) && is_sandboxed ())
+    if (!g_queue_is_empty (parameters->open_in_app_uris) && nautilus_application_is_sandboxed ())
     {
         const char *uri;
         ApplicationLaunchAsyncParameters *async_params;
