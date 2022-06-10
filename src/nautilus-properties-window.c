@@ -46,7 +46,6 @@
 #include "nautilus-module.h"
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-signaller.h"
 
 static GHashTable *windows;
 static GHashTable *pending_lists;
