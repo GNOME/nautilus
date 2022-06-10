@@ -29,7 +29,7 @@ G_DEFINE_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS_TYPE_VIEW_CELL)
 static void
 update_icon (NautilusGridCell *self)
 {
-    NautilusViewItemModel *item;
+    NautilusViewItem *item;
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
     GtkStyleContext *style_context;
@@ -39,8 +39,8 @@ update_icon (NautilusGridCell *self)
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
-    file = nautilus_view_item_model_get_file (item);
-    icon_size = nautilus_view_item_model_get_icon_size (item);
+    file = nautilus_view_item_get_file (item);
+    icon_size = nautilus_view_item_get_icon_size (item);
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
             NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
             NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
@@ -74,7 +74,7 @@ update_icon (NautilusGridCell *self)
 static void
 update_captions (NautilusGridCell *self)
 {
-    NautilusViewItemModel *item;
+    NautilusViewItem *item;
     NautilusFile *file;
     GtkWidget * const caption_labels[] =
     {
@@ -86,7 +86,7 @@ update_captions (NautilusGridCell *self)
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
-    file = nautilus_view_item_model_get_file (item);
+    file = nautilus_view_item_get_file (item);
     for (guint i = 0; i < NAUTILUS_GRID_CELL_N_CAPTIONS; i++)
     {
         GQuark attribute_q = self->caption_attributes[i];
@@ -106,12 +106,12 @@ update_captions (NautilusGridCell *self)
 static void
 on_file_changed (NautilusGridCell *self)
 {
-    NautilusViewItemModel *item;
+    NautilusViewItem *item;
     NautilusFile *file;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
-    file = nautilus_view_item_model_get_file (item);
+    file = nautilus_view_item_get_file (item);
 
     update_icon (self);
 
@@ -178,7 +178,7 @@ nautilus_grid_cell_init (NautilusGridCell *self)
     gtk_widget_init_template (GTK_WIDGET (self));
 
     /* Connect automatically to an item. */
-    self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM_MODEL);
+    self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::icon-size",
                                     (GCallback) on_item_size_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",

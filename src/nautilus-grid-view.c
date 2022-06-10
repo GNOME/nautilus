@@ -40,8 +40,8 @@ nautilus_grid_view_sort (gconstpointer a,
     NautilusFile *file_a;
     NautilusFile *file_b;
 
-    file_a = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL ((gpointer) a));
-    file_b = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL ((gpointer) b));
+    file_a = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) a));
+    file_b = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) b));
 
     return nautilus_file_compare_for_sort (file_a, file_b,
                                            self->sort_type,
@@ -349,12 +349,12 @@ bind_cell (GtkSignalListItemFactory *factory,
            gpointer                  user_data)
 {
     GtkWidget *cell;
-    NautilusViewItemModel *item_model;
+    NautilusViewItem *item;
 
     cell = gtk_list_item_get_child (listitem);
-    item_model = NAUTILUS_VIEW_ITEM_MODEL (gtk_list_item_get_item (listitem));
+    item = NAUTILUS_VIEW_ITEM (gtk_list_item_get_item (listitem));
 
-    nautilus_view_item_model_set_item_ui (item_model, cell);
+    nautilus_view_item_set_item_ui (item, cell);
 
     if (nautilus_view_cell_once (NAUTILUS_VIEW_CELL (cell)))
     {
@@ -378,11 +378,11 @@ unbind_cell (GtkSignalListItemFactory *factory,
              GtkListItem              *listitem,
              gpointer                  user_data)
 {
-    NautilusViewItemModel *item_model;
+    NautilusViewItem *item;
 
-    item_model = NAUTILUS_VIEW_ITEM_MODEL (gtk_list_item_get_item (listitem));
+    item = NAUTILUS_VIEW_ITEM (gtk_list_item_get_item (listitem));
 
-    nautilus_view_item_model_set_item_ui (item_model, NULL);
+    nautilus_view_item_set_item_ui (item, NULL);
 }
 
 static void

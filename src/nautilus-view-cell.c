@@ -25,7 +25,7 @@ struct _NautilusViewCellPrivate
     AdwBin parent_instance;
 
     NautilusListBase *view; /* Unowned */
-    NautilusViewItemModel *item; /* Owned reference */
+    NautilusViewItem *item; /* Owned reference */
 
     gboolean called_once;
 };
@@ -134,7 +134,7 @@ nautilus_view_cell_class_init (NautilusViewCellClass *klass)
                                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
     properties[PROP_ITEM] = g_param_spec_object ("item",
                                                  "", "",
-                                                 NAUTILUS_TYPE_VIEW_ITEM_MODEL,
+                                                 NAUTILUS_TYPE_VIEW_ITEM,
                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, N_PROPS, properties);
@@ -167,19 +167,19 @@ nautilus_view_cell_get_view (NautilusViewCell *self)
 }
 
 void
-nautilus_view_cell_set_item (NautilusViewCell      *self,
-                             NautilusViewItemModel *item)
+nautilus_view_cell_set_item (NautilusViewCell *self,
+                             NautilusViewItem *item)
 {
     g_return_if_fail (NAUTILUS_IS_VIEW_CELL (self));
-    g_return_if_fail (item == NULL || NAUTILUS_IS_VIEW_ITEM_MODEL (item));
+    g_return_if_fail (item == NULL || NAUTILUS_IS_VIEW_ITEM (item));
 
     g_object_set (self, "item", item, NULL);
 }
 
-NautilusViewItemModel *
+NautilusViewItem *
 nautilus_view_cell_get_item (NautilusViewCell *self)
 {
-    NautilusViewItemModel *item;
+    NautilusViewItem *item;
 
     g_return_val_if_fail (NAUTILUS_IS_VIEW_CELL (self), NULL);
 

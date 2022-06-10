@@ -9,7 +9,7 @@
 #include <libadwaita-1/adwaita.h>
 
 #include "nautilus-types.h"
-#include "nautilus-view-item-model.h"
+#include "nautilus-view-item.h"
 
 G_BEGIN_DECLS
 
@@ -24,8 +24,8 @@ struct _NautilusViewCellClass
 
 NautilusListBase *nautilus_view_cell_get_view (NautilusViewCell *self);
 void nautilus_view_cell_set_item (NautilusViewCell      *self,
-                                  NautilusViewItemModel *item);
-NautilusViewItemModel *nautilus_view_cell_get_item (NautilusViewCell *self);
+                                  NautilusViewItem *item);
+NautilusViewItem *nautilus_view_cell_get_item (NautilusViewCell *self);
 gboolean nautilus_view_cell_once (NautilusViewCell *self);
 
 G_END_DECLS

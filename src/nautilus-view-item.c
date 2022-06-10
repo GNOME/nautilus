@@ -1,7 +1,12 @@
-#include "nautilus-view-item-model.h"
-#include "nautilus-file.h"
+/*
+ * Copyright (C) 2022 The GNOME project contributors
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 
-struct _NautilusViewItemModel
+#include "nautilus-view-item.h"
+
+struct _NautilusViewItem
 {
     GObject parent_instance;
     guint icon_size;
@@ -10,7 +15,7 @@ struct _NautilusViewItemModel
     GtkWidget *item_ui;
 };
 
-G_DEFINE_TYPE (NautilusViewItemModel, nautilus_view_item_model, G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusViewItem, nautilus_view_item, G_TYPE_OBJECT)
 
 enum
 {
@@ -31,32 +36,32 @@ enum
 static guint signals[LAST_SIGNAL];
 
 static void
-nautilus_view_item_model_dispose (GObject *object)
+nautilus_view_item_dispose (GObject *object)
 {
-    NautilusViewItemModel *self = NAUTILUS_VIEW_ITEM_MODEL (object);
+    NautilusViewItem *self = NAUTILUS_VIEW_ITEM (object);
 
     g_clear_object (&self->item_ui);
 
-    G_OBJECT_CLASS (nautilus_view_item_model_parent_class)->dispose (object);
+    G_OBJECT_CLASS (nautilus_view_item_parent_class)->dispose (object);
 }
 
 static void
-nautilus_view_item_model_finalize (GObject *object)
+nautilus_view_item_finalize (GObject *object)
 {
-    NautilusViewItemModel *self = NAUTILUS_VIEW_ITEM_MODEL (object);
+    NautilusViewItem *self = NAUTILUS_VIEW_ITEM (object);
 
     g_clear_object (&self->file);
 
-    G_OBJECT_CLASS (nautilus_view_item_model_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_view_item_parent_class)->finalize (object);
 }
 
 static void
-nautilus_view_item_model_get_property (GObject    *object,
-                                       guint       prop_id,
-                                       GValue     *value,
-                                       GParamSpec *pspec)
+nautilus_view_item_get_property (GObject    *object,
+                                 guint       prop_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
 {
-    NautilusViewItemModel *self = NAUTILUS_VIEW_ITEM_MODEL (object);
+    NautilusViewItem *self = NAUTILUS_VIEW_ITEM (object);
 
     switch (prop_id)
     {
@@ -92,12 +97,12 @@ nautilus_view_item_model_get_property (GObject    *object,
 }
 
 static void
-nautilus_view_item_model_set_property (GObject      *object,
-                                       guint         prop_id,
-                                       const GValue *value,
-                                       GParamSpec   *pspec)
+nautilus_view_item_set_property (GObject      *object,
+                                 guint         prop_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
 {
-    NautilusViewItemModel *self = NAUTILUS_VIEW_ITEM_MODEL (object);
+    NautilusViewItem *self = NAUTILUS_VIEW_ITEM (object);
 
     switch (prop_id)
     {
@@ -133,19 +138,19 @@ nautilus_view_item_model_set_property (GObject      *object,
 }
 
 static void
-nautilus_view_item_model_init (NautilusViewItemModel *self)
+nautilus_view_item_init (NautilusViewItem *self)
 {
 }
 
 static void
-nautilus_view_item_model_class_init (NautilusViewItemModelClass *klass)
+nautilus_view_item_class_init (NautilusViewItemClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-    object_class->dispose = nautilus_view_item_model_dispose;
-    object_class->finalize = nautilus_view_item_model_finalize;
-    object_class->get_property = nautilus_view_item_model_get_property;
-    object_class->set_property = nautilus_view_item_model_set_property;
+    object_class->dispose = nautilus_view_item_dispose;
+    object_class->finalize = nautilus_view_item_finalize;
+    object_class->get_property = nautilus_view_item_get_property;
+    object_class->set_property = nautilus_view_item_set_property;
 
     g_object_class_install_property (object_class,
                                      PROP_ICON_SIZE,
@@ -187,71 +192,71 @@ nautilus_view_item_model_class_init (NautilusViewItemModelClass *klass)
                                           G_TYPE_NONE, 0);
 }
 
-NautilusViewItemModel *
-nautilus_view_item_model_new (NautilusFile *file,
-                              guint         icon_size)
+NautilusViewItem *
+nautilus_view_item_new (NautilusFile *file,
+                        guint         icon_size)
 {
-    return g_object_new (NAUTILUS_TYPE_VIEW_ITEM_MODEL,
+    return g_object_new (NAUTILUS_TYPE_VIEW_ITEM,
                          "file", file,
                          "icon-size", icon_size,
                          NULL);
 }
 
 guint
-nautilus_view_item_model_get_icon_size (NautilusViewItemModel *self)
+nautilus_view_item_get_icon_size (NautilusViewItem *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self), -1);
+    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (self), -1);
 
     return self->icon_size;
 }
 
 void
-nautilus_view_item_model_set_icon_size (NautilusViewItemModel *self,
-                                        guint                  icon_size)
+nautilus_view_item_set_icon_size (NautilusViewItem *self,
+                                  guint             icon_size)
 {
-    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
     g_object_set (self, "icon-size", icon_size, NULL);
 }
 
 void
-nautilus_view_item_model_set_cut (NautilusViewItemModel *self,
-                                  gboolean               is_cut)
+nautilus_view_item_set_cut (NautilusViewItem *self,
+                            gboolean          is_cut)
 {
-    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
     g_object_set (self, "is-cut", is_cut, NULL);
 }
 
 NautilusFile *
-nautilus_view_item_model_get_file (NautilusViewItemModel *self)
+nautilus_view_item_get_file (NautilusViewItem *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (self), NULL);
 
     return self->file;
 }
 
 GtkWidget *
-nautilus_view_item_model_get_item_ui (NautilusViewItemModel *self)
+nautilus_view_item_get_item_ui (NautilusViewItem *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (self), NULL);
 
     return self->item_ui;
 }
 
 void
-nautilus_view_item_model_set_item_ui (NautilusViewItemModel *self,
-                                      GtkWidget             *item_ui)
+nautilus_view_item_set_item_ui (NautilusViewItem *self,
+                                GtkWidget        *item_ui)
 {
-    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
     g_object_set (self, "item-ui", item_ui, NULL);
 }
 
 void
-nautilus_view_item_model_file_changed (NautilusViewItemModel *self)
+nautilus_view_item_file_changed (NautilusViewItem *self)
 {
-    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
     g_signal_emit (self, signals[FILE_CHANGED], 0);
 }

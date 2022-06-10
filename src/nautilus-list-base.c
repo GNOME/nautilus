@@ -8,7 +8,7 @@
 
 #include "nautilus-clipboard.h"
 #include "nautilus-view-cell.h"
-#include "nautilus-view-item-model.h"
+#include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
 #include "nautilus-files-view.h"
 #include "nautilus-file.h"
@@ -93,11 +93,11 @@ static const SortConstants sorts_constants[] =
     },
 };
 
-static inline NautilusViewItemModel *
+static inline NautilusViewItem *
 get_view_item (GListModel *model,
                guint       position)
 {
-    return NAUTILUS_VIEW_ITEM_MODEL (g_list_model_get_item (model, position));
+    return NAUTILUS_VIEW_ITEM (g_list_model_get_item (model, position));
 }
 
 static const SortConstants *
@@ -219,10 +219,10 @@ nautilus_list_base_set_icon_size (NautilusListBase *self,
     n_items = g_list_model_get_n_items (model);
     for (guint i = 0; i < n_items; i++)
     {
-        g_autoptr (NautilusViewItemModel) current_item_model = NULL;
+        g_autoptr (NautilusViewItem) current_item = NULL;
 
-        current_item_model = get_view_item (model, i);
-        nautilus_view_item_model_set_icon_size (current_item_model, icon_size);
+        current_item = get_view_item (model, i);
+        nautilus_view_item_set_icon_size (current_item, icon_size);
     }
 }
 
@@ -231,8 +231,8 @@ nautilus_list_base_set_icon_size (NautilusListBase *self,
  * or open its context menu. This helper should be used in these situations if
  * it's desirable to act on a multi-item selection, because it preserves it. */
 static void
-select_single_item_if_not_selected (NautilusListBase      *self,
-                                    NautilusViewItemModel *item)
+select_single_item_if_not_selected (NautilusListBase *self,
+                                    NautilusViewItem *item)
 {
     NautilusViewModel *model;
     guint position;
@@ -272,7 +272,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
     NautilusViewCell *cell = user_data;
     NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusViewItemModel *item;
+    NautilusViewItem *item;
     guint button;
     GdkModifierType modifiers;
     gboolean selection_mode;
@@ -334,7 +334,7 @@ on_item_click_released (GtkGestureClick *gesture,
     if (priv->activate_on_release)
     {
         NautilusViewModel *model;
-        NautilusViewItemModel *item;
+        NautilusViewItem *item;
         guint i;
 
         model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
@@ -556,10 +556,10 @@ real_file_changed (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusViewItemModel *item_model;
+    NautilusViewItem *item;
 
-    item_model = nautilus_view_model_get_item_from_file (priv->model, file);
-    nautilus_view_item_model_file_changed (item_model);
+    item = nautilus_view_model_get_item_from_file (priv->model, file);
+    nautilus_view_item_file_changed (item);
 }
 
 static GList *
@@ -575,11 +575,11 @@ real_get_selection (NautilusFilesView *files_view)
     n_selected = g_list_model_get_n_items (G_LIST_MODEL (selection));
     for (guint i = 0; i < n_selected; i++)
     {
-        g_autoptr (NautilusViewItemModel) item_model = NULL;
+        g_autoptr (NautilusViewItem) item = NULL;
 
-        item_model = get_view_item (G_LIST_MODEL (selection), i);
+        item = get_view_item (G_LIST_MODEL (selection), i);
         selected_files = g_list_prepend (selected_files,
-                                         g_object_ref (nautilus_view_item_model_get_file (item_model)));
+                                         g_object_ref (nautilus_view_item_get_file (item)));
     }
 
     return selected_files;
@@ -606,12 +606,12 @@ real_remove_file (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusViewItemModel *item_model;
+    NautilusViewItem *item;
 
-    item_model = nautilus_view_model_get_item_from_file (priv->model, file);
-    if (item_model != NULL)
+    item = nautilus_view_model_get_item_from_file (priv->model, file);
+    if (item != NULL)
     {
-        nautilus_view_model_remove_item (priv->model, item_model);
+        nautilus_view_model_remove_item (priv->model, item);
     }
 }
 
@@ -631,8 +631,8 @@ convert_glist_to_queue (GList *list)
 }
 
 static GQueue *
-convert_files_to_item_models (NautilusListBase *self,
-                              GQueue           *files)
+convert_files_to_items (NautilusListBase *self,
+                        GQueue           *files)
 {
     GList *l;
     GQueue *models;
@@ -640,11 +640,11 @@ convert_files_to_item_models (NautilusListBase *self,
     models = g_queue_new ();
     for (l = g_queue_peek_head_link (files); l != NULL; l = l->next)
     {
-        NautilusViewItemModel *item_model;
+        NautilusViewItem *item;
 
-        item_model = nautilus_view_item_model_new (NAUTILUS_FILE (l->data),
-                                                   nautilus_list_base_get_icon_size (self));
-        g_queue_push_tail (models, item_model);
+        item = nautilus_view_item_new (NAUTILUS_FILE (l->data),
+                                       nautilus_list_base_get_icon_size (self));
+        g_queue_push_tail (models, item);
     }
 
     return models;
@@ -657,7 +657,7 @@ real_set_selection (NautilusFilesView *files_view,
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (GQueue) selection_files = NULL;
-    g_autoptr (GQueue) selection_item_models = NULL;
+    g_autoptr (GQueue) selection_items = NULL;
     g_autoptr (GtkBitset) update_set = NULL;
     g_autoptr (GtkBitset) selection_set = NULL;
 
@@ -666,8 +666,8 @@ real_set_selection (NautilusFilesView *files_view,
 
     /* Convert file list into set of model indices */
     selection_files = convert_glist_to_queue (selection);
-    selection_item_models = nautilus_view_model_get_items_from_files (priv->model, selection_files);
-    for (GList *l = g_queue_peek_head_link (selection_item_models); l != NULL; l = l->next)
+    selection_items = nautilus_view_model_get_items_from_files (priv->model, selection_files);
+    for (GList *l = g_queue_peek_head_link (selection_items); l != NULL; l = l->next)
     {
         gtk_bitset_add (selection_set,
                         nautilus_view_model_get_index (priv->model, l->data));
@@ -716,7 +716,7 @@ get_first_selected_item (NautilusListBase *self)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autolist (NautilusFile) selection = NULL;
     NautilusFile *file;
-    NautilusViewItemModel *item_model;
+    NautilusViewItem *item;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     if (selection == NULL)
@@ -725,9 +725,9 @@ get_first_selected_item (NautilusListBase *self)
     }
 
     file = NAUTILUS_FILE (selection->data);
-    item_model = nautilus_view_model_get_item_from_file (priv->model, file);
+    item = nautilus_view_model_get_item_from_file (priv->model, file);
 
-    return nautilus_view_model_get_index (priv->model, item_model);
+    return nautilus_view_model_get_index (priv->model, item);
 }
 
 static void
@@ -788,8 +788,8 @@ real_compare_files (NautilusFilesView *files_view,
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkSorter *sorter;
-    g_autoptr (NautilusViewItemModel) item1 = NULL;
-    g_autoptr (NautilusViewItemModel) item2 = NULL;
+    g_autoptr (NautilusViewItem) item1 = NULL;
+    g_autoptr (NautilusViewItem) item2 = NULL;
 
     sorter = nautilus_view_model_get_sorter (priv->model);
     if (sorter == NULL)
@@ -798,8 +798,8 @@ real_compare_files (NautilusFilesView *files_view,
     }
 
     /* Generate fake model items for sorter use only. */
-    item1 = nautilus_view_item_model_new (file1, NAUTILUS_GRID_ICON_SIZE_SMALL);
-    item2 = nautilus_view_item_model_new (file2, NAUTILUS_GRID_ICON_SIZE_SMALL);
+    item1 = nautilus_view_item_new (file1, NAUTILUS_GRID_ICON_SIZE_SMALL);
+    item2 = nautilus_view_item_new (file2, NAUTILUS_GRID_ICON_SIZE_SMALL);
 
     return gtk_sorter_compare (sorter, item1, item2);
 }
@@ -813,14 +813,14 @@ on_clipboard_contents_received (GObject      *source_object,
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     NautilusClipboard *clip;
-    NautilusViewItemModel *item;
+    NautilusViewItem *item;
 
     for (GList *l = priv->cut_files; l != NULL; l = l->next)
     {
         item = nautilus_view_model_get_item_from_file (priv->model, l->data);
         if (item != NULL)
         {
-            nautilus_view_item_model_set_cut (item, FALSE);
+            nautilus_view_item_set_cut (item, FALSE);
         }
     }
     g_clear_list (&priv->cut_files, g_object_unref);
@@ -838,7 +838,7 @@ on_clipboard_contents_received (GObject      *source_object,
         item = nautilus_view_model_get_item_from_file (priv->model, l->data);
         if (item != NULL)
         {
-            nautilus_view_item_model_set_cut (item, TRUE);
+            nautilus_view_item_set_cut (item, TRUE);
         }
     }
 }
@@ -878,11 +878,11 @@ get_first_visible_item (NautilusListBase *self)
     view_ui = nautilus_list_base_get_view_ui (self);
     for (guint i = 0; i < n_items; i++)
     {
-        g_autoptr (NautilusViewItemModel) item = NULL;
+        g_autoptr (NautilusViewItem) item = NULL;
         GtkWidget *item_ui;
 
         item = get_view_item (G_LIST_MODEL (priv->model), i);
-        item_ui = nautilus_view_item_model_get_item_ui (item);
+        item_ui = nautilus_view_item_get_item_ui (item);
         if (item_ui != NULL)
         {
             gdouble y;
@@ -905,14 +905,14 @@ real_get_first_visible_file (NautilusFilesView *files_view)
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     guint i;
-    g_autoptr (NautilusViewItemModel) item = NULL;
+    g_autoptr (NautilusViewItem) item = NULL;
     gchar *uri = NULL;
 
     i = get_first_visible_item (self);
     if (i < G_MAXUINT)
     {
         item = get_view_item (G_LIST_MODEL (priv->model), i);
-        uri = nautilus_file_get_uri (nautilus_view_item_model_get_file (item));
+        uri = nautilus_file_get_uri (nautilus_view_item_get_file (item));
     }
     return uri;
 }
@@ -936,7 +936,7 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     NautilusListBase *self = data->view;
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (NautilusFile) file = NULL;
-    NautilusViewItemModel *item;
+    NautilusViewItem *item;
     guint i;
 
     file = nautilus_file_get_existing_by_uri (data->uri);
@@ -975,12 +975,12 @@ real_add_files (NautilusFilesView *files_view,
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (GQueue) files_queue = NULL;
-    g_autoptr (GQueue) item_models = NULL;
+    g_autoptr (GQueue) items = NULL;
     gdouble adjustment_value;
 
     files_queue = convert_glist_to_queue (files);
-    item_models = convert_files_to_item_models (self, files_queue);
-    nautilus_view_model_add_items (priv->model, item_models);
+    items = convert_files_to_items (self, files_queue);
+    nautilus_view_model_add_items (priv->model, items);
 
     /* GtkListBase anchoring doesn't cope well with our lazy loading.
      * Assuming that GtkListBase|list.scroll-to-item resets the anchor to 0, use
@@ -997,7 +997,7 @@ real_select_first (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (NautilusViewItemModel) item = NULL;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     g_autoptr (GList) selection = NULL;
 
@@ -1006,7 +1006,7 @@ real_select_first (NautilusFilesView *files_view)
     {
         return;
     }
-    file = nautilus_view_item_model_get_file (item);
+    file = nautilus_view_item_get_file (item);
     selection = g_list_prepend (selection, file);
     nautilus_view_set_selection (NAUTILUS_VIEW (files_view), selection);
 }
@@ -1038,12 +1038,12 @@ real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (NautilusViewItemModel) item = NULL;
+    g_autoptr (NautilusViewItem) item = NULL;
     GtkWidget *item_ui;
 
     /* We only allow one item to be renamed with a popover */
     item = get_view_item (G_LIST_MODEL (priv->model), get_first_selected_item (self));
-    item_ui = nautilus_view_item_model_get_item_ui (item);
+    item_ui = nautilus_view_item_get_item_ui (item);
     g_return_val_if_fail (item_ui != NULL, NULL);
 
     return get_rectangle_for_item_ui (self, item_ui);
@@ -1069,10 +1069,10 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
     focus_child = gtk_widget_get_focus_child (nautilus_list_base_get_view_ui (self));
     for (i = 0; i < n_selected; i++)
     {
-        g_autoptr (NautilusViewItemModel) item = NULL;
+        g_autoptr (NautilusViewItem) item = NULL;
 
         item = get_view_item (G_LIST_MODEL (selection), i);
-        item_ui = nautilus_view_item_model_get_item_ui (item);
+        item_ui = nautilus_view_item_get_item_ui (item);
         if (item_ui != NULL && gtk_widget_get_parent (item_ui) == focus_child)
         {
             break;
@@ -1141,7 +1141,7 @@ prioritize_thumbnailing_on_idle (NautilusListBase *self)
     guint next_index;
     gdouble y;
     guint last_index;
-    g_autoptr (NautilusViewItemModel) first_item = NULL;
+    g_autoptr (NautilusViewItem) first_item = NULL;
     NautilusFile *file;
 
     priv->prioritize_thumbnailing_handle_id = 0;
@@ -1155,14 +1155,14 @@ prioritize_thumbnailing_on_idle (NautilusListBase *self)
 
     first_item = get_view_item (G_LIST_MODEL (priv->model), first_index);
 
-    first_visible_child = nautilus_view_item_model_get_item_ui (first_item);
+    first_visible_child = nautilus_view_item_get_item_ui (first_item);
 
     for (next_index = first_index + 1; next_index < g_list_model_get_n_items (G_LIST_MODEL (priv->model)); next_index++)
     {
-        g_autoptr (NautilusViewItemModel) next_item = NULL;
+        g_autoptr (NautilusViewItem) next_item = NULL;
 
         next_item = get_view_item (G_LIST_MODEL (priv->model), next_index);
-        next_child = nautilus_view_item_model_get_item_ui (next_item);
+        next_child = nautilus_view_item_get_item_ui (next_item);
         if (next_child == NULL)
         {
             break;
@@ -1181,12 +1181,12 @@ prioritize_thumbnailing_on_idle (NautilusListBase *self)
     /* Do the iteration in reverse to give higher priority to the top */
     for (gint i = 0; i <= last_index - first_index; i++)
     {
-        g_autoptr (NautilusViewItemModel) item = NULL;
+        g_autoptr (NautilusViewItem) item = NULL;
 
         item = get_view_item (G_LIST_MODEL (priv->model), last_index - i);
         g_return_val_if_fail (item != NULL, G_SOURCE_REMOVE);
 
-        file = nautilus_view_item_model_get_file (NAUTILUS_VIEW_ITEM_MODEL (item));
+        file = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM (item));
         if (file != NULL && nautilus_file_is_thumbnailing (file))
         {
             g_autofree gchar *uri = nautilus_file_get_uri (file);
