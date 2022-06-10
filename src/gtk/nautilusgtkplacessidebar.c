@@ -36,6 +36,7 @@
 #include "gdk/gdkkeysyms.h"
 #include "nautilusgtkbookmarksmanagerprivate.h"
 #include "nautilus-dnd.h"
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-global-preferences.h"
@@ -3118,27 +3119,28 @@ on_key_pressed (GtkEventControllerKey *controller,
 
 static void
 format_cb (GSimpleAction *action,
-               GVariant      *variant,
-               gpointer       data)
+           GVariant      *variant,
+           gpointer       data)
 {
     NautilusGtkPlacesSidebar *sidebar = data;
     g_autoptr (GVolume) volume = NULL;
-    GAppInfo *app_info;
-    gchar *cmdline, *device_identifier;
+    g_autofree gchar *device_identifier = NULL;
+    GVariant *parameters;
 
     g_object_get (sidebar->context_row, "volume", &volume, NULL);
     device_identifier = g_volume_get_identifier (volume,
                                                  G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-    cmdline = g_strconcat ("gnome-disks ",
-                           "--block-device ", device_identifier, " ",
-                           "--format-device ",
-                           NULL);
-    app_info = g_app_info_create_from_commandline (cmdline, NULL, 0, NULL);
-    g_app_info_launch (app_info, NULL, NULL, NULL);
 
-    g_free (cmdline);
-    g_free (device_identifier);
-    g_clear_object (&app_info);
+    parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', @aay [], "
+                                       "{'options': <{'block-device': <%s>, "
+                                       "'format-device': <true> }> })", device_identifier);
+
+    nautilus_dbus_launcher_call (nautilus_dbus_launcher_get(),
+                                 NAUTILUS_DBUS_LAUNCHER_DISKS,
+                                 "CommandLine",
+                                 parameters,
+                                 GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (sidebar))));
+
 }
 
 static GActionEntry entries[] = {
@@ -3159,29 +3161,19 @@ static GActionEntry entries[] = {
 };
 
 static gboolean
-check_have_gnome_disks (void)
-{
-    gchar *disks_path;
-    gboolean res;
-
-    disks_path = g_find_program_in_path ("gnome-disks");
-    res = (disks_path != NULL);
-    g_free (disks_path);
-
-    return res;
-}
-
-static gboolean
 should_show_format_command (GVolume *volume)
 {
     gchar *unix_device_id;
     gboolean show_format;
+    gboolean disks_available;
 
     unix_device_id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-    show_format = (unix_device_id != NULL) && check_have_gnome_disks ();
+    disks_available = nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get(),
+                                                           NAUTILUS_DBUS_LAUNCHER_DISKS);
+    show_format = (unix_device_id != NULL);
     g_free (unix_device_id);
 
-    return show_format;
+    return show_format && disks_available;
 }
 
 static void
