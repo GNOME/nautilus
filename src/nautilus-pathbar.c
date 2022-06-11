@@ -460,7 +460,7 @@ nautilus_path_bar_show_current_location_menu (NautilusPathBar *self)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    g_signal_emit_by_name (self->current_view_menu_button, "activate");
+    gtk_menu_button_popup (GTK_MENU_BUTTON (self->current_view_menu_button));
 }
 
 static void
