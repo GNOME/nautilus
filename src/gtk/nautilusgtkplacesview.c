@@ -1085,6 +1085,7 @@ update_places (NautilusGtkPlacesView *view)
   GIcon *icon;
   GFile *file;
   GtkWidget *child;
+  gchar *osname;
 
   /* Clear all previously added items */
   while ((child = gtk_widget_get_first_child (GTK_WIDGET (view->listbox))))
@@ -1097,11 +1098,13 @@ update_places (NautilusGtkPlacesView *view)
   /* Add "Computer" row */
   file = g_file_new_for_path ("/");
   icon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk");
+  osname = g_get_os_info (G_OS_INFO_KEY_NAME);
 
-  add_file (view, file, icon, _("Computer"), "/", FALSE);
+  add_file (view, file, icon, ((osname != NULL) ? osname : _("Operating System")), "/", FALSE);
 
   g_clear_object (&file);
   g_clear_object (&icon);
+  g_free (osname);
 
   /* Add currently connected drives */
   drives = g_volume_monitor_get_connected_drives (view->volume_monitor);

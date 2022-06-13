@@ -103,6 +103,8 @@ struct _NautilusPathBar
     GMenu *extensions_section;
     GMenu *templates_submenu;
     GMenu *button_menu;
+
+    gchar *os_name;
 };
 
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_BOX);
@@ -224,6 +226,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
     GtkBuilder *builder;
     g_autoptr (GError) error = NULL;
 
+    self->os_name = g_get_os_info (G_OS_INFO_KEY_NAME);
+
     self->scrolled = gtk_scrolled_window_new ();
     /* Scroll horizontally only and don't use internal scrollbar. */
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (self->scrolled),
@@ -307,6 +311,7 @@ nautilus_path_bar_finalize (GObject *object)
     g_clear_object (&self->button_menu);
     g_clear_pointer (&self->button_menu_popover, gtk_widget_unparent);
     g_clear_object (&self->current_view_menu_popover);
+    g_free (self->os_name);
 
     unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
 
@@ -330,9 +335,14 @@ get_dir_name (ButtonData *button_data)
     {
         case ROOT_BUTTON:
         {
+            if (button_data->path_bar != NULL &&
+                button_data->path_bar->os_name != NULL)
+            {
+                return button_data->path_bar->os_name;
+            }
             /* Translators: This is the label used in the pathbar when seeing
              * the root directory (also known as /) */
-            return _("Computer");
+            return _("Operating System");
         }
 
         case ADMIN_ROOT_BUTTON:
@@ -1093,9 +1103,9 @@ make_button_data (NautilusPathBar *self,
     gtk_button_set_child (GTK_BUTTON (button_data->button), child);
     gtk_widget_show (button_data->container);
 
-    nautilus_path_bar_update_button_state (button_data, current_dir);
-
     button_data->path_bar = self;
+
+    nautilus_path_bar_update_button_state (button_data, current_dir);
 
     g_signal_connect (button_data->button, "clicked", G_CALLBACK (button_clicked_cb), button_data);
 
