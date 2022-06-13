@@ -210,10 +210,7 @@ static gboolean
 real_contains_file (NautilusDirectory *directory,
                     NautilusFile      *file)
 {
-    NautilusFavoriteDirectory *self;
     g_autofree gchar *uri = NULL;
-
-    self = NAUTILUS_STARRED_DIRECTORY (directory);
 
     uri = nautilus_file_get_uri (file);
 
