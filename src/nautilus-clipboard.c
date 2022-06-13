@@ -152,7 +152,7 @@ static void
 nautilus_clipboard_serialize (GdkContentSerializer *serializer)
 {
     NautilusClipboard *clip;
-    g_autofree gchar *str;
+    g_autofree gchar *str = NULL;
     g_autoptr (GError) error = NULL;
 
     clip = g_value_get_boxed (gdk_content_serializer_get_value (serializer));
