@@ -27,6 +27,8 @@ enum
     N_PROPS
 };
 
+static GParamSpec *properties[N_PROPS] = { NULL, };
+
 enum
 {
     FILE_CHANGED,
@@ -152,36 +154,25 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
     object_class->get_property = nautilus_view_item_get_property;
     object_class->set_property = nautilus_view_item_set_property;
 
-    g_object_class_install_property (object_class,
-                                     PROP_ICON_SIZE,
-                                     g_param_spec_int ("icon-size",
-                                                       "Icon size",
-                                                       "The size in pixels of the icon",
-                                                       NAUTILUS_GRID_ICON_SIZE_SMALL,
-                                                       NAUTILUS_GRID_ICON_SIZE_LARGEST,
-                                                       NAUTILUS_GRID_ICON_SIZE_LARGE,
-                                                       G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-    g_object_class_install_property (object_class,
-                                     PROP_IS_CUT,
-                                     g_param_spec_boolean ("is-cut",
-                                                           "", "",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE));
-    g_object_class_install_property (object_class,
-                                     PROP_FILE,
-                                     g_param_spec_object ("file",
-                                                          "File",
-                                                          "The file the icon item represents",
-                                                          NAUTILUS_TYPE_FILE,
-                                                          G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
-
-    g_object_class_install_property (object_class,
-                                     PROP_ITEM_UI,
-                                     g_param_spec_object ("item-ui",
-                                                          "Item ui",
-                                                          "The UI that reprensents the item model",
-                                                          GTK_TYPE_WIDGET,
-                                                          G_PARAM_READWRITE));
+    properties[PROP_ICON_SIZE] = g_param_spec_int ("icon-size",
+                                                   "", "",
+                                                   NAUTILUS_LIST_ICON_SIZE_SMALL,
+                                                   NAUTILUS_GRID_ICON_SIZE_LARGEST,
+                                                   NAUTILUS_GRID_ICON_SIZE_LARGE,
+                                                   G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
+    properties[PROP_IS_CUT] = g_param_spec_boolean ("is-cut",
+                                                    "", "",
+                                                    FALSE,
+                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_FILE] = g_param_spec_object ("file",
+                                                 "", "",
+                                                 NAUTILUS_TYPE_FILE,
+                                                 G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_ITEM_UI] = g_param_spec_object ("item-ui",
+                                                    "", "",
+                                                    GTK_TYPE_WIDGET,
+                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_properties (object_class, N_PROPS, properties);
 
     signals[FILE_CHANGED] = g_signal_new ("file-changed",
                                           G_TYPE_FROM_CLASS (klass),
