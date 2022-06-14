@@ -132,7 +132,9 @@ on_item_is_cut_changed (NautilusGridCell *self)
 {
     gboolean is_cut;
 
-    g_object_get (self, "is-cut", &is_cut, NULL);
+    g_object_get (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self)),
+                  "is-cut", &is_cut,
+                  NULL);
     if (is_cut)
     {
         gtk_widget_add_css_class (self->icon, "cut");
