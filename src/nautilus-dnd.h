@@ -143,3 +143,6 @@ NautilusDragInfo *          nautilus_drag_get_source_data                 (GdkDr
 
 GList *                     nautilus_drag_file_list_from_selection_list   (const GList                        *selection_list);
 #endif
+
+GdkPaintable *     get_paintable_for_drag_selection              (GList            *selection,
+                                                                  int               scale);

@@ -21,10 +21,10 @@
  *           Ettore Perazzoli <ettore@gnu.org>
  */
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
-
 #include <config.h>
 #include "nautilus-dnd.h"
+
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 
 #include "nautilus-program-choosing.h"
 #include <eel/eel-glib-extensions.h>
@@ -990,3 +990,90 @@ nautilus_drag_autoscroll_stop (NautilusDragInfo *drag_info)
 }
 
 #endif
+
+#define MAX_DRAWN_DRAG_ICONS 10
+#define NAUTILUS_DRAG_SURFACE_ICON_SIZE 64
+
+GdkPaintable *
+get_paintable_for_drag_selection (GList *selection,
+                                  int    scale)
+{
+    g_autoqueue (GdkPaintable) icons = g_queue_new ();
+    g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+    NautilusFileIconFlags flags;
+    GdkPaintable *icon;
+    guint n_icons;
+    guint icon_size = NAUTILUS_DRAG_SURFACE_ICON_SIZE;
+    float dy;
+    /* A wide shadow for the pile of icons gives a sense of floating. */
+    GskShadow stack_shadow = {.color = {0, 0, 0, .alpha = 0.15}, .dx = 0, .dy = 2, .radius = 10 };
+    /* A slight shadow swhich makes each icon in the stack look separate. */
+    GskShadow icon_shadow = {.color = {0, 0, 0, .alpha = 0.20}, .dx = 0, .dy = 1, .radius = 1 };
+    GskRoundedRect rounded_rect;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (selection->data), NULL);
+
+    /* The selection list is reversed compared to what the user sees. Get the
+     * first items by starting from the end of the list. */
+    flags = (NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS | NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE);
+    for (GList *l = g_list_last (selection);
+         l != NULL && g_queue_get_length (icons) <= MAX_DRAWN_DRAG_ICONS;
+         l = l->prev)
+    {
+        icon = nautilus_file_get_icon_paintable (l->data, icon_size, scale, flags);
+        g_queue_push_tail (icons, icon);
+    }
+
+    /* When there are 2 or 3 identical icons, we need to space them more,
+     * otherwise it would be hard to tell there is more than one icon at all.
+     * The more icons we have, the easier it is to notice multiple icons are
+     * stacked, and the more compact we want to be.
+     *
+     *  1 icon          2 icons         3 icons         4+ icons
+     *  .--------.      .--------.      .--------.      .--------.
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  |        |      |        |      |        |      |        |
+     *  '--------'      |--------|      |--------|      |--------|
+     *                  |        |      |        |      |--------|
+     *                  |        |      |--------|      |--------|
+     *                  '--------'      |        |      |--------|
+     *                                  '--------'      '--------'
+     */
+    n_icons = g_queue_get_length (icons);
+    dy = (n_icons == 2) ? 10 : (n_icons == 3) ? 6 : (n_icons >= 4) ? 4 : 0;
+
+    /* We want the first icon on top of every other. So we need to start drawing
+     * the stack from the bottom, that is, from the last icon. This requires us
+     * to jump to the last position and then move upwards one step at a time.
+     * Also, add 10px horizontal offset, for shadow, to workaround this GTK bug:
+     * https://gitlab.gnome.org/GNOME/gtk/-/issues/2341
+     */
+    gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (10, dy * n_icons));
+    gtk_snapshot_push_shadow (snapshot, &stack_shadow, 1);
+    for (GList *l = g_queue_peek_tail_link (icons); l != NULL; l = l->prev)
+    {
+        double w = gdk_paintable_get_intrinsic_width (l->data);
+        double h = gdk_paintable_get_intrinsic_height (l->data);
+        /* Offsets needed to center thumbnails. Floored to keep images sharp. */
+        float x = floor ((icon_size - w) / 2);
+        float y = floor ((icon_size - h) / 2);
+        gsk_rounded_rect_init_from_rect (&rounded_rect, &GRAPHENE_RECT_INIT (0, 0, w, h), 6);
+
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (0, -dy));
+
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (x, y));
+        gtk_snapshot_push_shadow (snapshot, &icon_shadow, 1);
+        gtk_snapshot_push_rounded_clip (snapshot, &rounded_rect);
+
+        gdk_paintable_snapshot (l->data, snapshot, w, h);
+
+        gtk_snapshot_pop (snapshot); /* End of rounded clip */
+        gtk_snapshot_pop (snapshot); /* End of icon shadow */
+        gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (-x, -y));
+    }
+    gtk_snapshot_pop (snapshot); /* End of stack shadow */
+
+    return gtk_snapshot_to_paintable (snapshot, NULL);
+}
