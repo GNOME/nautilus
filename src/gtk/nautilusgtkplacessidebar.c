@@ -796,7 +796,7 @@ on_bookmark_query_info_complete (GObject      *source,
     start_icon = g_themed_icon_new_with_default_fallbacks (clos->is_native ? ICON_NAME_FOLDER : ICON_NAME_FOLDER_NETWORK);
 
   mount_uri = g_file_get_uri (root);
-  tooltip = g_file_get_parse_name (root);
+  tooltip = clos->is_native ? g_file_get_path (root) : g_uri_unescape_string (mount_uri, NULL);
 
   add_place (sidebar, NAUTILUS_GTK_PLACES_BOOKMARK,
              NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
