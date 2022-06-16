@@ -23,7 +23,6 @@
  *          Pavel Cisler <pavel@eazel.com>
  */
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 #include <config.h>
 
 #include "nautilus-files-view-dnd.h"
@@ -134,10 +133,12 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
 
     if (action == GDK_ACTION_ASK)
     {
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
         action = nautilus_drag_drop_action_ask
                      (GTK_WIDGET (view),
                      GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
         if (action == 0)
+#endif
         {
             g_free (container_uri);
             return;
@@ -359,18 +360,21 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
 
     if (action == GDK_ACTION_ASK)
     {
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
         action = nautilus_drag_drop_action_ask
                      (GTK_WIDGET (view),
                      GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
         if (action == 0)
+#endif
         {
             return;
         }
     }
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
                                                 source_uri_list);
-
+#endif
     nautilus_files_view_move_copy_items (view, source_uri_list,
                                          target_uri != NULL ? target_uri : container_uri,
                                          action);
@@ -408,4 +412,3 @@ nautilus_files_view_handle_hover (NautilusFilesView *view,
     g_object_unref (location);
     nautilus_file_unref (target_file);
 }
-#endif

@@ -25,7 +25,7 @@
  */
 
 #pragma once
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
+
 #include "nautilus-files-view.h"
 
 void nautilus_files_view_handle_uri_list_drop     (NautilusFilesView *view,
@@ -53,4 +53,3 @@ void nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
                                                    const GList       *uris,
                                                    const char        *target_location,
                                                    GdkDragAction      action);
-#endif
