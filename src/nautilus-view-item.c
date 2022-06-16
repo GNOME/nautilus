@@ -11,6 +11,7 @@ struct _NautilusViewItem
     GObject parent_instance;
     guint icon_size;
     gboolean is_cut;
+    gboolean drag_accept;
     NautilusFile *file;
     GtkWidget *item_ui;
 };
@@ -23,6 +24,7 @@ enum
     PROP_FILE,
     PROP_ICON_SIZE,
     PROP_IS_CUT,
+    PROP_DRAG_ACCEPT,
     PROP_ITEM_UI,
     N_PROPS
 };
@@ -85,6 +87,12 @@ nautilus_view_item_get_property (GObject    *object,
         }
         break;
 
+        case PROP_DRAG_ACCEPT:
+        {
+            g_value_set_boolean (value, self->drag_accept);
+        }
+        break;
+
         case PROP_ITEM_UI:
         {
             g_value_set_object (value, self->item_ui);
@@ -126,6 +134,12 @@ nautilus_view_item_set_property (GObject      *object,
         }
         break;
 
+        case PROP_DRAG_ACCEPT:
+        {
+            self->drag_accept = g_value_get_boolean (value);
+        }
+        break;
+
         case PROP_ITEM_UI:
         {
             g_set_object (&self->item_ui, g_value_get_object (value));
@@ -164,6 +178,10 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
                                                     "", "",
                                                     FALSE,
                                                     G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_DRAG_ACCEPT] = g_param_spec_boolean ("drag-accept",
+                                                         "", "",
+                                                         FALSE,
+                                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_FILE] = g_param_spec_object ("file",
                                                  "", "",
                                                  NAUTILUS_TYPE_FILE,
@@ -217,6 +235,15 @@ nautilus_view_item_set_cut (NautilusViewItem *self,
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
     g_object_set (self, "is-cut", is_cut, NULL);
+}
+
+void
+nautilus_view_item_set_drag_accept (NautilusViewItem *self,
+                                    gboolean          drag_accept)
+{
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
+
+    g_object_set (self, "drag-accept", drag_accept, NULL);
 }
 
 NautilusFile *

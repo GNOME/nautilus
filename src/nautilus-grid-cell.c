@@ -31,6 +31,7 @@ update_icon (NautilusGridCell *self)
 {
     NautilusViewItem *item;
     NautilusFileIconFlags flags;
+    gboolean drag_accept;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
     GtkStyleContext *style_context;
     NautilusFile *file;
@@ -45,6 +46,12 @@ update_icon (NautilusGridCell *self)
             NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
             NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
             NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
+
+    g_object_get (item, "drag-accept", &drag_accept, NULL);
+    if (drag_accept)
+    {
+        flags |= NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
+    }
 
     icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, 1, flags);
     gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
@@ -128,6 +135,12 @@ on_item_size_changed (NautilusGridCell *self)
 }
 
 static void
+on_item_drag_accept_changed (NautilusGridCell *self)
+{
+    update_icon (self);
+}
+
+static void
 on_item_is_cut_changed (NautilusGridCell *self)
 {
     gboolean is_cut;
@@ -181,6 +194,8 @@ nautilus_grid_cell_init (NautilusGridCell *self)
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::icon-size",
                                     (GCallback) on_item_size_changed, self);
+    g_signal_group_connect_swapped (self->item_signal_group, "notify::drag-accept",
+                                    (GCallback) on_item_drag_accept_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
                                     (GCallback) on_item_is_cut_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
