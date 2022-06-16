@@ -2461,10 +2461,9 @@ properties_cb (GSimpleAction *action,
   NautilusGtkPlacesSidebar *sidebar = data;
   GList *list;
   NautilusFile *file;
-  g_autofree gchar *uri = NULL;
 
-  g_object_get (sidebar->context_row, "uri", &uri, NULL);
-  file = nautilus_file_get_by_uri (uri);
+  g_object_get (sidebar->context_row, "file", &file, NULL);
+
   list = g_list_append (NULL, file);
   nautilus_properties_window_present (list, GTK_WIDGET (sidebar), NULL, NULL, NULL);
 
