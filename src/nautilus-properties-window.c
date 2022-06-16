@@ -254,22 +254,6 @@ typedef struct
     gboolean cancelled;
 } StartupData;
 
-/* drag and drop definitions */
-
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
-enum
-{
-    TARGET_URI_LIST,
-    TARGET_GNOME_URI_LIST,
-};
-
-static const GtkTargetEntry target_table[] =
-{
-    { "text/uri-list", 0, TARGET_URI_LIST },
-    { "x-special/gnome-icon-list", 0, TARGET_GNOME_URI_LIST },
-};
-#endif
-
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL      200 /* milliseconds */
 #define FILES_UPDATE_INTERVAL                   200 /* milliseconds */
 
@@ -474,7 +458,6 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
     gtk_image_set_pixel_size (GTK_IMAGE (self->icon_button_image), pixel_size);
 }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 /* utility to test if a uri refers to a local image */
 static gboolean
 uri_is_local_image (const char *uri)
@@ -497,7 +480,6 @@ uri_is_local_image (const char *uri)
 
     return TRUE;
 }
-#endif
 
 static void
 reset_icon (NautilusPropertiesWindow *self)
@@ -516,27 +498,28 @@ reset_icon (NautilusPropertiesWindow *self)
     }
 }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 static void
-nautilus_properties_window_drag_data_received (GtkWidget        *widget,
-                                               GdkDragContext   *context,
-                                               int               x,
-                                               int               y,
-                                               GtkSelectionData *selection_data,
-                                               guint             info,
-                                               guint             time)
+nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
+                                         const GValue  *value,
+                                         gdouble        x,
+                                         gdouble        y,
+                                         gpointer       user_data)
 {
-    g_auto (GStrv) uris = NULL;
+    GSList *file_list;
     gboolean exactly_one;
     GtkImage *image;
     GtkWindow *window;
 
-    image = GTK_IMAGE (widget);
+    image = GTK_IMAGE (user_data);
     window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (image)));
 
-    uris = g_strsplit ((const gchar *) gtk_selection_data_get_data (selection_data), "\r\n", 0);
-    exactly_one = uris[0] != NULL && (uris[1] == NULL || uris[1][0] == '\0');
+    if (!G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+        return;
+    }
 
+    file_list = g_value_get_boxed (value);
+    exactly_one = file_list != NULL && g_slist_next (file_list) == NULL;
 
     if (!exactly_one)
     {
@@ -547,16 +530,15 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
     }
     else
     {
-        if (uri_is_local_image (uris[0]))
+        g_autofree gchar *uri = g_file_get_uri (file_list->data);
+
+        if (uri_is_local_image (uri))
         {
-            set_icon (uris[0], NAUTILUS_PROPERTIES_WINDOW (window));
+            set_icon (uri, NAUTILUS_PROPERTIES_WINDOW (window));
         }
         else
         {
-            g_autoptr (GFile) f = NULL;
-
-            f = g_file_new_for_uri (uris[0]);
-            if (!g_file_is_native (f))
+            if (!g_file_is_native (file_list->data))
             {
                 show_dialog (_("The file that you dropped is not local."),
                              _("You can only use local images as custom icons."),
@@ -573,7 +555,6 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
         }
     }
 }
-#endif
 
 static void
 setup_image_widget (NautilusPropertiesWindow *self,
@@ -583,16 +564,14 @@ setup_image_widget (NautilusPropertiesWindow *self,
 
     if (is_customizable)
     {
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
-        /* prepare the image to receive dropped objects to assign custom images */
-        gtk_drag_dest_set (self->icon_button_image,
-                           GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP,
-                           target_table, G_N_ELEMENTS (target_table),
-                           GDK_ACTION_COPY | GDK_ACTION_MOVE);
+        GtkDropTarget *target;
 
-        g_signal_connect (self->icon_button_image, "drag-data-received",
-                          G_CALLBACK (nautilus_properties_window_drag_data_received), NULL);
-#endif
+        /* prepare the image to receive dropped objects to assign custom images */
+        target = gtk_drop_target_new (GDK_TYPE_FILE_LIST, GDK_ACTION_COPY);
+        gtk_widget_add_controller (self->icon_button, GTK_EVENT_CONTROLLER (target));
+        g_signal_connect (target, "drop",
+                          G_CALLBACK (nautilus_properties_window_drag_drop_cb), self->icon_button_image);
+
         g_signal_connect (self->icon_button, "clicked",
                           G_CALLBACK (select_image_button_callback), self);
         gtk_stack_set_visible_child (self->icon_stack, self->icon_button);
