@@ -1118,9 +1118,7 @@ make_button_data (NautilusPathBar *self,
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_click_gesture_pressed), button_data);
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     nautilus_drag_slot_proxy_init (button_data->button, button_data->file, NULL);
-#endif
 
     g_object_unref (path);
 
