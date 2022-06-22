@@ -263,6 +263,28 @@ activate_selection_on_click (NautilusListBase *self,
 }
 
 static void
+open_context_menu_on_press (NautilusListBase *self,
+                            NautilusViewCell *cell,
+                            gdouble           x,
+                            gdouble           y)
+{
+    NautilusViewItem *item;
+    gdouble view_x, view_y;
+
+    item = nautilus_view_cell_get_item (cell);
+    g_return_if_fail (item != NULL);
+
+    /* Antecipate selection, if necessary. */
+    select_single_item_if_not_selected (self, item);
+
+    gtk_widget_translate_coordinates (GTK_WIDGET (cell), GTK_WIDGET (self),
+                                      x, y,
+                                      &view_x, &view_y);
+    nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
+                                                       view_x, view_y);
+}
+
+static void
 on_item_click_pressed (GtkGestureClick *gesture,
                        gint             n_press,
                        gdouble          x,
@@ -272,13 +294,10 @@ on_item_click_pressed (GtkGestureClick *gesture,
     NautilusViewCell *cell = user_data;
     NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusViewItem *item;
     guint button;
     GdkModifierType modifiers;
     gboolean selection_mode;
 
-    item = nautilus_view_cell_get_item (cell);
-    g_return_if_fail (item != NULL);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
     selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
@@ -299,6 +318,9 @@ on_item_click_pressed (GtkGestureClick *gesture,
     }
     else if (button == GDK_BUTTON_MIDDLE && n_press == 1)
     {
+        NautilusViewItem *item = nautilus_view_cell_get_item (cell);
+        g_return_if_fail (item != NULL);
+
         /* Antecipate selection, if necessary, to activate it. */
         select_single_item_if_not_selected (self, item);
         activate_selection_on_click (self, TRUE);
@@ -306,16 +328,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
     }
     else if (button == GDK_BUTTON_SECONDARY && n_press == 1)
     {
-        gdouble view_x, view_y;
-
-        /* Antecipate selection, if necessary, for the context menu. */
-        select_single_item_if_not_selected (self, item);
-
-        gtk_widget_translate_coordinates (GTK_WIDGET (cell), GTK_WIDGET (self),
-                                          x, y,
-                                          &view_x, &view_y);
-        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                           view_x, view_y);
+        open_context_menu_on_press (self, cell, x, y);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
 }
@@ -417,18 +430,8 @@ on_item_longpress_pressed (GtkGestureLongPress *gesture,
 {
     NautilusViewCell *cell = user_data;
     NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
-    GtkWidget *event_widget;
-    gdouble view_x;
-    gdouble view_y;
 
-    event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
-
-    gtk_widget_translate_coordinates (event_widget,
-                                      GTK_WIDGET (self),
-                                      x, y, &view_x, &view_y);
-
-    nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                       view_x, view_y);
+    open_context_menu_on_press (self, cell, x, y);
     gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
