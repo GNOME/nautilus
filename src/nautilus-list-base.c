@@ -313,7 +313,13 @@ on_item_click_pressed (GtkGestureClick *gesture,
      * they don't interfere with touch scrolling. */
     if (button == GDK_BUTTON_PRIMARY && n_press == 2 && !priv->single_click_mode)
     {
-        activate_selection_on_click (self, modifiers & GDK_SHIFT_MASK);
+        /* If Ctrl + Shift are held, we don't want to activate selection. But
+         * we still need to claim the event, otherwise GtkListBase's default
+         * gesture is going to trigger activation. */
+        if (!selection_mode)
+        {
+            activate_selection_on_click (self, FALSE);
+        }
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
     else if (button == GDK_BUTTON_MIDDLE && n_press == 1)
