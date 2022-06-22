@@ -219,26 +219,26 @@ on_grid_view_item_activated (GtkGridView *grid_view,
 }
 
 static guint
-real_get_icon_size (NautilusListBase *files_model_view)
+real_get_icon_size (NautilusListBase *list_base_view)
 {
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_model_view);
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base_view);
 
     return get_icon_size_for_zoom_level (self->zoom_level);
 }
 
 static GtkWidget *
-real_get_view_ui (NautilusListBase *files_model_view)
+real_get_view_ui (NautilusListBase *list_base_view)
 {
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_model_view);
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base_view);
 
     return GTK_WIDGET (self->view_ui);
 }
 
 static void
-real_scroll_to_item (NautilusListBase *files_model_view,
+real_scroll_to_item (NautilusListBase *list_base_view,
                      guint             position)
 {
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_model_view);
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base_view);
 
     gtk_widget_activate_action (GTK_WIDGET (self->view_ui),
                                 "list.scroll-to-item",
@@ -443,7 +443,7 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     NautilusFilesViewClass *files_view_class = NAUTILUS_FILES_VIEW_CLASS (klass);
-    NautilusListBaseClass *files_model_view_class = NAUTILUS_LIST_BASE_CLASS (klass);
+    NautilusListBaseClass *list_base_view_class = NAUTILUS_LIST_BASE_CLASS (klass);
 
     object_class->dispose = dispose;
     object_class->finalize = finalize;
@@ -456,9 +456,9 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
 
-    files_model_view_class->get_icon_size = real_get_icon_size;
-    files_model_view_class->get_view_ui = real_get_view_ui;
-    files_model_view_class->scroll_to_item = real_scroll_to_item;
+    list_base_view_class->get_icon_size = real_get_icon_size;
+    list_base_view_class->get_view_ui = real_get_view_ui;
+    list_base_view_class->scroll_to_item = real_scroll_to_item;
 }
 
 static void

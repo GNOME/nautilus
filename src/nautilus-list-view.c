@@ -90,17 +90,17 @@ get_icon_size_for_zoom_level (NautilusListZoomLevel zoom_level)
 }
 
 static guint
-real_get_icon_size (NautilusListBase *files_model_view)
+real_get_icon_size (NautilusListBase *list_base_view)
 {
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_model_view);
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
 
     return get_icon_size_for_zoom_level (self->zoom_level);
 }
 
 static GtkWidget *
-real_get_view_ui (NautilusListBase *files_model_view)
+real_get_view_ui (NautilusListBase *list_base_view)
 {
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_model_view);
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
 
     return GTK_WIDGET (self->view_ui);
 }
@@ -227,10 +227,10 @@ apply_columns_settings (NautilusListView  *self,
 }
 
 static void
-real_scroll_to_item (NautilusListBase *files_model_view,
+real_scroll_to_item (NautilusListBase *list_base_view,
                      guint             position)
 {
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_model_view);
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
     GtkWidget *child;
 
     child = gtk_widget_get_last_child (GTK_WIDGET (self->view_ui));
@@ -1140,7 +1140,7 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     NautilusFilesViewClass *files_view_class = NAUTILUS_FILES_VIEW_CLASS (klass);
-    NautilusListBaseClass *files_model_view_class = NAUTILUS_LIST_BASE_CLASS (klass);
+    NautilusListBaseClass *list_base_view_class = NAUTILUS_LIST_BASE_CLASS (klass);
 
     object_class->dispose = nautilus_list_view_dispose;
     object_class->finalize = nautilus_list_view_finalize;
@@ -1154,9 +1154,9 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
 
-    files_model_view_class->get_icon_size = real_get_icon_size;
-    files_model_view_class->get_view_ui = real_get_view_ui;
-    files_model_view_class->scroll_to_item = real_scroll_to_item;
+    list_base_view_class->get_icon_size = real_get_icon_size;
+    list_base_view_class->get_view_ui = real_get_view_ui;
+    list_base_view_class->scroll_to_item = real_scroll_to_item;
 }
 
 NautilusListView *
