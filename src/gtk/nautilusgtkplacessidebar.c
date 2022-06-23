@@ -1789,7 +1789,10 @@ drop_files_as_bookmarks (NautilusGtkPlacesSidebar *sidebar,
 
       if (info)
         {
-          if ((g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY || g_file_info_get_file_type (info) == G_FILE_TYPE_MOUNTABLE || g_file_info_get_file_type (info) == G_FILE_TYPE_SHORTCUT))
+          if ((g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY ||
+               g_file_info_get_file_type (info) == G_FILE_TYPE_MOUNTABLE ||
+               g_file_info_get_file_type (info) == G_FILE_TYPE_SHORTCUT ||
+               g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK))
             _nautilus_gtk_bookmarks_manager_insert_bookmark (sidebar->bookmarks_manager, f, position++, NULL);
 
           g_object_unref (info);
