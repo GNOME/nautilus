@@ -1710,7 +1710,7 @@ changed_group_callback (AdwComboRow              *row,
         NautilusFile *file = get_target_file (self);
         GListModel *list = adw_combo_row_get_model (row);
         const gchar *new_group_name = gtk_string_list_get_string (GTK_STRING_LIST (list), selected_pos);
-        g_autofree char *current_group_name = nautilus_file_get_group_name (file);
+        const char *current_group_name = nautilus_file_get_group_name (file);
 
         g_assert (new_group_name);
         g_assert (current_group_name);
@@ -1960,7 +1960,7 @@ update_group_row (AdwComboRow       *row,
     if (provide_dropdown)
     {
         NautilusFile *file = get_target_file (self);
-        g_autofree char *group_name = nautilus_file_get_group_name (file);
+        const char *group_name = nautilus_file_get_group_name (file);
         GList *groups = nautilus_file_get_settable_group_names (file);
         update_combo_row_dropdown (row, groups);
 

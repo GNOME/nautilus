@@ -6378,17 +6378,16 @@ nautilus_file_get_gid (NautilusFile *file)
  * nautilus_file_get_group_name:
  *
  * Get the name of the file's group. If the group has no
- * name, returns the groupid as a string. The caller is responsible
- * for g_free-ing this string.
+ * name, returns the groupid as a string.
  *
  * @file: The file in question.
  *
  * Return value: A newly-allocated string.
  **/
-char *
+const char *
 nautilus_file_get_group_name (NautilusFile *file)
 {
-    return g_strdup (file->details->group);
+    return file->details->group;
 }
 
 /**
@@ -6599,16 +6598,13 @@ nautilus_file_set_group (NautilusFile                  *file,
     if (!nautilus_file_undo_manager_is_operating ())
     {
         NautilusFileUndoInfo *undo_info;
-        char *current_group;
+        const char *current_group = nautilus_file_get_group_name (file);
 
-        current_group = nautilus_file_get_group_name (file);
         undo_info = nautilus_file_undo_info_ownership_new (NAUTILUS_FILE_UNDO_OP_CHANGE_GROUP,
                                                            nautilus_file_get_location (file),
                                                            current_group,
                                                            group_name_or_id);
         nautilus_file_undo_manager_set_action (undo_info);
-
-        g_free (current_group);
     }
 
     info = g_file_info_new ();
@@ -7149,7 +7145,7 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
     }
     if (attribute_q == attribute_group_q)
     {
-        return nautilus_file_get_group_name (file);
+        return g_strdup (nautilus_file_get_group_name (file));
     }
     if (attribute_q == attribute_uri_q)
     {
