@@ -174,7 +174,7 @@ static void     nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
                                                 gboolean      include_real_name);
 static char *nautilus_file_get_type_as_string (NautilusFile *file);
-static char *nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file);
+static const char *nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file);
 static char *nautilus_file_get_detailed_type_as_string (NautilusFile *file);
 static gboolean update_info_and_name (NautilusFile *file,
                                       GFileInfo    *info);
@@ -3452,8 +3452,8 @@ compare_by_type (NautilusFile *file_1,
 {
     gboolean is_directory_1;
     gboolean is_directory_2;
-    char *type_string_1;
-    char *type_string_2;
+    const char *type_string_1;
+    const char *type_string_2;
     int result;
 
     /* Directories go first. Then, if mime types are identical,
@@ -3511,9 +3511,6 @@ compare_by_type (NautilusFile *file_1,
         /* Among files of the same (generic) type, sort them by mime type. */
         result = g_utf8_collate (file_1->details->mime_type, file_2->details->mime_type);
     }
-
-    g_free (type_string_1);
-    g_free (type_string_2);
 
     return result;
 }
@@ -7364,11 +7361,16 @@ struct
     { "x-office-spreadsheet", N_("Spreadsheet") },
 };
 
-static char *
+/** Only returns NULL, if mime_type was NULL. */
+static const char *
 get_basic_type_for_mime_type (const char *mime_type)
 {
-    char *icon_name;
-    char *basic_type = NULL;
+    g_autofree char *icon_name = NULL;
+
+    if (mime_type == NULL)
+    {
+        return NULL;
+    }
 
     icon_name = g_content_type_get_generic_icon_name (mime_type);
     if (icon_name != NULL)
@@ -7379,26 +7381,23 @@ get_basic_type_for_mime_type (const char *mime_type)
         {
             if (strcmp (mime_type_map[i].icon_name, icon_name) == 0)
             {
-                basic_type = g_strdup (gettext (mime_type_map[i].display_name));
+                const char *basic_type = gettext (mime_type_map[i].display_name);
+
+                if (basic_type != NULL)
+                {
+                    return basic_type;
+                }
                 break;
             }
         }
     }
 
-    if (basic_type == NULL)
-    {
-        /* Refers to a file type which is known but not one of the basic types */
-        basic_type = g_strdup (_("Other"));
-    }
-
-    g_free (icon_name);
-
-    return basic_type;
+    /* Refers to a file type which is known but not one of the basic types */
+    return _("Other");
 }
 
-static char *
-get_description (NautilusFile *file,
-                 gboolean      detailed)
+static const char *
+get_common_description (NautilusFile *file)
 {
     const char *mime_type;
 
@@ -7414,47 +7413,66 @@ get_description (NautilusFile *file,
     {
         if (nautilus_file_is_executable (file))
         {
-            return g_strdup (_("Program"));
+            return _("Program");
         }
-        return g_strdup (_("Binary"));
+        return _("Binary");
     }
 
     if (strcmp (mime_type, "inode/directory") == 0)
     {
-        return g_strdup (_("Folder"));
+        return _("Folder");
     }
 
-    if (detailed)
-    {
-        char *description;
+    /* No common type */
+    return NULL;
+}
 
-        description = g_content_type_get_description (mime_type);
-        if (description != NULL)
-        {
-            return description;
-        }
+static const char *
+get_description (NautilusFile *file)
+{
+    const char *common_description = get_common_description (file);
+    if (common_description != NULL)
+    {
+        return common_description;
     }
     else
     {
-        char *category;
+        const char *mime_type = file->details->mime_type;
 
-        category = get_basic_type_for_mime_type (mime_type);
-        if (category != NULL)
-        {
-            return category;
-        }
+        return get_basic_type_for_mime_type (mime_type);
+    }
+}
+
+static char *
+get_detailed_description (NautilusFile *file)
+{
+    char *description;
+    const char *mime_type = file->details->mime_type;
+    const char *common_description = get_common_description (file);
+
+    if (common_description != NULL)
+    {
+        return g_strdup (common_description);
+    }
+
+    if (mime_type == NULL)
+    {
+        return NULL;
+    }
+
+    description = g_content_type_get_description (mime_type);
+    if (description != NULL)
+    {
+        return description;
     }
 
     return g_strdup (mime_type);
 }
 
-/* Takes ownership of string */
 static char *
 update_description_for_link (NautilusFile *file,
-                             char         *string)
+                             const char   *string)
 {
-    char *res;
-
     if (nautilus_file_is_symbolic_link (file))
     {
         g_assert (!nautilus_file_is_broken_symbolic_link (file));
@@ -7466,12 +7484,10 @@ update_description_for_link (NautilusFile *file,
          * (e.g. "folder", "plain text") to file type for symbolic link
          * to that kind of file (e.g. "link to folder").
          */
-        res = g_strdup_printf (_("Link to %s"), string);
-        g_free (string);
-        return res;
+        return g_strdup_printf (_("Link to %s"), string);
     }
 
-    return string;
+    return g_strdup (string);
 }
 
 static char *
@@ -7487,10 +7503,10 @@ nautilus_file_get_type_as_string (NautilusFile *file)
         return g_strdup (_("Link (broken)"));
     }
 
-    return update_description_for_link (file, get_description (file, FALSE));
+    return update_description_for_link (file, get_description (file));
 }
 
-static char *
+static const char *
 nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file)
 {
     if (file == NULL)
@@ -7500,15 +7516,17 @@ nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file)
 
     if (nautilus_file_is_broken_symbolic_link (file))
     {
-        return g_strdup (_("Link (broken)"));
+        return _("Link (broken)");
     }
 
-    return get_description (file, FALSE);
+    return get_description (file);
 }
 
 static char *
 nautilus_file_get_detailed_type_as_string (NautilusFile *file)
 {
+    g_autofree char *detailed_description;
+
     if (file == NULL)
     {
         return NULL;
@@ -7519,7 +7537,8 @@ nautilus_file_get_detailed_type_as_string (NautilusFile *file)
         return g_strdup (_("Link (broken)"));
     }
 
-    return update_description_for_link (file, get_description (file, TRUE));
+    detailed_description = get_detailed_description (file);
+    return update_description_for_link (file, detailed_description);
 }
 
 /**
