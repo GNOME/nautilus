@@ -7157,7 +7157,7 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
     }
     if (attribute_q == attribute_link_target_q)
     {
-        return nautilus_file_get_symbolic_link_target_path (file);
+        return g_strdup (nautilus_file_get_symbolic_link_target_path (file));
     }
     if (attribute_q == attribute_volume_q)
     {
@@ -7813,9 +7813,9 @@ nautilus_file_get_volume_name (NautilusFile *file)
  * to call this function on a file that isn't a symbolic link.
  * @file: NautilusFile representing the symbolic link in question.
  *
- * Returns: newly-allocated copy of the file path of the target of the symbolic link.
+ * Returns: the file path of the target of the symbolic link.
  */
-char *
+const char *
 nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
 {
     if (!nautilus_file_is_symbolic_link (file))
@@ -7823,7 +7823,7 @@ nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
         g_warning ("File has symlink target, but  is not marked as symlink");
     }
 
-    return g_strdup (file->details->symlink_name);
+    return file->details->symlink_name;
 }
 
 /**

@@ -562,7 +562,7 @@ static void
 report_broken_symbolic_link (GtkWindow    *parent_window,
                              NautilusFile *file)
 {
-    char *target_path;
+    const char *target_path;
     char *detail;
     GtkWidget *dialog;
     TrashBrokenSymbolicLinkData *data;
@@ -625,7 +625,6 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
                       G_CALLBACK (trash_symbolic_link_cb),
                       data);
 
-    g_free (target_path);
     g_free (detail);
 }
 
