@@ -94,7 +94,7 @@ static void
 bookmark_set_name_from_ready_file (NautilusBookmark *self,
                                    NautilusFile     *file)
 {
-    g_autofree gchar *display_name = NULL;
+    const char *display_name;
 
     if (self->has_custom_name)
     {

@@ -819,16 +819,13 @@ update_name_field (NautilusPropertiesWindow *self)
 
         if (!nautilus_file_is_gone (file))
         {
-            g_autofree gchar *file_name = NULL;
-
             file_counter += 1;
             if (file_counter > 1)
             {
                 g_string_append (name_str, ", ");
             }
 
-            file_name = nautilus_file_get_display_name (file);
-            g_string_append (name_str, file_name);
+            g_string_append (name_str, nautilus_file_get_display_name (file));
         }
     }
 
@@ -3574,11 +3571,10 @@ setup_permissions_page (NautilusPropertiesWindow *self)
          */
         if (!is_multi_file_window (self))
         {
-            g_autofree gchar *file_name = NULL;
             g_autofree gchar *prompt_text = NULL;
 
-            file_name = nautilus_file_get_display_name (get_target_file (self));
-            prompt_text = g_strdup_printf (_("The permissions of “%s” could not be determined."), file_name);
+            prompt_text = g_strdup_printf (_("The permissions of “%s” could not be determined."),
+                                           nautilus_file_get_display_name (get_target_file (self)));
             adw_status_page_set_description (ADW_STATUS_PAGE (self->unknown_permissions_page), prompt_text);
         }
 

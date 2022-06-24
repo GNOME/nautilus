@@ -1840,18 +1840,13 @@ nautilus_directory_match_pattern (NautilusDirectory *directory,
     files = nautilus_directory_get_file_list (directory);
     for (l = files; l; l = l->next)
     {
-        NautilusFile *file;
-        char *name;
-
-        file = NAUTILUS_FILE (l->data);
-        name = nautilus_file_get_display_name (file);
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        const char *name = nautilus_file_get_display_name (file);
 
         if (g_pattern_spec_match_string (spec, name))
         {
             ret = g_list_prepend (ret, nautilus_file_ref (file));
         }
-
-        g_free (name);
     }
 
     g_pattern_spec_free (spec);

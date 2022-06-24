@@ -290,7 +290,7 @@ nautilus_app_chooser_new (GList     *files,
 {
     gboolean single_content_type = TRUE;
     g_autofree gchar *content_type = NULL;
-    g_autofree gchar *file_name = NULL;
+    const char *file_name;
 
     content_type = nautilus_file_get_mime_type (files->data);
 

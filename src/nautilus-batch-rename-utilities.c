@@ -320,7 +320,7 @@ batch_rename_replace_label_text (gchar       *label,
 
 static gchar *
 get_metadata (GList        *selection_metadata,
-              gchar        *file_name,
+              const char   *file_name,
               MetadataType  metadata_type)
 {
     GList *l;
@@ -356,7 +356,7 @@ batch_rename_format (NautilusFile *file,
     GString *new_name;
     gboolean added_tag;
     MetadataType metadata_type;
-    g_autofree gchar *file_name = NULL;
+    const char *file_name;
     g_autofree gchar *extension = NULL;
     gint i;
     gchar *metadata;

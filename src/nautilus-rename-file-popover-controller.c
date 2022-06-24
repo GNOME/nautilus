@@ -167,12 +167,8 @@ static gboolean
 nautilus_rename_file_popover_controller_ignore_existing_file (NautilusFileNameWidgetController *controller,
                                                               NautilusFile                     *existing_file)
 {
-    NautilusRenameFilePopoverController *self;
-    g_autofree gchar *display_name = NULL;
-
-    self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
-
-    display_name = nautilus_file_get_display_name (existing_file);
+    NautilusRenameFilePopoverController *self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
+    const char *display_name = nautilus_file_get_display_name (existing_file);
 
     return nautilus_file_compare_display_name (self->target_file, display_name) == 0;
 }

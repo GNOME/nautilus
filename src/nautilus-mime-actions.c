@@ -563,7 +563,6 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
                              NautilusFile *file)
 {
     char *target_path;
-    char *display_name;
     char *detail;
     GtkWidget *dialog;
     TrashBrokenSymbolicLinkData *data;
@@ -572,7 +571,6 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
 
     g_assert (nautilus_file_is_broken_symbolic_link (file));
 
-    display_name = nautilus_file_get_display_name (file);
     can_trash = nautilus_file_can_trash (file) && !nautilus_file_is_in_trash (file);
 
     target_path = nautilus_file_get_symbolic_link_target_path (file);
@@ -591,7 +589,7 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
         dialog = adw_message_dialog_new (parent_window, NULL, detail);
         adw_message_dialog_format_heading (ADW_MESSAGE_DIALOG (dialog),
                                            _("The link “%s” is broken. Move it to Trash?"),
-                                           display_name);
+                                           nautilus_file_get_display_name (file));
         adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
                                           "cancel", _("_Cancel"),
                                           "move-to-trash", _("Mo_ve to Trash"),
@@ -602,11 +600,10 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
         dialog = adw_message_dialog_new (parent_window, NULL, detail);
         adw_message_dialog_format_heading (ADW_MESSAGE_DIALOG (dialog),
                                            _("The link “%s” is broken."),
-                                           display_name);
+                                           nautilus_file_get_display_name (file));
         adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog),
                                          "cancel", _("Cancel"));
     }
-    g_free (display_name);
 
     adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
 
@@ -1057,19 +1054,16 @@ static char *
 get_application_no_mime_type_handler_message (NautilusFile *file)
 {
     char *uri_for_display;
-    char *name;
     char *error_message;
-
-    name = nautilus_file_get_display_name (file);
 
     /* Truncate the URI so it doesn't get insanely wide. Note that even
      * though the dialog uses wrapped text, if the URI doesn't contain
      * white space then the text-wrapping code is too stupid to wrap it.
      */
-    uri_for_display = g_utf8_truncate_middle (name, MAX_URI_IN_DIALOG_LENGTH);
+    uri_for_display = g_utf8_truncate_middle (nautilus_file_get_display_name (file),
+                                              MAX_URI_IN_DIALOG_LENGTH);
     error_message = g_strdup_printf (_("Could Not Display “%s”"), uri_for_display);
     g_free (uri_for_display);
-    g_free (name);
 
     return error_message;
 }
@@ -2173,7 +2167,6 @@ nautilus_mime_activate_files (GtkWindow          *parent_window,
                               gboolean            user_confirmation)
 {
     ActivateParameters *parameters;
-    char *file_name;
     int file_count;
     GList *l, *next;
     NautilusFile *file;
@@ -2203,9 +2196,8 @@ nautilus_mime_activate_files (GtkWindow          *parent_window,
     file_count = g_list_length (files);
     if (file_count == 1)
     {
-        file_name = nautilus_file_get_display_name (files->data);
+        const char *file_name = nautilus_file_get_display_name (files->data);
         parameters->timed_wait_prompt = g_strdup_printf (_("Opening “%s”."), file_name);
-        g_free (file_name);
     }
     else
     {

@@ -2035,7 +2035,6 @@ nautilus_file_rename (NautilusFile                  *file,
                       gpointer                       callback_data)
 {
     NautilusFileOperation *op;
-    char *old_name;
     char *new_file_name;
     GFile *location;
 
@@ -2061,12 +2060,12 @@ nautilus_file_rename (NautilusFile                  *file,
     /* Tell the undo manager a rename is taking place */
     if (!nautilus_file_undo_manager_is_operating ())
     {
+        const char *old_name;
         op->undo_info = nautilus_file_undo_info_rename_new ();
 
         old_name = nautilus_file_get_display_name (file);
         nautilus_file_undo_info_rename_set_data_pre (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
                                                      location, old_name, new_file_name);
-        g_free (old_name);
     }
 
     /* Do the renaming. */
@@ -4476,19 +4475,21 @@ nautilus_file_peek_display_name (NautilusFile *file)
            file->details->display_name : "";
 }
 
-char *
+const char *
 nautilus_file_get_display_name (NautilusFile *file)
 {
     if (nautilus_file_is_other_locations (file))
     {
-        return g_strdup (_("Other Locations"));
+        return _("Other Locations");
     }
-    if (nautilus_file_is_starred_location (file))
+    else if (nautilus_file_is_starred_location (file))
     {
-        return g_strdup (_("Starred"));
+        return _("Starred");
     }
-
-    return g_strdup (nautilus_file_peek_display_name (file));
+    else
+    {
+        return nautilus_file_peek_display_name (file);
+    }
 }
 
 char *
@@ -7031,7 +7032,7 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
 
     if (attribute_q == attribute_name_q)
     {
-        return nautilus_file_get_display_name (file);
+        return g_strdup (nautilus_file_get_display_name (file));
     }
     if (attribute_q == attribute_type_q)
     {

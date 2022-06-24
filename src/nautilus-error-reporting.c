@@ -44,7 +44,7 @@ static void finish_rename (NautilusFile *file,
 static char *
 get_truncated_name_for_file (NautilusFile *file)
 {
-    g_autofree char *file_name = NULL;
+    const char *file_name;
 
     g_assert (NAUTILUS_IS_FILE (file));
 

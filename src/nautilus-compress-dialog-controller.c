@@ -520,7 +520,7 @@ extension_dropdown_setup (NautilusCompressDialogController *self)
 NautilusCompressDialogController *
 nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                          NautilusDirectory *destination_directory,
-                                         gchar             *initial_name)
+                                         const char        *initial_name)
 {
     NautilusCompressDialogController *self;
     g_autoptr (GtkBuilder) builder = NULL;

@@ -100,7 +100,6 @@ update_labels (NautilusNameCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
-    g_autofree gchar *display_name = NULL;
     g_autofree gchar *path_text = NULL;
     const gchar *fts_snippet = NULL;
 
@@ -108,7 +107,6 @@ update_labels (NautilusNameCell *self)
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
 
-    display_name = nautilus_file_get_display_name (file);
     path_text = get_path_text (file,
                                self->path_attribute_q,
                                self->file_path_base_location);
@@ -117,7 +115,8 @@ update_labels (NautilusNameCell *self)
         fts_snippet = nautilus_file_get_search_fts_snippet (file);
     }
 
-    gtk_label_set_text (GTK_LABEL (self->label), display_name);
+    gtk_label_set_text (GTK_LABEL (self->label),
+                        nautilus_file_get_display_name (file));
     gtk_label_set_text (GTK_LABEL (self->path), path_text);
     gtk_label_set_markup (GTK_LABEL (self->snippet), fts_snippet);
 

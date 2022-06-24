@@ -131,8 +131,8 @@ G_DECLARE_FINAL_TYPE (NautilusFileUndoInfoRename, nautilus_file_undo_info_rename
 NautilusFileUndoInfo *nautilus_file_undo_info_rename_new (void);
 void nautilus_file_undo_info_rename_set_data_pre (NautilusFileUndoInfoRename *self,
                                                   GFile                      *old_file,
-                                                  gchar                      *old_display_name,
-                                                  gchar                      *new_display_name);
+                                                  const char                 *old_display_name,
+                                                  const char                 *new_display_name);
 void nautilus_file_undo_info_rename_set_data_post (NautilusFileUndoInfoRename *self,
                                                    GFile                      *new_file);
 

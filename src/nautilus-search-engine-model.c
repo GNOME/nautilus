@@ -154,8 +154,8 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
         file = l->data;
 
-        display_name = nautilus_file_get_display_name (file);
-        match = nautilus_query_matches_string (model->query, display_name);
+        match = nautilus_query_matches_string (model->query,
+                                               nautilus_file_get_display_name (file));
         found = (match > -1);
         if (!found)
         {

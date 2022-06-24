@@ -331,7 +331,7 @@ nautilus_compute_title_for_location (GFile *location)
 
             if (title == NULL)
             {
-                title = nautilus_file_get_display_name (file);
+                title = g_strdup (nautilus_file_get_display_name (file));
             }
         }
         nautilus_file_unref (file);
@@ -828,22 +828,21 @@ nautilus_restore_files_from_trash (GList     *files,
     NautilusFile *file;
     GHashTable *original_dirs_hash;
     GList *unhandled_files, *l;
-    char *message, *file_name;
 
     original_dirs_hash = nautilus_trashed_files_get_original_directories (files, &unhandled_files);
 
     for (l = unhandled_files; l != NULL; l = l->next)
     {
+        g_autofree char *message;
+
         file = NAUTILUS_FILE (l->data);
-        file_name = nautilus_file_get_display_name (file);
-        message = g_strdup_printf (_("Could not determine original location of “%s” "), file_name);
-        g_free (file_name);
+        message = g_strdup_printf (_("Could not determine original location of “%s” "),
+                                   nautilus_file_get_display_name (file));
 
         show_dialog (message,
                      _("The item cannot be restored from trash"),
                      parent_window,
                      GTK_MESSAGE_WARNING);
-        g_free (message);
     }
 
     if (original_dirs_hash != NULL)
@@ -1178,7 +1177,7 @@ nautilus_get_common_filename_prefix (GList *file_list,
 
         g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
 
-        name = nautilus_file_get_display_name (l->data);
+        name = g_strdup (nautilus_file_get_display_name (l->data));
 
         /* Since the concept of file extensions does not apply to directories,
          * we filter those out.

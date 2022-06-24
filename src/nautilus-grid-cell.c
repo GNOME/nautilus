@@ -143,7 +143,6 @@ on_file_changed (NautilusGridCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
-    g_autofree gchar *name = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
@@ -152,9 +151,8 @@ on_file_changed (NautilusGridCell *self)
     update_icon (self);
     update_emblems (self);
 
-    name = nautilus_file_get_display_name (file);
-
-    gtk_label_set_text (GTK_LABEL (self->label), name);
+    gtk_label_set_text (GTK_LABEL (self->label),
+                        nautilus_file_get_display_name (file));
     update_captions (self);
 }
 

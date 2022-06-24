@@ -67,7 +67,7 @@ struct _NautilusShellSearchProvider
 
 G_DEFINE_TYPE (NautilusShellSearchProvider, nautilus_shell_search_provider, G_TYPE_OBJECT)
 
-static gchar *
+static const char *
 get_display_name (NautilusShellSearchProvider *self,
                   NautilusFile                *file)
 {
@@ -83,7 +83,7 @@ get_display_name (NautilusShellSearchProvider *self,
 
     if (bookmark)
     {
-        return g_strdup (nautilus_bookmark_get_name (bookmark));
+        return nautilus_bookmark_get_name (bookmark);
     }
     else
     {
@@ -621,7 +621,8 @@ result_list_attributes_ready_cb (GList    *file_list,
     GVariantBuilder meta;
     NautilusFile *file;
     GList *l;
-    gchar *uri, *display_name;
+    gchar *uri;
+    const char *display_name;
     gchar *path, *description;
     gchar *thumbnail_path;
     GIcon *gicon;
@@ -685,7 +686,6 @@ result_list_attributes_ready_cb (GList    *file_list,
         g_hash_table_insert (data->self->metas_cache,
                              g_strdup (uri), g_variant_ref_sink (meta_variant));
 
-        g_free (display_name);
         g_free (path);
         g_free (description);
         g_free (uri);

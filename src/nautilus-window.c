@@ -1208,9 +1208,7 @@ toast_undo_unstar_get_label (NautilusFileUndoInfo *undo_info)
     length = g_list_length (files);
     if (length == 1)
     {
-        g_autofree gchar *file_label = NULL;
-
-        file_label = nautilus_file_get_display_name (files->data);
+        const char *file_label = nautilus_file_get_display_name (files->data);
         /* Translators: one item has been unstarred and %s is its name. */
         label = g_markup_printf_escaped (_("“%s” unstarred"), file_label);
     }
@@ -1376,14 +1374,13 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     if (!g_file_equal (folder_to_open, current_location))
     {
         g_autoptr (NautilusFile) folder = NULL;
-        g_autofree gchar *folder_name = NULL;
         g_autofree gchar *button_label = NULL;
         GVariant *target;
 
         target = g_variant_new_take_string (g_file_get_uri (folder_to_open));
         folder = nautilus_file_get (folder_to_open);
-        folder_name = nautilus_file_get_display_name (folder);
-        button_label = g_strdup_printf (_("Open %s"), folder_name);
+        button_label = g_strdup_printf (_("Open %s"),
+                                        nautilus_file_get_display_name (folder));
         adw_toast_set_button_label (toast, button_label);
         adw_toast_set_action_name (toast, "win.open-location");
         adw_toast_set_action_target_value (toast, target);

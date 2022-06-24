@@ -2251,15 +2251,13 @@ nautilus_window_slot_update_bookmark (NautilusWindowSlot *self,
 
     if (recreate)
     {
-        char *display_name = NULL;
+        const char *display_name = nautilus_file_get_display_name (file);
 
         /* We've changed locations, must recreate bookmark for current location. */
         g_clear_object (&self->last_location_bookmark);
         self->last_location_bookmark = self->current_location_bookmark;
 
-        display_name = nautilus_file_get_display_name (file);
         self->current_location_bookmark = nautilus_bookmark_new (new_location, display_name);
-        g_free (display_name);
     }
 
     g_object_unref (new_location);

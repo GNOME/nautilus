@@ -2467,13 +2467,11 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 
     if (g_list_length (selection) == 1)
     {
-        g_autofree char *display_name = NULL;
-
-        display_name = nautilus_file_get_display_name (selection->data);
+        const char *display_name = nautilus_file_get_display_name (selection->data);
 
         if (nautilus_file_is_directory (selection->data))
         {
-            common_prefix = g_steal_pointer (&display_name);
+            common_prefix = g_strdup (display_name);
         }
         else
         {
@@ -3577,7 +3575,7 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
     gboolean folder_item_count_known;
     guint file_item_count;
     GList *p;
-    char *first_item_name;
+    const char *first_item_name = NULL;
     char *non_folder_count_str;
     char *non_folder_item_count_str;
     char *non_folder_counts_str;
@@ -3598,7 +3596,6 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
     non_folder_count = 0;
     non_folder_size_known = FALSE;
     non_folder_size = 0;
-    first_item_name = NULL;
     folder_count_str = NULL;
     folder_item_count_str = NULL;
     folder_counts_str = NULL;
@@ -3777,7 +3774,6 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
         detail_status = NULL;
     }
 
-    g_free (first_item_name);
     g_free (folder_count_str);
     g_free (folder_item_count_str);
     g_free (folder_counts_str);
@@ -5625,7 +5621,7 @@ add_script_to_scripts_menus (NautilusFilesView *view,
                              GMenu             *menu)
 {
     NautilusFilesViewPrivate *priv;
-    gchar *name;
+    const gchar *name;
     g_autofree gchar *uri = NULL;
     g_autofree gchar *escaped_uri = NULL;
     GdkTexture *mimetype_icon;
@@ -5673,7 +5669,6 @@ add_script_to_scripts_menus (NautilusFilesView *view,
                                               detailed_action_name, shortcut);
     }
 
-    g_free (name);
     g_free (action_name);
     g_free (detailed_action_name);
     g_object_unref (menu_item);
@@ -5754,7 +5749,6 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
     NautilusFile *file;
     NautilusDirectory *dir;
     char *uri;
-    gchar *file_name;
     int num;
 
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
@@ -5791,14 +5785,13 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
 
                 if (children_menu != NULL)
                 {
-                    file_name = nautilus_file_get_display_name (file);
+                    const char *file_name = nautilus_file_get_display_name (file);
                     menu_item = g_menu_item_new_submenu (file_name,
                                                          G_MENU_MODEL (children_menu));
                     g_menu_append_item (menu, menu_item);
                     any_scripts = TRUE;
                     g_object_unref (menu_item);
                     g_object_unref (children_menu);
-                    g_free (file_name);
                 }
 
                 nautilus_directory_unref (dir);
@@ -5871,7 +5864,8 @@ add_template_to_templates_menus (NautilusFilesView *view,
                                  GMenu             *menu)
 {
     NautilusFilesViewPrivate *priv;
-    char *uri, *name;
+    char *uri;
+    const char *name;
     g_autofree gchar *escaped_uri = NULL;
     GdkTexture *mimetype_icon;
     char *action_name, *detailed_action_name;
@@ -5908,7 +5902,6 @@ add_template_to_templates_menus (NautilusFilesView *view,
 
     g_menu_append_item (menu, menu_item);
 
-    g_free (name);
     g_free (uri);
     g_free (action_name);
     g_free (detailed_action_name);
@@ -6068,10 +6061,9 @@ update_directory_in_templates_menu (NautilusFilesView *view,
 
                 if (children_menu != NULL)
                 {
-                    g_autofree char *display_name = NULL;
+                    const char *display_name = nautilus_file_get_display_name (file);
                     g_autofree char *label = NULL;
 
-                    display_name = nautilus_file_get_display_name (file);
                     label = escape_underscores (display_name);
                     menu_item = g_menu_item_new_submenu (label, children_menu);
                     g_menu_append_item (menu, menu_item);
@@ -7008,17 +7000,13 @@ file_mount_callback (NautilusFile *file,
           error->code != G_IO_ERROR_FAILED_HANDLED &&
           error->code != G_IO_ERROR_ALREADY_MOUNTED)))
     {
-        char *text;
-        char *name;
-        name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
-        text = g_strdup_printf (_("Unable to access “%s”"), name);
+        g_autofree char *text = g_strdup_printf (_("Unable to access “%s”"),
+                                                 nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
                      GTK_WINDOW (nautilus_files_view_get_window (view)),
                      GTK_MESSAGE_ERROR);
-        g_free (text);
-        g_free (name);
     }
 }
 
@@ -7038,17 +7026,13 @@ file_unmount_callback (NautilusFile *file,
          (error->code != G_IO_ERROR_CANCELLED &&
           error->code != G_IO_ERROR_FAILED_HANDLED)))
     {
-        char *text;
-        char *name;
-        name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
-        text = g_strdup_printf (_("Unable to remove “%s”"), name);
+        g_autofree char *text = g_strdup_printf (_("Unable to remove “%s”"),
+                                                 nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
                      GTK_WINDOW (nautilus_files_view_get_window (view)),
                      GTK_MESSAGE_ERROR);
-        g_free (text);
-        g_free (name);
     }
 }
 
@@ -7068,17 +7052,13 @@ file_eject_callback (NautilusFile *file,
          (error->code != G_IO_ERROR_CANCELLED &&
           error->code != G_IO_ERROR_FAILED_HANDLED)))
     {
-        char *text;
-        char *name;
-        name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
-        text = g_strdup_printf (_("Unable to eject “%s”"), name);
+        g_autofree char *text = g_strdup_printf (_("Unable to eject “%s”"),
+                                                 nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
                      GTK_WINDOW (nautilus_files_view_get_window (view)),
                      GTK_MESSAGE_ERROR);
-        g_free (text);
-        g_free (name);
     }
 }
 
@@ -7206,17 +7186,13 @@ file_start_callback (NautilusFile *file,
           error->code != G_IO_ERROR_FAILED_HANDLED &&
           error->code != G_IO_ERROR_ALREADY_MOUNTED)))
     {
-        char *text;
-        char *name;
-        name = nautilus_file_get_display_name (file);
+        const char *name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
-        text = g_strdup_printf (_("Unable to start “%s”"), name);
+        g_autofree char *text = g_strdup_printf (_("Unable to start “%s”"), name);
         show_dialog (text,
                      error->message,
                      GTK_WINDOW (nautilus_files_view_get_window (view)),
                      GTK_MESSAGE_ERROR);
-        g_free (text);
-        g_free (name);
     }
 }
 
