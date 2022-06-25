@@ -1955,14 +1955,13 @@ name_is (NautilusFile *file,
     return strcmp (new_name, old_name) == 0;
 }
 
-static gchar *
+static const char *
 nautilus_file_can_rename_file (NautilusFile                  *file,
                                const char                    *new_name,
                                NautilusFileOperationCallback  callback,
                                gpointer                       callback_data)
 {
     GError *error;
-    gchar *new_file_name;
 
     /* Return an error for incoming names containing path separators.
      * But not for .desktop files as '/' are allowed for them */
@@ -2023,9 +2022,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
         return NULL;
     }
 
-    new_file_name = g_strdup (new_name);
-
-    return new_file_name;
+    return new_name;
 }
 
 void
@@ -2035,7 +2032,7 @@ nautilus_file_rename (NautilusFile                  *file,
                       gpointer                       callback_data)
 {
     NautilusFileOperation *op;
-    char *new_file_name;
+    const char *new_file_name;
     GFile *location;
 
     g_return_if_fail (NAUTILUS_IS_FILE (file));
@@ -2075,7 +2072,6 @@ nautilus_file_rename (NautilusFile                  *file,
                                    op->cancellable,
                                    rename_callback,
                                    op);
-    g_free (new_file_name);
     g_object_unref (location);
 }
 
@@ -2214,7 +2210,7 @@ real_batch_rename (GList                         *files,
 
     for (l1 = files, l2 = new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
-        g_autofree gchar *new_file_name = NULL;
+        const char *new_file_name;
         file = NAUTILUS_FILE (l1->data);
         new_name = l2->data;
 
