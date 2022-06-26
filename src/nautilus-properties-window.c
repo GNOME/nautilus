@@ -580,6 +580,59 @@ update_name_field (NautilusPropertiesWindow *self)
     gtk_label_set_text (self->name_value_label, name_str->str);
 }
 
+/**
+ * Returns the attribute value if all files in file_list have identical
+ * attributes, "unknown" if no files exist and NULL otherwise.
+ */
+static char *
+file_list_get_string_attribute (GList      *file_list,
+                                const char *attribute_name)
+{
+    g_autofree char *first_attr = NULL;
+
+    for (GList *l = file_list; l != NULL; l = l->next)
+    {
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+
+        if (nautilus_file_is_gone (file))
+        {
+            continue;
+        }
+
+        if (first_attr == NULL)
+        {
+            first_attr = nautilus_file_get_string_attribute_with_default (file, attribute_name);
+        }
+        else
+        {
+            g_autofree char *attr;
+            attr = nautilus_file_get_string_attribute_with_default (file, attribute_name);
+            if (!g_str_equal (attr, first_attr))
+            {
+                /* Not all files have the same value for attribute_name. */
+                return NULL;
+            }
+        }
+    }
+
+    if (first_attr != NULL)
+    {
+        return g_steal_pointer (&first_attr);
+    }
+    else
+    {
+        return g_strdup (_("unknown"));
+    }
+}
+
+static gboolean
+file_list_attributes_identical (GList      *file_list,
+                                const char *attribute_name)
+{
+    g_autofree char *attribute = file_list_get_string_attribute (file_list, attribute_name);
+    return attribute != NULL;
+}
+
 static void
 update_properties_window_title (NautilusPropertiesWindow *self)
 {
@@ -914,78 +967,6 @@ schedule_files_update (NautilusPropertiesWindow *self)
 }
 
 static gboolean
-file_list_attributes_identical (GList      *file_list,
-                                const char *attribute_name)
-{
-    gboolean identical;
-    g_autofree char *first_attr = NULL;
-    GList *l;
-
-    identical = TRUE;
-
-    for (l = file_list; l != NULL; l = l->next)
-    {
-        NautilusFile *file;
-
-        file = NAUTILUS_FILE (l->data);
-
-        if (nautilus_file_is_gone (file))
-        {
-            continue;
-        }
-
-        if (first_attr == NULL)
-        {
-            first_attr = nautilus_file_get_string_attribute_with_default (file, attribute_name);
-        }
-        else
-        {
-            g_autofree char *attr = NULL;
-            attr = nautilus_file_get_string_attribute_with_default (file, attribute_name);
-            if (strcmp (attr, first_attr))
-            {
-                identical = FALSE;
-                break;
-            }
-        }
-    }
-
-    return identical;
-}
-
-static char *
-file_list_get_string_attribute (GList      *file_list,
-                                const char *attribute_name,
-                                const char *inconsistent_value)
-{
-    if (file_list_attributes_identical (file_list, attribute_name))
-    {
-        GList *l;
-
-        for (l = file_list; l != NULL; l = l->next)
-        {
-            NautilusFile *file;
-
-            file = NAUTILUS_FILE (l->data);
-            if (!nautilus_file_is_gone (file))
-            {
-                return nautilus_file_get_string_attribute_with_default
-                           (file,
-                           attribute_name);
-            }
-        }
-        return g_strdup (_("unknown"));
-    }
-    else
-    {
-        return g_strdup (inconsistent_value);
-    }
-}
-
-#define INCONSISTENT_STATE_STRING \
-    "\xE2\x80\x92"
-
-static gboolean
 location_show_original (NautilusPropertiesWindow *self)
 {
     NautilusFile *file;
@@ -1003,7 +984,6 @@ value_field_update (GtkLabel                 *label,
     GList *file_list;
     const char *attribute_name;
     g_autofree char *attribute_value = NULL;
-    char *inconsistent_string;
     gboolean is_where;
 
     g_assert (GTK_IS_LABEL (label));
@@ -1020,16 +1000,15 @@ value_field_update (GtkLabel                 *label,
         file_list = self->target_files;
     }
 
-    inconsistent_string = INCONSISTENT_STATE_STRING;
     attribute_value = file_list_get_string_attribute (file_list,
-                                                      attribute_name,
-                                                      inconsistent_string);
-    if (!strcmp (attribute_name, "detailed_type") && strcmp (attribute_value, inconsistent_string))
+                                                      attribute_name);
+    if (attribute_value != NULL &&
+        g_str_equal (attribute_name, "detailed_type"))
     {
         g_autofree char *mime_type = file_list_get_string_attribute (file_list,
-                                                                     "mime_type",
-                                                                     inconsistent_string);
-        if (strcmp (mime_type, inconsistent_string) && strcmp (mime_type, "inode/directory"))
+                                                                     "mime_type");
+        if (mime_type != NULL &&
+            !g_str_equal (mime_type, "inode/directory"))
         {
             g_autofree char *tmp = g_steal_pointer (&attribute_value);
             attribute_value = g_strdup_printf (C_("MIME type description (MIME type)", "%s (%s)"), tmp, mime_type);
