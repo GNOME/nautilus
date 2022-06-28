@@ -517,6 +517,9 @@ typedef struct
 static void
 real_begin_loading (NautilusFilesView *files_view)
 {
+    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
     /*TODO move this to the files view class begin_loading and hook up? */
 
 
@@ -529,6 +532,10 @@ real_begin_loading (NautilusFilesView *files_view)
      * we need to update the menus */
     nautilus_files_view_update_context_menus (files_view);
     nautilus_files_view_update_toolbar_menus (files_view);
+
+    /* When double clicking on an item this deny_background_click can persist
+     * because the new view interrupts the gesture sequence, so lets reset it.*/
+    priv->deny_background_click = FALSE;
 }
 
 static void
