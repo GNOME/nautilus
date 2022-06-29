@@ -204,6 +204,11 @@
   padding: 6px;
 }
 
+/* We want drop feedback on the whole row. Disable per-cell feedback */
+.nautilus-list-view #NautilusViewCell:drop(active) {
+  box-shadow: none;
+}
+
 .nautilus-list-view.compact #NautilusViewCell {
   padding-top: 3px;
   padding-bottom: 3px;
@@ -214,6 +219,11 @@
 }
 
 /* Both views */
+.nautilus-list-view:drop(active),
+.nautilus-grid-view:drop(active) {
+  box-shadow: none;
+}
+
 .view .thumbnail {
   background: url('/org/gnome/nautilus/Checkerboard.png') repeat;
   box-shadow: 0px 1px 2px 0px @shade_color,
