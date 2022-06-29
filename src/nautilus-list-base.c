@@ -49,6 +49,7 @@ struct _NautilusListBasePrivate
 
     GdkDragAction drag_item_action;
     GdkDragAction drag_view_action;
+    guint hover_timer_id;
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
@@ -534,6 +535,50 @@ on_item_drag_prepare (GtkDragSource *source,
     return gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
 }
 
+static gboolean
+hover_timer (gpointer user_data)
+{
+    NautilusViewCell *cell = user_data;
+    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    NautilusViewItem *item = nautilus_view_cell_get_item (cell);
+    g_autofree gchar *uri = NULL;
+
+    priv->hover_timer_id = 0;
+
+    uri = nautilus_file_get_uri (nautilus_view_item_get_file (item));
+    nautilus_files_view_handle_hover (NAUTILUS_FILES_VIEW (self), uri);
+
+    return G_SOURCE_REMOVE;
+}
+
+static void
+on_item_drag_hover_enter (GtkDropControllerMotion *controller,
+                          gdouble                  x,
+                          gdouble                  y,
+                          gpointer                 user_data)
+{
+    NautilusViewCell *cell = user_data;
+    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    if (priv->hover_timer_id == 0)
+    {
+        priv->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, cell);
+    }
+}
+
+static void
+on_item_drag_hover_leave (GtkDropControllerMotion *controller,
+                          gpointer                 user_data)
+{
+    NautilusViewCell *cell = user_data;
+    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
+}
+
 static void
 real_perform_drop (NautilusListBase *self,
                    const GValue     *value,
@@ -773,6 +818,11 @@ setup_cell_common (GtkListItem      *listitem,
     g_signal_connect (drop_target, "motion", G_CALLBACK (on_item_drag_motion), cell);
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_item_drop), cell);
     gtk_widget_add_controller (GTK_WIDGET (cell), GTK_EVENT_CONTROLLER (drop_target));
+
+    controller = gtk_drop_controller_motion_new ();
+    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
+    g_signal_connect (controller, "enter", G_CALLBACK (on_item_drag_hover_enter), cell);
+    g_signal_connect (controller, "leave", G_CALLBACK (on_item_drag_hover_leave), cell);
 }
 
 static void
@@ -1406,6 +1456,7 @@ nautilus_list_base_dispose (GObject *object)
 
     g_clear_handle_id (&priv->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&priv->prioritize_thumbnailing_handle_id, g_source_remove);
+    g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->dispose (object);
 }
