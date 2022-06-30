@@ -193,12 +193,12 @@ slot_proxy_drag_motion (GtkDropTarget *target,
             action = 0;
             goto out;
         }
-    }
 
-    if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-    {
-        GSList *items = g_value_get_boxed (value);
-        action = nautilus_dnd_get_prefered_action (drag_info->target_file, items->data);
+        if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+        {
+            GSList *items = g_value_get_boxed (value);
+            action = nautilus_dnd_get_prefered_action (file, items->data);
+        }
     }
 
     g_free (target_uri);
