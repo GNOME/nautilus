@@ -205,9 +205,25 @@ action_pathbar_properties (GSimpleAction *action,
 }
 
 static void
-on_adjustment_changed (GtkAdjustment *adjustment)
+on_adjustment_changed (GtkAdjustment   *adjustment,
+                       NautilusPathBar *self)
 {
-    /* Automatically scroll to the end, to keep the current folder visible */
+    /* Automatically scroll to the end, to reveal the current folder. */
+    g_autoptr (AdwAnimation) anim = NULL;
+    anim = adw_timed_animation_new (GTK_WIDGET (self),
+                                    gtk_adjustment_get_value (adjustment),
+                                    gtk_adjustment_get_upper (adjustment),
+                                    800,
+                                    adw_property_animation_target_new (G_OBJECT (adjustment), "value"));
+    adw_timed_animation_set_easing (ADW_TIMED_ANIMATION (anim), ADW_EASE_OUT_CUBIC);
+    adw_animation_play (anim);
+}
+
+static void
+on_page_size_changed (GtkAdjustment *adjustment)
+{
+    /* When window is resized, immediately set new value, otherwise we would get
+     * an underflow gradient for an moment. */
     gtk_adjustment_set_value (adjustment, gtk_adjustment_get_upper (adjustment));
 }
 
@@ -237,7 +253,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
     gtk_box_append (GTK_BOX (self), self->scrolled);
 
     adjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (self->scrolled));
-    g_signal_connect (adjustment, "changed", (GCallback) on_adjustment_changed, NULL);
+    g_signal_connect (adjustment, "changed", G_CALLBACK (on_adjustment_changed), self);
+    g_signal_connect (adjustment, "notify::page-size", G_CALLBACK (on_page_size_changed), self);
 
     self->buttons_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (self->scrolled), self->buttons_box);
