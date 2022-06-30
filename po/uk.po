@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-06-13 12:01+0000\n"
-"PO-Revision-Date: 2022-06-13 17:16+0300\n"
+"POT-Creation-Date: 2022-06-30 17:49+0000\n"
+"PO-Revision-Date: 2022-06-30 22:03+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -74,7 +74,7 @@ msgstr "Проєкт GNOME"
 msgid "Tile View"
 msgstr "Перегляд мозаїкою"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2278
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42
 msgid "List View"
 msgstr "Перегляд списком"
 
@@ -492,7 +492,7 @@ msgstr "Якщо позначено, нововідкриті вікна мат�
 #: src/nautilus-files-view.c:5923 src/nautilus-files-view.c:6359
 #: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:618
 #: src/nautilus-mime-actions.c:624 src/nautilus-mime-actions.c:1014
-#: src/nautilus-mime-actions.c:1369 src/nautilus-properties-window.c:5249
+#: src/nautilus-mime-actions.c:1369 src/nautilus-properties-window.c:5228
 #: src/nautilus-search-popover.c:613
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:101
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:114
@@ -759,8 +759,7 @@ msgid "Channels:"
 msgstr "Канали:"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:114
-#: src/nautilus-files-view.c:441 src/nautilus-list-model.c:481
-#: src/nautilus-window-slot.c:928
+#: src/nautilus-files-view.c:441 src/nautilus-window-slot.c:928
 msgid "Loading…"
 msgstr "Завантаження…"
 
@@ -1147,14 +1146,12 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1792 src/nautilus-pathbar.c:357
-#: src/nautilus-shell-search-provider.c:330 src/nautilus-window.c:150
-#: src/gtk/nautilusgtkplacessidebar.c:1012
+#: src/nautilus-pathbar.c:357 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-window.c:150 src/gtk/nautilusgtkplacessidebar.c:1012
 msgid "Home"
 msgstr "Домівка"
 
-#: src/nautilus-column-utilities.c:59 src/nautilus-list-view.c:2146
-#: src/gtk/nautilusgtkplacessidebar.c:2292
+#: src/nautilus-column-utilities.c:59 src/gtk/nautilusgtkplacessidebar.c:2292
 msgid "Name"
 msgstr "Назва"
 
@@ -1256,6 +1253,7 @@ msgid "Modified — Time"
 msgstr "Змінено — Час"
 
 #: src/nautilus-column-utilities.c:156
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:51
 msgid "Recency"
 msgstr "Свіжість"
 
@@ -1288,6 +1286,7 @@ msgid "Original location of file before moved to the Trash"
 msgstr "Адреса файла перед його переміщенням у смітник"
 
 #: src/nautilus-column-utilities.c:239
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:58
 msgid "Relevance"
 msgstr "За відповідністю"
 
@@ -1338,26 +1337,27 @@ msgstr "Менші архіви, але треба встановити на Win
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-dnd.c:802
+#: src/nautilus-dnd.c:110
 msgid "_Move Here"
 msgstr "Пере_містити сюди"
 
-#: src/nautilus-dnd.c:807
+#: src/nautilus-dnd.c:115
 msgid "_Copy Here"
 msgstr "_Копіювати сюди"
 
-#: src/nautilus-dnd.c:812
+#: src/nautilus-dnd.c:120
 msgid "_Link Here"
 msgstr "_Сполучити сюди"
 
-#: src/nautilus-dnd.c:821 src/resources/ui/nautilus-compress-dialog.ui:78
+#: src/nautilus-dnd.c:129 src/resources/ui/nautilus-compress-dialog.ui:78
 #: src/resources/ui/nautilus-create-folder-dialog.ui:43
 msgid "Cancel"
 msgstr "Скасувати"
 
 #: src/nautilus-error-reporting.c:85
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of “%s”."
+msgid ""
+"You do not have the permissions necessary to view the contents of “%s”."
 msgstr "Ви не маєте прав, потрібних для перегляду вмісту «%s»."
 
 #: src/nautilus-error-reporting.c:92
@@ -1672,7 +1672,7 @@ msgstr "Невідомо"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7437 src/nautilus-properties-window.c:1280
+#: src/nautilus-file.c:7437 src/nautilus-properties-window.c:1259
 msgid "unknown"
 msgstr "невідомо"
 
@@ -2949,37 +2949,37 @@ msgstr "З_упинити багатодисковий пристрій"
 msgid "_Lock Drive"
 msgstr "За_блокувати пристрій"
 
-#: src/nautilus-files-view.c:9554
+#: src/nautilus-files-view.c:9560
 msgid "Content View"
 msgstr "Перегляд вмісту"
 
-#: src/nautilus-files-view.c:9555
+#: src/nautilus-files-view.c:9561
 msgid "View of the current folder"
 msgstr "Перегляд теперішньої теки"
 
-#: src/nautilus-files-view-dnd.c:62 src/nautilus-files-view-dnd.c:92
-#: src/nautilus-files-view-dnd.c:151
+#: src/nautilus-files-view-dnd.c:61 src/nautilus-files-view-dnd.c:91
+#: src/nautilus-files-view-dnd.c:152
 msgid "Drag and drop is not supported."
 msgstr "Перетягування не підтримується."
 
-#: src/nautilus-files-view-dnd.c:63
+#: src/nautilus-files-view-dnd.c:62
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
 "Перетягування та вставка підтримується лише на локальних файлових системах."
 
-#: src/nautilus-files-view-dnd.c:93 src/nautilus-files-view-dnd.c:152
+#: src/nautilus-files-view-dnd.c:92 src/nautilus-files-view-dnd.c:153
 msgid "An invalid drag type was used."
 msgstr "Було використано неправильний тип перетягування."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: src/nautilus-files-view-dnd.c:243
+#: src/nautilus-files-view-dnd.c:244
 msgid "Dropped Text.txt"
 msgstr "Перетягнутий текст.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: src/nautilus-files-view-dnd.c:334
+#: src/nautilus-files-view-dnd.c:335
 msgid "dropped data"
 msgstr "відкинуті дані"
 
@@ -3555,15 +3555,7 @@ msgstr "Містить музику й світлини"
 msgid "Contains photos and music"
 msgstr "Містить світлини і музику"
 
-#: src/nautilus-list-model.c:477
-msgid "(Empty)"
-msgstr "(Порожнє)"
-
-#: src/nautilus-list-view.c:1444
-msgid "Use Default"
-msgstr "Типово"
-
-#: src/nautilus-list-view.c:3215
+#: src/nautilus-list-view.c:555
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s видимих стовпчиків"
@@ -3933,8 +3925,6 @@ msgstr "«%s» захищено паролем."
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
 #: src/nautilus-pathbar.c:345 src/gtk/nautilusgtkplacesview.c:1103
-#| msgid "Opening %d item."
-#| msgid_plural "Opening %d items."
 msgid "Operating System"
 msgstr "Операційна система"
 
@@ -3948,8 +3938,8 @@ msgstr "Адміністративний корінь"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3613
-#: src/nautilus-properties-window.c:3643
+#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3592
+#: src/nautilus-properties-window.c:3622
 msgid "None"
 msgstr "Немає"
 
@@ -3992,7 +3982,7 @@ msgid "This is disabled due to security considerations."
 msgstr "Це заборонено з міркувань безпеки."
 
 #: src/nautilus-program-choosing.c:382 src/nautilus-program-choosing.c:457
-#: src/nautilus-properties-window.c:2632 src/nautilus-trash-bar.c:186
+#: src/nautilus-properties-window.c:2611 src/nautilus-trash-bar.c:186
 msgid "There was an error launching the application."
 msgstr "Помилка при запуску програми."
 
@@ -4051,27 +4041,27 @@ msgstr[3] "Триває %'d дія над файлами"
 msgid "All file operations have been completed"
 msgstr "Всі дії над файлами завершено"
 
-#: src/nautilus-properties-window.c:543
+#: src/nautilus-properties-window.c:526
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "Неможливо зв'язати понад одну вказану піктограму за раз!"
 
-#: src/nautilus-properties-window.c:544
+#: src/nautilus-properties-window.c:527
 msgid "Please drop just one image to set a custom icon."
 msgstr "Перетягніть лише одне зображення, щоб встановити іншу піктограму."
 
-#: src/nautilus-properties-window.c:561
+#: src/nautilus-properties-window.c:543
 msgid "The file that you dropped is not local."
 msgstr "Вказаний файл не є локальним."
 
-#: src/nautilus-properties-window.c:562 src/nautilus-properties-window.c:569
+#: src/nautilus-properties-window.c:544 src/nautilus-properties-window.c:551
 msgid "You can only use local images as custom icons."
 msgstr "Для піктограм можна використовувати лише локальні зображення."
 
-#: src/nautilus-properties-window.c:568
+#: src/nautilus-properties-window.c:550
 msgid "The file that you dropped is not an image."
 msgstr "Вказаний файл не є зображенням."
 
-#: src/nautilus-properties-window.c:654
+#: src/nautilus-properties-window.c:633
 #: src/resources/ui/nautilus-properties-window.ui:71
 msgid "_Name"
 msgid_plural "_Names"
@@ -4081,47 +4071,47 @@ msgstr[2] "_Назви"
 msgstr[3] "_Назва"
 
 #. To translators: %s is the name of the folder.
-#: src/nautilus-properties-window.c:909
+#: src/nautilus-properties-window.c:888
 #, c-format
 msgctxt "folder"
 msgid "%s Properties"
 msgstr "Властивості %s"
 
 #. To translators: %s is the name of the file.
-#: src/nautilus-properties-window.c:915
+#: src/nautilus-properties-window.c:894
 #, c-format
 msgctxt "file"
 msgid "%s Properties"
 msgstr "Властивості %s"
 
-#: src/nautilus-properties-window.c:923 src/gtk/nautilusgtkplacessidebar.c:3392
+#: src/nautilus-properties-window.c:902 src/gtk/nautilusgtkplacessidebar.c:3392
 #, c-format
 msgid "Properties"
 msgstr "Властивості"
 
-#: src/nautilus-properties-window.c:1338
+#: src/nautilus-properties-window.c:1317
 #, c-format
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-properties-window.c:1405
+#: src/nautilus-properties-window.c:1384
 msgid "Cancel Group Change?"
 msgstr "Скасувати зміну групи?"
 
-#: src/nautilus-properties-window.c:1774
+#: src/nautilus-properties-window.c:1753
 msgid "Cancel Owner Change?"
 msgstr "Скасувати зміну власника?"
 
-#: src/nautilus-properties-window.c:2102
+#: src/nautilus-properties-window.c:2081
 msgid "nothing"
 msgstr "нічого"
 
-#: src/nautilus-properties-window.c:2106
+#: src/nautilus-properties-window.c:2085
 msgid "unreadable"
 msgstr "нечіткий"
 
-#: src/nautilus-properties-window.c:2118
+#: src/nautilus-properties-window.c:2097
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4130,11 +4120,11 @@ msgstr[1] "%'d об'єкти, обсяг %s"
 msgstr[2] "%'d об'єктів, обсяг %s"
 msgstr[3] "%'d об'єкт, обсяг %s"
 
-#: src/nautilus-properties-window.c:2128
+#: src/nautilus-properties-window.c:2107
 msgid "(some contents unreadable)"
 msgstr "(деякий вміст не зчитується)"
 
-#: src/nautilus-properties-window.c:2631
+#: src/nautilus-properties-window.c:2610
 #, c-format
 msgid "Details: %s"
 msgstr "Подробиці: %s"
@@ -4142,109 +4132,109 @@ msgstr "Подробиці: %s"
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: src/nautilus-properties-window.c:3517 src/nautilus-properties-window.c:3532
-#: src/nautilus-properties-window.c:3549
+#: src/nautilus-properties-window.c:3496 src/nautilus-properties-window.c:3511
+#: src/nautilus-properties-window.c:3528
 msgid "no "
 msgstr "ні"
 
-#: src/nautilus-properties-window.c:3521
+#: src/nautilus-properties-window.c:3500
 msgid "list"
 msgstr "список"
 
-#: src/nautilus-properties-window.c:3525
+#: src/nautilus-properties-window.c:3504
 msgid "read"
 msgstr "читання"
 
-#: src/nautilus-properties-window.c:3536
+#: src/nautilus-properties-window.c:3515
 msgid "create/delete"
 msgstr "створити/вилучити"
 
-#: src/nautilus-properties-window.c:3540
+#: src/nautilus-properties-window.c:3519
 msgid "write"
 msgstr "запис"
 
-#: src/nautilus-properties-window.c:3551
+#: src/nautilus-properties-window.c:3530
 msgid "access"
 msgstr "доступ"
 
-#: src/nautilus-properties-window.c:3620
+#: src/nautilus-properties-window.c:3599
 msgid "List files only"
 msgstr "Лише список файлів"
 
-#: src/nautilus-properties-window.c:3626
+#: src/nautilus-properties-window.c:3605
 msgid "Access files"
 msgstr "Доступ до файлів"
 
-#: src/nautilus-properties-window.c:3632
+#: src/nautilus-properties-window.c:3611
 msgid "Create and delete files"
 msgstr "Створення та вилучення файлів"
 
-#: src/nautilus-properties-window.c:3650
+#: src/nautilus-properties-window.c:3629
 msgid "Read-only"
 msgstr "Лише читання"
 
-#: src/nautilus-properties-window.c:3656
+#: src/nautilus-properties-window.c:3635
 msgid "Read and write"
 msgstr "Читання та запис"
 
-#: src/nautilus-properties-window.c:4200
+#: src/nautilus-properties-window.c:4179
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Неможливо визначити права на «%s»."
 
-#: src/nautilus-properties-window.c:4444
+#: src/nautilus-properties-window.c:4423
 #, c-format
 msgid "Error while adding “%s”: %s"
 msgstr "Помилка додавання «%s»: %s"
 
-#: src/nautilus-properties-window.c:4446
+#: src/nautilus-properties-window.c:4425
 msgid "Could not add application"
 msgstr "Неможливо додати програму"
 
-#: src/nautilus-properties-window.c:4474
+#: src/nautilus-properties-window.c:4453
 msgid "Could not forget association"
 msgstr "Неможливо забути асоціацію"
 
-#: src/nautilus-properties-window.c:4517
+#: src/nautilus-properties-window.c:4496
 #, c-format
 msgid "Error while setting “%s” as default application: %s"
 msgstr "Помилка налаштування «%s» як типової програми: %s"
 
-#: src/nautilus-properties-window.c:4519
+#: src/nautilus-properties-window.c:4498
 msgid "Could not set as default"
 msgstr "Неможливо встановити типову програму"
 
 #. Translators: the %s here is a file extension
-#: src/nautilus-properties-window.c:4599
+#: src/nautilus-properties-window.c:4578
 #, c-format
 msgid "%s document"
 msgstr "Документ %s"
 
 #. Translators; %s here is a mime-type description
-#: src/nautilus-properties-window.c:4609
+#: src/nautilus-properties-window.c:4588
 #, c-format
 msgid "Open all files of type “%s” with"
 msgstr "Відкрити всі файли типу «%s» за допомогою"
 
 #. Translators: first %s is filename, second %s is mime-type description
-#: src/nautilus-properties-window.c:4618
+#: src/nautilus-properties-window.c:4597
 #, c-format
 msgid "Select an application to open “%s” and other files of type “%s”"
 msgstr "Виберіть програму для відкривання «%s» та інших файлів типу «%s»"
 
-#: src/nautilus-properties-window.c:5067
+#: src/nautilus-properties-window.c:5046
 msgid "Creating Properties window."
 msgstr "Створення вікна властивостей."
 
-#: src/nautilus-properties-window.c:5246
+#: src/nautilus-properties-window.c:5225
 msgid "Select Custom Icon"
 msgstr "Вибрати власну піктограму"
 
-#: src/nautilus-properties-window.c:5248
+#: src/nautilus-properties-window.c:5227
 msgid "_Revert"
 msgstr "Від_новити"
 
-#: src/nautilus-properties-window.c:5250 src/gtk/nautilusgtkplacesview.c:1679
+#: src/nautilus-properties-window.c:5229 src/gtk/nautilusgtkplacesview.c:1679
 #: src/gtk/nautilusgtkplacessidebar.c:3155
 #: src/gtk/nautilusgtkplacessidebar.c:3260
 msgid "_Open"
@@ -4254,6 +4244,10 @@ msgstr "_Відкрити"
 #, c-format
 msgid "Search for “%s”"
 msgstr "Пошук «%s»"
+
+#: src/nautilus-query-editor.c:635
+msgid "Clear entry"
+msgstr "Спорожнити запис"
 
 #: src/nautilus-rename-file-popover-controller.c:369
 msgid "Rename Folder"
@@ -4362,7 +4356,7 @@ msgstr "С_порожнити…"
 msgid "Delete all items in the Trash"
 msgstr "Вилучити всі об'єкти у смітнику"
 
-#: src/nautilus-ui-utilities.c:222
+#: src/nautilus-ui-utilities.c:224
 #, c-format
 msgid "Since %d day ago"
 msgid_plural "Since %d days ago"
@@ -4371,7 +4365,7 @@ msgstr[1] "%d дні тому"
 msgstr[2] "%d днів тому"
 msgstr[3] "%d день тому"
 
-#: src/nautilus-ui-utilities.c:223
+#: src/nautilus-ui-utilities.c:225
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
@@ -4380,7 +4374,7 @@ msgstr[1] "%d дні тому"
 msgstr[2] "%d днів тому"
 msgstr[3] "%d день тому"
 
-#: src/nautilus-ui-utilities.c:229
+#: src/nautilus-ui-utilities.c:231
 #, c-format
 msgid "Since last week"
 msgid_plural "Since %d weeks ago"
@@ -4389,7 +4383,7 @@ msgstr[1] "%d тижні тому"
 msgstr[2] "%d тижнів тому"
 msgstr[3] "%d тиждень тому"
 
-#: src/nautilus-ui-utilities.c:230
+#: src/nautilus-ui-utilities.c:232
 #, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
@@ -4398,7 +4392,7 @@ msgstr[1] "%d тижні тому"
 msgstr[2] "%d тижнів тому"
 msgstr[3] "%d тиждень тому"
 
-#: src/nautilus-ui-utilities.c:236
+#: src/nautilus-ui-utilities.c:238
 #, c-format
 msgid "Since last month"
 msgid_plural "Since %d months ago"
@@ -4407,7 +4401,7 @@ msgstr[1] "%d місяці тому"
 msgstr[2] "%d місяців тому"
 msgstr[3] "%d місяць тому"
 
-#: src/nautilus-ui-utilities.c:237
+#: src/nautilus-ui-utilities.c:239
 #, c-format
 msgid "Last month"
 msgid_plural "%d months ago"
@@ -4416,7 +4410,7 @@ msgstr[1] "%d місяці тому"
 msgstr[2] "%d місяців тому"
 msgstr[3] "%d місяць тому"
 
-#: src/nautilus-ui-utilities.c:242
+#: src/nautilus-ui-utilities.c:244
 #, c-format
 msgid "Since last year"
 msgid_plural "Since %d years ago"
@@ -4425,7 +4419,7 @@ msgstr[1] "%d роки тому"
 msgstr[2] "%d років тому"
 msgstr[3] "%d рік тому"
 
-#: src/nautilus-ui-utilities.c:243
+#: src/nautilus-ui-utilities.c:245
 #, c-format
 msgid "Last year"
 msgid_plural "%d years ago"
@@ -5927,6 +5921,12 @@ msgstr "Форматувати…"
 #: src/gtk/nautilusgtkplacessidebar.c:3892
 msgid "Computer"
 msgstr "Комп'ютер"
+
+#~ msgid "(Empty)"
+#~ msgstr "(Порожнє)"
+
+#~ msgid "Use Default"
+#~ msgstr "Типово"
 
 #~ msgid "Wallpapers"
 #~ msgstr "Фонові зображення"
