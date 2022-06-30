@@ -31,50 +31,46 @@
 
 /* Path bar */
 
-.nautilus-path-bar > scrolledwindow {
-  margin: 6px 0px 6px 0px;
+#NautilusPathBar {
   background-color: alpha(currentColor, 0.1);
+  border-radius: 6px;
+}
+#NautilusPathBar > menubutton {
+  margin: 0px;
 }
 
-.nautilus-path-bar scrolledwindow:dir(ltr),
-.nautilus-path-bar scrolledwindow:dir(ltr) undershoot.left {
+#NautilusPathBar > scrolledwindow undershoot.left {
+  background: linear-gradient(to right, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
+  border-left: solid 1px @borders;
+}
+#NautilusPathBar > scrolledwindow undershoot.right {
+  background: linear-gradient(to left, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
+  border-right: solid 1px @borders;
+}
+
+/* Match sidebar's rounded corners on the "start" side. */
+#NautilusPathBar > scrolledwindow:dir(ltr) undershoot.left {
   border-radius: 6px 0px 0px 6px;
 }
-
-.nautilus-path-bar scrolledwindow:dir(rtl),
-.nautilus-path-bar scrolledwindow:dir(rtl) undershoot.right {
+#NautilusPathBar > scrolledwindow:dir(rtl) undershoot.right {
   border-radius: 0px 6px 6px 0px;
 }
 
-/* Linked look */
-.nautilus-path-bar scrolledwindow:dir(rtl) {
-  margin-left: -1px;
-}
-
-.nautilus-path-bar scrolledwindow undershoot.left {
-  background: linear-gradient(to right, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
-}
-.nautilus-path-bar > scrolledwindow undershoot.right {
-  background: linear-gradient(to left, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
-}
-
-.path-buttons-box button {
+#NautilusPathButton {
   margin: 3px;
-  box-shadow: none;
   border-radius: 4px;
   padding-top: 0px;
   padding-bottom: 0px;
-  border-width: 0px;
-  -gtk-icon-shadow: none;
 }
 
-.path-buttons-box button:not(:hover),
-.path-buttons-box button.current-dir
+#NautilusPathButton:not(:hover),
+#NautilusPathButton.current-dir
 {
   background: none;
 }
 
-.path-buttons-box button:not(.current-dir):not(:backdrop):hover label {
+#NautilusPathButton:not(.current-dir):not(:backdrop):hover label,
+#NautilusPathButton:not(.current-dir):not(:backdrop):hover image {
   opacity: 1;
 }
 

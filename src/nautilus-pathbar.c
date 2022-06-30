@@ -260,6 +260,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (self->scrolled), self->buttons_box);
 
     self->current_view_menu_button = gtk_menu_button_new ();
+    gtk_widget_add_css_class (self->current_view_menu_button, "flat");
     gtk_menu_button_set_child (GTK_MENU_BUTTON (self->current_view_menu_button),
                                gtk_image_new_from_icon_name ("view-more-symbolic"));
     gtk_box_append (GTK_BOX (self), self->current_view_menu_button);
@@ -297,12 +298,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
                                  GTK_WIDGET (self->current_view_menu_popover));
     bind_current_view_menu_model_to_popover (self);
 
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
-                                 "linked");
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
-                                 "nautilus-path-bar");
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self->buttons_box)),
-                                 "path-buttons-box");
+    gtk_widget_set_name (GTK_WIDGET (self), "NautilusPathBar");
+    gtk_widget_add_css_class (GTK_WIDGET (self), "linked");
 
     /* Action group */
     self->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
@@ -1027,6 +1024,7 @@ make_button_data (NautilusPathBar *self,
     setup_button_type (button_data, self, path);
     button_data->button = gtk_button_new ();
     gtk_widget_set_focus_on_click (button_data->button, FALSE);
+    gtk_widget_set_name (button_data->button, "NautilusPathButton");
 
     /* TODO update button type when xdg directories change */
 
