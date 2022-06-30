@@ -24,12 +24,13 @@
 #include <config.h>
 #include "nautilus-dnd.h"
 
+#include <eel/eel-vfs-extensions.h>
+
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 
 #include "nautilus-program-choosing.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include "nautilus-file-utilities.h"
@@ -348,6 +349,7 @@ nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext *context)
 
     return gdk_drag_context_get_suggested_action (context);
 }
+#endif
 
 static gboolean
 check_same_fs (NautilusFile *file1,
@@ -394,6 +396,8 @@ source_is_deletable (GFile *file)
     return ret;
 }
 
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
+
 NautilusDragInfo *
 nautilus_drag_get_source_data (GdkDragContext *context)
 {
@@ -435,136 +439,9 @@ nautilus_drag_get_source_data (GdkDragContext *context)
 
     return source_data;
 }
+#endif
 
-void
-nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
-                                             const char     *target_uri_string,
-                                             const GList    *items,
-                                             guint32         source_actions,
-                                             int            *action)
-{
-    gboolean same_fs;
-    gboolean target_is_source_parent;
-    gboolean source_deletable;
-    const char *dropped_uri;
-    GFile *target, *dropped, *dropped_directory;
-    GdkDragAction actions;
-    NautilusFile *dropped_file, *target_file;
-
-    if (target_uri_string == NULL)
-    {
-        *action = 0;
-        return;
-    }
-
-    /* this is needed because of how dnd works. The actions at the time drag-begin
-     * is done are not set, because they are first set on drag-motion. However,
-     * for our use case, which is validation with the sidebar for dnd feedback
-     * when the dnd doesn't have as a destination the sidebar itself, we need
-     * a way to know the actions at drag-begin time. Either canvas view or
-     * list view know them when starting the drag, but asking for them here
-     * would be breaking the current model too much. So instead we rely on the
-     * caller, which will ask if appropiate to those objects about the actions
-     * available, instead of relying solely on the context here. */
-    if (source_actions)
-    {
-        actions = source_actions & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
-    }
-    else
-    {
-        actions = gdk_drag_context_get_actions (context) & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
-    }
-    if (actions == 0)
-    {
-        /* We can't use copy or move, just go with the suggested action. */
-        *action = gdk_drag_context_get_suggested_action (context);
-        return;
-    }
-
-    if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_ASK)
-    {
-        /* Don't override ask */
-        *action = gdk_drag_context_get_suggested_action (context);
-        return;
-    }
-
-    dropped_uri = ((NautilusDragSelectionItem *) items->data)->uri;
-    dropped_file = ((NautilusDragSelectionItem *) items->data)->file;
-    target_file = nautilus_file_get_by_uri (target_uri_string);
-
-    /*
-     * Check for trash URI.  We do a find_directory for any Trash directory.
-     * Passing 0 permissions as gnome-vfs would override the permissions
-     * passed with 700 while creating .Trash directory
-     */
-    if (eel_uri_is_trash (target_uri_string))
-    {
-        /* Only move to Trash */
-        if (actions & GDK_ACTION_MOVE)
-        {
-            *action = GDK_ACTION_MOVE;
-        }
-        nautilus_file_unref (target_file);
-        return;
-    }
-    else if (target_file != NULL && nautilus_file_is_archive (target_file))
-    {
-        *action = GDK_ACTION_COPY;
-
-        nautilus_file_unref (target_file);
-        return;
-    }
-    else
-    {
-        target = g_file_new_for_uri (target_uri_string);
-    }
-
-    same_fs = check_same_fs (target_file, dropped_file);
-
-    nautilus_file_unref (target_file);
-
-    /* Compare the first dropped uri with the target uri for same fs match. */
-    dropped = g_file_new_for_uri (dropped_uri);
-    dropped_directory = g_file_get_parent (dropped);
-    target_is_source_parent = FALSE;
-    if (dropped_directory != NULL)
-    {
-        /* If the dropped file is already in the same directory but
-         *  is in another filesystem we still want to move, not copy
-         *  as this is then just a move of a mountpoint to another
-         *  position in the dir */
-        target_is_source_parent = g_file_equal (dropped_directory, target);
-        g_object_unref (dropped_directory);
-    }
-    source_deletable = source_is_deletable (dropped);
-
-    if ((same_fs && source_deletable) || target_is_source_parent ||
-        g_file_has_uri_scheme (dropped, "trash"))
-    {
-        if (actions & GDK_ACTION_MOVE)
-        {
-            *action = GDK_ACTION_MOVE;
-        }
-        else
-        {
-            *action = gdk_drag_context_get_suggested_action (context);
-        }
-    }
-    else
-    {
-        if (actions & GDK_ACTION_COPY)
-        {
-            *action = GDK_ACTION_COPY;
-        }
-        else
-        {
-            *action = gdk_drag_context_get_suggested_action (context);
-        }
-    }
-
-    g_object_unref (target);
-    g_object_unref (dropped);
-}
+#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 
 GdkDragAction
 nautilus_drag_default_drop_action_for_uri_list (GdkDragContext *context,
@@ -990,6 +867,62 @@ nautilus_drag_autoscroll_stop (NautilusDragInfo *drag_info)
 }
 
 #endif
+
+GdkDragAction
+nautilus_dnd_get_prefered_action (NautilusFile *target_file,
+                                  GFile        *dropped)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (target_file), 0);
+    g_return_val_if_fail (dropped == NULL || G_IS_FILE (dropped), 0);
+
+    /* First check target imperatives */
+
+    if (nautilus_file_is_archive (target_file))
+    {
+        return GDK_ACTION_COPY;
+    }
+    else if (!nautilus_file_is_directory (target_file))
+    {
+        /* No other file type other than archives and directories currently
+         * accepts drops */
+        return 0;
+    }
+
+    if (nautilus_file_is_in_trash (target_file))
+    {
+        return GDK_ACTION_MOVE;
+    }
+
+    if (dropped != NULL)
+    {
+        g_autoptr (GFile) target_location = NULL;
+        g_autoptr (NautilusFile) dropped_file = NULL;
+        gboolean same_fs;
+        gboolean source_deletable;
+
+        if (g_file_has_uri_scheme (dropped, "trash"))
+        {
+            return GDK_ACTION_MOVE;
+        }
+
+        target_location = nautilus_file_get_location (target_file);
+        if (g_file_equal (target_location, dropped) ||
+            g_file_has_parent (dropped, target_location))
+        {
+            return 0;
+        }
+
+        dropped_file = nautilus_file_get (dropped);
+        same_fs = check_same_fs (target_file, dropped_file);
+        source_deletable = source_is_deletable (dropped);
+        if (same_fs && source_deletable)
+        {
+            return GDK_ACTION_MOVE;
+        }
+    }
+
+    return GDK_ACTION_COPY;
+}
 
 #define MAX_DRAWN_DRAG_ICONS 10
 #define NAUTILUS_DRAG_SURFACE_ICON_SIZE 64

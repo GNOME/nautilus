@@ -108,11 +108,6 @@ gboolean		    nautilus_drag_items_local			(const char			      *target_uri,
 									 const GList			      *selection_list);
 gboolean		    nautilus_drag_uris_local			(const char			      *target_uri,
 									 const GList			      *source_uri_list);
-void			    nautilus_drag_default_drop_action_for_icons (GdkDragContext			      *context,
-									 const char			      *target_uri,
-									 const GList			      *items,
-                                                                         guint32                               source_actions,
-									 int				      *action);
 GdkDragAction		    nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext			     *context);
 GdkDragAction		    nautilus_drag_default_drop_action_for_uri_list     (GdkDragContext			     *context,
 										const char			     *target_uri_string);
@@ -144,5 +139,7 @@ NautilusDragInfo *          nautilus_drag_get_source_data                 (GdkDr
 GList *                     nautilus_drag_file_list_from_selection_list   (const GList                        *selection_list);
 #endif
 
+GdkDragAction      nautilus_dnd_get_prefered_action              (NautilusFile     *target_file,
+                                                                  GFile            *dropped);
 GdkPaintable *     get_paintable_for_drag_selection              (GList            *selection,
                                                                   int               scale);
