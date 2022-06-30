@@ -579,6 +579,25 @@ on_item_drag_hover_leave (GtkDropControllerMotion *controller,
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 }
 
+static GdkDragAction
+get_preferred_action (NautilusFile *target_file,
+                      const GValue *value)
+{
+    GdkDragAction action = 0;
+
+    if (value == NULL)
+    {
+        action = nautilus_dnd_get_prefered_action (target_file, NULL);
+    }
+    if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+        GSList *source_file_list = g_value_get_boxed (value);
+        action = nautilus_dnd_get_prefered_action (target_file, source_file_list->data);
+    }
+
+    return action;
+}
+
 static void
 real_perform_drop (NautilusListBase *self,
                    const GValue     *value,
@@ -646,15 +665,7 @@ on_item_drag_enter (GtkDropTarget *target,
     }
 
     value = gtk_drop_target_get_value (target);
-    if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-    {
-        GSList *source_file_list;
-
-        source_file_list = g_value_get_boxed (value);
-        priv->drag_item_action = nautilus_dnd_get_prefered_action (dest_file,
-                                                                   source_file_list->data);
-    }
-
+    priv->drag_item_action = get_preferred_action (dest_file, value);
     if (priv->drag_item_action == 0)
     {
         gtk_drop_target_reject (target);
@@ -663,6 +674,30 @@ on_item_drag_enter (GtkDropTarget *target,
 
     nautilus_view_item_set_drag_accept (item, TRUE);
     return priv->drag_item_action;
+}
+
+static void
+on_item_drag_value_notify (GObject    *object,
+                           GParamSpec *pspec,
+                           gpointer    user_data)
+{
+    GtkDropTarget *target = GTK_DROP_TARGET (object);
+    NautilusViewCell *cell = user_data;
+    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    const GValue *value;
+    NautilusViewItem *item;
+
+    value = gtk_drop_target_get_value (target);
+    if (value == NULL)
+    {
+        return;
+    }
+
+    item = nautilus_view_cell_get_item (cell);
+    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (item));
+
+    priv->drag_item_action = get_preferred_action (nautilus_view_item_get_file (item), value);
 }
 
 static GdkDragAction
@@ -721,22 +756,12 @@ on_view_drag_enter (GtkDropTarget *target,
 {
     NautilusListBase *self = user_data;
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (NautilusFile) dest_file = NULL;
+    NautilusFile *dest_file;
     const GValue *value;
-    GList *source_file_list;
 
-    /* Reset action cache */
-    priv->drag_view_action = 0;
-
+    dest_file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
     value = gtk_drop_target_get_value (target);
-    if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-    {
-        source_file_list = g_value_get_boxed (value);
-        dest_file = nautilus_file_get (nautilus_view_get_location (NAUTILUS_VIEW (self)));
-        priv->drag_view_action = nautilus_dnd_get_prefered_action (dest_file,
-                                                                   source_file_list->data);
-    }
-
+    priv->drag_view_action = get_preferred_action (dest_file, value);
     if (priv->drag_view_action == 0)
     {
         gtk_drop_target_reject (target);
@@ -744,6 +769,27 @@ on_view_drag_enter (GtkDropTarget *target,
     }
 
     return priv->drag_view_action;
+}
+
+static void
+on_view_drag_value_notify (GObject    *object,
+                           GParamSpec *pspec,
+                           gpointer    user_data)
+{
+    GtkDropTarget *target = GTK_DROP_TARGET (object);
+    NautilusListBase *self = user_data;
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    const GValue *value;
+    NautilusFile *dest_file;
+
+    value = gtk_drop_target_get_value (target);
+    if (value == NULL)
+    {
+        return;
+    }
+
+    dest_file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
+    priv->drag_item_action = get_preferred_action (dest_file, value);
 }
 
 static GdkDragAction
@@ -814,6 +860,7 @@ setup_cell_common (GtkListItem      *listitem,
     /* TODO: Implement GDK_TYPE_STRING */
     gtk_drop_target_set_gtypes (drop_target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
     g_signal_connect (drop_target, "enter", G_CALLBACK (on_item_drag_enter), cell);
+    g_signal_connect (drop_target, "notify::value", G_CALLBACK (on_item_drag_value_notify), cell);
     g_signal_connect (drop_target, "leave", G_CALLBACK (on_item_drag_leave), cell);
     g_signal_connect (drop_target, "motion", G_CALLBACK (on_item_drag_motion), cell);
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_item_drop), cell);
@@ -1667,6 +1714,7 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     /* TODO: Implement GDK_TYPE_STRING */
     gtk_drop_target_set_gtypes (drop_target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
     g_signal_connect (drop_target, "enter", G_CALLBACK (on_view_drag_enter), self);
+    g_signal_connect (drop_target, "notify::value", G_CALLBACK (on_view_drag_value_notify), self);
     g_signal_connect (drop_target, "motion", G_CALLBACK (on_view_drag_motion), self);
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_view_drop), self);
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (drop_target));
