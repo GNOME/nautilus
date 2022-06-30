@@ -208,6 +208,21 @@ on_item_size_changed (NautilusNameCell *self)
 static void
 on_item_drag_accept_changed (NautilusNameCell *self)
 {
+    gboolean drag_accept;
+    NautilusViewItem *item;
+    GtkWidget *list_row = gtk_widget_get_parent (gtk_widget_get_parent (GTK_WIDGET (self)));
+
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_object_get (item, "drag-accept", &drag_accept, NULL);
+    if (drag_accept)
+    {
+        gtk_widget_set_state_flags (list_row, GTK_STATE_FLAG_DROP_ACTIVE, FALSE);
+    }
+    else
+    {
+        gtk_widget_unset_state_flags (list_row, GTK_STATE_FLAG_DROP_ACTIVE);
+    }
+
     update_icon (self);
 }
 
