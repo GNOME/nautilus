@@ -764,7 +764,8 @@ on_view_drag_enter (GtkDropTarget *target,
     priv->drag_view_action = get_preferred_action (dest_file, value);
     if (priv->drag_view_action == 0)
     {
-        gtk_drop_target_reject (target);
+        /* Don't summarily reject because the view's location might change on
+         * hover, so a DND action may become available. */
         return 0;
     }
 
@@ -812,8 +813,16 @@ on_view_drop (GtkDropTarget *target,
               gpointer       user_data)
 {
     NautilusListBase *self = user_data;
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GdkDragAction actions;
     GFile *target_location;
+
+    if (priv->drag_view_action == 0)
+    {
+        /* We didn't reject earlier because the view's location may change and,
+         * as a result, a drop action might become available. */
+        return FALSE;
+    }
 
     actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
     target_location = nautilus_view_get_location (NAUTILUS_VIEW (self));
