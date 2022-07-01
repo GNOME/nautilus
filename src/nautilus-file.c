@@ -5032,53 +5032,6 @@ prepend_icon_name (const char  *name,
     g_themed_icon_prepend_name (icon, name);
 }
 
-static void
-apply_emblems_to_icon (NautilusFile           *file,
-                       GIcon                 **icon,
-                       NautilusFileIconFlags   flags)
-{
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
-    GIcon *emblemed_icon = NULL;
-
-    g_autolist (GIcon) emblems = NULL;
-
-    emblems = nautilus_file_get_emblem_icons (file);
-
-    for (GList *l = emblems; l != NULL; l = l->next)
-    {
-        g_autoptr (GEmblem) emblem = NULL;
-
-        if (g_icon_equal (l->data, *icon))
-        {
-            continue;
-        }
-
-        emblem = g_emblem_new (l->data);
-
-        if (emblemed_icon == NULL)
-        {
-            emblemed_icon = g_emblemed_icon_new (*icon, emblem);
-        }
-        else
-        {
-            g_emblemed_icon_add_emblem (G_EMBLEMED_ICON (emblemed_icon), emblem);
-        }
-
-        if (emblemed_icon != NULL &&
-            (flags & NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM))
-        {
-            break;
-        }
-    }
-
-    if (emblemed_icon != NULL)
-    {
-        g_object_unref (*icon);
-        *icon = emblemed_icon;
-    }
-#endif
-}
-
 GIcon *
 nautilus_file_get_gicon (NautilusFile          *file,
                          NautilusFileIconFlags  flags)
@@ -5117,8 +5070,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
 
         if (((flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT) ||
              (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER) ||
-             (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON) ||
-             (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)) &&
+             (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON)) &&
             G_IS_THEMED_ICON (file->details->icon))
         {
             names = g_themed_icon_get_names (G_THEMED_ICON (file->details->icon));
@@ -5177,11 +5129,6 @@ out:
     if (icon == NULL)
     {
         icon = g_object_ref (get_default_file_icon ());
-    }
-
-    if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)
-    {
-        apply_emblems_to_icon (file, &icon, flags);
     }
 
     return icon;
@@ -5290,8 +5237,6 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     if (gicon != NULL)
     {
-        apply_emblems_to_icon (file, &gicon, flags);
-
         if (g_icon_equal (gicon, G_ICON (pixbuf)))
         {
             icon = nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
@@ -5342,11 +5287,6 @@ nautilus_file_get_icon (NautilusFile          *file,
     gicon = get_custom_icon (file);
     if (gicon != NULL)
     {
-        if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)
-        {
-            apply_emblems_to_icon (file, &gicon, flags);
-        }
-
         icon = nautilus_icon_info_lookup (gicon, size, scale);
         g_object_unref (gicon);
 

@@ -149,9 +149,7 @@ update_icon (NautilusNameCell *self)
     file = nautilus_view_item_get_file (item);
     icon_size = nautilus_view_item_get_icon_size (item);
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-            NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
-            NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
-            NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
+            NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE;
 
     g_object_get (item, "drag-accept", &drag_accept, NULL);
     if (drag_accept)
