@@ -16,6 +16,7 @@ struct _NautilusGridCell
 
     GtkWidget *fixed_height_box;
     GtkWidget *icon;
+    GtkWidget *emblems_box;
     GtkWidget *label;
     GtkWidget *first_caption;
     GtkWidget *second_caption;
@@ -101,6 +102,33 @@ update_captions (NautilusGridCell *self)
 }
 
 static void
+update_emblems (NautilusGridCell *self)
+{
+    NautilusViewItem *item;
+    NautilusFile *file;
+    GtkWidget *child;
+    g_autolist (GIcon) emblems = NULL;
+
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_return_if_fail (item != NULL);
+    file = nautilus_view_item_get_file (item);
+
+    /* Remove old emblems. */
+    while ((child = gtk_widget_get_first_child (self->emblems_box)) != NULL)
+    {
+        gtk_box_remove (GTK_BOX (self->emblems_box), child);
+    }
+
+    emblems = nautilus_file_get_emblem_icons (file);
+    for (GList *l = emblems; l != NULL; l = l->next)
+    {
+        gtk_box_append (GTK_BOX (self->emblems_box),
+                        gtk_image_new_from_gicon (l->data));
+    }
+}
+
+
+static void
 on_file_changed (NautilusGridCell *self)
 {
     NautilusViewItem *item;
@@ -111,6 +139,7 @@ on_file_changed (NautilusGridCell *self)
     file = nautilus_view_item_get_file (item);
 
     update_icon (self);
+    update_emblems (self);
 
     gtk_label_set_text (GTK_LABEL (self->label),
                         nautilus_file_get_display_name (file));
@@ -169,6 +198,7 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, fixed_height_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon);
+    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, emblems_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, label);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, second_caption);

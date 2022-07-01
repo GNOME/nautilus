@@ -479,6 +479,8 @@ GdkPaintable *          nautilus_file_get_icon_paintable                (Nautilu
 									 int                             scale,
 									 NautilusFileIconFlags           flags);
 
+GList *                 nautilus_file_get_emblem_icons                  (NautilusFile                   *file);
+
 /* Whether the file should open inside a view */
 gboolean                nautilus_file_opens_in_view                     (NautilusFile                   *file);
 /* Thumbnailing handling */

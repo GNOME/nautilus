@@ -3390,7 +3390,6 @@ compare_by_directory_name (NautilusFile *file_1,
                    file_2->details->directory_name_collation_key);
 }
 
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
 static GList *
 prepend_automatic_keywords (NautilusFile *file,
                             GList        *names)
@@ -3428,7 +3427,6 @@ prepend_automatic_keywords (NautilusFile *file,
 
     return names;
 }
-#endif
 
 static int
 compare_by_type (NautilusFile *file_1,
@@ -4850,7 +4848,6 @@ nautilus_is_video_file (NautilusFile *file)
     return FALSE;
 }
 
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
 static GList *
 sort_keyword_list_and_remove_duplicates (GList *keywords)
 {
@@ -4958,7 +4955,7 @@ nautilus_file_get_keywords (NautilusFile *file)
 
     metadata_strv = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
     /* Convert array to list */
-    for (gint i = 0; metadata_strv[i] != NULL; i++)
+    for (gint i = 0; metadata_strv != NULL && metadata_strv[i] != NULL; i++)
     {
         metadata_keywords = g_list_prepend (metadata_keywords, metadata_strv[i]);
     }
@@ -4978,10 +4975,10 @@ nautilus_file_get_keywords (NautilusFile *file)
  * in canonical order.
  * @file: NautilusFile representing the file in question.
  *
- * Returns: A list of emblem names.
+ * Returns: (transfer full) (element-type GIcon): A list of emblem names.
  *
  **/
-static GList *
+GList *
 nautilus_file_get_emblem_icons (NautilusFile *file)
 {
     GList *keywords, *l;
@@ -5023,7 +5020,6 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
 
     return icons;
 }
-#endif
 
 static void
 prepend_icon_name (const char  *name,

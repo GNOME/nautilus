@@ -52,16 +52,31 @@
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="label">
-                <property name="ellipsize">middle</property>
-                <property name="lines">1</property>
-                <property name="max-width-chars">-1</property>
-                <property name="wrap">False</property>
-                <property name="wrap-mode">word-char</property>
-                <property name="halign">start</property>
-                <attributes>
-                  <attribute name="insert-hyphens" value="false"></attribute>
-                </attributes>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="halign">fill</property>
+                <property name="hexpand">True</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="ellipsize">middle</property>
+                    <property name="lines">1</property>
+                    <property name="max-width-chars">-1</property>
+                    <property name="wrap">False</property>
+                    <property name="wrap-mode">word-char</property>
+                    <property name="halign">start</property>
+                    <attributes>
+                      <attribute name="insert-hyphens" value="false"></attribute>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="emblems_box">
+                    <property name="orientation">horizontal</property>
+                    <property name="halign">start</property>
+                    <property name="spacing">6</property>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
