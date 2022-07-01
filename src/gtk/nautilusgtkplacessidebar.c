@@ -35,8 +35,10 @@
 #include "nautilusgtksidebarrowprivate.h"
 #include "gdk/gdkkeysyms.h"
 #include "nautilusgtkbookmarksmanagerprivate.h"
+#include "nautilus-dnd.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-properties-window.h"
 #include "nautilus-trash-monitor.h"
 #pragma GCC diagnostic ignored "-Wshadow"
@@ -130,6 +132,8 @@ struct _NautilusGtkPlacesSidebar {
   int drag_row_y;
   GtkWidget *row_placeholder;
   DropState drop_state;
+  guint hover_timer_id;
+  GtkListBoxRow *hover_row;
 
   /* volume mounting - delayed open process */
   NautilusGtkPlacesOpenFlags go_to_after_mount_open_flags;
@@ -1461,6 +1465,28 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 }
 
 static gboolean
+hover_timer (gpointer user_data)
+{
+  NautilusGtkPlacesSidebar *sidebar = user_data;
+  gboolean open_folder_on_hover;
+  g_autofree gchar *uri = NULL;
+  g_autoptr (GFile) location = NULL;
+
+  open_folder_on_hover = g_settings_get_boolean (nautilus_preferences,
+                                                 NAUTILUS_PREFERENCES_OPEN_FOLDER_ON_DND_HOVER);
+  sidebar->hover_timer_id = 0;
+
+  if (open_folder_on_hover)
+    {
+      g_object_get (sidebar->hover_row, "uri", &uri, NULL);
+      location = g_file_new_for_uri (uri);
+      emit_open_location (sidebar, location, 0);
+    }
+
+  return G_SOURCE_REMOVE;
+}
+
+static gboolean
 check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                          NautilusGtkSidebarRow    *row,
                          const GValue     *value)
@@ -1645,6 +1671,12 @@ drag_motion_callback (GtkDropTarget    *target,
   action = 0;
   row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (sidebar->list_box), y);
 
+  if (row != sidebar->hover_row)
+    {
+      g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
+      sidebar->hover_row = row;
+    }
+
   /* Workaround https://gitlab.gnome.org/GNOME/gtk/-/issues/5023 */
   gtk_list_box_drag_unhighlight_row (GTK_LIST_BOX (sidebar->list_box));
 
@@ -1735,6 +1767,8 @@ drag_motion_callback (GtkDropTarget    *target,
               GFile *dest_file = g_file_new_for_uri (drop_target_uri);
 
               action = emit_drag_action_requested (sidebar, file, g_value_get_boxed (value));
+              if (sidebar->hover_timer_id == 0)
+                sidebar->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, sidebar);
 
               g_object_unref (dest_file);
             }
@@ -1923,6 +1957,7 @@ drag_leave_callback (GtkDropTarget *dest,
       sidebar->drop_state = DROP_STATE_NORMAL;
     }
 
+  g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
   sidebar->dragging_over = FALSE;
 }
 
@@ -4121,6 +4156,8 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
   g_clear_object (&sidebar->current_location);
   g_clear_pointer (&sidebar->rename_uri, g_free);
   g_clear_object (&sidebar->shortcuts);
+
+  g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
 
 #ifdef HAVE_CLOUDPROVIDERS
   for (l = sidebar->unready_accounts; l != NULL; l = l->next)
