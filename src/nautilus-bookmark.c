@@ -168,36 +168,6 @@ bookmark_file_changed_callback (NautilusFile     *file,
     }
 }
 
-static void
-apply_warning_emblem (GIcon    **base,
-                      gboolean   symbolic)
-{
-#if 0 && EMBLEMS_NEEDS_GTK4_REIMPLEMENTATION
-    GIcon *emblemed_icon;
-    g_autoptr (GIcon) warning = NULL;
-    g_autoptr (GEmblem) emblem = NULL;
-
-    if (symbolic)
-    {
-        warning = g_themed_icon_new ("dialog-warning-symbolic");
-    }
-    else
-    {
-        warning = g_themed_icon_new ("dialog-warning");
-    }
-
-    emblem = g_emblem_new (warning);
-    emblemed_icon = g_emblemed_icon_new (*base, emblem);
-
-    g_object_unref (*base);
-
-    *base = emblemed_icon;
-#else
-    /* GTK 4 doesn't draw emblemed icons. Use the warning icon itself. */
-    g_set_object (base, g_themed_icon_new (symbolic ? "dialog-warning-symbolic" : "dialog-warning"));
-#endif
-}
-
 gboolean
 nautilus_bookmark_get_is_builtin (NautilusBookmark *bookmark)
 {
@@ -303,7 +273,13 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
     g_autoptr (GIcon) icon = NULL;
     g_autoptr (GIcon) symbolic_icon = NULL;
 
-    if (g_file_is_native (bookmark->location))
+    if (!bookmark->exists)
+    {
+        DEBUG ("%s: file does not exist, set warning icon", nautilus_bookmark_get_name (bookmark));
+        symbolic_icon = g_themed_icon_new ("dialog-warning-symbolic");
+        icon = g_themed_icon_new ("dialog-warning");
+    }
+    else if (g_file_is_native (bookmark->location))
     {
         symbolic_icon = get_native_icon (bookmark, TRUE);
         icon = get_native_icon (bookmark, FALSE);
@@ -312,14 +288,6 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
     {
         symbolic_icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
         icon = g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER_REMOTE);
-    }
-
-    if (!bookmark->exists)
-    {
-        DEBUG ("%s: file does not exist, add emblem", nautilus_bookmark_get_name (bookmark));
-
-        apply_warning_emblem (&icon, FALSE);
-        apply_warning_emblem (&symbolic_icon, TRUE);
     }
 
     DEBUG ("%s: setting icon to default", nautilus_bookmark_get_name (bookmark));
