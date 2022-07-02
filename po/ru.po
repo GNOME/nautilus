@@ -18,16 +18,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-04-22 16:57+0000\n"
-"PO-Revision-Date: 2022-05-01 14:21+0300\n"
+"POT-Creation-Date: 2022-06-16 08:35+0000\n"
+"PO-Revision-Date: 2022-06-26 13:50+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 3.0.1\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
@@ -40,7 +40,7 @@ msgstr "Запуск приложения"
 #.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:112
-#: src/nautilus-window.c:2864
+#: src/nautilus-window.c:2872
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:47
 msgid "Files"
 msgstr "Файлы"
@@ -99,7 +99,7 @@ msgstr "Поиск"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4479 src/nautilus-file-utilities.c:323
-#: src/nautilus-pathbar.c:376
+#: src/nautilus-pathbar.c:380
 msgid "Other Locations"
 msgstr "Другие места"
 
@@ -561,8 +561,8 @@ msgstr "Y"
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-operations.c:259
 #: src/nautilus-files-view.c:5963 src/nautilus-files-view.c:6427
-#: src/nautilus-location-entry.c:350 src/nautilus-mime-actions.c:619
-#: src/nautilus-mime-actions.c:623 src/nautilus-mime-actions.c:1014
+#: src/nautilus-location-entry.c:350 src/nautilus-mime-actions.c:618
+#: src/nautilus-mime-actions.c:624 src/nautilus-mime-actions.c:1014
 #: src/nautilus-mime-actions.c:1369 src/nautilus-properties-window.c:5282
 #: src/nautilus-search-popover.c:623
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:102
@@ -1210,7 +1210,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1916 src/nautilus-pathbar.c:371
+#: src/nautilus-list-view.c:1916 src/nautilus-pathbar.c:375
 #: src/nautilus-shell-search-provider.c:330 src/nautilus-window.c:173
 msgid "Home"
 msgstr "Домашняя папка"
@@ -1549,7 +1549,7 @@ msgid "File not found"
 msgstr "Файл не найден"
 
 #: src/nautilus-file.c:4483 src/nautilus-file-utilities.c:327
-#: src/nautilus-pathbar.c:381
+#: src/nautilus-pathbar.c:385
 msgid "Starred"
 msgstr "Избранные"
 
@@ -3650,10 +3650,10 @@ msgstr "Эту ссылку нельзя использовать, потому 
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr "Эту ссылку нельзя использовать, потому что её цель «%s» не существует."
 
-#: src/nautilus-mime-actions.c:623
+#: src/nautilus-mime-actions.c:618
 #: src/resources/ui/nautilus-files-view-context-menus.ui:157
 msgid "Mo_ve to Trash"
-msgstr "_Переместить в корзину"
+msgstr "_Отправить в корзину"
 
 #: src/nautilus-mime-actions.c:996
 msgid "Are you sure you want to open all files?"
@@ -3936,13 +3936,13 @@ msgstr "«%s» защищён паролем."
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:359 src/gtk/nautilusgtkplacesview.c:1121
+#: src/nautilus-pathbar.c:363 src/gtk/nautilusgtkplacesview.c:1121
 msgid "Computer"
 msgstr "Компьютер"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:366
+#: src/nautilus-pathbar.c:370
 msgid "Administrator Root"
 msgstr "Корень системы"
 
@@ -4315,11 +4315,11 @@ msgstr ""
 
 #: src/nautilus-special-location-bar.c:58
 msgid ""
-"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
-"\">Learn more…</a>"
+"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+"templates\">Learn more…</a>"
 msgstr ""
-"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
-"\">Узнать подробнее…</a>"
+"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+"templates\">Узнать подробнее…</a>"
 
 #: src/nautilus-special-location-bar.c:64
 msgid "Executable files in this folder will appear in the Scripts menu."
@@ -4512,23 +4512,23 @@ msgstr[2] "Удалено из избранных %d файлов"
 msgid "Open %s"
 msgstr "Открыть %s"
 
-#: src/nautilus-window.c:1814
+#: src/nautilus-window.c:1822
 msgid "_New Tab"
 msgstr "Создать _вкладку"
 
-#: src/nautilus-window.c:1824
+#: src/nautilus-window.c:1832
 msgid "Move Tab _Left"
 msgstr "Переместить вкладку в_лево"
 
-#: src/nautilus-window.c:1832
+#: src/nautilus-window.c:1840
 msgid "Move Tab _Right"
 msgstr "Переместить вкладку в_право"
 
-#: src/nautilus-window.c:1843
+#: src/nautilus-window.c:1851
 msgid "_Close Tab"
 msgstr "_Закрыть вкладку"
 
-#: src/nautilus-window.c:2869
+#: src/nautilus-window.c:2877
 msgid "Access and organize your files"
 msgstr "Доступ и управление файлами"
 
@@ -4536,7 +4536,7 @@ msgstr "Доступ и управление файлами"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2880
+#: src/nautilus-window.c:2888
 msgid "translator-credits"
 msgstr ""
 "Станислав Соловей <whats_up@tut.by>, 2011-2020.\n"
@@ -4874,7 +4874,7 @@ msgstr "Переименовать"
 #: src/resources/gtk/help-overlay.ui:334
 msgctxt "shortcut window"
 msgid "Move to trash"
-msgstr "Переместить в корзину"
+msgstr "Отправить в корзину"
 
 #: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
