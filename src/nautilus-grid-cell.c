@@ -24,8 +24,6 @@ struct _NautilusGridCell
 
 G_DEFINE_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS_TYPE_VIEW_CELL)
 
-#define EXTRA_WIDTH_FOR_TEXT 36
-
 static void
 update_icon (NautilusGridCell *self)
 {
@@ -57,12 +55,6 @@ update_icon (NautilusGridCell *self)
     /* Set the same height and width for all icons regardless of aspect ratio.
      */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
-    if (icon_size < NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE)
-    {
-        int extra_margins = 0.5 * EXTRA_WIDTH_FOR_TEXT;
-        gtk_widget_set_margin_start (self->fixed_height_box, extra_margins);
-        gtk_widget_set_margin_end (self->fixed_height_box, extra_margins);
-    }
     style_context = gtk_widget_get_style_context (self->icon);
     thumbnail_path = nautilus_file_get_thumbnail_path (file);
     if (thumbnail_path != NULL &&
