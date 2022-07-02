@@ -791,7 +791,7 @@ on_view_drag_value_notify (GObject    *object,
     }
 
     dest_file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
-    priv->drag_item_action = get_preferred_action (dest_file, value);
+    priv->drag_view_action = get_preferred_action (dest_file, value);
 }
 
 static GdkDragAction
