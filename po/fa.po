@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-06-25 10:43+0000\n"
-"PO-Revision-Date: 2022-06-28 14:58+0430\n"
+"POT-Creation-Date: 2022-06-30 17:49+0000\n"
+"PO-Revision-Date: 2022-07-02 19:03+0430\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <>\n"
 "Language: fa\n"
@@ -474,7 +474,7 @@ msgstr "اگر روی درست تنظیم شود، قاب کناری پنجره�
 #: src/nautilus-files-view.c:5923 src/nautilus-files-view.c:6359
 #: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:618
 #: src/nautilus-mime-actions.c:624 src/nautilus-mime-actions.c:1014
-#: src/nautilus-mime-actions.c:1369 src/nautilus-properties-window.c:5249
+#: src/nautilus-mime-actions.c:1369 src/nautilus-properties-window.c:5228
 #: src/nautilus-search-popover.c:613
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:101
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:114
@@ -1300,19 +1300,19 @@ msgstr "بایگانی‌های کوچک‌تر اما باید در ویندو�
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-dnd.c:801
+#: src/nautilus-dnd.c:110
 msgid "_Move Here"
 msgstr "_جابه‌جایی به این‌جا"
 
-#: src/nautilus-dnd.c:806
+#: src/nautilus-dnd.c:115
 msgid "_Copy Here"
 msgstr "_رونوشت در این‌جا"
 
-#: src/nautilus-dnd.c:811
+#: src/nautilus-dnd.c:120
 msgid "_Link Here"
 msgstr "_پیوند به این‌جا"
 
-#: src/nautilus-dnd.c:820 src/resources/ui/nautilus-compress-dialog.ui:78
+#: src/nautilus-dnd.c:129 src/resources/ui/nautilus-compress-dialog.ui:78
 #: src/resources/ui/nautilus-create-folder-dialog.ui:43
 msgid "Cancel"
 msgstr "لغو"
@@ -1653,7 +1653,7 @@ msgstr "نامعلوم"
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7437 src/nautilus-properties-window.c:1280
+#: src/nautilus-file.c:7437 src/nautilus-properties-window.c:1259
 msgid "unknown"
 msgstr "نامعلوم"
 
@@ -2922,28 +2922,28 @@ msgstr "نمای محتویات"
 msgid "View of the current folder"
 msgstr "نمای شاخهٔ کنونی"
 
-#: src/nautilus-files-view-dnd.c:62 src/nautilus-files-view-dnd.c:92
-#: src/nautilus-files-view-dnd.c:151
+#: src/nautilus-files-view-dnd.c:61 src/nautilus-files-view-dnd.c:91
+#: src/nautilus-files-view-dnd.c:152
 msgid "Drag and drop is not supported."
 msgstr "کشیدن و رها کردن پشتیبانی نمی‌شود."
 
-#: src/nautilus-files-view-dnd.c:63
+#: src/nautilus-files-view-dnd.c:62
 msgid "Drag and drop is only supported on local file systems."
 msgstr "کشیدن و رها کردن تنها در سامانه‌پرونده‌های محلّی پشتیبانی می‌شود."
 
-#: src/nautilus-files-view-dnd.c:93 src/nautilus-files-view-dnd.c:152
+#: src/nautilus-files-view-dnd.c:92 src/nautilus-files-view-dnd.c:153
 msgid "An invalid drag type was used."
 msgstr "یک نوع کشیدن نادرست استفاده شده بود."
 
 #. Translator: This is the filename used for when you dnd text to a directory
-#: src/nautilus-files-view-dnd.c:243
+#: src/nautilus-files-view-dnd.c:244
 msgid "Dropped Text.txt"
 msgstr "متن انداخته شده.txt"
 
 #. Translator: This is the filename used for when you dnd raw
 #. * data to a directory, if the source didn't supply a name.
 #.
-#: src/nautilus-files-view-dnd.c:334
+#: src/nautilus-files-view-dnd.c:335
 msgid "dropped data"
 msgstr "دادهٔ انداخته شده"
 
@@ -3876,8 +3876,8 @@ msgstr "ریشهٔ مدیر"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3613
-#: src/nautilus-properties-window.c:3643
+#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3592
+#: src/nautilus-properties-window.c:3622
 msgid "None"
 msgstr "هیچ‌کدام"
 
@@ -3920,7 +3920,7 @@ msgid "This is disabled due to security considerations."
 msgstr "این گزینه به دلیل مسائل امنیتی از کار انداخته شده است."
 
 #: src/nautilus-program-choosing.c:382 src/nautilus-program-choosing.c:457
-#: src/nautilus-properties-window.c:2632 src/nautilus-trash-bar.c:186
+#: src/nautilus-properties-window.c:2611 src/nautilus-trash-bar.c:186
 msgid "There was an error launching the application."
 msgstr "خطایی در راه‌اندازی برنامه رخ داد."
 
@@ -3976,27 +3976,27 @@ msgstr[1] "تعداد %'Id عملیات فعال است"
 msgid "All file operations have been completed"
 msgstr "تمام عملیات‌های پرونده به پایان رسیدند"
 
-#: src/nautilus-properties-window.c:543
+#: src/nautilus-properties-window.c:526
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "نمی‌توان در آن واحد بیش از یک نقشک سفارشی تخصیص داد!"
 
-#: src/nautilus-properties-window.c:544
+#: src/nautilus-properties-window.c:527
 msgid "Please drop just one image to set a custom icon."
 msgstr "لطفاً فقط یک تصویر را برای تنظیم نقشک سفارشی بیندازید."
 
-#: src/nautilus-properties-window.c:561
+#: src/nautilus-properties-window.c:543
 msgid "The file that you dropped is not local."
 msgstr "پرونده‌ای که رها کردید محلّی نیست."
 
-#: src/nautilus-properties-window.c:562 src/nautilus-properties-window.c:569
+#: src/nautilus-properties-window.c:544 src/nautilus-properties-window.c:551
 msgid "You can only use local images as custom icons."
 msgstr "تنها می‌توانید از تصاویر محلّی به عنوان نقشک‌های سفارشی استفاده کنید."
 
-#: src/nautilus-properties-window.c:568
+#: src/nautilus-properties-window.c:550
 msgid "The file that you dropped is not an image."
 msgstr "پرونده‌ای که رها کرده‌اید تصویر نیست."
 
-#: src/nautilus-properties-window.c:654
+#: src/nautilus-properties-window.c:633
 #: src/resources/ui/nautilus-properties-window.ui:71
 msgid "_Name"
 msgid_plural "_Names"
@@ -4005,7 +4005,7 @@ msgstr[1] "_نام"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. To translators: %s is the name of the folder.
-#: src/nautilus-properties-window.c:909
+#: src/nautilus-properties-window.c:888
 #, c-format
 msgctxt "folder"
 msgid "%s Properties"
@@ -4013,51 +4013,51 @@ msgstr "ویژگی‌‌های ⁨%s⁩"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. To translators: %s is the name of the file.
-#: src/nautilus-properties-window.c:915
+#: src/nautilus-properties-window.c:894
 #, c-format
 msgctxt "file"
 msgid "%s Properties"
 msgstr "ویژگی‌‌های ⁨%s⁩"
 
-#: src/nautilus-properties-window.c:923 src/gtk/nautilusgtkplacessidebar.c:3392
+#: src/nautilus-properties-window.c:902 src/gtk/nautilusgtkplacessidebar.c:3392
 #, c-format
 msgid "Properties"
 msgstr "ویژگی‌ها"
 
-#: src/nautilus-properties-window.c:1338
+#: src/nautilus-properties-window.c:1317
 #, c-format
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-properties-window.c:1405
+#: src/nautilus-properties-window.c:1384
 msgid "Cancel Group Change?"
 msgstr "از تغییر گروه صرف نظر شود؟"
 
-#: src/nautilus-properties-window.c:1774
+#: src/nautilus-properties-window.c:1753
 msgid "Cancel Owner Change?"
 msgstr "از تغییر مالک صرف نظر شود؟"
 
-#: src/nautilus-properties-window.c:2102
+#: src/nautilus-properties-window.c:2081
 msgid "nothing"
 msgstr "هیچ چیز"
 
-#: src/nautilus-properties-window.c:2106
+#: src/nautilus-properties-window.c:2085
 msgid "unreadable"
 msgstr "غیرقابل خواندن"
 
-#: src/nautilus-properties-window.c:2118
+#: src/nautilus-properties-window.c:2097
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] "%'Id مورد با حجم %s"
 msgstr[1] "%'Id مورد با حجم %s"
 
-#: src/nautilus-properties-window.c:2128
+#: src/nautilus-properties-window.c:2107
 msgid "(some contents unreadable)"
 msgstr "(قسمتی از محتوا غیر قابل خواندن)"
 
-#: src/nautilus-properties-window.c:2631
+#: src/nautilus-properties-window.c:2610
 #, c-format
 msgid "Details: %s"
 msgstr "جزییات: %s"
@@ -4065,115 +4065,115 @@ msgstr "جزییات: %s"
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: src/nautilus-properties-window.c:3517 src/nautilus-properties-window.c:3532
-#: src/nautilus-properties-window.c:3549
+#: src/nautilus-properties-window.c:3496 src/nautilus-properties-window.c:3511
+#: src/nautilus-properties-window.c:3528
 msgid "no "
 msgstr "بدون "
 
-#: src/nautilus-properties-window.c:3521
+#: src/nautilus-properties-window.c:3500
 msgid "list"
 msgstr "فهرست"
 
-#: src/nautilus-properties-window.c:3525
+#: src/nautilus-properties-window.c:3504
 msgid "read"
 msgstr "خواندن"
 
-#: src/nautilus-properties-window.c:3536
+#: src/nautilus-properties-window.c:3515
 msgid "create/delete"
 msgstr "ساخت/حذف"
 
-#: src/nautilus-properties-window.c:3540
+#: src/nautilus-properties-window.c:3519
 msgid "write"
 msgstr "نوشتن"
 
-#: src/nautilus-properties-window.c:3551
+#: src/nautilus-properties-window.c:3530
 msgid "access"
 msgstr "دسترسی"
 
-#: src/nautilus-properties-window.c:3620
+#: src/nautilus-properties-window.c:3599
 msgid "List files only"
 msgstr "فقط فهرست پرونده‌ها"
 
-#: src/nautilus-properties-window.c:3626
+#: src/nautilus-properties-window.c:3605
 msgid "Access files"
 msgstr "دسترسی به پرونده‌ها"
 
-#: src/nautilus-properties-window.c:3632
+#: src/nautilus-properties-window.c:3611
 msgid "Create and delete files"
 msgstr "ساخت و حذف پرونده‌ها"
 
-#: src/nautilus-properties-window.c:3650
+#: src/nautilus-properties-window.c:3629
 msgid "Read-only"
 msgstr "فقط خواندنی"
 
-#: src/nautilus-properties-window.c:3656
+#: src/nautilus-properties-window.c:3635
 msgid "Read and write"
 msgstr "خواندن و نوشتن"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-properties-window.c:4200
+#: src/nautilus-properties-window.c:4179
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "دسترسی‌های «⁨%s⁩» قابل تشخیص نیست."
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-properties-window.c:4444
+#: src/nautilus-properties-window.c:4423
 #, c-format
 msgid "Error while adding “%s”: %s"
 msgstr "خطا هنگام افزودن «⁨%s⁩»: %s"
 
-#: src/nautilus-properties-window.c:4446
+#: src/nautilus-properties-window.c:4425
 msgid "Could not add application"
 msgstr "نمی‌توان برنامه را افزود"
 
-#: src/nautilus-properties-window.c:4474
+#: src/nautilus-properties-window.c:4453
 msgid "Could not forget association"
 msgstr "نمی‌توان وابستگی را فراموش کرد"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-properties-window.c:4517
+#: src/nautilus-properties-window.c:4496
 #, c-format
 msgid "Error while setting “%s” as default application: %s"
 msgstr "خطا هنگام تنظیم «⁨%s⁩» به عنوان برنامهٔ پیش‌گزیده: %s"
 
-#: src/nautilus-properties-window.c:4519
+#: src/nautilus-properties-window.c:4498
 msgid "Could not set as default"
 msgstr "عدم امکان در تنظیم به عنوان پیش‌گزیده"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: the %s here is a file extension
-#: src/nautilus-properties-window.c:4599
+#: src/nautilus-properties-window.c:4578
 #, c-format
 msgid "%s document"
 msgstr "سند ⁨%s⁩"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators; %s here is a mime-type description
-#: src/nautilus-properties-window.c:4609
+#: src/nautilus-properties-window.c:4588
 #, c-format
 msgid "Open all files of type “%s” with"
 msgstr "گشودن تمام پرونده‌های گونهٔ «⁨%s⁩» با"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: first %s is filename, second %s is mime-type description
-#: src/nautilus-properties-window.c:4618
+#: src/nautilus-properties-window.c:4597
 #, c-format
 msgid "Select an application to open “%s” and other files of type “%s”"
 msgstr "یک برنامه برای گشودن «⁨%s⁩» و پرونده‌های دیگر از گونهٔ «⁨%s⁩» برگزینید"
 
-#: src/nautilus-properties-window.c:5067
+#: src/nautilus-properties-window.c:5046
 msgid "Creating Properties window."
 msgstr "ایجاد کردن پنجرهٔ ویژگی‌ها."
 
-#: src/nautilus-properties-window.c:5246
+#: src/nautilus-properties-window.c:5225
 msgid "Select Custom Icon"
 msgstr "گزینش نقشک سفارشی"
 
-#: src/nautilus-properties-window.c:5248
+#: src/nautilus-properties-window.c:5227
 msgid "_Revert"
 msgstr "_بازگردانی"
 
-#: src/nautilus-properties-window.c:5250 src/gtk/nautilusgtkplacesview.c:1679
+#: src/nautilus-properties-window.c:5229 src/gtk/nautilusgtkplacesview.c:1679
 #: src/gtk/nautilusgtkplacessidebar.c:3155 src/gtk/nautilusgtkplacessidebar.c:3260
 msgid "_Open"
 msgstr "_گشودن"
@@ -4183,6 +4183,10 @@ msgstr "_گشودن"
 #, c-format
 msgid "Search for “%s”"
 msgstr "جست‌وجو برای «⁨%s⁩»"
+
+#: src/nautilus-query-editor.c:635
+msgid "Clear entry"
+msgstr "پاک‌سازی ورودی"
 
 #: src/nautilus-rename-file-popover-controller.c:369
 msgid "Rename Folder"
@@ -10385,9 +10389,6 @@ msgstr "رایانه"
 
 #~ msgid "View in Multiple Windows?"
 #~ msgstr "در چندین پنجره نمایش داده شود؟"
-
-#~ msgid "Clear History"
-#~ msgstr "پاک کردن تاریخچه"
 
 #~ msgid "Couldn't Delete Pattern"
 #~ msgstr "الگو حذف نشد"
