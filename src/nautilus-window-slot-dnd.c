@@ -197,7 +197,7 @@ slot_proxy_drag_motion (GtkDropTarget *target,
         if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
         {
             GSList *items = g_value_get_boxed (value);
-            action = nautilus_dnd_get_prefered_action (file, items->data);
+            action = nautilus_dnd_get_preferred_action (file, items->data);
         }
     }
 

@@ -945,7 +945,7 @@ places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
                                          NautilusFile             *dest_file,
                                          GList                    *source_file_list)
 {
-    return nautilus_dnd_get_prefered_action (dest_file, source_file_list->data);
+    return nautilus_dnd_get_preferred_action (dest_file, source_file_list->data);
 }
 #if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 /* Callback used when the places sidebar needs us to pop up a menu with possible drag actions */

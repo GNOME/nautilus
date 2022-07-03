@@ -160,8 +160,8 @@ nautilus_drag_drop_action_ask (GtkWidget     *widget,
 }
 
 GdkDragAction
-nautilus_dnd_get_prefered_action (NautilusFile *target_file,
-                                  GFile        *dropped)
+nautilus_dnd_get_preferred_action (NautilusFile *target_file,
+                                   GFile        *dropped)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (target_file), 0);
     g_return_val_if_fail (dropped == NULL || G_IS_FILE (dropped), 0);
