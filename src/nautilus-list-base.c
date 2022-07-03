@@ -50,7 +50,7 @@ struct _NautilusListBasePrivate
     GdkDragAction drag_item_action;
     GdkDragAction drag_view_action;
     guint hover_timer_id;
-    GtkDropTarget *view_drop_target;
+    gboolean drag_view_action_invalidated;
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
@@ -803,6 +803,16 @@ on_view_drag_motion (GtkDropTarget *target,
     NautilusListBase *self = user_data;
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
+    if (priv->drag_view_action_invalidated)
+    {
+        NautilusFile *dest_file;
+
+        dest_file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
+        priv->drag_view_action = get_preferred_action (dest_file,
+                                                       gtk_drop_target_get_value (target));
+        priv->drag_view_action_invalidated = FALSE;
+    }
+
     return priv->drag_view_action;
 }
 
@@ -934,9 +944,8 @@ real_begin_loading (NautilusFilesView *files_view)
     priv->deny_background_click = FALSE;
 
     /* When DnD is used to navigate between directories, the normal callbacks
-     * are ignored. Update DnD variables here upon navigating to a directory*/
-    priv->drag_view_action = get_preferred_action (nautilus_files_view_get_directory_as_file (files_view),
-                                                   gtk_drop_target_get_value (priv->view_drop_target));
+     * are ignored. Invalidate / clear actions when changing directories*/
+    priv->drag_view_action_invalidated = TRUE;
     priv->drag_item_action = 0;
 }
 
@@ -1703,7 +1712,6 @@ nautilus_list_base_get_model (NautilusListBase *self)
 void
 nautilus_list_base_setup_gestures (NautilusListBase *self)
 {
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkWidget *view_ui = nautilus_list_base_get_view_ui (self);
     GtkEventController *controller;
     GtkDropTarget *drop_target;
@@ -1730,5 +1738,4 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     g_signal_connect (drop_target, "motion", G_CALLBACK (on_view_drag_motion), self);
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_view_drop), self);
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (drop_target));
-    priv->view_drop_target = drop_target;
 }
