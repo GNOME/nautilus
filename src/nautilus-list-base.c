@@ -849,6 +849,7 @@ setup_cell_common (GtkListItem      *listitem,
 {
     GtkEventController *controller;
     GtkDropTarget *drop_target;
+    GdkDragAction actions;
 
     g_object_bind_property (listitem, "item",
                             cell, "item",
@@ -875,7 +876,8 @@ setup_cell_common (GtkListItem      *listitem,
     g_signal_connect (controller, "prepare", G_CALLBACK (on_item_drag_prepare), cell);
 
     /* TODO: Implement GDK_ACTION_ASK */
-    drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_COPY | GDK_ACTION_MOVE);
+    actions = GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK;
+    drop_target = gtk_drop_target_new (G_TYPE_INVALID, actions);
     gtk_drop_target_set_preload (drop_target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */
     gtk_drop_target_set_gtypes (drop_target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
@@ -1715,6 +1717,7 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     GtkWidget *view_ui = nautilus_list_base_get_view_ui (self);
     GtkEventController *controller;
     GtkDropTarget *drop_target;
+    GdkDragAction actions;
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (view_ui, controller);
@@ -1729,7 +1732,8 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
                       G_CALLBACK (on_view_longpress_pressed), self);
 
     /* TODO: Implement GDK_ACTION_ASK */
-    drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_COPY | GDK_ACTION_MOVE);
+    actions = GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK;
+    drop_target = gtk_drop_target_new (G_TYPE_INVALID, actions);
     gtk_drop_target_set_preload (drop_target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */
     gtk_drop_target_set_gtypes (drop_target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
