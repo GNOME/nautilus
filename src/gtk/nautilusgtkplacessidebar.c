@@ -1476,11 +1476,14 @@ hover_timer (gpointer user_data)
                                                  NAUTILUS_PREFERENCES_OPEN_FOLDER_ON_DND_HOVER);
   sidebar->hover_timer_id = 0;
 
-  if (open_folder_on_hover)
+  if (open_folder_on_hover && sidebar->hover_row != NULL)
     {
       g_object_get (sidebar->hover_row, "uri", &uri, NULL);
-      location = g_file_new_for_uri (uri);
-      emit_open_location (sidebar, location, 0);
+      if (uri != NULL)
+        {
+          location = g_file_new_for_uri (uri);
+          emit_open_location (sidebar, location, 0);
+        }
     }
 
   return G_SOURCE_REMOVE;
@@ -1675,6 +1678,7 @@ drag_motion_callback (GtkDropTarget    *target,
     {
       g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
       sidebar->hover_row = row;
+      sidebar->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, sidebar);
     }
 
   /* Workaround https://gitlab.gnome.org/GNOME/gtk/-/issues/5023 */
@@ -1767,8 +1771,6 @@ drag_motion_callback (GtkDropTarget    *target,
               GFile *dest_file = g_file_new_for_uri (drop_target_uri);
 
               action = emit_drag_action_requested (sidebar, file, g_value_get_boxed (value));
-              if (sidebar->hover_timer_id == 0)
-                sidebar->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, sidebar);
 
               g_object_unref (dest_file);
             }
