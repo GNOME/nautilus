@@ -590,7 +590,7 @@ get_preferred_action (NautilusFile *target_file,
     {
         action = nautilus_dnd_get_prefered_action (target_file, NULL);
     }
-    if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
         GSList *source_file_list = g_value_get_boxed (value);
         action = nautilus_dnd_get_prefered_action (target_file, source_file_list->data);
