@@ -9,6 +9,7 @@
  */
 
 #include "nautilus-dnd.h"
+#include "nautilus-file-utilities.h"
 
 static gboolean
 check_same_fs (NautilusFile *file1,
@@ -168,7 +169,8 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
 
     /* First check target imperatives */
 
-    if (nautilus_file_is_archive (target_file))
+    if (nautilus_is_file_roller_installed () &&
+        nautilus_file_is_archive (target_file))
     {
         return GDK_ACTION_COPY;
     }
