@@ -172,7 +172,8 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
     {
         return GDK_ACTION_COPY;
     }
-    else if (!nautilus_file_is_directory (target_file))
+    else if (!nautilus_file_is_directory (target_file) ||
+             !nautilus_file_can_write (target_file))
     {
         /* No other file type other than archives and directories currently
          * accepts drops */
