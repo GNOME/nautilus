@@ -937,9 +937,12 @@ real_begin_loading (NautilusFilesView *files_view)
 
     /* When DnD is used to navigate between directories, the normal callbacks
      * are ignored. Update DnD variables here upon navigating to a directory*/
-    priv->drag_view_action = get_preferred_action (nautilus_files_view_get_directory_as_file (files_view),
-                                                   gtk_drop_target_get_value (priv->view_drop_target));
-    priv->drag_item_action = 0;
+    if (gtk_drop_target_get_current_drop (priv->view_drop_target) != NULL)
+    {
+        priv->drag_view_action = get_preferred_action (nautilus_files_view_get_directory_as_file (files_view),
+                                                       gtk_drop_target_get_value (priv->view_drop_target));
+        priv->drag_item_action = 0;
+    }
 }
 
 static void
