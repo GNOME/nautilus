@@ -541,16 +541,15 @@ typedef struct
 
 static void
 trash_symbolic_link_cb (GtkDialog *dialog,
-                        gint       response_id,
+                        char      *response,
                         gpointer   user_data)
 {
     g_autofree TrashBrokenSymbolicLinkData *data = NULL;
     GList file_as_list;
 
     data = user_data;
-    gtk_window_destroy (GTK_WINDOW (dialog));
 
-    if (response_id == GTK_RESPONSE_YES)
+    if (g_strcmp0 (response, "move-to-trash") == 0)
     {
         file_as_list.data = data->file;
         file_as_list.next = NULL;
@@ -565,9 +564,8 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
 {
     char *target_path;
     char *display_name;
-    char *prompt;
     char *detail;
-    GtkDialog *dialog;
+    GtkWidget *dialog;
     TrashBrokenSymbolicLinkData *data;
 
     gboolean can_trash;
@@ -576,16 +574,6 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
 
     display_name = nautilus_file_get_display_name (file);
     can_trash = nautilus_file_can_trash (file) && !nautilus_file_is_in_trash (file);
-
-    if (can_trash)
-    {
-        prompt = g_strdup_printf (_("The link “%s” is broken. Move it to Trash?"), display_name);
-    }
-    else
-    {
-        prompt = g_strdup_printf (_("The link “%s” is broken."), display_name);
-    }
-    g_free (display_name);
 
     target_path = nautilus_file_get_symbolic_link_target_path (file);
     if (target_path == NULL)
@@ -600,16 +588,27 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
 
     if (can_trash)
     {
-        dialog = eel_show_yes_no_dialog (prompt, detail, _("Mo_ve to Trash"), _("_Cancel"),
-                                         parent_window);
+        dialog = adw_message_dialog_new (parent_window, NULL, detail);
+        adw_message_dialog_format_heading (ADW_MESSAGE_DIALOG (dialog),
+                                           _("The link “%s” is broken. Move it to Trash?"),
+                                           display_name);
+        adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
+                                          "cancel", _("_Cancel"),
+                                          "move-to-trash", _("Mo_ve to Trash"),
+                                          NULL);
     }
     else
     {
-        dialog = eel_show_simple_dialog (GTK_WIDGET (parent_window), GTK_MESSAGE_WARNING,
-                                         prompt, detail, _("_Cancel"), NULL);
+        dialog = adw_message_dialog_new (parent_window, NULL, detail);
+        adw_message_dialog_format_heading (ADW_MESSAGE_DIALOG (dialog),
+                                           _("The link “%s” is broken."),
+                                           display_name);
+        adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog),
+                                         "cancel", _("Cancel"));
     }
+    g_free (display_name);
 
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
 
     /* Make this modal to avoid problems with reffing the view & file
      * to keep them around in case the view changes, which would then
@@ -629,7 +628,6 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
                       G_CALLBACK (trash_symbolic_link_cb),
                       data);
 
-    g_free (prompt);
     g_free (target_path);
     g_free (detail);
 }
@@ -969,12 +967,29 @@ activate_mount_op_active (GtkMountOperation  *operation,
     }
 }
 
-static GtkDialog *
-show_confirm_multiple (GtkWindow *parent_window,
-                       int        window_count,
-                       int        tab_count)
+static void
+on_confirm_multiple_windows_response (GtkDialog          *dialog,
+                                      gchar              *response,
+                                      ActivateParameters *parameters)
 {
-    GtkDialog *dialog;
+    if (g_strcmp0 (response, "open-all") == 0)
+    {
+        unpause_activation_timed_cancel (parameters);
+        activate_files_internal (parameters);
+    }
+    else
+    {
+        activation_parameters_free (parameters);
+    }
+}
+
+static void
+show_confirm_multiple (ActivateParameters *parameters,
+                       int                 window_count,
+                       int                 tab_count)
+{
+    GtkWindow *parent_window = parameters->parent_window;
+    GtkWidget *dialog;
     char *prompt;
     char *detail;
 
@@ -995,30 +1010,20 @@ show_confirm_multiple (GtkWindow *parent_window,
         detail = g_strdup_printf (ngettext ("This will open %d separate window.",
                                             "This will open %d separate windows.", window_count), window_count);
     }
-    dialog = eel_show_yes_no_dialog (prompt, detail,
-                                     _("_OK"), _("_Cancel"),
-                                     parent_window);
+
+    dialog = adw_message_dialog_new (parent_window, prompt, detail);
+    adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
+                                      "cancel", _("_Cancel"),
+                                      "open-all", _("_Open All"),
+                                      NULL);
+
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "open-all");
+
+    g_signal_connect (dialog, "response",
+                      G_CALLBACK (on_confirm_multiple_windows_response), parameters);
+    gtk_window_present (GTK_WINDOW (dialog));
+
     g_free (detail);
-
-    return dialog;
-}
-
-static void
-on_confirm_multiple_windows_response (GtkDialog          *dialog,
-                                      int                 response_id,
-                                      ActivateParameters *parameters)
-{
-    gtk_window_destroy (GTK_WINDOW (dialog));
-
-    if (response_id == GTK_RESPONSE_YES)
-    {
-        unpause_activation_timed_cancel (parameters);
-        activate_files_internal (parameters);
-    }
-    else
-    {
-        activation_parameters_free (parameters);
-    }
 }
 
 typedef struct
@@ -1118,7 +1123,7 @@ open_with_response_cb (GtkDialog *dialog,
 
 static void
 choose_program (GtkDialog *message_dialog,
-                int        response,
+                gchar     *response,
                 gpointer   callback_data)
 {
     GtkWidget *dialog;
@@ -1126,9 +1131,8 @@ choose_program (GtkDialog *message_dialog,
     GFile *location;
     ActivateParametersInstall *parameters = callback_data;
 
-    if (response != GTK_RESPONSE_ACCEPT)
+    if (g_strcmp0 (response, "select-application") != 0)
     {
-        gtk_window_destroy (GTK_WINDOW (message_dialog));
         activate_parameters_install_free (parameters);
         return;
     }
@@ -1166,47 +1170,35 @@ static void
 show_unhandled_type_error (ActivateParametersInstall *parameters)
 {
     GtkWidget *dialog;
+    g_autofree char *body = NULL;
+    g_autofree char *content_type_description = NULL;
 
     char *mime_type = nautilus_file_get_mime_type (parameters->file);
     char *error_message = get_application_no_mime_type_handler_message (parameters->file, parameters->uri);
+
     if (g_content_type_is_unknown (mime_type))
     {
-        dialog = gtk_message_dialog_new (parameters->parent_window,
-                                         GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                         GTK_MESSAGE_ERROR,
-                                         0,
-                                         "%s", error_message);
-        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                  _("The file is of an unknown type"));
+        body = _("The file is of an unknown type");
     }
     else
     {
-        char *text;
-        text = g_strdup_printf (_("There is no application installed for “%s” files"), g_content_type_get_description (mime_type));
-
-        dialog = gtk_message_dialog_new (parameters->parent_window,
-                                         GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                         GTK_MESSAGE_ERROR,
-                                         0,
-                                         "%s", error_message);
-        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                  "%s", text);
-
-        g_free (text);
+        content_type_description = g_content_type_get_description (mime_type);
+        body = g_strdup_printf (_("There is no application installed for “%s” files"), content_type_description);
     }
 
-    gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Select Application"), GTK_RESPONSE_ACCEPT);
-
-    gtk_dialog_add_button (GTK_DIALOG (dialog), _("_OK"), GTK_RESPONSE_OK);
-
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+    dialog = adw_message_dialog_new (parameters->parent_window, error_message, body);
+    adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
+                                      "select-application", _("_Select Application"),
+                                      "ok", _("_OK"),
+                                      NULL);
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
 
     g_object_set_data_full (G_OBJECT (dialog),
                             "mime-action:file",
                             nautilus_file_ref (parameters->file),
                             (GDestroyNotify) nautilus_file_unref);
 
-    gtk_widget_show (GTK_WIDGET (dialog));
+    gtk_window_present (GTK_WINDOW (dialog));
 
     g_signal_connect (dialog, "response",
                       G_CALLBACK (choose_program), parameters);
@@ -1286,15 +1278,14 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 
 static void
 application_unhandled_file_install (GtkDialog                 *dialog,
-                                    gint                       response_id,
+                                    gchar                     *response,
                                     ActivateParametersInstall *parameters_install)
 {
     char *mime_type;
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
     parameters_install->dialog = NULL;
 
-    if (response_id == GTK_RESPONSE_YES)
+    if (g_strcmp0 (response, "search-in-software") == 0)
     {
         mime_type = nautilus_file_get_mime_type (parameters_install->file);
         search_for_application_mime_type (parameters_install, mime_type);
@@ -1318,6 +1309,7 @@ pk_proxy_appeared_cb (GObject      *source,
     GtkWidget *dialog;
     GDBusProxy *proxy;
     GError *error = NULL;
+    g_autofree char *content_type_description = NULL;
 
     proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
     name_owner = g_dbus_proxy_get_name_owner (proxy);
@@ -1337,24 +1329,21 @@ pk_proxy_appeared_cb (GObject      *source,
     g_free (name_owner);
 
     mime_type = nautilus_file_get_mime_type (parameters_install->file);
+    content_type_description = g_content_type_get_description (mime_type);
     error_message = get_application_no_mime_type_handler_message (parameters_install->file,
                                                                   parameters_install->uri);
     /* use a custom dialog to prompt the user to install new software */
-    dialog = gtk_message_dialog_new (parameters_install->parent_window,
-                                     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                     GTK_MESSAGE_ERROR,
-                                     GTK_BUTTONS_NONE,
-                                     "%s", error_message);
-    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                              _("There is no application installed for “%s” files. "
-                                                "Do you want to search for an application to open this file?"),
-                                              g_content_type_get_description (mime_type));
-    gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
+    dialog = adw_message_dialog_new (parameters_install->parent_window, error_message, NULL);
+    adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
+                                      "cancel", _("_Cancel"),
+                                      "search-in-software", _("_Search in Software"),
+                                      NULL);
+    adw_message_dialog_format_body (ADW_MESSAGE_DIALOG (dialog),
+                                    _("There is no application installed for “%s” files. "
+                                      "Do you want to search for an application to open this file?"),
+                                    content_type_description);
 
-    gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
-    gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Search in Software"), GTK_RESPONSE_YES);
-
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "search-in-software");
 
     parameters_install->dialog = dialog;
     parameters_install->proxy = proxy;
@@ -1362,7 +1351,7 @@ pk_proxy_appeared_cb (GObject      *source,
     g_signal_connect (dialog, "response",
                       G_CALLBACK (application_unhandled_file_install),
                       parameters_install);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
     g_free (mime_type);
 }
 
@@ -1571,12 +1560,8 @@ activate_files (ActivateParameters *parameters)
     if (parameters->user_confirmation &&
         num_tabs + num_windows > SILENT_OPEN_LIMIT)
     {
-        GtkDialog *dialog;
-
         pause_activation_timed_cancel (parameters);
-        dialog = show_confirm_multiple (parameters->parent_window, num_windows, num_tabs);
-        g_signal_connect (dialog, "response",
-                          G_CALLBACK (on_confirm_multiple_windows_response), parameters);
+        show_confirm_multiple (parameters, num_windows, num_tabs);
     }
     else
     {
