@@ -11,7 +11,7 @@ stages:
 
 flatpak:
     extends: '.flatpak'
-    image: registry.gitlab.gnome.org/alatiera/gnome-runtime-images/x86_64/base:latest
+    image:  registry.gitlab.gnome.org/alatiera/gnome-runtime-images/x86_64/gnome:master
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
         FLATPAK_MODULE: "nautilus"
