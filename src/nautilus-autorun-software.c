@@ -27,6 +27,7 @@
 #include <time.h>
 #include <errno.h>
 #include <gtk/gtk.h>
+#include <libadwaita-1/adwaita.h>
 #include <gio/gio.h>
 
 #include <glib/gi18n.h>
@@ -150,30 +151,22 @@ out:
     if (error_string != NULL)
     {
         GtkWidget *dialog;
-        dialog = gtk_message_dialog_new_with_markup (NULL,         /* TODO: parent window? */
-                                                     0,
-                                                     GTK_MESSAGE_ERROR,
-                                                     GTK_BUTTONS_OK,
-                                                     _("Oops! There was a problem running this software."));
-        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog), "%s", error_string);
+        dialog = adw_message_dialog_new (NULL,
+                                         _("Oops! There was a problem running this software."),
+                                         error_string);
+        adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "ok", _("_OK"));
+        adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
 
-        g_signal_connect (dialog,
-                          "response",
-                          G_CALLBACK (gtk_window_destroy),
-                          NULL);
-
-        gtk_widget_show (dialog);
+        gtk_window_present (GTK_WINDOW (dialog));
     }
 }
 
 static void
 autorun_software_dialog_response (GtkDialog *dialog,
-                                  gint       response_id,
+                                  gchar     *response,
                                   GMount    *mount)
 {
-    gtk_window_destroy (GTK_WINDOW (dialog));
-
-    if (response_id == GTK_RESPONSE_OK)
+    if (g_strcmp0 (response, "run") == 0)
     {
         autorun (mount);
     }
@@ -189,15 +182,10 @@ present_autorun_for_software_dialog (GMount *mount)
 
     mount_name = g_mount_get_name (mount);
 
-    dialog = gtk_message_dialog_new (NULL,     /* TODO: parent window? */
-                                     0,
-                                     GTK_MESSAGE_OTHER,
-                                     GTK_BUTTONS_CANCEL,
-                                     _("“%s” contains software intended to be automatically started. Would you like to run it?"),
-                                     mount_name);
-    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                              "%s",
-                                              _("If you don’t trust this location or aren’t sure, press Cancel."));
+    dialog = adw_message_dialog_new (NULL, NULL, _("If you don’t trust this location or aren’t sure, press Cancel."));
+    adw_message_dialog_format_heading (ADW_MESSAGE_DIALOG (dialog),
+                                       _("“%s” contains software intended to be automatically started. Would you like to run it?"),
+                                       mount_name);
 
     /* TODO: in a star trek future add support for verifying
      * software on media (e.g. if it has a certificate, check it
@@ -227,16 +215,18 @@ present_autorun_for_software_dialog (GMount *mount)
                       G_CALLBACK (autorun_software_dialog_mount_unmounted),
                       data);
 
-    gtk_dialog_add_button (GTK_DIALOG (dialog),
-                           _("_Run"),
-                           GTK_RESPONSE_OK);
+    adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
+                                      "cancel", _("_Cancel"),
+                                      "run", _("_Run"),
+                                      NULL);
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
 
     g_signal_connect (dialog,
                       "response",
                       G_CALLBACK (autorun_software_dialog_response),
                       mount);
 
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 int

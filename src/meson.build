@@ -334,7 +334,8 @@ executable(
   include_directories: nautilus_include_dirs,
   dependencies: [
     config_h,
-    gtk
+    gtk,
+    libadwaita,
   ],
   install: true
 )
