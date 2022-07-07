@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <libadwaita-1/adwaita.h>
+
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
 
@@ -127,16 +129,11 @@ show_error_message_cb (NautilusGtkPlacesView *view,
 
     window = gtk_widget_get_root (GTK_WIDGET (view));
 
-    dialog = gtk_message_dialog_new (GTK_WINDOW (window),
-                                     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                     GTK_MESSAGE_ERROR,
-                                     GTK_BUTTONS_CLOSE,
-                                     "%s", primary);
-    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                              "%s", secondary);
+    dialog = adw_message_dialog_new (GTK_WINDOW (window), primary, secondary);
+    adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog),
+                                     "close", _("_Close"));
 
-    g_signal_connect (dialog, "response", G_CALLBACK (gtk_window_destroy), NULL);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
