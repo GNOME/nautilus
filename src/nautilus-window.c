@@ -2317,12 +2317,12 @@ nautilus_window_new (void)
 void
 nautilus_window_show_about_dialog (NautilusWindow *window)
 {
-    const gchar *artists[] =
+    const gchar *designers[] =
     {
         "The GNOME Project",
         NULL
     };
-    const gchar *authors[] =
+    const gchar *developers[] =
     {
         "The contributors to the Nautilus project",
         NULL
@@ -2333,30 +2333,24 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
         "Sun Microsystems",
         NULL
     };
-    g_autofree gchar *program_name = NULL;
 
-    /* “Files” is the generic application name and the suffix is
-     * an arbitrary and deliberately unlocalized string only shown
-     * in development builds.
-     */
-    program_name = g_strconcat (_("Files"), NAME_SUFFIX, NULL);
-
-    gtk_show_about_dialog (window ? GTK_WINDOW (window) : NULL,
-                           "program-name", program_name,
+    adw_show_about_window (window ? GTK_WINDOW (window) : NULL,
+                           "application-name", _("Files"),
+                           "application-icon", APPLICATION_ID,
+                           "developer-name", _("The GNOME Project"),
                            "version", VERSION,
-                           "comments", _("Access and organize your files"),
                            "website", "https://wiki.gnome.org/action/show/Apps/Files",
+                           "issue-url", "https://gitlab.gnome.org/GNOME/nautilus/-/issues/new",
                            "copyright", "© 1999 The Files Authors",
                            "license-type", GTK_LICENSE_GPL_3_0,
-                           "artists", artists,
-                           "authors", authors,
+                           "designers", designers,
+                           "developers", developers,
                            "documenters", documenters,
                            /* Translators should localize the following string
                             * which will be displayed at the bottom of the about
                             * box to give credit to the translator(s).
                             */
                            "translator-credits", _("translator-credits"),
-                           "logo-icon-name", APPLICATION_ID,
                            NULL);
 }
 
