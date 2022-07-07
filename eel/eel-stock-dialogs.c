@@ -26,6 +26,7 @@
 
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
+#include <libadwaita-1/adwaita.h>
 
 #define TIMED_WAIT_STANDARD_DURATION 2000
 #define TIMED_WAIT_MIN_TIME_UP 3000
@@ -47,7 +48,7 @@ typedef struct
     guint timeout_handler_id;
 
     /* Window, once it's created. */
-    GtkDialog *dialog;
+    GtkWidget *dialog;
 
     /* system time (microseconds) when dialog was created */
     gint64 dialog_creation_time;
@@ -167,7 +168,7 @@ timed_wait_dialog_destroy_callback (GtkWidget *object,
 
     wait = callback_data;
 
-    g_assert (GTK_DIALOG (object) == wait->dialog);
+    g_assert (object == wait->dialog);
 
     wait->dialog = NULL;
 
@@ -182,49 +183,24 @@ timed_wait_dialog_destroy_callback (GtkWidget *object,
     }
 }
 
-static void
-trash_dialog_response_callback (GtkDialog *dialog,
-                                int        response_id,
-                                TimedWait *wait)
-{
-    gtk_window_destroy (GTK_WINDOW (dialog));
-}
-
 static gboolean
 timed_wait_callback (gpointer callback_data)
 {
     TimedWait *wait;
-    GtkDialog *dialog;
-    const char *button;
+    GtkWidget *dialog;
 
     wait = callback_data;
 
     /* Put up the timed wait window. */
-    button = wait->cancel_callback != NULL ? _("_Cancel") : ("_OK");
-    dialog = GTK_DIALOG (gtk_message_dialog_new (wait->parent_window,
-                                                 GTK_DIALOG_MODAL,
-                                                 GTK_MESSAGE_INFO,
-                                                 GTK_BUTTONS_NONE,
-                                                 NULL));
+    dialog = adw_message_dialog_new (wait->parent_window,
+                                     wait->wait_message,
+                                     _("You can stop this operation by clicking cancel."));
 
-    g_object_set (dialog,
-                  "text", wait->wait_message,
-                  "secondary-text", _("You can stop this operation by clicking cancel."),
-                  NULL);
+    adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "cancel", _("_Cancel"));
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
 
-    gtk_dialog_add_button (GTK_DIALOG (dialog), button, GTK_RESPONSE_OK);
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-
-    /* The contents are often very small, causing tiny little
-     * dialogs with their titles clipped if you just let gtk
-     * sizing do its thing. This enforces a minimum width to
-     * make it more likely that the title won't be clipped.
-     */
-    gtk_window_set_default_size (GTK_WINDOW (dialog),
-                                 TIMED_WAIT_MINIMUM_DIALOG_WIDTH,
-                                 -1);
     wait->dialog_creation_time = g_get_monotonic_time ();
-    gtk_widget_show (GTK_WIDGET (dialog));
+    gtk_window_present (GTK_WINDOW (dialog));
 
     /* FIXME bugzilla.eazel.com 2441:
      * Could parent here, but it's complicated because we
@@ -238,9 +214,6 @@ timed_wait_callback (gpointer callback_data)
      */
     g_signal_connect (dialog, "destroy",
                       G_CALLBACK (timed_wait_dialog_destroy_callback),
-                      wait);
-    g_signal_connect (dialog, "response",
-                      G_CALLBACK (trash_dialog_response_callback),
                       wait);
 
     wait->timeout_handler_id = 0;
@@ -258,6 +231,7 @@ eel_timed_wait_start_with_duration (int                duration,
 {
     TimedWait *wait;
 
+    g_return_if_fail (cancel_callback != NULL);
     g_return_if_fail (callback_data != NULL);
     g_return_if_fail (wait_message != NULL);
     g_return_if_fail (parent_window == NULL || GTK_IS_WINDOW (parent_window));

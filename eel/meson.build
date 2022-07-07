@@ -23,6 +23,7 @@ libeel_2_deps = [
   config_h,
   glib,
   gtk,
+  libadwaita,
   libm
 ]
 
