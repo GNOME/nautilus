@@ -49,6 +49,7 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib.h>
+#include <libadwaita-1/adwaita.h>
 
 #include "nautilus-error-reporting.h"
 #include "nautilus-operations-ui-manager.h"
@@ -3015,21 +3016,20 @@ create_empty_trash_prompt (GtkWindow *parent_window)
 {
     GtkWidget *dialog;
 
-    dialog = gtk_message_dialog_new (parent_window, GTK_DIALOG_MODAL,
-                                     GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE,
-                                     _("Do you want to empty the trash before you unmount?"));
-    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                              _("In order to regain the "
-                                                "free space on this volume "
-                                                "the trash must be emptied. "
-                                                "All trashed items on the volume "
-                                                "will be permanently lost."));
-    gtk_dialog_add_buttons (GTK_DIALOG (dialog),
-                            _("Do _not Empty Trash"), GTK_RESPONSE_REJECT,
-                            CANCEL, GTK_RESPONSE_CANCEL,
-                            _("Empty _Trash"), GTK_RESPONSE_ACCEPT, NULL);
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
-    gtk_window_set_title (GTK_WINDOW (dialog), "");
+    dialog = adw_message_dialog_new (parent_window,
+                                     _("Do you want to empty the trash before you unmount?"),
+                                     _("In order to regain the free space on this volume "
+                                       "the trash must be emptied. All trashed items on the volume "
+                                       "will be permanently lost."));
+    adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
+                                      "do-not-empty", _("Do _not Empty Trash"),
+                                      "cancel", _("Cancel"),
+                                      "empty-trash", _("Empty _Trash"),
+                                      NULL);
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "empty-trash");
+    adw_message_dialog_set_close_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
+    adw_message_dialog_set_response_appearance (ADW_MESSAGE_DIALOG (dialog),
+                                                "empty-trash", ADW_RESPONSE_DESTRUCTIVE);
 
     return dialog;
 }
@@ -3044,12 +3044,12 @@ empty_trash_for_unmount_done (gboolean success,
 
 static void
 empty_trash_prompt_cb (GtkDialog *dialog,
-                       gint       response_id,
+                       char      *response,
                        gpointer   user_data)
 {
     UnmountData *data = user_data;
 
-    if (response_id == GTK_RESPONSE_ACCEPT)
+    if (g_strcmp0 (response, "empty-trash") == 0)
     {
         GTask *task;
         EmptyTrashJob *job;
@@ -3065,7 +3065,7 @@ empty_trash_prompt_cb (GtkDialog *dialog,
         g_task_run_in_thread (task, empty_trash_thread_func);
         g_object_unref (task);
     }
-    else if (response_id == GTK_RESPONSE_CANCEL)
+    else if (g_strcmp0 (response, "cancel") == 0)
     {
         if (data->callback)
         {
@@ -3074,12 +3074,10 @@ empty_trash_prompt_cb (GtkDialog *dialog,
 
         unmount_data_free (data);
     }
-    else if (response_id == GTK_RESPONSE_REJECT)
+    else if (g_strcmp0 (response, "do-not-empty") == 0)
     {
         do_unmount (data);
     }
-
-    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 void
