@@ -519,14 +519,20 @@ on_item_drag_prepare (GtkDragSource *source,
 
     gtk_gesture_set_state (GTK_GESTURE (source), GTK_EVENT_SEQUENCE_CLAIMED);
 
-    /* Convert to GTK_TYPE_FILE_LIST, which is assumed to be a GSList<GFile>. */
+    actions = GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK | GDK_ACTION_MOVE;
+
     for (GList *l = selection; l != NULL; l = l->next)
     {
+        /* Convert to GTK_TYPE_FILE_LIST, which is assumed to be a GSList<GFile>. */
         file_list = g_slist_prepend (file_list, nautilus_file_get_location (l->data));
+
+        if (!nautilus_file_can_delete (l->data))
+        {
+            actions &= ~GDK_ACTION_MOVE;
+        }
     }
     file_list = g_slist_reverse (file_list);
 
-    actions = GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK | GDK_ACTION_MOVE;
     gtk_drag_source_set_actions (source, actions);
 
     scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
