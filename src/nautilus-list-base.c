@@ -537,7 +537,7 @@ on_item_drag_prepare (GtkDragSource *source,
 
     scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     paintable = get_paintable_for_drag_selection (selection, scale_factor);
-    gtk_drag_source_set_icon (source, paintable, 0, 0);
+    gtk_drag_source_set_icon (source, paintable, x, y);
 
     return gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
 }
