@@ -23,7 +23,7 @@
 #pragma once
 
 #include <gtk/gtk.h>
-
+#include <libadwaita-1/adwaita.h>
 
 void        nautilus_gmenu_set_from_model           (GMenu             *target_menu,
                                                      GMenuModel        *source_model);
@@ -43,7 +43,7 @@ gboolean    nautilus_date_time_is_between_dates     (GDateTime         *date,
 gchar     * get_text_for_date_range                 (GPtrArray         *date_range,
                                                      gboolean           prefix_with_since);
 
-GtkDialog * show_dialog                             (const gchar       *primary_text,
+AdwMessageDialog * show_dialog                      (const gchar       *primary_text,
                                                      const gchar       *secondary_text,
                                                      GtkWindow         *parent,
                                                      GtkMessageType     type);

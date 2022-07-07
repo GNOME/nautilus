@@ -306,7 +306,7 @@ get_text_for_date_range (GPtrArray *date_range,
     return label;
 }
 
-GtkDialog *
+AdwMessageDialog *
 show_dialog (const gchar    *primary_text,
              const gchar    *secondary_text,
              GtkWindow      *parent,
@@ -316,23 +316,13 @@ show_dialog (const gchar    *primary_text,
 
     g_return_val_if_fail (parent != NULL, NULL);
 
-    dialog = gtk_message_dialog_new (parent,
-                                     GTK_DIALOG_MODAL,
-                                     type,
-                                     GTK_BUTTONS_OK,
-                                     "%s", primary_text);
+    dialog = adw_message_dialog_new (parent, primary_text, secondary_text);
+    adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "ok", _("_OK"));
+    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
 
-    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                              "%s", secondary_text);
+    gtk_window_present (GTK_WINDOW (dialog));
 
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-
-    gtk_widget_show (dialog);
-
-    g_signal_connect (GTK_DIALOG (dialog), "response",
-                      G_CALLBACK (gtk_window_destroy), NULL);
-
-    return GTK_DIALOG (dialog);
+    return ADW_MESSAGE_DIALOG (dialog);
 }
 
 static void
