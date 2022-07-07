@@ -169,7 +169,7 @@ check_required_directories (NautilusApplication *self)
         GSList *l;
         char *error_string;
         g_autofree char *detail_string = NULL;
-        GtkDialog *dialog;
+        AdwMessageDialog *dialog;
 
         ret = FALSE;
 
@@ -773,18 +773,15 @@ action_help (GSimpleAction *action,
 
     if (error)
     {
-        dialog = gtk_message_dialog_new (window ? GTK_WINDOW (window) : NULL,
-                                         GTK_DIALOG_MODAL,
-                                         GTK_MESSAGE_ERROR,
-                                         GTK_BUTTONS_OK,
-                                         _("There was an error displaying help: \n%s"),
-                                         error->message);
-        g_signal_connect (G_OBJECT (dialog), "response",
-                          G_CALLBACK (gtk_window_destroy),
-                          NULL);
+        dialog = adw_message_dialog_new (window ? GTK_WINDOW (window) : NULL,
+                                         NULL, NULL);
+        adw_message_dialog_format_heading (ADW_MESSAGE_DIALOG (dialog),
+                                           _("There was an error displaying help: \n%s"),
+                                           error->message);
+        adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "ok", _("_OK"));
+        adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
 
-        gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-        gtk_widget_show (dialog);
+        gtk_window_present (GTK_WINDOW (dialog));
         g_error_free (error);
     }
 }
