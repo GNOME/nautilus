@@ -341,7 +341,7 @@ nautilus_drag_slot_proxy_init (GtkWidget          *widget,
 
     drag_info->widget = widget;
     /* TODO: Implement GDK_ACTION_ASK */
-    target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+    target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
 
     gtk_drop_target_set_preload (target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */

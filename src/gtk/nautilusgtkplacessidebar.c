@@ -3933,7 +3933,7 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
   gtk_widget_add_controller (GTK_WIDGET (sidebar), GTK_EVENT_CONTROLLER (gesture));
 
   /* DND support */
-  target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+  target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
   gtk_drop_target_set_preload (target, TRUE);
   gtk_drop_target_set_gtypes (target, (GType[2]) { NAUTILUS_TYPE_GTK_SIDEBAR_ROW, GDK_TYPE_FILE_LIST }, 2);
   g_signal_connect (target, "enter", G_CALLBACK (drag_motion_callback), sidebar);
