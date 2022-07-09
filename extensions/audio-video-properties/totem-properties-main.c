@@ -34,7 +34,7 @@
 
 static GType tpp_type = 0;
 static void property_page_provider_iface_init
-	(NautilusPropertyPageProviderIface *iface);
+	(NautilusPropertyPageProviderInterface *iface);
 static GList *totem_properties_get_pages
 	(NautilusPropertyPageProvider *provider, GList *files);
 
@@ -68,7 +68,7 @@ totem_properties_plugin_register_type (GTypeModule *module)
 }
 
 static void
-property_page_provider_iface_init (NautilusPropertyPageProviderIface *iface)
+property_page_provider_iface_init (NautilusPropertyPageProviderInterface *iface)
 {
 	iface->get_pages = totem_properties_get_pages;
 }

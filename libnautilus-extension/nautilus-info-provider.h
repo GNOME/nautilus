@@ -45,12 +45,6 @@ G_DECLARE_INTERFACE (NautilusInfoProvider, nautilus_info_provider,
                      NAUTILUS, INFO_PROVIDER,
                      GObject)
 
-/* For compatibility reasons, remove this once you start introducing breaking changes. */
-/**
- * NautilusInfoProviderIface: (skip)
- */
-typedef NautilusInfoProviderInterface NautilusInfoProviderIface;
-
 /**
  * SECTION:nautilus-info-provider
  * @title: NautilusInfoProvider
