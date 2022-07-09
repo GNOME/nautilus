@@ -1,10 +1,5 @@
 nautilus_extension_version = '2.0.0'
 
-libnautilus_extension_deprecated_headers = [
-  'nautilus-extension-types.h',
-  'nautilus-menu-item.h'
-]
-
 libnautilus_extension_headers = [
   'nautilus-column-provider.h',
   'nautilus-column.h',
@@ -23,7 +18,6 @@ install_headers(
 )
 install_headers(
   libnautilus_extension_headers,
-  libnautilus_extension_deprecated_headers,
   subdir: join_paths('nautilus', 'libnautilus-extension')
 )
 
@@ -61,7 +55,6 @@ libnautilus_extension_deps = [
 
 libnautilus_extension = shared_library(
   'nautilus-extension', [
-    libnautilus_extension_deprecated_headers,
     libnautilus_extension_sources,
   ],
   c_args: [
