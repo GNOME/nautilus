@@ -34,10 +34,6 @@
 #endif
 
 #include <glib-object.h>
-/* These should be removed at some point. */
-#include "nautilus-extension-types.h"
-#include "nautilus-file-info.h"
-#include "nautilus-property-page.h"
 
 
 G_BEGIN_DECLS
