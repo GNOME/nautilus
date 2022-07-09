@@ -47,12 +47,6 @@ G_DECLARE_INTERFACE (NautilusLocationWidgetProvider, nautilus_location_widget_pr
                      NAUTILUS, LOCATION_WIDGET_PROVIDER,
                      GObject)
 
-/* For compatibility reasons, remove this once you start introducing breaking changes. */
-/**
- * NautilusLocationWidgetProviderIface: (skip)
- */
-typedef NautilusLocationWidgetProviderInterface NautilusLocationWidgetProviderIface;
-
 /**
  * SECTION:nautilus-location-widget-provider
  * @title: NautilusLocationWidgetProvider

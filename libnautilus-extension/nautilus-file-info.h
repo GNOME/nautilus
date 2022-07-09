@@ -37,17 +37,6 @@ G_BEGIN_DECLS
 
 G_DECLARE_INTERFACE (NautilusFileInfo, nautilus_file_info, NAUTILUS, FILE_INFO, GObject)
 
-/* For compatibility reasons; remove this once you start introducing breaking changes.
- *
- * I’ve only noticed nautilus-python depending on this, but the context is that
- * NautilusFileInfo used to be an alias for NautilusFile to make it easier to
- * implement the interface,
- */
-/**
- * NautilusFile: (skip)
- */
-typedef struct NautilusFile NautilusFile;
-
 /**
  * SECTION:nautilus-file-info
  * @title: NautilusFileInfo

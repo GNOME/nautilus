@@ -48,12 +48,6 @@ G_DECLARE_INTERFACE (NautilusPropertyPageProvider, nautilus_property_page_provid
                      NAUTILUS, PROPERTY_PAGE_PROVIDER,
                      GObject)
 
-/* For compatibility reasons, remove this once you start introducing breaking changes. */
-/**
- * NautilusPropertyPageProviderIface: (skip)
- */
-typedef NautilusPropertyPageProviderInterface NautilusPropertyPageProviderIface;
-
 /**
  * SECTION:nautilus-property-page-provider
  * @title: NautilusPropertyPageProvider
