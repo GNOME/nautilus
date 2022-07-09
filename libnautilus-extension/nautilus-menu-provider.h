@@ -35,9 +35,6 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 #include "nautilus-file-info.h"
-/* These should be removed at some point. */
-#include "nautilus-extension-types.h"
-#include "nautilus-menu.h"
 
 G_BEGIN_DECLS
 
