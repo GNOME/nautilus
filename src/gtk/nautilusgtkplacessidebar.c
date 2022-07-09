@@ -3905,8 +3905,6 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
                                   GTK_POLICY_NEVER,
                                   GTK_POLICY_AUTOMATIC);
 
-  gtk_widget_add_css_class (GTK_WIDGET (sidebar), "sidebar");
-
   /* list box */
   sidebar->list_box = gtk_list_box_new ();
   gtk_widget_add_css_class (sidebar->list_box, "navigation-sidebar");
