@@ -108,8 +108,7 @@ struct _NautilusWindow
 
     /* Side Pane */
     int side_pane_width;
-    GtkWidget *sidebar;            /* container for the GtkPlacesSidebar */
-    GtkWidget *places_sidebar;     /* the actual GtkPlacesSidebar */
+    GtkWidget *places_sidebar;
     GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
     GFile *selected_file;     /* the selected file in the sidebar popup callback */
 
@@ -851,7 +850,7 @@ side_pane_notify_position_callback (GObject    *object,
 static void
 setup_side_pane_width (NautilusWindow *window)
 {
-    g_return_if_fail (window->sidebar != NULL);
+    g_return_if_fail (window->places_sidebar != NULL);
 
     window->side_pane_width =
         g_settings_get_int (nautilus_window_state,
@@ -1076,7 +1075,7 @@ nautilus_window_hide_sidebar (NautilusWindow *window)
 
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-    gtk_widget_hide (window->sidebar);
+    gtk_widget_hide (window->places_sidebar);
 }
 
 void
@@ -1086,7 +1085,7 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-    gtk_widget_show (window->sidebar);
+    gtk_widget_show (window->places_sidebar);
     setup_side_pane_width (window);
 }
 
@@ -2181,17 +2180,9 @@ nautilus_window_init (NautilusWindow *window)
     GtkEventController *controller;
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
+    g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
     gtk_widget_init_template (GTK_WIDGET (window));
     nautilus_notebook_setup (GTK_NOTEBOOK (window->notebook));
-
-    window->places_sidebar = nautilus_gtk_places_sidebar_new ();
-    g_object_set (window->places_sidebar,
-                  "vexpand", TRUE,
-                  "visible", TRUE,
-                  "show-other-locations", TRUE,
-                  "show-starred-location", TRUE,
-                  NULL);
-    gtk_box_append (GTK_BOX (window->sidebar), window->places_sidebar);
 
     g_signal_connect_object (window->places_sidebar,
                              "show-other-locations-with-flags",
@@ -2268,7 +2259,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_paned);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, sidebar);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, notebook);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_menu);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);

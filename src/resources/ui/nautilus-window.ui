@@ -47,10 +47,11 @@
                 <property name="vexpand">True</property>
                 <property name="hexpand">True</property>
                 <child>
-                  <object class="GtkBox" id="sidebar">
+                  <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
                     <property name="visible">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
+                    <property name="vexpand">True</property>
+                    <property name="show-other-locations">True</property>
+                    <property name="show-starred-location">True</property>
                   </object>
                 </child>
                 <child>
