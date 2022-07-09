@@ -104,11 +104,10 @@ struct _NautilusWindow
     GList *slots;
     NautilusWindowSlot *active_slot; /* weak reference */
 
-    GtkWidget *content_paned;
+    GtkWidget *content_flap;
 
     /* Side Pane */
-    int side_pane_width;
-    GtkWidget *places_sidebar;
+    GtkWidget *places_sidebar;     /* the actual GtkPlacesSidebar */
     GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
     GFile *selected_file;     /* the selected file in the sidebar popup callback */
 
@@ -804,62 +803,6 @@ nautilus_window_get_notebook (NautilusWindow *window)
     return window->notebook;
 }
 
-static gboolean
-save_sidebar_width_cb (gpointer user_data)
-{
-    NautilusWindow *window = user_data;
-
-
-    window->sidebar_width_handler_id = 0;
-
-    DEBUG ("Saving sidebar width: %d", window->side_pane_width);
-
-    g_settings_set_int (nautilus_window_state,
-                        NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
-                        window->side_pane_width);
-
-    return FALSE;
-}
-
-/* side pane helpers */
-static void
-side_pane_notify_position_callback (GObject    *object,
-                                    GParamSpec *pspec,
-                                    gpointer    user_data)
-{
-    NautilusWindow *window = user_data;
-    gint position;
-
-    if (window->sidebar_width_handler_id != 0)
-    {
-        g_source_remove (window->sidebar_width_handler_id);
-        window->sidebar_width_handler_id = 0;
-    }
-
-    position = gtk_paned_get_position (GTK_PANED (window->content_paned));
-    if (position != window->side_pane_width &&
-        position > 1)
-    {
-        window->side_pane_width = position;
-
-        window->sidebar_width_handler_id =
-            g_idle_add (save_sidebar_width_cb, window);
-    }
-}
-
-static void
-setup_side_pane_width (NautilusWindow *window)
-{
-    g_return_if_fail (window->places_sidebar != NULL);
-
-    window->side_pane_width =
-        g_settings_get_int (nautilus_window_state,
-                            NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH);
-
-    gtk_paned_set_position (GTK_PANED (window->content_paned),
-                            window->side_pane_width);
-}
-
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
 static void
 open_location_cb (NautilusWindow             *window,
@@ -1026,6 +969,19 @@ action_restore_tab (GSimpleAction *action,
     free_navigation_state (data);
 }
 
+static void
+action_toggle_sidebar (GSimpleAction *action,
+                       GVariant      *state,
+                       gpointer       user_data)
+{
+    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+    gboolean revealed;
+
+    revealed = adw_flap_get_reveal_flap (ADW_FLAP (window->content_flap));
+    adw_flap_set_reveal_flap (ADW_FLAP (window->content_flap), !revealed);
+}
+
+
 static guint
 get_window_xid (NautilusWindow *window)
 {
@@ -1042,12 +998,6 @@ get_window_xid (NautilusWindow *window)
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
-    setup_side_pane_width (window);
-    g_signal_connect (window->content_paned,
-                      "notify::position",
-                      G_CALLBACK (side_pane_notify_position_callback),
-                      window);
-
     nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
                                                 (NAUTILUS_GTK_PLACES_OPEN_NORMAL
                                                  | NAUTILUS_GTK_PLACES_OPEN_NEW_TAB
@@ -1582,12 +1532,14 @@ const GActionEntry win_entries[] =
     { "prompt-home-location", action_prompt_for_location_home },
     { "go-to-tab", NULL, "i", "0", action_go_to_tab },
     { "restore-tab", action_restore_tab },
+    { "toggle-sidebar", action_toggle_sidebar },
 };
 
 static void
 nautilus_window_initialize_actions (NautilusWindow *window)
 {
     GApplication *app;
+    GAction *action;
     gchar detailed_action[80];
     gchar accel[80];
     gint i;
@@ -1625,6 +1577,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerators (app, "win.prompt-home-location", ACCELS ("asciitilde", "dead_tilde"));
     nautilus_application_set_accelerator (app, "win.current-location-menu", "F10");
     nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
+    nautilus_application_set_accelerator (app, "win.toggle-sidebar", "F9");
 
     /* Alt+N for the first 9 tabs */
     for (i = 0; i < 9; ++i)
@@ -1635,6 +1588,10 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     }
 
 #undef ACCELS
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (window), "toggle-sidebar");
+    g_object_bind_property (window->content_flap, "folded",
+                            action, "enabled", G_BINDING_SYNC_CREATE);
 }
 
 
@@ -2226,7 +2183,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_paned);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_flap);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, notebook);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_menu);

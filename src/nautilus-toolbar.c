@@ -85,6 +85,10 @@ struct _NautilusToolbar
     GtkWidget *app_button;
     GMenuModel *undo_redo_section;
 
+    GtkWidget *sidebar_button;
+    gboolean show_sidebar_button;
+    gboolean sidebar_button_active;
+
     GtkWidget *forward_button;
     GtkWidget *forward_menu;
 
@@ -110,6 +114,8 @@ enum
     PROP_SHOW_LOCATION_ENTRY,
     PROP_WINDOW_SLOT,
     PROP_SEARCHING,
+    PROP_SHOW_SIDEBAR_BUTTON,
+    PROP_SIDEBAR_BUTTON_ACTIVE,
     NUM_PROPERTIES
 };
 
@@ -916,6 +922,18 @@ nautilus_toolbar_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SHOW_SIDEBAR_BUTTON:
+        {
+            g_value_set_boolean (value, self->show_sidebar_button);
+        }
+        break;
+
+        case PROP_SIDEBAR_BUTTON_ACTIVE:
+        {
+            g_value_set_boolean (value, self->sidebar_button_active);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1022,6 +1040,18 @@ nautilus_toolbar_set_property (GObject      *object,
         }
         break;
 
+        case PROP_SHOW_SIDEBAR_BUTTON:
+        {
+            self->show_sidebar_button = g_value_get_boolean (value);
+        }
+        break;
+
+        case PROP_SIDEBAR_BUTTON_ACTIVE:
+        {
+            self->sidebar_button_active = g_value_get_boolean (value);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1117,6 +1147,13 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                               "Whether the current view is searching or not",
                               FALSE,
                               G_PARAM_READWRITE);
+
+    properties[PROP_SHOW_SIDEBAR_BUTTON] =
+        g_param_spec_boolean ("show-sidebar-button", NULL, NULL, FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_SIDEBAR_BUTTON_ACTIVE] =
+        g_param_spec_boolean ("sidebar-button-active", NULL, NULL, FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 

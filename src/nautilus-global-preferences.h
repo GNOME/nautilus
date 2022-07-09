@@ -59,7 +59,6 @@ typedef enum
 /* Which views should be displayed for new windows */
 #define NAUTILUS_WINDOW_STATE_INITIAL_SIZE			"initial-size"
 #define NAUTILUS_WINDOW_STATE_MAXIMIZED				"maximized"
-#define NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH			"sidebar-width"
 
 /* Sorting order */
 #define NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST		"sort-directories-first"
