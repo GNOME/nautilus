@@ -1,4 +1,4 @@
-nautilus_extension_version = '1.5.0'
+nautilus_extension_version = '2.0.0'
 
 libnautilus_extension_deprecated_headers = [
   'nautilus-extension-types.h',
