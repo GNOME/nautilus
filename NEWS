@@ -1,3 +1,52 @@
+Major changes in 43.alpha
+=========================
+* Resolving regressions from the GTK 3 to 4 switch:
+  - Reintroduce clipboard with GTK 4 (António Fernandes)
+  - Reintroduce Drag’n’Drop with GTK 4 (Corey Berla, António Fernandes)
+  - Reintroduce emblems independently of file icon (António Fernandes)
+  - Reintroduce filter search tags with GTK 4 (António Fernandes)
+  - Port audio-video-properties extension to GTK 4 (Corey Berla)
+  - Restore sidebar features from GTK 3 (Corey Berla)
+  - Fix other regressions from the GTK 3 to 4 switch (António Fernandes, Noëlle,Óscar Fernández Díaz, Ondrej Holy, Corey Berla, Ákos Horváth, Corey Berla)
+* Modernizing view widgets
+  - Port files grid view mode to GtkGridView (António Fernandes)
+  - Reimplement files list view mode with GtkColumnView (António Fernandes)
+  - Add checkerboard background for thumbnails with transparency (Utkarsh Gandhi, António Fernandes)
+* Enhancing menus:
+  - New menu item to open current folder in another application (António Fernandes)
+  - Add menu item to copy current path to clipboard (Utkarsh Gandhi)
+  - Redesign zoom controls as icon size controls (António Fernandes)
+  - Context menu bugfixes (Owen D'Aprile, Ignacy Kuchciński)
+  - Add context menu item to show Properties in Other Locations (Corey Berla)
+  - Improve support for context menus on touchscreens
+  - Show extensions in templates names (Roshan R)
+  - Show sort menu options in list virw mode (António Fernandes)
+  - Allow sorting in recent and search (António Fernandes)
+* Other enhancements:
+  - Use better in-app notifications with AdwToast (Christopher Davis)
+  - Modernize "About" with AdwAboutWindow (Christopher Davis)
+  - Refine pathbar appearance (Utkarsh Gandhi, António Fernandes)
+  - Label '/' with the OS name (StarShot)
+  - Keyboard shortcuts overlay updates (Tero Gusto)
+* Miscellaneous bugfixes:
+  - Search engine bugfixes (Ondrej Holy)
+  - Floating satus bar bugfixes (Ignacy Kuchciński)
+  - Fix popover crashes (Corey Berla)
+  - Allow copying to a ramfs (Alister Sanders)
+  - Stop computing remote folders item count when didabled (Corey Berla)
+  - Fix batch rename for files with the same name in search results (Corey Berla)
+  - Don't trigger keyboard shortcuts ouside their intended scope (Vanadiae)
+* Maintenance work
+  - Adapt to thumbnails API changes (Michael Catanzaro)
+  - Depend on libportal and drop wallpaper fallback setting (Jeremy Bicha, António Fernandes)
+  - Modernize build with new meson features (Maximiliano)
+  - Bump extensions library version (António Fernandes)
+* Translation updates (GNOME Translation Project contributors)
+
+Leftover known regressions in 43.alpha
+  - Lacks HiDPI icons
+  - Lacks attention-grabbing animation on operations button
+
 Major changes in 42.alpha
 =========================
 * Improve design of the file renaming UI (Peter Eisenmann, Allan Day)
