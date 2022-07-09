@@ -57,7 +57,6 @@ typedef enum
 #define NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY		"always-use-location-entry"
 
 /* Which views should be displayed for new windows */
-#define NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR               "start-with-sidebar"
 #define NAUTILUS_WINDOW_STATE_INITIAL_SIZE			"initial-size"
 #define NAUTILUS_WINDOW_STATE_MAXIMIZED				"maximized"
 #define NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH			"sidebar-width"

@@ -1069,27 +1069,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 }
 
 void
-nautilus_window_hide_sidebar (NautilusWindow *window)
-{
-    DEBUG ("Called hide_sidebar()");
-
-    g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-    gtk_widget_hide (window->places_sidebar);
-}
-
-void
-nautilus_window_show_sidebar (NautilusWindow *window)
-{
-    DEBUG ("Called show_sidebar()");
-
-    g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-
-    gtk_widget_show (window->places_sidebar);
-    setup_side_pane_width (window);
-}
-
-void
 nautilus_window_slot_close (NautilusWindow     *window,
                             NautilusWindowSlot *slot)
 {
@@ -1609,8 +1588,6 @@ static void
 nautilus_window_initialize_actions (NautilusWindow *window)
 {
     GApplication *app;
-    GAction *action;
-    GVariant *state;
     gchar detailed_action[80];
     gchar accel[80];
     gint i;
@@ -1658,15 +1635,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     }
 
 #undef ACCELS
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");
-    state = g_action_get_state (action);
-    if (g_variant_get_boolean (state))
-    {
-        nautilus_window_show_sidebar (window);
-    }
-
-    g_variant_unref (state);
 }
 
 
