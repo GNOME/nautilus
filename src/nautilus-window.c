@@ -157,6 +157,12 @@ action_close_current_view (GSimpleAction *action,
     NautilusWindow *window = user_data;
     AdwTabPage *page = window->menu_page;
 
+    if (adw_tab_view_get_n_pages (window->tab_view) <= 1)
+    {
+        nautilus_window_close (window);
+        return;
+    }
+
     if (page == NULL)
     {
         page = adw_tab_view_get_selected_page (window->tab_view);
