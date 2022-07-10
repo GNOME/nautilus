@@ -36,12 +36,6 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON		"mouse-forward-button"
 #define NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON			"mouse-back-button"
 
-typedef enum
-{
-	NAUTILUS_NEW_TAB_POSITION_AFTER_CURRENT_TAB,
-	NAUTILUS_NEW_TAB_POSITION_END,
-} NautilusNewTabPosition;
-
 /* Single/Double click preference  */
 #define NAUTILUS_PREFERENCES_CLICK_POLICY			"click-policy"
 

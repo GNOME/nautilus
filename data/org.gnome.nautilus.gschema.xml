@@ -49,11 +49,6 @@
     <value value="2" nick="large"/>
   </enum>
 
-  <enum id="org.gnome.nautilus.TabPosition">
-    <value value="0" nick="after-current-tab"/>
-    <value value="1" nick="end"/>
-  </enum>
-
   <enum id="org.gnome.nautilus.SearchFilterTimeType">
     <value value="0" nick="last_modified"/>
     <value value="1" nick="last_used"/>
@@ -76,14 +71,6 @@
   </schema>
 
   <schema path="/org/gnome/nautilus/preferences/" id="org.gnome.nautilus.preferences" gettext-domain="nautilus">
-    <key name="tabs-open-position" enum="org.gnome.nautilus.TabPosition">
-      <aliases>
-        <alias value='after_current_tab' target='after-current-tab'/>
-      </aliases>
-      <default>'after-current-tab'</default>
-      <summary>Where to position newly open tabs in browser windows</summary>
-      <description>If set to “after-current-tab”, then new tabs are inserted after the current tab. If set to “end”, then new tabs are appended to the end of the tab list.</description>
-    </key>
     <key type="b" name="always-use-location-entry">
       <default>false</default>
       <summary>Always use the location entry, instead of the pathbar</summary>

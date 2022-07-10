@@ -543,9 +543,7 @@ nautilus_window_initialize_slot (NautilusWindow     *window,
                                      window);
     nautilus_notebook_add_tab (GTK_NOTEBOOK (window->notebook),
                                slot,
-                               (flags & NAUTILUS_OPEN_FLAG_SLOT_APPEND) != 0 ?
-                               -1 :
-                               gtk_notebook_get_current_page (GTK_NOTEBOOK (window->notebook)) + 1,
+                               -1,
                                FALSE);
     g_signal_handlers_unblock_by_func (window->notebook,
                                        G_CALLBACK (notebook_switch_page_cb),
@@ -563,19 +561,9 @@ nautilus_window_open_location_full (NautilusWindow     *window,
                                     NautilusWindowSlot *target_slot)
 {
     NautilusWindowSlot *active_slot;
-    gboolean new_tab_at_end;
 
     /* Assert that we are not managing new windows */
     g_assert (!(flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW));
-    /* if the flags say we want a new tab, open a slot in the current window */
-    if ((flags & NAUTILUS_OPEN_FLAG_NEW_TAB) != 0)
-    {
-        new_tab_at_end = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION) == NAUTILUS_NEW_TAB_POSITION_END;
-        if (new_tab_at_end)
-        {
-            flags |= NAUTILUS_OPEN_FLAG_SLOT_APPEND;
-        }
-    }
 
     active_slot = nautilus_window_get_active_slot (window);
     if (!target_slot)
