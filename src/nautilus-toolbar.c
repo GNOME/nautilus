@@ -1430,9 +1430,3 @@ nautilus_toolbar_is_menu_visible (NautilusToolbar *self)
 
     return gtk_widget_is_visible (menu);
 }
-
-gboolean
-nautilus_toolbar_is_operations_button_active (NautilusToolbar *self)
-{
-    return gtk_widget_is_visible (GTK_WIDGET (self->operations_popover));
-}
