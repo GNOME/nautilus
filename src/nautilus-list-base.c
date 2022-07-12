@@ -955,6 +955,7 @@ real_clear (NautilusFilesView *files_view)
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
+    g_clear_handle_id (&priv->scroll_to_file_handle_id, g_source_remove);
     nautilus_view_model_remove_all_items (priv->model);
 }
 
