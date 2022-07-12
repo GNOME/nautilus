@@ -222,11 +222,31 @@ navigation_button_press_cb (GtkGestureClick *gesture,
 {
     NautilusToolbar *self;
     GtkWidget *widget;
+    guint button;
 
     self = NAUTILUS_TOOLBAR (user_data);
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
 
-    show_menu (self, widget);
+    if (button == GDK_BUTTON_PRIMARY)
+    {
+        /* Don't do anything, primary click is handled through activate */
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
+        return;
+    }
+    else if (button == GDK_BUTTON_MIDDLE)
+    {
+        NautilusNavigationDirection direction;
+
+        direction = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
+                                                         "nav-direction"));
+
+        nautilus_window_back_or_forward_in_new_tab (self->window, direction);
+    }
+    else if (button == GDK_BUTTON_SECONDARY)
+    {
+        show_menu (self, widget);
+    }
 }
 
 static void
@@ -837,13 +857,13 @@ nautilus_toolbar_constructed (GObject *object)
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (self->back_button, controller);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_SECONDARY);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (self->forward_button, controller);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_SECONDARY);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
 
