@@ -155,7 +155,8 @@ action_pathbar_open_item_new_tab (GSimpleAction *action,
 
     if (location)
     {
-        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, NAUTILUS_OPEN_FLAG_NEW_TAB);
+        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location,
+                       NAUTILUS_OPEN_FLAG_NEW_TAB | NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE);
         g_object_unref (location);
     }
 }
@@ -619,7 +620,7 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
             {
                 g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
                                button_data->path,
-                               NAUTILUS_OPEN_FLAG_NEW_TAB);
+                               NAUTILUS_OPEN_FLAG_NEW_TAB | NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE);
             }
         }
         break;
