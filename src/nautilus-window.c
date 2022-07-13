@@ -545,9 +545,6 @@ nautilus_window_initialize_slot (NautilusWindow     *window,
     g_signal_handlers_unblock_by_func (window->notebook,
                                        G_CALLBACK (notebook_switch_page_cb),
                                        window);
-
-    window->slots = g_list_append (window->slots, slot);
-    g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
 }
 
 void
@@ -1408,24 +1405,10 @@ notebook_page_added_cb (GtkNotebook *notebook,
 {
     NautilusWindow *window = user_data;
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (page);
-    gboolean dnd_slot;
-
-    dnd_slot = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (slot), "dnd-window-slot"));
-    if (!dnd_slot)
-    {
-        return;
-    }
-
-    g_object_set_data (G_OBJECT (page), "dnd-window-slot",
-                       GINT_TO_POINTER (FALSE));
 
     nautilus_window_slot_set_window (slot, window);
     window->slots = g_list_append (window->slots, slot);
     g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
-
-    nautilus_window_set_active_slot (window, slot);
-
-    gtk_widget_show (GTK_WIDGET (window));
 }
 
 static GtkNotebook *
