@@ -1599,30 +1599,14 @@ nautilus_window_constructed (GObject *self)
     nautilus_profile_end (NULL);
 }
 
-static gint
-sort_slots_active_last (NautilusWindowSlot *a,
-                        NautilusWindowSlot *b,
-                        NautilusWindow     *window)
-{
-    if (window->active_slot == a)
-    {
-        return 1;
-    }
-    if (window->active_slot == b)
-    {
-        return -1;
-    }
-    return 0;
-}
-
 static void
-destroy_slots_foreach (gpointer data,
+remove_slots_foreach (gpointer data,
                        gpointer user_data)
 {
     NautilusWindowSlot *slot = data;
     NautilusWindow *window = user_data;
 
-    close_slot (window, slot, TRUE);
+    close_slot (window, slot, FALSE);
 }
 
 static void
@@ -1641,13 +1625,7 @@ nautilus_window_dispose (GObject *object)
 
     /* close all slots safely */
     slots_copy = g_list_copy (window->slots);
-    if (window->active_slot != NULL)
-    {
-        /* Make sure active slot is last one to be closed, to avoid default activation
-         * of others slots when closing the active one, see bug #741952  */
-        slots_copy = g_list_sort_with_data (slots_copy, (GCompareDataFunc) sort_slots_active_last, window);
-    }
-    g_list_foreach (slots_copy, (GFunc) destroy_slots_foreach, window);
+    g_list_foreach (slots_copy, (GFunc) remove_slots_foreach, window);
     g_list_free (slots_copy);
 
     /* the slots list should now be empty */
