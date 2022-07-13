@@ -385,7 +385,10 @@ real_open_location_full (NautilusApplication *self,
     {
         active_slot = nautilus_window_get_active_slot (active_window);
         /* Just for debug.*/
-        old_location = nautilus_window_slot_get_location (active_slot);
+        if (active_slot != NULL)
+        {
+            old_location = nautilus_window_slot_get_location (active_slot);
+        }
     }
 
 

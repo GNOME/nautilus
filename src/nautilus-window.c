@@ -99,9 +99,6 @@ struct _NautilusWindow
 
     GtkWidget *notebook;
 
-    /* available slots, and active slot.
-     * Both of them may never be NULL.
-     */
     GList *slots;
     NautilusWindowSlot *active_slot; /* weak reference */
 
@@ -1411,7 +1408,6 @@ notebook_page_added_cb (GtkNotebook *notebook,
 {
     NautilusWindow *window = user_data;
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (page);
-    NautilusWindowSlot *dummy_slot;
     gboolean dnd_slot;
 
     dnd_slot = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (slot), "dnd-window-slot"));
@@ -1428,12 +1424,6 @@ notebook_page_added_cb (GtkNotebook *notebook,
     g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
 
     nautilus_window_set_active_slot (window, slot);
-
-    dummy_slot = g_list_nth_data (window->slots, 0);
-    if (dummy_slot != NULL)
-    {
-        close_slot (window, dummy_slot, TRUE);
-    }
 
     gtk_widget_show (GTK_WIDGET (window));
 }
@@ -1588,7 +1578,6 @@ static void
 nautilus_window_constructed (GObject *self)
 {
     NautilusWindow *window;
-    NautilusWindowSlot *slot;
     NautilusApplication *application;
 
     window = NAUTILUS_WINDOW (self);
@@ -1617,9 +1606,6 @@ nautilus_window_constructed (GObject *self)
     /* Is required that the UI is constructed before initializating the actions, since
      * some actions trigger UI widgets to show/hide. */
     nautilus_window_initialize_actions (window);
-
-    slot = nautilus_window_create_and_init_slot (window, 0);
-    nautilus_window_set_active_slot (window, slot);
 
     window->bookmarks_id =
         g_signal_connect_swapped (nautilus_application_get_bookmarks (application), "changed",
