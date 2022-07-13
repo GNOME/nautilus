@@ -79,6 +79,11 @@ nautilus_clipboard_from_string (char *string)
     {
         lines = g_strsplit (string, "\n", 0);
 
+        if (lines[0] == NULL)
+        {
+            return clip;
+        }
+
         /* Line 0 is "cut" or "copy", so uris start at line 1. */
         clip->cut = g_str_equal (lines[0], "cut");
         for (int i = 1; lines[i] != NULL; i++)
