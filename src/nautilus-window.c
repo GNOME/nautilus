@@ -655,34 +655,17 @@ location_entry_location_changed_callback (GtkWidget      *widget,
 }
 
 static void
-close_slot (NautilusWindow     *window,
-            NautilusWindowSlot *slot,
-            gboolean            remove_from_notebook)
+remove_slot_from_window (NautilusWindowSlot *slot,
+                         NautilusWindow     *window)
 {
-    int page_num;
-    GtkNotebook *notebook;
+    g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
+    g_return_if_fail (NAUTILUS_WINDOW (window));
 
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-
-    DEBUG ("Closing slot %p", slot);
+    DEBUG ("Removing slot %p", slot);
 
     disconnect_slot (window, slot);
-
     window->slots = g_list_remove (window->slots, slot);
-
     g_signal_emit (window, signals[SLOT_REMOVED], 0, slot);
-
-    notebook = GTK_NOTEBOOK (window->notebook);
-
-    if (remove_from_notebook)
-    {
-        page_num = gtk_notebook_page_num (notebook, GTK_WIDGET (slot));
-        g_assert (page_num >= 0);
-
-        /* this will call gtk_widget_destroy on the slot */
-        gtk_notebook_remove_page (notebook, page_num);
-    }
 }
 
 void
@@ -1006,6 +989,8 @@ nautilus_window_slot_close (NautilusWindow     *window,
                             NautilusWindowSlot *slot)
 {
     NautilusNavigationState *data;
+    GtkNotebook *notebook = GTK_NOTEBOOK (window->notebook);
+    int page_num;
 
     DEBUG ("Requesting to remove slot %p from window %p", slot, window);
     if (window == NULL || slot == NULL)
@@ -1019,7 +1004,12 @@ nautilus_window_slot_close (NautilusWindow     *window,
         g_queue_push_head (window->tab_data_queue, data);
     }
 
-    close_slot (window, slot, TRUE);
+    remove_slot_from_window (slot, window);
+
+    page_num = gtk_notebook_page_num (notebook, GTK_WIDGET (slot));
+    g_assert (page_num >= 0);
+    /* this will destroy the slot */
+    gtk_notebook_remove_page (notebook, page_num);
 
     /* If that was the last slot in the window, close the window. */
     if (window->slots == NULL)
@@ -1394,7 +1384,7 @@ notebook_page_removed_cb (GtkNotebook *notebook,
         return;
     }
 
-    close_slot (window, slot, FALSE);
+    remove_slot_from_window (slot, window);
 }
 
 static void
@@ -1600,16 +1590,6 @@ nautilus_window_constructed (GObject *self)
 }
 
 static void
-remove_slots_foreach (gpointer data,
-                       gpointer user_data)
-{
-    NautilusWindowSlot *slot = data;
-    NautilusWindow *window = user_data;
-
-    close_slot (window, slot, FALSE);
-}
-
-static void
 nautilus_window_dispose (GObject *object)
 {
     NautilusWindow *window;
@@ -1625,7 +1605,7 @@ nautilus_window_dispose (GObject *object)
 
     /* close all slots safely */
     slots_copy = g_list_copy (window->slots);
-    g_list_foreach (slots_copy, (GFunc) remove_slots_foreach, window);
+    g_list_foreach (slots_copy, (GFunc) remove_slot_from_window, window);
     g_list_free (slots_copy);
 
     /* the slots list should now be empty */
