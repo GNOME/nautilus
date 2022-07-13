@@ -1376,15 +1376,14 @@ notebook_page_removed_cb (GtkNotebook *notebook,
 {
     NautilusWindow *window = user_data;
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (page);
-    gboolean dnd_slot;
 
-    dnd_slot = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (slot), "dnd-window-slot"));
-    if (!dnd_slot)
+    /* If the tab has been moved to another window, we need to remove the slot
+     * from the current window here. Otherwise, if the tab has been closed, then
+     * we have*/
+    if (g_list_find (window->slots, slot))
     {
-        return;
+        remove_slot_from_window (slot, window);
     }
-
-    remove_slot_from_window (slot, window);
 }
 
 static void
@@ -1410,7 +1409,6 @@ notebook_create_window_cb (GtkNotebook *notebook,
 {
     NautilusApplication *app;
     NautilusWindow *new_window;
-    NautilusWindowSlot *slot;
 
     if (!NAUTILUS_IS_WINDOW_SLOT (page))
     {
@@ -1421,10 +1419,6 @@ notebook_create_window_cb (GtkNotebook *notebook,
     new_window = nautilus_application_create_window (app);
     gtk_window_set_display (GTK_WINDOW (new_window),
                             gtk_widget_get_display (GTK_WIDGET (notebook)));
-
-    slot = NAUTILUS_WINDOW_SLOT (page);
-    g_object_set_data (G_OBJECT (slot), "dnd-window-slot",
-                       GINT_TO_POINTER (TRUE));
 
     return GTK_NOTEBOOK (new_window->notebook);
 }
