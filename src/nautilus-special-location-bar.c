@@ -22,6 +22,7 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-enum-types.h"
 
@@ -31,6 +32,8 @@ struct _NautilusSpecialLocationBar
 
     GtkWidget *label;
     GtkWidget *learn_more_label;
+    GtkWidget *button;
+    int button_response;
     NautilusSpecialLocation special_location;
 };
 
@@ -40,7 +43,41 @@ enum
     PROP_SPECIAL_LOCATION,
 };
 
+enum
+{
+    SPECIAL_LOCATION_SHARING_RESPONSE = 1,
+};
+
 G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, ADW_TYPE_BIN)
+
+static void
+on_info_bar_response (GtkInfoBar *infobar,
+                      gint        response_id,
+                      gpointer    user_data)
+{
+    NautilusSpecialLocationBar *bar = user_data;
+
+    switch (bar->button_response)
+    {
+        case SPECIAL_LOCATION_SHARING_RESPONSE:
+        {
+            GVariant *parameters;
+
+            parameters = g_variant_new_parsed ("('launch-panel', [<('sharing', @av [])>], "
+                                               "@a{sv} {})");
+            nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                         NAUTILUS_DBUS_LAUNCHER_SETTINGS,
+                                         "Activate",
+                                         parameters, NULL);
+        }
+        break;
+
+        default:
+        {
+            g_assert_not_reached ();
+        }
+    }
+}
 
 static void
 set_special_location (NautilusSpecialLocationBar *bar,
@@ -48,6 +85,7 @@ set_special_location (NautilusSpecialLocationBar *bar,
 {
     char *message;
     char *learn_more_markup = NULL;
+    char *button_label = NULL;
 
     switch (location)
     {
@@ -61,6 +99,14 @@ set_special_location (NautilusSpecialLocationBar *bar,
         case NAUTILUS_SPECIAL_LOCATION_SCRIPTS:
         {
             message = g_strdup (_("Executable files in this folder will appear in the Scripts menu."));
+        }
+        break;
+
+        case NAUTILUS_SPECIAL_LOCATION_SHARING:
+        {
+            message = g_strdup (_("Turn on File Sharing to share the contents of this folder over the network."));
+            button_label = _("Sharing Settings");
+            bar->button_response = SPECIAL_LOCATION_SHARING_RESPONSE;
         }
         break;
 
@@ -85,6 +131,16 @@ set_special_location (NautilusSpecialLocationBar *bar,
     else
     {
         gtk_widget_hide (bar->learn_more_label);
+    }
+
+    if (button_label)
+    {
+        gtk_button_set_label (GTK_BUTTON (bar->button), button_label);
+        gtk_widget_show (bar->button);
+    }
+    else
+    {
+        gtk_widget_hide (bar->button);
     }
 }
 
@@ -164,6 +220,7 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
 {
     GtkWidget *info_bar;
     PangoAttrList *attrs;
+    GtkWidget *button;
 
     info_bar = gtk_info_bar_new ();
     gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar), GTK_MESSAGE_QUESTION);
@@ -179,10 +236,15 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
     gtk_label_set_ellipsize (GTK_LABEL (bar->label), PANGO_ELLIPSIZE_END);
     gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), bar->label);
 
+    button = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar), "", GTK_RESPONSE_OK);
+    bar->button = button;
+
     bar->learn_more_label = gtk_label_new (NULL);
     gtk_widget_set_hexpand (bar->learn_more_label, TRUE);
     gtk_widget_set_halign (bar->learn_more_label, GTK_ALIGN_END);
     gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), bar->learn_more_label);
+
+    g_signal_connect (info_bar, "response", G_CALLBACK (on_info_bar_response), bar);
 }
 
 GtkWidget *
