@@ -22,6 +22,7 @@
 #include <config.h>
 #include "nautilus-file-utilities.h"
 
+#include "nautilus-application.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -1486,4 +1487,31 @@ location_settings_search_get_recursive_for_location (GFile *location)
     }
 
     return recursive;
+}
+
+/* check_schema_available() was copied from GNOME Settings */
+gboolean
+check_schema_available (const gchar *schema_id)
+{
+    GSettingsSchemaSource *source;
+    g_autoptr (GSettingsSchema) schema = NULL;
+
+    if (nautilus_application_is_sandboxed ())
+    {
+        return TRUE;
+    }
+
+    source = g_settings_schema_source_get_default ();
+    if (!source)
+    {
+        return FALSE;
+    }
+
+    schema = g_settings_schema_source_lookup (source, schema_id, TRUE);
+    if (!schema)
+    {
+        return FALSE;
+    }
+
+    return TRUE;
 }
