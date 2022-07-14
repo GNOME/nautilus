@@ -65,6 +65,8 @@ enum
     NUM_PROPERTIES
 };
 
+#define FILE_SHARING_SCHEMA_ID "org.gnome.desktop.file-sharing"
+
 struct _NautilusWindowSlot
 {
     GtkBox parent_instance;
@@ -2740,6 +2742,11 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
         else if (g_file_equal (location, scripts_file))
         {
             nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
+        }
+        else if (check_schema_available (FILE_SHARING_SCHEMA_ID) &&
+                 nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_PUBLIC_SHARE))
+        {
+            nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
         }
 
         g_object_unref (scripts_file);
