@@ -6457,6 +6457,121 @@ action_compress (GSimpleAction *action,
     nautilus_files_view_compress_dialog_new (view);
 }
 
+static void
+send_email_done (GObject      *source_object,
+                 GAsyncResult *res,
+                 gpointer      user_data)
+{
+    GtkWindow *window = user_data;
+    g_autoptr (GError) error = NULL;
+
+    xdp_portal_compose_email_finish (XDP_PORTAL (source_object), res, &error);
+    if (error != NULL)
+    {
+        show_dialog (_("Error sending email."),
+                     error->message,
+                     window,
+                     GTK_MESSAGE_ERROR);
+    }
+}
+
+static void
+real_send_email (GStrv              attachments,
+                 NautilusFilesView *view)
+{
+    /* Although the documentation says that addresses can be NULL, it takes
+     * no action when addresses is NULL. Since we don't know the address,
+     * provide an empty list */
+    const char * const addresses[] = {NULL};
+    g_autoptr (XdpPortal) portal = NULL;
+    XdpParent *parent;
+    GtkWidget *toplevel;
+
+    portal = xdp_portal_new ();
+    toplevel = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
+    parent = xdp_parent_new_gtk (GTK_WINDOW (toplevel));
+    xdp_portal_compose_email (portal, parent, addresses,
+                              NULL, NULL, NULL, NULL, (const char * const *) attachments,
+                              XDP_EMAIL_FLAG_NONE, NULL, send_email_done, toplevel);
+}
+
+static void
+email_archive_ready (GFile    *new_file,
+                     gboolean  success,
+                     gpointer  user_data)
+{
+    g_autoptr (GStrvBuilder) strv_builder = NULL;
+    g_auto (GStrv) attachments = NULL;
+    NautilusFilesView *view = user_data;
+
+    if (success)
+    {
+        strv_builder = g_strv_builder_new ();
+        g_strv_builder_add (strv_builder, g_file_get_path (new_file));
+        attachments = g_strv_builder_end (strv_builder);
+        real_send_email (attachments, view);
+    }
+}
+
+static void
+action_send_email (GSimpleAction *action,
+                   GVariant      *state,
+                   gpointer       user_data)
+{
+    NautilusFilesView *view = user_data;
+    g_autolist (NautilusFile) selection = NULL;
+    g_auto (GStrv) attachments = NULL;
+    g_autoptr (GStrvBuilder) strv_builder = NULL;
+    gboolean has_directory = FALSE;
+
+    strv_builder = g_strv_builder_new ();
+    selection = nautilus_files_view_get_selection (NAUTILUS_VIEW (view));
+
+    for (GList *l = selection; l != NULL; l = l->next)
+    {
+        if (nautilus_file_has_local_path (l->data))
+        {
+            g_autoptr (GFile) location = nautilus_file_get_location (l->data);
+            g_strv_builder_add (strv_builder, g_file_get_path (location));
+        }
+        /* If there's a directory in the list, we can't attach a folder,
+         * so to keep things simple let's archive the whole selection */
+        if (nautilus_file_is_directory (l->data))
+        {
+            has_directory = TRUE;
+            break;
+        }
+    }
+
+    if (has_directory)
+    {
+        g_autolist (GFile) source_locations = NULL;
+        g_autofree gchar *archive_directory_name = NULL;
+        g_autoptr (GFile) archive_directory = NULL;
+        g_autoptr (GFile) archive_location = NULL;
+
+        for (GList *l = selection; l != NULL; l = l->next)
+        {
+            source_locations = g_list_prepend (source_locations,
+                                               nautilus_file_get_location (l->data));
+        }
+        source_locations = g_list_reverse (source_locations);
+        archive_directory_name = g_dir_make_tmp ("nautilus-sendto-XXXXXX", NULL);
+        archive_directory = g_file_new_for_path (archive_directory_name);
+        archive_location = g_file_get_child (archive_directory, "archive.zip");
+        nautilus_file_operations_compress (source_locations, archive_location,
+                                           AUTOAR_FORMAT_ZIP, AUTOAR_FILTER_NONE,
+                                           NULL,
+                                           nautilus_files_view_get_containing_window (view),
+                                           NULL, email_archive_ready, view);
+    }
+    else
+    {
+        attachments = g_strv_builder_end (strv_builder);
+        real_send_email (attachments, view);
+    }
+}
+
 static gboolean
 can_run_in_terminal (GList *selection)
 {
@@ -6971,6 +7086,7 @@ const GActionEntry view_entries[] =
     { "extract-here", action_extract_here },
     { "extract-to", action_extract_to },
     { "compress", action_compress },
+    { "send-email", action_send_email },
     { "properties", action_properties},
     { "current-directory-properties", action_current_dir_properties},
     { "run-in-terminal", action_run_in_terminal },
@@ -7348,6 +7464,7 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean show_star;
     gboolean show_unstar;
     gchar *uri;
+    g_autoptr (GAppInfo) app_info_mailto = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -7390,6 +7507,9 @@ real_update_actions_state (NautilusFilesView *view)
                                                                NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
     settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
                                                         NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
+
+    app_info_mailto = g_app_info_get_default_for_uri_scheme ("mailto");
+
     /* Right click actions
      * Selection menu actions
      */
@@ -7544,6 +7664,12 @@ real_update_actions_state (NautilusFilesView *view)
                                  can_copy_files &&
                                  can_create_files &&
                                  !settings_show_create_link);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "send-email");
+    /* Show the email action is there's a default email client or if we are
+     * in a sandbox, you can't check the app info so always show */
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 (app_info_mailto != NULL || nautilus_application_is_sandboxed ()));
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "copy-to");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
