@@ -74,6 +74,8 @@
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
+#include "nautilus-templates-dialog.h"
+#include "nautilus-new-file-dialog-controller.h"
 #include "nautilus-new-folder-dialog-controller.h"
 #include "nautilus-previewer.h"
 #include "nautilus-profile.h"
@@ -163,6 +165,7 @@ typedef struct
 
     NautilusWindowSlot *slot;
     NautilusDirectory *model;
+    NautilusDirectory *templates_directory;
     NautilusFile *directory_as_file;
     GFile *location;
     guint dir_merge_id;
@@ -170,6 +173,8 @@ typedef struct
     NautilusQuery *search_query;
 
     NautilusRenameFilePopoverController *rename_file_controller;
+    NautilusTemplatesDialog *templates_dialog;
+    NautilusNewFileDialogController *new_file_controller;
     NautilusNewFolderDialogController *new_folder_controller;
     NautilusCompressDialogController *compress_controller;
 
@@ -226,6 +231,8 @@ typedef struct
 
     gboolean metadata_for_directory_as_file_pending;
     gboolean metadata_for_files_in_directory_pending;
+
+    gboolean has_templates;
 
     GList *subdirectory_list;
 
@@ -2024,6 +2031,45 @@ new_folder_dialog_controller_on_cancelled (NautilusNewFolderDialogController *co
 }
 
 static void
+templates_dialog_on_response (GtkDialog *dialog,
+                              int        response_id,
+                              gpointer  *user_data)
+{
+    NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+
+    gtk_window_destroy (GTK_WINDOW (dialog));
+    priv->templates_dialog = NULL;
+}
+
+static void
+new_file_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
+                                             NautilusFilesView                *self)
+{
+    NautilusFilesViewPrivate *priv;
+
+    priv = nautilus_files_view_get_instance_private (self);
+
+    g_clear_object (&priv->new_file_controller);
+
+    gtk_widget_grab_focus (GTK_WIDGET (self));
+}
+
+static void
+new_file_dialog_controller_on_cancelled (NautilusNewFileDialogController *controller,
+                                         NautilusFilesView               *self)
+{
+    NautilusFilesViewPrivate *priv;
+
+    priv = nautilus_files_view_get_instance_private (self);
+
+    g_clear_object (&priv->new_file_controller);
+}
+
+static void
 nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
                                            gboolean           with_selection)
 {
@@ -2416,6 +2462,83 @@ action_empty_trash (GSimpleAction *action,
     window = gtk_widget_get_root (GTK_WIDGET (view));
 
     nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
+}
+
+static void
+templates_changed_cb (NautilusDirectory *directory,
+                      NautilusFilesView *files_view,
+                      gpointer           callback_data)
+{
+    NautilusFilesViewPrivate *priv;
+    NautilusFilesView *view;
+
+    view = NAUTILUS_FILES_VIEW (callback_data);
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (view));
+
+    priv = nautilus_files_view_get_instance_private (view);
+
+    priv->has_templates = nautilus_directory_is_not_empty (directory);
+}
+
+static void
+action_new_file (GSimpleAction *action,
+                 GVariant      *state,
+                 gpointer       user_data)
+{
+    g_autoptr (NautilusDirectory) containing_directory = NULL;
+    NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+    g_autofree char *uri = NULL;
+    g_autofree char *templates_uri = NULL;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    uri = nautilus_files_view_get_backing_uri (view);
+    containing_directory = nautilus_directory_get_by_uri (uri);
+
+    if (!priv->has_templates) /* if the XDG Templates directory is empty */
+    {
+        if (priv->new_file_controller != NULL)
+        {
+            return;
+        }
+
+        priv->new_file_controller =
+            nautilus_new_file_dialog_controller_new (nautilus_files_view_get_containing_window (view),
+                                                     containing_directory);
+
+        g_signal_connect_object (priv->new_file_controller,
+                                 "name-accepted",
+                                 G_CALLBACK (new_file_dialog_controller_on_name_accepted),
+                                 view,
+                                 0);
+        g_signal_connect_object (priv->new_file_controller,
+                                 "cancelled",
+                                 G_CALLBACK (new_file_dialog_controller_on_cancelled),
+                                 view,
+                                 0);
+    }
+    else
+    {
+        if (priv->templates_dialog != NULL)
+        {
+            return;
+        }
+
+
+        priv->templates_dialog =
+            nautilus_templates_dialog_new (nautilus_files_view_get_containing_window (view));
+        gtk_window_present (GTK_WINDOW (priv->templates_dialog));
+
+        g_signal_connect_object (priv->templates_dialog,
+                                 "response",
+                                 G_CALLBACK (templates_dialog_on_response),
+                                 view,
+                                 0);
+    }
 }
 
 static void
@@ -3250,6 +3373,13 @@ nautilus_files_view_dispose (GObject *object)
                                                  priv->subdirectory_list->data);
     }
 
+    if (priv->templates_directory != NULL)
+    {
+        nautilus_directory_file_monitor_remove (priv->templates_directory, view);
+        g_object_unref (priv->templates_directory);
+        priv->templates_directory = NULL;
+    }
+
     remove_update_context_menus_timeout_callback (view);
     remove_update_status_idle_callback (view);
 
@@ -3326,6 +3456,7 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->rename_file_controller);
+    g_clear_object (&priv->new_file_controller);
     g_clear_object (&priv->new_folder_controller);
     g_clear_object (&priv->compress_controller);
     /* We don't own the slot, so no unref */
@@ -6718,6 +6849,7 @@ const GActionEntry view_entries[] =
     /* Background menu */
     { "empty-trash", action_empty_trash },
     { "new-folder", action_new_folder },
+    { "new-file", action_new_file },
     { "select-all", action_select_all },
     { "paste", action_paste_files },
     { "copy-current-location", action_copy_current_location },
@@ -7463,6 +7595,9 @@ real_update_actions_state (NautilusFilesView *view)
                                  !nautilus_trash_monitor_is_empty () &&
                                  is_in_trash);
 
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "new-file");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
@@ -9312,9 +9447,20 @@ nautilus_files_view_init (NautilusFilesView *view)
     {
         templates_uri = nautilus_get_templates_directory_uri ();
         templates_directory = nautilus_directory_get_by_uri (templates_uri);
+        priv->templates_directory = templates_directory;
         g_free (templates_uri);
         add_directory_to_templates_directory_list (view, templates_directory);
-        nautilus_directory_unref (templates_directory);
+
+        /* Monitor templates directory */
+
+        nautilus_directory_file_monitor_add (templates_directory, view,
+                                             FALSE, NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                             (NautilusDirectoryCallback) templates_changed_cb, view);
+
+        g_signal_connect_object (templates_directory, "files-added",
+                                 G_CALLBACK (templates_changed_cb), view, 0);
+        g_signal_connect_object (templates_directory, "files-changed",
+                                 G_CALLBACK (templates_changed_cb), view, 0);
     }
 
     priv->sort_directories_first =

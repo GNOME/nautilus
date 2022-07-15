@@ -7,6 +7,11 @@
       <attribute name="action">view.new-folder</attribute>
     </item>
     <item>
+      <attribute name="label" translatable="yes">_New File</attribute>
+      <attribute name="action">view.new-file</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+    <item>
       <attribute name="label" translatable="yes">Open _With…</attribute>
       <attribute name="action">view.open-current-directory-with-other-application</attribute>
     </item>
