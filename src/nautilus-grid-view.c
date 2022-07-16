@@ -412,7 +412,7 @@ create_view_ui (NautilusGridView *self)
 
     widget = gtk_grid_view_new (GTK_SELECTION_MODEL (model), factory);
     gtk_widget_set_focusable (widget, TRUE);
-    gtk_widget_set_valign (widget, GTK_ALIGN_START);
+
 
     /* We don't use the built-in child activation feature for clicks because it
      * doesn't fill all our needs nor does it match our expected behavior.
