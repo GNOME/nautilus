@@ -1714,18 +1714,17 @@ void
 nautilus_list_base_setup_gestures (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    GtkWidget *view_ui = nautilus_list_base_get_view_ui (self);
     GtkEventController *controller;
     GtkDropTarget *drop_target;
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (view_ui, controller);
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_view_click_pressed), self);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
-    gtk_widget_add_controller (view_ui, controller);
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_view_longpress_pressed), self);
