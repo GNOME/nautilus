@@ -41,15 +41,10 @@
       <object class="GtkButton" id="button">
         <property name="valign">center</property>
         <property name="margin_start">20</property>
+        <property name="icon-name">window-close-symbolic</property>
         <style>
-          <class name="image-button"/>
           <class name="circular"/>
         </style>
-        <child>
-          <object class="GtkImage" id="image">
-            <property name="icon-name">window-close-symbolic</property>
-          </object>
-        </child>
         <layout>
           <property name="column">1</property>
           <property name="row">0</property>

@@ -155,15 +155,7 @@
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="action_name">slot.search-visible</property>
-                <child>
-                  <object class="GtkImage" id="search_icon">
-                    <property name="icon_name">edit-find-symbolic</property>
-                    <property name="icon_size">1</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
+                <property name="icon_name">edit-find-symbolic</property>
               </object>
             </child>
           </object>
@@ -182,15 +174,7 @@
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="action_name">win.back</property>
-            <child>
-              <object class="GtkImage" id="back_icon">
-                <property name="icon_name">go-previous-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
+            <property name="icon_name">go-previous-symbolic</property>
           </object>
         </child>
         <child type="start">
@@ -199,15 +183,7 @@
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="action_name">win.forward</property>
-            <child>
-              <object class="GtkImage" id="forward_icon">
-                <property name="icon_name">go-next-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
+            <property name="icon_name">go-next-symbolic</property>
           </object>
         </child>
         <child type="start">
@@ -221,6 +197,7 @@
           <object class="GtkMenuButton" id="app_button">
             <property name="halign">center</property>
             <property name="valign">center</property>
+            <property name="icon_name">open-menu-symbolic</property>
             <property name="popover">
               <object class="GtkPopoverMenu">
                 <property name="menu-model">app_menu</property>
@@ -246,15 +223,6 @@
                 </child>
               </object>
             </property>
-            <child>
-              <object class="GtkImage">
-                <property name="icon_name">open-menu-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
           </object>
         </child>
         <child type="end">

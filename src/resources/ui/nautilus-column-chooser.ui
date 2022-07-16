@@ -67,23 +67,15 @@
             <child>
               <object class="GtkButton" id="move_up_button">
                 <property name="sensitive">False</property>
+                <property name="icon-name">go-up-symbolic</property>
                 <signal name="clicked" handler="move_up_clicked_callback" swapped="no"/>
-                <child>
-                  <object class="GtkImage">
-                    <property name="icon-name">go-up-symbolic</property>
-                  </object>
-                </child>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="move_down_button">
                 <property name="sensitive">False</property>
+                <property name="icon-name">go-down-symbolic</property>
                 <signal name="clicked" handler="move_down_clicked_callback" swapped="no"/>
-                <child>
-                  <object class="GtkImage">
-                    <property name="icon-name">go-down-symbolic</property>
-                  </object>
-                </child>
               </object>
             </child>
             <style>
