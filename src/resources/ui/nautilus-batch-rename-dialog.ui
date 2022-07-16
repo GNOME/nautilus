@@ -186,22 +186,12 @@
                             <child>
                               <object class="GtkMenuButton">
                                 <property name="menu_model">add_tag_menu</property>
-                                <child>
-                                  <object class="GtkBox">
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="icon-name">list-add-symbolic</property>
-                                        <property name="icon-size">1</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel">
-                                        <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Add</property>
-                                      </object>
-                                    </child>
+                                <property name="child">
+                                  <object class="AdwButtonContent">
+                                    <property name="icon-name">list-add-symbolic</property>
+                                    <property name="label" translatable="yes">Add</property>
                                   </object>
-                                </child>
+                                </property>
                               </object>
                             </child>
                             <style>
