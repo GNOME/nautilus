@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-07-15 06:59+0000\n"
-"PO-Revision-Date: 2022-07-16 08:45+0300\n"
+"POT-Creation-Date: 2022-07-16 11:51+0000\n"
+"PO-Revision-Date: 2022-07-16 22:43+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1310,6 +1310,20 @@ msgstr "Менші архіви, але тільки для Linux та Mac."
 #: src/nautilus-compress-dialog-controller.c:454
 msgid "Smaller archives but must be installed on Windows and Mac."
 msgstr "Менші архіви, але треба встановити на Windows і Mac."
+
+#: src/nautilus-dbus-launcher.c:46
+#, c-format
+msgid "Details: %s"
+msgstr "Подробиці: %s"
+
+#: src/nautilus-dbus-launcher.c:47 src/nautilus-dbus-launcher.c:87
+#: src/nautilus-program-choosing.c:382 src/nautilus-program-choosing.c:457
+msgid "There was an error launching the application."
+msgstr "Помилка при запуску програми."
+
+#: src/nautilus-dbus-launcher.c:88
+msgid "Details: The proxy has not been created."
+msgstr "Подробиці: проксі не було створено."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
 #: src/nautilus-directory.c:674
@@ -3961,10 +3975,6 @@ msgstr "Вибачте, але не можна виконувати команд
 msgid "This is disabled due to security considerations."
 msgstr "Це заборонено з міркувань безпеки."
 
-#: src/nautilus-program-choosing.c:382 src/nautilus-program-choosing.c:457
-msgid "There was an error launching the application."
-msgstr "Помилка при запуску програми."
-
 #. all files are non-local
 #. some files are non-local
 #: src/nautilus-program-choosing.c:411 src/nautilus-program-choosing.c:423
@@ -4292,15 +4302,13 @@ msgid "Executable files in this folder will appear in the Scripts menu."
 msgstr "Всі виконувані файли у цій теці з'являтимуться у меню «Скрипти»."
 
 #: src/nautilus-special-location-bar.c:107
-#| msgid "Unable to display the contents of this folder."
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network."
 msgstr ""
-"Увімкніть спільне користування файлами, щоб відкрити доступ до вмісту цієї"
-" теки з мережі."
+"Увімкніть спільне користування файлами, щоб відкрити доступ до вмісту цієї "
+"теки з мережі."
 
 #: src/nautilus-special-location-bar.c:108
-#| msgid "_Settings"
 msgid "Sharing Settings"
 msgstr "Параметри спільного користування"
 
@@ -5904,10 +5912,6 @@ msgstr "Форматувати…"
 #: src/gtk/nautilusgtkplacessidebar.c:3941
 msgid "Computer"
 msgstr "Комп'ютер"
-
-#, c-format
-#~ msgid "Details: %s"
-#~ msgstr "Подробиці: %s"
 
 #~ msgid "Width of the side pane"
 #~ msgstr "Ширина бічної панелі"
