@@ -57,6 +57,13 @@ typedef void (* NautilusWindowHandleExported) (NautilusWindow *window,
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH		890
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT		550
 
+typedef enum
+{
+    NAUTILUS_NAVIGATION_DIRECTION_NONE,
+    NAUTILUS_NAVIGATION_DIRECTION_BACK,
+    NAUTILUS_NAVIGATION_DIRECTION_FORWARD
+} NautilusNavigationDirection;
+
 NautilusWindow * nautilus_window_new                  (void);
 void             nautilus_window_close                (NautilusWindow    *window);
 

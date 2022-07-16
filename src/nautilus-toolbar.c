@@ -44,13 +44,6 @@
 
 /* Just design, context at https://gitlab.gnome.org/GNOME/nautilus/issues/548#note_274131 */
 
-typedef enum
-{
-    NAUTILUS_NAVIGATION_DIRECTION_NONE,
-    NAUTILUS_NAVIGATION_DIRECTION_BACK,
-    NAUTILUS_NAVIGATION_DIRECTION_FORWARD
-} NautilusNavigationDirection;
-
 struct _NautilusToolbar
 {
     AdwBin parent_instance;
