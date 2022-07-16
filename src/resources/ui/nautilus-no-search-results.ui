@@ -1,52 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkGrid" id="no_search_results">
-    <property name="halign">center</property>
-    <property name="valign">center</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
-    <property name="row_spacing">12</property>
-    <child>
-      <object class="GtkImage">
-        <property name="pixel_size">80</property>
-        <property name="icon_name">edit-find-symbolic</property>
-        <style>
-          <class name="dim-label"/>
-        </style>
-        <layout>
-          <property name="column">0</property>
-          <property name="row">0</property>
-        </layout>
-      </object>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="label" translatable="yes">No Results Found</property>
-        <attributes>
-          <attribute name="weight" value="bold"></attribute>
-          <attribute name="scale" value="1.44"></attribute>
-        </attributes>
-        <layout>
-          <property name="column">0</property>
-          <property name="row">1</property>
-        </layout>
-      </object>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="label" translatable="yes">Try a different search</property>
-        <style>
-          <class name="dim-label"/>
-        </style>
-        <layout>
-          <property name="column">0</property>
-          <property name="row">2</property>
-        </layout>
-      </object>
-    </child>
-    <style>
-      <class name="dim-label"/>
-    </style>
+  <object class="AdwStatusPage" id="no_search_results">
+    <property name="icon_name">edit-find-symbolic</property>
+    <property name="title" translatable="yes">No Results Found</property>
+    <property name="description" translatable="yes">Try a different search</property>
   </object>
 </interface>

@@ -1,37 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkGrid" id="starred_is_empty">
-    <property name="halign">center</property>
-    <property name="valign">center</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
-    <property name="row_spacing">36</property>
-    <child>
-      <object class="GtkImage">
-        <property name="pixel_size">128</property>
-        <property name="icon_name">starred-symbolic</property>
-        <style>
-          <class name="dim-label"/>
-          <class name="nautilus-empty-state-icon"/>
-        </style>
-        <layout>
-          <property name="column">0</property>
-          <property name="row">0</property>
-        </layout>
-      </object>
-    </child>
-    <child>
-      <object class="GtkLabel">
-        <property name="label" translatable="yes">Starred files will appear here</property>
-        <style>
-          <class name="large-title"/>
-        </style>
-        <layout>
-          <property name="column">0</property>
-          <property name="row">1</property>
-        </layout>
-      </object>
-    </child>
+  <object class="AdwStatusPage" id="starred_is_empty">
+    <property name="icon_name">starred-symbolic</property>
+    <property name="title" translatable="yes">Starred files will appear here</property>
   </object>
 </interface>
