@@ -49,7 +49,7 @@ struct _NautilusBatchRenameDialog
     GtkWidget *replace_entry;
     GtkWidget *format_mode_button;
     GtkWidget *replace_mode_button;
-    GtkWidget *numbering_order_label;
+    GtkWidget *numbering_order_button;
     GtkWidget *numbering_label;
     GtkWidget *scrolled_window;
     GtkWidget *numbering_revealer;
@@ -131,8 +131,8 @@ change_numbering_order (GSimpleAction *action,
     {
         if (g_strcmp0 (sorts_constants[i].action_target_name, target_name) == 0)
         {
-            gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                                 gettext (sorts_constants[i].label));
+            gtk_button_set_label (GTK_BUTTON (dialog->numbering_order_button),
+                                  gettext (sorts_constants[i].label));
             dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
                                                                    sorts_constants[i].sort_mode,
                                                                    dialog->create_date);
@@ -1880,7 +1880,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, mode_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, replace_mode_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, format_mode_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, scrolled_window);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);

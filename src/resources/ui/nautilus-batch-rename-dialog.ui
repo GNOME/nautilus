@@ -216,26 +216,10 @@
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkMenuButton">
+                                  <object class="GtkMenuButton" id="numbering_order_button">
                                     <property name="menu-model">numbering_order_menu</property>
-                                    <child>
-                                      <object class="GtkBox">
-                                        <property name="spacing">15</property>
-                                        <child>
-                                          <object class="GtkLabel" id="numbering_order_label">
-                                            <property name="width-request">180</property>
-                                            <property name="xalign">0</property>
-                                            <property name="label" translatable="yes">Original Name (Ascending)</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkImage" id="action_icon">
-                                            <property name="icon-name">pan-down-symbolic</property>
-                                            <property name="icon-size">1</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
+                                    <property name="label" translatable="yes">Original Name (Ascending)</property>
+                                    <property name="always-show-arrow">True</property>
                                   </object>
                                 </child>
                               </object>
