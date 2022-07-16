@@ -6917,6 +6917,7 @@ const GActionEntry view_entries[] =
     { "copy-current-location", action_copy_current_location },
     { "paste_accel", action_paste_files_accel },
     { "create-link", action_create_links },
+    { "create-link-shortcut", action_create_links },
     { "new-document" },
     /* Selection menu */
     { "scripts" },
@@ -6931,6 +6932,7 @@ const GActionEntry view_entries[] =
     { "cut", action_cut},
     { "copy", action_copy},
     { "create-link-in-place", action_create_links_in_place },
+    { "create-link-in-place-shortcut", action_create_links_in_place },
     { "move-to", action_move_to},
     { "copy-to", action_copy_to},
     { "move-to-trash", action_move_to_trash},
@@ -7044,6 +7046,11 @@ update_actions_clipboard_contents_received (GObject      *source_object,
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_link_from_copied_files &&
                                  settings_show_create_link);
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                         "create-link-shortcut");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 can_link_from_copied_files &&
+                                 !settings_show_create_link);
 }
 
 static void
@@ -7518,6 +7525,12 @@ real_update_actions_state (NautilusFilesView *view)
                                  can_copy_files &&
                                  can_create_files &&
                                  settings_show_create_link);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "create-link-in-place-shortcut");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 can_copy_files &&
+                                 can_create_files &&
+                                 !settings_show_create_link);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "copy-to");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
@@ -9364,7 +9377,9 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_i, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.invert-selection", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_space, 0, "view.preview-selection", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK, "view.create-link", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK, "view.create-link-shortcut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.create-link-in-place", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.create-link-in-place-shortcut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_CONTROL_MASK, "view.open-item-new-tab", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_SHIFT_MASK, "view.open-item-new-window", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_o, GDK_CONTROL_MASK | GDK_ALT_MASK, "view.open-item-location", NULL);
