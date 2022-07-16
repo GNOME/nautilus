@@ -99,28 +99,12 @@
           <object class="GtkStackPage">
             <property name="name">empty</property>
             <property name="child">
-              <object class="GtkBox">
-                <property name="vexpand">1</property>
-                <property name="valign">3</property>
-                <property name="orientation">1</property>
-                <property name="spacing">18</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="pixel-size">48</property>
-                    <property name="icon-name">network-server-symbolic</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes" comments="Translators: Server as any successfully connected network address">No recent servers found</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                </child>
+              <object class="AdwStatusPage">
+                <property name="icon-name">network-server-symbolic</property>
+                <property name="title" translatable="yes" comments="Translators: Server as any successfully connected network address">No recent servers found</property>
+                <style>
+                  <class name="compact"/>
+                </style>
               </object>
             </property>
           </object>
@@ -200,39 +184,10 @@
           <object class="GtkStackPage">
             <property name="name">empty-search</property>
             <property name="child">
-              <object class="GtkBox">
-                <property name="halign">3</property>
-                <property name="valign">3</property>
-                <property name="hexpand">1</property>
-                <property name="vexpand">1</property>
-                <property name="orientation">1</property>
-                <property name="spacing">12</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="pixel-size">72</property>
-                    <property name="icon-name">edit-find-symbolic</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes">No results found</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"></attribute>
-                      <attribute name="scale" value="1.44"></attribute>
-                    </attributes>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="label" translatable="yes">Try a different search</property>
-                    <style>
-                      <class name="dim-label"/>
-                    </style>
-                  </object>
-                </child>
+              <object class="AdwStatusPage">
+                <property name="icon-name">edit-find-symbolic</property>
+                <property name="title" translatable="yes">No results found</property>
+                <property name="label" translatable="yes">Try a different search</property>
               </object>
             </property>
           </object>
