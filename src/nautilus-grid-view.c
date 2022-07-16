@@ -411,8 +411,6 @@ create_view_ui (NautilusGridView *self)
     g_signal_connect (factory, "unbind", G_CALLBACK (unbind_cell), self);
 
     widget = gtk_grid_view_new (GTK_SELECTION_MODEL (model), factory);
-    gtk_widget_set_focusable (widget, TRUE);
-
 
     /* We don't use the built-in child activation feature for clicks because it
      * doesn't fill all our needs nor does it match our expected behavior.
