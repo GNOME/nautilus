@@ -100,7 +100,6 @@
       <object class="GtkButton" id="cancel_button">
         <property name="label" translatable="yes">_Cancel</property>
         <property name="use_underline">True</property>
-        <property name="focusable">True</property>
       </object>
     </child>
     <child type="action">
@@ -176,7 +175,6 @@
                             <property name="halign">center</property>
                             <child>
                               <object class="GtkEntry" id="name_entry">
-                                <property name="focusable">True</property>
                                 <property name="width_request">400</property>
                                 <property name="hexpand">True</property>
                                 <property name="activates-default">True</property>
@@ -288,7 +286,6 @@
                         </child>
                         <child>
                           <object class="GtkEntry" id="find_entry">
-                            <property name="focusable">True</property>
                             <property name="width_request">375</property>
                             <property name="activates-default">True</property>
                             <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes"/>
@@ -312,7 +309,6 @@
                         </child>
                         <child>
                           <object class="GtkEntry" id="replace_entry">
-                            <property name="focusable">True</property>
                             <property name="width_request">375</property>
                             <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes"/>
                             <signal name="activate" handler="file_names_widget_on_activate" swapped="yes"/>

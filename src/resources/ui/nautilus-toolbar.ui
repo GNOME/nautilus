@@ -108,7 +108,6 @@
   <template class="NautilusToolbar" parent="AdwBin">
     <child>
       <object class="AdwHeaderBar">
-        <property name="focusable">False</property>
         <child type="title">
           <object class="GtkBox" id="header_toolbar">
             <property name="spacing">6</property>
@@ -152,7 +151,6 @@
             </child>
             <child>
               <object class="GtkToggleButton" id="search_button">
-                <property name="focusable">True</property>
                 <property name="tooltip_text" translatable="yes">Search</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
@@ -180,7 +178,6 @@
         </child>
         <child type="start">
           <object class="GtkButton" id="back_button">
-            <property name="focusable">True</property>
             <property name="tooltip_text" translatable="yes">Go back</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
@@ -198,7 +195,6 @@
         </child>
         <child type="start">
           <object class="GtkButton" id="forward_button">
-            <property name="focusable">True</property>
             <property name="tooltip_text" translatable="yes">Go forward</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
@@ -223,7 +219,6 @@
         </child>
         <child type="end">
           <object class="GtkMenuButton" id="app_button">
-            <property name="focusable">True</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="popover">
@@ -266,7 +261,6 @@
           <object class="AdwSplitButton" id="view_split_button">
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="focusable">True</property>
             <property name="tooltip_text" translatable="yes">Toggle view</property>
             <property name="action_name">slot.files-view-mode-toggle</property>
             <property name="menu-model">view_menu</property>
@@ -284,7 +278,6 @@
             <property name="transition_type">slide-right</property>
             <property name="child">
               <object class="GtkMenuButton" id="operations_button">
-                <property name="focusable">True</property>
                 <property name="tooltip_text" translatable="yes">Show operations</property>
                 <property name="popover">operations_popover</property>
                 <child>

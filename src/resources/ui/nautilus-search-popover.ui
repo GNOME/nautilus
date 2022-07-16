@@ -35,7 +35,6 @@
                   <object class="GtkBox">
                     <child>
                       <object class="GtkButton" id="select_date_button">
-                        <property name="focusable">True</property>
                         <property name="receives_default">True</property>
                         <property name="tooltip_text" translatable="yes">Select a date</property>
                         <property name="hexpand">True</property>
@@ -51,7 +50,6 @@
                     <child>
                       <object class="GtkButton" id="clear_date_button">
                         <property name="visible">False</property>
-                        <property name="focusable">True</property>
                         <property name="receives_default">True</property>
                         <property name="tooltip_text" translatable="yes">Clear the currently selected date</property>
                         <signal name="clicked" handler="clear_date_button_clicked" object="NautilusSearchPopover" swapped="no"/>
@@ -74,7 +72,6 @@
                 <property name="name">date-entry</property>
                 <property name="child">
                   <object class="GtkEntry" id="date_entry">
-                    <property name="focusable">True</property>
                     <property name="secondary_icon_name">x-office-calendar-symbolic</property>
                     <property name="secondary_icon_tooltip_text" translatable="yes">Show a calendar to select the date</property>
                     <signal name="icon-release" handler="toggle_calendar_icon_clicked" object="NautilusSearchPopover" swapped="no"/>
@@ -122,7 +119,6 @@
                         <property name="child">
                           <object class="GtkScrolledWindow">
                             <property name="height_request">200</property>
-                            <property name="focusable">True</property>
                             <property name="hexpand">True</property>
                             <property name="child">
                               <object class="GtkViewport">
@@ -143,7 +139,6 @@
                         <property name="name">date-calendar</property>
                         <property name="child">
                           <object class="GtkCalendar" id="calendar">
-                            <property name="focusable">True</property>
                             <property name="valign">start</property>
                             <property name="show_week_numbers">True</property>
                             <signal name="day-selected" handler="calendar_day_selected" object="NautilusSearchPopover" swapped="no" />
@@ -228,7 +223,6 @@
                 <property name="name">type-button</property>
                 <property name="child">
                   <object class="GtkButton" id="select_type_button">
-                    <property name="focusable">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Which file types will be searched</property>
                     <signal name="clicked" handler="select_type_button_clicked" object="NautilusSearchPopover" swapped="no"/>
@@ -259,7 +253,6 @@
                 <property name="child">
                   <object class="GtkScrolledWindow">
                     <property name="height_request">250</property>
-                    <property name="focusable">True</property>
                     <property name="child">
                       <object class="GtkViewport">
                         <property name="child">
