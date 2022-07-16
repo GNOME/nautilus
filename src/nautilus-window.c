@@ -2034,6 +2034,54 @@ nautilus_window_back_or_forward (NautilusWindow *window,
     }
 }
 
+void
+nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
+                                            NautilusNavigationDirection  direction)
+{
+    GFile *location;
+    NautilusWindowSlot *window_slot;
+    NautilusWindowSlot *new_slot;
+    NautilusNavigationState *state;
+
+    window_slot = nautilus_window_get_active_slot (window);
+    new_slot = nautilus_window_slot_new (window);
+    state = nautilus_window_slot_get_navigation_state (window_slot);
+
+    /* Manually fix up the back / forward lists and location.
+     * This way we don't have to unnecessary load the current location
+     * and then load back / forward */
+    switch (direction)
+    {
+        case NAUTILUS_NAVIGATION_DIRECTION_BACK:
+        {
+            state->forward_list = g_list_prepend (state->forward_list, state->current_location_bookmark);
+            state->current_location_bookmark = state->back_list->data;
+            state->back_list = state->back_list->next;
+        }
+        break;
+
+        case NAUTILUS_NAVIGATION_DIRECTION_FORWARD:
+        {
+            state->back_list = g_list_prepend (state->back_list, state->current_location_bookmark);
+            state->current_location_bookmark = state->forward_list->data;
+            state->forward_list = state->forward_list->next;
+        }
+        break;
+
+        default:
+        {
+            g_assert_not_reached ();
+        }
+    }
+
+    location = nautilus_bookmark_get_location (state->current_location_bookmark);
+    nautilus_window_initialize_slot (window, new_slot, NAUTILUS_OPEN_FLAG_NEW_TAB);
+    nautilus_window_slot_open_location_full (new_slot, location, 0, NULL);
+    nautilus_window_slot_restore_navigation_state (new_slot, state);
+
+    free_navigation_state (state);
+}
+
 static void
 on_click_gesture_pressed (GtkGestureClick *gesture,
                           gint             n_press,

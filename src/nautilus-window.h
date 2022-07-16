@@ -115,4 +115,7 @@ gboolean nautilus_window_export_handle (NautilusWindow *window,
                                         gpointer user_data);
 void nautilus_window_unexport_handle (NautilusWindow *window);
 
+void nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
+                                                 NautilusNavigationDirection  back);
+
 G_END_DECLS
