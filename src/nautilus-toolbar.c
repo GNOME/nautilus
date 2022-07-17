@@ -448,7 +448,7 @@ on_progress_info_finished (NautilusToolbar      *self,
     /* If destination is null, don't show a notification. This happens when the
      * operation is a trash operation, which we already show a diferent kind of
      * notification */
-    if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->operations_button)) &&
+    if (!gtk_widget_is_visible (self->operations_popover) &&
         folder_to_open != NULL)
     {
         add_operations_button_attention_style (self);
