@@ -248,10 +248,7 @@ typedef struct
     GtkWidget *scrolled_window;
 
     /* Empty states */
-    GtkWidget *folder_is_empty_widget;
-    GtkWidget *trash_is_empty_widget;
-    GtkWidget *no_search_results_widget;
-    GtkWidget *starred_is_empty_widget;
+    GtkWidget *empty_view_page;
 
     /* Floating bar */
     guint floating_bar_set_status_timeout_id;
@@ -3640,12 +3637,9 @@ nautilus_files_view_check_empty_states (NautilusFilesView *view)
 static void
 real_check_empty_states (NautilusFilesView *view)
 {
-    NautilusFilesViewPrivate *priv;
-    GtkWidget *visible_child;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     g_autofree gchar *uri = NULL;
-
-    priv = nautilus_files_view_get_instance_private (view);
-    visible_child = priv->scrolled_window;
+    AdwStatusPage *status_page = ADW_STATUS_PAGE (priv->empty_view_page);
 
     if (!priv->loading &&
         nautilus_files_view_is_empty (view))
@@ -3654,23 +3648,35 @@ real_check_empty_states (NautilusFilesView *view)
 
         if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
         {
-            visible_child = priv->no_search_results_widget;
+            adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
+            adw_status_page_set_title (status_page, _("No Results Found"));
+            adw_status_page_set_description (status_page, _("Try a different search."));
         }
         else if (eel_uri_is_trash_root (uri))
         {
-            visible_child = priv->trash_is_empty_widget;
+            adw_status_page_set_icon_name (status_page, "user-trash-symbolic");
+            adw_status_page_set_title (status_page, _("Trash is Empty"));
+            adw_status_page_set_description (status_page, NULL);
         }
         else if (eel_uri_is_starred (uri))
         {
-            visible_child = priv->starred_is_empty_widget;
+            adw_status_page_set_icon_name (status_page, "starred-symbolic");
+            adw_status_page_set_title (status_page, _("No Starred Files"));
+            adw_status_page_set_description (status_page, NULL);
         }
         else
         {
-            visible_child = priv->folder_is_empty_widget;
+            adw_status_page_set_icon_name (status_page, "folder-symbolic");
+            adw_status_page_set_title (status_page, "Folder is Empty");
+            adw_status_page_set_description (status_page, NULL);
         }
-    }
 
-    gtk_stack_set_visible_child (GTK_STACK (priv->stack), visible_child);
+        gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->empty_view_page);
+    }
+    else
+    {
+        gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->scrolled_window);
+    }
 }
 
 static void
@@ -9344,6 +9350,15 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     g_object_class_override_property (oclass, PROP_EXTENSIONS_BACKGROUND_MENU, "extensions-background-menu");
     g_object_class_override_property (oclass, PROP_TEMPLATES_MENU, "templates-menu");
 
+    gtk_widget_class_set_template_from_resource (widget_class,
+                                                 "/org/gnome/nautilus/ui/nautilus-files-view.ui");
+
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, overlay);
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, empty_view_page);
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, scrolled_window);
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, floating_bar);
+
     /* See also the global accelerators in init() in addition to all the local
      * ones defined below.
      */
@@ -9448,56 +9463,14 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     g_object_unref (builder);
 
-    /* Main widgets */
-    priv->overlay = gtk_overlay_new ();
-    gtk_widget_set_vexpand (priv->overlay, TRUE);
-    gtk_widget_set_hexpand (priv->overlay, TRUE);
-    adw_bin_set_child (ADW_BIN (view), priv->overlay);
-    gtk_widget_show (priv->overlay);
-
-    /* Stack */
-    priv->stack = gtk_stack_new ();
-    gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), priv->stack);
+    g_type_ensure (NAUTILUS_TYPE_FLOATING_BAR);
+    gtk_widget_init_template (GTK_WIDGET (view));
 
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
                                                   GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
     gtk_widget_add_controller (priv->scrolled_window, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), view);
-
-    /* Scrolled Window */
-    priv->scrolled_window = gtk_scrolled_window_new ();
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (priv->scrolled_window),
-                                    GTK_POLICY_AUTOMATIC,
-                                    GTK_POLICY_AUTOMATIC);
-    gtk_stack_add_child (GTK_STACK (priv->stack), priv->scrolled_window);
-
-    /* Empty states */
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
-    priv->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
-    gtk_stack_add_child (GTK_STACK (priv->stack), priv->no_search_results_widget);
-    g_object_unref (builder);
-
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-folder-is-empty.ui");
-    priv->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
-    gtk_stack_add_child (GTK_STACK (priv->stack), priv->folder_is_empty_widget);
-    g_object_unref (builder);
-
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-starred-is-empty.ui");
-    priv->starred_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "starred_is_empty"));
-    gtk_stack_add_child (GTK_STACK (priv->stack), priv->starred_is_empty_widget);
-    g_object_unref (builder);
-
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-trash-is-empty.ui");
-    priv->trash_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "trash_is_empty"));
-    gtk_stack_add_child (GTK_STACK (priv->stack), priv->trash_is_empty_widget);
-    g_object_unref (builder);
-
-    /* Floating bar */
-    priv->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
-    gtk_widget_set_halign (priv->floating_bar, GTK_ALIGN_END);
-    gtk_widget_set_valign (priv->floating_bar, GTK_ALIGN_END);
-    gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->floating_bar);
 
     g_signal_connect (priv->floating_bar,
                       "stop",
