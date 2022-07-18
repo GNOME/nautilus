@@ -901,11 +901,13 @@ unload_file_timeout (gpointer data)
 {
     g_autoptr (UnloadDelayData) unload_data = data;
     NautilusListView *self = unload_data->self;
-    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+    NautilusViewModel *model;
+
     if (unload_data->self == NULL)
     {
         return G_SOURCE_REMOVE;
     }
+    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
     for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (model)); i++)
     {
