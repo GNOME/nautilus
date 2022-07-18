@@ -928,6 +928,12 @@ nautilus_toolbar_get_property (GObject    *object,
         }
         break;
 
+        case PROP_WINDOW_SLOT:
+        {
+            g_value_set_object (value, self->window_slot);
+        }
+        break;
+
         case PROP_SEARCHING:
         {
             g_value_set_boolean (value, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->search_button)));
