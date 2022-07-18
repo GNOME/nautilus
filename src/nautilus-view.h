@@ -84,7 +84,7 @@ struct _NautilusViewInterface
         gboolean                        (*is_searching)              (NautilusView         *view);
 };
 
-GIcon *                        nautilus_view_get_icon                  (guint                 view_id);
+const gchar *                  nautilus_view_get_icon_name             (guint                 view_id);
 
 const gchar *                        nautilus_view_get_tooltip               (guint                 view_id);
 

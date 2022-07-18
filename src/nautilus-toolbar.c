@@ -72,7 +72,6 @@ struct _NautilusToolbar
     GtkWidget *operations_icon;
 
     GtkWidget *view_split_button;
-    GtkWidget *view_toggle_icon;
     GMenuModel *view_menu;
 
     GtkWidget *app_button;
@@ -1180,7 +1179,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_split_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
@@ -1306,26 +1304,6 @@ disconnect_toolbar_menu_sections_change_handler (NautilusToolbar *self)
 }
 
 static gboolean
-nautilus_toolbar_view_toggle_icon_transform_to (GBinding     *binding,
-                                                const GValue *from_value,
-                                                GValue       *to_value,
-                                                gpointer      user_data)
-{
-    GIcon *icon;
-
-    icon = g_value_get_object (from_value);
-
-    /* As per design decision, we let the previous used icon if no
-     * view menu is available */
-    if (icon)
-    {
-        g_value_set_object (to_value, icon);
-    }
-
-    return TRUE;
-}
-
-static gboolean
 nautilus_toolbar_view_toggle_tooltip_transform_to (GBinding     *binding,
                                                    const GValue *from_value,
                                                    GValue       *to_value,
@@ -1363,13 +1341,9 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                            on_window_slot_destroyed,
                            self);
 
-        self->icon_binding = g_object_bind_property_full (self->window_slot, "icon",
-                                                          self->view_toggle_icon, "gicon",
-                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
-                                                          (GBindingTransformFunc) nautilus_toolbar_view_toggle_icon_transform_to,
-                                                          NULL,
-                                                          self,
-                                                          NULL);
+        self->icon_binding = g_object_bind_property (self->window_slot, "icon-name",
+                                                     self->view_split_button, "icon-name",
+                                                     G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
 
         /* HACK. We shouldn't be poking at internal children. But alas, no other option. */
         toggle_button = gtk_widget_get_parent (adw_split_button_get_child (ADW_SPLIT_BUTTON (self->view_split_button)));

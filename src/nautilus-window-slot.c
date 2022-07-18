@@ -53,7 +53,7 @@ enum
 {
     PROP_ACTIVE = 1,
     PROP_WINDOW,
-    PROP_ICON,
+    PROP_ICON_NAME,
     PROP_TOOLBAR_MENU_SECTIONS,
     PROP_EXTENSIONS_BACKGROUND_MENU,
     PROP_TEMPLATES_MENU,
@@ -819,9 +819,9 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
 
-        case PROP_ICON:
+        case PROP_ICON_NAME:
         {
-            g_value_take_object (value, nautilus_window_slot_get_icon (self));
+            g_value_set_static_string (value, nautilus_window_slot_get_icon_name (self));
         }
         break;
 
@@ -2863,7 +2863,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         self->templates_menu_binding = g_object_bind_property (self->content_view, "templates-menu",
                                                                self, "templates-menu",
                                                                G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
@@ -3037,11 +3037,11 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              NAUTILUS_TYPE_WINDOW,
                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
 
-    properties[PROP_ICON] =
-        g_param_spec_object ("icon",
+    properties[PROP_ICON_NAME] =
+        g_param_spec_string ("icon-name",
                              "Icon that represents the slot",
                              "The icon that represents the slot",
-                             G_TYPE_ICON,
+                             NULL,
                              G_PARAM_READABLE);
 
     properties[PROP_TOOLBAR_MENU_SECTIONS] =
@@ -3280,15 +3280,15 @@ nautilus_window_slot_new (NautilusWindow *window)
                          NULL);
 }
 
-GIcon *
-nautilus_window_slot_get_icon (NautilusWindowSlot *self)
+const gchar *
+nautilus_window_slot_get_icon_name (NautilusWindowSlot *self)
 {
     guint current_view_id;
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
 
     if (self->content_view == NULL)
     {
-        return NULL;
+        return "";
     }
 
     current_view_id = nautilus_view_get_view_id (NAUTILUS_VIEW (self->content_view));
@@ -3296,19 +3296,19 @@ nautilus_window_slot_get_icon (NautilusWindowSlot *self)
     {
         case NAUTILUS_VIEW_LIST_ID:
         {
-            return nautilus_view_get_icon (NAUTILUS_VIEW_GRID_ID);
+            return nautilus_view_get_icon_name (NAUTILUS_VIEW_GRID_ID);
         }
         break;
 
         case NAUTILUS_VIEW_GRID_ID:
         {
-            return nautilus_view_get_icon (NAUTILUS_VIEW_LIST_ID);
+            return nautilus_view_get_icon_name (NAUTILUS_VIEW_LIST_ID);
         }
         break;
 
         case NAUTILUS_VIEW_OTHER_LOCATIONS_ID:
         {
-            return nautilus_view_get_icon (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
+            return nautilus_view_get_icon_name (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
         }
         break;
 

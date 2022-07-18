@@ -110,27 +110,23 @@ nautilus_view_default_init (NautilusViewInterface *iface)
 }
 
 /**
- * nautilus_view_get_icon:
+ * nautilus_view_get_icon_name:
  * @view: a #NautilusView
  *
- * Retrieves the #GIcon that represents @view.
+ * Retrieves the icon name that represents @view.
  *
- * Returns: (transfer full): a #GIcon
+ * Returns: (transfer none): an icon name
  */
-GIcon *
-nautilus_view_get_icon (guint view_id)
+const gchar *
+nautilus_view_get_icon_name (guint view_id)
 {
     if (view_id == NAUTILUS_VIEW_GRID_ID)
     {
-        return g_themed_icon_new ("view-grid-symbolic");
+        return "view-grid-symbolic";
     }
-    else if (view_id == NAUTILUS_VIEW_LIST_ID)
+    else if (view_id == NAUTILUS_VIEW_LIST_ID || view_id == NAUTILUS_VIEW_OTHER_LOCATIONS_ID)
     {
-        return g_themed_icon_new ("view-list-symbolic");
-    }
-    else if (view_id == NAUTILUS_VIEW_OTHER_LOCATIONS_ID)
-    {
-        return g_themed_icon_new_with_default_fallbacks ("view-list-symbolic");
+        return "view-list-symbolic";
     }
     else
     {
