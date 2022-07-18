@@ -1125,6 +1125,11 @@ unbind_name_cell (GtkSignalListItemFactory *factory,
     NautilusViewItem *item;
 
     item = listitem_get_view_item (listitem);
+    if (item == NULL)
+    {
+        /* The row is gone */
+        return;
+    }
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (item));
 
     nautilus_view_item_set_item_ui (item, NULL);
