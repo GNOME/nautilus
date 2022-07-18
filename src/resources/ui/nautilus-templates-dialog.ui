@@ -9,11 +9,12 @@
      <object class="GtkBox">
        <property name="orientation">vertical</property>
        <child>
-         <object class="GtkStack">
+         <object class="GtkStack" id="templates_stack">
            <child>
              <object class="GtkStackPage">
                <property name="child">
                  <object class="AdwStatusPage">
+                   <property name="name">no-templates</property>
                    <property name="icon-name">folder-templates-symbolic</property>
                    <property name="title" translatable="yes">No Templates Found</property>
                    <property name="description" translatable="yes">Add more templates by importing them from files.</property>
@@ -33,13 +34,41 @@
            </child>
            <child>
              <object class="GtkStackPage">
+               <property name="name">templates-list</property>
                <property name="child">
                  <object class="GtkBox">
                    <property name="orientation">vertical</property>
+                   <property name="spacing">6</property>
+                   <child>
+                    <object class="GtkSearchEntry" id="templates_search_entry">
+                      <property name="halign">center</property>
+                      <property name="margin-top">24</property>
+                      <property name="margin-bottom">12</property>
+                      <property name="margin-start">12</property>
+                      <property name="margin-end">12</property>
+                      <signal name="search-changed" handler="search_changed"/>
+                    </object>
+                   </child>
+                   <child>
+                     <object class="GtkListBox" id="templates_list_box">
+                       <property name="show-separators">1</property>
+                       <property name="margin-top">12</property>
+                       <property name="margin-bottom">12</property>
+                       <property name="margin-start">48</property>
+                       <property name="margin-end">48</property>
+                       <signal name="row-activated" handler="row_activated"/>
+                       <signal name="row-selected" handler="row_selected"/>
+                       <style>
+                         <class name="boxed-list"/>
+                       </style>
+                     </object>
+                   </child>
                    <child>
                      <object class="GtkButton">
                        <property name="label" translatable="yes">Import</property>
                        <property name="halign">center</property>
+                       <property name="margin-top">12</property>
+                       <property name="margin-bottom">24</property>
                        <signal name="clicked" handler="nautilus_templates_dialog_import_template_dialog" swapped="yes"/>
                        <style>
                          <class name="pill"/>

@@ -21,6 +21,7 @@
 #pragma once
 
 #include <adwaita.h>
+#include "nautilus-types.h"
 
 G_BEGIN_DECLS
 
@@ -29,5 +30,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusTemplatesDialog, nautilus_templates_dialog, NAUTILUS, TEMPLATES_DIALOG, GtkDialog)
 
 NautilusTemplatesDialog * nautilus_templates_dialog_new (GtkWindow *parent_window);
+
+NautilusFile * nautilus_templates_dialog_get_selected_file (NautilusTemplatesDialog *self);
 
 G_END_DECLS
