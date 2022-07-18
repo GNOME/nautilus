@@ -232,6 +232,16 @@
             <property name="tooltip_text" translatable="yes" comments="Translators: This is a noun, meaning the options pertaining to the view.">View options</property>
             <property name="action_name">slot.files-view-mode-toggle</property>
             <property name="menu-model">view_menu</property>
+            <binding name="icon-name">
+              <lookup name="icon-name">
+                <lookup name="window-slot">NautilusToolbar</lookup>
+              </lookup>
+            </binding>
+            <binding name="tooltip-text">
+              <lookup name="tooltip">
+                <lookup name="window-slot">NautilusToolbar</lookup>
+              </lookup>
+            </binding>
           </object>
         </child>
         <child type="end">

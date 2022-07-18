@@ -95,9 +95,7 @@ struct _NautilusToolbar
 
     /* active slot & bindings */
     NautilusWindowSlot *window_slot;
-    GBinding *icon_binding;
     GBinding *search_binding;
-    GBinding *tooltip_binding;
 };
 
 enum
@@ -971,7 +969,6 @@ on_window_slot_destroyed (gpointer  data,
     /* The window slot was finalized, and the binding has already been removed.
      * Null it here, so that dispose() does not trip over itself when removing it.
      */
-    self->icon_binding = NULL;
     self->search_binding = NULL;
 
     nautilus_toolbar_set_window_slot_real (self, NULL);
@@ -1085,7 +1082,6 @@ nautilus_toolbar_dispose (GObject *object)
 
     self = NAUTILUS_TOOLBAR (object);
 
-    g_clear_pointer (&self->icon_binding, g_binding_unbind);
     g_clear_pointer (&self->search_binding, g_binding_unbind);
     g_clear_pointer (&self->back_menu, gtk_widget_unparent);
     g_clear_pointer (&self->forward_menu, gtk_widget_unparent);
@@ -1309,26 +1305,6 @@ disconnect_toolbar_menu_sections_change_handler (NautilusToolbar *self)
                                           self);
 }
 
-static gboolean
-nautilus_toolbar_view_toggle_tooltip_transform_to (GBinding     *binding,
-                                                   const GValue *from_value,
-                                                   GValue       *to_value,
-                                                   gpointer      user_data)
-{
-    const gchar *tooltip;
-
-    tooltip = g_value_get_string (from_value);
-
-    /* As per design decision, we let the previous used tooltip if no
-     * view menu is available */
-    if (tooltip)
-    {
-        g_value_set_string (to_value, tooltip);
-    }
-
-    return TRUE;
-}
-
 /* Called from on_window_slot_destroyed(), since bindings and signal handlers
  * are automatically removed once the slot goes away.
  */
@@ -1346,20 +1322,6 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
         g_object_weak_ref (G_OBJECT (self->window_slot),
                            on_window_slot_destroyed,
                            self);
-
-        self->icon_binding = g_object_bind_property (self->window_slot, "icon-name",
-                                                     self->view_split_button, "icon-name",
-                                                     G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-
-        /* HACK. We shouldn't be poking at internal children. But alas, no other option. */
-        toggle_button = gtk_widget_get_parent (adw_split_button_get_child (ADW_SPLIT_BUTTON (self->view_split_button)));
-        self->tooltip_binding = g_object_bind_property_full (self->window_slot, "tooltip",
-                                                             toggle_button, "tooltip-text",
-                                                             G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
-                                                             (GBindingTransformFunc) nautilus_toolbar_view_toggle_tooltip_transform_to,
-                                                             NULL,
-                                                             self,
-                                                             NULL);
 
         self->search_binding = g_object_bind_property (self->window_slot, "searching",
                                                        self, "searching",
@@ -1402,7 +1364,6 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
         return;
     }
 
-    g_clear_pointer (&self->icon_binding, g_binding_unbind);
     g_clear_pointer (&self->search_binding, g_binding_unbind);
 
     disconnect_toolbar_menu_sections_change_handler (self);
