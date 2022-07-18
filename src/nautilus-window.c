@@ -60,6 +60,7 @@
 #include "nautilus-location-entry.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-module.h"
 #include "nautilus-notebook.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-profile.h"
@@ -2281,6 +2282,9 @@ nautilus_window_new (void)
 void
 nautilus_window_show_about_dialog (NautilusWindow *window)
 {
+    g_autofree gchar *module_names = nautilus_module_get_installed_module_names ();
+    g_autofree gchar *debug_info = NULL;
+
     const gchar *designers[] =
     {
         "The GNOME Project",
@@ -2298,6 +2302,18 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
         NULL
     };
 
+    if (module_names == NULL)
+    {
+        debug_info = g_strdup (_("No plugins currently installed."));
+    }
+    else
+    {
+        debug_info = g_strconcat (_("Currently installed plugins:"), "\n\n",
+                                  module_names, "\n\n",
+                                  _("For bug testing only, the following command can be used:"), "\n"
+                                  "NAUTILUS_DISABLE_PLUGINS=TRUE nautilus", NULL);
+    }
+
     adw_show_about_window (window ? GTK_WINDOW (window) : NULL,
                            "application-name", _("Files"),
                            "application-icon", APPLICATION_ID,
@@ -2305,6 +2321,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                            "version", VERSION,
                            "website", "https://wiki.gnome.org/action/show/Apps/Files",
                            "issue-url", "https://gitlab.gnome.org/GNOME/nautilus/-/issues/new",
+                           "debug-info", debug_info,
                            "copyright", "© 1999 The Files Authors",
                            "license-type", GTK_LICENSE_GPL_3_0,
                            "designers", designers,
