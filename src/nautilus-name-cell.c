@@ -285,20 +285,14 @@ on_loading_timeout (gpointer user_data)
 }
 
 static void
-on_item_is_loading_changed (GObject    *object,
-                            GParamSpec *pspec,
-                            gpointer    user_data)
+on_item_is_loading_changed (NautilusNameCell *self)
 {
-    NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
     gboolean is_loading;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
 
-    if (object != G_OBJECT (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self))))
-    {
-        return;
-    }
 
     g_clear_handle_id (&self->loading_timeout_id, g_source_remove);
-    g_object_get (object, "is-loading", &is_loading, NULL);
+    g_object_get (item, "is-loading", &is_loading, NULL);
     if (is_loading)
     {
         self->loading_timeout_id = g_timeout_add_seconds (LOADING_TIMEOUT_SECONDS,
