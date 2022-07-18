@@ -56,6 +56,7 @@ struct _NautilusModuleClass
 };
 
 static GList *module_objects = NULL;
+static GStrv installed_module_names = NULL;
 
 static GType nautilus_module_get_type (void);
 
@@ -187,7 +188,8 @@ add_module_objects (NautilusModule *module)
 }
 
 static NautilusModule *
-nautilus_module_load_file (const char *filename)
+nautilus_module_load_file (const char   *filename,
+                           GStrvBuilder *installed_module_name_builder)
 {
     NautilusModule *module;
 
@@ -198,6 +200,7 @@ nautilus_module_load_file (const char *filename)
     {
         add_module_objects (module);
         g_type_module_unuse (G_TYPE_MODULE (module));
+        g_strv_builder_add (installed_module_name_builder, filename);
         return module;
     }
     else
@@ -207,11 +210,18 @@ nautilus_module_load_file (const char *filename)
     }
 }
 
+char *
+nautilus_module_get_installed_module_names ()
+{
+    return g_strjoinv ("\n", installed_module_names);
+}
+
 static void
 load_module_dir (const char *dirname)
 {
     GDir *dir;
 
+    g_autoptr (GStrvBuilder) installed_module_name_builder = g_strv_builder_new ();
     dir = g_dir_open (dirname, 0, NULL);
 
     if (dir)
@@ -227,13 +237,15 @@ load_module_dir (const char *dirname)
                 filename = g_build_filename (dirname,
                                              name,
                                              NULL);
-                nautilus_module_load_file (filename);
+                nautilus_module_load_file (filename, installed_module_name_builder);
                 g_free (filename);
             }
         }
 
         g_dir_close (dir);
     }
+
+    installed_module_names = g_strv_builder_end (installed_module_name_builder);
 }
 
 static void
@@ -248,6 +260,7 @@ free_module_objects (void)
     }
 
     g_list_free (module_objects);
+    g_strfreev (installed_module_names);
 }
 
 void
