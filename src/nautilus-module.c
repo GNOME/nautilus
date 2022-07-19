@@ -254,6 +254,14 @@ void
 nautilus_module_setup (void)
 {
     static gboolean initialized = FALSE;
+    const gchar *disable_plugins;
+
+    disable_plugins = g_getenv ("NAUTILUS_DISABLE_PLUGINS");
+    if (g_strcmp0 (disable_plugins, "TRUE") == 0)
+    {
+        /* Troublingshooting envvar is set to disable extensions */
+        return;
+    }
 
     if (!initialized)
     {
