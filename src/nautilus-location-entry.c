@@ -136,6 +136,20 @@ nautilus_location_entry_set_text (NautilusLocationEntry *entry,
 }
 
 static void
+nautilus_location_entry_insert_prefix (NautilusLocationEntry *entry,
+                                       GtkEntryCompletion    *completion)
+{
+    GtkEditable *delegate;
+
+    delegate = gtk_editable_get_delegate (GTK_EDITABLE (entry));
+    g_signal_handlers_block_by_func (delegate, G_CALLBACK (on_after_insert_text), entry);
+
+    gtk_entry_completion_insert_prefix (completion);
+
+    g_signal_handlers_unblock_by_func (delegate, G_CALLBACK (on_after_insert_text), entry);
+}
+
+static void
 emit_location_changed (NautilusLocationEntry *entry)
 {
     GFile *location;
@@ -566,7 +580,7 @@ update_completions_store (gpointer callback_data)
     if (priv->idle_insert_completion)
     {
         /* insert the completion */
-        gtk_entry_completion_insert_prefix (priv->completion);
+        nautilus_location_entry_insert_prefix (entry, priv->completion);
     }
 
     return FALSE;
