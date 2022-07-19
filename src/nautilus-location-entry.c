@@ -752,7 +752,7 @@ on_after_insert_text (GtkEditable *editable,
                       gint        *position,
                       gpointer     data)
 {
-    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (editable);
+    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (data);
 
     after_text_change (self, TRUE);
 }
@@ -763,7 +763,7 @@ on_after_delete_text (GtkEditable *editable,
                       gint         end_pos,
                       gpointer     data)
 {
-    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (editable);
+    NautilusLocationEntry *self = NAUTILUS_LOCATION_ENTRY (data);
 
     after_text_change (self, FALSE);
 }
@@ -969,14 +969,14 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
     g_signal_connect (controller, "key-pressed",
                       G_CALLBACK (nautilus_location_entry_key_pressed), NULL);
 
-    g_signal_connect_after (entry,
+    g_signal_connect_after (gtk_editable_get_delegate (GTK_EDITABLE (entry)),
                             "insert-text",
                             G_CALLBACK (on_after_insert_text),
-                            NULL);
-    g_signal_connect_after (entry,
+                            entry);
+    g_signal_connect_after (gtk_editable_get_delegate (GTK_EDITABLE (entry)),
                             "delete-text",
                             G_CALLBACK (on_after_delete_text),
-                            NULL);
+                            entry);
 
     priv->completion = gtk_entry_completion_new ();
     priv->completions_store = gtk_list_store_new (1, G_TYPE_STRING);
