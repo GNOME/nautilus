@@ -56,8 +56,6 @@ typedef struct _NautilusLocationEntryPrivate
     GFile *last_location;
 
     gboolean has_special_text;
-    gboolean setting_special_text;
-    gchar *special_text;
     NautilusLocationEntryAction secondary_action;
 
     GtkEventController *controller;
@@ -464,11 +462,10 @@ on_has_focus_changed (GObject    *object,
     entry = NAUTILUS_LOCATION_ENTRY (object);
     priv = nautilus_location_entry_get_instance_private (entry);
 
+    /* The entry has text which is not worth preserving on focus-in. */
     if (priv->has_special_text)
     {
-        priv->setting_special_text = TRUE;
         nautilus_location_entry_set_text (entry, "");
-        priv->setting_special_text = FALSE;
     }
 }
 
@@ -479,11 +476,6 @@ nautilus_location_entry_text_changed (NautilusLocationEntry *entry,
     NautilusLocationEntryPrivate *priv;
 
     priv = nautilus_location_entry_get_instance_private (entry);
-
-    if (priv->setting_special_text)
-    {
-        return;
-    }
 
     priv->has_special_text = FALSE;
 }
@@ -849,12 +841,6 @@ nautilus_location_entry_set_special_text (NautilusLocationEntry *entry,
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
-    priv->has_special_text = TRUE;
-
-    g_free (priv->special_text);
-    priv->special_text = g_strdup (special_text);
-
-    priv->setting_special_text = TRUE;
     nautilus_location_entry_set_text (entry, special_text);
-    priv->setting_special_text = FALSE;
+    priv->has_special_text = TRUE;
 }
