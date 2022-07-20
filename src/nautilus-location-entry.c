@@ -416,7 +416,6 @@ finalize (GObject *object)
     priv = nautilus_location_entry_get_instance_private (entry);
 
     g_object_unref (priv->completer);
-    g_free (priv->special_text);
 
     g_clear_object (&priv->last_location);
     g_clear_object (&priv->completion);
