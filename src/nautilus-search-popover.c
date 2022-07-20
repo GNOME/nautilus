@@ -562,6 +562,16 @@ on_other_types_dialog_response (GtkDialog             *dialog,
 }
 
 static void
+on_other_types_activate (GtkListView *self,
+                         guint        position,
+                         gpointer     user_data)
+{
+    GtkDialog *dialog = GTK_DIALOG (user_data);
+
+    gtk_dialog_response (dialog, GTK_RESPONSE_OK);
+}
+
+static void
 on_other_types_bind (GtkSignalListItemFactory *factory,
                      GtkListItem              *listitem,
                      gpointer                  user_data)
@@ -629,6 +639,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
                                           _("_Cancel"), GTK_RESPONSE_CANCEL,
                                           _("Select"), GTK_RESPONSE_OK,
                                           NULL);
+    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
     gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);
 
     /* If there are 0 results, make action insensitive */
@@ -665,6 +676,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
 
     listview = gtk_list_view_new (GTK_SELECTION_MODEL (g_object_ref (popover->other_types_model)),
                                   factory);
+    g_signal_connect (listview, "activate", G_CALLBACK (on_other_types_activate), dialog);
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled), listview);
 
