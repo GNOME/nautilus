@@ -38,17 +38,15 @@
 
   <enum id="org.gnome.nautilus.GridZoomLevel">
     <value value="0" nick="small"/>
-    <value value="1" nick="standard"/>
+    <value value="1" nick="medium"/>
     <value value="2" nick="large"/>
-    <value value="3" nick="larger"/>
-    <value value="4" nick="largest"/>
+    <value value="3" nick="extra-large"/>
   </enum>
 
   <enum id="org.gnome.nautilus.ListZoomLevel">
     <value value="0" nick="small"/>
-    <value value="1" nick="standard"/>
+    <value value="1" nick="medium"/>
     <value value="2" nick="large"/>
-    <value value="3" nick="larger"/>
   </enum>
 
   <enum id="org.gnome.nautilus.TabPosition">
@@ -216,13 +214,22 @@
     </key>
     <key name="default-zoom-level" enum="org.gnome.nautilus.GridZoomLevel">
       <default>'large'</default>
+      <aliases>
+        <alias value='standard' target='medium'/>
+        <alias value='larger' target='extra-large'/>
+        <alias value='largest' target='extra-large'/>
+      </aliases>
       <summary>Default icon view zoom level</summary>
     </key>
   </schema>
 
   <schema path="/org/gnome/nautilus/list-view/" id="org.gnome.nautilus.list-view" gettext-domain="nautilus">
     <key name="default-zoom-level" enum="org.gnome.nautilus.ListZoomLevel">
-      <default>'standard'</default>
+      <aliases>
+        <alias value='standard' target='medium'/>
+        <alias value='larger' target='large'/>
+      </aliases>
+      <default>'medium'</default>
       <summary>Default list view zoom level</summary>
     </key>
     <key type="as" name="default-visible-columns">
