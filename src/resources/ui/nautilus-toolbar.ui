@@ -161,8 +161,7 @@
           </object>
         </child>
         <child type="start">
-          <object class="GtkToggleButton" id="show_sidebar_button">
-            <property name="visible" bind-source="NautilusToolbar" bind-property="show-sidebar-button" bind-flags="bidirectional|sync-create"/>
+          <object class="GtkToggleButton" id="sidebar_button">
             <property name="active" bind-source="NautilusToolbar" bind-property="sidebar-button-active" bind-flags="bidirectional|sync-create"/>
             <property name="tooltip-text" translatable="yes">Show sidebar</property>
             <property name="icon-name">sidebar-show-symbolic</property>

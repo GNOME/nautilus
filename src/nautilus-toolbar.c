@@ -914,6 +914,14 @@ nautilus_toolbar_on_window_constructed (NautilusToolbar *self)
 }
 
 static void
+on_idle_show_sidebar_button (gpointer user_data)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (user_data);
+
+    gtk_widget_set_visible (self->sidebar_button, self->show_sidebar_button);
+}
+
+static void
 nautilus_toolbar_get_property (GObject    *object,
                                guint       property_id,
                                GValue     *value,
@@ -1056,6 +1064,11 @@ nautilus_toolbar_set_property (GObject      *object,
         case PROP_SHOW_SIDEBAR_BUTTON:
         {
             self->show_sidebar_button = g_value_get_boolean (value);
+            /* This is set as a result of the sidebar folding when the window
+             * goes under certain width. Actually showing a button at this point
+             * would result in trying to snapshot the toolbar without an
+             * allocation. So, do it on idle instead. */
+            g_idle_add_once (on_idle_show_sidebar_button, self);
         }
         break;
 
@@ -1183,6 +1196,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, sidebar_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_button);
