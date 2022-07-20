@@ -599,9 +599,12 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     GtkStringList *string_model;
     GtkStringSorter *sorter;
     GtkSortListModel *sort_model;
+    GtkStringFilter *filter;
+    GtkFilterListModel *filter_model;
     g_autoptr (GList) mime_infos = NULL;
     GtkWidget *dialog;
     GtkWidget *content_area;
+    GtkWidget *search_entry;
     GtkWidget *scrolled;
     GtkListItemFactory *factory;
     GtkWidget *listview;
@@ -615,7 +618,9 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     }
     sorter = gtk_string_sorter_new (gtk_property_expression_new (GTK_TYPE_STRING_OBJECT, NULL, "string"));
     sort_model = gtk_sort_list_model_new (G_LIST_MODEL (string_model), GTK_SORTER (sorter));
-    popover->other_types_model = gtk_single_selection_new (G_LIST_MODEL (sort_model));
+    filter = gtk_string_filter_new (gtk_property_expression_new (GTK_TYPE_STRING_OBJECT, NULL, "string"));
+    filter_model = gtk_filter_list_model_new (G_LIST_MODEL (sort_model), GTK_FILTER (filter));
+    popover->other_types_model = gtk_single_selection_new (G_LIST_MODEL (filter_model));
 
     toplevel = gtk_widget_get_root (GTK_WIDGET (popover));
     dialog = gtk_dialog_new_with_buttons (_("Select type"),
@@ -626,7 +631,25 @@ show_other_types_dialog (NautilusSearchPopover *popover)
                                           NULL);
     gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);
 
+    /* If there are 0 results, make action insensitive */
+    g_object_bind_property (filter_model,
+                            "n-items",
+                            gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK),
+                            "sensitive",
+                            G_BINDING_DEFAULT);
+
     content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+
+    search_entry = gtk_search_entry_new ();
+    gtk_search_entry_set_key_capture_widget (GTK_SEARCH_ENTRY (search_entry), content_area);
+    g_object_bind_property (search_entry, "text", filter, "search", G_BINDING_SYNC_CREATE);
+    gtk_box_append (GTK_BOX (content_area), search_entry);
+    gtk_widget_set_margin_start (search_entry, 12);
+    gtk_widget_set_margin_end (search_entry, 12);
+    gtk_widget_set_margin_top (search_entry, 6);
+    gtk_widget_set_margin_bottom (search_entry, 6);
+
+    gtk_box_append (GTK_BOX (content_area), gtk_separator_new (GTK_ORIENTATION_VERTICAL));
 
     scrolled = gtk_scrolled_window_new ();
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
