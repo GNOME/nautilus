@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkPopoverMenu" id="back_menu"/>
-  <object class="GtkPopoverMenu" id="forward_menu"/>
   <menu id="view_menu">
     <section>
       <attribute name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</attribute>
@@ -169,28 +167,20 @@
           </object>
         </child>
         <child type="start">
-          <object class="GtkButton" id="back_button">
-            <property name="tooltip_text" translatable="yes">Go back</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="action_name">win.back</property>
-            <property name="icon_name">go-previous-symbolic</property>
-          </object>
-        </child>
-        <child type="start">
-          <object class="GtkButton" id="forward_button">
-            <property name="tooltip_text" translatable="yes">Go forward</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="action_name">win.forward</property>
-            <property name="icon_name">go-next-symbolic</property>
-          </object>
-        </child>
-        <child type="start">
-          <object class="GtkSeparator">
-            <style>
-              <class name="spacer"/>
-            </style>
+          <object class="GtkBox">
+            <property name="spacing">6</property>
+            <child>
+              <object class="NautilusHistoryControls">
+                <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <style>
+                  <class name="spacer"/>
+                </style>
+              </object>
+            </child>
           </object>
         </child>
         <child type="end">

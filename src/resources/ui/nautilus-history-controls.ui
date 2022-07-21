@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkPopoverMenu" id="back_menu"/>
+  <object class="GtkPopoverMenu" id="forward_menu"/>
+  <template class="NautilusHistoryControls" parent="AdwBin">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkButton" id="back_button">
+            <property name="tooltip_text" translatable="yes">Go back</property>
+            <property name="valign">center</property>
+            <property name="action_name">win.back</property>
+            <property name="icon_name">go-previous-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="forward_button">
+            <property name="tooltip_text" translatable="yes">Go forward</property>
+            <property name="valign">center</property>
+            <property name="action_name">win.forward</property>
+            <property name="icon_name">go-next-symbolic</property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

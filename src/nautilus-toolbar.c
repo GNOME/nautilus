@@ -30,6 +30,7 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-history-controls.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-progress-info-manager.h"
@@ -80,12 +81,6 @@ struct _NautilusToolbar
     GtkWidget *sidebar_button;
     gboolean show_sidebar_button;
     gboolean sidebar_button_active;
-
-    GtkWidget *forward_button;
-    GtkWidget *forward_menu;
-
-    GtkWidget *back_button;
-    GtkWidget *back_menu;
 
     GtkWidget *search_button;
 
@@ -139,133 +134,6 @@ toolbar_update_appearance (NautilusToolbar *self)
     {
         gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "pathbar");
     }
-}
-
-static void
-fill_menu (NautilusToolbar *self,
-           GMenu           *menu,
-           gboolean         back)
-{
-    guint index;
-    GList *list;
-    const gchar *name;
-
-    list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
-           nautilus_window_slot_get_forward_history (self->window_slot);
-
-    index = 0;
-    while (list != NULL)
-    {
-        g_autoptr (GMenuItem) item = NULL;
-
-        name = nautilus_bookmark_get_name (NAUTILUS_BOOKMARK (list->data));
-        item = g_menu_item_new (name, NULL);
-        g_menu_item_set_action_and_target (item,
-                                           back ? "win.back-n" : "win.forward-n",
-                                           "u", index);
-        g_menu_append_item (menu, item);
-
-        list = g_list_next (list);
-        ++index;
-    }
-}
-
-static void
-show_menu (NautilusToolbar *self,
-           GtkWidget       *widget)
-{
-    g_autoptr (GMenu) menu = NULL;
-    NautilusNavigationDirection direction;
-    GtkPopoverMenu *popover;
-
-    menu = g_menu_new ();
-
-    direction = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
-                                                     "nav-direction"));
-
-    switch (direction)
-    {
-        case NAUTILUS_NAVIGATION_DIRECTION_FORWARD:
-        {
-            fill_menu (self, menu, FALSE);
-            popover = GTK_POPOVER_MENU (self->forward_menu);
-        }
-        break;
-
-        case NAUTILUS_NAVIGATION_DIRECTION_BACK:
-        {
-            fill_menu (self, menu, TRUE);
-            popover = GTK_POPOVER_MENU (self->back_menu);
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
-    }
-
-    gtk_popover_menu_set_menu_model (popover, G_MENU_MODEL (menu));
-    gtk_popover_popup (GTK_POPOVER (popover));
-}
-
-static void
-navigation_button_press_cb (GtkGestureClick *gesture,
-                            gint             n_press,
-                            gdouble          x,
-                            gdouble          y,
-                            gpointer         user_data)
-{
-    NautilusToolbar *self;
-    GtkWidget *widget;
-    guint button;
-
-    self = NAUTILUS_TOOLBAR (user_data);
-    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
-
-    if (button == GDK_BUTTON_PRIMARY)
-    {
-        /* Don't do anything, primary click is handled through activate */
-        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
-        return;
-    }
-    else if (button == GDK_BUTTON_MIDDLE)
-    {
-        NautilusNavigationDirection direction;
-
-        direction = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
-                                                         "nav-direction"));
-
-        nautilus_window_back_or_forward_in_new_tab (self->window, direction);
-    }
-    else if (button == GDK_BUTTON_SECONDARY)
-    {
-        show_menu (self, widget);
-    }
-}
-
-static void
-back_button_longpress_cb (GtkGestureLongPress *gesture,
-                          double               x,
-                          double               y,
-                          gpointer             user_data)
-{
-    NautilusToolbar *self = user_data;
-
-    show_menu (self, self->back_button);
-}
-
-static void
-forward_button_longpress_cb (GtkGestureLongPress *gesture,
-                             double               x,
-                             double               y,
-                             gpointer             user_data)
-{
-    NautilusToolbar *self = user_data;
-
-    show_menu (self, self->forward_button);
 }
 
 static gboolean
@@ -808,7 +676,6 @@ static void
 nautilus_toolbar_constructed (GObject *object)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
-    GtkEventController *controller;
 
     self->path_bar = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL));
     gtk_box_append (GTK_BOX (self->path_bar_container),
@@ -837,33 +704,6 @@ nautilus_toolbar_constructed (GObject *object)
                              NULL);
     update_operations (self);
 
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
-    gtk_widget_add_controller (self->back_button, controller);
-    g_signal_connect (controller, "pressed",
-                      G_CALLBACK (back_button_longpress_cb), self);
-
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
-    gtk_widget_add_controller (self->forward_button, controller);
-    g_signal_connect (controller, "pressed",
-                      G_CALLBACK (forward_button_longpress_cb), self);
-
-    g_object_set_data (G_OBJECT (self->back_button), "nav-direction",
-                       GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_BACK));
-    g_object_set_data (G_OBJECT (self->forward_button), "nav-direction",
-                       GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_FORWARD));
-
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (self->back_button, controller);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
-    g_signal_connect (controller, "pressed",
-                      G_CALLBACK (navigation_button_press_cb), self);
-
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (self->forward_button, controller);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
-    g_signal_connect (controller, "pressed",
-                      G_CALLBACK (navigation_button_press_cb), self);
-
     g_signal_connect (self->operations_popover, "show",
                       (GCallback) gtk_widget_grab_focus, NULL);
     g_signal_connect_swapped (self->operations_popover, "closed",
@@ -882,17 +722,14 @@ nautilus_toolbar_constructed (GObject *object)
 static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
+    g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
+
     gtk_widget_init_template (GTK_WIDGET (self));
 
     gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->operations_icon),
                                     (GtkDrawingAreaDrawFunc) on_operations_icon_draw,
                                     self,
                                     NULL);
-
-    gtk_widget_set_parent (self->back_menu, self->back_button);
-    g_signal_connect (self->back_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
-    gtk_widget_set_parent (self->forward_menu, self->forward_button);
-    g_signal_connect (self->forward_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
 }
 
 void
@@ -1083,8 +920,6 @@ nautilus_toolbar_dispose (GObject *object)
     self = NAUTILUS_TOOLBAR (object);
 
     g_clear_pointer (&self->search_binding, g_binding_unbind);
-    g_clear_pointer (&self->back_menu, gtk_widget_unparent);
-    g_clear_pointer (&self->forward_menu, gtk_widget_unparent);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
 }
@@ -1183,10 +1018,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_split_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_menu);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);

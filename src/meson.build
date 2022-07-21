@@ -89,6 +89,8 @@ libnautilus_sources = [
   'nautilus-grid-cell.h',
   'nautilus-grid-view.c',
   'nautilus-grid-view.h',
+  'nautilus-history-controls.c',
+  'nautilus-history-controls.h',
   'nautilus-label-cell.c',
   'nautilus-label-cell.h',
   'nautilus-list-base.c',
