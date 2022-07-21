@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-07-19 09:47+0000\n"
-"PO-Revision-Date: 2022-07-19 12:57+0300\n"
+"POT-Creation-Date: 2022-07-20 15:46+0000\n"
+"PO-Revision-Date: 2022-07-21 09:19+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -27,7 +27,7 @@ msgstr "Запустити програму"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:112
-#: src/nautilus-window.c:2302
+#: src/nautilus-window.c:2318
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:39
 msgid "Files"
 msgstr "Файли"
@@ -62,7 +62,7 @@ msgstr ""
 "піктограм, ієрархічний список. Можливості можна розширити за допомогою "
 "додатків і скриптів."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2304
+#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2320
 msgid "The GNOME Project"
 msgstr "Проєкт GNOME"
 
@@ -470,10 +470,9 @@ msgstr "Якщо позначено, нововідкриті вікна мат�
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:203 src/nautilus-file-operations.c:258
 #: src/nautilus-files-view.c:5936 src/nautilus-files-view.c:6372
-#: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:603
-#: src/nautilus-mime-actions.c:609 src/nautilus-mime-actions.c:999
-#: src/nautilus-mime-actions.c:1354 src/nautilus-properties-window.c:5239
-#: src/nautilus-search-popover.c:613
+#: src/nautilus-mime-actions.c:603 src/nautilus-mime-actions.c:609
+#: src/nautilus-mime-actions.c:999 src/nautilus-mime-actions.c:1354
+#: src/nautilus-properties-window.c:5239 src/nautilus-search-popover.c:613
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:101
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:114
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:11
@@ -1127,7 +1126,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
 #: src/nautilus-pathbar.c:372 src/nautilus-shell-search-provider.c:330
-#: src/nautilus-window.c:149 src/gtk/nautilusgtkplacessidebar.c:1017
+#: src/nautilus-window.c:150 src/gtk/nautilusgtkplacessidebar.c:1017
 msgid "Home"
 msgstr "Домівка"
 
@@ -2840,7 +2839,6 @@ msgid "No Results Found"
 msgstr "Не знайдено жодного результату"
 
 #: src/nautilus-files-view.c:3653 src/gtk/nautilusgtkplacesview.ui:190
-#| msgid "Try a different search"
 msgid "Try a different search."
 msgstr "Спробуйте пошукати по-іншому."
 
@@ -2849,12 +2847,10 @@ msgid "Trash is Empty"
 msgstr "Смітник порожній"
 
 #: src/nautilus-files-view.c:3664
-#| msgid "Starred files"
 msgid "No Starred Files"
 msgstr "Немає файлів із зірочками"
 
 #: src/nautilus-files-view.c:3670
-#| msgid "Recent files"
 msgid "No Recent Files"
 msgstr "Немає нещодавніх файлів"
 
@@ -3000,7 +2996,7 @@ msgstr "Перетягнутий текст.txt"
 msgid "dropped data"
 msgstr "відкинуті дані"
 
-#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1237
+#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1238
 msgid "Undo"
 msgstr "Повернути"
 
@@ -3577,29 +3573,6 @@ msgstr "Містить світлини і музику"
 msgid "%s Visible Columns"
 msgstr "%s видимих стовпчиків"
 
-#: src/nautilus-location-entry.c:338
-#, c-format
-msgid "Do you want to view %d location?"
-msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Переглянути %d в окремому вікні?"
-msgstr[1] "Переглянути %d в окремих вікнах?"
-msgstr[2] "Переглянути %d в окремих вікнах?"
-msgstr[3] "Переглянути %d в окремому вікні?"
-
-#: src/nautilus-location-entry.c:342 src/nautilus-mime-actions.c:995
-#, c-format
-msgid "This will open %d separate window."
-msgid_plural "This will open %d separate windows."
-msgstr[0] "Це призведе до відкривання %d окремого вікна."
-msgstr[1] "Це призведе до відкривання %d окремих вікон."
-msgstr[2] "Це призведе до відкривання %d окремих вікон."
-msgstr[3] "Це призведе до відкривання %d окремого вікна."
-
-#: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:999
-#: src/nautilus-mime-actions.c:1200
-msgid "_OK"
-msgstr "_Гаразд"
-
 #: src/nautilus-mime-actions.c:108
 #: src/resources/ui/nautilus-search-popover.ui:227
 msgid "Anything"
@@ -3679,6 +3652,19 @@ msgstr[0] "Це призведе до відкривання %d окремого
 msgstr[1] "Це призведе до відкривання %d окремих вікон."
 msgstr[2] "Це призведе до відкривання %d окремих вікон."
 msgstr[3] "Це призведе до відкривання %d окремого вікна."
+
+#: src/nautilus-mime-actions.c:995
+#, c-format
+msgid "This will open %d separate window."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Це призведе до відкривання %d окремого вікна."
+msgstr[1] "Це призведе до відкривання %d окремих вікон."
+msgstr[2] "Це призведе до відкривання %d окремих вікон."
+msgstr[3] "Це призведе до відкривання %d окремого вікна."
+
+#: src/nautilus-mime-actions.c:999 src/nautilus-mime-actions.c:1200
+msgid "_OK"
+msgstr "_Гаразд"
 
 #: src/nautilus-mime-actions.c:1077
 #, c-format
@@ -4458,35 +4444,35 @@ msgstr "Показати як список"
 msgid "Show List"
 msgstr "Показати як список"
 
-#: src/nautilus-window.c:148 src/resources/ui/nautilus-properties-window.ui:238
+#: src/nautilus-window.c:149 src/resources/ui/nautilus-properties-window.ui:238
 msgid "Parent folder"
 msgstr "Батьківська тека"
 
-#: src/nautilus-window.c:150
+#: src/nautilus-window.c:151
 msgid "New tab"
 msgstr "Нова вкладка"
 
-#: src/nautilus-window.c:151
+#: src/nautilus-window.c:152
 msgid "Close current view"
 msgstr "Закрити поточний перегляд"
 
-#: src/nautilus-window.c:152
+#: src/nautilus-window.c:153
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window.c:153
+#: src/nautilus-window.c:154
 msgid "Forward"
 msgstr "Вперед"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: src/nautilus-window.c:1143
+#: src/nautilus-window.c:1144
 #, c-format
 msgid "“%s” deleted"
 msgstr "«%s» вилучено"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: src/nautilus-window.c:1150
+#: src/nautilus-window.c:1151
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
@@ -4496,14 +4482,14 @@ msgstr[2] "%d файлів вилучено"
 msgstr[3] "%d файл вилучено"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1171
+#: src/nautilus-window.c:1172
 #, c-format
 msgid "“%s” unstarred"
 msgstr "Знято позначення зірками «%s»"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1177
+#: src/nautilus-window.c:1178
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4513,16 +4499,28 @@ msgstr[2] "Скасовано позначення зірками %d файлі�
 msgstr[3] "Скасовано позначення зірками %d файла"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1273 src/gtk/nautilusgtkplacessidebar.c:905
+#: src/nautilus-window.c:1274 src/gtk/nautilusgtkplacessidebar.c:905
 #, c-format
 msgid "Open %s"
 msgstr "Відкрити %s"
+
+#: src/nautilus-window.c:2307
+msgid "No plugins currently installed."
+msgstr "Зараз не встановлено жодних додатків."
+
+#: src/nautilus-window.c:2311
+msgid "Currently installed plugins:"
+msgstr "Поточні встановлені додатки:"
+
+#: src/nautilus-window.c:2313
+msgid "For bug testing only, the following command can be used:"
+msgstr "Лише для пошуку причини вад. Можете скористатися такою командою:"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2317
+#: src/nautilus-window.c:2334
 msgid "translator-credits"
 msgstr ""
 "Юрій Сирота <yuri@renome.rovno.ua>\n"
@@ -5753,7 +5751,6 @@ msgstr "Префікс"
 
 #. Translators: Server as any successfully connected network address
 #: src/gtk/nautilusgtkplacesview.ui:104
-#| msgid "Recent Servers"
 msgid "No Recent Servers"
 msgstr "Немає недавніх серверів"
 
@@ -5911,6 +5908,14 @@ msgstr "Форматувати…"
 #: src/gtk/nautilusgtkplacessidebar.c:3941
 msgid "Computer"
 msgstr "Комп'ютер"
+
+#, c-format
+#~ msgid "Do you want to view %d location?"
+#~ msgid_plural "Do you want to view %d locations?"
+#~ msgstr[0] "Переглянути %d в окремому вікні?"
+#~ msgstr[1] "Переглянути %d в окремих вікнах?"
+#~ msgstr[2] "Переглянути %d в окремих вікнах?"
+#~ msgstr[3] "Переглянути %d в окремому вікні?"
 
 #~ msgid "Folder is Empty"
 #~ msgstr "Тека — порожня"
