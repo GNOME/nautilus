@@ -1351,6 +1351,7 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                        NautilusWindowSlot *slot)
 {
     g_autoptr (GList) children = NULL;
+    GtkWidget *toggle_button;
 
     self->window_slot = slot;
 
@@ -1368,8 +1369,10 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                           self,
                                                           NULL);
 
+        /* HACK. We shouldn't be poking at internal children. But alas, no other option. */
+        toggle_button = gtk_widget_get_parent (adw_split_button_get_child (ADW_SPLIT_BUTTON (self->view_split_button)));
         self->tooltip_binding = g_object_bind_property_full (self->window_slot, "tooltip",
-                                                             self->view_split_button, "tooltip-text",
+                                                             toggle_button, "tooltip-text",
                                                              G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
                                                              (GBindingTransformFunc) nautilus_toolbar_view_toggle_tooltip_transform_to,
                                                              NULL,
