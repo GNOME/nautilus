@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-07-19 09:47+0000\n"
-"PO-Revision-Date: 2022-07-19 14:17+0100\n"
+"POT-Creation-Date: 2022-07-20 15:46+0000\n"
+"PO-Revision-Date: 2022-07-21 13:38+0100\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese (https://l10n.gnome.org/teams/pt/)\n"
 "Language: pt\n"
@@ -32,7 +32,7 @@ msgstr "Executar o Software"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:112
-#: src/nautilus-window.c:2302
+#: src/nautilus-window.c:2318
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:39
 msgid "Files"
 msgstr "Ficheiros"
@@ -64,10 +64,10 @@ msgstr ""
 "algumas. Pode procurar e gerir os seus ficheiros e pastas, quer localmente, "
 "quer numa rede, ler e escrever dados de e para unidades removíveis, executar "
 "scripts e iniciar aplicações. Tem três vistas: Grelha de ícones, Lista de "
-"ícones e Lista em árvore. As suas funções podem sem alargadas com extensões "
-"e scripts."
+"ícones e Lista em árvore. As suas funções podem sem alargadas com plugins e "
+"scripts."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2304
+#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2320
 msgid "The GNOME Project"
 msgstr "O Projeto GNOME"
 
@@ -483,10 +483,9 @@ msgstr ""
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:203 src/nautilus-file-operations.c:258
 #: src/nautilus-files-view.c:5936 src/nautilus-files-view.c:6372
-#: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:603
-#: src/nautilus-mime-actions.c:609 src/nautilus-mime-actions.c:999
-#: src/nautilus-mime-actions.c:1354 src/nautilus-properties-window.c:5239
-#: src/nautilus-search-popover.c:613
+#: src/nautilus-mime-actions.c:603 src/nautilus-mime-actions.c:609
+#: src/nautilus-mime-actions.c:999 src/nautilus-mime-actions.c:1354
+#: src/nautilus-properties-window.c:5239 src/nautilus-search-popover.c:613
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:101
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:114
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:11
@@ -1125,7 +1124,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
 #: src/nautilus-pathbar.c:372 src/nautilus-shell-search-provider.c:330
-#: src/nautilus-window.c:149 src/gtk/nautilusgtkplacessidebar.c:1017
+#: src/nautilus-window.c:150 src/gtk/nautilusgtkplacessidebar.c:1017
 msgid "Home"
 msgstr "Pasta pessoal"
 
@@ -2929,7 +2928,7 @@ msgstr "Texto largado.txt"
 msgid "dropped data"
 msgstr "dados largados"
 
-#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1237
+#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1238
 msgid "Undo"
 msgstr "Desfazer"
 
@@ -3460,25 +3459,6 @@ msgstr "Contém fotografias e música"
 msgid "%s Visible Columns"
 msgstr "%s colunas visíveis"
 
-#: src/nautilus-location-entry.c:338
-#, c-format
-msgid "Do you want to view %d location?"
-msgid_plural "Do you want to view %d locations?"
-msgstr[0] "Deseja ver %d localização?"
-msgstr[1] "Deseja ver %d localizações?"
-
-#: src/nautilus-location-entry.c:342 src/nautilus-mime-actions.c:995
-#, c-format
-msgid "This will open %d separate window."
-msgid_plural "This will open %d separate windows."
-msgstr[0] "Será aberta %d janela separada."
-msgstr[1] "Serão abertas %d janelas separadas."
-
-#: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:999
-#: src/nautilus-mime-actions.c:1200
-msgid "_OK"
-msgstr "_Aceitar"
-
 #: src/nautilus-mime-actions.c:108
 #: src/resources/ui/nautilus-search-popover.ui:227
 msgid "Anything"
@@ -3554,6 +3534,17 @@ msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Será aberto %d novo separador."
 msgstr[1] "Serão abertos %d novos separadores."
+
+#: src/nautilus-mime-actions.c:995
+#, c-format
+msgid "This will open %d separate window."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Será aberta %d janela separada."
+msgstr[1] "Serão abertas %d janelas separadas."
+
+#: src/nautilus-mime-actions.c:999 src/nautilus-mime-actions.c:1200
+msgid "_OK"
+msgstr "_Aceitar"
 
 #: src/nautilus-mime-actions.c:1077
 #, c-format
@@ -4309,35 +4300,35 @@ msgstr "Ver lista"
 msgid "Show List"
 msgstr "Ver lista"
 
-#: src/nautilus-window.c:148 src/resources/ui/nautilus-properties-window.ui:238
+#: src/nautilus-window.c:149 src/resources/ui/nautilus-properties-window.ui:238
 msgid "Parent folder"
 msgstr "Pasta-mãe"
 
-#: src/nautilus-window.c:150
+#: src/nautilus-window.c:151
 msgid "New tab"
 msgstr "Novo separador"
 
-#: src/nautilus-window.c:151
+#: src/nautilus-window.c:152
 msgid "Close current view"
 msgstr "Fechar vista atual"
 
-#: src/nautilus-window.c:152
+#: src/nautilus-window.c:153
 msgid "Back"
 msgstr "Voltar"
 
-#: src/nautilus-window.c:153
+#: src/nautilus-window.c:154
 msgid "Forward"
 msgstr "Avançar"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: src/nautilus-window.c:1143
+#: src/nautilus-window.c:1144
 #, c-format
 msgid "“%s” deleted"
 msgstr "“%s” eliminado"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: src/nautilus-window.c:1150
+#: src/nautilus-window.c:1151
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
@@ -4345,14 +4336,14 @@ msgstr[0] "%'d ficheiro eliminado"
 msgstr[1] "%'d ficheiros eliminados"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1171
+#: src/nautilus-window.c:1172
 #, c-format
 msgid "“%s” unstarred"
 msgstr "“%s” removido dos favoritos"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1177
+#: src/nautilus-window.c:1178
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4360,16 +4351,28 @@ msgstr[0] "%d ficheiro removido dos favoritos"
 msgstr[1] "%d ficheiros removidos dos favoritos"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1273 src/gtk/nautilusgtkplacessidebar.c:905
+#: src/nautilus-window.c:1274 src/gtk/nautilusgtkplacessidebar.c:905
 #, c-format
 msgid "Open %s"
 msgstr "Abrir %s"
+
+#: src/nautilus-window.c:2307
+msgid "No plugins currently installed."
+msgstr "Não há plugins atualmente instalados."
+
+#: src/nautilus-window.c:2311
+msgid "Currently installed plugins:"
+msgstr "Plugins atualmente instalados:"
+
+#: src/nautilus-window.c:2313
+msgid "For bug testing only, the following command can be used:"
+msgstr "Apenas para testes de bugs, pode ser utilizado o seguinte comando:"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2317
+#: src/nautilus-window.c:2334
 msgid "translator-credits"
 msgstr ""
 "Duarte Loreto <happyguy_pt@hotmail.com>\n"
@@ -5762,6 +5765,12 @@ msgstr "Formatar…"
 #: src/gtk/nautilusgtkplacessidebar.c:3941
 msgid "Computer"
 msgstr "Computador"
+
+#, c-format
+#~ msgid "Do you want to view %d location?"
+#~ msgid_plural "Do you want to view %d locations?"
+#~ msgstr[0] "Deseja ver %d localização?"
+#~ msgstr[1] "Deseja ver %d localizações?"
 
 #~ msgid "Folder is Empty"
 #~ msgstr "A pasta está vazia"
