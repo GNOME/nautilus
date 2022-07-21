@@ -62,6 +62,8 @@ enum
     PROP_SELECTION,
     PROP_LOCATION,
     PROP_TOOLTIP,
+    PROP_ALLOW_STOP,
+    PROP_TITLE,
     NUM_PROPERTIES
 };
 
@@ -865,6 +867,18 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
 
+        case PROP_ALLOW_STOP:
+        {
+            g_value_set_boolean (value, nautilus_window_slot_get_allow_stop (self));
+        }
+        break;
+
+        case PROP_TITLE:
+        {
+            g_value_set_string (value, nautilus_window_slot_get_title (self));
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -928,6 +942,7 @@ nautilus_window_slot_constructed (GObject *object)
                             G_BINDING_DEFAULT);
 
     self->title = g_strdup (_("Loading…"));
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
 }
 
 static void
@@ -3063,6 +3078,16 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              NULL,
                              G_PARAM_READWRITE);
 
+    properties[PROP_ALLOW_STOP] =
+        g_param_spec_boolean ("allow-stop", "", "",
+                              FALSE,
+                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+    properties[PROP_TITLE] =
+        g_param_spec_string ("title", "", "",
+                             NULL,
+                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
@@ -3133,33 +3158,18 @@ void
 nautilus_window_slot_update_title (NautilusWindowSlot *self)
 {
     NautilusWindow *window;
-    char *title;
-    gboolean do_sync = FALSE;
+    g_autofree char *title = NULL;
     title = nautilus_compute_title_for_location (self->location);
     window = nautilus_window_slot_get_window (self);
 
     if (g_strcmp0 (title, self->title) != 0)
     {
-        do_sync = TRUE;
-
         g_free (self->title);
-        self->title = title;
-        title = NULL;
-    }
+        self->title = g_steal_pointer (&title);
 
-    if (strlen (self->title) > 0)
-    {
-        do_sync = TRUE;
-    }
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
 
-    if (do_sync)
-    {
         nautilus_window_sync_title (window, self);
-    }
-
-    if (title != NULL)
-    {
-        g_free (title);
     }
 }
 
@@ -3180,6 +3190,8 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
 
     window = nautilus_window_slot_get_window (self);
     nautilus_window_sync_allow_stop (window, self);
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ALLOW_STOP]);
 }
 
 void
