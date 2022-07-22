@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-07-19 09:47+0000\n"
-"PO-Revision-Date: 2022-07-19 20:32+0300\n"
+"POT-Creation-Date: 2022-07-21 21:18+0000\n"
+"PO-Revision-Date: 2022-07-22 08:47+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "Language: he\n"
@@ -38,7 +38,7 @@ msgstr "הפעלת התכנה"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:112
-#: src/nautilus-window.c:2302
+#: src/nautilus-window.c:2318
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:39
 msgid "Files"
 msgstr "קבצים"
@@ -70,7 +70,7 @@ msgstr ""
 "מרוחקות, להריץ תסריטים ולשגר יישומים. יש לו שלוש תצוגות: רשת סמלים, רשימת "
 "סמלים ורשימת עץ. ניתן להרחיב את הפעולות שלו עם תוספים ותסריטים."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2304
+#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2320
 msgid "The GNOME Project"
 msgstr "מיזם GNOME"
 
@@ -107,11 +107,11 @@ msgstr "תיקייה;מנהל;עיון;סיור;כונן;מערכת קבצים;�
 msgid "New Window"
 msgstr "חלון חדש"
 
-#: data/org.gnome.nautilus.gschema.xml:86
+#: data/org.gnome.nautilus.gschema.xml:84
 msgid "Where to position newly open tabs in browser windows"
 msgstr "Where to position newly open tabs in browser windows"
 
-#: data/org.gnome.nautilus.gschema.xml:87
+#: data/org.gnome.nautilus.gschema.xml:85
 msgid ""
 "If set to “after-current-tab”, then new tabs are inserted after the current "
 "tab. If set to “end”, then new tabs are appended to the end of the tab list."
@@ -119,11 +119,11 @@ msgstr ""
 "If set to “after-current-tab”, then new tabs are inserted after the current "
 "tab. If set to “end”, then new tabs are appended to the end of the tab list."
 
-#: data/org.gnome.nautilus.gschema.xml:91
+#: data/org.gnome.nautilus.gschema.xml:89
 msgid "Always use the location entry, instead of the pathbar"
 msgstr "Always use the location entry, instead of the pathbar"
 
-#: data/org.gnome.nautilus.gschema.xml:92
+#: data/org.gnome.nautilus.gschema.xml:90
 msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
@@ -131,11 +131,11 @@ msgstr ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 
-#: data/org.gnome.nautilus.gschema.xml:96
+#: data/org.gnome.nautilus.gschema.xml:94
 msgid "Where to perform recursive search"
 msgstr "Where to perform recursive search"
 
-#: data/org.gnome.nautilus.gschema.xml:97
+#: data/org.gnome.nautilus.gschema.xml:95
 msgid ""
 "In which locations Nautilus should search on subfolders. Available values "
 "are “local-only”, “always”, “never”."
@@ -143,19 +143,19 @@ msgstr ""
 "In which locations Nautilus should search on subfolders. Available values "
 "are “local-only”, “always”, “never”."
 
-#: data/org.gnome.nautilus.gschema.xml:101
+#: data/org.gnome.nautilus.gschema.xml:99
 msgid "Filter the search dates using either last used or last modified"
 msgstr "Filter the search dates using either last used or last modified"
 
-#: data/org.gnome.nautilus.gschema.xml:102
+#: data/org.gnome.nautilus.gschema.xml:100
 msgid "Filter the search dates using either last used or last modified."
 msgstr "Filter the search dates using either last used or last modified."
 
-#: data/org.gnome.nautilus.gschema.xml:106
+#: data/org.gnome.nautilus.gschema.xml:104
 msgid "Whether to show a context menu item to delete permanently"
 msgstr "Whether to show a context menu item to delete permanently"
 
-#: data/org.gnome.nautilus.gschema.xml:107
+#: data/org.gnome.nautilus.gschema.xml:105
 msgid ""
 "If set to true, then Nautilus will show a delete permanently context menu "
 "item to bypass the Trash."
@@ -163,7 +163,7 @@ msgstr ""
 "If set to true, then Nautilus will show a delete permanently context menu "
 "item to bypass the Trash."
 
-#: data/org.gnome.nautilus.gschema.xml:111
+#: data/org.gnome.nautilus.gschema.xml:109
 msgid ""
 "Whether to show context menu items to create links from copied or selected "
 "files"
@@ -171,7 +171,7 @@ msgstr ""
 "Whether to show context menu items to create links from copied or selected "
 "files"
 
-#: data/org.gnome.nautilus.gschema.xml:112
+#: data/org.gnome.nautilus.gschema.xml:110
 msgid ""
 "If set to true, then Nautilus will show context menu items to create links "
 "from the copied or selected files."
@@ -179,11 +179,11 @@ msgstr ""
 "If set to true, then Nautilus will show context menu items to create links "
 "from the copied or selected files."
 
-#: data/org.gnome.nautilus.gschema.xml:117
+#: data/org.gnome.nautilus.gschema.xml:115
 msgid "When to show number of items in a folder"
 msgstr "When to show number of items in a folder"
 
-#: data/org.gnome.nautilus.gschema.xml:118
+#: data/org.gnome.nautilus.gschema.xml:116
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "“always” then always show item counts, even if the folder is on a remote "
@@ -195,11 +195,11 @@ msgstr ""
 "server. If set to “local-only” then only show counts for local file systems. "
 "If set to “never” then never bother to compute item counts."
 
-#: data/org.gnome.nautilus.gschema.xml:122
+#: data/org.gnome.nautilus.gschema.xml:120
 msgid "Type of click used to launch/open files"
 msgstr "Type of click used to launch/open files"
 
-#: data/org.gnome.nautilus.gschema.xml:123
+#: data/org.gnome.nautilus.gschema.xml:121
 msgid ""
 "Possible values are “single” to launch files on a single click, or “double” "
 "to launch them on a double click."
@@ -207,11 +207,11 @@ msgstr ""
 "Possible values are “single” to launch files on a single click, or “double” "
 "to launch them on a double click."
 
-#: data/org.gnome.nautilus.gschema.xml:127
+#: data/org.gnome.nautilus.gschema.xml:125
 msgid "Show the package installer for unknown MIME types"
 msgstr "Show the package installer for unknown MIME types"
 
-#: data/org.gnome.nautilus.gschema.xml:128
+#: data/org.gnome.nautilus.gschema.xml:126
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
@@ -219,11 +219,11 @@ msgstr ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
 
-#: data/org.gnome.nautilus.gschema.xml:132
+#: data/org.gnome.nautilus.gschema.xml:130
 msgid "Use extra mouse button events in Nautilus’ browser window"
 msgstr "Use extra mouse button events in Nautilus' browser window"
 
-#: data/org.gnome.nautilus.gschema.xml:133
+#: data/org.gnome.nautilus.gschema.xml:131
 msgid ""
 "For users with mice that have “Forward” and “Back” buttons, this key will "
 "determine if any action is taken inside of Nautilus when either is pressed."
@@ -231,11 +231,11 @@ msgstr ""
 "For users with mice that have “Forward” and “Back” buttons, this key will "
 "determine if any action is taken inside of Nautilus when either is pressed."
 
-#: data/org.gnome.nautilus.gschema.xml:137
+#: data/org.gnome.nautilus.gschema.xml:135
 msgid "Mouse button to activate the “Forward” command in browser window"
 msgstr "Mouse button to activate the “Forward” command in browser window"
 
-#: data/org.gnome.nautilus.gschema.xml:138
+#: data/org.gnome.nautilus.gschema.xml:136
 msgid ""
 "For users with mice that have buttons for “Forward” and “Back”, this key "
 "will set which button activates the “Forward” command in a browser window. "
@@ -245,11 +245,11 @@ msgstr ""
 "will set which button activates the “Forward” command in a browser window. "
 "Possible values range between 6 and 14."
 
-#: data/org.gnome.nautilus.gschema.xml:142
+#: data/org.gnome.nautilus.gschema.xml:140
 msgid "Mouse button to activate the “Back” command in browser window"
 msgstr "Mouse button to activate the “Back” command in browser window"
 
-#: data/org.gnome.nautilus.gschema.xml:143
+#: data/org.gnome.nautilus.gschema.xml:141
 msgid ""
 "For users with mice that have buttons for “Forward” and “Back”, this key "
 "will set which button activates the “Back” command in a browser window. "
@@ -259,11 +259,11 @@ msgstr ""
 "will set which button activates the “Back” command in a browser window. "
 "Possible values range between 6 and 14."
 
-#: data/org.gnome.nautilus.gschema.xml:148
+#: data/org.gnome.nautilus.gschema.xml:146
 msgid "When to show thumbnails of files"
 msgstr "When to show thumbnails of files"
 
-#: data/org.gnome.nautilus.gschema.xml:149
+#: data/org.gnome.nautilus.gschema.xml:147
 msgid ""
 "Speed trade-off for when to show a file as a thumbnail. If set to “always” "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -277,11 +277,11 @@ msgstr ""
 "“never” then never bother to thumbnail files, just use a generic icon. "
 "Despite what the name may suggest, this applies to any previewable file type."
 
-#: data/org.gnome.nautilus.gschema.xml:154
+#: data/org.gnome.nautilus.gschema.xml:152
 msgid "Maximum image size for thumbnailing"
 msgstr "Maximum image size for thumbnailing"
 
-#: data/org.gnome.nautilus.gschema.xml:155
+#: data/org.gnome.nautilus.gschema.xml:153
 msgid ""
 "Images over this size (in megabytes) won’t be thumbnailed. The purpose of "
 "this setting is to avoid thumbnailing large images that may take a long time "
@@ -291,11 +291,11 @@ msgstr ""
 "this setting is to avoid thumbnailing large images that may take a long time "
 "to load or use lots of memory."
 
-#: data/org.gnome.nautilus.gschema.xml:162
+#: data/org.gnome.nautilus.gschema.xml:160
 msgid "Default sort order"
 msgstr "Default sort order"
 
-#: data/org.gnome.nautilus.gschema.xml:163
+#: data/org.gnome.nautilus.gschema.xml:161
 msgid ""
 "The default sort-order for items in the icon view. Possible values are "
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
@@ -303,11 +303,11 @@ msgstr ""
 "The default sort-order for items in the icon view. Possible values are "
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
 
-#: data/org.gnome.nautilus.gschema.xml:167
+#: data/org.gnome.nautilus.gschema.xml:165
 msgid "Reverse sort order in new windows"
 msgstr "Reverse sort order in new windows"
 
-#: data/org.gnome.nautilus.gschema.xml:168
+#: data/org.gnome.nautilus.gschema.xml:166
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
 "sorted by name, then instead of sorting the files from “a” to “z”, they will "
@@ -319,11 +319,11 @@ msgstr ""
 "be sorted from “z” to “a”; if sorted by size, instead of being incrementally "
 "they will be sorted decrementally."
 
-#: data/org.gnome.nautilus.gschema.xml:178
+#: data/org.gnome.nautilus.gschema.xml:176
 msgid "Default folder viewer"
 msgstr "Default folder viewer"
 
-#: data/org.gnome.nautilus.gschema.xml:179
+#: data/org.gnome.nautilus.gschema.xml:177
 msgid ""
 "When a folder is visited this viewer is used. Possible values are “list-"
 "view”, and “icon-view”."
@@ -331,11 +331,11 @@ msgstr ""
 "When a folder is visited this viewer is used. Possible values are “list-"
 "view”, and “icon-view”."
 
-#: data/org.gnome.nautilus.gschema.xml:183
+#: data/org.gnome.nautilus.gschema.xml:181
 msgid "Whether to show hidden files"
 msgstr "Whether to show hidden files"
 
-#: data/org.gnome.nautilus.gschema.xml:184
+#: data/org.gnome.nautilus.gschema.xml:182
 msgid ""
 "This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
 "Settings.FileChooser” is now used instead."
@@ -343,17 +343,17 @@ msgstr ""
 "This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
 "Settings.FileChooser” is now used instead."
 
-#: data/org.gnome.nautilus.gschema.xml:188
+#: data/org.gnome.nautilus.gschema.xml:186
 msgid "What viewer should be used when searching"
 msgstr "What viewer should be used when searching"
 
-#: data/org.gnome.nautilus.gschema.xml:189
+#: data/org.gnome.nautilus.gschema.xml:187
 msgid ""
 "When searching Nautilus will switch to the type of view in this setting."
 msgstr ""
 "When searching Nautilus will switch to the type of view in this setting."
 
-#: data/org.gnome.nautilus.gschema.xml:193
+#: data/org.gnome.nautilus.gschema.xml:191
 msgid ""
 "Whether to open the hovered folder after a timeout when drag and drop "
 "operation"
@@ -361,7 +361,7 @@ msgstr ""
 "Whether to open the hovered folder after a timeout when drag and drop "
 "operation"
 
-#: data/org.gnome.nautilus.gschema.xml:194
+#: data/org.gnome.nautilus.gschema.xml:192
 msgid ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout."
@@ -369,7 +369,7 @@ msgstr ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout."
 
-#: data/org.gnome.nautilus.gschema.xml:198
+#: data/org.gnome.nautilus.gschema.xml:196
 msgid ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
@@ -377,7 +377,7 @@ msgstr ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
 
-#: data/org.gnome.nautilus.gschema.xml:199
+#: data/org.gnome.nautilus.gschema.xml:197
 msgid ""
 "If set to true, then Nautilus will also match the file contents besides the "
 "name. This toggles the default active state, which can still be overridden "
@@ -387,19 +387,19 @@ msgstr ""
 "name. This toggles the default active state, which can still be overridden "
 "in the search popover"
 
-#: data/org.gnome.nautilus.gschema.xml:206
+#: data/org.gnome.nautilus.gschema.xml:204
 msgid "Default format for compressing files"
 msgstr "Default format for compressing files"
 
-#: data/org.gnome.nautilus.gschema.xml:207
+#: data/org.gnome.nautilus.gschema.xml:205
 msgid "The format that will be selected when compressing files."
 msgstr "The format that will be selected when compressing files."
 
-#: data/org.gnome.nautilus.gschema.xml:214
+#: data/org.gnome.nautilus.gschema.xml:212
 msgid "List of possible captions on icons"
 msgstr "List of possible captions on icons"
 
-#: data/org.gnome.nautilus.gschema.xml:215
+#: data/org.gnome.nautilus.gschema.xml:213
 msgid ""
 "A list of captions below an icon in the icon view. The actual number of "
 "captions shown depends on the zoom level. Some possible values are: “size”, "
@@ -409,27 +409,27 @@ msgstr ""
 "captions shown depends on the zoom level. Some possible values are: “size”, "
 "“type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”."
 
-#: data/org.gnome.nautilus.gschema.xml:219
+#: data/org.gnome.nautilus.gschema.xml:222
 msgid "Default icon view zoom level"
 msgstr "Default icon view zoom level"
 
-#: data/org.gnome.nautilus.gschema.xml:226
+#: data/org.gnome.nautilus.gschema.xml:233
 msgid "Default list view zoom level"
 msgstr "Default list view zoom level"
 
-#: data/org.gnome.nautilus.gschema.xml:230
+#: data/org.gnome.nautilus.gschema.xml:237
 msgid "Columns visible in list view"
 msgstr "Columns visible in list view"
 
-#: data/org.gnome.nautilus.gschema.xml:234
+#: data/org.gnome.nautilus.gschema.xml:241
 msgid "Column order in list view"
 msgstr "Column order in list view"
 
-#: data/org.gnome.nautilus.gschema.xml:238
+#: data/org.gnome.nautilus.gschema.xml:245
 msgid "Use tree view"
 msgstr "Use tree view"
 
-#: data/org.gnome.nautilus.gschema.xml:239
+#: data/org.gnome.nautilus.gschema.xml:246
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat "
 "list."
@@ -437,29 +437,29 @@ msgstr ""
 "Whether a tree should be used for list view navigation instead of a flat "
 "list."
 
-#: data/org.gnome.nautilus.gschema.xml:246
+#: data/org.gnome.nautilus.gschema.xml:253
 msgid "Initial size of the window"
 msgstr "Initial size of the window"
 
-#: data/org.gnome.nautilus.gschema.xml:247
+#: data/org.gnome.nautilus.gschema.xml:254
 msgid ""
 "A tuple containing the initial width and height of the application window."
 msgstr ""
 "A tuple containing the initial width and height of the application window."
 
-#: data/org.gnome.nautilus.gschema.xml:251
+#: data/org.gnome.nautilus.gschema.xml:258
 msgid "Whether the navigation window should be maximized"
 msgstr "Whether the navigation window should be maximized"
 
-#: data/org.gnome.nautilus.gschema.xml:252
+#: data/org.gnome.nautilus.gschema.xml:259
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Whether the navigation window should be maximized by default."
 
-#: data/org.gnome.nautilus.gschema.xml:256
+#: data/org.gnome.nautilus.gschema.xml:263
 msgid "Show location bar in new windows"
 msgstr "Show location bar in new windows"
 
-#: data/org.gnome.nautilus.gschema.xml:257
+#: data/org.gnome.nautilus.gschema.xml:264
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
@@ -468,10 +468,9 @@ msgstr ""
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:203 src/nautilus-file-operations.c:258
 #: src/nautilus-files-view.c:5936 src/nautilus-files-view.c:6372
-#: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:603
-#: src/nautilus-mime-actions.c:609 src/nautilus-mime-actions.c:999
-#: src/nautilus-mime-actions.c:1354 src/nautilus-properties-window.c:5239
-#: src/nautilus-search-popover.c:613
+#: src/nautilus-mime-actions.c:603 src/nautilus-mime-actions.c:609
+#: src/nautilus-mime-actions.c:999 src/nautilus-mime-actions.c:1354
+#: src/nautilus-properties-window.c:5239 src/nautilus-search-popover.c:639
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:101
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:114
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:11
@@ -880,7 +879,7 @@ msgid "Send files by mail…"
 msgstr "שליחת קבצים בדוא״ל…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: src/nautilus-application.c:184 src/nautilus-window-slot.c:1563
+#: src/nautilus-application.c:184 src/nautilus-window-slot.c:1564
 msgid "Oops! Something went wrong."
 msgstr "אופס! משהו השתבש."
 
@@ -1122,7 +1121,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
 #: src/nautilus-pathbar.c:372 src/nautilus-shell-search-provider.c:330
-#: src/nautilus-window.c:149 src/gtk/nautilusgtkplacessidebar.c:1017
+#: src/nautilus-window.c:150 src/gtk/nautilusgtkplacessidebar.c:1017
 msgid "Home"
 msgstr "בית"
 
@@ -2832,7 +2831,6 @@ msgid "No Results Found"
 msgstr "לא נמצאו תוצאות"
 
 #: src/nautilus-files-view.c:3653 src/gtk/nautilusgtkplacesview.ui:190
-#| msgid "Try a different search"
 msgid "Try a different search."
 msgstr "יש לנסות חיפוש שונה."
 
@@ -2841,12 +2839,10 @@ msgid "Trash is Empty"
 msgstr "האשפה ריקה"
 
 #: src/nautilus-files-view.c:3664
-#| msgid "Starred files"
 msgid "No Starred Files"
 msgstr "אין קבצים מסומנים בכוכב"
 
 #: src/nautilus-files-view.c:3670
-#| msgid "Recent files"
 msgid "No Recent Files"
 msgstr "אין קבצים אחרונים"
 
@@ -2991,7 +2987,7 @@ msgstr "טקסט שנגרר.txt"
 msgid "dropped data"
 msgstr "נתונים שנשמטו"
 
-#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1237
+#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1238
 msgid "Undo"
 msgstr "ביטול"
 
@@ -3568,29 +3564,6 @@ msgstr "מכיל תמונות ומוזיקה"
 msgid "%s Visible Columns"
 msgstr "%s עמודות גלויות"
 
-#: src/nautilus-location-entry.c:338
-#, c-format
-msgid "Do you want to view %d location?"
-msgid_plural "Do you want to view %d locations?"
-msgstr[0] "לצפות במיקום אחד?"
-msgstr[1] "לצפות ב־%d מיקומים?"
-msgstr[2] "לצפות ב־%d מיקומים?"
-msgstr[3] "לצפות ב־%d מיקומים?"
-
-#: src/nautilus-location-entry.c:342 src/nautilus-mime-actions.c:995
-#, c-format
-msgid "This will open %d separate window."
-msgid_plural "This will open %d separate windows."
-msgstr[0] "פעולה זו תפתח חלון נפרד."
-msgstr[1] "פעולה זו תפתח %d חלונות נפרדים."
-msgstr[2] "פעולה זו תפתח %d חלונות נפרדים."
-msgstr[3] "פעולה זו תפתח %d חלונות נפרדים."
-
-#: src/nautilus-location-entry.c:353 src/nautilus-mime-actions.c:999
-#: src/nautilus-mime-actions.c:1200
-msgid "_OK"
-msgstr "_אישור"
-
 #: src/nautilus-mime-actions.c:108
 #: src/resources/ui/nautilus-search-popover.ui:227
 msgid "Anything"
@@ -3670,6 +3643,19 @@ msgstr[0] "פעולה זו תפתח לשונית נפרדת."
 msgstr[1] "פעולה זו תפתח %d לשוניות נפרדות."
 msgstr[2] "פעולה זו תפתח %d לשוניות נפרדות."
 msgstr[3] "פעולה זו תפתח %d לשוניות נפרדות."
+
+#: src/nautilus-mime-actions.c:995
+#, c-format
+msgid "This will open %d separate window."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "פעולה זו תפתח חלון נפרד."
+msgstr[1] "פעולה זו תפתח %d חלונות נפרדים."
+msgstr[2] "פעולה זו תפתח %d חלונות נפרדים."
+msgstr[3] "פעולה זו תפתח %d חלונות נפרדים."
+
+#: src/nautilus-mime-actions.c:999 src/nautilus-mime-actions.c:1200
+msgid "_OK"
+msgstr "_אישור"
 
 #: src/nautilus-mime-actions.c:1077
 #, c-format
@@ -4272,15 +4258,15 @@ msgstr "כל זמן"
 msgid "Other Type…"
 msgstr "סוג אחר…"
 
-#: src/nautilus-search-popover.c:610
+#: src/nautilus-search-popover.c:636
 msgid "Select type"
 msgstr "בחירת סוג"
 
-#: src/nautilus-search-popover.c:614
+#: src/nautilus-search-popover.c:640
 msgid "Select"
 msgstr "בחירה"
 
-#: src/nautilus-search-popover.c:681
+#: src/nautilus-search-popover.c:717
 #: src/resources/ui/nautilus-search-popover.ui:42
 msgid "Select Dates…"
 msgstr "בחירת תאריכים…"
@@ -4308,13 +4294,11 @@ msgid "Executable files in this folder will appear in the Scripts menu."
 msgstr "קובצי ההפעלה בתיקייה זו יופיעו בתפריט הסקריפטים."
 
 #: src/nautilus-special-location-bar.c:107
-#| msgid "Unable to display the contents of this folder."
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network."
 msgstr "יש להפעיל שיתוף תיקייה לשיתוף התוכן של תיקייה זו על גבי הרשת."
 
 #: src/nautilus-special-location-bar.c:108
-#| msgid "_Settings"
 msgid "Sharing Settings"
 msgstr "הגדרות שיתוף"
 
@@ -4439,35 +4423,35 @@ msgstr "הצגת רשימה"
 msgid "Show List"
 msgstr "הצגת רשימה"
 
-#: src/nautilus-window.c:148 src/resources/ui/nautilus-properties-window.ui:238
+#: src/nautilus-window.c:149 src/resources/ui/nautilus-properties-window.ui:238
 msgid "Parent folder"
 msgstr "תיקיית מכילה"
 
-#: src/nautilus-window.c:150
+#: src/nautilus-window.c:151
 msgid "New tab"
 msgstr "לשונית חדשה"
 
-#: src/nautilus-window.c:151
+#: src/nautilus-window.c:152
 msgid "Close current view"
 msgstr "סגירת התצוגה הנוכחית"
 
-#: src/nautilus-window.c:152
+#: src/nautilus-window.c:153
 msgid "Back"
 msgstr "אחורה"
 
-#: src/nautilus-window.c:153
+#: src/nautilus-window.c:154
 msgid "Forward"
 msgstr "קדימה"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: src/nautilus-window.c:1143
+#: src/nautilus-window.c:1144
 #, c-format
 msgid "“%s” deleted"
 msgstr "‏„%s” נמחק"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: src/nautilus-window.c:1150
+#: src/nautilus-window.c:1151
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
@@ -4477,14 +4461,14 @@ msgstr[2] "‫%d קבצים נמחקו"
 msgstr[3] "‫%d קבצים נמחקו"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1171
+#: src/nautilus-window.c:1172
 #, c-format
 msgid "“%s” unstarred"
 msgstr "בוטל סימון הפריט „%s” בכוכב"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1177
+#: src/nautilus-window.c:1178
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4494,16 +4478,29 @@ msgstr[2] "הוסר כוכב מ־%d פריטים"
 msgstr[3] "הוסר כוכב מ־%d פריטים"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1273 src/gtk/nautilusgtkplacessidebar.c:905
+#: src/nautilus-window.c:1274 src/gtk/nautilusgtkplacessidebar.c:905
 #, c-format
 msgid "Open %s"
 msgstr "פתיחת %s"
+
+#: src/nautilus-window.c:2307
+#| msgid "No templates installed"
+msgid "No plugins currently installed."
+msgstr "לא מותקנים תוספים."
+
+#: src/nautilus-window.c:2311
+msgid "Currently installed plugins:"
+msgstr "תוספים מותקנים:"
+
+#: src/nautilus-window.c:2313
+msgid "For bug testing only, the following command can be used:"
+msgstr "אך ורק לבדיקת תקלות, ניתן להשתמש בפקודה הבאה:"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2317
+#: src/nautilus-window.c:2334
 msgid "translator-credits"
 msgstr ""
 "גיל אשר <dolfin@rpg.org.il>\n"
@@ -4529,38 +4526,38 @@ msgstr "מיקום מרוחק – מחפש בתיקייה הנוכחית בלב�
 msgid "Only searching the current folder"
 msgstr "מחפש בתיקייה הנוכחית בלבד"
 
-#: src/nautilus-window-slot.c:1569
+#: src/nautilus-window-slot.c:1570
 msgid "Unable to display the contents of this folder."
 msgstr "לא ניתן להציג את תכני התיקייה הזאת."
 
-#: src/nautilus-window-slot.c:1573
+#: src/nautilus-window-slot.c:1574
 msgid "This location doesn’t appear to be a folder."
 msgstr "מסתבר כי מיקום זה אינו תיקייה."
 
-#: src/nautilus-window-slot.c:1585
+#: src/nautilus-window-slot.c:1586
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "לא ניתן למצוא את „%s”. נא לבדוק את האיות ולנסות שוב."
 
-#: src/nautilus-window-slot.c:1590
+#: src/nautilus-window-slot.c:1591
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "לא ניתן למצוא את הקובץ המבוקש. נא לבדוק את האיות ולנסות שוב."
 
-#: src/nautilus-window-slot.c:1601
+#: src/nautilus-window-slot.c:1602
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "מיקומי „%s” אינם נתמכים."
 
-#: src/nautilus-window-slot.c:1606
+#: src/nautilus-window-slot.c:1607
 msgid "Unable to handle this kind of location."
 msgstr "אין אפשרות לטפל במיקום מסוג זה."
 
-#: src/nautilus-window-slot.c:1614
+#: src/nautilus-window-slot.c:1615
 msgid "Unable to access the requested location."
 msgstr "לא ניתן לגשת למיקום המבוקש."
 
-#: src/nautilus-window-slot.c:1620
+#: src/nautilus-window-slot.c:1621
 msgid "Don’t have permission to access the requested location."
 msgstr "אין לך הרשאות גישה למיקום הנדרש."
 
@@ -4569,7 +4566,7 @@ msgstr "אין לך הרשאות גישה למיקום הנדרש."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1631
+#: src/nautilus-window-slot.c:1632
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4578,7 +4575,7 @@ msgstr "לא ניתן למצוא את המיקום המבוקש. נא לבדוק
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1640
+#: src/nautilus-window-slot.c:1641
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4586,12 +4583,12 @@ msgstr ""
 "השרת סרב להתחבר. בדרך כלל המשמעות של זה היא שחומת אש חוסמת את הגישה, או "
 "שהשרת המרוחק לא פועל."
 
-#: src/nautilus-window-slot.c:1659
+#: src/nautilus-window-slot.c:1660
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "הודעת שגיאה בלתי מטופלת: %s"
 
-#: src/nautilus-window-slot.c:1827
+#: src/nautilus-window-slot.c:1828
 #, c-format
 msgid "Unable to load location"
 msgstr "לא ניתן לטעון את המיקום"
@@ -5557,8 +5554,8 @@ msgid "Go forward"
 msgstr "קדימה"
 
 #: src/resources/ui/nautilus-toolbar.ui:232
-msgid "Toggle view"
-msgstr "שינוי התצוגה"
+msgid "View options"
+msgstr "צפייה בפאשרויות"
 
 #: src/resources/ui/nautilus-toolbar.ui:249
 msgid "Show operations"
@@ -5733,7 +5730,6 @@ msgstr "תחילית"
 
 #. Translators: Server as any successfully connected network address
 #: src/gtk/nautilusgtkplacesview.ui:104
-#| msgid "Recent Servers"
 msgid "No Recent Servers"
 msgstr "אין שרתים אחרונים"
 
@@ -5892,6 +5888,17 @@ msgstr "אתחול…"
 msgid "Computer"
 msgstr "מחשב"
 
+#, c-format
+#~ msgid "Do you want to view %d location?"
+#~ msgid_plural "Do you want to view %d locations?"
+#~ msgstr[0] "לצפות במיקום אחד?"
+#~ msgstr[1] "לצפות ב־%d מיקומים?"
+#~ msgstr[2] "לצפות ב־%d מיקומים?"
+#~ msgstr[3] "לצפות ב־%d מיקומים?"
+
+#~ msgid "Toggle view"
+#~ msgstr "שינוי התצוגה"
+
 #~ msgid "Folder is Empty"
 #~ msgstr "תיקייה זו ריקה"
 
@@ -5972,9 +5979,6 @@ msgstr "מחשב"
 
 #~ msgid "Select All"
 #~ msgstr "בחירת הכול"
-
-#~ msgid "View options"
-#~ msgstr "צפייה בפאשרויות"
 
 #~| msgid "Favorites"
 #~ msgid "Favorite files"
@@ -7975,9 +7979,6 @@ msgstr "מחשב"
 
 #~ msgid "Link _name:"
 #~ msgstr "_שם הקישור:"
-
-#~ msgid "No templates installed"
-#~ msgstr "לא מותקנות תבניות"
 
 #~ msgid "D_uplicate"
 #~ msgstr "שכ_פול"
