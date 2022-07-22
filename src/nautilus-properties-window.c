@@ -2292,6 +2292,17 @@ open_in_disks (GtkButton                *button,
 }
 
 static void
+add_updatable_label (NautilusPropertiesWindow *self,
+                     GtkWidget                *label,
+                     const char               *file_attribute)
+{
+    g_object_set_data_full (G_OBJECT (label), "file_attribute",
+                            g_strdup (file_attribute), g_free);
+
+    self->value_fields = g_list_prepend (self->value_fields, label);
+}
+
+static void
 setup_basic_page (NautilusPropertiesWindow *self)
 {
     /* Icon pixmap */
@@ -2306,22 +2317,14 @@ setup_basic_page (NautilusPropertiesWindow *self)
     {
         gtk_widget_show (self->type_title_label);
         gtk_widget_show (self->type_value_label);
-        g_object_set_data_full (G_OBJECT (self->type_value_label), "file_attribute",
-                                g_strdup ("detailed_type"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->type_value_label);
+        add_updatable_label (self, self->type_value_label, "detailed_type");
     }
 
     if (should_show_link_target (self))
     {
         gtk_widget_show (self->link_target_title_label);
         gtk_widget_show (self->link_target_value_label);
-        g_object_set_data_full (G_OBJECT (self->link_target_value_label), "file_attribute",
-                                g_strdup ("link_target"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->link_target_value_label);
+        add_updatable_label (self, self->link_target_value_label, "link_target");
     }
 
     if (is_multi_file_window (self) ||
@@ -2336,12 +2339,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
         gtk_widget_show (self->size_title_label);
         gtk_widget_show (self->size_value_label);
 
-        /* Stash a copy of the file attribute name in this field for the callback's sake. */
-        g_object_set_data_full (G_OBJECT (self->size_value_label), "file_attribute",
-                                g_strdup ("size_detail"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->size_value_label);
+        add_updatable_label (self, self->size_value_label, "size_detail");
     }
 
     if (should_show_location_info (self))
@@ -2349,33 +2347,21 @@ setup_basic_page (NautilusPropertiesWindow *self)
         gtk_widget_show (self->parent_folder_title_label);
         gtk_widget_show (self->parent_folder_value_label);
 
-        g_object_set_data_full (G_OBJECT (self->parent_folder_value_label), "file_attribute",
-                                g_strdup ("where"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->parent_folder_value_label);
+        add_updatable_label (self, self->parent_folder_value_label, "where");
     }
 
     if (should_show_trash_orig_path (self))
     {
         gtk_widget_show (self->original_folder_title_label);
         gtk_widget_show (self->original_folder_value_label);
-        g_object_set_data_full (G_OBJECT (self->original_folder_value_label), "file_attribute",
-                                g_strdup ("trash_orig_path"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->original_folder_value_label);
+        add_updatable_label (self, self->original_folder_value_label, "trash_orig_path");
     }
 
     if (should_show_trashed_on (self))
     {
         gtk_widget_show (self->trashed_on_title_label);
         gtk_widget_show (self->trashed_on_value_label);
-        g_object_set_data_full (G_OBJECT (self->trashed_on_value_label), "file_attribute",
-                                g_strdup ("trashed_on_full"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->trashed_on_value_label);
+        add_updatable_label (self, self->trashed_on_value_label, "trashed_on_full");
     }
 
     if (should_show_accessed_date (self)
@@ -2389,36 +2375,21 @@ setup_basic_page (NautilusPropertiesWindow *self)
     {
         gtk_widget_show (self->accessed_title_label);
         gtk_widget_show (self->accessed_value_label);
-        /* Stash a copy of the file attribute name in this field for the callback's sake. */
-        g_object_set_data_full (G_OBJECT (self->accessed_value_label), "file_attribute",
-                                g_strdup ("date_accessed_full"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->accessed_value_label);
+        add_updatable_label (self, self->accessed_value_label, "date_accessed_full");
     }
 
     if (should_show_modified_date (self))
     {
         gtk_widget_show (self->modified_title_label);
         gtk_widget_show (self->modified_value_label);
-        /* Stash a copy of the file attribute name in this field for the callback's sake. */
-        g_object_set_data_full (G_OBJECT (self->modified_value_label), "file_attribute",
-                                g_strdup ("date_modified_full"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->modified_value_label);
+        add_updatable_label (self, self->modified_value_label, "date_modified_full");
     }
 
     if (should_show_created_date (self))
     {
         gtk_widget_show (self->created_title_label);
         gtk_widget_show (self->created_value_label);
-        /* Stash a copy of the file attribute name in this field for the callback's sake. */
-        g_object_set_data_full (G_OBJECT (self->created_value_label), "file_attribute",
-                                g_strdup ("date_created_full"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->created_value_label);
+        add_updatable_label (self, self->created_value_label, "date_created_full");
     }
 
     if (should_show_free_space (self)
@@ -2427,13 +2398,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
         gtk_widget_show (self->spacer_3);
         gtk_widget_show (self->free_space_title_label);
         gtk_widget_show (self->free_space_value_label);
-
-        /* Stash a copy of the file attribute name in this field for the callback's sake. */
-        g_object_set_data_full (G_OBJECT (self->free_space_value_label), "file_attribute",
-                                g_strdup ("free_space"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->free_space_value_label);
+        add_updatable_label (self, self->free_space_value_label, "free_space");
     }
 
     if (should_show_volume_usage (self))
