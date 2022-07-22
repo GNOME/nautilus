@@ -50,6 +50,7 @@
 #include "nautilus-debug.h"
 
 #include "nautilus-application.h"
+#include "nautilus-app-chooser.h"
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
 #include "nautilus-clipboard.h"
@@ -1467,7 +1468,7 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
         goto out;
     }
 
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
+    info = nautilus_app_chooser_get_app_info (NAUTILUS_APP_CHOOSER (dialog));
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 
@@ -1491,11 +1492,7 @@ choose_program (NautilusFilesView *view,
     mime_type = nautilus_file_get_mime_type (files->data);
     parent_window = nautilus_files_view_get_containing_window (view);
 
-    dialog = gtk_app_chooser_dialog_new_for_content_type (parent_window,
-                                                          GTK_DIALOG_MODAL |
-                                                          GTK_DIALOG_DESTROY_WITH_PARENT |
-                                                          GTK_DIALOG_USE_HEADER_BAR,
-                                                          mime_type);
+    dialog = GTK_WIDGET (nautilus_app_chooser_new (mime_type, parent_window));
     g_object_set_data_full (G_OBJECT (dialog),
                             "directory-view:files",
                             files,
