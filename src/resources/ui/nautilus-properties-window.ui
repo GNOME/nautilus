@@ -258,21 +258,6 @@
                               <object class="GtkListBox" id="file_data_list_box">
                                 <property name="selection-mode">none</property>
                                 <child>
-                                  <object class="AdwActionRow" id="open_with_navigation_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">True</property>
-                                    <property name="selectable">False</property>
-                                    <property name="title" translatable="yes">_Open With</property>
-                                    <property name="use-underline">True</property>
-                                    <signal name="activated" handler="navigate_open_with_page" object="NautilusPropertiesWindow" swapped="yes"/>
-                                    <child>
-                                      <object class="GtkImage">
-                                        <property name="icon-name">go-next-symbolic</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
                                   <object class="AdwActionRow" id="link_target_row">
                                     <property name="visible">False</property>
                                     <property name="activatable">False</property>
@@ -1040,105 +1025,6 @@
                                     </child>
                                   </object>
                                 </property>
-                              </object>
-                            </child>
-                          </object>
-                        </property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-              </object>
-            </property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkStackPage">
-            <property name="name">open-with</property>
-            <property name="child">
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkHeaderBar">
-                    <property name="title-widget">
-                      <object class="AdwWindowTitle">
-                        <property name="title" translatable="yes">Open With</property>
-                      </object>
-                    </property>
-                    <child type="start">
-                      <object class="GtkButton">
-                        <property name="icon-name">go-previous-symbolic</property>
-                        <signal name="clicked" handler="navigate_main_page" object="NautilusPropertiesWindow" swapped="yes"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkScrolledWindow">
-                    <property name="hscrollbar-policy">never</property>
-                    <property name="vexpand">true</property>
-                    <property name="child">
-                      <object class="AdwClamp">
-                        <property name="margin-top">18</property>
-                        <property name="margin-bottom">18</property>
-                        <property name="margin-start">18</property>
-                        <property name="margin-end">18</property>
-                        <style>
-                          <class name="background"/>
-                        </style>
-                        <property name="child">
-                          <object class="GtkBox" id="open_with_box">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">6</property>
-                            <child>
-                              <object class="GtkLabel" id="open_with_label">
-                                <property name="wrap">1</property>
-                                <property name="wrap_mode">word-char</property>
-                                <property name="max_width_chars">30</property>
-                                <property name="xalign">0</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="app_chooser_widget_box">
-                                <property name="vexpand">True</property>
-                                <property name="orientation">vertical</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="spacing">6</property>
-                                <child>
-                                  <object class="GtkButton" id="reset_button">
-                                    <property name="label" translatable="yes">Reset</property>
-                                    <property name="focusable">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="halign">start</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="forget_button">
-                                    <property name="label" translatable="yes">_Forget</property>
-                                    <property name="focusable">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="add_button">
-                                    <property name="label" translatable="yes">_Add</property>
-                                    <property name="focusable">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="use_underline">True</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="set_as_default_button">
-                                    <property name="label" translatable="yes">Set as default</property>
-                                    <property name="focusable">True</property>
-                                    <property name="receives_default">True</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                           </object>
