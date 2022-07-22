@@ -474,8 +474,6 @@ static void remove_pending (StartupData *data,
                             gboolean     cancel_timed_wait);
 static void append_extension_pages (NautilusPropertiesWindow *self);
 
-static void setup_volume_information (NautilusPropertiesWindow *self);
-
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
 
 static gboolean
@@ -570,6 +568,21 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
                 g_object_unref (icon);
                 icon = NULL;
                 break;
+            }
+        }
+    }
+
+    if (!is_multi_file_window (self))
+    {
+        g_autoptr (GMount) mount = NULL;
+        mount = nautilus_file_get_mount (get_original_file (self));
+        if (mount != NULL)
+        {
+            g_autoptr (GIcon) gicon = g_mount_get_icon (mount);
+            if (gicon != NULL)
+            {
+                g_clear_object (&icon);
+                icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale);
             }
         }
     }
@@ -2121,10 +2134,48 @@ is_burn_directory (NautilusFile *file)
     return strcmp (file_uri, "burn:///") == 0;
 }
 
+
+static gboolean
+is_volume_properties (NautilusPropertiesWindow *self)
+{
+    NautilusFile *file;
+    gboolean success = FALSE;
+
+    if (is_multi_file_window (self))
+    {
+        return FALSE;
+    }
+
+    file = get_original_file (self);
+
+    if (file == NULL)
+    {
+        return FALSE;
+    }
+
+    if (is_root_directory (file) && nautilus_application_is_sandboxed ())
+    {
+        return FALSE;
+    }
+
+    if (nautilus_file_can_unmount (file))
+    {
+        return TRUE;
+    }
+
+    success = is_root_directory (file);
+
+#ifdef TODO_GIO
+    /* Look at is_mountpoint for activation uri */
+#endif
+
+    return success;
+}
+
 static gboolean
 should_show_custom_icon_buttons (NautilusPropertiesWindow *self)
 {
-    if (is_multi_file_window (self))
+    if (is_multi_file_window (self) || is_volume_properties (self))
     {
         return FALSE;
     }
@@ -2138,7 +2189,8 @@ should_show_file_type (NautilusPropertiesWindow *self)
     if (!is_multi_file_window (self)
         && (nautilus_file_is_in_trash (get_target_file (self)) ||
             is_network_directory (get_target_file (self)) ||
-            is_burn_directory (get_target_file (self))))
+            is_burn_directory (get_target_file (self)) ||
+            is_volume_properties (self)))
     {
         return FALSE;
     }
@@ -2229,7 +2281,8 @@ should_show_free_space (NautilusPropertiesWindow *self)
         && (nautilus_file_is_in_trash (get_target_file (self)) ||
             is_network_directory (get_target_file (self)) ||
             nautilus_file_is_in_recent (get_target_file (self)) ||
-            is_burn_directory (get_target_file (self))))
+            is_burn_directory (get_target_file (self)) ||
+            is_volume_properties (self)))
     {
         return FALSE;
     }
@@ -2245,38 +2298,7 @@ should_show_free_space (NautilusPropertiesWindow *self)
 static gboolean
 should_show_volume_usage (NautilusPropertiesWindow *self)
 {
-    NautilusFile *file;
-    gboolean success = FALSE;
-
-    if (is_multi_file_window (self))
-    {
-        return FALSE;
-    }
-
-    file = get_original_file (self);
-
-    if (file == NULL)
-    {
-        return FALSE;
-    }
-
-    if (is_root_directory (file) && nautilus_application_is_sandboxed ())
-    {
-        return FALSE;
-    }
-
-    if (nautilus_file_can_unmount (file))
-    {
-        return TRUE;
-    }
-
-    success = is_root_directory (file);
-
-#ifdef TODO_GIO
-    /* Look at is_mountpoint for activation uri */
-#endif
-
-    return success;
+    return is_volume_properties (self);
 }
 
 static void
@@ -2415,8 +2437,8 @@ setup_basic_page (NautilusPropertiesWindow *self)
         gtk_widget_show (self->disk_list_box);
         setup_volume_usage_widget (self);
     }
-    /* don't show file type for volumes */
-    else if (should_show_file_type (self))
+
+    if (should_show_file_type (self))
     {
         gtk_widget_show (self->type_value_label);
         add_updatable_label (self, self->type_value_label, "detailed_type");
@@ -2431,8 +2453,12 @@ setup_basic_page (NautilusPropertiesWindow *self)
     if (is_multi_file_window (self) ||
         nautilus_file_is_directory (get_target_file (self)))
     {
-        gtk_widget_show (self->contents_row);
-        setup_contents_field (self);
+        /* We have a more efficient way to measure used space in volumes. */
+        if (!is_volume_properties (self))
+        {
+            gtk_widget_show (self->contents_row);
+            setup_contents_field (self);
+        }
     }
     else
     {
@@ -2474,11 +2500,14 @@ setup_basic_page (NautilusPropertiesWindow *self)
         add_updatable_label (self, self->accessed_value_label, "date_accessed_full");
     }
 
-    if (should_show_free_space (self)
-        && !should_show_volume_usage (self))
+    if (should_show_free_space (self))
     {
-        gtk_widget_show (self->free_space_list_box);
-        add_updatable_label (self, self->free_space_value_label, "free_space");
+        /* We have a more efficient way to measure free space in volumes. */
+        if (!is_volume_properties (self))
+        {
+            gtk_widget_show (self->free_space_list_box);
+            add_updatable_label (self, self->free_space_value_label, "free_space");
+        }
     }
 }
 
