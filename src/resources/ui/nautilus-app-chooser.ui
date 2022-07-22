@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="NautilusAppChooser" parent="GtkDialog">
+    <property name="title" translatable="yes">Open With</property>
+    <property name="focusable">False</property>
+    <property name="destroy-with-parent">True</property>
+    <property name="modal">True</property>
+    <property name="default-width">420</property>
+    <property name="default-height">560</property>
+    <child internal-child="content_area">
+      <object class="GtkBox" id="content_area">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkStack">
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkStackPage">
+                <property name="name">list</property>
+                <property name="child">
+                  <object class="GtkScrolledWindow">
+                    <property name="hscrollbar-policy">never</property>
+                    <property name="vexpand">true</property>
+                    <property name="child">
+                      <object class="AdwClamp">
+                        <property name="margin-top">12</property>
+                        <property name="margin-bottom">12</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <style>
+                          <class name="background"/>
+                        </style>
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">12</property>
+                            <child>
+                              <object class="GtkBox" id="app_chooser_widget_box">
+                                <property name="vexpand">True</property>
+                                <property name="orientation">vertical</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkBox">
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkButton" id="reset_button">
+                                    <property name="label" translatable="yes">_Reset</property>
+                                    <property name="use-underline">True</property>
+                                    <property name="focusable">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="halign">start</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="set_as_default_button">
+                                    <property name="label" translatable="yes">Set as _Default</property>
+                                    <property name="use-underline">True</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="cancel_button">
+        <property name="label" translatable="yes">_Cancel</property>
+        <property name="use-underline">True</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="ok_button">
+        <property name="label" translatable="yes">_Open</property>
+        <property name="use-underline">True</property>
+        <property name="sensitive">False</property>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="ok" default="true">ok_button</action-widget>
+      <action-widget response="cancel">cancel_button</action-widget>
+    </action-widgets>
+  </template>
+</interface>
