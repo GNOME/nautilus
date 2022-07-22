@@ -875,49 +875,6 @@ file_list_attributes_identical (GList      *file_list,
     return attribute != NULL;
 }
 
-static void
-update_properties_window_title (NautilusPropertiesWindow *self)
-{
-    g_autofree gchar *title = NULL;
-    NautilusFile *file;
-
-    g_return_if_fail (GTK_IS_WINDOW (self));
-
-    if (!is_multi_file_window (self))
-    {
-        file = get_original_file (self);
-
-        if (file != NULL)
-        {
-            g_autofree gchar *name = NULL;
-            g_autofree gchar *truncated_name = NULL;
-
-            name = nautilus_file_get_display_name (file);
-            truncated_name = eel_str_middle_truncate (name, 30);
-
-            if (nautilus_file_is_directory (file))
-            {
-                /* To translators: %s is the name of the folder. */
-                title = g_strdup_printf (C_("folder", "%s Properties"),
-                                         truncated_name);
-            }
-            else
-            {
-                /* To translators: %s is the name of the file. */
-                title = g_strdup_printf (C_("file", "%s Properties"),
-                                         truncated_name);
-            }
-        }
-    }
-
-    if (title == NULL)
-    {
-        title = g_strdup_printf (_("Properties"));
-    }
-
-    gtk_window_set_title (GTK_WINDOW (self), title);
-}
-
 static GtkWidget *
 add_extension_page (NautilusPropertyPage     *property_page,
                     NautilusPropertiesWindow *self)
@@ -1305,7 +1262,6 @@ properties_window_update (NautilusPropertiesWindow *self,
 
     if (dirty_original)
     {
-        update_properties_window_title (self);
         update_properties_window_icon (self);
         update_name_field (self);
 
@@ -4014,9 +3970,6 @@ create_properties_window (StartupData *startup_data)
         gtk_window_set_startup_id (GTK_WINDOW (window), startup_data->startup_id);
     }
 
-    /* Set initial window title */
-    update_properties_window_title (window);
-
     /* Start monitoring the file attributes we display. Note that some
      * of the attributes are for the original file, and some for the
      * target files.
@@ -4257,6 +4210,9 @@ is_directory_ready_callback (NautilusFile *file,
         gtk_window_present (GTK_WINDOW (new_window));
         g_signal_connect (GTK_WIDGET (new_window), "destroy",
                           G_CALLBACK (widget_on_destroy), startup_data);
+
+        /* We wish the label to be selectable, but not selected by default. */
+        gtk_label_select_region (GTK_LABEL (new_window->name_value_label), -1, -1);
     }
 }
 

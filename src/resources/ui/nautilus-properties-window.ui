@@ -2,6 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusPropertiesWindow" parent="AdwWindow">
+    <property name="title" translatable="yes">Properties</property>
     <property name="focusable">False</property>
     <property name="modal">True</property>
     <property name="default-width">480</property>
@@ -77,6 +78,9 @@
                                     <property name="selectable">True</property>
                                     <property name="ellipsize">end</property>
                                     <property name="max-width-chars">24</property>
+                                    <property name="wrap">true</property>
+                                    <property name="lines">3</property>
+                                    <property name="justify">center</property>
                                     <style>
                                       <class name="title-3"/>
                                     </style>
