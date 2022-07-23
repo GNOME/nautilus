@@ -2401,6 +2401,21 @@ setup_volume_usage_widget (NautilusPropertiesWindow *self)
 }
 
 static void
+open_parent_folder (NautilusPropertiesWindow *self)
+{
+    g_autoptr (GFile) parent_location = NULL;
+
+    parent_location = nautilus_file_get_parent_location (get_target_file (self));
+    g_return_if_fail (parent_location != NULL);
+
+    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                             parent_location,
+                                             NAUTILUS_OPEN_FLAG_NEW_WINDOW,
+                                             &(GList){get_original_file (self), NULL},
+                                             NULL, NULL);
+}
+
+static void
 open_in_disks (NautilusPropertiesWindow *self)
 {
     NautilusDBusLauncher *launcher = nautilus_dbus_launcher_get ();
@@ -4638,6 +4653,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, set_as_default_button);
 
     gtk_widget_class_bind_template_callback (widget_class, open_in_disks);
+    gtk_widget_class_bind_template_callback (widget_class, open_parent_folder);
     gtk_widget_class_bind_template_callback (widget_class, navigate_main_page);
     gtk_widget_class_bind_template_callback (widget_class, navigate_permissions_page);
     gtk_widget_class_bind_template_callback (widget_class, navigate_open_with_page);
