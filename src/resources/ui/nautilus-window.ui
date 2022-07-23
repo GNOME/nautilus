@@ -37,6 +37,7 @@
               <object class="NautilusToolbar" id="toolbar">
                 <property name="show-sidebar-button" bind-source="content_flap" bind-property="folded" bind-flags="sync-create"/>
                 <property name="sidebar-button-active" bind-source="content_flap" bind-property="reveal-flap" bind-flags="bidirectional|sync-create"/>
+                <property name="show-toolbar-children" bind-source="content_flap" bind-property="folded" bind-flags="sync-create|invert-boolean"/>
                 <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
               </object>
             </child>
@@ -68,6 +69,29 @@
                     <child>
                       <object class="AdwTabView" id="tab_view">
                         <property name="menu-model">tab_menu_model</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkActionBar">
+                <property name="revealed" bind-source="content_flap" bind-property="folded" bind-flags="sync-create"/>
+                <child type="start">
+                  <object class="NautilusHistoryControls">
+                    <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
+                  </object>
+                </child>
+                <child type="end">
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="NautilusProgressIndicator"/>
+                    </child>
+                    <child>
+                      <object class="NautilusViewControls">
+                        <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                       </object>
                     </child>
                   </object>

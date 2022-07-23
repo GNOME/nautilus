@@ -60,6 +60,8 @@ struct _NautilusToolbar
     gboolean show_sidebar_button;
     gboolean sidebar_button_active;
 
+    gboolean show_toolbar_children;
+
     GtkWidget *search_button;
 
     GtkWidget *location_entry_close_button;
@@ -77,6 +79,7 @@ enum
     PROP_SEARCHING,
     PROP_SHOW_SIDEBAR_BUTTON,
     PROP_SIDEBAR_BUTTON_ACTIVE,
+    PROP_SHOW_TOOLBAR_CHILDREN,
     NUM_PROPERTIES
 };
 
@@ -299,6 +302,12 @@ nautilus_toolbar_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SHOW_TOOLBAR_CHILDREN:
+        {
+            g_value_set_boolean (value, self->show_toolbar_children);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -416,6 +425,12 @@ nautilus_toolbar_set_property (GObject      *object,
         }
         break;
 
+        case PROP_SHOW_TOOLBAR_CHILDREN:
+        {
+            self->show_toolbar_children = g_value_get_boolean (value);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -506,6 +521,9 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_SIDEBAR_BUTTON_ACTIVE] =
         g_param_spec_boolean ("sidebar-button-active", NULL, NULL, FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_SHOW_TOOLBAR_CHILDREN] =
+        g_param_spec_boolean ("show-toolbar-children", NULL, NULL, TRUE,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);

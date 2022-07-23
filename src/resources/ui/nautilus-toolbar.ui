@@ -126,20 +126,26 @@
           </object>
         </child>
         <child type="start">
-          <object class="GtkBox">
-            <property name="spacing">6</property>
-            <child>
-              <object class="NautilusHistoryControls">
-                <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+          <object class="GtkRevealer">
+            <property name="reveal-child" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
+            <property name="transition-type">slide-right</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="spacing">6</property>
+                <child>
+                  <object class="NautilusHistoryControls">
+                    <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSeparator">
+                    <style>
+                      <class name="spacer"/>
+                    </style>
+                  </object>
+                </child>
               </object>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <style>
-                  <class name="spacer"/>
-                </style>
-              </object>
-            </child>
+            </property>
           </object>
         </child>
         <child type="end">
@@ -175,18 +181,29 @@
           </object>
         </child>
         <child type="end">
-          <object class="NautilusViewControls">
-            <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
-          </object>
-        </child>
-        <child type="end">
-          <object class="NautilusProgressIndicator"/>
-        </child>
-        <child type="end">
-          <object class="GtkSeparator">
-            <style>
-              <class name="spacer"/>
-            </style>
+          <object class="GtkRevealer">
+            <property name="reveal-child" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
+            <property name="transition-type">slide-left</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkSeparator">
+                    <style>
+                      <class name="spacer"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="NautilusProgressIndicator"/>
+                </child>
+                <child>
+                  <object class="NautilusViewControls">
+                    <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+                  </object>
+                </child>
+              </object>
+            </property>
           </object>
         </child>
       </object>
