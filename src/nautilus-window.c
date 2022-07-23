@@ -139,6 +139,15 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (NautilusWindow, nautilus_window, ADW_TYPE_APPLICATION_WINDOW);
 
+enum
+{
+    PROP_0,
+    PROP_ACTIVE_SLOT,
+    N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS];
+
 static const GtkPadActionEntry pad_actions[] =
 {
     { GTK_PAD_ACTION_BUTTON, 0, -1, N_("Parent folder"), "up" },
@@ -1701,6 +1710,8 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
 
         on_location_changed (window);
     }
+
+    g_object_notify_by_pspec (G_OBJECT (window), properties[PROP_ACTIVE_SLOT]);
 }
 
 static void
@@ -2105,6 +2116,52 @@ nautilus_window_init (NautilusWindow *window)
 }
 
 static void
+nautilus_window_get_property (GObject    *object,
+                              guint       prop_id,
+                              GValue     *value,
+                              GParamSpec *pspec)
+{
+    NautilusWindow *self = NAUTILUS_WINDOW (object);
+
+    switch (prop_id)
+    {
+        case PROP_ACTIVE_SLOT:
+        {
+            g_value_set_object (value, G_OBJECT (nautilus_window_get_active_slot (self)));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
+nautilus_window_set_property (GObject      *object,
+                              guint         prop_id,
+                              const GValue *value,
+                              GParamSpec   *pspec)
+{
+    NautilusWindow *self = NAUTILUS_WINDOW (object);
+
+    switch (prop_id)
+    {
+        case PROP_ACTIVE_SLOT:
+        {
+            nautilus_window_set_active_slot (self, NAUTILUS_WINDOW_SLOT (g_value_get_object (value)));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_window_class_init (NautilusWindowClass *class)
 {
     GObjectClass *oclass = G_OBJECT_CLASS (class);
@@ -2114,12 +2171,22 @@ nautilus_window_class_init (NautilusWindowClass *class)
     oclass->dispose = nautilus_window_dispose;
     oclass->finalize = nautilus_window_finalize;
     oclass->constructed = nautilus_window_constructed;
+    oclass->get_property = nautilus_window_get_property;
+    oclass->set_property = nautilus_window_set_property;
 
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
     wclass->grab_focus = nautilus_window_grab_focus;
 
     winclass->close_request = nautilus_window_close_request;
+
+    properties[PROP_ACTIVE_SLOT] =
+        g_param_spec_object ("active-slot",
+                             NULL, NULL,
+                             NAUTILUS_TYPE_WINDOW_SLOT,
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (oclass, N_PROPS, properties);
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
