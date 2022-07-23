@@ -156,9 +156,7 @@ struct _NautilusPropertiesWindow
     AdwComboRow *others_folder_access_row;
     AdwComboRow *others_file_access_row;
 
-    GtkWidget *execution_list_box;
     AdwComboRow *execution_row;
-    GtkRevealer *execution_inconsistent_revealer;
     GtkSwitch *execution_switch;
 
     GtkWidget *security_context_list_box;
@@ -2701,48 +2699,6 @@ update_permissions (NautilusPropertiesWindow *self,
     }
 }
 
-static gboolean
-initial_permission_state_consistent (NautilusPropertiesWindow *self,
-                                     guint32                   mask,
-                                     FilterType                filter_type)
-{
-    gboolean first = TRUE;
-    guint32 first_permissions = 0;
-
-    for (GList *l = self->target_files; l != NULL; l = l->next)
-    {
-        NautilusFile *file = l->data;
-        guint32 permissions;
-
-        if (!file_matches_filter_type (file, filter_type))
-        {
-            continue;
-        }
-
-        permissions = GPOINTER_TO_INT (g_hash_table_lookup (self->initial_permissions,
-                                                            file));
-
-        if (first)
-        {
-            if ((permissions & mask) != mask &&
-                (permissions & mask) != 0)
-            {
-                /* Not fully on or off -> inconsistent */
-                return FALSE;
-            }
-
-            first_permissions = permissions;
-            first = FALSE;
-        }
-        else if ((permissions & mask) != (first_permissions & mask))
-        {
-            /* Not same permissions as first -> inconsistent */
-            return FALSE;
-        }
-    }
-    return TRUE;
-}
-
 static void
 execution_bit_changed (NautilusPropertiesWindow *self,
                        GParamSpec               *params,
@@ -2753,20 +2709,27 @@ execution_bit_changed (NautilusPropertiesWindow *self,
 
     /* if activated from switch, switch state is already toggled, thus invert value via XOR. */
     gboolean active = gtk_switch_get_state (self->execution_switch) ^ GTK_IS_SWITCH (widget);
-
-    gboolean inconsistent = gtk_revealer_get_child_revealed (self->execution_inconsistent_revealer);
-    gboolean initial_inconsistent = !initial_permission_state_consistent (self, permission_mask, filter_type);
-
-    /* If original execution permissions were inconsistent, circle through
-     * states: inconsistent -> on -> off -> inconsistent -> … */
-    gboolean set_executable = !active && (inconsistent || !initial_inconsistent);
-    gboolean set_inconsistent = !active && !inconsistent && initial_inconsistent;
+    gboolean set_executable = !active;
 
     update_permissions (self,
                         set_executable ? permission_mask : 0,
                         permission_mask,
                         filter_type,
-                        set_inconsistent);
+                        FALSE);
+}
+
+static gboolean
+should_show_exectution_switch (NautilusPropertiesWindow *self)
+{
+    g_autofree gchar *mime_type = NULL;
+
+    if (is_multi_file_window (self))
+    {
+        return FALSE;
+    }
+
+    mime_type = nautilus_file_get_mime_type (get_target_file (self));
+    return g_content_type_can_be_executable (mime_type);
 }
 
 static void
@@ -2775,37 +2738,27 @@ update_execution_row (GtkWidget         *row,
 {
     NautilusPropertiesWindow *self = target_perm->window;
 
-    if (target_perm->has_folders)
+    if (!should_show_exectution_switch (self))
     {
-        gtk_widget_hide (self->execution_list_box);
+        gtk_widget_hide (GTK_WIDGET (self->execution_row));
     }
     else
     {
-        gboolean inconsistent = target_perm->file_exec_permissions == PERMISSION_INCONSISTENT;
+        g_signal_handlers_block_by_func (self->execution_switch,
+                                         G_CALLBACK (execution_bit_changed),
+                                         self);
 
-        gtk_revealer_set_reveal_child (self->execution_inconsistent_revealer, inconsistent);
-        gtk_widget_set_has_tooltip (row, inconsistent);
+        gtk_switch_set_state (self->execution_switch,
+                              target_perm->file_exec_permissions == PERMISSION_EXEC);
 
-        /* Only toggle switch if permissions are consistent. This still allows switching in case
-         * not all permissions can be set. */
-        if (!inconsistent)
-        {
-            g_signal_handlers_block_by_func (self->execution_switch,
-                                             G_CALLBACK (execution_bit_changed),
-                                             self);
-
-            gtk_switch_set_state (self->execution_switch,
-                                  target_perm->file_exec_permissions == PERMISSION_EXEC);
-
-            g_signal_handlers_unblock_by_func (self->execution_switch,
-                                               G_CALLBACK (execution_bit_changed),
-                                               self);
-        }
+        g_signal_handlers_unblock_by_func (self->execution_switch,
+                                           G_CALLBACK (execution_bit_changed),
+                                           self);
 
         gtk_widget_set_sensitive (row,
                                   target_perm->can_set_any_file_permission);
 
-        gtk_widget_show (self->execution_list_box);
+        gtk_widget_show (GTK_WIDGET (self->execution_row));
     }
 }
 
@@ -4050,6 +4003,11 @@ create_properties_window (StartupData *startup_data)
         gtk_widget_show (window->permissions_navigation_row);
     }
 
+    if (should_show_exectution_switch (window))
+    {
+        gtk_widget_show (GTK_WIDGET (window->execution_row));
+    }
+
     if (should_show_open_with (window))
     {
         setup_open_with_page (window);
@@ -4636,9 +4594,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_folder_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_inconsistent_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_switch);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
