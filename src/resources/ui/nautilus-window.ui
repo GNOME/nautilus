@@ -37,6 +37,7 @@
               <object class="NautilusToolbar" id="toolbar">
                 <property name="show-sidebar-button" bind-source="content_flap" bind-property="folded" bind-flags="sync-create"/>
                 <property name="sidebar-button-active" bind-source="content_flap" bind-property="reveal-flap" bind-flags="bidirectional|sync-create"/>
+                <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
               </object>
             </child>
             <child>
