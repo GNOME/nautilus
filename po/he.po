@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-07-21 21:18+0000\n"
-"PO-Revision-Date: 2022-07-22 08:47+0300\n"
+"POT-Creation-Date: 2022-07-22 11:26+0000\n"
+"PO-Revision-Date: 2022-07-24 21:23+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "Language: he\n"
@@ -865,18 +865,6 @@ msgstr "טעינת פרטי התמונה נכשלה"
 #: src/nautilus-file.c:7414
 msgid "Image"
 msgstr "תמונה"
-
-#: extensions/sendto/nautilus-nste.c:105 extensions/sendto/nautilus-nste.c:112
-msgid "Send to…"
-msgstr "שליחה אל…"
-
-#: extensions/sendto/nautilus-nste.c:106
-msgid "Send file by mail…"
-msgstr "שליחת קובץ בדוא״ל…"
-
-#: extensions/sendto/nautilus-nste.c:113
-msgid "Send files by mail…"
-msgstr "שליחת קבצים בדוא״ל…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: src/nautilus-application.c:184 src/nautilus-window-slot.c:1564
@@ -2175,7 +2163,7 @@ msgid "Do _not Empty Trash"
 msgstr "אין _לרוקן את האשפה"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3173 src/nautilus-files-view.c:6631
+#: src/nautilus-file-operations.c:3173 src/nautilus-files-view.c:6746
 #: src/gtk/nautilusgtkplacessidebar.c:2046
 #, c-format
 msgid "Unable to access “%s”"
@@ -2863,30 +2851,35 @@ msgstr "_בחירה"
 msgid "Select Extract Destination"
 msgstr "בחירת יעד לחילוץ"
 
+#: src/nautilus-files-view.c:6471
+#| msgid "Error Setting Owner"
+msgid "Error sending email."
+msgstr "שגיאה בשליחת דוא״ל."
+
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6661
+#: src/nautilus-files-view.c:6776
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "לא ניתן להסיר את „%s”"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6691 src/gtk/nautilusgtkplacessidebar.c:2767
+#: src/nautilus-files-view.c:6806 src/gtk/nautilusgtkplacessidebar.c:2767
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "לא ניתן לשלוף את „%s”"
 
-#: src/nautilus-files-view.c:6716
+#: src/nautilus-files-view.c:6831
 msgid "Unable to stop drive"
 msgstr "לא ניתן לעצור את הכונן"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6829 src/gtk/nautilusgtkplacessidebar.c:2008
+#: src/nautilus-files-view.c:6944 src/gtk/nautilusgtkplacessidebar.c:2008
 #: src/gtk/nautilusgtkplacessidebar.c:2996
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "לא ניתן להפעיל את „%s”"
 
-#: src/nautilus-files-view.c:7796
+#: src/nautilus-files-view.c:7922
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2895,70 +2888,70 @@ msgstr[1] "תיקייה חדשה עם הבחירה (שני פריטים)"
 msgstr[2] "תיקייה חדשה עם הבחירה (%'d פריטים)"
 msgstr[3] "תיקייה חדשה עם הבחירה (%'d פריטים)"
 
-#: src/nautilus-files-view.c:7854
+#: src/nautilus-files-view.c:7980
 #, c-format
 msgid "Open With %s"
 msgstr "פתיחה באמצעות %s"
 
-#: src/nautilus-files-view.c:7866
+#: src/nautilus-files-view.c:7992
 msgid "Run"
 msgstr "הפעלה"
 
-#: src/nautilus-files-view.c:7871
+#: src/nautilus-files-view.c:7997
 msgid "Extract Here"
 msgstr "חילוץ לכאן"
 
-#: src/nautilus-files-view.c:7872
+#: src/nautilus-files-view.c:7998
 msgid "Extract to…"
 msgstr "חילוץ אל…"
 
-#: src/nautilus-files-view.c:7876
+#: src/nautilus-files-view.c:8002
 msgid "Open"
 msgstr "פתיחה"
 
-#: src/nautilus-files-view.c:7932
+#: src/nautilus-files-view.c:8058
 #: src/resources/ui/nautilus-files-view-context-menus.ui:127
 #: src/gtk/nautilusgtkplacessidebar.c:3404
 msgid "_Start"
 msgstr "ה_תחלה"
 
-#: src/nautilus-files-view.c:7938 src/gtk/nautilusgtkplacesview.c:1723
+#: src/nautilus-files-view.c:8064 src/gtk/nautilusgtkplacesview.c:1723
 msgid "_Connect"
 msgstr "ה_תחברות"
 
-#: src/nautilus-files-view.c:7944
+#: src/nautilus-files-view.c:8070
 msgid "_Start Multi-disk Drive"
 msgstr "ה_תחלת כונן מרובה דיסקים"
 
-#: src/nautilus-files-view.c:7950
+#: src/nautilus-files-view.c:8076
 msgid "U_nlock Drive"
 msgstr "ש_חרור כונן"
 
-#: src/nautilus-files-view.c:7968
+#: src/nautilus-files-view.c:8094
 msgid "Stop Drive"
 msgstr "ה_שהית כונן"
 
-#: src/nautilus-files-view.c:7974 src/gtk/nautilusgtkplacessidebar.c:3421
+#: src/nautilus-files-view.c:8100 src/gtk/nautilusgtkplacessidebar.c:3421
 msgid "_Safely Remove Drive"
 msgstr "הסרת הכונן _בבטחה"
 
-#: src/nautilus-files-view.c:7980 src/gtk/nautilusgtkplacesview.c:1712
+#: src/nautilus-files-view.c:8106 src/gtk/nautilusgtkplacesview.c:1712
 msgid "_Disconnect"
 msgstr "_ניתוק"
 
-#: src/nautilus-files-view.c:7986
+#: src/nautilus-files-view.c:8112
 msgid "_Stop Multi-disk Drive"
 msgstr "_עצירת כונן מרובה דיסקים"
 
-#: src/nautilus-files-view.c:7992
+#: src/nautilus-files-view.c:8118
 msgid "_Lock Drive"
 msgstr "_נעילת כונן"
 
-#: src/nautilus-files-view.c:9553
+#: src/nautilus-files-view.c:9679
 msgid "Content View"
 msgstr "תצוגה נוכחית"
 
-#: src/nautilus-files-view.c:9554
+#: src/nautilus-files-view.c:9680
 msgid "View of the current folder"
 msgstr "תצוגה של התיקייה הנוכחית"
 
@@ -4484,7 +4477,6 @@ msgid "Open %s"
 msgstr "פתיחת %s"
 
 #: src/nautilus-window.c:2307
-#| msgid "No templates installed"
 msgid "No plugins currently installed."
 msgstr "לא מותקנים תוספים."
 
@@ -5086,7 +5078,7 @@ msgid "Select _All"
 msgstr "בחירת _הכול"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:58
-#: src/resources/ui/nautilus-files-view-context-menus.ui:256
+#: src/resources/ui/nautilus-files-view-context-menus.ui:263
 msgid "P_roperties"
 msgstr "מ_אפיינים"
 
@@ -5200,18 +5192,23 @@ msgstr "חי_לוץ אל…"
 msgid "C_ompress…"
 msgstr "_דחיסה…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:239
+#. Translators: This is the transitive verb meaning 'to send via email' (e.g. 'email this document to Angela).
+#: src/resources/ui/nautilus-files-view-context-menus.ui:238
+msgid "Email…"
+msgstr "דוא״ל…"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:246
 msgid "Tags"
 msgstr "תגיות"
 
 #. Marks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:244
+#: src/resources/ui/nautilus-files-view-context-menus.ui:251
 msgctxt "menu item"
 msgid "Star"
 msgstr "כוכב"
 
 #. Unmarks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:249
+#: src/resources/ui/nautilus-files-view-context-menus.ui:256
 msgctxt "menu item"
 msgid "Unstar"
 msgstr "ביטול כוכב"
@@ -5887,6 +5884,15 @@ msgstr "אתחול…"
 #: src/gtk/nautilusgtkplacessidebar.c:3941
 msgid "Computer"
 msgstr "מחשב"
+
+#~ msgid "Send to…"
+#~ msgstr "שליחה אל…"
+
+#~ msgid "Send file by mail…"
+#~ msgstr "שליחת קובץ בדוא״ל…"
+
+#~ msgid "Send files by mail…"
+#~ msgstr "שליחת קבצים בדוא״ל…"
 
 #, c-format
 #~ msgid "Do you want to view %d location?"
@@ -6860,9 +6866,6 @@ msgstr "מחשב"
 #~ msgid_plural "%'d / %'d — %T left (%d files/sec)"
 #~ msgstr[0] "‏‏%'d / %'d – ‏%T נותרה (%d קבצים לשנייה)"
 #~ msgstr[1] "‏%'d / %'d – ‏%T נותרו (%d קבצים לשנייה)"
-
-#~ msgid "Email…"
-#~ msgstr "דוא״ל…"
 
 #~ msgid "open-location"
 #~ msgstr "open-location"
@@ -10836,9 +10839,6 @@ msgstr "מחשב"
 
 #~ msgid "Error Setting Group"
 #~ msgstr "שגיאה בקביעת קבוצה"
-
-#~ msgid "Error Setting Owner"
-#~ msgstr "שגיאה בקביעת בעלים"
 
 #~ msgid "Cancel Rename?"
 #~ msgstr "בטל שינוי שם?"
