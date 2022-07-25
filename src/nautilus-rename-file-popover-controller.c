@@ -272,7 +272,7 @@ target_file_on_changed (NautilusFile *file,
 }
 
 NautilusRenameFilePopoverController *
-nautilus_rename_file_popover_controller_new (void)
+nautilus_rename_file_popover_controller_new (GtkWidget *relative_to)
 {
     NautilusRenameFilePopoverController *self;
     g_autoptr (GtkBuilder) builder = NULL;
@@ -304,6 +304,8 @@ nautilus_rename_file_popover_controller_new (void)
 
     gtk_popover_set_default_widget (GTK_POPOVER (rename_file_popover), name_entry);
 
+    gtk_widget_set_parent (rename_file_popover, relative_to);
+
     return self;
 }
 
@@ -318,8 +320,7 @@ nautilus_rename_file_popover_controller_get_target_file (NautilusRenameFilePopov
 void
 nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopoverController *self,
                                                          NautilusFile                        *target_file,
-                                                         GdkRectangle                        *pointing_to,
-                                                         GtkWidget                           *relative_to)
+                                                         GdkRectangle                        *pointing_to)
 {
     g_autoptr (NautilusDirectory) containing_directory = NULL;
     GtkEventController *controller;
@@ -374,7 +375,6 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
     gtk_editable_set_text (GTK_EDITABLE (self->name_entry), edit_name);
 
     gtk_popover_set_pointing_to (GTK_POPOVER (self->rename_file_popover), pointing_to);
-    gtk_widget_set_parent (self->rename_file_popover, relative_to);
 
     gtk_popover_popup (GTK_POPOVER (self->rename_file_popover));
 

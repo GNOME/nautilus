@@ -2040,8 +2040,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     nautilus_rename_file_popover_controller_show_for_file (priv->rename_file_controller,
                                                            target_file,
-                                                           pointing_to,
-                                                           GTK_WIDGET (view));
+                                                           pointing_to);
 
     priv->name_accepted_handler_id = g_signal_connect (priv->rename_file_controller,
                                                        "name-accepted",
@@ -9702,7 +9701,7 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     priv->starred_cancellable = g_cancellable_new ();
 
-    priv->rename_file_controller = nautilus_rename_file_popover_controller_new ();
+    priv->rename_file_controller = nautilus_rename_file_popover_controller_new (GTK_WIDGET (view));
 
     nautilus_profile_end (NULL);
 }

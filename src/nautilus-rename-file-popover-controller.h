@@ -28,11 +28,10 @@
 #define NAUTILUS_TYPE_RENAME_FILE_POPOVER_CONTROLLER nautilus_rename_file_popover_controller_get_type ()
 G_DECLARE_FINAL_TYPE (NautilusRenameFilePopoverController, nautilus_rename_file_popover_controller, NAUTILUS, RENAME_FILE_POPOVER_CONTROLLER, NautilusFileNameWidgetController)
 
-NautilusRenameFilePopoverController * nautilus_rename_file_popover_controller_new (void);
+NautilusRenameFilePopoverController * nautilus_rename_file_popover_controller_new (GtkWidget *relative_to);
 
 NautilusFile * nautilus_rename_file_popover_controller_get_target_file (NautilusRenameFilePopoverController *controller);
 
 void           nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopoverController *controller,
                                                                         NautilusFile                        *target_file,
-                                                                        GdkRectangle                        *pointing_to,
-                                                                        GtkWidget                           *relative_to);
+                                                                        GdkRectangle                        *pointing_to);
