@@ -215,9 +215,9 @@ nautilus_trash_monitor_init (NautilusTrashMonitor *trash_monitor)
 }
 
 static void
-unref_trash_monitor (void)
+clear_trash_monitor_on_shutdown (void)
 {
-    g_object_unref (nautilus_trash_monitor);
+    g_clear_object (&nautilus_trash_monitor);
 }
 
 NautilusTrashMonitor *
@@ -229,7 +229,7 @@ nautilus_trash_monitor_get (void)
 
         nautilus_trash_monitor = NAUTILUS_TRASH_MONITOR
                                      (g_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
-        eel_debug_call_at_shutdown (unref_trash_monitor);
+        eel_debug_call_at_shutdown (clear_trash_monitor_on_shutdown);
     }
 
     return nautilus_trash_monitor;
