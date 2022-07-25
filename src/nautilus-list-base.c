@@ -1040,6 +1040,7 @@ real_remove_file (NautilusFilesView *files_view,
     if (item != NULL)
     {
         nautilus_view_model_remove_item (priv->model, item);
+        nautilus_files_view_notify_selection_changed (files_view);
     }
 }
 
