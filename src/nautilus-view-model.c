@@ -257,7 +257,10 @@ compare_data_func (gconstpointer a,
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (user_data);
 
-    g_return_val_if_fail (self->sorter != NULL, GTK_ORDERING_EQUAL);
+    if (self->sorter == NULL)
+    {
+        return GTK_ORDERING_EQUAL;
+    }
 
     return gtk_sorter_compare (self->sorter, (gpointer) a, (gpointer) b);
 }
@@ -288,15 +291,18 @@ void
 nautilus_view_model_set_sorter (NautilusViewModel *self,
                                 GtkSorter         *sorter)
 {
+    if (self->sorter != NULL)
+    {
+        g_clear_signal_handler (&self->sorter_changed_id, self->sorter);
+    }
+
     if (g_set_object (&self->sorter, sorter))
     {
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORTER]);
-
-        g_clear_signal_handler (&self->sorter_changed_id, self->sorter);
-        self->sorter_changed_id = g_signal_connect (self->sorter, "changed",
-                                                    G_CALLBACK (on_sorter_changed), self);
     }
 
+    self->sorter_changed_id = g_signal_connect (self->sorter, "changed",
+                                                G_CALLBACK (on_sorter_changed), self);
     g_list_store_sort (self->internal_model, compare_data_func, self);
 }
 
