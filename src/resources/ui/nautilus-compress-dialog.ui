@@ -33,6 +33,9 @@
             <property name="spacing">12</property>
             <child>
               <object class="GtkEntry" id="name_entry">
+                <accessibility>
+                  <relation name="labelled-by">name_label</relation>
+                </accessibility>
                 <property name="hexpand">True</property>
                 <property name="width-chars">30</property>
               </object>
@@ -63,6 +66,9 @@
         </child>
         <child>
           <object class="GtkEntry" id="passphrase_entry">
+            <accessibility>
+              <relation name="labelled-by">passphrase_label</relation>
+            </accessibility>
             <property name="visible">False</property>
             <property name="placeholder-text" translatable="yes">Enter a password here.</property>
             <property name="input-purpose">password</property>

@@ -203,6 +203,8 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, second_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, third_caption);
+
+    gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_GRID_CELL);
 }
 
 static void

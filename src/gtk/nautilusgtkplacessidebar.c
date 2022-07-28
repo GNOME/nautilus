@@ -3976,6 +3976,11 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
                                    entries, G_N_ELEMENTS (entries),
                                    sidebar);
   gtk_widget_insert_action_group (GTK_WIDGET (sidebar), "row", sidebar->row_actions);
+
+  gtk_accessible_update_property (GTK_ACCESSIBLE (sidebar),
+                                  GTK_ACCESSIBLE_PROPERTY_LABEL, _("Sidebar"),
+                                  GTK_ACCESSIBLE_PROPERTY_DESCRIPTION,
+                                  _("List of common shortcuts, mountpoints, and bookmarks."), -1);
 }
 
 static void
@@ -4515,6 +4520,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
   g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
 
   gtk_widget_class_set_css_name (widget_class, "placessidebar");
+  gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_LIST);
 }
 
 /*

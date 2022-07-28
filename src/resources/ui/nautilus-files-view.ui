@@ -2,6 +2,10 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusFilesView" parent="AdwBin">
+    <accessibility>
+      <property name="label" translatable="yes">Content View</property>
+      <property name="description" translatable="yes">View of the current folder</property>
+    </accessibility>
     <child>
       <object class="GtkOverlay" id="overlay">
         <property name="hexpand">True</property>

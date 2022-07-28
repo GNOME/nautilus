@@ -154,6 +154,10 @@
     </child>
   </object>
   <template class="NautilusGtkPlacesView" parent="GtkBox">
+    <accessibility>
+      <property name="label" translatable="yes">Other Locations</property>
+      <property name="description" translatable="yes">List of common local and remote mountpoints.</property>
+    </accessibility>
     <property name="orientation">1</property>
     <child>
       <object class="GtkStack" id="stack">

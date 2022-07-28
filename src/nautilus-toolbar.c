@@ -1195,6 +1195,8 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
 
     gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
+
+    gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
 }
 
 GtkWidget *

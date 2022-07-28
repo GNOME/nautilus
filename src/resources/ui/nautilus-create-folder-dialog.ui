@@ -21,7 +21,11 @@
           </object>
         </child>
         <child>
-          <object class="GtkEntry" id="name_entry"/>
+          <object class="GtkEntry" id="name_entry">
+            <accessibility>
+              <relation name="labelled-by">name_label</relation>
+            </accessibility>
+          </object>
         </child>
         <child>
           <object class="GtkRevealer" id="error_revealer">

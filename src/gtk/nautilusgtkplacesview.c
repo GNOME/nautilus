@@ -2418,6 +2418,7 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
   gtk_widget_class_install_action (widget_class, "location.properties", NULL, properties_cb);
 
   gtk_widget_class_set_css_name (widget_class, "placesview");
+  gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_LIST);
 }
 
 static void

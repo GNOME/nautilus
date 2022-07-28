@@ -3030,9 +3030,6 @@ create_empty_trash_prompt (GtkWindow *parent_window)
                             _("Empty _Trash"), GTK_RESPONSE_ACCEPT, NULL);
     gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
     gtk_window_set_title (GTK_WINDOW (dialog), "");
-#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
-    atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
-#endif
 
     return dialog;
 }

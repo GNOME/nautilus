@@ -9537,9 +9537,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
     GtkBuilder *builder;
-#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
-    AtkObject *atk_object;
-#endif
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
     GtkEventController *controller;
@@ -9669,13 +9666,6 @@ nautilus_files_view_init (NautilusFilesView *view)
                               G_CALLBACK (schedule_update_context_menus), view);
 
     priv->in_destruction = FALSE;
-
-#if 0 && NAUTILUS_A11Y_NEEDS_GTK4_REIMPLEMENTATION
-    /* Accessibility */
-    atk_object = gtk_widget_get_accessible (GTK_WIDGET (view));
-    atk_object_set_name (atk_object, _("Content View"));
-    atk_object_set_description (atk_object, _("View of the current folder"));
-#endif
 
     priv->view_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (priv->view_action_group),
