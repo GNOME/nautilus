@@ -146,6 +146,10 @@ nautilus_places_view_finalize (GObject *object)
     NautilusPlacesView *self = (NautilusPlacesView *) object;
     NautilusPlacesViewPrivate *priv = nautilus_places_view_get_instance_private (self);
 
+    g_signal_handlers_disconnect_by_func (self, loading_cb, priv->places_view);
+    g_signal_handlers_disconnect_by_func (self, open_location_cb, priv->places_view);
+    g_signal_handlers_disconnect_by_func (self, show_error_message_cb, priv->places_view);
+
     g_clear_object (&priv->location);
     g_clear_object (&priv->search_query);
 
