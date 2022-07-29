@@ -361,8 +361,6 @@ bind_cell (GtkSignalListItemFactory *factory,
          * that's why we need to complete the widget setup process here, on the
          * first time ::bind is emitted. */
         parent = gtk_widget_get_parent (cell);
-        gtk_widget_set_halign (parent, GTK_ALIGN_CENTER);
-        gtk_widget_set_valign (parent, GTK_ALIGN_START);
         gtk_widget_set_margin_top (parent, 3);
         gtk_widget_set_margin_bottom (parent, 3);
         gtk_widget_set_margin_start (parent, 3);
