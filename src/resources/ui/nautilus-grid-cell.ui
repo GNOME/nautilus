@@ -2,6 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusGridCell" parent="NautilusViewCell">
+    <property name="valign">start</property>
     <child>
       <object class="AdwClamp">
         <property name="maximum-size">0</property>
