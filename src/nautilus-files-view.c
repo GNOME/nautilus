@@ -55,6 +55,7 @@
 #include "nautilus-batch-rename-utilities.h"
 #include "nautilus-clipboard.h"
 #include "nautilus-compress-dialog-controller.h"
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
@@ -2508,6 +2509,50 @@ action_new_folder_with_selection (GSimpleAction *action,
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     nautilus_files_view_new_folder (NAUTILUS_FILES_VIEW (user_data), TRUE);
+}
+
+static void
+real_open_console (NautilusFile      *file,
+                   NautilusFilesView *view)
+{
+    GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (view));
+    GVariant *parameters;
+    g_autofree gchar *uri = NULL;
+
+    uri = nautilus_file_get_uri (file);
+    parameters = g_variant_new_parsed ("([%s], @a{sv} {})", uri);
+    nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                 NAUTILUS_DBUS_LAUNCHER_CONSOLE,
+                                 "Open",
+                                 parameters, GTK_WINDOW (window));
+}
+
+static void
+action_open_console (GSimpleAction *action,
+                     GVariant      *state,
+                     gpointer       user_data)
+{
+    g_autolist (NautilusFile) selection = NULL;
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (user_data));
+    g_return_if_fail (selection != NULL && g_list_length (selection) == 1);
+
+    real_open_console (NAUTILUS_FILE (selection->data), NAUTILUS_FILES_VIEW (user_data));
+}
+
+static void
+action_current_dir_open_console (GSimpleAction *action,
+                                 GVariant      *state,
+                                 gpointer       user_data)
+{
+    NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    real_open_console (priv->directory_as_file, view);
 }
 
 static void
@@ -7083,6 +7128,8 @@ const GActionEntry view_entries[] =
     { "extract-to", action_extract_to },
     { "compress", action_compress },
     { "send-email", action_send_email },
+    { "console", action_open_console },
+    { "current-directory-console", action_current_dir_open_console },
     { "properties", action_properties},
     { "current-directory-properties", action_current_dir_properties},
     { "run-in-terminal", action_run_in_terminal },
@@ -7774,6 +7821,17 @@ real_update_actions_state (NautilusFilesView *view)
                                  !selection_is_read_only && !selection_contains_recent &&
                                  can_paste_files_into && !selection_contains_starred);
 
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "console");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 selection_count == 1 && nautilus_file_is_directory (selection->data) &&
+                                 nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get (),
+                                                                      NAUTILUS_DBUS_LAUNCHER_CONSOLE));
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "current-directory-console");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 nautilus_dbus_launcher_is_available (nautilus_dbus_launcher_get (),
+                                                                      NAUTILUS_DBUS_LAUNCHER_CONSOLE));
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "properties");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),

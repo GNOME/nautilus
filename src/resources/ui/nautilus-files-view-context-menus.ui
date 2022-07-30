@@ -55,6 +55,13 @@
     <section id="background-extensions-section"/>
     <section>
       <item>
+        <attribute name="label" translatable="yes">Open in Consol_e</attribute>
+        <attribute name="action">view.current-directory-console</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">P_roperties</attribute>
         <attribute name="action">view.current-directory-properties</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
@@ -255,6 +262,13 @@
       <item>
         <attribute name="label" translatable="yes" context="menu item" comments="Unmarks a file as starred (starred)">Unstar</attribute>
         <attribute name="action">view.unstar</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Open in Consol_e</attribute>
+        <attribute name="action">view.console</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>
