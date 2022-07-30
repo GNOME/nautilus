@@ -118,92 +118,101 @@
           </object>
         </child>
         <child type="start">
-          <object class="GtkToggleButton" id="show_sidebar_button">
-            <property name="visible" bind-source="NautilusToolbar" bind-property="show-sidebar-button" bind-flags="bidirectional|sync-create"/>
-            <property name="active" bind-source="NautilusToolbar" bind-property="sidebar-button-active" bind-flags="bidirectional|sync-create"/>
-            <property name="tooltip-text" translatable="yes">Show sidebar</property>
-            <property name="icon-name">sidebar-show-symbolic</property>
-          </object>
-        </child>
-        <child type="start">
-          <object class="GtkRevealer">
-            <property name="reveal-child" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
-            <property name="transition-type">slide-right</property>
-            <property name="child">
-              <object class="GtkBox">
-                <property name="spacing">6</property>
-                <child>
-                  <object class="NautilusHistoryControls">
-                    <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <style>
-                      <class name="spacer"/>
-                    </style>
-                  </object>
-                </child>
+          <object class="GtkBox">
+            <child>
+              <object class="GtkToggleButton" id="show_sidebar_button">
+                <property name="visible" bind-source="NautilusToolbar" bind-property="show-sidebar-button" bind-flags="bidirectional|sync-create"/>
+                <property name="active" bind-source="NautilusToolbar" bind-property="sidebar-button-active" bind-flags="bidirectional|sync-create"/>
+                <property name="tooltip-text" translatable="yes">Show sidebar</property>
+                <property name="icon-name">sidebar-show-symbolic</property>
               </object>
-            </property>
-          </object>
-        </child>
-        <child type="end">
-          <object class="GtkMenuButton" id="app_button">
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="icon_name">open-menu-symbolic</property>
-            <property name="popover">
-              <object class="GtkPopoverMenu">
-                <property name="menu-model">app_menu</property>
-                <child type="zoom-out">
-                  <object class="GtkButton">
-                    <property name="icon-name">zoom-out-symbolic</property>
-                    <property name="action-name">view.zoom-out</property>
-                    <property name="tooltip-text">Zoom out</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
+            </child>
+            <child>
+              <object class="GtkRevealer">
+                <property name="reveal-child" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
+                <property name="transition-type">slide-right</property>
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="NautilusHistoryControls">
+                        <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <style>
+                          <class name="spacer"/>
+                        </style>
+                      </object>
+                    </child>
                   </object>
-                </child>
-                <child type="zoom-in">
-                  <object class="GtkButton">
-                    <property name="icon-name">zoom-in-symbolic</property>
-                    <property name="action-name">view.zoom-in</property>
-                    <property name="tooltip-text">Zoom in</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
-                  </object>
-                </child>
+                </property>
               </object>
-            </property>
+            </child>
           </object>
         </child>
         <child type="end">
-          <object class="GtkRevealer">
-            <property name="reveal-child" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
-            <property name="transition-type">slide-left</property>
-            <property name="child">
-              <object class="GtkBox">
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkSeparator">
-                    <style>
-                      <class name="spacer"/>
-                    </style>
+          <object class="GtkBox">
+            <child>
+              <object class="GtkRevealer">
+                <property name="reveal-child" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
+                <property name="transition-type">slide-left</property>
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="spacing">6</property>
+                    <property name="margin-end">6</property>
+                    <child>
+                      <object class="GtkSeparator">
+                        <style>
+                          <class name="spacer"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="NautilusProgressIndicator"/>
+                    </child>
+                    <child>
+                      <object class="NautilusViewControls">
+                        <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+                      </object>
+                    </child>
                   </object>
-                </child>
-                <child>
-                  <object class="NautilusProgressIndicator"/>
-                </child>
-                <child>
-                  <object class="NautilusViewControls">
-                    <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
-                  </object>
-                </child>
+                </property>
               </object>
-            </property>
+            </child>
+            <child>
+              <object class="GtkMenuButton" id="app_button">
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="icon_name">open-menu-symbolic</property>
+                <property name="popover">
+                  <object class="GtkPopoverMenu">
+                    <property name="menu-model">app_menu</property>
+                    <child type="zoom-out">
+                      <object class="GtkButton">
+                        <property name="icon-name">zoom-out-symbolic</property>
+                        <property name="action-name">view.zoom-out</property>
+                        <property name="tooltip-text">Zoom out</property>
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child type="zoom-in">
+                      <object class="GtkButton">
+                        <property name="icon-name">zoom-in-symbolic</property>
+                        <property name="action-name">view.zoom-in</property>
+                        <property name="tooltip-text">Zoom in</property>
+                        <style>
+                          <class name="flat"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
