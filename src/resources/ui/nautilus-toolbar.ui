@@ -120,11 +120,16 @@
         <child type="start">
           <object class="GtkBox">
             <child>
-              <object class="GtkToggleButton" id="show_sidebar_button">
-                <property name="visible" bind-source="NautilusToolbar" bind-property="show-sidebar-button" bind-flags="bidirectional|sync-create"/>
-                <property name="active" bind-source="NautilusToolbar" bind-property="sidebar-button-active" bind-flags="bidirectional|sync-create"/>
-                <property name="tooltip-text" translatable="yes">Show sidebar</property>
-                <property name="icon-name">sidebar-show-symbolic</property>
+              <object class="GtkRevealer">
+                <property name="reveal-child" bind-source="NautilusToolbar" bind-property="show-sidebar-button" bind-flags="bidirectional|sync-create"/>
+                <property name="transition-type">slide-right</property>
+                <property name="child">
+                  <object class="GtkToggleButton" id="show_sidebar_button">
+                    <property name="active" bind-source="NautilusToolbar" bind-property="sidebar-button-active" bind-flags="bidirectional|sync-create"/>
+                    <property name="tooltip-text" translatable="yes">Show sidebar</property>
+                    <property name="icon-name">sidebar-show-symbolic</property>
+                  </object>
+                </property>
               </object>
             </child>
             <child>
