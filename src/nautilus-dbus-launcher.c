@@ -215,6 +215,7 @@ nautilus_dbus_launcher_init (NautilusDBusLauncher *self)
 {
     nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_SETTINGS, FALSE);
     nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_DISKS, TRUE);
+    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_CONSOLE, TRUE);
 
     nautilus_dbus_launcher_create_proxy (self->data[NAUTILUS_DBUS_LAUNCHER_SETTINGS],
                                          "org.gnome.Settings", "/org/gnome/Settings",
@@ -223,4 +224,8 @@ nautilus_dbus_launcher_init (NautilusDBusLauncher *self)
     nautilus_dbus_launcher_create_proxy (self->data[NAUTILUS_DBUS_LAUNCHER_DISKS],
                                          "org.gnome.DiskUtility", "/org/gnome/DiskUtility",
                                          "org.gtk.Application");
+
+    nautilus_dbus_launcher_create_proxy (self->data[NAUTILUS_DBUS_LAUNCHER_CONSOLE],
+                                         "org.gnome.Console", "/org/gnome/Console",
+                                         "org.freedesktop.Application");
 }
