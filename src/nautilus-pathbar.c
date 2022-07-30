@@ -279,6 +279,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
     self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "button-menu")));
     self->button_menu_popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (self->button_menu));
     gtk_widget_set_parent (self->button_menu_popover, GTK_WIDGET (self));
+    gtk_popover_set_has_arrow (GTK_POPOVER (self->button_menu_popover), FALSE);
+    gtk_widget_set_halign (self->button_menu_popover, GTK_ALIGN_START);
 
     /* Add current location menu, which matches the view's background context menu */
     gtk_builder_add_from_resource (builder,
@@ -392,15 +394,6 @@ get_dir_name (ButtonData *button_data)
 static void
 button_data_free (ButtonData *button_data)
 {
-    NautilusPathBar *self;
-    self = button_data->path_bar;
-    if (self != NULL && self->button_menu_popover != NULL)
-    {
-        g_object_ref (self->button_menu_popover);
-        gtk_widget_unparent (self->button_menu_popover);
-        gtk_widget_set_parent (self->button_menu_popover, GTK_WIDGET (self));
-        g_object_unref (self->button_menu_popover);
-    }
     g_object_unref (button_data->path);
     g_free (button_data->dir_name);
     if (button_data->file != NULL)
@@ -601,6 +594,7 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     NautilusPathBar *self;
     guint current_button;
     GdkModifierType state;
+    double x_in_pathbar, y_in_pathbar;
 
     if (n_press != 1)
     {
@@ -611,6 +605,11 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     self = button_data->path_bar;
     current_button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
+
+    gtk_widget_translate_coordinates (GTK_WIDGET (button_data->button),
+                                      GTK_WIDGET (self),
+                                      x, y,
+                                      &x_in_pathbar, &y_in_pathbar);
 
     switch (current_button)
     {
@@ -633,15 +632,8 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
             }
             else
             {
-                /* Hold a reference to keep the popover from destroying itself
-                 * when unparented. */
-                g_object_ref (self->button_menu_popover);
-                gtk_widget_unparent (self->button_menu_popover);
-                gtk_widget_set_parent (self->button_menu_popover,
-                                       button_data->button);
-                gtk_popover_present (GTK_POPOVER (self->button_menu_popover));
-                g_object_unref (self->button_menu_popover);
-
+                gtk_popover_set_pointing_to (GTK_POPOVER (self->button_menu_popover),
+                                             &(GdkRectangle){x_in_pathbar, y_in_pathbar, 0, 0});
                 pop_up_pathbar_context_menu (self, button_data->file);
             }
         }
