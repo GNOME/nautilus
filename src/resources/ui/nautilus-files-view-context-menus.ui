@@ -8,8 +8,7 @@
     </item>
     <submenu id="templates-submenu">
       <attribute name="label" translatable="yes">New _Document</attribute>
-      <attribute name="action">view.new-document</attribute>
-      <attribute name="hidden-when">action-disabled</attribute>
+      <attribute name="nautilus-menu-item">templates-submenu</attribute>
     </submenu>
     <item>
       <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
@@ -72,8 +71,7 @@
     </section>
     <submenu>
       <attribute name="label" translatable="yes">_Scripts</attribute>
-      <attribute name="action">view.scripts</attribute>
-      <attribute name="hidden-when">action-disabled</attribute>
+      <attribute name="nautilus-menu-item">scripts-submenu</attribute>
       <section id="scripts-submenu-section"/>
       <section>
         <item>
