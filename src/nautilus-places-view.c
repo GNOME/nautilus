@@ -23,7 +23,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-file.h"
-#include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
 
@@ -303,12 +302,6 @@ nautilus_places_view_set_search_query (NautilusView  *view,
     g_free (text);
 }
 
-static NautilusToolbarMenuSections *
-nautilus_places_view_get_toolbar_menu_sections (NautilusView *view)
-{
-    return NULL;
-}
-
 static gboolean
 nautilus_places_view_is_loading (NautilusView *view)
 {
@@ -344,7 +337,6 @@ nautilus_places_view_iface_init (NautilusViewInterface *iface)
     iface->set_selection = nautilus_places_view_set_selection;
     iface->get_search_query = nautilus_places_view_get_search_query;
     iface->set_search_query = nautilus_places_view_set_search_query;
-    iface->get_toolbar_menu_sections = nautilus_places_view_get_toolbar_menu_sections;
     iface->is_loading = nautilus_places_view_is_loading;
     iface->is_searching = nautilus_places_view_is_searching;
     iface->get_view_id = nautilus_places_view_get_view_id;

@@ -179,24 +179,6 @@ nautilus_view_get_view_id (NautilusView *view)
     return NAUTILUS_VIEW_GET_IFACE (view)->get_view_id (view);
 }
 
-/**
- * nautilus_view_get_toolbar_menu_sections:
- * @view: a #NautilusView
- *
- * Retrieves the menu sections to show in the main toolbar menu when this view
- * is active
- *
- * Returns: (transfer none): a #NautilusToolbarMenuSections with the sections to
- * be displayed
- */
-NautilusToolbarMenuSections *
-nautilus_view_get_toolbar_menu_sections (NautilusView *view)
-{
-    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections, NULL);
-
-    return NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections (view);
-}
-
 GMenuModel *
 nautilus_view_get_extensions_background_menu (NautilusView *view)
 {

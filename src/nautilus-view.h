@@ -22,7 +22,6 @@
 #include <gtk/gtk.h>
 
 #include "nautilus-query.h"
-#include "nautilus-toolbar-menu-sections.h"
 
 /* Keep values in sync with the org.gnome.nautilus.FolderView schema enums: */
 #define NAUTILUS_VIEW_LIST_ID            1
@@ -42,11 +41,6 @@ struct _NautilusViewInterface
         GTypeInterface parent;
 
         guint                           (*get_view_id)               (NautilusView         *view);
-        /*
-         * Returns the menu sections that should be shown in the toolbar menu
-         * when this view is active. Implementations must not return %NULL
-         */
-        NautilusToolbarMenuSections *   (*get_toolbar_menu_sections) (NautilusView         *view);
 
         /*
          * Returns the menu for the background click of extensions.
@@ -89,8 +83,6 @@ const gchar *                  nautilus_view_get_icon_name             (guint   
 const gchar *                        nautilus_view_get_tooltip               (guint                 view_id);
 
 guint                          nautilus_view_get_view_id               (NautilusView         *view);
-
-NautilusToolbarMenuSections *  nautilus_view_get_toolbar_menu_sections (NautilusView         *view);
 
 GFile *                        nautilus_view_get_location              (NautilusView         *view);
 

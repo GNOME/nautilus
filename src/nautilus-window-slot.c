@@ -54,7 +54,6 @@ enum
     PROP_ACTIVE = 1,
     PROP_WINDOW,
     PROP_ICON_NAME,
-    PROP_TOOLBAR_MENU_SECTIONS,
     PROP_EXTENSIONS_BACKGROUND_MENU,
     PROP_TEMPLATES_MENU,
     PROP_LOADING,
@@ -822,12 +821,6 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_ICON_NAME:
         {
             g_value_set_static_string (value, nautilus_window_slot_get_icon_name (self));
-        }
-        break;
-
-        case PROP_TOOLBAR_MENU_SECTIONS:
-        {
-            g_value_set_object (value, nautilus_window_slot_get_toolbar_menu_sections (self));
         }
         break;
 
@@ -2864,7 +2857,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
                                                                self, "templates-menu",
                                                                G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
@@ -3043,12 +3035,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              "The icon that represents the slot",
                              NULL,
                              G_PARAM_READABLE);
-
-    properties[PROP_TOOLBAR_MENU_SECTIONS] =
-        g_param_spec_pointer ("toolbar-menu-sections",
-                              "Menu sections for the toolbar menu",
-                              "The menu sections to add to the toolbar menu for this slot",
-                              G_PARAM_READABLE);
 
     properties[PROP_EXTENSIONS_BACKGROUND_MENU] =
         g_param_spec_object ("extensions-background-menu",
@@ -3356,18 +3342,6 @@ nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
             return NULL;
         }
     }
-}
-
-NautilusToolbarMenuSections *
-nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *self)
-{
-    NautilusView *view;
-
-    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
-
-    view = nautilus_window_slot_get_current_view (self);
-
-    return view ? nautilus_view_get_toolbar_menu_sections (view) : NULL;
 }
 
 gboolean

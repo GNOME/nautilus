@@ -258,8 +258,7 @@ typedef struct
     guint floating_bar_set_passthrough_timeout_id;
     GtkWidget *floating_bar;
 
-    /* Toolbar menu */
-    NautilusToolbarMenuSections *toolbar_menu_sections;
+    GMenuModel *sort_menu;
 
     /* Exposed menus, for the path bar etc. */
     GMenuModel *extensions_background_menu;
@@ -721,28 +720,6 @@ nautilus_files_view_reveal_selection (NautilusFilesView *view)
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
     NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_selection (view);
-}
-
-/**
- * nautilus_files_view_get_toolbar_menu_sections:
- * @view: a #NautilusFilesView
- *
- * Retrieves the menu sections that should be added to the toolbar menu when
- * this view is active
- *
- * Returns: (transfer none): a #NautilusToolbarMenuSections with the details of
- * which menu sections should be added to the menu
- */
-static NautilusToolbarMenuSections *
-nautilus_files_view_get_toolbar_menu_sections (NautilusView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
-
-    return priv->toolbar_menu_sections;
 }
 
 static GMenuModel *
@@ -3316,7 +3293,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->view_action_group);
     g_clear_object (&priv->background_menu_model);
     g_clear_object (&priv->selection_menu_model);
-    g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
     g_clear_object (&priv->rename_file_controller);
@@ -3325,7 +3301,7 @@ nautilus_files_view_finalize (GObject *object)
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
 
-    g_free (priv->toolbar_menu_sections);
+    g_clear_object (&priv->sort_menu);
 
     g_hash_table_destroy (priv->non_ready_files);
     g_hash_table_destroy (priv->pending_reveal);
@@ -8221,7 +8197,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
-    GMenuModel *sort_section = priv->toolbar_menu_sections->sort_section;
+    GMenuModel *sort_section = priv->sort_menu;
     const gchar *action;
     gint i;
 
@@ -9378,7 +9354,6 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
     iface->set_selection = nautilus_files_view_set_selection;
     iface->get_search_query = nautilus_files_view_get_search_query;
     iface->set_search_query = nautilus_files_view_set_search_query;
-    iface->get_toolbar_menu_sections = nautilus_files_view_get_toolbar_menu_sections;
     iface->is_searching = nautilus_files_view_is_searching;
     iface->is_loading = nautilus_files_view_is_loading;
     iface->get_view_id = nautilus_files_view_get_view_id;
@@ -9605,8 +9580,7 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     /* Toolbar menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
-    priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
-    priv->toolbar_menu_sections->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
+    priv->sort_menu = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
 
     g_signal_connect (view,
                       "end-file-changes",
@@ -9627,7 +9601,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_widget_init_template (GTK_WIDGET (view));
 
     gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (priv->sort_menu_button),
-                                    priv->toolbar_menu_sections->sort_section);
+                                    priv->sort_menu);
 
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
                                                   GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
