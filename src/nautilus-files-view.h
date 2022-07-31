@@ -38,10 +38,10 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_FILES_VIEW nautilus_files_view_get_type()
 
-G_DECLARE_DERIVABLE_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILES_VIEW, AdwBin)
+G_DECLARE_DERIVABLE_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILES_VIEW, GtkBox)
 
 struct _NautilusFilesViewClass {
-        AdwBinClass parent_class;
+        GtkBoxClass parent_class;
 
         /* The 'clear' signal is emitted to empty the view of its contents.
          * It must be replaced by each subclass.
@@ -321,5 +321,7 @@ void              nautilus_files_view_action_show_hidden_files   (NautilusFilesV
 
 GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesView      *view);
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);
+void              nautilus_files_view_set_sort_label             (NautilusFilesView      *view,
+                                                                  const gchar            *label);
 
 G_END_DECLS

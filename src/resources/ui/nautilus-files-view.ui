@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusFilesView" parent="AdwBin">
+  <template class="NautilusFilesView" parent="GtkBox">
+    <property name="orientation">vertical</property>
     <accessibility>
       <property name="label" translatable="yes">Content View</property>
       <property name="description" translatable="yes">View of the current folder</property>
     </accessibility>
+    <child>
+      <object class="GtkMenuButton" id="sort_menu_button">
+        <property name="halign">start</property>
+        <property name="valign">start</property>
+        <property name="always-show-arrow">true</property>
+        <property name="label">Sort</property>
+        <style>
+          <class name="caption-heading"/>
+          <class name="nautilus-sort-button"/>
+        </style>
+      </object>
+    </child>
     <child>
       <object class="GtkOverlay" id="overlay">
         <property name="hexpand">True</property>

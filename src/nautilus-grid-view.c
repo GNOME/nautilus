@@ -7,6 +7,8 @@
 #include "nautilus-list-base-private.h"
 #include "nautilus-grid-view.h"
 
+#include <glib/gi18n.h>
+
 #include "nautilus-grid-cell.h"
 #include "nautilus-global-preferences.h"
 
@@ -262,6 +264,64 @@ real_sort_directories_first_changed (NautilusFilesView *files_view)
 }
 
 static void
+update_sort_menu_label (NautilusGridView *self)
+{
+    const gchar *label;
+
+    switch (self->sort_type)
+    {
+        case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+        {
+            label = self->reversed ? _("Z-A") : _("A-Z");
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_MTIME:
+        {
+            label = self->reversed ? _("Last Modified") : _("First Modified");
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_SIZE:
+        {
+            label = self->reversed ? _("Size") : _("Size (ascending)");
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_TYPE:
+        {
+            label = self->reversed ? _("Type (reversed)") : _("Type");
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+        {
+            label = self->reversed ? _("Last Trashed") : _("First Trashed");
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE:
+        {
+            label = self->reversed ? _("Relevance") : _("Least Relevant");
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_RECENCY:
+        {
+            label = self->reversed ? _("Recency") : _("Recency (reversed)");
+        }
+        break;
+
+        default:
+        {
+            label = _("Sort");
+        }
+    }
+
+    nautilus_files_view_set_sort_label (NAUTILUS_FILES_VIEW (self), label);
+}
+
+static void
 action_sort_order_changed (GSimpleAction *action,
                            GVariant      *value,
                            gpointer       user_data)
@@ -286,6 +346,8 @@ action_sort_order_changed (GSimpleAction *action,
     set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
                                  target_name,
                                  self->reversed);
+
+    update_sort_menu_label (self);
 
     g_simple_action_set_state (action, value);
 }

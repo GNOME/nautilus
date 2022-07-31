@@ -144,8 +144,25 @@
 }
 
 /* Grid view */
+.nautilus-grid-view .nautilus-sort-button button {
+  min-height: 20px;
+  margin-left: 24px;
+  margin-right: 24px;
+  background: none;
+}
+.nautilus-grid-view .nautilus-sort-button button:not(:hover):not(:checked) {
+  opacity: 0.4;
+}
+
+.nautilus-grid-view scrolledwindow undershoot.top {
+  border-top: 1px solid @borders;
+}
+
 .nautilus-grid-view gridview {
-  padding: 15px;
+  padding-top: 12px;
+  padding-bottom: 21px;
+  padding-left: 21px;
+  padding-right: 21px;
 }
 
 .nautilus-grid-view gridview > child {

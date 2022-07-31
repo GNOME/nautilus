@@ -246,6 +246,7 @@ typedef struct
 
     GtkWidget *stack;
 
+    GtkWidget *sort_menu_button;
     GtkWidget *scrolled_window;
 
     /* Empty states */
@@ -348,7 +349,7 @@ static gboolean nautilus_files_view_is_read_only (NautilusFilesView *view);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
-                         ADW_TYPE_BIN,
+                         GTK_TYPE_BOX,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW, nautilus_files_view_iface_init)
                          G_ADD_PRIVATE (NautilusFilesView));
 
@@ -4840,6 +4841,15 @@ nautilus_files_view_get_content_widget (NautilusFilesView *view)
     priv = nautilus_files_view_get_instance_private (view);
 
     return priv->scrolled_window;
+}
+
+void
+nautilus_files_view_set_sort_label (NautilusFilesView *view,
+                                    const gchar       *label)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    gtk_menu_button_set_label (GTK_MENU_BUTTON (priv->sort_menu_button), label);
 }
 
 /* home_dir_in_selection()
@@ -9349,6 +9359,17 @@ nautilus_files_view_is_loading (NautilusView *view)
 }
 
 static void
+nautilus_files_view_constructed (GObject *object)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    G_OBJECT_CLASS (nautilus_files_view_parent_class)->constructed (object);
+
+    gtk_widget_set_visible (priv->sort_menu_button, NAUTILUS_IS_GRID_VIEW (self));
+}
+
+static void
 nautilus_files_view_iface_init (NautilusViewInterface *iface)
 {
     iface->get_location = nautilus_files_view_get_location;
@@ -9376,6 +9397,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
 
+    oclass->constructed = nautilus_files_view_constructed;
     oclass->dispose = nautilus_files_view_dispose;
     oclass->finalize = nautilus_files_view_finalize;
     oclass->get_property = nautilus_files_view_get_property;
@@ -9493,6 +9515,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-files-view.ui");
 
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, sort_menu_button);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, overlay);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, empty_view_page);
@@ -9603,6 +9626,9 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_type_ensure (NAUTILUS_TYPE_FLOATING_BAR);
     gtk_widget_init_template (GTK_WIDGET (view));
 
+    gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (priv->sort_menu_button),
+                                    priv->toolbar_menu_sections->sort_section);
+
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
                                                   GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
     gtk_widget_add_controller (priv->scrolled_window, controller);
@@ -9686,6 +9712,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_widget_insert_action_group (GTK_WIDGET (view),
                                     "view",
                                     G_ACTION_GROUP (priv->view_action_group));
+
     app = g_application_get_default ();
 
     /* NOTE: Please do not add any key here that could interfere with
