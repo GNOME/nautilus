@@ -3,17 +3,6 @@
   <requires lib="gtk" version="4.0"/>
   <object class="GtkPopoverMenu" id="back_menu"/>
   <object class="GtkPopoverMenu" id="forward_menu"/>
-  <menu id="view_menu">
-    <section>
-      <attribute name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</attribute>
-      <!--
-           Sort section.
-
-           The toolbar code assumes this is the second item of this menu model.
-           Its contents is provided by the view.
-      -->
-    </section>
-  </menu>
   <menu id="app_menu">
     <section>
       <item>
@@ -219,12 +208,10 @@
           </object>
         </child>
         <child type="end">
-          <object class="AdwSplitButton" id="view_split_button">
+          <object class="GtkToggleButton" id="view_toggle_button">
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="tooltip_text" translatable="yes" comments="Translators: This is a noun, meaning the options pertaining to the view.">View options</property>
             <property name="action_name">slot.files-view-mode-toggle</property>
-            <property name="menu-model">view_menu</property>
             <binding name="icon-name">
               <lookup name="icon-name">
                 <lookup name="window-slot">NautilusToolbar</lookup>

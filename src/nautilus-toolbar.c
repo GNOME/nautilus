@@ -71,8 +71,7 @@ struct _NautilusToolbar
     GtkWidget *operations_revealer;
     GtkWidget *operations_icon;
 
-    GtkWidget *view_split_button;
-    GMenuModel *view_menu;
+    GtkWidget *view_toggle_button;
 
     GtkWidget *app_button;
     GMenuModel *undo_redo_section;
@@ -1179,8 +1178,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_list);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_split_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
@@ -1276,19 +1274,7 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
 
     new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
 
-    gtk_widget_set_sensitive (self->view_split_button, (new_sections != NULL));
-    if (new_sections == NULL)
-    {
-        return;
-    }
-
-    /* Let's assume that sort section is the first item
-     * in view_menu, as per nautilus-toolbar.ui. */
-
-    sort_item = g_menu_item_new_from_model (self->view_menu, 0);
-    g_menu_remove (G_MENU (self->view_menu), 0);
-    g_menu_item_set_section (sort_item, new_sections->sort_section);
-    g_menu_insert_item (G_MENU (self->view_menu), 0, sort_item);
+    gtk_widget_set_sensitive (self->view_toggle_button, (new_sections != NULL));
 }
 
 
