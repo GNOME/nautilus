@@ -8283,14 +8283,14 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    if (NULL == priv->selection_menu)
-    {
-        priv->selection_menu = gtk_popover_menu_new_from_model (NULL);
-        gtk_widget_set_parent (priv->selection_menu, GTK_WIDGET (view));
-        gtk_popover_set_has_arrow (GTK_POPOVER (priv->selection_menu), FALSE);
-        gtk_widget_set_halign (priv->selection_menu, GTK_ALIGN_START);
-        g_signal_connect (priv->selection_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
-    }
+    /* Destroy old popover and create a new one, to avoid duplicate submenu bugs
+     * and showing old model temporarily. We don't do this when popover is
+     * closed because it wouldn't activate the actions then. */
+    g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
+    priv->selection_menu = gtk_popover_menu_new_from_model (NULL);
+    gtk_widget_set_parent (priv->selection_menu, GTK_WIDGET (view));
+    gtk_popover_set_has_arrow (GTK_POPOVER (priv->selection_menu), FALSE);
+    gtk_widget_set_halign (priv->selection_menu, GTK_ALIGN_START);
 
     gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->selection_menu),
                                      G_MENU_MODEL (priv->selection_menu_model));
@@ -8335,15 +8335,15 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
+    /* Destroy old popover and create a new one, to avoid duplicate submenu bugs
+     * and showing old model temporarily. We don't do this when popover is
+     * closed because it wouldn't activate the actions then. */
+    g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
+    priv->background_menu = gtk_popover_menu_new_from_model (NULL);
+    gtk_widget_set_parent (priv->background_menu, GTK_WIDGET (view));
+    gtk_popover_set_has_arrow (GTK_POPOVER (priv->background_menu), FALSE);
+    gtk_widget_set_halign (priv->background_menu, GTK_ALIGN_START);
 
-    if (NULL == priv->background_menu)
-    {
-        priv->background_menu = gtk_popover_menu_new_from_model (NULL);
-        gtk_widget_set_parent (priv->background_menu, GTK_WIDGET (view));
-        gtk_popover_set_has_arrow (GTK_POPOVER (priv->background_menu), FALSE);
-        gtk_widget_set_halign (priv->background_menu, GTK_ALIGN_START);
-        g_signal_connect (priv->background_menu, "destroy", G_CALLBACK (gtk_widget_unparent), NULL);
-    }
     gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->background_menu),
                                      G_MENU_MODEL (priv->background_menu_model));
 
