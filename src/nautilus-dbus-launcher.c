@@ -143,7 +143,7 @@ nautilus_dbus_launcher_create_proxy (NautilusDBusLauncherData *data,
 gboolean nautilus_dbus_launcher_is_available (NautilusDBusLauncher   *self,
                                               NautilusDBusLauncherApp app)
 {
-    return self->data[app]->error == NULL;
+    return self->data[app]->error == NULL && self->data[app]->proxy != NULL;
 }
 
 NautilusDBusLauncher *
