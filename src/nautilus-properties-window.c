@@ -781,7 +781,7 @@ update_name_field (NautilusPropertiesWindow *self)
 
         if (!nautilus_file_is_gone (file))
         {
-            g_autofree gchar *file_name;
+            g_autofree gchar *file_name = NULL;
 
             file_counter += 1;
             if (file_counter > 1)
@@ -822,7 +822,7 @@ file_list_get_string_attribute (GList      *file_list,
         }
         else
         {
-            g_autofree char *attr;
+            g_autofree char *attr = NULL;
             attr = nautilus_file_get_string_attribute_with_default (file, attribute_name);
             if (!g_str_equal (attr, first_attr))
             {
@@ -853,7 +853,7 @@ add_extension_page (NautilusPropertyPage     *property_page,
     GtkWidget *up_button;
     GtkWidget *box;
     const char *extension_type;
-    g_autofree char *navigation_label;
+    g_autofree char *navigation_label = NULL;
 
     row = adw_action_row_new ();
     image = gtk_image_new_from_icon_name ("go-next-symbolic");
@@ -3020,7 +3020,7 @@ create_permissions_row (NautilusPropertiesWindow *self,
                         FilterType                filter_type)
 {
     g_autoptr (GtkExpression) expression = NULL;
-    g_autoptr (GListModel) model;
+    g_autoptr (GListModel) model = NULL;
 
     expression = gtk_property_expression_new (NAUTILUS_TYPE_PERMISSION_ENTRY, NULL, "name");
     adw_combo_row_set_expression (row, expression);
