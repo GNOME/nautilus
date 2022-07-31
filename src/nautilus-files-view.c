@@ -247,6 +247,8 @@ typedef struct
     GtkWidget *stack;
 
     GtkWidget *sort_menu_button;
+    GMenuModel *sort_menu;
+
     GtkWidget *scrolled_window;
 
     /* Empty states */
@@ -257,8 +259,6 @@ typedef struct
     guint floating_bar_loading_timeout_id;
     guint floating_bar_set_passthrough_timeout_id;
     GtkWidget *floating_bar;
-
-    GMenuModel *sort_menu;
 
     /* Exposed menus, for the path bar etc. */
     GMenuModel *extensions_background_menu;
@@ -3300,8 +3300,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->compress_controller);
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
-
-    g_clear_object (&priv->sort_menu);
 
     g_hash_table_destroy (priv->non_ready_files);
     g_hash_table_destroy (priv->pending_reveal);
@@ -9491,6 +9489,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                                                  "/org/gnome/nautilus/ui/nautilus-files-view.ui");
 
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, sort_menu_button);
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, sort_menu);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, overlay);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, empty_view_page);
@@ -9545,7 +9544,6 @@ static void
 nautilus_files_view_init (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
-    GtkBuilder *builder;
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
     GtkEventController *controller;
@@ -9578,10 +9576,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    /* Toolbar menu */
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
-    priv->sort_menu = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
-
     g_signal_connect (view,
                       "end-file-changes",
                       G_CALLBACK (on_end_file_changes),
@@ -9595,13 +9589,8 @@ nautilus_files_view_init (NautilusFilesView *view)
                       G_CALLBACK (on_parent_changed),
                       NULL);
 
-    g_object_unref (builder);
-
     g_type_ensure (NAUTILUS_TYPE_FLOATING_BAR);
     gtk_widget_init_template (GTK_WIDGET (view));
-
-    gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (priv->sort_menu_button),
-                                    priv->sort_menu);
 
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
                                                   GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
