@@ -24,6 +24,7 @@ struct _NautilusDBusLauncher
 {
     GObject parent;
 
+    NautilusDBusLauncherApp last_app_initialized;
     NautilusDBusLauncherData *data[NAUTILUS_DBUS_LAUNCHER_N_APPS];
 };
 
@@ -165,7 +166,7 @@ nautilus_dbus_launcher_finalize (GObject *object)
 {
     NautilusDBusLauncher *self = NAUTILUS_DBUS_LAUNCHER (object);
 
-    for (gint i = 0; i < NAUTILUS_DBUS_LAUNCHER_N_APPS - 1; i++)
+    for (gint i = 1; i <= self->last_app_initialized; i++)
     {
         g_clear_object (&self->data[i]->proxy);
         g_clear_object (&self->data[i]->error);
@@ -187,10 +188,13 @@ nautilus_dbus_launcher_class_init (NautilusDBusLauncherClass *klass)
     object_class->finalize = nautilus_dbus_launcher_finalize;
 }
 
-static NautilusDBusLauncherData *
-nautilus_dbus_launcher_data_new (gboolean ping_on_creation)
+static void
+nautilus_dbus_launcher_data_init (NautilusDBusLauncher    *self,
+                                  NautilusDBusLauncherApp  app,
+                                  gboolean                 ping_on_creation)
 {
     NautilusDBusLauncherData *data;
+    g_assert_true (app == self->last_app_initialized + 1);
 
     data = g_new0 (NautilusDBusLauncherData, 1);
     data->proxy = NULL;
@@ -198,14 +202,15 @@ nautilus_dbus_launcher_data_new (gboolean ping_on_creation)
     data->ping_on_creation = ping_on_creation;
     data->cancellable = g_cancellable_new ();
 
-    return data;
+    self->data[app] = data;
+    self->last_app_initialized = app;
 }
 
 static void
 nautilus_dbus_launcher_init (NautilusDBusLauncher *self)
 {
-    self->data[NAUTILUS_DBUS_LAUNCHER_SETTINGS] = nautilus_dbus_launcher_data_new (FALSE);
-    self->data[NAUTILUS_DBUS_LAUNCHER_DISKS] = nautilus_dbus_launcher_data_new (TRUE);
+    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_SETTINGS, FALSE);
+    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_DISKS, TRUE);
 
     nautilus_dbus_launcher_create_proxy (self->data[NAUTILUS_DBUS_LAUNCHER_SETTINGS],
                                          "org.gnome.Settings", "/org/gnome/Settings",
