@@ -7087,9 +7087,7 @@ const GActionEntry view_entries[] =
     { "paste_accel", action_paste_files_accel },
     { "create-link", action_create_links },
     { "create-link-shortcut", action_create_links },
-    { "new-document" },
     /* Selection menu */
-    { "scripts" },
     { "new-folder-with-selection", action_new_folder_with_selection },
     { "open-scripts-folder", action_open_scripts_folder },
     { "open-item-location", action_open_item_location },
@@ -7794,11 +7792,6 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  show_detect_media);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "scripts");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 priv->scripts_menu != NULL);
-
     /* Background menu actions */
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "open-current-directory-with-other-application");
@@ -7840,13 +7833,6 @@ real_update_actions_state (NautilusFilesView *view)
                                          "current-directory-properties");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !selection_contains_search);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "new-document");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 can_create_files &&
-                                 !selection_contains_recent &&
-                                 !selection_contains_starred &&
-                                 priv->templates_menu != NULL);
 
     /* Actions that are related to the clipboard need request, request the data
      * and update them once we have the data */
@@ -7961,6 +7947,8 @@ update_selection_menu (NautilusFilesView *view,
     gboolean show_start;
     gboolean show_stop;
     gboolean show_detect_media;
+    gboolean show_scripts = FALSE;
+    gint i;
     GDriveStartStopType start_stop_type;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
@@ -8185,8 +8173,20 @@ update_selection_menu (NautilusFilesView *view,
         update_scripts_menu (view, builder);
         priv->scripts_menu_updated = TRUE;
     }
-    object = gtk_builder_get_object (builder, "scripts-submenu-section");
-    nautilus_gmenu_set_from_model (G_MENU (object), priv->scripts_menu);
+
+    if (priv->scripts_menu != NULL)
+    {
+        show_scripts = TRUE;
+        object = gtk_builder_get_object (builder, "scripts-submenu-section");
+        nautilus_gmenu_set_from_model (G_MENU (object), priv->scripts_menu);
+    }
+
+    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (priv->selection_menu_model),
+                                              "nautilus-menu-item",
+                                              "scripts-submenu");
+    nautilus_g_menu_replace_string_in_item (priv->selection_menu_model, i,
+                                            "hidden-when",
+                                            (!show_scripts) ? "action-missing" : NULL);
 }
 
 static void
@@ -8195,6 +8195,8 @@ update_background_menu (NautilusFilesView *view,
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     GObject *object;
+    gboolean remove_submenu = TRUE;
+    gint i;
 
     if (nautilus_files_view_supports_creating_files (view) &&
         !showing_recent_directory (view) &&
@@ -8208,7 +8210,19 @@ update_background_menu (NautilusFilesView *view,
 
         object = gtk_builder_get_object (builder, "templates-submenu");
         nautilus_gmenu_set_from_model (G_MENU (object), priv->templates_menu);
+
+        if (priv->templates_menu != NULL)
+        {
+            remove_submenu = FALSE;
+        }
     }
+
+    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (priv->background_menu_model),
+                                              "nautilus-menu-item",
+                                              "templates-submenu");
+    nautilus_g_menu_replace_string_in_item (priv->background_menu_model, i,
+                                            "hidden-when",
+                                            remove_submenu ? "action-missing" : NULL);
 }
 
 static void

@@ -6,11 +6,11 @@
       <attribute name="label" translatable="yes">New _Folder</attribute>
       <attribute name="action">view.new-folder</attribute>
     </item>
-    <submenu id="templates-submenu">
+    <item>
       <attribute name="label" translatable="yes">New _Document</attribute>
-      <attribute name="action">view.new-document</attribute>
-      <attribute name="hidden-when">action-disabled</attribute>
-    </submenu>
+      <attribute name="nautilus-menu-item">templates-submenu</attribute>
+      <link name="submenu" id="templates-submenu"/>
+    </item>
     <item>
       <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
       <attribute name="action">win.bookmark-current-location</attribute>
@@ -79,8 +79,7 @@
     </section>
     <submenu>
       <attribute name="label" translatable="yes">_Scripts</attribute>
-      <attribute name="action">view.scripts</attribute>
-      <attribute name="hidden-when">action-disabled</attribute>
+      <attribute name="nautilus-menu-item">scripts-submenu</attribute>
       <section id="scripts-submenu-section"/>
       <section>
         <item>
