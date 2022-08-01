@@ -15,7 +15,7 @@
 typedef struct
 {
     GDBusProxy *proxy;
-    GError *error;
+    gchar *error;
     GCancellable *cancellable;
     gboolean ping_on_creation;
 } NautilusDBusLauncherData;
@@ -59,11 +59,15 @@ on_nautilus_dbus_launcher_ping_finished   (GObject      *source_object,
                                            gpointer      user_data)
 {
     NautilusDBusLauncherData *data = user_data;
-    GError *error = NULL;
+    g_autoptr (GError) error = NULL;
 
     g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
 
-    data->error = error;
+    if (error != NULL)
+    {
+        data->error = g_strdup (error->message);
+    }
+
     g_clear_object (&data->cancellable);
 }
 
@@ -100,14 +104,14 @@ on_nautilus_dbus_proxy_ready (GObject      *source_object,
                               gpointer      user_data)
 {
     NautilusDBusLauncherData *data = user_data;
-    GError *error = NULL;
+    g_autoptr (GError) error = NULL;
 
     data->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 
     if (error != NULL)
     {
         g_warning ("Error creating proxy %s", error->message);
-        data->error = error;
+        data->error = g_strdup (error->message);
         g_clear_object (&data->cancellable);
     }
     else if (data->ping_on_creation)
@@ -169,7 +173,7 @@ nautilus_dbus_launcher_finalize (GObject *object)
     for (gint i = 1; i <= self->last_app_initialized; i++)
     {
         g_clear_object (&self->data[i]->proxy);
-        g_clear_object (&self->data[i]->error);
+        g_free (self->data[i]->error);
         g_cancellable_cancel (self->data[i]->cancellable);
         g_clear_object (&self->data[i]->cancellable);
         g_free (self->data[i]);
