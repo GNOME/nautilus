@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-06-16 08:35+0000\n"
-"PO-Revision-Date: 2022-06-26 13:50+0300\n"
+"POT-Creation-Date: 2022-07-02 18:43+0000\n"
+"PO-Revision-Date: 2022-07-29 13:54+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -28,11 +28,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
-msgstr "Запуск приложения"
+msgstr "Запустить Центр приложений"
 
 #. “Files” is the generic application name and the suffix is
 #. * an arbitrary and deliberately unlocalized string only shown
@@ -303,7 +303,7 @@ msgid ""
 "to load or use lots of memory."
 msgstr ""
 "Для изображений, чей размер (в мегабайтах) превышает заданный здесь, файлы "
-"миниатюр создаваться не будут. Цель этого параметра — избежать построения "
+"миниатюр создаваться не будут. Цель этой настройки — избежать построения "
 "миниатюр для больших изображений, для которых может потребоваться много "
 "времени на загрузку или много памяти."
 
@@ -370,7 +370,7 @@ msgstr "Тип вида используемый при поиске"
 msgid ""
 "When searching Nautilus will switch to the type of view in this setting."
 msgstr ""
-"При поиске Nautilus переключает вид на тип, указанный в этом параметре."
+"При поиске Nautilus переключает вид на тип, указанный в этой настройке."
 
 #: data/org.gnome.nautilus.gschema.xml:193
 msgid ""
@@ -891,7 +891,7 @@ msgstr "Фокусное расстояние"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:246
 msgid "Software"
-msgstr "Программы"
+msgstr "Центр приложений"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:247
 #: src/nautilus-batch-rename-dialog.h:163
@@ -981,7 +981,7 @@ msgid ""
 "%s"
 msgstr ""
 "Не удалось создать требуемую папку. Создайте следующую папку или установите "
-"такие права доступа, чтобы было возможно создать папку:\n"
+"такие разрешения, чтобы было возможно создать папку:\n"
 "%s"
 
 #: src/nautilus-application.c:192
@@ -992,7 +992,7 @@ msgid ""
 "%s"
 msgstr ""
 "Не удалось создать требуемые папки. Создайте следующие папки или установите "
-"такие права доступа, чтобы было возможно создать папки:\n"
+"такие разрешения, чтобы было возможно создать папки:\n"
 "%s"
 
 #: src/nautilus-application.c:607
@@ -1022,8 +1022,8 @@ msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
 "supported."
 msgstr ""
-"«%s» является внутренним протоколом. Открытие этого местоположения напрямую "
-"не поддерживается."
+"«%s» является внутренним протоколом. Открытие этого расположения напрямую не "
+"поддерживается."
 
 #: src/nautilus-application.c:1069
 msgid "Perform a quick set of self-check tests."
@@ -1306,11 +1306,11 @@ msgstr "Группа файла."
 #: src/nautilus-column-utilities.c:131
 #: src/resources/ui/nautilus-properties-window.ui:1275
 msgid "Permissions"
-msgstr "Права"
+msgstr "Разрешения"
 
 #: src/nautilus-column-utilities.c:132
 msgid "The permissions of the file."
-msgstr "Права на файл."
+msgstr "Разрешения для файла."
 
 #: src/nautilus-column-utilities.c:139
 msgid "Location"
@@ -1318,7 +1318,7 @@ msgstr "Адрес"
 
 #: src/nautilus-column-utilities.c:140
 msgid "The location of the file."
-msgstr "Местоположение файла."
+msgstr "Расположение файла."
 
 #: src/nautilus-column-utilities.c:147
 msgid "Modified — Time"
@@ -1350,11 +1350,11 @@ msgstr "Дата перемещения файла в корзину"
 
 #: src/nautilus-column-utilities.c:220
 msgid "Original Location"
-msgstr "Исходное местоположение"
+msgstr "Исходное расположение"
 
 #: src/nautilus-column-utilities.c:221
 msgid "Original location of file before moved to the Trash"
-msgstr "Исходное местоположение файла до перемещения в корзину"
+msgstr "Исходное расположение файла до перемещения в корзину"
 
 #: src/nautilus-column-utilities.c:239
 msgid "Relevance"
@@ -1458,7 +1458,7 @@ msgstr "Не удалось изменить права доступа к объ
 
 #: src/nautilus-error-reporting.c:218
 msgid "The permissions could not be changed."
-msgstr "Не удалось изменить права."
+msgstr "Не удалось изменить разрешения."
 
 #: src/nautilus-error-reporting.c:253
 #, c-format
@@ -2196,7 +2196,7 @@ msgstr "Невозможно переместить «%s» в корзину. У
 #: src/nautilus-file-operations.c:2396
 msgid "This remote location does not support sending items to the trash."
 msgstr ""
-"Это удалённое местоположение не поддерживает отправку объектов в корзину."
+"Это удалённое расположение не поддерживает отправку объектов в корзину."
 
 #: src/nautilus-file-operations.c:2693
 msgid "Trashing Files"
@@ -2651,7 +2651,7 @@ msgstr "Произошла ошибка при создании символьн
 
 #: src/nautilus-file-operations.c:7362
 msgid "Setting permissions"
-msgstr "Установка прав"
+msgstr "Настройка разрешений"
 
 #. localizers: the initial name of a new folder
 #: src/nautilus-file-operations.c:7641
@@ -3718,11 +3718,11 @@ msgstr "_Найти в Центре приложений"
 #: src/nautilus-mime-actions.c:1769 src/nautilus-mime-actions.c:2068
 #: src/gtk/nautilusgtkplacesview.c:1231 src/gtk/nautilusgtkplacesview.c:1329
 msgid "Unable to access location"
-msgstr "Не удалось получить доступ к местоположению"
+msgstr "Не удалось получить доступ к расположению"
 
 #: src/nautilus-mime-actions.c:2159
 msgid "Unable to start location"
-msgstr "Не удалось открыть местоположение"
+msgstr "Не удалось открыть расположение"
 
 #: src/nautilus-mime-actions.c:2252
 #, c-format
@@ -3970,7 +3970,7 @@ msgstr "Только на этом компьютере"
 
 #: src/nautilus-preferences-window.c:338
 msgid "All locations"
-msgstr "Все местоположения"
+msgstr "Все расположения"
 
 #: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
 #: src/nautilus-preferences-window.c:342
@@ -4353,7 +4353,7 @@ msgstr "_Восстановить"
 
 #: src/nautilus-trash-bar.c:258
 msgid "Restore selected items to their original position"
-msgstr "Восстановить выделенные объекты к исходным местоположениям"
+msgstr "Восстановить выделенные объекты к исходным расположениям"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: src/nautilus-trash-bar.c:262
@@ -4546,15 +4546,15 @@ msgstr ""
 
 #: src/nautilus-window-slot.c:1060
 msgid "Searching locations only"
-msgstr "Поиск только местоположений"
+msgstr "Поиск только расположений"
 
 #: src/nautilus-window-slot.c:1064
 msgid "Searching network locations only"
-msgstr "Поиск только сетевых местоположений"
+msgstr "Поиск только сетевых расположений"
 
 #: src/nautilus-window-slot.c:1069
 msgid "Remote location — only searching the current folder"
-msgstr "Удалённое местоположение — поиск только в текущей папке"
+msgstr "Удалённое расположение — поиск только в текущей папке"
 
 #: src/nautilus-window-slot.c:1073
 msgid "Only searching the current folder"
@@ -4608,8 +4608,8 @@ msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
 msgstr ""
-"Не удалось найти запрошенный адрес. Проверьте сетевые параметры и "
-"правильность ввода."
+"Не удалось найти запрошенный адрес. Проверьте настройки сети и правильность "
+"ввода."
 
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
@@ -5427,7 +5427,7 @@ msgstr "Нельзя изменить эти права, поскольку вы
 
 #: src/resources/ui/nautilus-properties-window.ui:804
 msgid "The permissions of the selected file could not be determined."
-msgstr "Не удалось определить права доступа к выделенному файлу."
+msgstr "Не удалось определить разрешения выбранного файла."
 
 #: src/resources/ui/nautilus-properties-window.ui:825
 msgid "_Owner"
@@ -5666,11 +5666,11 @@ msgstr "_Файлы"
 
 #: src/gtk/nautilusgtkplacesview.c:897
 msgid "Searching for network locations"
-msgstr "Поиск сетевых местоположений"
+msgstr "Поиск сетевых расположений"
 
 #: src/gtk/nautilusgtkplacesview.c:904
 msgid "No network locations found"
-msgstr "Сетевые местоположения не найдены"
+msgstr "Сетевые расположения не найдены"
 
 #. Restore from Cancel to Connect
 #: src/gtk/nautilusgtkplacesview.c:1249 src/gtk/nautilusgtkplacesview.ui:317
@@ -5728,7 +5728,7 @@ msgstr "dav:// или davs://"
 
 #: src/gtk/nautilusgtkplacesview.c:1900
 msgid "Unable to get remote server location"
-msgstr "Не удалось открыть удалённое местоположение"
+msgstr "Не удалось открыть удалённое расположение"
 
 #: src/gtk/nautilusgtkplacesview.c:2095 src/gtk/nautilusgtkplacesview.c:2104
 msgid "Networks"
@@ -5789,7 +5789,6 @@ msgstr "Недавние серверы"
 msgid "No results found"
 msgstr "Результатов не найдено"
 
-# заголовок диалогового окна
 #: src/gtk/nautilusgtkplacesview.ui:307
 msgid "Connect to _Server"
 msgstr "Подключиться к _серверу"
@@ -5797,3 +5796,215 @@ msgstr "Подключиться к _серверу"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Ввести адрес сервера…"
+
+#~ msgid "Details: The proxy has not been created."
+#~ msgstr "Подробности: Прокси-сервер не был создан."
+
+#~ msgid "No Starred Files"
+#~ msgstr "Избранных файлов нет"
+
+#~ msgid "No Recent Files"
+#~ msgstr "Недавних файлов нет"
+
+#~ msgid "Error sending email."
+#~ msgstr "Ошибка отправки эл. почты."
+
+#~ msgid "Operating System"
+#~ msgstr "Операционная система"
+
+#~ msgid "Read/write, no access"
+#~ msgstr "Чтение/запись, без доступа"
+
+#~ msgid "Write-only"
+#~ msgstr "Только запись"
+
+#~ msgid "Write-only, no access"
+#~ msgstr "Только запись, без доступа"
+
+#~ msgid "Access-only"
+#~ msgstr "Только доступ"
+
+#~ msgid "Multiple"
+#~ msgstr "Несколько"
+
+#, c-format
+#~ msgid "%s Filesystem"
+#~ msgstr "Файловая система %s"
+
+#~ msgid "Clear entry"
+#~ msgstr "Очистить запись"
+
+#~ msgid ""
+#~ "Turn on File Sharing to share the contents of this folder over the "
+#~ "network."
+#~ msgstr ""
+#~ "Включите общий доступ к файлам, чтобы открыть общий доступ к содержимому "
+#~ "этой папки по сети."
+
+#~ msgid "Sharing Settings"
+#~ msgstr "Настройки общего доступа"
+
+#~ msgid "No plugins currently installed."
+#~ msgstr "В настоящее время плагины не установлены."
+
+#~ msgid "Currently installed plugins:"
+#~ msgstr "Текущие установленные плагины:"
+
+#~ msgid "For bug testing only, the following command can be used:"
+#~ msgstr ""
+#~ "Только для тестирования ошибок, можно использовать следующую команду:"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Expand folder"
+#~ msgstr "Развернуть папку"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Collapse folder"
+#~ msgstr "Свернуть папку"
+
+#~ msgid "_Open With Other Application"
+#~ msgstr "Открыть в другом _приложении"
+
+#~ msgid "_Copy Location"
+#~ msgstr "_Копировать адрес"
+
+#~ msgid "Email…"
+#~ msgstr "Отправить по эл. почте…"
+
+#~ msgid "Unknown Filesystem"
+#~ msgstr "Неизвестная файловая система"
+
+#~ msgid "total"
+#~ msgstr "всего"
+
+#~ msgid "_Open With"
+#~ msgstr "_Открыть с помощью"
+
+#~ msgid "Parent Folder"
+#~ msgstr "Родительская папка"
+
+#~ msgid "Original Folder"
+#~ msgstr "Исходная папка"
+
+#~ msgid "Set Custom _Permissions"
+#~ msgstr "Установить пользовательские _разрешения"
+
+#~ msgid "Set Custom Permissions"
+#~ msgstr "Установить пользовательские разрешения"
+
+#~ msgid "Unknown Permissions"
+#~ msgstr "Неизвестные разрешения"
+
+#~ msgid "The permissions of the selected files could not be determined."
+#~ msgstr "Не удалось определить разрешения выбранных файлов."
+
+#~ msgid "No Recent Servers"
+#~ msgstr "Недавних серверов нет"
+
+#, c-format
+#~ msgid "%s does not exist in the bookmarks list"
+#~ msgstr "%s отсутствует в списке закладок"
+
+#, c-format
+#~ msgid "%s already exists in the bookmarks list"
+#~ msgstr "%s уже есть в списке закладок"
+
+#~ msgid "Eject"
+#~ msgstr "Извлечь"
+
+#~ msgid "Recent"
+#~ msgstr "Недавние"
+
+#~ msgid "Recent files"
+#~ msgstr "Недавние файлы"
+
+#~ msgid "Starred files"
+#~ msgstr "Избранные файлы"
+
+#~ msgid "Open your personal folder"
+#~ msgstr "Открыть личную папку"
+
+#~ msgid "Desktop"
+#~ msgstr "Рабочий стол"
+
+#~ msgid "Open the contents of your desktop in a folder"
+#~ msgstr "Открыть содержимое рабочего стола в папке"
+
+#~ msgid "Enter Location"
+#~ msgstr "Введите расположение"
+
+#~ msgid "Manually enter a location"
+#~ msgstr "Введите расположение вручную"
+
+# "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
+# на боковую панель даже без распаковки `%s'.
+#~ msgid "Open the trash"
+#~ msgstr "Открыть корзину"
+
+#, c-format
+#~ msgid "Mount and open “%s”"
+#~ msgstr "Смонтировать и открыть «%s»"
+
+#~ msgid "Open the contents of the file system"
+#~ msgstr "Открыть содержимое файловой системы"
+
+#~ msgid "New bookmark"
+#~ msgstr "Создать закладку"
+
+#~ msgid "Add a new bookmark"
+#~ msgstr "Добавить новую закладку"
+
+#~ msgid "Show other locations"
+#~ msgstr "Показать другие расположения"
+
+#, c-format
+#~ msgid "Error unlocking “%s”"
+#~ msgstr "Ошибка разблокировки «%s»"
+
+#~ msgid "This name is already taken"
+#~ msgstr "Это имя уже занято"
+
+#, c-format
+#~ msgid "Unable to stop “%s”"
+#~ msgstr "Не удалось остановить «%s»"
+
+#, c-format
+#~ msgid "Unable to poll “%s” for media changes"
+#~ msgstr "Не удалось опросить «%s» об изменении носителей"
+
+#~ msgid "_Add Bookmark"
+#~ msgstr "_Добавить закладку"
+
+#~ msgid "_Remove from Bookmarks"
+#~ msgstr "_Убрать из закладок"
+
+#~ msgid "Empty Trash"
+#~ msgstr "Очистить корзину"
+
+#~ msgid "_Power On"
+#~ msgstr "_Включить"
+
+#~ msgid "_Connect Drive"
+#~ msgstr "_Подключить диск"
+
+#~ msgid "_Start Multi-disk Device"
+#~ msgstr "_Запустить многодисковое устройство"
+
+#~ msgid "_Unlock Device"
+#~ msgstr "_Разблокировать устройство"
+
+#~ msgid "_Disconnect Drive"
+#~ msgstr "_Отключить диск"
+
+#~ msgid "_Stop Multi-disk Device"
+#~ msgstr "_Остановить многодисковое устройство"
+
+#~ msgid "_Lock Device"
+#~ msgstr "_Заблокировать устройство"
+
+#, c-format
+#~ msgid "Unable to unmount “%s”"
+#~ msgstr "Не удалось размонтировать «%s»"
+
+#~ msgid "_Remove"
+#~ msgstr "_Удалить"
