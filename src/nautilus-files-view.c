@@ -360,6 +360,11 @@ static char *   nautilus_files_view_get_uri (NautilusFilesView *view);
 static gboolean nautilus_files_view_should_show_file (NautilusFilesView *view,
                                                       NautilusFile      *file);
 
+static void     nautilus_files_view_new_file (NautilusFilesView *directory_view,
+                                              const char        *parent_uri,
+                                              const char        *target_filename,
+                                              NautilusFile      *source);
+
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
                          ADW_TYPE_BIN,
@@ -2050,8 +2055,25 @@ new_file_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
                                              NautilusFilesView                *self)
 {
     NautilusFilesViewPrivate *priv;
+    gchar *template_name = NULL;
+    g_autofree gchar *template_path = NULL;
+    g_autoptr (GFile) template_location = NULL;
+    g_autofree gchar *name = NULL;
+    g_autoptr (NautilusFile) file = NULL;
 
     priv = nautilus_files_view_get_instance_private (self);
+
+    template_name = nautilus_new_file_dialog_controller_get_template_name (NAUTILUS_NEW_FILE_DIALOG_CONTROLLER (controller));
+    name = nautilus_file_name_widget_controller_get_new_name (controller);
+
+    if (template_name != NULL)
+    {
+        template_path = g_build_filename (NAUTILUS_DATADIR, "templates", template_name, NULL);
+        template_location = g_file_new_for_path (template_path);
+        file = nautilus_file_get (template_location);
+    }
+
+    nautilus_files_view_new_file (self, NULL, name, file);
 
     g_clear_object (&priv->new_file_controller);
 
@@ -2410,6 +2432,7 @@ nautilus_files_view_new_file_with_initial_contents (NautilusFilesView *view,
 static void
 nautilus_files_view_new_file (NautilusFilesView *directory_view,
                               const char        *parent_uri,
+                              const char        *target_filename,
                               NautilusFile      *source)
 {
     NewFolderData *data;
@@ -2427,7 +2450,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
     {
         nautilus_files_view_new_file_with_initial_contents (directory_view,
                                                             parent_uri != NULL ? parent_uri : container_uri,
-                                                            NULL,
+                                                            target_filename,
                                                             NULL,
                                                             0);
         g_free (container_uri);
@@ -2440,7 +2463,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
 
     nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
                                                      parent_uri != NULL ? parent_uri : container_uri,
-                                                     NULL,
+                                                     target_filename,
                                                      source_uri,
                                                      new_folder_done, data);
 
