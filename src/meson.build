@@ -174,6 +174,8 @@ libnautilus_sources = [
   'nautilus-rename-file-popover-controller.h',
   'nautilus-templates-dialog.c',
   'nautilus-templates-dialog.h',
+  'nautilus-new-file-dialog-controller.c',
+  'nautilus-new-file-dialog-controller.h',
   'nautilus-new-folder-dialog-controller.c',
   'nautilus-new-folder-dialog-controller.h',
   'nautilus-compress-dialog-controller.c',

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkDialog" id="create_file_dialog">
+    <property name="title" translatable="yes">New File</property>
+    <property name="modal">True</property>
+    <property name="use-header-bar">1</property>
+    <property name="default-width">500</property>
+    <property name="default-height">450</property>
+    <child internal-child="content_area">
+      <object class="GtkBox">
+        <child>
+          <object class="AdwClamp">
+            <property name="margin_top">18</property>
+            <property name="margin_bottom">18</property>
+            <property name="margin_start">18</property>
+            <property name="margin_end">18</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <child>
+                      <object class="AdwEntryRow" id="name_entry">
+                        <property name="title" translatable="yes">File Name</property>
+                        <child>
+                          <object class="GtkLabel" id="extension_label">
+                            <property name="label">.txt</property>
+                            <attributes>
+                              <attribute name="weight" value="bold"/>
+                            </attributes>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="error_revealer">
+                    <property name="child">
+                      <object class="GtkLabel" id="error_label">
+                        <property name="xalign">0</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <child>
+                      <object class="AdwActionRow" id="text_action_row">
+                        <property name="icon-name">text-x-generic-symbolic</property>
+                        <property name="title" translatable="yes">_Text File</property>
+                        <property name="use-underline">true</property>
+                        <child>
+                          <object class="GtkCheckButton" id="text_check_button">
+                            <property name="active">True</property>
+                          </object>
+                        </child>
+                        <property name="activatable_widget">text_check_button</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="document_action_row">
+                        <property name="icon-name">x-office-document-symbolic</property>
+                        <property name="title" translatable="yes">_Document</property>
+                        <property name="use-underline">true</property>
+                        <child>
+                          <object class="GtkCheckButton" id="document_check_button">
+                            <property name="group">text_check_button</property>
+                          </object>
+                        </child>
+                        <property name="activatable_widget">document_check_button</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="spreadsheet_action_row">
+                        <property name="icon-name">x-office-spreadsheet-symbolic</property>
+                        <property name="title" translatable="yes">_Spreadsheet</property>
+                        <property name="use-underline">true</property>
+                        <child>
+                          <object class="GtkCheckButton" id="spreadsheet_check_button">
+                            <property name="group">text_check_button</property>
+                          </object>
+                        </child>
+                        <property name="activatable_widget">spreadsheet_check_button</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwActionRow" id="presentation_action_row">
+                        <property name="icon-name">x-office-presentation-symbolic</property>
+                        <property name="title" translatable="yes">_Presentation</property>
+                        <property name="use-underline">true</property>
+                        <child>
+                          <object class="GtkCheckButton" id="presentation_check_button">
+                            <property name="group">text_check_button</property>
+                          </object>
+                        </child>
+                        <property name="activatable_widget">presentation_check_button</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="cancel_button">
+        <property name="label" translatable="yes">_Cancel</property>
+        <property name="use-underline">true</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="ok_button">
+        <property name="label" translatable="yes">C_reate</property>
+        <property name="use-underline">true</property>
+        <property name="sensitive">False</property>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="ok" default="true">ok_button</action-widget>
+      <action-widget response="cancel">cancel_button</action-widget>
+    </action-widgets>
+  </object>
+</interface>
