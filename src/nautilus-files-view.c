@@ -7707,10 +7707,8 @@ real_update_actions_state (NautilusFilesView *view)
                                  !settings_show_create_link);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "send-email");
-    /* Show the email action is there's a default email client or if we are
-     * in a sandbox, you can't check the app info so always show */
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 (app_info_mailto != NULL || nautilus_application_is_sandboxed ()));
+                                 app_info_mailto != NULL);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "copy-to");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
@@ -8036,7 +8034,7 @@ update_selection_menu (NautilusFilesView *view,
     else if (show_extract)
     {
         item_label = nautilus_files_view_supports_extract_here (view) ?
-                     g_strdup (_("Extract Here")) :
+                     g_strdup (_("Extract")) :
                      g_strdup (_("Extract to…"));
     }
     else
@@ -8044,17 +8042,39 @@ update_selection_menu (NautilusFilesView *view,
         item_label = g_strdup (_("Open"));
     }
 
-    menu_item = g_menu_item_new (item_label, "view.open-with-default-application");
-    if (app_icon != NULL)
+    /* The action already exists in the submenu if item opens in view */
+    if (!item_opens_in_view)
     {
-        g_menu_item_set_icon (menu_item, app_icon);
+        menu_item = g_menu_item_new (item_label, "view.open-with-default-application");
+        if (app_icon != NULL)
+        {
+            g_menu_item_set_icon (menu_item, app_icon);
+        }
+
+        object = gtk_builder_get_object (builder, "open-with-application-section");
+        g_menu_prepend_item (G_MENU (object), menu_item);
+
+        g_object_unref (menu_item);
+    }
+    else
+    {
+        object = gtk_builder_get_object (builder, "open-with-application-section");
+        i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
+                                                  "nautilus-menu-item",
+                                                  "open_with_in_main_menu");
+        g_menu_remove (G_MENU (object), i);
     }
 
+    /* The "Open" submenu should be hidden if the item doesn't open in the view. */
     object = gtk_builder_get_object (builder, "open-with-application-section");
-    g_menu_prepend_item (G_MENU (object), menu_item);
+    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
+                                              "nautilus-menu-item",
+                                              "open_in_view_submenu");
+    nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
+                                            "hidden-when",
+                                            (!item_opens_in_view) ? "action-missing" : NULL);
 
     g_free (item_label);
-    g_object_unref (menu_item);
 
     /* Drives */
     for (l = selection; l != NULL && (show_mount || show_unmount
@@ -8181,10 +8201,11 @@ update_selection_menu (NautilusFilesView *view,
         nautilus_gmenu_set_from_model (G_MENU (object), priv->scripts_menu);
     }
 
-    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (priv->selection_menu_model),
+    object = gtk_builder_get_object (builder, "open-with-application-section");
+    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
                                               "nautilus-menu-item",
                                               "scripts-submenu");
-    nautilus_g_menu_replace_string_in_item (priv->selection_menu_model, i,
+    nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
                                             "hidden-when",
                                             (!show_scripts) ? "action-missing" : NULL);
 }
