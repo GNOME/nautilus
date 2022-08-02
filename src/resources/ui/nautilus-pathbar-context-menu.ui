@@ -15,4 +15,52 @@
       <attribute name="action">pathbar.properties</attribute>
     </item>
   </menu>
+  <menu id="current-view-menu">
+    <item>
+      <attribute name="label" translatable="yes">New _Folder…</attribute>
+      <attribute name="action">view.new-folder</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">New _Document</attribute>
+      <attribute name="nautilus-menu-item">templates-submenu</attribute>
+      <link name="submenu" id="templates-submenu"/>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Open _With…</attribute>
+      <attribute name="action">view.open-current-directory-with-other-application</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Open in Consol_e</attribute>
+      <attribute name="action">view.current-directory-console</attribute>
+      <attribute name="hidden-when">action-disabled</attribute>
+    </item>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">R_eload</attribute>
+        <attribute name="action">win.reload</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">St_op</attribute>
+        <attribute name="action">win.stop</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
+        <attribute name="action">win.bookmark-current-location</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Copy Location</attribute>
+        <attribute name="action">view.copy-current-location</attribute>
+      </item>
+    </section>
+    <section id="background-extensions-section"/>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">P_roperties</attribute>
+        <attribute name="action">view.current-directory-properties</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

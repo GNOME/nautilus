@@ -282,15 +282,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
     gtk_popover_set_has_arrow (GTK_POPOVER (self->button_menu_popover), FALSE);
     gtk_widget_set_halign (self->button_menu_popover, GTK_ALIGN_START);
 
-    /* Add current location menu, which matches the view's background context menu */
-    gtk_builder_add_from_resource (builder,
-                                   "/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui",
-                                   &error);
-    if (error != NULL)
-    {
-        g_error ("failed to add files-view-context-menus.ui: %s", error->message);
-    }
-    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
+    /* Add current location menu, which shares features with the view's background context menu */
+    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "current-view-menu")));
     self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-extensions-section")));
     self->templates_submenu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "templates-submenu")));
     self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER_MENU (gtk_popover_menu_new_from_model (NULL)));
