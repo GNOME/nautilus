@@ -224,10 +224,14 @@
 
 .view .thumbnail {
   background: url('/org/gnome/nautilus/Checkerboard.png') repeat;
-  box-shadow: 0px 1px 2px 0px @shade_color,
-              0px 0px 0px 1px @shade_color,
-              0px 2px 0px 0px @shade_color;
   border-radius: 2px;
+  /* Draw a shin and outline to meld better with full-color icons */
+  box-shadow: 0px 0px 0px 1px @shade_color,
+              0px 2px 0px 0px @shade_color;
+}
+
+.view picture {
+  filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.3));
 }
 
 .view .cut {
