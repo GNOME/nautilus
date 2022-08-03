@@ -33,25 +33,6 @@
               <class name="column-name-labels-box"/>
             </style>
             <child>
-              <object class="GtkLabel" id="path">
-                <property name="visible">False</property>
-                <property name="ellipsize">start</property>
-                <property name="justify">left</property>
-                <property name="lines">2</property>
-                <property name="wrap">True</property>
-                <property name="wrap-mode">word-char</property>
-                <property name="halign">fill</property>
-                <property name="xalign">0.0</property>
-                <attributes>
-                  <attribute name="insert-hyphens" value="false"></attribute>
-                </attributes>
-                <style>
-                  <class name="caption"/>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-            </child>
-            <child>
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
                 <property name="halign">fill</property>
@@ -80,21 +61,46 @@
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="snippet">
+              <object class="GtkLabel" id="path">
                 <property name="visible">False</property>
-                <property name="ellipsize">end</property>
+                <property name="ellipsize">start</property>
                 <property name="justify">left</property>
-                <property name="lines">2</property>
-                <property name="wrap">True</property>
-                <property name="wrap-mode">word</property>
                 <property name="halign">fill</property>
                 <property name="xalign">0.0</property>
+                <attributes>
+                  <attribute name="insert-hyphens" value="false"></attribute>
+                </attributes>
                 <style>
-                  <class name="caption-heading"/>
-                  <class name="accent"/>
+                  <class name="caption"/>
+                  <class name="dim-label"/>
                 </style>
               </object>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="snippet_button">
+            <property name="tooltip-text" translatable="yes">Full text match</property>
+            <property name="visible">False</property>
+            <property name="icon-name">quotation-symbolic</property>
+            <property name="valign">center</property>
+            <style>
+              <class name="fts-snippet"/>
+            </style>
+            <property name="popover">
+              <object class="GtkPopover">
+                <child>
+                  <object class="GtkLabel" id="snippet">
+                    <property name="ellipsize">none</property>
+                    <property name="justify">left</property>
+                    <property name="max-width-chars">65</property>
+                    <property name="lines">10</property>
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">word</property>
+                  </object>
+                </child>
+              </object>
+            </property>
           </object>
         </child>
       </object>

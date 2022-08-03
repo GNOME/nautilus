@@ -20,6 +20,7 @@ struct _NautilusNameCell
     GtkWidget *icon;
     GtkWidget *label;
     GtkWidget *emblems_box;
+    GtkWidget *snippet_button;
     GtkWidget *snippet;
     GtkWidget *path;
 
@@ -88,29 +89,6 @@ get_path_text (NautilusFile *file,
     return g_steal_pointer (&path);
 }
 
-static gchar *
-get_fts_snippet (NautilusFile *file)
-{
-    const gchar *snippet;
-    g_autoptr (GRegex) regex = NULL;
-
-    snippet = nautilus_file_get_search_fts_snippet (file);
-    if (snippet == NULL)
-    {
-        return NULL;
-    }
-
-    /* Flatten the text by replacing new lines with spaces */
-    regex = g_regex_new ("\\R+", 0, G_REGEX_MATCH_NEWLINE_ANY, NULL);
-    return g_regex_replace (regex,
-                            snippet,
-                            -1,
-                            0,
-                            " ",
-                            G_REGEX_MATCH_NEWLINE_ANY,
-                            NULL);
-}
-
 static void
 update_labels (NautilusNameCell *self)
 {
@@ -118,7 +96,7 @@ update_labels (NautilusNameCell *self)
     NautilusFile *file;
     g_autofree gchar *display_name = NULL;
     g_autofree gchar *path_text = NULL;
-    g_autofree gchar *fts_snippet = NULL;
+    const gchar *fts_snippet = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
@@ -130,7 +108,7 @@ update_labels (NautilusNameCell *self)
                                self->file_path_base_location);
     if (self->show_snippet)
     {
-        fts_snippet = get_fts_snippet (file);
+        fts_snippet = nautilus_file_get_search_fts_snippet (file);
     }
 
     gtk_label_set_text (GTK_LABEL (self->label), display_name);
@@ -138,7 +116,7 @@ update_labels (NautilusNameCell *self)
     gtk_label_set_text (GTK_LABEL (self->snippet), fts_snippet);
 
     gtk_widget_set_visible (self->path, (path_text != NULL));
-    gtk_widget_set_visible (self->snippet, (fts_snippet != NULL));
+    gtk_widget_set_visible (self->snippet_button, (fts_snippet != NULL));
 }
 
 static void
@@ -320,6 +298,7 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, label);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, emblems_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, snippet_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, snippet);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, path);
 }
