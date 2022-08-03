@@ -217,7 +217,18 @@ cursor_callback (GObject      *object,
     if (tracker->fts_enabled)
     {
         snippet = tracker_sparql_cursor_get_string (cursor, 5, NULL);
-        nautilus_search_hit_set_fts_snippet (hit, snippet);
+        if (snippet != NULL)
+        {
+            g_autofree gchar *escaped = NULL;
+            g_autoptr (GString) buffer = NULL;
+            /* Escape for markup, before adding our own markup. */
+            escaped = g_markup_escape_text (snippet, -1);
+            buffer = g_string_new (escaped);
+            g_string_replace (buffer, "_NAUTILUS_SNIPPET_DELIM_START_", "<b>", 0);
+            g_string_replace (buffer, "_NAUTILUS_SNIPPET_DELIM_END_", "</b>", 0);
+
+            nautilus_search_hit_set_fts_snippet (hit, buffer->str);
+        }
     }
 
     if (g_time_val_from_iso8601 (mtime_str, &tv))
@@ -357,7 +368,12 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     if (tracker->fts_enabled && *search_text)
     {
-        g_string_append (sparql, " fts:snippet(?content)");
+        g_string_append (sparql,
+                         "fts:snippet(?content,"
+                         "            '_NAUTILUS_SNIPPET_DELIM_START_',"
+                         "            '_NAUTILUS_SNIPPET_DELIM_END_', "
+                         "            '…',"
+                         "            20)");
     }
 
     g_string_append (sparql, "FROM tracker:FileSystem ");
