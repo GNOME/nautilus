@@ -993,13 +993,14 @@ nautilus_file_unref (NautilusFile *file)
  * @file: The file in question.
  *
  * Return value: A string representing the parent's location,
- * formatted for user display (including stripping "file://").
+ * formatted for user display (including stripping "file://"
+ * and adding trailing slash).
  * If the parent is NULL, returns the empty string.
  */
 char *
 nautilus_file_get_parent_uri_for_display (NautilusFile *file)
 {
-    GFile *parent;
+    g_autoptr (GFile) parent = NULL;
     char *result;
 
     g_assert (NAUTILUS_IS_FILE (file));
@@ -1007,8 +1008,17 @@ nautilus_file_get_parent_uri_for_display (NautilusFile *file)
     parent = nautilus_file_get_parent_location (file);
     if (parent)
     {
-        result = g_file_get_parse_name (parent);
-        g_object_unref (parent);
+        g_autofree gchar *parse_name = g_file_get_parse_name (parent);
+
+        /* Ensure a trailing slash to emphasize it is a directory */
+        if (g_str_has_suffix (parse_name, G_DIR_SEPARATOR_S))
+        {
+            result = g_steal_pointer (&parse_name);
+        }
+        else
+        {
+            result = g_strconcat (parse_name, G_DIR_SEPARATOR_S, NULL);
+        }
     }
     else
     {

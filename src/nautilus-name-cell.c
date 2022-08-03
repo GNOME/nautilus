@@ -36,6 +36,7 @@ get_path_text (NautilusFile *file,
     g_autofree gchar *path = NULL;
     g_autoptr (GFile) dir_location = NULL;
     g_autoptr (GFile) home_location = g_file_new_for_path (g_get_home_dir ());
+    g_autoptr (GFile) root_location = g_file_new_for_path ("/");
     GFile *relative_location_base;
 
     if (path_attribute_q == 0)
@@ -66,15 +67,25 @@ get_path_text (NautilusFile *file,
         relative_location_base = home_location;
     }
 
-    if (g_file_has_prefix (dir_location, relative_location_base))
+    if (!g_file_equal (relative_location_base, root_location) &&
+        g_file_has_prefix (dir_location, relative_location_base))
     {
         g_autofree gchar *relative_path = NULL;
+        g_autofree gchar *display_name = NULL;
 
         relative_path = g_file_get_relative_path (relative_location_base, dir_location);
-        return g_filename_display_name (relative_path);
+        display_name = g_filename_display_name (relative_path);
+
+        /* Ensure a trailing slash to emphasize it is a directory */
+        if (g_str_has_suffix (display_name, G_DIR_SEPARATOR_S))
+        {
+            return g_steal_pointer (&display_name);
+        }
+
+        return g_strconcat (display_name, G_DIR_SEPARATOR_S, NULL);
     }
 
-    return g_file_get_path (dir_location);
+    return g_steal_pointer (&path);
 }
 
 static gchar *
