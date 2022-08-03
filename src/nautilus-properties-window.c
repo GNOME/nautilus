@@ -93,6 +93,10 @@ struct _NautilusPropertiesWindow
     GtkLabel *name_value_label;
     GtkWidget *type_value_label;
     GtkLabel *type_file_system_label;
+    GtkWidget *size_value_label;
+    GtkWidget *contents_box;
+    GtkWidget *contents_value_label;
+    GtkWidget *free_space_value_label;
 
     GtkWidget *disk_list_box;
     GtkLevelBar *disk_space_level_bar;
@@ -100,12 +104,9 @@ struct _NautilusPropertiesWindow
     GtkWidget *disk_space_free_value;
     GtkWidget *disk_space_capacity_value;
 
+    GtkWidget *locations_list_box;
     GtkWidget *link_target_row;
     GtkWidget *link_target_value_label;
-    GtkWidget *size_row;
-    GtkWidget *size_value_label;
-    GtkWidget *contents_row;
-    GtkWidget *contents_value_label;
     GtkWidget *contents_spinner;
     guint update_directory_contents_timeout_id;
     guint update_files_timeout_id;
@@ -127,9 +128,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *permissions_navigation_row;
 
     GtkListBox *extension_list_box;
-
-    GtkWidget *free_space_list_box;
-    GtkWidget *free_space_value_label;
 
     /* Permissions page */
 
@@ -2004,11 +2002,11 @@ directory_contents_value_field_update (NautilusPropertiesWindow *self)
         {
             if (unreadable_directory_count == 0)
             {
-                text = g_strdup (_("nothing"));
+                text = g_strdup (_("Empty folder"));
             }
             else
             {
-                text = g_strdup (_("unreadable"));
+                text = g_strdup (_("Contents unreadable"));
             }
         }
         else
@@ -2203,13 +2201,13 @@ should_show_file_type (NautilusPropertiesWindow *self)
 
     if (!is_multi_file_window (self)
         && (nautilus_file_is_in_trash (get_target_file (self)) ||
+            nautilus_file_is_directory (get_original_file (self)) ||
             is_network_directory (get_target_file (self)) ||
             is_burn_directory (get_target_file (self)) ||
             is_volume_properties (self)))
     {
         return FALSE;
     }
-
 
     return TRUE;
 }
@@ -2454,6 +2452,8 @@ add_updatable_label (NautilusPropertiesWindow *self,
 static void
 setup_basic_page (NautilusPropertiesWindow *self)
 {
+    gboolean should_show_locations_list_box = FALSE;
+
     /* Icon pixmap */
 
     setup_image_widget (self, should_show_custom_icon_buttons (self));
@@ -2478,6 +2478,8 @@ setup_basic_page (NautilusPropertiesWindow *self)
     {
         gtk_widget_show (self->link_target_row);
         add_updatable_label (self, self->link_target_value_label, "link_target");
+
+        should_show_locations_list_box = TRUE;
     }
 
     if (is_multi_file_window (self) ||
@@ -2486,13 +2488,13 @@ setup_basic_page (NautilusPropertiesWindow *self)
         /* We have a more efficient way to measure used space in volumes. */
         if (!is_volume_properties (self))
         {
-            gtk_widget_show (self->contents_row);
+            gtk_widget_show (self->contents_box);
             setup_contents_field (self);
         }
     }
     else
     {
-        gtk_widget_show (self->size_row);
+        gtk_widget_show (self->size_value_label);
         add_updatable_label (self, self->size_value_label, "size_detail");
     }
 
@@ -2500,6 +2502,8 @@ setup_basic_page (NautilusPropertiesWindow *self)
     {
         gtk_widget_show (self->parent_folder_row);
         add_updatable_label (self, self->parent_folder_value_label, "where");
+
+        should_show_locations_list_box = TRUE;
     }
 
     if (should_show_trashed_info (self))
@@ -2535,9 +2539,14 @@ setup_basic_page (NautilusPropertiesWindow *self)
         /* We have a more efficient way to measure free space in volumes. */
         if (!is_volume_properties (self))
         {
-            gtk_widget_show (self->free_space_list_box);
+            gtk_widget_show (self->free_space_value_label);
             add_updatable_label (self, self->free_space_value_label, "free_space");
         }
+    }
+
+    if (should_show_locations_list_box)
+    {
+        gtk_widget_show (self->locations_list_box);
     }
 }
 
@@ -4213,18 +4222,19 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_file_system_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_spinner);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_level_bar);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_used_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_free_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_capacity_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, locations_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_spinner);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_list_box);
@@ -4239,10 +4249,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_navigation_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_list_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, unknown_permissions_page);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_row);

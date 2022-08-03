@@ -7818,7 +7818,10 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
     res = NULL;
     if (file->details->free_space != (guint64) - 1)
     {
-        res = g_format_size (file->details->free_space);
+        g_autofree gchar *size_string = g_format_size (file->details->free_space);
+
+        /* Translators: This refers to available space in a folder; e.g.: 100 MB Free */
+        res = g_strdup_printf (_("%s Free"), size_string);
     }
 
     return res;

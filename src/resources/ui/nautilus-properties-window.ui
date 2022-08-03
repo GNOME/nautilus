@@ -92,9 +92,6 @@
                                     <property name="max-width-chars">24</property>
                                     <property name="selectable">True</property>
                                     <property name="visible">False</property>
-                                    <style>
-                                      <class name="dim-label"/>
-                                    </style>
                                     <attributes>
                                       <attribute name="text-transform"
                                                  value="PANGO_TEXT_TRANSFORM_UPPERCASE"
@@ -114,8 +111,47 @@
                                                  value="PANGO_TEXT_TRANSFORM_UPPERCASE"
                                                  start="0" end="1"/>
                                     </attributes>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="size_value_label">
+                                    <property name="visible">False</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">40</property>
                                     <style>
-                                      <class name="dim-label"/>
+                                      <class name="caption"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkBox" id="contents_box">
+                                    <property name="halign">center</property>
+                                    <property name="visible">False</property>
+                                    <property name="spacing">12</property>
+                                    <child>
+                                      <object class="GtkLabel" id="contents_value_label">
+                                        <property name="selectable">True</property>
+                                        <property name="ellipsize">end</property>
+                                        <property name="justify">center</property>
+                                        <property name="max-width-chars">40</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkSpinner" id="contents_spinner">
+                                        <property name="visible">False</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="free_space_value_label">
+                                    <property name="visible">False</property>
+                                    <property name="selectable">True</property>
+                                    <property name="ellipsize">end</property>
+                                    <property name="max-width-chars">24</property>
+                                    <style>
+                                      <class name="caption"/>
                                     </style>
                                   </object>
                                 </child>
@@ -265,7 +301,8 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkListBox" id="file_data_list_box">
+                              <object class="GtkListBox" id="locations_list_box">
+                                <property name="visible">False</property>
                                 <property name="selection-mode">none</property>
                                 <child>
                                   <object class="AdwActionRow" id="link_target_row">
@@ -284,56 +321,6 @@
                                           <class name="dim-label"/>
                                         </style>
                                       </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwActionRow" id="size_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <property name="title" translatable="yes">Size</property>
-                                    <child>
-                                      <object class="GtkLabel" id="size_value_label">
-                                        <property name="hexpand">True</property>
-                                        <property name="selectable">True</property>
-                                        <property name="ellipsize">end</property>
-                                        <property name="max-width-chars">24</property>
-                                        <property name="xalign">1</property>
-                                        <style>
-                                          <class name="dim-label"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwActionRow" id="contents_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <property name="title" translatable="yes">Contents</property>
-                                    <child>
-                                      <object class="GtkBox">
-                                        <property name="spacing">12</property>
-                                        <child>
-                                          <object class="GtkLabel" id="contents_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="max-width-chars">24</property>
-                                            <property name="xalign">1</property>
-                                            <style>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkSpinner" id="contents_spinner">
-                                            <property name="visible">False</property>
-                                          </object>
-                                        </child>
-                                       </object>
                                     </child>
                                   </object>
                                 </child>
@@ -601,34 +588,6 @@
                             <child>
                               <object class="GtkListBox" id="extension_list_box">
                                 <property name="selection-mode">none</property>
-                                <style>
-                                  <class name="boxed-list"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="free_space_list_box">
-                                <property name="visible">False</property>
-                                <property name="selection-mode">none</property>
-                                <child>
-                                  <object class="AdwActionRow">
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <property name="title" translatable="yes">Free Space</property>
-                                    <child>
-                                      <object class="GtkLabel" id="free_space_value_label">
-                                        <property name="hexpand">True</property>
-                                        <property name="selectable">True</property>
-                                        <property name="ellipsize">end</property>
-                                        <property name="max-width-chars">24</property>
-                                        <property name="xalign">1</property>
-                                        <style>
-                                          <class name="dim-label"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
                                 <style>
                                   <class name="boxed-list"/>
                                 </style>
