@@ -56,7 +56,7 @@ nautilus_uri_parse (const char  *uri,
                     guint16     *port,
                     char       **userinfo)
 {
-    char *tmp_str;
+    g_autofree char *tmp_str = NULL;
     const char *start, *p;
     char c;
 
@@ -91,8 +91,6 @@ nautilus_uri_parse (const char  *uri,
     {
         return FALSE;
     }
-
-    g_free (tmp_str);
 
     /* Decode hier-part:
      *  hier-part   = "//" authority path-abempty
@@ -1100,7 +1098,7 @@ get_message_for_two_content_types (const char * const *content_types)
 gboolean
 should_handle_content_type (const char *content_type)
 {
-    GAppInfo *default_app;
+    g_autoptr (GAppInfo) default_app = NULL;
 
     default_app = g_app_info_get_default_for_type (content_type, FALSE);
 
