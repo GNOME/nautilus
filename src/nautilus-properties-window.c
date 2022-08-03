@@ -2165,8 +2165,42 @@ should_show_custom_icon_buttons (NautilusPropertiesWindow *self)
 }
 
 static gboolean
+is_single_file_type (NautilusPropertiesWindow *self)
+{
+    if (is_multi_file_window (self))
+    {
+        g_autofree gchar *mime_type = NULL;
+        GList *l = self->original_files;
+
+        mime_type = nautilus_file_get_mime_type (NAUTILUS_FILE (l->data));
+        for (l = l->next; l != NULL; l = l->next)
+        {
+            g_autofree gchar *next_mime_type = NULL;
+
+            if (nautilus_file_is_gone (NAUTILUS_FILE (l->data)))
+            {
+                continue;
+            }
+
+            next_mime_type = nautilus_file_get_mime_type (NAUTILUS_FILE (l->data));
+            if (g_strcmp0 (next_mime_type, mime_type) != 0)
+            {
+                return FALSE;
+            }
+        }
+    }
+
+    return TRUE;
+}
+
+static gboolean
 should_show_file_type (NautilusPropertiesWindow *self)
 {
+    if (!is_single_file_type (self))
+    {
+        return FALSE;
+    }
+
     if (!is_multi_file_window (self)
         && (nautilus_file_is_in_trash (get_target_file (self)) ||
             is_network_directory (get_target_file (self)) ||
