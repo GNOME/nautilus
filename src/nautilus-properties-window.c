@@ -2415,6 +2415,28 @@ open_parent_folder (NautilusPropertiesWindow *self)
 }
 
 static void
+open_link_target (NautilusPropertiesWindow *self)
+{
+    g_autofree gchar *link_target_uri = NULL;
+    g_autoptr (GFile) link_target_location = NULL;
+    g_autoptr (NautilusFile) link_target_file = NULL;
+    g_autoptr (GFile) parent_location = NULL;
+
+    link_target_uri = nautilus_file_get_symbolic_link_target_uri (get_target_file (self));
+    g_return_if_fail (link_target_uri != NULL);
+    link_target_location = g_file_new_for_uri (link_target_uri);
+    link_target_file = nautilus_file_get (link_target_location);
+    parent_location = nautilus_file_get_parent_location (link_target_file);
+    g_return_if_fail (parent_location != NULL);
+
+    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                             parent_location,
+                                             NAUTILUS_OPEN_FLAG_NEW_WINDOW,
+                                             &(GList){link_target_file, NULL},
+                                             NULL, NULL);
+}
+
+static void
 open_in_disks (NautilusPropertiesWindow *self)
 {
     NautilusDBusLauncher *launcher = nautilus_dbus_launcher_get ();
@@ -4273,6 +4295,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     gtk_widget_class_bind_template_callback (widget_class, open_in_disks);
     gtk_widget_class_bind_template_callback (widget_class, open_parent_folder);
+    gtk_widget_class_bind_template_callback (widget_class, open_link_target);
     gtk_widget_class_bind_template_callback (widget_class, navigate_main_page);
     gtk_widget_class_bind_template_callback (widget_class, navigate_permissions_page);
 }
