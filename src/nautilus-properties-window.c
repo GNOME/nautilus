@@ -126,6 +126,7 @@ struct _NautilusPropertiesWindow
     GtkWidget *accessed_value_label;
 
     GtkWidget *permissions_navigation_row;
+    GtkWidget *permissions_value_label;
 
     GtkListBox *extension_list_box;
 
@@ -1184,6 +1185,39 @@ get_target_permissions (NautilusPropertiesWindow *self)
 }
 
 static void
+update_permissions_navigation_row (NautilusPropertiesWindow *self,
+                                   TargetPermissions        *target_perm)
+{
+    if (!target_perm->is_multi_file_window)
+    {
+        uid_t user_id = geteuid ();
+        gid_t group_id = getegid ();
+        PermissionType permission_type = PERMISSION_OTHER;
+        const gchar *text;
+
+        if (user_id == nautilus_file_get_uid (get_original_file (self)))
+        {
+            permission_type = PERMISSION_USER;
+        }
+        else if (group_id == nautilus_file_get_gid (get_original_file (self)))
+        {
+            permission_type = PERMISSION_GROUP;
+        }
+
+        if (nautilus_file_is_directory (get_original_file (self)))
+        {
+            text = permission_value_to_string (target_perm->folder_permissions[permission_type], TRUE);
+        }
+        else
+        {
+            text = permission_value_to_string (target_perm->file_permissions[permission_type], FALSE);
+        }
+
+        gtk_label_set_text (GTK_LABEL (self->permissions_value_label), text);
+    }
+}
+
+static void
 properties_window_update (NautilusPropertiesWindow *self,
                           GList                    *files)
 {
@@ -1238,6 +1272,7 @@ properties_window_update (NautilusPropertiesWindow *self,
     {
         g_autofree TargetPermissions *target_perm = get_target_permissions (self);
 
+        update_permissions_navigation_row (self, target_perm);
         update_owner_row (self->owner_row, target_perm);
         update_group_row (self->group_row, target_perm);
         update_execution_row (GTK_WIDGET (self->execution_row), target_perm);
@@ -4270,6 +4305,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_navigation_row);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_stack);

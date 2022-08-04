@@ -609,16 +609,20 @@
                                   <object class="AdwActionRow" id="permissions_navigation_row">
                                     <property name="activatable">True</property>
                                     <property name="selectable">False</property>
-                                    <property name="title" translatable="yes">Set Custom _Permissions</property>
+                                    <property name="title" translatable="yes">_Permissions</property>
                                     <property name="use-underline">True</property>
                                     <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWindow" swapped="yes"/>
                                     <child>
-                                      <object class="GtkBox" id="permissions_navigation_action_box">
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="icon-name">go-next-symbolic</property>
-                                          </object>
-                                        </child>
+                                      <object class="GtkLabel" id="permissions_value_label">
+                                        <property name="ellipsize">end</property>
+                                        <style>
+                                          <class name="dim-label"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon-name">go-next-symbolic</property>
                                       </object>
                                     </child>
                                   </object>

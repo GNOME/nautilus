@@ -6258,6 +6258,21 @@ nautilus_file_can_get_owner (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_get_uid:
+ *
+ * Get the user id of the file's owner.
+ *
+ * @file: The file in question.
+ *
+ * Return value: (transfer none): the user id.
+ */
+const uid_t
+nautilus_file_get_uid (NautilusFile *file)
+{
+    return file->details->uid;
+}
+
+/**
  * nautilus_file_get_owner_name:
  *
  * Get the user name of the file's owner. If the owner has no
@@ -6446,6 +6461,21 @@ nautilus_file_can_get_group (NautilusFile *file)
 {
     /* Before we have info on a file, the group is unknown. */
     return file->details->gid != -1;
+}
+
+/**
+ * nautilus_file_get_gid:
+ *
+ * Get the group id of the file's group.
+ *
+ * @file: The file in question.
+ *
+ * Return value: (transfer none): the group id.
+ */
+const gid_t
+nautilus_file_get_gid (NautilusFile *file)
+{
+    return file->details->gid;
 }
 
 /**
