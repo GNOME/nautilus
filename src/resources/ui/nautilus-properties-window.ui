@@ -6,7 +6,6 @@
     <property name="focusable">False</property>
     <property name="modal">True</property>
     <property name="default-width">480</property>
-    <property name="default-height">600</property>
     <child>
       <object class="GtkStack" id="page_stack">
         <property name="hexpand">True</property>
@@ -24,6 +23,8 @@
                   <object class="GtkScrolledWindow">
                     <property name="hscrollbar-policy">never</property>
                     <property name="vexpand">true</property>
+                    <property name="min-content-height">480</property>
+                    <property name="propagate-natural-height">true</property>
                     <property name="child">
                       <object class="AdwClamp">
                         <property name="margin-top">18</property>
