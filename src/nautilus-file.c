@@ -6946,7 +6946,10 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
         return NULL;
     }
 
-    return g_format_size_full (file->details->size, G_FORMAT_SIZE_LONG_FORMAT);
+    return g_strdup_printf (ngettext ("%lu byte",
+                                      "%lu bytes",
+                                      file->details->size),
+                            file->details->size);
 }
 
 

@@ -1385,6 +1385,14 @@ value_field_update (GtkLabel                 *label,
 
         gtk_widget_set_tooltip_text (GTK_WIDGET (label), mime_type);
     }
+    else if (g_str_equal (attribute_name, "size"))
+    {
+        g_autofree char *size_detail = NULL;
+
+        size_detail = file_list_get_string_attribute (file_list, "size_detail");
+
+        gtk_widget_set_tooltip_text (GTK_WIDGET (label), size_detail);
+    }
 
     gtk_label_set_text (label, attribute_value);
 }
@@ -2548,7 +2556,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
     else
     {
         gtk_widget_show (self->size_value_label);
-        add_updatable_label (self, self->size_value_label, "size_detail");
+        add_updatable_label (self, self->size_value_label, "size");
     }
 
     if (should_show_location_info (self))
