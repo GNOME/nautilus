@@ -7376,7 +7376,8 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
         || attribute_q == attribute_detailed_type_q
         || attribute_q == attribute_mime_type_q)
     {
-        return g_strdup (_("Unknown"));
+        /* Translators: This about a file type. */
+        return g_strdup (_("Unknown type"));
     }
     if (attribute_q == attribute_trashed_on_q)
     {
@@ -7407,7 +7408,7 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
     /* Fallback, use for both unknown attributes and attributes
      * for which we have no more appropriate default.
      */
-    return g_strdup (_("unknown"));
+    return g_strdup (_("Unknown"));
 }
 
 char *
