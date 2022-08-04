@@ -1377,17 +1377,13 @@ value_field_update (GtkLabel                 *label,
 
     attribute_value = file_list_get_string_attribute (file_list,
                                                       attribute_name);
-    if (attribute_value != NULL &&
-        g_str_equal (attribute_name, "detailed_type"))
+    if (g_str_equal (attribute_name, "detailed_type"))
     {
-        g_autofree char *mime_type = file_list_get_string_attribute (file_list,
-                                                                     "mime_type");
-        if (mime_type != NULL &&
-            !g_str_equal (mime_type, "inode/directory"))
-        {
-            g_autofree char *tmp = g_steal_pointer (&attribute_value);
-            attribute_value = g_strdup_printf (C_("MIME type description (MIME type)", "%s (%s)"), tmp, mime_type);
-        }
+        g_autofree char *mime_type = NULL;
+
+        mime_type = file_list_get_string_attribute (file_list, "mime_type");
+
+        gtk_widget_set_tooltip_text (GTK_WIDGET (label), mime_type);
     }
 
     gtk_label_set_text (label, attribute_value);
