@@ -144,6 +144,7 @@ nautilus_app_chooser_constructed (GObject *object)
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
     g_autoptr (GAppInfo) info = NULL;
     g_autofree gchar *content_type_description = NULL;
+    gchar *title;
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
@@ -169,9 +170,21 @@ nautilus_app_chooser_constructed (GObject *object)
                       G_CALLBACK (on_application_selected),
                       self);
 
+    if (!self->single_content_type)
+    {
+        title = _("Open Items");
+    }
+    else if (g_strcmp0 (self->content_type, "inode/directory") == 0)
+    {
+        title = _("Open Folder");
+    }
+    else
+    {
+        title = _("Open File");
+    }
+
     gtk_header_bar_set_title_widget (GTK_HEADER_BAR (gtk_dialog_get_header_bar (GTK_DIALOG (self))),
-                                     adw_window_title_new (gtk_window_get_title (GTK_WINDOW (self)),
-                                                           self->content_type));
+                                     adw_window_title_new (title, NULL));
 
     if (self->single_content_type)
     {
