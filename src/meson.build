@@ -275,7 +275,7 @@ nautilus_deps = [
   selinux,
   tracker_sparql,
   xml,
-  cloudproviders_dep,
+  cloudproviders,
 ]
 
 libnautilus = static_library(
