@@ -1485,15 +1485,13 @@ choose_program (NautilusFilesView *view,
                 GList             *files)
 {
     GtkWidget *dialog;
-    g_autofree gchar *mime_type = NULL;
     GtkWindow *parent_window;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
-    mime_type = nautilus_file_get_mime_type (files->data);
     parent_window = nautilus_files_view_get_containing_window (view);
 
-    dialog = GTK_WIDGET (nautilus_app_chooser_new (mime_type, parent_window));
+    dialog = GTK_WIDGET (nautilus_app_chooser_new (files, parent_window));
     g_object_set_data_full (G_OBJECT (dialog),
                             "directory-view:files",
                             files,

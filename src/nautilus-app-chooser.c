@@ -9,6 +9,7 @@
 #include <libadwaita-1/adwaita.h>
 #include <glib/gi18n.h>
 
+#include "nautilus-file.h"
 #include "nautilus-signaller.h"
 
 struct _NautilusAppChooser
@@ -16,6 +17,7 @@ struct _NautilusAppChooser
     GtkDialog parent_instance;
 
     gchar *content_type;
+    gboolean single_content_type;
 
     GtkWidget *app_chooser_widget_box;
     GtkWidget *reset_button;
@@ -30,6 +32,7 @@ enum
 {
     PROP_0,
     PROP_CONTENT_TYPE,
+    PROP_SINGLE_CONTENT_TYPE,
     LAST_PROP
 };
 
@@ -108,6 +111,12 @@ nautilus_app_chooser_set_property (GObject      *object,
         case PROP_CONTENT_TYPE:
         {
             self->content_type = g_value_dup_string (value);
+        }
+        break;
+
+        case PROP_SINGLE_CONTENT_TYPE:
+        {
+            self->single_content_type = g_value_get_boolean (value);
         }
         break;
 
@@ -199,16 +208,39 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
                                      g_param_spec_string ("content-type", "", "",
                                                           NULL,
                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+
+    g_object_class_install_property (object_class,
+                                     PROP_SINGLE_CONTENT_TYPE,
+                                     g_param_spec_boolean ("single-content-type", "", "",
+                                                           TRUE,
+                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
 }
 
 NautilusAppChooser *
-nautilus_app_chooser_new (const char *content_type,
-                          GtkWindow  *parent_window)
+nautilus_app_chooser_new (GList     *files,
+                          GtkWindow *parent_window)
 {
+    gboolean single_content_type = TRUE;
+    g_autofree gchar *content_type = NULL;
+
+    content_type = nautilus_file_get_mime_type (files->data);
+
+    for (GList *l = files; l != NULL; l = l->next)
+    {
+        g_autofree gchar *temp_mime_type = NULL;
+        temp_mime_type = nautilus_file_get_mime_type (l->data);
+        if (g_strcmp0 (content_type, temp_mime_type) != 0)
+        {
+            single_content_type = FALSE;
+            break;
+        }
+    }
+
     return NAUTILUS_APP_CHOOSER (g_object_new (NAUTILUS_TYPE_APP_CHOOSER,
                                                "transient-for", parent_window,
                                                "content-type", content_type,
                                                "use-header-bar", TRUE,
+                                               "single-content-type", single_content_type,
                                                NULL));
 }
 

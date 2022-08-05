@@ -14,8 +14,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusAppChooser, nautilus_app_chooser, NAUTILUS, APP_CHOOSER, GtkDialog)
 
-NautilusAppChooser *nautilus_app_chooser_new (const char *content_type,
-                                              GtkWindow  *parent_window);
+NautilusAppChooser *nautilus_app_chooser_new (GList     *files,
+                                              GtkWindow *parent_window);
 
 GAppInfo           *nautilus_app_chooser_get_app_info (NautilusAppChooser *self);
 
