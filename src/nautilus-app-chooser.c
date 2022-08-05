@@ -17,6 +17,7 @@ struct _NautilusAppChooser
     GtkDialog parent_instance;
 
     gchar *content_type;
+    gchar *file_name;
     gboolean single_content_type;
 
     GtkWidget *app_chooser_widget_box;
@@ -34,6 +35,7 @@ enum
     PROP_0,
     PROP_CONTENT_TYPE,
     PROP_SINGLE_CONTENT_TYPE,
+    PROP_FILE_NAME,
     LAST_PROP
 };
 
@@ -122,6 +124,12 @@ nautilus_app_chooser_set_property (GObject      *object,
         }
         break;
 
+        case PROP_FILE_NAME:
+        {
+            self->file_name = g_value_dup_string (value);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -203,6 +211,7 @@ nautilus_app_chooser_finalize (GObject *object)
     NautilusAppChooser *self = (NautilusAppChooser *) object;
 
     g_clear_pointer (&self->content_type, g_free);
+    g_clear_pointer (&self->file_name, g_free);
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->finalize (object);
 }
@@ -233,6 +242,12 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
 
     g_object_class_install_property (object_class,
+                                     PROP_FILE_NAME,
+                                     g_param_spec_string ("file-name", "", "",
+                                                          NULL,
+                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE));
+
+    g_object_class_install_property (object_class,
                                      PROP_SINGLE_CONTENT_TYPE,
                                      g_param_spec_boolean ("single-content-type", "", "",
                                                            TRUE,
@@ -245,8 +260,11 @@ nautilus_app_chooser_new (GList     *files,
 {
     gboolean single_content_type = TRUE;
     g_autofree gchar *content_type = NULL;
+    g_autofree gchar *file_name = NULL;
 
     content_type = nautilus_file_get_mime_type (files->data);
+
+    file_name = files->next ? NULL : nautilus_file_get_display_name (files->data);
 
     for (GList *l = files; l != NULL; l = l->next)
     {
@@ -263,6 +281,7 @@ nautilus_app_chooser_new (GList     *files,
                                                "transient-for", parent_window,
                                                "content-type", content_type,
                                                "use-header-bar", TRUE,
+                                               "file-name", file_name,
                                                "single-content-type", single_content_type,
                                                NULL));
 }
