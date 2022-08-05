@@ -9,7 +9,13 @@
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <child>
-          <object class="AdwHeaderBar"/>
+          <object class="AdwHeaderBar">
+            <child type="title">
+              <object class="AdwWindowTitle" id="window_title">
+                <property name="title" translatable="true">Visible Columns</property>
+              </object>
+            </child>
+          </object>
         </child>
         <child>
           <object class="GtkBox" id="box">

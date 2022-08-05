@@ -538,10 +538,10 @@ create_column_editor (NautilusListView *view)
 {
     g_autoptr (GtkBuilder) builder = NULL;
     GtkWidget *window;
+    AdwWindowTitle *window_title;
     GtkWidget *box;
     GtkWidget *column_chooser;
     NautilusFile *file;
-    char *str;
     char *name;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-list-view-column-editor.ui");
@@ -552,10 +552,9 @@ create_column_editor (NautilusListView *view)
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
     name = nautilus_file_get_display_name (file);
-    str = g_strdup_printf (_("Visible Columns - %s"), name);
+    window_title = ADW_WINDOW_TITLE (gtk_builder_get_object (builder, "window_title"));
+    adw_window_title_set_subtitle (window_title, name);
     g_free (name);
-    gtk_window_set_title (GTK_WINDOW (window), str);
-    g_free (str);
 
     box = GTK_WIDGET (gtk_builder_get_object (builder, "box"));
 
