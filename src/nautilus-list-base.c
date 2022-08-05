@@ -227,7 +227,7 @@ nautilus_list_base_set_icon_size (NautilusListBase *self,
     GListModel *model;
     guint n_items;
 
-    model = G_LIST_MODEL (nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self)));
+    model = G_LIST_MODEL (nautilus_list_base_get_model (self));
 
     n_items = g_list_model_get_n_items (model);
     for (guint i = 0; i < n_items; i++)
@@ -280,7 +280,7 @@ select_single_item_if_not_selected (NautilusListBase *self,
     NautilusViewModel *model;
     guint position;
 
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+    model = nautilus_list_base_get_model (self);
     position = nautilus_view_model_get_index (model, item);
     if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), position))
     {
@@ -424,7 +424,7 @@ on_item_click_released (GtkGestureClick *gesture,
         NautilusViewItem *item;
         guint i;
 
-        model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+        model = nautilus_list_base_get_model (self);
         item = nautilus_view_cell_get_item (cell);
         g_return_if_fail (item != NULL);
         i = nautilus_view_model_get_index (model, item);
