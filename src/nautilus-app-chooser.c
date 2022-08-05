@@ -21,6 +21,7 @@ struct _NautilusAppChooser
     gboolean single_content_type;
 
     GtkWidget *app_chooser_widget_box;
+    GtkWidget *label_description;
     GtkWidget *label_content_type_description;
     GtkWidget *set_as_default_switch;
     GtkWidget *set_default_box;
@@ -152,6 +153,7 @@ nautilus_app_chooser_constructed (GObject *object)
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
     g_autoptr (GAppInfo) info = NULL;
     g_autofree gchar *content_type_description = NULL;
+    g_autofree gchar *description = NULL;
     gchar *title;
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
@@ -177,6 +179,13 @@ nautilus_app_chooser_constructed (GObject *object)
                       "application-selected",
                       G_CALLBACK (on_application_selected),
                       self);
+
+    if (self->file_name != NULL)
+    {
+        /* Translators: %s is the filename.  i.e. "Choose an application to open test.jpg" */
+        description = g_strdup_printf (_("Choose an application to open <b>%s</b>."), self->file_name);
+        gtk_label_set_markup (GTK_LABEL (self->label_description), description);
+    }
 
     if (!self->single_content_type)
     {
@@ -230,6 +239,7 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, app_chooser_widget_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_as_default_switch);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_description);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_content_type_description);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_box);
 

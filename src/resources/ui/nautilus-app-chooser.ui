@@ -12,6 +12,15 @@
       <object class="GtkBox" id="content_area">
         <property name="orientation">vertical</property>
         <child>
+          <object class="GtkLabel" id="label_description">
+            <property name="margin-top">18</property>
+            <property name="wrap">True</property>
+            <property name="wrap-mode">PANGO_WRAP_WORD_CHAR</property>
+            <property name="halign">center</property>
+            <property name="label" translatable="yes">Choose an application to open the selected files.</property>
+          </object>
+        </child>
+        <child>
           <object class="GtkStack">
             <property name="hexpand">True</property>
             <child>
