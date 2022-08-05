@@ -117,6 +117,7 @@ if get_option('selinux')
 endif
 tracker_sparql = dependency('tracker-sparql-3.0')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
+cloudproviders_dep = dependency('cloudproviders', version: '>= 0.3.1')
 
 ####################
 # End dependencies #

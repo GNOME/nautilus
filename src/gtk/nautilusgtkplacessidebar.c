@@ -27,9 +27,7 @@
 #include "nautilus-enum-types.h"
 
 #include <gio/gio.h>
-#ifdef HAVE_CLOUDPROVIDERS
 #include <cloudproviders.h>
-#endif
 
 #include "nautilusgtkplacessidebarprivate.h"
 #include "nautilusgtksidebarrowprivate.h"
@@ -106,10 +104,8 @@ struct _NautilusGtkPlacesSidebar {
 
   GActionGroup *row_actions;
 
-#ifdef HAVE_CLOUDPROVIDERS
   CloudProvidersCollector *cloud_manager;
   GList *unready_accounts;
-#endif
 
   GVolumeMonitor    *volume_monitor;
   NautilusTrashMonitor   *trash_monitor;
@@ -395,11 +391,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
            GDrive                      *drive,
            GVolume                     *volume,
            GMount                      *mount,
-#ifdef HAVE_CLOUDPROVIDERS
            CloudProvidersAccount       *cloud_provider_account,
-#else
-           gpointer                    *cloud_provider_account,
-#endif
            const int                    index,
            const char                  *tooltip)
 {
@@ -439,9 +431,7 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
                       "drive", drive,
                       "volume", volume,
                       "mount", mount,
-#ifdef HAVE_CLOUDPROVIDERS
                       "cloud-provider-account", cloud_provider_account,
-#endif
                       NULL);
 
   eject_button = nautilus_gtk_sidebar_row_get_eject_button (NAUTILUS_GTK_SIDEBAR_ROW (row));
@@ -858,8 +848,6 @@ update_trash_icon (NautilusGtkPlacesSidebar *sidebar)
     }
 }
 
-#ifdef HAVE_CLOUDPROVIDERS
-
 static gboolean
 create_cloud_provider_account_row (NautilusGtkPlacesSidebar      *sidebar,
                                    CloudProvidersAccount *account)
@@ -937,8 +925,6 @@ on_account_updated (GObject    *object,
       }
 }
 
-#endif
-
 static void
 update_places (NautilusGtkPlacesSidebar *sidebar)
 {
@@ -959,12 +945,10 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   GList *network_mounts, *network_volumes;
   GIcon *new_bookmark_icon;
   GtkWidget *child;
-#ifdef HAVE_CLOUDPROVIDERS
   GList *cloud_providers;
   GList *cloud_providers_accounts;
   CloudProvidersAccount *cloud_provider_account;
   CloudProvidersProvider *cloud_provider;
-#endif
 
   /* save original selection */
   selected = gtk_list_box_get_selected_row (GTK_LIST_BOX (sidebar->list_box));
@@ -1069,7 +1053,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   add_application_shortcuts (sidebar);
 
   /* Cloud providers */
-#ifdef HAVE_CLOUDPROVIDERS
   cloud_providers = cloud_providers_collector_get_providers (sidebar->cloud_manager);
   for (l = sidebar->unready_accounts; l != NULL; l = l->next)
     {
@@ -1104,7 +1087,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
         }
     }
-#endif
 
   /* go through all connected drives */
   drives = g_volume_monitor_get_connected_drives (sidebar->volume_monitor);
@@ -3184,7 +3166,6 @@ on_row_popover_destroy (GtkWidget        *row_popover,
     sidebar->popover = NULL;
 }
 
-#ifdef HAVE_CLOUDPROVIDERS
 static void
 build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
 {
@@ -3239,7 +3220,6 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
       g_object_unref (cloud_provider_account);
     }
 }
-#endif
 
 /* Constructs the popover for the sidebar row if needed */
 static void
@@ -3260,6 +3240,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   gboolean show_properties;
   g_autoptr (GFile) trash = NULL;
   gboolean is_trash;
+  CloudProvidersAccount *cloud_provider_account;
 
   g_object_get (row,
                 "place-type", &type,
@@ -3283,9 +3264,6 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
       is_trash = FALSE;
     }
 
-#ifdef HAVE_CLOUDPROVIDERS
-  CloudProvidersAccount *cloud_provider_account;
-
   g_object_get (row, "cloud-provider-account", &cloud_provider_account, NULL);
 
   if (cloud_provider_account)
@@ -3293,7 +3271,6 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
       build_popup_menu_using_gmenu (row);
        return;
     }
-#endif
 
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "remove");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK));
@@ -3960,13 +3937,11 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
   sidebar->show_desktop = show_desktop;
 
   /* Cloud providers */
-#ifdef HAVE_CLOUDPROVIDERS
   sidebar->cloud_manager = cloud_providers_collector_dup_singleton ();
   g_signal_connect_swapped (sidebar->cloud_manager,
                             "providers-changed",
                             G_CALLBACK (update_places),
                             sidebar);
-#endif
 
   /* populate the sidebar */
   update_places (sidebar);
@@ -4083,9 +4058,7 @@ static void
 nautilus_gtk_places_sidebar_dispose (GObject *object)
 {
   NautilusGtkPlacesSidebar *sidebar;
-#ifdef HAVE_CLOUDPROVIDERS
   GList *l;
-#endif
 
   sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (object);
 
@@ -4156,7 +4129,6 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
 
   g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
 
-#ifdef HAVE_CLOUDPROVIDERS
   for (l = sidebar->unready_accounts; l != NULL; l = l->next)
     {
         g_signal_handlers_disconnect_by_data (l->data, sidebar);
@@ -4174,7 +4146,6 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
       g_object_unref (sidebar->cloud_manager);
       sidebar->cloud_manager = NULL;
     }
-#endif
 
   G_OBJECT_CLASS (nautilus_gtk_places_sidebar_parent_class)->dispose (object);
 }
