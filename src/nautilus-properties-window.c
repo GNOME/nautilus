@@ -48,6 +48,7 @@
 #include "nautilus-module.h"
 #include "nautilus-property-page.h"
 #include "nautilus-signaller.h"
+#include "nautilus-tag-manager.h"
 #include "nautilus-ui-utilities.h"
 
 static GHashTable *windows;
@@ -89,6 +90,8 @@ struct _NautilusPropertiesWindow
     GtkWidget *icon_button;
     GtkWidget *icon_button_image;
     GtkWidget *icon_chooser;
+
+    GtkWidget *star_button;
 
     GtkLabel *name_value_label;
     GtkWidget *type_value_label;
@@ -739,6 +742,71 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
                              GTK_MESSAGE_ERROR);
             }
         }
+    }
+}
+
+static void
+star_clicked (NautilusPropertiesWindow *self)
+{
+    NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
+    NautilusFile *file = get_original_file (self);
+    g_autofree gchar *uri = nautilus_file_get_uri (file);
+
+    if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
+    {
+        nautilus_tag_manager_unstar_files (tag_manager, G_OBJECT (self),
+                                           &(GList){ file, NULL }, NULL, NULL);
+    }
+    else
+    {
+        nautilus_tag_manager_star_files (tag_manager, G_OBJECT (self),
+                                         &(GList){ file, NULL }, NULL, NULL);
+    }
+}
+
+static void
+update_star (NautilusPropertiesWindow *self,
+             NautilusTagManager       *tag_manager)
+{
+    gboolean is_starred;
+    g_autofree gchar *file_uri = NULL;
+
+    file_uri = nautilus_file_get_uri (get_target_file (self));
+    is_starred = nautilus_tag_manager_file_is_starred (tag_manager, file_uri);
+
+    gtk_button_set_icon_name (GTK_BUTTON (self->star_button),
+                              is_starred ? "starred-symbolic" : "non-starred-symbolic");
+    /* Translators: This is a verb for tagging or untagging a file with a star. */
+    gtk_widget_set_tooltip_text (self->star_button, is_starred ? _("Unstar") : _("Star"));
+}
+
+static void
+on_starred_changed (NautilusTagManager *tag_manager,
+                    GList              *changed_files,
+                    gpointer            user_data)
+{
+    NautilusPropertiesWindow *self = user_data;
+    NautilusFile *file = get_target_file (self);
+
+    if (g_list_find (changed_files, file))
+    {
+        update_star (self, tag_manager);
+    }
+}
+
+static void
+setup_star_button (NautilusPropertiesWindow *self)
+{
+    NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
+    NautilusFile *file = get_target_file (self);
+    g_autoptr (GFile) parent_location = nautilus_file_get_parent_location (file);
+
+    if (nautilus_tag_manager_can_star_contents (tag_manager, parent_location))
+    {
+        gtk_widget_show (self->star_button);
+        update_star (self, tag_manager);
+        g_signal_connect_object (tag_manager, "starred-changed",
+                                 G_CALLBACK (on_starred_changed), self, 0);
     }
 }
 
@@ -2521,6 +2589,11 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     self->icon_chooser = NULL;
 
+    if (!is_multi_file_window (self))
+    {
+        setup_star_button (self);
+    }
+
     update_name_field (self);
 
     if (should_show_volume_usage (self))
@@ -4280,6 +4353,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button_image);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, star_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_file_system_label);
@@ -4333,6 +4407,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
 
+    gtk_widget_class_bind_template_callback (widget_class, star_clicked);
     gtk_widget_class_bind_template_callback (widget_class, open_in_disks);
     gtk_widget_class_bind_template_callback (widget_class, open_parent_folder);
     gtk_widget_class_bind_template_callback (widget_class, open_link_target);
