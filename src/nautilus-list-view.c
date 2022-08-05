@@ -552,7 +552,7 @@ create_column_editor (NautilusListView *view)
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
     name = nautilus_file_get_display_name (file);
-    str = g_strdup_printf (_("%s Visible Columns"), name);
+    str = g_strdup_printf (_("Visible Columns - %s"), name);
     g_free (name);
     gtk_window_set_title (GTK_WINDOW (window), str);
     g_free (str);
