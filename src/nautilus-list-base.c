@@ -312,7 +312,7 @@ open_context_menu_on_press (NautilusListBase *self,
                             gdouble           x,
                             gdouble           y)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     gdouble view_x, view_y;
 
     item = nautilus_view_cell_get_item (cell);
@@ -358,7 +358,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
                        gpointer         user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     guint button;
     GdkModifierType modifiers;
@@ -392,7 +392,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
     }
     else if (button == GDK_BUTTON_MIDDLE && n_press == 1)
     {
-        NautilusViewItem *item = nautilus_view_cell_get_item (cell);
+        g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
         g_return_if_fail (item != NULL);
 
         /* Anticipate selection, if necessary, to activate it. */
@@ -415,13 +415,13 @@ on_item_click_released (GtkGestureClick *gesture,
                         gpointer         user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     if (priv->activate_on_release)
     {
         NautilusViewModel *model;
-        NautilusViewItem *item;
+        g_autoptr (NautilusViewItem) item = NULL;
         guint i;
 
         model = nautilus_list_base_get_model (self);
@@ -445,7 +445,7 @@ on_item_click_stopped (GtkGestureClick *gesture,
                        gpointer         user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     rubberband_set_state (self, TRUE);
@@ -509,7 +509,7 @@ on_item_longpress_pressed (GtkGestureLongPress *gesture,
                            gpointer             user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
 
     open_context_menu_on_press (self, cell, x, y);
     gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
@@ -544,16 +544,17 @@ on_item_drag_prepare (GtkDragSource *source,
                       gpointer       user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     GtkWidget *view_ui;
     g_autolist (NautilusFile) selection = NULL;
     g_autoslist (GFile) file_list = NULL;
     g_autoptr (GdkPaintable) paintable = NULL;
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
     GdkDragAction actions;
     gint scale_factor;
 
     /* Anticipate selection, if necessary, for dragging the clicked item. */
-    select_single_item_if_not_selected (self, nautilus_view_cell_get_item (cell));
+    select_single_item_if_not_selected (self, item);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     g_return_val_if_fail (selection != NULL, NULL);
@@ -600,9 +601,9 @@ static gboolean
 hover_timer (gpointer user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusViewItem *item = nautilus_view_cell_get_item (cell);
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
     g_autofree gchar *uri = NULL;
 
     priv->hover_timer_id = 0;
@@ -620,7 +621,7 @@ on_item_drag_hover_enter (GtkDropControllerMotion *controller,
                           gpointer                 user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     priv->hover_start_point.x = x;
@@ -632,7 +633,7 @@ on_item_drag_hover_leave (GtkDropControllerMotion *controller,
                           gpointer                 user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
@@ -738,9 +739,9 @@ on_item_drag_enter (GtkDropTarget *target,
                     gpointer       user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     const GValue *value;
     g_autoptr (NautilusFile) dest_file = NULL;
 
@@ -781,10 +782,10 @@ on_item_drag_value_notify (GObject    *object,
 {
     GtkDropTarget *target = GTK_DROP_TARGET (object);
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     const GValue *value;
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
 
     value = gtk_drop_target_get_value (target);
     if (value == NULL)
@@ -805,7 +806,7 @@ on_item_drag_motion (GtkDropTarget *target,
                      gpointer       user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     /* There's a bug in GtkDropTarget where motion overrides enter
@@ -820,7 +821,7 @@ on_item_drag_leave (GtkDropTarget *dest,
                     gpointer       user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusViewItem *item = nautilus_view_cell_get_item (cell);
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
 
     nautilus_view_item_set_drag_accept (item, FALSE);
 }
@@ -833,8 +834,8 @@ on_item_drop (GtkDropTarget *target,
               gpointer       user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListBase *self = nautilus_view_cell_get_view (cell);
-    NautilusViewItem *item = nautilus_view_cell_get_item (cell);
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
     GdkDragAction actions;
     GFile *target_location;
 
