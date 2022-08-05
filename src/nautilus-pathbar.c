@@ -321,7 +321,6 @@ nautilus_path_bar_finalize (GObject *object)
     g_clear_object (&self->extensions_section);
     g_clear_object (&self->templates_submenu);
     g_clear_object (&self->button_menu);
-    g_clear_pointer (&self->button_menu_popover, gtk_widget_unparent);
     g_clear_object (&self->current_view_menu_popover);
     g_free (self->os_name);
 
