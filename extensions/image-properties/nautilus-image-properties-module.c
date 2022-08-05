@@ -18,7 +18,7 @@
 
 #include <config.h>
 
-#include "nautilus-image-properties-page-provider.h"
+#include "nautilus-image-properties-model-provider.h"
 
 #include <glib/gi18n-lib.h>
 
@@ -30,7 +30,7 @@ nautilus_module_initialize (GTypeModule *module)
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
-    nautilus_image_properties_page_provider_load (module);
+    nautilus_image_properties_model_provider_load (module);
 }
 
 void
@@ -47,7 +47,7 @@ nautilus_module_list_types (const GType **types,
     g_assert (types != NULL);
     g_assert (num_types != NULL);
 
-    type_list[0] = NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE_PROVIDER;
+    type_list[0] = NAUTILUS_TYPE_IMAGE_PROPERTIES_MODEL_PROVIDER;
 
     *types = type_list;
     *num_types = G_N_ELEMENTS (type_list);

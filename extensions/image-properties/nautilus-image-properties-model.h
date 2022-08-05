@@ -22,4 +22,4 @@
 
 #include <nautilus-extension.h>
 
-GtkWidget *nautilus_image_properties_page_new (NautilusFileInfo *file_info);
+NautilusPropertiesModel * nautilus_image_properties_model_new (NautilusFileInfo *file_info);

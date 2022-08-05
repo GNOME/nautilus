@@ -20,29 +20,25 @@
  * XMP support by Hubert Figuiere <hfiguiere@novell.com>
  */
 
-#include "nautilus-image-properties-page-provider.h"
+#include "nautilus-image-properties-model-provider.h"
 
-#include "nautilus-image-properties-page.h"
-
-#include <glib/gi18n.h>
+#include "nautilus-image-properties-model.h"
 
 #include <nautilus-extension.h>
 
-#define NAUTILUS_IMAGE_PROPERTIES_PAGE_NAME "NautilusImagePropertiesPage::property_page"
-
-struct _NautilusImagesPropertiesPageProvider
+struct _NautilusImagesPropertiesModelProvider
 {
     GObject parent_instance;
 };
 
-static void property_page_provider_iface_init (NautilusPropertyPageProviderInterface *iface);
+static void properties_group_provider_iface_init (NautilusPropertiesModelProviderInterface *iface);
 
-G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusImagesPropertiesPageProvider,
-                                nautilus_image_properties_page_provider,
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusImagesPropertiesModelProvider,
+                                nautilus_image_properties_model_provider,
                                 G_TYPE_OBJECT,
                                 0,
-                                G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER,
-                                                               property_page_provider_iface_init))
+                                G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER,
+                                                               properties_group_provider_iface_init))
 
 static gboolean
 is_mime_type_supported (const char *mime_type)
@@ -76,13 +72,12 @@ is_mime_type_supported (const char *mime_type)
 }
 
 static GList *
-get_pages (NautilusPropertyPageProvider *provider,
-           GList                        *files)
+get_models (NautilusPropertiesModelProvider *provider,
+            GList                           *files)
 {
     NautilusFileInfo *file_info;
     g_autofree char *mime_type = NULL;
-    GtkWidget *image_properties_page;
-    NautilusPropertyPage *property_page;
+    NautilusPropertiesModel *properties_group;
 
     if (files == NULL || files->next != NULL)
     {
@@ -95,40 +90,37 @@ get_pages (NautilusPropertyPageProvider *provider,
     {
         return NULL;
     }
-    image_properties_page = nautilus_image_properties_page_new (file_info);
-    property_page = nautilus_property_page_new (NAUTILUS_IMAGE_PROPERTIES_PAGE_NAME,
-                                                gtk_label_new (_("Image")),
-                                                image_properties_page);
+    properties_group = nautilus_image_properties_model_new (file_info);
 
-    return g_list_prepend (NULL, property_page);
+    return g_list_prepend (NULL, properties_group);
 }
 
 static void
-property_page_provider_iface_init (NautilusPropertyPageProviderInterface *iface)
+properties_group_provider_iface_init (NautilusPropertiesModelProviderInterface *iface)
 {
-    iface->get_pages = get_pages;
+    iface->get_models = get_models;
 }
 
 static void
-nautilus_image_properties_page_provider_init (NautilusImagesPropertiesPageProvider *self)
+nautilus_image_properties_model_provider_init (NautilusImagesPropertiesModelProvider *self)
 {
     (void) self;
 }
 
 static void
-nautilus_image_properties_page_provider_class_init (NautilusImagesPropertiesPageProviderClass *klass)
+nautilus_image_properties_model_provider_class_init (NautilusImagesPropertiesModelProviderClass *klass)
 {
     (void) klass;
 }
 
 static void
-nautilus_image_properties_page_provider_class_finalize (NautilusImagesPropertiesPageProviderClass *klass)
+nautilus_image_properties_model_provider_class_finalize (NautilusImagesPropertiesModelProviderClass *klass)
 {
     (void) klass;
 }
 
 void
-nautilus_image_properties_page_provider_load (GTypeModule *module)
+nautilus_image_properties_model_provider_load (GTypeModule *module)
 {
-    nautilus_image_properties_page_provider_register_type (module);
+    nautilus_image_properties_model_provider_register_type (module);
 }

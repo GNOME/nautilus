@@ -19,7 +19,7 @@
  * XMP support by Hubert Figuiere <hfiguiere@novell.com>
  */
 
-#include "nautilus-image-properties-page.h"
+#include "nautilus-image-properties-model.h"
 
 #include <gexiv2/gexiv2.h>
 #include <glib/gi18n.h>
@@ -30,10 +30,9 @@
 
 typedef struct
 {
-    GtkWidget *page_widget;
+    GListStore *group_model;
 
     GCancellable *cancellable;
-    GtkWidget *grid;
     GdkPixbufLoader *loader;
     gboolean got_size;
     gboolean pixbuf_still_loading;
@@ -43,87 +42,41 @@ typedef struct
 
     GExiv2Metadata *md;
     gboolean md_ready;
-} NautilusImagesPropertiesPage;
+} NautilusImagesPropertiesModel;
 
 static void
-nautilus_images_properties_page_free (NautilusImagesPropertiesPage *page)
+nautilus_images_properties_model_free (NautilusImagesPropertiesModel *self)
 {
-    if (page->cancellable != NULL)
+    if (self->cancellable != NULL)
     {
-        g_cancellable_cancel (page->cancellable);
-        g_clear_object (&page->cancellable);
+        g_cancellable_cancel (self->cancellable);
+        g_clear_object (&self->cancellable);
     }
-    g_free (page);
+    g_free (self);
 }
 
 static void
-append_item (NautilusImagesPropertiesPage *page,
-             const char                   *name,
-             const char                   *value)
+append_item (NautilusImagesPropertiesModel *self,
+             const char                    *name,
+             const char                    *value)
 {
-    GtkWidget *name_label;
-    PangoAttrList *attrs;
+    g_autoptr (NautilusPropertiesItem) item = NULL;
 
-    name_label = gtk_label_new (name);
-    attrs = pango_attr_list_new ();
-
-    pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-    gtk_label_set_attributes (GTK_LABEL (name_label), attrs);
-    pango_attr_list_unref (attrs);
-    gtk_grid_attach_next_to (GTK_GRID (page->grid), name_label, NULL, GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (name_label, GTK_ALIGN_START);
-    gtk_widget_show (name_label);
-
+    item = nautilus_properties_item_new (name, value);
     if (value != NULL)
     {
-        GtkWidget *value_label;
-
-        value_label = gtk_label_new (value);
-
-        gtk_label_set_wrap (GTK_LABEL (value_label), TRUE);
-        gtk_grid_attach_next_to (GTK_GRID (page->grid), value_label,
-                                 name_label, GTK_POS_RIGHT,
-                                 1, 1);
-        gtk_widget_set_halign (value_label, GTK_ALIGN_START);
-        gtk_widget_set_hexpand (value_label, TRUE);
-        gtk_widget_show (value_label);
+        g_list_store_append (self->group_model, item);
     }
 }
 
 static void
-nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
+nautilus_image_properties_model_init (NautilusImagesPropertiesModel *self)
 {
-    self->page_widget = gtk_scrolled_window_new ();
-
-    g_object_set (self->page_widget,
-                  "margin-bottom", 6,
-                  "margin-end", 12,
-                  "margin-start", 12,
-                  "margin-top", 6,
-                  NULL);
-    gtk_widget_set_vexpand (self->page_widget, TRUE);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (self->page_widget),
-                                    GTK_POLICY_NEVER,
-                                    GTK_POLICY_AUTOMATIC);
-
-    self->grid = gtk_grid_new ();
-
-    gtk_orientable_set_orientation (GTK_ORIENTABLE (self->grid), GTK_ORIENTATION_VERTICAL);
-    gtk_grid_set_row_spacing (GTK_GRID (self->grid), 6);
-    gtk_grid_set_column_spacing (GTK_GRID (self->grid), 18);
-    append_item (self, _("Loading…"), NULL);
-#if GTK_MAJOR_VERSION < 4
-    gtk_container_add (GTK_CONTAINER (self->page_widget), self->grid);
-#else
-    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (self->page_widget),
-                                   self->grid);
-#endif
-
-    gtk_widget_show (GTK_WIDGET (self->page_widget));
+    self->group_model = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_ITEM);
 }
 
 static void
-append_basic_info (NautilusImagesPropertiesPage *page)
+append_basic_info (NautilusImagesPropertiesModel *self)
 {
     GdkPixbufFormat *format;
     GExiv2Orientation orientation;
@@ -133,27 +86,27 @@ append_basic_info (NautilusImagesPropertiesPage *page)
     g_autofree char *desc = NULL;
     g_autofree char *value = NULL;
 
-    format = gdk_pixbuf_loader_get_format (page->loader);
+    format = gdk_pixbuf_loader_get_format (self->loader);
     name = gdk_pixbuf_format_get_name (format);
     desc = gdk_pixbuf_format_get_description (format);
     value = g_strdup_printf ("%s (%s)", name, desc);
 
-    append_item (page, _("Image Type"), value);
+    append_item (self, _("Image Type"), value);
 
-    orientation = gexiv2_metadata_try_get_orientation (page->md, NULL);
+    orientation = gexiv2_metadata_try_get_orientation (self->md, NULL);
 
     if (orientation == GEXIV2_ORIENTATION_ROT_90
         || orientation == GEXIV2_ORIENTATION_ROT_270
         || orientation == GEXIV2_ORIENTATION_ROT_90_HFLIP
         || orientation == GEXIV2_ORIENTATION_ROT_90_VFLIP)
     {
-        width = page->height;
-        height = page->width;
+        width = self->height;
+        height = self->width;
     }
     else
     {
-        width = page->width;
-        height = page->height;
+        width = self->width;
+        height = self->height;
     }
 
     g_free (value);
@@ -162,7 +115,7 @@ append_basic_info (NautilusImagesPropertiesPage *page)
                                        width),
                              width);
 
-    append_item (page, _("Width"), value);
+    append_item (self, _("Width"), value);
 
     g_free (value);
     value = g_strdup_printf (ngettext ("%d pixel",
@@ -170,23 +123,23 @@ append_basic_info (NautilusImagesPropertiesPage *page)
                                        height),
                              height);
 
-    append_item (page, _("Height"), value);
+    append_item (self, _("Height"), value);
 }
 
 static void
-append_gexiv2_tag (NautilusImagesPropertiesPage  *page,
-                   const char                   **tag_names,
-                   const char                    *description)
+append_gexiv2_tag (NautilusImagesPropertiesModel  *self,
+                   const char                    **tag_names,
+                   const char                     *description)
 {
     g_assert (tag_names != NULL);
 
     for (const char **i = tag_names; *i != NULL; i++)
     {
-        if (gexiv2_metadata_try_has_tag (page->md, *i, NULL))
+        if (gexiv2_metadata_try_has_tag (self->md, *i, NULL))
         {
             g_autofree char *tag_value = NULL;
 
-            tag_value = gexiv2_metadata_try_get_tag_interpreted_string (page->md, *i, NULL);
+            tag_value = gexiv2_metadata_try_get_tag_interpreted_string (self->md, *i, NULL);
 
             if (description == NULL)
             {
@@ -196,7 +149,7 @@ append_gexiv2_tag (NautilusImagesPropertiesPage  *page,
             /* don't add empty tags - try next one */
             if (strlen (tag_value) > 0)
             {
-                append_item (page, description, tag_value);
+                append_item (self, description, tag_value);
                 break;
             }
         }
@@ -204,7 +157,7 @@ append_gexiv2_tag (NautilusImagesPropertiesPage  *page,
 }
 
 static void
-append_gexiv2_info (NautilusImagesPropertiesPage *page)
+append_gexiv2_info (NautilusImagesPropertiesModel *self)
 {
     double longitude;
     double latitude;
@@ -229,30 +182,30 @@ append_gexiv2_info (NautilusImagesPropertiesPage *page)
     const char *rights[] = { "Xmp.dc.rights", NULL };
     const char *rating[] = { "Xmp.xmp.Rating", NULL };
 
-    if (!page->md_ready)
+    if (!self->md_ready)
     {
         return;
     }
 
-    append_gexiv2_tag (page, camera_brand, _("Camera Brand"));
-    append_gexiv2_tag (page, camera_model, _("Camera Model"));
-    append_gexiv2_tag (page, exposure_time, _("Exposure Time"));
-    append_gexiv2_tag (page, exposure_mode, _("Exposure Program"));
-    append_gexiv2_tag (page, aperture_value, _("Aperture Value"));
-    append_gexiv2_tag (page, iso_speed_ratings, _("ISO Speed Rating"));
-    append_gexiv2_tag (page, flash, _("Flash Fired"));
-    append_gexiv2_tag (page, metering_mode, _("Metering Mode"));
-    append_gexiv2_tag (page, focal_length, _("Focal Length"));
-    append_gexiv2_tag (page, software, _("Software"));
-    append_gexiv2_tag (page, title, _("Title"));
-    append_gexiv2_tag (page, description, _("Description"));
-    append_gexiv2_tag (page, subject, _("Keywords"));
-    append_gexiv2_tag (page, creator, _("Creator"));
-    append_gexiv2_tag (page, created_on, _("Created On"));
-    append_gexiv2_tag (page, rights, _("Copyright"));
-    append_gexiv2_tag (page, rating, _("Rating"));
+    append_gexiv2_tag (self, camera_brand, _("Camera Brand"));
+    append_gexiv2_tag (self, camera_model, _("Camera Model"));
+    append_gexiv2_tag (self, exposure_time, _("Exposure Time"));
+    append_gexiv2_tag (self, exposure_mode, _("Exposure Program"));
+    append_gexiv2_tag (self, aperture_value, _("Aperture Value"));
+    append_gexiv2_tag (self, iso_speed_ratings, _("ISO Speed Rating"));
+    append_gexiv2_tag (self, flash, _("Flash Fired"));
+    append_gexiv2_tag (self, metering_mode, _("Metering Mode"));
+    append_gexiv2_tag (self, focal_length, _("Focal Length"));
+    append_gexiv2_tag (self, software, _("Software"));
+    append_gexiv2_tag (self, title, _("Title"));
+    append_gexiv2_tag (self, description, _("Description"));
+    append_gexiv2_tag (self, subject, _("Keywords"));
+    append_gexiv2_tag (self, creator, _("Creator"));
+    append_gexiv2_tag (self, created_on, _("Created On"));
+    append_gexiv2_tag (self, rights, _("Copyright"));
+    append_gexiv2_tag (self, rating, _("Rating"));
 
-    if (gexiv2_metadata_try_get_gps_info (page->md, &longitude, &latitude, &altitude, NULL))
+    if (gexiv2_metadata_try_get_gps_info (self->md, &longitude, &latitude, &altitude, NULL))
     {
         g_autofree char *gps_coords = NULL;
 
@@ -267,40 +220,35 @@ append_gexiv2_info (NautilusImagesPropertiesPage *page)
                                       longitude >= 0 ? _("E") : _("W"),
                                       altitude);
 
-        append_item (page, _("Coordinates"), gps_coords);
+        append_item (self, _("Coordinates"), gps_coords);
     }
 }
 
 static void
-load_finished (NautilusImagesPropertiesPage *page)
+load_finished (NautilusImagesPropertiesModel *self)
 {
-    GtkWidget *label;
-
-    label = gtk_grid_get_child_at (GTK_GRID (page->grid), 0, 0);
-    gtk_widget_hide (label);
-
-    if (page->loader != NULL)
+    if (self->loader != NULL)
     {
-        gdk_pixbuf_loader_close (page->loader, NULL);
+        gdk_pixbuf_loader_close (self->loader, NULL);
     }
 
-    if (page->got_size)
+    if (self->got_size)
     {
-        append_basic_info (page);
-        append_gexiv2_info (page);
+        append_basic_info (self);
+        append_gexiv2_info (self);
     }
     else
     {
-        append_item (page, _("Failed to load image information"), NULL);
+        append_item (self, _("Failed to load image information"), NULL);
     }
 
-    if (page->loader != NULL)
+    if (self->loader != NULL)
     {
-        g_object_unref (page->loader);
-        page->loader = NULL;
+        g_object_unref (self->loader);
+        self->loader = NULL;
     }
-    page->md_ready = FALSE;
-    g_clear_object (&page->md);
+    self->md_ready = FALSE;
+    g_clear_object (&self->md);
 }
 
 static void
@@ -308,15 +256,15 @@ file_close_callback (GObject      *object,
                      GAsyncResult *res,
                      gpointer      data)
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagesPropertiesModel *self;
     GInputStream *stream;
 
-    page = data;
+    self = data;
     stream = G_INPUT_STREAM (object);
 
     g_input_stream_close_finish (stream, res, NULL);
 
-    g_clear_object (&page->cancellable);
+    g_clear_object (&self->cancellable);
 }
 
 static void
@@ -324,41 +272,41 @@ file_read_callback (GObject      *object,
                     GAsyncResult *res,
                     gpointer      data)
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagesPropertiesModel *self;
     GInputStream *stream;
     g_autoptr (GError) error = NULL;
     gssize count_read;
     gboolean done_reading;
 
-    page = data;
+    self = data;
     stream = G_INPUT_STREAM (object);
     count_read = g_input_stream_read_finish (stream, res, &error);
     done_reading = FALSE;
 
     if (count_read > 0)
     {
-        g_assert (count_read <= sizeof (page->buffer));
+        g_assert (count_read <= sizeof (self->buffer));
 
-        if (page->pixbuf_still_loading)
+        if (self->pixbuf_still_loading)
         {
-            if (!gdk_pixbuf_loader_write (page->loader,
-                                          page->buffer,
+            if (!gdk_pixbuf_loader_write (self->loader,
+                                          self->buffer,
                                           count_read,
                                           NULL))
             {
-                page->pixbuf_still_loading = FALSE;
+                self->pixbuf_still_loading = FALSE;
             }
         }
 
-        if (page->pixbuf_still_loading)
+        if (self->pixbuf_still_loading)
         {
             g_input_stream_read_async (G_INPUT_STREAM (stream),
-                                       page->buffer,
-                                       sizeof (page->buffer),
+                                       self->buffer,
+                                       sizeof (self->buffer),
                                        G_PRIORITY_DEFAULT,
-                                       page->cancellable,
+                                       self->cancellable,
                                        file_read_callback,
-                                       page);
+                                       self);
         }
         else
         {
@@ -382,12 +330,12 @@ file_read_callback (GObject      *object,
 
     if (done_reading)
     {
-        load_finished (page);
+        load_finished (self);
         g_input_stream_close_async (stream,
                                     G_PRIORITY_DEFAULT,
-                                    page->cancellable,
+                                    self->cancellable,
                                     file_close_callback,
-                                    page);
+                                    self);
     }
 }
 
@@ -397,19 +345,19 @@ size_prepared_callback (GdkPixbufLoader *loader,
                         int              height,
                         gpointer         callback_data)
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagesPropertiesModel *self;
 
-    page = callback_data;
+    self = callback_data;
 
-    page->height = height;
-    page->width = width;
-    page->got_size = TRUE;
-    page->pixbuf_still_loading = FALSE;
+    self->height = height;
+    self->width = width;
+    self->got_size = TRUE;
+    self->pixbuf_still_loading = FALSE;
 }
 
 typedef struct
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagesPropertiesModel *self;
     NautilusFileInfo *file_info;
 } FileOpenData;
 
@@ -419,14 +367,14 @@ file_open_callback (GObject      *object,
                     gpointer      user_data)
 {
     g_autofree FileOpenData *data = NULL;
-    NautilusImagesPropertiesPage *page;
+    NautilusImagesPropertiesModel *self;
     GFile *file;
     g_autofree char *uri = NULL;
     g_autoptr (GError) error = NULL;
     g_autoptr (GFileInputStream) stream = NULL;
 
     data = user_data;
-    page = data->page;
+    self = data->self;
     file = G_FILE (object);
     uri = g_file_get_uri (file);
     stream = g_file_read_finish (file, res, &error);
@@ -436,38 +384,38 @@ file_open_callback (GObject      *object,
 
         mime_type = nautilus_file_info_get_mime_type (data->file_info);
 
-        page->loader = gdk_pixbuf_loader_new_with_mime_type (mime_type, &error);
+        self->loader = gdk_pixbuf_loader_new_with_mime_type (mime_type, &error);
         if (error != NULL)
         {
             g_warning ("Error creating loader for %s: %s", uri, error->message);
         }
-        page->pixbuf_still_loading = TRUE;
-        page->width = 0;
-        page->height = 0;
+        self->pixbuf_still_loading = TRUE;
+        self->width = 0;
+        self->height = 0;
 
-        g_signal_connect (page->loader,
+        g_signal_connect (self->loader,
                           "size-prepared",
                           G_CALLBACK (size_prepared_callback),
-                          page);
+                          self);
 
         g_input_stream_read_async (G_INPUT_STREAM (stream),
-                                   page->buffer,
-                                   sizeof (page->buffer),
+                                   self->buffer,
+                                   sizeof (self->buffer),
                                    G_PRIORITY_DEFAULT,
-                                   page->cancellable,
+                                   self->cancellable,
                                    file_read_callback,
-                                   page);
+                                   self);
     }
     else
     {
         g_warning ("Error reading %s: %s", uri, error->message);
-        load_finished (page);
+        load_finished (self);
     }
 }
 
 static void
-nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage *self,
-                                                    NautilusFileInfo             *file_info)
+nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesModel *self,
+                                                     NautilusFileInfo              *file_info)
 {
     g_autofree char *uri = NULL;
     g_autoptr (GFile) file = NULL;
@@ -509,7 +457,7 @@ nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage
 
     data = g_new0 (FileOpenData, 1);
 
-    data->page = self;
+    data->self = self;
     data->file_info = file_info;
 
     g_file_read_async (file,
@@ -519,20 +467,23 @@ nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage
                        data);
 }
 
-GtkWidget *
-nautilus_image_properties_page_new (NautilusFileInfo *file_info)
+NautilusPropertiesModel *
+nautilus_image_properties_model_new (NautilusFileInfo *file_info)
 {
-    NautilusImagesPropertiesPage *self;
+    NautilusImagesPropertiesModel *self;
+    NautilusPropertiesModel *model;
 
-    self = g_new0 (NautilusImagesPropertiesPage, 1);
+    self = g_new0 (NautilusImagesPropertiesModel, 1);
 
-    nautilus_image_properties_page_init (self);
-    nautilus_image_properties_page_load_from_file_info (self, file_info);
+    nautilus_image_properties_model_init (self);
+    nautilus_image_properties_model_load_from_file_info (self, file_info);
 
-    g_object_set_data_full (G_OBJECT (self->page_widget),
-                            "nautilus-images-properties-page",
-                            self,
-                            (GDestroyNotify) nautilus_images_properties_page_free);
+    model = nautilus_properties_model_new (_("Image Properties"),
+                                           G_LIST_MODEL (self->group_model));
 
-    return self->page_widget;
+    g_object_weak_ref (G_OBJECT (model),
+                       (GWeakNotify) nautilus_images_properties_model_free,
+                       self);
+
+    return model;
 }
