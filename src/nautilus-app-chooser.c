@@ -20,8 +20,9 @@ struct _NautilusAppChooser
     gboolean single_content_type;
 
     GtkWidget *app_chooser_widget_box;
-    GtkWidget *reset_button;
-    GtkWidget *set_as_default_button;
+    GtkWidget *label_content_type_description;
+    GtkWidget *set_as_default_switch;
+    GtkWidget *set_default_box;
 
     GtkWidget *app_chooser_widget;
 };
@@ -37,30 +38,32 @@ enum
 };
 
 static void
-reset_clicked_cb (GtkButton *button,
-                  gpointer   user_data)
+open_button_clicked_cb (GtkButton          *button,
+                        NautilusAppChooser *self)
 {
-    NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (user_data);
-
-    g_app_info_reset_type_associations (self->content_type);
-    gtk_app_chooser_refresh (GTK_APP_CHOOSER (self->app_chooser_widget));
-    gtk_widget_set_sensitive (self->reset_button, FALSE);
-
-    g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
-}
-
-static void
-set_as_default_clicked_cb (GtkButton *button,
-                           gpointer   user_data)
-{
-    NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (user_data);
+    gboolean state;
     g_autoptr (GAppInfo) info = NULL;
     g_autoptr (GError) error = NULL;
 
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
+    state = gtk_switch_get_active (GTK_SWITCH (self->set_as_default_switch));
 
-    g_app_info_set_as_default_for_type (info, self->content_type,
-                                        &error);
+    if (!self->single_content_type)
+    {
+        /* Don't attempt to set an association with multiple content types */
+        return;
+    }
+
+    if (state)
+    {
+        info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
+        g_app_info_set_as_default_for_type (info, self->content_type,
+                                            &error);
+    }
+    else
+    {
+        g_app_info_reset_type_associations (self->content_type);
+        gtk_app_chooser_refresh (GTK_APP_CHOOSER (self->app_chooser_widget));
+    }
 
     if (error != NULL)
     {
@@ -77,7 +80,6 @@ set_as_default_clicked_cb (GtkButton *button,
     }
 
     gtk_app_chooser_refresh (GTK_APP_CHOOSER (self->app_chooser_widget));
-    gtk_widget_set_sensitive (self->reset_button, TRUE);
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 }
 
@@ -95,7 +97,7 @@ on_application_selected (GtkAppChooserWidget *widget,
     default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
     is_default = default_app != NULL && g_app_info_equal (info, default_app);
 
-    gtk_widget_set_sensitive (self->set_as_default_button, !is_default);
+    gtk_switch_set_state (GTK_SWITCH (self->set_as_default_switch), is_default);
 }
 
 static void
@@ -141,6 +143,7 @@ nautilus_app_chooser_constructed (GObject *object)
 {
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
     g_autoptr (GAppInfo) info = NULL;
+    g_autofree gchar *content_type_description = NULL;
 
     G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->constructed (object);
 
@@ -152,12 +155,6 @@ nautilus_app_chooser_constructed (GObject *object)
     gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
-    g_signal_connect (self->reset_button, "clicked",
-                      G_CALLBACK (reset_clicked_cb),
-                      self);
-    g_signal_connect (self->set_as_default_button, "clicked",
-                      G_CALLBACK (set_as_default_clicked_cb),
-                      self);
 
     /* initialize sensitivity */
     info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
@@ -175,6 +172,16 @@ nautilus_app_chooser_constructed (GObject *object)
     gtk_header_bar_set_title_widget (GTK_HEADER_BAR (gtk_dialog_get_header_bar (GTK_DIALOG (self))),
                                      adw_window_title_new (gtk_window_get_title (GTK_WINDOW (self)),
                                                            self->content_type));
+
+    if (self->single_content_type)
+    {
+        content_type_description = g_content_type_get_description (self->content_type);
+        gtk_label_set_label (GTK_LABEL (self->label_content_type_description), content_type_description);
+    }
+    else
+    {
+        gtk_widget_set_visible (self->set_default_box, FALSE);
+    }
 }
 
 static void
@@ -200,8 +207,11 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-app-chooser.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, app_chooser_widget_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, reset_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_as_default_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_as_default_switch);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_content_type_description);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_box);
+
+    gtk_widget_class_bind_template_callback (widget_class, open_button_clicked_cb);
 
     g_object_class_install_property (object_class,
                                      PROP_CONTENT_TYPE,
