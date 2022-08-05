@@ -7,6 +7,9 @@ libnautilus_extension_headers = [
   'nautilus-info-provider.h',
   'nautilus-location-widget-provider.h',
   'nautilus-menu-provider.h',
+  'nautilus-properties-model-provider.h',
+  'nautilus-properties-model.h',
+  'nautilus-properties-item.h',
   'nautilus-property-page-provider.h',
   'nautilus-property-page.h',
   'nautilus-menu.h'
@@ -42,6 +45,9 @@ libnautilus_extension_sources = [
   'nautilus-location-widget-provider.c',
   'nautilus-menu-item.c',
   'nautilus-menu-provider.c',
+  'nautilus-properties-model-provider.c',
+  'nautilus-properties-model.c',
+  'nautilus-properties-item.c',
   'nautilus-property-page-provider.c',
   'nautilus-property-page.c',
   'nautilus-menu.c'
