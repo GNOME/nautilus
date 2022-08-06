@@ -21,7 +21,7 @@
 #ifndef TOTEM_PROPERTIES_VIEW_H
 #define TOTEM_PROPERTIES_VIEW_H
 
-#include <gtk/gtk.h>
+#include <nautilus-extension.h>
 
 #define TOTEM_TYPE_PROPERTIES_VIEW	    (totem_properties_view_get_type ())
 #define TOTEM_PROPERTIES_VIEW(obj)	    (G_TYPE_CHECK_INSTANCE_CAST ((obj), TOTEM_TYPE_PROPERTIES_VIEW, TotemPropertiesView))
@@ -32,18 +32,17 @@
 typedef struct TotemPropertiesViewPriv TotemPropertiesViewPriv;
 
 typedef struct {
-	GtkGrid parent;
+	GObject parent;
 	TotemPropertiesViewPriv *priv;
 } TotemPropertiesView;
 
 typedef struct {
-	GtkGridClass parent;
+	GObjectClass parent;
 } TotemPropertiesViewClass;
 
-GType      totem_properties_view_get_type      (void);
-void       totem_properties_view_register_type (GTypeModule *module);
+GType                    totem_properties_view_get_type      (void);
+void                     totem_properties_view_register_type (GTypeModule *module);
 
-GtkWidget *totem_properties_view_new           (const char *location,
-						GtkWidget  *label);
+NautilusPropertiesModel *totem_properties_view_new           (const char *location);
 
 #endif /* TOTEM_PROPERTIES_VIEW_H */

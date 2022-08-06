@@ -20,7 +20,6 @@
 
 #include <config.h>
 
-#include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 
 #define GST_USE_UNSTABLE_API 1
@@ -28,19 +27,18 @@
 #include <gst/pbutils/pbutils.h>
 
 #include "totem-properties-view.h"
-#include "bacon-video-widget-properties.h"
+#include <math.h>
 
 struct TotemPropertiesViewPriv {
-	GtkWidget *label;
-	GtkWidget *vbox;
-	BaconVideoWidgetProperties *props;
+	NautilusPropertiesModel *model;
+	GListStore *store;
 	GstDiscoverer *disco;
 };
 
 static GObjectClass *parent_class = NULL;
 static void totem_properties_view_finalize (GObject *object);
 
-G_DEFINE_TYPE (TotemPropertiesView, totem_properties_view, GTK_TYPE_GRID)
+G_DEFINE_TYPE (TotemPropertiesView, totem_properties_view, G_TYPE_OBJECT)
 
 void
 totem_properties_view_register_type (GTypeModule *module)
@@ -56,16 +54,74 @@ totem_properties_view_class_init (TotemPropertiesViewClass *class)
 }
 
 static void
+append_item (TotemPropertiesView *props,
+             const char          *name,
+             const char          *value)
+{
+    g_autoptr (NautilusPropertiesItem) item = NULL;
+
+    item = nautilus_properties_item_new (name, value);
+
+    g_list_store_append (props->priv->store, item);
+}
+
+/* Copied from bacon-video-widget-properties.c
+ * Copyright (C) 2002 Bastien Nocera
+ */
+static char *
+time_to_string_text (gint64 msecs)
+{
+	char *secs, *mins, *hours, *string;
+	int sec, min, hour, _time;
+
+	_time = (int) (msecs / 1000);
+	sec = _time % 60;
+	_time = _time - sec;
+	min = (_time % (60*60)) / 60;
+	_time = _time - (min * 60);
+	hour = _time / (60*60);
+
+	hours = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d hour", "%d hours", hour), hour);
+
+	mins = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d minute",
+					  "%d minutes", min), min);
+
+	secs = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d second",
+					  "%d seconds", sec), sec);
+
+	if (hour > 0)
+	{
+		/* 5 hours 2 minutes 12 seconds */
+		string = g_strdup_printf (C_("time", "%s %s %s"), hours, mins, secs);
+	} else if (min > 0) {
+		/* 2 minutes 12 seconds */
+		string = g_strdup_printf (C_("time", "%s %s"), mins, secs);
+	} else if (sec > 0) {
+		/* 10 seconds */
+		string = g_strdup (secs);
+	} else {
+		/* 0 seconds */
+		string = g_strdup (_("0 seconds"));
+	}
+
+	g_free (hours);
+	g_free (mins);
+	g_free (secs);
+
+	return string;
+}
+
+static void
 update_general (TotemPropertiesView *props,
 		const GstTagList    *list)
 {
 	struct {
 		const char *tag_name;
-		const char *widget;
+		const char *title;
 	} items[] = {
-		{ GST_TAG_TITLE, "title" },
-		{ GST_TAG_ARTIST, "artist" },
-		{ GST_TAG_ALBUM, "album" },
+		{ GST_TAG_TITLE, N_("Title") },
+		{ GST_TAG_ARTIST, N_("Artist") },
+		{ GST_TAG_ALBUM, N_("Album") },
 	};
 	guint i;
         GDate *date;
@@ -76,9 +132,7 @@ update_general (TotemPropertiesView *props,
 		char *string;
 
 		if (gst_tag_list_get_string_index (list, items[i].tag_name, 0, &string) != FALSE) {
-			bacon_video_widget_properties_set_label (props->priv->props,
-								 items[i].widget,
-								 string);
+			append_item (props, gettext (items[i].title), string);
 			g_free (string);
 		}
 	}
@@ -88,9 +142,7 @@ update_general (TotemPropertiesView *props,
 	if (gst_tag_list_get_string (list, GST_TAG_COMMENT, &comment) ||
 		gst_tag_list_get_string (list, GST_TAG_DESCRIPTION, &comment)) {
 
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 "comment",
-							 comment);
+		append_item (props, _("Comment"), comment);
 		g_free (comment);
         }
 	
@@ -100,18 +152,14 @@ update_general (TotemPropertiesView *props,
 
 		string = g_strdup_printf ("%d", g_date_get_year (date));
 		g_date_free (date);
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 "year",
-							 string);
+		append_item (props, _("Year"), string);
 		g_free (string);
         } else if (gst_tag_list_get_date_time (list, GST_TAG_DATE_TIME, &datetime)) {
 		char *string;
 
 		string = g_strdup_printf ("%d", gst_date_time_get_year (datetime));
 		gst_date_time_unref (datetime);
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 "year",
-							 string);
+		append_item (props, _("Year"), string);
 		g_free (string);
 	}
 }
@@ -119,7 +167,7 @@ update_general (TotemPropertiesView *props,
 static void
 set_codec (TotemPropertiesView     *props,
 	   GstDiscovererStreamInfo *info,
-	   const char              *widget)
+	   const char              *title)
 {
 	GstCaps *caps;
 	const char *nick;
@@ -127,12 +175,8 @@ set_codec (TotemPropertiesView     *props,
 	nick = gst_discoverer_stream_info_get_stream_type_nick (info);
 	if (g_str_equal (nick, "audio") == FALSE &&
 	    g_str_equal (nick, "video") == FALSE &&
-	    g_str_equal (nick, "container") == FALSE) {
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 widget,
-							 _("N/A"));
+	    g_str_equal (nick, "container") == FALSE)
 		return;
-	}
 
 	caps = gst_discoverer_stream_info_get_caps (info);
 	if (caps) {
@@ -140,9 +184,7 @@ set_codec (TotemPropertiesView     *props,
 			char *string;
 
 			string = gst_pb_utils_get_codec_description (caps);
-			bacon_video_widget_properties_set_label (props->priv->props,
-								 widget,
-								 string);
+			append_item (props, title, string);
 			g_free (string);
 		}
 		gst_caps_unref (caps);
@@ -152,20 +194,15 @@ set_codec (TotemPropertiesView     *props,
 static void
 set_bitrate (TotemPropertiesView    *props,
 	     guint                   bitrate,
-	     const char             *widget)
+	     const char             *title)
 {
 	char *string;
 
 	if (!bitrate) {
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 widget,
-							 C_("Stream bit rate", "N/A"));
 		return;
 	}
 	string = g_strdup_printf (_("%d kbps"), bitrate / 1000);
-	bacon_video_widget_properties_set_label (props->priv->props,
-						 widget,
-						 string);
+	append_item (props, title, string);
 	g_free (string);
 }
 
@@ -175,27 +212,34 @@ update_video (TotemPropertiesView    *props,
 {
 	guint width, height;
 	guint fps_n, fps_d;
+	float framerate = 0.0;
 	char *string;
 
 	width = gst_discoverer_video_info_get_width (info);
 	height = gst_discoverer_video_info_get_height (info);
 	string = g_strdup_printf (N_("%d × %d"), width, height);
-	bacon_video_widget_properties_set_label (props->priv->props,
-						 "dimensions",
-						 string);
+	append_item (props, _("Dimensions"), string);
 	g_free (string);
 
-	set_codec (props, (GstDiscovererStreamInfo *) info, "vcodec");
-	set_bitrate (props, gst_discoverer_video_info_get_bitrate (info), "video_bitrate");
+	set_codec (props, (GstDiscovererStreamInfo *) info, _("Video Codec"));
+	set_bitrate (props, gst_discoverer_video_info_get_bitrate (info), _("Video Bit Rate"));
 
 	/* Round up/down to the nearest integer framerate */
 	fps_n = gst_discoverer_video_info_get_framerate_num (info);
 	fps_d = gst_discoverer_video_info_get_framerate_denom (info);
-	if (fps_d > 0.0)
-		bacon_video_widget_properties_set_framerate (props->priv->props,
-							     (float) fps_n / (float) fps_d);
-	else
-		bacon_video_widget_properties_set_framerate (props->priv->props, 0.0);
+	if (fps_d > 0.0) {
+		framerate = (float) fps_n / (float) fps_d;
+	}
+
+	if (framerate > 1.0) {
+		string = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE,
+                                                       "%0.2f frame per second",
+                                                       "%0.2f frames per second",
+                                                       (int) (ceilf (framerate))),
+                                          framerate);
+		append_item (props, _("Frame Rate"), string);
+		g_free (string);
+	}
 }
 
 static void
@@ -204,22 +248,16 @@ update_audio (TotemPropertiesView    *props,
 {
 	guint samplerate, channels;
 
-	set_codec (props, (GstDiscovererStreamInfo *) info, "acodec");
+	set_codec (props, (GstDiscovererStreamInfo *) info, _("Audio Codec"));
 
-	set_bitrate (props, gst_discoverer_audio_info_get_bitrate (info), "audio_bitrate");
+	set_bitrate (props, gst_discoverer_audio_info_get_bitrate (info), _("Audio Bit Rate"));
 
 	samplerate = gst_discoverer_audio_info_get_sample_rate (info);
 	if (samplerate) {
 		char *string;
 		string = g_strdup_printf (_("%d Hz"), samplerate);
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 "samplerate",
-							 string);
+		append_item (props, _("Sample Rate"), string);
 		g_free (string);
-	} else {
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 "samplerate",
-							 C_("Sample rate", "N/A"));
 	}
 
 	channels = gst_discoverer_audio_info_get_channels (info);
@@ -235,14 +273,8 @@ update_audio (TotemPropertiesView    *props,
 		} else {
 			string = g_strdup (""); //Should not happen
 		}
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 "channels",
-							 string);
+		append_item (props, _("Channels"), string);
 		g_free (string);
-	} else {
-		bacon_video_widget_properties_set_label (props->priv->props,
-							 "channels",
-							 C_("Number of audio channels", "N/A"));
 	}
 }
 
@@ -257,6 +289,7 @@ discovered_cb (GstDiscoverer       *discoverer,
 	gboolean has_audio, has_video;
 	const char *label;
         GstClockTime duration;
+	g_autofree char *duration_string = NULL;
         GstDiscovererStreamInfo *sinfo;
 
 	if (error) {
@@ -272,26 +305,22 @@ discovered_cb (GstDiscoverer       *discoverer,
 	has_audio = (audio_streams != NULL);
 
 	if (has_audio == has_video)
-		label = N_("Audio/Video");
+		label = _("Audio and Video Properties");
 	else if (has_audio)
-		label = N_("Audio");
+		label = _("Audio Properties");
 	else
-		label = N_("Video");
+		label = _("Video Properties");
 
-	gtk_label_set_text (GTK_LABEL (props->priv->label), _(label));
-
-	/* Widgets */
-	bacon_video_widget_properties_set_has_type (props->priv->props,
-						    has_video,
-						    has_audio);
+	nautilus_properties_model_set_title (props->priv->model, label);
 
 	/* General */
         duration = gst_discoverer_info_get_duration (info);
-        bacon_video_widget_properties_set_duration (props->priv->props, duration / GST_SECOND * 1000);
+        duration_string = time_to_string_text (duration / GST_SECOND * 1000);
+	append_item (props, _("Duration"), duration_string);
 
         sinfo = gst_discoverer_info_get_stream_info (info);
         if (sinfo) {
-		set_codec (props, sinfo, "container");
+		set_codec (props, sinfo, _("Container"));
 		gst_discoverer_stream_info_unref (sinfo);
 	}
 
@@ -315,11 +344,10 @@ totem_properties_view_init (TotemPropertiesView *props)
 
 	props->priv = g_new0 (TotemPropertiesViewPriv, 1);
 
-	props->priv->vbox = bacon_video_widget_properties_new ();
-	gtk_grid_attach (GTK_GRID (props), props->priv->vbox, 0, 0, 1, 1);
-	gtk_widget_show (GTK_WIDGET (props));
+	props->priv->store = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_ITEM);
 
-	props->priv->props = BACON_VIDEO_WIDGET_PROPERTIES (props->priv->vbox);
+        props->priv->model = nautilus_properties_model_new (_("Audio/Video Properties"),
+                                                            G_LIST_MODEL (props->priv->store));
 
 	props->priv->disco = gst_discoverer_new (GST_SECOND * 60, &err);
 	if (props->priv->disco == NULL) {
@@ -346,7 +374,6 @@ totem_properties_view_finalize (GObject *object)
 			gst_discoverer_stop (props->priv->disco);
 			g_clear_object (&props->priv->disco);
 		}
-		g_clear_object (&props->priv->label);
 		g_free (props->priv);
 	}
 	props->priv = NULL;
@@ -363,8 +390,6 @@ totem_properties_view_set_location (TotemPropertiesView *props,
 	if (props->priv->disco)
 		gst_discoverer_stop (props->priv->disco);
 
-	bacon_video_widget_properties_reset (props->priv->props);
-
 	if (location != NULL && props->priv->disco != NULL) {
 		gst_discoverer_start (props->priv->disco);
 
@@ -375,15 +400,16 @@ totem_properties_view_set_location (TotemPropertiesView *props,
 	}
 }
 
-GtkWidget *
-totem_properties_view_new (const char *location, GtkWidget *label)
+NautilusPropertiesModel *
+totem_properties_view_new (const char *location)
 {
-	TotemPropertiesView *self;
+	TotemPropertiesView *props;
 
-	self = g_object_new (TOTEM_TYPE_PROPERTIES_VIEW, NULL);
-	g_object_ref (label);
-	self->priv->label = label;
-	totem_properties_view_set_location (self, location);
+	props = g_object_new (TOTEM_TYPE_PROPERTIES_VIEW, NULL);
 
-	return GTK_WIDGET (self);
+	totem_properties_view_set_location (props, location);
+
+	g_object_weak_ref (G_OBJECT (props->priv->model), (GWeakNotify) g_object_unref, props);
+
+	return props->priv->model;
 }

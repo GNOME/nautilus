@@ -33,10 +33,10 @@
 #include "totem-mime-types.h"
 
 static GType tpp_type = 0;
-static void property_page_provider_iface_init
-	(NautilusPropertyPageProviderInterface *iface);
-static GList *totem_properties_get_pages
-	(NautilusPropertyPageProvider *provider, GList *files);
+static void properties_model_provider_iface_init
+	(NautilusPropertiesModelProviderInterface *iface);
+static GList *totem_properties_get_models
+	(NautilusPropertiesModelProvider *provider, GList *files);
 
 static void
 totem_properties_plugin_register_type (GTypeModule *module)
@@ -52,8 +52,8 @@ totem_properties_plugin_register_type (GTypeModule *module)
 		0,
 		(GInstanceInitFunc) NULL
 	};
-	const GInterfaceInfo property_page_provider_iface_info = {
-		(GInterfaceInitFunc)property_page_provider_iface_init,
+	const GInterfaceInfo properties_model_provider_iface_info = {
+		(GInterfaceInitFunc)properties_model_provider_iface_init,
 		NULL,
 		NULL
 	};
@@ -63,14 +63,14 @@ totem_properties_plugin_register_type (GTypeModule *module)
 			&info, 0);
 	g_type_module_add_interface (module,
 			tpp_type,
-			NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER,
-			&property_page_provider_iface_info);
+			NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER,
+			&properties_model_provider_iface_info);
 }
 
 static void
-property_page_provider_iface_init (NautilusPropertyPageProviderInterface *iface)
+properties_model_provider_iface_init (NautilusPropertiesModelProviderInterface *iface)
 {
-	iface->get_pages = totem_properties_get_pages;
+	iface->get_models = totem_properties_get_models;
 }
 
 static gpointer
@@ -82,23 +82,22 @@ init_backend (gpointer data)
 }
 
 static GList *
-totem_properties_get_pages (NautilusPropertyPageProvider *provider,
+totem_properties_get_models (NautilusPropertiesModelProvider *provider,
 			     GList *files)
 {
 	static GOnce backend_inited = G_ONCE_INIT;
 	NautilusFileInfo *file;
 	char *uri;
-	GtkWidget *page, *label;
-	NautilusPropertyPage *property_page;
+	NautilusPropertiesModel *model;
 	guint i;
 	gboolean found;
 
-	/* only add properties page if a single file is selected */
+	/* only add properties model if a single file is selected */
 	if (files == NULL || files->next != NULL)
 		return NULL;
 	file = files->data;
 
-	/* only add the properties page to these mime types */
+	/* only add the properties model to these mime types */
 	found = FALSE;
 	for (i = 0; mime_types[i] != NULL; i++) {
 		if (nautilus_file_info_is_mime_type (file, mime_types[i])) {
@@ -109,18 +108,14 @@ totem_properties_get_pages (NautilusPropertyPageProvider *provider,
 	if (found == FALSE)
 		return NULL;
 
-	/* okay, make the page, init'ing the backend first if necessary */
+	/* okay, make the model, init'ing the backend first if necessary */
 	g_once (&backend_inited, init_backend, NULL);
 
 	uri = nautilus_file_info_get_uri (file);
-	label = gtk_label_new (_("Audio/Video"));
-	page = totem_properties_view_new (uri, label);
+	model = totem_properties_view_new (uri);
 	g_free (uri);
 
-	property_page = nautilus_property_page_new ("video-properties",
-			label, page);
-
-	return g_list_prepend (NULL, property_page);
+	return g_list_prepend (NULL, model);
 }
 
 /* --- extension interface --- */
