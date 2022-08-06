@@ -3214,8 +3214,13 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
 
       sidebar->popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (menu));
       gtk_widget_set_parent (sidebar->popover, GTK_WIDGET (sidebar));
+      gtk_widget_set_halign (sidebar->popover, GTK_ALIGN_START);
+      gtk_popover_set_has_arrow (GTK_POPOVER (sidebar->popover), FALSE);
       g_signal_connect (sidebar->popover, "destroy",
                         G_CALLBACK (on_row_popover_destroy), sidebar);
+
+      setup_popover_shadowing (sidebar->popover, sidebar);
+
       g_object_unref (sidebar);
       g_object_unref (cloud_provider_account);
     }
