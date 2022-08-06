@@ -1,4 +1,4 @@
-nautilus_extension_version = '2.0.0'
+nautilus_extension_version = '4'
 
 libnautilus_extension_headers = [
   'nautilus-column-provider.h',
@@ -50,7 +50,7 @@ libnautilus_extension_sources = [
 libnautilus_extension_deps = [
   config_h,
   glib,
-  gtk
+  gio
 ]
 
 libnautilus_extension = shared_library(
@@ -62,7 +62,7 @@ libnautilus_extension = shared_library(
   ],
   dependencies: libnautilus_extension_deps,
   include_directories: nautilus_include_dirs,
-  version: nautilus_extension_version,
+  soversion: nautilus_extension_version,
   install: true
 )
 
@@ -76,10 +76,9 @@ if get_option('introspection')
       '-DNAUTILUS_COMPILATION'
     ],
     sources: libnautilus_extension_sources,
-    nsversion: '4.0',
+    nsversion: nautilus_extension_version + '.0',
     namespace: 'Nautilus',
     includes: [
-      'Gtk-4.0',
       'Gio-2.0',
       'GLib-2.0'
     ],
@@ -97,7 +96,7 @@ nautilus_extension = declare_dependency(
 
 pkgconfig.generate(
   description: 'A library to create Nautilus view extensions',
-  filebase: 'libnautilus-extension',
+  filebase: 'libnautilus-extension-' + nautilus_extension_version,
   libraries: [
     libnautilus_extension
   ],
@@ -108,11 +107,11 @@ pkgconfig.generate(
   requires: [
     'gio-2.0',
     'glib-2.0',
-    'gtk4'
   ],
   variables: [
     'exec_prefix=${prefix}',
-    'extensiondir=${libdir}/nautilus/extensions-3.0'
+    'extensiondir=${libdir}/nautilus/extensions-' + nautilus_extension_version,
+    'extensions_api_version=' + nautilus_extension_version
   ],
   version: meson.project_version()
 )
