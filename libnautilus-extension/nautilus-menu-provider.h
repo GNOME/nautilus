@@ -33,7 +33,6 @@
 #endif
 
 #include <glib-object.h>
-#include <gtk/gtk.h>
 #include "nautilus-file-info.h"
 
 G_BEGIN_DECLS
@@ -68,34 +67,28 @@ struct _NautilusMenuProviderInterface
     GTypeInterface g_iface;
 
     GList *(*get_file_items)       (NautilusMenuProvider *provider,
-                                    GtkWidget            *window,
                                     GList                *files);
     GList *(*get_background_items) (NautilusMenuProvider *provider,
-                                    GtkWidget            *window,
                                     NautilusFileInfo     *current_folder);
 };
 
 /**
  * nautilus_menu_provider_get_file_items:
  * @provider: a #NautilusMenuProvider
- * @window: the parent #GtkWidget window
  * @files: (element-type NautilusFileInfo): a list of #NautilusFileInfo
  *
  * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem.
  */
 GList  *nautilus_menu_provider_get_file_items           (NautilusMenuProvider *provider,
-                                                         GtkWidget            *window,
                                                          GList                *files);
 /**
  * nautilus_menu_provider_get_background_items:
  * @provider: a #NautilusMenuProvider
- * @window: the parent #GtkWidget window
  * @current_folder: the folder for which background items are requested
  *
  * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem.
  */
 GList *nautilus_menu_provider_get_background_items      (NautilusMenuProvider *provider,
-                                                         GtkWidget            *window,
                                                          NautilusFileInfo     *current_folder);
 
 /**

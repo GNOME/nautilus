@@ -50,7 +50,6 @@ nautilus_menu_provider_default_init (NautilusMenuProviderInterface *klass)
 
 GList *
 nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
-                                       GtkWidget            *window,
                                        GList                *files)
 {
     NautilusMenuProviderInterface *iface;
@@ -58,11 +57,10 @@ nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
     iface = NAUTILUS_MENU_PROVIDER_GET_IFACE (provider);
 
     g_return_val_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider), NULL);
-    g_return_val_if_fail (GTK_IS_WIDGET (window), NULL);
 
     if (iface->get_file_items != NULL)
     {
-        return iface->get_file_items (provider, window, files);
+        return iface->get_file_items (provider, files);
     }
 
     return NULL;
@@ -70,7 +68,6 @@ nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
 
 GList *
 nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
-                                             GtkWidget            *window,
                                              NautilusFileInfo     *current_folder)
 {
     NautilusMenuProviderInterface *iface;
@@ -78,12 +75,11 @@ nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
     iface = NAUTILUS_MENU_PROVIDER_GET_IFACE (provider);
 
     g_return_val_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider), NULL);
-    g_return_val_if_fail (GTK_IS_WIDGET (window), NULL);
     g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (current_folder), NULL);
 
     if (iface->get_background_items != NULL)
     {
-        return iface->get_background_items (provider, window, current_folder);
+        return iface->get_background_items (provider, current_folder);
     }
 
     return NULL;

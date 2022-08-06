@@ -4968,13 +4968,11 @@ get_menu_icon_for_file (NautilusFile *file,
 static GList *
 get_extension_selection_menu_items (NautilusFilesView *view)
 {
-    NautilusWindow *window;
     GList *items;
     GList *providers;
     GList *l;
     g_autolist (NautilusFile) selection = NULL;
 
-    window = nautilus_files_view_get_window (view);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
     items = NULL;
@@ -4986,7 +4984,6 @@ get_extension_selection_menu_items (NautilusFilesView *view)
 
         provider = NAUTILUS_MENU_PROVIDER (l->data);
         file_items = nautilus_menu_provider_get_file_items (provider,
-                                                            GTK_WIDGET (window),
                                                             selection);
         items = g_list_concat (items, file_items);
     }
@@ -5000,13 +4997,11 @@ static GList *
 get_extension_background_menu_items (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
-    NautilusWindow *window;
     GList *items;
     GList *providers;
     GList *l;
 
     priv = nautilus_files_view_get_instance_private (view);
-    window = nautilus_files_view_get_window (view);
     providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
     items = NULL;
 
@@ -5019,7 +5014,6 @@ get_extension_background_menu_items (NautilusFilesView *view)
         provider = NAUTILUS_MENU_PROVIDER (l->data);
         file_info = NAUTILUS_FILE_INFO (priv->directory_as_file);
         file_items = nautilus_menu_provider_get_background_items (provider,
-                                                                  GTK_WIDGET (window),
                                                                   file_info);
         items = g_list_concat (items, file_items);
     }
