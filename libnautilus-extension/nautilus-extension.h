@@ -23,7 +23,6 @@
 #include <libnautilus-extension/nautilus-extension-enum-types.h>
 #include <libnautilus-extension/nautilus-file-info.h>
 #include <libnautilus-extension/nautilus-info-provider.h>
-#include <libnautilus-extension/nautilus-location-widget-provider.h>
 #include <libnautilus-extension/nautilus-menu.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-extension/nautilus-properties-model.h>

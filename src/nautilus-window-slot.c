@@ -45,7 +45,6 @@
 #include "nautilus-module.h"
 #include "nautilus-monitor.h"
 #include "nautilus-profile.h"
-#include <nautilus-extension.h>
 #include "nautilus-ui-utilities.h"
 #include <eel/eel-vfs-extensions.h>
 
@@ -2593,34 +2592,6 @@ nautilus_window_slot_show_special_location_bar (NautilusWindowSlot      *self,
 }
 
 static void
-slot_add_extension_extra_widgets (NautilusWindowSlot *self)
-{
-    GList *providers, *l;
-    GtkWidget *widget;
-    char *uri;
-    NautilusWindow *window;
-
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER);
-    window = nautilus_window_slot_get_window (self);
-
-    uri = nautilus_window_slot_get_location_uri (self);
-    for (l = providers; l != NULL; l = l->next)
-    {
-        NautilusLocationWidgetProvider *provider;
-
-        provider = NAUTILUS_LOCATION_WIDGET_PROVIDER (l->data);
-        widget = nautilus_location_widget_provider_get_widget (provider, uri, GTK_WIDGET (window));
-        if (widget != NULL)
-        {
-            nautilus_window_slot_add_extra_location_widget (self, widget);
-        }
-    }
-    g_free (uri);
-
-    nautilus_module_extension_list_free (providers);
-}
-
-static void
 nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 {
     GFile *new_location;
@@ -2789,8 +2760,6 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
                                        data);
 
     nautilus_directory_unref (directory);
-
-    slot_add_extension_extra_widgets (self);
 }
 
 static void
