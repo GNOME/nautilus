@@ -68,7 +68,6 @@ NautilusColumn *nautilus_column_new  (const char *name,
  *   label (string)       - the user-visible label for the column
  *   description (string) - a user-visible description of the column
  *   xalign (float)       - x-alignment of the column 
- *   default-sort-order (GtkSortType) - default sort order of the column
  */
 
 G_END_DECLS

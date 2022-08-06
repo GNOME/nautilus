@@ -21,7 +21,6 @@
  *
  */
 
-#include <gtk/gtk.h>
 #include "nautilus-column.h"
 
 enum
@@ -46,7 +45,7 @@ struct _NautilusColumn
     char *label;
     char *description;
     float xalign;
-    GtkSortType default_sort_order;
+    int default_sort_order; /* Actually, meant to store GtkSortType */
 };
 
 G_DEFINE_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
@@ -274,12 +273,19 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                          1.0,
                                                          0.0,
                                                          G_PARAM_READWRITE));
+    /**
+     * NautilusColumn:default-sort-order: (type gboolean)
+     *
+     * Actually meant to store the enum values of GtkSortType, but we don't want
+     * extensions to depend on GTK. Also, this is for internal consumption only.
+     *
+     * Stability: Private: Internal to the application.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_DEFAULT_SORT_ORDER,
-                                     g_param_spec_enum ("default-sort-order",
-                                                        "Default sort order",
-                                                        "Default sort order",
-                                                        GTK_TYPE_SORT_TYPE,
-                                                        GTK_SORT_ASCENDING,
-                                                        G_PARAM_READWRITE));
+                                     g_param_spec_int ("default-sort-order",
+                                                       "Default sort order",
+                                                       "Default sort order",
+                                                       G_MININT, G_MAXINT, 0,
+                                                       G_PARAM_READWRITE));
 }
