@@ -29,8 +29,6 @@
 #include <libnautilus-extension/nautilus-properties-model.h>
 #include <libnautilus-extension/nautilus-properties-model-provider.h>
 #include <libnautilus-extension/nautilus-properties-item.h>
-#include <libnautilus-extension/nautilus-property-page.h>
-#include <libnautilus-extension/nautilus-property-page-provider.h>
 
 /**
  * SECTION:nautilus-extension

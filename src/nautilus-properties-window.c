@@ -48,7 +48,6 @@
 #include "nautilus-module.h"
 #include "nautilus-properties-model.h"
 #include "nautilus-properties-item.h"
-#include "nautilus-property-page.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-ui-utilities.h"
@@ -132,8 +131,6 @@ struct _NautilusPropertiesWindow
 
     GtkWidget *permissions_navigation_row;
     GtkWidget *permissions_value_label;
-
-    GtkListBox *extension_list_box;
 
     GtkWidget *extension_models_list_box;
     GList *extensions_properties_models;
@@ -470,7 +467,6 @@ static void set_icon (const char               *icon_path,
 static void remove_pending (StartupData *data,
                             gboolean     cancel_call_when_ready,
                             gboolean     cancel_timed_wait);
-static void refresh_extension_pages (NautilusPropertiesWindow *self);
 static void refresh_extension_model_pages (NautilusPropertiesWindow *self);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
@@ -545,15 +541,6 @@ navigate_permissions_page (NautilusPropertiesWindow *self,
                            GtkWidget                *widget)
 {
     gtk_stack_set_visible_child_name (self->page_stack, "permissions");
-}
-
-static void
-navigate_extension_page (NautilusPropertiesWindow *self,
-                         GParamSpec               *params,
-                         AdwPreferencesRow        *row)
-{
-    gtk_stack_set_visible_child_name (self->page_stack,
-                                      adw_preferences_row_get_title (row));
 }
 
 static void
@@ -923,55 +910,6 @@ file_list_get_string_attribute (GList      *file_list,
     {
         return g_strdup (_("unknown"));
     }
-}
-
-static GtkWidget *
-add_extension_page (NautilusPropertyPage     *property_page,
-                    NautilusPropertiesWindow *self)
-{
-    GtkWidget *row;
-    GtkWidget *image;
-    GtkWidget *page_widget;
-    GtkWidget *header_bar;
-    GtkWidget *up_button;
-    GtkWidget *box;
-    const char *extension_type;
-    g_autofree char *navigation_label = NULL;
-
-    row = adw_action_row_new ();
-    image = gtk_image_new_from_icon_name ("go-next-symbolic");
-    extension_type = gtk_label_get_text (GTK_LABEL (nautilus_property_page_get_label (property_page)));
-    navigation_label = g_strdup_printf (_("%s Properties"), extension_type);
-    page_widget = nautilus_property_page_get_widget (property_page);
-
-    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), navigation_label);
-    adw_action_row_add_suffix (ADW_ACTION_ROW (row), image);
-
-    gtk_list_box_row_set_activatable (GTK_LIST_BOX_ROW (row), TRUE);
-    gtk_list_box_row_set_selectable (GTK_LIST_BOX_ROW (row), FALSE);
-
-    g_signal_connect_swapped (row, "activated",
-                              G_CALLBACK (navigate_extension_page),
-                              self);
-
-    header_bar = gtk_header_bar_new ();
-    gtk_header_bar_set_title_widget (GTK_HEADER_BAR (header_bar),
-                                     adw_window_title_new (navigation_label, NULL));
-
-    up_button = gtk_button_new_from_icon_name ("go-previous-symbolic");
-    g_signal_connect_swapped (up_button, "clicked", G_CALLBACK (navigate_main_page), self);
-    gtk_header_bar_pack_start (GTK_HEADER_BAR (header_bar), up_button);
-
-    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append (GTK_BOX (box), header_bar);
-    gtk_box_append (GTK_BOX (box), page_widget);
-    gtk_widget_add_css_class (page_widget, "background");
-
-    gtk_stack_add_named (self->page_stack,
-                         box,
-                         navigation_label);
-
-    return row;
 }
 
 static GtkWidget *
@@ -1470,7 +1408,6 @@ properties_window_update (NautilusPropertiesWindow *self,
     {
         if (!mime_list_equal (self->mime_list, mime_list))
         {
-            refresh_extension_pages (self);
             refresh_extension_model_pages (self);
         }
 
@@ -3695,35 +3632,6 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 }
 
 static void
-refresh_extension_pages (NautilusPropertiesWindow *self)
-{
-    GListStore *extension_providers = g_list_store_new (NAUTILUS_TYPE_PROPERTY_PAGE);
-    g_autolist (GObject) providers =
-        nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER);
-
-    for (GList *p = providers; p != NULL; p = p->next)
-    {
-        NautilusPropertyPageProvider *provider = NAUTILUS_PROPERTY_PAGE_PROVIDER (p->data);
-        g_autolist (NautilusPropertyPage) pages =
-            nautilus_property_page_provider_get_pages (provider, self->original_files);
-
-        for (GList *l = pages; l != NULL; l = l->next)
-        {
-            g_list_store_append (extension_providers, NAUTILUS_PROPERTY_PAGE (l->data));
-        }
-    }
-
-    gtk_widget_set_visible (GTK_WIDGET (self->extension_list_box),
-                            g_list_model_get_n_items (G_LIST_MODEL (extension_providers)) > 0);
-
-    gtk_list_box_bind_model (self->extension_list_box,
-                             G_LIST_MODEL (extension_providers),
-                             (GtkListBoxCreateWidgetFunc) add_extension_page,
-                             self,
-                             NULL);
-}
-
-static void
 refresh_extension_model_pages (NautilusPropertiesWindow *self)
 {
     GListStore *extensions_list = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_MODEL);
@@ -3965,9 +3873,6 @@ create_properties_window (StartupData *startup_data)
     {
         gtk_widget_show (GTK_WIDGET (window->execution_row));
     }
-
-    /* Add available extension pages */
-    refresh_extension_pages (window);
 
     /* Add available extension models pages */
     refresh_extension_model_pages (window);
@@ -4532,7 +4437,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_navigation_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_models_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_stack);
