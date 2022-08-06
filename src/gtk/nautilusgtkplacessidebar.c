@@ -3188,17 +3188,21 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
       g_menu_item_set_action_and_target_value (item, "row.open",
                                                g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NORMAL));
       g_menu_append_item (menu, item);
+      g_object_unref (item);
+
       if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB)
         {
           item = g_menu_item_new (_("Open in New _Tab"), "row.open-other");
           g_menu_item_set_action_and_target_value (item, "row.open-other", g_variant_new_int32(NAUTILUS_GTK_PLACES_OPEN_NEW_TAB));
           g_menu_append_item (menu, item);
+          g_object_unref (item);
         }
       if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW)
         {
           item = g_menu_item_new (_("Open in New _Window"), "row.open-other");
           g_menu_item_set_action_and_target_value (item, "row.open-other", g_variant_new_int32(NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW));
           g_menu_append_item (menu, item);
+          g_object_unref (item);
         }
       cloud_provider_menu = cloud_providers_account_get_menu_model (cloud_provider_account);
       cloud_provider_action_group = cloud_providers_account_get_action_group (cloud_provider_account);
@@ -3213,6 +3217,7 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
         gtk_widget_unparent (sidebar->popover);
 
       sidebar->popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (menu));
+      g_object_unref (menu);
       gtk_widget_set_parent (sidebar->popover, GTK_WIDGET (sidebar));
       gtk_widget_set_halign (sidebar->popover, GTK_ALIGN_START);
       gtk_popover_set_has_arrow (GTK_POPOVER (sidebar->popover), FALSE);
