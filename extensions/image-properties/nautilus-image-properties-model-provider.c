@@ -25,6 +25,7 @@
 #include "nautilus-image-properties-model.h"
 
 #include <nautilus-extension.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 struct _NautilusImagesPropertiesModelProvider
 {

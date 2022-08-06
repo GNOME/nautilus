@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
-
 #include <nautilus-extension.h>
 
 NautilusPropertiesModel * nautilus_image_properties_model_new (NautilusFileInfo *file_info);

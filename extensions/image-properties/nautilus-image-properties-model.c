@@ -23,6 +23,7 @@
 
 #include <gexiv2/gexiv2.h>
 #include <glib/gi18n.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include <math.h>
 
