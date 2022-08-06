@@ -47,8 +47,6 @@ void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
 
 gboolean   nautilus_toolbar_is_menu_visible    (NautilusToolbar *toolbar);
 
-gboolean   nautilus_toolbar_is_operations_button_active (NautilusToolbar *toolbar);
-
 void       nautilus_toolbar_on_window_constructed       (NautilusToolbar *toolbar);
 
 void nautilus_toolbar_set_window_slot (NautilusToolbar    *self,

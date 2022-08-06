@@ -27,23 +27,15 @@
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
-#include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-history-controls.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
-#include "nautilus-progress-info-manager.h"
-#include "nautilus-progress-info-widget.h"
+#include "nautilus-progress-indicator.h"
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
-
-#define OPERATION_MINIMUM_TIME 2 /*s */
-#define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
-#define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 /*s */
-
-/* Just design, context at https://gitlab.gnome.org/GNOME/nautilus/issues/548#note_274131 */
 
 struct _NautilusToolbar
 {
@@ -61,17 +53,6 @@ struct _NautilusToolbar
     gboolean show_location_entry;
     gboolean location_entry_should_auto_hide;
 
-    guint start_operations_timeout_id;
-    guint remove_finished_operations_timeout_id;
-    guint operations_button_attention_timeout_id;
-
-    GtkWidget *operations_button;
-    GtkWidget *operations_popover;
-    GtkWidget *operations_list;
-    GListStore *progress_infos_model;
-    GtkWidget *operations_revealer;
-    GtkWidget *operations_icon;
-
     GtkWidget *view_split_button;
     GMenuModel *view_menu;
 
@@ -85,8 +66,6 @@ struct _NautilusToolbar
     GtkWidget *search_button;
 
     GtkWidget *location_entry_close_button;
-
-    NautilusProgressInfoManager *progress_manager;
 
     /* active slot & bindings */
     NautilusWindowSlot *window_slot;
@@ -110,8 +89,6 @@ G_DEFINE_TYPE (NautilusToolbar, nautilus_toolbar, ADW_TYPE_BIN);
 
 static void nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                    NautilusWindowSlot *slot);
-static void update_operations (NautilusToolbar *self);
-
 static void
 toolbar_update_appearance (NautilusToolbar *self)
 {
@@ -133,433 +110,6 @@ toolbar_update_appearance (NautilusToolbar *self)
     else
     {
         gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "pathbar");
-    }
-}
-
-static gboolean
-should_show_progress_info (NautilusProgressInfo *info)
-{
-    return nautilus_progress_info_get_total_elapsed_time (info) +
-           nautilus_progress_info_get_remaining_time (info) > OPERATION_MINIMUM_TIME;
-}
-
-static GList *
-get_filtered_progress_infos (NautilusToolbar *self)
-{
-    GList *l;
-    GList *filtered_progress_infos;
-    GList *progress_infos;
-
-    progress_infos = nautilus_progress_info_manager_get_all_infos (self->progress_manager);
-    filtered_progress_infos = NULL;
-
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        if (should_show_progress_info (l->data))
-        {
-            filtered_progress_infos = g_list_append (filtered_progress_infos, l->data);
-        }
-    }
-
-    return filtered_progress_infos;
-}
-
-static gboolean
-should_hide_operations_button (NautilusToolbar *self)
-{
-    GList *progress_infos;
-    GList *l;
-
-    progress_infos = get_filtered_progress_infos (self);
-
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        if (nautilus_progress_info_get_total_elapsed_time (l->data) +
-            nautilus_progress_info_get_remaining_time (l->data) > OPERATION_MINIMUM_TIME &&
-            !nautilus_progress_info_get_is_cancelled (l->data) &&
-            !nautilus_progress_info_get_is_finished (l->data))
-        {
-            return FALSE;
-        }
-    }
-
-    g_list_free (progress_infos);
-
-    return TRUE;
-}
-
-static gboolean
-on_remove_finished_operations_timeout (NautilusToolbar *self)
-{
-    nautilus_progress_info_manager_remove_finished_or_cancelled_infos (self->progress_manager);
-    if (should_hide_operations_button (self))
-    {
-        gtk_revealer_set_reveal_child (GTK_REVEALER (self->operations_revealer),
-                                       FALSE);
-    }
-    else
-    {
-        update_operations (self);
-    }
-
-    self->remove_finished_operations_timeout_id = 0;
-
-    return G_SOURCE_REMOVE;
-}
-
-static void
-unschedule_remove_finished_operations (NautilusToolbar *self)
-{
-    if (self->remove_finished_operations_timeout_id != 0)
-    {
-        g_source_remove (self->remove_finished_operations_timeout_id);
-        self->remove_finished_operations_timeout_id = 0;
-    }
-}
-
-static void
-schedule_remove_finished_operations (NautilusToolbar *self)
-{
-    if (self->remove_finished_operations_timeout_id == 0)
-    {
-        self->remove_finished_operations_timeout_id =
-            g_timeout_add_seconds (REMOVE_FINISHED_OPERATIONS_TIEMOUT,
-                                   (GSourceFunc) on_remove_finished_operations_timeout,
-                                   self);
-    }
-}
-
-static void
-remove_operations_button_attention_style (NautilusToolbar *self)
-{
-    GtkStyleContext *style_context;
-
-    style_context = gtk_widget_get_style_context (self->operations_button);
-    gtk_style_context_remove_class (style_context,
-                                    "nautilus-operations-button-needs-attention");
-}
-
-static gboolean
-on_remove_operations_button_attention_style_timeout (NautilusToolbar *self)
-{
-    remove_operations_button_attention_style (self);
-    self->operations_button_attention_timeout_id = 0;
-
-    return G_SOURCE_REMOVE;
-}
-
-static void
-unschedule_operations_button_attention_style (NautilusToolbar *self)
-{
-    if (self->operations_button_attention_timeout_id != 0)
-    {
-        g_source_remove (self->operations_button_attention_timeout_id);
-        self->operations_button_attention_timeout_id = 0;
-    }
-}
-
-static void
-add_operations_button_attention_style (NautilusToolbar *self)
-{
-    GtkStyleContext *style_context;
-
-    style_context = gtk_widget_get_style_context (self->operations_button);
-
-    unschedule_operations_button_attention_style (self);
-    remove_operations_button_attention_style (self);
-
-    gtk_style_context_add_class (style_context,
-                                 "nautilus-operations-button-needs-attention");
-    self->operations_button_attention_timeout_id = g_timeout_add (NEEDS_ATTENTION_ANIMATION_TIMEOUT,
-                                                                  (GSourceFunc) on_remove_operations_button_attention_style_timeout,
-                                                                  self);
-}
-
-static void
-on_progress_info_cancelled (NautilusToolbar *self)
-{
-    /* Update the pie chart progress */
-    gtk_widget_queue_draw (self->operations_icon);
-
-    if (!nautilus_progress_manager_has_viewers (self->progress_manager))
-    {
-        schedule_remove_finished_operations (self);
-    }
-}
-
-static void
-on_progress_info_progress_changed (NautilusToolbar *self)
-{
-    /* Update the pie chart progress */
-    gtk_widget_queue_draw (self->operations_icon);
-}
-
-static void
-on_progress_info_finished (NautilusToolbar      *self,
-                           NautilusProgressInfo *info)
-{
-    gchar *main_label;
-    GFile *folder_to_open;
-
-    /* Update the pie chart progress */
-    gtk_widget_queue_draw (self->operations_icon);
-
-    if (!nautilus_progress_manager_has_viewers (self->progress_manager))
-    {
-        schedule_remove_finished_operations (self);
-    }
-
-    folder_to_open = nautilus_progress_info_get_destination (info);
-    /* If destination is null, don't show a notification. This happens when the
-     * operation is a trash operation, which we already show a diferent kind of
-     * notification */
-    if (!gtk_widget_is_visible (self->operations_popover) &&
-        folder_to_open != NULL)
-    {
-        add_operations_button_attention_style (self);
-        main_label = nautilus_progress_info_get_status (info);
-        nautilus_window_show_operation_notification (self->window,
-                                                     main_label,
-                                                     folder_to_open);
-        g_free (main_label);
-    }
-
-    g_clear_object (&folder_to_open);
-}
-
-static void
-disconnect_progress_infos (NautilusToolbar *self)
-{
-    GList *progress_infos;
-    GList *l;
-
-    progress_infos = nautilus_progress_info_manager_get_all_infos (self->progress_manager);
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        g_signal_handlers_disconnect_by_data (l->data, self);
-    }
-}
-
-static void
-update_operations (NautilusToolbar *self)
-{
-    GList *progress_infos;
-    GList *l;
-    gboolean should_show_progress_button = FALSE;
-
-    disconnect_progress_infos (self);
-    g_list_store_remove_all (self->progress_infos_model);
-
-    progress_infos = get_filtered_progress_infos (self);
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        should_show_progress_button = should_show_progress_button ||
-                                      should_show_progress_info (l->data);
-
-        g_signal_connect_swapped (l->data, "finished",
-                                  G_CALLBACK (on_progress_info_finished), self);
-        g_signal_connect_swapped (l->data, "cancelled",
-                                  G_CALLBACK (on_progress_info_cancelled), self);
-        g_signal_connect_swapped (l->data, "progress-changed",
-                                  G_CALLBACK (on_progress_info_progress_changed), self);
-        g_list_store_append (self->progress_infos_model, l->data);
-    }
-
-    g_list_free (progress_infos);
-
-    if (should_show_progress_button &&
-        !gtk_revealer_get_reveal_child (GTK_REVEALER (self->operations_revealer)))
-    {
-        add_operations_button_attention_style (self);
-        gtk_revealer_set_reveal_child (GTK_REVEALER (self->operations_revealer),
-                                       TRUE);
-        gtk_widget_queue_draw (self->operations_icon);
-    }
-
-    /* Since we removed the info widgets, we need to restore the focus */
-    if (gtk_widget_get_visible (self->operations_popover))
-    {
-        gtk_widget_grab_focus (self->operations_popover);
-    }
-}
-
-static gboolean
-on_progress_info_started_timeout (NautilusToolbar *self)
-{
-    GList *progress_infos;
-    GList *filtered_progress_infos;
-
-    update_operations (self);
-
-    /* In case we didn't show the operations button because the operation total
-     * time stimation is not good enough, update again to make sure we don't miss
-     * a long time operation because of that */
-
-    progress_infos = nautilus_progress_info_manager_get_all_infos (self->progress_manager);
-    filtered_progress_infos = get_filtered_progress_infos (self);
-    if (!nautilus_progress_manager_are_all_infos_finished_or_cancelled (self->progress_manager) &&
-        g_list_length (progress_infos) != g_list_length (filtered_progress_infos))
-    {
-        g_list_free (filtered_progress_infos);
-        return G_SOURCE_CONTINUE;
-    }
-    else
-    {
-        g_list_free (filtered_progress_infos);
-        self->start_operations_timeout_id = 0;
-        return G_SOURCE_REMOVE;
-    }
-}
-
-static void
-schedule_operations_start (NautilusToolbar *self)
-{
-    if (self->start_operations_timeout_id == 0)
-    {
-        /* Timeout is a little more than what we require for a stimated operation
-         * total time, to make sure the stimated total time is correct */
-        self->start_operations_timeout_id =
-            g_timeout_add (SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE * 1000 + 500,
-                           (GSourceFunc) on_progress_info_started_timeout,
-                           self);
-    }
-}
-
-static void
-unschedule_operations_start (NautilusToolbar *self)
-{
-    if (self->start_operations_timeout_id != 0)
-    {
-        g_source_remove (self->start_operations_timeout_id);
-        self->start_operations_timeout_id = 0;
-    }
-}
-
-static void
-on_progress_info_started (NautilusProgressInfo *info,
-                          NautilusToolbar      *self)
-{
-    g_signal_handlers_disconnect_by_data (info, self);
-    schedule_operations_start (self);
-}
-
-static void
-on_new_progress_info (NautilusProgressInfoManager *manager,
-                      NautilusProgressInfo        *info,
-                      NautilusToolbar             *self)
-{
-    g_signal_connect (info, "started",
-                      G_CALLBACK (on_progress_info_started), self);
-}
-
-static void
-on_operations_icon_draw (GtkDrawingArea  *drawing_area,
-                         cairo_t         *cr,
-                         int              width,
-                         int              height,
-                         NautilusToolbar *self)
-{
-    GtkWidget *widget = GTK_WIDGET (drawing_area);
-    gfloat elapsed_progress = 0;
-    gint remaining_progress = 0;
-    gint total_progress;
-    gdouble ratio;
-    GList *progress_infos;
-    GList *l;
-    gboolean all_cancelled;
-    GdkRGBA background;
-    GdkRGBA foreground;
-    GtkStyleContext *style_context;
-
-    style_context = gtk_widget_get_style_context (widget);
-    gtk_style_context_get_color (style_context, &foreground);
-    background = foreground;
-    background.alpha *= 0.3;
-
-    all_cancelled = TRUE;
-    progress_infos = get_filtered_progress_infos (self);
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        if (!nautilus_progress_info_get_is_cancelled (l->data))
-        {
-            all_cancelled = FALSE;
-            remaining_progress += nautilus_progress_info_get_remaining_time (l->data);
-            elapsed_progress += nautilus_progress_info_get_elapsed_time (l->data);
-        }
-    }
-
-    g_list_free (progress_infos);
-
-    total_progress = remaining_progress + elapsed_progress;
-
-    if (all_cancelled)
-    {
-        ratio = 1.0;
-    }
-    else
-    {
-        if (total_progress > 0)
-        {
-            ratio = MAX (0.05, elapsed_progress / total_progress);
-        }
-        else
-        {
-            ratio = 0.05;
-        }
-    }
-
-
-    width = gtk_widget_get_allocated_width (widget);
-    height = gtk_widget_get_allocated_height (widget);
-
-    gdk_cairo_set_source_rgba (cr, &background);
-    cairo_arc (cr,
-               width / 2.0, height / 2.0,
-               MIN (width, height) / 2.0,
-               0, 2 * G_PI);
-    cairo_fill (cr);
-    cairo_move_to (cr, width / 2.0, height / 2.0);
-    gdk_cairo_set_source_rgba (cr, &foreground);
-    cairo_arc (cr,
-               width / 2.0, height / 2.0,
-               MIN (width, height) / 2.0,
-               -G_PI / 2.0, ratio * 2 * G_PI - G_PI / 2.0);
-
-    cairo_fill (cr);
-}
-
-static void
-on_operations_popover_notify_visible (NautilusToolbar *self,
-                                      GParamSpec      *pspec,
-                                      GObject         *popover)
-{
-    if (gtk_widget_get_visible (GTK_WIDGET (popover)))
-    {
-        unschedule_remove_finished_operations (self);
-        nautilus_progress_manager_add_viewer (self->progress_manager,
-                                              G_OBJECT (self));
-    }
-    else
-    {
-        nautilus_progress_manager_remove_viewer (self->progress_manager,
-                                                 G_OBJECT (self));
-    }
-}
-
-static void
-on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
-                                 NautilusToolbar             *self)
-{
-    if (nautilus_progress_manager_has_viewers (manager))
-    {
-        unschedule_remove_finished_operations (self);
-        return;
-    }
-
-    if (nautilus_progress_manager_are_all_infos_finished_or_cancelled (manager))
-    {
-        unschedule_remove_finished_operations (self);
-        schedule_remove_finished_operations (self);
     }
 }
 
@@ -659,19 +209,6 @@ on_location_entry_focus_changed (GObject    *object,
     }
 }
 
-static GtkWidget *
-operations_list_create_widget (GObject  *item,
-                               gpointer  user_data)
-{
-    NautilusProgressInfo *info = NAUTILUS_PROGRESS_INFO (item);
-    GtkWidget *widget;
-
-    widget = nautilus_progress_info_widget_new (info);
-    gtk_widget_show (widget);
-
-    return widget;
-}
-
 static void
 nautilus_toolbar_constructed (GObject *object)
 {
@@ -689,25 +226,6 @@ nautilus_toolbar_constructed (GObject *object)
                     self->location_entry_close_button);
     g_signal_connect (self->location_entry_close_button, "clicked",
                       G_CALLBACK (on_location_entry_close), self);
-
-    self->progress_manager = nautilus_progress_info_manager_dup_singleton ();
-    g_signal_connect (self->progress_manager, "new-progress-info",
-                      G_CALLBACK (on_new_progress_info), self);
-    g_signal_connect (self->progress_manager, "has-viewers-changed",
-                      G_CALLBACK (on_progress_has_viewers_changed), self);
-
-    self->progress_infos_model = g_list_store_new (NAUTILUS_TYPE_PROGRESS_INFO);
-    gtk_list_box_bind_model (GTK_LIST_BOX (self->operations_list),
-                             G_LIST_MODEL (self->progress_infos_model),
-                             (GtkListBoxCreateWidgetFunc) operations_list_create_widget,
-                             NULL,
-                             NULL);
-    update_operations (self);
-
-    g_signal_connect (self->operations_popover, "show",
-                      (GCallback) gtk_widget_grab_focus, NULL);
-    g_signal_connect_swapped (self->operations_popover, "closed",
-                              (GCallback) gtk_widget_grab_focus, self);
     g_signal_connect (self->location_entry, "notify::has-focus",
                       G_CALLBACK (on_location_entry_focus_changed), self);
 
@@ -723,13 +241,9 @@ static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
     g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
+    g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
 
     gtk_widget_init_template (GTK_WIDGET (self));
-
-    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->operations_icon),
-                                    (GtkDrawingAreaDrawFunc) on_operations_icon_draw,
-                                    self,
-                                    NULL);
 }
 
 void
@@ -939,14 +453,6 @@ nautilus_toolbar_finalize (GObject *obj)
                              on_window_slot_destroyed, self);
         self->window_slot = NULL;
     }
-    disconnect_progress_infos (self);
-    unschedule_remove_finished_operations (self);
-    unschedule_operations_start (self);
-    unschedule_operations_button_attention_style (self);
-
-    g_clear_object (&self->progress_infos_model);
-    g_signal_handlers_disconnect_by_data (self->progress_manager, self);
-    g_clear_object (&self->progress_manager);
 
     g_signal_handlers_disconnect_by_func (self->window,
                                           on_window_focus_changed, self);
@@ -1009,11 +515,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_icon);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_list);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_split_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
@@ -1024,8 +525,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
-
-    gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
 }
@@ -1219,10 +718,4 @@ nautilus_toolbar_is_menu_visible (NautilusToolbar *self)
     g_return_val_if_fail (menu != NULL, FALSE);
 
     return gtk_widget_is_visible (menu);
-}
-
-gboolean
-nautilus_toolbar_is_operations_button_active (NautilusToolbar *self)
-{
-    return gtk_widget_is_visible (GTK_WIDGET (self->operations_popover));
 }

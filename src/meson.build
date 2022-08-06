@@ -109,6 +109,8 @@ libnautilus_sources = [
   'nautilus-places-view.h',
   'nautilus-previewer.c',
   'nautilus-previewer.h',
+  'nautilus-progress-indicator.c',
+  'nautilus-progress-indicator.h',
   'nautilus-progress-info-widget.c',
   'nautilus-progress-info-widget.h',
   'nautilus-progress-persistence-handler.c',

@@ -80,29 +80,6 @@
       </item>
     </section>
   </menu>
-  <object class="GtkPopover" id="operations_popover">
-    <property name="child">
-      <object class="GtkScrolledWindow">
-        <property name="hscrollbar_policy">never</property>
-        <property name="max_content_height">270</property>
-        <property name="propagate_natural_height">True</property>
-        <property name="child">
-          <object class="GtkListBox" id="operations_list">
-            <property name="margin_start">6</property>
-            <property name="margin_end">6</property>
-            <property name="margin_top">6</property>
-            <property name="margin_bottom">6</property>
-            <property name="selection-mode">none</property>
-            <property name="activate-on-single-click">False</property>
-            <style>
-              <class name="operations-list"/>
-            </style>
-          </object>
-        </property>
-      </object>
-    </property>
-    <signal name="notify::visible" handler="on_operations_popover_notify_visible" object="NautilusToolbar" swapped="yes"/>
-  </object>
   <template class="NautilusToolbar" parent="AdwBin">
     <child>
       <object class="AdwHeaderBar">
@@ -235,28 +212,7 @@
           </object>
         </child>
         <child type="end">
-          <object class="GtkRevealer" id="operations_revealer">
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="transition_type">slide-right</property>
-            <property name="child">
-              <object class="GtkMenuButton" id="operations_button">
-                <property name="tooltip_text" translatable="yes">Show operations</property>
-                <property name="popover">operations_popover</property>
-                <child>
-                  <object class="GtkDrawingArea" id="operations_icon">
-                    <property name="width_request">16</property>
-                    <property name="height_request">16</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                  </object>
-                </child>
-                <style>
-                  <class name="image-button"/>
-                </style>
-              </object>
-            </property>
-          </object>
+          <object class="NautilusProgressIndicator"/>
         </child>
         <child type="end">
           <object class="GtkSeparator">
