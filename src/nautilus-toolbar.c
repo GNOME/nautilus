@@ -33,7 +33,7 @@
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-progress-indicator.h"
-#include "nautilus-toolbar-menu-sections.h"
+#include "nautilus-view-controls.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
 
@@ -52,9 +52,6 @@ struct _NautilusToolbar
 
     gboolean show_location_entry;
     gboolean location_entry_should_auto_hide;
-
-    GtkWidget *view_split_button;
-    GMenuModel *view_menu;
 
     GtkWidget *app_button;
     GMenuModel *undo_redo_section;
@@ -242,6 +239,7 @@ nautilus_toolbar_init (NautilusToolbar *self)
 {
     g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
     g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
+    g_type_ensure (NAUTILUS_TYPE_VIEW_CONTROLS);
 
     gtk_widget_init_template (GTK_WIDGET (self));
 }
@@ -515,8 +513,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_split_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
@@ -595,46 +591,6 @@ slot_on_templates_menu_changed (NautilusToolbar    *self,
                                           menu);
 }
 
-static void
-on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
-                                       GParamSpec         *param,
-                                       NautilusWindowSlot *slot)
-{
-    NautilusToolbarMenuSections *new_sections;
-    g_autoptr (GMenuItem) zoom_item = NULL;
-    g_autoptr (GMenuItem) sort_item = NULL;
-
-    new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
-
-    gtk_widget_set_sensitive (self->view_split_button, (new_sections != NULL));
-    if (new_sections == NULL)
-    {
-        return;
-    }
-
-    /* Let's assume that sort section is the first item
-     * in view_menu, as per nautilus-toolbar.ui. */
-
-    sort_item = g_menu_item_new_from_model (self->view_menu, 0);
-    g_menu_remove (G_MENU (self->view_menu), 0);
-    g_menu_item_set_section (sort_item, new_sections->sort_section);
-    g_menu_insert_item (G_MENU (self->view_menu), 0, sort_item);
-}
-
-
-static void
-disconnect_toolbar_menu_sections_change_handler (NautilusToolbar *self)
-{
-    if (self->window_slot == NULL)
-    {
-        return;
-    }
-
-    g_signal_handlers_disconnect_by_func (self->window_slot,
-                                          G_CALLBACK (on_slot_toolbar_menu_sections_changed),
-                                          self);
-}
-
 /* Called from on_window_slot_destroyed(), since bindings and signal handlers
  * are automatically removed once the slot goes away.
  */
@@ -643,7 +599,6 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                        NautilusWindowSlot *slot)
 {
     g_autoptr (GList) children = NULL;
-    GtkWidget *toggle_button;
 
     self->window_slot = slot;
 
@@ -657,9 +612,6 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                        self, "searching",
                                                        G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
 
-        on_slot_toolbar_menu_sections_changed (self, NULL, self->window_slot);
-        g_signal_connect_swapped (self->window_slot, "notify::toolbar-menu-sections",
-                                  G_CALLBACK (on_slot_toolbar_menu_sections_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::extensions-background-menu",
                                   G_CALLBACK (slot_on_extensions_background_menu_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::templates-menu",
@@ -696,7 +648,6 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
 
     g_clear_pointer (&self->search_binding, g_binding_unbind);
 
-    disconnect_toolbar_menu_sections_change_handler (self);
     if (self->window_slot != NULL)
     {
         g_signal_handlers_disconnect_by_data (self->window_slot, self);

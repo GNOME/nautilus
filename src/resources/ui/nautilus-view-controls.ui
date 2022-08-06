@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <menu id="view_menu">
+    <section>
+      <attribute name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</attribute>
+      <!--
+           Sort section.
+
+           The toolbar code assumes this is the second item of this menu model.
+           Its contents is provided by the view.
+      -->
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Visible Columns…</attribute>
+        <attribute name="action">view.visible-columns</attribute>
+        <attribute name="hidden-when">action-missing</attribute>
+      </item>
+    </section>
+  </menu>
+  <template class="NautilusViewControls" parent="AdwBin">
+    <property name="child">
+      <object class="AdwSplitButton" id="view_split_button">
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="tooltip_text" translatable="yes">Toggle view</property>
+        <property name="action_name">slot.files-view-mode-toggle</property>
+        <property name="menu-model">view_menu</property>
+        <binding name="icon-name">
+          <lookup name="icon-name">
+            <lookup name="window-slot">NautilusViewControls</lookup>
+          </lookup>
+        </binding>
+        <binding name="tooltip-text">
+          <lookup name="tooltip">
+            <lookup name="window-slot">NautilusViewControls</lookup>
+          </lookup>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>
