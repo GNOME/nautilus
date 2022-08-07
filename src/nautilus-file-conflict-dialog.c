@@ -52,8 +52,8 @@ struct _NautilusFileConflictDialog
     GtkWidget *skip_button;
     GtkWidget *rename_button;
     GtkWidget *replace_button;
-    GtkWidget *dest_image;
-    GtkWidget *src_image;
+    GtkWidget *dest_icon;
+    GtkWidget *src_icon;
 };
 
 G_DEFINE_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, GTK_TYPE_DIALOG);
@@ -72,8 +72,8 @@ nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
                                           GdkPaintable               *destination_paintable,
                                           GdkPaintable               *source_paintable)
 {
-    gtk_image_set_from_paintable (GTK_IMAGE (fcd->dest_image), destination_paintable);
-    gtk_image_set_from_paintable (GTK_IMAGE (fcd->src_image), source_paintable);
+    gtk_picture_set_paintable (GTK_PICTURE (fcd->dest_icon), destination_paintable);
+    gtk_picture_set_paintable (GTK_PICTURE (fcd->src_icon), source_paintable);
 }
 
 void
@@ -250,8 +250,8 @@ nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, rename_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, replace_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, skip_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, dest_image);
-    gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, src_image);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, dest_icon);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, src_icon);
     gtk_widget_class_bind_template_callback (widget_class, entry_text_changed_cb);
     gtk_widget_class_bind_template_callback (widget_class, on_expanded_notify);
     gtk_widget_class_bind_template_callback (widget_class, checkbox_toggled_cb);
