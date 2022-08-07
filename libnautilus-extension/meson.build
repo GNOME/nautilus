@@ -1,5 +1,3 @@
-nautilus_extension_version = '4'
-
 libnautilus_extension_headers = [
   'nautilus-column-provider.h',
   'nautilus-column.h',

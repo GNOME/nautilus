@@ -9,6 +9,8 @@ project('nautilus', 'c',
   license: 'GPL-3.0-or-later'
 )
 
+nautilus_extension_version = '4'
+
 ###############
 # Directories #
 ###############
@@ -21,7 +23,7 @@ desktopdir = join_paths(datadir, 'applications')
 includedir = get_option('includedir')
 libdir = get_option('libdir')
 localedir = get_option('localedir')
-extensiondir = join_paths(libdir, 'nautilus', 'extensions-3.0')
+extensiondir = join_paths(libdir, 'nautilus', 'extensions-' + nautilus_extension_version)
 servicedir = join_paths(datadir, 'dbus-1', 'services')
 
 ###################
