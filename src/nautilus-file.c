@@ -5038,23 +5038,11 @@ nautilus_file_get_emblem_icons (NautilusFile *file)
     return icons;
 }
 
-static void
-prepend_icon_name (const char  *name,
-                   GThemedIcon *icon)
-{
-    g_themed_icon_prepend_name (icon, name);
-}
-
 GIcon *
 nautilus_file_get_gicon (NautilusFile          *file,
                          NautilusFileIconFlags  flags)
 {
-    const char * const *names;
-    const char *name;
-    GPtrArray *prepend_array;
     GIcon *icon;
-    int i;
-    gboolean is_folder = FALSE, is_inode_directory = FALSE;
 
     if (file == NULL)
     {
@@ -5079,57 +5067,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
 
     if (file->details->icon)
     {
-        icon = NULL;
-
-        if (((flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER) ||
-             (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON)) &&
-            G_IS_THEMED_ICON (file->details->icon))
-        {
-            names = g_themed_icon_get_names (G_THEMED_ICON (file->details->icon));
-            prepend_array = g_ptr_array_new ();
-
-            for (i = 0; names[i] != NULL; i++)
-            {
-                name = names[i];
-
-                if (strcmp (name, "folder") == 0)
-                {
-                    is_folder = TRUE;
-                }
-                if (strcmp (name, "inode-directory") == 0)
-                {
-                    is_inode_directory = TRUE;
-                }
-            }
-
-            /* Here, we add icons in reverse order of precedence,
-             * because they are later prepended */
-
-            /* "folder" should override "inode-directory", not the other way around */
-            if (is_inode_directory)
-            {
-                g_ptr_array_add (prepend_array, "folder");
-            }
-            if (is_folder && (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER))
-            {
-                g_ptr_array_add (prepend_array, "folder-open");
-            }
-
-            if (prepend_array->len)
-            {
-                /* When constructing GThemed Icon, pointers from the array
-                 * are reused, but not the array itself, so the cast is safe */
-                icon = g_themed_icon_new_from_names ((char **) names, -1);
-                g_ptr_array_foreach (prepend_array, (GFunc) prepend_icon_name, icon);
-            }
-
-            g_ptr_array_free (prepend_array, TRUE);
-        }
-
-        if (icon == NULL)
-        {
-            icon = g_object_ref (file->details->icon);
-        }
+        icon = g_object_ref (file->details->icon);
     }
 
 out:

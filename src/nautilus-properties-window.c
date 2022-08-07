@@ -576,15 +576,13 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
         {
             icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                                           NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON |
-                                           NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
+                                           NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
         }
         else
         {
             new_icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
                                                NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                                               NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON |
-                                               NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
+                                               NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON);
             if (!new_icon || new_icon != icon)
             {
                 g_object_unref (icon);
