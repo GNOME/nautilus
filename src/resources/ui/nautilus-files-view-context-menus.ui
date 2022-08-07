@@ -34,6 +34,11 @@
         <attribute name="label" translatable="yes">Select _All</attribute>
         <attribute name="action">view.select-all</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">_Visible Columns…</attribute>
+        <attribute name="action">view.visible-columns</attribute>
+        <attribute name="hidden-when">action-missing</attribute>
+      </item>
     </section>
     <section id="background-extensions-section"/>
     <section>
