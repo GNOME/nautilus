@@ -1,3 +1,47 @@
+Major changes in 43.beta
+=========================
+* Adapting main window elements to smaller sizes (Christopher Davis);
+  - Make sidebar foldable.
+  - Split toolbar contorls into top and bottom toolbars at small sizes.
+* Restoring Disks integration (Corey Berla):
+  - Open storage unit in Disks from Properties.
+  - Format with Disks from the sidebar context menu.
+* Absorbing features from core plug-ins (Corey Brela):
+  - Provide infobar for Public folder, instead of gnome-user-share
+  - Provide context menu action to open folders in Console.
+  - Replace nautilus-send-to extension with Email portal.
+* Remodeling plug-ins
+  - List installed extensions plug-ins in About. (Corey Berla)
+  - Implement new Properties API and port Image and Audio/Video (António Fernades)
+  - Remove GTK-dependent API from libnautilus-extension (António Fernandes)
+  - Bump libnautilus-extension versions.
+* Improving search UI design
+  - Use modern design patterns for type filter chooser (António Fernandes)
+  - Elaborate FTS snippets and place them in a container (António Fernandes, Alan Day)
+* Modernizing Properties window
+  - Implement new "pages and rows" design (Peter Eisenmann, António Fernandes)
+  - Move ability to set default app into Open With dialog (António Fernandes, Corey Berla)
+* Reorganizing context menus (Allan Day, António Fernandes).
+* Refining view visual styles
+  - Saturate selection colors (Allan Day, Alexander Mikhay)
+  - Add icon shadows (Jakub Steiner)
+  - Refine layout of column editor dialog. (Allan Day, António Fernandes)
+* Using more modern widgetry
+  - Use AdwTabBar for detatchable tabs (Alexander Mikhaylenko, António Fernandes, Christopher Davis)
+  - Use AdwEmptyState for empty folder views (Christopher Davis, António Fernandes).
+  - Use AdwMessageDialog instead of GtkMessage. (Christopher Davis, Ondrej Holy)
+* Resolving regressions from the GTK 3 to 4 switch:
+  - Restore Accessibility relations (Corey Berla).
+  - Restore location entry suggestions (Corey Berla).
+  - Restore libcloudproviders integration (Ondrej Holy)
+* Opening new tab with middle click on next and forward buttons (Corey Berla)
+* Miscellaneous bugfixes (multiple contributos)
+* Translation updates (GNOME Translation Project contributors)
+
+Leftover known regressions in 43.beta
+  - Lacks HiDPI icons
+  - Lacks attention-grabbing animation on operations button
+
 Major changes in 43.alpha
 =========================
 * Resolving regressions from the GTK 3 to 4 switch:
