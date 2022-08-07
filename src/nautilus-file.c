@@ -5157,14 +5157,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     gicon = NULL;
     pixbuf = NULL;
 
-    if (flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE)
-    {
-        modified_size = size * scale;
-    }
-    else
-    {
-        modified_size = size * scale * NAUTILUS_GRID_ICON_SIZE_MEDIUM / NAUTILUS_GRID_ICON_SIZE_SMALL;
-    }
+    modified_size = size * scale;
 
     if (file->details->thumbnail)
     {
@@ -5293,8 +5286,7 @@ nautilus_file_get_icon (NautilusFile          *file,
         goto out;
     }
 
-    DEBUG ("Called file_get_icon(), at size %d, force thumbnail %d", size,
-           flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE);
+    DEBUG ("Called file_get_icon(), at size %d", size);
 
     if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
         nautilus_file_should_show_thumbnail (file) &&

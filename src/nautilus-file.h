@@ -82,10 +82,8 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS = (1<<0),
 	NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING = (1<<1),
 	NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER = (1<<2),
-	/* whether the thumbnail size must match the display icon size */
-	NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE = (1<<3),
 	/* uses the icon of the mount if present */
-	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON = (1<<4),
+	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON = (1<<3),
 } NautilusFileIconFlags;	
 
 #define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 32

@@ -242,7 +242,7 @@ get_paintable_for_drag_selection (GList *selection,
 
     /* The selection list is reversed compared to what the user sees. Get the
      * first items by starting from the end of the list. */
-    flags = (NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS | NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE);
+    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
     for (GList *l = g_list_last (selection);
          l != NULL && g_queue_get_length (icons) <= MAX_DRAWN_DRAG_ICONS;
          l = l->prev)
