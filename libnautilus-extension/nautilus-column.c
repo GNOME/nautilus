@@ -123,7 +123,7 @@ nautilus_column_get_property (GObject    *object,
 
         case PROP_DEFAULT_SORT_ORDER:
         {
-            g_value_set_enum (value, column->default_sort_order);
+            g_value_set_int (value, column->default_sort_order);
         }
         break;
 
@@ -188,7 +188,7 @@ nautilus_column_set_property (GObject      *object,
 
         case PROP_DEFAULT_SORT_ORDER:
         {
-            column->default_sort_order = g_value_get_enum (value);
+            column->default_sort_order = g_value_get_int (value);
             g_object_notify (object, "default-sort-order");
         }
         break;
