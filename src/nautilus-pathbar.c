@@ -500,7 +500,7 @@ button_clicked_cb (GtkButton *button,
 
     if (g_file_equal (button_data->path, self->current_path))
     {
-        nautilus_path_bar_show_current_location_menu (self);
+        return;
     }
     else
     {
@@ -630,7 +630,7 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
         {
             if (g_file_equal (button_data->path, self->current_path))
             {
-                nautilus_path_bar_show_current_location_menu (self);
+                break;
             }
             else
             {
