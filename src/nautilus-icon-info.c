@@ -337,7 +337,7 @@ nautilus_icon_info_lookup (GIcon *icon,
     if (G_IS_LOADABLE_ICON (icon))
     {
         g_autoptr (GdkPixbuf) pixbuf = NULL;
-        g_autoptr (GdkTexture) texture = NULL;
+        g_autoptr (GdkPaintable) paintable = NULL;
         LoadableIconKey lookup_key;
         LoadableIconKey *key;
         GInputStream *stream;
@@ -376,10 +376,18 @@ nautilus_icon_info_lookup (GIcon *icon,
 
         if (pixbuf != NULL)
         {
-            texture = gdk_texture_new_for_pixbuf (pixbuf);
+            double width = gdk_pixbuf_get_width (pixbuf) / scale;
+            double height = gdk_pixbuf_get_height (pixbuf) / scale;
+            g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
+            g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+
+            gdk_paintable_snapshot (GDK_PAINTABLE (texture),
+                                    GDK_SNAPSHOT (snapshot),
+                                    width, height);
+            paintable = gtk_snapshot_to_paintable (snapshot, NULL);
         }
 
-        icon_info = nautilus_icon_info_new_for_paintable (GDK_PAINTABLE (texture), scale);
+        icon_info = nautilus_icon_info_new_for_paintable (paintable, scale);
 
         key = loadable_icon_key_new (icon, scale, size);
         g_hash_table_insert (loadable_icon_cache, key, icon_info);
