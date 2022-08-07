@@ -35,7 +35,9 @@ void        nautilus_g_menu_replace_string_in_item  (GMenu             *menu,
                                                      const gchar       *attribute,
                                                      const gchar       *string);
 
-void        nautilus_ui_frame_video                 (GdkPixbuf        **pixbuf);
+void        nautilus_ui_frame_video                 (GtkSnapshot       *snapshot,
+                                                     gdouble            width,
+                                                     gdouble            height);
 
 gboolean    nautilus_date_time_is_between_dates     (GDateTime         *date,
                                                      GDateTime         *initial_date,

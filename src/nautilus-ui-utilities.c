@@ -164,39 +164,41 @@ ensure_filmholes (void)
 }
 
 void
-nautilus_ui_frame_video (GdkPixbuf **pixbuf)
+nautilus_ui_frame_video (GtkSnapshot *snapshot,
+                         gdouble      width,
+                         gdouble      height)
 {
-    int width, height;
+    g_autoptr (GdkTexture) left_texture = NULL;
+    g_autoptr (GdkTexture) right_texture = NULL;
     int holes_width, holes_height;
-    int i;
 
     if (!ensure_filmholes ())
     {
         return;
     }
 
-    width = gdk_pixbuf_get_width (*pixbuf);
-    height = gdk_pixbuf_get_height (*pixbuf);
     holes_width = gdk_pixbuf_get_width (filmholes_left);
     holes_height = gdk_pixbuf_get_height (filmholes_left);
 
-    for (i = 0; i < height; i += holes_height)
-    {
-        gdk_pixbuf_composite (filmholes_left, *pixbuf, 0, i,
-                              MIN (width, holes_width),
-                              MIN (height - i, holes_height),
-                              0, i, 1, 1, GDK_INTERP_NEAREST, 255);
-    }
+    /* Left */
+    gtk_snapshot_push_repeat (snapshot,
+                              &GRAPHENE_RECT_INIT (0, 0, holes_width, height),
+                              NULL);
+    left_texture = gdk_texture_new_for_pixbuf (filmholes_left);
+    gtk_snapshot_append_texture (snapshot,
+                                 left_texture,
+                                 &GRAPHENE_RECT_INIT (0, 0, holes_width, holes_height));
+    gtk_snapshot_pop (snapshot);
 
-    for (i = 0; i < height; i += holes_height)
-    {
-        gdk_pixbuf_composite (filmholes_right, *pixbuf,
-                              width - holes_width, i,
-                              MIN (width, holes_width),
-                              MIN (height - i, holes_height),
-                              width - holes_width, i,
-                              1, 1, GDK_INTERP_NEAREST, 255);
-    }
+    /* Right */
+    gtk_snapshot_push_repeat (snapshot,
+                              &GRAPHENE_RECT_INIT (width - holes_width, 0, holes_width, height),
+                              NULL);
+    right_texture = gdk_texture_new_for_pixbuf (filmholes_right);
+    gtk_snapshot_append_texture (snapshot,
+                                 right_texture,
+                                 &GRAPHENE_RECT_INIT (width - holes_width, 0, holes_width, holes_height));
+    gtk_snapshot_pop (snapshot);
 }
 
 gboolean

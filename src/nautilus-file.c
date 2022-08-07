@@ -5146,6 +5146,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                   int                    scale,
                                   NautilusFileIconFlags  flags)
 {
+    g_autoptr (GdkPaintable) paintable = NULL;
     int modified_size;
     GdkPixbuf *pixbuf;
     int w, h, s;
@@ -5159,6 +5160,11 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     if (file->details->thumbnail)
     {
+        gdouble texture_width;
+        gdouble texture_height;
+        g_autoptr (GdkTexture) texture = NULL;
+        g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+
         w = gdk_pixbuf_get_width (file->details->thumbnail);
         h = gdk_pixbuf_get_height (file->details->thumbnail);
 
@@ -5191,19 +5197,23 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                               MAX (h * thumb_scale, 1),
                                               GDK_INTERP_BILINEAR);
 
-            /* We don't want frames around small icons */
-            if (!gdk_pixbuf_get_has_alpha (file->details->thumbnail) || s >= 128 * scale)
-            {
-                if (nautilus_is_video_file (file))
-                {
-                    nautilus_ui_frame_video (&pixbuf);
-                }
-            }
-
             g_clear_object (&file->details->scaled_thumbnail);
             file->details->scaled_thumbnail = pixbuf;
             file->details->thumbnail_scale = thumb_scale;
         }
+
+        texture = gdk_texture_new_for_pixbuf (pixbuf);
+        texture_width = gdk_texture_get_width (texture);
+        texture_height = gdk_texture_get_height (texture);
+        gdk_paintable_snapshot (GDK_PAINTABLE (texture),
+                                GDK_SNAPSHOT (snapshot),
+                                texture_width, texture_height);
+        if (size >= NAUTILUS_GRID_ICON_SIZE_SMALL &&
+            nautilus_is_video_file (file))
+        {
+            nautilus_ui_frame_video (snapshot, texture_width, texture_height);
+        }
+        paintable = gtk_snapshot_to_paintable (snapshot, NULL);
 
         DEBUG ("Returning thumbnailed image, at size %d %d",
                (int) (w * thumb_scale), (int) (h * thumb_scale));
@@ -5217,10 +5227,9 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         nautilus_create_thumbnail (file);
     }
 
-    if (pixbuf != NULL)
+    if (paintable != NULL)
     {
-        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
-        icon = nautilus_icon_info_new_for_paintable (GDK_PAINTABLE (texture), scale);
+        icon = nautilus_icon_info_new_for_paintable (paintable, scale);
     }
     else if (file->details->is_thumbnailing)
     {
