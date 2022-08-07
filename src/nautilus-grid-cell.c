@@ -34,15 +34,17 @@ update_icon (NautilusGridCell *self)
     GtkStyleContext *style_context;
     NautilusFile *file;
     guint icon_size;
+    gint scale_factor;
     g_autofree gchar *thumbnail_path = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
     icon_size = nautilus_view_item_get_icon_size (item);
+    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
 
-    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, 1, flags);
+    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
     gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
     /* Set the same height and width for all icons regardless of aspect ratio.

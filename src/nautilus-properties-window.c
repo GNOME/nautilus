@@ -564,8 +564,6 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
     gint icon_scale;
 
     icon_scale = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    /* FIXME: Temporary regression: HiDPI icons not supported, ignore scale. */
-    icon_scale = 1;
 
     for (l = self->original_files; l != NULL; l = l->next)
     {

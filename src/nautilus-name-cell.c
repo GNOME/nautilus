@@ -128,6 +128,7 @@ update_icon (NautilusNameCell *self)
     NautilusViewItem *item;
     NautilusFile *file;
     guint icon_size;
+    gint scale_factor;
     int icon_height;
     int extra_margin;
     g_autofree gchar *thumbnail_path = NULL;
@@ -137,9 +138,10 @@ update_icon (NautilusNameCell *self)
 
     file = nautilus_view_item_get_file (item);
     icon_size = nautilus_view_item_get_icon_size (item);
+    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
 
-    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, 1, flags);
+    icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
     gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
     /* Set the same width for all icons regardless of aspect ratio.
