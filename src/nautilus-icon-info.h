@@ -14,7 +14,7 @@ G_BEGIN_DECLS
 #define NAUTILUS_TYPE_ICON_INFO (nautilus_icon_info_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusIconInfo, nautilus_icon_info, NAUTILUS, ICON_INFO, GObject)
 
-NautilusIconInfo *    nautilus_icon_info_new_for_pixbuf               (GdkPixbuf         *pixbuf,
+NautilusIconInfo *    nautilus_icon_info_new_for_paintable            (GdkPaintable      *paintable,
 								       int                scale);
 NautilusIconInfo *    nautilus_icon_info_lookup                       (GIcon             *icon,
 								       int                size,

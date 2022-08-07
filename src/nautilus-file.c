@@ -5150,11 +5150,9 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     GdkPixbuf *pixbuf;
     int w, h, s;
     double thumb_scale;
-    GIcon *gicon;
     NautilusIconInfo *icon;
 
     icon = NULL;
-    gicon = NULL;
     pixbuf = NULL;
 
     modified_size = size * scale;
@@ -5221,25 +5219,13 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     if (pixbuf != NULL)
     {
-        gicon = G_ICON (g_object_ref (pixbuf));
+        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
+        icon = nautilus_icon_info_new_for_paintable (GDK_PAINTABLE (texture), scale);
     }
     else if (file->details->is_thumbnailing)
     {
-        gicon = g_themed_icon_new (ICON_NAME_THUMBNAIL_LOADING);
-    }
-
-    if (gicon != NULL)
-    {
-        if (g_icon_equal (gicon, G_ICON (pixbuf)))
-        {
-            icon = nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
-        }
-        else
-        {
-            icon = nautilus_icon_info_lookup (gicon, size, scale);
-        }
-
-        g_object_unref (gicon);
+        g_autoptr (GIcon) gicon = g_themed_icon_new (ICON_NAME_THUMBNAIL_LOADING);
+        icon = nautilus_icon_info_lookup (gicon, size, scale);
     }
 
     return icon;
