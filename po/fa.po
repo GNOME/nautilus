@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-06 18:49+0000\n"
-"PO-Revision-Date: 2022-08-07 03:08+0430\n"
+"POT-Creation-Date: 2022-08-07 00:41+0000\n"
+"PO-Revision-Date: 2022-08-07 05:28+0430\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <>\n"
 "Language: fa\n"
@@ -82,13 +82,13 @@ msgstr "نمای سیاهه‌ای"
 #: src/nautilus-search-directory-file.c:175 src/nautilus-search-directory-file.c:232
 #: src/nautilus-search-directory-file.c:272
 #: src/resources/ui/nautilus-search-popover.ui:272
-#: src/resources/ui/nautilus-toolbar.ui:154
+#: src/resources/ui/nautilus-toolbar.ui:111
 msgid "Search"
 msgstr "جست‌وجو"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:324
-#: src/nautilus-pathbar.c:379 src/gtk/nautilusgtkplacesview.ui:158
+#: src/nautilus-pathbar.c:372 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1428
 msgid "Other Locations"
 msgstr "دیگر مکان‌ها"
@@ -100,7 +100,7 @@ msgstr ""
 "folder;manager;explore;disk;filesystem;nautilus;پرونده;شاخه;پوشه;مدیر;کشف;دیسک;"
 "سامانه‌پرونده;ناتیلوس;"
 
-#: data/org.gnome.Nautilus.desktop.in.in:20 src/resources/ui/nautilus-toolbar.ui:27
+#: data/org.gnome.Nautilus.desktop.in.in:20 src/resources/ui/nautilus-toolbar.ui:7
 msgid "New Window"
 msgstr "پنجرهٔ جدید"
 
@@ -880,7 +880,7 @@ msgstr ""
 "%s"
 
 #: src/nautilus-application.c:781 src/nautilus-autorun-software.c:157
-#: src/nautilus-mime-actions.c:1192 src/nautilus-ui-utilities.c:320
+#: src/nautilus-mime-actions.c:1192 src/nautilus-ui-utilities.c:329
 msgid "_OK"
 msgstr "_تأیید"
 
@@ -1084,7 +1084,7 @@ msgid "001, 002, 003"
 msgstr "۰۰۱، ۰۰۲، ۰۰۳"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
-#: src/nautilus-pathbar.c:374 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-pathbar.c:367 src/nautilus-shell-search-provider.c:330
 #: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1001
 msgid "Home"
 msgstr "خانه"
@@ -1455,7 +1455,7 @@ msgid "File not found"
 msgstr "پرونده پیدا نشد"
 
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
-#: src/nautilus-pathbar.c:384 src/gtk/nautilusgtkplacessidebar.c:990
+#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:990
 msgid "Starred"
 msgstr "ستاره‌دار"
 
@@ -2874,7 +2874,7 @@ msgstr "ناتوان در متوقّف کردن گرداننده"
 msgid "Unable to start “%s”"
 msgstr "ناتوان در آغاز «⁨%s⁩»"
 
-#: src/nautilus-files-view.c:7976
+#: src/nautilus-files-view.c:7962
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2882,62 +2882,64 @@ msgstr[0] "شاخهٔ جدید با گزیده‌ها (%'Id مورد)"
 msgstr[1] "شاخهٔ جدید با گزیده‌ها (%'Id مورد)"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-files-view.c:8034
+#: src/nautilus-files-view.c:8020
 #, c-format
 msgid "Open With %s"
 msgstr "گشودن با ⁨%s⁩"
 
-#: src/nautilus-files-view.c:8046
+#: src/nautilus-files-view.c:8032
 msgid "Run"
 msgstr "اجرا"
 
-#: src/nautilus-files-view.c:8051
-msgid "Extract Here"
-msgstr "استخراج در این‌جا"
+#: src/nautilus-files-view.c:8037
+#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:41
+msgid "Extract"
+msgstr "استخراج"
 
-#: src/nautilus-files-view.c:8052
+#: src/nautilus-files-view.c:8038
 msgid "Extract to…"
 msgstr "استخراج به…"
 
-#: src/nautilus-files-view.c:8056
+#: src/nautilus-files-view.c:8042
+#: src/resources/ui/nautilus-files-view-context-menus.ui:77
 msgid "Open"
 msgstr "گشودن"
 
-#: src/nautilus-files-view.c:8112
-#: src/resources/ui/nautilus-files-view-context-menus.ui:134
+#: src/nautilus-files-view.c:8120
+#: src/resources/ui/nautilus-files-view-context-menus.ui:141
 #: src/gtk/nautilusgtkplacessidebar.c:3391
 msgid "_Start"
 msgstr "_آغاز"
 
-#: src/nautilus-files-view.c:8118 src/gtk/nautilusgtkplacesview.c:1723
+#: src/nautilus-files-view.c:8126 src/gtk/nautilusgtkplacesview.c:1723
 msgid "_Connect"
 msgstr "_اتّصال"
 
-#: src/nautilus-files-view.c:8124
+#: src/nautilus-files-view.c:8132
 msgid "_Start Multi-disk Drive"
 msgstr "_آغاز گردانندهٔ چند دیسکی"
 
-#: src/nautilus-files-view.c:8130
+#: src/nautilus-files-view.c:8138
 msgid "U_nlock Drive"
 msgstr "_قفل‌گشایی گرداننده"
 
-#: src/nautilus-files-view.c:8148
+#: src/nautilus-files-view.c:8156
 msgid "Stop Drive"
 msgstr "متوقّف کردن گرداننده"
 
-#: src/nautilus-files-view.c:8154 src/gtk/nautilusgtkplacessidebar.c:3408
+#: src/nautilus-files-view.c:8162 src/gtk/nautilusgtkplacessidebar.c:3408
 msgid "_Safely Remove Drive"
 msgstr "برداشتن _امن گرداننده"
 
-#: src/nautilus-files-view.c:8160 src/gtk/nautilusgtkplacesview.c:1712
+#: src/nautilus-files-view.c:8168 src/gtk/nautilusgtkplacesview.c:1712
 msgid "_Disconnect"
 msgstr "_قطع ارتباط"
 
-#: src/nautilus-files-view.c:8166
+#: src/nautilus-files-view.c:8174
 msgid "_Stop Multi-disk Drive"
 msgstr "_متوقّف کردن گردانندهٔ چند دیسکی"
 
-#: src/nautilus-files-view.c:8172
+#: src/nautilus-files-view.c:8180
 msgid "_Lock Drive"
 msgstr "_قفل کردن گرداننده"
 
@@ -3563,7 +3565,7 @@ msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "پیوند «⁨%s⁩» خراب است. به زباله‌دان منتقل شود؟"
 
 #: src/nautilus-mime-actions.c:597
-#: src/resources/ui/nautilus-files-view-context-menus.ui:181
+#: src/resources/ui/nautilus-files-view-context-menus.ui:205
 msgid "Mo_ve to Trash"
 msgstr "ا_نداختن در زباله‌دان"
 
@@ -3863,13 +3865,13 @@ msgstr "«⁨%s⁩» با گذرواژه محافظت شده."
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:362 src/gtk/nautilusgtkplacesview.c:1103
+#: src/nautilus-pathbar.c:355 src/gtk/nautilusgtkplacesview.c:1103
 msgid "Operating System"
 msgstr "سیستم‌عامل"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:369
+#: src/nautilus-pathbar.c:362
 msgid "Administrator Root"
 msgstr "ریشهٔ مدیر"
 
@@ -4100,6 +4102,7 @@ msgid "_Revert"
 msgstr "_بازگردانی"
 
 #: src/nautilus-properties-window.c:4274 src/resources/ui/nautilus-app-chooser.ui:84
+#: src/resources/ui/nautilus-files-view-context-menus.ui:72
 #: src/gtk/nautilusgtkplacesview.c:1694 src/gtk/nautilusgtkplacessidebar.c:3187
 #: src/gtk/nautilusgtkplacessidebar.c:3298
 msgid "_Open"
@@ -4189,11 +4192,11 @@ msgstr "برای هم‌رسانی محتوای این شاخه روی شبکه�
 msgid "Sharing Settings"
 msgstr "تنظیمات هم‌رسانی"
 
-#: src/nautilus-toolbar.c:749 src/resources/ui/nautilus-toolbar.ui:52
+#: src/nautilus-toolbar.c:167 src/resources/ui/nautilus-toolbar.ui:32
 msgid "_Undo"
 msgstr "_برگردان"
 
-#: src/nautilus-toolbar.c:758 src/resources/ui/nautilus-toolbar.ui:56
+#: src/nautilus-toolbar.c:176 src/resources/ui/nautilus-toolbar.ui:36
 msgid "_Redo"
 msgstr "انجام _دوباره"
 
@@ -4226,56 +4229,56 @@ msgstr "_تخلیه…"
 msgid "Delete all items in the Trash"
 msgstr "حذف همهٔ موارد داخل زباله‌دان"
 
-#: src/nautilus-ui-utilities.c:224
+#: src/nautilus-ui-utilities.c:233
 #, c-format
 msgid "Since %d day ago"
 msgid_plural "Since %d days ago"
 msgstr[0] "از %Id روز پیش"
 msgstr[1] "از %Id روز پیش"
 
-#: src/nautilus-ui-utilities.c:225
+#: src/nautilus-ui-utilities.c:234
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%Id روز پیش"
 msgstr[1] "%Id روز پیش"
 
-#: src/nautilus-ui-utilities.c:231
+#: src/nautilus-ui-utilities.c:240
 #, c-format
 msgid "Since last week"
 msgid_plural "Since %d weeks ago"
 msgstr[0] "از هفته گذشته"
 msgstr[1] "از %Id هفته پیش"
 
-#: src/nautilus-ui-utilities.c:232
+#: src/nautilus-ui-utilities.c:241
 #, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
 msgstr[0] "هفته گذشته"
 msgstr[1] "%Id هفته پیش"
 
-#: src/nautilus-ui-utilities.c:238
+#: src/nautilus-ui-utilities.c:247
 #, c-format
 msgid "Since last month"
 msgid_plural "Since %d months ago"
 msgstr[0] "از ماه گذشته"
 msgstr[1] "از %Id ماه پیش"
 
-#: src/nautilus-ui-utilities.c:239
+#: src/nautilus-ui-utilities.c:248
 #, c-format
 msgid "Last month"
 msgid_plural "%d months ago"
 msgstr[0] "ماه گذشته"
 msgstr[1] "%Id ماه پیش"
 
-#: src/nautilus-ui-utilities.c:244
+#: src/nautilus-ui-utilities.c:253
 #, c-format
 msgid "Since last year"
 msgid_plural "Since %d years ago"
 msgstr[0] "از سال گذشته"
 msgstr[1] "از %Id سال پیش"
 
-#: src/nautilus-ui-utilities.c:245
+#: src/nautilus-ui-utilities.c:254
 #, c-format
 msgid "Last year"
 msgid_plural "%d years ago"
@@ -4883,8 +4886,8 @@ msgid "Replace the current List Columns settings with the default settings"
 msgstr "جایگزینی تنظیمات ستون‌های سیاههٔ کنونی با تنظیمات پیش‌گزیده"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
-msgid "Create Archive"
-msgstr "ایجاد بایگانی"
+msgid "Create Compressed Archive"
+msgstr "ایجاد بایگانی فشرده"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:24
 msgid "Archive name"
@@ -4928,187 +4931,161 @@ msgid "Others"
 msgstr "دیگران"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:6
-msgid "New _Folder"
-msgstr "_شاخهٔ جدید"
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:20
+msgid "New _Folder…"
+msgstr "_شاخهٔ جدید…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:10
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:24
 msgid "New _Document"
 msgstr "_سند جدید"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:15
-msgid "Add to _Bookmarks"
-msgstr "افزودن _به نشانک‌ها"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:61
+#: src/resources/ui/nautilus-files-view-context-menus.ui:94
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:29
+msgid "Open _With…"
+msgstr "گشودن _با…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:19
-msgid "R_eload"
-msgstr "_بازخوانی"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:24
-msgid "St_op"
-msgstr "_توقّف"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:30
-msgid "_Open With Other Application"
-msgstr "_گشودن با برنامه‌ای دیگر"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:34
-msgid "_Copy Location"
-msgstr "_رونوشت از مکان"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:40
-#: src/resources/ui/nautilus-files-view-context-menus.ui:159
-#: src/resources/ui/nautilus-preferences-window.ui:65
-msgid "Create _Link"
-msgstr "ساخت _پیوند"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:47
-msgid "_Paste"
-msgstr "_جای‌گذاری"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:51
-msgid "Select _All"
-msgstr "گزینش _همه"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:58
-#: src/resources/ui/nautilus-files-view-context-menus.ui:270
+#: src/resources/ui/nautilus-files-view-context-menus.ui:99
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:33
 msgid "Open in Consol_e"
 msgstr "گشودن در _کنسول"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:65
-#: src/resources/ui/nautilus-files-view-context-menus.ui:277
+#: src/resources/ui/nautilus-files-view-context-menus.ui:25
+msgid "_Paste"
+msgstr "_جای‌گذاری"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:29
+msgid "Paste as _Link"
+msgstr "جای‌گذاری به شکل _پیوند"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:34
+msgid "Select _All"
+msgstr "گزینش _همه"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:41
+#: src/resources/ui/nautilus-files-view-context-menus.ui:238
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:60
 msgid "P_roperties"
 msgstr "_ویژگی‌ها"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:75
-msgid "Open With Other _Application"
-msgstr "گشودن با _برنامه‌ای دیگر"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:51
+msgid "_Extract"
+msgstr "_استخراج"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:81
-msgid "_Scripts"
-msgstr "_کدنوشته‌ها"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:56
+msgid "E_xtract to…"
+msgstr "ا_ستخراج به…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:87
-msgid "_Open Scripts Folder"
-msgstr "_گشودن شاخهٔ کدنوشته‌ها"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:95
-msgid "_Open Item Location"
-msgstr "_گشودن مکان مورد"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:100
-msgid "Open In New _Tab"
-msgstr "گشودن در _زبانهٔ جدید"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:105
-msgid "Open In New _Window"
-msgstr "گشودن در _پنجرهٔ جدید"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:112
+#: src/resources/ui/nautilus-files-view-context-menus.ui:67
 msgid "_Run as a Program"
 msgstr "_اجرا به عنوان برنامه"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:119
+#: src/resources/ui/nautilus-files-view-context-menus.ui:82
+msgid "Open In New _Tab"
+msgstr "گشودن در _زبانهٔ جدید"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:87
+msgid "Open In New _Window"
+msgstr "گشودن در _پنجرهٔ جدید"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:107
+msgid "_Open Item Location"
+msgstr "_گشودن مکان مورد"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:112
+msgid "_Scripts"
+msgstr "_کدنوشته‌ها"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:117
+msgid "_Open Scripts Folder"
+msgstr "_گشودن شاخهٔ کدنوشته‌ها"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:126
 #: src/gtk/nautilusgtkplacesview.c:1728 src/gtk/nautilusgtkplacessidebar.c:3356
 msgid "_Mount"
 msgstr "_سوار کردن"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:124
+#: src/resources/ui/nautilus-files-view-context-menus.ui:131
 #: src/gtk/nautilusgtkplacesview.c:1717 src/gtk/nautilusgtkplacessidebar.c:3365
 msgid "_Unmount"
 msgstr "_پیاده کردن"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:129
+#: src/resources/ui/nautilus-files-view-context-menus.ui:136
 #: src/gtk/nautilusgtkplacessidebar.c:3372
 msgid "_Eject"
 msgstr "_بیرون دادن"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:139
+#: src/resources/ui/nautilus-files-view-context-menus.ui:146
 #: src/gtk/nautilusgtkplacessidebar.c:3406
 msgid "_Stop"
 msgstr "_توقّف"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:144
+#: src/resources/ui/nautilus-files-view-context-menus.ui:151
 #: src/gtk/nautilusgtkplacessidebar.c:3382
 msgid "_Detect Media"
 msgstr "_یافتن رسانه"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:151
+#: src/resources/ui/nautilus-files-view-context-menus.ui:158
 msgid "Cu_t"
 msgstr "_برش"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:155
+#: src/resources/ui/nautilus-files-view-context-menus.ui:162
 msgid "_Copy"
 msgstr "_رونوشت"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:164
-msgid "_Paste Into Folder"
-msgstr "_جای‌گذاری در شاخه"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:171
+#: src/resources/ui/nautilus-files-view-context-menus.ui:166
 msgid "Move to…"
 msgstr "جابه‌جایی به…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:175
+#: src/resources/ui/nautilus-files-view-context-menus.ui:170
 msgid "Copy to…"
 msgstr "رونوشت به…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:186
-msgid "_Delete from Trash"
-msgstr "_حذف از زباله‌دان"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:191
-#: src/resources/ui/nautilus-files-view-context-menus.ui:196
-msgid "_Delete Permanently…"
-msgstr "_حذف همیشگی…"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:201
-msgid "_Restore From Trash"
-msgstr "_بازگردانی از زباله‌دان"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:208
+#: src/resources/ui/nautilus-files-view-context-menus.ui:176
 msgid "Rena_me…"
 msgstr "تغییر _نام…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:214
-msgid "Set As Wallpaper"
-msgstr "تنظیم به عنوان پس‌زمینه"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:180
+msgid "_Paste Into Folder"
+msgstr "_جای‌گذاری در شاخه"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:221
-msgid "_Remove from Recent"
-msgstr "_برداشتن از موارد اخیر"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:185
+#: src/resources/ui/nautilus-preferences-window.ui:65
+msgid "Create _Link"
+msgstr "ساخت _پیوند"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:228
-msgid "_Extract Here"
-msgstr "این‌جا _استخراج شود"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:233
-msgid "E_xtract to…"
-msgstr "ا_ستخراج به…"
-
-#: src/resources/ui/nautilus-files-view-context-menus.ui:238
+#: src/resources/ui/nautilus-files-view-context-menus.ui:190
 msgid "C_ompress…"
 msgstr "_فشرده‌سازی…"
 
+#: src/resources/ui/nautilus-files-view-context-menus.ui:195
+msgid "Set as Background…"
+msgstr "تنظیم به عنوان پس‌زمینه…"
+
 #. Translators: This is the transitive verb meaning 'to send via email' (e.g. 'email this document to Angela).
-#: src/resources/ui/nautilus-files-view-context-menus.ui:245
+#: src/resources/ui/nautilus-files-view-context-menus.ui:200
 msgid "Email…"
 msgstr "رایانامه…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:253
-msgid "Tags"
-msgstr "برچسب‌ها"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:210
+msgid "_Delete from Trash"
+msgstr "_حذف از زباله‌دان"
 
-#. Marks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:258
-msgctxt "menu item"
-msgid "Star"
-msgstr "ستاره"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:215
+#: src/resources/ui/nautilus-files-view-context-menus.ui:220
+msgid "_Delete Permanently…"
+msgstr "_حذف همیشگی…"
 
-#. Unmarks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:263
-msgctxt "menu item"
-msgid "Unstar"
-msgstr "بی‌ستاره"
+#: src/resources/ui/nautilus-files-view-context-menus.ui:225
+msgid "_Restore From Trash"
+msgstr "_بازگردانی از زباله‌دان"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:230
+msgid "_Remove from Recent"
+msgstr "_برداشتن از موارد اخیر"
 
 #: src/resources/ui/nautilus-files-view-select-items.ui:5
 msgid "Select Items Matching"
@@ -5146,10 +5123,6 @@ msgstr "گذرواژه لازم است"
 msgid "Enter password…"
 msgstr "ورود گذرواژه…"
 
-#: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:41
-msgid "Extract"
-msgstr "استخراج"
-
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
 #: src/gtk/nautilusgtkplacesview.c:1703 src/gtk/nautilusgtkplacessidebar.c:3202
 #: src/gtk/nautilusgtkplacessidebar.c:3315
@@ -5166,6 +5139,22 @@ msgstr "گشودن در _زبانهٔ جدید"
 #: src/gtk/nautilusgtkplacesview.c:1733
 msgid "_Properties"
 msgstr "_ویژگی‌ها"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:39
+msgid "R_eload"
+msgstr "_بازخوانی"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:44
+msgid "St_op"
+msgstr "_توقّف"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:49
+msgid "Add to _Bookmarks"
+msgstr "افزودن _به نشانک‌ها"
+
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:53
+msgid "_Copy Location"
+msgstr "_رونوشت از مکان"
 
 #: src/resources/ui/nautilus-preferences-window.ui:19
 msgid "Sort _Folders Before Files"
@@ -5407,64 +5396,37 @@ msgstr "نام پرونده"
 msgid "Search only on the file name"
 msgstr "فقط جست‌وجو نام پرونده"
 
-#. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
-#: src/resources/ui/nautilus-toolbar.ui:8
-msgctxt "menu item"
-msgid "Sort"
-msgstr "چیدمان"
-
-#: src/resources/ui/nautilus-toolbar.ui:18
-msgid "_Visible Columns…"
-msgstr "_ستون‌های نمایان…"
-
-#: src/resources/ui/nautilus-toolbar.ui:32
+#: src/resources/ui/nautilus-toolbar.ui:12
 msgid "New Tab"
 msgstr "زبانهٔ جدید"
 
-#: src/resources/ui/nautilus-toolbar.ui:38
+#: src/resources/ui/nautilus-toolbar.ui:18
 msgid "Icon size"
 msgstr "اندازهٔ نقشک"
 
-#: src/resources/ui/nautilus-toolbar.ui:62
+#: src/resources/ui/nautilus-toolbar.ui:42
 msgid "Show _Hidden Files"
 msgstr "نمایش پرونده‌های _نهفته"
 
-#: src/resources/ui/nautilus-toolbar.ui:68
+#: src/resources/ui/nautilus-toolbar.ui:48
 msgid "_Preferences"
 msgstr "_ترجیحات"
 
-#: src/resources/ui/nautilus-toolbar.ui:72
+#: src/resources/ui/nautilus-toolbar.ui:52
 msgid "_Keyboard Shortcuts"
 msgstr "میان‌برهای _صفحه‌کلید"
 
-#: src/resources/ui/nautilus-toolbar.ui:76
+#: src/resources/ui/nautilus-toolbar.ui:56
 msgid "_Help"
 msgstr "_راهنما"
 
-#: src/resources/ui/nautilus-toolbar.ui:80
+#: src/resources/ui/nautilus-toolbar.ui:60
 msgid "_About Files"
 msgstr "_دربارهٔ پرونده‌ها"
 
-#: src/resources/ui/nautilus-toolbar.ui:167
+#: src/resources/ui/nautilus-toolbar.ui:129
 msgid "Show sidebar"
 msgstr "نمایش نوار کناری"
-
-#: src/resources/ui/nautilus-toolbar.ui:173
-msgid "Go back"
-msgstr "عقب رفتن"
-
-#: src/resources/ui/nautilus-toolbar.ui:182
-msgid "Go forward"
-msgstr "جلو رفتن"
-
-#. Translators: This is a noun, meaning the options pertaining to the view.
-#: src/resources/ui/nautilus-toolbar.ui:232
-msgid "View options"
-msgstr "گزینه‌های نما"
-
-#: src/resources/ui/nautilus-toolbar.ui:254
-msgid "Show operations"
-msgstr "نمایش عملیات"
 
 #. This is used to sort by name in the toolbar view menu
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:8
@@ -5804,6 +5766,54 @@ msgstr "نوار جانبی"
 #: src/gtk/nautilusgtkplacessidebar.c:3968
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "سیاههٔ میان‌برها، نقطه‌های وصل شدن و نشانک‌های معمول."
+
+#~ msgid "Extract Here"
+#~ msgstr "استخراج در این‌جا"
+
+#~ msgid "New _Folder"
+#~ msgstr "_شاخهٔ جدید"
+
+#~ msgid "_Open With Other Application"
+#~ msgstr "_گشودن با برنامه‌ای دیگر"
+
+#~ msgid "Open With Other _Application"
+#~ msgstr "گشودن با _برنامه‌ای دیگر"
+
+#~ msgid "Set As Wallpaper"
+#~ msgstr "تنظیم به عنوان پس‌زمینه"
+
+#~ msgid "_Extract Here"
+#~ msgstr "این‌جا _استخراج شود"
+
+#~ msgid "Tags"
+#~ msgstr "برچسب‌ها"
+
+#~ msgctxt "menu item"
+#~ msgid "Star"
+#~ msgstr "ستاره"
+
+#~ msgctxt "menu item"
+#~ msgid "Unstar"
+#~ msgstr "بی‌ستاره"
+
+#~ msgctxt "menu item"
+#~ msgid "Sort"
+#~ msgstr "چیدمان"
+
+#~ msgid "_Visible Columns…"
+#~ msgstr "_ستون‌های نمایان…"
+
+#~ msgid "Go back"
+#~ msgstr "عقب رفتن"
+
+#~ msgid "Go forward"
+#~ msgstr "جلو رفتن"
+
+#~ msgid "View options"
+#~ msgstr "گزینه‌های نما"
+
+#~ msgid "Show operations"
+#~ msgstr "نمایش عملیات"
 
 #~ msgid "Where to position newly open tabs in browser windows"
 #~ msgstr "جایی که زبانه‌های تازه باز شده جدید در پنجره مرورگر قرار می‌گیرند"
@@ -6257,9 +6267,6 @@ msgstr "سیاههٔ میان‌برها، نقطه‌های وصل شدن و ن
 
 #~ msgid "Others:"
 #~ msgstr "دیگران:"
-
-#~ msgid "New _Folder…"
-#~ msgstr "_شاخهٔ جدید…"
 
 #~ msgid "Create the initial window with the given geometry."
 #~ msgstr "ایجاد پنجرهٔ اولیه با پیکربندی ظاهری داده شده."
@@ -7567,9 +7574,6 @@ msgstr "سیاههٔ میان‌برها، نقطه‌های وصل شدن و ن
 #~ msgid "_Up"
 #~ msgstr "_بالا"
 
-#~ msgid "Set as _Background"
-#~ msgstr "تنظیم به عنوان پ_س‌زمینه"
-
 #~ msgid "--geometry cannot be used with more than one URI."
 #~ msgstr "نمی‌توان برای بیش از یک نشانی اینترنتی از geometry-- استفاده کرد."
 
@@ -8706,9 +8710,6 @@ msgstr "سیاههٔ میان‌برها، نقطه‌های وصل شدن و ن
 
 #~ msgid "You can download it or make a link to it."
 #~ msgstr "می‌توانید آن را بارگیری کنید یا پیوندی به آن ایجاد کنید."
-
-#~ msgid "Make a _Link"
-#~ msgstr "_ساخت یک پیوند"
 
 #~ msgid "_Download"
 #~ msgstr "_بارگیری"
