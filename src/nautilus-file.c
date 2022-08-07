@@ -912,10 +912,6 @@ finalize (GObject *object)
     {
         g_object_unref (file->details->thumbnail);
     }
-    if (file->details->scaled_thumbnail)
-    {
-        g_object_unref (file->details->scaled_thumbnail);
-    }
 
     if (file->details->mount)
     {
@@ -5147,76 +5143,39 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                   NautilusFileIconFlags  flags)
 {
     g_autoptr (GdkPaintable) paintable = NULL;
-    int modified_size;
-    GdkPixbuf *pixbuf;
-    int w, h, s;
-    double thumb_scale;
     NautilusIconInfo *icon;
 
     icon = NULL;
-    pixbuf = NULL;
 
-    modified_size = size * scale;
-
-    if (file->details->thumbnail)
+    if (file->details->thumbnail != NULL)
     {
-        gdouble texture_width;
-        gdouble texture_height;
-        g_autoptr (GdkTexture) texture = NULL;
+        GdkPixbuf *pixbuf = file->details->thumbnail;
+        double width = gdk_pixbuf_get_width (pixbuf) / scale;
+        double height = gdk_pixbuf_get_height (pixbuf) / scale;
+        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
         g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
 
-        w = gdk_pixbuf_get_width (file->details->thumbnail);
-        h = gdk_pixbuf_get_height (file->details->thumbnail);
+        if (MAX (width, height) > size)
+        {
+            float scale_down_factor = MAX (width, height) / size;
 
-        s = MAX (w, h);
-        /* Don't scale up small thumbnails in the standard view */
-        if (s <= NAUTILUS_GRID_ICON_SIZE_MEDIUM)
-        {
-            thumb_scale = (double) size / NAUTILUS_GRID_ICON_SIZE_SMALL;
-        }
-        else
-        {
-            thumb_scale = (double) modified_size / s;
+            width = width / scale_down_factor;
+            height = height / scale_down_factor;
         }
 
-        /* Make sure that icons don't get smaller than NAUTILUS_LIST_ICON_SIZE_SMALL */
-        if (s * thumb_scale <= NAUTILUS_LIST_ICON_SIZE_SMALL)
-        {
-            thumb_scale = (double) NAUTILUS_LIST_ICON_SIZE_SMALL / s;
-        }
-
-        if (file->details->thumbnail_scale == thumb_scale &&
-            file->details->scaled_thumbnail != NULL)
-        {
-            pixbuf = file->details->scaled_thumbnail;
-        }
-        else
-        {
-            pixbuf = gdk_pixbuf_scale_simple (file->details->thumbnail,
-                                              MAX (w * thumb_scale, 1),
-                                              MAX (h * thumb_scale, 1),
-                                              GDK_INTERP_BILINEAR);
-
-            g_clear_object (&file->details->scaled_thumbnail);
-            file->details->scaled_thumbnail = pixbuf;
-            file->details->thumbnail_scale = thumb_scale;
-        }
-
-        texture = gdk_texture_new_for_pixbuf (pixbuf);
-        texture_width = gdk_texture_get_width (texture);
-        texture_height = gdk_texture_get_height (texture);
         gdk_paintable_snapshot (GDK_PAINTABLE (texture),
                                 GDK_SNAPSHOT (snapshot),
-                                texture_width, texture_height);
+                                width, height);
+
         if (size >= NAUTILUS_GRID_ICON_SIZE_SMALL &&
             nautilus_is_video_file (file))
         {
-            nautilus_ui_frame_video (snapshot, texture_width, texture_height);
+            nautilus_ui_frame_video (snapshot, width, height);
         }
-        paintable = gtk_snapshot_to_paintable (snapshot, NULL);
 
         DEBUG ("Returning thumbnailed image, at size %d %d",
-               (int) (w * thumb_scale), (int) (h * thumb_scale));
+               (int) (width), (int) (height));
+        paintable = gtk_snapshot_to_paintable (snapshot, NULL);
     }
     else if (file->details->thumbnail_path == NULL &&
              file->details->can_read &&
