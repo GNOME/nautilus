@@ -129,7 +129,7 @@
         <property name="label" translatable="yes">_Open</property>
         <property name="use-underline">True</property>
         <property name="sensitive">False</property>
-        <signal name="clicked" object="NautilusAppChooser" handler="open_button_clicked_cb" swapped="no"/>
+        <signal name="clicked" object="NautilusAppChooser" handler="open_cb" swapped="yes"/>
       </object>
     </child>
     <action-widgets>

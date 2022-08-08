@@ -41,8 +41,7 @@ enum
 };
 
 static void
-open_button_clicked_cb (GtkButton          *button,
-                        NautilusAppChooser *self)
+open_cb (NautilusAppChooser *self)
 {
     gboolean set_new_default = FALSE;
     g_autoptr (GAppInfo) info = NULL;
@@ -81,7 +80,13 @@ open_button_clicked_cb (GtkButton          *button,
         adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (message_dialog), "close", _("OK"));
         gtk_window_present (GTK_WINDOW (message_dialog));
     }
+}
 
+static void
+on_application_activated (NautilusAppChooser *self)
+{
+    open_cb (self);
+    gtk_dialog_response (GTK_DIALOG (self), GTK_RESPONSE_OK);
 }
 
 static void
@@ -182,6 +187,8 @@ nautilus_app_chooser_constructed (GObject *object)
 
     g_signal_connect_object (self->app_chooser_widget, "application-selected",
                              G_CALLBACK (on_application_selected), self, 0);
+    g_signal_connect_object (self->app_chooser_widget, "application-activated",
+                             G_CALLBACK (on_application_activated), self, G_CONNECT_SWAPPED);
 
     if (self->file_name != NULL)
     {
@@ -246,7 +253,7 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_content_type_description);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_box);
 
-    gtk_widget_class_bind_template_callback (widget_class, open_button_clicked_cb);
+    gtk_widget_class_bind_template_callback (widget_class, open_cb);
 
     g_object_class_install_property (object_class,
                                      PROP_CONTENT_TYPE,
