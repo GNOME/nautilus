@@ -180,10 +180,8 @@ nautilus_app_chooser_constructed (GObject *object)
                                  info, self);
     }
 
-    g_signal_connect (self->app_chooser_widget,
-                      "application-selected",
-                      G_CALLBACK (on_application_selected),
-                      self);
+    g_signal_connect_object (self->app_chooser_widget, "application-selected",
+                             G_CALLBACK (on_application_selected), self, 0);
 
     if (self->file_name != NULL)
     {
