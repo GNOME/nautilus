@@ -82,7 +82,6 @@ open_button_clicked_cb (GtkButton          *button,
         gtk_window_present (GTK_WINDOW (message_dialog));
     }
 
-    gtk_app_chooser_refresh (GTK_APP_CHOOSER (self->app_chooser_widget));
 }
 
 static void
