@@ -44,11 +44,9 @@ static void
 open_button_clicked_cb (GtkButton          *button,
                         NautilusAppChooser *self)
 {
-    gboolean state;
+    gboolean set_new_default = FALSE;
     g_autoptr (GAppInfo) info = NULL;
     g_autoptr (GError) error = NULL;
-
-    state = gtk_switch_get_active (GTK_SWITCH (self->set_as_default_switch));
 
     if (!self->single_content_type)
     {
@@ -56,16 +54,17 @@ open_button_clicked_cb (GtkButton          *button,
         return;
     }
 
-    if (state)
+    /* The switch is insensitive if the selected app is already default */
+    if (gtk_widget_get_sensitive (self->set_as_default_switch))
+    {
+        set_new_default = gtk_switch_get_active (GTK_SWITCH (self->set_as_default_switch));
+    }
+
+    if (set_new_default)
     {
         info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
         g_app_info_set_as_default_for_type (info, self->content_type,
                                             &error);
-    }
-    else
-    {
-        g_app_info_reset_type_associations (self->content_type);
-        gtk_app_chooser_refresh (GTK_APP_CHOOSER (self->app_chooser_widget));
     }
 
     if (error != NULL)
@@ -101,6 +100,7 @@ on_application_selected (GtkAppChooserWidget *widget,
     is_default = default_app != NULL && g_app_info_equal (info, default_app);
 
     gtk_switch_set_state (GTK_SWITCH (self->set_as_default_switch), is_default);
+    gtk_widget_set_sensitive (GTK_WIDGET (self->set_as_default_switch), !is_default);
 }
 
 static void
