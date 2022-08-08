@@ -9,6 +9,8 @@
 #include <libadwaita-1/adwaita.h>
 #include <glib/gi18n.h>
 
+#include <eel/eel-string.h>
+
 #include "nautilus-file.h"
 #include "nautilus-signaller.h"
 
@@ -218,8 +220,9 @@ nautilus_app_chooser_constructed (GObject *object)
         content_type_description = g_content_type_get_description (self->content_type);
         if (content_type_description != NULL)
         {
-            content_type_description[0] = g_ascii_toupper (content_type_description[0]);
-            adw_action_row_set_subtitle (ADW_ACTION_ROW (self->set_default_row), content_type_description);
+            g_autofree gchar *capitalized = NULL;
+            capitalized = eel_str_capitalize (content_type_description);
+            adw_action_row_set_subtitle (ADW_ACTION_ROW (self->set_default_row), capitalized);
         }
     }
     else

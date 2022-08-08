@@ -95,16 +95,28 @@ eel_str_double_underscores (const char *string)
 char *
 eel_str_capitalize (const char *string)
 {
-    char *capitalized;
+    char *capitalized = NULL;
 
     if (string == NULL)
     {
         return NULL;
     }
 
-    capitalized = g_strdup (string);
+    if (g_utf8_validate (string, -1, NULL))
+    {
+        g_autofree gunichar *ucs4 = NULL;
+        ucs4 = g_utf8_to_ucs4 (string, -1, NULL, NULL, NULL);
+        if (ucs4 != NULL)
+        {
+            ucs4[0] = g_unichar_toupper (ucs4[0]);
+            capitalized = g_ucs4_to_utf8 (ucs4, -1, NULL, NULL, NULL);
+        }
+    }
 
-    capitalized[0] = g_ascii_toupper (capitalized[0]);
+    if (capitalized == NULL)
+    {
+        return g_strdup (string);
+    }
 
     return capitalized;
 }
