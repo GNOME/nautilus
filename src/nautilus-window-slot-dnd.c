@@ -35,6 +35,7 @@ typedef struct
     NautilusWindowSlot *target_slot;
     GtkWidget *widget;
 
+    graphene_point_t hover_start_point;
     guint switch_location_timer;
 } NautilusDragSlotProxyInfo;
 
@@ -107,6 +108,7 @@ slot_proxy_drag_motion (GtkDropTarget *target,
     char *target_uri;
     GFile *location;
     const GValue *value;
+    graphene_point_t start;
 
     drag_info = user_data;
 
@@ -170,7 +172,14 @@ slot_proxy_drag_motion (GtkDropTarget *target,
     g_free (target_uri);
 
 out:
-    slot_proxy_check_switch_location_timer (drag_info);
+    start = drag_info->hover_start_point;
+    if (gtk_drag_check_threshold (drag_info->widget, start.x, start.y, x, y))
+    {
+        slot_proxy_remove_switch_location_timer (drag_info);
+        slot_proxy_check_switch_location_timer (drag_info);
+        drag_info->hover_start_point.x = x;
+        drag_info->hover_start_point.y = y;
+    }
 
     return action;
 }

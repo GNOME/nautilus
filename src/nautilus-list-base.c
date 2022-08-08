@@ -49,6 +49,7 @@ struct _NautilusListBasePrivate
 
     GdkDragAction drag_item_action;
     GdkDragAction drag_view_action;
+    graphene_point_t hover_start_point;
     guint hover_timer_id;
     GtkDropTarget *view_drop_target;
 };
@@ -586,6 +587,26 @@ on_item_drag_hover_leave (GtkDropControllerMotion *controller,
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 }
 
+static void
+on_item_drag_hover_motion (GtkDropControllerMotion *controller,
+                           gdouble                  x,
+                           gdouble                  y,
+                           gpointer                 user_data)
+{
+    NautilusViewCell *cell = user_data;
+    g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    graphene_point_t start = priv->hover_start_point;
+
+    if (gtk_drag_check_threshold (GTK_WIDGET (cell), start.x, start.y, x, y))
+    {
+        g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
+        priv->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, cell);
+        priv->hover_start_point.x = x;
+        priv->hover_start_point.y = y;
+    }
+}
+
 static GdkDragAction
 get_preferred_action (NautilusFile *target_file,
                       const GValue *value)
@@ -886,6 +907,7 @@ setup_cell_common (GtkListItem      *listitem,
     gtk_widget_add_controller (GTK_WIDGET (cell), controller);
     g_signal_connect (controller, "enter", G_CALLBACK (on_item_drag_hover_enter), cell);
     g_signal_connect (controller, "leave", G_CALLBACK (on_item_drag_hover_leave), cell);
+    g_signal_connect (controller, "motion", G_CALLBACK (on_item_drag_hover_motion), cell);
 }
 
 static void

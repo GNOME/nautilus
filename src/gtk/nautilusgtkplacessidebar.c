@@ -130,6 +130,7 @@ struct _NautilusGtkPlacesSidebar {
   GtkWidget *row_placeholder;
   DropState drop_state;
   guint hover_timer_id;
+  graphene_point_t hover_start_point;
   GtkListBoxRow *hover_row;
 
   /* volume mounting - delayed open process */
@@ -1652,16 +1653,21 @@ drag_motion_callback (GtkDropTarget    *target,
   int row_index;
   int row_placeholder_index;
   const GValue *value;
+  graphene_point_t start;
 
   sidebar->dragging_over = TRUE;
   action = 0;
   row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (sidebar->list_box), y);
 
-  if (row != sidebar->hover_row)
+  start = sidebar->hover_start_point;
+  if (row != sidebar->hover_row ||
+      gtk_drag_check_threshold (GTK_WIDGET (sidebar), start.x, start.y, x, y))
     {
       g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
       sidebar->hover_row = row;
       sidebar->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, sidebar);
+      sidebar->hover_start_point.x = x;
+      sidebar->hover_start_point.y = y;
     }
 
   /* Workaround https://gitlab.gnome.org/GNOME/gtk/-/issues/5023 */
