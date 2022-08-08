@@ -54,7 +54,6 @@ enum
     PROP_ICON_NAME,
     PROP_TOOLBAR_MENU_SECTIONS,
     PROP_EXTENSIONS_BACKGROUND_MENU,
-    PROP_TEMPLATES_MENU,
     PROP_LOADING,
     PROP_SEARCH_VISIBLE,
     PROP_SELECTION,
@@ -136,13 +135,11 @@ struct _NautilusWindowSlot
 
     /* Menus */
     GMenuModel *extensions_background_menu;
-    GMenuModel *templates_menu;
 
     /* View bindings */
     GBinding *searching_binding;
     GBinding *selection_binding;
     GBinding *extensions_background_menu_binding;
-    GBinding *templates_menu_binding;
     GList *selection;
 };
 
@@ -173,9 +170,6 @@ static void update_search_information (NautilusWindowSlot *self);
 static void real_set_extensions_background_menu (NautilusWindowSlot *self,
                                                  GMenuModel         *menu);
 static GMenuModel *real_get_extensions_background_menu (NautilusWindowSlot *self);
-static void real_set_templates_menu (NautilusWindowSlot *self,
-                                     GMenuModel         *menu);
-static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
@@ -694,13 +688,6 @@ real_set_extensions_background_menu (NautilusWindowSlot *self,
 }
 
 static void
-real_set_templates_menu (NautilusWindowSlot *self,
-                         GMenuModel         *menu)
-{
-    g_set_object (&self->templates_menu, menu);
-}
-
-static void
 nautilus_window_slot_set_property (GObject      *object,
                                    guint         property_id,
                                    const GValue *value,
@@ -740,12 +727,6 @@ nautilus_window_slot_set_property (GObject      *object,
         }
         break;
 
-        case PROP_TEMPLATES_MENU:
-        {
-            real_set_templates_menu (self, g_value_get_object (value));
-        }
-        break;
-
         case PROP_SELECTION:
         {
             nautilus_window_slot_set_selection (self, g_value_get_pointer (value));
@@ -772,22 +753,6 @@ nautilus_window_slot_get_extensions_background_menu (NautilusWindowSlot *self)
     GMenuModel *menu = NULL;
 
     g_object_get (self, "extensions-background-menu", &menu, NULL);
-
-    return menu;
-}
-
-static GMenuModel *
-real_get_templates_menu (NautilusWindowSlot *self)
-{
-    return self->templates_menu;
-}
-
-GMenuModel *
-nautilus_window_slot_get_templates_menu (NautilusWindowSlot *self)
-{
-    GMenuModel *menu = NULL;
-
-    g_object_get (self, "templates-menu", &menu, NULL);
 
     return menu;
 }
@@ -828,12 +793,6 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_EXTENSIONS_BACKGROUND_MENU:
         {
             g_value_set_object (value, real_get_extensions_background_menu (self));
-        }
-        break;
-
-        case PROP_TEMPLATES_MENU:
-        {
-            g_value_set_object (value, real_get_templates_menu (self));
         }
         break;
 
@@ -2798,7 +2757,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         g_binding_unbind (self->searching_binding);
         g_binding_unbind (self->selection_binding);
         g_binding_unbind (self->extensions_background_menu_binding);
-        g_binding_unbind (self->templates_menu_binding);
         widget = GTK_WIDGET (self->content_view);
         gtk_box_remove (GTK_BOX (self), widget);
         g_clear_object (&self->content_view);
@@ -2823,13 +2781,9 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         self->extensions_background_menu_binding = g_object_bind_property (self->content_view, "extensions-background-menu",
                                                                            self, "extensions-background-menu",
                                                                            G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        self->templates_menu_binding = g_object_bind_property (self->content_view, "templates-menu",
-                                                               self, "templates-menu",
-                                                               G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
     }
 
@@ -2879,9 +2833,7 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_pointer (&self->searching_binding, g_binding_unbind);
     g_clear_pointer (&self->selection_binding, g_binding_unbind);
     g_clear_pointer (&self->extensions_background_menu_binding, g_binding_unbind);
-    g_clear_pointer (&self->templates_menu_binding, g_binding_unbind);
 
-    g_clear_object (&self->templates_menu);
     g_clear_object (&self->extensions_background_menu);
 
     if (self->content_view)
@@ -3021,13 +2973,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
         g_param_spec_object ("extensions-background-menu",
                              "Background menu of extensions",
                              "Proxy property from the view for the background menu for extensions",
-                             G_TYPE_MENU_MODEL,
-                             G_PARAM_READWRITE);
-
-    properties[PROP_TEMPLATES_MENU] =
-        g_param_spec_object ("templates-menu",
-                             "Templates menu",
-                             "Proxy property from the view for the templates menu",
                              G_TYPE_MENU_MODEL,
                              G_PARAM_READWRITE);
 

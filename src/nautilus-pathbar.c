@@ -110,7 +110,6 @@ struct _NautilusPathBar
     GtkWidget *button_menu_popover;
     GMenu *current_view_menu;
     GMenu *extensions_section;
-    GMenu *templates_submenu;
     GMenu *button_menu;
 
     gchar *os_name;
@@ -297,7 +296,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
     /* Add current location menu, which shares features with the view's background context menu */
     self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "current-view-menu")));
     self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-extensions-section")));
-    self->templates_submenu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "templates-submenu")));
     self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER_MENU (gtk_popover_menu_new_from_model (NULL)));
 
     g_object_unref (builder);
@@ -329,7 +327,6 @@ nautilus_path_bar_finalize (GObject *object)
 
     g_clear_object (&self->current_view_menu);
     g_clear_object (&self->extensions_section);
-    g_clear_object (&self->templates_submenu);
     g_clear_object (&self->button_menu);
     g_clear_object (&self->current_view_menu_popover);
     g_free (self->os_name);
@@ -441,37 +438,6 @@ nautilus_path_bar_set_extensions_background_menu (NautilusPathBar *self,
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
     nautilus_gmenu_set_from_model (self->extensions_section, menu);
-}
-
-void
-nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
-                                      GMenuModel      *menu)
-{
-    gint i;
-
-    g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
-
-    if (!gtk_widget_is_visible (GTK_WIDGET (self->current_view_menu_popover)))
-    {
-        /* Workaround to avoid leaking duplicated GtkStack pages each time the
-         * templates menu is set. Unbinding the model is the only way to clear
-         * all children. After that's done, on idle, we rebind it.
-         * See https://gitlab.gnome.org/GNOME/nautilus/-/issues/1705 */
-        gtk_popover_menu_set_menu_model (self->current_view_menu_popover, NULL);
-    }
-
-    nautilus_gmenu_set_from_model (self->templates_submenu, menu);
-    if (self->bind_menu_model_to_popover_id == 0)
-    {
-        self->bind_menu_model_to_popover_id = g_idle_add ((GSourceFunc) bind_current_view_menu_model_to_popover, self);
-    }
-
-    i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (self->current_view_menu),
-                                              "nautilus-menu-item",
-                                              "templates-submenu");
-    nautilus_g_menu_replace_string_in_item (self->current_view_menu, i,
-                                            "hidden-when",
-                                            (menu == NULL) ? "action-missing" : NULL);
 }
 
 /* Public functions and their helpers */

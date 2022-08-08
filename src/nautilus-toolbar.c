@@ -518,18 +518,6 @@ slot_on_extensions_background_menu_changed (NautilusToolbar    *self,
                                                       menu);
 }
 
-static void
-slot_on_templates_menu_changed (NautilusToolbar    *self,
-                                GParamSpec         *param,
-                                NautilusWindowSlot *slot)
-{
-    g_autoptr (GMenuModel) menu = NULL;
-
-    menu = nautilus_window_slot_get_templates_menu (slot);
-    nautilus_path_bar_set_templates_menu (NAUTILUS_PATH_BAR (self->path_bar),
-                                          menu);
-}
-
 /* Called from on_window_slot_destroyed(), since bindings and signal handlers
  * are automatically removed once the slot goes away.
  */
@@ -549,8 +537,6 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
 
         g_signal_connect_swapped (self->window_slot, "notify::extensions-background-menu",
                                   G_CALLBACK (slot_on_extensions_background_menu_changed), self);
-        g_signal_connect_swapped (self->window_slot, "notify::templates-menu",
-                                  G_CALLBACK (slot_on_templates_menu_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::search-visible",
                                   G_CALLBACK (toolbar_update_appearance), self);
     }
