@@ -147,6 +147,12 @@ nautilus_app_chooser_init (NautilusAppChooser *self)
     gtk_widget_set_name (GTK_WIDGET (self), "NautilusAppChooser");
 }
 
+static gboolean
+content_type_is_folder (NautilusAppChooser *self)
+{
+    return g_strcmp0 (self->content_type, "inode/directory") == 0;
+}
+
 static void
 nautilus_app_chooser_constructed (GObject *object)
 {
@@ -191,7 +197,7 @@ nautilus_app_chooser_constructed (GObject *object)
     {
         title = _("Open Items");
     }
-    else if (g_strcmp0 (self->content_type, "inode/directory") == 0)
+    else if (content_type_is_folder (self))
     {
         title = _("Open Folder");
     }
@@ -203,7 +209,7 @@ nautilus_app_chooser_constructed (GObject *object)
     gtk_header_bar_set_title_widget (GTK_HEADER_BAR (gtk_dialog_get_header_bar (GTK_DIALOG (self))),
                                      adw_window_title_new (title, NULL));
 
-    if (self->single_content_type)
+    if (self->single_content_type && !content_type_is_folder (self))
     {
         content_type_description = g_content_type_get_description (self->content_type);
         gtk_label_set_label (GTK_LABEL (self->label_content_type_description), content_type_description);
