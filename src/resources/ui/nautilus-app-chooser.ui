@@ -72,34 +72,7 @@
                             <property name="hexpand">true</property>
                             <property name="selectable">false</property>
                             <property name="activatable-widget">set_as_default_switch</property>
-                            <child type="prefix">
-                              <object class="GtkBox">
-                                <property name="orientation">vertical</property>
-                                <property name="spacing">3</property>
-                                <property name="hexpand">true</property>
-                                <property name="valign">center</property>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="label" translatable="yes">Always use for this file type</property>
-                                    <property name="halign">start</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label_content_type_description">
-                                    <property name="halign">start</property>
-                                    <attributes>
-                                      <attribute name="text-transform"
-                                                 value="PANGO_TEXT_TRANSFORM_UPPERCASE"
-                                                 start="0" end="1"/>
-                                    </attributes>
-                                    <style>
-                                      <class name="caption"/>
-                                      <class name="dim-label"/>
-                                    </style>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
+                            <property name="title" translatable="yes">Always use for this file type</property>
                             <child>
                               <object class="GtkSwitch" id="set_as_default_switch">
                                 <property name="halign">end</property>

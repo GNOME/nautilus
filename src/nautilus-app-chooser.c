@@ -22,7 +22,7 @@ struct _NautilusAppChooser
 
     GtkWidget *app_chooser_widget_box;
     GtkWidget *label_description;
-    GtkWidget *label_content_type_description;
+    GtkWidget *set_default_row;
     GtkWidget *set_as_default_switch;
     GtkWidget *set_default_box;
 
@@ -216,7 +216,11 @@ nautilus_app_chooser_constructed (GObject *object)
     if (self->single_content_type && !content_type_is_folder (self))
     {
         content_type_description = g_content_type_get_description (self->content_type);
-        gtk_label_set_label (GTK_LABEL (self->label_content_type_description), content_type_description);
+        if (content_type_description != NULL)
+        {
+            content_type_description[0] = g_ascii_toupper (content_type_description[0]);
+            adw_action_row_set_subtitle (ADW_ACTION_ROW (self->set_default_row), content_type_description);
+        }
     }
     else
     {
@@ -250,7 +254,7 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, app_chooser_widget_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_as_default_switch);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_description);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_content_type_description);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_box);
 
     gtk_widget_class_bind_template_callback (widget_class, open_cb);
