@@ -1471,8 +1471,6 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
 
     info = nautilus_app_chooser_get_app_info (NAUTILUS_APP_CHOOSER (dialog));
 
-    g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
-
     nautilus_launch_application (info, files, parent_window);
 
     g_object_unref (info);

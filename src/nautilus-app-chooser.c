@@ -65,6 +65,7 @@ open_button_clicked_cb (GtkButton          *button,
         info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
         g_app_info_set_as_default_for_type (info, self->content_type,
                                             &error);
+        g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
     }
 
     if (error != NULL)
@@ -82,7 +83,6 @@ open_button_clicked_cb (GtkButton          *button,
     }
 
     gtk_app_chooser_refresh (GTK_APP_CHOOSER (self->app_chooser_widget));
-    g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 }
 
 static void
