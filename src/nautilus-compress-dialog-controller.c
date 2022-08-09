@@ -407,7 +407,7 @@ popover_on_show (GtkWidget *widget,
         int w, h, y;
 
         /* The vbox child is used instead of the dialog itself to get size
-           without the title bar, client side decorations etc. */
+         * without the title bar, client side decorations etc. */
         vbox = gtk_bin_get_child (GTK_BIN (self->compress_dialog));
         gtk_widget_translate_coordinates (widget, vbox, 0, gtk_widget_get_margin_top (vbox), NULL, &y);
 
