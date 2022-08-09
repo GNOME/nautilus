@@ -400,13 +400,20 @@ popover_on_show (GtkWidget *widget,
     }
 
 #ifdef GDK_WINDOWING_X11
+    /* Workaround for https://gitlab.gnome.org/GNOME/nautilus/-/issues/2018 */
     if (GDK_IS_X11_DISPLAY (gdk_display_get_default ()))
     {
-        int w, h;
+        GtkWidget *vbox;
+        int w, h, y;
 
-        /* Workaround for https://gitlab.gnome.org/GNOME/nautilus/-/issues/2018 */
-        gtk_window_get_default_size (GTK_WINDOW (self->compress_dialog), &w, &h);
-        gtk_window_resize (GTK_WINDOW (self->compress_dialog), w, h * 2);
+        /* The vbox child is used instead of the dialog itself to get size
+         * without the title bar, client side decorations etc. */
+        vbox = gtk_bin_get_child (GTK_BIN (self->compress_dialog));
+        gtk_widget_translate_coordinates (widget, vbox, 0, gtk_widget_get_margin_top (vbox), NULL, &y);
+
+        gtk_widget_get_preferred_width (widget, NULL, &w);
+        gtk_widget_get_preferred_height (widget, NULL, &h);
+        gtk_window_resize (GTK_WINDOW (self->compress_dialog), w, y + h);
     }
 #endif
 }
