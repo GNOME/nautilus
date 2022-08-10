@@ -570,10 +570,8 @@ on_item_drag_hover_enter (GtkDropControllerMotion *controller,
     NautilusListBase *self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
-    if (priv->hover_timer_id == 0)
-    {
-        priv->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, cell);
-    }
+    priv->hover_start_point.x = x;
+    priv->hover_start_point.y = y;
 }
 
 static void
@@ -598,6 +596,12 @@ on_item_drag_hover_motion (GtkDropControllerMotion *controller,
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     graphene_point_t start = priv->hover_start_point;
 
+    /* This condition doubles in two roles:
+     *   - If the timeout hasn't started yet, to ensure the pointer has entered
+     *     deep enough into the cell before starting the timeout to switch;
+     *   - If the timeout has already started, to reset it if the pointer is
+     *     moving a lot.
+     * Both serve to prevent accidental triggering of switch-on-hover. */
     if (gtk_drag_check_threshold (GTK_WIDGET (cell), start.x, start.y, x, y))
     {
         g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
