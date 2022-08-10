@@ -236,7 +236,6 @@ get_paintable_for_drag_selection (GList *selection,
     GskShadow stack_shadow = {.color = {0, 0, 0, .alpha = 0.15}, .dx = 0, .dy = 2, .radius = 10 };
     /* A slight shadow swhich makes each icon in the stack look separate. */
     GskShadow icon_shadow = {.color = {0, 0, 0, .alpha = 0.20}, .dx = 0, .dy = 1, .radius = 1 };
-    GskRoundedRect rounded_rect;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (selection->data), NULL);
 
@@ -286,17 +285,14 @@ get_paintable_for_drag_selection (GList *selection,
         /* Offsets needed to center thumbnails. Floored to keep images sharp. */
         float x = floor ((icon_size - w) / 2);
         float y = floor ((icon_size - h) / 2);
-        gsk_rounded_rect_init_from_rect (&rounded_rect, &GRAPHENE_RECT_INIT (0, 0, w, h), 6);
 
         gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (0, -dy));
 
         gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (x, y));
         gtk_snapshot_push_shadow (snapshot, &icon_shadow, 1);
-        gtk_snapshot_push_rounded_clip (snapshot, &rounded_rect);
 
         gdk_paintable_snapshot (l->data, snapshot, w, h);
 
-        gtk_snapshot_pop (snapshot); /* End of rounded clip */
         gtk_snapshot_pop (snapshot); /* End of icon shadow */
         gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (-x, -y));
     }
