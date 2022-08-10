@@ -5103,6 +5103,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         double height = gdk_pixbuf_get_height (pixbuf) / scale;
         g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
         g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
+        GskRoundedRect rounded_rect;
 
         if (MAX (width, height) > size)
         {
@@ -5111,6 +5112,11 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
             width = width / scale_down_factor;
             height = height / scale_down_factor;
         }
+
+        gsk_rounded_rect_init_from_rect (&rounded_rect,
+                                         &GRAPHENE_RECT_INIT (0, 0, width, height),
+                                         2 /* radius*/);
+        gtk_snapshot_push_rounded_clip (snapshot, &rounded_rect);
 
         gdk_paintable_snapshot (GDK_PAINTABLE (texture),
                                 GDK_SNAPSHOT (snapshot),
@@ -5121,6 +5127,8 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         {
             nautilus_ui_frame_video (snapshot, width, height);
         }
+
+        gtk_snapshot_pop (snapshot); /* End rounded clip */
 
         DEBUG ("Returning thumbnailed image, at size %d %d",
                (int) (width), (int) (height));
