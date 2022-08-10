@@ -1177,7 +1177,7 @@ toast_undo_deleted_get_label (NautilusFileUndoInfo *undo_info)
     {
         file_label = g_file_get_basename (files->data);
         /* Translators: only one item has been deleted and %s is its name. */
-        label = g_markup_printf_escaped (_("“%s” deleted"), file_label);
+        label = g_markup_printf_escaped (_("“%s” moved to trash"), file_label);
         g_free (file_label);
     }
     else
