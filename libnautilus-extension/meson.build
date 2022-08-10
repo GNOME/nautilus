@@ -65,7 +65,7 @@ libnautilus_extension = shared_library(
 )
 
 if get_option('introspection')
-  gnome.generate_gir(
+  nautilus_extension_gir = gnome.generate_gir(
     libnautilus_extension,
     export_packages: [
       'libnautilus-extension'

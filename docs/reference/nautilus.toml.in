@@ -1,0 +1,22 @@
+[library]
+version = "@VERSION@"
+description = "Nautilus Extension API"
+license = "GPL-2.0-or-later"
+browse_url = "https://gitlab.gnome.org/GNOME/nautilus/"
+repository_url = "https://gitlab.gnome.org/GNOME/nautilus.git"
+devhelp = true
+search_index = true
+
+[theme]
+name = "basic"
+show_index_summary = true
+show_class_hierarchy = true
+
+[source-location]
+# The base URL for the web UI
+base_url = "https://gitlab.gnome.org/GNOME/nautilus/-/blob/master/"
+# The format for links, using "filename" and "line" for the format
+file_format = "{filename}#L{line}"
+
+[extra]
+urlmap_file = "urlmap.js"

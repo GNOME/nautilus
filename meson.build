@@ -23,6 +23,7 @@ desktopdir = join_paths(datadir, 'applications')
 includedir = get_option('includedir')
 libdir = get_option('libdir')
 localedir = get_option('localedir')
+docdir = datadir / 'doc'
 extensiondir = join_paths(libdir, 'nautilus', 'extensions-' + nautilus_extension_version)
 servicedir = join_paths(datadir, 'dbus-1', 'services')
 
@@ -121,6 +122,7 @@ endif
 tracker_sparql = dependency('tracker-sparql-3.0')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
 cloudproviders = dependency('cloudproviders', version: '>= 0.3.1')
+gi_docgen = find_program('gi-docgen', required: get_option('docs'))
 
 ####################
 # End dependencies #
@@ -203,7 +205,7 @@ subdirs = [
 # Conditional building #
 ########################
 
-if get_option('docs')
+if gi_docgen.found()
   subdirs += 'docs'
 endif
 if get_option('tests') != 'none'
