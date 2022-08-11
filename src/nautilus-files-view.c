@@ -2488,6 +2488,22 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
 }
 
 static void
+action_empty_trash (GSimpleAction *action,
+                    GVariant      *state,
+                    gpointer       user_data)
+{
+    NautilusFilesView *view;
+    GtkRoot *window;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    window = gtk_widget_get_root (GTK_WIDGET (view));
+
+    nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
+}
+
+static void
 action_new_folder (GSimpleAction *action,
                    GVariant      *state,
                    gpointer       user_data)
@@ -7070,6 +7086,7 @@ const GActionEntry view_entries[] =
     { "zoom-standard", action_zoom_standard },
     { "show-hidden-files", NULL, NULL, "true", action_show_hidden_files },
     /* Background menu */
+    { "empty-trash", action_empty_trash },
     { "new-folder", action_new_folder },
     { "select-all", action_select_all },
     { "paste", action_paste_files },
@@ -7478,6 +7495,7 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean can_extract_here;
     gboolean item_opens_in_view;
     gboolean is_read_only;
+    gboolean is_in_trash;
     GAction *action;
     GActionGroup *view_action_group;
     gboolean show_mount;
@@ -7514,6 +7532,7 @@ real_update_actions_state (NautilusFilesView *view)
     zoom_level_is_default = nautilus_files_view_is_zoom_level_default (view);
 
     is_read_only = nautilus_files_view_is_read_only (view);
+    is_in_trash = showing_trash_directory (view);
     can_create_files = nautilus_files_view_supports_creating_files (view);
     can_delete_files =
         can_delete_all (selection) &&
@@ -7790,6 +7809,14 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "new-folder");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "empty-trash");
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !nautilus_trash_monitor_is_empty () &&
+                                 is_in_trash);
+
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
