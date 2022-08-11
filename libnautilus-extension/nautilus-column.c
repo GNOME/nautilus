@@ -228,6 +228,11 @@ nautilus_column_class_init (NautilusColumnClass *class)
     G_OBJECT_CLASS (class)->get_property = nautilus_column_get_property;
     G_OBJECT_CLASS (class)->set_property = nautilus_column_set_property;
 
+    /**
+     * NautilusColumn:name:
+     *
+     * The identifier for the column.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_NAME,
                                      g_param_spec_string ("name",
@@ -235,6 +240,12 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                           "Name of the column",
                                                           NULL,
                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
+
+    /**
+     * NautilusColumn:attribute:
+     *
+     * The file attribute to be displayed in the column.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_ATTRIBUTE,
                                      g_param_spec_string ("attribute",
@@ -242,6 +253,12 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                           "The attribute name to display",
                                                           NULL,
                                                           G_PARAM_READWRITE));
+
+    /**
+     * NautilusColumn:attribute_q:
+     *
+     * The name of the attribute to display, in quark form.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_ATTRIBUTE_Q,
                                      g_param_spec_uint ("attribute_q",
@@ -249,6 +266,12 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                         "The attribute name to display, in quark form",
                                                         0, G_MAXUINT, 0,
                                                         G_PARAM_READABLE));
+
+    /**
+     * NautilusColumn:label:
+     *
+     * The label to display in the column.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_LABEL,
                                      g_param_spec_string ("label",
@@ -256,6 +279,12 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                           "Label to display in the column",
                                                           NULL,
                                                           G_PARAM_READWRITE));
+
+    /**
+     * NautilusColumn:description:
+     *
+     * The user-visible description of the column.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_DESCRIPTION,
                                      g_param_spec_string ("description",
@@ -264,6 +293,11 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                           NULL,
                                                           G_PARAM_READWRITE));
 
+    /**
+     * NautilusColumn:xalign:
+     *
+     * The x-alignment of the column.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_XALIGN,
                                      g_param_spec_float ("xalign",

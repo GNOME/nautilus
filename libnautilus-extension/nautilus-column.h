@@ -36,23 +36,26 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusColumn, nautilus_column, NAUTILUS, COLUMN, GObject)
 
 /**
- * SECTION:nautilus-column
- * @title: NautilusColumn
- * @short_description: List view column descriptor object
+ * NautilusColumn:
  *
- * #NautilusColumn is an object that describes a column in the file manager
- * list view. Extensions can provide #NautilusColumn by registering a
- * #NautilusColumnProvider and returning them from
- * nautilus_column_provider_get_columns(), which will be called by the main
+ * List view column descriptor object.
+ *
+ * `NautilusColumn` is an object that describes a column in the file manager
+ * list view. Extensions can provide `NautilusColumn` by registering a
+ * [class@ColumnProvider] and returning them from
+ * [method@ColumnProvider.get_columns], which will be called by the main
  * application when creating a view.
  */
 
 /**
  * nautilus_column_new:
+ *
  * @name: (not nullable): identifier of the column
  * @attribute: (not nullable): the file attribute to be displayed in the column
  * @label: (not nullable): the user-visible label for the column
  * @description: (not nullable): a user-visible description of the column
+ *
+ * Creates a new [class@Column] object.
  *
  * Returns: (transfer full): a new #NautilusColumn
  */
@@ -60,14 +63,5 @@ NautilusColumn *nautilus_column_new  (const char *name,
                                       const char *attribute,
                                       const char *label,
                                       const char *description);
-
-/* NautilusColumn has the following properties:
- *   name (string)        - the identifier for the column
- *   attribute (string)   - the file attribute to be displayed in the 
- *                          column
- *   label (string)       - the user-visible label for the column
- *   description (string) - a user-visible description of the column
- *   xalign (float)       - x-alignment of the column 
- */
 
 G_END_DECLS
