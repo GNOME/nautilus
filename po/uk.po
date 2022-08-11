@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-10 09:19+0000\n"
-"PO-Revision-Date: 2022-08-10 17:12+0300\n"
+"POT-Creation-Date: 2022-08-11 08:24+0000\n"
+"PO-Revision-Date: 2022-08-11 22:01+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1559,13 +1559,13 @@ msgstr[2] "%'u файлів"
 msgstr[3] "%'u файл"
 
 #: src/nautilus-file.c:6949
-#, c-format
-msgid "%lu byte"
-msgid_plural "%lu bytes"
-msgstr[0] "%lu байт"
-msgstr[1] "%lu байти"
-msgstr[2] "%lu байтів"
-msgstr[3] "%lu байт"
+#| msgid "%a"
+msgid "%"
+msgid_plural "%"
+msgstr[0] "%"
+msgstr[1] "%"
+msgstr[2] "%"
+msgstr[3] "%"
 
 #. This means no contents at all were readable
 #: src/nautilus-file.c:7359
@@ -4337,7 +4337,6 @@ msgstr "Вперед"
 #. Translators: only one item has been deleted and %s is its name.
 #: src/nautilus-window.c:1180
 #, c-format
-#| msgid "Move “%s” to trash"
 msgid "“%s” moved to trash"
 msgstr "«%s» пересунуто до смітника"
 
@@ -5814,6 +5813,14 @@ msgstr "Бічна панель"
 #: src/gtk/nautilusgtkplacessidebar.c:3968
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Список типових скорочень, точок монтування та закладок."
+
+#, c-format
+#~ msgid "%lu byte"
+#~ msgid_plural "%lu bytes"
+#~ msgstr[0] "%lu байт"
+#~ msgstr[1] "%lu байти"
+#~ msgstr[2] "%lu байтів"
+#~ msgstr[3] "%lu байт"
 
 #, c-format
 #~ msgid "“%s” deleted"
