@@ -58,7 +58,7 @@ struct _NautilusPropertiesModelProviderInterface
  * so it should return quickly. The models can be populated and updated
  * asynchronously.
  *
- * Returns: (nullable) (element-type NautilusPropertyModel) (transfer full): A #GList of allocated #NautilusPropertiesModel models.
+ * Returns: (nullable) (element-type NautilusPropertiesModel) (transfer full): A #GList of allocated #NautilusPropertiesModel models.
  */
 GList *nautilus_properties_model_provider_get_models (NautilusPropertiesModelProvider *provider,
                                                       GList                           *files);

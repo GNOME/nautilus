@@ -34,7 +34,7 @@ G_DECLARE_FINAL_TYPE (NautilusPropertiesItem,
 /**
  * nautilus_properties_item_new:
  * @name: the user-visible name for the properties item.
- * @model: the user-visible value for the properties item.
+ * @value: the user-visible value for the properties item.
  *
  * Returns: (transfer full): a new #NautilusPropertiesItem
  */
@@ -43,7 +43,7 @@ NautilusPropertiesItem *nautilus_properties_item_new (const char *name,
 
 /**
  * nautilus_properties_item_get_name:
- * @item: the properties item
+ * @self: the properties item
  *
  * Returns: (transfer none): the name of this #NautilusPropertiesItem
  */
@@ -51,7 +51,7 @@ const char *nautilus_properties_item_get_name (NautilusPropertiesItem *self);
 
 /**
  * nautilus_properties_item_get_value:
- * @item: the properties item
+ * @self: the properties item
  *
  * Returns: (transfer none): the value of this #NautilusPropertiesItem
  */
