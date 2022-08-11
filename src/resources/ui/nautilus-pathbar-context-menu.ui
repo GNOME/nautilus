@@ -57,6 +57,13 @@
     <section id="background-extensions-section"/>
     <section>
       <item>
+        <attribute name="label" translatable="yes">Empty _Trash</attribute>
+        <attribute name="action">view.empty-trash</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">P_roperties</attribute>
         <attribute name="action">view.current-directory-properties</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
