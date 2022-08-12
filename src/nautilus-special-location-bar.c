@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "nautilus-dbus-launcher.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-enum-types.h"
 
@@ -46,6 +47,7 @@ enum
 enum
 {
     SPECIAL_LOCATION_SHARING_RESPONSE = 1,
+    SPECIAL_LOCATION_TRASH_RESPONSE = 2,
 };
 
 G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, ADW_TYPE_BIN)
@@ -56,6 +58,7 @@ on_info_bar_response (GtkInfoBar *infobar,
                       gpointer    user_data)
 {
     NautilusSpecialLocationBar *bar = user_data;
+    GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (bar));
 
     switch (bar->button_response)
     {
@@ -68,7 +71,20 @@ on_info_bar_response (GtkInfoBar *infobar,
             nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
                                          NAUTILUS_DBUS_LAUNCHER_SETTINGS,
                                          "Activate",
-                                         parameters, NULL);
+                                         parameters, GTK_WINDOW (window));
+        }
+        break;
+
+        case SPECIAL_LOCATION_TRASH_RESPONSE:
+        {
+            GVariant *parameters;
+
+            parameters = g_variant_new_parsed ("('launch-panel', [<('usage', @av [])>], "
+                                               "@a{sv} {})");
+            nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                         NAUTILUS_DBUS_LAUNCHER_SETTINGS,
+                                         "Activate",
+                                         parameters, GTK_WINDOW (window));
         }
         break;
 
@@ -77,6 +93,45 @@ on_info_bar_response (GtkInfoBar *infobar,
             g_assert_not_reached ();
         }
     }
+}
+
+static gchar *
+parse_old_files_age_preferences_value (void)
+{
+    guint old_files_age = g_settings_get_uint (gnome_privacy_preferences, "old-files-age");
+
+    switch (old_files_age)
+    {
+        case 0:
+        {
+            return g_strdup (_("Items in Trash older than 1 hour are automatically deleted"));
+        }
+
+        default:
+        {
+            return g_strdup_printf (ngettext ("Items in Trash older than %d day are automatically deleted",
+                                              "Items in Trash older than %d days are automatically deleted",
+                                              old_files_age),
+                                    old_files_age);
+        }
+    }
+}
+
+static void
+old_files_age_preferences_changed (GSettings *settings,
+                                   gchar     *key,
+                                   gpointer   user_data)
+{
+    NautilusSpecialLocationBar *bar;
+    g_autofree gchar *message = NULL;
+
+    g_assert (NAUTILUS_IS_SPECIAL_LOCATION_BAR (user_data));
+
+    bar = NAUTILUS_SPECIAL_LOCATION_BAR (user_data);
+
+    message = parse_old_files_age_preferences_value ();
+
+    gtk_label_set_text (GTK_LABEL (bar->label), message);
 }
 
 static void
@@ -107,6 +162,19 @@ set_special_location (NautilusSpecialLocationBar *bar,
             message = g_strdup (_("Turn on File Sharing to share the contents of this folder over the network."));
             button_label = _("Sharing Settings");
             bar->button_response = SPECIAL_LOCATION_SHARING_RESPONSE;
+        }
+        break;
+
+        case NAUTILUS_SPECIAL_LOCATION_TRASH:
+        {
+            message = parse_old_files_age_preferences_value ();
+            button_label = _("_Settings");
+            bar->button_response = SPECIAL_LOCATION_TRASH_RESPONSE;
+
+            g_signal_connect_object (gnome_privacy_preferences,
+                                     "changed::old-files-age",
+                                     G_CALLBACK (old_files_age_preferences_changed),
+                                     bar, 0);
         }
         break;
 

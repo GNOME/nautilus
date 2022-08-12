@@ -1102,6 +1102,34 @@ recursive_search_preferences_changed (GSettings *settings,
 }
 
 static void
+remove_old_trash_files_preferences_changed (GSettings *settings,
+                                            gchar     *key,
+                                            gpointer   callback_data)
+{
+    NautilusWindowSlot *self;
+    GFile *location;
+    g_autoptr (NautilusDirectory) directory = NULL;
+
+    g_assert (NAUTILUS_IS_WINDOW_SLOT (callback_data));
+
+    self = NAUTILUS_WINDOW_SLOT (callback_data);
+    location = nautilus_window_slot_get_current_location (self);
+    directory = nautilus_directory_get (location);
+
+    if (nautilus_directory_is_in_trash (directory))
+    {
+        if (g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files"))
+        {
+            nautilus_window_slot_setup_extra_location_widgets (self);
+        }
+        else
+        {
+            nautilus_window_slot_remove_extra_location_widgets (self);
+        }
+    }
+}
+
+static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     GApplication *app;
@@ -1117,6 +1145,11 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect_object (nautilus_preferences,
                              "changed::recursive-search",
                              G_CALLBACK (recursive_search_preferences_changed),
+                             self, 0);
+
+    g_signal_connect_object (gnome_privacy_preferences,
+                             "changed::remove-old-trash-files",
+                             G_CALLBACK (remove_old_trash_files_preferences_changed),
                              self, 0);
 
     self->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
@@ -2669,6 +2702,11 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
              nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_PUBLIC_SHARE))
     {
         nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
+    }
+    else if (nautilus_directory_is_in_trash (directory) &&
+             g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files"))
+    {
+        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_TRASH);
     }
 
     g_object_unref (scripts_file);
