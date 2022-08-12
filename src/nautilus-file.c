@@ -6924,6 +6924,7 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
 {
     guint item_count;
     gboolean count_unreadable;
+    g_autofree char *size_str = NULL;
 
     if (file == NULL)
     {
@@ -6946,10 +6947,11 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
         return NULL;
     }
 
-    return g_strdup_printf (ngettext ("%" G_GOFFSET_FORMAT " byte",
-                                      "%" G_GOFFSET_FORMAT " bytes",
+    size_str = g_strdup_printf ("%" G_GOFFSET_FORMAT, file->details->size);
+    return g_strdup_printf (ngettext ("%s byte",
+                                      "%s bytes",
                                       file->details->size),
-                            file->details->size);
+                            size_str);
 }
 
 
