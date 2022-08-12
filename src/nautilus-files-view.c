@@ -7610,10 +7610,6 @@ real_update_actions_state (NautilusFilesView *view)
                                  (selection_contains_recent || selection_contains_search ||
                                   selection_contains_starred));
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "new-folder");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
-
     item_opens_in_view = selection_count != 0;
 
     for (l = selection; l != NULL; l = l->next)
