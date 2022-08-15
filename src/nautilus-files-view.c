@@ -9655,7 +9655,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Return, GDK_ALT_MASK, "view.properties", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_a, GDK_CONTROL_MASK, "view.select-all", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_i, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.invert-selection", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_space, 0, "view.preview-selection", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK, "view.create-link", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK, "view.create-link-shortcut", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_m, GDK_CONTROL_MASK | GDK_SHIFT_MASK, "view.create-link-in-place", NULL);
@@ -9675,6 +9674,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
     GtkEventController *controller;
+    GtkShortcut *shortcut;
     gchar *templates_uri;
     GdkClipboard *clipboard;
     GApplication *app;
@@ -9834,6 +9834,23 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerator (app, "view.new-folder", "<control><shift>n");
     nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
     nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
+
+    /* This one should have been a keybinding, because it should trigger only
+     * when the view is focused. Unfortunately, children can override bindings,
+     * and such is the case of GtkListItemWidget which binds the spacebar to its
+     * `|listitem.select` action.
+     *
+     * So, we make it a local shortcut (like keybindings are), but using the
+     * capture phase instead, to trigger it first (keybindings use bubble phase).
+     */
+    shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_space, 0),
+                                 gtk_named_action_new ("view.preview-selection"));
+
+    controller = gtk_shortcut_controller_new ();
+    gtk_widget_add_controller (GTK_WIDGET (view), controller);
+    /* By default, :scope is GTK_SHORTCUT_SCOPE_LOCAL, so no need to set it. */
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
 
     priv->starred_cancellable = g_cancellable_new ();
 
