@@ -20,18 +20,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus 41.2\n"
+"Project-Id-Version: nautilus 43.0\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-10 09:19+0000\n"
-"PO-Revision-Date: 2022-08-10 19:26+0800\n"
-"Last-Translator: lumingzh <lumingzh@qq.com>\n"
+"POT-Creation-Date: 2022-08-15 09:49+0000\n"
+"PO-Revision-Date: 2022-08-15 14:16-0400\n"
+"Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: Gtranslator 42.0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.1.1\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -94,7 +94,7 @@ msgstr "搜索"
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:324
 #: src/nautilus-pathbar.c:372 src/gtk/nautilusgtkplacesview.ui:158
-#: src/gtk/nautilusgtkplacessidebar.c:1428
+#: src/gtk/nautilusgtkplacessidebar.c:1429
 msgid "Other Locations"
 msgstr "其他位置"
 
@@ -981,11 +981,11 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
 #: src/nautilus-pathbar.c:367 src/nautilus-shell-search-provider.c:330
-#: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1001
+#: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1002
 msgid "Home"
 msgstr "用户文件夹"
 
-#: src/nautilus-column-utilities.c:59 src/gtk/nautilusgtkplacessidebar.c:2335
+#: src/nautilus-column-utilities.c:59 src/gtk/nautilusgtkplacessidebar.c:2341
 msgid "Name"
 msgstr "名称"
 
@@ -1338,7 +1338,7 @@ msgid "File not found"
 msgstr "找不到文件"
 
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
-#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:990
+#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:991
 msgid "Starred"
 msgstr "已收藏"
 
@@ -1490,100 +1490,100 @@ msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u 个文件"
 
-#: src/nautilus-file.c:6949
+#: src/nautilus-file.c:6951
 #, c-format
-msgid "%lu byte"
-msgid_plural "%lu bytes"
-msgstr[0] "%lu 个字节"
+msgid "%s byte"
+msgid_plural "%s bytes"
+msgstr[0] "%s 个字节"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7359
+#: src/nautilus-file.c:7361
 msgid "? bytes"
 msgstr "？字节"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7371
+#: src/nautilus-file.c:7373
 msgid "? items"
 msgstr "？项"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:7380
+#: src/nautilus-file.c:7382
 msgid "Unknown type"
 msgstr "未知类型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7411
+#: src/nautilus-file.c:7413
 msgid "Unknown"
 msgstr "未知"
 
-#: src/nautilus-file.c:7449 src/nautilus-file.c:7457 src/nautilus-file.c:7516
+#: src/nautilus-file.c:7451 src/nautilus-file.c:7459 src/nautilus-file.c:7518
 msgid "Program"
 msgstr "程序"
 
-#: src/nautilus-file.c:7450
+#: src/nautilus-file.c:7452
 msgid "Audio"
 msgstr "音频"
 
-#: src/nautilus-file.c:7451
+#: src/nautilus-file.c:7453
 msgid "Font"
 msgstr "字体"
 
-#: src/nautilus-file.c:7452
+#: src/nautilus-file.c:7454
 msgid "Image"
 msgstr "图像"
 
-#: src/nautilus-file.c:7453
+#: src/nautilus-file.c:7455
 msgid "Archive"
 msgstr "归档"
 
-#: src/nautilus-file.c:7454
+#: src/nautilus-file.c:7456
 msgid "Markup"
 msgstr "标记"
 
-#: src/nautilus-file.c:7455 src/nautilus-file.c:7456
+#: src/nautilus-file.c:7457 src/nautilus-file.c:7458
 msgid "Text"
 msgstr "文本"
 
-#: src/nautilus-file.c:7458 src/nautilus-mime-actions.c:215
+#: src/nautilus-file.c:7460 src/nautilus-mime-actions.c:215
 msgid "Video"
 msgstr "视频"
 
-#: src/nautilus-file.c:7459
+#: src/nautilus-file.c:7461
 msgid "Contacts"
 msgstr "联系人"
 
-#: src/nautilus-file.c:7460
+#: src/nautilus-file.c:7462
 msgid "Calendar"
 msgstr "日历"
 
-#: src/nautilus-file.c:7461
+#: src/nautilus-file.c:7463
 msgid "Document"
 msgstr "文档"
 
-#: src/nautilus-file.c:7462 src/nautilus-mime-actions.c:189
+#: src/nautilus-file.c:7464 src/nautilus-mime-actions.c:189
 msgid "Presentation"
 msgstr "演示文稿"
 
-#: src/nautilus-file.c:7463 src/nautilus-mime-actions.c:197
+#: src/nautilus-file.c:7465 src/nautilus-mime-actions.c:197
 msgid "Spreadsheet"
 msgstr "电子表格"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7490
+#: src/nautilus-file.c:7492
 msgid "Other"
 msgstr "其他类型"
 
-#: src/nautilus-file.c:7518
+#: src/nautilus-file.c:7520
 msgid "Binary"
 msgstr "二进制文件"
 
-#: src/nautilus-file.c:7523
+#: src/nautilus-file.c:7525
 msgid "Folder"
 msgstr "文件夹"
 
-#: src/nautilus-file.c:7562
+#: src/nautilus-file.c:7564
 msgid "Link"
 msgstr "链接"
 
@@ -1592,18 +1592,18 @@ msgstr "链接"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7568 src/nautilus-file-operations.c:490
+#: src/nautilus-file.c:7570 src/nautilus-file-operations.c:490
 #, c-format
 msgid "Link to %s"
 msgstr "到 %s 的链接"
 
 # broken 表示其状态，已断开、已断->断开的。
-#: src/nautilus-file.c:7586 src/nautilus-file.c:7602 src/nautilus-file.c:7618
+#: src/nautilus-file.c:7588 src/nautilus-file.c:7604 src/nautilus-file.c:7620
 msgid "Link (broken)"
 msgstr "链接（已断）"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7858
+#: src/nautilus-file.c:7860
 #, c-format
 msgid "%s Free"
 msgstr "%s 剩余"
@@ -1986,7 +1986,7 @@ msgstr "正在将文件移动到回收站"
 msgid "Deleting Files"
 msgstr "正在删除文件"
 
-#: src/nautilus-file-operations.c:2846 src/gtk/nautilusgtkplacessidebar.c:2778
+#: src/nautilus-file-operations.c:2846 src/gtk/nautilusgtkplacessidebar.c:2784
 #, c-format
 msgid "Unable to eject %s"
 msgstr "无法弹出 %s"
@@ -2014,7 +2014,7 @@ msgstr "不清空回收站(_N)"
 
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-file-operations.c:3168 src/nautilus-files-view.c:6777
-#: src/gtk/nautilusgtkplacessidebar.c:2028
+#: src/gtk/nautilusgtkplacessidebar.c:2034
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "无法访问“%s”"
@@ -2642,7 +2642,7 @@ msgid "Unable to remove “%s”"
 msgstr "无法移除“%s”"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6837 src/gtk/nautilusgtkplacessidebar.c:2749
+#: src/nautilus-files-view.c:6837 src/gtk/nautilusgtkplacessidebar.c:2755
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "无法弹出“%s”"
@@ -2652,8 +2652,8 @@ msgid "Unable to stop drive"
 msgstr "无法停止驱动器"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6975 src/gtk/nautilusgtkplacessidebar.c:1990
-#: src/gtk/nautilusgtkplacessidebar.c:2978
+#: src/nautilus-files-view.c:6975 src/gtk/nautilusgtkplacessidebar.c:1996
+#: src/gtk/nautilusgtkplacessidebar.c:2984
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "无法启动“%s”"
@@ -2689,7 +2689,7 @@ msgstr "打开"
 
 #: src/nautilus-files-view.c:8110
 #: src/resources/ui/nautilus-files-view-context-menus.ui:146
-#: src/gtk/nautilusgtkplacessidebar.c:3391
+#: src/gtk/nautilusgtkplacessidebar.c:3397
 msgid "_Start"
 msgstr "启动(_S)"
 
@@ -2709,7 +2709,7 @@ msgstr "解锁驱动器(_N)"
 msgid "Stop Drive"
 msgstr "停止驱动器"
 
-#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3408
+#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3414
 msgid "_Safely Remove Drive"
 msgstr "安全移除驱动器(_S)"
 
@@ -3819,8 +3819,8 @@ msgstr "撤销(_R)"
 #: src/nautilus-properties-window.c:4327
 #: src/resources/ui/nautilus-app-chooser.ui:109
 #: src/resources/ui/nautilus-files-view-context-menus.ui:77
-#: src/gtk/nautilusgtkplacesview.c:1694 src/gtk/nautilusgtkplacessidebar.c:3187
-#: src/gtk/nautilusgtkplacessidebar.c:3298
+#: src/gtk/nautilusgtkplacesview.c:1694 src/gtk/nautilusgtkplacessidebar.c:3193
+#: src/gtk/nautilusgtkplacessidebar.c:3304
 msgid "_Open"
 msgstr "打开(_O)"
 
@@ -3879,7 +3879,7 @@ msgstr "选择时间…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:335 src/nautilus-trash-bar.c:224
-#: src/gtk/nautilusgtkplacessidebar.c:1044
+#: src/gtk/nautilusgtkplacessidebar.c:1045
 msgid "Trash"
 msgstr "回收站"
 
@@ -3889,11 +3889,11 @@ msgstr "将文件放入此文件夹并用作新文档的模板。"
 
 #: src/nautilus-special-location-bar.c:95
 msgid ""
-"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
-"\">Learn more…</a>"
+"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+"templates\">Learn more…</a>"
 msgstr ""
-"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
-"\">获取详情……</a>"
+"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+"templates\">获取详情……</a>"
 
 #: src/nautilus-special-location-bar.c:101
 msgid "Executable files in this folder will appear in the Scripts menu."
@@ -4054,7 +4054,7 @@ msgid_plural "%d files unstarred"
 msgstr[0] "已取消收藏 %d 个文件"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1310 src/gtk/nautilusgtkplacessidebar.c:893
+#: src/nautilus-window.c:1310 src/gtk/nautilusgtkplacessidebar.c:894
 #, c-format
 msgid "Open %s"
 msgstr "打开 %s"
@@ -4544,8 +4544,8 @@ msgstr "原文件名称"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:107
 #: src/resources/ui/nautilus-rename-file-popover.ui:42
-#: src/gtk/nautilusgtkplacessidebar.c:2341
-#: src/gtk/nautilusgtkplacessidebar.c:3334
+#: src/gtk/nautilusgtkplacessidebar.c:2347
+#: src/gtk/nautilusgtkplacessidebar.c:3340
 msgid "_Rename"
 msgstr "重命名(_R)"
 
@@ -4720,27 +4720,27 @@ msgid "_Open Scripts Folder"
 msgstr "打开脚本文件夹(_O)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:131
-#: src/gtk/nautilusgtkplacesview.c:1728 src/gtk/nautilusgtkplacessidebar.c:3356
+#: src/gtk/nautilusgtkplacesview.c:1728 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Mount"
 msgstr "挂载(_M)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:136
-#: src/gtk/nautilusgtkplacesview.c:1717 src/gtk/nautilusgtkplacessidebar.c:3365
+#: src/gtk/nautilusgtkplacesview.c:1717 src/gtk/nautilusgtkplacessidebar.c:3371
 msgid "_Unmount"
 msgstr "卸载(_U)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:141
-#: src/gtk/nautilusgtkplacessidebar.c:3372
+#: src/gtk/nautilusgtkplacessidebar.c:3378
 msgid "_Eject"
 msgstr "弹出(_E)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:151
-#: src/gtk/nautilusgtkplacessidebar.c:3406
+#: src/gtk/nautilusgtkplacessidebar.c:3412
 msgid "_Stop"
 msgstr "停止(_S)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:156
-#: src/gtk/nautilusgtkplacessidebar.c:3382
+#: src/gtk/nautilusgtkplacessidebar.c:3388
 msgid "_Detect Media"
 msgstr "检测介质(_D)"
 
@@ -4848,14 +4848,14 @@ msgid "Enter password…"
 msgstr "输入密码…"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacesview.c:1703 src/gtk/nautilusgtkplacessidebar.c:3202
-#: src/gtk/nautilusgtkplacessidebar.c:3315
+#: src/gtk/nautilusgtkplacesview.c:1703 src/gtk/nautilusgtkplacessidebar.c:3208
+#: src/gtk/nautilusgtkplacessidebar.c:3321
 msgid "Open in New _Window"
 msgstr "在新窗口中打开(_W)"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacesview.c:1698 src/gtk/nautilusgtkplacessidebar.c:3195
-#: src/gtk/nautilusgtkplacessidebar.c:3306
+#: src/gtk/nautilusgtkplacesview.c:1698 src/gtk/nautilusgtkplacessidebar.c:3201
+#: src/gtk/nautilusgtkplacessidebar.c:3312
 msgid "Open in New _Tab"
 msgstr "在新标签页中打开(_T)"
 
@@ -4975,7 +4975,7 @@ msgid "Show operations"
 msgstr "显示操作"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
-#: src/gtk/nautilusgtkplacessidebar.c:3430
+#: src/gtk/nautilusgtkplacessidebar.c:3436
 msgid "Properties"
 msgstr "属性"
 
@@ -5164,6 +5164,14 @@ msgstr "关于文件(_A)"
 msgid "Show sidebar"
 msgstr "显示侧边栏"
 
+#: src/resources/ui/nautilus-toolbar.ui:201
+msgid "Zoom out"
+msgstr "缩小"
+
+#: src/resources/ui/nautilus-toolbar.ui:211
+msgid "Zoom in"
+msgstr "放大"
+
 #. This is used to sort by name in the toolbar view menu
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:8
 msgctxt "Sort Criterion"
@@ -5306,13 +5314,13 @@ msgid_plural "%s / %s available"
 msgstr[0] "%s / %s 可用"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:490
-#: src/gtk/nautilusgtkplacessidebar.c:413
+#: src/gtk/nautilusgtkplacessidebar.c:414
 msgid "Disconnect"
 msgstr "断开连接"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:490
 #: src/gtk/nautilusgtkplacesviewrow.ui:53
-#: src/gtk/nautilusgtkplacessidebar.c:417
+#: src/gtk/nautilusgtkplacessidebar.c:418
 msgid "Unmount"
 msgstr "卸载"
 
@@ -5364,146 +5372,150 @@ msgstr "%s 不在书签列表中"
 msgid "%s already exists in the bookmarks list"
 msgstr "%s 已在书签列表中"
 
-#: src/gtk/nautilusgtkplacessidebar.c:415
+#: src/gtk/nautilusgtkplacessidebar.c:416
 msgid "Eject"
 msgstr "弹出"
 
-#: src/gtk/nautilusgtkplacessidebar.c:979
+#: src/gtk/nautilusgtkplacessidebar.c:980
 msgid "Recent"
 msgstr "最近"
 
-#: src/gtk/nautilusgtkplacessidebar.c:981
+#: src/gtk/nautilusgtkplacessidebar.c:982
 msgid "Recent files"
 msgstr "最近文件"
 
-#: src/gtk/nautilusgtkplacessidebar.c:992
+#: src/gtk/nautilusgtkplacessidebar.c:993
 msgid "Starred files"
 msgstr "收藏文件"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1003
+#: src/gtk/nautilusgtkplacessidebar.c:1004
 msgid "Open your personal folder"
 msgstr "打开您的个人文件夹"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1016
+#: src/gtk/nautilusgtkplacessidebar.c:1017
 msgid "Desktop"
 msgstr "桌面"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1018
+#: src/gtk/nautilusgtkplacessidebar.c:1019
 msgid "Open the contents of your desktop in a folder"
 msgstr "在文件夹中打开您的桌面内容"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1032
+#: src/gtk/nautilusgtkplacessidebar.c:1033
 msgid "Enter Location"
 msgstr "输入位置"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1034
+#: src/gtk/nautilusgtkplacessidebar.c:1035
 msgid "Manually enter a location"
 msgstr "手动输入一个位置"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1046
+#: src/gtk/nautilusgtkplacessidebar.c:1047
 msgid "Open the trash"
 msgstr "打开回收站"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1155
-#: src/gtk/nautilusgtkplacessidebar.c:1183
-#: src/gtk/nautilusgtkplacessidebar.c:1383
+#: src/gtk/nautilusgtkplacessidebar.c:1156
+#: src/gtk/nautilusgtkplacessidebar.c:1184
+#: src/gtk/nautilusgtkplacessidebar.c:1384
 #, c-format
 msgid "Mount and open “%s”"
 msgstr "挂载并打开“%s”"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1278
+#: src/gtk/nautilusgtkplacessidebar.c:1279
 msgid "Open the contents of the file system"
 msgstr "打开文件系统的内容"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1361
+#: src/gtk/nautilusgtkplacessidebar.c:1362
 msgid "New bookmark"
 msgstr "新建书签"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1363
+#: src/gtk/nautilusgtkplacessidebar.c:1364
 msgid "Add a new bookmark"
 msgstr "添加新的书签"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1429
+#: src/gtk/nautilusgtkplacessidebar.c:1430
 msgid "Show other locations"
 msgstr "显示其它位置"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/gtk/nautilusgtkplacessidebar.c:2026
+#: src/gtk/nautilusgtkplacessidebar.c:2032
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "解锁“%s”时出错"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2259
+#: src/gtk/nautilusgtkplacessidebar.c:2265
 msgid "This name is already taken"
 msgstr "该名称已被使用"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2720
+#: src/gtk/nautilusgtkplacessidebar.c:2726
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "无法停止“%s”"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2930
+#: src/gtk/nautilusgtkplacessidebar.c:2936
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "无法为媒体更改轮询“%s”"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3326
+#: src/gtk/nautilusgtkplacessidebar.c:3332
 msgid "_Add Bookmark"
 msgstr "添加书签(_A)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3330
+#: src/gtk/nautilusgtkplacessidebar.c:3336
 msgid "_Remove from Bookmarks"
 msgstr "从书签移除(_R)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3343
+#: src/gtk/nautilusgtkplacessidebar.c:3349
 msgid "Empty Trash"
 msgstr "清空回收站"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3393
+#: src/gtk/nautilusgtkplacessidebar.c:3399
 msgid "_Power On"
 msgstr "启动(_P)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3394
+#: src/gtk/nautilusgtkplacessidebar.c:3400
 msgid "_Connect Drive"
 msgstr "连接驱动器(_C)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3395
+#: src/gtk/nautilusgtkplacessidebar.c:3401
 msgid "_Start Multi-disk Device"
 msgstr "启动多磁盘设备(_S)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3396
+#: src/gtk/nautilusgtkplacessidebar.c:3402
 msgid "_Unlock Device"
 msgstr "解锁设备(_U)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3409
+#: src/gtk/nautilusgtkplacessidebar.c:3415
 msgid "_Disconnect Drive"
 msgstr "断开驱动器(_D)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3410
+#: src/gtk/nautilusgtkplacessidebar.c:3416
 msgid "_Stop Multi-disk Device"
 msgstr "停止多磁盘设备(_S)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3411
+#: src/gtk/nautilusgtkplacessidebar.c:3417
 msgid "_Lock Device"
 msgstr "锁定设备(_L)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3420
+#: src/gtk/nautilusgtkplacessidebar.c:3426
 msgid "Format…"
 msgstr "格式化…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3928
+#: src/gtk/nautilusgtkplacessidebar.c:3934
 msgid "Computer"
 msgstr "计算机"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3966
+#: src/gtk/nautilusgtkplacessidebar.c:3972
 msgid "Sidebar"
 msgstr "侧边栏"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3968
+#: src/gtk/nautilusgtkplacessidebar.c:3974
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "通用的快捷键、挂载点和书签列表。"
+
+#~ msgid "%"
+#~ msgid_plural "%"
+#~ msgstr[0] "%"
 
 #~ msgctxt "Title"
 #~ msgid "Unknown"
@@ -5788,14 +5800,8 @@ msgstr "通用的快捷键、挂载点和书签列表。"
 #~ msgid "Empty _Trash…"
 #~ msgstr "清空回收站(_T)…"
 
-#~ msgid "Zoom out"
-#~ msgstr "缩小"
-
 #~ msgid "Reset zoom"
 #~ msgstr "重置缩放"
-
-#~ msgid "Zoom in"
-#~ msgstr "放大"
 
 #, c-format
 #~ msgid "Unable to unmount “%s”"
