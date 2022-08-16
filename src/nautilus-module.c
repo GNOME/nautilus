@@ -211,7 +211,7 @@ nautilus_module_load_file (const char   *filename,
 }
 
 char *
-nautilus_module_get_installed_module_names ()
+nautilus_module_get_installed_module_names (void)
 {
     return g_strjoinv ("\n", installed_module_names);
 }

@@ -552,7 +552,7 @@ nautilus_starred_directory_class_init (NautilusFavoriteDirectoryClass *klass)
 }
 
 NautilusFavoriteDirectory *
-nautilus_starred_directory_new ()
+nautilus_starred_directory_new (void)
 {
     NautilusFavoriteDirectory *self;
 

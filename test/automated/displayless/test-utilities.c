@@ -3,7 +3,7 @@
 static gchar *nautilus_tmp_dir = NULL;
 
 const gchar *
-test_get_tmp_dir ()
+test_get_tmp_dir (void)
 {
     if (nautilus_tmp_dir == NULL)
     {
@@ -14,7 +14,7 @@ test_get_tmp_dir ()
 }
 
 void
-test_clear_tmp_dir ()
+test_clear_tmp_dir (void)
 {
     if (nautilus_tmp_dir != NULL)
     {

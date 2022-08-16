@@ -276,7 +276,7 @@ on_sorter_changed (GtkSorter       *sorter,
 }
 
 NautilusViewModel *
-nautilus_view_model_new ()
+nautilus_view_model_new (void)
 {
     return g_object_new (NAUTILUS_TYPE_VIEW_MODEL, NULL);
 }

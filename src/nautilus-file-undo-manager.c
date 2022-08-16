@@ -258,13 +258,13 @@ nautilus_file_undo_manager_get_state (void)
 
 
 gboolean
-nautilus_file_undo_manager_is_operating ()
+nautilus_file_undo_manager_is_operating (void)
 {
     return undo_singleton->is_operating;
 }
 
 NautilusFileUndoManager *
-nautilus_file_undo_manager_get ()
+nautilus_file_undo_manager_get (void)
 {
     return undo_singleton;
 }
