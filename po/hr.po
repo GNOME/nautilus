@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-15 09:49+0000\n"
-"PO-Revision-Date: 2022-08-15 12:36+0200\n"
+"POT-Creation-Date: 2022-08-16 07:02+0000\n"
+"PO-Revision-Date: 2022-08-17 13:16+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <hr@li.hr>\n"
 "Language: hr\n"
@@ -34,7 +34,7 @@ msgstr "Datoteke"
 #: data/org.gnome.Nautilus.appdata.xml.in.in:6
 #: data/org.gnome.Nautilus.desktop.in.in:4
 msgid "Access and organize files"
-msgstr "Pristupite i organizirajte datoteke"
+msgstr "Pristupite datotekama i organizirajte ih"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:8
 msgid ""
@@ -42,8 +42,8 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"Datoteke, isto tako poznat i kao Nautilus, je uobičajeni upravitelj datoteka "
-"za GNOME radno okruženje. Pruža jednostavan i integriran način upravljanja s "
+"Datoteke, još poznat i kao Nautilus, je uobičajeni upravitelj datoteka za "
+"GNOME radno okruženje. Pruža jednostavan i integriran način upravljanja "
 "vašim datotekama i pregledavanje vašeg datotečnog sustava."
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:12
@@ -54,11 +54,11 @@ msgid ""
 "applications. It has three views: Icon Grid, Icon List, and Tree List. Its "
 "functions can be extended with plugins and scripts."
 msgstr ""
-"Nautilus podržava sve osnovne funkcije upravitelja datotekama i još mnogo "
+"Nautilus podržava sve osnovne funkcije upravitelja datoteka i još mnogo "
 "toga. Može pretraživati i upravljati vašim datotekama i mapama, lokalno i "
 "putem mreže, čitati i pisati podatke na i s uklonjivih medija, pokretati "
-"skripte i aplikacije. Ima tri pogleda: pogled ikona, pogled popisa i pogled "
-"stabla. Njegove funkcije mogu se proširiti priključcima i skriptama."
+"skripte i aplikacije. Ima dva pogleda: pogled mreže i pogled popisa. Njegove "
+"funkcije mogu se proširiti priključcima i skriptama."
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2276
 msgid "The GNOME Project"
@@ -66,7 +66,7 @@ msgstr "GNOME projekt"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:38
 msgid "Tile View"
-msgstr "Popločani prikaz"
+msgstr "Pogled mreže"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:42
 msgid "List View"
@@ -107,7 +107,7 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"Ako je ovo postavljeno, tada će prozori Nautilus preglednika uvijek "
+"Ako je postavljeno na istina, tada će prozori Nautilus preglednika uvijek "
 "koristiti tekstovni unos za lokacijsku traku s alatima, umjesto trake s "
 "putanjom."
 
@@ -126,13 +126,13 @@ msgstr ""
 #: data/org.gnome.nautilus.gschema.xml:86
 msgid "Filter the search dates using either last used or last modified"
 msgstr ""
-"Filter pretražuje datume prema, posljednjem korištenju ili posljednjoj "
+"Filtar pretražuje datume prema, posljednjem korištenju ili posljednjoj "
 "promjeni"
 
 #: data/org.gnome.nautilus.gschema.xml:87
 msgid "Filter the search dates using either last used or last modified."
 msgstr ""
-"Filter pretražuje datume prema, posljednjem korištenju ili posljednjoj "
+"Filtar pretražuje datume prema, posljednjem korištenju ili posljednjoj "
 "promjeni."
 
 #: data/org.gnome.nautilus.gschema.xml:91
@@ -144,8 +144,8 @@ msgid ""
 "If set to true, then Nautilus will show a delete permanently context menu "
 "item to bypass the Trash."
 msgstr ""
-"Ako je odabrano, Nautilus će prikazati stavku izbornika trajnog brisanja za "
-"zaobilaženje premještanja u smeće."
+"Ako je postavljeno na istina, Nautilus će prikazati stavku izbornika trajnog "
+"brisanja za zaobilaženje premještanja u smeće."
 
 #: data/org.gnome.nautilus.gschema.xml:96
 msgid ""
@@ -160,8 +160,8 @@ msgid ""
 "If set to true, then Nautilus will show context menu items to create links "
 "from the copied or selected files."
 msgstr ""
-"Ako je odabrano, Nautilus će prikazati stavku izbornika za stvaranje "
-"poveznice s kopiranih ili odabranih datoteka."
+"Ako je postavljeno na istina, Nautilus će prikazati stavku izbornika za "
+"stvaranje poveznice s kopiranih ili odabranih datoteka."
 
 #: data/org.gnome.nautilus.gschema.xml:102
 msgid "When to show number of items in a folder"
@@ -303,10 +303,10 @@ msgid ""
 "be sorted from “z” to “a”; if sorted by size, instead of being incrementally "
 "they will be sorted decrementally."
 msgstr ""
-"Ako je odabrano, datoteke u novim prozorima biti će poredane u obrnutom "
-"poretku. npr. ako su poredane po nazivu, onda umjesto poredavanja datoteka "
-"od \"a\" do \"ž\", biti će poredane od \"ž\" do \"a\". Ako su poredane po "
-"rastućoj veličini, tada će biti poredane padajući."
+"Ako je postavljeno na istina, datoteke u novim prozorima biti će poredane u "
+"obrnutom poretku. npr. ako su poredane po nazivu, onda umjesto poredavanja "
+"datoteka od \"a\" do \"ž\", biti će poredane od \"ž\" do \"a\". Ako su "
+"poredane po rastućoj veličini, tada će biti poredane padajući."
 
 #: data/org.gnome.nautilus.gschema.xml:163
 msgid "Default folder viewer"
@@ -356,8 +356,8 @@ msgid ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout."
 msgstr ""
-"Ako je omogućeno, kada se obavlja radnja povlačenja i ispuštanja mapa iznad "
-"koje se lebdi će se automatski otvoriti nakon isteka vremena."
+"Ako je postavljeno na istina, kada se obavlja radnja povlačenja i ispuštanja "
+"mapa iznad koje se lebdi će se automatski otvoriti nakon isteka vremena."
 
 #: data/org.gnome.nautilus.gschema.xml:183
 msgid ""
@@ -373,9 +373,9 @@ msgid ""
 "name. This toggles the default active state, which can still be overridden "
 "in the search popover"
 msgstr ""
-"Ako je omogućeno, Nautilus će prikazati sadržaj datoteke pokraj naziva. To "
-"uključuje zadano aktivno stanje, koje se može zaobići u skočnom prozoru "
-"pretrage"
+"Ako je postavljeno na istina, Nautilus će prikazati sadržaj datoteke pokraj "
+"naziva. To uključuje zadano aktivno stanje, koje se može zaobići u skočnom "
+"prozoru pretrage"
 
 #: data/org.gnome.nautilus.gschema.xml:191
 msgid "Default format for compressing files"
@@ -453,8 +453,8 @@ msgstr "Prikaži adresnu traku u novim prozorima"
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
-"Ako je postavljeno, u novotvorenim prozorima će se prikazivati traka za unos "
-"adrese."
+"Ako je postavljeno na istina, u novotvorenim prozorima će se prikazivati "
+"traka za unos adrese."
 
 #: eel/eel-stock-dialogs.c:197
 msgid "You can stop this operation by clicking cancel."
