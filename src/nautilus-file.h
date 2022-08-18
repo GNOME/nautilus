@@ -86,26 +86,6 @@ typedef enum {
 
 #define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 32
 
-/* Standard Drag & Drop types. */
-typedef enum {
-	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
-	NAUTILUS_ICON_DND_URI_LIST,
-	NAUTILUS_ICON_DND_NETSCAPE_URL,
-	NAUTILUS_ICON_DND_TEXT,
-	NAUTILUS_ICON_DND_XDNDDIRECTSAVE,
-	NAUTILUS_ICON_DND_RAW,
-	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
-} NautilusIconDndTargetType;
-
-/* Item of the drag selection list */
-typedef struct {
-	NautilusFile *file;
-	char *uri;
-	gboolean got_icon_position;
-	int icon_x, icon_y;
-	int icon_width, icon_height;
-} NautilusDragSelectionItem;
-
 /* Emblems sometimes displayed for NautilusFiles. Do not localize. */
 #define NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link"
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "unreadable"
@@ -503,16 +483,6 @@ GList *                 nautilus_file_list_filter                       (GList  
                                                                          NautilusFileFilterFunc          filter_function,
                                                                          gpointer                        user_data);
 gboolean                nautilus_file_list_are_all_folders              (const GList                    *files);
-/* DND */
-gboolean                nautilus_drag_can_accept_item                   (NautilusFile                   *drop_target_item,
-                                                                         const char                     *item_uri);
-
-gboolean                nautilus_drag_can_accept_items                  (NautilusFile                   *drop_target_item,
-                                                                         const GList                    *items);
-
-gboolean                nautilus_drag_can_accept_info                   (NautilusFile                   *drop_target_item,
-                                                                         NautilusIconDndTargetType       drag_type,
-                                                                         const GList                    *items);
 
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);

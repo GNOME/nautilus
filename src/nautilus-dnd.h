@@ -15,13 +15,6 @@
 
 #define HOVER_TIMEOUT 500
 
-/* Drag & Drop target names. */
-#define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE	"x-special/gnome-icon-list"
-#define NAUTILUS_ICON_DND_URI_LIST_TYPE		"text/uri-list"
-#define NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE	"_NETSCAPE_URL"
-#define NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE	"application/x-rootwindow-drop"
-#define NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE	"XdndDirectSave0" /* XDS Protocol Type */
-#define NAUTILUS_ICON_DND_RAW_TYPE	"application/octet-stream"
 #define NAUTILUS_DRAG_SURFACE_ICON_SIZE 64
 
 GdkDragAction      nautilus_drag_drop_action_ask                 (GtkWidget        *widget,
