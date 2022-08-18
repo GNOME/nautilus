@@ -7923,7 +7923,7 @@ real_update_actions_state (NautilusFilesView *view)
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "unstar");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), show_unstar);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), show_unstar && selection_contains_starred);
 }
 
 /* Convenience function to be called when updating menus,
