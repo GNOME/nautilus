@@ -545,6 +545,7 @@ on_item_drag_prepare (GtkDragSource *source,
 {
     NautilusViewCell *cell = user_data;
     NautilusListBase *self = NAUTILUS_LIST_BASE (nautilus_view_cell_get_view (cell));
+    GtkWidget *view_ui;
     g_autolist (NautilusFile) selection = NULL;
     g_autoslist (GFile) file_list = NULL;
     g_autoptr (GdkPaintable) paintable = NULL;
@@ -577,6 +578,19 @@ on_item_drag_prepare (GtkDragSource *source,
 
     scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     paintable = get_paintable_for_drag_selection (selection, scale_factor);
+
+    view_ui = NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
+    if (GTK_IS_GRID_VIEW (view_ui))
+    {
+        x = x * NAUTILUS_DRAG_SURFACE_ICON_SIZE / nautilus_list_base_get_icon_size (self);
+        y = y * NAUTILUS_DRAG_SURFACE_ICON_SIZE / nautilus_list_base_get_icon_size (self);
+    }
+    else
+    {
+        x = 0;
+        y = 0;
+    }
+
     gtk_drag_source_set_icon (source, paintable, x, y);
 
     return gdk_content_provider_new_typed (GDK_TYPE_FILE_LIST, file_list);
