@@ -932,10 +932,10 @@ places_sidebar_drag_action_ask_cb (NautilusGtkPlacesSidebar *sidebar,
 }
 #endif
 static GList *
-build_uri_list_from_gfile_list (GList *file_list)
+build_uri_list_from_gfile_list (GSList *file_list)
 {
     GList *result;
-    GList *l;
+    GSList *l;
 
     result = NULL;
 
@@ -955,7 +955,7 @@ build_uri_list_from_gfile_list (GList *file_list)
 static void
 places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
                                      GFile                    *dest_file,
-                                     GList                    *source_file_list,
+                                     GSList                   *source_file_list,
                                      GdkDragAction             action,
                                      gpointer                  user_data)
 {
