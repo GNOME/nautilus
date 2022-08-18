@@ -204,8 +204,7 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
         }
 
         target_location = nautilus_file_get_location (target_file);
-        if (g_file_equal (target_location, dropped) ||
-            g_file_has_parent (dropped, target_location))
+        if (g_file_equal (target_location, dropped))
         {
             return 0;
         }

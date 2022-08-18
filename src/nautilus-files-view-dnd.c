@@ -350,11 +350,21 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
                                               GdkDragAction      action)
 {
     g_autofree char *container_uri = NULL;
+    g_autoptr (GFile) source_location = g_file_new_for_uri (source_uri_list->data);
+    g_autoptr (GFile) target_location = g_file_new_for_uri (target_uri);
 
     if (target_uri == NULL)
     {
         container_uri = nautilus_files_view_get_backing_uri (view);
         g_assert (container_uri != NULL);
+    }
+    if (g_file_has_parent (source_location, target_location) &&
+        action & GDK_ACTION_MOVE)
+    {
+        /* By default dragging to the same directory is allowed so that
+         * users can duplicate a file using the CTRL modifier key.  Prevent
+         * an accidental MOVE, by rejecting what would be an error anyways. */
+        return;
     }
 
     if (action == GDK_ACTION_ASK)
