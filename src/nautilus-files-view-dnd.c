@@ -349,9 +349,8 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
                                               const char        *target_uri,
                                               GdkDragAction      action)
 {
-    char *container_uri;
+    g_autofree char *container_uri = NULL;
 
-    container_uri = NULL;
     if (target_uri == NULL)
     {
         container_uri = nautilus_files_view_get_backing_uri (view);
@@ -378,8 +377,6 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
     nautilus_files_view_move_copy_items (view, source_uri_list,
                                          target_uri != NULL ? target_uri : container_uri,
                                          action);
-
-    g_free (container_uri);
 }
 
 void
