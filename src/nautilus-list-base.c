@@ -263,6 +263,12 @@ set_focus_item (NautilusListBase *self,
                                 FALSE, FALSE);
 }
 
+static guint
+nautilus_list_base_get_icon_size (NautilusListBase *self)
+{
+    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_icon_size (self);
+}
+
 /* GtkListBase changes selection only with the primary button, and only after
  * release. But we need to anticipate selection earlier if we are to activate it
  * or open its context menu. This helper should be used in these situations if
@@ -987,12 +993,6 @@ nautilus_list_base_scroll_to_item (NautilusListBase *self,
                                    guint             position)
 {
     NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->scroll_to_item (self, position);
-}
-
-static guint
-nautilus_list_base_get_icon_size (NautilusListBase *self)
-{
-    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_icon_size (self);
 }
 
 static GtkWidget *
