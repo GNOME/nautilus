@@ -22,6 +22,7 @@
 #define NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE	"application/x-rootwindow-drop"
 #define NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE	"XdndDirectSave0" /* XDS Protocol Type */
 #define NAUTILUS_ICON_DND_RAW_TYPE	"application/octet-stream"
+#define NAUTILUS_DRAG_SURFACE_ICON_SIZE 64
 
 GdkDragAction      nautilus_drag_drop_action_ask                 (GtkWidget        *widget,
                                                                   GdkDragAction     possible_actions);

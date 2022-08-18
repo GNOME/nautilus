@@ -223,7 +223,6 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
 }
 
 #define MAX_DRAWN_DRAG_ICONS 10
-#define NAUTILUS_DRAG_SURFACE_ICON_SIZE 64
 
 GdkPaintable *
 get_paintable_for_drag_selection (GList *selection,
