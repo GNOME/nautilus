@@ -91,7 +91,7 @@ typedef struct
     guint previewer_selection_id;
 } NautilusApplicationPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, ADW_TYPE_APPLICATION);
 
 void
 nautilus_application_set_accelerator (GApplication *app,
@@ -791,7 +791,7 @@ action_kill (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
 {
-    GtkApplication *application = user_data;
+    AdwApplication *application = user_data;
 
     /* we have been asked to force quit */
     g_application_quit (G_APPLICATION (application));
@@ -1054,40 +1054,6 @@ nautilus_application_init (NautilusApplication *self)
     nautilus_clipboard_register ();
 }
 
-static void
-setup_theme_extensions (void)
-{
-    static GtkCssProvider *provider = NULL;
-    static GtkCssProvider *permanent_provider = NULL;
-    GdkDisplay *display;
-
-    display = gdk_display_get_default ();
-
-    /* CSS that themes can override */
-    if (provider == NULL)
-    {
-        provider = gtk_css_provider_new ();
-        gtk_css_provider_load_from_resource (provider, "/org/gnome/nautilus/css/Adwaita.css");
-        gtk_style_context_add_provider_for_display (display,
-                                                    GTK_STYLE_PROVIDER (provider),
-                                                    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    }
-
-    /* CSS we want to always load for any theme */
-    if (permanent_provider == NULL)
-    {
-        permanent_provider = gtk_css_provider_new ();
-        gtk_css_provider_load_from_resource (permanent_provider, "/org/gnome/nautilus/css/nautilus.css");
-        /* The behavior of two style providers with the same priority is
-         * undefined and gtk happens to prefer the provider that got added last.
-         * Use a higher priority here to avoid this problem.
-         */
-        gtk_style_context_add_provider_for_display (display,
-                                                    GTK_STYLE_PROVIDER (permanent_provider),
-                                                    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
-    }
-}
-
 NautilusApplication *
 nautilus_application_get_default (void)
 {
@@ -1180,11 +1146,7 @@ nautilus_application_startup_common (NautilusApplication *self)
      */
     G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
 
-    adw_init ();
-
     gtk_window_set_default_icon_name (APPLICATION_ID);
-
-    setup_theme_extensions ();
 
     /* initialize preferences and create the global GSettings objects */
     nautilus_global_preferences_init ();

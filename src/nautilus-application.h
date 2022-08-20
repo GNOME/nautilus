@@ -20,18 +20,16 @@
 
 #pragma once
 
-#include <gdk/gdk.h>
-#include <gio/gio.h>
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 #include "nautilus-types.h"
 
 G_BEGIN_DECLS
 #define NAUTILUS_TYPE_APPLICATION (nautilus_application_get_type())
-G_DECLARE_DERIVABLE_TYPE (NautilusApplication, nautilus_application, NAUTILUS, APPLICATION, GtkApplication)
+G_DECLARE_DERIVABLE_TYPE (NautilusApplication, nautilus_application, NAUTILUS, APPLICATION, AdwApplication)
 
 struct _NautilusApplicationClass {
-	GtkApplicationClass parent_class;
+	AdwApplicationClass parent_class;
 
         void  (*open_location_full) (NautilusApplication     *application,
                                      GFile                   *location,
