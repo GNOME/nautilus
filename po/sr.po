@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-13 11:26+0000\n"
-"PO-Revision-Date: 2022-08-13 17:09+0200\n"
+"POT-Creation-Date: 2022-08-16 07:02+0000\n"
+"PO-Revision-Date: 2022-08-20 14:42+0200\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
 "Language-Team: српски <gnome-sr@googlegroups.org>\n"
 "Language: sr\n"
@@ -1156,11 +1156,11 @@ msgstr "Датум када је последњи пут корисник при
 
 #: src/nautilus-column-utilities.c:166 src/nautilus-properties-window.c:783
 msgid "Star"
-msgstr "Звездица"
+msgstr "Звезда"
 
 #: src/nautilus-column-utilities.c:167
 msgid "Shows if file is starred."
-msgstr "Приказује да ли је датотека обележена звездицом."
+msgstr "Приказује да ли је датотека обележена звездом."
 
 #: src/nautilus-column-utilities.c:212
 msgid "Trashed On"
@@ -1410,7 +1410,7 @@ msgstr "Датотека није пронађена"
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
 #: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:991
 msgid "Starred"
-msgstr "Са звездицом"
+msgstr "Са звездом"
 
 #. Translators: Time in 24h format
 #: src/nautilus-file.c:5463
@@ -1569,102 +1569,103 @@ msgstr[1] "%'u датотеке"
 msgstr[2] "%'u датотека"
 msgstr[3] "једна датотека"
 
-#: src/nautilus-file.c:6949
-msgid "%"
-msgid_plural "%"
-msgstr[0] "%"
-msgstr[1] "%"
-msgstr[2] "%"
-msgstr[3] "%"
+#: src/nautilus-file.c:6951
+#, c-format
+msgid "%s byte"
+msgid_plural "%s bytes"
+msgstr[0] "%s бајт"
+msgstr[1] "%s бајта"
+msgstr[2] "%s бајтова"
+msgstr[3] "%s бајт"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7359
+#: src/nautilus-file.c:7361
 msgid "? bytes"
 msgstr "? бајтова"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7371
+#: src/nautilus-file.c:7373
 msgid "? items"
 msgstr "? ставки"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:7380
+#: src/nautilus-file.c:7382
 msgid "Unknown type"
 msgstr "Непозната врста"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7411
+#: src/nautilus-file.c:7413
 msgid "Unknown"
 msgstr "Непознато"
 
-#: src/nautilus-file.c:7449 src/nautilus-file.c:7457 src/nautilus-file.c:7516
+#: src/nautilus-file.c:7451 src/nautilus-file.c:7459 src/nautilus-file.c:7518
 msgid "Program"
 msgstr "Програм"
 
-#: src/nautilus-file.c:7450
+#: src/nautilus-file.c:7452
 msgid "Audio"
 msgstr "Звук"
 
-#: src/nautilus-file.c:7451
+#: src/nautilus-file.c:7453
 msgid "Font"
 msgstr "Фонт"
 
-#: src/nautilus-file.c:7452
+#: src/nautilus-file.c:7454
 msgid "Image"
 msgstr "Слика"
 
-#: src/nautilus-file.c:7453
+#: src/nautilus-file.c:7455
 msgid "Archive"
 msgstr "Архива"
 
-#: src/nautilus-file.c:7454
+#: src/nautilus-file.c:7456
 msgid "Markup"
 msgstr "Маркап текст"
 
-#: src/nautilus-file.c:7455 src/nautilus-file.c:7456
+#: src/nautilus-file.c:7457 src/nautilus-file.c:7458
 msgid "Text"
 msgstr "Текст"
 
-#: src/nautilus-file.c:7458 src/nautilus-mime-actions.c:215
+#: src/nautilus-file.c:7460 src/nautilus-mime-actions.c:215
 msgid "Video"
 msgstr "Видео"
 
-#: src/nautilus-file.c:7459
+#: src/nautilus-file.c:7461
 msgid "Contacts"
 msgstr "Контакти"
 
-#: src/nautilus-file.c:7460
+#: src/nautilus-file.c:7462
 msgid "Calendar"
 msgstr "Календар"
 
-#: src/nautilus-file.c:7461
+#: src/nautilus-file.c:7463
 msgid "Document"
 msgstr "Документ"
 
-#: src/nautilus-file.c:7462 src/nautilus-mime-actions.c:189
+#: src/nautilus-file.c:7464 src/nautilus-mime-actions.c:189
 msgid "Presentation"
 msgstr "Презентација"
 
-#: src/nautilus-file.c:7463 src/nautilus-mime-actions.c:197
+#: src/nautilus-file.c:7465 src/nautilus-mime-actions.c:197
 msgid "Spreadsheet"
 msgstr "Табела"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7490
+#: src/nautilus-file.c:7492
 msgid "Other"
 msgstr "Остали"
 
-#: src/nautilus-file.c:7518
+#: src/nautilus-file.c:7520
 msgid "Binary"
 msgstr "Бинарни објекат"
 
-#: src/nautilus-file.c:7523
+#: src/nautilus-file.c:7525
 msgid "Folder"
 msgstr "Фасцикла"
 
-#: src/nautilus-file.c:7562
+#: src/nautilus-file.c:7564
 msgid "Link"
 msgstr "Веза"
 
@@ -1675,19 +1676,19 @@ msgstr "Веза"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7568 src/nautilus-file-operations.c:490
+#: src/nautilus-file.c:7570 src/nautilus-file-operations.c:490
 #, c-format
 msgid "Link to %s"
 msgstr "Веза ка %s"
 
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # Не показује на право место
-#: src/nautilus-file.c:7586 src/nautilus-file.c:7602 src/nautilus-file.c:7618
+#: src/nautilus-file.c:7588 src/nautilus-file.c:7604 src/nautilus-file.c:7620
 msgid "Link (broken)"
 msgstr "Веза (поломљена)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7858
+#: src/nautilus-file.c:7860
 #, c-format
 msgid "%s Free"
 msgstr "%s слободно"
@@ -3288,36 +3289,36 @@ msgstr "_Понови серијско преименовање"
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
-msgstr[0] "Уклони звездицу са %d датотеке"
-msgstr[1] "Уклони звездицу са %d датотеке"
-msgstr[2] "Уклони звездицу са %d датотека"
-msgstr[3] "Уклони звездицу са датотеке"
+msgstr[0] "Уклони звезду са %d датотеке"
+msgstr[1] "Уклони звезду са %d датотеке"
+msgstr[2] "Уклони звезду са %d датотека"
+msgstr[3] "Уклони звезду са датотеке"
 
 #: src/nautilus-file-undo-operations.c:1396
 #: src/nautilus-file-undo-operations.c:1405
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
-msgstr[0] "Додај звездицу на %d датотеку"
-msgstr[1] "Додај звездицу на %d датотеку"
-msgstr[2] "Додај звездицу на %d датотеку"
-msgstr[3] "Додај звездицу на датотеку"
+msgstr[0] "Додај звезду на %d датотеку"
+msgstr[1] "Додај звезду на %d датотеку"
+msgstr[2] "Додај звезду на %d датотеку"
+msgstr[3] "Додај звезду на датотеку"
 
 #: src/nautilus-file-undo-operations.c:1400
 msgid "_Undo Starring"
-msgstr "_Опозови додавање звездице"
+msgstr "_Опозови додавање звезде"
 
 #: src/nautilus-file-undo-operations.c:1401
 msgid "_Redo Starring"
-msgstr "_Понови додавање звездице"
+msgstr "_Понови додавање звезде"
 
 #: src/nautilus-file-undo-operations.c:1413
 msgid "_Undo Unstarring"
-msgstr "_Опозови уклањање звездице"
+msgstr "_Опозови уклањање звезде"
 
 #: src/nautilus-file-undo-operations.c:1414
 msgid "_Redo Unstarring"
-msgstr "_Понови уклањање звездице"
+msgstr "_Понови уклањање звезде"
 
 #: src/nautilus-file-undo-operations.c:1611
 #, c-format
@@ -4082,10 +4083,8 @@ msgid "Empty folder"
 msgstr "Празна фасцикла"
 
 #: src/nautilus-properties-window.c:2162
-#, fuzzy
-#| msgid "(some contents unreadable)"
 msgid "Contents unreadable"
-msgstr "(део садржаја је нечитљив)"
+msgstr "Садржај је нечитљив"
 
 #: src/nautilus-properties-window.c:2174
 #, c-format
@@ -4209,17 +4208,14 @@ msgid "Executable files in this folder will appear in the Scripts menu."
 msgstr "Датотеке у овој фасцикли ће се појавити у изборнику „Скрипте“."
 
 #: src/nautilus-special-location-bar.c:107
-#, fuzzy
-#| msgid "Unable to display the contents of this folder."
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network."
-msgstr "Не могу да прикажем садржај ове фасцикле."
+msgstr ""
+"Укључите Дељење датотека да бисте поделили садржај ове фасцикле на мрежи."
 
 #: src/nautilus-special-location-bar.c:108
-#, fuzzy
-#| msgid "_Settings"
 msgid "Sharing Settings"
-msgstr "По_дешавања"
+msgstr "Подешавања дељења"
 
 #: src/nautilus-toolbar.c:167 src/resources/ui/nautilus-toolbar.ui:32
 msgid "_Undo"
@@ -4364,10 +4360,9 @@ msgstr "Напред"
 
 #. Translators: only one item has been deleted and %s is its name.
 #: src/nautilus-window.c:1180
-#, fuzzy, c-format
-#| msgid "Move “%s” to trash"
+#, c-format
 msgid "“%s” moved to trash"
-msgstr "Премештам „%s“ у смеће"
+msgstr "Ставка „%s“ премештена у смеће"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
@@ -4384,7 +4379,7 @@ msgstr[3] "Преостала је једна датотека за брисањ
 #: src/nautilus-window.c:1208
 #, c-format
 msgid "“%s” unstarred"
-msgstr "Уклоњена је звездица са ставке „%s“"
+msgstr "Уклоњена је звезда са ставке „%s“"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
@@ -4392,10 +4387,10 @@ msgstr "Уклоњена је звездица са ставке „%s“"
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
-msgstr[0] "Уклоњена је звездица са %d датотеке"
-msgstr[1] "Уклоњена је звездица са %d датотеке"
-msgstr[2] "Уклоњена је звездица са %d датотеке"
-msgstr[3] "Уклоњена је звездица са датотеке"
+msgstr[0] "Уклоњена је звезда са %d датотеке"
+msgstr[1] "Уклоњена је звезда са %d датотеке"
+msgstr[2] "Уклоњена је звезда са %d датотеке"
+msgstr[3] "Уклоњена је звезда са датотеке"
 
 #. translators: %s is the name of a cloud provider for files
 #: src/nautilus-window.c:1310 src/gtk/nautilusgtkplacessidebar.c:894
@@ -4596,7 +4591,7 @@ msgstr "Отвори у новом прозору"
 #: src/resources/gtk/help-overlay.ui:107
 msgctxt "shortcut window"
 msgid "Open item location (search and recent only)"
-msgstr "Отвори локацију ставке (само претрага и скорашње)"
+msgstr "Отвори пута ставке (само претрага и недавно)"
 
 #: src/resources/gtk/help-overlay.ui:114
 msgctxt "shortcut window"
@@ -4744,19 +4739,14 @@ msgid "Grid view"
 msgstr "Прикажи као мрежу"
 
 #: src/resources/gtk/help-overlay.ui:314
-#, fuzzy
-#| msgid "Parent folder"
 msgctxt "shortcut window"
 msgid "Expand folder"
-msgstr "Родитељска фасцикла"
+msgstr "Ширење фасцикле"
 
 #: src/resources/gtk/help-overlay.ui:321
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create folder"
 msgctxt "shortcut window"
 msgid "Collapse folder"
-msgstr "Направи фасциклу"
+msgstr "Скупљање фасцикле"
 
 #: src/resources/gtk/help-overlay.ui:330
 msgctxt "shortcut window"
@@ -4829,10 +4819,8 @@ msgid "Show item properties"
 msgstr "Прикажи својства ставке"
 
 #: src/resources/ui/nautilus-app-chooser.ui:46
-#, fuzzy
-#| msgid "Choose another application with which to open the selected item"
 msgid "Choose an application to open the selected files."
-msgstr "Изаберите неки други програм за отварање изабране ставке"
+msgstr "Изабери програм за отварање изабраних датотека."
 
 #: src/resources/ui/nautilus-app-chooser.ui:80
 msgid "Always use for this file type"
@@ -4936,10 +4924,8 @@ msgid "Replace the current List Columns settings with the default settings"
 msgstr "Враћа подешавања прегледа у виду списка на подразумеване вредности"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
-#, fuzzy
-#| msgid "Create Archive"
 msgid "Create Compressed Archive"
-msgstr "Направи архиву"
+msgstr "Направи запаковану архиву"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:24
 msgid "Archive name"
@@ -5000,29 +4986,22 @@ msgstr "Нови _документ"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:66
 #: src/resources/ui/nautilus-files-view-context-menus.ui:99
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:29
-#, fuzzy
-#| msgid "Open With"
 msgid "Open _With…"
-msgstr "Отвори програмом"
+msgstr "От_вори помоћу…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:19
 #: src/resources/ui/nautilus-files-view-context-menus.ui:104
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:33
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open in new tab"
 msgid "Open in Consol_e"
-msgstr "Отвори у новом језичку"
+msgstr "Отвори у конзол_и"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:25
 msgid "_Paste"
 msgstr "_Убаци"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:29
-#, fuzzy
-#| msgid "Create _Link"
 msgid "Paste as _Link"
-msgstr "Направи ве_зу"
+msgstr "У_баци као везу"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:34
 msgid "Select _All"
@@ -5041,10 +5020,8 @@ msgid "P_roperties"
 msgstr "Осо_бине"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:56
-#, fuzzy
-#| msgid "Extract"
 msgid "_Extract"
-msgstr "Распакуј"
+msgstr "Распак_уј"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:61
 msgid "E_xtract to…"
@@ -5133,10 +5110,8 @@ msgid "C_ompress…"
 msgstr "_Запакуј…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:200
-#, fuzzy
-#| msgid "Set as _Background"
 msgid "Set as Background…"
-msgstr "Постави за _позадину"
+msgstr "Постави за позадину…"
 
 #. Translators: This is the transitive verb meaning 'to send via email' (e.g. 'email this document to Angela).
 #: src/resources/ui/nautilus-files-view-context-menus.ui:205
@@ -5158,7 +5133,7 @@ msgstr "_Врати из смећа"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:235
 msgid "_Remove from Recent"
-msgstr "Уклони из скорашњег"
+msgstr "Уклони из недавно_г"
 
 #: src/resources/ui/nautilus-files-view-select-items.ui:5
 msgid "Select Items Matching"
@@ -5186,20 +5161,16 @@ msgstr "Иди напред"
 
 # bug: plural-forms?
 #: src/resources/ui/nautilus-list-view-column-editor.ui:15
-#, fuzzy
-#| msgid "%s Visible Columns"
 msgid "Visible Columns"
-msgstr "%s — приказане колоне"
+msgstr "Видљиве колоне"
 
 #: src/resources/ui/nautilus-list-view-column-editor.ui:30
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Изаберите додатне податке за приказ у овој фасцикли:"
 
 #: src/resources/ui/nautilus-name-cell.ui:83
-#, fuzzy
-#| msgid "Full Text Search:"
 msgid "Full text match"
-msgstr "Претрага целог текста:"
+msgstr "Поклапање тачног текста"
 
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
 msgid "Password Required"
@@ -5239,10 +5210,8 @@ msgid "Add to _Bookmarks"
 msgstr "Додај у о_бележиваче"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:53
-#, fuzzy
-#| msgid "Location"
 msgid "_Copy Location"
-msgstr "Место"
+msgstr "_Копирај путању"
 
 #: src/resources/ui/nautilus-preferences-window.ui:9
 #: src/resources/ui/nautilus-preferences-window.ui:13
@@ -5310,10 +5279,8 @@ msgstr ""
 "Више података ће бити приказано када увећате."
 
 #: src/resources/ui/nautilus-preferences-window.ui:130
-#, fuzzy
-#| msgid "Icon View Captions"
 msgid "Grid View Captions"
-msgstr "Натписи у прегледу иконица"
+msgstr "Натписи приказа мреже"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:135
@@ -5350,10 +5317,8 @@ msgid "Properties"
 msgstr "Особине"
 
 #: src/resources/ui/nautilus-properties-window.ui:121
-#, fuzzy
-#| msgid "Filesystem type"
 msgid "Unknown Filesystem"
-msgstr "Врста система датотека"
+msgstr "Непознати систем датотека"
 
 #: src/resources/ui/nautilus-properties-window.ui:214
 msgid "total"
@@ -5375,20 +5340,14 @@ msgid "Open in Disks"
 msgstr "Отвори унутар Дискова"
 
 #: src/resources/ui/nautilus-properties-window.ui:336
-#, fuzzy
-#| msgid "Link target"
 msgid "Link Target"
 msgstr "Мета везе"
 
 #: src/resources/ui/nautilus-properties-window.ui:381
-#, fuzzy
-#| msgid "Parent Folder:"
 msgid "Parent Folder"
-msgstr "Родитељска фасцикла:"
+msgstr "Родитељска фасцикла"
 
 #: src/resources/ui/nautilus-properties-window.ui:434
-#, fuzzy
-#| msgid "Original folder"
 msgid "Original Folder"
 msgstr "Изворна фасцикла"
 
@@ -5397,34 +5356,24 @@ msgid "Trashed on"
 msgstr "Обрисано дана"
 
 #: src/resources/ui/nautilus-properties-window.ui:628
-#, fuzzy
-#| msgid "Permissions"
 msgid "_Permissions"
-msgstr "Овлашћења"
+msgstr "Ов_лашћења"
 
 #: src/resources/ui/nautilus-properties-window.ui:650
-#, fuzzy
-#| msgid "Allow _executing file as program"
 msgid "_Executable as Program"
-msgstr "Дозволи _покретање датотеке као програма"
+msgstr "Изв_рши као програм"
 
 #: src/resources/ui/nautilus-properties-window.ui:696
-#, fuzzy
-#| msgid "Setting permissions"
 msgid "Set Custom Permissions"
-msgstr "Постављам овлашћења"
+msgstr "Постави прилагођена овлашћења"
 
 #: src/resources/ui/nautilus-properties-window.ui:725
-#, fuzzy
-#| msgid "_Undo Change Permissions"
 msgid "Unknown Permissions"
-msgstr "_Опозови измену овлашћења"
+msgstr "Непозната овлашћења"
 
 #: src/resources/ui/nautilus-properties-window.ui:726
-#, fuzzy
-#| msgid "The permissions of the selected file could not be determined."
 msgid "The permissions of the selected files could not be determined."
-msgstr "Не могу да утврдим овлашћења за изабрану датотеку."
+msgstr "Не могу да утврдим овлашћења за изабране фасцикле."
 
 #: src/resources/ui/nautilus-properties-window.ui:741
 msgid "You are not the owner, so you cannot change these permissions."
@@ -5447,16 +5396,12 @@ msgstr "Приступ"
 #: src/resources/ui/nautilus-properties-window.ui:785
 #: src/resources/ui/nautilus-properties-window.ui:822
 #: src/resources/ui/nautilus-properties-window.ui:857
-#, fuzzy
-#| msgid "Folder access"
 msgid "Folder Access"
 msgstr "Приступ фасцикли"
 
 #: src/resources/ui/nautilus-properties-window.ui:792
 #: src/resources/ui/nautilus-properties-window.ui:829
 #: src/resources/ui/nautilus-properties-window.ui:864
-#, fuzzy
-#| msgid "File access"
 msgid "File Access"
 msgstr "Приступ датотеци"
 
@@ -5465,8 +5410,6 @@ msgid "_Group"
 msgstr "_Група"
 
 #: src/resources/ui/nautilus-properties-window.ui:877
-#, fuzzy
-#| msgid "Security context"
 msgid "Security Context"
 msgstr "Безбедносни контекст"
 
@@ -5475,10 +5418,8 @@ msgid "Change Permissions for Enclosed Files…"
 msgstr "Измени овлашћења за садржане датотеке…"
 
 #: src/resources/ui/nautilus-rename-file-popover.ui:23
-#, fuzzy
-#| msgid "File name"
 msgid "New Filename"
-msgstr "Назив датотеке"
+msgstr "Нови назив датотеке"
 
 #: src/resources/ui/nautilus-search-popover.ui:15
 msgid "When"
@@ -5557,10 +5498,16 @@ msgid "_About Files"
 msgstr "_О програму"
 
 #: src/resources/ui/nautilus-toolbar.ui:129
-#, fuzzy
-#| msgid "_Show sidebar"
 msgid "Show sidebar"
-msgstr "Пр_икажи бочну површ"
+msgstr "Прикажи бочну површ"
+
+#: src/resources/ui/nautilus-toolbar.ui:201
+msgid "Zoom out"
+msgstr "Умањи"
+
+#: src/resources/ui/nautilus-toolbar.ui:211
+msgid "Zoom in"
+msgstr "Увећај"
 
 #. This is used to sort by name in the toolbar view menu
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:8
@@ -5737,14 +5684,12 @@ msgstr "Префикс"
 
 #. Translators: Server as any successfully connected network address
 #: src/gtk/nautilusgtkplacesview.ui:104
-#, fuzzy
-#| msgid "Recent Servers"
 msgid "No Recent Servers"
-msgstr "Скорашњи сервери"
+msgstr "Нема недавних сервера"
 
 #: src/gtk/nautilusgtkplacesview.ui:125
 msgid "Recent Servers"
-msgstr "Скорашњи сервери"
+msgstr "Недавни сервери"
 
 #: src/gtk/nautilusgtkplacesview.ui:159
 msgid "List of common local and remote mountpoints."
@@ -5769,29 +5714,20 @@ msgid "%s already exists in the bookmarks list"
 msgstr "„%s“ већ постоји у списку обележивача"
 
 #: src/gtk/nautilusgtkplacessidebar.c:416
-#, fuzzy
-#| msgid "_Eject"
 msgid "Eject"
-msgstr "_Избаци"
+msgstr "Избаци"
 
 #: src/gtk/nautilusgtkplacessidebar.c:980
-#, fuzzy
-#| msgid "Recency"
 msgid "Recent"
-msgstr "Учесталост"
+msgstr "Недавно"
 
 #: src/gtk/nautilusgtkplacessidebar.c:982
-#, fuzzy
-#| msgid "Recent Servers"
 msgid "Recent files"
-msgstr "Скорашњи сервери"
+msgstr "Недавни сервери"
 
 #: src/gtk/nautilusgtkplacessidebar.c:993
-#, fuzzy
-#| msgid "Star %d file"
-#| msgid_plural "Star %d files"
 msgid "Starred files"
-msgstr "Додај звездицу на %d датотеку"
+msgstr "Датотеке са звездом"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1004
 msgid "Open your personal folder"
@@ -5802,99 +5738,73 @@ msgid "Desktop"
 msgstr "Радна површ"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1019
-#, fuzzy
-#| msgid "Open your personal folder"
 msgid "Open the contents of your desktop in a folder"
-msgstr "Отворите вашу личну фасциклу"
+msgstr "Отворите садржај ваше радне површи унутар фасцикле"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1033
-#, fuzzy
-#| msgid "Enter _Location"
 msgid "Enter Location"
-msgstr "Унеси _путању"
+msgstr "Унеси путању"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1035
-#, fuzzy
-#| msgid "Unable to load location"
 msgid "Manually enter a location"
-msgstr "Ме могу да учитам путању"
+msgstr "Ручно унеси путању"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1047
-#, fuzzy
-#| msgid "Open With %s"
 msgid "Open the trash"
-msgstr "Отвори помоћу %s"
+msgstr "Отвори смеће"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1156
 #: src/gtk/nautilusgtkplacessidebar.c:1184
 #: src/gtk/nautilusgtkplacessidebar.c:1384
-#, fuzzy, c-format
-#| msgid "Moving %'d file to “%s”"
-#| msgid_plural "Moving %'d files to “%s”"
+#, c-format
 msgid "Mount and open “%s”"
-msgstr "Премештам %'d датотеку у „%s“"
+msgstr "Закачи и отвори „%s“"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1279
-#, fuzzy
-#| msgid "The owner of the file."
 msgid "Open the contents of the file system"
-msgstr "Власник датотеке."
+msgstr "Отвори садржај система датотека"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1362
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Bookmarks"
 msgid "New bookmark"
-msgstr "Обележивачи"
+msgstr "Нови обележивач"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1364
-#, fuzzy
-#| msgid "Add to _Bookmarks"
 msgid "Add a new bookmark"
-msgstr "Додај у о_бележиваче"
+msgstr "Додај нови обележивач"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1430
-#, fuzzy
-#| msgid "Other locations"
 msgid "Show other locations"
-msgstr "Друга места"
+msgstr "Прикажи друга места"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
 #: src/gtk/nautilusgtkplacessidebar.c:2032
-#, fuzzy, c-format
-#| msgid "Error extracting “%s”"
+#, c-format
 msgid "Error unlocking “%s”"
-msgstr "Грешка при распаковању „%s“"
+msgstr "Грешка при откључавању уређаја „%s“"
 
 #: src/gtk/nautilusgtkplacessidebar.c:2265
 msgid "This name is already taken"
 msgstr "Овај назив је већ заузет"
 
 #: src/gtk/nautilusgtkplacessidebar.c:2726
-#, fuzzy, c-format
-#| msgid "Unable to start “%s”"
+#, c-format
 msgid "Unable to stop “%s”"
-msgstr "Не могу да покренем „%s“"
+msgstr "Не могу да зауставим „%s“"
 
 #: src/gtk/nautilusgtkplacessidebar.c:2936
-#, fuzzy, c-format
-#| msgid "Unable to remove “%s”"
+#, c-format
 msgid "Unable to poll “%s” for media changes"
-msgstr "Не могу да уклоним „%s“"
+msgstr "Не могу да питам „%s“ о изменама медија"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3332
-#, fuzzy
-#| msgid "Add to _Bookmarks"
 msgid "_Add Bookmark"
-msgstr "Додај у о_бележиваче"
+msgstr "Дод_ај обележивач"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3336
-#, fuzzy
-#| msgid "_Remove from Recent"
 msgid "_Remove from Bookmarks"
-msgstr "Уклони из скорашњег"
+msgstr "Ук_лони из обележивача"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3349
 msgid "Empty Trash"
@@ -5905,60 +5815,51 @@ msgid "_Power On"
 msgstr "_Укључи"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3400
-#, fuzzy
-#| msgid "_Connect"
 msgid "_Connect Drive"
-msgstr "_Повежи се"
+msgstr "_Повежи уређај"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3401
-#, fuzzy
-#| msgid "_Start Multi-disk Drive"
 msgid "_Start Multi-disk Device"
 msgstr "_Покрени уређај са више дискова"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3402
-#, fuzzy
-#| msgid "_Unlock Drive"
 msgid "_Unlock Device"
-msgstr "О_ткључај уређај"
+msgstr "Откљ_учај уређај"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3415
-#, fuzzy
-#| msgid "_Disconnect"
 msgid "_Disconnect Drive"
-msgstr "_Прекини везу"
+msgstr "_Откачи уређај"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3416
-#, fuzzy
-#| msgid "_Stop Multi-disk Drive"
 msgid "_Stop Multi-disk Device"
 msgstr "_Заустави уређај са више диска"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3417
-#, fuzzy
-#| msgid "_Lock Drive"
 msgid "_Lock Device"
 msgstr "_Закључај уређај"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3426
-#, fuzzy
-#| msgid "_Format…"
 msgid "Format…"
-msgstr "_Форматирај…"
+msgstr "Форматирај…"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3934
 msgid "Computer"
 msgstr "Рачунар"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3972
-#, fuzzy
-#| msgid "_Sidebar"
 msgid "Sidebar"
-msgstr "_Бочна трака"
+msgstr "Бочна површ"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3974
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Списак честих пречица, тачака качења и обележивача."
+
+#~ msgid "%"
+#~ msgid_plural "%"
+#~ msgstr[0] "%"
+#~ msgstr[1] "%"
+#~ msgstr[2] "%"
+#~ msgstr[3] "%"
 
 #~ msgid "Where to position newly open tabs in browser windows"
 #~ msgstr "Где сместити новоотворене језичке у прозорима прегледача"
@@ -6285,14 +6186,8 @@ msgstr "Списак честих пречица, тачака качења и �
 #~ msgid "Toggle view"
 #~ msgstr "Промени преглед"
 
-#~ msgid "Zoom out"
-#~ msgstr "Умањи"
-
 #~ msgid "Reset zoom"
 #~ msgstr "Поново постави степен увећања"
-
-#~ msgid "Zoom in"
-#~ msgstr "Увећај"
 
 #~ msgid "No recent servers found"
 #~ msgstr "Нема скорашњих сервера"
