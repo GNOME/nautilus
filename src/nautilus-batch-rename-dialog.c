@@ -131,8 +131,8 @@ change_numbering_order (GSimpleAction *action,
     {
         if (g_strcmp0 (sorts_constants[i].action_target_name, target_name) == 0)
         {
-            gtk_button_set_label (GTK_BUTTON (dialog->numbering_order_button),
-                                  gettext (sorts_constants[i].label));
+            gtk_menu_button_set_label (GTK_MENU_BUTTON (dialog->numbering_order_button),
+                                       gettext (sorts_constants[i].label));
             dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
                                                                    sorts_constants[i].sort_mode,
                                                                    dialog->create_date);
