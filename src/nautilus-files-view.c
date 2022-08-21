@@ -8370,7 +8370,8 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      * closed because it wouldn't activate the actions then. */
     g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
     priv->selection_menu = gtk_popover_menu_new_from_model (NULL);
-    gtk_widget_set_parent (priv->selection_menu, GTK_WIDGET (view));
+    /* If the view is the parent it doesn't get the focus back, so make the scrolled window the parent instead */
+    gtk_widget_set_parent (priv->selection_menu, priv->scrolled_window);
     gtk_popover_set_has_arrow (GTK_POPOVER (priv->selection_menu), FALSE);
     gtk_widget_set_halign (priv->selection_menu, GTK_ALIGN_START);
 
@@ -8422,7 +8423,8 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      * closed because it wouldn't activate the actions then. */
     g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
     priv->background_menu = gtk_popover_menu_new_from_model (NULL);
-    gtk_widget_set_parent (priv->background_menu, GTK_WIDGET (view));
+    /* If the view is the parent it doesn't get the focus back, so make the scrolled window the parent instead */
+    gtk_widget_set_parent (priv->background_menu, priv->scrolled_window);
     gtk_popover_set_has_arrow (GTK_POPOVER (priv->background_menu), FALSE);
     gtk_widget_set_halign (priv->background_menu, GTK_ALIGN_START);
 
