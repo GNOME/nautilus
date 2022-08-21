@@ -8393,6 +8393,12 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      * closed because it wouldn't activate the actions then. */
     g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
     priv->selection_menu = gtk_popover_menu_new_from_model (NULL);
+
+    /* There's something related to NautilusFilesView that isn't grabbing the
+     * focus back when the popover is closed. Let's force it as a workaround. */
+    g_signal_connect_object (priv->selection_menu, "closed",
+                             G_CALLBACK (gtk_widget_grab_focus), view,
+                             G_CONNECT_SWAPPED);
     gtk_widget_set_parent (priv->selection_menu, GTK_WIDGET (view));
     gtk_popover_set_has_arrow (GTK_POPOVER (priv->selection_menu), FALSE);
     gtk_widget_set_halign (priv->selection_menu, GTK_ALIGN_START);
@@ -8445,6 +8451,12 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      * closed because it wouldn't activate the actions then. */
     g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
     priv->background_menu = gtk_popover_menu_new_from_model (NULL);
+
+    /* There's something related to NautilusFilesView that isn't grabbing the
+     * focus back when the popover is closed. Let's force it as a workaround. */
+    g_signal_connect_object (priv->background_menu, "closed",
+                             G_CALLBACK (gtk_widget_grab_focus), view,
+                             G_CONNECT_SWAPPED);
     gtk_widget_set_parent (priv->background_menu, GTK_WIDGET (view));
     gtk_popover_set_has_arrow (GTK_POPOVER (priv->background_menu), FALSE);
     gtk_widget_set_halign (priv->background_menu, GTK_ALIGN_START);
