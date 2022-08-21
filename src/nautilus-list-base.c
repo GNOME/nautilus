@@ -438,6 +438,10 @@ on_view_click_pressed (GtkGestureClick *gesture,
         return;
     }
 
+    /* We are overriding many of the gestures for the views so let's make sure to
+     * grab the focus in order to make rubberbanding and background click work */
+    gtk_widget_grab_focus (GTK_WIDGET (self));
+
     /* Don't interfere with GtkListBase default selection handling when
      * holding Ctrl and Shift. */
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
