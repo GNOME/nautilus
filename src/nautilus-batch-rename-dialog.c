@@ -1896,8 +1896,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_up);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_down);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_response);
-    gtk_widget_class_bind_template_callback (widget_class, on_insert_text);
-    gtk_widget_class_bind_template_callback (widget_class, on_delete_text);
 }
 
 GtkWidget *
@@ -2073,6 +2071,10 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     g_signal_connect (self->original_name_listbox, "row-selected", G_CALLBACK (row_selected), self);
     g_signal_connect (self->arrow_listbox, "row-selected", G_CALLBACK (row_selected), self);
     g_signal_connect (self->result_listbox, "row-selected", G_CALLBACK (row_selected), self);
+    g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
+                             "delete-text", G_CALLBACK (on_delete_text), self, 0);
+    g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
+                             "insert-text", G_CALLBACK (on_insert_text), self, 0);
 
     self->size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
