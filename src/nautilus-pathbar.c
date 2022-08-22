@@ -266,6 +266,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
                                gtk_image_new_from_icon_name ("view-more-symbolic"));
     gtk_box_append (GTK_BOX (self), self->current_view_menu_button);
 
+    gtk_widget_set_tooltip_text (self->current_view_menu_button, _("Current Folder Menu"));
+
     builder = gtk_builder_new ();
 
     /* Add context menu for pathbar buttons */
@@ -753,6 +755,8 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
     if (button_data->label != NULL)
     {
         gtk_label_set_text (GTK_LABEL (button_data->label), dir_name);
+
+        gtk_widget_set_tooltip_text (button_data->button, dir_name);
 
         if (current_dir)
         {
