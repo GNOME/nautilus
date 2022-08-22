@@ -1576,6 +1576,11 @@ nautilus_batch_rename_dialog_initialize_actions (NautilusBatchRenameDialog *dial
 
     check_metadata_for_selection (dialog, dialog->selection,
                                   dialog->metadata_cancellable);
+
+    /* Make sure that the state is initialized to name-ascending */
+    action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                         "numbering-order-changed");
+    g_action_change_state (action, g_variant_new_string ("name-ascending"));
 }
 
 static void
