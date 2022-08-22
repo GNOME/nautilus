@@ -138,7 +138,8 @@ undo_manager_changed (NautilusToolbar *self)
     g_autofree gchar *redo_description = NULL;
     gboolean is_undo;
     g_autoptr (GMenu) updated_section = g_menu_new ();
-    g_autoptr (GMenuItem) menu_item = NULL;
+    g_autoptr (GMenuItem) undo_menu_item = NULL;
+    g_autoptr (GMenuItem) redo_menu_item = NULL;
 
     /* Look up the last action from the undo manager, and get the text that
      * describes it, e.g. "Undo Create Folder"/"Redo Create Folder"
@@ -166,8 +167,8 @@ undo_manager_changed (NautilusToolbar *self)
         g_free (undo_label);
         undo_label = g_strdup (_("_Undo"));
     }
-    g_set_object (&menu_item, g_menu_item_new (undo_label, "win.undo"));
-    g_menu_append_item (updated_section, menu_item);
+    undo_menu_item = g_menu_item_new (undo_label, "win.undo");
+    g_menu_append_item (updated_section, undo_menu_item);
     update_action (self, "undo", undo_active);
 
     if (!redo_active || redo_label == NULL)
@@ -175,8 +176,8 @@ undo_manager_changed (NautilusToolbar *self)
         g_free (redo_label);
         redo_label = g_strdup (_("_Redo"));
     }
-    g_set_object (&menu_item, g_menu_item_new (redo_label, "win.redo"));
-    g_menu_append_item (updated_section, menu_item);
+    redo_menu_item = g_menu_item_new (redo_label, "win.redo");
+    g_menu_append_item (updated_section, redo_menu_item);
     update_action (self, "redo", redo_active);
 
     nautilus_gmenu_set_from_model (G_MENU (self->undo_redo_section),
