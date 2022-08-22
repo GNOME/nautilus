@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-11 08:24+0000\n"
-"PO-Revision-Date: 2022-08-11 12:48+0300\n"
+"POT-Creation-Date: 2022-08-15 09:49+0000\n"
+"PO-Revision-Date: 2022-08-15 13:47+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -96,7 +96,7 @@ msgstr "Поиск"
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:324
 #: src/nautilus-pathbar.c:372 src/gtk/nautilusgtkplacesview.ui:158
-#: src/gtk/nautilusgtkplacessidebar.c:1428
+#: src/gtk/nautilusgtkplacessidebar.c:1429
 msgid "Other Locations"
 msgstr "Другие места"
 
@@ -1047,11 +1047,11 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
 #: src/nautilus-pathbar.c:367 src/nautilus-shell-search-provider.c:330
-#: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1001
+#: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1002
 msgid "Home"
 msgstr "Домашняя папка"
 
-#: src/nautilus-column-utilities.c:59 src/gtk/nautilusgtkplacessidebar.c:2335
+#: src/nautilus-column-utilities.c:59 src/gtk/nautilusgtkplacessidebar.c:2341
 msgid "Name"
 msgstr "Имя"
 
@@ -1412,7 +1412,7 @@ msgid "File not found"
 msgstr "Файл не найден"
 
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
-#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:990
+#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:991
 msgid "Starred"
 msgstr "Избранные"
 
@@ -1575,101 +1575,102 @@ msgstr[0] "%'u файл"
 msgstr[1] "%'u файла"
 msgstr[2] "%'u файлов"
 
-#: src/nautilus-file.c:6949
-msgid "%"
-msgid_plural "%"
-msgstr[0] "%"
-msgstr[1] "%"
-msgstr[2] "%"
+#: src/nautilus-file.c:6951
+#, c-format
+msgid "%s byte"
+msgid_plural "%s bytes"
+msgstr[0] "%s байт"
+msgstr[1] "%s байта"
+msgstr[2] "%s байт"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7359
+#: src/nautilus-file.c:7361
 msgid "? bytes"
 msgstr "? байт"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7371
+#: src/nautilus-file.c:7373
 msgid "? items"
 msgstr "? объектов"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:7380
+#: src/nautilus-file.c:7382
 msgid "Unknown type"
 msgstr "Неизвестный тип"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7411
+#: src/nautilus-file.c:7413
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/nautilus-file.c:7449 src/nautilus-file.c:7457 src/nautilus-file.c:7516
+#: src/nautilus-file.c:7451 src/nautilus-file.c:7459 src/nautilus-file.c:7518
 msgid "Program"
 msgstr "Программа"
 
-#: src/nautilus-file.c:7450
+#: src/nautilus-file.c:7452
 msgid "Audio"
 msgstr "Аудио"
 
-#: src/nautilus-file.c:7451
+#: src/nautilus-file.c:7453
 msgid "Font"
 msgstr "Шрифт"
 
-#: src/nautilus-file.c:7452
+#: src/nautilus-file.c:7454
 msgid "Image"
 msgstr "Изображение"
 
-#: src/nautilus-file.c:7453
+#: src/nautilus-file.c:7455
 msgid "Archive"
 msgstr "Архив"
 
-#: src/nautilus-file.c:7454
+#: src/nautilus-file.c:7456
 msgid "Markup"
 msgstr "Разметка"
 
-#: src/nautilus-file.c:7455 src/nautilus-file.c:7456
+#: src/nautilus-file.c:7457 src/nautilus-file.c:7458
 msgid "Text"
 msgstr "Текст"
 
-#: src/nautilus-file.c:7458 src/nautilus-mime-actions.c:215
+#: src/nautilus-file.c:7460 src/nautilus-mime-actions.c:215
 msgid "Video"
 msgstr "Видео"
 
-#: src/nautilus-file.c:7459
+#: src/nautilus-file.c:7461
 msgid "Contacts"
 msgstr "Контакты"
 
-#: src/nautilus-file.c:7460
+#: src/nautilus-file.c:7462
 msgid "Calendar"
 msgstr "Календарь"
 
-#: src/nautilus-file.c:7461
+#: src/nautilus-file.c:7463
 msgid "Document"
 msgstr "Документ"
 
-#: src/nautilus-file.c:7462 src/nautilus-mime-actions.c:189
+#: src/nautilus-file.c:7464 src/nautilus-mime-actions.c:189
 msgid "Presentation"
 msgstr "Презентация"
 
-#: src/nautilus-file.c:7463 src/nautilus-mime-actions.c:197
+#: src/nautilus-file.c:7465 src/nautilus-mime-actions.c:197
 msgid "Spreadsheet"
 msgstr "Электронная таблица"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7490
+#: src/nautilus-file.c:7492
 msgid "Other"
 msgstr "Другое"
 
-#: src/nautilus-file.c:7518
+#: src/nautilus-file.c:7520
 msgid "Binary"
 msgstr "Двоичный файл"
 
-#: src/nautilus-file.c:7523
+#: src/nautilus-file.c:7525
 msgid "Folder"
 msgstr "Папка"
 
-#: src/nautilus-file.c:7562
+#: src/nautilus-file.c:7564
 msgid "Link"
 msgstr "Ссылка"
 
@@ -1678,17 +1679,17 @@ msgstr "Ссылка"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7568 src/nautilus-file-operations.c:490
+#: src/nautilus-file.c:7570 src/nautilus-file-operations.c:490
 #, c-format
 msgid "Link to %s"
 msgstr "Ссылка на %s"
 
-#: src/nautilus-file.c:7586 src/nautilus-file.c:7602 src/nautilus-file.c:7618
+#: src/nautilus-file.c:7588 src/nautilus-file.c:7604 src/nautilus-file.c:7620
 msgid "Link (broken)"
 msgstr "Ссылка (испорченная)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7858
+#: src/nautilus-file.c:7860
 #, c-format
 msgid "%s Free"
 msgstr "%s свободно"
@@ -2096,7 +2097,7 @@ msgstr "Перемещение файлов в корзину"
 msgid "Deleting Files"
 msgstr "Удаление файлов"
 
-#: src/nautilus-file-operations.c:2846 src/gtk/nautilusgtkplacessidebar.c:2778
+#: src/nautilus-file-operations.c:2846 src/gtk/nautilusgtkplacessidebar.c:2784
 #, c-format
 msgid "Unable to eject %s"
 msgstr "Не удалось извлечь %s"
@@ -2124,7 +2125,7 @@ msgstr "Не о_чищать корзину"
 
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-file-operations.c:3168 src/nautilus-files-view.c:6777
-#: src/gtk/nautilusgtkplacessidebar.c:2028
+#: src/gtk/nautilusgtkplacessidebar.c:2034
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Не удалось получить доступ к «%s»"
@@ -2809,7 +2810,7 @@ msgid "Unable to remove “%s”"
 msgstr "Не удалось удалить «%s»"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6837 src/gtk/nautilusgtkplacessidebar.c:2749
+#: src/nautilus-files-view.c:6837 src/gtk/nautilusgtkplacessidebar.c:2755
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Не удалось извлечь «%s»"
@@ -2819,8 +2820,8 @@ msgid "Unable to stop drive"
 msgstr "Не удалось остановить привод"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6975 src/gtk/nautilusgtkplacessidebar.c:1990
-#: src/gtk/nautilusgtkplacessidebar.c:2978
+#: src/nautilus-files-view.c:6975 src/gtk/nautilusgtkplacessidebar.c:1996
+#: src/gtk/nautilusgtkplacessidebar.c:2984
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Не удалось запустить «%s»"
@@ -2861,7 +2862,7 @@ msgstr "Открыть"
 
 #: src/nautilus-files-view.c:8110
 #: src/resources/ui/nautilus-files-view-context-menus.ui:146
-#: src/gtk/nautilusgtkplacessidebar.c:3391
+#: src/gtk/nautilusgtkplacessidebar.c:3397
 msgid "_Start"
 msgstr "_Запустить"
 
@@ -2881,7 +2882,7 @@ msgstr "_Разблокировать привод"
 msgid "Stop Drive"
 msgstr "Остановить привод"
 
-#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3408
+#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3414
 msgid "_Safely Remove Drive"
 msgstr "_Безопасно удалить привод"
 
@@ -4057,8 +4058,8 @@ msgstr "_Вернуть"
 #: src/nautilus-properties-window.c:4327
 #: src/resources/ui/nautilus-app-chooser.ui:109
 #: src/resources/ui/nautilus-files-view-context-menus.ui:77
-#: src/gtk/nautilusgtkplacesview.c:1694 src/gtk/nautilusgtkplacessidebar.c:3187
-#: src/gtk/nautilusgtkplacessidebar.c:3298
+#: src/gtk/nautilusgtkplacesview.c:1694 src/gtk/nautilusgtkplacessidebar.c:3193
+#: src/gtk/nautilusgtkplacessidebar.c:3304
 msgid "_Open"
 msgstr "_Открыть"
 
@@ -4117,7 +4118,7 @@ msgstr "Выбрать даты…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:335 src/nautilus-trash-bar.c:224
-#: src/gtk/nautilusgtkplacessidebar.c:1044
+#: src/gtk/nautilusgtkplacessidebar.c:1045
 msgid "Trash"
 msgstr "Корзина"
 
@@ -4320,7 +4321,7 @@ msgstr[2] "Удалено из избранных %d файлов"
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1310 src/gtk/nautilusgtkplacessidebar.c:893
+#: src/nautilus-window.c:1310 src/gtk/nautilusgtkplacessidebar.c:894
 #, c-format
 msgid "Open %s"
 msgstr "Открыть %s"
@@ -4799,8 +4800,8 @@ msgstr "Исходное имя файла"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:107
 #: src/resources/ui/nautilus-rename-file-popover.ui:42
-#: src/gtk/nautilusgtkplacessidebar.c:2341
-#: src/gtk/nautilusgtkplacessidebar.c:3334
+#: src/gtk/nautilusgtkplacessidebar.c:2347
+#: src/gtk/nautilusgtkplacessidebar.c:3340
 msgid "_Rename"
 msgstr "_Переименовать"
 
@@ -4975,27 +4976,27 @@ msgid "_Open Scripts Folder"
 msgstr "Открыть папку с_ценариев"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:131
-#: src/gtk/nautilusgtkplacesview.c:1728 src/gtk/nautilusgtkplacessidebar.c:3356
+#: src/gtk/nautilusgtkplacesview.c:1728 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Mount"
 msgstr "_Присоединить"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:136
-#: src/gtk/nautilusgtkplacesview.c:1717 src/gtk/nautilusgtkplacessidebar.c:3365
+#: src/gtk/nautilusgtkplacesview.c:1717 src/gtk/nautilusgtkplacessidebar.c:3371
 msgid "_Unmount"
 msgstr "О_тсоединить том"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:141
-#: src/gtk/nautilusgtkplacessidebar.c:3372
+#: src/gtk/nautilusgtkplacessidebar.c:3378
 msgid "_Eject"
 msgstr "_Извлечь"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:151
-#: src/gtk/nautilusgtkplacessidebar.c:3406
+#: src/gtk/nautilusgtkplacessidebar.c:3412
 msgid "_Stop"
 msgstr "Ос_тановить"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:156
-#: src/gtk/nautilusgtkplacessidebar.c:3382
+#: src/gtk/nautilusgtkplacessidebar.c:3388
 msgid "_Detect Media"
 msgstr "Опреде_лить носитель"
 
@@ -5103,14 +5104,14 @@ msgid "Enter password…"
 msgstr "Введите пароль…"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacesview.c:1703 src/gtk/nautilusgtkplacessidebar.c:3202
-#: src/gtk/nautilusgtkplacessidebar.c:3315
+#: src/gtk/nautilusgtkplacesview.c:1703 src/gtk/nautilusgtkplacessidebar.c:3208
+#: src/gtk/nautilusgtkplacessidebar.c:3321
 msgid "Open in New _Window"
 msgstr "Открыть в _новом окне"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacesview.c:1698 src/gtk/nautilusgtkplacessidebar.c:3195
-#: src/gtk/nautilusgtkplacessidebar.c:3306
+#: src/gtk/nautilusgtkplacesview.c:1698 src/gtk/nautilusgtkplacessidebar.c:3201
+#: src/gtk/nautilusgtkplacessidebar.c:3312
 msgid "Open in New _Tab"
 msgstr "Открыть в новой _вкладке"
 
@@ -5234,7 +5235,7 @@ msgid "Show operations"
 msgstr "Показать операции"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
-#: src/gtk/nautilusgtkplacessidebar.c:3430
+#: src/gtk/nautilusgtkplacessidebar.c:3436
 msgid "Properties"
 msgstr "Свойства"
 
@@ -5425,6 +5426,14 @@ msgstr "_О приложении"
 msgid "Show sidebar"
 msgstr "Показывать боковую панель"
 
+#: src/resources/ui/nautilus-toolbar.ui:201
+msgid "Zoom out"
+msgstr "Отдалить"
+
+#: src/resources/ui/nautilus-toolbar.ui:211
+msgid "Zoom in"
+msgstr "Приблизить"
+
 #. This is used to sort by name in the toolbar view menu
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:8
 msgctxt "Sort Criterion"
@@ -5569,13 +5578,13 @@ msgstr[1] "%s / %s доступно"
 msgstr[2] "%s / %s доступно"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:490
-#: src/gtk/nautilusgtkplacessidebar.c:413
+#: src/gtk/nautilusgtkplacessidebar.c:414
 msgid "Disconnect"
 msgstr "Отключить"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:490
 #: src/gtk/nautilusgtkplacesviewrow.ui:53
-#: src/gtk/nautilusgtkplacessidebar.c:417
+#: src/gtk/nautilusgtkplacessidebar.c:418
 msgid "Unmount"
 msgstr "Отсоединить"
 
@@ -5627,155 +5636,154 @@ msgstr "%s отсутствует в списке закладок"
 msgid "%s already exists in the bookmarks list"
 msgstr "%s уже есть в списке закладок"
 
-#: src/gtk/nautilusgtkplacessidebar.c:415
+#: src/gtk/nautilusgtkplacessidebar.c:416
 msgid "Eject"
 msgstr "Извлечь"
 
-#: src/gtk/nautilusgtkplacessidebar.c:979
+#: src/gtk/nautilusgtkplacessidebar.c:980
 msgid "Recent"
 msgstr "Недавние"
 
-#: src/gtk/nautilusgtkplacessidebar.c:981
+#: src/gtk/nautilusgtkplacessidebar.c:982
 msgid "Recent files"
 msgstr "Недавние файлы"
 
-#: src/gtk/nautilusgtkplacessidebar.c:992
+#: src/gtk/nautilusgtkplacessidebar.c:993
 msgid "Starred files"
 msgstr "Избранные файлы"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1003
+#: src/gtk/nautilusgtkplacessidebar.c:1004
 msgid "Open your personal folder"
 msgstr "Открыть личную папку"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1016
+#: src/gtk/nautilusgtkplacessidebar.c:1017
 msgid "Desktop"
 msgstr "Рабочий стол"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1018
+#: src/gtk/nautilusgtkplacessidebar.c:1019
 msgid "Open the contents of your desktop in a folder"
 msgstr "Открыть содержимое рабочего стола в папке"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1032
+#: src/gtk/nautilusgtkplacessidebar.c:1033
 msgid "Enter Location"
 msgstr "Введите расположение"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1034
+#: src/gtk/nautilusgtkplacessidebar.c:1035
 msgid "Manually enter a location"
 msgstr "Введите расположение вручную"
 
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
-#: src/gtk/nautilusgtkplacessidebar.c:1046
+#: src/gtk/nautilusgtkplacessidebar.c:1047
 msgid "Open the trash"
 msgstr "Открыть корзину"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1155
-#: src/gtk/nautilusgtkplacessidebar.c:1183
-#: src/gtk/nautilusgtkplacessidebar.c:1383
+#: src/gtk/nautilusgtkplacessidebar.c:1156
+#: src/gtk/nautilusgtkplacessidebar.c:1184
+#: src/gtk/nautilusgtkplacessidebar.c:1384
 #, c-format
 msgid "Mount and open “%s”"
 msgstr "Смонтировать и открыть «%s»"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1278
+#: src/gtk/nautilusgtkplacessidebar.c:1279
 msgid "Open the contents of the file system"
 msgstr "Открыть содержимое файловой системы"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1361
+#: src/gtk/nautilusgtkplacessidebar.c:1362
 msgid "New bookmark"
 msgstr "Создать закладку"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1363
+#: src/gtk/nautilusgtkplacessidebar.c:1364
 msgid "Add a new bookmark"
 msgstr "Добавить новую закладку"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1429
+#: src/gtk/nautilusgtkplacessidebar.c:1430
 msgid "Show other locations"
 msgstr "Показать другие расположения"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/gtk/nautilusgtkplacessidebar.c:2026
+#: src/gtk/nautilusgtkplacessidebar.c:2032
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "Ошибка разблокировки «%s»"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2259
+#: src/gtk/nautilusgtkplacessidebar.c:2265
 msgid "This name is already taken"
 msgstr "Это имя уже занято"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2720
+#: src/gtk/nautilusgtkplacessidebar.c:2726
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "Не удалось остановить «%s»"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2930
+#: src/gtk/nautilusgtkplacessidebar.c:2936
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "Не удалось опросить «%s» об изменении носителей"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3326
+#: src/gtk/nautilusgtkplacessidebar.c:3332
 msgid "_Add Bookmark"
 msgstr "_Добавить закладку"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3330
+#: src/gtk/nautilusgtkplacessidebar.c:3336
 msgid "_Remove from Bookmarks"
 msgstr "_Удалить из закладок"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3343
+#: src/gtk/nautilusgtkplacessidebar.c:3349
 msgid "Empty Trash"
 msgstr "Очистить корзину"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3393
+#: src/gtk/nautilusgtkplacessidebar.c:3399
 msgid "_Power On"
 msgstr "_Включить"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3394
+#: src/gtk/nautilusgtkplacessidebar.c:3400
 msgid "_Connect Drive"
 msgstr "_Подключить диск"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3395
+#: src/gtk/nautilusgtkplacessidebar.c:3401
 msgid "_Start Multi-disk Device"
 msgstr "_Запустить многодисковое устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3396
+#: src/gtk/nautilusgtkplacessidebar.c:3402
 msgid "_Unlock Device"
 msgstr "_Разблокировать устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3409
+#: src/gtk/nautilusgtkplacessidebar.c:3415
 msgid "_Disconnect Drive"
 msgstr "_Отключить диск"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3410
+#: src/gtk/nautilusgtkplacessidebar.c:3416
 msgid "_Stop Multi-disk Device"
 msgstr "_Остановить многодисковое устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3411
+#: src/gtk/nautilusgtkplacessidebar.c:3417
 msgid "_Lock Device"
 msgstr "_Заблокировать устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3420
+#: src/gtk/nautilusgtkplacessidebar.c:3426
 msgid "Format…"
 msgstr "Форматировать…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3928
+#: src/gtk/nautilusgtkplacessidebar.c:3934
 msgid "Computer"
 msgstr "Компьютер"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3966
+#: src/gtk/nautilusgtkplacessidebar.c:3972
 msgid "Sidebar"
 msgstr "Боковая панель"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3968
+#: src/gtk/nautilusgtkplacessidebar.c:3974
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Список общих ярлыков, точек монтирования и закладок."
 
-#, c-format
-#~ msgid "%lu byte"
-#~ msgid_plural "%lu bytes"
-#~ msgstr[0] "%lu байт"
-#~ msgstr[1] "%lu байта"
-#~ msgstr[2] "%lu байт"
+#~ msgid "%"
+#~ msgid_plural "%"
+#~ msgstr[0] "%"
+#~ msgstr[1] "%"
+#~ msgstr[2] "%"
 
 #, c-format
 #~ msgid "“%s” deleted"
@@ -6077,14 +6085,8 @@ msgstr "Список общих ярлыков, точек монтирован�
 #~ msgid "Unable to unmount “%s”"
 #~ msgstr "Не удалось размонтировать «%s»"
 
-#~ msgid "Zoom out"
-#~ msgstr "Отдалить"
-
 #~ msgid "Reset zoom"
 #~ msgstr "Сбросить масштаб"
-
-#~ msgid "Zoom in"
-#~ msgstr "Приблизить"
 
 #~ msgid "_Remove"
 #~ msgstr "_Удалить"
