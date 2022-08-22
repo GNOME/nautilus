@@ -3710,7 +3710,7 @@ real_check_empty_states (NautilusFilesView *view)
         else
         {
             adw_status_page_set_icon_name (status_page, "folder-symbolic");
-            adw_status_page_set_title (status_page, "Folder is Empty");
+            adw_status_page_set_title (status_page, _("Folder is Empty"));
             adw_status_page_set_description (status_page, NULL);
         }
 
