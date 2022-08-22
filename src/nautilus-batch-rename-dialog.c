@@ -264,54 +264,6 @@ const GActionEntry dialog_entries[] =
     { "add-album-name-tag", add_metadata_tag },
 };
 
-static void
-row_selected (GtkListBox    *box,
-              GtkListBoxRow *listbox_row,
-              gpointer       user_data)
-{
-    NautilusBatchRenameDialog *dialog;
-    GtkListBoxRow *row;
-    gint index;
-
-    if (!GTK_IS_LIST_BOX_ROW (listbox_row))
-    {
-        return;
-    }
-
-    dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
-    index = gtk_list_box_row_get_index (listbox_row);
-
-    if (GTK_WIDGET (box) == dialog->original_name_listbox)
-    {
-        row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (dialog->arrow_listbox), index);
-        gtk_list_box_select_row (GTK_LIST_BOX (dialog->arrow_listbox),
-                                 row);
-        row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (dialog->result_listbox), index);
-        gtk_list_box_select_row (GTK_LIST_BOX (dialog->result_listbox),
-                                 row);
-    }
-
-    if (GTK_WIDGET (box) == dialog->arrow_listbox)
-    {
-        row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (dialog->original_name_listbox), index);
-        gtk_list_box_select_row (GTK_LIST_BOX (dialog->original_name_listbox),
-                                 row);
-        row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (dialog->result_listbox), index);
-        gtk_list_box_select_row (GTK_LIST_BOX (dialog->result_listbox),
-                                 row);
-    }
-
-    if (GTK_WIDGET (box) == dialog->result_listbox)
-    {
-        row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (dialog->arrow_listbox), index);
-        gtk_list_box_select_row (GTK_LIST_BOX (dialog->arrow_listbox),
-                                 row);
-        row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (dialog->original_name_listbox), index);
-        gtk_list_box_select_row (GTK_LIST_BOX (dialog->original_name_listbox),
-                                 row);
-    }
-}
-
 static gint
 compare_int (gconstpointer a,
              gconstpointer b)
@@ -2073,9 +2025,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
     self->row_height = -1;
 
-    g_signal_connect (self->original_name_listbox, "row-selected", G_CALLBACK (row_selected), self);
-    g_signal_connect (self->arrow_listbox, "row-selected", G_CALLBACK (row_selected), self);
-    g_signal_connect (self->result_listbox, "row-selected", G_CALLBACK (row_selected), self);
     g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
                              "delete-text", G_CALLBACK (on_delete_text), self, 0);
     g_signal_connect_object (gtk_editable_get_delegate (GTK_EDITABLE (self->name_entry)),
