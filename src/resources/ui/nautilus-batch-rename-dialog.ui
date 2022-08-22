@@ -309,12 +309,16 @@
                 <property name="min-content-height">250</property>
                 <property name="max-content-width">600</property>
                 <property name="min-content-width">600</property>
+                <style>
+                  <class name="batch-rename-preview"/>
+                </style>
                 <property name="child">
                   <object class="GtkViewport">
                     <property name="child">
                       <object class="GtkBox" id="a_box">
                         <child>
                           <object class="GtkListBox" id="original_name_listbox">
+                            <property name="hexpand">True</property>
                             <property name="selection_mode">GTK_SELECTION_NONE</property>
                           </object>
                         </child>
@@ -325,6 +329,7 @@
                         </child>
                         <child>
                           <object class="GtkListBox" id="result_listbox">
+                            <property name="hexpand">True</property>
                             <property name="selection_mode">GTK_SELECTION_NONE</property>
                           </object>
                         </child>
