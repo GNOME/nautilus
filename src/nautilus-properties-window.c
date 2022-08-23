@@ -468,6 +468,7 @@ static void remove_pending (StartupData *data,
                             gboolean     cancel_call_when_ready,
                             gboolean     cancel_timed_wait);
 static void refresh_extension_model_pages (NautilusPropertiesWindow *self);
+static gboolean is_root_directory (NautilusFile *file);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
 
@@ -595,16 +596,22 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
 
     if (!is_multi_file_window (self))
     {
+        g_autoptr (GIcon) gicon = NULL;
         g_autoptr (GMount) mount = NULL;
         mount = nautilus_file_get_mount (get_original_file (self));
         if (mount != NULL)
         {
-            g_autoptr (GIcon) gicon = g_mount_get_icon (mount);
-            if (gicon != NULL)
-            {
-                g_clear_object (&icon);
-                icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale);
-            }
+            gicon = g_mount_get_icon (mount);
+        }
+        else if (is_root_directory (get_original_file (self)))
+        {
+            gicon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk");
+        }
+
+        if (gicon != NULL)
+        {
+            g_clear_object (&icon);
+            icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale);
         }
     }
 
