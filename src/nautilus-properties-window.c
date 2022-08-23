@@ -53,7 +53,6 @@
 #include "nautilus-tag-manager.h"
 #include "nautilus-ui-utilities.h"
 
-static GHashTable *windows;
 static GHashTable *pending_lists;
 
 typedef struct
@@ -3931,42 +3930,6 @@ get_target_file_list (GList *original_files)
 }
 
 static void
-add_window (NautilusPropertiesWindow *self)
-{
-    if (!is_multi_file_window (self))
-    {
-        g_hash_table_insert (windows,
-                             get_original_file (self),
-                             self);
-        g_object_set_data (G_OBJECT (self), "window_key",
-                           get_original_file (self));
-    }
-}
-
-static void
-remove_window (NautilusPropertiesWindow *self)
-{
-    gpointer key;
-
-    key = g_object_get_data (G_OBJECT (self), "window_key");
-    if (key)
-    {
-        g_hash_table_remove (windows, key);
-    }
-}
-
-static NautilusPropertiesWindow *
-get_existing_window (GList *file_list)
-{
-    if (!file_list->next)
-    {
-        return g_hash_table_lookup (windows, file_list->data);
-    }
-
-    return NULL;
-}
-
-static void
 properties_window_finish (StartupData *data)
 {
     gboolean cancel_timed_wait;
@@ -4074,7 +4037,6 @@ is_directory_ready_callback (NautilusFile *file,
 
         new_window = create_properties_window (startup_data);
 
-        add_window (new_window);
         startup_data->window = new_window;
 
         remove_pending (startup_data, FALSE, TRUE);
@@ -4099,46 +4061,15 @@ nautilus_properties_window_present (GList                            *original_f
     GtkWindow *parent_window;
     StartupData *startup_data;
     g_autolist (NautilusFile) target_files = NULL;
-    NautilusPropertiesWindow *existing_window;
     g_autofree char *pending_key = NULL;
 
     g_return_if_fail (original_files != NULL);
     g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
 
-
-    /* Create the hash tables first time through. */
-    if (windows == NULL)
-    {
-        windows = g_hash_table_new (NULL, NULL);
-    }
-
     if (pending_lists == NULL)
     {
         pending_lists = g_hash_table_new (g_str_hash, g_str_equal);
     }
-
-    /* Look to see if there's already a window for this file. */
-    existing_window = get_existing_window (original_files);
-    if (existing_window != NULL)
-    {
-        if (parent_widget)
-        {
-            gtk_window_set_display (GTK_WINDOW (existing_window),
-                                    gtk_widget_get_display (parent_widget));
-        }
-        else if (startup_id)
-        {
-            gtk_window_set_startup_id (GTK_WINDOW (existing_window), startup_id);
-        }
-
-        gtk_window_present (GTK_WINDOW (existing_window));
-        startup_data = startup_data_new (NULL, NULL, NULL, NULL, NULL, NULL,
-                                         callback, callback_data, existing_window);
-        g_signal_connect (GTK_WIDGET (existing_window), "destroy",
-                          G_CALLBACK (widget_on_destroy), startup_data);
-        return;
-    }
-
 
     pending_key = get_pending_key (original_files);
 
@@ -4206,8 +4137,6 @@ real_dispose (GObject *object)
     NautilusPropertiesWindow *self;
 
     self = NAUTILUS_PROPERTIES_WINDOW (object);
-
-    remove_window (self);
 
     unschedule_or_cancel_group_change (self);
     unschedule_or_cancel_owner_change (self);
