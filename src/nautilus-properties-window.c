@@ -804,6 +804,11 @@ setup_star_button (NautilusPropertiesWindow *self)
     NautilusFile *file = get_target_file (self);
     g_autoptr (GFile) parent_location = nautilus_file_get_parent_location (file);
 
+    if (parent_location == NULL)
+    {
+        return;
+    }
+
     if (nautilus_tag_manager_can_star_contents (tag_manager, parent_location))
     {
         gtk_widget_show (self->star_button);
