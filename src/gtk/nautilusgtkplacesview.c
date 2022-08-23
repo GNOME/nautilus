@@ -28,6 +28,7 @@
 #include "nautilusgtkplacesviewprivate.h"
 #include "nautilusgtkplacesviewrowprivate.h"
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-properties-window.h"
 
 /*< private >
@@ -1768,13 +1769,14 @@ real_popup_menu (GtkWidget *widget,
   NautilusGtkPlacesView *view;
   GMount *mount;
   GFile *file;
-  gboolean is_network;
+  gboolean is_root, is_network;
   double x_in_view, y_in_view;
 
   view = NAUTILUS_GTK_PLACES_VIEW (gtk_widget_get_ancestor (GTK_WIDGET (row), NAUTILUS_TYPE_GTK_PLACES_VIEW));
 
   mount = nautilus_gtk_places_view_row_get_mount (row);
   file = nautilus_gtk_places_view_row_get_file (row);
+  is_root = file && nautilus_is_root_directory (file);
   is_network = nautilus_gtk_places_view_row_get_is_network (row);
 
   gtk_widget_action_set_enabled (GTK_WIDGET (view), "location.disconnect",
@@ -1786,7 +1788,8 @@ real_popup_menu (GtkWidget *widget,
   gtk_widget_action_set_enabled (GTK_WIDGET (view), "location.mount",
                                  !file && !mount && !is_network);
   gtk_widget_action_set_enabled (GTK_WIDGET (view), "location.properties",
-                                 !(file && is_network));
+                                 (is_root ||
+                                  (mount && !(file && is_network))));
 
   if (!view->popup_menu)
     {
