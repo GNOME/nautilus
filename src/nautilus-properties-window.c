@@ -855,6 +855,8 @@ static void
 update_name_field (NautilusPropertiesWindow *self)
 {
     g_autoptr (GString) name_str = g_string_new ("");
+    g_autofree gchar *os_name = NULL;
+    gchar *name_value;
     guint file_counter = 0;
 
     for (GList *l = self->target_files; l != NULL; l = l->next)
@@ -876,7 +878,17 @@ update_name_field (NautilusPropertiesWindow *self)
         }
     }
 
-    gtk_label_set_text (self->name_value_label, name_str->str);
+    if (!is_multi_file_window (self) && is_root_directory (get_original_file (self)))
+    {
+        os_name = g_get_os_info (G_OS_INFO_KEY_NAME);
+        name_value = (os_name != NULL) ? os_name : _("Operating System");
+    }
+    else
+    {
+        name_value = name_str->str;
+    }
+
+    gtk_label_set_text (self->name_value_label, name_value);
 }
 
 /**
