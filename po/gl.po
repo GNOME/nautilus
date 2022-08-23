@@ -18,10 +18,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-16 07:02+0000\n"
-"PO-Revision-Date: 2022-08-20 13:21+0200\n"
+"POT-Creation-Date: 2022-08-22 21:54+0000\n"
+"PO-Revision-Date: 2022-08-23 08:18+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galician <proxecto@trasno.gal>\n"
+"Language-Team: Galician <Proxecto Trasno <proxecto@trasno.gal>>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,7 +84,8 @@ msgstr "O Proxecto GNOME"
 msgid "Tile View"
 msgstr "Vista de teselas"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-view.c:154
+#: src/nautilus-view.c:158
 msgid "List View"
 msgstr "Visualización en lista"
 
@@ -99,7 +100,7 @@ msgstr "Buscar"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:324
-#: src/nautilus-pathbar.c:372 src/gtk/nautilusgtkplacesview.ui:158
+#: src/nautilus-pathbar.c:374 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1429
 msgid "Other Locations"
 msgstr "Outras localizacións"
@@ -543,23 +544,19 @@ msgid "Title"
 msgstr "Título"
 
 #: extensions/audio-video-properties/totem-properties-view.c:123
-#| msgid "Artist:"
 msgid "Artist"
 msgstr "Artista"
 
 #: extensions/audio-video-properties/totem-properties-view.c:124
-#| msgid "Album:"
 msgid "Album"
 msgstr "Álbum"
 
 #: extensions/audio-video-properties/totem-properties-view.c:145
-#| msgid "Comment:"
 msgid "Comment"
 msgstr "Comentario"
 
 #: extensions/audio-video-properties/totem-properties-view.c:155
 #: extensions/audio-video-properties/totem-properties-view.c:162
-#| msgid "Year:"
 msgid "Year"
 msgstr "Ano"
 
@@ -574,17 +571,14 @@ msgid "%d × %d"
 msgstr "%d × %d"
 
 #: extensions/audio-video-properties/totem-properties-view.c:221
-#| msgid "Dimensions:"
 msgid "Dimensions"
 msgstr "Dimensións"
 
 #: extensions/audio-video-properties/totem-properties-view.c:224
-#| msgid "Video CD"
 msgid "Video Codec"
 msgstr "Códec de vídeo"
 
 #: extensions/audio-video-properties/totem-properties-view.c:225
-#| msgid "Bit rate:"
 msgid "Video Bit Rate"
 msgstr "Taxa de bits do vídeo"
 
@@ -596,17 +590,14 @@ msgstr[0] "%0.2f fotograma por segundo"
 msgstr[1] "%0.2f fotogramas por segundo"
 
 #: extensions/audio-video-properties/totem-properties-view.c:240
-#| msgid "Frame rate:"
 msgid "Frame Rate"
 msgstr "Taxa de marcos"
 
 #: extensions/audio-video-properties/totem-properties-view.c:251
-#| msgid "Audio CD"
 msgid "Audio Codec"
 msgstr "Códec de son"
 
 #: extensions/audio-video-properties/totem-properties-view.c:253
-#| msgid "Bit rate:"
 msgid "Audio Bit Rate"
 msgstr "Taxa de bits"
 
@@ -616,7 +607,6 @@ msgid "%d Hz"
 msgstr "%d Hz"
 
 #: extensions/audio-video-properties/totem-properties-view.c:259
-#| msgid "Sample rate:"
 msgid "Sample Rate"
 msgstr "Taxa de mostras"
 
@@ -633,38 +623,30 @@ msgid "Stereo"
 msgstr "Estéreo"
 
 #: extensions/audio-video-properties/totem-properties-view.c:276
-#| msgid "Channels:"
 msgid "Channels"
 msgstr "Canles"
 
 #: extensions/audio-video-properties/totem-properties-view.c:308
-#| msgctxt "shortcut window"
-#| msgid "Show item properties"
 msgid "Audio and Video Properties"
 msgstr "Propiedades do son e vídeo"
 
 #: extensions/audio-video-properties/totem-properties-view.c:310
-#| msgid "Properties"
 msgid "Audio Properties"
 msgstr "Propiedades do son"
 
 #: extensions/audio-video-properties/totem-properties-view.c:312
-#| msgid "Properties"
 msgid "Video Properties"
 msgstr "Propiedades do vídeo"
 
 #: extensions/audio-video-properties/totem-properties-view.c:319
-#| msgid "Duration:"
 msgid "Duration"
 msgstr "Duración"
 
 #: extensions/audio-video-properties/totem-properties-view.c:323
-#| msgid "Container:"
 msgid "Container"
 msgstr "Contedor"
 
 #: extensions/audio-video-properties/totem-properties-view.c:349
-#| msgid "Audio/Video"
 msgid "Audio/Video Properties"
 msgstr "Propiedades do Son/Vídeo"
 
@@ -782,7 +764,6 @@ msgid "Failed to load image information"
 msgstr "Produciuse un erro ao cargar a información da imaxe"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:482
-#| msgid "Properties"
 msgid "Image Properties"
 msgstr "Propiedades da imaxe"
 
@@ -893,17 +874,14 @@ msgid "Choose an application to open <b>%s</b>."
 msgstr "Escoller unha aplicación para abrir <b>%s</b>."
 
 #: src/nautilus-app-chooser.c:204
-#| msgid "Open %s"
 msgid "Open Items"
 msgstr "Abrir elementos"
 
 #: src/nautilus-app-chooser.c:208
-#| msgid "New Folder"
 msgid "Open Folder"
 msgstr "Abrir cartafol"
 
 #: src/nautilus-app-chooser.c:212 src/resources/ui/nautilus-app-chooser.ui:5
-#| msgid "Rename File"
 msgid "Open File"
 msgstr "Abrir ficheiro"
 
@@ -1064,7 +1042,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
-#: src/nautilus-pathbar.c:367 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-pathbar.c:369 src/nautilus-shell-search-provider.c:330
 #: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1002
 msgid "Home"
 msgstr "Cartafol persoal"
@@ -1094,7 +1072,7 @@ msgid "The type of the file."
 msgstr "O tipo do ficheiro."
 
 #: src/nautilus-column-utilities.c:80
-#: src/resources/ui/nautilus-properties-window.ui:553
+#: src/resources/ui/nautilus-properties-window.ui:554
 msgid "Modified"
 msgstr "Modificado"
 
@@ -1111,7 +1089,7 @@ msgid "The detailed type of the file."
 msgstr "O tipo detallado do ficheiro."
 
 #: src/nautilus-column-utilities.c:96
-#: src/resources/ui/nautilus-properties-window.ui:515
+#: src/resources/ui/nautilus-properties-window.ui:516
 msgid "Accessed"
 msgstr "Accedido"
 
@@ -1120,7 +1098,7 @@ msgid "The date the file was accessed."
 msgstr "A data na que se accedeu ao ficheiro."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-properties-window.ui:591
+#: src/resources/ui/nautilus-properties-window.ui:592
 #: src/resources/ui/nautilus-search-popover.ui:176
 msgid "Created"
 msgstr "Creado"
@@ -1426,7 +1404,7 @@ msgid "File not found"
 msgstr "Non foi posíbel atopar o ficheiro"
 
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
-#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:991
+#: src/nautilus-pathbar.c:379 src/gtk/nautilusgtkplacessidebar.c:991
 msgid "Starred"
 msgstr "Favorito"
 
@@ -1563,7 +1541,6 @@ msgstr "O grupo especificado «%s» non existe"
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
 #: src/nautilus-file.c:6833
 #, c-format
-#| msgid "%s (%s)"
 msgid "%s (You)"
 msgstr "%s (Vostede)"
 
@@ -1590,7 +1567,6 @@ msgstr[1] "%'u ficheiros"
 
 #: src/nautilus-file.c:6951
 #, c-format
-#| msgid "? bytes"
 msgid "%s byte"
 msgid_plural "%s bytes"
 msgstr[0] "%s byte"
@@ -1608,7 +1584,6 @@ msgstr "? elementos"
 
 #. Translators: This about a file type.
 #: src/nautilus-file.c:7382
-#| msgid "Unknown"
 msgid "Unknown type"
 msgstr "Tipo descoñecido"
 
@@ -1705,7 +1680,6 @@ msgstr "Ligazón (rota)"
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
 #: src/nautilus-file.c:7860
 #, c-format
-#| msgid "%s Filesystem"
 msgid "%s Free"
 msgstr "%s libres"
 
@@ -2774,6 +2748,10 @@ msgstr "Non hai ficheiros marcados"
 msgid "No Recent Files"
 msgstr "Non hai ficheiros recentes"
 
+#: src/nautilus-files-view.c:3713
+msgid "Folder is Empty"
+msgstr "O cartafol está baleiro"
+
 #: src/nautilus-files-view.c:5955
 msgid "Select Move Destination"
 msgstr "Seleccionar o destino de mover"
@@ -3523,7 +3501,6 @@ msgstr[0] "Isto abrirá %d xanela separada."
 msgstr[1] "Isto abrirá %d xanelas separadas."
 
 #: src/nautilus-mime-actions.c:1017
-#| msgid "_Open"
 msgid "_Open All"
 msgstr "_Abrir todo"
 
@@ -3781,20 +3758,24 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "«%s» é un contrasinal protexido."
 
+#: src/nautilus-pathbar.c:269
+#| msgid "Parent Folder"
+msgid "Current Folder Menu"
+msgstr "Menú do cartafol actual"
+
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:355 src/gtk/nautilusgtkplacesview.c:1103
+#: src/nautilus-pathbar.c:357 src/gtk/nautilusgtkplacesview.c:1103
 msgid "Operating System"
 msgstr "Sistema operativo"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:362
+#: src/nautilus-pathbar.c:364
 msgid "Administrator Root"
 msgstr "Administrador Root"
 
 #: src/nautilus-places-view.c:134
-#| msgid "_Close Tab"
 msgid "_Close"
 msgstr "_Pechar"
 
@@ -3958,8 +3939,6 @@ msgstr "O ficheiro que soltou non é unha imaxe."
 
 #. Translators: This is a verb for tagging or untagging a file with a star.
 #: src/nautilus-properties-window.c:783
-#| msgctxt "menu item"
-#| msgid "Unstar"
 msgid "Unstar"
 msgstr "Quitar favorito"
 
@@ -3980,13 +3959,10 @@ msgid "Multiple"
 msgstr "Múltiple"
 
 #: src/nautilus-properties-window.c:2158
-#| msgctxt "shortcut window"
-#| msgid "Expand folder"
 msgid "Empty folder"
 msgstr "Baleirar cartafol"
 
 #: src/nautilus-properties-window.c:2162
-#| msgid "(some contents unreadable)"
 msgid "Contents unreadable"
 msgstr "Contidos non lexíbeis"
 
@@ -4216,16 +4192,10 @@ msgstr[0] "Último ano"
 msgstr[1] "Hai %d anos"
 
 #: src/nautilus-view.c:150
-msgid "Show grid"
-msgstr "Mostrar grella"
-
-#: src/nautilus-view.c:154
-msgid "Show list"
-msgstr "Mostrar lista"
-
-#: src/nautilus-view.c:158
-msgid "Show List"
-msgstr "Mostrar lista"
+#| msgctxt "shortcut window"
+#| msgid "Grid view"
+msgid "Grid View"
+msgstr "Vista en grella"
 
 #: src/nautilus-window.c:153
 msgid "Parent folder"
@@ -4239,18 +4209,17 @@ msgstr "Nova lapela"
 msgid "Close current view"
 msgstr "Pechar a vista actual"
 
-#: src/nautilus-window.c:157
+#: src/nautilus-window.c:157 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Atrás"
 
-#: src/nautilus-window.c:158
+#: src/nautilus-window.c:158 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Adiante"
 
 #. Translators: only one item has been deleted and %s is its name.
 #: src/nautilus-window.c:1180
 #, c-format
-#| msgid "Move “%s” to trash"
 msgid "“%s” moved to trash"
 msgstr "«%s» movido ao lixo"
 
@@ -4814,7 +4783,6 @@ msgstr ""
 "omisión"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
-#| msgid "Create Archive"
 msgid "Create Compressed Archive"
 msgstr "Crear arquivo comprimido"
 
@@ -4859,7 +4827,7 @@ msgid "C_hange"
 msgstr "C_ambiar"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:137
-#: src/resources/ui/nautilus-properties-window.ui:843
+#: src/resources/ui/nautilus-properties-window.ui:844
 msgid "Others"
 msgstr "Outros"
 
@@ -4877,15 +4845,12 @@ msgstr "Novo _documento"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:66
 #: src/resources/ui/nautilus-files-view-context-menus.ui:99
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:29
-#| msgid "Open With"
 msgid "Open _With…"
 msgstr "Abrir _con…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:19
 #: src/resources/ui/nautilus-files-view-context-menus.ui:104
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:33
-#| msgctxt "shortcut window"
-#| msgid "Open in new tab"
 msgid "Open in Consol_e"
 msgstr "Abrir na _Consola"
 
@@ -4894,7 +4859,6 @@ msgid "_Paste"
 msgstr "_Pegar"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:29
-#| msgid "Create _Link"
 msgid "Paste as _Link"
 msgstr "Pegar como _ligazón"
 
@@ -4915,7 +4879,6 @@ msgid "P_roperties"
 msgstr "P_ropiedades"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:56
-#| msgid "Extract"
 msgid "_Extract"
 msgstr "_Extraer"
 
@@ -5047,16 +5010,7 @@ msgstr "Visualización de contido"
 msgid "View of the current folder"
 msgstr "Visualización do cartafol actual"
 
-#: src/resources/ui/nautilus-history-controls.ui:11
-msgid "Go back"
-msgstr "Ir atrás"
-
-#: src/resources/ui/nautilus-history-controls.ui:19
-msgid "Go forward"
-msgstr "Ir adiante"
-
 #: src/resources/ui/nautilus-list-view-column-editor.ui:15
-#| msgid "%s Visible Columns"
 msgid "Visible Columns"
 msgstr "Columnas visíbeis"
 
@@ -5065,7 +5019,6 @@ msgid "Choose the order of information to appear in this folder:"
 msgstr "Seleccione a orde de información que aparece neste cartafol:"
 
 #: src/resources/ui/nautilus-name-cell.ui:83
-#| msgid "Full Text"
 msgid "Full text match"
 msgstr "Coincidencia de texto completo"
 
@@ -5214,105 +5167,104 @@ msgstr "Mostrar operacións"
 msgid "Properties"
 msgstr "Propiedades"
 
-#: src/resources/ui/nautilus-properties-window.ui:121
+#: src/resources/ui/nautilus-properties-window.ui:122
 msgid "Unknown Filesystem"
 msgstr "Sistema de ficheiros descoñecido"
 
-#: src/resources/ui/nautilus-properties-window.ui:214
+#: src/resources/ui/nautilus-properties-window.ui:215
 msgid "total"
 msgstr "total"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:243
+#: src/resources/ui/nautilus-properties-window.ui:244
 msgid "used"
 msgstr "usado"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:273
+#: src/resources/ui/nautilus-properties-window.ui:274
 msgid "free"
 msgstr "libres"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:302
+#: src/resources/ui/nautilus-properties-window.ui:303
 msgid "Open in Disks"
 msgstr "Abrir en Discos"
 
-#: src/resources/ui/nautilus-properties-window.ui:336
+#: src/resources/ui/nautilus-properties-window.ui:337
 msgid "Link Target"
 msgstr "Destino da ligazón"
 
-#: src/resources/ui/nautilus-properties-window.ui:381
+#: src/resources/ui/nautilus-properties-window.ui:382
 msgid "Parent Folder"
 msgstr "Cartafol pai"
 
-#: src/resources/ui/nautilus-properties-window.ui:434
+#: src/resources/ui/nautilus-properties-window.ui:435
 msgid "Original Folder"
 msgstr "Cartafol orixinal"
 
-#: src/resources/ui/nautilus-properties-window.ui:468
+#: src/resources/ui/nautilus-properties-window.ui:469
 msgid "Trashed on"
 msgstr "Movido ao lixo o"
 
-#: src/resources/ui/nautilus-properties-window.ui:628
-#| msgid "Permissions"
+#: src/resources/ui/nautilus-properties-window.ui:629
 msgid "_Permissions"
 msgstr "_Permisos"
 
-#: src/resources/ui/nautilus-properties-window.ui:650
+#: src/resources/ui/nautilus-properties-window.ui:651
 msgid "_Executable as Program"
 msgstr "_Executábel como programa"
 
-#: src/resources/ui/nautilus-properties-window.ui:696
+#: src/resources/ui/nautilus-properties-window.ui:697
 msgid "Set Custom Permissions"
 msgstr "Estabelecer os permisos personalizados"
 
-#: src/resources/ui/nautilus-properties-window.ui:725
+#: src/resources/ui/nautilus-properties-window.ui:726
 msgid "Unknown Permissions"
 msgstr "Permisos descoñecidos"
 
-#: src/resources/ui/nautilus-properties-window.ui:726
+#: src/resources/ui/nautilus-properties-window.ui:727
 msgid "The permissions of the selected files could not be determined."
 msgstr "Non foi posíbel determinar ss permisos dos ficheiros seleccionados."
 
-#: src/resources/ui/nautilus-properties-window.ui:741
+#: src/resources/ui/nautilus-properties-window.ui:742
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Vostede non é o propietario polo que non pode cambiar estes permisos."
 
-#: src/resources/ui/nautilus-properties-window.ui:757
+#: src/resources/ui/nautilus-properties-window.ui:758
 msgid "The permissions of the selected file could not be determined."
 msgstr "Non é posíbel determinar os permisos do ficheiro seleccionado."
 
-#: src/resources/ui/nautilus-properties-window.ui:770
+#: src/resources/ui/nautilus-properties-window.ui:771
 msgid "_Owner"
 msgstr "_Propietario"
 
-#: src/resources/ui/nautilus-properties-window.ui:778
-#: src/resources/ui/nautilus-properties-window.ui:815
-#: src/resources/ui/nautilus-properties-window.ui:850
+#: src/resources/ui/nautilus-properties-window.ui:779
+#: src/resources/ui/nautilus-properties-window.ui:816
+#: src/resources/ui/nautilus-properties-window.ui:851
 msgid "Access"
 msgstr "Acceso"
 
-#: src/resources/ui/nautilus-properties-window.ui:785
-#: src/resources/ui/nautilus-properties-window.ui:822
-#: src/resources/ui/nautilus-properties-window.ui:857
+#: src/resources/ui/nautilus-properties-window.ui:786
+#: src/resources/ui/nautilus-properties-window.ui:823
+#: src/resources/ui/nautilus-properties-window.ui:858
 msgid "Folder Access"
 msgstr "Acceso ao cartafol"
 
-#: src/resources/ui/nautilus-properties-window.ui:792
-#: src/resources/ui/nautilus-properties-window.ui:829
-#: src/resources/ui/nautilus-properties-window.ui:864
+#: src/resources/ui/nautilus-properties-window.ui:793
+#: src/resources/ui/nautilus-properties-window.ui:830
+#: src/resources/ui/nautilus-properties-window.ui:865
 msgid "File Access"
 msgstr "Acceso ao ficheiro"
 
-#: src/resources/ui/nautilus-properties-window.ui:807
+#: src/resources/ui/nautilus-properties-window.ui:808
 msgid "_Group"
 msgstr "_Grupo"
 
-#: src/resources/ui/nautilus-properties-window.ui:877
+#: src/resources/ui/nautilus-properties-window.ui:878
 msgid "Security Context"
 msgstr "Contexto de seguranza"
 
-#: src/resources/ui/nautilus-properties-window.ui:898
+#: src/resources/ui/nautilus-properties-window.ui:899
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Cambiar permisos aos ficheiros contidos…"
 
@@ -5373,7 +5325,8 @@ msgid "New Tab"
 msgstr "Nova lapela"
 
 #: src/resources/ui/nautilus-toolbar.ui:18
-msgid "Icon size"
+#| msgid "Icon size"
+msgid "Icon Size"
 msgstr "Tamaño da icona"
 
 #: src/resources/ui/nautilus-toolbar.ui:42
@@ -5400,11 +5353,15 @@ msgstr "_Sobre Ficheiros"
 msgid "Show sidebar"
 msgstr "Mostrar barra lateral"
 
-#: src/resources/ui/nautilus-toolbar.ui:201
+#: src/resources/ui/nautilus-toolbar.ui:191
+msgid "Main Menu"
+msgstr "Menú principal"
+
+#: src/resources/ui/nautilus-toolbar.ui:202
 msgid "Zoom out"
 msgstr "Afastar"
 
-#: src/resources/ui/nautilus-toolbar.ui:211
+#: src/resources/ui/nautilus-toolbar.ui:212
 msgid "Zoom in"
 msgstr "Ampliar"
 
@@ -5442,7 +5399,8 @@ msgstr "Último en envío ao _lixo"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
 #: src/resources/ui/nautilus-view-controls.ui:26
-msgid "View options"
+#| msgid "View options"
+msgid "View Options"
 msgstr "Ver opcións"
 
 #: src/resources/ui/nautilus-window.ui:7
@@ -5752,6 +5710,21 @@ msgstr "Barra lateral"
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Lista de atallos, puntos de montaxe e marcadores comúns."
 
+#~ msgid "Show grid"
+#~ msgstr "Mostrar grella"
+
+#~ msgid "Show list"
+#~ msgstr "Mostrar lista"
+
+#~ msgid "Show List"
+#~ msgstr "Mostrar lista"
+
+#~ msgid "Go back"
+#~ msgstr "Ir atrás"
+
+#~ msgid "Go forward"
+#~ msgstr "Ir adiante"
+
 #~ msgctxt "Title"
 #~ msgid "Unknown"
 #~ msgstr "Descoñecido"
@@ -6002,9 +5975,6 @@ msgstr "Lista de atallos, puntos de montaxe e marcadores comúns."
 
 #~ msgid "Access and organize your files"
 #~ msgstr "Acceder aos seus ficheiros e organizalos"
-
-#~ msgid "Folder is Empty"
-#~ msgstr "O cartafol está baleiro"
 
 #~ msgid "Volume"
 #~ msgstr "Volume"
