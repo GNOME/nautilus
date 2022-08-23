@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-16 07:02+0000\n"
-"PO-Revision-Date: 2022-08-16 21:15+0300\n"
+"POT-Creation-Date: 2022-08-22 21:54+0000\n"
+"PO-Revision-Date: 2022-08-23 17:38+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -70,7 +70,8 @@ msgstr "Проєкт GNOME"
 msgid "Tile View"
 msgstr "Перегляд мозаїкою"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-view.c:154
+#: src/nautilus-view.c:158
 msgid "List View"
 msgstr "Перегляд списком"
 
@@ -85,7 +86,7 @@ msgstr "Пошук"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:324
-#: src/nautilus-pathbar.c:372 src/gtk/nautilusgtkplacesview.ui:158
+#: src/nautilus-pathbar.c:374 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1429
 msgid "Other Locations"
 msgstr "Інші адреси"
@@ -1035,7 +1036,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
-#: src/nautilus-pathbar.c:367 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-pathbar.c:369 src/nautilus-shell-search-provider.c:330
 #: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1002
 msgid "Home"
 msgstr "Домівка"
@@ -1065,7 +1066,7 @@ msgid "The type of the file."
 msgstr "Тип файла."
 
 #: src/nautilus-column-utilities.c:80
-#: src/resources/ui/nautilus-properties-window.ui:553
+#: src/resources/ui/nautilus-properties-window.ui:554
 msgid "Modified"
 msgstr "Змінено"
 
@@ -1082,7 +1083,7 @@ msgid "The detailed type of the file."
 msgstr "Докладно щодо типу файла."
 
 #: src/nautilus-column-utilities.c:96
-#: src/resources/ui/nautilus-properties-window.ui:515
+#: src/resources/ui/nautilus-properties-window.ui:516
 msgid "Accessed"
 msgstr "Дата доступу"
 
@@ -1091,7 +1092,7 @@ msgid "The date the file was accessed."
 msgstr "Дата останнього доступу до файла."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-properties-window.ui:591
+#: src/resources/ui/nautilus-properties-window.ui:592
 #: src/resources/ui/nautilus-search-popover.ui:176
 msgid "Created"
 msgstr "Створено"
@@ -1397,7 +1398,7 @@ msgid "File not found"
 msgstr "Файл не знайдено"
 
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
-#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:991
+#: src/nautilus-pathbar.c:379 src/gtk/nautilusgtkplacessidebar.c:991
 msgid "Starred"
 msgstr "З зірочками"
 
@@ -1560,8 +1561,6 @@ msgstr[3] "%'u файл"
 
 #: src/nautilus-file.c:6951
 #, c-format
-#| msgid "%lu byte"
-#| msgid_plural "%lu bytes"
 msgid "%s byte"
 msgid_plural "%s bytes"
 msgstr[0] "%s байт"
@@ -2798,6 +2797,10 @@ msgstr "Немає файлів із зірочками"
 msgid "No Recent Files"
 msgstr "Немає нещодавніх файлів"
 
+#: src/nautilus-files-view.c:3713
+msgid "Folder is Empty"
+msgstr "Тека — порожня"
+
 #: src/nautilus-files-view.c:5955
 msgid "Select Move Destination"
 msgstr "Виберіть ціль для перенесення"
@@ -3857,15 +3860,20 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "«%s» захищено паролем."
 
+#: src/nautilus-pathbar.c:269
+#| msgid "Parent Folder"
+msgid "Current Folder Menu"
+msgstr "Меню поточної теки"
+
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:355 src/gtk/nautilusgtkplacesview.c:1103
+#: src/nautilus-pathbar.c:357 src/gtk/nautilusgtkplacesview.c:1103
 msgid "Operating System"
 msgstr "Операційна система"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:362
+#: src/nautilus-pathbar.c:364
 msgid "Administrator Root"
 msgstr "Адміністративний корінь"
 
@@ -4305,16 +4313,10 @@ msgstr[2] "%d років тому"
 msgstr[3] "%d рік тому"
 
 #: src/nautilus-view.c:150
-msgid "Show grid"
-msgstr "Показати як таблицю"
-
-#: src/nautilus-view.c:154
-msgid "Show list"
-msgstr "Показати як список"
-
-#: src/nautilus-view.c:158
-msgid "Show List"
-msgstr "Показати як список"
+#| msgctxt "shortcut window"
+#| msgid "Grid view"
+msgid "Grid View"
+msgstr "Перегляд ґраткою"
 
 #: src/nautilus-window.c:153
 msgid "Parent folder"
@@ -4328,11 +4330,11 @@ msgstr "Нова вкладка"
 msgid "Close current view"
 msgstr "Закрити поточний перегляд"
 
-#: src/nautilus-window.c:157
+#: src/nautilus-window.c:157 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window.c:158
+#: src/nautilus-window.c:158 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Вперед"
 
@@ -4939,7 +4941,7 @@ msgid "C_hange"
 msgstr "З_мінити"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:137
-#: src/resources/ui/nautilus-properties-window.ui:843
+#: src/resources/ui/nautilus-properties-window.ui:844
 msgid "Others"
 msgstr "Інші"
 
@@ -5122,14 +5124,6 @@ msgstr "Перегляд вмісту"
 msgid "View of the current folder"
 msgstr "Перегляд теперішньої теки"
 
-#: src/resources/ui/nautilus-history-controls.ui:11
-msgid "Go back"
-msgstr "Перейти назад"
-
-#: src/resources/ui/nautilus-history-controls.ui:19
-msgid "Go forward"
-msgstr "Перейти вперед"
-
 #: src/resources/ui/nautilus-list-view-column-editor.ui:15
 msgid "Visible Columns"
 msgstr "Видимі стовпчики"
@@ -5287,104 +5281,104 @@ msgstr "Показати операції"
 msgid "Properties"
 msgstr "Властивості"
 
-#: src/resources/ui/nautilus-properties-window.ui:121
+#: src/resources/ui/nautilus-properties-window.ui:122
 msgid "Unknown Filesystem"
 msgstr "Невідома файлова система"
 
-#: src/resources/ui/nautilus-properties-window.ui:214
+#: src/resources/ui/nautilus-properties-window.ui:215
 msgid "total"
 msgstr "загалом"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:243
+#: src/resources/ui/nautilus-properties-window.ui:244
 msgid "used"
 msgstr "зайнято"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:273
+#: src/resources/ui/nautilus-properties-window.ui:274
 msgid "free"
 msgstr "вільно"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:302
+#: src/resources/ui/nautilus-properties-window.ui:303
 msgid "Open in Disks"
 msgstr "Відкрити у «Дисках»"
 
-#: src/resources/ui/nautilus-properties-window.ui:336
+#: src/resources/ui/nautilus-properties-window.ui:337
 msgid "Link Target"
 msgstr "Ціль посилання"
 
-#: src/resources/ui/nautilus-properties-window.ui:381
+#: src/resources/ui/nautilus-properties-window.ui:382
 msgid "Parent Folder"
 msgstr "Батьківська тека"
 
-#: src/resources/ui/nautilus-properties-window.ui:434
+#: src/resources/ui/nautilus-properties-window.ui:435
 msgid "Original Folder"
 msgstr "Початкова тека"
 
-#: src/resources/ui/nautilus-properties-window.ui:468
+#: src/resources/ui/nautilus-properties-window.ui:469
 msgid "Trashed on"
 msgstr "Викинуто"
 
-#: src/resources/ui/nautilus-properties-window.ui:628
+#: src/resources/ui/nautilus-properties-window.ui:629
 msgid "_Permissions"
 msgstr "П_рава доступу"
 
-#: src/resources/ui/nautilus-properties-window.ui:650
+#: src/resources/ui/nautilus-properties-window.ui:651
 msgid "_Executable as Program"
 msgstr "_Виконання файла як програми"
 
-#: src/resources/ui/nautilus-properties-window.ui:696
+#: src/resources/ui/nautilus-properties-window.ui:697
 msgid "Set Custom Permissions"
 msgstr "Встановити нетипові права доступу"
 
-#: src/resources/ui/nautilus-properties-window.ui:725
+#: src/resources/ui/nautilus-properties-window.ui:726
 msgid "Unknown Permissions"
 msgstr "Невідомі права доступу"
 
-#: src/resources/ui/nautilus-properties-window.ui:726
+#: src/resources/ui/nautilus-properties-window.ui:727
 msgid "The permissions of the selected files could not be determined."
 msgstr "Не вдалось визначити визначити права доступу до вибраних файлів."
 
-#: src/resources/ui/nautilus-properties-window.ui:741
+#: src/resources/ui/nautilus-properties-window.ui:742
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Ви не власник, тож не можете змінювати ці права."
 
-#: src/resources/ui/nautilus-properties-window.ui:757
+#: src/resources/ui/nautilus-properties-window.ui:758
 msgid "The permissions of the selected file could not be determined."
 msgstr "Не вдалось визначити визначити права доступу на вибраний файл."
 
-#: src/resources/ui/nautilus-properties-window.ui:770
+#: src/resources/ui/nautilus-properties-window.ui:771
 msgid "_Owner"
 msgstr "В_ласник"
 
-#: src/resources/ui/nautilus-properties-window.ui:778
-#: src/resources/ui/nautilus-properties-window.ui:815
-#: src/resources/ui/nautilus-properties-window.ui:850
+#: src/resources/ui/nautilus-properties-window.ui:779
+#: src/resources/ui/nautilus-properties-window.ui:816
+#: src/resources/ui/nautilus-properties-window.ui:851
 msgid "Access"
 msgstr "Доступ"
 
-#: src/resources/ui/nautilus-properties-window.ui:785
-#: src/resources/ui/nautilus-properties-window.ui:822
-#: src/resources/ui/nautilus-properties-window.ui:857
+#: src/resources/ui/nautilus-properties-window.ui:786
+#: src/resources/ui/nautilus-properties-window.ui:823
+#: src/resources/ui/nautilus-properties-window.ui:858
 msgid "Folder Access"
 msgstr "Доступ до теки"
 
-#: src/resources/ui/nautilus-properties-window.ui:792
-#: src/resources/ui/nautilus-properties-window.ui:829
-#: src/resources/ui/nautilus-properties-window.ui:864
+#: src/resources/ui/nautilus-properties-window.ui:793
+#: src/resources/ui/nautilus-properties-window.ui:830
+#: src/resources/ui/nautilus-properties-window.ui:865
 msgid "File Access"
 msgstr "Доступ до файла"
 
-#: src/resources/ui/nautilus-properties-window.ui:807
+#: src/resources/ui/nautilus-properties-window.ui:808
 msgid "_Group"
 msgstr "_Група"
 
-#: src/resources/ui/nautilus-properties-window.ui:877
+#: src/resources/ui/nautilus-properties-window.ui:878
 msgid "Security Context"
 msgstr "Контекст безпеки"
 
-#: src/resources/ui/nautilus-properties-window.ui:898
+#: src/resources/ui/nautilus-properties-window.ui:899
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Змінити права для вкладених файлів…"
 
@@ -5445,7 +5439,8 @@ msgid "New Tab"
 msgstr "Нова вкладка"
 
 #: src/resources/ui/nautilus-toolbar.ui:18
-msgid "Icon size"
+#| msgid "Icon size"
+msgid "Icon Size"
 msgstr "Розмір піктограм"
 
 #: src/resources/ui/nautilus-toolbar.ui:42
@@ -5472,11 +5467,15 @@ msgstr "_Про файли"
 msgid "Show sidebar"
 msgstr "Показати бічну панель"
 
-#: src/resources/ui/nautilus-toolbar.ui:201
+#: src/resources/ui/nautilus-toolbar.ui:191
+msgid "Main Menu"
+msgstr "Головне меню"
+
+#: src/resources/ui/nautilus-toolbar.ui:202
 msgid "Zoom out"
 msgstr "Віддалити"
 
-#: src/resources/ui/nautilus-toolbar.ui:211
+#: src/resources/ui/nautilus-toolbar.ui:212
 msgid "Zoom in"
 msgstr "Наблизити"
 
@@ -5514,7 +5513,8 @@ msgstr "Востаннє _очищено"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
 #: src/resources/ui/nautilus-view-controls.ui:26
-msgid "View options"
+#| msgid "View options"
+msgid "View Options"
 msgstr "Параметри перегляду"
 
 #: src/resources/ui/nautilus-window.ui:7
@@ -5824,6 +5824,21 @@ msgstr "Бічна панель"
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Список типових скорочень, точок монтування та закладок."
 
+#~ msgid "Show grid"
+#~ msgstr "Показати як таблицю"
+
+#~ msgid "Show list"
+#~ msgstr "Показати як список"
+
+#~ msgid "Show List"
+#~ msgstr "Показати як список"
+
+#~ msgid "Go back"
+#~ msgstr "Перейти назад"
+
+#~ msgid "Go forward"
+#~ msgstr "Перейти вперед"
+
 #~| msgid "%a"
 #~ msgid "%"
 #~ msgid_plural "%"
@@ -6076,9 +6091,6 @@ msgstr "Список типових скорочень, точок монтув�
 #~ msgstr[1] "Переглянути %d в окремих вікнах?"
 #~ msgstr[2] "Переглянути %d в окремих вікнах?"
 #~ msgstr[3] "Переглянути %d в окремому вікні?"
-
-#~ msgid "Folder is Empty"
-#~ msgstr "Тека — порожня"
 
 #~ msgid "Starred files will appear here"
 #~ msgstr "Тут буде показано позначені зірками файли"
