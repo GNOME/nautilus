@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-16 07:02+0000\n"
-"PO-Revision-Date: 2022-08-20 14:42+0200\n"
+"POT-Creation-Date: 2022-08-23 03:33+0000\n"
+"PO-Revision-Date: 2022-08-23 06:47+0200\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
 "Language-Team: српски <gnome-sr@googlegroups.org>\n"
 "Language: sr\n"
@@ -72,7 +72,8 @@ msgstr "Гномов пројекат"
 msgid "Tile View"
 msgstr "Преглед плочица"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-view.c:154
+#: src/nautilus-view.c:158
 msgid "List View"
 msgstr "Прикажи као списак"
 
@@ -87,7 +88,7 @@ msgstr "Претрага"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:324
-#: src/nautilus-pathbar.c:372 src/gtk/nautilusgtkplacesview.ui:158
+#: src/nautilus-pathbar.c:374 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1429
 msgid "Other Locations"
 msgstr "Друга места"
@@ -1042,7 +1043,7 @@ msgstr "001, 002, 003"
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # ako je za "home directory", onda bi bilo dobro "licni direktorijum", ako je za "home page", onda za "licna stranica"
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
-#: src/nautilus-pathbar.c:367 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-pathbar.c:369 src/nautilus-shell-search-provider.c:330
 #: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1002
 msgid "Home"
 msgstr "Личнo"
@@ -1072,7 +1073,7 @@ msgid "The type of the file."
 msgstr "Врста датотеке."
 
 #: src/nautilus-column-utilities.c:80
-#: src/resources/ui/nautilus-properties-window.ui:553
+#: src/resources/ui/nautilus-properties-window.ui:554
 msgid "Modified"
 msgstr "Датум измене"
 
@@ -1089,7 +1090,7 @@ msgid "The detailed type of the file."
 msgstr "Опширан опис врсте датотеке."
 
 #: src/nautilus-column-utilities.c:96
-#: src/resources/ui/nautilus-properties-window.ui:515
+#: src/resources/ui/nautilus-properties-window.ui:516
 msgid "Accessed"
 msgstr "Датум приступа"
 
@@ -1098,7 +1099,7 @@ msgid "The date the file was accessed."
 msgstr "Датум када је последњи пут датотека коришћена."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-properties-window.ui:591
+#: src/resources/ui/nautilus-properties-window.ui:592
 #: src/resources/ui/nautilus-search-popover.ui:176
 msgid "Created"
 msgstr "Датум настанка"
@@ -1408,7 +1409,7 @@ msgid "File not found"
 msgstr "Датотека није пронађена"
 
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
-#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:991
+#: src/nautilus-pathbar.c:379 src/gtk/nautilusgtkplacessidebar.c:991
 msgid "Starred"
 msgstr "Са звездом"
 
@@ -2824,6 +2825,10 @@ msgstr "Нема датотека са звездом"
 msgid "No Recent Files"
 msgstr "Нема недавних датотека"
 
+#: src/nautilus-files-view.c:3713
+msgid "Folder is Empty"
+msgstr "Фасцикла је празна"
+
 #: src/nautilus-files-view.c:5955
 msgid "Select Move Destination"
 msgstr "Изаберите одредиште премештања"
@@ -3882,15 +3887,19 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "„%s“ је заштићено лозинком."
 
+#: src/nautilus-pathbar.c:269
+msgid "Current Folder Menu"
+msgstr "Мени тренутне фасцикле"
+
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:355 src/gtk/nautilusgtkplacesview.c:1103
+#: src/nautilus-pathbar.c:357 src/gtk/nautilusgtkplacesview.c:1103
 msgid "Operating System"
 msgstr "Оперативни систем"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:362
+#: src/nautilus-pathbar.c:364
 msgid "Administrator Root"
 msgstr "Администраторска партиција"
 
@@ -4327,16 +4336,8 @@ msgstr[2] "Пре %d година"
 msgstr[3] "Прошле године"
 
 #: src/nautilus-view.c:150
-msgid "Show grid"
-msgstr "Прикажи мрежу"
-
-#: src/nautilus-view.c:154
-msgid "Show list"
-msgstr "Прикажи списак"
-
-#: src/nautilus-view.c:158
-msgid "Show List"
-msgstr "Прикажи списак"
+msgid "Grid View"
+msgstr "Прикажи као мрежу"
 
 #: src/nautilus-window.c:153
 msgid "Parent folder"
@@ -4350,11 +4351,11 @@ msgstr "Нови језичак"
 msgid "Close current view"
 msgstr "Затворите тренутни прозор"
 
-#: src/nautilus-window.c:157
+#: src/nautilus-window.c:157 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window.c:158
+#: src/nautilus-window.c:158 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Напред"
 
@@ -4968,7 +4969,7 @@ msgid "C_hange"
 msgstr "Про_мени"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:137
-#: src/resources/ui/nautilus-properties-window.ui:843
+#: src/resources/ui/nautilus-properties-window.ui:844
 msgid "Others"
 msgstr "Остали"
 
@@ -5151,14 +5152,6 @@ msgstr "Преглед садржаја"
 msgid "View of the current folder"
 msgstr "Преглед текуће фасцикле"
 
-#: src/resources/ui/nautilus-history-controls.ui:11
-msgid "Go back"
-msgstr "Иди назад"
-
-#: src/resources/ui/nautilus-history-controls.ui:19
-msgid "Go forward"
-msgstr "Иди напред"
-
 # bug: plural-forms?
 #: src/resources/ui/nautilus-list-view-column-editor.ui:15
 msgid "Visible Columns"
@@ -5316,104 +5309,104 @@ msgstr "Прикажи радње"
 msgid "Properties"
 msgstr "Особине"
 
-#: src/resources/ui/nautilus-properties-window.ui:121
+#: src/resources/ui/nautilus-properties-window.ui:122
 msgid "Unknown Filesystem"
 msgstr "Непознати систем датотека"
 
-#: src/resources/ui/nautilus-properties-window.ui:214
+#: src/resources/ui/nautilus-properties-window.ui:215
 msgid "total"
 msgstr "укупно"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:243
+#: src/resources/ui/nautilus-properties-window.ui:244
 msgid "used"
 msgstr "заузето"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:273
+#: src/resources/ui/nautilus-properties-window.ui:274
 msgid "free"
 msgstr "слободно"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:302
+#: src/resources/ui/nautilus-properties-window.ui:303
 msgid "Open in Disks"
 msgstr "Отвори унутар Дискова"
 
-#: src/resources/ui/nautilus-properties-window.ui:336
+#: src/resources/ui/nautilus-properties-window.ui:337
 msgid "Link Target"
 msgstr "Мета везе"
 
-#: src/resources/ui/nautilus-properties-window.ui:381
+#: src/resources/ui/nautilus-properties-window.ui:382
 msgid "Parent Folder"
 msgstr "Родитељска фасцикла"
 
-#: src/resources/ui/nautilus-properties-window.ui:434
+#: src/resources/ui/nautilus-properties-window.ui:435
 msgid "Original Folder"
 msgstr "Изворна фасцикла"
 
-#: src/resources/ui/nautilus-properties-window.ui:468
+#: src/resources/ui/nautilus-properties-window.ui:469
 msgid "Trashed on"
 msgstr "Обрисано дана"
 
-#: src/resources/ui/nautilus-properties-window.ui:628
+#: src/resources/ui/nautilus-properties-window.ui:629
 msgid "_Permissions"
 msgstr "Ов_лашћења"
 
-#: src/resources/ui/nautilus-properties-window.ui:650
+#: src/resources/ui/nautilus-properties-window.ui:651
 msgid "_Executable as Program"
 msgstr "Изв_рши као програм"
 
-#: src/resources/ui/nautilus-properties-window.ui:696
+#: src/resources/ui/nautilus-properties-window.ui:697
 msgid "Set Custom Permissions"
 msgstr "Постави прилагођена овлашћења"
 
-#: src/resources/ui/nautilus-properties-window.ui:725
+#: src/resources/ui/nautilus-properties-window.ui:726
 msgid "Unknown Permissions"
 msgstr "Непозната овлашћења"
 
-#: src/resources/ui/nautilus-properties-window.ui:726
+#: src/resources/ui/nautilus-properties-window.ui:727
 msgid "The permissions of the selected files could not be determined."
 msgstr "Не могу да утврдим овлашћења за изабране фасцикле."
 
-#: src/resources/ui/nautilus-properties-window.ui:741
+#: src/resources/ui/nautilus-properties-window.ui:742
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Ви нисте власник, и зато не можете изменити ова овлашћења."
 
-#: src/resources/ui/nautilus-properties-window.ui:757
+#: src/resources/ui/nautilus-properties-window.ui:758
 msgid "The permissions of the selected file could not be determined."
 msgstr "Не могу да утврдим овлашћења за изабрану датотеку."
 
-#: src/resources/ui/nautilus-properties-window.ui:770
+#: src/resources/ui/nautilus-properties-window.ui:771
 msgid "_Owner"
 msgstr "_Власник"
 
-#: src/resources/ui/nautilus-properties-window.ui:778
-#: src/resources/ui/nautilus-properties-window.ui:815
-#: src/resources/ui/nautilus-properties-window.ui:850
+#: src/resources/ui/nautilus-properties-window.ui:779
+#: src/resources/ui/nautilus-properties-window.ui:816
+#: src/resources/ui/nautilus-properties-window.ui:851
 msgid "Access"
 msgstr "Приступ"
 
-#: src/resources/ui/nautilus-properties-window.ui:785
-#: src/resources/ui/nautilus-properties-window.ui:822
-#: src/resources/ui/nautilus-properties-window.ui:857
+#: src/resources/ui/nautilus-properties-window.ui:786
+#: src/resources/ui/nautilus-properties-window.ui:823
+#: src/resources/ui/nautilus-properties-window.ui:858
 msgid "Folder Access"
 msgstr "Приступ фасцикли"
 
-#: src/resources/ui/nautilus-properties-window.ui:792
-#: src/resources/ui/nautilus-properties-window.ui:829
-#: src/resources/ui/nautilus-properties-window.ui:864
+#: src/resources/ui/nautilus-properties-window.ui:793
+#: src/resources/ui/nautilus-properties-window.ui:830
+#: src/resources/ui/nautilus-properties-window.ui:865
 msgid "File Access"
 msgstr "Приступ датотеци"
 
-#: src/resources/ui/nautilus-properties-window.ui:807
+#: src/resources/ui/nautilus-properties-window.ui:808
 msgid "_Group"
 msgstr "_Група"
 
-#: src/resources/ui/nautilus-properties-window.ui:877
+#: src/resources/ui/nautilus-properties-window.ui:878
 msgid "Security Context"
 msgstr "Безбедносни контекст"
 
-#: src/resources/ui/nautilus-properties-window.ui:898
+#: src/resources/ui/nautilus-properties-window.ui:899
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Измени овлашћења за садржане датотеке…"
 
@@ -5474,7 +5467,7 @@ msgid "New Tab"
 msgstr "Нови језичак"
 
 #: src/resources/ui/nautilus-toolbar.ui:18
-msgid "Icon size"
+msgid "Icon Size"
 msgstr "Величина иконице"
 
 #: src/resources/ui/nautilus-toolbar.ui:42
@@ -5501,11 +5494,15 @@ msgstr "_О програму"
 msgid "Show sidebar"
 msgstr "Прикажи бочну површ"
 
-#: src/resources/ui/nautilus-toolbar.ui:201
+#: src/resources/ui/nautilus-toolbar.ui:191
+msgid "Main Menu"
+msgstr "Главни мени"
+
+#: src/resources/ui/nautilus-toolbar.ui:202
 msgid "Zoom out"
 msgstr "Умањи"
 
-#: src/resources/ui/nautilus-toolbar.ui:211
+#: src/resources/ui/nautilus-toolbar.ui:212
 msgid "Zoom in"
 msgstr "Увећај"
 
@@ -5543,7 +5540,7 @@ msgstr "Последње бачено у _смеће"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
 #: src/resources/ui/nautilus-view-controls.ui:26
-msgid "View options"
+msgid "View Options"
 msgstr "Могућности прегледа"
 
 #: src/resources/ui/nautilus-window.ui:7
@@ -5854,6 +5851,21 @@ msgstr "Бочна површ"
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Списак честих пречица, тачака качења и обележивача."
 
+#~ msgid "Show grid"
+#~ msgstr "Прикажи мрежу"
+
+#~ msgid "Show list"
+#~ msgstr "Прикажи списак"
+
+#~ msgid "Show List"
+#~ msgstr "Прикажи списак"
+
+#~ msgid "Go back"
+#~ msgstr "Иди назад"
+
+#~ msgid "Go forward"
+#~ msgstr "Иди напред"
+
 #~ msgid "%"
 #~ msgid_plural "%"
 #~ msgstr[0] "%"
@@ -6143,9 +6155,6 @@ msgstr "Списак честих пречица, тачака качења и �
 #~ msgctxt "menu item"
 #~ msgid "Star"
 #~ msgstr "Додај звездицу"
-
-#~ msgid "Folder is Empty"
-#~ msgstr "Фасцикла је празна"
 
 #~ msgid "Contents"
 #~ msgstr "Садржај"
