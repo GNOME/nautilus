@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-08-16 07:02+0000\n"
-"PO-Revision-Date: 2022-08-18 13:45+0300\n"
+"POT-Creation-Date: 2022-08-22 21:54+0000\n"
+"PO-Revision-Date: 2022-08-23 19:12+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "Language: he\n"
@@ -78,7 +78,8 @@ msgstr "מיזם GNOME"
 msgid "Tile View"
 msgstr "תצוגת אריחים"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-view.c:154
+#: src/nautilus-view.c:158
 msgid "List View"
 msgstr "תצוגת רשימה"
 
@@ -93,7 +94,7 @@ msgstr "חיפוש"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:324
-#: src/nautilus-pathbar.c:372 src/gtk/nautilusgtkplacesview.ui:158
+#: src/nautilus-pathbar.c:374 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1429
 msgid "Other Locations"
 msgstr "מיקומים אחרים"
@@ -1031,7 +1032,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:305
-#: src/nautilus-pathbar.c:367 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-pathbar.c:369 src/nautilus-shell-search-provider.c:330
 #: src/nautilus-window.c:154 src/gtk/nautilusgtkplacessidebar.c:1002
 msgid "Home"
 msgstr "בית"
@@ -1061,7 +1062,7 @@ msgid "The type of the file."
 msgstr "סוג הקובץ."
 
 #: src/nautilus-column-utilities.c:80
-#: src/resources/ui/nautilus-properties-window.ui:553
+#: src/resources/ui/nautilus-properties-window.ui:554
 msgid "Modified"
 msgstr "מועד שינוי"
 
@@ -1078,7 +1079,7 @@ msgid "The detailed type of the file."
 msgstr "פרטים על סוג הקובץ."
 
 #: src/nautilus-column-utilities.c:96
-#: src/resources/ui/nautilus-properties-window.ui:515
+#: src/resources/ui/nautilus-properties-window.ui:516
 msgid "Accessed"
 msgstr "מועד גישה"
 
@@ -1087,7 +1088,7 @@ msgid "The date the file was accessed."
 msgstr "התאריך בו ניגשו לקובץ."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-properties-window.ui:591
+#: src/resources/ui/nautilus-properties-window.ui:592
 #: src/resources/ui/nautilus-search-popover.ui:176
 msgid "Created"
 msgstr "נוצר"
@@ -1389,7 +1390,7 @@ msgid "File not found"
 msgstr "קובץ לא נמצא"
 
 #: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:328
-#: src/nautilus-pathbar.c:377 src/gtk/nautilusgtkplacessidebar.c:991
+#: src/nautilus-pathbar.c:379 src/gtk/nautilusgtkplacessidebar.c:991
 msgid "Starred"
 msgstr "מסומן בכוכב"
 
@@ -1552,8 +1553,6 @@ msgstr[3] "‫%'u קבצים"
 
 #: src/nautilus-file.c:6951
 #, c-format
-#| msgid "%lu byte"
-#| msgid_plural "%lu bytes"
 msgid "%s byte"
 msgid_plural "%s bytes"
 msgstr[0] "בית אחד"
@@ -2791,6 +2790,10 @@ msgstr "אין קבצים מסומנים בכוכב"
 msgid "No Recent Files"
 msgstr "אין קבצים אחרונים"
 
+#: src/nautilus-files-view.c:3713
+msgid "Folder is Empty"
+msgstr "תיקייה זו ריקה"
+
 #: src/nautilus-files-view.c:5955
 msgid "Select Move Destination"
 msgstr "בחירת יעד להעברה"
@@ -3845,15 +3848,20 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "‏„‎%s” מוגן בססמה."
 
+#: src/nautilus-pathbar.c:269
+#| msgid "Cut Folder"
+msgid "Current Folder Menu"
+msgstr "תפריט תיקייה נוכחית"
+
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:355 src/gtk/nautilusgtkplacesview.c:1103
+#: src/nautilus-pathbar.c:357 src/gtk/nautilusgtkplacesview.c:1103
 msgid "Operating System"
 msgstr "מערכת הפעלה"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:362
+#: src/nautilus-pathbar.c:364
 msgid "Administrator Root"
 msgstr "מנהל מערכת (Root)"
 
@@ -4285,16 +4293,10 @@ msgstr[2] "לפני %d שנים"
 msgstr[3] "לפני %d שנים"
 
 #: src/nautilus-view.c:150
-msgid "Show grid"
-msgstr "הצגת רשת"
-
-#: src/nautilus-view.c:154
-msgid "Show list"
-msgstr "הצגת רשימה"
-
-#: src/nautilus-view.c:158
-msgid "Show List"
-msgstr "הצגת רשימה"
+#| msgctxt "shortcut window"
+#| msgid "Grid view"
+msgid "Grid View"
+msgstr "תצוגת רשת"
 
 #: src/nautilus-window.c:153
 msgid "Parent folder"
@@ -4308,18 +4310,17 @@ msgstr "לשונית חדשה"
 msgid "Close current view"
 msgstr "סגירת התצוגה הנוכחית"
 
-#: src/nautilus-window.c:157
+#: src/nautilus-window.c:157 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "אחורה"
 
-#: src/nautilus-window.c:158
+#: src/nautilus-window.c:158 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "קדימה"
 
 #. Translators: only one item has been deleted and %s is its name.
 #: src/nautilus-window.c:1180
 #, c-format
-#| msgid "Move “%s” to trash"
 msgid "“%s” moved to trash"
 msgstr "‏„%s” הועבר לאשפה"
 
@@ -4920,7 +4921,7 @@ msgid "C_hange"
 msgstr "_שינוי"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:137
-#: src/resources/ui/nautilus-properties-window.ui:843
+#: src/resources/ui/nautilus-properties-window.ui:844
 msgid "Others"
 msgstr "אחרים"
 
@@ -5103,14 +5104,6 @@ msgstr "תצוגה נוכחית"
 msgid "View of the current folder"
 msgstr "תצוגה של התיקייה הנוכחית"
 
-#: src/resources/ui/nautilus-history-controls.ui:11
-msgid "Go back"
-msgstr "אחורה"
-
-#: src/resources/ui/nautilus-history-controls.ui:19
-msgid "Go forward"
-msgstr "קדימה"
-
 #: src/resources/ui/nautilus-list-view-column-editor.ui:15
 msgid "Visible Columns"
 msgstr "עמודות גלויות"
@@ -5267,104 +5260,104 @@ msgstr "הצג פעולות"
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: src/resources/ui/nautilus-properties-window.ui:121
+#: src/resources/ui/nautilus-properties-window.ui:122
 msgid "Unknown Filesystem"
 msgstr "סוג מערכת קבצים לא ידוע"
 
-#: src/resources/ui/nautilus-properties-window.ui:214
+#: src/resources/ui/nautilus-properties-window.ui:215
 msgid "total"
 msgstr "סה״כ"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:243
+#: src/resources/ui/nautilus-properties-window.ui:244
 msgid "used"
 msgstr "בשימוש"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:273
+#: src/resources/ui/nautilus-properties-window.ui:274
 msgid "free"
 msgstr "פנוי"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:302
+#: src/resources/ui/nautilus-properties-window.ui:303
 msgid "Open in Disks"
 msgstr "פתיחה באמצעות כוננים"
 
-#: src/resources/ui/nautilus-properties-window.ui:336
+#: src/resources/ui/nautilus-properties-window.ui:337
 msgid "Link Target"
 msgstr "יעד קישור"
 
-#: src/resources/ui/nautilus-properties-window.ui:381
+#: src/resources/ui/nautilus-properties-window.ui:382
 msgid "Parent Folder"
 msgstr "תיקייה מכילה"
 
-#: src/resources/ui/nautilus-properties-window.ui:434
+#: src/resources/ui/nautilus-properties-window.ui:435
 msgid "Original Folder"
 msgstr "תיקייה מקורית"
 
-#: src/resources/ui/nautilus-properties-window.ui:468
+#: src/resources/ui/nautilus-properties-window.ui:469
 msgid "Trashed on"
 msgstr "נזרק לאשפה"
 
-#: src/resources/ui/nautilus-properties-window.ui:628
+#: src/resources/ui/nautilus-properties-window.ui:629
 msgid "_Permissions"
 msgstr "_הרשאות"
 
-#: src/resources/ui/nautilus-properties-window.ui:650
+#: src/resources/ui/nautilus-properties-window.ui:651
 msgid "_Executable as Program"
 msgstr "ה_רצה כתָכְנה"
 
-#: src/resources/ui/nautilus-properties-window.ui:696
+#: src/resources/ui/nautilus-properties-window.ui:697
 msgid "Set Custom Permissions"
 msgstr "הגדרת הרשאות מותאמות"
 
-#: src/resources/ui/nautilus-properties-window.ui:725
+#: src/resources/ui/nautilus-properties-window.ui:726
 msgid "Unknown Permissions"
 msgstr "הרשאות לא ידועות"
 
-#: src/resources/ui/nautilus-properties-window.ui:726
+#: src/resources/ui/nautilus-properties-window.ui:727
 msgid "The permissions of the selected files could not be determined."
 msgstr "לא ניתן לזהות את ההרשאות של הקבצים הנבחרים."
 
-#: src/resources/ui/nautilus-properties-window.ui:741
+#: src/resources/ui/nautilus-properties-window.ui:742
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "אינך הבעלים, לכן אינך יכול לשנות את ההרשאות."
 
-#: src/resources/ui/nautilus-properties-window.ui:757
+#: src/resources/ui/nautilus-properties-window.ui:758
 msgid "The permissions of the selected file could not be determined."
 msgstr "לא ניתן לזהות את ההרשאות של הקובץ הנבחר."
 
-#: src/resources/ui/nautilus-properties-window.ui:770
+#: src/resources/ui/nautilus-properties-window.ui:771
 msgid "_Owner"
 msgstr "_בעלים"
 
-#: src/resources/ui/nautilus-properties-window.ui:778
-#: src/resources/ui/nautilus-properties-window.ui:815
-#: src/resources/ui/nautilus-properties-window.ui:850
+#: src/resources/ui/nautilus-properties-window.ui:779
+#: src/resources/ui/nautilus-properties-window.ui:816
+#: src/resources/ui/nautilus-properties-window.ui:851
 msgid "Access"
 msgstr "גישה"
 
-#: src/resources/ui/nautilus-properties-window.ui:785
-#: src/resources/ui/nautilus-properties-window.ui:822
-#: src/resources/ui/nautilus-properties-window.ui:857
+#: src/resources/ui/nautilus-properties-window.ui:786
+#: src/resources/ui/nautilus-properties-window.ui:823
+#: src/resources/ui/nautilus-properties-window.ui:858
 msgid "Folder Access"
 msgstr "גישה לתיקייה"
 
-#: src/resources/ui/nautilus-properties-window.ui:792
-#: src/resources/ui/nautilus-properties-window.ui:829
-#: src/resources/ui/nautilus-properties-window.ui:864
+#: src/resources/ui/nautilus-properties-window.ui:793
+#: src/resources/ui/nautilus-properties-window.ui:830
+#: src/resources/ui/nautilus-properties-window.ui:865
 msgid "File Access"
 msgstr "גישה לקובץ"
 
-#: src/resources/ui/nautilus-properties-window.ui:807
+#: src/resources/ui/nautilus-properties-window.ui:808
 msgid "_Group"
 msgstr "קבו_צה"
 
-#: src/resources/ui/nautilus-properties-window.ui:877
+#: src/resources/ui/nautilus-properties-window.ui:878
 msgid "Security Context"
 msgstr "הקשר אבטחה"
 
-#: src/resources/ui/nautilus-properties-window.ui:898
+#: src/resources/ui/nautilus-properties-window.ui:899
 msgid "Change Permissions for Enclosed Files…"
 msgstr "החלפת ההרשאות לכל הקבצים שבפנים…"
 
@@ -5425,7 +5418,8 @@ msgid "New Tab"
 msgstr "לשונית חדשה"
 
 #: src/resources/ui/nautilus-toolbar.ui:18
-msgid "Icon size"
+#| msgid "Icon size"
+msgid "Icon Size"
 msgstr "גודל צלמית"
 
 #: src/resources/ui/nautilus-toolbar.ui:42
@@ -5452,11 +5446,15 @@ msgstr "_על אודות קבצים"
 msgid "Show sidebar"
 msgstr "הצגת הסרגל הצדי"
 
-#: src/resources/ui/nautilus-toolbar.ui:201
+#: src/resources/ui/nautilus-toolbar.ui:191
+msgid "Main Menu"
+msgstr "תפריט ראשי"
+
+#: src/resources/ui/nautilus-toolbar.ui:202
 msgid "Zoom out"
 msgstr "התרחקות"
 
-#: src/resources/ui/nautilus-toolbar.ui:211
+#: src/resources/ui/nautilus-toolbar.ui:212
 msgid "Zoom in"
 msgstr "התקרבות"
 
@@ -5494,8 +5492,9 @@ msgstr "הוש_לך לאחרונה"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
 #: src/resources/ui/nautilus-view-controls.ui:26
-msgid "View options"
-msgstr "צפייה בפאשרויות"
+#| msgid "View options"
+msgid "View Options"
+msgstr "אפשרויות תצוגה"
 
 #: src/resources/ui/nautilus-window.ui:7
 msgid "_New Tab"
@@ -5804,6 +5803,21 @@ msgstr "סרגל צד"
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "רשימה של צירופי מקשים, נקודות עגינה וסימניות נפוצות."
 
+#~ msgid "Show grid"
+#~ msgstr "הצגת רשת"
+
+#~ msgid "Show list"
+#~ msgstr "הצגת רשימה"
+
+#~ msgid "Show List"
+#~ msgstr "הצגת רשימה"
+
+#~ msgid "Go back"
+#~ msgstr "אחורה"
+
+#~ msgid "Go forward"
+#~ msgstr "קדימה"
+
 #, c-format
 #~ msgid "“%s” deleted"
 #~ msgstr "‏„%s” נמחק"
@@ -6052,9 +6066,6 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 
 #~ msgid "Toggle view"
 #~ msgstr "שינוי התצוגה"
-
-#~ msgid "Folder is Empty"
-#~ msgstr "תיקייה זו ריקה"
 
 #~ msgid "Starred files will appear here"
 #~ msgstr "קבצים המסומנים בכוכב יופיעו כאן"
@@ -11262,9 +11273,6 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 
 #~ msgid "_Names:"
 #~ msgstr "_שמות:"
-
-#~ msgid "Cut Folder"
-#~ msgstr "גזור תיקייה"
 
 #~ msgid "Copy Folder"
 #~ msgstr "העתק תיקייה"
