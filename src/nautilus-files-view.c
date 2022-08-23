@@ -8250,6 +8250,16 @@ update_background_menu (NautilusFilesView *view,
             remove_submenu = FALSE;
         }
     }
+    else
+    {
+        /* This is necessary because the pathbar menu relies on it being NULL
+         * to hide the submenu. */
+        nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), NULL);
+
+        /* And this is necessary to regenerate the templates menu when we go
+         * back to a normal folder. */
+        priv->templates_menu_updated = FALSE;
+    }
 
     i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (priv->background_menu_model),
                                               "nautilus-menu-item",
