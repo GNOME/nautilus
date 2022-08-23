@@ -28,6 +28,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
+#include <gio/gunixmounts.h>
 #include <nautilus-extension.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -2613,12 +2614,37 @@ open_in_disks (NautilusPropertiesWindow *self)
 
     mount = nautilus_file_get_mount (get_original_file (self));
     volume = (mount != NULL) ? g_mount_get_volume (mount) : NULL;
-    device_identifier = g_volume_get_identifier (volume,
-                                                 G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
 
-    parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', "
-                                       "@aay [], {'options': <{'block-device': <%s>}> })",
-                                       device_identifier);
+    if (volume != NULL)
+    {
+        device_identifier = g_volume_get_identifier (volume,
+                                                     G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+    }
+    else
+    {
+        g_autoptr (GFile) location = NULL;
+        g_autofree gchar *path = NULL;
+        g_autoptr (GUnixMountEntry) mount_entry = NULL;
+
+        location = nautilus_file_get_location (get_original_file (self));
+        path = g_file_get_path (location);
+        mount_entry = (path != NULL) ? g_unix_mount_at (path, NULL) : NULL;
+        if (mount_entry != NULL)
+        {
+            device_identifier = g_strdup (g_unix_mount_get_device_path (mount_entry));
+        }
+    }
+
+    if (device_identifier != NULL)
+    {
+        parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', "
+                                           "@aay [], {'options': <{'block-device': <%s>}> })",
+                                           device_identifier);
+    }
+    else
+    {
+        parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', @aay [], @a{sv} {})");
+    }
 
     nautilus_dbus_launcher_call (launcher,
                                  NAUTILUS_DBUS_LAUNCHER_DISKS,
