@@ -2319,7 +2319,8 @@ is_volume_properties (NautilusPropertiesWindow *self)
 static gboolean
 should_show_custom_icon_buttons (NautilusPropertiesWindow *self)
 {
-    if (is_multi_file_window (self) || is_volume_properties (self))
+    if (is_multi_file_window (self) || is_volume_properties (self) ||
+        is_root_directory (get_original_file (self)))
     {
         return FALSE;
     }
