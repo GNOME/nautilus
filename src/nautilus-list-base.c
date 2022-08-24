@@ -45,7 +45,6 @@ struct _NautilusListBasePrivate
 
     gboolean single_click_mode;
     gboolean activate_on_release;
-    gboolean deny_background_click;
 
     GdkDragAction drag_item_action;
     GdkDragAction drag_view_action;
@@ -359,7 +358,6 @@ on_item_click_pressed (GtkGestureClick *gesture,
     selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
 
     /* Before anything else, store event state to be read by other handlers. */
-    priv->deny_background_click = TRUE;
     priv->activate_on_release = (priv->single_click_mode &&
                                  button == GDK_BUTTON_PRIMARY &&
                                  n_press == 1 &&
@@ -427,7 +425,6 @@ on_item_click_released (GtkGestureClick *gesture,
 
     rubberband_set_state (self, TRUE);
     priv->activate_on_release = FALSE;
-    priv->deny_background_click = FALSE;
 }
 
 static void
@@ -440,7 +437,6 @@ on_item_click_stopped (GtkGestureClick *gesture,
 
     rubberband_set_state (self, TRUE);
     priv->activate_on_release = FALSE;
-    priv->deny_background_click = FALSE;
 }
 
 static void
@@ -451,17 +447,9 @@ on_view_click_pressed (GtkGestureClick *gesture,
                        gpointer         user_data)
 {
     NautilusListBase *self = user_data;
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     guint button;
     GdkModifierType modifiers;
     gboolean selection_mode;
-
-    if (priv->deny_background_click)
-    {
-        /* Item was clicked. */
-        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
-        return;
-    }
 
     /* We are overriding many of the gestures for the views so let's make sure to
      * grab the focus in order to make rubberbanding and background click work */
@@ -989,10 +977,6 @@ real_begin_loading (NautilusFilesView *files_view)
      * we need to update the menus */
     nautilus_files_view_update_context_menus (files_view);
     nautilus_files_view_update_toolbar_menus (files_view);
-
-    /* When double clicking on an item this deny_background_click can persist
-     * because the new view interrupts the gesture sequence, so lets reset it.*/
-    priv->deny_background_click = FALSE;
 
     /* When DnD is used to navigate between directories, the normal callbacks
      * are ignored. Update DnD variables here upon navigating to a directory*/
@@ -1756,16 +1740,25 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkEventController *controller;
     GtkDropTarget *drop_target;
+    GtkWidget *view_ui = nautilus_list_base_get_view_ui (self);
+
+    if (GTK_IS_COLUMN_VIEW (view_ui))
+    {
+        /* ListView is the top-most widget in a ColumnView */
+        view_ui = gtk_widget_get_next_sibling (gtk_widget_get_first_child (view_ui));
+    }
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+    gtk_widget_add_controller (view_ui, controller);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_TARGET);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_view_click_pressed), self);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
-    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+    gtk_widget_add_controller (view_ui, controller);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_TARGET);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_view_longpress_pressed), self);
 
