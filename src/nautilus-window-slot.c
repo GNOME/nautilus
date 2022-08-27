@@ -3319,3 +3319,22 @@ nautilus_window_slot_go_up (NautilusWindowSlot *self)
         self->down_list = g_steal_pointer (&down_list);
     }
 }
+
+void
+nautilus_window_slot_go_down (NautilusWindowSlot *self)
+{
+    g_autolist (GFile) down_list = g_steal_pointer (&self->down_list);
+    if (down_list == NULL)
+    {
+        return;
+    }
+
+    GFile *child = G_FILE (down_list->data);
+
+    nautilus_window_slot_open_location_full (self, child, 0, NULL);
+
+    /* Undo ref'ing done in nautilus_window_slot_go_up() */
+    g_object_unref (child);
+    down_list = g_list_delete_link (down_list, down_list);
+    self->down_list = g_steal_pointer (&down_list);
+}

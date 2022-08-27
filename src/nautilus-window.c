@@ -272,6 +272,19 @@ action_up (GSimpleAction *action,
 }
 
 static void
+action_down (GSimpleAction *action,
+             GVariant      *state,
+             gpointer       user_data)
+{
+    NautilusWindowSlot *slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
+
+    if (slot != NULL)
+    {
+        nautilus_window_slot_go_down (slot);
+    }
+}
+
+static void
 action_back (GSimpleAction *action,
              GVariant      *state,
              gpointer       user_data)
@@ -1556,6 +1569,7 @@ const GActionEntry win_entries[] =
     { .name = "back-n", .activate = action_back_n, .parameter_type = "u" },
     { .name = "forward-n", .activate = action_forward_n, .parameter_type = "u" },
     { .name = "up", .activate = action_up },
+    { .name = "down", .activate = action_down },
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
     { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
     { .name = "reload", .activate = action_reload },
@@ -1620,6 +1634,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     /* Only accesible by shorcuts */
     nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
     nautilus_application_set_accelerator (app, "win.up", "<alt>Up");
+    nautilus_application_set_accelerator (app, "win.down", "<alt>Down");
     nautilus_application_set_accelerators (app, "win.go-home", ACCELS ("<alt>Home", "HomePage", "Start"));
     nautilus_application_set_accelerator (app, "win.go-starred", "Favorites");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
