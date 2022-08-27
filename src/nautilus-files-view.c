@@ -9749,7 +9749,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Menu, 0, "view.popup-menu", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_F10, GDK_SHIFT_MASK, "view.popup-menu", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_o, GDK_CONTROL_MASK, "view.open-with-default-application", NULL);
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Down, GDK_ALT_MASK, "view.open-with-default-application", NULL);
     /* This is not necessary per-se, because it's the default activation
      * keybinding. But in order for it to appear in the context menu as a
      * keyboard shortcut, we need to bind it to the menu item action here. */
