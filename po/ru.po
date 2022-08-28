@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-07-02 18:43+0000\n"
-"PO-Revision-Date: 2022-07-29 13:54+0300\n"
+"POT-Creation-Date: 2022-08-15 18:29+0000\n"
+"PO-Revision-Date: 2022-08-28 15:54+0300\n"
 "Last-Translator: Aleksandr Melman <Alexmelman88@gmail.com>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -99,7 +99,7 @@ msgstr "Поиск"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
 #: src/nautilus-file.c:4479 src/nautilus-file-utilities.c:323
-#: src/nautilus-pathbar.c:380
+#: src/nautilus-pathbar.c:381
 msgid "Other Locations"
 msgstr "Другие места"
 
@@ -969,7 +969,7 @@ msgid "Send files by mail…"
 msgstr "Отправить файлы по электронной почте…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: src/nautilus-application.c:182 src/nautilus-window-slot.c:1584
+#: src/nautilus-application.c:182 src/nautilus-window-slot.c:1585
 msgid "Oops! Something went wrong."
 msgstr "Ой! Что-то пошло не так."
 
@@ -1210,7 +1210,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1916 src/nautilus-pathbar.c:375
+#: src/nautilus-list-view.c:1916 src/nautilus-pathbar.c:376
 #: src/nautilus-shell-search-provider.c:330 src/nautilus-window.c:173
 msgid "Home"
 msgstr "Домашняя папка"
@@ -1549,7 +1549,7 @@ msgid "File not found"
 msgstr "Файл не найден"
 
 #: src/nautilus-file.c:4483 src/nautilus-file-utilities.c:327
-#: src/nautilus-pathbar.c:385
+#: src/nautilus-pathbar.c:386
 msgid "Starred"
 msgstr "Избранные"
 
@@ -3936,13 +3936,13 @@ msgstr "«%s» защищён паролем."
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:363 src/gtk/nautilusgtkplacesview.c:1121
+#: src/nautilus-pathbar.c:364 src/gtk/nautilusgtkplacesview.c:1121
 msgid "Computer"
 msgstr "Компьютер"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:370
+#: src/nautilus-pathbar.c:371
 msgid "Administrator Root"
 msgstr "Корень системы"
 
@@ -4392,9 +4392,9 @@ msgstr[2] "Начиная с %d недель назад"
 #, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
-msgstr[0] "%d недель назад"
+msgstr[0] "%d неделю назад"
 msgstr[1] "%d недели назад"
-msgstr[2] "%d неделю назад"
+msgstr[2] "%d недель назад"
 
 #: src/nautilus-ui-utilities.c:236
 #, c-format
@@ -4560,41 +4560,41 @@ msgstr "Удалённое расположение — поиск только 
 msgid "Only searching the current folder"
 msgstr "Поиск только в текущей папке"
 
-#: src/nautilus-window-slot.c:1590
+#: src/nautilus-window-slot.c:1591
 msgid "Unable to display the contents of this folder."
 msgstr "Не удалось показать содержимое этой папки."
 
-#: src/nautilus-window-slot.c:1594
+#: src/nautilus-window-slot.c:1595
 msgid "This location doesn’t appear to be a folder."
 msgstr "Этот адрес не является папкой."
 
-#: src/nautilus-window-slot.c:1606
+#: src/nautilus-window-slot.c:1607
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr ""
 "Не удалось найти «%s». Проверьте правильность ввода и повторите попытку."
 
-#: src/nautilus-window-slot.c:1611
+#: src/nautilus-window-slot.c:1612
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Не удалось найти запрошенный файл. Проверьте правильность ввода и повторите "
 "попытку."
 
-#: src/nautilus-window-slot.c:1622
+#: src/nautilus-window-slot.c:1623
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Адреса «%s» не поддерживаются."
 
-#: src/nautilus-window-slot.c:1627
+#: src/nautilus-window-slot.c:1628
 msgid "Unable to handle this kind of location."
 msgstr "Невозможно обработать этот тип адреса."
 
-#: src/nautilus-window-slot.c:1635
+#: src/nautilus-window-slot.c:1636
 msgid "Unable to access the requested location."
 msgstr "Не удалось получить доступ к запрошенному адресу."
 
-#: src/nautilus-window-slot.c:1641
+#: src/nautilus-window-slot.c:1642
 msgid "Don’t have permission to access the requested location."
 msgstr "Недостаточно прав для получения доступа к запрошенному адресу."
 
@@ -4603,7 +4603,7 @@ msgstr "Недостаточно прав для получения доступ
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1652
+#: src/nautilus-window-slot.c:1653
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4614,7 +4614,7 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1661
+#: src/nautilus-window-slot.c:1662
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4622,12 +4622,12 @@ msgstr ""
 "Сервер отказал в подключении. Обычно это означает, что подключение "
 "блокируется межсетевым экраном или сервис не запущен."
 
-#: src/nautilus-window-slot.c:1680
+#: src/nautilus-window-slot.c:1681
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Сообщение о необработанной ошибке: %s"
 
-#: src/nautilus-window-slot.c:1848
+#: src/nautilus-window-slot.c:1849
 #, c-format
 msgid "Unable to load location"
 msgstr "Не удалось загрузить адрес"
