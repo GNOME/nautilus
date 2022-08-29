@@ -234,6 +234,8 @@ nautilus_freedesktop_dbus_finalize (GObject *object)
 
     g_clear_pointer (&fdb->pending_open_locations, g_strfreev);
     g_clear_pointer (&fdb->pending_open_windows_with_locations, g_variant_unref);
+
+    G_OBJECT_CLASS (nautilus_freedesktop_dbus_parent_class)->finalize (object);
 }
 
 static void
