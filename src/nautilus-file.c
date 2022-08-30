@@ -8007,6 +8007,12 @@ nautilus_file_is_user_special_directory (NautilusFile   *file,
     gboolean is_special_dir;
     const gchar *special_dir;
 
+    if (nautilus_file_is_home (file))
+    {
+        /* A xdg-user-dir is disabled by setting it to the home directory */
+        return FALSE;
+    }
+
     special_dir = g_get_user_special_dir (special_directory);
     is_special_dir = FALSE;
 
