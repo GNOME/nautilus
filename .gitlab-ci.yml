@@ -20,6 +20,8 @@ flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
 
 flatpak@aarch64:
+    #don't build on MRs to save resources
+    stage: deploy
     extends: ['.flatpak@aarch64', '.vars-devel']
 
 nightly@x86_64:
