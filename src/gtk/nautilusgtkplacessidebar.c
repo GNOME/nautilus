@@ -3293,6 +3293,8 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "rename");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK ||
                                                           type == NAUTILUS_GTK_PLACES_XDG_DIR));
+  action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "bookmark");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_MOUNTED_VOLUME));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "open");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "empty-trash");
@@ -3330,10 +3332,12 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   section = g_menu_new ();
   item = g_menu_item_new (_("_Add Bookmark"), "row.bookmark");
+  g_menu_item_set_attribute (item, "hidden-when", "s", "action-disabled");
   g_menu_append_item (section, item);
   g_object_unref (item);
 
   item = g_menu_item_new (_("_Remove from Bookmarks"), "row.remove");
+  g_menu_item_set_attribute (item, "hidden-when", "s", "action-disabled");
   g_menu_append_item (section, item);
   g_object_unref (item);
 
