@@ -2,25 +2,40 @@ include: 'https://gitlab.gnome.org/GNOME/citemplates/raw/master/flatpak/flatpak_
 
 variables:
     GIT_SUBMODULE_STRATEGY: normal
-    BUNDLE: "nautilus-dev.flatpak"
 
 stages:
     - image
     - test
     - deploy
 
-flatpak:
-    extends: '.flatpak'
+.vars-devel:
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
+        BUNDLE: "nautilus-dev.flatpak"
 
-nightly:
+flatpak@x86_64:
+    extends: ['.flatpak@x86_64', '.vars-devel']
+
+flatpak@aarch64:
+    #don't build for every, MRs to save resources
+    only:
+        refs:
+            - 'master'
+            - 'main'
+            - $CI_DEFAULT_BRANCH
+
+    extends: ['.flatpak@aarch64', '.vars-devel']
+
+nightly@x86_64:
     extends: '.publish_nightly'
-    dependencies:
-        - flatpak
+    needs: ['flatpak@x86_64']
+
+nightly@aarch64:
+    extends: '.publish_nightly'
+    needs: ['flatpak@aarch64']
 
 style check:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
