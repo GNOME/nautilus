@@ -3331,7 +3331,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   g_object_unref (section);
 
   section = g_menu_new ();
-  item = g_menu_item_new (_("_Add Bookmark"), "row.bookmark");
+  item = g_menu_item_new (_("Add to _Bookmarks"), "row.bookmark");
   g_menu_item_set_attribute (item, "hidden-when", "s", "action-disabled");
   g_menu_append_item (section, item);
   g_object_unref (item);
