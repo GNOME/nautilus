@@ -3,6 +3,9 @@
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusGridCell" parent="NautilusViewCell">
     <property name="valign">start</property>
+    <accessibility>
+      <relation name="labelled-by">label</relation>
+    </accessibility>
     <child>
       <object class="AdwClamp">
         <property name="maximum-size">0</property>

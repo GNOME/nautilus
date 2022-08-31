@@ -2,6 +2,9 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusNameCell" parent="NautilusViewCell">
+    <accessibility>
+      <relation name="labelled-by">label</relation>
+    </accessibility>
     <child>
       <object class="GtkBox">
         <property name="spacing">6</property>
