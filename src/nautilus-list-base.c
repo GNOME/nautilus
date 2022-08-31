@@ -19,6 +19,10 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-thumbnails.h"
 
+#ifdef GDK_WINDOWING_X11
+#include <gdk/x11/gdkx.h>
+#endif
+
 /**
  * NautilusListBase:
  *
@@ -804,6 +808,17 @@ on_item_drop (GtkDropTarget *target,
     actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
     target_location = nautilus_file_get_location (nautilus_view_item_get_file (item));
 
+    #ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self))))
+    {
+        /* Temporary workaround until the below GTK MR (or equivalend fix)
+         * is merged.  Without this fix, the preferred action isn't set correctly.
+         * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
+        GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
+        actions = gdk_drag_get_selected_action (drag);
+    }
+    #endif
+
     real_perform_drop (self, value, actions, target_location);
 
     return TRUE;
@@ -887,6 +902,17 @@ on_view_drop (GtkDropTarget *target,
 
     actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
     target_location = nautilus_view_get_location (NAUTILUS_VIEW (self));
+
+    #ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self))))
+    {
+        /* Temporary workaround until the below GTK MR (or equivalend fix)
+         * is merged.  Without this fix, the preferred action isn't set correctly.
+         * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
+        GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
+        actions = gdk_drag_get_selected_action (drag);
+    }
+    #endif
 
     real_perform_drop (self, value, actions, target_location);
 

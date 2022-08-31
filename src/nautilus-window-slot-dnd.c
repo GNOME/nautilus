@@ -29,6 +29,10 @@
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-window-slot-dnd.h"
 
+#ifdef GDK_WINDOWING_X11
+#include <gdk/x11/gdkx.h>
+#endif
+
 typedef struct
 {
     NautilusFile *target_file;
@@ -278,6 +282,17 @@ slot_proxy_handle_drop (GtkDropTarget *target,
             }
 
             actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
+
+            #ifdef GDK_WINDOWING_X11
+            if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+            {
+                /* Temporary workaround until the below GTK MR (or equivalend fix)
+                 * is merged.  Without this fix, the preferred action isn't set correctly.
+                 * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
+                GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
+                actions = gdk_drag_get_selected_action (drag);
+            }
+            #endif
 
             nautilus_files_view_drop_proxy_received_uris (target_view,
                                                           uri_list,
