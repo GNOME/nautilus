@@ -945,11 +945,27 @@ bind_name_cell (GtkSignalListItemFactory *factory,
                 GtkListItem              *listitem,
                 gpointer                  user_data)
 {
+    GtkWidget *cell;
     NautilusViewItem *item;
 
+    cell = gtk_list_item_get_child (listitem);
     item = NAUTILUS_VIEW_ITEM (gtk_list_item_get_item (listitem));
 
     nautilus_view_item_set_item_ui (item, gtk_list_item_get_child (listitem));
+
+    if (nautilus_view_cell_once (NAUTILUS_VIEW_CELL (cell)))
+    {
+        GtkWidget *row_widget;
+
+        /* At the time of ::setup emission, the item ui has got no parent yet,
+         * that's why we need to complete the widget setup process here, on the
+         * first time ::bind is emitted. */
+        row_widget = gtk_widget_get_parent (gtk_widget_get_parent (cell));
+
+        gtk_accessible_update_relation (GTK_ACCESSIBLE (row_widget),
+                                        GTK_ACCESSIBLE_RELATION_LABELLED_BY, cell, NULL,
+                                        -1);
+    }
 }
 
 static void
