@@ -1879,11 +1879,14 @@ drag_drop_callback (GtkDropTarget    *target,
       else
         {
           GFile *dest_file = g_file_new_for_uri (target_uri);
+          GdkDragAction actions;
+
+          actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
           
           emit_drag_perform_drop (sidebar,
                                   dest_file,
                                   g_value_get_boxed (value),
-                                  gdk_drop_get_actions (gtk_drop_target_get_current_drop (target)));
+                                  actions);
 
           g_object_unref (dest_file);
         }

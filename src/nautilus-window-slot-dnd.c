@@ -270,15 +270,19 @@ slot_proxy_handle_drop (GtkDropTarget *target,
         if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
         {
             GSList *items = g_value_get_boxed (value);
+            GdkDragAction actions;
+
             for (GSList *l = items; l != NULL; l = l->next)
             {
                 uri_list = g_list_prepend (uri_list, g_file_get_uri (l->data));
             }
 
+            actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
+
             nautilus_files_view_drop_proxy_received_uris (target_view,
                                                           uri_list,
                                                           target_uri,
-                                                          gdk_drop_get_actions (gtk_drop_target_get_current_drop (target)));
+                                                          actions);
             g_list_free_full (uri_list, g_free);
         }
     }
