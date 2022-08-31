@@ -976,8 +976,8 @@ add_extension_model_page (NautilusPropertiesModel  *model,
     GtkWidget *title;
     GtkWidget *header_bar;
     GtkWidget *list_box;
-    GtkWidget *group;
-    GtkWidget *page;
+    GtkWidget *clamp;
+    GtkWidget *scrolled_window;
     GtkWidget *up_button;
     GtkWidget *box;
 
@@ -1002,22 +1002,27 @@ add_extension_model_page (NautilusPropertiesModel  *model,
 
     list_box = gtk_list_box_new ();
     gtk_widget_add_css_class (list_box, "boxed-list");
+    gtk_widget_set_valign (list_box, GTK_ALIGN_START);
     gtk_list_box_bind_model (GTK_LIST_BOX (list_box), list_model,
                              (GtkListBoxCreateWidgetFunc) create_extension_group_row,
                              self,
                              NULL);
 
-    group = adw_preferences_group_new ();
-    adw_preferences_group_add (ADW_PREFERENCES_GROUP (group), list_box);
+    clamp = adw_clamp_new ();
+    adw_clamp_set_child (ADW_CLAMP (clamp), list_box);
+    gtk_widget_set_margin_top (clamp, 18);
+    gtk_widget_set_margin_bottom (clamp, 18);
+    gtk_widget_set_margin_start (clamp, 18);
+    gtk_widget_set_margin_end (clamp, 18);
 
-    page = adw_preferences_page_new ();
-    adw_preferences_page_add (ADW_PREFERENCES_PAGE (page), ADW_PREFERENCES_GROUP (group));
-    gtk_widget_set_vexpand (page, TRUE);
+    scrolled_window = gtk_scrolled_window_new ();
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window), clamp);
+    gtk_widget_set_vexpand (scrolled_window, TRUE);
 
     box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append (GTK_BOX (box), header_bar);
-    gtk_box_append (GTK_BOX (box), page);
-    gtk_widget_add_css_class (page, "background");
+    gtk_box_append (GTK_BOX (box), scrolled_window);
+    gtk_widget_add_css_class (scrolled_window, "background");
 
     gtk_stack_add_named (self->page_stack,
                          box,
