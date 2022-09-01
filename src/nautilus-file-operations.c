@@ -55,6 +55,7 @@
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
+#include "nautilus-tag-manager.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-undo-operations.h"
@@ -7488,7 +7489,21 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    if (copy_action == GDK_ACTION_COPY)
+    if (g_file_has_uri_scheme (dest, "starred"))
+    {
+        g_autolist (NautilusFile) source_file_list = NULL;
+
+        for (GList *l = locations; l != NULL; l = l->next)
+        {
+            source_file_list = g_list_prepend (source_file_list, nautilus_file_get (l->data));
+        }
+
+        source_file_list = g_list_reverse (source_file_list);
+        nautilus_tag_manager_star_files (nautilus_tag_manager_get (),
+                                         G_OBJECT (parent_view),
+                                         source_file_list, NULL, NULL);
+    }
+    else if (copy_action == GDK_ACTION_COPY)
     {
         src_dir = g_file_get_parent (locations->data);
         if (target_dir == NULL ||
