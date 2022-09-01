@@ -1502,12 +1502,6 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                 "file", &dest_file,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_STARRED_LOCATION)
-    {
-      g_free (uri);
-      return FALSE;
-    }
-
   if (place_type == NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
     {
       g_free (uri);
