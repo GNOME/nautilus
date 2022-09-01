@@ -137,7 +137,32 @@ get_thumbnail_factory (void)
 
     if (thumbnail_factory == NULL)
     {
-        thumbnail_factory = gnome_desktop_thumbnail_factory_new (GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE);
+        GdkDisplay *display = gdk_display_get_default ();
+        GListModel *monitors = gdk_display_get_monitors (display);
+        gint max_scale = 1;
+        GnomeDesktopThumbnailSize size;
+
+        for (guint i = 0; i < g_list_model_get_n_items (monitors); i++)
+        {
+            g_autoptr (GdkMonitor) monitor = g_list_model_get_item (monitors, i);
+
+            max_scale = MAX (max_scale, gdk_monitor_get_scale_factor (monitor));
+        }
+
+        if (max_scale <= 1)
+        {
+            size = GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE;
+        }
+        else if (max_scale <= 2)
+        {
+            size = GNOME_DESKTOP_THUMBNAIL_SIZE_XLARGE;
+        }
+        else
+        {
+            size = GNOME_DESKTOP_THUMBNAIL_SIZE_XXLARGE;
+        }
+
+        thumbnail_factory = gnome_desktop_thumbnail_factory_new (size);
     }
 
     return thumbnail_factory;
