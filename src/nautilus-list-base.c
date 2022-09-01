@@ -245,7 +245,15 @@ set_focus_item (NautilusListBase *self,
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkWidget *item_widget = nautilus_view_item_get_item_ui (item);
-    GtkWidget *parent = gtk_widget_get_parent (item_widget);
+    GtkWidget *parent;
+
+    if (item_widget == NULL)
+    {
+        /* We can't set the focus if the item isn't created yet. Return early to prevent a crash */
+        return;
+    }
+
+    parent = gtk_widget_get_parent (item_widget);
 
     if (!gtk_widget_grab_focus (parent))
     {
