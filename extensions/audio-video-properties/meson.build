@@ -24,19 +24,3 @@ libtotem_properties_page = shared_module(
   install: true,
   install_dir: extensiondir
 )
-
-# test_properties_page_sources = files(
-#   'totem-properties-main.c',
-#   'totem-properties-view.c',
-#   'totem-gst-helpers.c',
-#   'test-properties-page.c'
-# )
-
-# executable(
-#   'test-properties-page',
-#   test_properties_page_sources,
-#   dependencies: libtotem_properties_page_deps + [
-#     nautilus_extension
-#   ],
-# )
-
