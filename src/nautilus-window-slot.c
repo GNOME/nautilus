@@ -2664,6 +2664,26 @@ view_is_loading_changed_cb (GObject            *object,
     nautilus_profile_end (NULL);
 }
 
+static gboolean
+nautilus_file_is_public_share_folder (NautilusFile *file)
+{
+    if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_PUBLIC_SHARE))
+    {
+        return TRUE;
+    }
+    if (g_strcmp0 (g_get_home_dir (), g_get_user_special_dir (G_USER_DIRECTORY_PUBLIC_SHARE)))
+    {
+        /* In order to match the behavior of gnome-user-share the ~/Public folder
+         * is considered to be the public sharing folder when XDG_PUBLICSHARE_DIR
+         * is set to the home folder. */
+        g_autoptr (GFile) public_folder = g_file_new_build_filename (g_get_home_dir (), "Public", NULL);
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+        return g_file_equal (public_folder, location);
+    }
+    return FALSE;
+}
+
 static void
 nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
 {
@@ -2698,8 +2718,7 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
     {
         nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
     }
-    else if (check_schema_available (FILE_SHARING_SCHEMA_ID) &&
-             nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_PUBLIC_SHARE))
+    else if (check_schema_available (FILE_SHARING_SCHEMA_ID) && nautilus_file_is_public_share_folder (file))
     {
         nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
     }
