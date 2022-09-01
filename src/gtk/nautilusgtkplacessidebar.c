@@ -113,7 +113,6 @@ struct _NautilusGtkPlacesSidebar {
   GList *unready_accounts;
 
   GVolumeMonitor    *volume_monitor;
-  NautilusTrashMonitor   *trash_monitor;
   GtkSettings       *gtk_settings;
   GFile             *current_location;
 
@@ -123,7 +122,6 @@ struct _NautilusGtkPlacesSidebar {
   GtkWidget *rename_error;
   char *rename_uri;
 
-  gulong trash_monitor_changed_id;
   GtkWidget *trash_row;
 
   /* DND */
@@ -3895,9 +3893,9 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   sidebar->bookmarks_manager = _nautilus_gtk_bookmarks_manager_new ((GtkBookmarksChangedFunc)update_places, sidebar);
 
-  sidebar->trash_monitor = nautilus_trash_monitor_get ();
-  sidebar->trash_monitor_changed_id = g_signal_connect_swapped (sidebar->trash_monitor, "trash-state-changed",
-                                                                G_CALLBACK (update_trash_icon), sidebar);
+  g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
+                           G_CALLBACK (update_trash_icon), sidebar,
+                           G_CONNECT_SWAPPED);
 
   sidebar->swin = gtk_scrolled_window_new ();
   gtk_widget_set_parent (sidebar->swin, GTK_WIDGET (sidebar));
@@ -4117,13 +4115,6 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
       sidebar->rename_entry = NULL;
       sidebar->rename_button = NULL;
       sidebar->rename_error = NULL;
-    }
-
-  if (sidebar->trash_monitor)
-    {
-      g_signal_handler_disconnect (sidebar->trash_monitor, sidebar->trash_monitor_changed_id);
-      sidebar->trash_monitor_changed_id = 0;
-      g_clear_object (&sidebar->trash_monitor);
     }
 
   if (sidebar->trash_row)
