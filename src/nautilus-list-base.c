@@ -659,6 +659,10 @@ get_preferred_action (NautilusFile *target_file,
         GSList *source_file_list = g_value_get_boxed (value);
         action = nautilus_dnd_get_preferred_action (target_file, source_file_list->data);
     }
+    else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
+    {
+        action = GDK_ACTION_COPY;
+    }
 
     return action;
 }
@@ -669,19 +673,22 @@ real_perform_drop (NautilusListBase *self,
                    GdkDragAction     action,
                    GFile            *target_location)
 {
+    g_autofree gchar *target_uri = g_file_get_uri (target_location);
+
     if (!gdk_drag_action_is_unique (action))
     {
         /* TODO: Implement */
     }
     else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
     {
-        /* TODO: Implement */
+        nautilus_files_view_handle_text_drop (NAUTILUS_FILES_VIEW (self),
+                                              g_value_get_string (value),
+                                              target_uri, action);
     }
     else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
         GSList *source_file_list = g_value_get_boxed (value);
         GList *source_uri_list = NULL;
-        g_autofree gchar *target_uri = NULL;
 
         for (GSList *l = source_file_list; l != NULL; l = l->next)
         {
@@ -689,7 +696,6 @@ real_perform_drop (NautilusListBase *self,
         }
         source_uri_list = g_list_reverse (source_uri_list);
 
-        target_uri = g_file_get_uri (target_location);
         nautilus_files_view_drop_proxy_received_uris (NAUTILUS_FILES_VIEW (self),
                                                       source_uri_list,
                                                       target_uri,
@@ -954,7 +960,7 @@ setup_cell_common (GtkListItem      *listitem,
     drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
     gtk_drop_target_set_preload (drop_target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */
-    gtk_drop_target_set_gtypes (drop_target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
+    gtk_drop_target_set_gtypes (drop_target, (GType[2]) { GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 2);
     g_signal_connect (drop_target, "enter", G_CALLBACK (on_item_drag_enter), cell);
     g_signal_connect (drop_target, "notify::value", G_CALLBACK (on_item_drag_value_notify), cell);
     g_signal_connect (drop_target, "leave", G_CALLBACK (on_item_drag_leave), cell);
@@ -1799,7 +1805,7 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
     gtk_drop_target_set_preload (drop_target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */
-    gtk_drop_target_set_gtypes (drop_target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
+    gtk_drop_target_set_gtypes (drop_target, (GType[2]) { GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 2);
     g_signal_connect (drop_target, "enter", G_CALLBACK (on_view_drag_enter), self);
     g_signal_connect (drop_target, "notify::value", G_CALLBACK (on_view_drag_value_notify), self);
     g_signal_connect (drop_target, "motion", G_CALLBACK (on_view_drag_motion), self);
