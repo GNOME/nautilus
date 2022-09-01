@@ -126,6 +126,10 @@ struct _NautilusWindow
     gulong bookmarks_id;
 
     GQueue *tab_data_queue;
+
+    /* Pad controller which holds a reference to the window. Kept around to
+     * break reference-counting cycles during finalization. */
+    GtkPadController *pad_controller;
 };
 
 enum
@@ -1663,6 +1667,13 @@ nautilus_window_close (NautilusWindow *window)
     nautilus_window_save_geometry (window);
     nautilus_window_set_active_slot (window, NULL);
 
+    /* The pad controller hold a reference to the window, creating a cycle.
+     * Usually, reference cycles are resolved in dispose(), but GTK removes the
+     * controllers in finalize(), so our only option is to manually remove it
+     * here before starting the destruction of the window. */
+    gtk_widget_remove_controller (GTK_WIDGET (window),
+                                  GTK_EVENT_CONTROLLER (window->pad_controller));
+
     gtk_window_destroy (GTK_WINDOW (window));
 }
 
@@ -2051,7 +2062,6 @@ static void
 nautilus_window_init (NautilusWindow *window)
 {
     GtkWindowGroup *window_group;
-    GtkPadController *pad_controller;
     GtkEventController *controller;
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
@@ -2084,11 +2094,15 @@ nautilus_window_init (NautilusWindow *window)
 
     window->tab_data_queue = g_queue_new ();
 
-    pad_controller = gtk_pad_controller_new (G_ACTION_GROUP (window), NULL);
-    gtk_pad_controller_set_action_entries (pad_controller,
+    /* Attention: this creates a reference cycle: the pad controller owns a
+     * reference to the window (as an action group) and the window (as a widget)
+     * owns a reference to the pad controller. To break this, we must remove
+     * the controller from the window before destroying the window. */
+    window->pad_controller = gtk_pad_controller_new (G_ACTION_GROUP (window), NULL);
+    gtk_pad_controller_set_action_entries (window->pad_controller,
                                            pad_actions, G_N_ELEMENTS (pad_actions));
     gtk_widget_add_controller (GTK_WIDGET (window),
-                               GTK_EVENT_CONTROLLER (pad_controller));
+                               GTK_EVENT_CONTROLLER (window->pad_controller));
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (GTK_WIDGET (window), controller);
