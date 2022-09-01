@@ -4635,6 +4635,17 @@ get_mount_icon (NautilusFile *file)
         mount_icon = g_mount_get_icon (mount);
         g_object_unref (mount);
     }
+    else
+    {
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+        /* Root directory doesn't have a GMount, but for UI purposes we want
+         * it to be treated the same way. */
+        if (nautilus_is_root_directory (location))
+        {
+            mount_icon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk");
+        }
+    }
 
     return mount_icon;
 }

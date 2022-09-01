@@ -576,12 +576,14 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
         {
             icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
+                                           NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON |
                                            NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
         }
         else
         {
             new_icon = nautilus_file_get_icon (file, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale,
                                                NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
+                                               NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON |
                                                NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
             if (!new_icon || new_icon != icon)
             {
@@ -589,27 +591,6 @@ get_image_for_properties_window (NautilusPropertiesWindow  *self,
                 icon = NULL;
                 break;
             }
-        }
-    }
-
-    if (!is_multi_file_window (self))
-    {
-        g_autoptr (GIcon) gicon = NULL;
-        g_autoptr (GMount) mount = NULL;
-        mount = nautilus_file_get_mount (get_original_file (self));
-        if (mount != NULL)
-        {
-            gicon = g_mount_get_icon (mount);
-        }
-        else if (is_root_directory (get_original_file (self)))
-        {
-            gicon = g_themed_icon_new_with_default_fallbacks ("drive-harddisk");
-        }
-
-        if (gicon != NULL)
-        {
-            g_clear_object (&icon);
-            icon = nautilus_icon_info_lookup (gicon, NAUTILUS_GRID_ICON_SIZE_MEDIUM, icon_scale);
         }
     }
 
