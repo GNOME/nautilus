@@ -72,7 +72,7 @@ struct _NautilusToolbar
 
 enum
 {
-    PROP_WINDOW = 1,
+    PROP_0,
     PROP_SHOW_LOCATION_ENTRY,
     PROP_WINDOW_SLOT,
     PROP_SEARCHING,
@@ -117,10 +117,13 @@ update_action (NautilusToolbar *self,
                const char      *action_name,
                gboolean         enabled)
 {
+    GtkWidget *window;
     GAction *action;
 
+    window = gtk_widget_get_ancestor (GTK_WIDGET (self), NAUTILUS_TYPE_WINDOW);
+
     /* Activate/deactivate */
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->window), action_name);
+    action = g_action_map_lookup_action (G_ACTION_MAP (window), action_name);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
 }
 
@@ -355,12 +358,6 @@ nautilus_toolbar_set_property (GObject      *object,
 
     switch (property_id)
     {
-        case PROP_WINDOW:
-        {
-            self->window = g_value_get_object (value);
-        }
-        break;
-
         case PROP_SHOW_LOCATION_ENTRY:
         {
             nautilus_toolbar_set_show_location_entry (self, g_value_get_boolean (value));
@@ -451,13 +448,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     oclass->finalize = nautilus_toolbar_finalize;
     oclass->constructed = nautilus_toolbar_constructed;
 
-    properties[PROP_WINDOW] =
-        g_param_spec_object ("window",
-                             "The NautilusWindow",
-                             "The NautilusWindow this toolbar is part of",
-                             NAUTILUS_TYPE_WINDOW,
-                             G_PARAM_WRITABLE |
-                             G_PARAM_STATIC_STRINGS);
     properties[PROP_SHOW_LOCATION_ENTRY] =
         g_param_spec_boolean ("show-location-entry",
                               "Whether to show the location entry",

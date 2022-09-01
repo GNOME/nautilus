@@ -1350,9 +1350,6 @@ setup_toolbar (NautilusWindow *window)
     GtkWidget *path_bar;
     GtkWidget *location_entry;
 
-
-    g_object_set (window->toolbar, "window", window, NULL);
-
     /* connect to the pathbar signals */
     path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->toolbar));
 
