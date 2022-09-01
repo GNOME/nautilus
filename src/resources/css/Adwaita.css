@@ -1,13 +1,9 @@
 /* Toolbar */
 
-/* Here we use the .button background-image colors from Adwaita, but ligthen them,
- * since is not possible to use lighten () in common css. */
 @keyframes needs_attention_keyframes {
-    0% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0); border-color: @borders; }
-    /* can't do animation-direction, so holding the color on two keyframes */
-    30% {background-image: linear-gradient(to bottom, @view_bg_color, @view_bg_color, @view_bg_color); border-color: @window_fg_color; }
-    90% {background-image: linear-gradient(to bottom, @view_bg_color, @view_bg_color, @view_bg_color); border-color: @window_fg_color; }
-    100% {background-image: linear-gradient(to bottom, #fafafa, #ededed 40%,  #e0e0e0); border-color: @borders; }
+  0% { }
+  10% { background-color: @accent_bg_color; border-radius: 999999px; }
+  100% { }
 }
 
 .nautilus-operations-button-needs-attention {
