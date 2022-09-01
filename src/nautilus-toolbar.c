@@ -51,7 +51,6 @@ struct _NautilusToolbar
     GtkWidget *location_entry;
 
     gboolean show_location_entry;
-    gboolean location_entry_should_auto_hide;
 
     GtkWidget *app_button;
     GMenuModel *undo_redo_section;
@@ -192,28 +191,38 @@ on_location_entry_close (GtkWidget       *close_button,
 }
 
 static void
-on_location_entry_focus_changed (GObject    *object,
-                                 GParamSpec *pspec,
-                                 gpointer    user_data)
+on_location_entry_focus_leave (GtkEventControllerFocus *controller,
+                               gpointer                 user_data)
 {
     NautilusToolbar *toolbar;
+    GtkWidget *focus_widget;
 
     toolbar = NAUTILUS_TOOLBAR (user_data);
 
-    if (gtk_widget_has_focus (GTK_WIDGET (object)))
+    /* The location entry is a transient: it should hide when it loses focus.
+     *
+     * However, if we lose focus because the window itself lost focus, then the
+     * location entry should persist, because this may happen due to the user
+     * switching keyboard layout/input method; or they may want to copy/drop
+     * an path from another window/app. We detect this case by looking at the
+     * focus widget of the window (GtkRoot).
+     */
+
+    focus_widget = gtk_root_get_focus (gtk_widget_get_root (GTK_WIDGET (toolbar)));
+    if (focus_widget != NULL &&
+        gtk_widget_is_ancestor (focus_widget, GTK_WIDGET (toolbar->location_entry)))
     {
-        toolbar->location_entry_should_auto_hide = TRUE;
+        return;
     }
-    else if (toolbar->location_entry_should_auto_hide)
-    {
-        nautilus_toolbar_set_show_location_entry (toolbar, FALSE);
-    }
+
+    nautilus_toolbar_set_show_location_entry (toolbar, FALSE);
 }
 
 static void
 nautilus_toolbar_constructed (GObject *object)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
+    GtkEventController *controller;
 
     self->path_bar = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL));
     gtk_box_append (GTK_BOX (self->path_bar_container),
@@ -227,8 +236,11 @@ nautilus_toolbar_constructed (GObject *object)
                     self->location_entry_close_button);
     g_signal_connect (self->location_entry_close_button, "clicked",
                       G_CALLBACK (on_location_entry_close), self);
-    g_signal_connect (self->location_entry, "notify::has-focus",
-                      G_CALLBACK (on_location_entry_focus_changed), self);
+
+    controller = gtk_event_controller_focus_new ();
+    gtk_widget_add_controller (self->location_entry, controller);
+    g_signal_connect (controller, "leave",
+                      G_CALLBACK (on_location_entry_focus_leave), self);
 
     /* Setting a max width on one entry to effectively set a max expansion for
      * the whole title widget. */
@@ -334,42 +346,6 @@ on_window_slot_destroyed (gpointer  data,
 }
 
 static void
-on_window_focus_changed (GObject    *object,
-                         GParamSpec *pspec,
-                         gpointer    user_data)
-{
-    GtkWidget *widget;
-    NautilusToolbar *toolbar;
-
-    widget = GTK_WIDGET (object);
-    toolbar = NAUTILUS_TOOLBAR (user_data);
-
-    if (g_settings_get_boolean (nautilus_preferences,
-                                NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY))
-    {
-        return;
-    }
-
-    /* The working assumption being made here is, if the location entry is visible,
-     * the user must have switched windows while having keyboard focus on the entry
-     * (because otherwise it would be invisible),
-     * so we focus the entry explicitly to reset the “should auto-hide” flag.
-     */
-    if (gtk_widget_has_focus (widget) && toolbar->show_location_entry)
-    {
-        gtk_widget_grab_focus (toolbar->location_entry);
-    }
-    /* The location entry in general is hidden when it loses focus,
-     * but hiding it when switching windows could be undesirable, as the user
-     * might want to copy a path from somewhere. This here prevents that from happening.
-     */
-    else
-    {
-        toolbar->location_entry_should_auto_hide = FALSE;
-    }
-}
-
-static void
 nautilus_toolbar_set_property (GObject      *object,
                                guint         property_id,
                                const GValue *value,
@@ -381,17 +357,7 @@ nautilus_toolbar_set_property (GObject      *object,
     {
         case PROP_WINDOW:
         {
-            if (self->window != NULL)
-            {
-                g_signal_handlers_disconnect_by_func (self->window,
-                                                      on_window_focus_changed, self);
-            }
             self->window = g_value_get_object (value);
-            if (self->window != NULL)
-            {
-                g_signal_connect (self->window, "notify::has-focus",
-                                  G_CALLBACK (on_window_focus_changed), self);
-            }
         }
         break;
 
@@ -467,9 +433,6 @@ nautilus_toolbar_finalize (GObject *obj)
                              on_window_slot_destroyed, self);
         self->window_slot = NULL;
     }
-
-    g_signal_handlers_disconnect_by_func (self->window,
-                                          on_window_focus_changed, self);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->finalize (obj);
 }
