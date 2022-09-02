@@ -120,8 +120,8 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
     g_free (container_uri);
 }
 
-#define MAX_LEN_FILENAME 128
-#define MIN_LEN_FILENAME 10
+#define MAX_LEN_FILENAME 64
+#define MIN_LEN_FILENAME 8
 
 static char *
 get_drop_filename (const char *text)
@@ -130,8 +130,9 @@ get_drop_filename (const char *text)
     char trimmed[MAX_LEN_FILENAME];
     int i;
     int last_word = -1;
-    int last_sentence = -1;
+    int end_sentence = -1;
     int last_nonspace = -1;
+    int start_sentence = -1;
     int num_attrs;
     PangoLogAttr *attrs;
     gchar *current_char;
@@ -144,35 +145,39 @@ get_drop_filename (const char *text)
     /* since the end of the text will always match a word boundary don't include it */
     for (i = 0; (i < num_attrs - 1); i++)
     {
+        if (attrs[i].is_sentence_start && start_sentence == -1)
+        {
+            start_sentence = i;
+        }
         if (!attrs[i].is_white)
         {
             last_nonspace = i;
-        }
-        if (attrs[i].is_sentence_end)
-        {
-            last_sentence = last_nonspace;
         }
         if (attrs[i].is_word_boundary)
         {
             last_word = last_nonspace;
         }
+        if (attrs[i].is_sentence_end)
+        {
+            end_sentence = last_nonspace;
+            break;
+        }
     }
     g_free (attrs);
 
-    if (last_sentence > 0)
+    if (end_sentence > 0)
     {
-        i = last_sentence;
+        i = end_sentence;
     }
     else
     {
         i = last_word;
     }
 
-    if (i > MIN_LEN_FILENAME)
+    if (i - start_sentence > MIN_LEN_FILENAME)
     {
-        char basename[MAX_LEN_FILENAME];
-        g_utf8_strncpy (basename, trimmed, i);
-        filename = g_strdup_printf ("%s.txt", basename);
+        g_autofree char *substring = g_utf8_substring (trimmed, start_sentence, i);
+        filename = g_strdup_printf ("%s.txt", substring);
     }
     else
     {
