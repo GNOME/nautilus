@@ -4342,6 +4342,7 @@ process_old_files (NautilusFilesView *view)
                                      GUINT_TO_POINTER (TRUE));
             }
         }
+        pending_additions = g_list_reverse (pending_additions);
 
         if (files_added != NULL)
         {
