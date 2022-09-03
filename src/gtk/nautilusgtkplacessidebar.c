@@ -3233,7 +3233,8 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
       if (sidebar->popover)
         gtk_widget_unparent (sidebar->popover);
 
-      sidebar->popover = gtk_popover_menu_new_from_model (G_MENU_MODEL (menu));
+      sidebar->popover = gtk_popover_menu_new_from_model_full (G_MENU_MODEL (menu),
+                                                               GTK_POPOVER_MENU_NESTED);
       g_object_unref (menu);
       gtk_widget_set_parent (sidebar->popover, GTK_WIDGET (sidebar));
       gtk_widget_set_halign (sidebar->popover, GTK_ALIGN_START);
