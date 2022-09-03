@@ -1613,6 +1613,8 @@ nautilus_window_dispose (GObject *object)
 
     nautilus_window_unexport_handle (window);
 
+    gtk_widget_dispose_template (GTK_WIDGET (window), NAUTILUS_TYPE_WINDOW);
+
     G_OBJECT_CLASS (nautilus_window_parent_class)->dispose (object);
 }
 

@@ -4167,6 +4167,8 @@ real_dispose (GObject *object)
     g_clear_handle_id (&self->update_directory_contents_timeout_id, g_source_remove);
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
 
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_PROPERTIES_WINDOW);
+
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->dispose (object);
 }
 

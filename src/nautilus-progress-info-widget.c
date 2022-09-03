@@ -112,6 +112,8 @@ nautilus_progress_info_widget_dispose (GObject *obj)
     }
     g_clear_object (&self->priv->info);
 
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_PROGRESS_INFO_WIDGET);
+
     G_OBJECT_CLASS (nautilus_progress_info_widget_parent_class)->dispose (obj);
 }
 

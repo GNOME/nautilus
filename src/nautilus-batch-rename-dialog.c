@@ -1756,6 +1756,16 @@ file_names_widget_entry_on_changed (NautilusBatchRenameDialog *self)
 }
 
 static void
+nautilus_batch_rename_dialog_dispose (GObject *object)
+{
+    NautilusBatchRenameDialog *dialog = NAUTILUS_BATCH_RENAME_DIALOG (object);
+
+    gtk_widget_dispose_template (GTK_WIDGET (dialog), NAUTILUS_TYPE_BATCH_RENAME_DIALOG);
+
+    G_OBJECT_CLASS (nautilus_batch_rename_dialog_parent_class)->dispose (object);
+}
+
+static void
 nautilus_batch_rename_dialog_finalize (GObject *object)
 {
     NautilusBatchRenameDialog *dialog;
@@ -1822,6 +1832,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     oclass = G_OBJECT_CLASS (klass);
 
     oclass->finalize = nautilus_batch_rename_dialog_finalize;
+    oclass->dispose = nautilus_batch_rename_dialog_dispose;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-batch-rename-dialog.ui");
 

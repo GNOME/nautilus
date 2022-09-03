@@ -446,6 +446,16 @@ nautilus_gtk_sidebar_row_set_end_icon (NautilusGtkSidebarRow *self,
 }
 
 static void
+nautilus_gtk_sidebar_row_dispose (GObject *object)
+{
+  NautilusGtkSidebarRow *self = NAUTILUS_GTK_SIDEBAR_ROW (object);
+
+  gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_GTK_SIDEBAR_ROW);
+
+  G_OBJECT_CLASS (nautilus_gtk_sidebar_row_parent_class)->dispose (object);
+}
+
+static void
 nautilus_gtk_sidebar_row_finalize (GObject *object)
 {
   NautilusGtkSidebarRow *self = NAUTILUS_GTK_SIDEBAR_ROW (object);
@@ -490,6 +500,7 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
   object_class->get_property = nautilus_gtk_sidebar_row_get_property;
   object_class->set_property = nautilus_gtk_sidebar_row_set_property;
   object_class->finalize = nautilus_gtk_sidebar_row_finalize;
+  object_class->dispose = nautilus_gtk_sidebar_row_dispose;
 
   properties [PROP_SIDEBAR] =
     g_param_spec_object ("sidebar",

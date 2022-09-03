@@ -818,6 +818,15 @@ nautilus_search_popover_set_property (GObject      *object,
     }
 }
 
+static void
+nautilus_search_popover_dispose (GObject *obj)
+{
+    NautilusSearchPopover *self = NAUTILUS_SEARCH_POPOVER (obj);
+
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_SEARCH_POPOVER);
+
+    G_OBJECT_CLASS (nautilus_search_popover_parent_class)->dispose (obj);
+}
 
 static void
 nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
@@ -826,6 +835,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+    object_class->dispose = nautilus_search_popover_dispose;
     object_class->get_property = nautilus_search_popover_get_property;
     object_class->set_property = nautilus_search_popover_set_property;
 

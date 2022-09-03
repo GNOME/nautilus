@@ -525,6 +525,16 @@ nautilus_column_chooser_get_settings (NautilusColumnChooser   *chooser,
 }
 
 static void
+nautilus_column_chooser_dispose (GObject *object)
+{
+    NautilusColumnChooser *self = NAUTILUS_COLUMN_CHOOSER (object);
+
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_COLUMN_CHOOSER);
+
+    G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->dispose (object);
+}
+
+static void
 nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 {
     GtkWidgetClass *widget_class;
@@ -535,6 +545,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 
     oclass->set_property = nautilus_column_chooser_set_property;
     oclass->constructed = nautilus_column_chooser_constructed;
+    oclass->dispose = nautilus_column_chooser_dispose;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, view);

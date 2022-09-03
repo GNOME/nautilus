@@ -412,6 +412,8 @@ nautilus_toolbar_dispose (GObject *object)
 
     g_clear_pointer (&self->search_binding, g_binding_unbind);
 
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_TOOLBAR);
+
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
 }
 
