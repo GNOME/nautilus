@@ -172,6 +172,14 @@ get_directory_sort_by (NautilusFile *file,
     default_sort = get_default_sort_order (file, reversed);
     g_return_val_if_fail (default_sort != NULL, NULL);
 
+    if (default_sort->sort_type == NAUTILUS_FILE_SORT_BY_RECENCY ||
+        default_sort->sort_type == NAUTILUS_FILE_SORT_BY_TRASHED_TIME ||
+        default_sort->sort_type == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
+    {
+        /* These defaults are important. Ignore metadata. */
+        return default_sort;
+    }
+
     sort_by = nautilus_file_get_metadata (file,
                                           NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
                                           default_sort->metadata_name);
