@@ -1,3 +1,42 @@
+Major changes in 43.rc
+=========================
+* Resolving regressions from the GTK 3 to 4 switch:
+  - Restore accessible labels for view items (Corey Berla)
+  - HiDPI icons and thumbnails (António Fernandes)
+  - Restore transient location entry behavior (António Fernandes)
+  - Restore spacebar shortcut to trigger sushi file previewer (António Fernandes)
+  - Restore ability to create new file from dropped text (Corey Berla)
+  - Restore ability to duplicate via DND + Ctrl (Corey Berla)
+* Drag-and-drop enhancements:
+  - Allow dropping files into Starred to star them (Corey Berla)
+  - Prevent "open on hover" while moving pointer (Corey Berla, António Fernandes)
+* Menu enhancements:
+  - Add menu item to remove files from Starred list (Corey Berla)
+  - Don't activate menu button when clicking folder name (António Fernandes)
+  - Don't offer "Properties" and "Add to Bookmarks" actions when they don't make sense (Eric Daigle, Corey Berla, António Fernandes)
+* Properties enhancements
+  - Wrap long filename words in Properties (anarchistcat)
+  - Refine properties for root directory (Corey Berla)
+  - Show error state for extensions properties (António Fernandes)
+* General enhancements
+  - Redesign trash infobar (Ignacy Kuchciński, Sam Hewitt)
+  - Add tooltips to every headerbar control (Ronen Margolin)
+  - Update and modernize libnautilus-extension documentation (Jan Tojnar)
+  - Update appdata screenshots (Christopher Davis)
+* Bugfixes
+  - Fix various app chooser issues (Corey Berla)
+  - Fix various batch rename dialog issues (Corey Berla)
+  - Fix Highcontrast styles (Ignacy Kuchciński, António Fernandes)
+  - Fix focus misbehaviours in the new views (Corey Berla)
+  - Don't show URI escape codes in tooltips (Antonio Teixeira)
+  - Show sharing infobar in gnome-user-share's fallback location (Corey Berla)
+  - Fix icon size in file conflict dialog (António Fernandes)
+  - Fix operations indicator animation (António Fernandes)
+  - Mark missing translatable strings (Sabri Ünal)
+  - Fix various memory leaks (Ignacy Kuchciński, Corey Berla)
+  - Fix compilation errors (Jeremy Bicha, Ondrey Holy, Timo)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 43.beta.1
 ==========================
 * Restore view options tooltip (António Fernandes)
