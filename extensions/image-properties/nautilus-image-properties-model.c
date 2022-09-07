@@ -64,10 +64,7 @@ append_item (NautilusImagesPropertiesModel *self,
     g_autoptr (NautilusPropertiesItem) item = NULL;
 
     item = nautilus_properties_item_new (name, value);
-    if (value != NULL)
-    {
-        g_list_store_append (self->group_model, item);
-    }
+    g_list_store_append (self->group_model, item);
 }
 
 static void
@@ -240,7 +237,7 @@ load_finished (NautilusImagesPropertiesModel *self)
     }
     else
     {
-        append_item (self, _("Failed to load image information"), NULL);
+        append_item (self, _("Oops! Something went wrong."), _("Failed to load image information"));
     }
 
     if (self->loader != NULL)
