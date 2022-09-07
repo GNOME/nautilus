@@ -925,7 +925,8 @@ create_extension_group_row (NautilusPropertiesItem   *item,
     gtk_list_box_row_set_activatable (GTK_LIST_BOX_ROW (row), FALSE);
     adw_action_row_add_prefix (ADW_ACTION_ROW (row), box);
 
-    gtk_widget_set_valign (box, GTK_ALIGN_CENTER);
+    gtk_widget_set_margin_top (box, 7);
+    gtk_widget_set_margin_bottom (box, 7);
     gtk_box_append (GTK_BOX (box), name_label);
     gtk_box_append (GTK_BOX (box), value_label);
 
@@ -937,7 +938,8 @@ create_extension_group_row (NautilusPropertiesItem   *item,
 
     g_object_bind_property (item, "value", value_label, "label", G_BINDING_SYNC_CREATE);
     gtk_widget_set_halign (value_label, GTK_ALIGN_START);
-    gtk_label_set_ellipsize (GTK_LABEL (value_label), PANGO_ELLIPSIZE_END);
+    gtk_label_set_wrap (GTK_LABEL (value_label), TRUE);
+    gtk_label_set_wrap_mode (GTK_LABEL (value_label), PANGO_WRAP_WORD_CHAR);
     gtk_label_set_selectable (GTK_LABEL (value_label), TRUE);
 
     return row;
