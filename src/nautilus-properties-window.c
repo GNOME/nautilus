@@ -133,7 +133,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *permissions_value_label;
 
     GtkWidget *extension_models_list_box;
-    GList *extensions_properties_models;
 
     /* Permissions page */
 
@@ -3666,8 +3665,8 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 static void
 refresh_extension_model_pages (NautilusPropertiesWindow *self)
 {
-    GListStore *extensions_list = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_MODEL);
-    GList *all_models = NULL;
+    g_autoptr (GListStore) extensions_list = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_MODEL);
+    g_autolist (NautilusPropertiesModel) all_models = NULL;
     g_autolist (GObject) providers =
         nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER);
 
@@ -3677,10 +3676,6 @@ refresh_extension_model_pages (NautilusPropertiesWindow *self)
 
         all_models = g_list_concat (all_models, models);
     }
-
-    g_clear_list (&self->extensions_properties_models, g_object_unref);
-    self->extensions_properties_models = all_models;
-
 
     for (GList *l = all_models; l != NULL; l = l->next)
     {
@@ -4146,8 +4141,6 @@ real_dispose (GObject *object)
     g_clear_list (&self->target_files, (GDestroyNotify) nautilus_file_unref);
 
     g_clear_list (&self->changed_files, (GDestroyNotify) nautilus_file_unref);
-
-    g_clear_list (&self->extensions_properties_models, g_object_unref);
 
     g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
 
