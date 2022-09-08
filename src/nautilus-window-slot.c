@@ -1354,15 +1354,16 @@ begin_location_change (NautilusWindowSlot         *self,
 
     nautilus_window_slot_set_allow_stop (self, TRUE);
 
-    new_selection = check_select_old_location_containing_folder (new_selection, location, previous_location);
-
     g_assert (self->pending_location == NULL);
 
     self->pending_location = g_object_ref (location);
     self->location_change_type = type;
     self->location_change_distance = distance;
     self->tried_mount = FALSE;
-    self->pending_selection = nautilus_file_list_copy (new_selection);
+    self->pending_selection =
+        check_select_old_location_containing_folder (nautilus_file_list_copy (new_selection),
+                                                     location,
+                                                     previous_location);
 
     self->pending_scroll_to = g_strdup (scroll_pos);
 
