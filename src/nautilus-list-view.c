@@ -654,7 +654,7 @@ action_sort_order_changed (GSimpleAction *action,
         g_autoptr (GtkColumnViewColumn) view_column = NULL;
         GtkListItemFactory *factory;
         NautilusColumn *nautilus_column;
-        gchar *attribute;
+        g_autofree gchar *attribute = NULL;
 
         view_column = g_list_model_get_item (view_columns, i);
         factory = gtk_column_view_column_get_factory (view_column);
