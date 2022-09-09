@@ -2592,6 +2592,8 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 
     nautilus_window_slot_set_location (self, new_location);
 
+    g_object_unref (new_location);
+
     /* Sync the actions for this new location. */
     nautilus_window_slot_sync_actions (self);
 }
