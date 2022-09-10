@@ -2021,6 +2021,8 @@ update_group_row (AdwComboRow       *row,
         GList *groups = nautilus_file_get_settable_group_names (file);
         update_combo_row_dropdown (row, groups);
 
+        g_list_free_full (groups, g_free);
+
         /* display current group */
         select_ownership_row_entry (row, group_name, string_list_item_equals_string);
 
