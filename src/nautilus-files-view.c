@@ -3206,6 +3206,46 @@ slot_active_changed (NautilusWindowSlot *slot,
 }
 
 static gboolean
+nautilus_files_view_focus (GtkWidget        *widget,
+                           GtkDirectionType  direction)
+{
+    NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+    GtkWidget *focus;
+    GtkWidget *main_child;
+
+    view = NAUTILUS_FILES_VIEW (widget);
+    priv = nautilus_files_view_get_instance_private (view);
+    focus = gtk_window_get_focus (GTK_WINDOW (gtk_widget_get_root (widget)));
+
+    /* In general, we want to forward focus movement to the main child. However,
+     * we must chain up for default focus handling in case the focus in in any
+     * other child, e.g. a popover. */
+    if (gtk_widget_is_ancestor (focus, widget) &&
+        !gtk_widget_is_ancestor (focus, priv->scrolled_window))
+    {
+        if (GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->focus (widget, direction))
+        {
+            return TRUE;
+        }
+        else
+        {
+            /* The default handler returns FALSE if a popover has just been
+             * closed, because it moves the focus forward. But we want to move
+             * focus back into the view's main child. So, fall through. */
+        }
+    }
+
+    main_child = gtk_scrolled_window_get_child (GTK_SCROLLED_WINDOW (priv->scrolled_window));
+    if (main_child != NULL)
+    {
+        return gtk_widget_child_focus (main_child, direction);
+    }
+
+    return FALSE;
+}
+
+static gboolean
 nautilus_files_view_grab_focus (GtkWidget *widget)
 {
     /* focus the child of the scrolled window if it exists */
@@ -9464,6 +9504,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     oclass->get_property = nautilus_files_view_get_property;
     oclass->set_property = nautilus_files_view_set_property;
 
+    widget_class->focus = nautilus_files_view_focus;
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
 
