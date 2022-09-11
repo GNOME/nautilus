@@ -1563,17 +1563,37 @@ real_preview_selection_event (NautilusFilesView *files_view,
                               GtkDirectionType   direction)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    GtkMovementStep step;
-    gint count;
-    gboolean handled;
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    guint i;
+    gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL);
 
-    step = (direction == GTK_DIR_UP || direction == GTK_DIR_DOWN) ?
-           GTK_MOVEMENT_DISPLAY_LINES : GTK_MOVEMENT_VISUAL_POSITIONS;
-    count = (direction == GTK_DIR_RIGHT || direction == GTK_DIR_DOWN) ?
-            1 : -1;
+    i = get_first_selected_item (self);
+    if (direction == GTK_DIR_UP ||
+        direction == (rtl ? GTK_DIR_RIGHT : GTK_DIR_LEFT))
+    {
+        if (i == 0)
+        {
+            /* We are at the start of the list, can't move up. */
+            gtk_widget_error_bell (GTK_WIDGET (self));
+            return;
+        }
 
-    g_signal_emit_by_name (nautilus_list_base_get_view_ui (self),
-                           "move-cursor", step, count, &handled);
+        i--;
+    }
+    else
+    {
+        i++;
+
+        if (i >= g_list_model_get_n_items (G_LIST_MODEL (priv->model)))
+        {
+            /* We are at the end of the list, can't move down. */
+            gtk_widget_error_bell (GTK_WIDGET (self));
+            return;
+        }
+    }
+
+    gtk_selection_model_select_item (GTK_SELECTION_MODEL (priv->model), i, TRUE);
+    set_focus_item (self, g_list_model_get_item (G_LIST_MODEL (priv->model), i));
 }
 
 static void
