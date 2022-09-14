@@ -52,7 +52,7 @@ enum
     CONTENT_BAR_RESPONSE_APP = 1
 };
 
-G_DEFINE_TYPE (NautilusXContentBar, nautilus_x_content_bar, GTK_TYPE_INFO_BAR)
+G_DEFINE_TYPE (NautilusXContentBar, nautilus_x_content_bar, ADW_TYPE_BIN)
 
 static void
 content_bar_response_cb (GtkInfoBar *infobar,
