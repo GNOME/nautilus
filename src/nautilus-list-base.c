@@ -1506,18 +1506,8 @@ real_select_first (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (NautilusViewItem) item = NULL;
-    NautilusFile *file;
-    g_autoptr (GList) selection = NULL;
 
-    item = get_view_item (G_LIST_MODEL (priv->model), 0);
-    if (item == NULL)
-    {
-        return;
-    }
-    file = nautilus_view_item_get_file (item);
-    selection = g_list_prepend (selection, file);
-    nautilus_view_set_selection (NAUTILUS_VIEW (files_view), selection);
+    gtk_selection_model_select_item (GTK_SELECTION_MODEL (priv->model), 0, TRUE);
 }
 
 static GdkRectangle *
