@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2022-08-31 15:42+0000\n"
-"PO-Revision-Date: 2022-08-31 21:27+0200\n"
+"PO-Revision-Date: 2022-09-19 21:39+0200\n"
 "Last-Translator: Matej Urbančič <mateju@src.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -853,10 +853,9 @@ msgstr "V redu"
 
 #. Translators: %s is the filename.  i.e. "Choose an application to open test.jpg"
 #: src/nautilus-app-chooser.c:198
-#, fuzzy, c-format
-#| msgid "Choose another application with which to open the selected item"
+#, c-format
 msgid "Choose an application to open <b>%s</b>."
-msgstr "Izberite drug program s katerim naj se odpre izbran predmet"
+msgstr "Izbor programa za odpiranje datoteke <b>%s</b>."
 
 #: src/nautilus-app-chooser.c:204
 msgid "Open Items"
@@ -1530,10 +1529,9 @@ msgstr "Navedena skupina »%s« ne obstaja"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
 #: src/nautilus-file.c:6833
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#, c-format
 msgid "%s (You)"
-msgstr "%s (%s)"
+msgstr "%s (Vi)"
 
 #: src/nautilus-file.c:6865
 #, c-format
@@ -2788,8 +2786,6 @@ msgid "No Results Found"
 msgstr "Ni zadetkov"
 
 #: src/nautilus-files-view.c:3706 src/gtk/nautilusgtkplacesview.ui:194
-#, fuzzy
-#| msgid "Try a different search"
 msgid "Try a different search."
 msgstr "Poskusite drugačen iskalni niz"
 
@@ -2798,16 +2794,12 @@ msgid "Trash is Empty"
 msgstr "Smeti so prazne"
 
 #: src/nautilus-files-view.c:3717
-#, fuzzy
-#| msgid "Starred files"
 msgid "No Starred Files"
-msgstr "Datoteke z zvezdico"
+msgstr "Ni datotek z zvezdico"
 
 #: src/nautilus-files-view.c:3723
-#, fuzzy
-#| msgid "Recent files"
 msgid "No Recent Files"
-msgstr "Nedavne datoteke"
+msgstr "Ni nedavnih datotek"
 
 #: src/nautilus-files-view.c:3729
 msgid "Folder is Empty"
@@ -4002,7 +3994,7 @@ msgstr "ustvarjanje in brisanje datotek"
 
 #: src/nautilus-properties-window.c:357
 msgid "Read/write, no access"
-msgstr ""
+msgstr "Branje in pisanje, ni dostopa"
 
 #: src/nautilus-properties-window.c:364 src/nautilus-properties-window.c:3132
 msgid "Read-only"
@@ -4022,7 +4014,7 @@ msgstr "Le za branje"
 
 #: src/nautilus-properties-window.c:386
 msgid "Write-only, no access"
-msgstr ""
+msgstr "Le za branje, ni dostopa"
 
 #: src/nautilus-properties-window.c:393
 msgid "Access-only"
@@ -4067,7 +4059,7 @@ msgstr "Preklic spremembe lastnika?"
 
 #: src/nautilus-properties-window.c:1989 src/nautilus-properties-window.c:2034
 msgid "Multiple"
-msgstr ""
+msgstr "Zaporedno"
 
 #: src/nautilus-properties-window.c:2158
 msgid "Empty folder"
@@ -4182,16 +4174,16 @@ msgstr "Smeti"
 
 #: src/nautilus-special-location-bar.c:107
 msgid "Items in Trash older than 1 hour are automatically deleted"
-msgstr ""
+msgstr "Predmeti v Smeteh, starejši od 1 ure bodo samodejno izbrisani."
 
 #: src/nautilus-special-location-bar.c:112
 #, c-format
 msgid "Items in Trash older than %d day are automatically deleted"
 msgid_plural "Items in Trash older than %d days are automatically deleted"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Predmeti v Smeteh, starejši od %d ur bodo samodejno izbrisani."
+msgstr[1] "Predmeti v Smeteh, starejši od %d ure bodo samodejno izbrisani."
+msgstr[2] "Predmeti v Smeteh, starejši od %d ur bodo samodejno izbrisani."
+msgstr[3] "Predmeti v Smeteh, starejši od %d ur bodo samodejno izbrisani."
 
 #: src/nautilus-special-location-bar.c:149
 msgid "Put files in this folder to use them as templates for new documents."
@@ -4210,11 +4202,9 @@ msgid "Executable files in this folder will appear in the Scripts menu."
 msgstr "Izvedljive datoteke v tej mapi bodo prikazane v meniju Skripti."
 
 #: src/nautilus-special-location-bar.c:162
-#, fuzzy
-#| msgid "Unable to display the contents of this folder."
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network."
-msgstr "Vsebine te mape ni mogoče prikazati."
+msgstr "Omogoči osebno izmenjavo in souporabo datotek te mape prek omrežja."
 
 #: src/nautilus-special-location-bar.c:163
 msgid "Sharing Settings"
@@ -4330,10 +4320,9 @@ msgstr "Naprej"
 
 #. Translators: only one item has been deleted and %s is its name.
 #: src/nautilus-window.c:1180
-#, fuzzy, c-format
-#| msgid "Move “%s” to trash"
+#, c-format
 msgid "“%s” moved to trash"
-msgstr "Premakni »%s« v smeti"
+msgstr "Predmet »%s« je premaknjen smeti"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
@@ -4379,7 +4368,7 @@ msgstr "Trenutno nameščeni vstavki:"
 
 #: src/nautilus-window.c:2269
 msgid "For bug testing only, the following command can be used:"
-msgstr ""
+msgstr "Le za preizkušanje hroščev, mogoče je uporabiti ukaz:"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -4702,19 +4691,14 @@ msgid "Grid view"
 msgstr "Pokaže mrežni pogled"
 
 #: src/resources/gtk/help-overlay.ui:314
-#, fuzzy
-#| msgid "Parent folder"
 msgctxt "shortcut window"
 msgid "Expand folder"
-msgstr "Nadrejena mapa"
+msgstr "Razširi mapo"
 
 #: src/resources/gtk/help-overlay.ui:321
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create folder"
 msgctxt "shortcut window"
 msgid "Collapse folder"
-msgstr "Ustvari mapo"
+msgstr "Zloži mapo"
 
 #: src/resources/gtk/help-overlay.ui:330
 msgctxt "shortcut window"
@@ -4787,14 +4771,12 @@ msgid "Show item properties"
 msgstr "Pokaže lastnosti predmeta"
 
 #: src/resources/ui/nautilus-app-chooser.ui:46
-#, fuzzy
-#| msgid "Choose another application with which to open the selected item"
 msgid "Choose an application to open the selected files."
-msgstr "Izberite drug program s katerim naj se odpre izbran predmet"
+msgstr "Izbor programa za odpiranje izbranega predmeta."
 
 #: src/resources/ui/nautilus-app-chooser.ui:80
 msgid "Always use for this file type"
-msgstr ""
+msgstr "Vedno uporabi za to vrsto datoteke"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:6
 msgid "Automatic Numbers"
@@ -5131,10 +5113,8 @@ msgid "Choose the order of information to appear in this folder:"
 msgstr "Izberite vrstni red stolpcev, prikazanih v tej mapi"
 
 #: src/resources/ui/nautilus-name-cell.ui:86
-#, fuzzy
-#| msgid "Full Text Search:"
 msgid "Full text match"
-msgstr "Iskanje besedila:"
+msgstr "Iskanje po celotnem besedilu"
 
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
 msgid "Password Required"
@@ -5663,7 +5643,7 @@ msgstr "Nedavni strežniki"
 
 #: src/gtk/nautilusgtkplacesview.ui:159
 msgid "List of common local and remote mountpoints."
-msgstr ""
+msgstr "Seznam splošnih krajevnih in oddaljenih točk priklopa."
 
 #: src/gtk/nautilusgtkplacesview.ui:211
 msgid "Connect to _Server"
@@ -5818,7 +5798,7 @@ msgstr "Stranska vrstica"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3978
 msgid "List of common shortcuts, mountpoints, and bookmarks."
-msgstr ""
+msgstr "Seznam splošnih tipkovnih bližnjic, točk priklopa in zaznamkov."
 
 #~ msgid "Where to position newly open tabs in browser windows"
 #~ msgstr "Kam naj se postavijo na novo odprti zavihki okna brskalnika"
