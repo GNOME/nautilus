@@ -2731,6 +2731,28 @@ paste_value_received_callback (GObject      *source_object,
 
         g_list_free_full (item_uris, g_free);
     }
+    else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+        GSList *source_list = g_value_get_boxed (value);
+        GList *item_uris = NULL;
+
+        for (GSList *l = source_list; l != NULL; l = l->next)
+        {
+            item_uris = g_list_prepend (item_uris, g_file_get_uri (l->data));
+        }
+
+        item_uris = g_list_reverse (item_uris);
+        handle_clipboard_data (data->view, item_uris, data->dest_uri, action);
+        g_list_free_full (item_uris, g_free);
+    }
+    else if (G_VALUE_HOLDS (value, G_TYPE_FILE))
+    {
+        GFile *location = g_value_get_object (value);
+        GList *item_uris = g_list_append (NULL, g_file_get_uri (location));
+
+        handle_clipboard_data (data->view, item_uris, data->dest_uri, action);
+        g_list_free_full (item_uris, g_free);
+    }
 
     paste_callback_data_free (data);
 }
@@ -2758,6 +2780,20 @@ paste_files (NautilusFilesView *view,
     if (gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD))
     {
         gdk_clipboard_read_value_async (clipboard, NAUTILUS_TYPE_CLIPBOARD,
+                                        G_PRIORITY_DEFAULT,
+                                        priv->clipboard_cancellable,
+                                        paste_value_received_callback, data);
+    }
+    else if (gdk_content_formats_contain_gtype (formats, GDK_TYPE_FILE_LIST))
+    {
+        gdk_clipboard_read_value_async (clipboard, GDK_TYPE_FILE_LIST,
+                                        G_PRIORITY_DEFAULT,
+                                        priv->clipboard_cancellable,
+                                        paste_value_received_callback, data);
+    }
+    else if (gdk_content_formats_contain_gtype (formats, G_TYPE_FILE))
+    {
+        gdk_clipboard_read_value_async (clipboard, G_TYPE_FILE,
                                         G_PRIORITY_DEFAULT,
                                         priv->clipboard_cancellable,
                                         paste_value_received_callback, data);
@@ -7178,7 +7214,9 @@ update_actions_state_for_clipboard_targets (NautilusFilesView *view)
     priv = nautilus_files_view_get_instance_private (view);
     clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
     formats = gdk_clipboard_get_formats (clipboard);
-    is_data_copied = gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD);
+    is_data_copied = gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD) ||
+                     gdk_content_formats_contain_gtype (formats, GDK_TYPE_FILE_LIST) ||
+                     gdk_content_formats_contain_gtype (formats, G_TYPE_FILE);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                          "paste");
