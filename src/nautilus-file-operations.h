@@ -164,3 +164,10 @@ void nautilus_file_operations_compress (GList                          *files,
                                         NautilusFileOperationsDBusData *dbus_data,
                                         NautilusCreateCallback          done_callback,
                                         gpointer                        done_callback_data);
+
+void
+nautilus_file_operations_paste_image_from_clipboard (GtkWidget                      *parent_view,
+                                                    NautilusFileOperationsDBusData *dbus_data,
+                                                    const char                     *parent_dir_uri,
+                                                    NautilusCopyCallback            done_callback,
+                                                    gpointer                        done_callback_data);

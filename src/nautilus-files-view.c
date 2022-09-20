@@ -2777,15 +2777,26 @@ paste_files (NautilusFilesView *view,
     PasteCallbackData *data;
     GdkClipboard *clipboard;
     GdkContentFormats *formats;
-    char *uri;
+    gchar *real_dest_uri;
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
     clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
     formats = gdk_clipboard_get_formats (clipboard);
 
-    uri = dest_uri != NULL ? dest_uri : nautilus_files_view_get_backing_uri (view);
+    real_dest_uri = dest_uri != NULL ? dest_uri : nautilus_files_view_get_backing_uri (view);
+
+    if (gdk_content_formats_contain_gtype (formats, GDK_TYPE_TEXTURE))
+    {
+        nautilus_file_operations_paste_image_from_clipboard (GTK_WIDGET (view),
+                                                             NULL,
+                                                             real_dest_uri,
+                                                             copy_move_done_callback,
+                                                             pre_copy_move (view));
+        return;
+    }
+
     data = g_new0 (PasteCallbackData, 1);
-    data->dest_uri = uri;
+    data->dest_uri = real_dest_uri;
     data->as_link = as_link;
     data->view = view;
 
@@ -7222,7 +7233,8 @@ update_actions_state_for_clipboard_targets (NautilusFilesView *view)
     formats = gdk_clipboard_get_formats (clipboard);
     is_data_copied = gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD) ||
                      gdk_content_formats_contain_gtype (formats, GDK_TYPE_FILE_LIST) ||
-                     gdk_content_formats_contain_gtype (formats, G_TYPE_FILE);
+                     gdk_content_formats_contain_gtype (formats, G_TYPE_FILE) ||
+                     gdk_content_formats_contain_gtype (formats, GDK_TYPE_TEXTURE);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                          "paste");
