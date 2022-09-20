@@ -2723,6 +2723,20 @@ action_open_item_new_window (GSimpleAction *action,
     nautilus_file_list_free (selection);
 }
 
+typedef struct _PasteCallbackData
+{
+    NautilusFilesView *view;
+    gboolean as_link;
+    gchar *dest_uri;
+} PasteCallbackData;
+
+static void
+paste_callback_data_free (PasteCallbackData *data)
+{
+    g_free (data->dest_uri);
+    g_free (data);
+}
+
 static void
 handle_clipboard_data (NautilusFilesView *view,
                        NautilusClipboard *clip,
@@ -2748,47 +2762,47 @@ handle_clipboard_data (NautilusFilesView *view,
 }
 
 static void
-paste_clipboard_data (NautilusFilesView *view,
-                      NautilusClipboard *clip,
-                      char              *destination_uri)
-{
-    GdkDragAction action;
-
-    if (nautilus_clipboard_is_cut (clip))
-    {
-        action = GDK_ACTION_MOVE;
-    }
-    else
-    {
-        action = GDK_ACTION_COPY;
-    }
-
-    handle_clipboard_data (view, clip, destination_uri, action);
-}
-
-static void
 paste_clipboard_received_callback (GObject      *source_object,
                                    GAsyncResult *res,
                                    gpointer      user_data)
 {
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (source_object);
     NautilusClipboard *clip;
-    g_autofree char *view_uri = NULL;
+    GdkDragAction action;
+    PasteCallbackData *data = user_data;
+
+    action = data->as_link ? GDK_ACTION_LINK : GDK_ACTION_COPY;
 
     clip = nautilus_files_view_get_clipboard_finish (view, res, NULL);
     if (clip != NULL)
     {
-        view_uri = nautilus_files_view_get_backing_uri (view);
-        paste_clipboard_data (view, clip, view_uri);
+        action = nautilus_clipboard_is_cut (clip) ? GDK_ACTION_MOVE : action;
+        handle_clipboard_data (data->view, clip, data->dest_uri, action);
     }
+
+    paste_callback_data_free (data);
 }
 
 static void
-paste_files (NautilusFilesView *view)
+paste_files (NautilusFilesView *view,
+             gchar             *dest_uri,
+             gboolean           as_link)
 {
+    PasteCallbackData *data;
+    GdkClipboard *clipboard;
+    GdkContentFormats *formats;
+    char *uri;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    uri = dest_uri != NULL ? dest_uri : nautilus_files_view_get_backing_uri (view);
+    data = g_new0 (PasteCallbackData, 1);
+    data->dest_uri = uri;
+    data->as_link = as_link;
+    data->view = view;
+
     nautilus_files_view_get_clipboard_async (view,
                                              paste_clipboard_received_callback,
-                                             NULL);
+                                             data);
 }
 
 static void
@@ -2800,7 +2814,7 @@ action_paste_files (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    paste_files (view);
+    paste_files (view, NULL, FALSE);
 }
 
 static void
@@ -2821,24 +2835,7 @@ action_paste_files_accel (GSimpleAction *action,
     }
     else
     {
-        paste_files (view);
-    }
-}
-
-static void
-create_links_clipboard_received_callback (GObject      *source_object,
-                                          GAsyncResult *res,
-                                          gpointer      user_data)
-{
-    NautilusFilesView *view = NAUTILUS_FILES_VIEW (source_object);
-    NautilusClipboard *clip;
-    g_autofree char *view_uri = NULL;
-
-    clip = nautilus_files_view_get_clipboard_finish (view, res, NULL);
-    if (clip != NULL)
-    {
-        view_uri = nautilus_files_view_get_backing_uri (view);
-        handle_clipboard_data (view, clip, view_uri, GDK_ACTION_LINK);
+        paste_files (view, NULL, FALSE);
     }
 }
 
@@ -2847,11 +2844,10 @@ action_create_links (GSimpleAction *action,
                      GVariant      *state,
                      gpointer       user_data)
 {
+    NautilusFilesView *view = user_data;
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
-    nautilus_files_view_get_clipboard_async (NAUTILUS_FILES_VIEW (user_data),
-                                             create_links_clipboard_received_callback,
-                                             NULL);
+    paste_files (view, NULL, TRUE);
 }
 
 static void
@@ -6134,34 +6130,6 @@ action_move_to (GSimpleAction *action,
 }
 
 static void
-paste_into_clipboard_received_callback (GObject      *source_object,
-                                        GAsyncResult *res,
-                                        gpointer      user_data)
-{
-    NautilusFilesView *view = NAUTILUS_FILES_VIEW (source_object);
-    NautilusClipboard *clip;
-    g_autofree char *directory_uri = user_data;
-
-    clip = nautilus_files_view_get_clipboard_finish (view, res, NULL);
-    if (clip != NULL)
-    {
-        paste_clipboard_data (view, clip, directory_uri);
-    }
-}
-
-static void
-paste_into (NautilusFilesView *view,
-            NautilusFile      *target)
-{
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-    g_assert (NAUTILUS_IS_FILE (target));
-
-    nautilus_files_view_get_clipboard_async (view,
-                                             paste_into_clipboard_received_callback,
-                                             nautilus_file_get_activation_uri (target));
-}
-
-static void
 action_paste_files_into (GSimpleAction *action,
                          GVariant      *state,
                          gpointer       user_data)
@@ -6173,7 +6141,7 @@ action_paste_files_into (GSimpleAction *action,
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     if (selection != NULL)
     {
-        paste_into (view, NAUTILUS_FILE (selection->data));
+        paste_files (view, nautilus_file_get_activation_uri (selection->data), FALSE);
     }
 }
 
