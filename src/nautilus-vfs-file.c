@@ -203,7 +203,14 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
     info = g_file_info_new ();
 
     gio_key = g_strconcat ("metadata::", key, NULL);
-    g_file_info_set_attribute_stringv (info, gio_key, value);
+    if (value == NULL)
+    {
+        g_file_info_set_attribute (info, gio_key, G_FILE_ATTRIBUTE_TYPE_INVALID, NULL);
+    }
+    else
+    {
+        g_file_info_set_attribute_stringv (info, gio_key, value);
+    }
     g_free (gio_key);
 
     location = nautilus_file_get_location (file);
