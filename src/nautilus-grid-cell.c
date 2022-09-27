@@ -28,7 +28,7 @@ G_DEFINE_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS_TYPE_VIEW_CELL)
 static void
 update_icon (NautilusGridCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
     GtkStyleContext *style_context;
@@ -66,7 +66,7 @@ update_icon (NautilusGridCell *self)
 static void
 update_captions (NautilusGridCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     GtkWidget * const caption_labels[] =
     {
@@ -98,7 +98,7 @@ update_captions (NautilusGridCell *self)
 static void
 update_emblems (NautilusGridCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     GtkWidget *child;
     g_autolist (GIcon) emblems = NULL;
@@ -125,7 +125,7 @@ update_emblems (NautilusGridCell *self)
 static void
 on_file_changed (NautilusGridCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     g_autofree gchar *name = NULL;
 
@@ -153,8 +153,10 @@ static void
 on_item_is_cut_changed (NautilusGridCell *self)
 {
     gboolean is_cut;
+    g_autoptr (NautilusViewItem) item = NULL;
 
-    g_object_get (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self)),
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_object_get (item,
                   "is-cut", &is_cut,
                   NULL);
     if (is_cut)

@@ -37,7 +37,7 @@ static GParamSpec *properties[N_PROPS] = { NULL, };
 static void
 on_file_changed (NautilusLabelCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     g_autofree gchar *string = NULL;
 
