@@ -1135,6 +1135,8 @@ real_get_selection (NautilusFilesView *files_view)
                                          g_object_ref (nautilus_view_item_get_file (item)));
     }
 
+    selected_files = g_list_reverse (selected_files);
+
     return selected_files;
 }
 
