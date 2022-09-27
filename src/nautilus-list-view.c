@@ -935,8 +935,6 @@ setup_name_cell (GtkSignalListItemFactory *factory,
         nautilus_name_cell_show_snippet (NAUTILUS_NAME_CELL (cell));
     }
 
-    gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
-
     setup_selection_click_workaround (cell);
 }
 
