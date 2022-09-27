@@ -880,7 +880,7 @@ on_item_click_released_workaround (GtkGestureClick *gesture,
         modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK))
     {
         NautilusViewModel *model;
-        NautilusViewItem *item;
+        g_autoptr (NautilusViewItem) item = NULL;
         guint i;
 
         model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));

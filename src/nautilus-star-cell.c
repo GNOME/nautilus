@@ -27,7 +27,7 @@ on_star_click_released (GtkGestureClick *gesture,
 {
     NautilusStarCell *self = user_data;
     NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     g_autofree gchar *uri = NULL;
 
@@ -77,7 +77,7 @@ update_star (GtkImage     *star,
 static void
 on_file_changed (NautilusStarCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     g_autofree gchar *string = NULL;
 
@@ -94,7 +94,7 @@ on_starred_changed (NautilusTagManager *tag_manager,
                     gpointer            user_data)
 {
     NautilusStarCell *self = user_data;
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));

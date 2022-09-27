@@ -92,7 +92,7 @@ get_path_text (NautilusFile *file,
 static void
 update_labels (NautilusNameCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     g_autofree gchar *display_name = NULL;
     g_autofree gchar *path_text = NULL;
@@ -125,7 +125,7 @@ update_icon (NautilusNameCell *self)
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
     GtkStyleContext *style_context;
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     guint icon_size;
     gint scale_factor;
@@ -177,7 +177,7 @@ update_icon (NautilusNameCell *self)
 static void
 update_emblems (NautilusNameCell *self)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     GtkWidget *child;
     g_autolist (GIcon) emblems = NULL;
@@ -218,7 +218,7 @@ static void
 on_item_drag_accept_changed (NautilusNameCell *self)
 {
     gboolean drag_accept;
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     GtkWidget *list_row = gtk_widget_get_parent (gtk_widget_get_parent (GTK_WIDGET (self)));
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
@@ -237,8 +237,10 @@ static void
 on_item_is_cut_changed (NautilusNameCell *self)
 {
     gboolean is_cut;
+    g_autoptr (NautilusViewItem) item = NULL;
 
-    g_object_get (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self)),
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_object_get (item,
                   "is-cut", &is_cut,
                   NULL);
     if (is_cut)
