@@ -294,6 +294,12 @@ typedef struct
     GList *selection;
 } CompressCallbackData;
 
+typedef struct
+{
+    GList *added_files;
+    NautilusFilesView *directory_view;
+} CopyMoveDoneData;
+
 /* forward declarations */
 
 static gboolean display_selection_info_idle_callback (gpointer data);
@@ -342,6 +348,12 @@ static void     set_search_query_internal (NautilusFilesView *files_view,
                                            NautilusDirectory *base_model);
 
 static gboolean nautilus_files_view_is_read_only (NautilusFilesView *view);
+static void nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
+                                               GList        *selection);
+static void copy_move_done_callback (GHashTable *debuting_files,
+                                     gboolean    success,
+                                     gpointer    data);
+static CopyMoveDoneData * pre_copy_move (NautilusFilesView *directory_view);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
@@ -3899,12 +3911,6 @@ debuting_files_add_files_callback (NautilusFilesView *view,
 
     nautilus_profile_end (NULL);
 }
-
-typedef struct
-{
-    GList *added_files;
-    NautilusFilesView *directory_view;
-} CopyMoveDoneData;
 
 static void
 copy_move_done_data_free (CopyMoveDoneData *data)
