@@ -130,6 +130,36 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
     g_free (info);
 }
 
+const char*
+get_thumbnail_path_attribute (void)
+{
+    switch (thumbnail_size)
+    {
+        case GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE:
+        {
+            return G_FILE_ATTRIBUTE_THUMBNAIL_PATH_LARGE;
+        }
+        break;
+
+        case GNOME_DESKTOP_THUMBNAIL_SIZE_XLARGE:
+        {
+            return G_FILE_ATTRIBUTE_THUMBNAIL_PATH_XLARGE;
+        }
+        break;
+
+        case GNOME_DESKTOP_THUMBNAIL_SIZE_XXLARGE:
+        {
+            return G_FILE_ATTRIBUTE_THUMBNAIL_PATH_XXLARGE;
+        }
+        break;
+
+        default:
+        {
+            return G_FILE_ATTRIBUTE_THUMBNAIL_PATH;
+        }
+    }
+}
+
 static GnomeDesktopThumbnailFactory *
 get_thumbnail_factory (void)
 {

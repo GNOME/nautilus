@@ -2838,7 +2838,7 @@ update_info_internal (NautilusFile *file,
         file->details->icon = g_object_ref (icon);
     }
 
-    thumbnail_path = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
+    thumbnail_path = g_file_info_get_attribute_byte_string (info, get_thumbnail_path_attribute ());
     if (g_strcmp0 (file->details->thumbnail_path, thumbnail_path) != 0)
     {
         changed = TRUE;

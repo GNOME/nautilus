@@ -21,7 +21,10 @@
 
 #pragma once
 
+#define GNOME_DESKTOP_USE_UNSTABLE_API
+
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <libgnome-desktop/gnome-desktop-thumbnail.h>
 #include "nautilus-file.h"
 
 /* Returns NULL if there's no thumbnail yet. */
@@ -33,3 +36,5 @@ gboolean   nautilus_thumbnail_is_mimetype_limited_by_size
 /* Queue handling: */
 void       nautilus_thumbnail_remove_from_queue     (const char   *file_uri);
 void       nautilus_thumbnail_prioritize            (const char   *file_uri);
+
+const char* get_thumbnail_path_attribute        (void);
