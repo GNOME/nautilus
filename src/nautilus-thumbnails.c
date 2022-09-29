@@ -91,6 +91,8 @@ static gint running_threads = 0;
 /* The maximum number of threads allowed. */
 static guint max_threads = 0;
 
+static GnomeDesktopThumbnailSize thumbnail_size = -1;
+
 static gboolean
 get_file_mtime (const char *file_uri,
                 time_t     *mtime)
@@ -138,29 +140,31 @@ get_thumbnail_factory (void)
         GdkDisplay *display = gdk_display_get_default ();
         GListModel *monitors = gdk_display_get_monitors (display);
         gint max_scale = 1;
-        GnomeDesktopThumbnailSize size;
 
-        for (guint i = 0; i < g_list_model_get_n_items (monitors); i++)
+        if (thumbnail_size == -1)
         {
-            g_autoptr (GdkMonitor) monitor = g_list_model_get_item (monitors, i);
+            for (guint i = 0; i < g_list_model_get_n_items (monitors); i++)
+            {
+                g_autoptr (GdkMonitor) monitor = g_list_model_get_item (monitors, i);
 
-            max_scale = MAX (max_scale, gdk_monitor_get_scale_factor (monitor));
+                max_scale = MAX (max_scale, gdk_monitor_get_scale_factor (monitor));
+            }
+
+            if (max_scale <= 1)
+            {
+                thumbnail_size = GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE;
+            }
+            else if (max_scale <= 2)
+            {
+                thumbnail_size = GNOME_DESKTOP_THUMBNAIL_SIZE_XLARGE;
+            }
+            else
+            {
+                thumbnail_size = GNOME_DESKTOP_THUMBNAIL_SIZE_XXLARGE;
+            }
         }
 
-        if (max_scale <= 1)
-        {
-            size = GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE;
-        }
-        else if (max_scale <= 2)
-        {
-            size = GNOME_DESKTOP_THUMBNAIL_SIZE_XLARGE;
-        }
-        else
-        {
-            size = GNOME_DESKTOP_THUMBNAIL_SIZE_XXLARGE;
-        }
-
-        thumbnail_factory = gnome_desktop_thumbnail_factory_new (size);
+        thumbnail_factory = gnome_desktop_thumbnail_factory_new (thumbnail_size);
     }
 
     return thumbnail_factory;
