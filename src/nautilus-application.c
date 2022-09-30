@@ -854,6 +854,8 @@ nautilus_init_application_actions (NautilusApplication *app)
                                           "app.help", "F1");
     nautilus_application_set_accelerator (G_APPLICATION (app),
                                           "app.quit", "<Primary>q");
+    nautilus_application_set_accelerator (G_APPLICATION (app),
+                                          "app.preferences", "<Primary>comma");
 }
 
 static void
