@@ -63,14 +63,6 @@ GFile         *nautilus_query_editor_get_location (NautilusQueryEditor *editor);
  */
 void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                                                    GFile               *location);
-/**
- * nautilus_query_editor_set_text:
- *
- * @editor: A #NautilusQueryEditor instance.
- * @text: (not nullable) (transfer none): The search text.
- */
-void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
-                                                   const gchar         *text);
 
 gboolean
 nautilus_query_editor_handle_event (NautilusQueryEditor   *self,

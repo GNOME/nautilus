@@ -76,10 +76,6 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-static void entry_activate_cb (GtkWidget           *entry,
-                               NautilusQueryEditor *editor);
-static void entry_changed_cb (GtkWidget           *entry,
-                              NautilusQueryEditor *editor);
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
@@ -785,17 +781,6 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
     }
 
     self->change_frozen = FALSE;
-}
-
-void
-nautilus_query_editor_set_text (NautilusQueryEditor *self,
-                                const gchar         *text)
-{
-    g_return_if_fail (NAUTILUS_IS_QUERY_EDITOR (self));
-    g_return_if_fail (text != NULL);
-
-    /* The handler of the entry will take care of everything */
-    gtk_editable_set_text (GTK_EDITABLE (self->text), text);
 }
 
 static gboolean
