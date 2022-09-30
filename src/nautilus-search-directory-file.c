@@ -74,8 +74,11 @@ search_directory_file_call_when_ready (NautilusFile           *file,
     /* Update display name, in case this didn't happen yet */
     nautilus_search_directory_file_update_display_name (NAUTILUS_SEARCH_DIRECTORY_FILE (file));
 
-    /* All data for directory-as-file is always uptodate */
-    (*callback)(file, callback_data);
+    if (callback != NULL)
+    {
+        /* All data for directory-as-file is always up to date */
+        (*callback)(file, callback_data);
+    }
 }
 
 static void
