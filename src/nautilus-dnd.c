@@ -11,6 +11,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-tag-manager.h"
 
 static gboolean
 check_same_fs (NautilusFile *file1,
@@ -180,7 +181,14 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
     }
     else if (nautilus_file_is_starred_location (target_file))
     {
-        return GDK_ACTION_COPY;
+        if (nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (), dropped))
+        {
+            return GDK_ACTION_COPY;
+        }
+        else
+        {
+            return 0;
+        }
     }
     else if (!nautilus_file_is_directory (target_file) ||
              !nautilus_file_can_write (target_file) ||
