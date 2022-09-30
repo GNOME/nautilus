@@ -777,6 +777,7 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
     if (!g_str_equal (current_text, text))
     {
         gtk_editable_set_text (GTK_EDITABLE (self->text), text);
+        gtk_editable_set_position (GTK_EDITABLE (self->text), -1);
     }
 
     if (g_set_object (&self->query, query))
