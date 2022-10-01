@@ -7373,8 +7373,8 @@ on_clipboard_owner_changed (GdkClipboard *clipboard,
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
 
-    /* Update paste menu item */
-    nautilus_files_view_update_context_menus (self);
+    /* We need to update paste and paste-like actions */
+    nautilus_files_view_update_actions_state (self);
 }
 
 static gboolean
