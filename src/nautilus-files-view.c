@@ -4461,9 +4461,13 @@ remove_update_context_menus_timeout_callback (NautilusFilesView *view)
 static void
 update_context_menus_if_pending (NautilusFilesView *view)
 {
-    remove_update_context_menus_timeout_callback (view);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
-    nautilus_files_view_update_context_menus (view);
+    if (priv->update_context_menus_timeout_id != 0)
+    {
+        remove_update_context_menus_timeout_callback (view);
+        nautilus_files_view_update_context_menus (view);
+    }
 }
 
 static gboolean
