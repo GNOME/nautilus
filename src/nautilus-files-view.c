@@ -7996,22 +7996,22 @@ update_selection_menu (NautilusFilesView *view,
 
         file = NAUTILUS_FILE (l->data);
 
-        if (!nautilus_mime_file_extracts (file))
+        if (show_extract && !nautilus_mime_file_extracts (file))
         {
             show_extract = FALSE;
         }
 
-        if (!nautilus_mime_file_opens_in_external_app (file))
+        if (show_app && !nautilus_mime_file_opens_in_external_app (file))
         {
             show_app = FALSE;
         }
 
-        if (!nautilus_mime_file_launches (file))
+        if (show_run && !nautilus_mime_file_launches (file))
         {
             show_run = FALSE;
         }
 
-        if (!nautilus_file_opens_in_view (file))
+        if (item_opens_in_view && !nautilus_file_opens_in_view (file))
         {
             item_opens_in_view = FALSE;
         }
