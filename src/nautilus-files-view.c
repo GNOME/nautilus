@@ -227,9 +227,6 @@ typedef struct
     gboolean show_hidden_files;
     gboolean ignore_hidden_file_preferences;
 
-    gboolean batching_selection_level;
-    gboolean selection_changed_while_batched;
-
     gboolean selection_was_removed;
 
     gboolean metadata_for_directory_as_file_pending;
@@ -8601,21 +8598,7 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
                           view);
     }
 
-    if (priv->batching_selection_level != 0)
-    {
-        priv->selection_changed_while_batched = TRUE;
-    }
-    else
-    {
-        /* Here is the work we do only when we're not
-         * batching selection changes. In other words, it's the slower
-         * stuff that we don't want to slow down selection techniques
-         * such as rubberband-selecting in icon view.
-         */
-
-        /* Schedule an update of menu item states to match selection */
-        schedule_update_context_menus (view);
-    }
+    schedule_update_context_menus (view);
 }
 
 static void
@@ -9105,36 +9088,6 @@ nautilus_files_view_trash_state_changed_callback (NautilusTrashMonitor *trash_mo
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
     schedule_update_context_menus (view);
-}
-
-void
-nautilus_files_view_start_batching_selection_changes (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-    priv = nautilus_files_view_get_instance_private (view);
-
-    ++priv->batching_selection_level;
-    priv->selection_changed_while_batched = FALSE;
-}
-
-void
-nautilus_files_view_stop_batching_selection_changes (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-    priv = nautilus_files_view_get_instance_private (view);
-    g_return_if_fail (priv->batching_selection_level > 0);
-
-    if (--priv->batching_selection_level == 0)
-    {
-        if (priv->selection_changed_while_batched)
-        {
-            nautilus_files_view_notify_selection_changed (view);
-        }
-    }
 }
 
 static void
