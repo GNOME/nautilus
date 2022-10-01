@@ -86,16 +86,7 @@ nautilus_view_model_set_selection (GtkSelectionModel *model,
     gboolean res;
 
     res = gtk_selection_model_set_selection (selection_model, selected, mask);
-    if (res)
-    {
-        guint min = gtk_bitset_get_minimum (mask);
-        guint max = gtk_bitset_get_maximum (mask);
 
-        if (min <= max)
-        {
-            gtk_selection_model_selection_changed (selection_model, min, max - min + 1);
-        }
-    }
     return res;
 }
 
