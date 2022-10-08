@@ -84,7 +84,11 @@ static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
 
-#define SEARCH_CHANGED_TIMEOUT 150
+/* A hunt-and-peck typist types at 25-35 words per minute, which means 342 to 480ms between strokes.
+ * An average touch typist types at 50-70 wpm, which means 171 to 240ms "under ideal conditions".
+ * A 150ms default search triggering delay is too short even for fast typists in general,
+ * so wait 400ms after typing, to improve performance by not spamming search engines: */
+#define SEARCH_CHANGED_TIMEOUT 400
 
 static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
