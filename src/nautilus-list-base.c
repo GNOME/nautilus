@@ -395,7 +395,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
 
     /* It's safe to claim event sequence on press in the following cases because
      * they don't interfere with touch scrolling. */
-    if (button == GDK_BUTTON_PRIMARY && n_press == 2 && !priv->single_click_mode)
+    if (button <= GDK_BUTTON_PRIMARY && n_press == 2 && !priv->single_click_mode)
     {
         /* If Ctrl + Shift are held, we don't want to activate selection. But
          * we still need to claim the event, otherwise GtkListBase's default
