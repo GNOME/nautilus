@@ -155,11 +155,20 @@ toggle_path (NautilusColumnChooser *chooser,
 {
     GtkTreeIter iter;
     gboolean visible;
+    g_autofree gchar *name = NULL;
 
     gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->store),
                              &iter, path);
-    gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
-                        &iter, COLUMN_VISIBLE, &visible, -1);
+    gtk_tree_model_get (GTK_TREE_MODEL (chooser->store), &iter,
+                        COLUMN_VISIBLE, &visible,
+                        COLUMN_NAME, &name, -1);
+
+    if (g_strcmp0 (name, "name") == 0)
+    {
+        /* Don't allow name column to be disabled. */
+        return;
+    }
+
     gtk_list_store_set (chooser->store,
                         &iter, COLUMN_VISIBLE, !visible, -1);
     list_changed (chooser);
