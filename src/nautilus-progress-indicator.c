@@ -254,12 +254,12 @@ update_operations (NautilusProgressIndicator *self)
         should_show_progress_button = should_show_progress_button ||
                                       should_show_progress_info (l->data);
 
-        g_signal_connect_swapped (l->data, "finished",
-                                  G_CALLBACK (on_progress_info_finished), self);
-        g_signal_connect_swapped (l->data, "cancelled",
-                                  G_CALLBACK (on_progress_info_cancelled), self);
-        g_signal_connect_swapped (l->data, "progress-changed",
-                                  G_CALLBACK (on_progress_info_progress_changed), self);
+        g_signal_connect_object (l->data, "finished",
+                                 G_CALLBACK (on_progress_info_finished), self, G_CONNECT_SWAPPED);
+        g_signal_connect_object (l->data, "cancelled",
+                                 G_CALLBACK (on_progress_info_cancelled), self, G_CONNECT_SWAPPED);
+        g_signal_connect_object (l->data, "progress-changed",
+                                 G_CALLBACK (on_progress_info_progress_changed), self, G_CONNECT_SWAPPED);
         g_list_store_append (self->progress_infos_model, l->data);
     }
 
