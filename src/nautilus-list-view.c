@@ -606,6 +606,7 @@ action_sort_order_changed (GSimpleAction *action,
     NautilusFileSortType sort_type;
     NautilusListView *self;
     GListModel *view_columns;
+    NautilusViewModel *model;
     g_autoptr (GtkColumnViewColumn) sort_column = NULL;
     GtkSorter *sorter;
 
@@ -668,7 +669,8 @@ action_sort_order_changed (GSimpleAction *action,
         }
     }
 
-    sorter = gtk_column_view_get_sorter (self->view_ui);
+    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+    sorter = nautilus_view_model_get_sorter (model);
 
     g_signal_handlers_block_by_func (sorter, on_sorter_changed, self);
     /* FIXME: Set NULL to stop drawing the arrow on previous sort column
