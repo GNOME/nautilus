@@ -16,13 +16,13 @@
     </item>
     <item>
       <attribute name="action">view.sort</attribute>
-      <attribute name="target" type="(sb)">('modification date',true)</attribute>
+      <attribute name="target" type="(sb)">('date_modified',true)</attribute>
       <attribute name="label" translatable="yes">Last _Modified</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
     </item>
     <item>
       <attribute name="action">view.sort</attribute>
-      <attribute name="target" type="(sb)">('modification date',false)</attribute>
+      <attribute name="target" type="(sb)">('date_modified',false)</attribute>
       <attribute name="label" translatable="yes">_First Modified</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
     </item>
@@ -40,7 +40,7 @@
     </item>
     <item>
       <attribute name="action">view.sort</attribute>
-      <attribute name="target" type="(sb)">('trashed',true)</attribute>
+      <attribute name="target" type="(sb)">('trashed_on',true)</attribute>
       <attribute name="label" translatable="yes">Last _Trashed</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
       <attribute name="nautilus-menu-item">last_trashed</attribute>

@@ -82,19 +82,19 @@ static const SortConstants sorts_constants[] =
     },
     {
         NAUTILUS_FILE_SORT_BY_MTIME,
-        "modification date",
+        "date_modified",
     },
     {
         NAUTILUS_FILE_SORT_BY_ATIME,
-        "access date",
+        "date_accessed",
     },
     {
         NAUTILUS_FILE_SORT_BY_BTIME,
-        "creation date",
+        "date_created",
     },
     {
         NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
-        "trashed",
+        "trashed_on",
     },
     {
         NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
