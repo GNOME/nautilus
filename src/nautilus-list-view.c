@@ -45,6 +45,8 @@ struct _NautilusListView
     GtkWidget *column_editor;
     GHashTable *factory_to_column_map;
 
+    GHashTable *all_view_columns_hash;
+
     /* Column sort hack state */
     gboolean column_header_was_clicked;
     GQuark clicked_column_attribute_q;
@@ -121,7 +123,6 @@ apply_columns_settings (NautilusListView  *self,
     g_autoptr (GList) view_columns = NULL;
     GListModel *old_view_columns;
     g_autoptr (GHashTable) visible_columns_hash = NULL;
-    g_autoptr (GHashTable) old_view_columns_hash = NULL;
     int column_i = 0;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
@@ -166,25 +167,7 @@ apply_columns_settings (NautilusListView  *self,
         }
     }
 
-    old_view_columns_hash = g_hash_table_new_full (g_str_hash,
-                                                   g_str_equal,
-                                                   (GDestroyNotify) g_free,
-                                                   NULL);
     old_view_columns = gtk_column_view_get_columns (self->view_ui);
-    for (guint i = 0; i < g_list_model_get_n_items (old_view_columns); i++)
-    {
-        g_autoptr (GtkColumnViewColumn) view_column = NULL;
-        GtkListItemFactory *factory;
-        NautilusColumn *nautilus_column;
-        gchar *name;
-
-        view_column = g_list_model_get_item (old_view_columns, i);
-        factory = gtk_column_view_column_get_factory (view_column);
-        nautilus_column = g_hash_table_lookup (self->factory_to_column_map, factory);
-        g_object_get (nautilus_column, "name", &name, NULL);
-        g_hash_table_insert (old_view_columns_hash, name, view_column);
-    }
-
     for (GList *l = all_columns; l != NULL; l = l->next)
     {
         g_autofree char *name = NULL;
@@ -197,7 +180,7 @@ apply_columns_settings (NautilusListView  *self,
         {
             GtkColumnViewColumn *view_column;
 
-            view_column = g_hash_table_lookup (old_view_columns_hash, name);
+            view_column = g_hash_table_lookup (self->all_view_columns_hash, name);
             if (view_column != NULL)
             {
                 view_columns = g_list_prepend (view_columns, view_column);
@@ -215,11 +198,7 @@ apply_columns_settings (NautilusListView  *self,
         view_column = g_list_model_get_item (old_view_columns, i);
         if (g_list_find (view_columns, view_column) == NULL)
         {
-            gtk_column_view_column_set_visible (view_column, FALSE);
-        }
-        else
-        {
-            gtk_column_view_column_set_visible (view_column, TRUE);
+            gtk_column_view_remove_column (self->view_ui, view_column);
         }
     }
 
@@ -770,9 +749,11 @@ real_begin_loading (NautilusFilesView *files_view)
     NautilusListView *self = NAUTILUS_LIST_VIEW (files_view);
     NautilusFile *file;
 
+    /* We need to setup the columns before chaining up */
+    update_columns_settings_from_metadata_and_preferences (self);
+
     NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->begin_loading (files_view);
 
-    update_columns_settings_from_metadata_and_preferences (self);
     self->clicked_column_attribute_q = 0;
 
     self->path_attribute_q = 0;
@@ -1099,6 +1080,10 @@ setup_view_columns (NautilusListView *self)
                                                          g_direct_equal,
                                                          NULL,
                                                          g_object_unref);
+    self->all_view_columns_hash = g_hash_table_new_full (g_str_hash,
+                                                         g_str_equal,
+                                                         (GDestroyNotify) g_free,
+                                                         g_object_unref);
 
     for (GList *l = nautilus_columns; l != NULL; l = l->next)
     {
@@ -1155,11 +1140,12 @@ setup_view_columns (NautilusListView *self)
             g_signal_connect (factory, "setup", G_CALLBACK (setup_label_cell), self);
         }
 
-        gtk_column_view_append_column (self->view_ui, view_column);
-
         g_hash_table_insert (self->factory_to_column_map,
                              factory,
                              g_object_ref (nautilus_column));
+        g_hash_table_insert (self->all_view_columns_hash,
+                             g_steal_pointer (&name),
+                             g_steal_pointer (&view_column));
     }
 }
 
@@ -1224,6 +1210,7 @@ nautilus_list_view_dispose (GObject *object)
 
     g_clear_object (&self->file_path_base_location);
     g_clear_pointer (&self->factory_to_column_map, g_hash_table_destroy);
+    g_clear_pointer (&self->all_view_columns_hash, g_hash_table_destroy);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->dispose (object);
 }
