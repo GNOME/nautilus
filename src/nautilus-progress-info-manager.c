@@ -159,6 +159,7 @@ nautilus_progress_info_manager_remove_finished_or_cancelled_infos (NautilusProgr
         if (nautilus_progress_info_get_is_finished (l->data) ||
             nautilus_progress_info_get_is_cancelled (l->data))
         {
+            g_object_unref (l->data);
             self->progress_infos = g_list_remove (self->progress_infos,
                                                   l->data);
         }
