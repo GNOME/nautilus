@@ -264,6 +264,8 @@ release_application (NautilusProgressInfo               *info,
 {
     /* release the GApplication hold we acquired */
     g_application_release (g_application_get_default ());
+    /* Release reference aquired when the signal was connected. */
+    g_object_unref (info);
 }
 
 static void
@@ -274,6 +276,8 @@ progress_info_started_cb (NautilusProgressInfo               *info,
 
     /* hold GApplication so we never quit while there's an operation pending */
     g_application_hold (g_application_get_default ());
+    /* Hold a ref to keep the info alive until we get the ::finished signal. */
+    g_object_ref (info);
 
     g_signal_connect (info, "finished",
                       G_CALLBACK (release_application), self);
