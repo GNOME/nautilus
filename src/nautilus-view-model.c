@@ -301,9 +301,12 @@ nautilus_view_model_set_sorter (NautilusViewModel *self,
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORTER]);
     }
 
-    self->sorter_changed_id = g_signal_connect (self->sorter, "changed",
-                                                G_CALLBACK (on_sorter_changed), self);
-    g_list_store_sort (self->internal_model, compare_data_func, self);
+    if (self->sorter != NULL)
+    {
+        self->sorter_changed_id = g_signal_connect (self->sorter, "changed",
+                                                    G_CALLBACK (on_sorter_changed), self);
+        g_list_store_sort (self->internal_model, compare_data_func, self);
+    }
 }
 
 GQueue *
