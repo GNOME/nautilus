@@ -1207,6 +1207,10 @@ static void
 nautilus_list_view_dispose (GObject *object)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (object);
+    NautilusViewModel *model;
+
+    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+    nautilus_view_model_set_sorter (model, NULL);
 
     g_clear_object (&self->file_path_base_location);
     g_clear_pointer (&self->factory_to_column_map, g_hash_table_destroy);
