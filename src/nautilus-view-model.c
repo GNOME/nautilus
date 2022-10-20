@@ -391,6 +391,10 @@ nautilus_view_model_add_items (NautilusViewModel *self,
     GList *l;
     int i = 0;
 
+    /* Sort items before adding them to the internal model. This ensures that
+     * the first sorted item is become the initial focus and scroll anchor. */
+    g_queue_sort (items, compare_data_func, self);
+
     array = g_malloc_n (g_queue_get_length (items),
                         sizeof (NautilusViewItem *));
 

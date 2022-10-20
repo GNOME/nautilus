@@ -183,14 +183,6 @@ struct _NautilusFilesViewClass {
 
         void    (* update_actions_state)     (NautilusFilesView *view);
 
-        /* sort_files is a function pointer that subclasses can override
-         * to provide a sorting order to determine which files should be
-         * presented when only a partial list is provided.
-         */
-        int     (* compare_files)            (NautilusFilesView *view,
-                                              NautilusFile      *a,
-                                              NautilusFile      *b);
-
         /* is_empty is a function pointer that subclasses must
          * override to report whether the view contains any items.
          */
