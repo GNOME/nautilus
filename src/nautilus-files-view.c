@@ -4085,38 +4085,6 @@ ready_to_load (NautilusFile *file)
                                          NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
 }
 
-static int
-compare_files_cover (gconstpointer a,
-                     gconstpointer b,
-                     gpointer      callback_data)
-{
-    const FileAndDirectory *fad1, *fad2;
-    NautilusFilesView *view;
-
-    view = callback_data;
-    fad1 = a;
-    fad2 = b;
-
-    if (fad1->directory < fad2->directory)
-    {
-        return -1;
-    }
-    else if (fad1->directory > fad2->directory)
-    {
-        return 1;
-    }
-    else
-    {
-        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->compare_files (view, fad1->file, fad2->file);
-    }
-}
-static void
-sort_files (NautilusFilesView  *view,
-            GList             **list)
-{
-    *list = g_list_sort_with_data (*list, compare_files_cover, view);
-}
-
 /* Go through all the new added and changed files.
  * Put any that are not ready to load in the non_ready_files hash table.
  * Add all the rest to the old_added_files and old_changed_files lists.
@@ -4203,20 +4171,14 @@ process_new_files (NautilusFilesView *view)
         }
     }
 
-    /* If any files were added to old_added_files, then resort it. */
     if (old_added_files != priv->old_added_files)
     {
         priv->old_added_files = old_added_files;
-        sort_files (view, &priv->old_added_files);
     }
 
-    /* Resort old_changed_files too, since file attributes
-     * relevant to sorting could have changed.
-     */
     if (old_changed_files != priv->old_changed_files)
     {
         priv->old_changed_files = old_changed_files;
-        sort_files (view, &priv->old_changed_files);
     }
 }
 

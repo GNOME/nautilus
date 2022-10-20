@@ -1299,30 +1299,6 @@ real_reveal_selection (NautilusFilesView *files_view)
     nautilus_list_base_scroll_to_item (self, get_first_selected_item (self));
 }
 
-static int
-real_compare_files (NautilusFilesView *files_view,
-                    NautilusFile      *file1,
-                    NautilusFile      *file2)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    GtkSorter *sorter;
-    g_autoptr (NautilusViewItem) item1 = NULL;
-    g_autoptr (NautilusViewItem) item2 = NULL;
-
-    sorter = nautilus_view_model_get_sorter (priv->model);
-    if (sorter == NULL)
-    {
-        return 0;
-    }
-
-    /* Generate fake model items for sorter use only. */
-    item1 = nautilus_view_item_new (file1, NAUTILUS_GRID_ICON_SIZE_SMALL);
-    item2 = nautilus_view_item_new (file2, NAUTILUS_GRID_ICON_SIZE_SMALL);
-
-    return gtk_sorter_compare (sorter, item1, item2);
-}
-
 static void
 on_clipboard_contents_received (GObject      *source_object,
                                 GAsyncResult *res,
@@ -1737,7 +1713,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->select_all = real_select_all;
     files_view_class->set_selection = real_set_selection;
     files_view_class->invert_selection = real_invert_selection;
-    files_view_class->compare_files = real_compare_files;
     files_view_class->end_file_changes = real_end_file_changes;
     files_view_class->end_loading = real_end_loading;
     files_view_class->get_first_visible_file = real_get_first_visible_file;
