@@ -639,12 +639,6 @@ action_sort_order_changed (GSimpleAction *action,
     self = NAUTILUS_LIST_VIEW (user_data);
     g_variant_get (value, "(&sb)", &target_name, &reversed);
 
-    if (g_strcmp0 (target_name, "unknown") == 0)
-    {
-        /* Sort order has been changed without using this action. */
-        g_simple_action_set_state (action, value);
-        return;
-    }
     view_columns = gtk_column_view_get_columns (self->view_ui);
     for (guint i = 0; i < g_list_model_get_n_items (view_columns); i++)
     {
