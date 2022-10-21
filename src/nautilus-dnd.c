@@ -8,6 +8,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-utilities.h"
 
@@ -164,10 +165,13 @@ GdkDragAction
 nautilus_dnd_get_preferred_action (NautilusFile *target_file,
                                    GFile        *dropped)
 {
+    g_autoptr (NautilusDirectory) directory = NULL;
+
     g_return_val_if_fail (NAUTILUS_IS_FILE (target_file), 0);
     g_return_val_if_fail (dropped == NULL || G_IS_FILE (dropped), 0);
 
     /* First check target imperatives */
+    directory = nautilus_directory_get_for_file (target_file);
 
     if (nautilus_is_file_roller_installed () &&
         nautilus_file_is_archive (target_file))
@@ -179,7 +183,8 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
         return GDK_ACTION_COPY;
     }
     else if (!nautilus_file_is_directory (target_file) ||
-             !nautilus_file_can_write (target_file))
+             !nautilus_file_can_write (target_file) ||
+             !nautilus_directory_is_editable (directory))
     {
         /* No other file type other than archives and directories currently
          * accepts drops */
