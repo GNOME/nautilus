@@ -346,7 +346,6 @@ nautilus_floating_bar_constructed (GObject *obj)
 {
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (obj);
     GtkWidget *w, *box, *labels_box;
-    GtkStyleContext *context;
 
     G_OBJECT_CLASS (nautilus_floating_bar_parent_class)->constructed (obj);
 
@@ -391,9 +390,8 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_widget_show (w);
 
     w = gtk_button_new_from_icon_name ("process-stop-symbolic");
-    context = gtk_widget_get_style_context (w);
-    gtk_style_context_add_class (context, "circular");
-    gtk_style_context_add_class (context, "flat");
+    gtk_widget_add_css_class (w, "circular");
+    gtk_widget_add_css_class (w, "flat");
     gtk_widget_set_valign (w, GTK_ALIGN_CENTER);
     gtk_box_append (GTK_BOX (self), w);
     self->stop_button = w;
@@ -406,10 +404,7 @@ nautilus_floating_bar_constructed (GObject *obj)
 static void
 nautilus_floating_bar_init (NautilusFloatingBar *self)
 {
-    GtkStyleContext *context;
-
-    context = gtk_widget_get_style_context (GTK_WIDGET (self));
-    gtk_style_context_add_class (context, "floating-bar");
+    gtk_widget_add_css_class (GTK_WIDGET (self), "floating-bar");
 
     self->motion_controller = NULL;
     self->pointer_x_in_parent_coordinates = -1;

@@ -900,7 +900,6 @@ nautilus_window_slot_constructed (GObject *object)
 {
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (object);
     GtkWidget *extras_vbox;
-    GtkStyleContext *style_context;
 
     G_OBJECT_CLASS (nautilus_window_slot_parent_class)->constructed (object);
 
@@ -930,8 +929,7 @@ nautilus_window_slot_constructed (GObject *object)
     gtk_widget_show (GTK_WIDGET (self->search_info_label));
     gtk_widget_show (GTK_WIDGET (self->search_info_label_revealer));
 
-    style_context = gtk_widget_get_style_context (GTK_WIDGET (self->search_info_label));
-    gtk_style_context_add_class (style_context, "search-information");
+    gtk_widget_add_css_class (GTK_WIDGET (self->search_info_label), "search-information");
 
     g_object_bind_property (self, "location",
                             self->query_editor, "location",

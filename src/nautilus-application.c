@@ -276,11 +276,7 @@ nautilus_application_create_window (NautilusApplication *self)
 
     if (g_strcmp0 (PROFILE, "") != 0)
     {
-        GtkStyleContext *style_context;
-
-        style_context = gtk_widget_get_style_context (GTK_WIDGET (window));
-
-        gtk_style_context_add_class (style_context, "devel");
+        gtk_widget_add_css_class (GTK_WIDGET (window), "devel");
     }
 
     DEBUG ("Creating a new navigation window");

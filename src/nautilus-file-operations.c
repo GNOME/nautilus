@@ -1376,8 +1376,7 @@ do_run_simple_dialog (gpointer _data)
             g_strcmp0 (button_title, EMPTY_TRASH) == 0 ||
             g_strcmp0 (button_title, DELETE_ALL) == 0)
         {
-            gtk_style_context_add_class (gtk_widget_get_style_context (button),
-                                         "destructive-action");
+            gtk_widget_add_css_class (button, "destructive-action");
         }
 
         if (data->should_start_inactive)
