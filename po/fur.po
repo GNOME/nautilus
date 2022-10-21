@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-09-18 04:03+0000\n"
-"PO-Revision-Date: 2022-09-26 18:08+0200\n"
+"POT-Creation-Date: 2022-10-09 06:06+0000\n"
+"PO-Revision-Date: 2022-10-21 07:28+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -804,7 +804,7 @@ msgstr ""
 msgid "_OK"
 msgstr "_OK"
 
-#: src/nautilus-application.c:909
+#: src/nautilus-application.c:911
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -813,27 +813,27 @@ msgstr ""
 "“%s” al è un protocol interni. Nol è supuartât il vierzi cheste posizion in "
 "maniere direte."
 
-#: src/nautilus-application.c:1009
+#: src/nautilus-application.c:1011
 msgid "Perform a quick set of self-check tests."
 msgstr "Eseguìs une veloce serie di test di diagnostiche."
 
-#: src/nautilus-application.c:1012
+#: src/nautilus-application.c:1014
 msgid "Show the version of the program."
 msgstr "Mostre la version dal program."
 
-#: src/nautilus-application.c:1014
+#: src/nautilus-application.c:1016
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Vierç simpri un gnûf barcon par esplorâ i URI specificâts"
 
-#: src/nautilus-application.c:1016
+#: src/nautilus-application.c:1018
 msgid "Quit Nautilus."
 msgstr "Va fûr di Nautilis."
 
-#: src/nautilus-application.c:1018
+#: src/nautilus-application.c:1020
 msgid "Select specified URI in parent folder."
 msgstr "Selezione i URI specificâts te cartele superiôr."
 
-#: src/nautilus-application.c:1019
+#: src/nautilus-application.c:1021
 msgid "[URI…]"
 msgstr "[URI...]"
 
@@ -1517,7 +1517,6 @@ msgstr "Il grup “%s” nol esist"
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
 #: src/nautilus-file.c:6736
 #, c-format
-#| msgid "%s (%s)"
 msgid "%s (You)"
 msgstr "%s (Tu)"
 
@@ -1544,7 +1543,6 @@ msgstr[1] "%'u files"
 
 #: src/nautilus-file.c:6854
 #, c-format
-#| msgid "? bytes"
 msgid "%s byte"
 msgid_plural "%s bytes"
 msgstr[0] "%s byte"
@@ -3928,7 +3926,7 @@ msgstr "Anulâ la modifiche dal proprietari?"
 
 #: src/nautilus-properties-window.c:1995 src/nautilus-properties-window.c:2040
 msgid "Multiple"
-msgstr ""
+msgstr "Multipli"
 
 #: src/nautilus-properties-window.c:2164
 msgid "Empty folder"
@@ -4355,265 +4353,270 @@ msgstr "Mostre jutori"
 
 #: src/resources/gtk/help-overlay.ui:59
 msgctxt "shortcut window"
+msgid "Show preferences"
+msgstr "Mostre preferencis"
+
+#: src/resources/gtk/help-overlay.ui:66
+msgctxt "shortcut window"
 msgid "Shortcuts"
 msgstr "Scurtis"
 
-#: src/resources/gtk/help-overlay.ui:66
+#: src/resources/gtk/help-overlay.ui:73
 msgctxt "shortcut window"
 msgid "Undo"
 msgstr "Anule"
 
-#: src/resources/gtk/help-overlay.ui:73
+#: src/resources/gtk/help-overlay.ui:80
 msgctxt "shortcut window"
 msgid "Redo"
 msgstr "Torne fâ"
 
-#: src/resources/gtk/help-overlay.ui:82
+#: src/resources/gtk/help-overlay.ui:89
 msgctxt "shortcut window"
 msgid "Opening"
 msgstr "Daûr a vierzi"
 
-#: src/resources/gtk/help-overlay.ui:86
+#: src/resources/gtk/help-overlay.ui:93
 msgctxt "shortcut window"
 msgid "Open"
 msgstr "Vierç"
 
-#: src/resources/gtk/help-overlay.ui:93
+#: src/resources/gtk/help-overlay.ui:100
 msgctxt "shortcut window"
 msgid "Open in new tab"
 msgstr "Vierç intune gnove schede"
 
-#: src/resources/gtk/help-overlay.ui:100
+#: src/resources/gtk/help-overlay.ui:107
 msgctxt "shortcut window"
 msgid "Open in new window"
 msgstr "Vierç intun gnûf barcon"
 
-#: src/resources/gtk/help-overlay.ui:107
+#: src/resources/gtk/help-overlay.ui:114
 msgctxt "shortcut window"
 msgid "Open item location (search and recent only)"
 msgstr "Vierç la posizion dal element (nome ricercje e resints)"
 
-#: src/resources/gtk/help-overlay.ui:114
+#: src/resources/gtk/help-overlay.ui:121
 msgctxt "shortcut window"
 msgid "Open file and close window"
 msgstr "Vierç file e siere barcon"
 
-#: src/resources/gtk/help-overlay.ui:121
+#: src/resources/gtk/help-overlay.ui:128
 msgctxt "shortcut window"
 msgid "Open with default application"
 msgstr "Vierç cun l'aplicazion predefinide"
 
-#: src/resources/gtk/help-overlay.ui:130
+#: src/resources/gtk/help-overlay.ui:137
 msgctxt "shortcut window"
 msgid "Tabs"
 msgstr "Schedis"
 
-#: src/resources/gtk/help-overlay.ui:134
+#: src/resources/gtk/help-overlay.ui:141
 msgctxt "shortcut window"
 msgid "New tab"
 msgstr "Gnove schede"
 
-#: src/resources/gtk/help-overlay.ui:141
+#: src/resources/gtk/help-overlay.ui:148
 msgctxt "shortcut window"
 msgid "Go to previous tab"
 msgstr "Va te schede precedent"
 
-#: src/resources/gtk/help-overlay.ui:148
+#: src/resources/gtk/help-overlay.ui:155
 msgctxt "shortcut window"
 msgid "Go to next tab"
 msgstr "Va te prossime schede"
 
-#: src/resources/gtk/help-overlay.ui:155
+#: src/resources/gtk/help-overlay.ui:162
 msgctxt "shortcut window"
 msgid "Open tab"
 msgstr "Vierç schede"
 
-#: src/resources/gtk/help-overlay.ui:162
+#: src/resources/gtk/help-overlay.ui:169
 msgctxt "shortcut window"
 msgid "Move tab left"
 msgstr "Sposte schede a çampe"
 
-#: src/resources/gtk/help-overlay.ui:169
+#: src/resources/gtk/help-overlay.ui:176
 msgctxt "shortcut window"
 msgid "Move tab right"
 msgstr "Sposte schede a drete"
 
-#: src/resources/gtk/help-overlay.ui:176
+#: src/resources/gtk/help-overlay.ui:183
 msgctxt "shortcut window"
 msgid "Restore tab"
 msgstr "Ripristine schede"
 
-#: src/resources/gtk/help-overlay.ui:185
+#: src/resources/gtk/help-overlay.ui:192
 msgctxt "shortcut window"
 msgid "Navigation"
 msgstr "Navigazion"
 
-#: src/resources/gtk/help-overlay.ui:189
+#: src/resources/gtk/help-overlay.ui:196
 msgctxt "shortcut window"
 msgid "Go back"
 msgstr "Torne indaûr"
 
-#: src/resources/gtk/help-overlay.ui:196
+#: src/resources/gtk/help-overlay.ui:203
 msgctxt "shortcut window"
 msgid "Go forward"
 msgstr "Va Indevant"
 
-#: src/resources/gtk/help-overlay.ui:203
+#: src/resources/gtk/help-overlay.ui:210
 msgctxt "shortcut window"
 msgid "Go up"
 msgstr "Va sù"
 
-#: src/resources/gtk/help-overlay.ui:210
+#: src/resources/gtk/help-overlay.ui:217
 msgctxt "shortcut window"
 msgid "Go down"
 msgstr "Va jù"
 
-#: src/resources/gtk/help-overlay.ui:217
+#: src/resources/gtk/help-overlay.ui:224
 msgctxt "shortcut window"
 msgid "Go to home folder"
 msgstr "Va te cartele Cjase"
 
-#: src/resources/gtk/help-overlay.ui:224
+#: src/resources/gtk/help-overlay.ui:231
 msgctxt "shortcut window"
 msgid "Enter location"
 msgstr "Introdusi posizion"
 
-#: src/resources/gtk/help-overlay.ui:231
+#: src/resources/gtk/help-overlay.ui:238
 msgctxt "shortcut window"
 msgid "Location bar with root location"
 msgstr "Sbare di posizion cun la lidrîs"
 
-#: src/resources/gtk/help-overlay.ui:238
+#: src/resources/gtk/help-overlay.ui:245
 msgctxt "shortcut window"
 msgid "Location bar with home location"
 msgstr "Sbare di posizion cun la cartele personâl"
 
-#: src/resources/gtk/help-overlay.ui:247
+#: src/resources/gtk/help-overlay.ui:254
 msgctxt "shortcut window"
 msgid "View"
 msgstr "Viodude"
 
-#: src/resources/gtk/help-overlay.ui:251
+#: src/resources/gtk/help-overlay.ui:258
 msgctxt "shortcut window"
 msgid "Zoom in"
 msgstr "Aumente Ingrandiment"
 
-#: src/resources/gtk/help-overlay.ui:258
+#: src/resources/gtk/help-overlay.ui:265
 msgctxt "shortcut window"
 msgid "Zoom out"
 msgstr "Diminuìs ingrandiment"
 
-#: src/resources/gtk/help-overlay.ui:265
+#: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "Reset zoom"
 msgstr "Azerâ ingrandiment"
 
-#: src/resources/gtk/help-overlay.ui:272
+#: src/resources/gtk/help-overlay.ui:279
 msgctxt "shortcut window"
 msgid "Refresh view"
 msgstr "Inzorne viodude"
 
-#: src/resources/gtk/help-overlay.ui:279
+#: src/resources/gtk/help-overlay.ui:286
 msgctxt "shortcut window"
 msgid "Show/hide hidden files"
 msgstr "Mostre/plate i files platâts"
 
-#: src/resources/gtk/help-overlay.ui:286
+#: src/resources/gtk/help-overlay.ui:293
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
 msgstr "Mostre/plate il panel laterâl"
 
-#: src/resources/gtk/help-overlay.ui:293
+#: src/resources/gtk/help-overlay.ui:300
 msgctxt "shortcut window"
 msgid "Show/hide action menu"
 msgstr "Mostre/plate menù azion"
 
-#: src/resources/gtk/help-overlay.ui:300
+#: src/resources/gtk/help-overlay.ui:307
 msgctxt "shortcut window"
 msgid "List view"
 msgstr "Viodude a liste"
 
-#: src/resources/gtk/help-overlay.ui:307
+#: src/resources/gtk/help-overlay.ui:314
 msgctxt "shortcut window"
 msgid "Grid view"
 msgstr "Viodude a gridele"
 
-#: src/resources/gtk/help-overlay.ui:314
+#: src/resources/gtk/help-overlay.ui:321
 msgctxt "shortcut window"
 msgid "Expand folder"
 msgstr "Espant arbul cartele"
 
-#: src/resources/gtk/help-overlay.ui:321
+#: src/resources/gtk/help-overlay.ui:328
 msgctxt "shortcut window"
 msgid "Collapse folder"
 msgstr "Strenç arbul cartele"
 
-#: src/resources/gtk/help-overlay.ui:330
+#: src/resources/gtk/help-overlay.ui:337
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "Daûr a modificâ"
 
-#: src/resources/gtk/help-overlay.ui:334
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Create folder"
 msgstr "Cree cartele"
 
-#: src/resources/gtk/help-overlay.ui:341
+#: src/resources/gtk/help-overlay.ui:348
 msgctxt "shortcut window"
 msgid "Rename"
 msgstr "Cambie non"
 
-#: src/resources/gtk/help-overlay.ui:348
+#: src/resources/gtk/help-overlay.ui:355
 msgctxt "shortcut window"
 msgid "Move to trash"
 msgstr "Môf te scovacere"
 
-#: src/resources/gtk/help-overlay.ui:355
+#: src/resources/gtk/help-overlay.ui:362
 msgctxt "shortcut window"
 msgid "Delete permanently"
 msgstr "Elimine par simpri"
 
-#: src/resources/gtk/help-overlay.ui:362
+#: src/resources/gtk/help-overlay.ui:369
 msgctxt "shortcut window"
 msgid "Create link to copied item"
 msgstr "Cree colegament al element copiât"
 
-#: src/resources/gtk/help-overlay.ui:369
+#: src/resources/gtk/help-overlay.ui:376
 msgctxt "shortcut window"
 msgid "Create link to selected item"
 msgstr "Cree colegament al element selezionât"
 
-#: src/resources/gtk/help-overlay.ui:376
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "Taie"
 
-#: src/resources/gtk/help-overlay.ui:383
+#: src/resources/gtk/help-overlay.ui:390
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "Copie"
 
-#: src/resources/gtk/help-overlay.ui:390
+#: src/resources/gtk/help-overlay.ui:397
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "Tache"
 
-#: src/resources/gtk/help-overlay.ui:397
+#: src/resources/gtk/help-overlay.ui:404
 msgctxt "shortcut window"
 msgid "Select all"
 msgstr "Selezione dut"
 
-#: src/resources/gtk/help-overlay.ui:404
+#: src/resources/gtk/help-overlay.ui:411
 msgctxt "shortcut window"
 msgid "Invert selection"
 msgstr "Invertìs selezion"
 
-#: src/resources/gtk/help-overlay.ui:411
+#: src/resources/gtk/help-overlay.ui:418
 msgctxt "shortcut window"
 msgid "Select items matching"
 msgstr "Selezione i elements compagns"
 
-#: src/resources/gtk/help-overlay.ui:418
+#: src/resources/gtk/help-overlay.ui:425
 msgctxt "shortcut window"
 msgid "Show item properties"
 msgstr "Mostre propietâts element"
@@ -6093,9 +6096,6 @@ msgstr "Liste di comuns segnelibris, ponts di montaç e scurtis."
 
 #~ msgid "%d MB"
 #~ msgstr "%d MB"
-
-#~ msgid "Preferences"
-#~ msgstr "Preferencis"
 
 #~ msgctxt "preferences"
 #~ msgid "Sort"
