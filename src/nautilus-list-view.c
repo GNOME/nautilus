@@ -625,29 +625,10 @@ action_sort_order_changed (GSimpleAction *action,
 {
     const gchar *target_name;
     gboolean reversed;
-    NautilusFileSortType sort_type;
     NautilusListView *self;
     GListModel *view_columns;
     g_autoptr (GtkColumnViewColumn) sort_column = NULL;
     GtkSorter *sorter;
-
-    /* This array makes the #NautilusFileSortType values correspond to the
-     * respective column attribute.
-     */
-    const char *attributes[] =
-    {
-        "name",
-        "size",
-        "type",
-        "date_modified",
-        "date_accessed",
-        "date_created",
-        "starred",
-        "trashed_on",
-        "search_relevance",
-        "recency",
-        NULL
-    };
 
     /* Don't resort if the action is in the same state as before */
     if (g_variant_equal (value, g_action_get_state (G_ACTION (action))))
@@ -664,9 +645,6 @@ action_sort_order_changed (GSimpleAction *action,
         g_simple_action_set_state (action, value);
         return;
     }
-
-    sort_type = get_sorts_type_from_metadata_text (target_name);
-
     view_columns = gtk_column_view_get_columns (self->view_ui);
     for (guint i = 0; i < g_list_model_get_n_items (view_columns); i++)
     {
@@ -675,7 +653,7 @@ action_sort_order_changed (GSimpleAction *action,
 
         view_column = g_list_model_get_item (view_columns, i);
         attribute = gtk_column_view_column_get_id (view_column);
-        if (g_strcmp0 (attributes[sort_type], attribute) == 0)
+        if (g_strcmp0 (target_name, attribute) == 0)
         {
             sort_column = g_steal_pointer (&view_column);
             break;

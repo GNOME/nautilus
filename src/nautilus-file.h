@@ -52,8 +52,7 @@ typedef struct NautilusFile NautilusFile;
 typedef enum {
 	/* These may be set as default-sort-order. When touching this, make sure to
 	 * keep the values in sync with the "org.gnome.nautilus.SortOrder" enum in the
-	 * `data/org.gnome.nautilus.gschema.xml` schemas file, and the attributes[]
-	 * array in `src/nautilus-list-view.c`.
+	 * `data/org.gnome.nautilus.gschema.xml` schemas file.
 	 */
 	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME = 0,
 	NAUTILUS_FILE_SORT_BY_SIZE = 1,
