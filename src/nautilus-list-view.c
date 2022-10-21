@@ -671,18 +671,10 @@ action_sort_order_changed (GSimpleAction *action,
     for (guint i = 0; i < g_list_model_get_n_items (view_columns); i++)
     {
         g_autoptr (GtkColumnViewColumn) view_column = NULL;
-        GtkListItemFactory *factory;
-        NautilusColumn *nautilus_column;
-        g_autofree gchar *attribute = NULL;
+        const char *attribute;
 
         view_column = g_list_model_get_item (view_columns, i);
-        factory = gtk_column_view_column_get_factory (view_column);
-        nautilus_column = g_hash_table_lookup (self->factory_to_column_map, factory);
-        if (nautilus_column == NULL)
-        {
-            continue;
-        }
-        g_object_get (nautilus_column, "attribute", &attribute, NULL);
+        attribute = gtk_column_view_column_get_id (view_column);
         if (g_strcmp0 (attributes[sort_type], attribute) == 0)
         {
             sort_column = g_steal_pointer (&view_column);
