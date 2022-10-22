@@ -1131,6 +1131,38 @@ icon_theme_changed_callback (GtkIconTheme *icon_theme,
     emit_change_signals_for_all_files_in_all_directories ();
 }
 
+static void
+maybe_migrate_gtk_filechooser_preferences (void)
+{
+    if (!g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MIGRATED_GTK_SETTINGS))
+    {
+        g_autoptr (GSettingsSchema) schema = NULL;
+
+        /* We don't depend on GTK 3. Check whether its schema is installed. */
+        schema = g_settings_schema_source_lookup (g_settings_schema_source_get_default (),
+                                                  "org.gtk.Settings.FileChooser",
+                                                  FALSE);
+        if (schema != NULL)
+        {
+            g_autoptr (GSettings) gtk3_settings = NULL;
+
+            gtk3_settings = g_settings_new_with_path ("org.gtk.Settings.FileChooser",
+                                                      "/org/gtk/settings/file-chooser/");
+            g_settings_set_boolean (gtk_filechooser_preferences,
+                                    NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+                                    g_settings_get_boolean (gtk3_settings,
+                                                            NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST));
+            g_settings_set_boolean (gtk_filechooser_preferences,
+                                    NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
+                                    g_settings_get_boolean (gtk3_settings,
+                                                            NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES));
+        }
+        g_settings_set_boolean (nautilus_preferences,
+                                NAUTILUS_PREFERENCES_MIGRATED_GTK_SETTINGS,
+                                TRUE);
+    }
+}
+
 void
 nautilus_application_startup_common (NautilusApplication *self)
 {
@@ -1171,6 +1203,7 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
     {
+        maybe_migrate_gtk_filechooser_preferences ();
         nautilus_tag_manager_maybe_migrate_tracker2_data (priv->tag_manager);
     }
 

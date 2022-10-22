@@ -127,6 +127,9 @@ typedef enum
 /* Full Text Search enabled */
 #define NAUTILUS_PREFERENCES_FTS_ENABLED "fts-enabled"
 
+/* Gtk settings migration happened */
+#define NAUTILUS_PREFERENCES_MIGRATED_GTK_SETTINGS "migrated-gtk-settings"
+
 void nautilus_global_preferences_init                      (void);
 
 extern GSettings *nautilus_preferences;

@@ -168,6 +168,11 @@
       <summary>Whether to show hidden files</summary>
       <description>This key is deprecated and ignored. The “show-hidden” key from “org.gtk.Settings.FileChooser” is now used instead.</description>
     </key>
+    <key type="b" name="migrated-gtk-settings">
+      <default>false</default>
+      <summary>Whether GTK 4 settings migration happened</summary>
+      <description>Whether settings shared with GtkFileChooser have been migrated from their GTK 3 key to the GTK 4 ones.</description>
+    </key>
     <key name="search-view" enum="org.gnome.nautilus.FolderView">
       <default>'list-view'</default>
       <summary>What viewer should be used when searching</summary>
