@@ -894,7 +894,7 @@ on_after_sorter_changed (GtkSorter       *sorter,
     g_autoptr (GVariant) state = NULL;
     const gchar *new_sort_text;
     gboolean reversed;
-    g_autofree gchar *current_sort_text = NULL;
+    const gchar *current_sort_text;
 
     if (!self->column_header_was_clicked || self->clicked_column_attribute_q == 0)
     {
