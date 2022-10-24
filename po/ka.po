@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-09-30 16:24+0000\n"
-"PO-Revision-Date: 2022-10-24 22:53+0200\n"
+"POT-Creation-Date: 2022-10-22 20:03+0000\n"
+"PO-Revision-Date: 2022-10-24 22:57+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <(nothng)>\n"
 "Language: ka\n"
@@ -82,7 +82,7 @@ msgstr "სხვა მდებარეობები"
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
 msgid "folder;manager;explore;disk;filesystem;nautilus;"
-msgstr ""
+msgstr "folder;manager;explore;disk;filesystem;nautilus;"
 
 #: data/org.gnome.Nautilus.desktop.in.in:20
 #: src/resources/ui/nautilus-toolbar.ui:7
@@ -717,34 +717,34 @@ msgstr ""
 msgid "_OK"
 msgstr "_OK"
 
-#: src/nautilus-application.c:911
+#: src/nautilus-application.c:909
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
 "supported."
 msgstr ""
 
-#: src/nautilus-application.c:1011
+#: src/nautilus-application.c:1009
 msgid "Perform a quick set of self-check tests."
 msgstr "სწრაფი ავტო-შემოწმების შესრულება."
 
-#: src/nautilus-application.c:1014
+#: src/nautilus-application.c:1012
 msgid "Show the version of the program."
 msgstr "პროგრამის ვერსიის ჩვენება."
 
-#: src/nautilus-application.c:1016
+#: src/nautilus-application.c:1014
 msgid "Always open a new window for browsing specified URIs"
 msgstr ""
 
-#: src/nautilus-application.c:1018
+#: src/nautilus-application.c:1016
 msgid "Quit Nautilus."
 msgstr "Nautilus-დან გასვლა."
 
-#: src/nautilus-application.c:1020
+#: src/nautilus-application.c:1018
 msgid "Select specified URI in parent folder."
 msgstr "მონიშნეთ მითითებული URI მშობელ საქაღალდეში."
 
-#: src/nautilus-application.c:1021
+#: src/nautilus-application.c:1019
 msgid "[URI…]"
 msgstr "[URI]"
 
@@ -1514,7 +1514,7 @@ msgstr "კონტაქტები"
 
 #: src/nautilus-file.c:7365
 msgid "Calendar"
-msgstr "კალენდარი"
+msgstr "კალენდერი"
 
 #: src/nautilus-file.c:7366
 msgid "Document"
@@ -1568,7 +1568,7 @@ msgstr "%s თავისუფალია"
 #: src/nautilus-file-name-widget-controller.c:143
 #: src/nautilus-rename-file-popover-controller.c:110
 msgid "File names cannot contain “/”."
-msgstr ""
+msgstr "ფაილის სახელი არ შეიძლება \"/\"-ს შეიცავდეს."
 
 #: src/nautilus-file-name-widget-controller.c:148
 #: src/nautilus-rename-file-popover-controller.c:122
@@ -4155,273 +4155,266 @@ msgid "Show help"
 msgstr "დახმარების ჩვენება"
 
 #: src/resources/gtk/help-overlay.ui:59
-#, fuzzy
-#| msgid "_Preferences"
-msgctxt "shortcut window"
-msgid "Show preferences"
-msgstr "_მორგება"
-
-#: src/resources/gtk/help-overlay.ui:66
 msgctxt "shortcut window"
 msgid "Shortcuts"
 msgstr "მალსახმობები"
 
-#: src/resources/gtk/help-overlay.ui:73
+#: src/resources/gtk/help-overlay.ui:66
 msgctxt "shortcut window"
 msgid "Undo"
 msgstr "ბრძანების გაუქმება"
 
-#: src/resources/gtk/help-overlay.ui:80
+#: src/resources/gtk/help-overlay.ui:73
 msgctxt "shortcut window"
 msgid "Redo"
 msgstr "ბრძანების აღდგენა"
 
-#: src/resources/gtk/help-overlay.ui:89
+#: src/resources/gtk/help-overlay.ui:82
 msgctxt "shortcut window"
 msgid "Opening"
 msgstr "იხსნება"
 
-#: src/resources/gtk/help-overlay.ui:93
+#: src/resources/gtk/help-overlay.ui:86
 msgctxt "shortcut window"
 msgid "Open"
 msgstr "გახსნა"
 
-#: src/resources/gtk/help-overlay.ui:100
+#: src/resources/gtk/help-overlay.ui:93
 msgctxt "shortcut window"
 msgid "Open in new tab"
 msgstr "ახალ ჩანართში გახსნა"
 
-#: src/resources/gtk/help-overlay.ui:107
+#: src/resources/gtk/help-overlay.ui:100
 msgctxt "shortcut window"
 msgid "Open in new window"
 msgstr "ახალ ფან_ჯარაში გახსნა"
 
-#: src/resources/gtk/help-overlay.ui:114
+#: src/resources/gtk/help-overlay.ui:107
 msgctxt "shortcut window"
 msgid "Open item location (search and recent only)"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:121
+#: src/resources/gtk/help-overlay.ui:114
 msgctxt "shortcut window"
 msgid "Open file and close window"
 msgstr "ფაილის გახსნა და ფანჯრის დახურვა"
 
-#: src/resources/gtk/help-overlay.ui:128
+#: src/resources/gtk/help-overlay.ui:121
 msgctxt "shortcut window"
 msgid "Open with default application"
 msgstr "ნაგულისხმები პროგრამით გახსნა"
 
-#: src/resources/gtk/help-overlay.ui:137
+#: src/resources/gtk/help-overlay.ui:130
 msgctxt "shortcut window"
 msgid "Tabs"
 msgstr "დაფები"
 
-#: src/resources/gtk/help-overlay.ui:141
+#: src/resources/gtk/help-overlay.ui:134
 msgctxt "shortcut window"
 msgid "New tab"
 msgstr "ახალი _დაფა"
 
-#: src/resources/gtk/help-overlay.ui:148
+#: src/resources/gtk/help-overlay.ui:141
 msgctxt "shortcut window"
 msgid "Go to previous tab"
 msgstr "წინა ჩანართზე გადასვლა"
 
-#: src/resources/gtk/help-overlay.ui:155
+#: src/resources/gtk/help-overlay.ui:148
 msgctxt "shortcut window"
 msgid "Go to next tab"
 msgstr "შემდეგი ჩანართზე გადასვლა"
 
-#: src/resources/gtk/help-overlay.ui:162
+#: src/resources/gtk/help-overlay.ui:155
 msgctxt "shortcut window"
 msgid "Open tab"
 msgstr "ჩანართის გახსნა"
 
-#: src/resources/gtk/help-overlay.ui:169
+#: src/resources/gtk/help-overlay.ui:162
 msgctxt "shortcut window"
 msgid "Move tab left"
 msgstr "ჩანართის _მარცხნივ გადატანა"
 
-#: src/resources/gtk/help-overlay.ui:176
+#: src/resources/gtk/help-overlay.ui:169
 msgctxt "shortcut window"
 msgid "Move tab right"
 msgstr "ჩანართის მა_რჯვნივ გადატანა"
 
-#: src/resources/gtk/help-overlay.ui:183
+#: src/resources/gtk/help-overlay.ui:176
 msgctxt "shortcut window"
 msgid "Restore tab"
 msgstr "ჩანართის აღდგენა"
 
-#: src/resources/gtk/help-overlay.ui:192
+#: src/resources/gtk/help-overlay.ui:185
 msgctxt "shortcut window"
 msgid "Navigation"
 msgstr "ნავიგაცია"
 
-#: src/resources/gtk/help-overlay.ui:196
+#: src/resources/gtk/help-overlay.ui:189
 msgctxt "shortcut window"
 msgid "Go back"
 msgstr "უკან დაბრუნება"
 
-#: src/resources/gtk/help-overlay.ui:203
+#: src/resources/gtk/help-overlay.ui:196
 msgctxt "shortcut window"
 msgid "Go forward"
 msgstr "წინ გადასვლა"
 
-#: src/resources/gtk/help-overlay.ui:210
+#: src/resources/gtk/help-overlay.ui:203
 msgctxt "shortcut window"
 msgid "Go up"
 msgstr "მაღლა ასვლა"
 
-#: src/resources/gtk/help-overlay.ui:217
+#: src/resources/gtk/help-overlay.ui:210
 msgctxt "shortcut window"
 msgid "Go down"
 msgstr "დაბლა ჩამოსვლა"
 
-#: src/resources/gtk/help-overlay.ui:224
+#: src/resources/gtk/help-overlay.ui:217
 msgctxt "shortcut window"
 msgid "Go to home folder"
 msgstr "საწყის საქაღალდეზე გადასვლა"
 
-#: src/resources/gtk/help-overlay.ui:231
+#: src/resources/gtk/help-overlay.ui:224
 msgctxt "shortcut window"
 msgid "Enter location"
 msgstr "შეიყვანეთ ადგილმდებარეობა"
 
-#: src/resources/gtk/help-overlay.ui:238
+#: src/resources/gtk/help-overlay.ui:231
 msgctxt "shortcut window"
 msgid "Location bar with root location"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:245
+#: src/resources/gtk/help-overlay.ui:238
 msgctxt "shortcut window"
 msgid "Location bar with home location"
 msgstr ""
 
-#: src/resources/gtk/help-overlay.ui:254
+#: src/resources/gtk/help-overlay.ui:247
 msgctxt "shortcut window"
 msgid "View"
 msgstr "ხედი"
 
-#: src/resources/gtk/help-overlay.ui:258
+#: src/resources/gtk/help-overlay.ui:251
 msgctxt "shortcut window"
 msgid "Zoom in"
 msgstr "&გადიდება"
 
-#: src/resources/gtk/help-overlay.ui:265
+#: src/resources/gtk/help-overlay.ui:258
 msgctxt "shortcut window"
 msgid "Zoom out"
 msgstr "დაპატარავება"
 
-#: src/resources/gtk/help-overlay.ui:272
+#: src/resources/gtk/help-overlay.ui:265
 msgctxt "shortcut window"
 msgid "Reset zoom"
 msgstr "გადიდების საწყისი პარამეტრები"
 
-#: src/resources/gtk/help-overlay.ui:279
+#: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "Refresh view"
 msgstr "ხედის განახლება"
 
-#: src/resources/gtk/help-overlay.ui:286
+#: src/resources/gtk/help-overlay.ui:279
 msgctxt "shortcut window"
 msgid "Show/hide hidden files"
 msgstr "დამალული ფაილების ჩვენება"
 
-#: src/resources/gtk/help-overlay.ui:293
+#: src/resources/gtk/help-overlay.ui:286
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
 msgstr "გვერდითი ზოლის ჩვენება/დამალვა"
 
-#: src/resources/gtk/help-overlay.ui:300
+#: src/resources/gtk/help-overlay.ui:293
 msgctxt "shortcut window"
 msgid "Show/hide action menu"
 msgstr "აპლიკაციის მენიუს ჩვენება/დამალვა"
 
-#: src/resources/gtk/help-overlay.ui:307
+#: src/resources/gtk/help-overlay.ui:300
 msgctxt "shortcut window"
 msgid "List view"
 msgstr "სიის ხედი"
 
-#: src/resources/gtk/help-overlay.ui:314
+#: src/resources/gtk/help-overlay.ui:307
 msgctxt "shortcut window"
 msgid "Grid view"
 msgstr "ბადის ხედი"
 
-#: src/resources/gtk/help-overlay.ui:321
+#: src/resources/gtk/help-overlay.ui:314
 msgctxt "shortcut window"
 msgid "Expand folder"
 msgstr "საქაღალდის გახსნა"
 
-#: src/resources/gtk/help-overlay.ui:328
+#: src/resources/gtk/help-overlay.ui:321
 msgctxt "shortcut window"
 msgid "Collapse folder"
 msgstr "საქაღალდის დახურვა"
 
-#: src/resources/gtk/help-overlay.ui:337
+#: src/resources/gtk/help-overlay.ui:330
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "ჩასწორება"
 
-#: src/resources/gtk/help-overlay.ui:341
+#: src/resources/gtk/help-overlay.ui:334
 msgctxt "shortcut window"
 msgid "Create folder"
 msgstr "საქაღალდის შექმნა"
 
-#: src/resources/gtk/help-overlay.ui:348
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Rename"
 msgstr "%1 სურათის სახელის გადარქმევა"
 
-#: src/resources/gtk/help-overlay.ui:355
+#: src/resources/gtk/help-overlay.ui:348
 msgctxt "shortcut window"
 msgid "Move to trash"
 msgstr "ნაგავში მოთავსება"
 
-#: src/resources/gtk/help-overlay.ui:362
+#: src/resources/gtk/help-overlay.ui:355
 msgctxt "shortcut window"
 msgid "Delete permanently"
 msgstr "სამუდამოდ წაშლა"
 
-#: src/resources/gtk/help-overlay.ui:369
+#: src/resources/gtk/help-overlay.ui:362
 msgctxt "shortcut window"
 msgid "Create link to copied item"
 msgstr "კოპირებულ ელემენტამდე ბმულის შექმნა"
 
-#: src/resources/gtk/help-overlay.ui:376
+#: src/resources/gtk/help-overlay.ui:369
 msgctxt "shortcut window"
 msgid "Create link to selected item"
 msgstr "მონიშნულ ელემენტამდე ბმული შექმნა"
 
-#: src/resources/gtk/help-overlay.ui:383
+#: src/resources/gtk/help-overlay.ui:376
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "ამოჭრა"
 
-#: src/resources/gtk/help-overlay.ui:390
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "ასლი"
 
-#: src/resources/gtk/help-overlay.ui:397
+#: src/resources/gtk/help-overlay.ui:390
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "ჩასმა"
 
-#: src/resources/gtk/help-overlay.ui:404
+#: src/resources/gtk/help-overlay.ui:397
 msgctxt "shortcut window"
 msgid "Select all"
 msgstr "ყველას მონიშვნა"
 
-#: src/resources/gtk/help-overlay.ui:411
+#: src/resources/gtk/help-overlay.ui:404
 msgctxt "shortcut window"
 msgid "Invert selection"
 msgstr "მონიშვნის ინვერსია"
 
-#: src/resources/gtk/help-overlay.ui:418
+#: src/resources/gtk/help-overlay.ui:411
 msgctxt "shortcut window"
 msgid "Select items matching"
 msgstr "აირჩიეთ დამთხვეული ელემენტები"
 
-#: src/resources/gtk/help-overlay.ui:425
+#: src/resources/gtk/help-overlay.ui:418
 msgctxt "shortcut window"
 msgid "Show item properties"
 msgstr "თვისებების ჩვენება"
