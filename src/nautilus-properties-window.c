@@ -1975,6 +1975,7 @@ update_owner_row (AdwComboRow       *row,
         GList *users = nautilus_get_user_names ();
 
         update_combo_row_dropdown (row, users);
+        g_list_free_full (users, g_free);
 
         /* display current owner */
         select_ownership_row_entry (row, owner_name, string_list_item_starts_with_word);
