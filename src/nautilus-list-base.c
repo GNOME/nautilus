@@ -1219,17 +1219,20 @@ real_set_selection (NautilusFilesView *files_view,
     g_autoptr (GQueue) selection_files = NULL;
     g_autoptr (GQueue) selection_items = NULL;
     g_autoptr (GtkBitset) update_set = NULL;
-    g_autoptr (GtkBitset) selection_set = NULL;
+    g_autoptr (GtkBitset) new_selection_set = NULL;
+    g_autoptr (GtkBitset) old_selection_set = NULL;
 
-    update_set = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
-    selection_set = gtk_bitset_new_empty ();
+    old_selection_set = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+    /* We aren't allowed to modify the actual selection bitset */
+    update_set = gtk_bitset_copy (old_selection_set);
+    new_selection_set = gtk_bitset_new_empty ();
 
     /* Convert file list into set of model indices */
     selection_files = convert_glist_to_queue (selection);
     selection_items = nautilus_view_model_get_items_from_files (priv->model, selection_files);
     for (GList *l = g_queue_peek_head_link (selection_items); l != NULL; l = l->next)
     {
-        gtk_bitset_add (selection_set,
+        gtk_bitset_add (new_selection_set,
                         nautilus_view_model_get_index (priv->model, l->data));
     }
 
@@ -1240,9 +1243,9 @@ real_set_selection (NautilusFilesView *files_view,
         set_focus_item (self, item);
     }
 
-    gtk_bitset_union (update_set, selection_set);
+    gtk_bitset_union (update_set, new_selection_set);
     gtk_selection_model_set_selection (GTK_SELECTION_MODEL (priv->model),
-                                       selection_set,
+                                       new_selection_set,
                                        update_set);
 }
 
