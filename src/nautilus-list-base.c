@@ -1367,12 +1367,13 @@ get_first_visible_item (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     guint n_items;
-    gdouble scrolled_y;
     GtkWidget *view_ui;
+    GtkBorder border = {0};
 
     n_items = g_list_model_get_n_items (G_LIST_MODEL (priv->model));
-    scrolled_y = gtk_adjustment_get_value (priv->vadjustment);
     view_ui = nautilus_list_base_get_view_ui (self);
+    gtk_scrollable_get_border (GTK_SCROLLABLE (view_ui), &border);
+
     for (guint i = 0; i < n_items; i++)
     {
         g_autoptr (NautilusViewItem) item = NULL;
@@ -1380,13 +1381,15 @@ get_first_visible_item (NautilusListBase *self)
 
         item = get_view_item (G_LIST_MODEL (priv->model), i);
         item_ui = nautilus_view_item_get_item_ui (item);
-        if (item_ui != NULL)
+        if (item_ui != NULL && gtk_widget_get_mapped (item_ui))
         {
+            GtkWidget *list_item_widget = gtk_widget_get_parent (item_ui);
+            gdouble h = gtk_widget_get_allocated_height (list_item_widget);
             gdouble y;
 
-            gtk_widget_translate_coordinates (item_ui, view_ui,
-                                              0, 0, NULL, &y);
-            if (gtk_widget_is_visible (item_ui) && y >= scrolled_y)
+            gtk_widget_translate_coordinates (list_item_widget, GTK_WIDGET (self),
+                                              0, h, NULL, &y);
+            if (y >= border.top)
             {
                 return i;
             }
@@ -1436,13 +1439,15 @@ scroll_to_file_on_idle (ScrollToFileData *data)
     NautilusViewItem *item;
     guint i;
 
+    priv->scroll_to_file_handle_id = 0;
+
     file = nautilus_file_get_existing_by_uri (data->uri);
     item = nautilus_view_model_get_item_from_file (priv->model, file);
-    i = nautilus_view_model_get_index (priv->model, item);
+    g_return_val_if_fail (item != NULL, G_SOURCE_REMOVE);
 
+    i = nautilus_view_model_get_index (priv->model, item);
     nautilus_list_base_scroll_to_item (self, i);
 
-    priv->scroll_to_file_handle_id = 0;
     return G_SOURCE_REMOVE;
 }
 
