@@ -7487,7 +7487,6 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean selection_contains_search;
     gboolean selection_contains_starred;
     gboolean selection_all_in_trash;
-    gboolean selection_is_read_only;
     gboolean can_create_files;
     gboolean can_delete_files;
     gboolean can_move_files;
@@ -7529,9 +7528,6 @@ real_update_actions_state (NautilusFilesView *view)
     selection_contains_recent = showing_recent_directory (view);
     selection_contains_starred = showing_starred_directory (view);
     selection_contains_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
-    selection_is_read_only = selection_count == 1 &&
-                             (!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
-                              !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
     selection_all_in_trash = all_in_trash (selection);
     zoom_level_is_default = nautilus_files_view_is_zoom_level_default (view);
 
