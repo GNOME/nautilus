@@ -9261,6 +9261,28 @@ on_scroll (GtkEventControllerScroll *scroll,
 }
 
 static void
+on_scroll_begin (GtkEventControllerScroll *scroll,
+                 gpointer                  user_data)
+{
+    GdkModifierType state;
+
+    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
+    if (state & GDK_CONTROL_MASK)
+    {
+        gtk_event_controller_scroll_set_flags (scroll,
+                                               GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
+                                               GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
+    }
+}
+
+static void
+on_scroll_end (GtkEventControllerScroll *scroll,
+               gpointer                  user_data)
+{
+    gtk_event_controller_scroll_set_flags (scroll, GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+}
+
+static void
 on_parent_changed (GObject    *object,
                    GParamSpec *pspec,
                    gpointer    user_data)
@@ -9685,11 +9707,12 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_type_ensure (NAUTILUS_TYPE_FLOATING_BAR);
     gtk_widget_init_template (GTK_WIDGET (view));
 
-    controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
-                                                  GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
+    controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
     gtk_widget_add_controller (priv->scrolled_window, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), view);
+    g_signal_connect (controller, "scroll-begin", G_CALLBACK (on_scroll_begin), view);
+    g_signal_connect (controller, "scroll-end", G_CALLBACK (on_scroll_end), view);
 
     g_signal_connect (priv->floating_bar,
                       "stop",
