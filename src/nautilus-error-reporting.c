@@ -348,8 +348,11 @@ rename_callback (NautilusFile *file,
     {
         if (!(error->domain == G_IO_ERROR && error->code == G_IO_ERROR_CANCELLED))
         {
+            GtkApplication *app = GTK_APPLICATION (g_application_get_default ());
+            GtkWindow *window = gtk_application_get_active_window (app);
+
             /* If rename failed, notify the user. */
-            nautilus_report_error_renaming_file (file, data->name, error, NULL);
+            nautilus_report_error_renaming_file (file, data->name, error, window);
         }
         else
         {
