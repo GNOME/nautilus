@@ -1574,9 +1574,10 @@ nautilus_window_constructed (GObject *self)
      * some actions trigger UI widgets to show/hide. */
     nautilus_window_initialize_actions (window);
 
-    window->bookmarks_id =
-        g_signal_connect_swapped (nautilus_application_get_bookmarks (application), "changed",
-                                  G_CALLBACK (nautilus_window_sync_bookmarks), window);
+    window->bookmarks_id = g_signal_connect_object (nautilus_application_get_bookmarks (application),
+                                                    "changed",
+                                                    G_CALLBACK (nautilus_window_sync_bookmarks),
+                                                    window, G_CONNECT_SWAPPED);
 
     nautilus_toolbar_on_window_constructed (NAUTILUS_TOOLBAR (window->toolbar));
 
