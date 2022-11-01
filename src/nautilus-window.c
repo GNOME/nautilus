@@ -431,19 +431,6 @@ action_undo (GSimpleAction *action,
 }
 
 static void
-action_toggle_state_view_button (GSimpleAction *action,
-                                 GVariant      *state,
-                                 gpointer       user_data)
-{
-    GVariant *current_state;
-
-    current_state = g_action_get_state (G_ACTION (action));
-    g_action_change_state (G_ACTION (action),
-                           g_variant_new_boolean (!g_variant_get_boolean (current_state)));
-    g_variant_unref (current_state);
-}
-
-static void
 action_show_current_location_menu (GSimpleAction *action,
                                    GVariant      *state,
                                    gpointer       user_data)
@@ -1459,7 +1446,6 @@ const GActionEntry win_entries[] =
     { "back-n", action_back_n, "u" },
     { "forward-n", action_forward_n, "u" },
     { "up", action_up },
-    { "view-menu", action_toggle_state_view_button, NULL, "false", NULL },
     { "current-location-menu", action_show_current_location_menu },
     { "open-location", action_open_location, "s" },
     { "reload", action_reload },
