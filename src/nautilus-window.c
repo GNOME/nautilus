@@ -603,7 +603,7 @@ nautilus_window_initialize_slot (NautilusWindow     *window,
 
     connect_slot (window, slot);
 
-    current = adw_tab_view_get_selected_page (window->tab_view);
+    current = get_current_page (window);
     page = adw_tab_view_add_page (window->tab_view, GTK_WIDGET (slot), current);
 
     g_object_bind_property (slot, "allow-stop",
