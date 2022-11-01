@@ -162,23 +162,29 @@ static const GtkPadActionEntry pad_actions[] =
     { GTK_PAD_ACTION_BUTTON, 5, -1, N_("Forward"), "forward" },
 };
 
+static AdwTabPage *
+get_current_page (NautilusWindow *window)
+{
+    if (window->menu_page != NULL)
+    {
+        return window->menu_page;
+    }
+
+    return adw_tab_view_get_selected_page (window->tab_view);
+}
+
 static void
 action_close_current_view (GSimpleAction *action,
                            GVariant      *state,
                            gpointer       user_data)
 {
     NautilusWindow *window = user_data;
-    AdwTabPage *page = window->menu_page;
+    AdwTabPage *page = get_current_page (window);
 
     if (adw_tab_view_get_n_pages (window->tab_view) <= 1)
     {
         nautilus_window_close (window);
         return;
-    }
-
-    if (page == NULL)
-    {
-        page = adw_tab_view_get_selected_page (window->tab_view);
     }
 
     adw_tab_view_close_page (window->tab_view, page);
@@ -339,12 +345,7 @@ action_tab_move_left (GSimpleAction *action,
                       gpointer       user_data)
 {
     NautilusWindow *window = user_data;
-    AdwTabPage *page = window->menu_page;
-
-    if (page == NULL)
-    {
-        page = adw_tab_view_get_selected_page (window->tab_view);
-    }
+    AdwTabPage *page = get_current_page (window);
 
     adw_tab_view_reorder_backward (window->tab_view, page);
 }
@@ -355,12 +356,7 @@ action_tab_move_right (GSimpleAction *action,
                        gpointer       user_data)
 {
     NautilusWindow *window = user_data;
-    AdwTabPage *page = window->menu_page;
-
-    if (page == NULL)
-    {
-        page = adw_tab_view_get_selected_page (window->tab_view);
-    }
+    AdwTabPage *page = get_current_page (window);
 
     adw_tab_view_reorder_forward (window->tab_view, page);
 }
