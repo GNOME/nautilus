@@ -191,6 +191,17 @@ action_close_current_view (GSimpleAction *action,
 }
 
 static void
+action_close_other_tabs (GSimpleAction *action,
+                         GVariant      *parameters,
+                         gpointer       user_data)
+{
+    NautilusWindow *window = user_data;
+    AdwTabPage *page = get_current_page (window);
+
+    adw_tab_view_close_other_pages (window->tab_view, page);
+}
+
+static void
 action_go_home (GSimpleAction *action,
                 GVariant      *state,
                 gpointer       user_data)
@@ -1457,6 +1468,7 @@ const GActionEntry win_entries[] =
     { "redo", action_redo },
     /* Only accesible by shorcuts */
     { "close-current-view", action_close_current_view },
+    { "close-other-tabs", action_close_other_tabs },
     { "go-home", action_go_home },
     { "go-starred", action_go_starred },
     { "tab-move-left", action_tab_move_left },
