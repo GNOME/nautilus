@@ -1428,6 +1428,18 @@ tab_view_create_window_cb (AdwTabView     *tab_view,
 }
 
 static void
+action_tab_move_new_window (GSimpleAction *action,
+                            GVariant      *parameter,
+                            gpointer       user_data)
+{
+    NautilusWindow *window = user_data;
+    AdwTabPage *page = get_current_page (window);
+    AdwTabView *new_view = tab_view_create_window_cb (window->tab_view, window);
+
+    adw_tab_view_transfer_page (window->tab_view, page, new_view, 0);
+}
+
+static void
 setup_tab_view (NautilusWindow *window)
 {
     g_signal_connect (window->tab_view, "close-page",
@@ -1473,6 +1485,7 @@ const GActionEntry win_entries[] =
     { "go-starred", action_go_starred },
     { "tab-move-left", action_tab_move_left },
     { "tab-move-right", action_tab_move_right },
+    { "tab-move-new-window", action_tab_move_new_window },
     { "prompt-root-location", action_prompt_for_location_root },
     { "prompt-home-location", action_prompt_for_location_home },
     { "go-to-tab", NULL, "i", "0", action_go_to_tab },
