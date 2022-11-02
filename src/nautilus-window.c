@@ -733,10 +733,12 @@ void
 nautilus_window_new_tab (NautilusWindow *window)
 {
     NautilusWindowSlot *current_slot;
+    AdwTabPage *page;
     GFile *location;
     g_autofree gchar *uri = NULL;
 
-    current_slot = nautilus_window_get_active_slot (window);
+    page = get_current_page (window);
+    current_slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
     location = nautilus_window_slot_get_location (current_slot);
 
     if (location != NULL)
