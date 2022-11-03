@@ -488,6 +488,7 @@ tab_view_setup_menu_cb (AdwTabView     *tab_view,
 {
     GAction *move_tab_left_action;
     GAction *move_tab_right_action;
+    GAction *restore_tab_action;
     int position, n_pages;
 
     window->menu_page = page;
@@ -504,11 +505,15 @@ tab_view_setup_menu_cb (AdwTabView     *tab_view,
                                                        "tab-move-left");
     move_tab_right_action = g_action_map_lookup_action (G_ACTION_MAP (window),
                                                         "tab-move-right");
+    restore_tab_action = g_action_map_lookup_action (G_ACTION_MAP (window),
+                                                     "restore-tab");
 
     g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_left_action),
                                  page == NULL || position > 0);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_right_action),
                                  page == NULL || position < n_pages - 1);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (restore_tab_action),
+                                 g_queue_get_length (window->tab_data_queue) > 0);
 }
 
 static void
