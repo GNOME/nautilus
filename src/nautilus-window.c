@@ -479,11 +479,15 @@ tab_view_setup_menu_cb (AdwTabView     *tab_view,
     GAction *move_tab_right_action;
     int position, n_pages;
 
-    if (page != NULL)
+    window->menu_page = page;
+
+    if (page == NULL)
     {
-        position = adw_tab_view_get_page_position (tab_view, page);
-        n_pages = adw_tab_view_get_n_pages (tab_view);
+        return;
     }
+
+    position = adw_tab_view_get_page_position (tab_view, page);
+    n_pages = adw_tab_view_get_n_pages (tab_view);
 
     move_tab_left_action = g_action_map_lookup_action (G_ACTION_MAP (window),
                                                        "tab-move-left");
@@ -494,8 +498,6 @@ tab_view_setup_menu_cb (AdwTabView     *tab_view,
                                  page == NULL || position > 0);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_right_action),
                                  page == NULL || position < n_pages - 1);
-
-    window->menu_page = page;
 }
 
 static void
