@@ -851,6 +851,7 @@ on_item_drop (GtkDropTarget *target,
 {
     NautilusViewCell *cell = user_data;
     g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
     GdkDragAction actions;
     GFile *target_location;
@@ -868,6 +869,9 @@ on_item_drop (GtkDropTarget *target,
         actions = gdk_drag_get_selected_action (drag);
     }
     #endif
+
+    /* In x11 the leave signal isn't emitted on a drop so we need to clear the timeout */
+    g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
     real_perform_drop (self, value, actions, target_location);
 
