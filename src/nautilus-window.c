@@ -2288,6 +2288,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                            "version", VERSION,
                            "website", "https://wiki.gnome.org/action/show/Apps/Files",
                            "issue-url", "https://gitlab.gnome.org/GNOME/nautilus/-/issues/new",
+                           "support-url", "https://discourse.gnome.org/tag/nautilus",
                            "debug-info", debug_info,
                            "copyright", "© 1999 The Files Authors",
                            "license-type", GTK_LICENSE_GPL_3_0,
