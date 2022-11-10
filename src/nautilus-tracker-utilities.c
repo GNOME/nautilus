@@ -115,28 +115,3 @@ nautilus_tracker_get_miner_fs_connection (GError **error)
 
     return tracker_miner_fs_connection;
 }
-
-/**
- * nautilus_tracker_get_miner_fs_busname:
- * @error: return location for a #GError
- *
- * This function returns a DBus name that can be used to talk to
- * tracker-miner-fs, or %NULL if there is no Tracker Miner FS available.
- *
- * The first time you call it, this function will block while trying to connect.
- * This may take some time if starting Tracker Miners from a Flatpak bundle.
- *
- * Returns: a string
- */
-const gchar *
-nautilus_tracker_get_miner_fs_busname (GError **error)
-{
-    setup_tracker_miner_fs_connection ();
-
-    if (tracker_miner_fs_error && error)
-    {
-        *error = g_error_copy (tracker_miner_fs_error);
-    }
-
-    return tracker_miner_fs_busname;
-}

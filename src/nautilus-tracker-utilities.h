@@ -25,4 +25,3 @@
 #include <libtracker-sparql/tracker-sparql.h>
 
 TrackerSparqlConnection * nautilus_tracker_get_miner_fs_connection (GError **error);
-const gchar *             nautilus_tracker_get_miner_fs_busname    (GError **error);
