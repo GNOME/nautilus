@@ -73,8 +73,8 @@ host_tracker_miner_fs_ready (GObject      *source,
     }
 }
 
-static void
-setup_tracker_miner_fs_connection (void)
+void
+nautilus_tracker_setup_miner_fs_connection (void)
 {
     static gsize tried_tracker_init = FALSE;
 
@@ -107,7 +107,7 @@ setup_tracker_miner_fs_connection (void)
 TrackerSparqlConnection *
 nautilus_tracker_get_miner_fs_connection (GError **error)
 {
-    setup_tracker_miner_fs_connection ();
+    nautilus_tracker_setup_miner_fs_connection ();
 
     if (tracker_miner_fs_error && error)
     {
