@@ -866,7 +866,7 @@ on_item_drop (GtkDropTarget *target,
          * is merged.  Without this fix, the preferred action isn't set correctly.
          * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
         GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
-        actions = gdk_drag_get_selected_action (drag);
+        actions = drag != NULL ? gdk_drag_get_selected_action (drag) : GDK_ACTION_COPY;
     }
     #endif
 
@@ -964,7 +964,7 @@ on_view_drop (GtkDropTarget *target,
          * is merged.  Without this fix, the preferred action isn't set correctly.
          * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
         GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
-        actions = gdk_drag_get_selected_action (drag);
+        actions = drag != NULL ? gdk_drag_get_selected_action (drag) : GDK_ACTION_COPY;
     }
     #endif
 
