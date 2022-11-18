@@ -3324,8 +3324,8 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB)
     {
-      item = g_menu_item_new (_("Open in New _Tab"), "row.open");
-      g_menu_item_set_action_and_target_value (item, "row.open",
+      item = g_menu_item_new (_("Open in New _Tab"), "row.open-other");
+      g_menu_item_set_action_and_target_value (item, "row.open-other",
                                                g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NEW_TAB));
       g_menu_append_item (section, item);
       g_object_unref (item);
@@ -3333,8 +3333,8 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW)
     {
-      item = g_menu_item_new (_("Open in New _Window"), "row.open");
-      g_menu_item_set_action_and_target_value (item, "row.open",
+      item = g_menu_item_new (_("Open in New _Window"), "row.open-other");
+      g_menu_item_set_action_and_target_value (item, "row.open-other",
                                                g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW));
       g_menu_append_item (section, item);
       g_object_unref (item);
