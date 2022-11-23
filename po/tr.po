@@ -1,6 +1,6 @@
 # Turkish translation of Nautilus.
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# Copyright (C) 2019-2022 Nautilus'S COPYRIGHT HOLDER
+# Copyright (C) 2019-2022 Nautilus's COPYRIGHT HOLDER
 # This file is distributed under the same license as the Nautilus package.
 #
 # Ömer Fadıl USTA <omer_fad@hotmail.com>, 2002.
@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-09-18 04:03+0000\n"
-"PO-Revision-Date: 2022-09-18 18:15+0300\n"
+"POT-Creation-Date: 2022-09-19 19:40+0000\n"
+"PO-Revision-Date: 2022-11-23 19:18+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -415,7 +415,7 @@ msgstr ""
 "Simge görünümünde simgenin altındaki başlıkların listesi. Gösterilen "
 "başlıkların sayısı, yakınlaştırma düzeyine göre değişecektir. Bazı olası "
 "değerler: “size” (boyut), “type” (type), “date_modified” (düzenleme tarihi), "
-"“owner” (sahip), “group” (küme), “permissions” (izinler) ve "
+"“owner” (sahip), “group” (grup), “permissions” (izinler) ve "
 "“mime_type” (mime türü)."
 
 #: data/org.gnome.nautilus.gschema.xml:209
@@ -526,7 +526,7 @@ msgstr "%s %s"
 #. 0 seconds
 #: extensions/audio-video-properties/totem-properties-view.c:104
 msgid "0 seconds"
-msgstr "%d saniye"
+msgstr "0 saniye"
 
 #: extensions/audio-video-properties/totem-properties-view.c:122
 #: extensions/image-properties/nautilus-image-properties-model.c:201
@@ -1105,11 +1105,11 @@ msgstr "Dosyanın sahibi."
 #: src/nautilus-column-utilities.c:123
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:92
 msgid "Group"
-msgstr "Küme"
+msgstr "Grup"
 
 #: src/nautilus-column-utilities.c:124
 msgid "The group of the file."
-msgstr "Dosyanın kümesi."
+msgstr "Dosyanın grubu."
 
 #: src/nautilus-column-utilities.c:131
 msgid "Permissions"
@@ -1271,17 +1271,17 @@ msgstr "Bu konum gösterilemedi."
 #: src/nautilus-error-reporting.c:142
 #, c-format
 msgid "You do not have the permissions necessary to change the group of “%s”."
-msgstr "“%s” kümesini değiştirmek için yeterli izniniz yok."
+msgstr "“%s” grubunu değiştirmek için yeterli izniniz yok."
 
 #. fall through
 #: src/nautilus-error-reporting.c:165
 #, c-format
 msgid "Sorry, could not change the group of “%s”: %s"
-msgstr "Üzgünüm, “%s” kümesi değiştirilemedi: %s"
+msgstr "Üzgünüm, “%s” grubu değiştirilemedi: %s"
 
 #: src/nautilus-error-reporting.c:170
 msgid "The group could not be changed."
-msgstr "Küme değiştirilemedi."
+msgstr "Grup değiştirilemedi."
 
 #: src/nautilus-error-reporting.c:191
 #, c-format
@@ -1509,12 +1509,12 @@ msgstr "Belirtilen sahip “%s” yok"
 #: src/nautilus-file.c:6575
 #, c-format
 msgid "Not allowed to set group"
-msgstr "Küme atamasına izin verilemiyor"
+msgstr "Grup atamasına izin verilemiyor"
 
 #: src/nautilus-file.c:6594
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
-msgstr "Belirtilen ”%s” kümesi yok"
+msgstr "Belirtilen ”%s” grubu yok"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
 #: src/nautilus-file.c:6736
@@ -3166,20 +3166,20 @@ msgstr "İzinlerini belirle: “%s”"
 #: src/nautilus-file-undo-operations.c:2199
 #, c-format
 msgid "Restore group of “%s” to “%s”"
-msgstr "“%s” ögesinin kümesini “%s” kümesine geri yükle"
+msgstr "“%s” ögesinin grubunu “%s” grubuna geri yükle"
 
 #: src/nautilus-file-undo-operations.c:2201
 #, c-format
 msgid "Set group of “%s” to “%s”"
-msgstr "“%s” ögesinin kümesini “%s” olarak belirle"
+msgstr "“%s” ögesinin grubunu “%s” olarak belirle"
 
 #: src/nautilus-file-undo-operations.c:2204
 msgid "_Undo Change Group"
-msgstr "Küme Değiştirmeyi _Geri Al"
+msgstr "Grup Değiştirmeyi _Geri Al"
 
 #: src/nautilus-file-undo-operations.c:2205
 msgid "_Redo Change Group"
-msgstr "Küme Değiştirmeyi _Yinele"
+msgstr "Grup Değiştirmeyi _Yinele"
 
 #: src/nautilus-file-undo-operations.c:2209
 #, c-format
@@ -3840,7 +3840,7 @@ msgstr "bilinmiyor"
 
 #: src/nautilus-properties-window.c:1694
 msgid "Cancel Group Change?"
-msgstr "Küme Değişimi İptal Edilsin mi?"
+msgstr "Grup Değişimi İptal Edilsin mi?"
 
 #: src/nautilus-properties-window.c:1844
 msgid "Cancel Owner Change?"
@@ -3974,8 +3974,8 @@ msgstr "Bu klasördeki dosyalar Yeni Belge menüsünde görünecektir."
 
 #: src/nautilus-special-location-bar.c:150
 msgid ""
-"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
-"\">Learn more…</a>"
+"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+"templates\">Learn more…</a>"
 msgstr ""
 "<a href=\"help:gnome-help/files-templates\" title=\"Şablonlar için GNOME "
 "yardım\">Daha çoğunu öğren…</a>"
@@ -5099,7 +5099,7 @@ msgstr "Dosya Erişimi"
 
 #: src/resources/ui/nautilus-properties-window.ui:808
 msgid "_Group"
-msgstr "_Küme"
+msgstr "_Grup"
 
 #: src/resources/ui/nautilus-properties-window.ui:878
 msgid "Security Context"
