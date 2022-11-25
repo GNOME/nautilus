@@ -1021,6 +1021,11 @@ get_basename (GFile *file)
     if (name == NULL)
     {
         basename = g_file_get_basename (file);
+        if (basename == NULL)
+        {
+            return g_strdup (_("unknown"));
+        }
+
         if (g_utf8_validate (basename, -1, NULL))
         {
             name = basename;
@@ -4383,6 +4388,7 @@ get_unique_target_file (GFile      *src,
     if (dest == NULL)
     {
         basename = g_file_get_basename (src);
+        g_assert (basename == NULL);
 
         if (g_utf8_validate (basename, -1, NULL))
         {
