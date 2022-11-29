@@ -1031,7 +1031,8 @@ real_file_changed (NautilusFilesView *files_view,
 }
 
 static GList *
-real_get_selection (NautilusFilesView *files_view)
+get_selection (NautilusFilesView *files_view,
+               gboolean           for_file_transfer)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
@@ -1044,15 +1045,43 @@ real_get_selection (NautilusFilesView *files_view)
     for (guint i = 0; i < n_selected; i++)
     {
         g_autoptr (NautilusViewItem) item = NULL;
+        NautilusFile *file;
 
         item = get_view_item (G_LIST_MODEL (selection), i);
-        selected_files = g_list_prepend (selected_files,
-                                         g_object_ref (nautilus_view_item_get_file (item)));
+        file = nautilus_view_item_get_file (item);
+
+        if (for_file_transfer)
+        {
+            /* If the parent is already selected don't include the child. */
+            g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
+            g_autoptr (NautilusViewItem) parent_item = NULL;
+            guint parent_pos;
+
+            parent_item = nautilus_view_model_get_item_from_file (priv->model, parent);
+            parent_pos = nautilus_view_model_get_index (priv->model, parent_item);
+            if (gtk_selection_model_is_selected (GTK_SELECTION_MODEL (priv->model), parent_pos))
+            {
+                continue;
+            }
+        }
+        selected_files = g_list_prepend (selected_files, g_object_ref (file));
     }
 
     selected_files = g_list_reverse (selected_files);
 
     return selected_files;
+}
+
+static GList *
+real_get_selection (NautilusFilesView *files_view)
+{
+    return get_selection (files_view, FALSE);
+}
+
+static GList *
+real_get_selection_for_file_transfer (NautilusFilesView *files_view)
+{
+    return get_selection (files_view, TRUE);
 }
 
 static gboolean
@@ -1719,10 +1748,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->click_policy_changed = real_click_policy_changed;
     files_view_class->file_changed = real_file_changed;
     files_view_class->get_selection = real_get_selection;
-    /* TODO: remove this get_selection_for_file_transfer, this doesn't even
-     * take into account we could us the view for recursive search :/
-     * CanvasView has the same issue. */
-    files_view_class->get_selection_for_file_transfer = real_get_selection;
+    files_view_class->get_selection_for_file_transfer = real_get_selection_for_file_transfer;
     files_view_class->is_empty = real_is_empty;
     files_view_class->remove_file = real_remove_file;
     files_view_class->select_all = real_select_all;
