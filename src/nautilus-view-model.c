@@ -374,7 +374,10 @@ nautilus_view_model_get_items_from_files (NautilusViewModel *self,
         NautilusViewItem *item;
 
         item = nautilus_view_model_get_item_from_file (self, l->data);
-        g_queue_push_tail (items, item);
+        if (item != NULL)
+        {
+            g_queue_push_tail (items, item);
+        }
     }
 
     return items;
