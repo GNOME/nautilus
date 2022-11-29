@@ -1079,6 +1079,42 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     }
 }
 
+static gboolean
+transform_model_n_items_to_boolean (GBinding     *binding,
+                                    const GValue *from_value,
+                                    GValue       *to_value,
+                                    gpointer      data)
+{
+    guint n_items = g_value_get_uint (from_value);
+    gboolean result;
+
+    result = n_items == 0 ? TRUE : FALSE;
+    g_value_set_boolean (to_value, result);
+
+    return TRUE;
+}
+
+static void
+on_row_children_changed (GObject    *gobject,
+                         GParamSpec *pspec,
+                         gpointer    user_data)
+{
+    GtkTreeExpander *expander = user_data;
+    GListModel *model = gtk_tree_list_row_get_children (GTK_TREE_LIST_ROW (gobject));
+
+    if (model == NULL)
+    {
+        return;
+    }
+
+    g_object_bind_property_full (model, "n-items",
+                                 expander, "hide-expander",
+                                 G_BINDING_SYNC_CREATE,
+                                 transform_model_n_items_to_boolean,
+                                 NULL,
+                                 NULL, NULL);
+}
+
 static void
 bind_name_cell (GtkSignalListItemFactory *factory,
                 GtkListItem              *listitem,
@@ -1109,10 +1145,17 @@ bind_name_cell (GtkSignalListItemFactory *factory,
 
     if (self->expand_as_a_tree)
     {
-        g_signal_connect_object (GTK_TREE_LIST_ROW (gtk_list_item_get_item (listitem)),
+        GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
+        GtkTreeListRow *row = GTK_TREE_LIST_ROW (gtk_list_item_get_item (listitem));
+
+        g_signal_connect_object (row,
                                  "notify::expanded",
                                  G_CALLBACK (on_row_expanded_changed),
                                  self, 0);
+        g_signal_connect_object (row,
+                                 "notify::children",
+                                 G_CALLBACK (on_row_children_changed),
+                                 expander, 0);
     }
 }
 
@@ -1138,6 +1181,9 @@ unbind_name_cell (GtkSignalListItemFactory *factory,
     {
         g_signal_handlers_disconnect_by_func (gtk_list_item_get_item (listitem),
                                               on_row_expanded_changed,
+                                              self);
+        g_signal_handlers_disconnect_by_func (gtk_list_item_get_item (listitem),
+                                              on_row_children_changed,
                                               self);
     }
 }
