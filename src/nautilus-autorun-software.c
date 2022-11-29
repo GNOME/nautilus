@@ -117,7 +117,7 @@ autorun (GMount *mount)
     {
         program_to_spawn = g_file_get_child (root, "autorun");
     }
-    else if (_check_file (root, "autorun.sh", TRUE))
+    else if (_check_file (root, "autorun.sh", FALSE))
     {
         program_to_spawn = g_file_new_for_path ("/bin/sh");
         program_parameter_file = g_file_get_child (root, "autorun.sh");
