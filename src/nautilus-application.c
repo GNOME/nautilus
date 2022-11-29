@@ -817,17 +817,6 @@ action_quit (GSimpleAction *action,
     g_list_free (windows);
 }
 
-static void
-action_show_help_overlay (GSimpleAction *action,
-                          GVariant      *state,
-                          gpointer       user_data)
-{
-    GtkApplication *application = user_data;
-    GtkWindow *window = gtk_application_get_active_window (application);
-
-    g_action_group_activate_action (G_ACTION_GROUP (window), "show-help-overlay", NULL);
-}
-
 const static GActionEntry app_entries[] =
 {
     { "new-window", action_new_window, NULL, NULL, NULL },
@@ -837,7 +826,6 @@ const static GActionEntry app_entries[] =
     { "help", action_help, NULL, NULL, NULL },
     { "quit", action_quit, NULL, NULL, NULL },
     { "kill", action_kill, NULL, NULL, NULL },
-    { "show-help-overlay", action_show_help_overlay, NULL, NULL, NULL },
 };
 
 static void
