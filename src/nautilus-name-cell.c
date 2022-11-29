@@ -272,6 +272,8 @@ on_loading_timeout (gpointer user_data)
     NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
     gboolean is_loading;
 
+    self->loading_timeout_id = 0;
+
     g_object_get (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self)),
                   "is-loading", &is_loading,
                   NULL);
