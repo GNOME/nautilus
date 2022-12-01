@@ -1364,6 +1364,9 @@ nautilus_list_view_dispose (GObject *object)
     nautilus_view_model_set_sorter (model, NULL);
 
     g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
+                                          update_columns_settings_from_metadata_and_preferences,
+                                          self);
+    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
                                           nautilus_list_view_reload,
                                           self);
 
