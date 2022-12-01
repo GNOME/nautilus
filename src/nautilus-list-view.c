@@ -938,7 +938,7 @@ static void
 on_subdirectory_done_loading (NautilusDirectory *directory,
                               GtkTreeListRow    *row)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
 
     g_signal_handlers_disconnect_by_func (directory, on_subdirectory_done_loading, row);
 
@@ -953,7 +953,7 @@ on_row_expanded_changed (GObject    *gobject,
 {
     GtkTreeListRow *row = GTK_TREE_LIST_ROW (gobject);
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
     g_autoptr (NautilusDirectory) directory = NULL;
     gboolean expanded;
 
@@ -975,6 +975,7 @@ on_row_expanded_changed (GObject    *gobject,
         if (!nautilus_directory_are_all_files_seen (directory))
         {
             nautilus_view_item_set_loading (item, TRUE);
+
             g_signal_connect_object (directory,
                                      "done-loading",
                                      G_CALLBACK (on_subdirectory_done_loading),
