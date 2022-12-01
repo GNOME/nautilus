@@ -738,9 +738,6 @@ real_begin_loading (NautilusFilesView *files_view)
 
     update_columns_settings_from_metadata_and_preferences (self);
 
-    /* TODO Reload the view if this setting changes. We can't easily switch
-     * tree mode on/off on an already loaded view and the preference is not
-     * expected to be changed frequently. */
     self->expand_as_a_tree = g_settings_get_boolean (nautilus_list_view_preferences,
                                                      NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
 
@@ -1289,6 +1286,15 @@ setup_view_columns (NautilusListView *self)
 }
 
 static void
+nautilus_list_view_reload (NautilusListView *self)
+{
+    NautilusWindowSlot *slot;
+
+    slot = nautilus_files_view_get_nautilus_window_slot (NAUTILUS_FILES_VIEW (self));
+    nautilus_window_slot_queue_reload (slot);
+}
+
+static void
 nautilus_list_view_init (NautilusListView *self)
 {
     NautilusViewModel *model;
@@ -1307,6 +1313,11 @@ nautilus_list_view_init (NautilusListView *self)
     g_signal_connect_object (nautilus_list_view_preferences,
                              "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
                              G_CALLBACK (update_columns_settings_from_metadata_and_preferences),
+                             self,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (nautilus_list_view_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE,
+                             G_CALLBACK (nautilus_list_view_reload),
                              self,
                              G_CONNECT_SWAPPED);
 
@@ -1351,6 +1362,10 @@ nautilus_list_view_dispose (GObject *object)
 
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_set_sorter (model, NULL);
+
+    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
+                                          nautilus_list_view_reload,
+                                          self);
 
     g_clear_object (&self->file_path_base_location);
     g_clear_pointer (&self->factory_to_column_map, g_hash_table_destroy);
