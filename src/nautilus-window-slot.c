@@ -598,6 +598,7 @@ nautilus_window_slot_search (NautilusWindowSlot *self,
     {
         nautilus_window_slot_set_search_visible (self, TRUE);
         nautilus_query_editor_set_query (self->query_editor, query);
+        nautilus_view_set_search_query (view, query);
     }
     else
     {
