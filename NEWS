@@ -1,3 +1,27 @@
+Major changes in 43.1
+=========================
+* Bugfixes
+  - Actually reset metadata when reseting to default columns (Corey Berla)
+  - Don't allow hiding name column (Corey Berla)
+  - Keep track of column sorting changes (Corey Berla)
+  - Fix view focus navigation (António Fernandes)
+  - Reimplement view navigation from the previewer (António Fernandes)
+  - Don't accept drops into search directory (Liu Yuyang)
+  - Share settings with GTK4 filechooser (Colin Sane)
+  - Fix a properties extensions bugs (António Fernandes)
+  - Fix various Drag-and-Drop bugs (Corey Berla)
+  - Remove dead shortcut from Keyboard Shortcut (Jake Dane)
+  - Allow opening current view in new tab from sidebar (Colin Kinloch)
+  - Fix crashes (Corey Berla, Aleksandar Dezelin)
+* Performance improvements
+  - Optimize sorting during directory loading (Corey Berla)
+  - Minimize column factories (Corey Berla)
+  - Increase search timeout (Jeff Fortin Tam)
+  - Minimize and optimize menu updates (Corey Berla)
+* Build fixes
+  - Make header prototypes match definitions (Leonardo Hernández)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 43.0
 =========================
 * Bugfixes
