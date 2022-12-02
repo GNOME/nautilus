@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-10-24 20:55+0000\n"
+"POT-Creation-Date: 2022-11-23 19:59+0000\n"
 "Last-Translator: Нанба Наала <naala-nanba@rambler.ru>\n"
 "Language-Team: Abkhazian <daniel.abzakh@gmail.com>\n"
 "Language: ab\n"
@@ -80,11 +80,292 @@ msgstr ""
 #: data/org.gnome.Nautilus.desktop.in.in:20
 #: src/resources/ui/nautilus-toolbar.ui:7
 msgid "New Window"
-msgstr ""
+msgstr "Аҧенџьыр ҿыц"
 
 #: data/org.gnome.nautilus.gschema.xml:76
 msgid "Always use the location entry, instead of the pathbar"
 msgstr "_Апанель ацымхәрас аҭыӡҭып ацәаҳәа еснагь шәхы иашәырхәала"
+
+#: data/org.gnome.nautilus.gschema.xml:77
+msgid ""
+"If set to true, then Nautilus browser windows will always use a textual "
+"input entry for the location toolbar, instead of the pathbar."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:81
+msgid "Where to perform recursive search"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:82
+msgid ""
+"In which locations Nautilus should search on subfolders. Available values "
+"are “local-only”, “always”, “never”."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:86
+msgid "Filter the search dates using either last used or last modified"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:87
+msgid "Filter the search dates using either last used or last modified."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:91
+msgid "Whether to show a context menu item to delete permanently"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:92
+msgid ""
+"If set to true, then Nautilus will show a delete permanently context menu "
+"item to bypass the Trash."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:96
+msgid ""
+"Whether to show context menu items to create links from copied or selected "
+"files"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:97
+msgid ""
+"If set to true, then Nautilus will show context menu items to create links "
+"from the copied or selected files."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:102
+msgid "When to show number of items in a folder"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:103
+msgid ""
+"Speed tradeoff for when to show the number of items in a folder. If set to "
+"“always” then always show item counts, even if the folder is on a remote "
+"server. If set to “local-only” then only show counts for local file systems. "
+"If set to “never” then never bother to compute item counts."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:107
+msgid "Type of click used to launch/open files"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:108
+msgid ""
+"Possible values are “single” to launch files on a single click, or “double” "
+"to launch them on a double click."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:112
+msgid "Show the package installer for unknown MIME types"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:113
+msgid ""
+"Whether to show the user a package installer dialog in case an unknown MIME "
+"type is opened, in order to search for an application to handle it."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:117
+msgid "Use extra mouse button events in Nautilus’ browser window"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:118
+msgid ""
+"For users with mice that have “Forward” and “Back” buttons, this key will "
+"determine if any action is taken inside of Nautilus when either is pressed."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:122
+msgid "Mouse button to activate the “Forward” command in browser window"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:123
+msgid ""
+"For users with mice that have buttons for “Forward” and “Back”, this key "
+"will set which button activates the “Forward” command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:127
+msgid "Mouse button to activate the “Back” command in browser window"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:128
+msgid ""
+"For users with mice that have buttons for “Forward” and “Back”, this key "
+"will set which button activates the “Back” command in a browser window. "
+"Possible values range between 6 and 14."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:133
+msgid "When to show thumbnails of files"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:134
+msgid ""
+"Speed trade-off for when to show a file as a thumbnail. If set to “always” "
+"then always thumbnail, even if the folder is on a remote server. If set to "
+"“local-only” then only show thumbnails for local file systems. If set to "
+"“never” then never bother to thumbnail files, just use a generic icon. "
+"Despite what the name may suggest, this applies to any previewable file type."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:139
+msgid "Maximum image size for thumbnailing"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:140
+msgid ""
+"Images over this size (in megabytes) won’t be thumbnailed. The purpose of "
+"this setting is to avoid thumbnailing large images that may take a long time "
+"to load or use lots of memory."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:147
+msgid "Default sort order"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:148
+msgid ""
+"The default sort-order for items in the icon view. Possible values are "
+"“name”, “size”, “type”, “mtime”, “atime” and “starred”."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:152
+msgid "Reverse sort order in new windows"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:153
+msgid ""
+"If true, files in new windows will be sorted in reverse order. I.e., if "
+"sorted by name, then instead of sorting the files from “a” to “z”, they will "
+"be sorted from “z” to “a”; if sorted by size, instead of being incrementally "
+"they will be sorted decrementally."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:163
+msgid "Default folder viewer"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:164
+msgid ""
+"When a folder is visited this viewer is used. Possible values are “list-"
+"view”, and “icon-view”."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:168
+msgid "Whether to show hidden files"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:169
+msgid ""
+"This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
+"Settings.FileChooser” is now used instead."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:173
+msgid "What viewer should be used when searching"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:174
+msgid ""
+"When searching Nautilus will switch to the type of view in this setting."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:178
+msgid ""
+"Whether to open the hovered folder after a timeout when drag and drop "
+"operation"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:179
+msgid ""
+"If this is set to true, when performing a drag and drop operation the "
+"hovered folder will open automatically after a timeout."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:183
+msgid ""
+"Whether to have full text search enabled by default when opening a new "
+"window/tab"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:184
+msgid ""
+"If set to true, then Nautilus will also match the file contents besides the "
+"name. This toggles the default active state, which can still be overridden "
+"in the search popover"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:191
+msgid "Default format for compressing files"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:192
+msgid "The format that will be selected when compressing files."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:199
+msgid "List of possible captions on icons"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:200
+msgid ""
+"A list of captions below an icon in the icon view. The actual number of "
+"captions shown depends on the zoom level. Some possible values are: “size”, "
+"“type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:209
+msgid "Default icon view zoom level"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:220
+msgid "Default list view zoom level"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:224
+msgid "Columns visible in list view"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:228
+msgid "Column order in list view"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:232
+msgid "Use tree view"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:233
+msgid ""
+"Whether a tree should be used for list view navigation instead of a flat "
+"list."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:240
+msgid "Initial size of the window"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:241
+msgid ""
+"A tuple containing the initial width and height of the application window."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:245
+msgid "Whether the navigation window should be maximized"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:246
+msgid "Whether the navigation window should be maximized by default."
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:250
+msgid "Show location bar in new windows"
+msgstr ""
+
+#: data/org.gnome.nautilus.gschema.xml:251
+msgid ""
+"If set to true, newly opened windows will have the location bar visible."
+msgstr ""
 
 #: eel/eel-stock-dialogs.c:197
 msgid "You can stop this operation by clicking cancel."
@@ -166,7 +447,7 @@ msgstr "Ажәеилыркка"
 #: extensions/audio-video-properties/totem-properties-view.c:155
 #: extensions/audio-video-properties/totem-properties-view.c:162
 msgid "Year"
-msgstr ""
+msgstr "Ашықәс"
 
 #: extensions/audio-video-properties/totem-properties-view.c:204
 #, c-format
@@ -199,7 +480,7 @@ msgstr[1] ""
 
 #: extensions/audio-video-properties/totem-properties-view.c:240
 msgid "Frame Rate"
-msgstr ""
+msgstr "Акадрқәа рыласра"
 
 #: extensions/audio-video-properties/totem-properties-view.c:251
 msgid "Audio Codec"
@@ -319,7 +600,7 @@ msgstr ""
 
 #: extensions/image-properties/nautilus-image-properties-model.c:199
 msgid "Focal Length"
-msgstr ""
+msgstr "Афокустә бжьазаара"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:200
 msgid "Software"
@@ -367,7 +648,7 @@ msgstr "E"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:221
 msgid "W"
-msgstr ""
+msgstr "А"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:224
 msgid "Coordinates"
@@ -996,7 +1277,7 @@ msgstr ""
 #: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:326
 #: src/nautilus-pathbar.c:378 src/gtk/nautilusgtkplacessidebar.c:994
 msgid "Starred"
-msgstr ""
+msgstr "Иалкаау"
 
 #. Translators: Time in 24h format
 #: src/nautilus-file.c:5366
@@ -1246,7 +1527,7 @@ msgstr "Аҭаӡ"
 
 #: src/nautilus-file.c:7467
 msgid "Link"
-msgstr ""
+msgstr "Аидҳәалара"
 
 #. Note to localizers: convert file type string for file
 #. * (e.g. "folder", "plain text") to file type for symbolic link
@@ -2369,7 +2650,7 @@ msgstr "Аԥшьы %s аҟны аартра"
 
 #: src/nautilus-files-view.c:8050
 msgid "Run"
-msgstr ""
+msgstr "Аус арура "
 
 #: src/nautilus-files-view.c:8055
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:41
@@ -2977,7 +3258,7 @@ msgstr "Зегьы"
 #: src/nautilus-mime-actions.c:118
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:51
 msgid "Folders"
-msgstr ""
+msgstr "Аҭаӡқәа "
 
 #: src/nautilus-mime-actions.c:122
 msgid "Documents"
@@ -3329,7 +3610,7 @@ msgstr "_Аркра"
 #: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:398
 #: src/nautilus-properties-window.c:3127 src/nautilus-properties-window.c:3157
 msgid "None"
-msgstr ""
+msgstr "Мап"
 
 #: src/nautilus-preferences-window.c:334
 msgid "Single click"
@@ -3351,7 +3632,7 @@ msgstr ""
 #: src/nautilus-preferences-window.c:336 src/nautilus-preferences-window.c:338
 #: src/nautilus-preferences-window.c:340
 msgid "Never"
-msgstr ""
+msgstr "Ахаан"
 
 #: src/nautilus-preferences-window.c:338
 msgid "All files"
@@ -3392,7 +3673,7 @@ msgstr ""
 
 #: src/nautilus-progress-info.c:306
 msgid "Canceled"
-msgstr ""
+msgstr "Иаҧыхуп"
 
 #: src/nautilus-progress-info.c:353 src/nautilus-progress-info.c:374
 msgid "Preparing"
@@ -3405,7 +3686,7 @@ msgstr ""
 
 #: src/nautilus-progress-persistence-handler.c:108
 msgid "Show Details"
-msgstr ""
+msgstr "Аԥкаарақәа рырбара"
 
 #: src/nautilus-progress-persistence-handler.c:111
 #, c-format
@@ -3432,7 +3713,7 @@ msgstr ""
 
 #: src/nautilus-properties-window.c:364 src/nautilus-properties-window.c:3164
 msgid "Read-only"
-msgstr ""
+msgstr "Аԥхьара заҵәык азы"
 
 #: src/nautilus-properties-window.c:368 src/nautilus-properties-window.c:3140
 msgid "Access files"
@@ -3554,7 +3835,7 @@ msgstr ""
 
 #: src/nautilus-query-editor.c:635
 msgid "Clear entry"
-msgstr ""
+msgstr "Анҵамҭа арыцқьара"
 
 #: src/nautilus-rename-file-popover-controller.c:370
 msgid "Rename Folder"
@@ -3724,7 +4005,7 @@ msgstr ""
 
 #: src/nautilus-window.c:161 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
-msgstr ""
+msgstr "Шьҭахьҟа"
 
 #: src/nautilus-window.c:162 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
@@ -4565,7 +4846,7 @@ msgstr "Зегьы ирзаку"
 
 #: src/resources/ui/nautilus-preferences-window.ui:19
 msgid "Sort _Folders Before Files"
-msgstr ""
+msgstr "Афаилқәа раԥхьа аҭаӡқәа_ реилыԥшаара"
 
 #: src/resources/ui/nautilus-preferences-window.ui:34
 msgid "_Expandable Folders in List View"
@@ -4810,7 +5091,7 @@ msgstr ""
 
 #: src/resources/ui/nautilus-toolbar.ui:12
 msgid "New Tab"
-msgstr ""
+msgstr "Агәылаҵа ҿыц"
 
 #: src/resources/ui/nautilus-toolbar.ui:18
 msgid "Icon Size"
@@ -4842,15 +5123,15 @@ msgstr ""
 
 #: src/resources/ui/nautilus-toolbar.ui:191
 msgid "Main Menu"
-msgstr ""
+msgstr "Ихадоу амнниу"
 
 #: src/resources/ui/nautilus-toolbar.ui:202
 msgid "Zoom out"
-msgstr ""
+msgstr "Архәҷра"
 
 #: src/resources/ui/nautilus-toolbar.ui:212
 msgid "Zoom in"
-msgstr ""
+msgstr "Ардура"
 
 #. This is used to sort by name in the toolbar view menu
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:8
@@ -4997,7 +5278,7 @@ msgstr[1] ""
 #: src/gtk/nautilusgtkplacesviewrow.c:490
 #: src/gtk/nautilusgtkplacessidebar.c:417
 msgid "Disconnect"
-msgstr ""
+msgstr "Аҿыхра"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:490
 #: src/gtk/nautilusgtkplacesviewrow.ui:53
@@ -5069,7 +5350,7 @@ msgstr ""
 
 #: src/gtk/nautilusgtkplacessidebar.c:996
 msgid "Starred files"
-msgstr ""
+msgstr "Иалкаау афаилқаә"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1007
 msgid "Open your personal folder"
@@ -5191,818 +5472,3 @@ msgstr "Аваратәи апанель"
 #: src/gtk/nautilusgtkplacessidebar.c:3991
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr ""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#, fuzzy
