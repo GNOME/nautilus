@@ -123,7 +123,7 @@ set_captions_from_preferences (NautilusGridView *self)
                                  NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS);
 
     /* Set a celling on the number of captions depending on the zoom level. */
-    n_captions_for_zoom_level = MIN (self->zoom_level,
+    n_captions_for_zoom_level = MIN (1 + self->zoom_level,
                                      G_N_ELEMENTS (self->caption_attributes));
 
     /* Reset array to zeros beforehand, as we may not refill all elements. */
