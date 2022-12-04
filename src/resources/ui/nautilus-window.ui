@@ -43,6 +43,7 @@
             </child>
             <child>
               <object class="AdwFlap" id="content_flap">
+                <property name="swipe-to-close" bind-source="content_flap" bind-property="folded" bind-flags="sync-create"/>
                 <child type="flap">
                   <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
                     <property name="vexpand">True</property>
