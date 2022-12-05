@@ -68,30 +68,45 @@ nautilus_clipboard_to_string (NautilusClipboard *clip)
 }
 
 static NautilusClipboard *
-nautilus_clipboard_from_string (char *string)
+nautilus_clipboard_from_string (char    *string,
+                                GError **error)
 {
     NautilusClipboard *clip;
     g_auto (GStrv) lines = NULL;
+    g_autolist (NautilusFile) files = NULL;
+
+    if (string == NULL)
+    {
+        *error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA, "Clipboard string cannot be NULL.");
+        return NULL;
+    }
+
+    lines = g_strsplit (string, "\n", 0);
+
+    if (g_strcmp0 (lines[0], "cut") != 0 && g_strcmp0 (lines[0], "copy") != 0)
+    {
+        *error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA, "Nautilus Clipboard must begin with 'cut' or 'copy'.");
+        return NULL;
+    }
+
+    /* Line 0 is "cut" or "copy", so uris start at line 1. */
+    for (int i = 1; lines[i] != NULL; i++)
+    {
+        if (g_strcmp0 (lines[i], "") == 0)
+        {
+            continue;
+        }
+        else if (!g_uri_is_valid (lines[i], G_URI_FLAGS_NONE, error))
+        {
+            return NULL;
+        }
+        files = g_list_prepend (files, nautilus_file_get_by_uri (lines[i]));
+    }
 
     clip = g_new0 (NautilusClipboard, 1);
-
-    if (string != NULL)
-    {
-        lines = g_strsplit (string, "\n", 0);
-
-        if (lines[0] == NULL)
-        {
-            return clip;
-        }
-
-        /* Line 0 is "cut" or "copy", so uris start at line 1. */
-        clip->cut = g_str_equal (lines[0], "cut");
-        for (int i = 1; lines[i] != NULL; i++)
-        {
-            clip->files = g_list_prepend (clip->files, nautilus_file_get_by_uri (lines[i]));
-        }
-        clip->files = g_list_reverse (clip->files);
-    }
+    files = g_list_reverse (files);
+    clip->files = g_steal_pointer (&files);
+    clip->cut = g_str_equal (lines[0], "cut");
 
     return clip;
 }
@@ -205,7 +220,13 @@ nautilus_clipboard_deserialize_finish (GObject      *source,
 
     string = g_memory_output_stream_steal_data (G_MEMORY_OUTPUT_STREAM (output));
 
-    clip = nautilus_clipboard_from_string (string);
+    clip = nautilus_clipboard_from_string (string, &error);
+
+    if (clip == NULL)
+    {
+        gdk_content_deserializer_return_error (deserializer, error);
+        return;
+    }
 
     g_value_set_boxed (gdk_content_deserializer_get_value (deserializer), clip);
     gdk_content_deserializer_return_success (deserializer);
