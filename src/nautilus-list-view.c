@@ -1044,6 +1044,53 @@ setup_selection_click_workaround (NautilusViewCell *cell)
     g_signal_connect (controller, "released", G_CALLBACK (on_item_click_released_workaround), cell);
 }
 
+static gboolean
+tree_expander_shortcut_cb (GtkWidget *widget,
+                           GVariant  *args,
+                           gpointer   user_data)
+{
+    GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (widget));
+    GtkTreeListRow *row = gtk_tree_expander_get_list_row (expander);
+    GtkTextDirection direction = gtk_widget_get_direction (widget);
+    char *action;
+    guint keyval = GPOINTER_TO_INT (user_data);
+
+    if ((keyval == GDK_KEY_Right && direction == GTK_TEXT_DIR_LTR) ||
+        (keyval == GDK_KEY_Left && direction == GTK_TEXT_DIR_RTL))
+    {
+        action = "listitem.expand";
+    }
+    else
+    {
+        action = "listitem.collapse";
+    }
+
+    if (!gtk_tree_list_row_get_expanded (row) &&
+        g_strcmp0 (action, "listitem.collapse") == 0)
+    {
+        g_autoptr (GtkTreeListRow) parent = gtk_tree_list_row_get_parent (row);
+
+        if (parent != NULL)
+        {
+            g_autoptr (NautilusViewItem) item = NULL;
+            GtkWidget *cell;
+
+            item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (parent));
+            cell = nautilus_view_item_get_item_ui (item);
+
+            gtk_widget_activate_action (cell, "list.unselect-all", NULL);
+            gtk_widget_activate_action (cell, "listitem.select", "(bb)", FALSE, FALSE);
+            gtk_widget_grab_focus (gtk_widget_get_parent (cell));
+        }
+    }
+    else
+    {
+        gtk_widget_activate_action (GTK_WIDGET (expander), action, NULL);
+    }
+
+    return TRUE;
+}
+
 static void
 setup_name_cell (GtkSignalListItemFactory *factory,
                  GtkListItem              *listitem,
@@ -1068,7 +1115,23 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     if (self->expand_as_a_tree)
     {
         GtkTreeExpander *expander;
+        GtkEventController *controller = gtk_shortcut_controller_new ();
+        GtkShortcut *shortcut;
 
+        /* TODO: This shortcut doesn't work because the name cell doesn't have
+         * the focus, the row GtkListItemWidget above the cells, has the focus.
+         * We either need to figure out an appropriate way to get the focus to the
+         * name cell or put the controller somewhere else.  The problem with putting
+         * the controller on the view, is that the selection won't necessarily
+         * match the focus. */
+        shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Left, 0),
+                                     gtk_callback_action_new (tree_expander_shortcut_cb, GINT_TO_POINTER (GDK_KEY_Left), NULL));
+        gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
+        shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Right, 0),
+                                     gtk_callback_action_new (tree_expander_shortcut_cb, GINT_TO_POINTER (GDK_KEY_Right), NULL));
+        gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
+
+        gtk_widget_add_controller (GTK_WIDGET (cell), controller);
         expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
         gtk_tree_expander_set_indent_for_icon (expander, TRUE);
         g_object_bind_property (listitem, "item",
