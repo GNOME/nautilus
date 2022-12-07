@@ -77,7 +77,7 @@ nautilus_clipboard_from_string (char    *string,
 
     if (string == NULL)
     {
-        *error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA, "Clipboard string cannot be NULL.");
+        *error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Clipboard string cannot be NULL."));
         return NULL;
     }
 
@@ -85,7 +85,8 @@ nautilus_clipboard_from_string (char    *string,
 
     if (g_strcmp0 (lines[0], "cut") != 0 && g_strcmp0 (lines[0], "copy") != 0)
     {
-        *error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA, "Nautilus Clipboard must begin with 'cut' or 'copy'.");
+        /* Translators: Do not translate 'cut' and 'copy'. These are literal keywords. */
+        *error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Nautilus Clipboard must begin with “cut” or “copy”."));
         return NULL;
     }
 
