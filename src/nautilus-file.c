@@ -2914,6 +2914,11 @@ update_info_internal (NautilusFile *file,
         file->details->trash_orig_path = g_strdup (trash_orig_path);
     }
 
+    if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_PREVIEW_ICON))
+    {
+        file->details->has_preview_icon = TRUE;
+    }
+
     changed |=
         nautilus_file_update_metadata_from_info (file, info);
 
@@ -4834,6 +4839,15 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
         nautilus_file_get_size (file) > cached_thumbnail_limit)
     {
         return FALSE;
+    }
+
+    if (show_file_thumbs != NAUTILUS_SPEED_TRADEOFF_NEVER &&
+        file->details->has_preview_icon)
+    {
+        /* The thumbnail should be generated if the preview icon is available
+         * regardless of the filesystem type (i.e. for MTP/GPhoto2 backends).
+         */
+        return TRUE;
     }
 
     return get_speed_tradeoff_preference_for_file (file, show_file_thumbs);

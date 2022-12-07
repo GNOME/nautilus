@@ -27,7 +27,7 @@
 #include "nautilus-file-undo-operations.h"
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*,preview::icon"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -185,6 +185,7 @@ struct NautilusFileDetails
 	guint start_stop_type               : 3; /* GDriveStartStopType */
 	guint can_poll_for_media            : 1;
 	guint is_media_check_automatic      : 1;
+	guint has_preview_icon              : 1;
 
 	guint filesystem_readonly           : 1;
 	guint filesystem_use_preview        : 2; /* GFilesystemPreviewType */
