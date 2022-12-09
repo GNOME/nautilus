@@ -44,10 +44,6 @@ struct _NautilusListView
     GtkColumnViewColumn *star_column;
     GtkWidget *column_editor;
     GHashTable *factory_to_column_map;
-
-    /* Column sort hack state */
-    gboolean column_header_was_clicked;
-    GQuark clicked_column_attribute_q;
 };
 
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
@@ -250,33 +246,14 @@ real_scroll_to_item (NautilusListBase *list_base_view,
     }
 }
 
-typedef struct
-{
-    GQuark attribute;
-    NautilusListView *view;
-} SortData;
-
 static gint
 nautilus_list_view_sort (gconstpointer a,
                          gconstpointer b,
                          gpointer      user_data)
 {
-    SortData *data = user_data;
-    NautilusListView *self = data->view;
-    GQuark attribute_q = data->attribute;
+    GQuark attribute_q = GPOINTER_TO_UINT (user_data);
     NautilusFile *file_a = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) a));
     NautilusFile *file_b = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) b));
-
-    /* Hack: We don't know what column is being sorted on when the column
-     * headers are clicked. So let's just look at what attribute was most
-     * recently used for sorting.
-     * https://gitlab.gnome.org/GNOME/gtk/-/issues/4833 */
-    if (self->clicked_column_attribute_q == 0 && self->column_header_was_clicked)
-    {
-        self->clicked_column_attribute_q = attribute_q;
-    }
-
-    g_return_val_if_fail (file_a != NULL && file_b != NULL, GTK_ORDERING_EQUAL);
 
     /* The reversed argument is FALSE because the columnview sorter handles that
      * itself and if we don't want to reverse the reverse. The directories_first
@@ -691,18 +668,12 @@ action_sort_order_changed (GSimpleAction *action,
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     sorter = nautilus_view_model_get_sorter (model);
 
-    /* Ask the column view to sort by column if it hasn't just done so already. */
-    if (!self->column_header_was_clicked)
-    {
-        g_signal_handlers_block_by_func (sorter, on_sorter_changed, self);
-        /* FIXME: Set NULL to stop drawing the arrow on previous sort column
-         * to workaround https://gitlab.gnome.org/GNOME/gtk/-/issues/4696 */
-        gtk_column_view_sort_by_column (self->view_ui, NULL, FALSE);
-        gtk_column_view_sort_by_column (self->view_ui, sort_column, reversed);
-        g_signal_handlers_unblock_by_func (sorter, on_sorter_changed, self);
-    }
-
-    self->column_header_was_clicked = FALSE;
+    g_signal_handlers_block_by_func (sorter, on_sorter_changed, self);
+    /* FIXME: Set NULL to stop drawing the arrow on previous sort column
+     * to workaround https://gitlab.gnome.org/GNOME/gtk/-/issues/4696 */
+    gtk_column_view_sort_by_column (self->view_ui, NULL, FALSE);
+    gtk_column_view_sort_by_column (self->view_ui, sort_column, reversed);
+    g_signal_handlers_unblock_by_func (sorter, on_sorter_changed, self);
 
     set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
                                  target_name,
@@ -769,7 +740,6 @@ real_begin_loading (NautilusFilesView *files_view)
     NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->begin_loading (files_view);
 
     update_columns_settings_from_metadata_and_preferences (self);
-    self->clicked_column_attribute_q = 0;
 
     self->path_attribute_q = 0;
     g_clear_object (&self->file_path_base_location);
@@ -878,60 +848,12 @@ on_sorter_changed (GtkSorter       *sorter,
                    gpointer         user_data)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
-    /* Set the conditions to capture the sort attribute the first time that
-     * nautilus_list_view_sort() is called. */
-    self->column_header_was_clicked = TRUE;
-    self->clicked_column_attribute_q = 0;
-
-    /* If there is only one file, enforce a comparison against a dummy item, to
-     * ensure nautilus_list_view_sort() gets called at least once. */
-    if (g_list_model_get_n_items (G_LIST_MODEL (model)) == 1)
-    {
-        NautilusViewItem *item = g_list_model_get_item (G_LIST_MODEL (model), 0);
-        g_autoptr (NautilusViewItem) dummy_item = NULL;
-
-        dummy_item = nautilus_view_item_new (nautilus_view_item_get_file (item),
-                                             NAUTILUS_LIST_ICON_SIZE_SMALL);
-
-        gtk_sorter_compare (sorter, item, dummy_item);
-    }
-}
-
-static void
-on_after_sorter_changed (GtkSorter       *sorter,
-                         GtkSorterChange  change,
-                         gpointer         user_data)
-{
-    NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    GActionGroup *action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
-    g_autoptr (GVariant) state = NULL;
-    const gchar *new_sort_text;
-    gboolean reversed;
-    const gchar *current_sort_text;
-
-    if (!self->column_header_was_clicked || self->clicked_column_attribute_q == 0)
-    {
-        return;
-    }
-
-    state = g_action_group_get_action_state (action_group, "sort");
-    g_variant_get (state, "(&sb)", &current_sort_text, &reversed);
-
-    new_sort_text = g_quark_to_string (self->clicked_column_attribute_q);
-
-    if (g_strcmp0 (new_sort_text, current_sort_text) == 0)
-    {
-        reversed = !reversed;
-    }
-    else
-    {
-        reversed = FALSE;
-    }
-
-    g_action_group_change_action_state (action_group, "sort",
-                                        g_variant_new ("(sb)", new_sort_text, reversed));
+    /* When user clicks a header to change sort order, we don't know what the
+     * new sort order is. Make sure the sort menu doesn't indicate a outdated
+     * action state. */
+    g_action_group_change_action_state (nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self)),
+                                        "sort", g_variant_new ("(sb)", "unknown", FALSE));
 }
 
 static guint
@@ -1099,7 +1021,6 @@ setup_view_columns (NautilusListView *self)
     for (GList *l = nautilus_columns; l != NULL; l = l->next)
     {
         NautilusColumn *nautilus_column = NAUTILUS_COLUMN (l->data);
-        SortData *data;
         g_autofree gchar *name = NULL;
         g_autofree gchar *label = NULL;
         GQuark attribute_q = 0;
@@ -1114,13 +1035,9 @@ setup_view_columns (NautilusListView *self)
                       "default-sort-order", &sort_order,
                       NULL);
 
-        data = g_new0 (SortData, 1);
-        data->attribute = attribute_q;
-        data->view = self;
-
         sorter = gtk_custom_sorter_new (nautilus_list_view_sort,
-                                        data,
-                                        g_free);
+                                        GUINT_TO_POINTER (attribute_q),
+                                        NULL);
 
         factory = gtk_signal_list_item_factory_new ();
         view_column = gtk_column_view_column_new (NULL, factory);
@@ -1194,7 +1111,6 @@ nautilus_list_view_init (NautilusListView *self)
     gtk_multi_sorter_append (sorter, g_object_ref (GTK_SORTER (directories_sorter)));
     gtk_multi_sorter_append (sorter, g_object_ref (gtk_column_view_get_sorter (self->view_ui)));
     g_signal_connect_object (sorter, "changed", G_CALLBACK (on_sorter_changed), self, 0);
-    g_signal_connect_object (sorter, "changed", G_CALLBACK (on_after_sorter_changed), self, G_CONNECT_AFTER);
 
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
