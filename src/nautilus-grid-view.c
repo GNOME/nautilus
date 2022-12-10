@@ -23,7 +23,7 @@ struct _NautilusGridView
 
     GQuark caption_attributes[NAUTILUS_GRID_CELL_N_CAPTIONS];
 
-    NautilusFileSortType sort_type;
+    GQuark sort_attribute;
     gboolean reversed;
 };
 
@@ -43,10 +43,10 @@ nautilus_grid_view_sort (gconstpointer a,
     file_a = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) a));
     file_b = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) b));
 
-    return nautilus_file_compare_for_sort (file_a, file_b,
-                                           self->sort_type,
-                                           self->directories_first,
-                                           self->reversed);
+    return nautilus_file_compare_for_sort_by_attribute_q (file_a, file_b,
+                                                          self->sort_attribute,
+                                                          self->directories_first,
+                                                          self->reversed);
 }
 
 static void
@@ -373,7 +373,7 @@ action_sort_order_changed (GSimpleAction *action,
     }
 
     g_variant_get (value, "(&sb)", &target_name, &self->reversed);
-    self->sort_type = get_sorts_type_from_metadata_text (target_name);
+    self->sort_attribute = g_quark_from_string (target_name);
 
     sorter = gtk_custom_sorter_new (nautilus_grid_view_sort, self, NULL);
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));

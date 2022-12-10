@@ -62,52 +62,6 @@ struct _NautilusListBasePrivate
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
 
-typedef struct
-{
-    const NautilusFileSortType sort_type;
-    const gchar *metadata_name;
-} SortConstants;
-
-static const SortConstants sorts_constants[] =
-{
-    {
-        NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-        "name",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_SIZE,
-        "size",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_TYPE,
-        "type",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_MTIME,
-        "date_modified",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_ATIME,
-        "date_accessed",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_BTIME,
-        "date_created",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
-        "trashed_on",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
-        "search_relevance",
-    },
-    {
-        NAUTILUS_FILE_SORT_BY_RECENCY,
-        "recency",
-    },
-};
-
 static const char *
 get_metadata_name_from_sort_type (NautilusFileSortType sort_type)
 {
@@ -174,76 +128,26 @@ get_view_item (GListModel *model,
     return NAUTILUS_VIEW_ITEM (g_list_model_get_item (model, position));
 }
 
-static const SortConstants *
-get_sorts_constants_from_sort_type (NautilusFileSortType sort_type)
-{
-    guint i;
-
-    for (i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
-    {
-        if (sort_type == sorts_constants[i].sort_type)
-        {
-            return &sorts_constants[i];
-        }
-    }
-
-    return &sorts_constants[0];
-}
-
-static const SortConstants *
-get_sorts_constants_from_metadata_text (const char *metadata_name)
-{
-    guint i;
-
-    for (i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
-    {
-        if (g_strcmp0 (sorts_constants[i].metadata_name, metadata_name) == 0)
-        {
-            return &sorts_constants[i];
-        }
-    }
-
-    return &sorts_constants[0];
-}
-
-const NautilusFileSortType
-get_sorts_type_from_metadata_text (const char *metadata_name)
-{
-    return get_sorts_constants_from_metadata_text (metadata_name)->sort_type;
-}
-
-static const SortConstants *
-get_default_sort_order (NautilusFile *file,
-                        gboolean     *reversed)
-{
-    NautilusFileSortType sort_type;
-
-    sort_type = nautilus_file_get_default_sort_type (file, reversed);
-
-    return get_sorts_constants_from_sort_type (sort_type);
-}
-
 static char *
 get_directory_sort_by (NautilusFile *file,
                        gboolean     *reversed)
 {
-    const SortConstants *default_sort;
+    NautilusFileSortType default_sort;
     char *sort_by = NULL;
 
-    default_sort = get_default_sort_order (file, reversed);
-    g_return_val_if_fail (default_sort != NULL, NULL);
+    default_sort = nautilus_file_get_default_sort_type (file, reversed);
 
-    if (default_sort->sort_type == NAUTILUS_FILE_SORT_BY_RECENCY ||
-        default_sort->sort_type == NAUTILUS_FILE_SORT_BY_TRASHED_TIME ||
-        default_sort->sort_type == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
+    if (default_sort == NAUTILUS_FILE_SORT_BY_RECENCY ||
+        default_sort == NAUTILUS_FILE_SORT_BY_TRASHED_TIME ||
+        default_sort == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
     {
         /* These defaults are important. Ignore metadata. */
-        return g_strdup (default_sort->metadata_name);
+        return g_strdup (get_metadata_name_from_sort_type (default_sort));
     }
 
     sort_by = nautilus_file_get_metadata (file,
                                           NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                          default_sort->metadata_name);
+                                          get_metadata_name_from_sort_type (default_sort));
 
     *reversed = nautilus_file_get_boolean_metadata (file,
                                                     NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
@@ -257,14 +161,14 @@ set_directory_sort_metadata (NautilusFile *file,
                              const gchar  *metadata_name,
                              gboolean      reversed)
 {
-    const SortConstants *default_sort;
+    NautilusFileSortType default_sort;
     gboolean default_reversed;
 
-    default_sort = get_default_sort_order (file, &default_reversed);
+    default_sort = nautilus_file_get_default_sort_type (file, &default_reversed);
 
     nautilus_file_set_metadata (file,
                                 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                default_sort->metadata_name,
+                                get_metadata_name_from_sort_type (default_sort),
                                 metadata_name);
     nautilus_file_set_boolean_metadata (file,
                                         NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,

@@ -26,7 +26,6 @@ void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 void                          set_directory_sort_metadata       (NautilusFile *file,
                                                                  const gchar  *metadata_name,
                                                                  gboolean      reversed);
-const NautilusFileSortType    get_sorts_type_from_metadata_text (const char   *metadata_name);
 void                          setup_cell_common                 (GtkListItem      *listitem,
                                                                  NautilusViewCell *cell);
 
