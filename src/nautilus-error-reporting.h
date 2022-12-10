@@ -28,6 +28,7 @@
 
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH      50
 #define MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH  350
+#define FAT_FORBIDDEN_CHARACTERS                ":|<>*?\\\"/"
 
 void nautilus_report_error_loading_directory	 (NautilusFile   *file,
 						  GError         *error,
