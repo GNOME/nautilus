@@ -125,7 +125,9 @@
       "builddir": true,
       "config-opts": [
         "-Ddocs=false",
-        "-Dbackends=gtk4",
+        "-Dbackend-gtk4=enabled",
+        "-Dbackend-gtk3=disabled",
+        "-Dbackend-qt5=disabled",
         "--libdir=/app/lib",
         "--buildtype=debugoptimized"
       ],
