@@ -164,12 +164,12 @@ get_default_sort_order (NautilusFile *file,
     return get_sorts_constants_from_sort_type (sort_type);
 }
 
-static const SortConstants *
+static char *
 get_directory_sort_by (NautilusFile *file,
                        gboolean     *reversed)
 {
     const SortConstants *default_sort;
-    g_autofree char *sort_by = NULL;
+    char *sort_by = NULL;
 
     default_sort = get_default_sort_order (file, reversed);
     g_return_val_if_fail (default_sort != NULL, NULL);
@@ -179,7 +179,7 @@ get_directory_sort_by (NautilusFile *file,
         default_sort->sort_type == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
     {
         /* These defaults are important. Ignore metadata. */
-        return default_sort;
+        return g_strdup (default_sort->metadata_name);
     }
 
     sort_by = nautilus_file_get_metadata (file,
@@ -190,7 +190,7 @@ get_directory_sort_by (NautilusFile *file,
                                                     NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
                                                     *reversed);
 
-    return get_sorts_constants_from_metadata_text (sort_by);
+    return sort_by;
 }
 
 void
@@ -216,17 +216,17 @@ set_directory_sort_metadata (NautilusFile *file,
 static void
 update_sort_order_from_metadata_and_preferences (NautilusListBase *self)
 {
-    const SortConstants *default_directory_sort;
+    g_autofree char *metadata_name = NULL;
     GActionGroup *view_action_group;
     gboolean reversed;
 
-    default_directory_sort = get_directory_sort_by (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                                    &reversed);
+    metadata_name = get_directory_sort_by (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
+                                           &reversed);
     view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_group_change_action_state (view_action_group,
                                         "sort",
                                         g_variant_new ("(sb)",
-                                                       default_directory_sort->metadata_name,
+                                                       metadata_name,
                                                        reversed));
 }
 
