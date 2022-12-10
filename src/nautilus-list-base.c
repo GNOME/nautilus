@@ -108,6 +108,65 @@ static const SortConstants sorts_constants[] =
     },
 };
 
+static const char *
+get_metadata_name_from_sort_type (NautilusFileSortType sort_type)
+{
+    switch (sort_type)
+    {
+        case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+        {
+            return "name";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_SIZE:
+        {
+            return "size";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_TYPE:
+        {
+            return "type";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_MTIME:
+        {
+            return "date_modified";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_ATIME:
+        {
+            return "date_accessed";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_BTIME:
+        {
+            return "date_created";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+        {
+            return "trashed_on";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE:
+        {
+            return "search_relevance";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_RECENCY:
+        {
+            return "recency";
+        }
+
+        case NAUTILUS_FILE_SORT_BY_STARRED:
+        {
+            return "starred";
+        }
+    }
+
+    return NULL;
+}
+
 static inline NautilusViewItem *
 get_view_item (GListModel *model,
                guint       position)
