@@ -303,6 +303,15 @@ nautilus_report_error_renaming_file (NautilusFile *file,
             }
             break;
 
+            case G_IO_ERROR_BUSY:
+            {
+                message = g_strdup_printf (_("Could not rename “%s” because a process is using it."
+                                             " If it's open in another application, close it before"
+                                             " renaming it."),
+                                           truncated_old_name);
+            }
+            break;
+
             default:
             {
             }
