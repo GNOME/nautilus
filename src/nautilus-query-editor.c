@@ -626,6 +626,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     gtk_widget_set_parent (editor->tags_box, GTK_WIDGET (editor));
 
     editor->text = gtk_text_new ();
+    gtk_text_set_placeholder_text (GTK_TEXT (editor->text), _("Search files and folders"));
     gtk_widget_set_hexpand (editor->text, TRUE);
     gtk_widget_set_parent (editor->text, GTK_WIDGET (editor));
 
