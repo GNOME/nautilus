@@ -512,8 +512,7 @@ nautilus_file_clear_info (NautilusFile *file)
         nautilus_file_clear_display_name (file);
     }
 
-    if (!file->details->got_custom_activation_uri &&
-        file->details->activation_uri != NULL)
+    if (file->details->activation_uri != NULL)
     {
         g_free (file->details->activation_uri);
         file->details->activation_uri = NULL;
@@ -2518,10 +2517,9 @@ update_info_internal (NautilusFile *file,
     }
     file->details->type = file_type;
 
-    if (!file->details->got_custom_activation_uri &&
-        (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL) ||
-         file_type == G_FILE_TYPE_SHORTCUT ||
-         nautilus_file_is_in_recent (file)))
+    if (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL) ||
+        file_type == G_FILE_TYPE_SHORTCUT ||
+        nautilus_file_is_in_recent (file))
     {
         activation_uri = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
         if (activation_uri == NULL)
