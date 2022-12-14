@@ -582,7 +582,7 @@ on_item_drag_prepare (GtkDragSource *source,
     for (GList *l = selection; l != NULL; l = l->next)
     {
         /* Convert to GTK_TYPE_FILE_LIST, which is assumed to be a GSList<GFile>. */
-        file_list = g_slist_prepend (file_list, nautilus_file_get_location (l->data));
+        file_list = g_slist_prepend (file_list, nautilus_file_get_activation_location (l->data));
 
         if (!nautilus_file_can_delete (l->data))
         {
