@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2022-10-22 09:06+0000\n"
-"PO-Revision-Date: 2022-10-23 19:42+0300\n"
+"POT-Creation-Date: 2022-12-13 01:33+0000\n"
+"PO-Revision-Date: 2022-12-15 13:23+0200\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <>\n"
 "Language: he\n"
@@ -84,9 +84,9 @@ msgid "List View"
 msgstr "תצוגת רשימה"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:46 src/nautilus-query.c:540
-#: src/nautilus-search-directory-file.c:175
-#: src/nautilus-search-directory-file.c:232
-#: src/nautilus-search-directory-file.c:272
+#: src/nautilus-search-directory-file.c:178
+#: src/nautilus-search-directory-file.c:235
+#: src/nautilus-search-directory-file.c:275
 #: src/resources/ui/nautilus-search-popover.ui:272
 #: src/resources/ui/nautilus-toolbar.ui:111
 msgid "Search"
@@ -472,10 +472,10 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "לחיצה על ביטול תעצור את הפעולה הזאת."
 
 #: eel/eel-stock-dialogs.c:199 src/nautilus-autorun-software.c:219
-#: src/nautilus-file-operations.c:260 src/nautilus-files-view.c:5986
-#: src/nautilus-files-view.c:6422 src/nautilus-mime-actions.c:596
+#: src/nautilus-file-operations.c:260 src/nautilus-files-view.c:5987
+#: src/nautilus-files-view.c:6423 src/nautilus-mime-actions.c:596
 #: src/nautilus-mime-actions.c:1016 src/nautilus-mime-actions.c:1338
-#: src/nautilus-properties-window.c:4288 src/nautilus-search-popover.c:639
+#: src/nautilus-properties-window.c:4301 src/nautilus-search-popover.c:639
 #: src/resources/ui/nautilus-app-chooser.ui:103
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:101
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:114
@@ -532,7 +532,7 @@ msgid "0 seconds"
 msgstr "0 שניות"
 
 #: extensions/audio-video-properties/totem-properties-view.c:122
-#: extensions/image-properties/nautilus-image-properties-model.c:201
+#: extensions/image-properties/nautilus-image-properties-model.c:198
 #: src/nautilus-batch-rename-dialog.h:163
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:53
 msgid "Title"
@@ -625,7 +625,8 @@ msgstr "ערוצים"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:299
-#: src/nautilus-application.c:184 src/nautilus-window-slot.c:1603
+#: extensions/image-properties/nautilus-image-properties-model.c:240
+#: src/nautilus-application.c:184 src/nautilus-window-slot.c:1605
 msgid "Oops! Something went wrong."
 msgstr "אופס! משהו השתבש."
 
@@ -653,12 +654,12 @@ msgstr "מכיל"
 msgid "Audio/Video Properties"
 msgstr "מאפייני שמע/וידאו"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:95
+#: extensions/image-properties/nautilus-image-properties-model.c:92
 msgid "Image Type"
 msgstr "סוג התמונה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:114
-#: extensions/image-properties/nautilus-image-properties-model.c:122
+#: extensions/image-properties/nautilus-image-properties-model.c:111
+#: extensions/image-properties/nautilus-image-properties-model.c:119
 #, c-format
 msgid "%d pixel"
 msgid_plural "%d pixels"
@@ -667,108 +668,108 @@ msgstr[1] "שני פיקסלים"
 msgstr[2] "‫%d פיקסלים"
 msgstr[3] "‫%d פיקסלים"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:119
+#: extensions/image-properties/nautilus-image-properties-model.c:116
 msgid "Width"
 msgstr "רוחב"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:127
+#: extensions/image-properties/nautilus-image-properties-model.c:124
 msgid "Height"
 msgstr "גובה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:191
+#: extensions/image-properties/nautilus-image-properties-model.c:188
 msgid "Camera Brand"
 msgstr "סוג מצלמה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:192
+#: extensions/image-properties/nautilus-image-properties-model.c:189
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:28
 msgid "Camera Model"
 msgstr "דגם המצלמה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:193
+#: extensions/image-properties/nautilus-image-properties-model.c:190
 msgid "Exposure Time"
 msgstr "זמן חשיפה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:194
+#: extensions/image-properties/nautilus-image-properties-model.c:191
 msgid "Exposure Program"
 msgstr "תכנית חשיפה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:195
+#: extensions/image-properties/nautilus-image-properties-model.c:192
 msgid "Aperture Value"
 msgstr "ערך פתיחת הצמצם"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:196
+#: extensions/image-properties/nautilus-image-properties-model.c:193
 msgid "ISO Speed Rating"
 msgstr "דירוג מהירות ISO"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:197
+#: extensions/image-properties/nautilus-image-properties-model.c:194
 msgid "Flash Fired"
 msgstr "פלאש נורה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:198
+#: extensions/image-properties/nautilus-image-properties-model.c:195
 msgid "Metering Mode"
 msgstr "שיטה מטרית"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:199
+#: extensions/image-properties/nautilus-image-properties-model.c:196
 msgid "Focal Length"
 msgstr "אורך מוקד"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:200
+#: extensions/image-properties/nautilus-image-properties-model.c:197
 msgid "Software"
 msgstr "תכנה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:202
+#: extensions/image-properties/nautilus-image-properties-model.c:199
 msgid "Description"
 msgstr "תיאור"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:203
+#: extensions/image-properties/nautilus-image-properties-model.c:200
 msgid "Keywords"
 msgstr "מילות מפתח"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:204
+#: extensions/image-properties/nautilus-image-properties-model.c:201
 msgid "Creator"
 msgstr "יוצר"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:205
+#: extensions/image-properties/nautilus-image-properties-model.c:202
 msgid "Created On"
 msgstr "נוצר בתאריך"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:206
+#: extensions/image-properties/nautilus-image-properties-model.c:203
 msgid "Copyright"
 msgstr "זכויות יוצרים"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:207
+#: extensions/image-properties/nautilus-image-properties-model.c:204
 msgid "Rating"
 msgstr "דירוג"
 
 #. Translators: "N" and "S" stand for
 #. * north and south in GPS coordinates.
-#: extensions/image-properties/nautilus-image-properties-model.c:217
+#: extensions/image-properties/nautilus-image-properties-model.c:214
 msgid "N"
 msgstr "צ"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:217
+#: extensions/image-properties/nautilus-image-properties-model.c:214
 msgid "S"
 msgstr "ד"
 
 #. Translators: "E" and "W" stand for
 #. * east and west in GPS coordinates.
-#: extensions/image-properties/nautilus-image-properties-model.c:221
+#: extensions/image-properties/nautilus-image-properties-model.c:218
 msgid "E"
 msgstr "מז"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:221
+#: extensions/image-properties/nautilus-image-properties-model.c:218
 msgid "W"
 msgstr "מע"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:224
+#: extensions/image-properties/nautilus-image-properties-model.c:221
 msgid "Coordinates"
 msgstr "נקודות ציון"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:243
+#: extensions/image-properties/nautilus-image-properties-model.c:240
 msgid "Failed to load image information"
 msgstr "טעינת פרטי התמונה נכשלה"
 
-#: extensions/image-properties/nautilus-image-properties-model.c:482
+#: extensions/image-properties/nautilus-image-properties-model.c:479
 msgid "Image Properties"
 msgstr "מאפייני תמונה"
 
@@ -820,7 +821,7 @@ msgstr ""
 msgid "_OK"
 msgstr "_אישור"
 
-#: src/nautilus-application.c:911
+#: src/nautilus-application.c:899
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -828,27 +829,27 @@ msgid ""
 msgstr "‏„%s” הוא פרוטוקול פנימי. פתיחת המיקום ישירות אינה נתמכת."
 
 # console messages
-#: src/nautilus-application.c:1011
+#: src/nautilus-application.c:999
 msgid "Perform a quick set of self-check tests."
 msgstr "Perform a quick set of self-check tests."
 
-#: src/nautilus-application.c:1014
+#: src/nautilus-application.c:1002
 msgid "Show the version of the program."
 msgstr "Show the version of the progam."
 
-#: src/nautilus-application.c:1016
+#: src/nautilus-application.c:1004
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Always open a new window for browsing specified URIs"
 
-#: src/nautilus-application.c:1018
+#: src/nautilus-application.c:1006
 msgid "Quit Nautilus."
 msgstr "Quit Nautilus."
 
-#: src/nautilus-application.c:1020
+#: src/nautilus-application.c:1008
 msgid "Select specified URI in parent folder."
 msgstr "Select specified URI in parent folder."
 
-#: src/nautilus-application.c:1021
+#: src/nautilus-application.c:1009
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -1074,7 +1075,7 @@ msgid "The type of the file."
 msgstr "סוג הקובץ."
 
 #: src/nautilus-column-utilities.c:80
-#: src/resources/ui/nautilus-properties-window.ui:554
+#: src/resources/ui/nautilus-properties-window.ui:544
 msgid "Modified"
 msgstr "מועד שינוי"
 
@@ -1091,7 +1092,7 @@ msgid "The detailed type of the file."
 msgstr "פרטים על סוג הקובץ."
 
 #: src/nautilus-column-utilities.c:96
-#: src/resources/ui/nautilus-properties-window.ui:516
+#: src/resources/ui/nautilus-properties-window.ui:506
 msgid "Accessed"
 msgstr "מועד גישה"
 
@@ -1100,7 +1101,7 @@ msgid "The date the file was accessed."
 msgstr "התאריך בו ניגשו לקובץ."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-properties-window.ui:592
+#: src/resources/ui/nautilus-properties-window.ui:582
 #: src/resources/ui/nautilus-search-popover.ui:176
 msgid "Created"
 msgstr "נוצר"
@@ -1156,7 +1157,7 @@ msgstr "לאחרונה"
 msgid "The date the file was accessed by the user."
 msgstr "התאריך בו המשתמש ניגש לקובץ."
 
-#: src/nautilus-column-utilities.c:166 src/nautilus-properties-window.c:767
+#: src/nautilus-column-utilities.c:166 src/nautilus-properties-window.c:766
 msgid "Star"
 msgstr "כוכב"
 
@@ -1246,19 +1247,19 @@ msgstr "פרטים: המתווך לא נוצר."
 msgid "%s (%s)"
 msgstr "‏%s ‏(%s)"
 
-#: src/nautilus-dnd.c:112
+#: src/nautilus-dnd.c:113
 msgid "_Move Here"
 msgstr "הע_ברה לכאן"
 
-#: src/nautilus-dnd.c:117
+#: src/nautilus-dnd.c:118
 msgid "_Copy Here"
 msgstr "ה_עתקה לכאן"
 
-#: src/nautilus-dnd.c:122
+#: src/nautilus-dnd.c:123
 msgid "_Link Here"
 msgstr "_קישור לכאן"
 
-#: src/nautilus-dnd.c:131 src/nautilus-file-operations.c:3027
+#: src/nautilus-dnd.c:132 src/nautilus-file-operations.c:3027
 #: src/nautilus-mime-actions.c:607
 #: src/resources/ui/nautilus-compress-dialog.ui:83
 #: src/resources/ui/nautilus-create-folder-dialog.ui:45
@@ -1361,7 +1362,7 @@ msgstr "לא ניתן לשנות את השם של „%s” ל־„%s”, עמך 
 msgid "The item could not be renamed."
 msgstr "לא ניתן לשנות את שם הפריט."
 
-#: src/nautilus-error-reporting.c:431
+#: src/nautilus-error-reporting.c:434
 #, c-format
 msgid "Renaming “%s” to “%s”."
 msgstr "‏„%s” משנה את שמו ל־„%s”."
@@ -1759,8 +1760,6 @@ msgid "Copy _Anyway"
 msgstr "להעתיק _בכל זאת"
 
 #: src/nautilus-file-operations.c:271 src/nautilus-file-operations.c:3028
-#: src/resources/ui/nautilus-files-view-context-menus.ui:45
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:60
 msgid "Empty _Trash"
 msgstr "פינוי ה_אשפה"
 
@@ -2129,7 +2128,7 @@ msgid "Do _not Empty Trash"
 msgstr "אין _לרוקן את האשפה"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3169 src/nautilus-files-view.c:6796
+#: src/nautilus-file-operations.c:3169 src/nautilus-files-view.c:6797
 #: src/gtk/nautilusgtkplacessidebar.c:2045
 #, c-format
 msgid "Unable to access “%s”"
@@ -2683,27 +2682,27 @@ msgstr[3] "‏%'d קבצים נדחסו אל „%s”"
 msgid "Compressing Files"
 msgstr "כיווץ קבצים"
 
-#: src/nautilus-files-view.c:442
+#: src/nautilus-files-view.c:439
 msgid "Searching…"
 msgstr "מתבצע חיפוש…"
 
-#: src/nautilus-files-view.c:442 src/nautilus-window-slot.c:939
+#: src/nautilus-files-view.c:439 src/nautilus-window-slot.c:940
 msgid "Loading…"
 msgstr "בטעינה…"
 
-#: src/nautilus-files-view.c:1798
+#: src/nautilus-files-view.c:1795
 msgid "Examples: "
 msgstr "דוגמאות: "
 
-#: src/nautilus-files-view.c:2821
+#: src/nautilus-files-view.c:2818
 msgid "Could not paste files"
 msgstr "לא ניתן להדביק קבצים"
 
-#: src/nautilus-files-view.c:2822
+#: src/nautilus-files-view.c:2819
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "ההרשאות לא מאפשרות להדביק קצבים לתיקייה זו"
 
-#: src/nautilus-files-view.c:2973
+#: src/nautilus-files-view.c:2970
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2711,12 +2710,12 @@ msgstr ""
 "ב־Nautilus 3.6 הופסק השימוש בתיקייה זו והתבצע ניסיון לייבא את התצורה אל ‎~/."
 "local/share/nautilus"
 
-#: src/nautilus-files-view.c:3521 src/nautilus-files-view.c:3568
+#: src/nautilus-files-view.c:3518 src/nautilus-files-view.c:3565
 #, c-format
 msgid "“%s” selected"
 msgstr "‏„‎%s“ נבחר"
 
-#: src/nautilus-files-view.c:3525
+#: src/nautilus-files-view.c:3522
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -2725,7 +2724,7 @@ msgstr[1] "שתי תיקיות נבחרו"
 msgstr[2] "‏%'d תיקיות נבחרו"
 msgstr[3] "‏%'d תיקיות נבחרו"
 
-#: src/nautilus-files-view.c:3539
+#: src/nautilus-files-view.c:3536
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2735,7 +2734,7 @@ msgstr[2] "(מכיל %'d פריטים)"
 msgstr[3] "(מכיל %'d פריטים)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3554
+#: src/nautilus-files-view.c:3551
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -2744,7 +2743,7 @@ msgstr[1] "(מכיל %'d פריטים סך־הכול)"
 msgstr[2] "(מכיל %'d פריטים סך־הכול)"
 msgstr[3] "(מכיל %'d פריטים סך־הכול)"
 
-#: src/nautilus-files-view.c:3573
+#: src/nautilus-files-view.c:3570
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2754,7 +2753,7 @@ msgstr[2] "‫%'d פריטים נבחרו"
 msgstr[3] "‫%'d פריטים נבחרו"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3582
+#: src/nautilus-files-view.c:3579
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2767,7 +2766,7 @@ msgstr[3] "‫%'d פריטים אחרים נבחרו"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3597
+#: src/nautilus-files-view.c:3594
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2779,80 +2778,80 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3647
+#: src/nautilus-files-view.c:3644
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3745 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3742 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "לא נמצאו תוצאות"
 
-#: src/nautilus-files-view.c:3746 src/gtk/nautilusgtkplacesview.ui:194
+#: src/nautilus-files-view.c:3743 src/gtk/nautilusgtkplacesview.ui:194
 msgid "Try a different search."
 msgstr "יש לנסות חיפוש שונה."
 
-#: src/nautilus-files-view.c:3751
+#: src/nautilus-files-view.c:3748
 msgid "Trash is Empty"
 msgstr "האשפה ריקה"
 
-#: src/nautilus-files-view.c:3757
+#: src/nautilus-files-view.c:3754
 msgid "No Starred Files"
 msgstr "אין קבצים מסומנים בכוכב"
 
-#: src/nautilus-files-view.c:3763
+#: src/nautilus-files-view.c:3760
 msgid "No Recent Files"
 msgstr "אין קבצים אחרונים"
 
-#: src/nautilus-files-view.c:3769
+#: src/nautilus-files-view.c:3766
 msgid "Folder is Empty"
 msgstr "תיקייה זו ריקה"
 
-#: src/nautilus-files-view.c:5974
+#: src/nautilus-files-view.c:5975
 msgid "Select Move Destination"
 msgstr "בחירת יעד להעברה"
 
-#: src/nautilus-files-view.c:5978
+#: src/nautilus-files-view.c:5979
 msgid "Select Copy Destination"
 msgstr "בחירת יעד להעתקה"
 
-#: src/nautilus-files-view.c:5987 src/nautilus-files-view.c:6423
+#: src/nautilus-files-view.c:5988 src/nautilus-files-view.c:6424
 #: src/resources/ui/nautilus-files-view-select-items.ui:16
 msgid "_Select"
 msgstr "_בחירה"
 
-#: src/nautilus-files-view.c:6419
+#: src/nautilus-files-view.c:6420
 msgid "Select Extract Destination"
 msgstr "בחירת יעד לחילוץ"
 
-#: src/nautilus-files-view.c:6521
+#: src/nautilus-files-view.c:6522
 msgid "Error sending email."
 msgstr "שגיאה בשליחת דוא״ל."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6826
+#: src/nautilus-files-view.c:6827
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "לא ניתן להסיר את „%s”"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6856 src/gtk/nautilusgtkplacessidebar.c:2766
+#: src/nautilus-files-view.c:6857 src/gtk/nautilusgtkplacessidebar.c:2766
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "לא ניתן לשלוף את „%s”"
 
-#: src/nautilus-files-view.c:6881
+#: src/nautilus-files-view.c:6882
 msgid "Unable to stop drive"
 msgstr "לא ניתן לעצור את הכונן"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6994 src/gtk/nautilusgtkplacessidebar.c:2007
+#: src/nautilus-files-view.c:6995 src/gtk/nautilusgtkplacessidebar.c:2007
 #: src/gtk/nautilusgtkplacessidebar.c:2995
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "לא ניתן להפעיל את „%s”"
 
-#: src/nautilus-files-view.c:7982
+#: src/nautilus-files-view.c:7980
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2861,64 +2860,64 @@ msgstr[1] "תיקייה חדשה עם הבחירה (שני פריטים)"
 msgstr[2] "תיקייה חדשה עם הבחירה (%'d פריטים)"
 msgstr[3] "תיקייה חדשה עם הבחירה (%'d פריטים)"
 
-#: src/nautilus-files-view.c:8040
+#: src/nautilus-files-view.c:8038
 #, c-format
 msgid "Open With %s"
 msgstr "פתיחה באמצעות %s"
 
-#: src/nautilus-files-view.c:8052
+#: src/nautilus-files-view.c:8050
 msgid "Run"
 msgstr "הפעלה"
 
-#: src/nautilus-files-view.c:8057
+#: src/nautilus-files-view.c:8055
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:41
 msgid "Extract"
 msgstr "חילוץ"
 
-#: src/nautilus-files-view.c:8058
+#: src/nautilus-files-view.c:8056
 msgid "Extract to…"
 msgstr "חילוץ אל…"
 
-#: src/nautilus-files-view.c:8062
+#: src/nautilus-files-view.c:8060
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "פתיחה"
 
-#: src/nautilus-files-view.c:8140
+#: src/nautilus-files-view.c:8138
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3414
 msgid "_Start"
 msgstr "ה_תחלה"
 
-#: src/nautilus-files-view.c:8146 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8144 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "ה_תחברות"
 
-#: src/nautilus-files-view.c:8152
+#: src/nautilus-files-view.c:8150
 msgid "_Start Multi-disk Drive"
 msgstr "ה_תחלת כונן מרובה דיסקים"
 
-#: src/nautilus-files-view.c:8158
+#: src/nautilus-files-view.c:8156
 msgid "U_nlock Drive"
 msgstr "ש_חרור כונן"
 
-#: src/nautilus-files-view.c:8176
+#: src/nautilus-files-view.c:8174
 msgid "Stop Drive"
 msgstr "ה_שהית כונן"
 
-#: src/nautilus-files-view.c:8182 src/gtk/nautilusgtkplacessidebar.c:3431
+#: src/nautilus-files-view.c:8180 src/gtk/nautilusgtkplacessidebar.c:3431
 msgid "_Safely Remove Drive"
 msgstr "הסרת הכונן _בבטחה"
 
-#: src/nautilus-files-view.c:8188 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8186 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "_ניתוק"
 
-#: src/nautilus-files-view.c:8194
+#: src/nautilus-files-view.c:8192
 msgid "_Stop Multi-disk Drive"
 msgstr "_עצירת כונן מרובה דיסקים"
 
-#: src/nautilus-files-view.c:8200
+#: src/nautilus-files-view.c:8198
 msgid "_Lock Drive"
 msgstr "_נעילת כונן"
 
@@ -3863,7 +3862,7 @@ msgstr "תפריט תיקייה נוכחית"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:356 src/nautilus-properties-window.c:861
+#: src/nautilus-pathbar.c:356 src/nautilus-properties-window.c:860
 #: src/gtk/nautilusgtkplacesview.c:1104
 msgid "Operating System"
 msgstr "מערכת הפעלה"
@@ -3883,8 +3882,8 @@ msgstr "_סגירה"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:398
-#: src/nautilus-properties-window.c:3127 src/nautilus-properties-window.c:3157
+#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:397
+#: src/nautilus-properties-window.c:3146 src/nautilus-properties-window.c:3176
 msgid "None"
 msgstr "ללא"
 
@@ -3979,94 +3978,94 @@ msgstr[3] "‫%'d פעולות קבצים פעילות"
 msgid "All file operations have been completed"
 msgstr "כל פעולות הקבצים הושלמו"
 
-#: src/nautilus-properties-window.c:349 src/nautilus-properties-window.c:3170
+#: src/nautilus-properties-window.c:348 src/nautilus-properties-window.c:3189
 msgid "Read and write"
 msgstr "קריאה וכתיבה"
 
-#: src/nautilus-properties-window.c:353 src/nautilus-properties-window.c:3146
+#: src/nautilus-properties-window.c:352 src/nautilus-properties-window.c:3165
 msgid "Create and delete files"
 msgstr "יצירת ומחיקת קבצים"
 
-#: src/nautilus-properties-window.c:357
+#: src/nautilus-properties-window.c:356
 msgid "Read/write, no access"
 msgstr "קריאה/כתיבה, ללא גישה"
 
-#: src/nautilus-properties-window.c:364 src/nautilus-properties-window.c:3164
+#: src/nautilus-properties-window.c:363 src/nautilus-properties-window.c:3183
 msgid "Read-only"
 msgstr "קריאה בלבד"
 
-#: src/nautilus-properties-window.c:368 src/nautilus-properties-window.c:3140
+#: src/nautilus-properties-window.c:367 src/nautilus-properties-window.c:3159
 msgid "Access files"
 msgstr "גישה לקבצים"
 
-#: src/nautilus-properties-window.c:372 src/nautilus-properties-window.c:3134
+#: src/nautilus-properties-window.c:371 src/nautilus-properties-window.c:3153
 msgid "List files only"
 msgstr "רשימת קבצים בלבד"
 
-#: src/nautilus-properties-window.c:382
+#: src/nautilus-properties-window.c:381
 msgid "Write-only"
 msgstr "כתיבה בלבד"
 
-#: src/nautilus-properties-window.c:386
+#: src/nautilus-properties-window.c:385
 msgid "Write-only, no access"
 msgstr "כתיבה בלבד, ללא גישה"
 
-#: src/nautilus-properties-window.c:393
+#: src/nautilus-properties-window.c:392
 msgid "Access-only"
 msgstr "גישה בלבד"
 
-#: src/nautilus-properties-window.c:702
+#: src/nautilus-properties-window.c:701
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "לא ניתן לשייך יותר מסמל מותאם אישית אחד בכל פעם!"
 
-#: src/nautilus-properties-window.c:703
+#: src/nautilus-properties-window.c:702
 msgid "Please drop just one image to set a custom icon."
 msgstr "נא לגרור רק תמונה אחת כדי להגדיר סמל מותאם."
 
-#: src/nautilus-properties-window.c:719
+#: src/nautilus-properties-window.c:718
 msgid "The file that you dropped is not local."
 msgstr "הקובץ שהושלך אינו מקומי."
 
-#: src/nautilus-properties-window.c:720 src/nautilus-properties-window.c:727
+#: src/nautilus-properties-window.c:719 src/nautilus-properties-window.c:726
 msgid "You can only use local images as custom icons."
 msgstr "ניתן להשתמש רק בתמונות מקומיות כסמלים מותאמים אישית."
 
-#: src/nautilus-properties-window.c:726
+#: src/nautilus-properties-window.c:725
 msgid "The file that you dropped is not an image."
 msgstr "הקובץ שהשלכת אינו תמונה."
 
 #. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:767
+#: src/nautilus-properties-window.c:766
 #: src/resources/ui/nautilus-files-view-context-menus.ui:247
 msgid "Unstar"
 msgstr "ביטול כוכב"
 
-#: src/nautilus-properties-window.c:912
+#: src/nautilus-properties-window.c:911
 msgid "unknown"
 msgstr "לא ידוע"
 
-#: src/nautilus-properties-window.c:1694
+#: src/nautilus-properties-window.c:1703
 msgid "Cancel Group Change?"
 msgstr "לבטל שינוי קבוצה?"
 
-#: src/nautilus-properties-window.c:1844
+#: src/nautilus-properties-window.c:1853
 msgid "Cancel Owner Change?"
 msgstr "לבטל שינוי בעלים?"
 
-#: src/nautilus-properties-window.c:1995 src/nautilus-properties-window.c:2040
+#: src/nautilus-properties-window.c:2005 src/nautilus-properties-window.c:2052
 msgid "Multiple"
 msgstr "מרובה"
 
-#: src/nautilus-properties-window.c:2164
+#: src/nautilus-properties-window.c:2176
 msgid "Empty folder"
 msgstr "תיקייה ריקה"
 
-#: src/nautilus-properties-window.c:2168
+#: src/nautilus-properties-window.c:2180
 msgid "Contents unreadable"
 msgstr "תוכן לא ניתן לקריאה"
 
-#: src/nautilus-properties-window.c:2180
+#: src/nautilus-properties-window.c:2192
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4075,34 +4074,34 @@ msgstr[1] "‫%'d פריטים, סה״כ %s"
 msgstr[2] "‫%'d פריטים, סה״כ %s"
 msgstr[3] "‫%'d פריטים, סה״כ %s"
 
-#: src/nautilus-properties-window.c:2190
+#: src/nautilus-properties-window.c:2202
 msgid "(some contents unreadable)"
 msgstr "(חלק מהתוכן אינו קריא)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2510
+#: src/nautilus-properties-window.c:2522
 #, c-format
 msgid "%s Filesystem"
 msgstr "מערכת קבצים %s"
 
-#: src/nautilus-properties-window.c:3658
+#: src/nautilus-properties-window.c:3677
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "לא ניתן לזהות את ההרשאות של „%s”."
 
-#: src/nautilus-properties-window.c:4114
+#: src/nautilus-properties-window.c:4129
 msgid "Creating Properties window."
 msgstr "נוצר חלון מאפיינים."
 
-#: src/nautilus-properties-window.c:4285
+#: src/nautilus-properties-window.c:4298
 msgid "Select Custom Icon"
 msgstr "בחירת סמל מותאם אישית"
 
-#: src/nautilus-properties-window.c:4287
+#: src/nautilus-properties-window.c:4300
 msgid "_Revert"
 msgstr "ה_חזרה"
 
-#: src/nautilus-properties-window.c:4289
+#: src/nautilus-properties-window.c:4302
 #: src/resources/ui/nautilus-app-chooser.ui:109
 #: src/resources/ui/nautilus-files-view-context-menus.ui:84
 #: src/gtk/nautilusgtkplacesview.c:1695 src/gtk/nautilusgtkplacessidebar.c:3205
@@ -4115,7 +4114,7 @@ msgstr "_פתיחה"
 msgid "Search for “%s”"
 msgstr "חיפוש אחר „%s”"
 
-#: src/nautilus-query-editor.c:639
+#: src/nautilus-query-editor.c:635
 msgid "Clear entry"
 msgstr "ניקוי הרשומה"
 
@@ -4367,7 +4366,7 @@ msgstr "אך ורק לבדיקת תקלות, ניתן להשתמש בפקודה 
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2301
+#: src/nautilus-window.c:2302
 msgid "translator-credits"
 msgstr ""
 "גיל אשר <dolfin@rpg.org.il>\n"
@@ -4377,54 +4376,54 @@ msgstr ""
 "יוסף אור בוצ׳קו <yoseforb@gmail.com>\n"
 "מיזם תרגום GNOME לעברית https://l10n.gnome.org/teams/he/"
 
-#: src/nautilus-window-slot.c:1070
+#: src/nautilus-window-slot.c:1071
 msgid "Searching locations only"
 msgstr "מחפש מיקומים בלבד"
 
-#: src/nautilus-window-slot.c:1074
+#: src/nautilus-window-slot.c:1075
 msgid "Searching network locations only"
 msgstr "מחפש מיקומי רשת בלבד"
 
-#: src/nautilus-window-slot.c:1079
+#: src/nautilus-window-slot.c:1080
 msgid "Remote location — only searching the current folder"
 msgstr "מיקום מרוחק – מחפש בתיקייה הנוכחית בלבד"
 
-#: src/nautilus-window-slot.c:1083
+#: src/nautilus-window-slot.c:1084
 msgid "Only searching the current folder"
 msgstr "מחפש בתיקייה הנוכחית בלבד"
 
-#: src/nautilus-window-slot.c:1609
+#: src/nautilus-window-slot.c:1611
 msgid "Unable to display the contents of this folder."
 msgstr "לא ניתן להציג את תכני התיקייה הזאת."
 
-#: src/nautilus-window-slot.c:1613
+#: src/nautilus-window-slot.c:1615
 msgid "This location doesn’t appear to be a folder."
 msgstr "מסתבר כי מיקום זה אינו תיקייה."
 
-#: src/nautilus-window-slot.c:1625
+#: src/nautilus-window-slot.c:1627
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "לא ניתן למצוא את „%s”. נא לבדוק את האיות ולנסות שוב."
 
-#: src/nautilus-window-slot.c:1630
+#: src/nautilus-window-slot.c:1632
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "לא ניתן למצוא את הקובץ המבוקש. נא לבדוק את האיות ולנסות שוב."
 
-#: src/nautilus-window-slot.c:1641
+#: src/nautilus-window-slot.c:1643
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "מיקומי „%s” אינם נתמכים."
 
-#: src/nautilus-window-slot.c:1646
+#: src/nautilus-window-slot.c:1648
 msgid "Unable to handle this kind of location."
 msgstr "אין אפשרות לטפל במיקום מסוג זה."
 
-#: src/nautilus-window-slot.c:1654
+#: src/nautilus-window-slot.c:1656
 msgid "Unable to access the requested location."
 msgstr "לא ניתן לגשת למיקום המבוקש."
 
-#: src/nautilus-window-slot.c:1660
+#: src/nautilus-window-slot.c:1662
 msgid "Don’t have permission to access the requested location."
 msgstr "אין לך הרשאות גישה למיקום הנדרש."
 
@@ -4433,7 +4432,7 @@ msgstr "אין לך הרשאות גישה למיקום הנדרש."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1671
+#: src/nautilus-window-slot.c:1673
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4442,7 +4441,7 @@ msgstr "לא ניתן למצוא את המיקום המבוקש. נא לבדוק
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1680
+#: src/nautilus-window-slot.c:1682
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4450,12 +4449,12 @@ msgstr ""
 "השרת סרב להתחבר. בדרך כלל המשמעות של זה היא שחומת אש חוסמת את הגישה, או "
 "שהשרת המרוחק לא פועל."
 
-#: src/nautilus-window-slot.c:1699
+#: src/nautilus-window-slot.c:1701
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "הודעת שגיאה בלתי מטופלת: %s"
 
-#: src/nautilus-window-slot.c:1867
+#: src/nautilus-window-slot.c:1869
 #, c-format
 msgid "Unable to load location"
 msgstr "לא ניתן לטעון את המיקום"
@@ -4546,225 +4545,220 @@ msgstr "פתיחת מיקום פריט (חיפוש ובשימוש לאחרונה
 
 #: src/resources/gtk/help-overlay.ui:121
 msgctxt "shortcut window"
-msgid "Open file and close window"
-msgstr "פתיחת קובץ וסגירת חלון"
-
-#: src/resources/gtk/help-overlay.ui:128
-msgctxt "shortcut window"
 msgid "Open with default application"
 msgstr "פתיחה עם יישום ברירת מחדל"
 
-#: src/resources/gtk/help-overlay.ui:137
+#: src/resources/gtk/help-overlay.ui:130
 msgctxt "shortcut window"
 msgid "Tabs"
 msgstr "לשוניות"
 
-#: src/resources/gtk/help-overlay.ui:141
+#: src/resources/gtk/help-overlay.ui:134
 msgctxt "shortcut window"
 msgid "New tab"
 msgstr "לשונית חדשה"
 
-#: src/resources/gtk/help-overlay.ui:148
+#: src/resources/gtk/help-overlay.ui:141
 msgctxt "shortcut window"
 msgid "Go to previous tab"
 msgstr "מעבר ללשונית קודמת"
 
-#: src/resources/gtk/help-overlay.ui:155
+#: src/resources/gtk/help-overlay.ui:148
 msgctxt "shortcut window"
 msgid "Go to next tab"
 msgstr "מעבר ללשונית הבאה"
 
-#: src/resources/gtk/help-overlay.ui:162
+#: src/resources/gtk/help-overlay.ui:155
 msgctxt "shortcut window"
 msgid "Open tab"
 msgstr "פתיחת לשונית"
 
-#: src/resources/gtk/help-overlay.ui:169
+#: src/resources/gtk/help-overlay.ui:162
 msgctxt "shortcut window"
 msgid "Move tab left"
 msgstr "הזזת לשונית שמאלה"
 
-#: src/resources/gtk/help-overlay.ui:176
+#: src/resources/gtk/help-overlay.ui:169
 msgctxt "shortcut window"
 msgid "Move tab right"
 msgstr "הזזת לשונית ימינה"
 
-#: src/resources/gtk/help-overlay.ui:183
+#: src/resources/gtk/help-overlay.ui:176
 msgctxt "shortcut window"
 msgid "Restore tab"
 msgstr "שחזור לשונית"
 
-#: src/resources/gtk/help-overlay.ui:192
+#: src/resources/gtk/help-overlay.ui:185
 msgctxt "shortcut window"
 msgid "Navigation"
 msgstr "ניווט"
 
-#: src/resources/gtk/help-overlay.ui:196
+#: src/resources/gtk/help-overlay.ui:189
 msgctxt "shortcut window"
 msgid "Go back"
 msgstr "אחורה"
 
-#: src/resources/gtk/help-overlay.ui:203
+#: src/resources/gtk/help-overlay.ui:196
 msgctxt "shortcut window"
 msgid "Go forward"
 msgstr "קדימה"
 
-#: src/resources/gtk/help-overlay.ui:210
+#: src/resources/gtk/help-overlay.ui:203
 msgctxt "shortcut window"
 msgid "Go up"
 msgstr "למעלה"
 
-#: src/resources/gtk/help-overlay.ui:217
+#: src/resources/gtk/help-overlay.ui:210
 msgctxt "shortcut window"
 msgid "Go down"
 msgstr "למטה"
 
-#: src/resources/gtk/help-overlay.ui:224
+#: src/resources/gtk/help-overlay.ui:217
 msgctxt "shortcut window"
 msgid "Go to home folder"
 msgstr "מעבר לתיקיית הבית"
 
-#: src/resources/gtk/help-overlay.ui:231
+#: src/resources/gtk/help-overlay.ui:224
 msgctxt "shortcut window"
 msgid "Enter location"
 msgstr "הזנת מיקום"
 
-#: src/resources/gtk/help-overlay.ui:238
+#: src/resources/gtk/help-overlay.ui:231
 msgctxt "shortcut window"
 msgid "Location bar with root location"
 msgstr "שורת המיקום עם מיקום השורש /"
 
-#: src/resources/gtk/help-overlay.ui:245
+#: src/resources/gtk/help-overlay.ui:238
 msgctxt "shortcut window"
 msgid "Location bar with home location"
 msgstr "סרגל המיקום עם מיקום תיקיית הבית"
 
-#: src/resources/gtk/help-overlay.ui:254
+#: src/resources/gtk/help-overlay.ui:247
 msgctxt "shortcut window"
 msgid "View"
 msgstr "תצוגה"
 
-#: src/resources/gtk/help-overlay.ui:258
+#: src/resources/gtk/help-overlay.ui:251
 msgctxt "shortcut window"
 msgid "Zoom in"
 msgstr "התקרבות"
 
-#: src/resources/gtk/help-overlay.ui:265
+#: src/resources/gtk/help-overlay.ui:258
 msgctxt "shortcut window"
 msgid "Zoom out"
 msgstr "התרחקות"
 
-#: src/resources/gtk/help-overlay.ui:272
+#: src/resources/gtk/help-overlay.ui:265
 msgctxt "shortcut window"
 msgid "Reset zoom"
 msgstr "איפוס התקריב"
 
-#: src/resources/gtk/help-overlay.ui:279
+#: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "Refresh view"
 msgstr "רענון התצוגה"
 
-#: src/resources/gtk/help-overlay.ui:286
+#: src/resources/gtk/help-overlay.ui:279
 msgctxt "shortcut window"
 msgid "Show/hide hidden files"
 msgstr "הצגת קבצים מוסתרים"
 
-#: src/resources/gtk/help-overlay.ui:293
+#: src/resources/gtk/help-overlay.ui:286
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
 msgstr "הצגת סרגל הצד"
 
-#: src/resources/gtk/help-overlay.ui:300
+#: src/resources/gtk/help-overlay.ui:293
 msgctxt "shortcut window"
 msgid "Show/hide action menu"
 msgstr "הצגת תפריט פעולה"
 
-#: src/resources/gtk/help-overlay.ui:307
+#: src/resources/gtk/help-overlay.ui:300
 msgctxt "shortcut window"
 msgid "List view"
 msgstr "תצוגת רשימה"
 
-#: src/resources/gtk/help-overlay.ui:314
+#: src/resources/gtk/help-overlay.ui:307
 msgctxt "shortcut window"
 msgid "Grid view"
 msgstr "תצוגת רשת"
 
-#: src/resources/gtk/help-overlay.ui:321
+#: src/resources/gtk/help-overlay.ui:314
 msgctxt "shortcut window"
 msgid "Expand folder"
 msgstr "הרחבת תיקייה"
 
-#: src/resources/gtk/help-overlay.ui:328
+#: src/resources/gtk/help-overlay.ui:321
 msgctxt "shortcut window"
 msgid "Collapse folder"
 msgstr "כיווץ תיקייה"
 
-#: src/resources/gtk/help-overlay.ui:337
+#: src/resources/gtk/help-overlay.ui:330
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "עריכה"
 
-#: src/resources/gtk/help-overlay.ui:341
+#: src/resources/gtk/help-overlay.ui:334
 msgctxt "shortcut window"
 msgid "Create folder"
 msgstr "יצירת תיקייה"
 
-#: src/resources/gtk/help-overlay.ui:348
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Rename"
 msgstr "שינוי שם"
 
-#: src/resources/gtk/help-overlay.ui:355
+#: src/resources/gtk/help-overlay.ui:348
 msgctxt "shortcut window"
 msgid "Move to trash"
 msgstr "העברה לאשפה"
 
-#: src/resources/gtk/help-overlay.ui:362
+#: src/resources/gtk/help-overlay.ui:355
 msgctxt "shortcut window"
 msgid "Delete permanently"
 msgstr "מחיקה לצמיתות"
 
-#: src/resources/gtk/help-overlay.ui:369
+#: src/resources/gtk/help-overlay.ui:362
 msgctxt "shortcut window"
 msgid "Create link to copied item"
 msgstr "יצירת קישור להעתקת פריט"
 
-#: src/resources/gtk/help-overlay.ui:376
+#: src/resources/gtk/help-overlay.ui:369
 msgctxt "shortcut window"
 msgid "Create link to selected item"
 msgstr "יצירת קישור לבחירת פריט"
 
-#: src/resources/gtk/help-overlay.ui:383
+#: src/resources/gtk/help-overlay.ui:376
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "גזירה"
 
-#: src/resources/gtk/help-overlay.ui:390
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "העתקה"
 
-#: src/resources/gtk/help-overlay.ui:397
+#: src/resources/gtk/help-overlay.ui:390
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "הדבקה"
 
-#: src/resources/gtk/help-overlay.ui:404
+#: src/resources/gtk/help-overlay.ui:397
 msgctxt "shortcut window"
 msgid "Select all"
 msgstr "בחירת הכול"
 
-#: src/resources/gtk/help-overlay.ui:411
+#: src/resources/gtk/help-overlay.ui:404
 msgctxt "shortcut window"
 msgid "Invert selection"
 msgstr "היפוך הבחירה"
 
-#: src/resources/gtk/help-overlay.ui:418
+#: src/resources/gtk/help-overlay.ui:411
 msgctxt "shortcut window"
 msgid "Select items matching"
 msgstr "בחירת פריטים שמתאימים"
 
-#: src/resources/gtk/help-overlay.ui:425
+#: src/resources/gtk/help-overlay.ui:418
 msgctxt "shortcut window"
 msgid "Show item properties"
 msgstr "הצגת מאפיין פריט"
@@ -4919,7 +4913,7 @@ msgid "C_hange"
 msgstr "_שינוי"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:137
-#: src/resources/ui/nautilus-properties-window.ui:844
+#: src/resources/ui/nautilus-properties-window.ui:834
 msgid "Others"
 msgstr "אחרים"
 
@@ -4959,10 +4953,13 @@ msgid "Select _All"
 msgstr "בחירת _הכול"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:38
-#: src/resources/ui/nautilus-progress-indicator.ui:15
-#: src/resources/ui/nautilus-view-controls.ui:15
-msgid "_Visible Columns…"
-msgstr "עמודות _גלויות…"
+msgid "_Visible Columns"
+msgstr "עמודות _גלויות"
+
+#: src/resources/ui/nautilus-files-view-context-menus.ui:45
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:60
+msgid "Empty _Trash…"
+msgstr "פינוי ה_אשפה…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:53
 #: src/resources/ui/nautilus-files-view-context-menus.ui:255
@@ -5070,8 +5067,8 @@ msgid "Email…"
 msgstr "דוא״ל…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:222
-msgid "_Delete from Trash"
-msgstr "למ_חוק מהאשפה"
+msgid "_Delete from Trash…"
+msgstr "_מחיקה מהאשפה…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:227
 #: src/resources/ui/nautilus-files-view-context-menus.ui:232
@@ -5250,6 +5247,11 @@ msgctxt "menu item"
 msgid "Sort"
 msgstr "מיון"
 
+#: src/resources/ui/nautilus-progress-indicator.ui:15
+#: src/resources/ui/nautilus-view-controls.ui:15
+msgid "_Visible Columns…"
+msgstr "עמודות _גלויות…"
+
 #: src/resources/ui/nautilus-progress-indicator.ui:52
 msgid "Show operations"
 msgstr "הצג פעולות"
@@ -5259,104 +5261,104 @@ msgstr "הצג פעולות"
 msgid "Properties"
 msgstr "מאפיינים"
 
-#: src/resources/ui/nautilus-properties-window.ui:122
+#: src/resources/ui/nautilus-properties-window.ui:117
 msgid "Unknown Filesystem"
 msgstr "סוג מערכת קבצים לא ידוע"
 
-#: src/resources/ui/nautilus-properties-window.ui:215
+#: src/resources/ui/nautilus-properties-window.ui:205
 msgid "total"
 msgstr "סה״כ"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:244
+#: src/resources/ui/nautilus-properties-window.ui:234
 msgid "used"
 msgstr "בשימוש"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:274
+#: src/resources/ui/nautilus-properties-window.ui:264
 msgid "free"
 msgstr "פנוי"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:303
+#: src/resources/ui/nautilus-properties-window.ui:293
 msgid "Open in Disks"
 msgstr "פתיחה באמצעות כוננים"
 
-#: src/resources/ui/nautilus-properties-window.ui:337
+#: src/resources/ui/nautilus-properties-window.ui:327
 msgid "Link Target"
 msgstr "יעד קישור"
 
-#: src/resources/ui/nautilus-properties-window.ui:382
+#: src/resources/ui/nautilus-properties-window.ui:372
 msgid "Parent Folder"
 msgstr "תיקייה מכילה"
 
-#: src/resources/ui/nautilus-properties-window.ui:435
+#: src/resources/ui/nautilus-properties-window.ui:425
 msgid "Original Folder"
 msgstr "תיקייה מקורית"
 
-#: src/resources/ui/nautilus-properties-window.ui:469
+#: src/resources/ui/nautilus-properties-window.ui:459
 msgid "Trashed on"
 msgstr "נזרק לאשפה"
 
-#: src/resources/ui/nautilus-properties-window.ui:629
+#: src/resources/ui/nautilus-properties-window.ui:619
 msgid "_Permissions"
 msgstr "_הרשאות"
 
-#: src/resources/ui/nautilus-properties-window.ui:651
+#: src/resources/ui/nautilus-properties-window.ui:641
 msgid "_Executable as Program"
 msgstr "ה_רצה כתָכְנה"
 
-#: src/resources/ui/nautilus-properties-window.ui:697
+#: src/resources/ui/nautilus-properties-window.ui:687
 msgid "Set Custom Permissions"
 msgstr "הגדרת הרשאות מותאמות"
 
-#: src/resources/ui/nautilus-properties-window.ui:726
+#: src/resources/ui/nautilus-properties-window.ui:716
 msgid "Unknown Permissions"
 msgstr "הרשאות לא ידועות"
 
-#: src/resources/ui/nautilus-properties-window.ui:727
+#: src/resources/ui/nautilus-properties-window.ui:717
 msgid "The permissions of the selected files could not be determined."
 msgstr "לא ניתן לזהות את ההרשאות של הקבצים הנבחרים."
 
-#: src/resources/ui/nautilus-properties-window.ui:742
+#: src/resources/ui/nautilus-properties-window.ui:732
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "אינך הבעלים, לכן אינך יכול לשנות את ההרשאות."
 
-#: src/resources/ui/nautilus-properties-window.ui:758
+#: src/resources/ui/nautilus-properties-window.ui:748
 msgid "The permissions of the selected file could not be determined."
 msgstr "לא ניתן לזהות את ההרשאות של הקובץ הנבחר."
 
-#: src/resources/ui/nautilus-properties-window.ui:771
+#: src/resources/ui/nautilus-properties-window.ui:761
 msgid "_Owner"
 msgstr "_בעלים"
 
-#: src/resources/ui/nautilus-properties-window.ui:779
-#: src/resources/ui/nautilus-properties-window.ui:816
-#: src/resources/ui/nautilus-properties-window.ui:851
+#: src/resources/ui/nautilus-properties-window.ui:769
+#: src/resources/ui/nautilus-properties-window.ui:806
+#: src/resources/ui/nautilus-properties-window.ui:841
 msgid "Access"
 msgstr "גישה"
 
-#: src/resources/ui/nautilus-properties-window.ui:786
-#: src/resources/ui/nautilus-properties-window.ui:823
-#: src/resources/ui/nautilus-properties-window.ui:858
+#: src/resources/ui/nautilus-properties-window.ui:776
+#: src/resources/ui/nautilus-properties-window.ui:813
+#: src/resources/ui/nautilus-properties-window.ui:848
 msgid "Folder Access"
 msgstr "גישה לתיקייה"
 
-#: src/resources/ui/nautilus-properties-window.ui:793
-#: src/resources/ui/nautilus-properties-window.ui:830
-#: src/resources/ui/nautilus-properties-window.ui:865
+#: src/resources/ui/nautilus-properties-window.ui:783
+#: src/resources/ui/nautilus-properties-window.ui:820
+#: src/resources/ui/nautilus-properties-window.ui:855
 msgid "File Access"
 msgstr "גישה לקובץ"
 
-#: src/resources/ui/nautilus-properties-window.ui:808
+#: src/resources/ui/nautilus-properties-window.ui:798
 msgid "_Group"
 msgstr "קבו_צה"
 
-#: src/resources/ui/nautilus-properties-window.ui:878
+#: src/resources/ui/nautilus-properties-window.ui:868
 msgid "Security Context"
 msgstr "הקשר אבטחה"
 
-#: src/resources/ui/nautilus-properties-window.ui:899
+#: src/resources/ui/nautilus-properties-window.ui:889
 msgid "Change Permissions for Enclosed Files…"
 msgstr "החלפת ההרשאות לכל הקבצים שבפנים…"
 
@@ -5749,8 +5751,8 @@ msgid "_Remove from Bookmarks"
 msgstr "ה_סרה מהסימניות"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3366
-msgid "Empty Trash"
-msgstr "פינוי האשפה"
+msgid "Empty Trash…"
+msgstr "פינוי האשפה…"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3416
 msgid "_Power On"
@@ -5795,6 +5797,13 @@ msgstr "סרגל צד"
 #: src/gtk/nautilusgtkplacessidebar.c:3991
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "רשימה של צירופי מקשים, נקודות עגינה וסימניות נפוצות."
+
+#~ msgctxt "shortcut window"
+#~ msgid "Open file and close window"
+#~ msgstr "פתיחת קובץ וסגירת חלון"
+
+#~ msgid "Empty Trash"
+#~ msgstr "פינוי האשפה"
 
 #~ msgid "Tile View"
 #~ msgstr "תצוגת אריחים"
@@ -6124,9 +6133,6 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 
 #~ msgid "Wallpapers"
 #~ msgstr "רקעים"
-
-#~ msgid "Empty _Trash…"
-#~ msgstr "פינוי ה_אשפה…"
 
 #~ msgid "Reset zoom"
 #~ msgstr "איפוס התקריב"
