@@ -1178,7 +1178,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 
     if (g_content_type_is_unknown (mime_type))
     {
-        body = _("The file is of an unknown type");
+        body = g_strdup (_("The file is of an unknown type"));
     }
     else
     {
