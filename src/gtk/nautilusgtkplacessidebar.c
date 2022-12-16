@@ -4472,7 +4472,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
   properties[PROP_OPEN_FLAGS] =
           g_param_spec_flags ("open-flags",
                               "Open Flags",
-                              "Modes in which the calling application can open locations selected in the sidebar",
+                              "Modes in which the calling app can open locations selected in the sidebar",
                               NAUTILUS_TYPE_OPEN_FLAGS,
                               NAUTILUS_GTK_PLACES_OPEN_NORMAL,
                               G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);

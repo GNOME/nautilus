@@ -1183,12 +1183,12 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
     else
     {
         content_type_description = g_content_type_get_description (mime_type);
-        body = g_strdup_printf (_("There is no application installed for “%s” files"), content_type_description);
+        body = g_strdup_printf (_("There is no app installed for “%s” files"), content_type_description);
     }
 
     dialog = adw_message_dialog_new (parameters->parent_window, error_message, body);
     adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
-                                      "select-application", _("_Select Application"),
+                                      "select-application", _("_Select App"),
                                       "ok", _("_OK"),
                                       NULL);
     adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
@@ -1225,9 +1225,9 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
             char *message;
 
             message = g_strdup_printf ("%s\n%s",
-                                       _("There was an internal error trying to search for applications:"),
+                                       _("There was an internal error trying to search for apps:"),
                                        error->message);
-            show_dialog (_("Unable to search for application"),
+            show_dialog (_("Unable to search for app"),
                          message,
                          parameters_install->parent_window,
                          GTK_MESSAGE_ERROR);
@@ -1235,7 +1235,7 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
         }
         else
         {
-            g_warning ("Error while trying to search for applications: %s",
+            g_warning ("Error while trying to search for apps: %s",
                        error->message);
         }
 
@@ -1339,8 +1339,8 @@ pk_proxy_appeared_cb (GObject      *source,
                                       "search-in-software", _("_Search in Software"),
                                       NULL);
     adw_message_dialog_format_body (ADW_MESSAGE_DIALOG (dialog),
-                                    _("There is no application installed for “%s” files. "
-                                      "Do you want to search for an application to open this file?"),
+                                    _("There is no app installed for “%s” files. "
+                                      "Do you want to search for an app to open this file?"),
                                     content_type_description);
 
     adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "search-in-software");

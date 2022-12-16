@@ -588,7 +588,7 @@ open_file_in_application (gpointer user_data)
                                                           GTK_DIALOG_USE_HEADER_BAR,
                                                           mime_type);
     heading = _("Password-protected archives are not yet supported. "
-                "This list contains applications that can open the archive.");
+                "This list contains apps that can open the archive.");
 
     gtk_app_chooser_dialog_set_heading (GTK_APP_CHOOSER_DIALOG (dialog), heading);
 

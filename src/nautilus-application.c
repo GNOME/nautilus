@@ -972,7 +972,7 @@ nautilus_application_command_line (GApplication            *application,
 
     if (g_variant_dict_contains (options, "quit"))
     {
-        DEBUG ("Killing application, as requested");
+        DEBUG ("Killing app, as requested");
         g_action_group_activate_action (G_ACTION_GROUP (application),
                                         "kill", NULL);
         goto out;

@@ -256,7 +256,7 @@ launch_application_from_command_internal (const gchar *full_command,
 
     if (error != NULL)
     {
-        g_message ("Could not start application: %s", error->message);
+        g_message ("Could not start app: %s", error->message);
     }
 }
 
@@ -379,7 +379,7 @@ nautilus_launch_desktop_file (const char  *desktop_file_uri,
     g_free (desktop_file_path);
     if (app_info == NULL)
     {
-        show_dialog (_("There was an error launching the application."),
+        show_dialog (_("There was an error launching the app."),
                      NULL,
                      parent_window,
                      GTK_MESSAGE_ERROR);
@@ -454,7 +454,7 @@ nautilus_launch_desktop_file (const char  *desktop_file_uri,
     if (error != NULL)
     {
         message = g_strconcat (_("Details: "), error->message, NULL);
-        show_dialog (_("There was an error launching the application."),
+        show_dialog (_("There was an error launching the app."),
                      message,
                      parent_window,
                      GTK_MESSAGE_ERROR);

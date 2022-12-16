@@ -74,7 +74,7 @@ open_cb (NautilusAppChooser *self)
         g_autofree gchar *message = NULL;
         GtkWidget *message_dialog;
 
-        message = g_strdup_printf (_("Error while setting “%s” as default application: %s"),
+        message = g_strdup_printf (_("Error while setting “%s” as default app: %s"),
                                    g_app_info_get_display_name (info), error->message);
         message_dialog = adw_message_dialog_new (GTK_WINDOW (self),
                                                  _("Could not set as default"),
@@ -194,8 +194,8 @@ nautilus_app_chooser_constructed (GObject *object)
 
     if (self->file_name != NULL)
     {
-        /* Translators: %s is the filename.  i.e. "Choose an application to open test.jpg" */
-        description = g_strdup_printf (_("Choose an application to open <b>%s</b>."), self->file_name);
+        /* Translators: %s is the filename.  i.e. "Choose an app to open test.jpg" */
+        description = g_strdup_printf (_("Choose an app to open <b>%s</b>."), self->file_name);
         gtk_label_set_markup (GTK_LABEL (self->label_description), description);
     }
 
