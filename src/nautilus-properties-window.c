@@ -2513,6 +2513,16 @@ setup_volume_information (NautilusPropertiesWindow *self)
     if (info)
     {
         fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+
+        /* We shouldn't be using filesystem::type, it's not meant for UI.
+         * https://gitlab.gnome.org/GNOME/nautilus/-/issues/98
+         *
+         * Until we fix that issue, workaround this common outrageous case. */
+        if (g_strcmp0 (fs_type, "msdos") == 0)
+        {
+            fs_type = "FAT";
+        }
+
         if (fs_type != NULL)
         {
             /* Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'. */
