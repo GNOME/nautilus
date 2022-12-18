@@ -1230,7 +1230,6 @@ typedef struct
 {
     GtkWindow **parent_window;
     NautilusFileOperationsDBusData *dbus_data;
-    gboolean ignore_close_box;
     GtkMessageType message_type;
     const char *primary_text;
     const char *secondary_text;
@@ -1439,7 +1438,6 @@ do_run_simple_dialog (gpointer _data)
 
 static int
 run_simple_dialog_va (CommonJob      *job,
-                      gboolean        ignore_close_box,
                       GtkMessageType  message_type,
                       char           *primary_text,
                       char           *secondary_text,
@@ -1457,7 +1455,6 @@ run_simple_dialog_va (CommonJob      *job,
     data = g_new0 (RunSimpleDialogData, 1);
     data->parent_window = &job->parent_window;
     data->dbus_data = job->dbus_data;
-    data->ignore_close_box = ignore_close_box;
     data->message_type = message_type;
     data->primary_text = primary_text;
     data->secondary_text = secondary_text;
@@ -1511,7 +1508,6 @@ run_simple_dialog_va (CommonJob      *job,
 #if 0 /* Not used at the moment */
 static int
 run_simple_dialog (CommonJob     *job,
-                   gboolean       ignore_close_box,
                    GtkMessageType message_type,
                    char          *primary_text,
                    char          *secondary_text,
@@ -1523,7 +1519,6 @@ run_simple_dialog (CommonJob     *job,
 
     va_start (varargs, details_text);
     res = run_simple_dialog_va (job,
-                                ignore_close_box,
                                 message_type,
                                 primary_text,
                                 secondary_text,
@@ -1547,7 +1542,6 @@ run_error (CommonJob  *job,
 
     va_start (varargs, show_all);
     res = run_simple_dialog_va (job,
-                                FALSE,
                                 GTK_MESSAGE_ERROR,
                                 primary_text,
                                 secondary_text,
@@ -1571,7 +1565,6 @@ run_warning (CommonJob  *job,
 
     va_start (varargs, show_all);
     res = run_simple_dialog_va (job,
-                                FALSE,
                                 GTK_MESSAGE_WARNING,
                                 primary_text,
                                 secondary_text,
@@ -1595,7 +1588,6 @@ run_question (CommonJob  *job,
 
     va_start (varargs, show_all);
     res = run_simple_dialog_va (job,
-                                FALSE,
                                 GTK_MESSAGE_QUESTION,
                                 primary_text,
                                 secondary_text,
