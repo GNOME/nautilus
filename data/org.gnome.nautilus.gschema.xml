@@ -38,9 +38,10 @@
 
   <enum id="org.gnome.nautilus.GridZoomLevel">
     <value value="0" nick="small"/>
-    <value value="1" nick="medium"/>
-    <value value="2" nick="large"/>
-    <value value="3" nick="extra-large"/>
+    <value value="1" nick="small-plus"/>
+    <value value="2" nick="medium"/>
+    <value value="3" nick="large"/>
+    <value value="4" nick="extra-large"/>
   </enum>
 
   <enum id="org.gnome.nautilus.ListZoomLevel">
@@ -206,7 +207,7 @@
     </key>
     <key name="default-zoom-level" enum="org.gnome.nautilus.GridZoomLevel">
       <aliases>
-        <alias value='standard' target='medium'/>
+        <alias value='standard' target='small-plus'/>
         <alias value='larger' target='extra-large'/>
         <alias value='largest' target='extra-large'/>
       </aliases>
