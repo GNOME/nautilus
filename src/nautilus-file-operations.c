@@ -1326,11 +1326,6 @@ simple_dialog_cb (GtkDialog *dialog,
 {
     RunSimpleDialogData *data = user_data;
 
-    if ((response_id == GTK_RESPONSE_NONE || response_id == GTK_RESPONSE_DELETE_EVENT) && data->ignore_close_box)
-    {
-        return;
-    }
-
     gtk_window_destroy (GTK_WINDOW (dialog));
 
     data->result = response_id;
