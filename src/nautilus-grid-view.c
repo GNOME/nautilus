@@ -78,6 +78,12 @@ get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level)
         }
         break;
 
+        case NAUTILUS_GRID_ZOOM_LEVEL_SMALL_PLUS:
+        {
+            return NAUTILUS_GRID_ICON_SIZE_SMALL_PLUS;
+        }
+        break;
+
         case NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM:
         {
             return NAUTILUS_GRID_ICON_SIZE_MEDIUM;
