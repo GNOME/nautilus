@@ -1730,14 +1730,50 @@ on_vadjustment_changed (GtkAdjustment *adjustment,
     }
 }
 
+static gboolean
+nautilus_list_base_focus (GtkWidget        *widget,
+                          GtkDirectionType  direction)
+{
+    NautilusListBase *self = NAUTILUS_LIST_BASE (widget);
+    g_autolist (NautilusFile) selection = NULL;
+    gboolean no_selection;
+    gboolean handled;
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+    no_selection = (selection == NULL);
+
+    handled = GTK_WIDGET_CLASS (nautilus_list_base_parent_class)->focus (widget, direction);
+
+    if (handled && no_selection)
+    {
+        GtkWidget *focus_widget = gtk_root_get_focus (gtk_widget_get_root (widget));
+
+        /* Workaround for https://gitlab.gnome.org/GNOME/nautilus/-/issues/2489
+         * Also ensures an item gets selected when using <Tab> to focus the view.
+         * Ideally to be fixed in GtkListBase instead. */
+        if (focus_widget != NULL)
+        {
+            gtk_widget_activate_action (focus_widget,
+                                        "listitem.select",
+                                        "(bb)",
+                                        FALSE, FALSE);
+        }
+    }
+
+    return handled;
+}
+
 static void
 nautilus_list_base_class_init (NautilusListBaseClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
     NautilusFilesViewClass *files_view_class = NAUTILUS_FILES_VIEW_CLASS (klass);
 
     object_class->dispose = nautilus_list_base_dispose;
     object_class->finalize = nautilus_list_base_finalize;
+
+    widget_class->focus = nautilus_list_base_focus;
 
     files_view_class->add_files = real_add_files;
     files_view_class->begin_loading = real_begin_loading;
