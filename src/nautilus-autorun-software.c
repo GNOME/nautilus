@@ -243,6 +243,7 @@ main (int   argc,
     textdomain (GETTEXT_PACKAGE);
 
     gtk_init ();
+    adw_init ();
 
     if (argc != 2)
     {
