@@ -603,6 +603,16 @@ on_other_types_setup (GtkSignalListItemFactory *factory,
     gtk_list_item_set_child (listitem, label);
 }
 
+static gchar *
+join_type_and_description (GtkStringObject *object,
+                           gpointer         user_data)
+{
+    const gchar *content_type = gtk_string_object_get_string (object);
+    g_autofree gchar *description = g_content_type_get_description (content_type);
+
+    return g_strdup_printf ("%s %s", content_type, description);
+}
+
 static void
 show_other_types_dialog (NautilusSearchPopover *popover)
 {
@@ -628,7 +638,10 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     }
     sorter = gtk_string_sorter_new (gtk_property_expression_new (GTK_TYPE_STRING_OBJECT, NULL, "string"));
     sort_model = gtk_sort_list_model_new (G_LIST_MODEL (string_model), GTK_SORTER (sorter));
-    filter = gtk_string_filter_new (gtk_property_expression_new (GTK_TYPE_STRING_OBJECT, NULL, "string"));
+    filter = gtk_string_filter_new (gtk_cclosure_expression_new (G_TYPE_STRING,
+                                                                 NULL, 0, NULL,
+                                                                 G_CALLBACK (join_type_and_description),
+                                                                 NULL, NULL));
     filter_model = gtk_filter_list_model_new (G_LIST_MODEL (sort_model), GTK_FILTER (filter));
     popover->other_types_model = gtk_single_selection_new (G_LIST_MODEL (filter_model));
 
