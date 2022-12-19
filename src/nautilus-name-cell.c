@@ -124,7 +124,6 @@ update_icon (NautilusNameCell *self)
 {
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
-    GtkStyleContext *style_context;
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     guint icon_size;
@@ -160,17 +159,16 @@ update_icon (NautilusNameCell *self)
     gtk_widget_set_margin_top (self->fixed_height_box, extra_margin);
     gtk_widget_set_margin_bottom (self->fixed_height_box, extra_margin);
 
-    style_context = gtk_widget_get_style_context (self->icon);
     thumbnail_path = nautilus_file_get_thumbnail_path (file);
     if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
         thumbnail_path != NULL &&
         nautilus_file_should_show_thumbnail (file))
     {
-        gtk_style_context_add_class (style_context, "thumbnail");
+        gtk_widget_add_css_class (self->icon, "thumbnail");
     }
     else
     {
-        gtk_style_context_remove_class (style_context, "thumbnail");
+        gtk_widget_remove_css_class (self->icon, "thumbnail");
     }
 }
 

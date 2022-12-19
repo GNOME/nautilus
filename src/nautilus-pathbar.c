@@ -1056,7 +1056,7 @@ make_button_data (NautilusPathBar *self,
             GtkWidget *separator_label;
 
             separator_label = gtk_label_new (G_DIR_SEPARATOR_S);
-            gtk_style_context_add_class (gtk_widget_get_style_context (separator_label), "dim-label");
+            gtk_widget_add_css_class (separator_label, "dim-label");
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -1070,8 +1070,7 @@ make_button_data (NautilusPathBar *self,
 
     if (current_dir)
     {
-        gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
-                                     "current-dir");
+        gtk_widget_add_css_class (button_data->button, "current-dir");
         gtk_widget_set_hexpand (button_data->button, TRUE);
         gtk_widget_set_halign (button_data->label, GTK_ALIGN_START);
     }
@@ -1089,8 +1088,8 @@ make_button_data (NautilusPathBar *self,
 
         if (!current_dir)
         {
-            gtk_style_context_add_class (gtk_widget_get_style_context (button_data->label), "dim-label");
-            gtk_style_context_add_class (gtk_widget_get_style_context (button_data->image), "dim-label");
+            gtk_widget_add_css_class (button_data->label, "dim-label");
+            gtk_widget_add_css_class (button_data->image, "dim-label");
         }
     }
 

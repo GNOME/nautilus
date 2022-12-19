@@ -2086,8 +2086,7 @@ nautilus_window_init (NautilusWindow *window)
     window->slots = NULL;
     window->active_slot = NULL;
 
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (window)),
-                                 "nautilus-window");
+    gtk_widget_add_css_class (GTK_WIDGET (window), "nautilus-window");
 
     window_group = gtk_window_group_new ();
     gtk_window_group_add_window (window_group, GTK_WINDOW (window));

@@ -31,7 +31,6 @@ update_icon (NautilusGridCell *self)
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
-    GtkStyleContext *style_context;
     NautilusFile *file;
     guint icon_size;
     gint scale_factor;
@@ -50,16 +49,15 @@ update_icon (NautilusGridCell *self)
     /* Set the same height and width for all icons regardless of aspect ratio.
      */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
-    style_context = gtk_widget_get_style_context (self->icon);
     thumbnail_path = nautilus_file_get_thumbnail_path (file);
     if (thumbnail_path != NULL &&
         nautilus_file_should_show_thumbnail (file))
     {
-        gtk_style_context_add_class (style_context, "thumbnail");
+        gtk_widget_add_css_class (self->icon, "thumbnail");
     }
     else
     {
-        gtk_style_context_remove_class (style_context, "thumbnail");
+        gtk_widget_remove_css_class (self->icon, "thumbnail");
     }
 }
 

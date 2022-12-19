@@ -72,7 +72,7 @@ append_drop_action_menu_item (GtkWidget          *menu,
     gtk_widget_set_sensitive (menu_item, sensitive);
     gtk_box_append (GTK_BOX (menu), menu_item);
 
-    gtk_style_context_add_class (gtk_widget_get_style_context (menu_item), "flat");
+    gtk_widget_add_css_class (menu_item, "flat");
 
     g_object_set_data (G_OBJECT (menu_item),
                        "action",

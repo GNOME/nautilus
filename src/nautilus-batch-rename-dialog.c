@@ -787,7 +787,6 @@ update_conflict_row_background (NautilusBatchRenameDialog *dialog)
     GList *l3;
     GList *duplicates;
     gint index;
-    GtkStyleContext *context;
     ConflictData *conflict_data;
 
     index = 0;
@@ -804,17 +803,11 @@ update_conflict_row_background (NautilusBatchRenameDialog *dialog)
         GtkWidget *row2 = gtk_widget_get_parent (l2->data);
         GtkWidget *row3 = gtk_widget_get_parent (l3->data);
 
-        context = gtk_widget_get_style_context (row1);
-
-        if (gtk_style_context_has_class (context, "conflict-row"))
+        if (gtk_widget_has_css_class (row1, "conflict-row"))
         {
-            gtk_style_context_remove_class (context, "conflict-row");
-
-            context = gtk_widget_get_style_context (row2);
-            gtk_style_context_remove_class (context, "conflict-row");
-
-            context = gtk_widget_get_style_context (row3);
-            gtk_style_context_remove_class (context, "conflict-row");
+            gtk_widget_remove_css_class (row1, "conflict-row");
+            gtk_widget_remove_css_class (row2, "conflict-row");
+            gtk_widget_remove_css_class (row3, "conflict-row");
         }
 
         if (duplicates != NULL)
@@ -822,14 +815,9 @@ update_conflict_row_background (NautilusBatchRenameDialog *dialog)
             conflict_data = duplicates->data;
             if (conflict_data->index == index)
             {
-                context = gtk_widget_get_style_context (row1);
-                gtk_style_context_add_class (context, "conflict-row");
-
-                context = gtk_widget_get_style_context (row2);
-                gtk_style_context_add_class (context, "conflict-row");
-
-                context = gtk_widget_get_style_context (row3);
-                gtk_style_context_add_class (context, "conflict-row");
+                gtk_widget_add_css_class (row1, "conflict-row");
+                gtk_widget_add_css_class (row2, "conflict-row");
+                gtk_widget_add_css_class (row3, "conflict-row");
 
                 duplicates = duplicates->next;
             }
@@ -1416,7 +1404,6 @@ static void
 update_row_shadowing (GtkWidget *row,
                       gboolean   shown)
 {
-    GtkStyleContext *context;
     GtkStateFlags flags;
 
     if (!GTK_IS_LIST_BOX_ROW (row))
@@ -1424,8 +1411,7 @@ update_row_shadowing (GtkWidget *row,
         return;
     }
 
-    context = gtk_widget_get_style_context (row);
-    flags = gtk_style_context_get_state (context);
+    flags = gtk_widget_get_state_flags (row);
 
     if (shown)
     {
@@ -1436,7 +1422,7 @@ update_row_shadowing (GtkWidget *row,
         flags &= ~GTK_STATE_FLAG_PRELIGHT;
     }
 
-    gtk_style_context_set_state (context, flags);
+    gtk_widget_set_state_flags (row, flags, FALSE);
 }
 
 static void
