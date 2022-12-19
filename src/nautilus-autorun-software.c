@@ -274,6 +274,11 @@ main (int   argc,
 
     present_autorun_for_software_dialog (mount);
 
+    while (g_list_model_get_n_items (gtk_window_get_toplevels ()) > 0)
+    {
+        g_main_context_iteration (NULL, TRUE);
+    }
+
 out:
     return 0;
 }
