@@ -200,6 +200,95 @@ real_can_zoom_out (NautilusFilesView *files_view)
     return self->zoom_level > NAUTILUS_GRID_ZOOM_LEVEL_SMALL;
 }
 
+/* The generic implementation in src/nautilus-list-base.c doesn't allow the
+ * 2-dimensional movements expected from a grid. Let's hack GTK here. */
+static void
+real_preview_selection_event (NautilusFilesView *files_view,
+                              GtkDirectionType   direction)
+{
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_view);
+    guint direction_keyval;
+    g_autoptr (GtkShortcutTrigger) direction_trigger = NULL;
+    g_autoptr (GListModel) controllers = NULL;
+    gboolean success = FALSE;
+
+    /* We want the same behavior as when the user presses the arrow keys while
+     * the focus is in the view. So, let's get the matching arrow key. */
+    switch (direction)
+    {
+        case GTK_DIR_UP:
+        {
+            direction_keyval = GDK_KEY_Up;
+        }
+        break;
+
+        case GTK_DIR_DOWN:
+        {
+            direction_keyval = GDK_KEY_Down;
+        }
+        break;
+
+        case GTK_DIR_LEFT:
+        {
+            direction_keyval = GDK_KEY_Left;
+        }
+        break;
+
+        case GTK_DIR_RIGHT:
+        {
+            direction_keyval = GDK_KEY_Right;
+        }
+        break;
+
+        default:
+        {
+            g_return_if_reached ();
+        }
+    }
+
+    /* We cannot simulate a click, but we can find the shortcut it triggers and
+     * activate its action programatically.
+     *
+     * First, we create out would-be trigger.*/
+    direction_trigger = gtk_keyval_trigger_new (direction_keyval, 0);
+
+    /* Then we iterate over the shortcut installed in GtkGridView until we find
+     * a matching trigger. There may be multiple shortcut controllers, and each
+     * shortcut controller may hold multiple shortcuts each. Let's loop. */
+    controllers = gtk_widget_observe_controllers (GTK_WIDGET (self->view_ui));
+    for (guint i = 0; i < g_list_model_get_n_items (controllers); i++)
+    {
+        g_autoptr (GtkEventController) controller = g_list_model_get_item (controllers, i);
+
+        if (!GTK_IS_SHORTCUT_CONTROLLER (controller))
+        {
+            continue;
+        }
+
+        for (guint j = 0; j < g_list_model_get_n_items (G_LIST_MODEL (controller)); j++)
+        {
+            g_autoptr (GtkShortcut) shortcut = g_list_model_get_item (G_LIST_MODEL (controller), j);
+            GtkShortcutTrigger *trigger = gtk_shortcut_get_trigger (shortcut);
+
+            if (gtk_shortcut_trigger_equal (trigger, direction_trigger))
+            {
+                /* Match found. Activate the action to move cursor. */
+                success = gtk_shortcut_action_activate (gtk_shortcut_get_action (shortcut),
+                                                        0,
+                                                        GTK_WIDGET (self->view_ui),
+                                                        gtk_shortcut_get_arguments (shortcut));
+                break;
+            }
+        }
+    }
+
+    /* If the hack fails (GTK may change it's internal behavior), fallback. */
+    if (!success)
+    {
+        NAUTILUS_FILES_VIEW_CLASS (nautilus_grid_view_parent_class)->preview_selection_event (files_view, direction);
+    }
+}
+
 /* We only care about the keyboard activation part that GtkGridView provides,
  * but we don't need any special filtering here. Indeed, we ask GtkGridView
  * to not activate on single click, and we get to handle double clicks before
@@ -457,6 +546,7 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     files_view_class->get_view_id = real_get_view_id;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
+    files_view_class->preview_selection_event = real_preview_selection_event;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_ui = real_get_view_ui;
