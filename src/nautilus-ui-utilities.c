@@ -338,7 +338,8 @@ show_dialog (const gchar    *primary_text,
 
 static void
 notify_unmount_done (GMountOperation *op,
-                     const gchar     *message)
+                     const gchar     *message,
+                     gpointer         user_data)
 {
     NautilusApplication *application;
     gchar *notification_id;
@@ -354,7 +355,7 @@ notify_unmount_done (GMountOperation *op,
         gchar **strings;
 
         strings = g_strsplit (message, "\n", 0);
-        icon = g_themed_icon_new ("media-removable-symbolic");
+        icon = g_mount_get_symbolic_icon (G_MOUNT (user_data));
         unplug = g_notification_new (strings[0]);
         g_notification_set_body (unplug, strings[1]);
         g_notification_set_icon (unplug, icon);
@@ -370,7 +371,8 @@ notify_unmount_done (GMountOperation *op,
 
 static void
 notify_unmount_show (GMountOperation *op,
-                     const gchar     *message)
+                     const gchar     *message,
+                     gpointer         user_data)
 {
     NautilusApplication *application;
     GNotification *unmount;
@@ -380,7 +382,7 @@ notify_unmount_show (GMountOperation *op,
 
     application = nautilus_application_get_default ();
     strings = g_strsplit (message, "\n", 0);
-    icon = g_themed_icon_new ("media-removable");
+    icon = g_mount_get_icon (G_MOUNT (user_data));
 
     unmount = g_notification_new (strings[0]);
     g_notification_set_body (unmount, strings[1]);
@@ -404,11 +406,11 @@ show_unmount_progress_cb (GMountOperation *op,
 {
     if (bytes_left == 0)
     {
-        notify_unmount_done (op, message);
+        notify_unmount_done (op, message, user_data);
     }
     else
     {
-        notify_unmount_show (op, message);
+        notify_unmount_show (op, message, user_data);
     }
 }
 
@@ -416,5 +418,5 @@ void
 show_unmount_progress_aborted_cb (GMountOperation *op,
                                   gpointer         user_data)
 {
-    notify_unmount_done (op, NULL);
+    notify_unmount_done (op, NULL, user_data);
 }

@@ -2887,9 +2887,9 @@ do_unmount (UnmountData *data)
     }
 
     g_signal_connect (mount_op, "show-unmount-progress",
-                      G_CALLBACK (show_unmount_progress_cb), NULL);
+                      G_CALLBACK (show_unmount_progress_cb), data->mount);
     g_signal_connect (mount_op, "aborted",
-                      G_CALLBACK (show_unmount_progress_aborted_cb), NULL);
+                      G_CALLBACK (show_unmount_progress_aborted_cb), data->mount);
 
     if (data->eject)
     {
