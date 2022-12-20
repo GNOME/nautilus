@@ -624,6 +624,13 @@ hover_timer (gpointer user_data)
 
     priv->hover_timer_id = 0;
 
+    if (priv->drag_item_action == 0)
+    {
+        /* If we aren't able to dropped don't change the location. This stops
+         * drops onto themselves, and another unnecessary drops. */
+        return G_SOURCE_REMOVE;
+    }
+
     uri = nautilus_file_get_uri (nautilus_view_item_get_file (item));
     nautilus_files_view_handle_hover (NAUTILUS_FILES_VIEW (self), uri);
 
