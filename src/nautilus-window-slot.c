@@ -1785,7 +1785,7 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
         g_free (self->pending_scroll_to);
 
         self->pending_location = nautilus_file_get_parent_location (file);
-        if (nautilus_file_is_archive (file))
+        if (nautilus_mime_file_extracts (file))
         {
             self->pending_file_to_activate = nautilus_file_ref (file);
         }
