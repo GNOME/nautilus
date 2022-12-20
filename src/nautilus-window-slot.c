@@ -307,6 +307,13 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
     {
         view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
     }
+    if (view_id == NAUTILUS_VIEW_INVALID_ID)
+    {
+        g_warning ("Invalid value stored for 'default-folder-viewer' key for "
+                   "the 'org.gnome.nautilus.preferences' schemas. Installed "
+                   "schemas may be outdated. Falling back to 'list-view'.");
+        view_id = NAUTILUS_VIEW_LIST_ID;
+    }
 
     /* Try to reuse the current view */
     if (nautilus_window_slot_content_view_matches (self, view_id))
