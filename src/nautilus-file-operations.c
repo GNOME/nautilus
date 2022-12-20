@@ -5583,7 +5583,7 @@ retry:
         {
             dest_uri = g_file_get_uri (dest);
 
-            g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
+            g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (!overwrite));
         }
         if (copy_job->is_move)
         {
