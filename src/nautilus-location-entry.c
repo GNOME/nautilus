@@ -579,7 +579,8 @@ after_text_change (NautilusLocationEntry *self,
      * directory is large. */
     if (priv->idle_id == 0)
     {
-        priv->idle_id = g_idle_add (update_completions_store, self);
+        priv->idle_id = g_idle_add_full (G_PRIORITY_HIGH,
+                                         update_completions_store, self, NULL);
     }
 }
 
