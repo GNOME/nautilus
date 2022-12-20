@@ -167,9 +167,19 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
                                    GFile        *dropped)
 {
     g_autoptr (NautilusDirectory) directory = NULL;
+    g_autoptr (GFile) target_location = NULL;
+    g_autoptr (NautilusFile) dropped_file = NULL;
+    gboolean same_fs;
+    gboolean source_deletable;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (target_file), 0);
     g_return_val_if_fail (dropped == NULL || G_IS_FILE (dropped), 0);
+
+    target_location = nautilus_file_get_location (target_file);
+    if (g_file_equal (target_location, dropped))
+    {
+        return 0;
+    }
 
     /* First check target imperatives */
     directory = nautilus_directory_get_for_file (target_file);
@@ -198,37 +208,22 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
          * accepts drops */
         return 0;
     }
-
-    if (nautilus_file_is_in_trash (target_file))
+    else if (nautilus_file_is_in_trash (target_file))
     {
         return GDK_ACTION_MOVE;
     }
 
-    if (dropped != NULL)
+    if (g_file_has_uri_scheme (dropped, "trash"))
     {
-        g_autoptr (GFile) target_location = NULL;
-        g_autoptr (NautilusFile) dropped_file = NULL;
-        gboolean same_fs;
-        gboolean source_deletable;
+        return GDK_ACTION_MOVE;
+    }
 
-        if (g_file_has_uri_scheme (dropped, "trash"))
-        {
-            return GDK_ACTION_MOVE;
-        }
-
-        target_location = nautilus_file_get_location (target_file);
-        if (g_file_equal (target_location, dropped))
-        {
-            return 0;
-        }
-
-        dropped_file = nautilus_file_get (dropped);
-        same_fs = check_same_fs (target_file, dropped_file);
-        source_deletable = source_is_deletable (dropped);
-        if (same_fs && source_deletable)
-        {
-            return GDK_ACTION_MOVE;
-        }
+    dropped_file = nautilus_file_get (dropped);
+    same_fs = check_same_fs (target_file, dropped_file);
+    source_deletable = source_is_deletable (dropped);
+    if (same_fs && source_deletable)
+    {
+        return GDK_ACTION_MOVE;
     }
 
     return GDK_ACTION_COPY;
