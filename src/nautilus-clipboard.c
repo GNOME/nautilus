@@ -95,7 +95,8 @@ nautilus_clipboard_from_string (char    *string,
     {
         if (g_strcmp0 (lines[i], "") == 0)
         {
-            continue;
+            *error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_DATA, _("Nautilus Clipboard must not have empty lines."));
+            return NULL;
         }
         else if (!g_uri_is_valid (lines[i], G_URI_FLAGS_NONE, error))
         {
