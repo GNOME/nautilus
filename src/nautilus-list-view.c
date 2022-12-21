@@ -59,6 +59,9 @@ get_view_item (GtkColumnViewCell *cell)
     return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (cell))));
 }
 
+static GStrv get_columns_from_view (NautilusListView *self,
+                                    gboolean          visible_only);
+
 static guint
 get_icon_size_for_zoom_level (NautilusListZoomLevel zoom_level)
 {
@@ -99,6 +102,37 @@ real_get_view_ui (NautilusListBase *list_base_view)
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
 
     return GTK_WIDGET (self->view_ui);
+}
+
+static void
+columns_items_changed (GListModel *self,
+                       guint       position,
+                       guint       removed,
+                       guint       added,
+                       gpointer    user_data)
+{
+    NautilusFile *file;
+    NautilusListView *view = user_data;
+    g_auto (GStrv) column_order = NULL;
+    g_auto (GStrv) new_column_order = get_columns_from_view (view, FALSE);
+    g_auto (GStrv) new_visible_order = NULL;
+
+    file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
+    column_order = nautilus_column_get_column_order (file);
+
+    if (g_strv_equal ((const gchar * const *) column_order, (const gchar * const *) new_column_order))
+    {
+        return;
+    }
+
+    new_visible_order = get_columns_from_view (view, TRUE);
+
+    nautilus_file_set_metadata_list (file,
+                                     NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER,
+                                     new_column_order);
+    nautilus_file_set_metadata_list (file,
+                                     NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS,
+                                     new_visible_order);
 }
 
 static void
@@ -191,10 +225,16 @@ apply_columns_settings (NautilusListView  *self,
             continue;
         }
 
+        g_signal_handlers_block_by_func (gtk_column_view_get_columns (self->view_ui),
+                                         G_CALLBACK (columns_items_changed), self);
+
         gtk_column_view_insert_column (self->view_ui, column_i, view_column);
 
         visible = g_hash_table_contains (visible_columns_hash, lowercase);
         gtk_column_view_column_set_visible (view_column, visible);
+
+        g_signal_handlers_unblock_by_func (gtk_column_view_get_columns (self->view_ui),
+                                           G_CALLBACK (columns_items_changed), self);
     }
 }
 
@@ -1247,6 +1287,9 @@ setup_view_columns (NautilusListView *self)
     section = g_menu_new ();
     g_menu_append (section, _("More Columns"), "view.visible-columns");
     g_menu_append_section (menu, NULL, G_MENU_MODEL (section));
+
+    g_signal_connect (gtk_column_view_get_columns (self->view_ui),
+                      "items-changed", G_CALLBACK (columns_items_changed), self);
 }
 
 static void
@@ -1351,6 +1394,9 @@ nautilus_list_view_dispose (GObject *object)
     g_clear_pointer (&self->factory_to_column_map, g_hash_table_destroy);
 
     g_signal_handlers_disconnect_by_func (gtk_column_view_get_sorter (self->view_ui), on_sorter_changed, self);
+    g_signal_handlers_disconnect_by_func (gtk_column_view_get_columns (self->view_ui),
+                                          columns_items_changed,
+                                          self);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->dispose (object);
 }
