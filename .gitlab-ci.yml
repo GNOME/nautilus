@@ -12,7 +12,7 @@ stages:
 flatpak:
     extends: '.flatpak'
     variables:
-        MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
+        MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.json"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
