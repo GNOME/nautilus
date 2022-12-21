@@ -63,7 +63,7 @@ autorun_software_dialog_mount_unmounted (GMount                    *mount,
 static gboolean
 _check_file (GFile      *mount_root,
              const char *file_path,
-             gboolean    must_be_executable)
+             gboolean   *executable)
 {
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFileInfo) file_info = NULL;
@@ -80,10 +80,9 @@ _check_file (GFile      *mount_root,
         return FALSE;
     }
 
-    if (must_be_executable &&
-        !g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE))
+    if (executable != NULL)
     {
-        return FALSE;
+        *executable = g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE);
     }
 
     return TRUE;
@@ -99,6 +98,7 @@ autorun (GMount *mount)
     g_autofree char *path_to_spawn = NULL;
     g_autofree char *cwd_for_program = NULL;
     g_autofree char *program_parameter = NULL;
+    gboolean executable = TRUE;
 
     root = g_mount_get_root (mount);
 
@@ -109,15 +109,15 @@ autorun (GMount *mount)
      * the ordering does matter.
      */
 
-    if (_check_file (root, ".autorun", TRUE))
+    if (_check_file (root, ".autorun", &executable) && executable)
     {
         program_to_spawn = g_file_get_child (root, ".autorun");
     }
-    else if (_check_file (root, "autorun", TRUE))
+    else if (_check_file (root, "autorun", &executable) && executable)
     {
         program_to_spawn = g_file_get_child (root, "autorun");
     }
-    else if (_check_file (root, "autorun.sh", FALSE))
+    else if (_check_file (root, "autorun.sh", NULL))
     {
         program_to_spawn = g_file_new_for_path ("/bin/sh");
         program_parameter_file = g_file_get_child (root, "autorun.sh");
@@ -143,6 +143,11 @@ autorun (GMount *mount)
             goto out;
         }
         error_string = g_strdup_printf (_("Unable to start the program:\n%s"), strerror (errno));
+        goto out;
+    }
+    else if (!executable)
+    {
+        error_string = g_strdup (_("The program is not executable."));
         goto out;
     }
     error_string = g_strdup_printf (_("Unable to locate the program"));
