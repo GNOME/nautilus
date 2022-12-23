@@ -33,15 +33,8 @@ G_STMT_START { \
     EEL_CHECK_RESULT(boolean, expression, expected_value)
 #define EEL_CHECK_INTEGER_RESULT(expression, expected_value) \
     EEL_CHECK_RESULT(integer, expression, expected_value)
-#define EEL_CHECK_DOUBLE_RESULT(expression, expected_value) \
-    EEL_CHECK_RESULT(double, expression, expected_value)
 #define EEL_CHECK_STRING_RESULT(expression, expected_value) \
     EEL_CHECK_RESULT(string, expression, expected_value)
-#define EEL_CHECK_RECTANGLE_RESULT(expression, expected_x0, expected_y0, expected_x1, expected_y1) \
-G_STMT_START { \
-    eel_before_check (#expression, __FILE__, __LINE__); \
-    eel_check_rectangle_result (expression, expected_x0, expected_y0, expected_x1, expected_y1); \
-} G_STMT_END
 
 void eel_exit_if_self_checks_failed (void);
 void eel_before_check_function      (const char    *name);
@@ -58,8 +51,6 @@ void eel_check_boolean_result       (gboolean       result,
                                      gboolean       expected_value);
 void eel_check_integer_result       (long           result,
                                      long           expected_value);
-void eel_check_double_result        (double         result,
-                                     double         expected_value);
 void eel_check_string_result        (char          *result,
                                      const char    *expected_value);
 

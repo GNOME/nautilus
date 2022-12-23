@@ -123,18 +123,6 @@ eel_check_integer_result (long result,
 }
 
 void
-eel_check_double_result (double result,
-                         double expected)
-{
-    if (result != expected)
-    {
-        eel_report_check_failure (g_strdup_printf ("%f", result),
-                                  g_strdup_printf ("%f", expected));
-    }
-    eel_after_check ();
-}
-
-void
 eel_check_string_result (char       *result,
                          const char *expected)
 {

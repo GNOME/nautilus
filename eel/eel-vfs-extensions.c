@@ -75,38 +75,6 @@ eel_uri_is_other_locations (const char *uri)
     return g_str_has_prefix (uri, "other-locations:");
 }
 
-gboolean
-eel_uri_is_in_xdg_dirs (const gchar *uri)
-{
-    GUserDirectory dir;
-    g_autoptr (GFile) location = NULL;
-    gboolean has_prefix = FALSE;
-
-    location = g_file_new_for_uri (uri);
-    for (dir = 0; dir < G_USER_N_DIRECTORIES; dir++)
-    {
-        g_autoptr (GFile) xdg_dir_location = NULL;
-        const gchar *path;
-
-        path = g_get_user_special_dir (dir);
-        if (path == NULL)
-        {
-            continue;
-        }
-
-        xdg_dir_location = g_file_new_for_path (path);
-        has_prefix = g_file_has_prefix (location, xdg_dir_location) ||
-                     g_file_equal (location, xdg_dir_location);
-
-        if (has_prefix)
-        {
-            break;
-        }
-    }
-
-    return has_prefix;
-}
-
 /**
  * eel_filename_get_extension_offset:
  * @filename: a null-terminated string representing the basename of a file, with
