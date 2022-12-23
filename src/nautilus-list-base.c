@@ -1713,6 +1713,17 @@ nautilus_list_base_focus (GtkWidget        *widget,
     gboolean no_selection;
     gboolean handled;
 
+    /* If focus is already inside the view, allow to immediately tab out of it,
+     * instead of having to cycle through every item (potentially many). */
+    if (direction == GTK_DIR_TAB_FORWARD || direction == GTK_DIR_TAB_BACKWARD)
+    {
+        GtkWidget *focus_widget = gtk_root_get_focus (gtk_widget_get_root (widget));
+        if (focus_widget != NULL && gtk_widget_is_ancestor (focus_widget, widget))
+        {
+            return FALSE;
+        }
+    }
+
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     no_selection = (selection == NULL);
 
