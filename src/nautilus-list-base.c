@@ -1594,8 +1594,6 @@ real_preview_selection_event (NautilusFilesView *files_view,
     {
         if (i == 0)
         {
-            /* We are at the start of the list, can't move up. */
-            gtk_widget_error_bell (GTK_WIDGET (self));
             return;
         }
 
@@ -1607,8 +1605,6 @@ real_preview_selection_event (NautilusFilesView *files_view,
 
         if (i >= g_list_model_get_n_items (G_LIST_MODEL (priv->model)))
         {
-            /* We are at the end of the list, can't move down. */
-            gtk_widget_error_bell (GTK_WIDGET (self));
             return;
         }
     }
