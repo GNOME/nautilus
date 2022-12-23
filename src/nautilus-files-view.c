@@ -9831,11 +9831,17 @@ nautilus_files_view_new (guint               id,
             view = NAUTILUS_FILES_VIEW (nautilus_list_view_new (slot));
         }
         break;
+
+        default:
+        {
+            g_critical ("Unknown view type ID: %d. Falling back to list.", id);
+            view = NAUTILUS_FILES_VIEW (nautilus_list_view_new (slot));
+        }
     }
 
     if (view == NULL)
     {
-        g_critical ("Unknown view type ID: %d", id);
+        g_assert_not_reached ();
     }
     else if (g_object_is_floating (view))
     {
