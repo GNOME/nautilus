@@ -1,11 +1,7 @@
 libeel_2_sources = [
-  'eel-art-extensions.h',
-  'eel-art-extensions.c',
   'eel-debug.h',
   'eel-debug.c',
   'eel-glib-extensions.h',
-  'eel-graphic-effects.h',
-  'eel-graphic-effects.c',
   'eel-self-checks.h',
   'eel-self-checks.c',
   'eel-stock-dialogs.h',
@@ -14,7 +10,6 @@ libeel_2_sources = [
   'eel-string.c',
   'eel-vfs-extensions.h',
   'eel-vfs-extensions.c',
-  'eel.h',
   'eel-lib-self-check-functions.h',
   'eel-lib-self-check-functions.c',
 ]

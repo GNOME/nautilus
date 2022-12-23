@@ -24,7 +24,6 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-application.h"
-#include <eel/eel-graphic-effects.h>
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>

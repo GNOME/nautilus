@@ -111,32 +111,6 @@ eel_check_boolean_result (gboolean result,
 }
 
 void
-eel_check_rectangle_result (EelIRect result,
-                            int      expected_x0,
-                            int      expected_y0,
-                            int      expected_x1,
-                            int      expected_y1)
-{
-    if (result.x0 != expected_x0
-        || result.y0 != expected_y0
-        || result.x1 != expected_x1
-        || result.y1 != expected_y1)
-    {
-        eel_report_check_failure (g_strdup_printf ("x0=%d, y0=%d, x1=%d, y1=%d",
-                                                   result.x0,
-                                                   result.y0,
-                                                   result.x1,
-                                                   result.y1),
-                                  g_strdup_printf ("x0=%d, y0=%d, x1=%d, y1=%d",
-                                                   expected_x0,
-                                                   expected_y0,
-                                                   expected_x1,
-                                                   expected_y1));
-    }
-    eel_after_check ();
-}
-
-void
 eel_check_integer_result (long result,
                           long expected)
 {

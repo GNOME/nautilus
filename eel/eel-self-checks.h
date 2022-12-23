@@ -22,7 +22,6 @@
 #pragma once
 
 #include <glib.h>
-#include <eel/eel-art-extensions.h>
 
 #define EEL_CHECK_RESULT(type, expression, expected_value) \
 G_STMT_START { \
@@ -61,11 +60,6 @@ void eel_check_integer_result       (long           result,
                                      long           expected_value);
 void eel_check_double_result        (double         result,
                                      double         expected_value);
-void eel_check_rectangle_result     (EelIRect       result,
-                                     int            expected_x0,
-                                     int            expected_y0,
-                                     int            expected_x1,
-                                     int            expected_y1);
 void eel_check_string_result        (char          *result,
                                      const char    *expected_value);
 
