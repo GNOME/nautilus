@@ -187,11 +187,6 @@ handle_create_folder (NautilusDBusFileOperations *object,
     file = g_file_new_for_uri (uri);
     basename = g_file_get_basename (file);
     parent_file = g_file_get_parent (file);
-    if (parent_file == NULL || basename == NULL)
-    {
-        g_dbus_method_invocation_return_error (invocation, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, "Invalid uri: %s", uri);
-        return TRUE;
-    }
     parent_file_uri = g_file_get_uri (parent_file);
 
     handle_create_folder_internal (parent_file_uri, basename, NULL);
