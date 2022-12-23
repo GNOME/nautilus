@@ -22,8 +22,6 @@
 #include <config.h>
 #include "eel-stock-dialogs.h"
 
-#include "eel-glib-extensions.h"
-
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <libadwaita-1/adwaita.h>

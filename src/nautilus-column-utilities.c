@@ -23,7 +23,6 @@
 #include "nautilus-column-utilities.h"
 
 #include <string.h>
-#include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
 #include <nautilus-extension.h>
 #include "nautilus-module.h"

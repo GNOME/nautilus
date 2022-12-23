@@ -21,7 +21,6 @@
 
 #include "nautilus-query.h"
 
-#include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
 
 #include "nautilus-enum-types.h"

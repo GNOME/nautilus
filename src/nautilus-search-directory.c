@@ -19,7 +19,6 @@
 
 #include "nautilus-search-directory.h"
 
-#include <eel/eel-glib-extensions.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 #include <string.h>

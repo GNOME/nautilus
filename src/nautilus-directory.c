@@ -21,7 +21,6 @@
 
 #include "nautilus-directory-private.h"
 
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>

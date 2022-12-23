@@ -39,7 +39,6 @@
 
 #include "nautilus-progress-info.h"
 
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-string.h>
 

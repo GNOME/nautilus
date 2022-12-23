@@ -22,7 +22,6 @@
 
 #include "nautilus-search-directory-file.h"
 
-#include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <string.h>

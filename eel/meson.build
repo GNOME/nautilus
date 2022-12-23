@@ -1,7 +1,6 @@
 libeel_2_sources = [
   'eel-debug.h',
   'eel-debug.c',
-  'eel-glib-extensions.h',
   'eel-self-checks.h',
   'eel-self-checks.c',
   'eel-stock-dialogs.h',

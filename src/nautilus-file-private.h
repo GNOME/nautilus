@@ -25,7 +25,6 @@
 #include "nautilus-file.h"
 #include "nautilus-monitor.h"
 #include "nautilus-file-undo-operations.h"
-#include <eel/eel-glib-extensions.h>
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
 	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*"
@@ -130,67 +129,67 @@ struct NautilusFileDetails
 	/* boolean fields: bitfield to save space, since there can be
            many NautilusFile objects. */
 
-	eel_boolean_bit unconfirmed                   : 1;
-	eel_boolean_bit is_gone                       : 1;
+	guint unconfirmed                   : 1;
+	guint is_gone                       : 1;
 	/* Set when emitting files_added on the directory to make sure we
 	   add a file, and only once */
-	eel_boolean_bit is_added                      : 1;
+	guint is_added                      : 1;
 	/* Set by the NautilusDirectory while it's loading the file
 	 * list so the file knows not to do redundant I/O.
 	 */
-	eel_boolean_bit loading_directory             : 1;
-	eel_boolean_bit got_file_info                 : 1;
-	eel_boolean_bit get_info_failed               : 1;
-	eel_boolean_bit file_info_is_up_to_date       : 1;
+	guint loading_directory             : 1;
+	guint got_file_info                 : 1;
+	guint get_info_failed               : 1;
+	guint file_info_is_up_to_date       : 1;
 	
-	eel_boolean_bit got_directory_count           : 1;
-	eel_boolean_bit directory_count_failed        : 1;
-	eel_boolean_bit directory_count_is_up_to_date : 1;
+	guint got_directory_count           : 1;
+	guint directory_count_failed        : 1;
+	guint directory_count_is_up_to_date : 1;
 
-	eel_boolean_bit deep_counts_status      : 2; /* NautilusRequestStatus */
+	guint deep_counts_status      : 2; /* NautilusRequestStatus */
 	/* no deep_counts_are_up_to_date field; since we expose
            intermediate values for this attribute, we do actually
            forget it rather than invalidating. */
 
-	eel_boolean_bit got_mime_list                 : 1;
-	eel_boolean_bit mime_list_failed              : 1;
-	eel_boolean_bit mime_list_is_up_to_date       : 1;
+	guint got_mime_list                 : 1;
+	guint mime_list_failed              : 1;
+	guint mime_list_is_up_to_date       : 1;
 
-	eel_boolean_bit mount_is_up_to_date           : 1;
+	guint mount_is_up_to_date           : 1;
 	
-	eel_boolean_bit got_custom_display_name       : 1;
+	guint got_custom_display_name       : 1;
 
-	eel_boolean_bit thumbnail_is_up_to_date       : 1;
-	eel_boolean_bit thumbnailing_failed           : 1;
+	guint thumbnail_is_up_to_date       : 1;
+	guint thumbnailing_failed           : 1;
 	
-	eel_boolean_bit is_thumbnailing               : 1;
+	guint is_thumbnailing               : 1;
 
-	eel_boolean_bit is_symlink                    : 1;
-	eel_boolean_bit is_mountpoint                 : 1;
-	eel_boolean_bit is_hidden                     : 1;
+	guint is_symlink                    : 1;
+	guint is_mountpoint                 : 1;
+	guint is_hidden                     : 1;
 
-	eel_boolean_bit has_permissions               : 1;
+	guint has_permissions               : 1;
 	
-	eel_boolean_bit can_read                      : 1;
-	eel_boolean_bit can_write                     : 1;
-	eel_boolean_bit can_execute                   : 1;
-	eel_boolean_bit can_delete                    : 1;
-	eel_boolean_bit can_trash                     : 1;
-	eel_boolean_bit can_rename                    : 1;
-	eel_boolean_bit can_mount                     : 1;
-	eel_boolean_bit can_unmount                   : 1;
-	eel_boolean_bit can_eject                     : 1;
-	eel_boolean_bit can_start                     : 1;
-	eel_boolean_bit can_start_degraded            : 1;
-	eel_boolean_bit can_stop                      : 1;
-	eel_boolean_bit start_stop_type               : 3; /* GDriveStartStopType */
-	eel_boolean_bit can_poll_for_media            : 1;
-	eel_boolean_bit is_media_check_automatic      : 1;
+	guint can_read                      : 1;
+	guint can_write                     : 1;
+	guint can_execute                   : 1;
+	guint can_delete                    : 1;
+	guint can_trash                     : 1;
+	guint can_rename                    : 1;
+	guint can_mount                     : 1;
+	guint can_unmount                   : 1;
+	guint can_eject                     : 1;
+	guint can_start                     : 1;
+	guint can_start_degraded            : 1;
+	guint can_stop                      : 1;
+	guint start_stop_type               : 3; /* GDriveStartStopType */
+	guint can_poll_for_media            : 1;
+	guint is_media_check_automatic      : 1;
 
-	eel_boolean_bit filesystem_readonly           : 1;
-	eel_boolean_bit filesystem_use_preview        : 2; /* GFilesystemPreviewType */
-	eel_boolean_bit filesystem_info_is_up_to_date : 1;
-	eel_boolean_bit filesystem_remote             : 1;
+	guint filesystem_readonly           : 1;
+	guint filesystem_use_preview        : 2; /* GFilesystemPreviewType */
+	guint filesystem_info_is_up_to_date : 1;
+	guint filesystem_remote             : 1;
 	GRefString     *filesystem_type;
 
 	time_t trash_time; /* 0 is unknown */

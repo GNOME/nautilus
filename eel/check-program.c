@@ -22,7 +22,6 @@
 #include <config.h>
 
 #include <eel/eel-debug.h>
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-lib-self-check-functions.h>
 #include <eel/eel-self-checks.h>
 #include <gdk/gdk.h>
