@@ -4307,6 +4307,7 @@ make_file_name_valid_for_dest_fs (char       *filename,
             !strcmp (dest_fs_type, "fuse") ||
             !strcmp (dest_fs_type, "ntfs") ||
             !strcmp (dest_fs_type, "msdos") ||
+            !strcmp (dest_fs_type, "cifs") ||
             !strcmp (dest_fs_type, "msdosfs"))
         {
             gboolean ret;
@@ -5595,8 +5596,13 @@ retry:
         return;
     }
 
+    /* On smb shares INVALID_ARGUMENT is typically returned instead of INVALID_FILENAME
+     * (i.e. FAT_FORBIDDEN_CHARACTER) except with '\' where NOT_DIRECTORY is returned
+     */
     if (!handled_invalid_filename &&
-        IS_IO_ERROR (error, INVALID_FILENAME))
+        (IS_IO_ERROR (error, INVALID_FILENAME) ||
+         IS_IO_ERROR (error, INVALID_ARGUMENT) ||
+         IS_IO_ERROR (error, NOT_DIRECTORY)))
     {
         handled_invalid_filename = TRUE;
 
