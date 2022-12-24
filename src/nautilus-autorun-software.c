@@ -147,7 +147,7 @@ autorun (GMount *mount)
     }
     else if (!executable)
     {
-        error_string = g_strdup (_("The program is not executable."));
+        error_string = g_strdup (_("The program is not marked as executable."));
         goto out;
     }
     error_string = g_strdup_printf (_("Unable to locate the program"));
