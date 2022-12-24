@@ -146,8 +146,6 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
     gtk_label_set_text (GTK_LABEL (bar->label), message);
     g_free (message);
 
-    gtk_widget_show (bar->label);
-
     for (n = 0; bar->x_content_types[n] != NULL; n++)
     {
         const char *name;
@@ -200,8 +198,6 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         gtk_box_append (GTK_BOX (box), gtk_label_new (name));
 
         gtk_button_set_child (GTK_BUTTON (button), box);
-
-        gtk_widget_show (button);
     }
 
     g_ptr_array_free (apps, TRUE);
@@ -329,7 +325,6 @@ nautilus_x_content_bar_init (NautilusXContentBar *bar)
 
     info_bar = gtk_info_bar_new ();
     gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar), GTK_MESSAGE_QUESTION);
-    gtk_widget_show (info_bar);
     adw_bin_set_child (ADW_BIN (bar), info_bar);
 
     attrs = pango_attr_list_new ();

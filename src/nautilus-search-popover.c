@@ -237,7 +237,6 @@ listbox_header_func (GtkListBoxRow         *row,
         GtkWidget *separator;
 
         separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-        gtk_widget_show (separator);
 
         gtk_list_box_row_set_header (row, separator);
     }
@@ -397,7 +396,6 @@ create_row_for_label (const gchar *text,
                           NULL);
 
     gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (row), label);
-    gtk_widget_show (row);
 
     return row;
 }
@@ -694,7 +692,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled), listview);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_other_types_dialog_response), popover);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
@@ -718,7 +716,7 @@ update_date_label (NautilusSearchPopover *popover,
 
         gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), days < 1 ? label : "");
 
-        gtk_widget_show (popover->clear_date_button);
+        gtk_widget_set_visible (popover->clear_date_button, TRUE);
         gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
 
         g_date_time_unref (now);
@@ -729,7 +727,7 @@ update_date_label (NautilusSearchPopover *popover,
         gtk_label_set_label (GTK_LABEL (popover->select_date_button_label),
                              _("Select Dates…"));
         gtk_editable_set_text (GTK_EDITABLE (popover->date_entry), "");
-        gtk_widget_hide (popover->clear_date_button);
+        gtk_widget_set_visible (popover->clear_date_button, FALSE);
     }
 }
 

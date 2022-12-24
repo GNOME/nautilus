@@ -1405,8 +1405,6 @@ do_run_simple_dialog (gpointer _data)
                                        MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
         gtk_box_append (GTK_BOX (content_area), label);
-
-        gtk_widget_show (label);
     }
 
     if (data->dbus_data != NULL)
@@ -1428,7 +1426,7 @@ do_run_simple_dialog (gpointer _data)
 
     /* Run it. */
     g_signal_connect (dialog, "response", G_CALLBACK (simple_dialog_cb), data);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 
     return FALSE;
 }
@@ -3104,7 +3102,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
         dialog = create_empty_trash_prompt (parent_window);
 
         g_signal_connect (dialog, "response", G_CALLBACK (empty_trash_prompt_cb), data);
-        gtk_widget_show (dialog);
+        gtk_window_present (GTK_WINDOW (dialog));
         return;
     }
 

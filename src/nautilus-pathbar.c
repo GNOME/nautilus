@@ -791,12 +791,12 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
     if (icon != NULL)
     {
         gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon);
-        gtk_widget_show (GTK_WIDGET (button_data->image));
+        gtk_widget_set_visible (GTK_WIDGET (button_data->image), TRUE);
         g_object_unref (icon);
     }
     else
     {
-        gtk_widget_hide (GTK_WIDGET (button_data->image));
+        gtk_widget_set_visible (GTK_WIDGET (button_data->image), FALSE);
     }
 }
 
@@ -1113,7 +1113,7 @@ make_button_data (NautilusPathBar *self,
     }
 
     gtk_button_set_child (GTK_BUTTON (button_data->button), child);
-    gtk_widget_show (button_data->container);
+    gtk_widget_set_visible (button_data->container, TRUE);
 
     button_data->path_bar = self;
 

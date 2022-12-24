@@ -445,7 +445,6 @@ listbox_header_func (GtkListBoxRow             *row,
     if (separator == NULL)
     {
         separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-        gtk_widget_show (separator);
 
         gtk_list_box_row_set_header (row, separator);
     }
@@ -534,8 +533,6 @@ create_original_name_label (NautilusBatchRenameDialog *dialog,
 
     dialog->listbox_labels_old = g_list_prepend (dialog->listbox_labels_old, label_old);
 
-    gtk_widget_show (label_old);
-
     return label_old;
 }
 
@@ -552,8 +549,6 @@ create_result_label (NautilusBatchRenameDialog *dialog,
     gtk_label_set_ellipsize (GTK_LABEL (label_new), PANGO_ELLIPSIZE_END);
 
     dialog->listbox_labels_new = g_list_prepend (dialog->listbox_labels_new, label_new);
-
-    gtk_widget_show (label_new);
 
     return label_new;
 }
@@ -579,8 +574,6 @@ create_arrow (NautilusBatchRenameDialog *dialog,
 
     dialog->listbox_icons = g_list_prepend (dialog->listbox_icons, icon);
 
-    gtk_widget_show (icon);
-
     return icon;
 }
 
@@ -604,7 +597,6 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 
     gtk_widget_set_cursor_from_name (GTK_WIDGET (dialog), "progress");
 
-    gtk_widget_hide (GTK_WIDGET (dialog));
     begin_batch_rename (dialog, dialog->new_names);
 
     gtk_window_destroy (GTK_WINDOW (dialog));
@@ -891,7 +883,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
 
         gtk_widget_set_sensitive (dialog->rename_button, FALSE);
 
-        gtk_widget_show (dialog->conflict_box);
+        gtk_widget_set_visible (dialog->conflict_box, TRUE);
 
         dialog->selected_conflict = 0;
         dialog->conflicts_number = g_list_length (dialog->duplicates);
@@ -911,7 +903,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     }
     else
     {
-        gtk_widget_hide (dialog->conflict_box);
+        gtk_widget_set_visible (dialog->conflict_box, FALSE);
 
         /* re-enable the rename button if there are no more name conflicts */
         if (dialog->duplicates == NULL && !gtk_widget_is_sensitive (dialog->rename_button))
@@ -1239,13 +1231,13 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
         gtk_widget_set_sensitive (dialog->conflict_down, FALSE);
         gtk_widget_set_sensitive (dialog->conflict_up, FALSE);
 
-        gtk_widget_show (dialog->conflict_box);
+        gtk_widget_set_visible (dialog->conflict_box, TRUE);
 
         return TRUE;
     }
     else
     {
-        gtk_widget_hide (dialog->conflict_box);
+        gtk_widget_set_visible (dialog->conflict_box, FALSE);
 
         return FALSE;
     }

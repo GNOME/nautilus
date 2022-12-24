@@ -1155,7 +1155,7 @@ choose_program (GtkDialog *message_dialog,
                             nautilus_file_ref (file),
                             (GDestroyNotify) nautilus_file_unref);
 
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 
     g_signal_connect (dialog,
                       "response",

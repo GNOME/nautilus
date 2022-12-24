@@ -564,7 +564,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
         gtk_editable_set_text (GTK_EDITABLE (name_entry), initial_name);
     }
 
-    gtk_widget_show (compress_dialog);
+    gtk_window_present (GTK_WINDOW (compress_dialog));
 
     return self;
 }

@@ -584,18 +584,14 @@ action_visible_columns (GSimpleAction *action,
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
 
-    if (self->column_editor)
-    {
-        gtk_widget_show (self->column_editor);
-    }
-    else
+    if (self->column_editor == NULL)
     {
         self->column_editor = create_column_editor (self);
         g_object_add_weak_pointer (G_OBJECT (self->column_editor),
                                    (gpointer *) &self->column_editor);
-
-        gtk_widget_show (self->column_editor);
     }
+
+    gtk_window_present (GTK_WINDOW (self->column_editor));
 }
 
 static void

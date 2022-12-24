@@ -1435,7 +1435,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       g_object_unref (start_icon);
     }
 
-  gtk_widget_show (GTK_WIDGET (sidebar));
   /* We want this hidden by default, but need to do it after the show_all call */
   nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), TRUE);
 
@@ -1617,7 +1616,7 @@ stop_drop_feedback (NautilusGtkPlacesSidebar *sidebar)
 
   if (sidebar->drag_row != NULL)
     {
-      gtk_widget_show (sidebar->drag_row);
+      gtk_widget_set_visible (sidebar->drag_row, TRUE);
       sidebar->drag_row = NULL;
     }
 
@@ -3634,7 +3633,7 @@ on_row_dragged (GtkGestureDrag *gesture,
       g_signal_connect (drag, "cancel", G_CALLBACK (dnd_cancel_cb), sidebar);
 
       gtk_widget_get_allocation (sidebar->drag_row, &allocation);
-      gtk_widget_hide (sidebar->drag_row);
+      gtk_widget_set_visible (sidebar->drag_row, FALSE);
 
       drag_widget = GTK_WIDGET (nautilus_gtk_sidebar_row_clone (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->drag_row)));
       sidebar->drag_row_height = allocation.height;

@@ -249,7 +249,6 @@ nautilus_toolbar_constructed (GObject *object)
      * the whole title widget. */
     gtk_editable_set_max_width_chars (GTK_EDITABLE (self->location_entry), 88);
 
-    gtk_widget_show (GTK_WIDGET (self));
     toolbar_update_appearance (self);
 }
 

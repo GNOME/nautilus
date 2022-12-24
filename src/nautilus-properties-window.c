@@ -794,7 +794,7 @@ setup_star_button (NautilusPropertiesWindow *self)
 
     if (nautilus_tag_manager_can_star_contents (tag_manager, parent_location))
     {
-        gtk_widget_show (self->star_button);
+        gtk_widget_set_visible (self->star_button, TRUE);
         update_star (self, tag_manager);
         g_signal_connect_object (tag_manager, "starred-changed",
                                  G_CALLBACK (on_starred_changed), self, 0);
@@ -1080,7 +1080,7 @@ get_mime_list (NautilusPropertiesWindow *self)
 static gboolean
 start_spinner_callback (NautilusPropertiesWindow *self)
 {
-    gtk_widget_show (self->contents_spinner);
+    gtk_widget_set_visible (self->contents_spinner, TRUE);
     gtk_spinner_start (GTK_SPINNER (self->contents_spinner));
     self->deep_count_spinner_timeout_id = 0;
 
@@ -1103,7 +1103,7 @@ static void
 stop_spinner (NautilusPropertiesWindow *self)
 {
     gtk_spinner_stop (GTK_SPINNER (self->contents_spinner));
-    gtk_widget_hide (self->contents_spinner);
+    gtk_widget_set_visible (self->contents_spinner, FALSE);
     g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
 }
 
@@ -2538,7 +2538,7 @@ setup_volume_information (NautilusPropertiesWindow *self)
             }
 
             gtk_label_set_text (self->type_file_system_label, fs_label);
-            gtk_widget_show (GTK_WIDGET (self->type_file_system_label));
+            gtk_widget_set_visible (GTK_WIDGET (self->type_file_system_label), TRUE);
         }
     }
 
@@ -2705,19 +2705,19 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     if (should_show_volume_usage (self))
     {
-        gtk_widget_show (self->disk_list_box);
+        gtk_widget_set_visible (self->disk_list_box, TRUE);
         setup_volume_usage_widget (self);
     }
 
     if (should_show_file_type (self))
     {
-        gtk_widget_show (self->type_value_label);
+        gtk_widget_set_visible (self->type_value_label, TRUE);
         add_updatable_label (self, self->type_value_label, "detailed_type");
     }
 
     if (should_show_link_target (self))
     {
-        gtk_widget_show (self->link_target_row);
+        gtk_widget_set_visible (self->link_target_row, TRUE);
         add_updatable_label (self, self->link_target_value_label, "link_target");
 
         should_show_locations_list_box = TRUE;
@@ -2729,19 +2729,19 @@ setup_basic_page (NautilusPropertiesWindow *self)
         /* We have a more efficient way to measure used space in volumes. */
         if (!is_volume_properties (self))
         {
-            gtk_widget_show (self->contents_box);
+            gtk_widget_set_visible (self->contents_box, TRUE);
             setup_contents_field (self);
         }
     }
     else
     {
-        gtk_widget_show (self->size_value_label);
+        gtk_widget_set_visible (self->size_value_label, TRUE);
         add_updatable_label (self, self->size_value_label, "size");
     }
 
     if (should_show_location_info (self))
     {
-        gtk_widget_show (self->parent_folder_row);
+        gtk_widget_set_visible (self->parent_folder_row, TRUE);
         add_updatable_label (self, self->parent_folder_value_label, "where");
 
         should_show_locations_list_box = TRUE;
@@ -2749,29 +2749,29 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     if (should_show_trashed_info (self))
     {
-        gtk_widget_show (self->trashed_list_box);
+        gtk_widget_set_visible (self->trashed_list_box, TRUE);
         add_updatable_label (self, self->original_folder_value_label, "trash_orig_path");
         add_updatable_label (self, self->trashed_on_value_label, "trashed_on_full");
     }
 
     if (should_show_modified_date (self))
     {
-        gtk_widget_show (self->times_list_box);
-        gtk_widget_show (self->modified_row);
+        gtk_widget_set_visible (self->times_list_box, TRUE);
+        gtk_widget_set_visible (self->modified_row, TRUE);
         add_updatable_label (self, self->modified_value_label, "date_modified_full");
     }
 
     if (should_show_created_date (self))
     {
-        gtk_widget_show (self->created_row);
-        gtk_widget_show (self->times_list_box);
+        gtk_widget_set_visible (self->created_row, TRUE);
+        gtk_widget_set_visible (self->times_list_box, TRUE);
         add_updatable_label (self, self->created_value_label, "date_created_full");
     }
 
     if (should_show_accessed_date (self))
     {
-        gtk_widget_show (self->times_list_box);
-        gtk_widget_show (self->accessed_row);
+        gtk_widget_set_visible (self->times_list_box, TRUE);
+        gtk_widget_set_visible (self->accessed_row, TRUE);
         add_updatable_label (self, self->accessed_value_label, "date_accessed_full");
     }
 
@@ -2780,14 +2780,14 @@ setup_basic_page (NautilusPropertiesWindow *self)
         /* We have a more efficient way to measure free space in volumes. */
         if (!is_volume_properties (self))
         {
-            gtk_widget_show (self->free_space_value_label);
+            gtk_widget_set_visible (self->free_space_value_label, TRUE);
             add_updatable_label (self, self->free_space_value_label, "free_space");
         }
     }
 
     if (should_show_locations_list_box)
     {
-        gtk_widget_show (self->locations_list_box);
+        gtk_widget_set_visible (self->locations_list_box, TRUE);
     }
 }
 
@@ -2993,7 +2993,7 @@ update_execution_row (GtkWidget         *row,
 
     if (!should_show_exectution_switch (self))
     {
-        gtk_widget_hide (GTK_WIDGET (self->execution_row));
+        gtk_widget_set_visible (GTK_WIDGET (self->execution_row), FALSE);
     }
     else
     {
@@ -3011,7 +3011,7 @@ update_execution_row (GtkWidget         *row,
         gtk_widget_set_sensitive (row,
                                   target_perm->can_set_any_file_permission);
 
-        gtk_widget_show (GTK_WIDGET (self->execution_row));
+        gtk_widget_set_visible (GTK_WIDGET (self->execution_row), TRUE);
     }
 }
 
@@ -3309,7 +3309,7 @@ create_permissions_row (NautilusPropertiesWindow *self,
     expression = gtk_property_expression_new (NAUTILUS_TYPE_PERMISSION_ENTRY, NULL, "name");
     adw_combo_row_set_expression (row, expression);
 
-    gtk_widget_show (GTK_WIDGET (row));
+    gtk_widget_set_visible (GTK_WIDGET (row), TRUE);
 
     g_object_set_data (G_OBJECT (row), "permission-type", GINT_TO_POINTER (permission_type));
     g_object_set_data (G_OBJECT (row), "filter-type", GINT_TO_POINTER (filter_type));
@@ -3625,7 +3625,7 @@ on_change_permissions_clicked (GtkWidget                *button,
     set_active_from_umask (combo, PERMISSION_OTHER, FOLDERS_ONLY);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), self);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
@@ -3644,15 +3644,15 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
         if (!all_can_set_permissions (file_list))
         {
-            gtk_widget_show (self->not_the_owner_label);
-            gtk_widget_show (self->bottom_prompt_seperator);
+            gtk_widget_set_visible (self->not_the_owner_label, TRUE);
+            gtk_widget_set_visible (self->bottom_prompt_seperator, TRUE);
         }
 
         gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permissions-box");
         create_simple_permissions (self);
 
 #ifdef HAVE_SELINUX
-        gtk_widget_show (self->security_context_list_box);
+        gtk_widget_set_visible (self->security_context_list_box, TRUE);
 
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (self->security_context_value_label), "file_attribute",
@@ -3664,7 +3664,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
         if (self->has_recursive_apply)
         {
-            gtk_widget_show (self->change_permissions_button_box);
+            gtk_widget_set_visible (self->change_permissions_button_box, TRUE);
             g_signal_connect (self->change_permissions_button, "clicked",
                               G_CALLBACK (on_change_permissions_clicked),
                               self);
@@ -3923,12 +3923,12 @@ create_properties_window (StartupData *startup_data)
     if (should_show_permissions (window))
     {
         setup_permissions_page (window);
-        gtk_widget_show (window->permissions_navigation_row);
+        gtk_widget_set_visible (window->permissions_navigation_row, TRUE);
     }
 
     if (should_show_exectution_switch (window))
     {
-        gtk_widget_show (GTK_WIDGET (window->execution_row));
+        gtk_widget_set_visible (GTK_WIDGET (window->execution_row), TRUE);
     }
 
     /* Add available extension models pages */
@@ -4285,7 +4285,7 @@ custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
         break;
     }
 
-    gtk_widget_hide (GTK_WIDGET (dialog));
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -4366,7 +4366,7 @@ select_image_button_callback (GtkWidget                *widget,
 
     g_signal_connect (dialog, "response",
                       G_CALLBACK (custom_icon_file_chooser_response_cb), self);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void

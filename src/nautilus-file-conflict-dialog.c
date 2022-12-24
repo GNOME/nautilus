@@ -110,7 +110,7 @@ nautilus_file_conflict_dialog_set_replace_button_label (NautilusFileConflictDial
 void
 nautilus_file_conflict_dialog_disable_skip (NautilusFileConflictDialog *fcd)
 {
-    gtk_widget_hide (fcd->skip_button);
+    gtk_widget_set_visible (fcd->skip_button, FALSE);
 }
 
 void
@@ -122,7 +122,7 @@ nautilus_file_conflict_dialog_disable_replace (NautilusFileConflictDialog *fcd)
 void
 nautilus_file_conflict_dialog_disable_apply_to_all (NautilusFileConflictDialog *fcd)
 {
-    gtk_widget_hide (fcd->checkbox);
+    gtk_widget_set_visible (fcd->checkbox, FALSE);
 }
 
 static void
@@ -164,8 +164,8 @@ on_expanded_notify (GtkExpander                *w,
 {
     if (gtk_expander_get_expanded (w))
     {
-        gtk_widget_hide (dialog->replace_button);
-        gtk_widget_show (dialog->rename_button);
+        gtk_widget_set_visible (dialog->replace_button, FALSE);
+        gtk_widget_set_visible (dialog->rename_button, TRUE);
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_RENAME);
 
         gtk_widget_set_sensitive (dialog->checkbox, FALSE);
@@ -189,8 +189,8 @@ on_expanded_notify (GtkExpander                *w,
     }
     else
     {
-        gtk_widget_hide (dialog->rename_button);
-        gtk_widget_show (dialog->replace_button);
+        gtk_widget_set_visible (dialog->rename_button, FALSE);
+        gtk_widget_set_visible (dialog->replace_button, TRUE);
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_REPLACE);
 
         gtk_widget_set_sensitive (dialog->checkbox, TRUE);

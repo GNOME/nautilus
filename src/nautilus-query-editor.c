@@ -622,7 +622,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     gtk_widget_set_parent (image, GTK_WIDGET (editor));
 
     editor->tags_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_widget_hide (editor->tags_box);
+    gtk_widget_set_visible (editor->tags_box, FALSE);
     gtk_widget_set_parent (editor->tags_box, GTK_WIDGET (editor));
 
     editor->text = gtk_text_new ();

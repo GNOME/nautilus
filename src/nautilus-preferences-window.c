@@ -382,7 +382,7 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
 
     gtk_window_set_transient_for (GTK_WINDOW (preferences_window), parent_window);
 
-    gtk_widget_show (preferences_window);
+    gtk_window_present (GTK_WINDOW (preferences_window));
 }
 
 void nautilus_preferences_window_show(GtkWindow *window)

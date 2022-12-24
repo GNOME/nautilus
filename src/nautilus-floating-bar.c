@@ -232,14 +232,14 @@ check_pointer_timeout (gpointer user_data)
         pointer_y < data->y_down_limit ||
         pointer_y > data->y_upper_limit)
     {
-        gtk_widget_show (GTK_WIDGET (self));
+        gtk_widget_set_visible (GTK_WIDGET (self), TRUE);
         self->hover_timeout_id = 0;
 
         return G_SOURCE_REMOVE;
     }
     else
     {
-        gtk_widget_hide (GTK_WIDGET (self));
+        gtk_widget_set_visible (GTK_WIDGET (self), FALSE);
     }
 
     return G_SOURCE_CONTINUE;
@@ -374,20 +374,17 @@ nautilus_floating_bar_constructed (GObject *obj)
                   "margin-start", 12,
                   "margin-end", 12,
                   NULL);
-    gtk_widget_show (labels_box);
 
     w = gtk_label_new (NULL);
     gtk_label_set_ellipsize (GTK_LABEL (w), PANGO_ELLIPSIZE_MIDDLE);
     gtk_label_set_single_line_mode (GTK_LABEL (w), TRUE);
     gtk_box_append (GTK_BOX (labels_box), w);
     self->primary_label_widget = w;
-    gtk_widget_show (w);
 
     w = gtk_label_new (NULL);
     gtk_label_set_single_line_mode (GTK_LABEL (w), TRUE);
     gtk_box_append (GTK_BOX (labels_box), w);
     self->details_label_widget = w;
-    gtk_widget_show (w);
 
     w = gtk_button_new_from_icon_name ("process-stop-symbolic");
     gtk_widget_add_css_class (w, "circular");

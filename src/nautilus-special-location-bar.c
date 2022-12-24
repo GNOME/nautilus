@@ -187,28 +187,26 @@ set_special_location (NautilusSpecialLocationBar *bar,
     gtk_label_set_text (GTK_LABEL (bar->label), message);
     g_free (message);
 
-    gtk_widget_show (bar->label);
-
     if (learn_more_markup)
     {
         gtk_label_set_markup (GTK_LABEL (bar->learn_more_label),
                               learn_more_markup);
-        gtk_widget_show (bar->learn_more_label);
+        gtk_widget_set_visible (bar->learn_more_label, TRUE);
         g_free (learn_more_markup);
     }
     else
     {
-        gtk_widget_hide (bar->learn_more_label);
+        gtk_widget_set_visible (bar->learn_more_label, FALSE);
     }
 
     if (button_label)
     {
         gtk_button_set_label (GTK_BUTTON (bar->button), button_label);
-        gtk_widget_show (bar->button);
+        gtk_widget_set_visible (bar->button, TRUE);
     }
     else
     {
-        gtk_widget_hide (bar->button);
+        gtk_widget_set_visible (bar->button, FALSE);
     }
 }
 
@@ -292,7 +290,6 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
 
     info_bar = gtk_info_bar_new ();
     gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar), GTK_MESSAGE_QUESTION);
-    gtk_widget_show (info_bar);
     adw_bin_set_child (ADW_BIN (bar), info_bar);
 
     attrs = pango_attr_list_new ();

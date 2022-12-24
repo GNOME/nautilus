@@ -883,20 +883,20 @@ update_network_state (NautilusGtkPlacesView *view)
        * otherwise just show the spinner in the header */
       if (!has_networks (view))
         {
-          gtk_widget_show (view->network_placeholder);
+          gtk_widget_set_visible (view->network_placeholder, TRUE);
           gtk_label_set_text (GTK_LABEL (view->network_placeholder_label),
                               _("Searching for network locations"));
         }
     }
   else if (!has_networks (view))
     {
-      gtk_widget_show (view->network_placeholder);
+      gtk_widget_set_visible (view->network_placeholder, TRUE);
       gtk_label_set_text (GTK_LABEL (view->network_placeholder_label),
                           _("No network locations found"));
     }
   else
     {
-      gtk_widget_hide (view->network_placeholder);
+      gtk_widget_set_visible (view->network_placeholder, FALSE);
     }
 }
 
@@ -1680,7 +1680,7 @@ populate_available_protocols_grid (GtkGrid *grid)
     }
 
   if (!has_any)
-    gtk_widget_hide (GTK_WIDGET (grid));
+    gtk_widget_set_visible (GTK_WIDGET (grid), FALSE);
 }
 
 static GMenuModel *
@@ -2014,7 +2014,7 @@ on_recent_servers_listbox_row_activated (NautilusGtkPlacesView    *view,
 
   gtk_editable_set_text (GTK_EDITABLE (view->address_entry), uri);
 
-  gtk_widget_hide (view->recent_servers_popover);
+  gtk_widget_set_visible (view->recent_servers_popover, FALSE);
 }
 
 static void

@@ -385,7 +385,7 @@ nautilus_places_view_init (NautilusPlacesView *self)
                                              NAUTILUS_OPEN_FLAG_NEW_TAB | NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NORMAL);
     gtk_widget_set_hexpand (priv->places_view, TRUE);
     gtk_widget_set_vexpand (priv->places_view, TRUE);
-    gtk_widget_show (priv->places_view);
+    gtk_widget_set_visible (priv->places_view, TRUE);
     gtk_box_append (GTK_BOX (self), priv->places_view);
 
     g_signal_connect_object (priv->places_view, "notify::loading",

@@ -500,7 +500,7 @@ run_file_conflict_dialog (gpointer user_data)
                                         data);
 
     g_signal_connect (data->dialog, "response", G_CALLBACK (on_conflict_dialog_response), data);
-    gtk_widget_show (GTK_WIDGET (data->dialog));
+    gtk_window_present (GTK_WINDOW (data->dialog));
 
     g_list_free (files);
 
@@ -593,7 +593,7 @@ open_file_in_application (gpointer user_data)
     gtk_app_chooser_dialog_set_heading (GTK_APP_CHOOSER_DIALOG (dialog), heading);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_app_chooser_response), data);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 
     return G_SOURCE_REMOVE;
 }
@@ -664,7 +664,7 @@ run_passphrase_dialog (gpointer user_data)
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_request_passphrase_cb), data);
     gtk_window_set_transient_for (GTK_WINDOW (dialog), data->parent_window);
-    gtk_widget_show (GTK_WIDGET (dialog));
+    gtk_window_present (GTK_WINDOW (dialog));
 
     return G_SOURCE_REMOVE;
 }

@@ -676,7 +676,6 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
                                                 GtkWidget          *widget)
 {
     gtk_box_append (GTK_BOX (self->extra_location_widgets), widget);
-    gtk_widget_show (self->extra_location_widgets);
 }
 
 static void
@@ -912,18 +911,15 @@ nautilus_window_slot_constructed (GObject *object)
 
     gtk_orientable_set_orientation (GTK_ORIENTABLE (self),
                                     GTK_ORIENTATION_VERTICAL);
-    gtk_widget_show (GTK_WIDGET (self));
 
     extras_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     self->extra_location_widgets = extras_vbox;
     gtk_box_append (GTK_BOX (self), extras_vbox);
-    gtk_widget_show (extras_vbox);
 
     self->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
     /* We want to keep alive the query editor betwen additions and removals on the
      * UI, specifically when the toolbar adds or removes it */
     g_object_ref_sink (self->query_editor);
-    gtk_widget_show (GTK_WIDGET (self->query_editor));
 
     self->search_info_label = GTK_LABEL (gtk_label_new (NULL));
     self->search_info_label_revealer = GTK_REVEALER (gtk_revealer_new ());
@@ -932,9 +928,6 @@ nautilus_window_slot_constructed (GObject *object)
                             GTK_WIDGET (self->search_info_label));
     gtk_box_append (GTK_BOX (self),
                     GTK_WIDGET (self->search_info_label_revealer));
-
-    gtk_widget_show (GTK_WIDGET (self->search_info_label));
-    gtk_widget_show (GTK_WIDGET (self->search_info_label_revealer));
 
     gtk_widget_add_css_class (GTK_WIDGET (self->search_info_label), "search-information");
 
@@ -2035,7 +2028,6 @@ setup_view (NautilusWindowSlot *self,
     }
 
     change_view (self);
-    gtk_widget_show (GTK_WIDGET (self->window));
 
 out:
     nautilus_profile_end (NULL);
@@ -2498,7 +2490,6 @@ nautilus_window_slot_show_x_content_bar (NautilusWindowSlot *self,
     }
 
     bar = nautilus_x_content_bar_new (mount, x_content_types);
-    gtk_widget_show (bar);
     nautilus_window_slot_add_extra_location_widget (self, bar);
 }
 
@@ -2569,7 +2560,6 @@ nautilus_window_slot_show_special_location_bar (NautilusWindowSlot      *self,
     GtkWidget *bar;
 
     bar = nautilus_special_location_bar_new (special_location);
-    gtk_widget_show (bar);
 
     nautilus_window_slot_add_extra_location_widget (self, bar);
 }
@@ -2616,8 +2606,6 @@ view_started_loading (NautilusWindowSlot *self,
     {
         gtk_widget_grab_focus (GTK_WIDGET (self->window));
     }
-
-    gtk_widget_show (GTK_WIDGET (self->window));
 
     nautilus_window_slot_set_loading (self, TRUE);
 }
@@ -2816,7 +2804,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         widget = GTK_WIDGET (self->content_view);
         gtk_box_append (GTK_BOX (self), widget);
         gtk_widget_set_vexpand (widget, TRUE);
-        gtk_widget_show (widget);
         self->searching_binding = g_object_bind_property (self->content_view, "searching",
                                                           self, "searching",
                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);

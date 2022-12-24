@@ -423,7 +423,7 @@ remove_loading_floating_bar (NautilusFilesView *view)
         priv->floating_bar_loading_timeout_id = 0;
     }
 
-    gtk_widget_hide (priv->floating_bar);
+    gtk_widget_set_visible (priv->floating_bar, FALSE);
     nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (priv->floating_bar), FALSE);
 }
 
@@ -441,7 +441,7 @@ real_setup_loading_floating_bar (NautilusFilesView *view)
     nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (priv->floating_bar), priv->loading);
 
     gtk_widget_set_halign (priv->floating_bar, GTK_ALIGN_END);
-    gtk_widget_show (priv->floating_bar);
+    gtk_widget_set_visible (priv->floating_bar, TRUE);
 }
 
 static gboolean
@@ -515,7 +515,7 @@ real_floating_bar_set_short_status (NautilusFilesView *view,
 
     if (primary_status == NULL && detail_status == NULL)
     {
-        gtk_widget_hide (priv->floating_bar);
+        gtk_widget_set_visible (priv->floating_bar, FALSE);
         nautilus_floating_bar_remove_hover_timeout (NAUTILUS_FLOATING_BAR (priv->floating_bar));
         return;
     }
@@ -524,7 +524,7 @@ real_floating_bar_set_short_status (NautilusFilesView *view,
                                       primary_status,
                                       detail_status);
 
-    gtk_widget_show (priv->floating_bar);
+    gtk_widget_set_visible (priv->floating_bar, TRUE);
 }
 
 typedef struct
@@ -1490,7 +1490,7 @@ choose_program (NautilusFilesView *view,
                             "directory-view:files",
                             files,
                             (GDestroyNotify) nautilus_file_list_free);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 
     g_signal_connect_object (dialog, "response",
                              G_CALLBACK (app_chooser_dialog_response_cb),
@@ -1803,7 +1803,7 @@ select_pattern (NautilusFilesView *view)
     g_signal_connect (dialog, "response",
                       G_CALLBACK (pattern_select_response_cb),
                       view);
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
@@ -6017,7 +6017,7 @@ copy_or_move_selection (NautilusFilesView *view,
                       G_CALLBACK (on_destination_dialog_response),
                       copy_data);
 
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
@@ -6202,7 +6202,7 @@ real_action_rename (NautilusFilesView *view)
                                                        nautilus_files_view_get_model (view),
                                                        window);
 
-            gtk_widget_show (GTK_WIDGET (dialog));
+            gtk_window_present (GTK_WINDOW (dialog));
         }
         else
         {
@@ -6456,7 +6456,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
                       G_CALLBACK (on_extract_destination_dialog_response),
                       data);
 
-    gtk_widget_show (dialog);
+    gtk_window_present (GTK_WINDOW (dialog));
 }
 
 static void
@@ -9759,8 +9759,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     /* Register to menu provider extension signal managing menu updates */
     g_signal_connect_object (nautilus_signaller_get_current (), "popup-menu-changed",
                              G_CALLBACK (schedule_update_context_menus), view, G_CONNECT_SWAPPED);
-
-    gtk_widget_show (GTK_WIDGET (view));
 
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,

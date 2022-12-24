@@ -467,7 +467,7 @@ operations_list_create_widget (GObject  *item,
     GtkWidget *widget;
 
     widget = nautilus_progress_info_widget_new (info);
-    gtk_widget_show (widget);
+    gtk_widget_set_visible (widget, TRUE);
 
     return widget;
 }
