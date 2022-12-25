@@ -575,13 +575,7 @@ after_text_change (NautilusLocationEntry *self,
      * but don't insert the completion into the entry. */
     priv->idle_insert_completion = insert;
 
-    /* Do the expand at idle time to avoid slowing down typing when the
-     * directory is large. */
-    if (priv->idle_id == 0)
-    {
-        priv->idle_id = g_idle_add_full (G_PRIORITY_HIGH,
-                                         update_completions_store, self, NULL);
-    }
+    update_completions_store (self);
 }
 
 static void
