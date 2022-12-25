@@ -398,12 +398,11 @@ got_completion_data_callback (GFilenameCompleter    *completer,
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
-    if (priv->idle_id)
+    if (priv->idle_id == 0)
     {
-        g_source_remove (priv->idle_id);
-        priv->idle_id = 0;
+        priv->idle_id = g_idle_add_full (G_PRIORITY_HIGH,
+                                         update_completions_store, entry, NULL);
     }
-    update_completions_store (entry);
 }
 
 static void
@@ -575,7 +574,13 @@ after_text_change (NautilusLocationEntry *self,
      * but don't insert the completion into the entry. */
     priv->idle_insert_completion = insert;
 
-    update_completions_store (self);
+    /* Do the expand at idle time to avoid slowing down typing when the
+     * directory is large. */
+    if (priv->idle_id == 0)
+    {
+        priv->idle_id = g_idle_add_full (G_PRIORITY_HIGH,
+                                         update_completions_store, self, NULL);
+    }
 }
 
 static void
