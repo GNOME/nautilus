@@ -1,3 +1,4 @@
+#include "nautilus-tracker-utilities.h"
 #include "test-utilities.h"
 
 /* Time in seconds we allow for Tracker Miners to index the file */
@@ -137,6 +138,8 @@ main (int   argc,
     g_autoptr (GFile) location = NULL;
     g_autoptr (GError) error = NULL;
     const gchar *indexed_tmpdir;
+
+    nautilus_tracker_setup_host_miner_fs_connection_sync ();
 
     indexed_tmpdir = g_getenv ("TRACKER_INDEXED_TMPDIR");
     if (!indexed_tmpdir)
