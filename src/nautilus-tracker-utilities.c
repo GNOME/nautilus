@@ -73,6 +73,12 @@ nautilus_tracker_setup_miner_fs_connection (void)
 {
     static gsize tried_tracker_init = FALSE;
 
+    if (tracker_miner_fs_connection != NULL)
+    {
+        /* The connection was already established */
+        return;
+    }
+
     if (g_once_init_enter (&tried_tracker_init))
     {
         const gchar *busname = "org.freedesktop.Tracker3.Miner.Files";
@@ -84,6 +90,30 @@ nautilus_tracker_setup_miner_fs_connection (void)
 
         g_once_init_leave (&tried_tracker_init, TRUE);
     }
+}
+
+/**
+ * nautilus_tracker_setup_host_miner_fs_connection_sync:
+ *
+ * This function is only meant to be used within tests.
+ * This version of this setup function intentionally blocks to help with tests.
+ *
+ */
+void
+nautilus_tracker_setup_host_miner_fs_connection_sync (void)
+{
+    g_autoptr (GError) error = NULL;
+    const gchar *busname = "org.freedesktop.Tracker3.Miner.Files";
+
+    g_message ("Starting %s", busname);
+    tracker_miner_fs_connection = tracker_sparql_connection_bus_new (busname, NULL, NULL, &error);
+    if (error != NULL)
+    {
+        g_critical ("Could not start local Tracker indexer at %s: %s", busname, error->message);
+        return;
+    }
+
+    tracker_miner_fs_busname = busname;
 }
 
 /**

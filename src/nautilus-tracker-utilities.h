@@ -26,3 +26,6 @@
 
 TrackerSparqlConnection * nautilus_tracker_get_miner_fs_connection (GError **error);
 void nautilus_tracker_setup_miner_fs_connection (void);
+
+/* nautilus_tracker_setup_host_miner_fs_connection_sync() is for testing purposes only */
+void nautilus_tracker_setup_host_miner_fs_connection_sync (void);
