@@ -4304,6 +4304,7 @@ make_file_name_valid_for_dest_fs (char       *filename,
             !strcmp (dest_fs_type, "ntfs") ||
             /* msdos is returned for fat filesystems */
             !strcmp (dest_fs_type, "msdos") ||
+            !strcmp (dest_fs_type, "exfat") ||
             !strcmp (dest_fs_type, "cifs"))
         {
             gboolean ret;
