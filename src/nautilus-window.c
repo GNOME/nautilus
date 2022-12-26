@@ -383,19 +383,23 @@ action_go_to_tab (GSimpleAction *action,
 }
 
 static void
+prompt_for_location (NautilusWindow *window,
+                     const char     *path)
+{
+    GtkWidget *entry;
+
+    entry = nautilus_window_ensure_location_entry (window);
+    nautilus_location_entry_set_special_text (NAUTILUS_LOCATION_ENTRY (entry),
+                                              path);
+    gtk_editable_set_position (GTK_EDITABLE (entry), -1);
+}
+
+static void
 action_prompt_for_location_root (GSimpleAction *action,
                                  GVariant      *state,
                                  gpointer       user_data)
 {
-    NautilusWindow *window = user_data;
-    GFile *location;
-    GtkWidget *entry;
-
-    location = g_file_new_for_path ("/");
-    entry = nautilus_window_ensure_location_entry (window);
-    nautilus_location_entry_set_location (NAUTILUS_LOCATION_ENTRY (entry), location);
-
-    g_object_unref (location);
+    prompt_for_location (NAUTILUS_WINDOW (user_data), "/");
 }
 
 static void
@@ -403,12 +407,7 @@ action_prompt_for_location_home (GSimpleAction *action,
                                  GVariant      *state,
                                  gpointer       user_data)
 {
-    GtkWidget *entry;
-
-    entry = nautilus_window_ensure_location_entry (NAUTILUS_WINDOW (user_data));
-    nautilus_location_entry_set_special_text (NAUTILUS_LOCATION_ENTRY (entry),
-                                              "~");
-    gtk_editable_set_position (GTK_EDITABLE (entry), -1);
+    prompt_for_location (NAUTILUS_WINDOW (user_data), "~");
 }
 
 static void
