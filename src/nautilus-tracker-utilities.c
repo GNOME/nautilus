@@ -20,6 +20,7 @@
  */
 
 #include "config.h"
+#include "nautilus-application.h"
 #include "nautilus-tracker-utilities.h"
 
 /* Shared global connection to Tracker Miner FS */
@@ -50,12 +51,6 @@ start_local_tracker_miner_fs (void)
     tracker_miner_fs_busname = busname;
 }
 
-static gboolean
-inside_flatpak (void)
-{
-    return g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
-}
-
 static void
 host_tracker_miner_fs_ready (GObject      *source,
                              GAsyncResult *res,
@@ -65,7 +60,7 @@ host_tracker_miner_fs_ready (GObject      *source,
     if (tracker_miner_fs_error)
     {
         g_warning ("Unable to create connection for session-wide Tracker indexer: %s", (tracker_miner_fs_error)->message);
-        if (inside_flatpak ())
+        if (nautilus_application_is_sandboxed ())
         {
             g_clear_error (&tracker_miner_fs_error);
             start_local_tracker_miner_fs ();
