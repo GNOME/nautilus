@@ -25,6 +25,8 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-properties-window.h"
 
+#include "nautilus-application.h"
+#include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
@@ -33,8 +35,11 @@
 #include "nautilus-icon-names.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-window.h"
 
-#include "nautilus-window-slot-dnd.h"
+#ifdef GDK_WINDOWING_X11
+#include <gdk/x11/gdkx.h>
+#endif
 
 enum
 {
@@ -79,6 +84,9 @@ typedef struct
 
     guint ignore_changes : 1;
     guint is_root : 1;
+
+    graphene_point_t hover_start_point;
+    guint switch_location_timer;
 } ButtonData;
 
 struct _NautilusPathBar
@@ -675,6 +683,148 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
+static void
+switch_location (ButtonData *button_data)
+{
+    GFile *location;
+    GtkRoot *window;
+
+    if (button_data->file == NULL)
+    {
+        return;
+    }
+
+    window = gtk_widget_get_root (button_data->button);
+    g_assert (NAUTILUS_IS_WINDOW (window));
+
+    location = nautilus_file_get_location (button_data->file);
+    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                             location, NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                             NULL, NAUTILUS_WINDOW (window), NULL);
+    g_object_unref (location);
+}
+
+static gboolean
+switch_location_timer (gpointer user_data)
+{
+    ButtonData *button_data = user_data;
+
+    button_data->switch_location_timer = 0;
+
+    switch_location (button_data);
+
+    return G_SOURCE_REMOVE;
+}
+
+static void
+check_switch_location_timer (ButtonData *button_data)
+{
+    if (button_data->switch_location_timer)
+    {
+        return;
+    }
+
+    button_data->switch_location_timer = g_timeout_add (HOVER_TIMEOUT,
+                                                        switch_location_timer,
+                                                        button_data);
+}
+
+static void
+remove_switch_location_timer (ButtonData *button_data)
+{
+    if (button_data->switch_location_timer != 0)
+    {
+        g_source_remove (button_data->switch_location_timer);
+        button_data->switch_location_timer = 0;
+    }
+}
+
+static GdkDragAction
+on_drag_motion (GtkDropTarget *target,
+                gdouble        x,
+                gdouble        y,
+                gpointer       user_data)
+{
+    ButtonData *button_data = user_data;
+    GdkDragAction action;
+    const GValue *value;
+    graphene_point_t start;
+
+    value = gtk_drop_target_get_value (target);
+    if (value == NULL)
+    {
+        return 0;
+    }
+
+    if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+        GSList *items = g_value_get_boxed (value);
+
+        if (items == NULL)
+        {
+            action = 0;
+        }
+        else
+        {
+            action = nautilus_dnd_get_preferred_action (button_data->file, items->data);
+        }
+    }
+
+    start = button_data->hover_start_point;
+    if (gtk_drag_check_threshold (button_data->button, start.x, start.y, x, y))
+    {
+        remove_switch_location_timer (button_data);
+        check_switch_location_timer (button_data);
+        button_data->hover_start_point.x = x;
+        button_data->hover_start_point.y = y;
+    }
+
+    return action;
+}
+
+static void
+on_drag_leave (GtkDropTarget *target,
+               gpointer       user_data)
+{
+    remove_switch_location_timer (user_data);
+}
+
+static void
+on_drag_drop (GtkDropTarget *target,
+              const GValue  *value,
+              gdouble        x,
+              gdouble        y,
+              gpointer       user_data)
+{
+    GtkRoot *window;
+    NautilusWindowSlot *target_slot;
+    NautilusFilesView *target_view;
+    g_autoptr (GFile) target_location = NULL;
+    ButtonData *button_data = user_data;
+    GdkDragAction action;
+
+    window = gtk_widget_get_root (button_data->button);
+    g_assert (NAUTILUS_IS_WINDOW (window));
+
+    target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
+    target_location = nautilus_file_get_location (button_data->file);
+    target_view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (target_slot));
+    action = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
+
+    #ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        /* Temporary workaround until the below GTK MR (or equivalent fix)
+         * is merged.  Without this fix, the preferred action isn't set correctly.
+         * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
+        GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
+        action = gdk_drag_get_selected_action (drag);
+    }
+    #endif
+
+    nautilus_dnd_perform_drop (target_view, value, action, target_location);
+}
+
 static GIcon *
 get_gicon_for_mount (ButtonData *button_data)
 {
@@ -1012,6 +1162,7 @@ make_button_data (NautilusPathBar *self,
     GFile *path;
     GtkWidget *child = NULL;
     GtkEventController *controller;
+    GtkDropTarget *target;
     ButtonData *button_data;
 
     path = nautilus_file_get_location (file);
@@ -1130,7 +1281,17 @@ make_button_data (NautilusPathBar *self,
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_click_gesture_pressed), button_data);
 
-    nautilus_drag_slot_proxy_init (button_data->button, button_data->file);
+    /* TODO: Implement GDK_ACTION_ASK */
+    target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
+
+    gtk_drop_target_set_preload (target, TRUE);
+    /* TODO: Implement GDK_TYPE_STRING */
+    gtk_drop_target_set_gtypes (target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
+    g_signal_connect (target, "enter", G_CALLBACK (on_drag_motion), button_data);
+    g_signal_connect (target, "motion", G_CALLBACK (on_drag_motion), button_data);
+    g_signal_connect (target, "drop", G_CALLBACK (on_drag_drop), button_data);
+    g_signal_connect (target, "leave", G_CALLBACK (on_drag_leave), button_data);
+    gtk_widget_add_controller (button_data->button, GTK_EVENT_CONTROLLER (target));
 
     g_object_unref (path);
 

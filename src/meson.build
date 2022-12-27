@@ -141,8 +141,6 @@ libnautilus_sources = [
   'nautilus-view-model.h',
   'nautilus-window-slot.c',
   'nautilus-window-slot.h',
-  'nautilus-window-slot-dnd.c',
-  'nautilus-window-slot-dnd.h',
   'nautilus-window.c',
   'nautilus-window.h',
   'nautilus-x-content-bar.c',
