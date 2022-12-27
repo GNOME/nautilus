@@ -657,43 +657,6 @@ get_preferred_action (NautilusFile *target_file,
     return action;
 }
 
-static void
-real_perform_drop (NautilusListBase *self,
-                   const GValue     *value,
-                   GdkDragAction     action,
-                   GFile            *target_location)
-{
-    g_autofree gchar *target_uri = g_file_get_uri (target_location);
-
-    if (!gdk_drag_action_is_unique (action))
-    {
-        /* TODO: Implement */
-    }
-    else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
-    {
-        nautilus_files_view_handle_text_drop (NAUTILUS_FILES_VIEW (self),
-                                              g_value_get_string (value),
-                                              target_uri, action);
-    }
-    else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-    {
-        GSList *source_file_list = g_value_get_boxed (value);
-        GList *source_uri_list = NULL;
-
-        for (GSList *l = source_file_list; l != NULL; l = l->next)
-        {
-            source_uri_list = g_list_prepend (source_uri_list, g_file_get_uri (l->data));
-        }
-        source_uri_list = g_list_reverse (source_uri_list);
-
-        nautilus_files_view_drop_proxy_received_uris (NAUTILUS_FILES_VIEW (self),
-                                                      source_uri_list,
-                                                      target_uri,
-                                                      action);
-        g_list_free_full (source_uri_list, g_free);
-    }
-}
-
 static GdkDragAction
 on_item_drag_enter (GtkDropTarget *target,
                     double         x,
@@ -819,7 +782,7 @@ on_item_drop (GtkDropTarget *target,
     /* In x11 the leave signal isn't emitted on a drop so we need to clear the timeout */
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
-    real_perform_drop (self, value, actions, target_location);
+    nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
 
     return TRUE;
 }
@@ -914,7 +877,7 @@ on_view_drop (GtkDropTarget *target,
     }
     #endif
 
-    real_perform_drop (self, value, actions, target_location);
+    nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
 
     return TRUE;
 }
