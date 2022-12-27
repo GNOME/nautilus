@@ -4296,17 +4296,15 @@ make_file_name_valid_for_dest_fs (char       *filename,
 {
     if (dest_fs_type != NULL && filename != NULL)
     {
-        if (!strcmp (dest_fs_type, "fat") ||
-            !strcmp (dest_fs_type, "vfat") ||
-            /* The fuseblk filesystem type could be of any type
+        if (/* The fuseblk filesystem type could be of any type
              * in theory, but in practice is usually NTFS or exFAT.
              * This assumption is a pragmatic way to solve
              * https://gitlab.gnome.org/GNOME/nautilus/-/issues/1343 */
             !strcmp (dest_fs_type, "fuse") ||
             !strcmp (dest_fs_type, "ntfs") ||
+            /* msdos is returned for fat filesystems */
             !strcmp (dest_fs_type, "msdos") ||
-            !strcmp (dest_fs_type, "cifs") ||
-            !strcmp (dest_fs_type, "msdosfs"))
+            !strcmp (dest_fs_type, "cifs"))
         {
             gboolean ret;
             int i, old_len;
