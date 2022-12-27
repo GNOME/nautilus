@@ -30,8 +30,5 @@
 
 #include "nautilus-dnd.h"
 
-#include "nautilus-window-slot.h"
-
 void nautilus_drag_slot_proxy_init (GtkWidget *widget,
-                                    NautilusFile *target_file,
-                                    NautilusWindowSlot *target_slot);
+                                    NautilusFile *target_file);

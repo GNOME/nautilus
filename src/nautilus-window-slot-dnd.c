@@ -36,7 +36,6 @@
 typedef struct
 {
     NautilusFile *target_file;
-    NautilusWindowSlot *target_slot;
     GtkWidget *widget;
 
     graphene_point_t hover_start_point;
@@ -105,18 +104,10 @@ slot_proxy_drag_motion (GtkDropTarget *target,
                         gdouble        y,
                         gpointer       user_data)
 {
-    NautilusDragSlotProxyInfo *drag_info;
-    NautilusWindowSlot *target_slot;
-    GtkRoot *window;
+    NautilusDragSlotProxyInfo *drag_info = user_data;
     GdkDragAction action;
-    char *target_uri;
-    GFile *location;
     const GValue *value;
     graphene_point_t start;
-
-    drag_info = user_data;
-
-    action = 0;
 
     value = gtk_drop_target_get_value (target);
     if (value == NULL)
@@ -124,58 +115,20 @@ slot_proxy_drag_motion (GtkDropTarget *target,
         return 0;
     }
 
-    window = gtk_widget_get_root (drag_info->widget);
-    g_assert (NAUTILUS_IS_WINDOW (window));
+    if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+        GSList *items = g_value_get_boxed (value);
 
-    target_uri = NULL;
-    if (drag_info->target_file != NULL)
-    {
-        target_uri = nautilus_file_get_uri (drag_info->target_file);
-    }
-    else
-    {
-        if (drag_info->target_slot != NULL)
+        if (items == NULL)
         {
-            target_slot = drag_info->target_slot;
+            action = 0;
         }
         else
         {
-            target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
-        }
-
-        if (target_slot != NULL)
-        {
-            location = nautilus_window_slot_get_location (target_slot);
-            target_uri = g_file_get_uri (location);
+            action = nautilus_dnd_get_preferred_action (drag_info->target_file, items->data);
         }
     }
 
-    if (target_uri != NULL)
-    {
-        NautilusFile *file;
-        NautilusDirectory *directory;
-        gboolean can;
-        file = nautilus_file_get_existing_by_uri (target_uri);
-        directory = nautilus_directory_get_for_file (file);
-        can = nautilus_file_can_write (file) && nautilus_directory_is_editable (directory);
-        nautilus_directory_unref (directory);
-        g_object_unref (file);
-        if (!can)
-        {
-            action = 0;
-            goto out;
-        }
-
-        if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-        {
-            GSList *items = g_value_get_boxed (value);
-            action = nautilus_dnd_get_preferred_action (file, items->data);
-        }
-    }
-
-    g_free (target_uri);
-
-out:
     start = drag_info->hover_start_point;
     if (gtk_drag_check_threshold (drag_info->widget, start.x, start.y, x, y))
     {
@@ -193,17 +146,13 @@ drag_info_free (gpointer user_data)
 {
     NautilusDragSlotProxyInfo *drag_info = user_data;
 
+    slot_proxy_remove_switch_location_timer (drag_info);
+
     g_clear_object (&drag_info->target_file);
-    g_clear_object (&drag_info->target_slot);
 
     g_slice_free (NautilusDragSlotProxyInfo, drag_info);
 }
 
-static void
-drag_info_clear (NautilusDragSlotProxyInfo *drag_info)
-{
-    slot_proxy_remove_switch_location_timer (drag_info);
-}
 
 static void
 slot_proxy_drag_leave (GtkDropTarget *target,
@@ -213,7 +162,7 @@ slot_proxy_drag_leave (GtkDropTarget *target,
 
     drag_info = user_data;
 
-    drag_info_clear (drag_info);
+    slot_proxy_remove_switch_location_timer (drag_info);
 }
 
 static void
@@ -226,90 +175,37 @@ slot_proxy_handle_drop (GtkDropTarget *target,
     GtkRoot *window;
     NautilusWindowSlot *target_slot;
     NautilusFilesView *target_view;
-    char *target_uri;
-    GList *uri_list = NULL;
-    GFile *location;
-    NautilusDragSlotProxyInfo *drag_info;
-
-    drag_info = user_data;
+    g_autoptr (GFile) target_location = NULL;
+    NautilusDragSlotProxyInfo *drag_info = user_data;
+    GdkDragAction action;
 
     window = gtk_widget_get_root (drag_info->widget);
     g_assert (NAUTILUS_IS_WINDOW (window));
 
-    if (drag_info->target_slot != NULL)
+    target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
+    target_location = nautilus_file_get_location (drag_info->target_file);
+    target_view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (target_slot));
+    action = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
+
+    #ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        target_slot = drag_info->target_slot;
+        /* Temporary workaround until the below GTK MR (or equivalent fix)
+         * is merged.  Without this fix, the preferred action isn't set correctly.
+         * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
+        GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
+        action = gdk_drag_get_selected_action (drag);
     }
-    else
-    {
-        target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
-    }
+    #endif
 
-    target_uri = NULL;
-    if (drag_info->target_file != NULL)
-    {
-        target_uri = nautilus_file_get_uri (drag_info->target_file);
-    }
-    else if (target_slot != NULL)
-    {
-        location = nautilus_window_slot_get_location (target_slot);
-        target_uri = g_file_get_uri (location);
-    }
+    nautilus_dnd_perform_drop (target_view, value, action, target_location);
 
-    target_view = NULL;
-    if (target_slot != NULL)
-    {
-        NautilusView *view;
-
-        view = nautilus_window_slot_get_current_view (target_slot);
-
-        if (view && NAUTILUS_IS_FILES_VIEW (view))
-        {
-            target_view = NAUTILUS_FILES_VIEW (view);
-        }
-    }
-
-    if (target_slot != NULL && target_view != NULL)
-    {
-        if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-        {
-            GSList *items = g_value_get_boxed (value);
-            GdkDragAction actions;
-
-            for (GSList *l = items; l != NULL; l = l->next)
-            {
-                uri_list = g_list_prepend (uri_list, g_file_get_uri (l->data));
-            }
-
-            actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
-
-            #ifdef GDK_WINDOWING_X11
-            if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-            {
-                /* Temporary workaround until the below GTK MR (or equivalend fix)
-                 * is merged.  Without this fix, the preferred action isn't set correctly.
-                 * https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982 */
-                GdkDrag *drag = gdk_drop_get_drag (gtk_drop_target_get_current_drop (target));
-                actions = gdk_drag_get_selected_action (drag);
-            }
-            #endif
-
-            nautilus_files_view_drop_proxy_received_uris (target_view,
-                                                          uri_list,
-                                                          target_uri,
-                                                          actions);
-            g_list_free_full (uri_list, g_free);
-        }
-    }
-    g_free (target_uri);
-
-    drag_info_clear (drag_info);
+    drag_info_free (drag_info);
 }
 
 void
-nautilus_drag_slot_proxy_init (GtkWidget          *widget,
-                               NautilusFile       *target_file,
-                               NautilusWindowSlot *target_slot)
+nautilus_drag_slot_proxy_init (GtkWidget    *widget,
+                               NautilusFile *target_file)
 {
     NautilusDragSlotProxyInfo *drag_info;
     GtkDropTarget *target;
@@ -318,18 +214,7 @@ nautilus_drag_slot_proxy_init (GtkWidget          *widget,
 
     drag_info = g_slice_new0 (NautilusDragSlotProxyInfo);
 
-    g_object_set_data_full (G_OBJECT (widget), "drag-slot-proxy-data", drag_info,
-                            drag_info_free);
-
-    if (target_file != NULL)
-    {
-        drag_info->target_file = nautilus_file_ref (target_file);
-    }
-
-    if (target_slot != NULL)
-    {
-        drag_info->target_slot = g_object_ref (target_slot);
-    }
+    drag_info->target_file = nautilus_file_ref (target_file);
 
     drag_info->widget = widget;
     /* TODO: Implement GDK_ACTION_ASK */
