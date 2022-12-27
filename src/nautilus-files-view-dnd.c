@@ -81,18 +81,6 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
         }
     }
 
-    if ((action != GDK_ACTION_COPY) &&
-        (action != GDK_ACTION_MOVE) &&
-        (action != GDK_ACTION_LINK))
-    {
-        show_dialog (_("Drag and drop is not supported."),
-                     _("An invalid drag type was used."),
-                     GET_ANCESTOR (view),
-                     GTK_MESSAGE_WARNING);
-        g_free (container_uri);
-        return;
-    }
-
     n_uris = 0;
     uri_list = g_uri_list_extract_uris (item_uris);
     for (i = 0; uri_list[i] != NULL; i++)
@@ -305,6 +293,17 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
         /* By default dragging to the same directory is allowed so that
          * users can duplicate a file using the CTRL modifier key.  Prevent
          * an accidental MOVE, by rejecting what would be an error anyways. */
+        return;
+    }
+
+    if ((action != GDK_ACTION_COPY) &&
+        (action != GDK_ACTION_MOVE) &&
+        (action != GDK_ACTION_LINK))
+    {
+        show_dialog (_("Drag and drop is not supported."),
+                     _("An invalid drag type was used."),
+                     GET_ANCESTOR (view),
+                     GTK_MESSAGE_WARNING);
         return;
     }
 
