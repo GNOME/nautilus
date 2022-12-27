@@ -97,6 +97,7 @@ struct _NautilusWindow
     AdwApplicationWindow parent_instance;
 
     AdwTabView *tab_view;
+    AdwTabBar *tab_bar;
     AdwTabPage *menu_page;
 
     GList *slots;
@@ -1467,6 +1468,63 @@ setup_tab_view (NautilusWindow *window)
                       window);
 }
 
+static GdkDragAction
+extra_drag_value_cb (AdwTabBar    *self,
+                     AdwTabPage   *page,
+                     const GValue *value,
+                     gpointer      user_data)
+{
+    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
+    g_autoptr (NautilusFile) file = nautilus_file_get (nautilus_window_slot_get_location (slot));
+    GdkDragAction action;
+
+    if (value == NULL)
+    {
+        action = 0;
+    }
+    else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
+    {
+        GSList *file_list = g_value_get_boxed (value);
+
+        if (file_list == NULL)
+        {
+            action = 0;
+        }
+        else
+        {
+            action = nautilus_dnd_get_preferred_action (file, G_FILE (file_list->data));
+        }
+    }
+    else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
+    {
+        action = GDK_ACTION_COPY;
+    }
+
+    /* We set the preferred action on the drop from the results of this function,
+     * but since we don't have access to the GtkDropTarget, we can't get the preferred
+     * action in ::drop, so let's set it as data on the page. We probably should
+     * expose the preferred action within libadwaita.
+     */
+    g_object_set_data (G_OBJECT (page), "drag-action", GINT_TO_POINTER (action));
+    return action;
+}
+
+static gboolean
+extra_drag_drop_cb (AdwTabBar    *self,
+                    AdwTabPage   *page,
+                    const GValue *value,
+                    gpointer      user_data)
+{
+    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (slot));
+    GFile *target_location = nautilus_window_slot_get_location (slot);
+    GdkDragAction action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (page), "drag-action"));
+
+    nautilus_dnd_perform_drop (view, value, action, target_location);
+
+    return TRUE;
+}
+
 const GActionEntry win_entries[] =
 {
     { "back", action_back },
@@ -1578,6 +1636,19 @@ nautilus_window_constructed (GObject *self)
                                  NAUTILUS_WINDOW_DEFAULT_HEIGHT);
 
     setup_tab_view (window);
+
+    /* Lets not support GDK_ACTION_LINK for now.  This only impacts x11
+     * and on x11 we are using a hack in list-base to handle GDK_ACTION_LINK
+     * which we can not replicate here because we don't have access to the
+     * GtkDropTarget to check the actions on the GdkDrag.
+     */
+    adw_tab_bar_setup_extra_drop_target (window->tab_bar,
+                                         GDK_ACTION_COPY | GDK_ACTION_MOVE,
+                                         (GType [2]) {GDK_TYPE_FILE_LIST, G_TYPE_STRING}, 2);
+    adw_tab_bar_set_extra_drag_preload (window->tab_bar, TRUE);
+    g_signal_connect (window->tab_bar, "extra-drag-value", G_CALLBACK (extra_drag_value_cb), NULL);
+    g_signal_connect (window->tab_bar, "extra-drag-drop", G_CALLBACK (extra_drag_drop_cb), NULL);
+
     nautilus_window_set_up_sidebar (window);
 
 
@@ -2227,6 +2298,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);
 
     signals[SLOT_ADDED] =
         g_signal_new ("slot-added",
