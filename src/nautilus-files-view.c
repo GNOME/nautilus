@@ -9059,6 +9059,11 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
 
         return;
     }
+    else if (copy_action == GDK_ACTION_MOVE)
+    {
+        nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
+                                                    item_uris);
+    }
     nautilus_file_unref (target_file);
 
     nautilus_file_operations_copy_move
