@@ -2084,7 +2084,7 @@ nautilus_window_init (NautilusWindow *window)
                              window,
                              G_CONNECT_SWAPPED);
 
-    g_signal_connect (window, "notify::is-maximized",
+    g_signal_connect (window, "notify::maximized",
                       G_CALLBACK (on_is_maximized_changed), NULL);
 
     window->slots = NULL;
