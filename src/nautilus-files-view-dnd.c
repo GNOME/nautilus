@@ -195,11 +195,9 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
         return;
     }
 
-
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
     nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
                                                 source_uri_list);
-#endif
+
     nautilus_files_view_move_copy_items (view, source_uri_list,
                                          target_uri != NULL ? target_uri : container_uri,
                                          action);

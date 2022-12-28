@@ -113,46 +113,42 @@ nautilus_clipboard_from_string (char    *string,
     return clip;
 }
 
-#if 0 && NAUTILUS_DND_NEEDS_GTK4_REIMPLEMENTATION
 void
 nautilus_clipboard_clear_if_colliding_uris (GtkWidget   *widget,
                                             const GList *item_uris)
 {
-    GtkSelectionData *data;
-    GList *clipboard_item_uris, *l;
-    gboolean collision;
+    GdkClipboard *clipboard = gtk_widget_get_clipboard (widget);
+    GdkContentFormats *formats = gdk_clipboard_get_formats (clipboard);
+    g_auto (GValue) value = G_VALUE_INIT;
+    NautilusClipboard *nautilus_clipboard;
+    GList *clipboard_item_uris;
 
-    collision = FALSE;
-    data = gtk_clipboard_wait_for_contents (gtk_widget_get_clipboard (widget),
-                                            copied_files_atom);
-    if (data == NULL)
+    if (!gdk_clipboard_is_local (clipboard) ||
+        !gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD))
     {
         return;
     }
 
-    clipboard_item_uris = nautilus_clipboard_get_uri_list_from_selection_data (data);
+    g_value_init (&value, NAUTILUS_TYPE_CLIPBOARD);
+    if (!gdk_content_provider_get_value (gdk_clipboard_get_content (clipboard), &value, NULL))
+    {
+        return;
+    }
+    nautilus_clipboard = g_value_get_boxed (&value);
+    clipboard_item_uris = nautilus_clipboard_get_uri_list (nautilus_clipboard);
 
-    for (l = (GList *) item_uris; l; l = l->next)
+    for (GList *l = (GList *) item_uris; l != NULL; l = l->next)
     {
         if (g_list_find_custom ((GList *) clipboard_item_uris, l->data,
                                 (GCompareFunc) g_strcmp0))
         {
-            collision = TRUE;
+            gdk_clipboard_set_content (clipboard, NULL);
             break;
         }
     }
 
-    if (collision)
-    {
-        gtk_clipboard_clear (gtk_widget_get_clipboard (widget));
-    }
-
-    if (clipboard_item_uris)
-    {
-        g_list_free_full (clipboard_item_uris, g_free);
-    }
+    g_list_free_full (clipboard_item_uris, g_free);
 }
-#endif
 
 /*
  * This asumes the implementation of GTK_TYPE_FILE_LIST is a GSList<GFile>.
