@@ -195,7 +195,7 @@ nautilus_app_chooser_constructed (GObject *object)
     if (self->file_name != NULL)
     {
         /* Translators: %s is the filename.  i.e. "Choose an app to open test.jpg" */
-        description = g_strdup_printf (_("Choose an app to open <b>%s</b>."), self->file_name);
+        description = g_strdup_printf (_("Choose an app to open <b>%s</b>"), self->file_name);
         gtk_label_set_markup (GTK_LABEL (self->label_description), description);
     }
 
