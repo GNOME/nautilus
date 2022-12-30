@@ -132,7 +132,6 @@ apply_columns_settings (NautilusListView  *self,
     g_autolist (NautilusColumn) all_columns = NULL;
     NautilusFile *file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
     g_autoptr (GFile) location = NULL;
-    g_autoptr (GList) view_columns = NULL;
     GListModel *old_view_columns;
     g_autoptr (GHashTable) visible_columns_hash = NULL;
     g_autoptr (GHashTable) old_view_columns_hash = NULL;
@@ -193,50 +192,28 @@ apply_columns_settings (NautilusListView  *self,
         nautilus_column = g_hash_table_lookup (self->factory_to_column_map, factory);
         g_object_get (nautilus_column, "name", &name, NULL);
         g_hash_table_insert (old_view_columns_hash, name, view_column);
+        gtk_column_view_column_set_visible (view_column, FALSE);
     }
 
     for (GList *l = all_columns; l != NULL; l = l->next)
     {
+        gboolean visible;
         g_autofree char *name = NULL;
         g_autofree char *lowercase = NULL;
+        GtkColumnViewColumn *view_column;
 
         g_object_get (G_OBJECT (l->data), "name", &name, NULL);
         lowercase = g_ascii_strdown (name, -1);
-
-        if (g_hash_table_lookup (visible_columns_hash, lowercase) != NULL)
+        view_column = g_hash_table_lookup (old_view_columns_hash, name);
+        if (view_column == NULL)
         {
-            GtkColumnViewColumn *view_column;
-
-            view_column = g_hash_table_lookup (old_view_columns_hash, name);
-            if (view_column != NULL)
-            {
-                view_columns = g_list_prepend (view_columns, view_column);
-            }
+            continue;
         }
-    }
 
-    view_columns = g_list_reverse (view_columns);
+        gtk_column_view_insert_column (self->view_ui, column_i++, view_column);
 
-    /* hide columns that are not present in the configuration */
-    for (guint i = 0; i < g_list_model_get_n_items (old_view_columns); i++)
-    {
-        g_autoptr (GtkColumnViewColumn) view_column = NULL;
-
-        view_column = g_list_model_get_item (old_view_columns, i);
-        if (g_list_find (view_columns, view_column) == NULL)
-        {
-            gtk_column_view_column_set_visible (view_column, FALSE);
-        }
-        else
-        {
-            gtk_column_view_column_set_visible (view_column, TRUE);
-        }
-    }
-
-    /* place columns in the correct order */
-    for (GList *l = view_columns; l != NULL; l = l->next, column_i++)
-    {
-        gtk_column_view_insert_column (self->view_ui, column_i, l->data);
+        visible = g_hash_table_contains (visible_columns_hash, lowercase);
+        gtk_column_view_column_set_visible (view_column, visible);
     }
 }
 
