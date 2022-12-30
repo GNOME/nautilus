@@ -278,6 +278,7 @@ nautilus_file_info_add_emblem (NautilusFileInfo *self,
     NautilusFileInfoInterface *iface;
 
     g_return_if_fail (NAUTILUS_IS_FILE_INFO (self));
+    g_return_if_fail (emblem_name != NULL && emblem_name[0] != '\0');
 
     iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
 
