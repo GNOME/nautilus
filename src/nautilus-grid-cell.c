@@ -99,6 +99,7 @@ update_emblems (NautilusGridCell *self)
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     GtkWidget *child;
+    GtkIconTheme *theme;
     g_autolist (GIcon) emblems = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
@@ -111,9 +112,18 @@ update_emblems (NautilusGridCell *self)
         gtk_box_remove (GTK_BOX (self->emblems_box), child);
     }
 
+    theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
     emblems = nautilus_file_get_emblem_icons (file);
     for (GList *l = emblems; l != NULL; l = l->next)
     {
+        if (!gtk_icon_theme_has_gicon (theme, l->data))
+        {
+            g_autofree gchar *icon_string = g_icon_to_string (l->data);
+            g_warning ("Failed to add emblem. “%s” not found in the icon theme",
+                       icon_string);
+            continue;
+        }
+
         gtk_box_append (GTK_BOX (self->emblems_box),
                         gtk_image_new_from_gicon (l->data));
     }
