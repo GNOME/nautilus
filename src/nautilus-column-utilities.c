@@ -21,6 +21,7 @@
 
 #include <config.h>
 #include "nautilus-column-utilities.h"
+#include "nautilus-global-preferences.h"
 
 #include <string.h>
 #include <glib/gi18n.h>
@@ -29,25 +30,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
-
-static const char *default_column_order[] =
-{
-    "name",
-    "size",
-    "type",
-    "owner",
-    "group",
-    "permissions",
-    "detailed_type",
-    "where",
-    "date_modified_with_time",
-    "date_modified",
-    "date_accessed",
-    "date_created",
-    "recency",
-    "starred",
-    NULL
-};
 
 static const char *default_columns_for_recent[] =
 {
@@ -355,6 +337,10 @@ column_compare (NautilusColumn  *a,
     char *name_a;
     char *name_b;
     int ret;
+    g_auto (GStrv) default_column_order = NULL;
+
+    default_column_order = g_settings_get_strv (nautilus_list_view_preferences,
+                                                NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
 
     g_object_get (G_OBJECT (a), "name", &name_a, NULL);
     index_a = strv_index (column_order, name_a);
