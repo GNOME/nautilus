@@ -41,6 +41,9 @@ struct _NautilusColumnChooser
     GtkWidget *use_default_button;
     GtkWidget *window_title;
 
+    NautilusColumn *drag_column;
+    guint orig_drag_pos;
+
     NautilusFile *file;
 };
 
@@ -137,6 +140,98 @@ notify_row_switch_cb (GObject    *object,
     list_changed (chooser);
 }
 
+static GdkContentProvider *
+on_row_drag_prepare (GtkDragSource *source,
+                     gdouble        x,
+                     gdouble        y,
+                     gpointer       user_data)
+{
+    GtkWidget *widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (source));
+    g_autoptr (GdkPaintable) paintable = gtk_widget_paintable_new (widget);
+    NautilusColumn *column = user_data;
+    NautilusColumnChooser *chooser;
+
+    chooser = NAUTILUS_COLUMN_CHOOSER (gtk_widget_get_ancestor (widget, NAUTILUS_TYPE_COLUMN_CHOOSER));
+    if (!g_list_store_find (G_LIST_STORE (chooser->model), column, &chooser->orig_drag_pos))
+    {
+        return NULL;
+    }
+
+    chooser->drag_column = column;
+    gtk_drag_source_set_icon (source, paintable, 0, 0);
+    return gdk_content_provider_new_typed (NAUTILUS_TYPE_COLUMN, user_data);
+}
+
+static gboolean
+on_row_drag_cancel (GtkDragSource       *source,
+                    GdkDrag             *drag,
+                    GdkDragCancelReason *reason,
+                    gpointer             user_data)
+{
+    NautilusColumnChooser *chooser = user_data;
+    guint pos;
+
+    if (g_list_store_find (G_LIST_STORE (chooser->model), chooser->drag_column, &pos))
+    {
+        g_list_store_remove (G_LIST_STORE (chooser->model), pos);
+        g_list_store_insert (G_LIST_STORE (chooser->model), chooser->orig_drag_pos, chooser->drag_column);
+        list_changed (chooser);
+
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+static GdkDragAction
+on_row_drop_enter (GtkDropTarget *target,
+                   gdouble        x,
+                   gdouble        y,
+                   gpointer       user_data)
+{
+    NautilusColumn *drop_column = user_data;
+    NautilusColumn *drag_column;
+    NautilusColumnChooser *chooser;
+    GtkWidget *row = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (target));
+    const GValue *value = gtk_drop_target_get_value (target);
+    guint orig_pos, dest_pos = 0;
+
+    if (value == NULL || !G_VALUE_HOLDS (value, NAUTILUS_TYPE_COLUMN))
+    {
+        return 0;
+    }
+
+    chooser = NAUTILUS_COLUMN_CHOOSER (gtk_widget_get_ancestor (row, NAUTILUS_TYPE_COLUMN_CHOOSER));
+    drag_column = g_value_get_object (value);
+
+    if (drop_column == drag_column)
+    {
+        return GDK_ACTION_MOVE;
+    }
+
+    if (g_list_store_find (G_LIST_STORE (chooser->model), drag_column, &orig_pos) &&
+        g_list_store_find (G_LIST_STORE (chooser->model), drop_column, &dest_pos))
+    {
+        g_list_store_remove (G_LIST_STORE (chooser->model), orig_pos);
+        g_list_store_insert (G_LIST_STORE (chooser->model), dest_pos, drag_column);
+        list_changed (chooser);
+
+        return GDK_ACTION_MOVE;
+    }
+
+    return 0;
+}
+
+static gboolean
+on_row_drop (GtkDropTarget *self,
+             const GValue  *value,
+             gdouble        x,
+             gdouble        y,
+             gpointer       user_data)
+{
+    return TRUE;
+}
+
 static GtkWidget *
 add_list_box_row (GObject  *item,
                   gpointer  user_data)
@@ -147,6 +242,7 @@ add_list_box_row (GObject  *item,
     g_autofree char *name = NULL;
     GtkWidget *row;
     GtkWidget *row_switch;
+    GtkEventController *controller;
 
     g_object_get (column, "label", &label, "name", &name, NULL);
 
@@ -168,6 +264,18 @@ add_list_box_row (GObject  *item,
     gtk_widget_set_halign (row_switch, GTK_ALIGN_END);
     gtk_widget_set_valign (row_switch, GTK_ALIGN_CENTER);
     adw_action_row_add_suffix (ADW_ACTION_ROW (row), row_switch);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_drag_source_new ());
+    gtk_drag_source_set_actions (GTK_DRAG_SOURCE (controller), GDK_ACTION_MOVE);
+    g_signal_connect (controller, "prepare", G_CALLBACK (on_row_drag_prepare), column);
+    g_signal_connect (controller, "drag-cancel", G_CALLBACK (on_row_drag_cancel), chooser);
+    gtk_widget_add_controller (row, controller);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_drop_target_new (NAUTILUS_TYPE_COLUMN, GDK_ACTION_MOVE));
+    gtk_drop_target_set_preload (GTK_DROP_TARGET (controller), TRUE);
+    g_signal_connect (controller, "enter", G_CALLBACK (on_row_drop_enter), column);
+    g_signal_connect (controller, "drop", G_CALLBACK (on_row_drop), column);
+    gtk_widget_add_controller (row, controller);
 
     return row;
 }
