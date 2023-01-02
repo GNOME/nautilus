@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkListStore" id="store">
-    <columns>
-      <!-- column-name COLUMN_VISIBLE -->
-      <column type="gboolean"/>
-      <!-- column-name COLUMN_LABEL -->
-      <column type="gchararray"/>
-      <!-- column-name COLUMN_NAME -->
-      <column type="gchararray"/>
-      <!-- column-name COLUMN_SENSITIVE -->
-      <column type="gboolean"/>
-    </columns>
-  </object>
   <template class="NautilusColumnChooser" parent="AdwWindow">
     <property name="modal">True</property>
     <property name="default-width">360</property>
@@ -31,57 +19,27 @@
           </object>
         </child>
         <child>
-          <object class="GtkBox" id="box">
-            <property name="margin-top">18</property>
-            <property name="margin-bottom">18</property>
-            <property name="margin-start">18</property>
-            <property name="margin-end">18</property>
+          <object class="GtkBox">
             <property name="orientation">vertical</property>
-            <property name="spacing">18</property>
             <child>
               <object class="GtkScrolledWindow">
                 <property name="child">
-                  <object class="GtkTreeView" id="view">
+                  <object class="GtkListBox" id="list_box">
+                    <property name="margin-bottom">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-top">12</property>
                     <property name="vexpand">True</property>
-                    <property name="model">store</property>
-                    <property name="headers-visible">False</property>
-                    <property name="reorderable">True</property>
-                    <signal name="row-activated" handler="view_row_activated_callback" swapped="no"/>
-                    <child internal-child="selection">
-                      <object class="GtkTreeSelection">
-                        <signal name="changed" handler="selection_changed_callback" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkTreeViewColumn" id="visible-column">
-                        <child>
-                          <object class="GtkCellRendererToggle">
-                            <signal name="toggled" handler="visible_toggled_callback" swapped="no"/>
-                          </object>
-                          <attributes>
-                            <attribute name="sensitive">3</attribute>
-                            <attribute name="active">0</attribute>
-                          </attributes>
-                        </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkTreeViewColumn" id="label-column">
-                        <child>
-                          <object class="GtkCellRendererText"/>
-                          <attributes>
-                            <attribute name="sensitive">3</attribute>
-                            <attribute name="text">1</attribute>
-                          </attributes>
-                        </child>
-                      </object>
-                    </child>
+                    <property name="selection-mode">none</property>
+                    <style>
+                      <class name="boxed-list"/>
+                    </style>
                   </object>
                 </property>
-                <style>
-                  <class name="frame"/>
-                </style>
               </object>
+            </child>
+            <child>
+              <object class="GtkSeparator"/>
             </child>
             <child>
               <object class="GtkBox">

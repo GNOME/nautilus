@@ -17,11 +17,13 @@
  *  see <http://www.gnu.org/licenses/>.
  *
  *  Authors: Dave Camp <dave@ximian.com>
+ *           Corey Berla <corey@berla.me>
  */
 
 #include <config.h>
 #include "nautilus-column-chooser.h"
 
+#include <adwaita.h>
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -34,22 +36,12 @@ struct _NautilusColumnChooser
 {
     AdwWindow parent;
 
-    GtkWidget *view;
-    GtkListStore *store;
-
+    GListModel *model;
+    GtkWidget *list_box;
     GtkWidget *use_default_button;
     GtkWidget *window_title;
 
     NautilusFile *file;
-};
-
-enum
-{
-    COLUMN_VISIBLE,
-    COLUMN_LABEL,
-    COLUMN_NAME,
-    COLUMN_SENSITIVE,
-    NUM_COLUMNS
 };
 
 enum
@@ -67,6 +59,39 @@ enum
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, ADW_TYPE_WINDOW);
+
+static GStrv
+get_column_names (NautilusColumnChooser *chooser,
+                  gboolean               only_visible)
+{
+    g_autoptr (GStrvBuilder) builder = g_strv_builder_new ();
+
+    for (guint i = 0; i < g_list_model_get_n_items (chooser->model); i++)
+    {
+        g_autoptr (NautilusColumn) column = g_list_model_get_item (chooser->model, i);
+        char *name;
+        gboolean visible;
+
+        g_object_get (column, "name", &name, "visible", &visible, NULL);
+
+        if (!only_visible || visible)
+        {
+            g_strv_builder_add (builder, name);
+        }
+        else
+        {
+            g_free (name);
+        }
+    }
+
+    return g_strv_builder_end (builder);
+}
+
+static void
+list_changed (NautilusColumnChooser *chooser)
+{
+    g_signal_emit (chooser, signals[CHANGED], 0);
+}
 
 static void
 nautilus_column_chooser_set_property (GObject      *object,
@@ -95,73 +120,6 @@ nautilus_column_chooser_set_property (GObject      *object,
 }
 
 static void
-list_changed (NautilusColumnChooser *chooser)
-{
-    g_signal_emit (chooser, signals[CHANGED], 0);
-}
-
-static void
-toggle_path (NautilusColumnChooser *chooser,
-             GtkTreePath           *path)
-{
-    GtkTreeIter iter;
-    gboolean visible;
-    g_autofree gchar *name = NULL;
-
-    gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->store),
-                             &iter, path);
-    gtk_tree_model_get (GTK_TREE_MODEL (chooser->store), &iter,
-                        COLUMN_VISIBLE, &visible,
-                        COLUMN_NAME, &name, -1);
-
-    if (g_strcmp0 (name, "name") == 0)
-    {
-        /* Don't allow name column to be disabled. */
-        return;
-    }
-
-    gtk_list_store_set (chooser->store,
-                        &iter, COLUMN_VISIBLE, !visible, -1);
-    list_changed (chooser);
-}
-
-
-static void
-visible_toggled_callback (GtkCellRendererToggle *cell,
-                          char                  *path_string,
-                          gpointer               user_data)
-{
-    GtkTreePath *path;
-
-    path = gtk_tree_path_new_from_string (path_string);
-    toggle_path (NAUTILUS_COLUMN_CHOOSER (user_data), path);
-    gtk_tree_path_free (path);
-}
-
-static void
-view_row_activated_callback (GtkTreeView       *tree_view,
-                             GtkTreePath       *path,
-                             GtkTreeViewColumn *column,
-                             gpointer           user_data)
-{
-    toggle_path (NAUTILUS_COLUMN_CHOOSER (user_data), path);
-}
-
-static void
-selection_changed_callback (GtkTreeSelection *selection,
-                            gpointer          user_data)
-{
-}
-
-static void
-row_deleted_callback (GtkTreeModel *model,
-                      GtkTreePath  *path,
-                      gpointer      user_data)
-{
-    list_changed (NAUTILUS_COLUMN_CHOOSER (user_data));
-}
-
-static void
 use_default_clicked_callback (GtkWidget *button,
                               gpointer   user_data)
 {
@@ -170,235 +128,104 @@ use_default_clicked_callback (GtkWidget *button,
 }
 
 static void
-populate_tree (NautilusColumnChooser *chooser)
+notify_row_switch_cb (GObject    *object,
+                      GParamSpec *pspec,
+                      gpointer    user_data)
 {
-    GList *columns;
-    GList *l;
+    NautilusColumnChooser *chooser = user_data;
 
-    columns = nautilus_get_columns_for_file (chooser->file);
-
-    for (l = columns; l != NULL; l = l->next)
-    {
-        GtkTreeIter iter;
-        NautilusColumn *column;
-        char *name;
-        char *label;
-        gboolean visible = FALSE;
-        gboolean sensitive = TRUE;
-
-        column = NAUTILUS_COLUMN (l->data);
-
-        g_object_get (G_OBJECT (column),
-                      "name", &name, "label", &label,
-                      NULL);
-
-        if (strcmp (name, "name") == 0)
-        {
-            visible = TRUE;
-            sensitive = FALSE;
-        }
-        if (strcmp (name, "starred") == 0)
-        {
-            g_free (name);
-            g_free (label);
-            continue;
-        }
-
-        gtk_list_store_append (chooser->store, &iter);
-        gtk_list_store_set (chooser->store, &iter,
-                            COLUMN_VISIBLE, visible,
-                            COLUMN_LABEL, label,
-                            COLUMN_NAME, name,
-                            COLUMN_SENSITIVE, sensitive,
-                            -1);
-
-        g_free (name);
-        g_free (label);
-    }
-
-    nautilus_column_list_free (columns);
+    list_changed (chooser);
 }
 
-static void
-nautilus_column_chooser_constructed (GObject *object)
+static GtkWidget *
+add_list_box_row (GObject  *item,
+                  gpointer  user_data)
 {
-    NautilusColumnChooser *chooser;
-    g_autofree gchar *name = NULL;
+    NautilusColumn *column = NAUTILUS_COLUMN (item);
+    NautilusColumnChooser *chooser = user_data;
+    g_autofree char *label = NULL;
+    g_autofree char *name = NULL;
+    GtkWidget *row;
+    GtkWidget *row_switch;
 
-    G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->constructed (object);
+    g_object_get (column, "label", &label, "name", &name, NULL);
 
-    chooser = NAUTILUS_COLUMN_CHOOSER (object);
-    name = nautilus_file_get_display_name (chooser->file);
+    row = adw_action_row_new ();
+    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), label);
 
-    adw_window_title_set_subtitle (ADW_WINDOW_TITLE (chooser->window_title), name);
+    if (g_strcmp0 (name, "name") == 0)
+    {
+        return row;
+    }
 
-    populate_tree (chooser);
+    row_switch = gtk_switch_new ();
+    g_object_bind_property (column, "visible", row_switch, "active",
+                            G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+    g_signal_connect (row_switch, "notify::active",
+                      G_CALLBACK (notify_row_switch_cb),
+                      chooser);
 
-    g_signal_connect (chooser->store, "row-deleted",
-                      G_CALLBACK (row_deleted_callback), chooser);
+    gtk_widget_set_halign (row_switch, GTK_ALIGN_END);
+    gtk_widget_set_valign (row_switch, GTK_ALIGN_CENTER);
+    adw_action_row_add_suffix (ADW_ACTION_ROW (row), row_switch);
+
+    return row;
 }
 
-static void
-set_visible_columns (NautilusColumnChooser  *chooser,
-                     char                  **visible_columns)
+static guint
+strv_index (char **column_order,
+            char  *name)
 {
-    GHashTable *visible_columns_hash;
-    GtkTreeIter iter;
-    int i;
-
-    visible_columns_hash = g_hash_table_new (g_str_hash, g_str_equal);
-    /* always show the name column */
-    g_hash_table_insert (visible_columns_hash, "name", "name");
-    for (i = 0; visible_columns[i] != NULL; ++i)
+    for (gint i = 0; column_order[i] != NULL; i++)
     {
-        g_hash_table_insert (visible_columns_hash,
-                             visible_columns[i],
-                             visible_columns[i]);
-    }
-
-    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->store),
-                                       &iter))
-    {
-        do
+        if (g_strcmp0 (column_order[i], name) == 0)
         {
-            char *name;
-            gboolean visible;
-
-            gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
-                                &iter,
-                                COLUMN_NAME, &name,
-                                -1);
-
-            visible = (g_hash_table_lookup (visible_columns_hash, name) != NULL);
-
-            gtk_list_store_set (chooser->store,
-                                &iter,
-                                COLUMN_VISIBLE, visible,
-                                -1);
-            g_free (name);
+            return i;
         }
-        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), &iter));
     }
 
-    g_hash_table_destroy (visible_columns_hash);
+    return G_MAXUINT;
 }
 
-static char **
-get_column_names (NautilusColumnChooser *chooser,
-                  gboolean               only_visible)
+static gint
+column_sort_func (gconstpointer a,
+                  gconstpointer b,
+                  gpointer      user_data)
 {
-    GPtrArray *ret;
-    GtkTreeIter iter;
+    g_autofree char *a_name = NULL;
+    g_autofree char *b_name = NULL;
+    guint a_pos, b_pos;
+    char **column_order = user_data;
 
-    ret = g_ptr_array_new ();
-    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->store),
-                                       &iter))
-    {
-        do
-        {
-            char *name;
-            gboolean visible;
-            gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
-                                &iter,
-                                COLUMN_VISIBLE, &visible,
-                                COLUMN_NAME, &name,
-                                -1);
-            if (!only_visible || visible)
-            {
-                /* give ownership to the array */
-                g_ptr_array_add (ret, name);
-            }
-            else
-            {
-                g_free (name);
-            }
-        }
-        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), &iter));
-    }
-    g_ptr_array_add (ret, NULL);
+    g_object_get ((gpointer) a, "name", &a_name, NULL);
+    g_object_get ((gpointer) b, "name", &b_name, NULL);
+    a_pos = strv_index (column_order, a_name);
+    b_pos = strv_index (column_order, b_name);
 
-    return (char **) g_ptr_array_free (ret, FALSE);
-}
-
-static gboolean
-get_column_iter (NautilusColumnChooser *chooser,
-                 NautilusColumn        *column,
-                 GtkTreeIter           *iter)
-{
-    char *column_name;
-
-    g_object_get (NAUTILUS_COLUMN (column), "name", &column_name, NULL);
-
-    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->store),
-                                       iter))
-    {
-        do
-        {
-            char *name;
-
-            gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
-                                iter,
-                                COLUMN_NAME, &name,
-                                -1);
-            if (!strcmp (name, column_name))
-            {
-                g_free (column_name);
-                g_free (name);
-                return TRUE;
-            }
-
-            g_free (name);
-        }
-        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), iter));
-    }
-    g_free (column_name);
-    return FALSE;
+    return a_pos == b_pos ? 0 : a_pos < b_pos ? -1 : 1;
 }
 
 static void
 set_column_order (NautilusColumnChooser  *chooser,
                   char                  **column_order)
 {
-    GList *columns;
-    GList *l;
-    GtkTreePath *path;
+    g_list_store_sort (G_LIST_STORE (chooser->model), column_sort_func, column_order);
+}
 
-    columns = nautilus_get_columns_for_file (chooser->file);
-    columns = nautilus_sort_columns (columns, column_order);
-
-    g_signal_handlers_block_by_func (chooser->store,
-                                     G_CALLBACK (row_deleted_callback),
-                                     chooser);
-
-    path = gtk_tree_path_new_first ();
-    for (l = columns; l != NULL; l = l->next)
+static void
+set_visible_columns (NautilusColumnChooser  *chooser,
+                     char                  **visible_columns)
+{
+    for (guint i = 0; i < g_list_model_get_n_items (chooser->model); i++)
     {
-        GtkTreeIter iter;
+        g_autoptr (NautilusColumn) column = g_list_model_get_item (chooser->model, i);
+        g_autofree char *name = NULL;
+        gboolean visible;
 
-        if (get_column_iter (chooser, NAUTILUS_COLUMN (l->data), &iter))
-        {
-            GtkTreeIter before;
-            if (path)
-            {
-                gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->store),
-                                         &before, path);
-                gtk_list_store_move_after (chooser->store,
-                                           &iter, &before);
-                gtk_tree_path_next (path);
-            }
-            else
-            {
-                gtk_list_store_move_after (chooser->store,
-                                           &iter, NULL);
-            }
-        }
+        g_object_get (column, "name", &name, NULL);
+        visible = g_strv_contains ((const char **) visible_columns, name);
+        g_object_set (column, "visible", visible, NULL);
     }
-    gtk_tree_path_free (path);
-    g_signal_handlers_unblock_by_func (chooser->store,
-                                       G_CALLBACK (row_deleted_callback),
-                                       chooser);
-
-    nautilus_column_list_free (columns);
 }
 
 void
@@ -430,6 +257,56 @@ nautilus_column_chooser_get_settings (NautilusColumnChooser   *chooser,
 }
 
 static void
+populate_list (NautilusColumnChooser *chooser)
+{
+    GList *columns = nautilus_get_columns_for_file (chooser->file);
+
+    g_list_store_remove_all (G_LIST_STORE (chooser->model));
+
+    for (GList *l = columns; l != NULL; l = l->next)
+    {
+        g_autofree char *name = NULL;
+
+        g_object_get (l->data, "name", &name, NULL);
+
+        if (strcmp (name, "starred") == 0)
+        {
+            continue;
+        }
+
+        g_list_store_append (G_LIST_STORE (chooser->model), l->data);
+    }
+
+    nautilus_column_list_free (columns);
+}
+
+static void
+nautilus_column_chooser_constructed (GObject *object)
+{
+    NautilusColumnChooser *chooser;
+    g_autofree gchar *name = NULL;
+
+    G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->constructed (object);
+
+    chooser = NAUTILUS_COLUMN_CHOOSER (object);
+    name = nautilus_file_get_display_name (chooser->file);
+
+    adw_window_title_set_subtitle (ADW_WINDOW_TITLE (chooser->window_title), name);
+
+    populate_list (chooser);
+}
+
+static void
+nautilus_column_chooser_finalize (GObject *object)
+{
+    NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (object);
+
+    g_clear_object (&chooser->model);
+
+    G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->finalize (object);
+}
+
+static void
 nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 {
     GtkWidgetClass *widget_class;
@@ -440,15 +317,12 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 
     oclass->set_property = nautilus_column_chooser_set_property;
     oclass->constructed = nautilus_column_chooser_constructed;
+    oclass->finalize = nautilus_column_chooser_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, view);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, store);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_default_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, window_title);
-    gtk_widget_class_bind_template_callback (widget_class, view_row_activated_callback);
-    gtk_widget_class_bind_template_callback (widget_class, selection_changed_callback);
-    gtk_widget_class_bind_template_callback (widget_class, visible_toggled_callback);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
 
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
@@ -471,9 +345,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 
     g_object_class_install_property (oclass,
                                      PROP_FILE,
-                                     g_param_spec_object ("file",
-                                                          "File",
-                                                          "The file this column chooser is for",
+                                     g_param_spec_object ("file", NULL, NULL,
                                                           NAUTILUS_TYPE_FILE,
                                                           G_PARAM_CONSTRUCT_ONLY |
                                                           G_PARAM_WRITABLE));
@@ -483,6 +355,14 @@ static void
 nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 {
     gtk_widget_init_template (GTK_WIDGET (chooser));
+
+    chooser->model = G_LIST_MODEL (g_list_store_new (G_TYPE_OBJECT));
+
+    gtk_list_box_bind_model (GTK_LIST_BOX (chooser->list_box),
+                             G_LIST_MODEL (chooser->model),
+                             (GtkListBoxCreateWidgetFunc) add_list_box_row,
+                             chooser,
+                             NULL);
 }
 
 GtkWidget *
