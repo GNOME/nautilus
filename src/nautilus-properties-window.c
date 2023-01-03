@@ -3150,7 +3150,6 @@ setup_permissions_drop_down (GtkDropDown    *drop_down,
     {
         if (type != PERMISSION_USER)
         {
-
             list_store_append_nautilus_permission_entry (store, PERMISSION_NONE, FALSE);
         }
         list_store_append_nautilus_permission_entry (store, PERMISSION_READ, FALSE);
