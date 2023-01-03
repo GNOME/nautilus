@@ -25,14 +25,16 @@
 #include <gtk/gtk.h>
 #include "nautilus-file.h"
 
+#include <libadwaita-1/adwaita.h>
+
 #define NAUTILUS_TYPE_COLUMN_CHOOSER nautilus_column_chooser_get_type()
 
-G_DECLARE_FINAL_TYPE (NautilusColumnChooser, nautilus_column_chooser, NAUTILUS, COLUMN_CHOOSER, GtkBox);
+G_DECLARE_FINAL_TYPE (NautilusColumnChooser, nautilus_column_chooser, NAUTILUS, COLUMN_CHOOSER, AdwWindow);
 
-GtkWidget *nautilus_column_chooser_new                 (NautilusFile *file);
+GtkWidget *nautilus_column_chooser_new             (NautilusFile            *file);
 void       nautilus_column_chooser_set_settings    (NautilusColumnChooser   *chooser,
 						    char                   **visible_columns, 
 						    char                   **column_order);
-void       nautilus_column_chooser_get_settings    (NautilusColumnChooser *chooser,
+void       nautilus_column_chooser_get_settings    (NautilusColumnChooser   *chooser,
 						    char                  ***visible_columns, 
 						    char                  ***column_order);

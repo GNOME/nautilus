@@ -32,7 +32,7 @@
 
 struct _NautilusColumnChooser
 {
-    GtkBox parent;
+    AdwWindow parent;
 
     GtkWidget *view;
     GtkListStore *store;
@@ -40,6 +40,7 @@ struct _NautilusColumnChooser
     GtkWidget *move_up_button;
     GtkWidget *move_down_button;
     GtkWidget *use_default_button;
+    GtkWidget *window_title;
 
     NautilusFile *file;
 };
@@ -67,7 +68,7 @@ enum
 };
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_BOX);
+G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, ADW_TYPE_WINDOW);
 
 static void
 nautilus_column_chooser_set_property (GObject      *object,
@@ -333,10 +334,14 @@ static void
 nautilus_column_chooser_constructed (GObject *object)
 {
     NautilusColumnChooser *chooser;
+    g_autofree gchar *name = NULL;
 
     G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->constructed (object);
 
     chooser = NAUTILUS_COLUMN_CHOOSER (object);
+    name = nautilus_file_get_display_name (chooser->file);
+
+    adw_window_title_set_subtitle (ADW_WINDOW_TITLE (chooser->window_title), name);
 
     populate_tree (chooser);
 
@@ -553,12 +558,15 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_up_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_down_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_default_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, window_title);
     gtk_widget_class_bind_template_callback (widget_class, view_row_activated_callback);
     gtk_widget_class_bind_template_callback (widget_class, selection_changed_callback);
     gtk_widget_class_bind_template_callback (widget_class, visible_toggled_callback);
     gtk_widget_class_bind_template_callback (widget_class, move_up_clicked_callback);
     gtk_widget_class_bind_template_callback (widget_class, move_down_clicked_callback);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
+
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
 
     signals[CHANGED] = g_signal_new
                            ("changed",
