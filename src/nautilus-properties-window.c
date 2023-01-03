@@ -170,7 +170,7 @@ struct _NautilusPropertiesWindow
     OwnerChange *owner_change;
 
     GList *permission_rows;
-    GList *change_permission_combos;
+    GList *change_permission_drop_downs;
     GHashTable *initial_permissions;
     gboolean has_recursive_apply;
 
@@ -401,15 +401,6 @@ permission_value_to_string (PermissionValue permission_value,
 }
 
 /* end NautilusPermissionEntry */
-
-enum
-{
-    COLUMN_NAME,
-    COLUMN_VALUE,
-    COLUMN_USE_ORIGINAL,
-    COLUMN_ID,
-    NUM_COLUMNS
-};
 
 typedef struct
 {
@@ -3129,84 +3120,42 @@ update_permission_row (AdwComboRow       *row,
 }
 
 static void
-setup_permissions_combo_box (GtkComboBox    *combo,
+setup_permissions_drop_down (GtkDropDown    *drop_down,
                              PermissionType  type,
                              FilterType      filter_type)
 {
-    g_autoptr (GtkListStore) store = NULL;
-    GtkCellRenderer *cell;
-    GtkTreeIter iter;
+    g_autoptr (GListStore) store = NULL;
+    g_autoptr (GtkExpression) expression = NULL;
 
-    store = gtk_list_store_new (NUM_COLUMNS, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN, G_TYPE_STRING);
-    gtk_combo_box_set_model (combo, GTK_TREE_MODEL (store));
-    gtk_combo_box_set_id_column (GTK_COMBO_BOX (combo), COLUMN_ID);
+    store = g_list_store_new (NAUTILUS_TYPE_PERMISSION_ENTRY);
+    gtk_drop_down_set_model (drop_down, G_LIST_MODEL (store));
+    expression = gtk_property_expression_new (NAUTILUS_TYPE_PERMISSION_ENTRY, NULL, "name");
+    gtk_drop_down_set_expression (drop_down, expression);
 
-    g_object_set_data (G_OBJECT (combo), "filter-type", GINT_TO_POINTER (filter_type));
-    g_object_set_data (G_OBJECT (combo), "permission-type", GINT_TO_POINTER (type));
+
+    g_object_set_data (G_OBJECT (drop_down), "filter-type", GINT_TO_POINTER (filter_type));
+    g_object_set_data (G_OBJECT (drop_down), "permission-type", GINT_TO_POINTER (type));
 
     if (filter_type == FOLDERS_ONLY)
     {
         if (type != PERMISSION_USER)
         {
-            gtk_list_store_append (store, &iter);
-            gtk_list_store_set (store, &iter,
-                                /* Translators: this is referred to the permissions
-                                 * the user has in a directory.
-                                 */
-                                COLUMN_NAME, _("None"),
-                                COLUMN_VALUE, PERMISSION_NONE,
-                                COLUMN_ID, "none",
-                                -1);
+            list_store_append_nautilus_permission_entry (store, PERMISSION_NONE, TRUE);
         }
-        gtk_list_store_append (store, &iter);
-        gtk_list_store_set (store, &iter,
-                            COLUMN_NAME, _("List files only"),
-                            COLUMN_VALUE, PERMISSION_READ,
-                            COLUMN_ID, "r",
-                            -1);
-        gtk_list_store_append (store, &iter);
-        gtk_list_store_set (store, &iter,
-                            COLUMN_NAME, _("Access files"),
-                            COLUMN_VALUE, PERMISSION_READ | PERMISSION_EXEC,
-                            COLUMN_ID, "rx",
-                            -1);
-        gtk_list_store_append (store, &iter);
-        gtk_list_store_set (store, &iter,
-                            COLUMN_NAME, _("Create and delete files"),
-                            COLUMN_VALUE, PERMISSION_READ | PERMISSION_EXEC | PERMISSION_WRITE,
-                            COLUMN_ID, "rwx",
-                            -1);
+        list_store_append_nautilus_permission_entry (store, PERMISSION_READ, TRUE);
+        list_store_append_nautilus_permission_entry (store, PERMISSION_READ | PERMISSION_EXEC, TRUE);
+        list_store_append_nautilus_permission_entry (store, PERMISSION_READ | PERMISSION_EXEC | PERMISSION_WRITE, TRUE);
     }
     else
     {
         if (type != PERMISSION_USER)
         {
-            gtk_list_store_append (store, &iter);
-            gtk_list_store_set (store, &iter,
-                                COLUMN_NAME, _("None"),
-                                COLUMN_VALUE, PERMISSION_NONE,
-                                COLUMN_ID, "none",
-                                -1);
-        }
-        gtk_list_store_append (store, &iter);
-        gtk_list_store_set (store, &iter,
-                            COLUMN_NAME, _("Read-only"),
-                            COLUMN_VALUE, PERMISSION_READ,
-                            COLUMN_ID, "r",
-                            -1);
-        gtk_list_store_append (store, &iter);
-        gtk_list_store_set (store, &iter,
-                            COLUMN_NAME, _("Read and write"),
-                            COLUMN_VALUE, PERMISSION_READ | PERMISSION_WRITE,
-                            COLUMN_ID, "rw",
-                            -1);
-    }
 
-    cell = gtk_cell_renderer_text_new ();
-    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo), cell, TRUE);
-    gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (combo), cell,
-                                    "text", COLUMN_NAME,
-                                    NULL);
+            list_store_append_nautilus_permission_entry (store, PERMISSION_NONE, FALSE);
+        }
+        list_store_append_nautilus_permission_entry (store, PERMISSION_READ, FALSE);
+        list_store_append_nautilus_permission_entry (store, PERMISSION_READ | PERMISSION_WRITE, FALSE);
+    }
 }
 
 static gboolean
@@ -3383,18 +3332,14 @@ on_change_permissions_response (GtkDialog                *dialog,
     guint32 file_permission, file_permission_mask;
     guint32 dir_permission, dir_permission_mask;
     guint32 vfs_mask, vfs_new_perm;
-    GtkWidget *combo;
-    gboolean use_original;
     FilterType filter_type;
     GList *l;
-    GtkTreeModel *model;
-    GtkTreeIter iter;
     PermissionType type;
-    int new_perm, mask;
+    int mask;
 
     if (response != GTK_RESPONSE_OK)
     {
-        g_clear_pointer (&self->change_permission_combos, g_list_free);
+        g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
         gtk_window_destroy (GTK_WINDOW (dialog));
         return;
     }
@@ -3405,27 +3350,20 @@ on_change_permissions_response (GtkDialog                *dialog,
     dir_permission_mask = 0;
 
     /* Simple mode, minus exec checkbox */
-    for (l = self->change_permission_combos; l != NULL; l = l->next)
+    for (l = self->change_permission_drop_downs; l != NULL; l = l->next)
     {
-        combo = l->data;
+        GtkDropDown *drop_down = l->data;
+        NautilusPermissionEntry *selected = gtk_drop_down_get_selected_item (drop_down);
 
-        if (!gtk_combo_box_get_active_iter (GTK_COMBO_BOX (combo), &iter))
+        if (selected == NULL)
         {
             continue;
         }
 
-        type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "permission-type"));
-        filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo), "filter-type"));
+        type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (drop_down), "permission-type"));
+        filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (drop_down), "filter-type"));
 
-        model = gtk_combo_box_get_model (GTK_COMBO_BOX (combo));
-        gtk_tree_model_get (model, &iter,
-                            COLUMN_VALUE, &new_perm,
-                            COLUMN_USE_ORIGINAL, &use_original, -1);
-        if (use_original)
-        {
-            continue;
-        }
-        vfs_new_perm = permission_to_vfs (type, new_perm);
+        vfs_new_perm = permission_to_vfs (type, selected->permission_value);
 
         mask = PERMISSION_READ | PERMISSION_WRITE;
         if (filter_type == FOLDERS_ONLY)
@@ -3469,19 +3407,20 @@ on_change_permissions_response (GtkDialog                *dialog,
                                                      self);
         }
     }
-    g_clear_pointer (&self->change_permission_combos, g_list_free);
+    g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
     gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
-set_active_from_umask (GtkComboBox    *combo,
+set_active_from_umask (GtkDropDown    *drop_down,
                        PermissionType  type,
                        FilterType      filter_type)
 {
+    GListModel *model = gtk_drop_down_get_model (drop_down);
     mode_t initial;
     mode_t mask;
     mode_t p;
-    const char *id;
+    PermissionValue perm;
 
     if (filter_type == FOLDERS_ONLY)
     {
@@ -3501,23 +3440,23 @@ set_active_from_umask (GtkComboBox    *combo,
         p &= ~(S_IRWXG | S_IRWXO);
         if ((p & S_IRWXU) == S_IRWXU)
         {
-            id = "rwx";
+            perm = PERMISSION_READ | PERMISSION_EXEC | PERMISSION_WRITE;
         }
         else if ((p & (S_IRUSR | S_IWUSR)) == (S_IRUSR | S_IWUSR))
         {
-            id = "rw";
+            perm = PERMISSION_READ | PERMISSION_WRITE;
         }
         else if ((p & (S_IRUSR | S_IXUSR)) == (S_IRUSR | S_IXUSR))
         {
-            id = "rx";
+            perm = PERMISSION_READ | PERMISSION_EXEC;
         }
         else if ((p & S_IRUSR) == S_IRUSR)
         {
-            id = "r";
+            perm = PERMISSION_READ;
         }
         else
         {
-            id = "none";
+            perm = PERMISSION_NONE;
         }
     }
     else if (type == PERMISSION_GROUP)
@@ -3525,23 +3464,23 @@ set_active_from_umask (GtkComboBox    *combo,
         p &= ~(S_IRWXU | S_IRWXO);
         if ((p & S_IRWXG) == S_IRWXG)
         {
-            id = "rwx";
+            perm = PERMISSION_READ | PERMISSION_EXEC | PERMISSION_WRITE;
         }
         else if ((p & (S_IRGRP | S_IWGRP)) == (S_IRGRP | S_IWGRP))
         {
-            id = "rw";
+            perm = PERMISSION_READ | PERMISSION_WRITE;
         }
         else if ((p & (S_IRGRP | S_IXGRP)) == (S_IRGRP | S_IXGRP))
         {
-            id = "rx";
+            perm = PERMISSION_READ | PERMISSION_EXEC;
         }
         else if ((p & S_IRGRP) == S_IRGRP)
         {
-            id = "r";
+            perm = PERMISSION_READ;
         }
         else
         {
-            id = "none";
+            perm = PERMISSION_NONE;
         }
     }
     else
@@ -3549,27 +3488,36 @@ set_active_from_umask (GtkComboBox    *combo,
         p &= ~(S_IRWXU | S_IRWXG);
         if ((p & S_IRWXO) == S_IRWXO)
         {
-            id = "rwx";
+            perm = PERMISSION_READ | PERMISSION_EXEC | PERMISSION_WRITE;
         }
         else if ((p & (S_IROTH | S_IWOTH)) == (S_IROTH | S_IWOTH))
         {
-            id = "rw";
+            perm = PERMISSION_READ | PERMISSION_WRITE;
         }
         else if ((p & (S_IROTH | S_IXOTH)) == (S_IROTH | S_IXOTH))
         {
-            id = "rx";
+            perm = PERMISSION_READ | PERMISSION_EXEC;
         }
         else if ((p & S_IROTH) == S_IROTH)
         {
-            id = "r";
+            perm = PERMISSION_READ;
         }
         else
         {
-            id = "none";
+            perm = PERMISSION_NONE;
         }
     }
 
-    gtk_combo_box_set_active_id (combo, id);
+    for (guint i = 0; i < g_list_model_get_n_items (model); i++)
+    {
+        g_autoptr (NautilusPermissionEntry) entry = g_list_model_get_item (model, i);
+
+        if (entry->permission_value == perm)
+        {
+            gtk_drop_down_set_selected (drop_down, i);
+            break;
+        }
+    }
 }
 
 static void
@@ -3577,7 +3525,7 @@ on_change_permissions_clicked (GtkWidget                *button,
                                NautilusPropertiesWindow *self)
 {
     GtkWidget *dialog;
-    GtkComboBox *combo;
+    GtkDropDown *drop_down;
     g_autoptr (GtkBuilder) change_permissions_builder = NULL;
 
     change_permissions_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-file-properties-change-permissions.ui");
@@ -3586,43 +3534,43 @@ on_change_permissions_clicked (GtkWidget                *button,
     gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (self));
 
     /* Owner Permissions */
-    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_owner_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_USER, FILES_ONLY);
-    self->change_permission_combos = g_list_prepend (self->change_permission_combos,
-                                                     combo);
-    set_active_from_umask (combo, PERMISSION_USER, FILES_ONLY);
+    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "file_owner_drop_down"));
+    setup_permissions_drop_down (drop_down, PERMISSION_USER, FILES_ONLY);
+    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
+                                                         drop_down);
+    set_active_from_umask (drop_down, PERMISSION_USER, FILES_ONLY);
 
-    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_owner_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_USER, FOLDERS_ONLY);
-    self->change_permission_combos = g_list_prepend (self->change_permission_combos,
-                                                     combo);
-    set_active_from_umask (combo, PERMISSION_USER, FOLDERS_ONLY);
+    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "folder_owner_drop_down"));
+    setup_permissions_drop_down (drop_down, PERMISSION_USER, FOLDERS_ONLY);
+    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
+                                                         drop_down);
+    set_active_from_umask (drop_down, PERMISSION_USER, FOLDERS_ONLY);
 
     /* Group Permissions */
-    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_group_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_GROUP, FILES_ONLY);
-    self->change_permission_combos = g_list_prepend (self->change_permission_combos,
-                                                     combo);
-    set_active_from_umask (combo, PERMISSION_GROUP, FILES_ONLY);
+    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "file_group_drop_down"));
+    setup_permissions_drop_down (drop_down, PERMISSION_GROUP, FILES_ONLY);
+    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
+                                                         drop_down);
+    set_active_from_umask (drop_down, PERMISSION_GROUP, FILES_ONLY);
 
-    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_group_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_GROUP, FOLDERS_ONLY);
-    self->change_permission_combos = g_list_prepend (self->change_permission_combos,
-                                                     combo);
-    set_active_from_umask (combo, PERMISSION_GROUP, FOLDERS_ONLY);
+    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "folder_group_drop_down"));
+    setup_permissions_drop_down (drop_down, PERMISSION_GROUP, FOLDERS_ONLY);
+    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
+                                                         drop_down);
+    set_active_from_umask (drop_down, PERMISSION_GROUP, FOLDERS_ONLY);
 
     /* Others Permissions */
-    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_other_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_OTHER, FILES_ONLY);
-    self->change_permission_combos = g_list_prepend (self->change_permission_combos,
-                                                     combo);
-    set_active_from_umask (combo, PERMISSION_OTHER, FILES_ONLY);
+    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "file_other_drop_down"));
+    setup_permissions_drop_down (drop_down, PERMISSION_OTHER, FILES_ONLY);
+    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
+                                                         drop_down);
+    set_active_from_umask (drop_down, PERMISSION_OTHER, FILES_ONLY);
 
-    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_other_combo"));
-    setup_permissions_combo_box (combo, PERMISSION_OTHER, FOLDERS_ONLY);
-    self->change_permission_combos = g_list_prepend (self->change_permission_combos,
-                                                     combo);
-    set_active_from_umask (combo, PERMISSION_OTHER, FOLDERS_ONLY);
+    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "folder_other_drop_down"));
+    setup_permissions_drop_down (drop_down, PERMISSION_OTHER, FOLDERS_ONLY);
+    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
+                                                         drop_down);
+    set_active_from_umask (drop_down, PERMISSION_OTHER, FOLDERS_ONLY);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), self);
     gtk_window_present (GTK_WINDOW (dialog));
@@ -4177,7 +4125,7 @@ real_dispose (GObject *object)
 
     g_clear_list (&self->permission_rows, NULL);
 
-    g_clear_list (&self->change_permission_combos, NULL);
+    g_clear_list (&self->change_permission_drop_downs, NULL);
 
     g_clear_pointer (&self->initial_permissions, g_hash_table_destroy);
 
