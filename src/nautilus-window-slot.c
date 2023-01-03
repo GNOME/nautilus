@@ -2567,8 +2567,10 @@ nautilus_window_slot_show_special_location_bar (NautilusWindowSlot      *self,
 static void
 nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 {
-    g_autoptr (GFile) new_location = g_steal_pointer (&self->pending_location);
+    GFile *new_location;
     NautilusFile *file;
+    new_location = self->pending_location;
+    self->pending_location = NULL;
 
     file = nautilus_file_get (new_location);
     nautilus_window_slot_update_bookmark (self, file);
@@ -2585,6 +2587,7 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 
     nautilus_window_slot_set_location (self, new_location);
 
+    g_object_unref (new_location);
 
     /* Sync the actions for this new location. */
     nautilus_window_slot_sync_actions (self);
