@@ -334,6 +334,8 @@ nautilus_column_chooser_constructed (GObject *object)
 {
     NautilusColumnChooser *chooser;
 
+    G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->constructed (object);
+
     chooser = NAUTILUS_COLUMN_CHOOSER (object);
 
     populate_tree (chooser);
