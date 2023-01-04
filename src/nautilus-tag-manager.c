@@ -956,7 +956,7 @@ child_watch_cb (GPid     pid,
                 gpointer user_data)
 {
     DEBUG ("Child %" G_PID_FORMAT " exited %s", pid,
-           g_spawn_check_exit_status (status, NULL) ? "normally" : "abnormally");
+           g_spawn_check_wait_status (status, NULL) ? "normally" : "abnormally");
     g_spawn_close_pid (pid);
 }
 

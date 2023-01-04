@@ -1853,7 +1853,7 @@ nautilus_directory_match_pattern (NautilusDirectory *directory,
         file = NAUTILUS_FILE (l->data);
         name = nautilus_file_get_display_name (file);
 
-        if (g_pattern_match_string (spec, name))
+        if (g_pattern_spec_match_string (spec, name))
         {
             ret = g_list_prepend (ret, nautilus_file_ref (file));
         }
