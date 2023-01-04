@@ -248,6 +248,7 @@ add_list_box_row (GObject  *item,
     g_autofree char *name = NULL;
     GtkWidget *row;
     GtkWidget *row_switch;
+    GtkWidget *drag_image;
     GtkEventController *controller;
 
     g_object_get (column, "label", &label, "name", &name, NULL);
@@ -257,6 +258,7 @@ add_list_box_row (GObject  *item,
 
     if (g_strcmp0 (name, "name") == 0)
     {
+        adw_action_row_add_prefix (ADW_ACTION_ROW (row), gtk_image_new ());
         return row;
     }
 
@@ -270,6 +272,9 @@ add_list_box_row (GObject  *item,
     gtk_widget_set_halign (row_switch, GTK_ALIGN_END);
     gtk_widget_set_valign (row_switch, GTK_ALIGN_CENTER);
     adw_action_row_add_suffix (ADW_ACTION_ROW (row), row_switch);
+
+    drag_image = gtk_image_new_from_icon_name ("list-drag-handle-symbolic");
+    adw_action_row_add_prefix (ADW_ACTION_ROW (row), drag_image);
 
     controller = GTK_EVENT_CONTROLLER (gtk_drag_source_new ());
     gtk_drag_source_set_actions (GTK_DRAG_SOURCE (controller), GDK_ACTION_MOVE);
