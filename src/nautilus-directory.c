@@ -65,7 +65,7 @@ static NautilusDirectory *nautilus_directory_new (GFile *location);
 static void               set_directory_location (NautilusDirectory *directory,
                                                   GFile             *location);
 
-G_DEFINE_TYPE (NautilusDirectory, nautilus_directory, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusDirectory, nautilus_directory, G_TYPE_OBJECT);
 
 static gboolean
 real_contains_file (NautilusDirectory *self,
@@ -332,14 +332,13 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
                              G_TYPE_FILE,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
 
-    g_type_class_add_private (klass, sizeof (NautilusDirectoryDetails));
     g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
 }
 
 static void
 nautilus_directory_init (NautilusDirectory *directory)
 {
-    directory->details = G_TYPE_INSTANCE_GET_PRIVATE ((directory), NAUTILUS_TYPE_DIRECTORY, NautilusDirectoryDetails);
+    directory->details = nautilus_directory_get_instance_private (directory);
     directory->details->file_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                            g_free, NULL);
     directory->details->high_priority_queue = nautilus_file_queue_new ();

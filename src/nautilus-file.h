@@ -486,11 +486,11 @@ gboolean                nautilus_file_list_are_all_folders              (const G
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);
 
-typedef struct NautilusFileDetails NautilusFileDetails;
+typedef struct NautilusFilePrivate NautilusFilePrivate;
 
 struct NautilusFile {
 	GObject parent_slot;
-	NautilusFileDetails *details;
+	NautilusFilePrivate *details;
 };
 
 /* This is actually a "protected" type, but it must be here so we can
