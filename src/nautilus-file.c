@@ -2465,7 +2465,6 @@ update_info_internal (NautilusFile *file,
     time_t atime, mtime, btime;
     time_t trash_time;
     time_t recency;
-    GTimeVal g_trash_time;
     const char *time_string;
     const char *symlink_name, *mime_type, *selinux_context, *name, *thumbnail_path;
     GFileType file_type;
@@ -2891,8 +2890,10 @@ update_info_internal (NautilusFile *file,
     time_string = g_file_info_get_attribute_string (info, "trash::deletion-date");
     if (time_string != NULL)
     {
-        g_time_val_from_iso8601 (time_string, &g_trash_time);
-        trash_time = g_trash_time.tv_sec;
+        g_autoptr (GTimeZone) tz = g_time_zone_new_local ();
+        g_autoptr (GDateTime) date_time = g_date_time_new_from_iso8601 (time_string, tz);
+
+        trash_time = date_time != NULL ? g_date_time_to_unix (date_time) : 0;
     }
     if (file->details->trash_time != trash_time)
     {

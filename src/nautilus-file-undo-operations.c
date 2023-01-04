@@ -1645,8 +1645,7 @@ trash_redo_func_callback (GHashTable *debuting_uris,
 {
     NautilusFileUndoInfoTrash *self = user_data;
     GHashTable *new_trashed_files;
-    GTimeVal current_time;
-    gsize updated_trash_time;
+    gint64 updated_trash_time;
     GFile *file;
     GList *keys, *l;
 
@@ -1654,18 +1653,19 @@ trash_redo_func_callback (GHashTable *debuting_uris,
     {
         new_trashed_files =
             g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
-                                   g_object_unref, NULL);
+                                   g_object_unref, g_free);
 
         keys = g_hash_table_get_keys (self->trashed);
 
-        g_get_current_time (&current_time);
-        updated_trash_time = current_time.tv_sec;
+        /* Convert from microseconds to seconds */
+        updated_trash_time = g_get_real_time () / 1000000;
 
         for (l = keys; l != NULL; l = l->next)
         {
             file = l->data;
             g_hash_table_insert (new_trashed_files,
-                                 g_object_ref (file), GSIZE_TO_POINTER (updated_trash_time));
+                                 g_object_ref (file),
+                                 g_memdup2 (&updated_trash_time, sizeof (updated_trash_time)));
         }
 
         g_list_free (keys);
@@ -1726,7 +1726,8 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
         GFileInfo *info;
         gpointer lookupvalue;
         GFile *item;
-        glong trash_time, orig_trash_time;
+        gint64 orig_trash_time;
+        gint64 trash_time;
         const char *origpath;
         GFile *origfile;
 
@@ -1742,7 +1743,7 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
             {
                 GDateTime *date;
 
-                orig_trash_time = GPOINTER_TO_SIZE (lookupvalue);
+                orig_trash_time = *((guint64 *) lookupvalue);
                 trash_time = 0;
                 date = g_file_info_get_deletion_date (info);
                 if (date)
@@ -1850,7 +1851,7 @@ static void
 nautilus_file_undo_info_trash_init (NautilusFileUndoInfoTrash *self)
 {
     self->trashed = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
-                                           g_object_unref, NULL);
+                                           g_object_unref, g_free);
 }
 
 static void
@@ -1888,13 +1889,11 @@ void
 nautilus_file_undo_info_trash_add_file (NautilusFileUndoInfoTrash *self,
                                         GFile                     *file)
 {
-    GTimeVal current_time;
-    gsize orig_trash_time;
-
-    g_get_current_time (&current_time);
-    orig_trash_time = current_time.tv_sec;
-
-    g_hash_table_insert (self->trashed, g_object_ref (file), GSIZE_TO_POINTER (orig_trash_time));
+    /* Convert from microseconds to seconds */
+    gint64 orig_trash_time = g_get_real_time () / 1000000;
+    g_hash_table_insert (self->trashed,
+                         g_object_ref (file),
+                         g_memdup2 (&orig_trash_time, sizeof (orig_trash_time)));
 }
 
 GList *
