@@ -205,7 +205,7 @@ nautilus_files_view_handle_text_drop (NautilusFilesView *view,
                                       const char        *target_uri,
                                       GdkDragAction      action)
 {
-    int length;
+    gsize length;
     char *container_uri;
     char *filename;
 

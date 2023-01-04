@@ -120,7 +120,7 @@ NautilusFileUndoInfo *nautilus_file_undo_info_create_new (NautilusFileUndoOp op_
 void nautilus_file_undo_info_create_set_data (NautilusFileUndoInfoCreate *self,
                                               GFile                      *file,
                                               const char                 *template,
-                                              gint                        length);
+                                              gsize                       length);
 
 /* rename */
 #define NAUTILUS_TYPE_FILE_UNDO_INFO_RENAME nautilus_file_undo_info_rename_get_type ()

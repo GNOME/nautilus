@@ -276,7 +276,7 @@ void              nautilus_files_view_new_file_with_initial_contents (NautilusFi
                                                                       const char         *parent_uri,
                                                                       const char         *filename,
                                                                       const char         *initial_contents,
-                                                                      int                 length);
+                                                                      gsize               length);
 /* selection handling */
 void              nautilus_files_view_activate_selection         (NautilusFilesView      *view);
 void              nautilus_files_view_preview_selection_event    (NautilusFilesView      *view,

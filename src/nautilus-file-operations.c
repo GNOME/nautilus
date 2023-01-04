@@ -7623,7 +7623,7 @@ create_task_thread_func (GTask        *task,
     char *primary, *secondary, *details;
     int response;
     char *data;
-    int length;
+    gsize length;
     GFileOutputStream *out;
     gboolean handled_invalid_filename;
     int max_length, offset;
@@ -8216,7 +8216,7 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
                                    const char             *parent_dir,
                                    const char             *target_filename,
                                    const char             *initial_contents,
-                                   int                     length,
+                                   gsize                   length,
                                    NautilusCreateCallback  done_callback,
                                    gpointer                done_callback_data)
 {
@@ -8234,7 +8234,7 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
-    job->src_data = g_memdup (initial_contents, length);
+    job->src_data = g_memdup2 (initial_contents, length);
     job->length = length;
     job->filename = g_strdup (target_filename);
 
