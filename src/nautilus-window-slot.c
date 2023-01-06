@@ -1232,7 +1232,7 @@ save_scroll_position_for_history (NautilusWindowSlot *self)
     {
         char *current_pos;
 
-        current_pos = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
+        current_pos = nautilus_files_view_get_last_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
         nautilus_bookmark_set_scroll_pos (self->current_location_bookmark, current_pos);
         g_free (current_pos);
     }
@@ -2179,7 +2179,7 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
 
         if (NAUTILUS_IS_FILES_VIEW (self->content_view))
         {
-            current_pos = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
+            current_pos = nautilus_files_view_get_last_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
         }
     }
     begin_location_change

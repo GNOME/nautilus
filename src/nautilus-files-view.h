@@ -200,8 +200,9 @@ struct _NautilusFilesViewClass {
 
         /* Return the uri of the first visible file */
         char *         (* get_first_visible_file) (NautilusFilesView          *view);
-        /* Scroll the view so that the file specified by the uri is at the top
-           of the view */
+        /* Return the uri of the last visible file */
+        char *         (* get_last_visible_file) (NautilusFilesView          *view);
+        /* Scroll the view so the file specified by the uri is visible with least scrolling */
         void           (* scroll_to_file)    (NautilusFilesView *view,
                                               const char        *uri);
 
@@ -279,6 +280,7 @@ void              nautilus_files_view_preview_selection_event    (NautilusFilesV
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
 
 char *            nautilus_files_view_get_first_visible_file     (NautilusFilesView      *view);
+char *            nautilus_files_view_get_last_visible_file     (NautilusFilesView      *view);
 void              nautilus_files_view_scroll_to_file             (NautilusFilesView      *view,
                                                                   const char             *uri);
 
