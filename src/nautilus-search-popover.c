@@ -494,10 +494,6 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
     now = g_date_time_new_now_local ();
     max_days = SEARCH_FILTER_MAX_YEARS * 365;
 
-    /* Add the no date filter element first */
-    row = create_row_for_label (_("Any time"), TRUE);
-    gtk_list_box_insert (GTK_LIST_BOX (popover->dates_listbox), row, -1);
-
     /* This is a tricky loop. The main intention here is that each
      * timeslice (day, week, month) have 2 or 3 entries.
      *
