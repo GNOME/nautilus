@@ -263,6 +263,7 @@ get_text_for_date_range (GPtrArray *date_range,
     gint normalized;
     GDateTime *initial_date;
     GDateTime *end_date;
+    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
     gchar *formatted_date;
     gchar *label;
 
@@ -279,6 +280,13 @@ get_text_for_date_range (GPtrArray *date_range,
     if (days < 1)
     {
         label = g_strdup (formatted_date);
+    }
+    else if (g_date_time_get_year (now) != g_date_time_get_year (end_date) ||
+             g_date_time_get_day_of_year (now) != g_date_time_get_day_of_year (end_date))
+    {
+        g_autofree char *formatted_end_date = g_date_time_format (end_date, "%x");
+
+        label = g_strdup_printf ("%s-%s", formatted_date, formatted_end_date);
     }
     else
     {
