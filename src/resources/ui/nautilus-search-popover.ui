@@ -70,7 +70,7 @@
                   <object class="GtkEntry" id="date_entry">
                     <property name="secondary_icon_name">x-office-calendar-symbolic</property>
                     <property name="secondary_icon_tooltip_text" translatable="yes">Use Calendar</property>
-                    <signal name="icon-release" handler="toggle_calendar_icon_clicked" object="NautilusSearchPopover" swapped="no"/>
+                    <signal name="icon-release" handler="toggle_calendar_icon_clicked" object="NautilusSearchPopover" swapped="yes"/>
                     <signal name="activate" handler="date_entry_activate" object="NautilusSearchPopover" swapped="no"/>
                   </object>
                 </property>
@@ -114,7 +114,7 @@
                         <property name="name">date-list</property>
                         <property name="child">
                           <object class="GtkScrolledWindow">
-                            <property name="height_request">200</property>
+                            <property name="height_request">215</property>
                             <property name="hexpand">True</property>
                             <property name="child">
                               <object class="GtkViewport">

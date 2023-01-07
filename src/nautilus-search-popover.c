@@ -63,6 +63,8 @@ static void          show_other_types_dialog (NautilusSearchPopover *popover);
 static void          update_date_label (NautilusSearchPopover *popover,
                                         GPtrArray             *date_range);
 
+static void toggle_calendar_icon_clicked (NautilusSearchPopover *popover);
+
 G_DEFINE_TYPE (NautilusSearchPopover, nautilus_search_popover, GTK_TYPE_POPOVER)
 
 enum
@@ -291,10 +293,14 @@ dates_listbox_row_activated (GtkListBox            *listbox,
         date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
         g_ptr_array_add (date_range, g_date_time_ref (date));
         g_ptr_array_add (date_range, g_date_time_ref (now));
+        update_date_label (popover, date_range);
+        show_date_selection_widgets (popover, FALSE);
+        g_signal_emit_by_name (popover, "date-range", date_range);
     }
-    update_date_label (popover, date_range);
-    show_date_selection_widgets (popover, FALSE);
-    g_signal_emit_by_name (popover, "date-range", date_range);
+    else
+    {
+        toggle_calendar_icon_clicked (popover);
+    }
 
     if (date_range)
     {
@@ -355,10 +361,9 @@ select_type_button_clicked (GtkButton             *button,
 }
 
 static void
-toggle_calendar_icon_clicked (GtkEntry              *entry,
-                              GtkEntryIconPosition   position,
-                              NautilusSearchPopover *popover)
+toggle_calendar_icon_clicked (NautilusSearchPopover *popover)
 {
+    GtkEntry *entry = GTK_ENTRY (popover->date_entry);
     const gchar *current_visible_child;
     const gchar *child;
     const gchar *icon_name;
@@ -562,6 +567,10 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
 
         days += step;
     }
+
+    /* Add the no date filter element first */
+    row = create_row_for_label (_("Custom Dates"), TRUE);
+    gtk_list_box_insert (GTK_LIST_BOX (popover->dates_listbox), row, -1);
 
     g_date_time_unref (maximum_dt);
     g_date_time_unref (now);
