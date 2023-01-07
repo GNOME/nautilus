@@ -25,7 +25,7 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-global-preferences.h"
 
- #define SEARCH_FILTER_MAX_YEARS 5
+ #define SEARCH_FILTER_MAX_YEARS 3
 
 struct _NautilusSearchPopover
 {
@@ -514,7 +514,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
         {
             /* days */
             normalized = days;
-            step = 2;
+            step = 4;
         }
         else if (days < 30)
         {
@@ -524,7 +524,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
             {
                 days = 7;
             }
-            step = 7;
+            step = 14;
         }
         else if (days < 365)
         {
@@ -534,7 +534,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
             {
                 days = 30;
             }
-            step = 90;
+            step = 175;
         }
         else
         {
@@ -544,7 +544,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
             {
                 days = 365;
             }
-            step = 365;
+            step = 730;
         }
 
         current_date = g_date_time_add_days (now, -days);
