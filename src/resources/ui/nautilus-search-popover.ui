@@ -136,7 +136,6 @@
                         <property name="child">
                           <object class="GtkCalendar" id="calendar">
                             <property name="valign">start</property>
-                            <property name="show_week_numbers">True</property>
                             <signal name="day-selected" handler="calendar_day_selected" object="NautilusSearchPopover" swapped="no" />
                             <signal name="next-month" handler="calendar_visible_month_changed" object="NautilusSearchPopover" swapped="no" />
                             <signal name="next-year" handler="calendar_visible_month_changed" object="NautilusSearchPopover" swapped="no" />
