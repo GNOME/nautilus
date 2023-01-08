@@ -169,6 +169,25 @@ on_item_is_cut_changed (NautilusGridCell *self)
     }
 }
 
+static gboolean
+on_label_query_tooltip (GtkWidget  *widget,
+                        int         x,
+                        int         y,
+                        gboolean    keyboard_tip,
+                        GtkTooltip *tooltip,
+                        gpointer    user_data)
+{
+    GtkLabel *label = GTK_LABEL (widget);
+
+    if (pango_layout_is_ellipsized (gtk_label_get_layout (label)))
+    {
+        gtk_tooltip_set_markup (tooltip, gtk_label_get_label (label));
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 static void
 finalize (GObject *object)
 {
@@ -203,6 +222,9 @@ static void
 nautilus_grid_cell_init (NautilusGridCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
+
+    g_signal_connect (self->label, "query-tooltip",
+                      G_CALLBACK (on_label_query_tooltip), NULL);
 
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
