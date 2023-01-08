@@ -63,7 +63,7 @@ struct _NautilusListBasePrivate
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
 
 static const char *
-get_metadata_name_from_sort_type (NautilusFileSortType sort_type)
+get_sort_attribute_from_sort_type (NautilusFileSortType sort_type)
 {
     switch (sort_type)
     {
@@ -142,12 +142,12 @@ get_directory_sort_by (NautilusFile *file,
         default_sort == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
     {
         /* These defaults are important. Ignore metadata. */
-        return g_strdup (get_metadata_name_from_sort_type (default_sort));
+        return g_strdup (get_sort_attribute_from_sort_type (default_sort));
     }
 
     sort_by = nautilus_file_get_metadata (file,
                                           NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                          get_metadata_name_from_sort_type (default_sort));
+                                          get_sort_attribute_from_sort_type (default_sort));
 
     *reversed = nautilus_file_get_boolean_metadata (file,
                                                     NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
@@ -158,7 +158,7 @@ get_directory_sort_by (NautilusFile *file,
 
 void
 set_directory_sort_metadata (NautilusFile *file,
-                             const gchar  *metadata_name,
+                             const gchar  *sort_attribute,
                              gboolean      reversed)
 {
     NautilusFileSortType default_sort;
@@ -168,8 +168,8 @@ set_directory_sort_metadata (NautilusFile *file,
 
     nautilus_file_set_metadata (file,
                                 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                get_metadata_name_from_sort_type (default_sort),
-                                metadata_name);
+                                get_sort_attribute_from_sort_type (default_sort),
+                                sort_attribute);
     nautilus_file_set_boolean_metadata (file,
                                         NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
                                         default_reversed,
@@ -179,17 +179,17 @@ set_directory_sort_metadata (NautilusFile *file,
 static void
 update_sort_order_from_metadata_and_preferences (NautilusListBase *self)
 {
-    g_autofree char *metadata_name = NULL;
+    g_autofree char *sort_attribute = NULL;
     GActionGroup *view_action_group;
     gboolean reversed;
 
-    metadata_name = get_directory_sort_by (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                           &reversed);
+    sort_attribute = get_directory_sort_by (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
+                                            &reversed);
     view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_group_change_action_state (view_action_group,
                                         "sort",
                                         g_variant_new ("(sb)",
-                                                       metadata_name,
+                                                       sort_attribute,
                                                        reversed));
 }
 

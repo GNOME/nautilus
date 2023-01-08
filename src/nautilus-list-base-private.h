@@ -24,7 +24,7 @@ void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 
 /* Shareable helpers */
 void                          set_directory_sort_metadata       (NautilusFile *file,
-                                                                 const gchar  *metadata_name,
+                                                                 const gchar  *sort_attribute,
                                                                  gboolean      reversed);
 void                          setup_cell_common                 (GtkListItem      *listitem,
                                                                  NautilusViewCell *cell);
