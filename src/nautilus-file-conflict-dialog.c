@@ -35,10 +35,12 @@
 
 struct _NautilusFileConflictDialog
 {
-    GtkDialog parent_instance;
+    AdwWindow parent_instance;
 
     gchar *conflict_name;
     gchar *suggested_name;
+
+    ConflictResponse response;
 
     /* UI objects */
     GtkWidget *primary_label;
@@ -56,7 +58,7 @@ struct _NautilusFileConflictDialog
     GtkWidget *src_icon;
 };
 
-G_DEFINE_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, ADW_TYPE_WINDOW);
 
 void
 nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
@@ -126,6 +128,34 @@ nautilus_file_conflict_dialog_disable_apply_to_all (NautilusFileConflictDialog *
 }
 
 static void
+cancel_button_cb (NautilusFileConflictDialog *dialog)
+{
+    dialog->response = CONFLICT_RESPONSE_CANCEL;
+    gtk_window_close (GTK_WINDOW (dialog));
+}
+
+static void
+rename_button_cb (NautilusFileConflictDialog *dialog)
+{
+    dialog->response = CONFLICT_RESPONSE_RENAME;
+    gtk_window_close (GTK_WINDOW (dialog));
+}
+
+static void
+replace_button_cb (NautilusFileConflictDialog *dialog)
+{
+    dialog->response = CONFLICT_RESPONSE_REPLACE;
+    gtk_window_close (GTK_WINDOW (dialog));
+}
+
+static void
+skip_button_cb (NautilusFileConflictDialog *dialog)
+{
+    dialog->response = CONFLICT_RESPONSE_SKIP;
+    gtk_window_close (GTK_WINDOW (dialog));
+}
+
+static void
 entry_text_changed_cb (GtkEditable                *entry,
                        NautilusFileConflictDialog *dialog)
 {
@@ -166,7 +196,7 @@ on_expanded_notify (GtkExpander                *w,
     {
         gtk_widget_set_visible (dialog->replace_button, FALSE);
         gtk_widget_set_visible (dialog->rename_button, TRUE);
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_RENAME);
+        gtk_window_set_default_widget (GTK_WINDOW (dialog), dialog->rename_button);
 
         gtk_widget_set_sensitive (dialog->checkbox, FALSE);
 
@@ -191,7 +221,7 @@ on_expanded_notify (GtkExpander                *w,
     {
         gtk_widget_set_visible (dialog->rename_button, FALSE);
         gtk_widget_set_visible (dialog->replace_button, TRUE);
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_REPLACE);
+        gtk_window_set_default_widget (GTK_WINDOW (dialog), dialog->replace_button);
 
         gtk_widget_set_sensitive (dialog->checkbox, TRUE);
     }
@@ -220,6 +250,8 @@ static void
 nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 {
     gtk_widget_init_template (GTK_WIDGET (fcd));
+    /* Treat closing window as cancel action */
+    fcd->response = CONFLICT_RESPONSE_CANCEL;
 }
 
 static void
@@ -252,6 +284,10 @@ nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, skip_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, dest_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileConflictDialog, src_icon);
+    gtk_widget_class_bind_template_callback (widget_class, cancel_button_cb);
+    gtk_widget_class_bind_template_callback (widget_class, rename_button_cb);
+    gtk_widget_class_bind_template_callback (widget_class, replace_button_cb);
+    gtk_widget_class_bind_template_callback (widget_class, skip_button_cb);
     gtk_widget_class_bind_template_callback (widget_class, entry_text_changed_cb);
     gtk_widget_class_bind_template_callback (widget_class, on_expanded_notify);
     gtk_widget_class_bind_template_callback (widget_class, checkbox_toggled_cb);
@@ -291,6 +327,12 @@ nautilus_file_conflict_dialog_get_new_name (NautilusFileConflictDialog *dialog)
     return g_strdup (gtk_editable_get_text (GTK_EDITABLE (dialog->entry)));
 }
 
+ConflictResponse
+nautilus_file_conflict_dialog_get_response (NautilusFileConflictDialog *dialog)
+{
+    return dialog->response;
+}
+
 gboolean
 nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog)
 {
@@ -302,6 +344,5 @@ nautilus_file_conflict_dialog_new (GtkWindow *parent)
 {
     return NAUTILUS_FILE_CONFLICT_DIALOG (g_object_new (NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,
                                                         "transient-for", parent,
-                                                        "use-header-bar", TRUE,
                                                         NULL));
 }

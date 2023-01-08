@@ -20,13 +20,6 @@ FileConflictResponse * copy_move_conflict_ask_user_action (GtkWindow *parent_win
                                                            GFile     *dest_dir,
                                                            gchar     *suggestion);
 
-enum
-{
-    CONFLICT_RESPONSE_SKIP = 1,
-    CONFLICT_RESPONSE_REPLACE = 2,
-    CONFLICT_RESPONSE_RENAME = 3,
-};
-
 void handle_unsupported_compressed_file (GtkWindow *parent_window,
                                          GFile     *compressed_file);
 

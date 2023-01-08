@@ -53,6 +53,7 @@
 #include "nautilus-error-reporting.h"
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
+#include "nautilus-file-conflict-dialog.h"
 #include "nautilus-file-private.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-trash-monitor.h"
@@ -5675,8 +5676,7 @@ retry:
 
         response = handle_copy_move_conflict (job, src, dest, dest_dir);
 
-        if (response->id == GTK_RESPONSE_CANCEL ||
-            response->id == GTK_RESPONSE_DELETE_EVENT)
+        if (response->id == CONFLICT_RESPONSE_CANCEL)
         {
             file_conflict_response_free (response);
             abort_job (job);
@@ -6425,8 +6425,7 @@ retry:
 
         response = handle_copy_move_conflict (job, src, dest, dest_dir);
 
-        if (response->id == GTK_RESPONSE_CANCEL ||
-            response->id == GTK_RESPONSE_DELETE_EVENT)
+        if (response->id == CONFLICT_RESPONSE_CANCEL)
         {
             file_conflict_response_free (response);
             abort_job (job);

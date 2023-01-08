@@ -426,11 +426,11 @@ copy_move_conflict_on_file_list_ready (GList    *files,
 }
 
 static void
-on_conflict_dialog_response (GtkDialog *dialog,
-                             gint       response_id,
-                             gpointer   user_data)
+on_conflict_dialog_closing (GtkWindow *dialog,
+                            gpointer   user_data)
 {
     FileConflictDialogData *data = user_data;
+    ConflictResponse response;
 
     if (data->handle != NULL)
     {
@@ -449,19 +449,20 @@ on_conflict_dialog_response (GtkDialog *dialog,
         nautilus_file_monitor_remove (data->destination, data);
     }
 
-    if (response_id == CONFLICT_RESPONSE_RENAME)
+    response = nautilus_file_conflict_dialog_get_response (data->dialog);
+
+    if (response == CONFLICT_RESPONSE_RENAME)
     {
         data->response->new_name =
             nautilus_file_conflict_dialog_get_new_name (data->dialog);
     }
-    else if (response_id != GTK_RESPONSE_CANCEL &&
-             response_id != GTK_RESPONSE_NONE)
+    else if (response != CONFLICT_RESPONSE_CANCEL)
     {
         data->response->apply_to_all =
             nautilus_file_conflict_dialog_get_apply_to_all (data->dialog);
     }
 
-    data->response->id = response_id;
+    data->response->id = response;
 
     gtk_window_destroy (GTK_WINDOW (data->dialog));
 
@@ -499,7 +500,7 @@ run_file_conflict_dialog (gpointer user_data)
                                         data->on_file_list_ready,
                                         data);
 
-    g_signal_connect (data->dialog, "response", G_CALLBACK (on_conflict_dialog_response), data);
+    g_signal_connect (data->dialog, "close-request", G_CALLBACK (on_conflict_dialog_closing), data);
     gtk_window_present (GTK_WINDOW (data->dialog));
 
     g_list_free (files);

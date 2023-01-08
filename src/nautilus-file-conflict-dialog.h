@@ -25,12 +25,21 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <libadwaita-1/adwaita.h>
 
 G_BEGIN_DECLS
 
+typedef enum
+{
+    CONFLICT_RESPONSE_CANCEL,
+    CONFLICT_RESPONSE_SKIP,
+    CONFLICT_RESPONSE_REPLACE,
+    CONFLICT_RESPONSE_RENAME,
+} ConflictResponse;
+
 #define NAUTILUS_TYPE_FILE_CONFLICT_DIALOG (nautilus_file_conflict_dialog_get_type ())
 
-G_DECLARE_FINAL_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, NAUTILUS, FILE_CONFLICT_DIALOG, GtkDialog)
+G_DECLARE_FINAL_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, NAUTILUS, FILE_CONFLICT_DIALOG, AdwWindow)
 
 NautilusFileConflictDialog* nautilus_file_conflict_dialog_new (GtkWindow *parent);
 
@@ -58,5 +67,7 @@ void nautilus_file_conflict_dialog_delay_buttons_activation (NautilusFileConflic
 
 char*      nautilus_file_conflict_dialog_get_new_name     (NautilusFileConflictDialog *dialog);
 gboolean   nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog);
+
+ConflictResponse nautilus_file_conflict_dialog_get_response (NautilusFileConflictDialog *dialog);
 
 G_END_DECLS
