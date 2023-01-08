@@ -660,8 +660,6 @@ action_sort_order_changed (GSimpleAction *action,
     if (!self->column_header_was_clicked)
     {
         g_signal_handlers_block_by_func (sorter, on_sorter_changed, self);
-        /* FIXME: Set NULL to stop drawing the arrow on previous sort column
-         * to workaround https://gitlab.gnome.org/GNOME/gtk/-/issues/4696 */
         gtk_column_view_sort_by_column (self->view_ui, NULL, FALSE);
         gtk_column_view_sort_by_column (self->view_ui, sort_column, reversed);
         g_signal_handlers_unblock_by_func (sorter, on_sorter_changed, self);
