@@ -74,3 +74,18 @@ update image:
     except:
         variables:
             - $CI_PROJECT_NAMESPACE != "GNOME"
+
+pages:
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
+    stage: deploy
+    only:
+        refs:
+            - $CI_DEFAULT_BRANCH
+    script:
+        - meson setup -Ddocs=true -Dextensions=false -Dtests=none _build
+        - ninja -C _build
+        - mv _build/docs/reference/nautilus/ public/
+    artifacts:
+        paths:
+            - public/
+        expire_in: 2 days
