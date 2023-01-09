@@ -198,7 +198,7 @@ subdirs = [
 # Conditional building #
 ########################
 
-if gi_docgen.found()
+if get_option('docs')
   subdirs += 'docs'
 endif
 if get_option('tests') != 'none'
