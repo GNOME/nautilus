@@ -22,6 +22,7 @@
  */
 
 #include "config.h"
+#include <eel/eel-string.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include "nautilus-enum-types.h"
@@ -564,7 +565,7 @@ _nautilus_gtk_bookmarks_manager_set_bookmark_label (NautilusGtkBookmarksManager 
       GtkBookmark *bookmark = link->data;
 
       g_free (bookmark->label);
-      bookmark->label = g_strdup (label);
+      bookmark->label = eel_str_replace_substring (label, "\n", " ");
     }
   else
     {
