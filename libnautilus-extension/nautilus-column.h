@@ -42,7 +42,7 @@ G_DECLARE_FINAL_TYPE (NautilusColumn, nautilus_column, NAUTILUS, COLUMN, GObject
  *
  * `NautilusColumn` is an object that describes a column in the file manager
  * list view. Extensions can provide `NautilusColumn` by registering a
- * [class@ColumnProvider] and returning them from
+ * [iface@ColumnProvider] and returning them from
  * [method@ColumnProvider.get_columns], which will be called by the main
  * application when creating a view.
  */
