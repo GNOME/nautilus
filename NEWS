@@ -1,3 +1,43 @@
+Major changes in 44.alpha
+=========================
+* Enhancements:
+  - Allow expanding subfolders in the list (António Fernandes, Corey Berla)
+  - Enrich tab context menus (Corey Berla)
+  - Allow pasting image data into new PNG file (Corey Berla)
+  - Use pregenerated thumbnails when available, e.g. MTP (Ondrej Holy)
+  - Add shortcut for Preferences (Sabri Ünal)
+  - Show full filename in grid, using tooltips (António Fernandes)
+  - Reintroduce 64px icon size for grid view (António Fernandes)
+  - Remove upper limit on thumbnailing file size range (Peter Eisenmann)
+  - Reword "application" to "app" (sunflowerskater)
+  - Other papercuts (António Fernandes, Hari Rana, sunflowerskater)
+* Other bugfixes:
+  - Avoid many crashes (Corey Berla, Gary li, António Fernandes, Aleksandar Dezelin)
+  - Fix and improve autorun support (Will Thompson, António Fernandes)
+  - Fix some drag-and-drop issues (Corey Berla, Liu Yuyang)
+  - Fix some view focus and selection issues (Corey Berla, António Fernandes)
+  - Fix properties extensions bugs (António Fernandes)
+  - Fix memory leaks (Ignacy Kuchciński, António Fernandes)
+  - Fix building on certain cases (Leonardo Hernández)
+  - Fix bugs with file operations (Corey Berla, Gary Li, Bastien Nocera)
+  - Resolve some performance issues (Corey Berla, Jeff Fortin Tam)
+  - Resolve stuttering scrolling (Corey Berla)
+  - Save and restore sort column (Corey Berla)
+  - Launch search from shell correctly (Corey Berla)
+  - Reimplement view navigation from the previewer (António Fernandes)
+  - Stop showing � in the type on Properties (Aleksandar Dezelin)
+  - Stop blocking on the tracker connection (Corey Berla)
+  - Add missing trailing ellipsis and mnemonics in menus (Gotam Gorabh, Peter Eisenmann)
+  - Allow opening current view in new tab from sidebar (Colin Kinloch)
+  - Share settings with GTK4 filechooser (Colin Sane)
+  - Don't allow hiding name column (Corey Berla)
+* Code cleanups
+  - Drop workarounds for resolved GTK4 issues (Corey Berla)
+  - Use fewer deprecated GTK 4 API (Corey Berla, Peter Eisenmann)
+  - Don't use deprecated GLib API (Corey Berla)
+  - Remove unused obsolete code (Peter Eisenmann, Benjamin Otte, Corey Berla, Antóino Fernandes, Sabri Ünal)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 43.0
 =========================
 * Bugfixes
