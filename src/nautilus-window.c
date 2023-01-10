@@ -491,16 +491,15 @@ tab_view_setup_menu_cb (AdwTabView     *tab_view,
     GAction *move_tab_right_action;
     GAction *restore_tab_action;
     int position, n_pages;
+    gboolean menu_is_closed = (page == NULL);
 
     window->menu_page = page;
 
-    if (page == NULL)
+    if (!menu_is_closed)
     {
-        return;
+        position = adw_tab_view_get_page_position (tab_view, page);
+        n_pages = adw_tab_view_get_n_pages (tab_view);
     }
-
-    position = adw_tab_view_get_page_position (tab_view, page);
-    n_pages = adw_tab_view_get_n_pages (tab_view);
 
     move_tab_left_action = g_action_map_lookup_action (G_ACTION_MAP (window),
                                                        "tab-move-left");
@@ -509,12 +508,13 @@ tab_view_setup_menu_cb (AdwTabView     *tab_view,
     restore_tab_action = g_action_map_lookup_action (G_ACTION_MAP (window),
                                                      "restore-tab");
 
+    /* Re-enable all of the actions if the menu is closed */
     g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_left_action),
-                                 page == NULL || position > 0);
+                                 menu_is_closed || position > 0);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_right_action),
-                                 page == NULL || position < n_pages - 1);
+                                 menu_is_closed || position < n_pages - 1);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (restore_tab_action),
-                                 g_queue_get_length (window->tab_data_queue) > 0);
+                                 menu_is_closed || g_queue_get_length (window->tab_data_queue) > 0);
 }
 
 static void
