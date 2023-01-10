@@ -62,7 +62,6 @@ update image:
     stage: image
     script:
         - dnf install -y buildah runc
-        - sed -i '/^mountopt =.*/d' /etc/containers/storage.conf
         - buildah bud --tag $CI_REGISTRY_IMAGE -f .gitlab/Dockerfile
         - buildah tag $CI_REGISTRY_IMAGE "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
         - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
