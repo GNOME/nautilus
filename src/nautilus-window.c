@@ -514,7 +514,7 @@ tab_view_setup_menu_cb (AdwTabView     *tab_view,
     g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_right_action),
                                  menu_is_closed || position < n_pages - 1);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (restore_tab_action),
-                                 page == NULL || g_queue_get_length (window->tab_data_queue) > 0);
+                                 menu_is_closed || g_queue_get_length (window->tab_data_queue) > 0);
 }
 
 static void
