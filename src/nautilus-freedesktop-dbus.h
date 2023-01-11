@@ -21,6 +21,7 @@
 #pragma once
 
 #include <glib-object.h>
+#include <gio/gio.h>
 
 #define NAUTILUS_FDO_DBUS_IFACE "org.freedesktop.FileManager1"
 #define NAUTILUS_FDO_DBUS_NAME  "org.freedesktop.FileManager1"
@@ -30,7 +31,10 @@
 
 G_DECLARE_FINAL_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, NAUTILUS, FREEDESKTOP_DBUS, GObject);
 
-NautilusFreedesktopDBus * nautilus_freedesktop_dbus_new (void);
+NautilusFreedesktopDBus * nautilus_freedesktop_dbus_new (GDBusConnection *connection);
+
+gboolean nautilus_freedesktop_dbus_register (NautilusFreedesktopDBus *fdb, GError **error);
+void nautilus_freedesktop_dbus_unregister (NautilusFreedesktopDBus *fdb);
 
 void nautilus_freedesktop_dbus_set_open_locations (NautilusFreedesktopDBus *fdb, const gchar **locations);
 

@@ -579,8 +579,6 @@ nautilus_application_finalize (GObject *object)
     g_clear_object (&priv->progress_handler);
     g_clear_object (&priv->bookmark_list);
 
-    g_clear_object (&priv->fdb_manager);
-
     g_list_free (priv->windows);
 
     g_hash_table_destroy (priv->notifications);
@@ -1170,9 +1168,6 @@ nautilus_application_startup (GApplication *app)
 
     gtk_window_set_default_icon_name (APPLICATION_ID);
 
-    /* create DBus manager */
-    priv->fdb_manager = nautilus_freedesktop_dbus_new ();
-
     /* initialize preferences and create the global GSettings objects */
     nautilus_global_preferences_init ();
 
@@ -1226,6 +1221,12 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
+    priv->fdb_manager = nautilus_freedesktop_dbus_new (connection);
+    if (!nautilus_freedesktop_dbus_register (priv->fdb_manager, error))
+    {
+        return FALSE;
+    }
+
     priv->search_provider = nautilus_shell_search_provider_new ();
     if (!nautilus_shell_search_provider_register (priv->search_provider, connection, error))
     {
@@ -1250,6 +1251,12 @@ nautilus_application_dbus_unregister (GApplication    *app,
     {
         nautilus_dbus_manager_unregister (priv->dbus_manager);
         g_clear_object (&priv->dbus_manager);
+    }
+
+    if (priv->fdb_manager)
+    {
+        nautilus_freedesktop_dbus_unregister (priv->fdb_manager);
+        g_clear_object (&priv->fdb_manager);
     }
 
     if (priv->search_provider)
