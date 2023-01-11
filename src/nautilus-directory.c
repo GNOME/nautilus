@@ -434,6 +434,11 @@ emit_change_signals_for_all_files_in_all_directories (void)
     GList *dirs, *l;
     NautilusDirectory *directory;
 
+    if (directories == NULL)
+    {
+        return;
+    }
+
     dirs = NULL;
     g_hash_table_foreach (directories,
                           collect_all_directories,
