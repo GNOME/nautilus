@@ -45,10 +45,14 @@ struct _NautilusColumnChooser
     GtkWidget *use_custom_box;
     GtkWidget *use_custom_switch;
 
+    GMenuModel *row_button_menu;
+    GActionGroup *action_group;
+
     NautilusColumn *drag_column;
     guint orig_drag_pos;
 
     NautilusFile *file;
+    GtkListBoxRow *row_with_open_menu;
 };
 
 enum
@@ -102,6 +106,26 @@ list_changed (NautilusColumnChooser *chooser)
     g_signal_emit (chooser, signals[CHANGED], 0, column_order, visible_columns);
 }
 
+static void
+move_row (NautilusColumnChooser *chooser,
+          GtkListBoxRow         *row,
+          guint                  increment)
+{
+    guint i = gtk_list_box_row_get_index (row);
+    g_autoptr (NautilusColumn) column = g_list_model_get_item (chooser->model, i);
+    guint n_items = g_list_model_get_n_items (chooser->model);
+
+    if (increment == 0 || i + increment < 0 || i + increment >= n_items)
+    {
+        return;
+    }
+
+    g_list_store_remove (G_LIST_STORE (chooser->model), i);
+    g_list_store_insert (G_LIST_STORE (chooser->model), i + increment, column);
+
+    list_changed (chooser);
+}
+
 static gboolean
 is_special_folder (NautilusColumnChooser *chooser)
 {
@@ -109,6 +133,34 @@ is_special_folder (NautilusColumnChooser *chooser)
             nautilus_file_is_in_search (chooser->file) ||
             nautilus_file_is_in_recent (chooser->file));
 }
+
+static void action_move_row_up (GSimpleAction *action,
+                                GVariant      *state,
+                                gpointer       user_data)
+{
+    NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
+
+    g_assert (GTK_IS_LIST_BOX_ROW (chooser->row_with_open_menu));
+
+    move_row (chooser, chooser->row_with_open_menu, -1);
+}
+
+static void action_move_row_down (GSimpleAction *action,
+                                  GVariant      *state,
+                                  gpointer       user_data)
+{
+    NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
+
+    g_assert (GTK_IS_LIST_BOX_ROW (chooser->row_with_open_menu));
+
+    move_row (chooser, chooser->row_with_open_menu, 1);
+}
+
+const GActionEntry column_chooser_actions[] =
+{
+    { "move-up", action_move_row_up },
+    { "move-down", action_move_row_down }
+};
 
 static void
 nautilus_column_chooser_set_property (GObject      *object,
@@ -238,6 +290,35 @@ on_row_drop (GtkDropTarget *self,
     return TRUE;
 }
 
+static void
+on_create_row_menu_cb (GtkMenuButton *menu_button,
+                       GtkListBoxRow *row)
+{
+    GAction *action_up;
+    GAction *action_down;
+    int row_index = gtk_list_box_row_get_index (row);
+    NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (
+        gtk_widget_get_ancestor (GTK_WIDGET (row), NAUTILUS_TYPE_COLUMN_CHOOSER));
+
+    action_up = g_action_map_lookup_action (G_ACTION_MAP (chooser->action_group), "move-up");
+    action_down = g_action_map_lookup_action (G_ACTION_MAP (chooser->action_group), "move-down");
+
+    chooser->row_with_open_menu = row;
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action_up), TRUE);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action_down), TRUE);
+
+    if (row_index <= 1)
+    {
+        /* "Name" is always the first column */
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action_up), FALSE);
+    }
+
+    if (row_index == g_list_model_get_n_items (chooser->model) - 1)
+    {
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action_down), FALSE);
+    }
+}
+
 static GtkWidget *
 add_list_box_row (GObject  *item,
                   gpointer  user_data)
@@ -248,6 +329,7 @@ add_list_box_row (GObject  *item,
     g_autofree char *name = NULL;
     GtkWidget *row;
     GtkWidget *row_switch;
+    GtkWidget *menu_button;
     GtkWidget *drag_image;
     GtkEventController *controller;
 
@@ -262,6 +344,8 @@ add_list_box_row (GObject  *item,
         return row;
     }
 
+    /* Column can be en/disabled, add switch */
+    gtk_list_box_row_set_activatable (GTK_LIST_BOX_ROW (row), TRUE);
     row_switch = gtk_switch_new ();
     g_object_bind_property (column, "visible", row_switch, "active",
                             G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
@@ -272,6 +356,17 @@ add_list_box_row (GObject  *item,
     gtk_widget_set_halign (row_switch, GTK_ALIGN_END);
     gtk_widget_set_valign (row_switch, GTK_ALIGN_CENTER);
     adw_action_row_add_suffix (ADW_ACTION_ROW (row), row_switch);
+    adw_action_row_set_activatable_widget (ADW_ACTION_ROW (row), row_switch);
+
+    /* Add move up/down operation menu */
+    menu_button = gtk_menu_button_new ();
+    gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (menu_button), "view-more-symbolic");
+    gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (menu_button), chooser->row_button_menu);
+    gtk_menu_button_set_create_popup_func (GTK_MENU_BUTTON (menu_button),
+                                           (GtkMenuButtonCreatePopupFunc) on_create_row_menu_cb, row, NULL);
+    gtk_widget_set_valign (menu_button, GTK_ALIGN_CENTER);
+    gtk_widget_add_css_class (menu_button, "flat");
+    adw_action_row_add_suffix (ADW_ACTION_ROW (row), menu_button);
 
     drag_image = gtk_image_new_from_icon_name ("list-drag-handle-symbolic");
     adw_action_row_add_prefix (ADW_ACTION_ROW (row), drag_image);
@@ -496,6 +591,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_switch);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, row_button_menu);
 
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
 
@@ -528,6 +624,16 @@ nautilus_column_chooser_init (NautilusColumnChooser *chooser)
                              (GtkListBoxCreateWidgetFunc) add_list_box_row,
                              chooser,
                              NULL);
+
+    /* Action group */
+    chooser->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
+    g_action_map_add_action_entries (G_ACTION_MAP (chooser->action_group),
+                                     column_chooser_actions,
+                                     G_N_ELEMENTS (column_chooser_actions),
+                                     chooser);
+    gtk_widget_insert_action_group (GTK_WIDGET (chooser),
+                                    "column-chooser",
+                                    G_ACTION_GROUP (chooser->action_group));
 }
 
 GtkWidget *
