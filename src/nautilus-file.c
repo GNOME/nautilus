@@ -128,6 +128,7 @@ static GHashTable *symbolic_links;
 
 static guint64 cached_thumbnail_limit;
 static NautilusSpeedTradeoffValue show_file_thumbs;
+static gboolean use_24_hour;
 
 static NautilusSpeedTradeoffValue show_directory_item_count;
 
@@ -5323,7 +5324,6 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     GDateTime *file_date_time, *now;
     GDateTime *today_midnight;
     gint days_ago;
-    gboolean use_24;
     const gchar *format;
     gchar *result;
     gchar *result_with_ratio;
@@ -5351,13 +5351,10 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
 
         days_ago = g_date_time_difference (today_midnight, file_date) / G_TIME_SPAN_DAY;
 
-        use_24 = g_settings_get_enum (gnome_interface_preferences, "clock-format") ==
-                 G_DESKTOP_CLOCK_FORMAT_24H;
-
         /* Show only the time if date is on today */
         if (days_ago == 0)
         {
-            if (use_24)
+            if (use_24_hour)
             {
                 /* Translators: Time in 24h format */
                 format = _("%H:%M");
@@ -5378,7 +5375,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
             }
             else
             {
-                if (use_24)
+                if (use_24_hour)
                 {
                     /* Translators: this is the word Yesterday followed by
                      * a time in 24h format. i.e. "Yesterday 23:04" */
@@ -5404,7 +5401,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
             }
             else
             {
-                if (use_24)
+                if (use_24_hour)
                 {
                     /* Translators: this is the name of the week day followed by
                      * a time in 24h format. i.e. "Monday 23:04" */
@@ -5431,7 +5428,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
             }
             else
             {
-                if (use_24)
+                if (use_24_hour)
                 {
                     /* Translators: this is the day of the month followed
                      * by the abbreviated month name followed by a time in
@@ -5460,7 +5457,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
             }
             else
             {
-                if (use_24)
+                if (use_24_hour)
                 {
                     /* Translators: this is the day number followed
                      * by the abbreviated month name followed by the year followed
@@ -5498,6 +5495,15 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     g_free (result);
 
     return result_with_ratio;
+}
+
+static void
+clock_format_changed_callback (gpointer data)
+{
+    gint clock_format;
+
+    clock_format = g_settings_get_enum (gnome_interface_preferences, "clock-format");
+    use_24_hour = (clock_format == G_DESKTOP_CLOCK_FORMAT_24H);
 }
 
 static void
@@ -9183,6 +9189,11 @@ nautilus_file_class_init (NautilusFileClass *class)
                       "mime-data-changed",
                       G_CALLBACK (mime_type_data_changed_callback),
                       NULL);
+    clock_format_changed_callback (NULL);
+    g_signal_connect_swapped (gnome_interface_preferences,
+                              "changed::clock-format",
+                              G_CALLBACK (clock_format_changed_callback),
+                              NULL);
 }
 
 void
