@@ -8944,13 +8944,19 @@ nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
 }
 
 static void
-thumbnail_limit_changed_callback (gpointer user_data)
+update_thumbnail_limit (void)
 {
     cached_thumbnail_limit = g_settings_get_uint64 (nautilus_preferences,
                                                     NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT);
 
     /*Converts the obtained limit in MB to bytes */
     cached_thumbnail_limit *= MEGA_TO_BASE_RATE;
+}
+
+static void
+thumbnail_limit_changed_callback (gpointer user_data)
+{
+    update_thumbnail_limit ();
 
     /* Tell the world that icons might have changed. We could invent a narrower-scope
      * signal to mean only "thumbnails might have changed" if this ends up being slow
@@ -8960,9 +8966,15 @@ thumbnail_limit_changed_callback (gpointer user_data)
 }
 
 static void
-show_thumbnails_changed_callback (gpointer user_data)
+update_show_thumbnails (void)
 {
     show_file_thumbs = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS);
+}
+
+static void
+show_thumbnails_changed_callback (gpointer user_data)
+{
+    update_show_thumbnails ();
 
     /* Tell the world that icons might have changed. We could invent a narrower-scope
      * signal to mean only "thumbnails might have changed" if this ends up being slow
@@ -9156,12 +9168,12 @@ nautilus_file_class_init (NautilusFileClass *class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
-    thumbnail_limit_changed_callback (NULL);
+    update_thumbnail_limit ();
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT,
                               G_CALLBACK (thumbnail_limit_changed_callback),
                               NULL);
-    show_thumbnails_changed_callback (NULL);
+    update_show_thumbnails ();
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
                               G_CALLBACK (show_thumbnails_changed_callback),
