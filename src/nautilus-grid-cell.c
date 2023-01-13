@@ -191,7 +191,7 @@ on_label_query_tooltip (GtkWidget  *widget,
 
     if (pango_layout_is_ellipsized (gtk_label_get_layout (label)))
     {
-        gtk_tooltip_set_markup (tooltip, gtk_label_get_label (label));
+        gtk_tooltip_set_text (tooltip, gtk_label_get_text (label));
         return TRUE;
     }
 
