@@ -1049,11 +1049,32 @@ tree_expander_shortcut_cb (GtkWidget *widget,
                            GVariant  *args,
                            gpointer   user_data)
 {
-    GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (widget));
-    GtkTreeListRow *row = gtk_tree_expander_get_list_row (expander);
+    GtkWidget *child;
+    g_autoptr (NautilusViewItem) item = NULL;
+    GtkTreeExpander *expander;
+    GtkTreeListRow *row;
     GtkTextDirection direction = gtk_widget_get_direction (widget);
     char *action;
     guint keyval = GPOINTER_TO_INT (user_data);
+
+    /* Hack to find the focus item. */
+    child = gtk_root_get_focus (gtk_widget_get_root (widget));
+    while (child != NULL && !NAUTILUS_IS_VIEW_CELL (child))
+    {
+        child = gtk_widget_get_first_child (child);
+    }
+
+    if (!NAUTILUS_IS_VIEW_CELL (child))
+    {
+        return FALSE;
+    }
+
+    /* The name cell might not be the first column (the user may have changed
+     * column order), but the expander is always on the name cell. */
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (child));
+    expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (nautilus_view_item_get_item_ui (item)));
+    row = gtk_tree_expander_get_list_row (expander);
+    /* End of hack. */
 
     if ((keyval == GDK_KEY_Right && direction == GTK_TEXT_DIR_LTR) ||
         (keyval == GDK_KEY_Left && direction == GTK_TEXT_DIR_RTL))
@@ -1072,11 +1093,12 @@ tree_expander_shortcut_cb (GtkWidget *widget,
 
         if (parent != NULL)
         {
-            g_autoptr (NautilusViewItem) item = NULL;
+            g_autoptr (NautilusViewItem) parent_item = NULL;
             GtkWidget *cell;
 
-            item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (parent));
-            cell = nautilus_view_item_get_item_ui (item);
+            parent_item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (parent));
+            g_return_val_if_fail (parent_item != NULL, FALSE);
+            cell = nautilus_view_item_get_item_ui (parent_item);
 
             gtk_widget_activate_action (cell, "list.unselect-all", NULL);
             gtk_widget_activate_action (cell, "listitem.select", "(bb)", FALSE, FALSE);
@@ -1115,23 +1137,7 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     if (self->expand_as_a_tree)
     {
         GtkTreeExpander *expander;
-        GtkEventController *controller = gtk_shortcut_controller_new ();
-        GtkShortcut *shortcut;
 
-        /* TODO: This shortcut doesn't work because the name cell doesn't have
-         * the focus, the row GtkListItemWidget above the cells, has the focus.
-         * We either need to figure out an appropriate way to get the focus to the
-         * name cell or put the controller somewhere else.  The problem with putting
-         * the controller on the view, is that the selection won't necessarily
-         * match the focus. */
-        shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Left, 0),
-                                     gtk_callback_action_new (tree_expander_shortcut_cb, GINT_TO_POINTER (GDK_KEY_Left), NULL));
-        gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
-        shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Right, 0),
-                                     gtk_callback_action_new (tree_expander_shortcut_cb, GINT_TO_POINTER (GDK_KEY_Right), NULL));
-        gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
-
-        gtk_widget_add_controller (GTK_WIDGET (cell), controller);
         expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
         gtk_tree_expander_set_indent_for_icon (expander, TRUE);
         g_object_bind_property (listitem, "item",
@@ -1366,6 +1372,8 @@ nautilus_list_view_init (NautilusListView *self)
     GtkSorter *column_view_sorter;
     g_autoptr (GtkCustomSorter) directories_sorter = NULL;
     g_autoptr (GtkMultiSorter) sorter = NULL;
+    GtkEventController *controller;
+    GtkShortcut *shortcut;
 
     gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-list-view");
 
@@ -1416,6 +1424,18 @@ nautilus_list_view_init (NautilusListView *self)
     self->zoom_level = get_default_zoom_level ();
     g_action_group_change_action_state (nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self)),
                                         "zoom-to-level", g_variant_new_int32 (self->zoom_level));
+
+    /* Set up tree expand/collapse shortcuts in capture phase otherwise they
+     * would be handled by GtkListBase's cursor movement shortcuts. */
+    controller = gtk_shortcut_controller_new ();
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Left, 0),
+                                 gtk_callback_action_new (tree_expander_shortcut_cb, GINT_TO_POINTER (GDK_KEY_Left), NULL));
+    gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
+    shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Right, 0),
+                                 gtk_callback_action_new (tree_expander_shortcut_cb, GINT_TO_POINTER (GDK_KEY_Right), NULL));
+    gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
 }
 
 static void
