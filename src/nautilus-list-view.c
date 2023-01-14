@@ -944,6 +944,14 @@ on_subdirectory_done_loading (NautilusDirectory *directory,
 
     item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
     nautilus_view_item_set_loading (item, FALSE);
+
+    if (!nautilus_directory_is_not_empty (directory))
+    {
+        GtkWidget *name_cell = nautilus_view_item_get_item_ui (item);
+        GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (name_cell));
+
+        gtk_tree_expander_set_hide_expander (expander, TRUE);
+    }
 }
 
 static void
@@ -1143,19 +1151,16 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     }
 }
 
-static gboolean
-transform_model_n_items_to_boolean (GBinding     *binding,
-                                    const GValue *from_value,
-                                    GValue       *to_value,
-                                    gpointer      data)
+static void
+on_n_items_notify (GObject    *object,
+                   GParamSpec *pspec,
+                   gpointer    user_data)
 {
-    guint n_items = g_value_get_uint (from_value);
-    gboolean result;
+    GListModel *model = G_LIST_MODEL (object);
+    GtkTreeExpander *expander = GTK_TREE_EXPANDER (user_data);
+    guint n_items = g_list_model_get_n_items (model);
 
-    result = n_items == 0 ? TRUE : FALSE;
-    g_value_set_boolean (to_value, result);
-
-    return TRUE;
+    gtk_tree_expander_set_hide_expander (expander, n_items == 0);
 }
 
 static void
@@ -1171,12 +1176,9 @@ on_row_children_changed (GObject    *gobject,
         return;
     }
 
-    g_object_bind_property_full (model, "n-items",
-                                 expander, "hide-expander",
-                                 G_BINDING_SYNC_CREATE,
-                                 transform_model_n_items_to_boolean,
-                                 NULL,
-                                 NULL, NULL);
+    g_signal_connect_object (model, "notify::n-items",
+                             G_CALLBACK (on_n_items_notify), expander,
+                             0);
 }
 
 static void
