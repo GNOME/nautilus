@@ -1,5 +1,6 @@
 #include "nautilus-view-model.h"
 #include "nautilus-view-item.h"
+#include "nautilus-directory.h"
 #include "nautilus-global-preferences.h"
 
 struct _NautilusViewModel
@@ -392,7 +393,8 @@ nautilus_view_model_get_item_from_file (NautilusViewModel *self,
 
 void
 nautilus_view_model_remove_item (NautilusViewModel *self,
-                                 NautilusViewItem  *item)
+                                 NautilusViewItem  *item,
+                                 NautilusDirectory *directory)
 {
     NautilusFile *file;
     g_autoptr (NautilusFile) parent = NULL;
@@ -400,7 +402,7 @@ nautilus_view_model_remove_item (NautilusViewModel *self,
     guint i;
 
     file = nautilus_view_item_get_file (item);
-    parent = nautilus_file_get_parent (file);
+    parent = nautilus_directory_get_corresponding_file (directory);
     dir_store = get_directory_store (self, parent);
     if (g_list_store_find (dir_store, item, &i))
     {

@@ -22,7 +22,8 @@ GQueue * nautilus_view_model_get_items_from_files (NautilusViewModel *self,
                                                    GQueue            *files);
 /* Don't use inside a loop, use nautilus_view_model_remove_all_items instead. */
 void nautilus_view_model_remove_item (NautilusViewModel     *self,
-                                      NautilusViewItem *item);
+                                      NautilusViewItem      *item,
+                                      NautilusDirectory     *directory);
 void nautilus_view_model_remove_all_items (NautilusViewModel *self);
 /* Don't use inside a loop, use nautilus_view_model_add_items instead. */
 void nautilus_view_model_add_item (NautilusViewModel     *self,
