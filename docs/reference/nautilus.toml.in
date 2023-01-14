@@ -1,11 +1,31 @@
 [library]
 version = "@VERSION@"
 description = "Nautilus Extension API"
-license = "GPL-2.0-or-later"
+authors = "The GNOME Project"
+license = "GPL-3.0-or-later"
 browse_url = "https://gitlab.gnome.org/GNOME/nautilus/"
 repository_url = "https://gitlab.gnome.org/GNOME/nautilus.git"
+website_url = "https://gnome.pages.gitlab.gnome.org/nautilus/"
+logo_url = "logo.svg"
 devhelp = true
 search_index = true
+
+dependencies = ["GLib – 2.0", "Gio-2.0", "GObject-2.0"]
+
+  [dependencies."GLib-2.0"]
+  name = "GLib"
+  description = "The base type system library"
+  docs_url = "https://docs.gtk.org/gobject/"
+
+  [dependencies."Gio-2.0"]
+  name = "Gio"
+  description = "GObject Interfaces and Objects, Networking, IPC, and I/O"
+  docs_url = "https://docs.gtk.org/gio/"
+
+  [dependencies."GObject-2.0"]
+  name = "GObject"
+  description = "The base type system library"
+  docs_url = "https://docs.gtk.org/gobject/"
 
 [theme]
 name = "basic"
@@ -20,3 +40,7 @@ file_format = "{filename}#L{line}"
 
 [extra]
 urlmap_file = "urlmap.js"
+
+content_images = [
+  "logo.svg",
+]
