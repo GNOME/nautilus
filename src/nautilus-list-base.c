@@ -215,7 +215,7 @@ nautilus_list_base_set_icon_size (NautilusListBase *self,
     }
 }
 
-static void
+void
 set_focus_item (NautilusListBase *self,
                 NautilusViewItem *item)
 {

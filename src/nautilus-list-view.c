@@ -1049,6 +1049,7 @@ tree_expander_shortcut_cb (GtkWidget *widget,
                            GVariant  *args,
                            gpointer   user_data)
 {
+    NautilusListView *self = NAUTILUS_LIST_VIEW (widget);
     GtkWidget *child;
     g_autoptr (NautilusViewItem) item = NULL;
     GtkTreeExpander *expander;
@@ -1094,15 +1095,11 @@ tree_expander_shortcut_cb (GtkWidget *widget,
         if (parent != NULL)
         {
             g_autoptr (NautilusViewItem) parent_item = NULL;
-            GtkWidget *cell;
 
             parent_item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (parent));
             g_return_val_if_fail (parent_item != NULL, FALSE);
-            cell = nautilus_view_item_get_item_ui (parent_item);
 
-            gtk_widget_activate_action (cell, "list.unselect-all", NULL);
-            gtk_widget_activate_action (cell, "listitem.select", "(bb)", FALSE, FALSE);
-            gtk_widget_grab_focus (gtk_widget_get_parent (cell));
+            set_focus_item (NAUTILUS_LIST_BASE (self), parent_item);
         }
     }
     else

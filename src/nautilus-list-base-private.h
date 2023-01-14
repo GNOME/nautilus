@@ -28,6 +28,8 @@ void                          set_directory_sort_metadata       (NautilusFile *f
                                                                  gboolean      reversed);
 void                          setup_cell_common                 (GtkListItem      *listitem,
                                                                  NautilusViewCell *cell);
+void                          set_focus_item                    (NautilusListBase *self,
+                                                                 NautilusViewItem *item);
 
 #define listitem_get_view_item(li) \
 (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (li)))))
