@@ -931,15 +931,30 @@ setup_cell_common (GtkListItem      *listitem,
     gtk_widget_add_controller (GTK_WIDGET (cell), GTK_EVENT_CONTROLLER (drop_target));
 }
 
+static void
+real_setup_cell_hover (NautilusViewCell *cell,
+                       GtkWidget        *target)
+{
+    GtkEventController *controller = gtk_drop_controller_motion_new ();
+    gtk_widget_add_controller (target, controller);
+    g_signal_connect (controller, "enter", G_CALLBACK (on_item_drag_hover_enter), cell);
+    g_signal_connect (controller, "leave", G_CALLBACK (on_item_drag_hover_leave), cell);
+    g_signal_connect (controller, "motion", G_CALLBACK (on_item_drag_hover_motion), cell);
+}
+
+void
+setup_cell_hover_inner_target (NautilusViewCell *cell,
+                               GtkWidget        *target)
+{
+    g_return_if_fail (gtk_widget_is_ancestor (target, GTK_WIDGET (cell)));
+
+    real_setup_cell_hover (cell, target);
+}
 
 void
 setup_cell_hover (NautilusViewCell *cell)
 {
-    GtkEventController *controller = gtk_drop_controller_motion_new ();
-    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
-    g_signal_connect (controller, "enter", G_CALLBACK (on_item_drag_hover_enter), cell);
-    g_signal_connect (controller, "leave", G_CALLBACK (on_item_drag_hover_leave), cell);
-    g_signal_connect (controller, "motion", G_CALLBACK (on_item_drag_hover_motion), cell);
+    real_setup_cell_hover (cell, GTK_WIDGET (cell));
 }
 
 static void

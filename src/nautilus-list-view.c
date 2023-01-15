@@ -1128,7 +1128,7 @@ setup_name_cell (GtkSignalListItemFactory *factory,
 
     cell = nautilus_name_cell_new (NAUTILUS_LIST_BASE (self));
     setup_cell_common (listitem, cell);
-    setup_cell_hover (cell);
+    setup_cell_hover_inner_target (cell, nautilus_name_cell_get_content (NAUTILUS_NAME_CELL (cell)));
 
     nautilus_name_cell_set_path (NAUTILUS_NAME_CELL (cell),
                                  self->path_attribute_q,

@@ -29,6 +29,8 @@ void                          set_directory_sort_metadata       (NautilusFile *f
 void                          setup_cell_common                 (GtkListItem      *listitem,
                                                                  NautilusViewCell *cell);
 void                          setup_cell_hover                  (NautilusViewCell *cell);
+void                          setup_cell_hover_inner_target     (NautilusViewCell *cell,
+                                                                 GtkWidget        *target);
 
 void                          set_focus_item                    (NautilusListBase *self,
                                                                  NautilusViewItem *item);

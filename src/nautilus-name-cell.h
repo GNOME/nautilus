@@ -20,5 +20,6 @@ void nautilus_name_cell_set_path (NautilusNameCell *self,
                                   GFile            *base_location);
 void nautilus_name_cell_show_snippet (NautilusNameCell *self);
 GtkTreeExpander * nautilus_name_cell_get_expander (NautilusNameCell *self);
+GtkWidget * nautilus_name_cell_get_content (NautilusNameCell *self);
 
 G_END_DECLS

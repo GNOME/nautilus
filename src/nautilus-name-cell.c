@@ -19,6 +19,7 @@ struct _NautilusNameCell
     GFile *file_path_base_location;
 
     GtkWidget *expander;
+    GtkWidget *content;
     GtkWidget *fixed_height_box;
     GtkWidget *spinner;
     GtkWidget *icon;
@@ -355,6 +356,7 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, expander);
+    gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, content);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, fixed_height_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, spinner);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, icon);
@@ -392,4 +394,10 @@ GtkTreeExpander *
 nautilus_name_cell_get_expander (NautilusNameCell *self)
 {
     return GTK_TREE_EXPANDER (self->expander);
+}
+
+GtkWidget *
+nautilus_name_cell_get_content (NautilusNameCell *self)
+{
+    return self->content;
 }
