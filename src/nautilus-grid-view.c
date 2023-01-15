@@ -496,6 +496,7 @@ setup_cell (GtkSignalListItemFactory *factory,
 
     cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
     setup_cell_common (listitem, NAUTILUS_VIEW_CELL (cell));
+    setup_cell_hover (NAUTILUS_VIEW_CELL (cell));
 
     nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);
 }

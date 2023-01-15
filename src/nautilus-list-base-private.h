@@ -28,6 +28,8 @@ void                          set_directory_sort_metadata       (NautilusFile *f
                                                                  gboolean      reversed);
 void                          setup_cell_common                 (GtkListItem      *listitem,
                                                                  NautilusViewCell *cell);
+void                          setup_cell_hover                  (NautilusViewCell *cell);
+
 void                          set_focus_item                    (NautilusListBase *self,
                                                                  NautilusViewItem *item);
 

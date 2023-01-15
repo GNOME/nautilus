@@ -929,8 +929,13 @@ setup_cell_common (GtkListItem      *listitem,
     g_signal_connect (drop_target, "motion", G_CALLBACK (on_item_drag_motion), cell);
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_item_drop), cell);
     gtk_widget_add_controller (GTK_WIDGET (cell), GTK_EVENT_CONTROLLER (drop_target));
+}
 
-    controller = gtk_drop_controller_motion_new ();
+
+void
+setup_cell_hover (NautilusViewCell *cell)
+{
+    GtkEventController *controller = gtk_drop_controller_motion_new ();
     gtk_widget_add_controller (GTK_WIDGET (cell), controller);
     g_signal_connect (controller, "enter", G_CALLBACK (on_item_drag_hover_enter), cell);
     g_signal_connect (controller, "leave", G_CALLBACK (on_item_drag_hover_leave), cell);
