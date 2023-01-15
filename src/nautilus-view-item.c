@@ -25,7 +25,6 @@ enum
     PROP_ICON_SIZE,
     PROP_IS_CUT,
     PROP_DRAG_ACCEPT,
-    PROP_ITEM_UI,
     N_PROPS
 };
 
@@ -44,7 +43,7 @@ nautilus_view_item_dispose (GObject *object)
 {
     NautilusViewItem *self = NAUTILUS_VIEW_ITEM (object);
 
-    g_clear_object (&self->item_ui);
+    g_clear_weak_pointer (&self->item_ui);
 
     G_OBJECT_CLASS (nautilus_view_item_parent_class)->dispose (object);
 }
@@ -93,12 +92,6 @@ nautilus_view_item_get_property (GObject    *object,
         }
         break;
 
-        case PROP_ITEM_UI:
-        {
-            g_value_set_object (value, self->item_ui);
-        }
-        break;
-
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -137,12 +130,6 @@ nautilus_view_item_set_property (GObject      *object,
         case PROP_DRAG_ACCEPT:
         {
             self->drag_accept = g_value_get_boolean (value);
-        }
-        break;
-
-        case PROP_ITEM_UI:
-        {
-            g_set_object (&self->item_ui, g_value_get_object (value));
         }
         break;
 
@@ -186,10 +173,7 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
                                                  "", "",
                                                  NAUTILUS_TYPE_FILE,
                                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-    properties[PROP_ITEM_UI] = g_param_spec_object ("item-ui",
-                                                    "", "",
-                                                    GTK_TYPE_WIDGET,
-                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
     g_object_class_install_properties (object_class, N_PROPS, properties);
 
     signals[FILE_CHANGED] = g_signal_new ("file-changed",
@@ -268,7 +252,7 @@ nautilus_view_item_set_item_ui (NautilusViewItem *self,
 {
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
-    g_object_set (self, "item-ui", item_ui, NULL);
+    g_set_weak_pointer (&self->item_ui, item_ui);
 }
 
 void
