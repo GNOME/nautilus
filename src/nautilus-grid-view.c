@@ -441,7 +441,7 @@ bind_cell (GtkSignalListItemFactory *factory,
            gpointer                  user_data)
 {
     GtkWidget *cell;
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
 
     cell = gtk_list_item_get_child (listitem);
     item = listitem_get_view_item (listitem);
@@ -475,7 +475,7 @@ unbind_cell (GtkSignalListItemFactory *factory,
              GtkListItem              *listitem,
              gpointer                  user_data)
 {
-    NautilusViewItem *item;
+    g_autoptr (NautilusViewItem) item = NULL;
 
     item = listitem_get_view_item (listitem);
 

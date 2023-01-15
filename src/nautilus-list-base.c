@@ -1468,7 +1468,7 @@ real_add_files (NautilusFilesView *files_view,
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (GQueue) files_queue = NULL;
-    g_autoptr (GQueue) items = NULL;
+    g_autoqueue (NautilusViewItem) items = NULL;
 
     files_queue = convert_glist_to_queue (files);
     items = convert_files_to_items (self, files_queue);
@@ -1562,6 +1562,7 @@ real_preview_selection_event (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    g_autoptr (NautilusViewItem) item = NULL;
     guint i;
     gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL);
 
@@ -1587,7 +1588,8 @@ real_preview_selection_event (NautilusFilesView *files_view,
     }
 
     gtk_selection_model_select_item (GTK_SELECTION_MODEL (priv->model), i, TRUE);
-    set_focus_item (self, g_list_model_get_item (G_LIST_MODEL (priv->model), i));
+    item = g_list_model_get_item (G_LIST_MODEL (priv->model), i);
+    set_focus_item (self, item);
 }
 
 static void
