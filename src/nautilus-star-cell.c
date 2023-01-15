@@ -79,7 +79,6 @@ on_file_changed (NautilusStarCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
-    g_autofree gchar *string = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
