@@ -1065,8 +1065,17 @@ real_file_changed (NautilusFilesView *files_view,
                    NautilusDirectory *directory)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
+    g_autoptr (NautilusFile) directory_as_file = NULL;
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     NautilusViewItem *item;
+
+    directory_as_file = nautilus_directory_get_corresponding_file (directory);
+    if (file == directory_as_file)
+    {
+        /* We don't care about changes to the current directory itself here, so
+         * silently ignore it. This happens only with self-owned files.*/
+        return;
+    }
 
     item = nautilus_view_model_find_item_for_file (priv->model, file);
     if (item != NULL)
