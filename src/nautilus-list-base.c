@@ -71,6 +71,9 @@ enum
 
 static GParamSpec *properties[N_PROPS] = { NULL, };
 
+static void real_add_files (NautilusFilesView *files_view,
+                            GList             *files);
+
 static const char *
 get_sort_attribute_from_sort_type (NautilusFileSortType sort_type)
 {
@@ -1066,7 +1069,17 @@ real_file_changed (NautilusFilesView *files_view,
     NautilusViewItem *item;
 
     item = nautilus_view_model_find_item_for_file (priv->model, file);
-    nautilus_view_item_file_changed (item);
+    if (item != NULL)
+    {
+        nautilus_view_item_file_changed (item);
+    }
+    else
+    {
+        /* When a file that was hidden is not hidden anymore (e.g. undoing the
+         * rename operation which made it hidden), we get a change notification
+         * for a file that's not in our model. Let's add it then. */
+        real_add_files (files_view, &(GList){file, NULL});
+    }
 }
 
 static GList *
