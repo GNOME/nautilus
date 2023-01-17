@@ -1070,7 +1070,7 @@ get_selection (NautilusFilesView *files_view,
         {
             /* If the parent is already selected don't include the child. */
             g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
-            g_autoptr (NautilusViewItem) parent_item = NULL;
+            NautilusViewItem *parent_item;
             guint parent_pos;
 
             parent_item = nautilus_view_model_get_item_from_file (priv->model, parent);
