@@ -5842,6 +5842,10 @@ retry:
     }
     else if (IS_IO_ERROR (error, CANCELLED))
     {
+        if (!copy_job->is_move)
+        {
+            g_file_delete (dest, NULL, NULL);
+        }
         g_error_free (error);
     }
     /* Other error */
