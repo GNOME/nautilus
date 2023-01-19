@@ -20,13 +20,8 @@ flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
 
 flatpak@aarch64:
-    #don't build for every, MRs to save resources
-    only:
-        refs:
-            - 'master'
-            - 'main'
-            - $CI_DEFAULT_BRANCH
-
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     extends: ['.flatpak@aarch64', '.vars-devel']
 
 nightly@x86_64:
@@ -50,8 +45,11 @@ style check:
     script:
         - LANG=C.utf8 data/run-uncrustify.sh
         - git diff --exit-code | tee uncrustify.diff
-    except:
-        - /^gnome-.*$/
+    rules:
+        # https://docs.gitlab.com/ee/ci/jobs/job_control.html#avoid-duplicate-pipelines
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          when: never
+        - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
 update image:
     variables:
@@ -68,19 +66,17 @@ update image:
         - buildah push --creds $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD $CI_REGISTRY_IMAGE
         - buildah push --creds $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
     when: manual
-    only:
-        - web
-        - master
-    except:
-        variables:
-            - $CI_PROJECT_NAMESPACE != "GNOME"
+    rules:
+        - if: $CI_PROJECT_NAMESPACE != "GNOME"
+          when: never
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        - if: $CI_PIPELINE_SOURCE == "web"
 
 pages:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: deploy
-    only:
-        variables:
-            - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     script:
         - meson setup -Ddocs=true -Dextensions=false -Dtests=none _build
         - ninja -C _build
