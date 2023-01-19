@@ -79,8 +79,8 @@ pages:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: deploy
     only:
-        refs:
-            - $CI_DEFAULT_BRANCH
+        variables:
+            - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     script:
         - meson setup -Ddocs=true -Dextensions=false -Dtests=none _build
         - ninja -C _build
