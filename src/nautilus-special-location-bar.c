@@ -20,6 +20,7 @@
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+#include <adwaita.h>
 #include <string.h>
 
 #include "nautilus-dbus-launcher.h"
@@ -27,36 +28,10 @@
 #include "nautilus-special-location-bar.h"
 #include "nautilus-enum-types.h"
 
-struct _NautilusSpecialLocationBar
-{
-    AdwBin parent_instance;
-
-    GtkWidget *label;
-    GtkWidget *learn_more_label;
-    GtkWidget *button;
-    int button_response;
-    NautilusSpecialLocation special_location;
-};
-
-enum
-{
-    PROP_0,
-    PROP_SPECIAL_LOCATION,
-};
-
-enum
-{
-    SPECIAL_LOCATION_SHARING_RESPONSE = 1,
-    SPECIAL_LOCATION_TRASH_RESPONSE = 2,
-    SPECIAL_LOCATION_TEMPLATES_RESPONSE = 3,
-};
-
-G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, ADW_TYPE_BIN)
-
 static void
-on_sharing_clicked (GtkInfoBar *infobar)
+on_sharing_clicked (AdwBanner *banner)
 {
-    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (infobar)));
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (banner)));
     GVariant *parameters = g_variant_new_parsed (
         "('launch-panel', [<('sharing', @av [])>], @a{sv} {})");
 
@@ -67,17 +42,17 @@ on_sharing_clicked (GtkInfoBar *infobar)
 }
 
 static void
-on_template_clicked (GtkInfoBar *infobar)
+on_template_clicked (AdwBanner *banner)
 {
-    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (infobar)));
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (banner)));
     g_autoptr (GtkUriLauncher) launcher = gtk_uri_launcher_new ("help:gnome-help/files-templates");
     gtk_uri_launcher_launch (launcher, window, NULL, NULL, NULL);
 }
 
 static void
-on_trash_auto_emptied_clicked (GtkInfoBar *infobar)
+on_trash_auto_emptied_clicked (AdwBanner *banner)
 {
-    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (infobar)));
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (banner)));
     GVariant *parameters = g_variant_new_parsed (
         "('launch-panel', [<('usage', @av [])>], @a{sv} {})");
 
@@ -85,40 +60,6 @@ on_trash_auto_emptied_clicked (GtkInfoBar *infobar)
                                  NAUTILUS_DBUS_LAUNCHER_SETTINGS,
                                  "Activate",
                                  parameters, window);
-}
-
-static void
-on_info_bar_response (GtkInfoBar *infobar,
-                      gint        response_id,
-                      gpointer    user_data)
-{
-    NautilusSpecialLocationBar *bar = user_data;
-
-    switch (bar->button_response)
-    {
-        case SPECIAL_LOCATION_SHARING_RESPONSE:
-        {
-            on_sharing_clicked (infobar);
-        }
-        break;
-
-        case SPECIAL_LOCATION_TRASH_RESPONSE:
-        {
-            on_trash_auto_emptied_clicked (infobar);
-        }
-        break;
-
-        case SPECIAL_LOCATION_TEMPLATES_RESPONSE:
-        {
-            on_template_clicked (infobar);
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-    }
 }
 
 static gchar *
@@ -144,64 +85,54 @@ parse_old_files_age_preferences_value (void)
 }
 
 static void
-old_files_age_preferences_changed (GSettings *settings,
-                                   gchar     *key,
-                                   gpointer   user_data)
+set_auto_emptied_message (AdwBanner *banner)
 {
-    NautilusSpecialLocationBar *bar;
-    g_autofree gchar *message = NULL;
+    g_autofree gchar *message = parse_old_files_age_preferences_value ();
 
-    g_assert (NAUTILUS_IS_SPECIAL_LOCATION_BAR (user_data));
-
-    bar = NAUTILUS_SPECIAL_LOCATION_BAR (user_data);
-
-    message = parse_old_files_age_preferences_value ();
-
-    gtk_label_set_text (GTK_LABEL (bar->label), message);
+    adw_banner_set_title (banner, message);
 }
 
 static void
-set_special_location (NautilusSpecialLocationBar *bar,
-                      NautilusSpecialLocation     location)
+load_special_location (AdwBanner               *banner,
+                       NautilusSpecialLocation  location)
 {
-    char *message;
-    char *learn_more_markup = NULL;
-    char *button_label = NULL;
+    const char *button_label = NULL;
+    GCallback callback = NULL;
 
     switch (location)
     {
         case NAUTILUS_SPECIAL_LOCATION_TEMPLATES:
         {
-            message = g_strdup (_("Put files in this folder to use them as templates for new documents."));
+            adw_banner_set_title (banner, _("Put files in this folder to use them as templates for new documents."));
             button_label = _("_Learn More");
-            bar->button_response = SPECIAL_LOCATION_TEMPLATES_RESPONSE;
+            callback = G_CALLBACK (on_template_clicked);
         }
         break;
 
         case NAUTILUS_SPECIAL_LOCATION_SCRIPTS:
         {
-            message = g_strdup (_("Executable files in this folder will appear in the Scripts menu."));
+            adw_banner_set_title (banner, _("Executable files in this folder will appear in the Scripts menu."));
         }
         break;
 
         case NAUTILUS_SPECIAL_LOCATION_SHARING:
         {
-            message = g_strdup (_("Turn on File Sharing to share the contents of this folder over the network."));
+            adw_banner_set_title (banner, _("Turn on File Sharing to share the contents of this folder over the network."));
             button_label = _("Sharing Settings");
-            bar->button_response = SPECIAL_LOCATION_SHARING_RESPONSE;
+            callback = G_CALLBACK (on_sharing_clicked);
         }
         break;
 
         case NAUTILUS_SPECIAL_LOCATION_TRASH:
         {
-            message = parse_old_files_age_preferences_value ();
+            set_auto_emptied_message (banner);
             button_label = _("_Settings");
-            bar->button_response = SPECIAL_LOCATION_TRASH_RESPONSE;
+            callback = G_CALLBACK (on_trash_auto_emptied_clicked);
 
             g_signal_connect_object (gnome_privacy_preferences,
                                      "changed::old-files-age",
-                                     G_CALLBACK (old_files_age_preferences_changed),
-                                     bar, 0);
+                                     G_CALLBACK (set_auto_emptied_message),
+                                     banner, G_CONNECT_SWAPPED);
         }
         break;
 
@@ -211,138 +142,21 @@ set_special_location (NautilusSpecialLocationBar *bar,
         }
     }
 
-    gtk_label_set_text (GTK_LABEL (bar->label), message);
-    g_free (message);
+    adw_banner_set_button_label (banner, button_label);
+    adw_banner_set_revealed (banner, TRUE);
 
-    if (learn_more_markup)
+    if (callback != NULL)
     {
-        gtk_label_set_markup (GTK_LABEL (bar->learn_more_label),
-                              learn_more_markup);
-        gtk_widget_set_visible (bar->learn_more_label, TRUE);
-        g_free (learn_more_markup);
+        g_signal_connect (banner, "button-clicked", callback, NULL);
     }
-    else
-    {
-        gtk_widget_set_visible (bar->learn_more_label, FALSE);
-    }
-
-    if (button_label)
-    {
-        gtk_button_set_label (GTK_BUTTON (bar->button), button_label);
-        gtk_widget_set_visible (bar->button, TRUE);
-    }
-    else
-    {
-        gtk_widget_set_visible (bar->button, FALSE);
-    }
-}
-
-static void
-nautilus_special_location_bar_set_property (GObject      *object,
-                                            guint         prop_id,
-                                            const GValue *value,
-                                            GParamSpec   *pspec)
-{
-    NautilusSpecialLocationBar *bar;
-
-    bar = NAUTILUS_SPECIAL_LOCATION_BAR (object);
-
-    switch (prop_id)
-    {
-        case PROP_SPECIAL_LOCATION:
-        {
-            set_special_location (bar, g_value_get_enum (value));
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-        break;
-    }
-}
-
-static void
-nautilus_special_location_bar_get_property (GObject    *object,
-                                            guint       prop_id,
-                                            GValue     *value,
-                                            GParamSpec *pspec)
-{
-    NautilusSpecialLocationBar *bar;
-
-    bar = NAUTILUS_SPECIAL_LOCATION_BAR (object);
-
-    switch (prop_id)
-    {
-        case PROP_SPECIAL_LOCATION:
-        {
-            g_value_set_enum (value, bar->special_location);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-        break;
-    }
-}
-
-static void
-nautilus_special_location_bar_class_init (NautilusSpecialLocationBarClass *klass)
-{
-    GObjectClass *object_class;
-
-    object_class = G_OBJECT_CLASS (klass);
-    object_class->get_property = nautilus_special_location_bar_get_property;
-    object_class->set_property = nautilus_special_location_bar_set_property;
-
-    g_object_class_install_property (object_class,
-                                     PROP_SPECIAL_LOCATION,
-                                     g_param_spec_enum ("special-location",
-                                                        "special-location",
-                                                        "special-location",
-                                                        NAUTILUS_TYPE_SPECIAL_LOCATION,
-                                                        NAUTILUS_SPECIAL_LOCATION_TEMPLATES,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-}
-
-static void
-nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
-{
-    GtkWidget *info_bar;
-    PangoAttrList *attrs;
-    GtkWidget *button;
-
-    info_bar = gtk_info_bar_new ();
-    gtk_info_bar_set_message_type (GTK_INFO_BAR (info_bar), GTK_MESSAGE_QUESTION);
-    adw_bin_set_child (ADW_BIN (bar), info_bar);
-
-    attrs = pango_attr_list_new ();
-    pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-    bar->label = gtk_label_new (NULL);
-    gtk_label_set_attributes (GTK_LABEL (bar->label), attrs);
-    pango_attr_list_unref (attrs);
-
-    gtk_label_set_ellipsize (GTK_LABEL (bar->label), PANGO_ELLIPSIZE_END);
-    gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), bar->label);
-
-    button = gtk_info_bar_add_button (GTK_INFO_BAR (info_bar), "", GTK_RESPONSE_OK);
-    bar->button = button;
-
-    bar->learn_more_label = gtk_label_new (NULL);
-    gtk_widget_set_hexpand (bar->learn_more_label, TRUE);
-    gtk_widget_set_halign (bar->learn_more_label, GTK_ALIGN_END);
-    gtk_info_bar_add_child (GTK_INFO_BAR (info_bar), bar->learn_more_label);
-
-    g_signal_connect (info_bar, "response", G_CALLBACK (on_info_bar_response), bar);
 }
 
 GtkWidget *
 nautilus_special_location_bar_new (NautilusSpecialLocation location)
 {
-    return g_object_new (NAUTILUS_TYPE_SPECIAL_LOCATION_BAR,
-                         "special-location", location,
-                         NULL);
+    GtkWidget *banner = adw_banner_new ("");
+
+    load_special_location (ADW_BANNER (banner), location);
+
+    return banner;
 }

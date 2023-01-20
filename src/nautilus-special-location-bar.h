@@ -24,9 +24,6 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_SPECIAL_LOCATION_BAR (nautilus_special_location_bar_get_type ())
-G_DECLARE_FINAL_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, NAUTILUS, SPECIAL_LOCATION_BAR, AdwBin)
-
 typedef enum {
     NAUTILUS_SPECIAL_LOCATION_TEMPLATES,
     NAUTILUS_SPECIAL_LOCATION_SCRIPTS,
@@ -34,6 +31,6 @@ typedef enum {
     NAUTILUS_SPECIAL_LOCATION_TRASH,
 } NautilusSpecialLocation;
 
-GtkWidget	*nautilus_special_location_bar_new (NautilusSpecialLocation location);
+GtkWidget *nautilus_special_location_bar_new (NautilusSpecialLocation location);
 
 G_END_DECLS
