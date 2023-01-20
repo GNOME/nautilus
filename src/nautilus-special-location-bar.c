@@ -53,38 +53,49 @@ enum
 G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, ADW_TYPE_BIN)
 
 static void
+on_sharing_clicked (GtkInfoBar *infobar)
+{
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (infobar)));
+    GVariant *parameters = g_variant_new_parsed (
+        "('launch-panel', [<('sharing', @av [])>], @a{sv} {})");
+
+    nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                 NAUTILUS_DBUS_LAUNCHER_SETTINGS,
+                                 "Activate",
+                                 parameters, window);
+}
+
+static void
+on_trash_auto_emptied_clicked (GtkInfoBar *infobar)
+{
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (infobar)));
+    GVariant *parameters = g_variant_new_parsed (
+        "('launch-panel', [<('usage', @av [])>], @a{sv} {})");
+
+    nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                 NAUTILUS_DBUS_LAUNCHER_SETTINGS,
+                                 "Activate",
+                                 parameters, window);
+}
+
+static void
 on_info_bar_response (GtkInfoBar *infobar,
                       gint        response_id,
                       gpointer    user_data)
 {
     NautilusSpecialLocationBar *bar = user_data;
-    GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (bar));
 
     switch (bar->button_response)
     {
         case SPECIAL_LOCATION_SHARING_RESPONSE:
         {
-            GVariant *parameters;
-
-            parameters = g_variant_new_parsed ("('launch-panel', [<('sharing', @av [])>], "
-                                               "@a{sv} {})");
-            nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
-                                         NAUTILUS_DBUS_LAUNCHER_SETTINGS,
-                                         "Activate",
-                                         parameters, GTK_WINDOW (window));
+            on_sharing_clicked (infobar);
         }
         break;
 
         case SPECIAL_LOCATION_TRASH_RESPONSE:
         {
-            GVariant *parameters;
-
-            parameters = g_variant_new_parsed ("('launch-panel', [<('usage', @av [])>], "
-                                               "@a{sv} {})");
-            nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
-                                         NAUTILUS_DBUS_LAUNCHER_SETTINGS,
-                                         "Activate",
-                                         parameters, GTK_WINDOW (window));
+            on_trash_auto_emptied_clicked (infobar);
         }
         break;
 
