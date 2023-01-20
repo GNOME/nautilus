@@ -1097,6 +1097,7 @@ get_selection (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    NautilusFile *view_file = nautilus_files_view_get_directory_as_file (files_view);
     g_autoptr (GtkSelectionFilterModel) selection = NULL;
     guint n_selected;
     GList *selected_files = NULL;
@@ -1106,15 +1107,16 @@ get_selection (NautilusFilesView *files_view,
     for (guint i = 0; i < n_selected; i++)
     {
         g_autoptr (NautilusViewItem) item = NULL;
+        g_autoptr (NautilusFile) parent = NULL;
         NautilusFile *file;
 
         item = get_view_item (G_LIST_MODEL (selection), i);
         file = nautilus_view_item_get_file (item);
+        parent = nautilus_file_get_parent (file);
 
-        if (for_file_transfer)
+        if (for_file_transfer && view_file != parent)
         {
             /* If the parent is already selected don't include the child. */
-            g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
             NautilusViewItem *parent_item;
             guint parent_pos;
 
