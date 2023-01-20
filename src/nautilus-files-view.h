@@ -60,8 +60,8 @@ struct _NautilusFilesViewClass {
          */
         void    (* add_files)                    (NautilusFilesView *view,
                                                   GList             *files);
-        void    (* remove_file)                 (NautilusFilesView *view,
-                                                 NautilusFile      *file,
+        void    (* remove_files)                 (NautilusFilesView *view,
+                                                 GList             *files,
                                                  NautilusDirectory *directory);
 
         /* The 'file_changed' signal is emitted to signal a change in a file,

@@ -129,7 +129,7 @@ enum
     END_LOADING,
     FILE_CHANGED,
     MOVE_COPY_ITEMS,
-    REMOVE_FILE,
+    REMOVE_FILES,
     SELECTION_CHANGED,
     TRASH,
     DELETE,
@@ -4342,6 +4342,7 @@ process_old_files (NautilusFilesView *view)
 
     if (files_added != NULL || files_changed != NULL)
     {
+        g_autoptr (GHashTable) files_removed = g_hash_table_new (NULL, NULL);
         gboolean send_selection_change = FALSE;
 
         g_signal_emit (view, signals[BEGIN_FILE_CHANGES], 0);
@@ -4376,9 +4377,18 @@ process_old_files (NautilusFilesView *view)
             gboolean should_show_file;
             pending = node->data;
             should_show_file = still_should_show_file (view, pending);
-            g_signal_emit (view,
-                           signals[should_show_file ? FILE_CHANGED : REMOVE_FILE], 0,
-                           pending->file, pending->directory);
+            if (should_show_file)
+            {
+                g_signal_emit (view,
+                               signals[FILE_CHANGED], 0, pending->file, pending->directory);
+            }
+            else
+            {
+                files = g_hash_table_lookup (files_removed, pending->directory);
+                g_hash_table_insert (files_removed,
+                                     pending->directory,
+                                     g_list_prepend (files, pending->file));
+            }
 
             /* Acknowledge the files that were pending to be revealed */
             if (g_hash_table_contains (priv->pending_reveal, pending->file))
@@ -4397,6 +4407,19 @@ process_old_files (NautilusFilesView *view)
             }
         }
 
+        if (files_removed != NULL)
+        {
+            GHashTableIter iter;
+            gpointer directory;
+
+            g_hash_table_iter_init (&iter, files_removed);
+            while (g_hash_table_iter_next (&iter, &directory, (gpointer *) &files))
+            {
+                g_signal_emit (view, signals[REMOVE_FILES], 0, files, directory);
+                g_list_free (files);
+                g_hash_table_iter_steal (&iter);
+            }
+        }
         if (files_changed != NULL)
         {
             g_autolist (NautilusFile) selection = NULL;
@@ -9572,14 +9595,14 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
-    signals[REMOVE_FILE] =
+    signals[REMOVE_FILES] =
         g_signal_new ("remove-file",
                       G_TYPE_FROM_CLASS (klass),
                       G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, remove_file),
+                      G_STRUCT_OFFSET (NautilusFilesViewClass, remove_files),
                       NULL, NULL,
                       g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
+                      G_TYPE_NONE, 2, G_TYPE_POINTER /* GList<NautilusFile> */, NAUTILUS_TYPE_DIRECTORY);
     signals[SELECTION_CHANGED] =
         g_signal_new ("selection-changed",
                       G_TYPE_FROM_CLASS (klass),

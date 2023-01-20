@@ -21,9 +21,9 @@ NautilusViewItem * nautilus_view_model_find_item_for_file (NautilusViewModel *se
 GList * nautilus_view_model_find_items_for_files (NautilusViewModel *self,
                                                   GList             *files);
 /* Don't use inside a loop, use nautilus_view_model_remove_all_items instead. */
-void nautilus_view_model_remove_item (NautilusViewModel     *self,
-                                      NautilusViewItem      *item,
-                                      NautilusDirectory     *directory);
+void nautilus_view_model_remove_items (NautilusViewModel     *self,
+                                       GList                 *items,
+                                       NautilusDirectory     *directory);
 void nautilus_view_model_remove_all_items (NautilusViewModel *self);
 /* Don't use inside a loop, use nautilus_view_model_add_items instead. */
 void nautilus_view_model_add_item (NautilusViewModel     *self,
