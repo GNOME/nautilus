@@ -21,7 +21,12 @@ flatpak@x86_64:
 
 flatpak@aarch64:
     rules:
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        # https://docs.gitlab.com/ee/ci/jobs/job_control.html#avoid-duplicate-pipelines
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          when: never
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "GNOME"
+        - when: manual
+          allow_failure: true
     extends: ['.flatpak@aarch64', '.vars-devel']
 
 nightly@x86_64:
