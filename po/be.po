@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2022-12-09 18:45+0000\n"
-"PO-Revision-Date: 2022-12-14 01:08+0300\n"
+"PO-Revision-Date: 2023-01-20 17:18+0300\n"
 "Last-Translator: Yuras Shumovich <shumovichy@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -20,9 +20,8 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
-#, fuzzy
 msgid "Run Software"
-msgstr "Запуск праграм"
+msgstr "Запуск кіраўніка праграм"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:112
@@ -149,7 +148,7 @@ msgid ""
 "Whether to show context menu items to create links from copied or selected "
 "files"
 msgstr ""
-"Ці паказаць у кантэкставым меню пункт \"Стварыць пасылкі\" для скапіраваных "
+"Ці паказаць у кантэкставым меню пункт \"Стварыць пасылкі\" для скапіяваных "
 "або вылучаных файлаў"
 
 #: data/org.gnome.nautilus.gschema.xml:97
@@ -158,7 +157,7 @@ msgid ""
 "from the copied or selected files."
 msgstr ""
 "Калі ўключана, Наўтылус будзе паказваць у кантэкставым меню пункт \"Стварыць "
-"пасылкі\" для скапіраваных або вылучаных файлаў."
+"пасылкі\" для скапіяваных або вылучаных файлаў."
 
 #: data/org.gnome.nautilus.gschema.xml:102
 msgid "When to show number of items in a folder"
@@ -316,8 +315,8 @@ msgid ""
 "When a folder is visited this viewer is used. Possible values are “list-"
 "view”, and “icon-view”."
 msgstr ""
-"Пры наведванні папкі будзе ўжыты гэты рэжым прагляду. Магчымыя значэнні: \"list-"
-"view\" (рэжым спіса) і \"icon-view\" (рэжым значкоў)."
+"Пры наведванні папкі будзе ўжыты гэты рэжым прагляду. Магчымыя значэнні: "
+"\"list-view\" (рэжым спіса) і \"icon-view\" (рэжым значкоў)."
 
 #: data/org.gnome.nautilus.gschema.xml:168
 msgid "Whether to show hidden files"
@@ -338,7 +337,8 @@ msgstr "Які рэжым прагляду выкарыстоўваць пры �
 #: data/org.gnome.nautilus.gschema.xml:177
 msgid ""
 "When searching Nautilus will switch to the type of view in this setting."
-msgstr "Пры пошуку Наўтылус будзе выкарыстоўваць рэжым прагляду з гэтай налады."
+msgstr ""
+"Пры пошуку Наўтылус будзе выкарыстоўваць рэжым прагляду з гэтай налады."
 
 #: data/org.gnome.nautilus.gschema.xml:181
 msgid ""
@@ -1053,7 +1053,7 @@ msgstr "Тып файла."
 #: src/nautilus-column-utilities.c:80
 #: src/resources/ui/nautilus-properties-window.ui:554
 msgid "Modified"
-msgstr "Зменены"
+msgstr "Зменена"
 
 #: src/nautilus-column-utilities.c:81 src/nautilus-column-utilities.c:148
 msgid "The date the file was modified."
@@ -1070,7 +1070,7 @@ msgstr "Больш дакладны тып файла."
 #: src/nautilus-column-utilities.c:96
 #: src/resources/ui/nautilus-properties-window.ui:516
 msgid "Accessed"
-msgstr "Час апошняга доступу"
+msgstr "Апошні доступ"
 
 #: src/nautilus-column-utilities.c:97
 msgid "The date the file was accessed."
@@ -1218,7 +1218,7 @@ msgstr "Узнікла памылка запуску праграмы."
 
 #: src/nautilus-dbus-launcher.c:95
 msgid "Details: The proxy has not been created."
-msgstr ""
+msgstr "Падрабязнасці: проксі не створаны."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
 #: src/nautilus-directory.c:674
@@ -1232,7 +1232,7 @@ msgstr "Пера_мясціць сюды"
 
 #: src/nautilus-dnd.c:118
 msgid "_Copy Here"
-msgstr "С_капіраваць сюды"
+msgstr "С_капіяваць сюды"
 
 #: src/nautilus-dnd.c:123
 msgid "_Link Here"
@@ -1735,7 +1735,7 @@ msgstr "А_б'яднаць усё"
 
 #: src/nautilus-file-operations.c:270
 msgid "Copy _Anyway"
-msgstr "_Усё роўна скапіраваць"
+msgstr "_Усё роўна скапіяваць"
 
 #: src/nautilus-file-operations.c:271 src/nautilus-file-operations.c:3028
 #: src/resources/ui/nautilus-files-view-context-menus.ui:45
@@ -2104,9 +2104,9 @@ msgstr "Немагчыма атрымаць доступ да «%s»"
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
-msgstr[0] "Падрыхтоўка да капіравання %'d файла (%s)"
-msgstr[1] "Падрыхтоўка да капіравання %'d файлаў (%s)"
-msgstr[2] "Падрыхтоўка да капіравання %'d файлаў (%s)"
+msgstr[0] "Падрыхтоўка да капіявання %'d файла (%s)"
+msgstr[1] "Падрыхтоўка да капіявання %'d файлаў (%s)"
+msgstr[2] "Падрыхтоўка да капіявання %'d файлаў (%s)"
 
 #: src/nautilus-file-operations.c:3267
 #, c-format
@@ -2144,7 +2144,7 @@ msgstr[2] "Падрыхтоўка да сціскання %'d файлаў"
 #: src/nautilus-file-operations.c:4978 src/nautilus-file-operations.c:5060
 #: src/nautilus-file-operations.c:5347
 msgid "Error while copying."
-msgstr "Памылка падчас капіравання."
+msgstr "Памылка падчас капіявання."
 
 #: src/nautilus-file-operations.c:3347 src/nautilus-file-operations.c:4974
 #: src/nautilus-file-operations.c:5056 src/nautilus-file-operations.c:5343
@@ -2202,7 +2202,7 @@ msgstr "Узнікла памылка збору звестак пра «%s»."
 #: src/nautilus-file-operations.c:3876 src/nautilus-file-operations.c:3920
 #, c-format
 msgid "Error while copying to “%s”."
-msgstr "Памылка падчас капіравання ў «%s»."
+msgstr "Памылка падчас капіявання ў «%s»."
 
 #: src/nautilus-file-operations.c:3764
 msgid "You do not have permissions to access the destination folder."
@@ -2227,7 +2227,7 @@ msgstr ""
 #: src/nautilus-file-operations.c:3881
 #, c-format
 msgid "%s more space is required to copy to the destination."
-msgstr "Для капіравання ў месца прызначэння патрэбна яшчэ %s вольнай прасторы."
+msgstr "Для капіявання ў месца прызначэння патрэбна яшчэ %s вольнай прасторы."
 
 #: src/nautilus-file-operations.c:3921
 msgid "The destination is read-only."
@@ -2246,12 +2246,12 @@ msgstr "Перамешчана «%s» у «%s»"
 #: src/nautilus-file-operations.c:4009
 #, c-format
 msgid "Copying “%s” to “%s”"
-msgstr "Капіраванне «%s» у «%s»"
+msgstr "Капіяванне «%s» у «%s»"
 
 #: src/nautilus-file-operations.c:4013
 #, c-format
 msgid "Copied “%s” to “%s”"
-msgstr "Скапіравана «%s» у «%s»"
+msgstr "Скапіявана «%s» у «%s»"
 
 #: src/nautilus-file-operations.c:4047
 #, c-format
@@ -2275,9 +2275,9 @@ msgstr[2] "Перамяшчэнне %'d файлаў у «%s»"
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
-msgstr[0] "Капіраванне %'d файла ў «%s»"
-msgstr[1] "Капіраванне %'d файлаў у «%s»"
-msgstr[2] "Капіраванне %'d файлаў у «%s»"
+msgstr[0] "Капіяванне %'d файла ў «%s»"
+msgstr[1] "Капіяванне %'d файлаў у «%s»"
+msgstr[2] "Капіяванне %'d файлаў у «%s»"
 
 #: src/nautilus-file-operations.c:4095
 #, c-format
@@ -2291,9 +2291,9 @@ msgstr[2] "Перамешчана %'d файлаў у «%s»"
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
-msgstr[0] "Скапіраваны %'d файл у «%s»"
-msgstr[1] "Скапіравана %'d файлы ў «%s»"
-msgstr[2] "Скапіравана %'d файлаў у «%s»"
+msgstr[0] "Скапіяваны %'d файл у «%s»"
+msgstr[1] "Скапіявана %'d файлы ў «%s»"
+msgstr[2] "Скапіявана %'d файлаў у «%s»"
 
 #: src/nautilus-file-operations.c:4124
 #, c-format
@@ -2371,7 +2371,7 @@ msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr ""
-"Вы не можаце скапіраваць папку «%s», бо не маеце дазволу на стварэнне яе "
+"Вы не можаце скапіяваць папку «%s», бо не маеце дазволу на стварэнне яе "
 "копіі ў месцы прызначэння."
 
 #: src/nautilus-file-operations.c:4798
@@ -2385,7 +2385,7 @@ msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
 "permissions to see them."
 msgstr ""
-"Вы не можаце скапіраваць файлы з папкі «%s», бо вы не маеце дазволу на іх "
+"Вы не можаце скапіяваць файлы з папкі «%s», бо вы не маеце дазволу на іх "
 "прагляд."
 
 #: src/nautilus-file-operations.c:5001
@@ -2397,8 +2397,7 @@ msgstr "_Прапусціць файлы"
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
 "it."
-msgstr ""
-"Вы не можаце скапіраваць папку «%s», бо не маеце дазволу на яе чытанне."
+msgstr "Вы не можаце скапіяваць папку «%s», бо не маеце дазволу на яе чытанне."
 
 #: src/nautilus-file-operations.c:5132 src/nautilus-file-operations.c:5761
 #: src/nautilus-file-operations.c:6507
@@ -2421,7 +2420,7 @@ msgstr "Немагчыма перамясціць папку саму ў сяб�
 
 #: src/nautilus-file-operations.c:5452 src/nautilus-file-operations.c:6265
 msgid "You cannot copy a folder into itself."
-msgstr "Немагчыма скапіраваць папку саму ў сябе."
+msgstr "Немагчыма скапіяваць папку саму ў сябе."
 
 #: src/nautilus-file-operations.c:5453 src/nautilus-file-operations.c:6266
 msgid "The destination folder is inside the source folder."
@@ -2434,7 +2433,7 @@ msgstr "Немагчыма перамясціць файл на месца са�
 
 #: src/nautilus-file-operations.c:5494 src/nautilus-file-operations.c:6308
 msgid "You cannot copy a file over itself."
-msgstr "Немагчыма скапіраваць файл на месца самога сябе."
+msgstr "Немагчыма скапіяваць файл на месца самога сябе."
 
 #: src/nautilus-file-operations.c:5495 src/nautilus-file-operations.c:6309
 msgid "The source file would be overwritten by the destination."
@@ -2443,7 +2442,7 @@ msgstr "Іначай арыгінальны файл быў бы перапіс�
 #: src/nautilus-file-operations.c:5765 src/nautilus-file-operations.c:5853
 #, c-format
 msgid "Error while copying “%s”."
-msgstr "Памылка падчас капіравання «%s»."
+msgstr "Памылка падчас капіявання «%s»."
 
 #: src/nautilus-file-operations.c:5768
 #, c-format
@@ -2453,11 +2452,11 @@ msgstr "Не ўдалося выдаліць у %s існуючы файл з т
 #: src/nautilus-file-operations.c:5855
 #, c-format
 msgid "There was an error copying the file into %s."
-msgstr "Узнікла памылка капіравання файла ў %s."
+msgstr "Узнікла памылка капіявання файла ў %s."
 
 #: src/nautilus-file-operations.c:6045
 msgid "Copying Files"
-msgstr "Капіраванне файлаў"
+msgstr "Капіяванне файлаў"
 
 #: src/nautilus-file-operations.c:6165
 #, c-format
@@ -2578,9 +2577,9 @@ msgstr "Вынята «%s» у «%s»"
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
-msgstr[0] "Выняты %'d файл у “%s”"
-msgstr[1] "Вынята %'d файла ў “%s”"
-msgstr[2] "Вынята %'d файлаў у “%s”"
+msgstr[0] "Выняты %'d файл у «%s»"
+msgstr[1] "Вынята %'d файла ў «%s»"
+msgstr[2] "Вынята %'d файлаў у «%s»"
 
 #: src/nautilus-file-operations.c:8623
 msgid "Preparing to extract"
@@ -2763,7 +2762,7 @@ msgstr "Выбар месца для перамяшчэння"
 
 #: src/nautilus-files-view.c:5979
 msgid "Select Copy Destination"
-msgstr "Выбар месца для капіравання"
+msgstr "Выбар месца для капіявання"
 
 #: src/nautilus-files-view.c:5988 src/nautilus-files-view.c:6424
 #: src/resources/ui/nautilus-files-view-select-items.ui:16
@@ -2995,33 +2994,33 @@ msgstr "Аднавіць «%s» са сметніцы"
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
-msgstr[0] "Выдаліць %d скапіраваны элемент"
-msgstr[1] "Выдаліць %d скапіраваныя элементы"
-msgstr[2] "Выдаліць %d скапіраваных элементаў"
+msgstr[0] "Выдаліць %d скапіяваны элемент"
+msgstr[1] "Выдаліць %d скапіяваныя элементы"
+msgstr[2] "Выдаліць %d скапіяваных элементаў"
 
 #: src/nautilus-file-undo-operations.c:502
 #, c-format
 msgid "Copy %d item to “%s”"
 msgid_plural "Copy %d items to “%s”"
-msgstr[0] "Скапіраваць %d элемент у «%s»"
-msgstr[1] "Скапіраваць %d элементы ў «%s»"
-msgstr[2] "Скапіраваць %d элементаў у «%s»"
+msgstr[0] "Скапіяваць %d элемент у «%s»"
+msgstr[1] "Скапіяваць %d элементы ў «%s»"
+msgstr[2] "Скапіяваць %d элементаў у «%s»"
 
 #: src/nautilus-file-undo-operations.c:506
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
-msgstr[0] "_Адрабіць капіраванне %d элемента"
-msgstr[1] "_Адрабіць капіраванне %d элементаў"
-msgstr[2] "_Адрабіць капіраванне %d элементаў"
+msgstr[0] "_Адрабіць капіяванне %d элемента"
+msgstr[1] "_Адрабіць капіяванне %d элементаў"
+msgstr[2] "_Адрабіць капіяванне %d элементаў"
 
 #: src/nautilus-file-undo-operations.c:509
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
-msgstr[0] "_Паўтарыць капіраванне %d элемента"
-msgstr[1] "_Паўтарыць капіраванне %d элементаў"
-msgstr[2] "_Паўтарыць капіраванне %d элементаў"
+msgstr[0] "_Паўтарыць капіяванне %d элемента"
+msgstr[1] "_Паўтарыць капіяванне %d элементаў"
+msgstr[2] "_Паўтарыць капіяванне %d элементаў"
 
 #: src/nautilus-file-undo-operations.c:515
 #: src/nautilus-file-undo-operations.c:542
@@ -3035,15 +3034,15 @@ msgstr "Выдаліць «%s»"
 #: src/nautilus-file-undo-operations.c:516
 #, c-format
 msgid "Copy “%s” to “%s”"
-msgstr "Капіраваць «%s» у «%s»"
+msgstr "Капіяваць «%s» у «%s»"
 
 #: src/nautilus-file-undo-operations.c:518
 msgid "_Undo Copy"
-msgstr "_Адрабіць капіраванне"
+msgstr "_Адрабіць капіяванне"
 
 #: src/nautilus-file-undo-operations.c:519
 msgid "_Redo Copy"
-msgstr "_Паўтарыць капіраванне"
+msgstr "_Паўтарыць капіяванне"
 
 #: src/nautilus-file-undo-operations.c:526
 #, c-format
@@ -4099,14 +4098,21 @@ msgstr "Сметніца"
 #: src/nautilus-special-location-bar.c:107
 msgid "Items in Trash older than 1 hour are automatically deleted"
 msgstr ""
+"Элементы, якія знаходзяцца ў Сметніцы больш за 1 гадзіну, выдаляюцца "
+"аўтаматычна"
 
 #: src/nautilus-special-location-bar.c:112
 #, c-format
 msgid "Items in Trash older than %d day are automatically deleted"
 msgid_plural "Items in Trash older than %d days are automatically deleted"
 msgstr[0] ""
+"Элементы, якія знаходзяцца ў Сметніцы больш за %d дзень, выдаляюцца "
+"аўтаматычна"
 msgstr[1] ""
+"Элементы, якія знаходзяцца ў Сметніцы больш за %d дні, выдаляюцца аўтаматычна"
 msgstr[2] ""
+"Элементы, якія знаходзяцца ў Сметніцы больш за %d дзён, выдаляюцца "
+"аўтаматычна"
 
 #: src/nautilus-special-location-bar.c:149
 msgid "Put files in this folder to use them as templates for new documents."
@@ -4130,6 +4136,8 @@ msgstr "Выканальныя файлы з гэтай папкі паказв�
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network."
 msgstr ""
+"Уключыце супольны доступ да файлаў, каб даць доступ да змесціва гэтай папкі "
+"па сетцы."
 
 #: src/nautilus-special-location-bar.c:163
 msgid "Sharing Settings"
@@ -4280,6 +4288,7 @@ msgstr "Бягучыя ўсталяваныя плагіны:"
 #: src/nautilus-window.c:2280
 msgid "For bug testing only, the following command can be used:"
 msgstr ""
+"Толькі для тэсціравання памылак, можна выкарыстоўваць наступную каманду:"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -4321,7 +4330,7 @@ msgstr "Гэтае месца не з'яўляецца папкай."
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr ""
-"Не ўдалося адшукаць “%s”. Праверце правільнасць яго напісання і паўтарыце "
+"Не ўдалося адшукаць «%s». Праверце правільнасць яго напісання і паўтарыце "
 "спробу."
 
 #: src/nautilus-window-slot.c:1630
@@ -4334,7 +4343,7 @@ msgstr ""
 #: src/nautilus-window-slot.c:1641
 #, c-format
 msgid "“%s” locations are not supported."
-msgstr "Адрасы “%s” не падтрымліваюцца."
+msgstr "Адрасы «%s» не падтрымліваюцца."
 
 #: src/nautilus-window-slot.c:1646
 msgid "Unable to handle this kind of location."
@@ -4369,8 +4378,8 @@ msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
 msgstr ""
-"Сервер адхіліў падлучэнне. Звычайна гэта азначае, што фаервол блакіруе доступ "
-"або аддалены сэрвіс не запушчаны."
+"Сервер адхіліў падлучэнне. Звычайна гэта азначае, што фаервол блакіруе "
+"доступ або аддалены сэрвіс не запушчаны."
 
 #: src/nautilus-window-slot.c:1699
 #, c-format
@@ -4459,7 +4468,7 @@ msgstr "Адкрыць у новым акне"
 #: src/resources/gtk/help-overlay.ui:107
 msgctxt "shortcut window"
 msgid "Open item location (search and recent only)"
-msgstr "Адкрыць месца знаходжання элемента (толькі пошук ці апошняе)"
+msgstr "Адкрыць месца знаходжання элемента (толькі ў пошуку і нядаўніх)"
 
 #: src/resources/gtk/help-overlay.ui:114
 msgctxt "shortcut window"
@@ -4639,7 +4648,7 @@ msgstr "Выдаліць незваротна"
 #: src/resources/gtk/help-overlay.ui:355
 msgctxt "shortcut window"
 msgid "Create link to copied item"
-msgstr "Стварыць спасылку на скапіраваны элемент"
+msgstr "Стварыць спасылку на скапіяваны элемент"
 
 #: src/resources/gtk/help-overlay.ui:362
 msgctxt "shortcut window"
@@ -4654,7 +4663,7 @@ msgstr "Выразаць"
 #: src/resources/gtk/help-overlay.ui:376
 msgctxt "shortcut window"
 msgid "Copy"
-msgstr "Скапіраваць"
+msgstr "Скапіяваць"
 
 #: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
@@ -4945,7 +4954,7 @@ msgstr "_Выразаць"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:174
 msgid "_Copy"
-msgstr "С_капіраваць"
+msgstr "С_капіяваць"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:178
 msgid "Move to…"
@@ -4953,7 +4962,7 @@ msgstr "Перамясціць у…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:182
 msgid "Copy to…"
-msgstr "Скапіраваць у…"
+msgstr "Скапіяваць у…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:188
 msgid "Rena_me…"
@@ -5024,7 +5033,7 @@ msgstr "Вызначыце парадак з'яўлення інфармацыі
 
 #: src/resources/ui/nautilus-name-cell.ui:86
 msgid "Full text match"
-msgstr ""
+msgstr "Поўнае супадзенне тэксту"
 
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
 msgid "Password Required"
@@ -5135,7 +5144,7 @@ msgstr ""
 
 #: src/resources/ui/nautilus-preferences-window.ui:130
 msgid "Grid View Captions"
-msgstr ""
+msgstr "Подпісы ў рэжыме сеткі"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:135
@@ -5550,7 +5559,7 @@ msgstr "Нядаўнія серверы"
 
 #: src/gtk/nautilusgtkplacesview.ui:159
 msgid "List of common local and remote mountpoints."
-msgstr ""
+msgstr "Спіс агульных лакальных і аддаленых пунктаў мантавання."
 
 #: src/gtk/nautilusgtkplacesview.ui:211
 msgid "Connect to _Server"
@@ -5705,4 +5714,4 @@ msgstr "Бакавая панэль"
 
 #: src/gtk/nautilusgtkplacessidebar.c:3991
 msgid "List of common shortcuts, mountpoints, and bookmarks."
-msgstr ""
+msgstr "Спіс агульных ярлыкоў, пунктаў мантавання і закладак."
