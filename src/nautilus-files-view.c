@@ -3790,6 +3790,7 @@ real_check_empty_states (NautilusFilesView *view)
         }
 
         gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->empty_view_page);
+        nautilus_files_view_display_selection_info (view);
     }
     else
     {
