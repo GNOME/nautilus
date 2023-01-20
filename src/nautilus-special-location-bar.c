@@ -48,6 +48,7 @@ enum
 {
     SPECIAL_LOCATION_SHARING_RESPONSE = 1,
     SPECIAL_LOCATION_TRASH_RESPONSE = 2,
+    SPECIAL_LOCATION_TEMPLATES_RESPONSE = 3,
 };
 
 G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, ADW_TYPE_BIN)
@@ -63,6 +64,14 @@ on_sharing_clicked (GtkInfoBar *infobar)
                                  NAUTILUS_DBUS_LAUNCHER_SETTINGS,
                                  "Activate",
                                  parameters, window);
+}
+
+static void
+on_template_clicked (GtkInfoBar *infobar)
+{
+    GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (infobar)));
+    g_autoptr (GtkUriLauncher) launcher = gtk_uri_launcher_new ("help:gnome-help/files-templates");
+    gtk_uri_launcher_launch (launcher, window, NULL, NULL, NULL);
 }
 
 static void
@@ -96,6 +105,12 @@ on_info_bar_response (GtkInfoBar *infobar,
         case SPECIAL_LOCATION_TRASH_RESPONSE:
         {
             on_trash_auto_emptied_clicked (infobar);
+        }
+        break;
+
+        case SPECIAL_LOCATION_TEMPLATES_RESPONSE:
+        {
+            on_template_clicked (infobar);
         }
         break;
 
@@ -158,7 +173,8 @@ set_special_location (NautilusSpecialLocationBar *bar,
         case NAUTILUS_SPECIAL_LOCATION_TEMPLATES:
         {
             message = g_strdup (_("Put files in this folder to use them as templates for new documents."));
-            learn_more_markup = g_strdup (_("<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates\">Learn more…</a>"));
+            button_label = _("_Learn More");
+            bar->button_response = SPECIAL_LOCATION_TEMPLATES_RESPONSE;
         }
         break;
 
