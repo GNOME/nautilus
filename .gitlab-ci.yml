@@ -76,7 +76,7 @@ pages:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: deploy
     rules:
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "GNOME"
     script:
         - meson setup -Ddocs=true -Dextensions=false -Dtests=none _build
         - ninja -C _build
