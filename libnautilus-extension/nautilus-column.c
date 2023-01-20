@@ -33,6 +33,7 @@ enum
     PROP_DESCRIPTION,
     PROP_XALIGN,
     PROP_DEFAULT_SORT_ORDER,
+    PROP_VISIBLE,
     LAST_PROP
 };
 
@@ -46,6 +47,7 @@ struct _NautilusColumn
     char *description;
     float xalign;
     int default_sort_order; /* Actually, meant to store GtkSortType */
+    gboolean visible;
 };
 
 G_DEFINE_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
@@ -127,6 +129,12 @@ nautilus_column_get_property (GObject    *object,
         }
         break;
 
+        case PROP_VISIBLE:
+        {
+            g_value_set_boolean (value, column->visible);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -190,6 +198,12 @@ nautilus_column_set_property (GObject      *object,
         {
             column->default_sort_order = g_value_get_int (value);
             g_object_notify (object, "default-sort-order");
+        }
+        break;
+
+        case PROP_VISIBLE:
+        {
+            column->visible = g_value_get_boolean (value);
         }
         break;
 
@@ -322,4 +336,20 @@ nautilus_column_class_init (NautilusColumnClass *class)
                                                        "Default sort order",
                                                        G_MININT, G_MAXINT, 0,
                                                        G_PARAM_READWRITE));
+
+    /**
+     * NautilusColumn:visible: (type gboolean)
+     *
+     * Whether to show the NautilusColumn in a ColumnChooser.
+     * This is not meant to be used by extensions. The value may be changed
+     * over the life of the NautilusColumn.
+     *
+     * Stability: Private: Internal to the application.
+     */
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_VISIBLE,
+                                     g_param_spec_boolean ("visible",
+                                                           NULL, NULL,
+                                                           FALSE,
+                                                           G_PARAM_READWRITE));
 }
