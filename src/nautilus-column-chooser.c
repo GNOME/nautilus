@@ -37,8 +37,6 @@ struct _NautilusColumnChooser
     GtkWidget *view;
     GtkListStore *store;
 
-    GtkWidget *move_up_button;
-    GtkWidget *move_down_button;
     GtkWidget *use_default_button;
     GtkWidget *window_title;
 
@@ -97,56 +95,8 @@ nautilus_column_chooser_set_property (GObject      *object,
 }
 
 static void
-update_buttons (NautilusColumnChooser *chooser)
-{
-    GtkTreeSelection *selection;
-    GtkTreeIter iter;
-
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (chooser->view));
-
-    if (gtk_tree_selection_get_selected (selection, NULL, &iter))
-    {
-        gboolean visible;
-        gboolean top;
-        gboolean bottom;
-        GtkTreePath *first;
-        GtkTreePath *path;
-
-        gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
-                            &iter,
-                            COLUMN_VISIBLE, &visible,
-                            -1);
-
-        path = gtk_tree_model_get_path (GTK_TREE_MODEL (chooser->store),
-                                        &iter);
-        first = gtk_tree_path_new_first ();
-
-        top = (gtk_tree_path_compare (path, first) == 0);
-
-        gtk_tree_path_free (path);
-        gtk_tree_path_free (first);
-
-        bottom = !gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store),
-                                            &iter);
-
-        gtk_widget_set_sensitive (chooser->move_up_button,
-                                  !top);
-        gtk_widget_set_sensitive (chooser->move_down_button,
-                                  !bottom);
-    }
-    else
-    {
-        gtk_widget_set_sensitive (chooser->move_up_button,
-                                  FALSE);
-        gtk_widget_set_sensitive (chooser->move_down_button,
-                                  FALSE);
-    }
-}
-
-static void
 list_changed (NautilusColumnChooser *chooser)
 {
-    update_buttons (chooser);
     g_signal_emit (chooser, signals[CHANGED], 0);
 }
 
@@ -201,7 +151,6 @@ static void
 selection_changed_callback (GtkTreeSelection *selection,
                             gpointer          user_data)
 {
-    update_buttons (NAUTILUS_COLUMN_CHOOSER (user_data));
 }
 
 static void
@@ -210,66 +159,6 @@ row_deleted_callback (GtkTreeModel *model,
                       gpointer      user_data)
 {
     list_changed (NAUTILUS_COLUMN_CHOOSER (user_data));
-}
-
-static void
-move_up_clicked_callback (GtkWidget *button,
-                          gpointer   user_data)
-{
-    NautilusColumnChooser *chooser;
-    GtkTreeIter iter;
-    GtkTreeSelection *selection;
-
-    chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
-
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (chooser->view));
-
-    if (gtk_tree_selection_get_selected (selection, NULL, &iter))
-    {
-        GtkTreePath *path;
-        GtkTreeIter prev;
-
-        path = gtk_tree_model_get_path (GTK_TREE_MODEL (chooser->store), &iter);
-        gtk_tree_path_prev (path);
-        if (gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->store), &prev, path))
-        {
-            gtk_list_store_move_before (chooser->store,
-                                        &iter,
-                                        &prev);
-        }
-        gtk_tree_path_free (path);
-    }
-
-    list_changed (chooser);
-}
-
-static void
-move_down_clicked_callback (GtkWidget *button,
-                            gpointer   user_data)
-{
-    NautilusColumnChooser *chooser;
-    GtkTreeIter iter;
-    GtkTreeSelection *selection;
-
-    chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
-
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (chooser->view));
-
-    if (gtk_tree_selection_get_selected (selection, NULL, &iter))
-    {
-        GtkTreeIter next;
-
-        next = iter;
-
-        if (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), &next))
-        {
-            gtk_list_store_move_after (chooser->store,
-                                       &iter,
-                                       &next);
-        }
-    }
-
-    list_changed (chooser);
 }
 
 static void
@@ -555,15 +444,11 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, view);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, store);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_up_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, move_down_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_default_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, window_title);
     gtk_widget_class_bind_template_callback (widget_class, view_row_activated_callback);
     gtk_widget_class_bind_template_callback (widget_class, selection_changed_callback);
     gtk_widget_class_bind_template_callback (widget_class, visible_toggled_callback);
-    gtk_widget_class_bind_template_callback (widget_class, move_up_clicked_callback);
-    gtk_widget_class_bind_template_callback (widget_class, move_down_clicked_callback);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
 
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
