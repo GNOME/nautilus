@@ -150,14 +150,10 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
 static void change_view (NautilusWindowSlot *self);
-static void hide_query_editor (NautilusWindowSlot *self);
-static void nautilus_window_slot_sync_actions (NautilusWindowSlot *self);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self);
 static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
                                                            guint               id);
-static NautilusView *nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
-                                                                 GFile              *location);
 static void nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
                                                    guint               id);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
@@ -168,12 +164,6 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
 static void update_search_information (NautilusWindowSlot *self);
-static void real_set_extensions_background_menu (NautilusWindowSlot *self,
-                                                 GMenuModel         *menu);
-static GMenuModel *real_get_extensions_background_menu (NautilusWindowSlot *self);
-static void real_set_templates_menu (NautilusWindowSlot *self,
-                                     GMenuModel         *menu);
-static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
