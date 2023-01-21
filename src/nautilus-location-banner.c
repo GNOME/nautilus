@@ -92,12 +92,16 @@ set_auto_emptied_message (AdwBanner *banner)
     adw_banner_set_title (banner, message);
 }
 
-static void
-load_special_location (AdwBanner               *banner,
-                       NautilusSpecialLocation  location)
+void
+nautilus_location_banner_load (AdwBanner               *banner,
+                               NautilusSpecialLocation  location)
 {
     const char *button_label = NULL;
     GCallback callback = NULL;
+
+    /* Reset signal handlers. */
+    g_signal_handlers_disconnect_by_data (banner, &nautilus_location_banner_load);
+    g_signal_handlers_disconnect_by_data (gnome_privacy_preferences, banner);
 
     switch (location)
     {
@@ -147,16 +151,6 @@ load_special_location (AdwBanner               *banner,
 
     if (callback != NULL)
     {
-        g_signal_connect (banner, "button-clicked", callback, NULL);
+        g_signal_connect (banner, "button-clicked", callback, &nautilus_location_banner_load);
     }
-}
-
-GtkWidget *
-nautilus_location_banner_new (NautilusSpecialLocation location)
-{
-    GtkWidget *banner = adw_banner_new ("");
-
-    load_special_location (ADW_BANNER (banner), location);
-
-    return banner;
 }

@@ -38,6 +38,7 @@
 #include "nautilus-x-content-bar.h"
 
 #include <glib/gi18n.h>
+#include <adwaita.h>
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
@@ -109,6 +110,9 @@ struct _NautilusWindowSlot
     gulong qe_activated_id;
     gulong qe_focus_view_id;
 
+    /* Banner */
+    AdwBanner *banner;
+
     GtkLabel *search_info_label;
     GtkRevealer *search_info_label_revealer;
 
@@ -164,7 +168,7 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
 static void update_search_information (NautilusWindowSlot *self);
-static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
+static void nautilus_window_slot_setup_banner (NautilusWindowSlot *self);
 
 void
 free_navigation_state (gpointer data)
@@ -879,6 +883,10 @@ nautilus_window_slot_constructed (GObject *object)
      * UI, specifically when the toolbar adds or removes it */
     g_object_ref_sink (self->query_editor);
 
+    self->banner = ADW_BANNER (adw_banner_new (""));
+    gtk_box_append (GTK_BOX (self),
+                    GTK_WIDGET (self->banner));
+
     self->search_info_label = GTK_LABEL (gtk_label_new (NULL));
     self->search_info_label_revealer = GTK_REVEALER (gtk_revealer_new ());
 
@@ -1081,14 +1089,7 @@ remove_old_trash_files_preferences_changed (GSettings *settings,
 
     if (nautilus_directory_is_in_trash (directory))
     {
-        if (g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files"))
-        {
-            nautilus_window_slot_setup_extra_location_widgets (self);
-        }
-        else
-        {
-            nautilus_window_slot_remove_extra_location_widgets (self);
-        }
+        nautilus_window_slot_setup_banner (self);
     }
 }
 
@@ -2530,15 +2531,6 @@ out:
 }
 
 static void
-nautilus_window_slot_show_banner (NautilusWindowSlot      *self,
-                                  NautilusSpecialLocation  special_location)
-{
-    GtkWidget *banner = nautilus_location_banner_new (special_location);
-
-    nautilus_window_slot_add_extra_location_widget (self, banner);
-}
-
-static void
 nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 {
     g_autoptr (GFile) new_location = g_steal_pointer (&self->pending_location);
@@ -2561,6 +2553,8 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 
     /* Sync the actions for this new location. */
     nautilus_window_slot_sync_actions (self);
+
+    nautilus_window_slot_setup_banner (self);
 }
 
 static void
@@ -2648,10 +2642,9 @@ nautilus_file_is_public_share_folder (NautilusFile *file)
 }
 
 static void
-nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
+nautilus_window_slot_setup_banner (NautilusWindowSlot *self)
 {
     GFile *location;
-    FindMountData *data;
     NautilusDirectory *directory;
     NautilusFile *file;
     GFile *scripts_file;
@@ -2675,24 +2668,42 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
     if (nautilus_should_use_templates_directory () &&
         nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_TEMPLATES))
     {
-        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
+        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
     }
     else if (g_file_equal (location, scripts_file))
     {
-        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
+        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
     }
     else if (check_schema_available (FILE_SHARING_SCHEMA_ID) && nautilus_file_is_public_share_folder (file))
     {
-        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
+        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_SHARING);
     }
     else if (nautilus_directory_is_in_trash (directory) &&
              g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files"))
     {
-        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_TRASH);
+        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_TRASH);
+    }
+    else
+    {
+        adw_banner_set_revealed (self->banner, FALSE);
     }
 
     g_object_unref (scripts_file);
     nautilus_file_unref (file);
+
+    nautilus_directory_unref (directory);
+}
+
+static void
+nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
+{
+    GFile *location = nautilus_window_slot_get_current_location (self);
+    FindMountData *data;
+
+    if (location == NULL)
+    {
+        return;
+    }
 
     /* need the mount to determine if we should put up the x-content cluebar */
     if (self->find_mount_cancellable != NULL)
@@ -2712,8 +2723,6 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
                                        data->cancellable,
                                        found_mount_cb,
                                        data);
-
-    nautilus_directory_unref (directory);
 }
 
 static void

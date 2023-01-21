@@ -31,6 +31,7 @@ typedef enum {
     NAUTILUS_SPECIAL_LOCATION_TRASH,
 } NautilusSpecialLocation;
 
-GtkWidget *nautilus_location_banner_new (NautilusSpecialLocation location);
+void nautilus_location_banner_load (AdwBanner               *banner,
+                                    NautilusSpecialLocation  location);
 
 G_END_DECLS
