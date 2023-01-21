@@ -105,14 +105,6 @@ nautilus_location_banner_load (AdwBanner               *banner,
 
     switch (location)
     {
-        case NAUTILUS_SPECIAL_LOCATION_TEMPLATES:
-        {
-            adw_banner_set_title (banner, _("Put files in this folder to use them as templates for new documents."));
-            button_label = _("_Learn More");
-            callback = G_CALLBACK (on_template_clicked);
-        }
-        break;
-
         case NAUTILUS_SPECIAL_LOCATION_SCRIPTS:
         {
             adw_banner_set_title (banner, _("Executable files in this folder will appear in the Scripts menu."));
@@ -124,6 +116,14 @@ nautilus_location_banner_load (AdwBanner               *banner,
             adw_banner_set_title (banner, _("Turn on File Sharing to share the contents of this folder over the network."));
             button_label = _("Sharing Settings");
             callback = G_CALLBACK (on_sharing_clicked);
+        }
+        break;
+
+        case NAUTILUS_SPECIAL_LOCATION_TEMPLATES:
+        {
+            adw_banner_set_title (banner, _("Put files in this folder to use them as templates for new documents."));
+            button_label = _("_Learn More");
+            callback = G_CALLBACK (on_template_clicked);
         }
         break;
 
