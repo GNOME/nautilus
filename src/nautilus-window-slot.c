@@ -27,11 +27,11 @@
 #include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-files-view.h"
+#include "nautilus-location-banner.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-scheme.h"
-#include "nautilus-special-location-bar.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
 #include "nautilus-window.h"
@@ -2540,14 +2540,12 @@ out:
 }
 
 static void
-nautilus_window_slot_show_special_location_bar (NautilusWindowSlot      *self,
-                                                NautilusSpecialLocation  special_location)
+nautilus_window_slot_show_banner (NautilusWindowSlot      *self,
+                                  NautilusSpecialLocation  special_location)
 {
-    GtkWidget *bar;
+    GtkWidget *banner = nautilus_location_banner_new (special_location);
 
-    bar = nautilus_special_location_bar_new (special_location);
-
-    nautilus_window_slot_add_extra_location_widget (self, bar);
+    nautilus_window_slot_add_extra_location_widget (self, banner);
 }
 
 static void
@@ -2687,20 +2685,20 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
     if (nautilus_should_use_templates_directory () &&
         nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_TEMPLATES))
     {
-        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
+        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
     }
     else if (g_file_equal (location, scripts_file))
     {
-        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
+        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
     }
     else if (check_schema_available (FILE_SHARING_SCHEMA_ID) && nautilus_file_is_public_share_folder (file))
     {
-        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
+        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_SHARING);
     }
     else if (nautilus_directory_is_in_trash (directory) &&
              g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files"))
     {
-        nautilus_window_slot_show_special_location_bar (self, NAUTILUS_SPECIAL_LOCATION_TRASH);
+        nautilus_window_slot_show_banner (self, NAUTILUS_SPECIAL_LOCATION_TRASH);
     }
 
     g_object_unref (scripts_file);

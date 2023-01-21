@@ -16,8 +16,8 @@ libnautilus_sources = [
     sources: [
       'gtk/nautilusgtkplacessidebarprivate.h',
       'nautilus-enums.h',
+      'nautilus-location-banner.h',
       'nautilus-search-popover.h',
-      'nautilus-special-location-bar.h',
       'nautilus-query.h',
       'nautilus-search-provider.h'
     ]
@@ -97,6 +97,7 @@ libnautilus_sources = [
   'nautilus-list-base.h',
   'nautilus-list-view.c',
   'nautilus-list-view.h',
+  'nautilus-location-banner.c',
   'nautilus-location-entry.c',
   'nautilus-location-entry.h',
   'nautilus-mime-actions.c',
@@ -124,7 +125,6 @@ libnautilus_sources = [
   'nautilus-self-check-functions.c',
   'nautilus-self-check-functions.h',
   'nautilus-shell-search-provider.c',
-  'nautilus-special-location-bar.c',
   'nautilus-star-cell.c',
   'nautilus-star-cell.h',
   'nautilus-toolbar.c',

@@ -25,7 +25,7 @@
 
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-special-location-bar.h"
+#include "nautilus-location-banner.h"
 #include "nautilus-enum-types.h"
 
 static void
@@ -152,7 +152,7 @@ load_special_location (AdwBanner               *banner,
 }
 
 GtkWidget *
-nautilus_special_location_bar_new (NautilusSpecialLocation location)
+nautilus_location_banner_new (NautilusSpecialLocation location)
 {
     GtkWidget *banner = adw_banner_new ("");
 
