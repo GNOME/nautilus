@@ -22,6 +22,13 @@
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <child>
+              <object class="AdwBanner" id="banner">
+                <property name="title" translatable="yes">This folder uses custom settings</property>
+                <property name="button-label">_Revert</property>
+                <signal name="button-clicked" handler="use_default_clicked_callback"/>
+              </object>
+            </child>
+            <child>
               <object class="GtkScrolledWindow">
                 <property name="child">
                   <object class="GtkListBox" id="list_box">
@@ -42,29 +49,23 @@
               <object class="GtkSeparator"/>
             </child>
             <child>
-              <object class="GtkBox">
-                <property name="spacing">12</property>
+              <object class="GtkListBox" id="use_custom_box">
                 <child>
-                  <object class="GtkBox">
-                    <style>
-                      <class name="linked"/>
-                    </style>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkBox">
+                  <object class="AdwActionRow">
+                    <property name="hexpand">true</property>
+                    <property name="selectable">false</property>
+                    <property name="activatable_widget">use_custom_switch</property>
+                    <property name="title" translatable="yes">Only Apply to Current Folder</property>
                     <child>
-                      <object class="GtkButton" id="use_default_button">
-                        <property name="hexpand">true</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">Reset to De_fault</property>
-                        <property name="tooltip-text" translatable="yes">Replace the current List Columns settings with the default settings</property>
-                        <property name="use-underline">True</property>
-                        <signal name="clicked" handler="use_default_clicked_callback" swapped="no"/>
+                      <object class="GtkSwitch" id="use_custom_switch">
+                        <property name="valign">center</property>
                       </object>
                     </child>
                   </object>
                 </child>
+                <style>
+                  <class name="background"/>
+                </style>
               </object>
             </child>
           </object>

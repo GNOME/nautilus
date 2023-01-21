@@ -29,6 +29,8 @@
 #include <glib/gi18n.h>
 
 #include <nautilus-extension.h>
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
 
 #include "nautilus-column-utilities.h"
 
@@ -38,8 +40,10 @@ struct _NautilusColumnChooser
 
     GListModel *model;
     GtkWidget *list_box;
-    GtkWidget *use_default_button;
     GtkWidget *window_title;
+    GtkWidget *banner;
+    GtkWidget *use_custom_box;
+    GtkWidget *use_custom_switch;
 
     NautilusColumn *drag_column;
     guint orig_drag_pos;
@@ -56,7 +60,6 @@ enum
 enum
 {
     CHANGED,
-    USE_DEFAULT,
     LAST_SIGNAL
 };
 static guint signals[LAST_SIGNAL];
@@ -97,6 +100,14 @@ list_changed (NautilusColumnChooser *chooser)
     g_auto (GStrv) visible_columns = get_column_names (chooser, TRUE);
 
     g_signal_emit (chooser, signals[CHANGED], 0, column_order, visible_columns);
+}
+
+static gboolean
+is_special_folder (NautilusColumnChooser *chooser)
+{
+    return (nautilus_file_is_in_trash (chooser->file) ||
+            nautilus_file_is_in_search (chooser->file) ||
+            nautilus_file_is_in_recent (chooser->file));
 }
 
 static void
@@ -308,6 +319,34 @@ column_sort_func (gconstpointer a,
     return a_pos == b_pos ? 0 : a_pos < b_pos ? -1 : 1;
 }
 
+static gboolean
+nautilus_column_chooser_close_request (GtkWindow *window)
+{
+    NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (window);
+    g_auto (GStrv) column_order = get_column_names (chooser, FALSE);
+    g_auto (GStrv) visible_columns = get_column_names (chooser, TRUE);
+    gboolean has_custom;
+
+    has_custom = gtk_switch_get_active (GTK_SWITCH (chooser->use_custom_switch));
+    if (has_custom)
+    {
+        nautilus_column_save_metadata (chooser->file, column_order, visible_columns);
+    }
+    else
+    {
+        g_settings_set_strv (nautilus_list_view_preferences,
+                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
+                             (const char **) column_order);
+        g_settings_set_strv (nautilus_list_view_preferences,
+                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
+                             (const char **) visible_columns);
+
+        nautilus_column_save_metadata (chooser->file, NULL, NULL);
+    }
+
+    return FALSE;
+}
+
 static void
 set_column_order (NautilusColumnChooser  *chooser,
                   char                  **column_order)
@@ -349,6 +388,10 @@ use_default_clicked_callback (GtkWidget *button,
     set_visible_columns (chooser, default_columns);
     set_column_order (chooser, default_order);
 
+    gtk_widget_set_visible (chooser->use_custom_box, TRUE);
+    gtk_switch_set_active (GTK_SWITCH (chooser->use_custom_switch), FALSE);
+    adw_banner_set_revealed (ADW_BANNER (chooser->banner), FALSE);
+
     list_changed (chooser);
 }
 
@@ -386,6 +429,9 @@ nautilus_column_chooser_constructed (GObject *object)
 {
     NautilusColumnChooser *chooser;
     g_autofree gchar *name = NULL;
+    g_auto (GStrv) file_visible_columns = NULL;
+    g_auto (GStrv) file_column_order = NULL;
+    gboolean has_custom_columns;
 
     G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->constructed (object);
 
@@ -395,6 +441,24 @@ nautilus_column_chooser_constructed (GObject *object)
     adw_window_title_set_subtitle (ADW_WINDOW_TITLE (chooser->window_title), name);
 
     populate_list (chooser);
+
+    file_visible_columns = nautilus_file_get_metadata_list (chooser->file,
+                                                            NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
+    file_column_order = nautilus_file_get_metadata_list (chooser->file,
+                                                         NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER);
+
+    has_custom_columns = ((file_visible_columns != NULL && file_visible_columns[0] != NULL) ||
+                          (file_column_order != NULL && file_column_order[0] != NULL) ||
+                          is_special_folder (chooser));
+
+    gtk_switch_set_active (GTK_SWITCH (chooser->use_custom_switch), has_custom_columns);
+    gtk_widget_set_visible (chooser->use_custom_box, !has_custom_columns);
+    adw_banner_set_revealed (ADW_BANNER (chooser->banner), has_custom_columns);
+
+    if (is_special_folder (chooser))
+    {
+        adw_banner_set_button_label (ADW_BANNER (chooser->banner), NULL);
+    }
 }
 
 static void
@@ -410,20 +474,22 @@ nautilus_column_chooser_finalize (GObject *object)
 static void
 nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 {
-    GtkWidgetClass *widget_class;
-    GObjectClass *oclass;
-
-    widget_class = GTK_WIDGET_CLASS (chooser_class);
-    oclass = G_OBJECT_CLASS (chooser_class);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (chooser_class);
+    GtkWindowClass *win_class = GTK_WINDOW_CLASS (chooser_class);
+    GObjectClass *oclass = G_OBJECT_CLASS (chooser_class);
 
     oclass->set_property = nautilus_column_chooser_set_property;
     oclass->constructed = nautilus_column_chooser_constructed;
     oclass->finalize = nautilus_column_chooser_finalize;
 
+    win_class->close_request = nautilus_column_chooser_close_request;
+
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, list_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_default_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, window_title);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, banner);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_switch);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
 
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
@@ -436,14 +502,6 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                            g_cclosure_marshal_generic,
                            G_TYPE_NONE,
                            2, G_TYPE_STRV, G_TYPE_STRV);
-
-    signals[USE_DEFAULT] = g_signal_new
-                               ("use-default",
-                               G_TYPE_FROM_CLASS (chooser_class),
-                               G_SIGNAL_RUN_LAST,
-                               0, NULL, NULL,
-                               g_cclosure_marshal_VOID__VOID,
-                               G_TYPE_NONE, 0);
 
     g_object_class_install_property (oclass,
                                      PROP_FILE,
