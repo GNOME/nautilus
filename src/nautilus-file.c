@@ -7893,6 +7893,26 @@ nautilus_file_is_directory (NautilusFile *file)
     return nautilus_file_info_is_directory (NAUTILUS_FILE_INFO (file));
 }
 
+gboolean
+nautilus_file_is_public_share_folder (NautilusFile *file)
+{
+    if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_PUBLIC_SHARE))
+    {
+        return TRUE;
+    }
+    if (g_strcmp0 (g_get_home_dir (), g_get_user_special_dir (G_USER_DIRECTORY_PUBLIC_SHARE)))
+    {
+        /* In order to match the behavior of gnome-user-share the ~/Public folder
+         * is considered to be the public sharing folder when XDG_PUBLICSHARE_DIR
+         * is set to the home folder. */
+        g_autoptr (GFile) public_folder = g_file_new_build_filename (g_get_home_dir (), "Public", NULL);
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+        return g_file_equal (public_folder, location);
+    }
+    return FALSE;
+}
+
 /**
  * nautilus_file_is_user_special_directory
  *

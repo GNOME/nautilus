@@ -188,6 +188,7 @@ char *                  nautilus_file_get_symbolic_link_target_uri      (Nautilu
 gboolean                nautilus_file_is_broken_symbolic_link           (NautilusFile                   *file);
 gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
+gboolean                nautilus_file_is_public_share_folder            (NautilusFile                   *file);
 gboolean                nautilus_file_is_regular_file                   (NautilusFile                   *file);
 gboolean                nautilus_file_is_user_special_directory         (NautilusFile                   *file,
 									 GUserDirectory                 special_directory);
