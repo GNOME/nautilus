@@ -3402,7 +3402,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   if (is_trash) {
     section = g_menu_new ();
-    item = g_menu_item_new (_("Empty Trash…"), "row.empty-trash");
+    item = g_menu_item_new (_("_Empty Trash…"), "row.empty-trash");
     g_menu_append_item (section, item);
     g_object_unref (item);
 
