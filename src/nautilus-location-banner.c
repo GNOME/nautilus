@@ -80,13 +80,13 @@ parse_old_files_age_preferences_value (void)
     {
         case 0:
         {
-            return g_strdup (_("Items in Trash older than 1 hour are automatically deleted"));
+            return g_strdup (_("Files in the trash are permanently deleted after 1 hour"));
         }
 
         default:
         {
-            return g_strdup_printf (ngettext ("Items in Trash older than %d day are automatically deleted",
-                                              "Items in Trash older than %d days are automatically deleted",
+            return g_strdup_printf (ngettext ("Files in the trash are permanently deleted after %d day",
+                                              "Files in the trash are permanently deleted after %d days",
                                               old_files_age),
                                     old_files_age);
         }
@@ -147,7 +147,7 @@ nautilus_location_banner_load (AdwBanner               *banner,
         case NAUTILUS_SPECIAL_LOCATION_TRASH_AUTO_EMPTIED:
         {
             set_auto_emptied_message (banner);
-            button_label = _("_Settings");
+            button_label = _("_Trash Settings");
             callback = G_CALLBACK (on_trash_auto_emptied_clicked);
 
             g_signal_connect_object (gnome_privacy_preferences,
