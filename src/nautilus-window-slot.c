@@ -2651,10 +2651,13 @@ nautilus_window_slot_setup_banner (NautilusWindowSlot *self)
     {
         nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_SHARING);
     }
-    else if (nautilus_file_is_in_trash (file) &&
-             g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files"))
+    else if (nautilus_file_is_in_trash (file))
     {
-        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_TRASH);
+        gboolean auto_emptied = g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files");
+        nautilus_location_banner_load (self->banner,
+                                       (auto_emptied ?
+                                        NAUTILUS_SPECIAL_LOCATION_TRASH_AUTO_EMPTIED :
+                                        NAUTILUS_SPECIAL_LOCATION_TRASH));
     }
     else
     {

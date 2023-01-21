@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "nautilus-dbus-launcher.h"
+#include "nautilus-file-operations.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-location-banner.h"
 #include "nautilus-enum-types.h"
@@ -60,6 +61,14 @@ on_trash_auto_emptied_clicked (AdwBanner *banner)
                                  NAUTILUS_DBUS_LAUNCHER_SETTINGS,
                                  "Activate",
                                  parameters, window);
+}
+
+static void
+on_trash_clear_clicked (AdwBanner *banner)
+{
+    GtkWidget *window = GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (banner)));
+
+    nautilus_file_operations_empty_trash (window, TRUE, NULL);
 }
 
 static gchar *
@@ -128,6 +137,14 @@ nautilus_location_banner_load (AdwBanner               *banner,
         break;
 
         case NAUTILUS_SPECIAL_LOCATION_TRASH:
+        {
+            adw_banner_set_title (banner, "");
+            button_label = _("_Empty Trash…");
+            callback = G_CALLBACK (on_trash_clear_clicked);
+        }
+        break;
+
+        case NAUTILUS_SPECIAL_LOCATION_TRASH_AUTO_EMPTIED:
         {
             set_auto_emptied_message (banner);
             button_label = _("_Settings");
