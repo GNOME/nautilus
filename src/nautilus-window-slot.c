@@ -476,12 +476,7 @@ nautilus_window_slot_get_current_location (NautilusWindowSlot *self)
         return self->pending_location;
     }
 
-    if (self->location != NULL)
-    {
-        return self->location;
-    }
-
-    return NULL;
+    return self->location;
 }
 
 static void
