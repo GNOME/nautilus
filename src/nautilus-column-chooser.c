@@ -93,7 +93,10 @@ get_column_names (NautilusColumnChooser *chooser,
 static void
 list_changed (NautilusColumnChooser *chooser)
 {
-    g_signal_emit (chooser, signals[CHANGED], 0);
+    g_auto (GStrv) column_order = get_column_names (chooser, FALSE);
+    g_auto (GStrv) visible_columns = get_column_names (chooser, TRUE);
+
+    g_signal_emit (chooser, signals[CHANGED], 0, column_order, visible_columns);
 }
 
 static void
@@ -120,14 +123,6 @@ nautilus_column_chooser_set_property (GObject      *object,
         }
         break;
     }
-}
-
-static void
-use_default_clicked_callback (GtkWidget *button,
-                              gpointer   user_data)
-{
-    g_signal_emit (NAUTILUS_COLUMN_CHOOSER (user_data),
-                   signals[USE_DEFAULT], 0);
 }
 
 static void
@@ -336,38 +331,33 @@ set_visible_columns (NautilusColumnChooser  *chooser,
     }
 }
 
-void
-nautilus_column_chooser_set_settings (NautilusColumnChooser  *chooser,
-                                      char                  **visible_columns,
-                                      char                  **column_order)
+static void
+use_default_clicked_callback (GtkWidget *button,
+                              gpointer   user_data)
 {
-    g_return_if_fail (NAUTILUS_IS_COLUMN_CHOOSER (chooser));
-    g_return_if_fail (visible_columns != NULL);
-    g_return_if_fail (column_order != NULL);
+    NautilusColumnChooser *chooser = user_data;
+    g_auto (GStrv) default_columns = NULL;
+    g_auto (GStrv) default_order = NULL;
 
-    set_visible_columns (chooser, visible_columns);
-    set_column_order (chooser, column_order);
+    nautilus_column_save_metadata (chooser->file, NULL, NULL);
+
+    /* set view values ourselves, as new metadata could not have been
+     * updated yet.
+     */
+    default_columns = nautilus_column_get_default_visible_columns (chooser->file);
+    default_order = nautilus_column_get_default_column_order (chooser->file);
+    set_visible_columns (chooser, default_columns);
+    set_column_order (chooser, default_order);
 
     list_changed (chooser);
-}
-
-void
-nautilus_column_chooser_get_settings (NautilusColumnChooser   *chooser,
-                                      char                  ***visible_columns,
-                                      char                  ***column_order)
-{
-    g_return_if_fail (NAUTILUS_IS_COLUMN_CHOOSER (chooser));
-    g_return_if_fail (visible_columns != NULL);
-    g_return_if_fail (column_order != NULL);
-
-    *visible_columns = get_column_names (chooser, TRUE);
-    *column_order = get_column_names (chooser, FALSE);
 }
 
 static void
 populate_list (NautilusColumnChooser *chooser)
 {
     GList *columns = nautilus_get_columns_for_file (chooser->file);
+    g_auto (GStrv) visible_columns = nautilus_column_get_visible_columns (chooser->file);
+    g_auto (GStrv) column_order = nautilus_column_get_column_order (chooser->file);
 
     g_list_store_remove_all (G_LIST_STORE (chooser->model));
 
@@ -384,6 +374,9 @@ populate_list (NautilusColumnChooser *chooser)
 
         g_list_store_append (G_LIST_STORE (chooser->model), l->data);
     }
+
+    set_visible_columns (chooser, visible_columns);
+    set_column_order (chooser, column_order);
 
     nautilus_column_list_free (columns);
 }
@@ -440,8 +433,9 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                            G_TYPE_FROM_CLASS (chooser_class),
                            G_SIGNAL_RUN_LAST,
                            0, NULL, NULL,
-                           g_cclosure_marshal_VOID__VOID,
-                           G_TYPE_NONE, 0);
+                           g_cclosure_marshal_generic,
+                           G_TYPE_NONE,
+                           2, G_TYPE_STRV, G_TYPE_STRV);
 
     signals[USE_DEFAULT] = g_signal_new
                                ("use-default",
