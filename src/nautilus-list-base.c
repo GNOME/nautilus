@@ -1112,6 +1112,10 @@ real_is_empty (NautilusFilesView *files_view)
 static void
 real_end_file_changes (NautilusFilesView *files_view)
 {
+    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    nautilus_view_model_sort (priv->model);
 }
 
 static void
