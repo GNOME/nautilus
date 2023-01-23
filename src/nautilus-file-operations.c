@@ -269,6 +269,7 @@ G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 #define LONG_JOB_THRESHOLD_IN_SECONDS 2
 
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH 50
+#define MAXIMUM_FAT_FILE_SIZE G_MAXUINT32
 
 #define IS_IO_ERROR(__error, KIND) (((__error)->domain == G_IO_ERROR && (__error)->code == G_IO_ERROR_ ## KIND))
 
@@ -283,6 +284,7 @@ G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 #define MERGE _("_Merge")
 #define MERGE_ALL _("Merge _All")
 #define COPY_FORCE _("Copy _Anyway")
+#define FORCE_OPERATION _("Proceed _Anyway")
 #define EMPTY_TRASH _("Empty _Trash")
 
 static gboolean
@@ -3736,10 +3738,10 @@ scan_sources (GList      *files,
 }
 
 static void
-verify_destination (CommonJob  *job,
-                    GFile      *dest,
-                    char      **dest_fs_id,
-                    goffset     required_size)
+verify_destination (CommonJob   *job,
+                    GFile       *dest,
+                    char       **dest_fs_id,
+                    SourceInfo  *source_info)
 {
     GFileInfo *info, *fsinfo;
     GError *error;
@@ -3750,6 +3752,7 @@ verify_destination (CommonJob  *job,
     int response;
     GFileType file_type;
     gboolean dest_is_symlink = FALSE;
+    goffset required_size = (source_info != NULL) ? source_info->num_bytes : -1;
 
     if (dest_fs_id)
     {
@@ -3928,6 +3931,24 @@ retry:
             {
                 g_assert_not_reached ();
             }
+        }
+    }
+
+    if (!job_aborted (job) &&
+        source_info != NULL && source_info->largest_file_bytes > G_MAXUINT32 &&
+        g_strcmp0 (fs_type, "msdos") == 0)
+    {
+        primary = g_strdup (_("File too Large for Destination"));
+        secondary = g_strdup (_("Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."));
+        details = NULL;
+        response = run_warning (job,
+                                primary, secondary, details,
+                                FALSE,
+                                CANCEL, FORCE_OPERATION, NULL);
+
+        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+        {
+            abort_job (job);
         }
     }
 
@@ -6097,7 +6118,7 @@ nautilus_file_operations_copy (GTask        *task,
     verify_destination (&job->common,
                         dest,
                         &dest_fs_id,
-                        source_info.num_bytes);
+                        &source_info);
     g_object_unref (dest);
     if (job_aborted (common))
     {
@@ -6795,7 +6816,7 @@ nautilus_file_operations_move (GTask        *task,
     verify_destination (&job->common,
                         job->destination,
                         &dest_fs_id,
-                        -1);
+                        NULL);
     if (job_aborted (common))
     {
         goto aborted;
@@ -6842,7 +6863,7 @@ nautilus_file_operations_move (GTask        *task,
     verify_destination (&job->common,
                         job->destination,
                         NULL,
-                        source_info.num_bytes);
+                        &source_info);
     if (job_aborted (common))
     {
         goto aborted;
@@ -7122,7 +7143,7 @@ link_task_thread_func (GTask        *task,
     verify_destination (&job->common,
                         job->destination,
                         NULL,
-                        -1);
+                        NULL);
     if (job_aborted (common))
     {
         return;
@@ -7646,7 +7667,7 @@ create_task_thread_func (GTask        *task,
 
     verify_destination (common,
                         job->dest_dir,
-                        NULL, -1);
+                        NULL, NULL);
     if (job_aborted (common))
     {
         return;
