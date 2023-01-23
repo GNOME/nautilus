@@ -173,10 +173,11 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
     gboolean source_deletable;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (target_file), 0);
+    /* With non-local drops, it's normal for dropped to initially be NULL */
     g_return_val_if_fail (dropped == NULL || G_IS_FILE (dropped), 0);
 
     target_location = nautilus_file_get_location (target_file);
-    if (g_file_equal (target_location, dropped))
+    if (dropped != NULL && g_file_equal (target_location, dropped))
     {
         return 0;
     }
@@ -211,6 +212,11 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
     else if (nautilus_file_is_in_trash (target_file))
     {
         return GDK_ACTION_MOVE;
+    }
+
+    if (dropped == NULL)
+    {
+        return GDK_ACTION_COPY;
     }
 
     if (g_file_has_uri_scheme (dropped, "trash"))
