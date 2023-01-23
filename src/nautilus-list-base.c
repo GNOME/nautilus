@@ -1163,6 +1163,9 @@ real_is_empty (NautilusFilesView *files_view)
 static void
 real_end_file_changes (NautilusFilesView *files_view)
 {
+    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
+
+    nautilus_list_base_reset_sort (self);
 }
 
 static void
