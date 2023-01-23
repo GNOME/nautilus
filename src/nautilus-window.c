@@ -1520,9 +1520,7 @@ extra_drag_drop_cb (AdwTabBar    *self,
     GFile *target_location = nautilus_window_slot_get_location (slot);
     GdkDragAction action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (page), "drag-action"));
 
-    nautilus_dnd_perform_drop (view, value, action, target_location);
-
-    return TRUE;
+    return nautilus_dnd_perform_drop (view, value, action, target_location);
 }
 
 const GActionEntry win_entries[] =

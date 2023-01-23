@@ -785,9 +785,7 @@ on_item_drop (GtkDropTarget *target,
     /* In x11 the leave signal isn't emitted on a drop so we need to clear the timeout */
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
-    nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
-
-    return TRUE;
+    return nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
 }
 
 static GdkDragAction
@@ -880,9 +878,7 @@ on_view_drop (GtkDropTarget *target,
     }
     #endif
 
-    nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
-
-    return TRUE;
+    return nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
 }
 
 void

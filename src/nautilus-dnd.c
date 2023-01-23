@@ -230,7 +230,7 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
     return GDK_ACTION_COPY;
 }
 
-void
+gboolean
 nautilus_dnd_perform_drop (NautilusFilesView *view,
                            const GValue      *value,
                            GdkDragAction      action,
@@ -241,17 +241,24 @@ nautilus_dnd_perform_drop (NautilusFilesView *view,
     if (!gdk_drag_action_is_unique (action))
     {
         /* TODO: Implement */
+        return FALSE;
     }
     else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
     {
         nautilus_files_view_handle_text_drop (view,
                                               g_value_get_string (value),
                                               target_uri, action);
+        return TRUE;
     }
     else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
         GSList *source_file_list = g_value_get_boxed (value);
         GList *source_uri_list = NULL;
+
+        if (source_file_list == NULL)
+        {
+            return FALSE;
+        }
 
         for (GSList *l = source_file_list; l != NULL; l = l->next)
         {
@@ -264,7 +271,11 @@ nautilus_dnd_perform_drop (NautilusFilesView *view,
                                                       target_uri,
                                                       action);
         g_list_free_full (source_uri_list, g_free);
+
+        return TRUE;
     }
+
+    return FALSE;
 }
 
 #define MAX_DRAWN_DRAG_ICONS 10
