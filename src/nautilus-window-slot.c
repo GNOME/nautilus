@@ -1442,11 +1442,10 @@ viewed_file_changed_callback (NautilusFile       *file,
         if (self->viewed_file_seen)
         {
             GFile *go_to_file;
-            GFile *parent;
             GFile *location;
             GMount *mount;
+            gboolean find_existing = FALSE;
 
-            parent = NULL;
             location = nautilus_file_get_location (file);
 
             if (g_file_is_native (location))
@@ -1455,16 +1454,18 @@ viewed_file_changed_callback (NautilusFile       *file,
 
                 if (mount == NULL)
                 {
-                    parent = g_file_get_parent (location);
+                    find_existing = TRUE;
                 }
 
                 g_clear_object (&mount);
             }
 
-            if (parent != NULL)
+            if (find_existing)
             {
-                /* auto-show existing parent */
-                go_to_file = nautilus_find_existing_uri_in_hierarchy (parent);
+                /* Verify also the current location to prevent jumps to parent
+                 * in case of autofs.
+                 */
+                go_to_file = nautilus_find_existing_uri_in_hierarchy (location);
             }
             else
             {
@@ -1473,7 +1474,6 @@ viewed_file_changed_callback (NautilusFile       *file,
 
             nautilus_window_slot_open_location_full (self, go_to_file, 0, NULL);
 
-            g_clear_object (&parent);
             g_object_unref (go_to_file);
             g_object_unref (location);
         }
