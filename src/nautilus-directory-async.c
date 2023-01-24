@@ -28,6 +28,7 @@
 #include "nautilus-enums.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-queue.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
 #include "nautilus-signaller.h"
@@ -3914,45 +3915,6 @@ find_enclosing_mount_callback (GObject      *source_object,
     }
 }
 
-static GMount *
-get_mount_at (GFile *target)
-{
-    GVolumeMonitor *monitor;
-    GFile *root;
-    GList *mounts, *l;
-    GMount *found;
-
-    monitor = g_volume_monitor_get ();
-    mounts = g_volume_monitor_get_mounts (monitor);
-
-    found = NULL;
-    for (l = mounts; l != NULL; l = l->next)
-    {
-        GMount *mount = G_MOUNT (l->data);
-
-        if (g_mount_is_shadowed (mount))
-        {
-            continue;
-        }
-
-        root = g_mount_get_root (mount);
-
-        if (g_file_equal (target, root))
-        {
-            found = g_object_ref (mount);
-            break;
-        }
-
-        g_object_unref (root);
-    }
-
-    g_list_free_full (mounts, g_object_unref);
-
-    g_object_unref (monitor);
-
-    return found;
-}
-
 static void
 mount_start (NautilusDirectory *directory,
              NautilusFile      *file,
@@ -3998,7 +3960,7 @@ mount_start (NautilusDirectory *directory,
         target = nautilus_file_get_activation_location (file);
         if (target != NULL)
         {
-            mount = get_mount_at (target);
+            mount = nautilus_get_mounted_mount_for_root (target);
             g_object_unref (target);
         }
 
