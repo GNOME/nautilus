@@ -177,6 +177,7 @@ typedef struct
 {
     int num_files;
     goffset num_bytes;
+    goffset largest_file_bytes;
     int num_files_since_progress;
     OpKind op;
     GHashTable *scanned_dirs_info;
@@ -3336,6 +3337,7 @@ count_file (GFileInfo     *info,
 
     source_info->num_files += 1;
     source_info->num_bytes += num_bytes;
+    source_info->largest_file_bytes = MAX (source_info->largest_file_bytes, num_bytes);
 
     if (dir_info != NULL)
     {
