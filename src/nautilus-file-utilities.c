@@ -598,7 +598,6 @@ nautilus_generate_unique_file_in_directory (GFile      *directory,
 GFile *
 nautilus_find_existing_uri_in_hierarchy (GFile *location)
 {
-    GFileInfo *info;
     GFile *tmp;
 
     g_assert (location != NULL);
@@ -606,10 +605,11 @@ nautilus_find_existing_uri_in_hierarchy (GFile *location)
     location = g_object_ref (location);
     while (location != NULL)
     {
+        g_autoptr (GFileInfo) info = NULL;
+
         info = g_file_query_info (location,
                                   G_FILE_ATTRIBUTE_STANDARD_NAME,
                                   0, NULL, NULL);
-        g_object_unref (info);
         if (info != NULL)
         {
             return location;
