@@ -1101,40 +1101,7 @@ button_data_file_changed (NautilusFile *file,
     }
     else if (nautilus_file_is_gone (file))
     {
-        gint idx, position;
-
-        /* if the current or a parent location are gone, clear all the buttons,
-         * the view will set the new path.
-         */
-        current_location = nautilus_file_get_location (current_button_data->file);
-
-        if (g_file_has_prefix (current_location, location) ||
-            g_file_equal (current_location, location))
-        {
-            nautilus_path_bar_clear_buttons (self);
-        }
-        else if (g_file_has_prefix (location, current_location))
-        {
-            /* remove this and the following buttons */
-            position = g_list_position (self->button_list,
-                                        g_list_find (self->button_list, button_data));
-
-            if (position != -1)
-            {
-                for (idx = 0; idx <= position; idx++)
-                {
-                    ButtonData *data;
-
-                    data = BUTTON_DATA (self->button_list->data);
-
-                    gtk_box_remove (GTK_BOX (self->buttons_box), data->container);
-                    self->button_list = g_list_remove (self->button_list, data);
-                    button_data_free (data);
-                }
-            }
-        }
-
-        g_object_unref (current_location);
+        /* Do nothing here, the view will set new path if needed. */
         g_object_unref (location);
         return;
     }
