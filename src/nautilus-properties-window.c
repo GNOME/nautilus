@@ -1398,11 +1398,7 @@ properties_window_update (NautilusPropertiesWindow *self,
 
     mime_list = get_mime_list (self);
 
-    if (self->mime_list == NULL)
-    {
-        self->mime_list = mime_list;
-    }
-    else
+    if (self->mime_list != NULL)
     {
         if (!mime_list_equal (self->mime_list, mime_list))
         {
@@ -1410,8 +1406,8 @@ properties_window_update (NautilusPropertiesWindow *self,
         }
 
         g_list_free_full (self->mime_list, g_free);
-        self->mime_list = mime_list;
     }
+    self->mime_list = mime_list;
 }
 
 static gboolean
