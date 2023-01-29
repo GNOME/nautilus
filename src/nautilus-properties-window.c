@@ -21,6 +21,7 @@
 
 #include "nautilus-properties-window.h"
 
+#include <adwaita.h>
 #include <cairo.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -173,6 +174,10 @@ struct _NautilusPropertiesWindow
     GList *change_permission_drop_downs;
     GHashTable *initial_permissions;
     gboolean has_recursive_apply;
+
+    /* Extensions */
+    GtkListBox *extension_list_box;
+    AdwWindowTitle *extension_title;
 
     GList *value_fields;
 
@@ -532,16 +537,6 @@ navigate_permissions_page (NautilusPropertiesWindow *self,
                            GtkWidget                *widget)
 {
     gtk_stack_set_visible_child_name (self->page_stack, "permissions");
-}
-
-static void
-navigate_extension_model_page (NautilusPropertiesWindow *self,
-                               GParamSpec               *params,
-                               AdwPreferencesRow        *row)
-{
-    gtk_stack_set_visible_child (self->page_stack,
-                                 g_object_get_data (G_OBJECT (row),
-                                                    "nautilus-extension-properties-page"));
 }
 
 static void
@@ -936,19 +931,29 @@ create_extension_group_row (NautilusPropertiesItem   *item,
     return row;
 }
 
+static void
+navigate_extension_model_page (AdwPreferencesRow        *row,
+                               GParamSpec               *params,
+                               NautilusPropertiesWindow *self)
+{
+    GListModel *list_model = g_object_get_data (G_OBJECT (row), "nautilus-extension-properties-model");
+    gtk_list_box_bind_model (self->extension_list_box,
+                             list_model,
+                             (GtkListBoxCreateWidgetFunc) create_extension_group_row,
+                             self,
+                             NULL);
+
+    adw_window_title_set_title (self->extension_title, adw_preferences_row_get_title (row));
+
+    gtk_stack_set_visible_child_name (self->page_stack, "extension");
+}
+
 static GtkWidget *
 add_extension_model_page (NautilusPropertiesModel  *model,
                           NautilusPropertiesWindow *self)
 {
     GListModel *list_model = nautilus_properties_model_get_model (model);
     GtkWidget *row;
-    GtkWidget *title;
-    GtkWidget *header_bar;
-    GtkWidget *list_box;
-    GtkWidget *clamp;
-    GtkWidget *scrolled_window;
-    GtkWidget *up_button;
-    GtkWidget *box;
 
     row = adw_action_row_new ();
     g_object_bind_property (model, "title", row, "title", G_BINDING_SYNC_CREATE);
@@ -956,48 +961,10 @@ add_extension_model_page (NautilusPropertiesModel  *model,
     gtk_list_box_row_set_selectable (GTK_LIST_BOX_ROW (row), FALSE);
     adw_action_row_add_suffix (ADW_ACTION_ROW (row),
                                gtk_image_new_from_icon_name ("go-next-symbolic"));
-    g_signal_connect_swapped (row, "activated",
-                              G_CALLBACK (navigate_extension_model_page), self);
+    g_signal_connect (row, "activated",
+                      G_CALLBACK (navigate_extension_model_page), self);
 
-    title = adw_window_title_new (NULL, NULL);
-    g_object_bind_property (model, "title", title, "title", G_BINDING_SYNC_CREATE);
-
-    up_button = gtk_button_new_from_icon_name ("go-previous-symbolic");
-    g_signal_connect_swapped (up_button, "clicked", G_CALLBACK (navigate_main_page), self);
-
-    header_bar = gtk_header_bar_new ();
-    gtk_header_bar_set_title_widget (GTK_HEADER_BAR (header_bar), title);
-    gtk_header_bar_pack_start (GTK_HEADER_BAR (header_bar), up_button);
-
-    list_box = gtk_list_box_new ();
-    gtk_widget_add_css_class (list_box, "boxed-list");
-    gtk_widget_set_valign (list_box, GTK_ALIGN_START);
-    gtk_list_box_bind_model (GTK_LIST_BOX (list_box), list_model,
-                             (GtkListBoxCreateWidgetFunc) create_extension_group_row,
-                             self,
-                             NULL);
-
-    clamp = adw_clamp_new ();
-    adw_clamp_set_child (ADW_CLAMP (clamp), list_box);
-    gtk_widget_set_margin_top (clamp, 18);
-    gtk_widget_set_margin_bottom (clamp, 18);
-    gtk_widget_set_margin_start (clamp, 18);
-    gtk_widget_set_margin_end (clamp, 18);
-
-    scrolled_window = gtk_scrolled_window_new ();
-    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window), clamp);
-    gtk_widget_set_vexpand (scrolled_window, TRUE);
-
-    box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append (GTK_BOX (box), header_bar);
-    gtk_box_append (GTK_BOX (box), scrolled_window);
-    gtk_widget_add_css_class (scrolled_window, "background");
-
-    gtk_stack_add_named (self->page_stack,
-                         box,
-                         NULL);
-
-    g_object_set_data (G_OBJECT (row), "nautilus-extension-properties-page", box);
+    g_object_set_data (G_OBJECT (row), "nautilus-extension-properties-model", list_model);
 
     return row;
 }
@@ -4393,6 +4360,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_title);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_list_box);
 
     gtk_widget_class_bind_template_callback (widget_class, star_clicked);
     gtk_widget_class_bind_template_callback (widget_class, open_in_disks);
