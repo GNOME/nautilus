@@ -7377,11 +7377,10 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
 
 /**
  * nautilus_file_get_volume_name
- * Get the path of the volume the file resides on
+ * Get the name of the volume the file resides on
  * @file: NautilusFile representing the file in question.
  *
- * Returns: newly-allocated copy of the volume name of the target file,
- * if the volume name isn't set, it returns the mount path of the volume
+ * Returns: newly-allocated copy of the volume name of the target file.
  */
 char *
 nautilus_file_get_volume_name (NautilusFile *file)
