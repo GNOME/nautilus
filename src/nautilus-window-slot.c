@@ -1383,28 +1383,20 @@ viewed_file_changed_callback (NautilusFile       *file,
 
         if (self->viewed_file_seen)
         {
-            GFile *go_to_file;
+            GFile *go_to_file = NULL;
             GFile *location;
-            gboolean find_existing = FALSE;
 
             location = nautilus_file_get_location (file);
 
-            if (g_file_is_native (location))
-            {
-                if (!nautilus_file_has_been_unmounted (file))
-                {
-                    find_existing = TRUE;
-                }
-            }
-
-            if (find_existing)
+            if (!nautilus_file_has_been_unmounted (file))
             {
                 /* Verify also the current location to prevent jumps to parent
                  * in case of autofs.
                  */
                 go_to_file = nautilus_find_existing_uri_in_hierarchy (location);
             }
-            else
+
+            if (go_to_file == NULL)
             {
                 go_to_file = g_file_new_for_path (g_get_home_dir ());
             }
