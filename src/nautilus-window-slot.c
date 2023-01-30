@@ -1357,7 +1357,6 @@ static void
 viewed_file_changed_callback (NautilusFile       *file,
                               NautilusWindowSlot *self)
 {
-    GFile *new_location;
     gboolean is_in_trash, was_in_trash;
 
     g_assert (NAUTILUS_IS_FILE (file));
@@ -1383,10 +1382,15 @@ viewed_file_changed_callback (NautilusFile       *file,
 
         if (self->viewed_file_seen)
         {
-            GFile *go_to_file = NULL;
-            GFile *location;
+            g_autoptr (GFile) location = nautilus_file_get_location (file);
+            g_autoptr (GFile) go_to_file = NULL;
 
-            location = nautilus_file_get_location (file);
+            /* If the current location disappears, the following code jumps to
+             * the first existing parent except in the case when the file
+             * resides on some of the user interesting mounts and the mount was
+             * unmounted. In that case, it jumps to the home directory to avoid
+             * jumping into the runtime dir.
+             */
 
             if (!nautilus_file_has_been_unmounted (file))
             {
@@ -1412,16 +1416,12 @@ viewed_file_changed_callback (NautilusFile       *file,
             {
                 nautilus_window_slot_open_location_full (self, go_to_file, 0, NULL);
             }
-
-            g_object_unref (go_to_file);
-            g_object_unref (location);
         }
     }
     else
     {
-        new_location = nautilus_file_get_location (file);
+        g_autoptr (GFile) new_location = nautilus_file_get_location (file);
         nautilus_window_slot_set_location (self, new_location);
-        g_object_unref (new_location);
     }
 }
 
