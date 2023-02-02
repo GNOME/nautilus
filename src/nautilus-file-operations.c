@@ -4388,7 +4388,7 @@ get_unique_target_file (GFile      *src,
     if (dest == NULL)
     {
         basename = g_file_get_basename (src);
-        g_assert (basename == NULL);
+        g_assert (basename != NULL);
 
         if (g_utf8_validate (basename, -1, NULL))
         {
