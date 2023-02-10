@@ -1,3 +1,42 @@
+Major changes in 44.beta
+========================
+appdata: State hardware support (Christopher Davis)
+desktop: List compatible form factors (Christopher Davis)
+flatpak: Use -Dbattery_detection=none for tracker-miners (Ondrej Holy)
+file-operations: Fix inverted g_assert condition (Ondrej Holy)
+ci: Make flatpak@aarch64 job manual in some cases (Ondrej Holy)
+ci: Disable pages job on forks (Ondrej Holy)
+ci: Replace only/except with rules (Ondrej Holy)
+ci: Fix $CI_DEFAULT_BRANCH usage for pages job (Ondrej Holy)
+dnd: Fix dnd_get_preferred_action for non-local drops (Corey Berla)
+dnd: Don't handle drops without uris (Peter Eisenmann)
+style.css: Make rubberband to have rounded corners (sunflowerskater)
+general: Stop leaking NautilusViewItem (Corey Berla)
+view-item: Make item_ui a weak pointer (Corey Berla)
+star-cell: Remove unused variable (Corey Berla)
+docs: Several improvements to docs site (Corey Berla)
+ci: Publish docs to nautilus pages (Corey Berla)
+ci: Docker image add dependencies to build nautilus for docs (Corey Berla)
+ci: Docker image use uncrustify binary (Corey Berla)
+ci: Remove old incorrect command (Corey Berla)
+build: Only generate docs when 'docs' option enabled (Corey Berla)
+docs: Fix ColumnProvider type in nautilus-column (Corey Berla)
+name-cell: Don't open on hover expander icon. (António Fernandes)
+list-base: Setup cell hover controller separately (António Fernandes)
+list-view: Don't hide expander while loading (António Fernandes)
+list-view: Set focus when moving to parent in the tree (António Fernandes)
+list-view: Actually make tree shortcuts work (António Fernandes)
+view-model: Stop crashing on sort-directories-first change (António Fernandes)
+view-model: Remove moved item from old store (António Fernandes)
+grid-cell: Set tooltip values using text, not markup (Athul Iddya)
+application: Export FileManager1 iface from dbus_register vfunc (Ondrej Holy)
+build: require libadwaita >= 1.3.alpha (Jeremy Bicha)
+general: Fix style for updated version of uncrustify (Corey Berla)
+window: Reset actions when tab menu is closed (Corey Berla)
+gtkbookmarkmanager: Don't allow newlines in the bookmark label (Corey Berla)
+
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 44.alpha
 =========================
 * Enhancements:
