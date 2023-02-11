@@ -290,13 +290,13 @@ toggle_calendar_icon_clicked (GtkEntry              *entry,
     {
         child = "date-calendar";
         icon_name = "view-list-symbolic";
-        tooltip = _("Show a list to select the date");
+        tooltip = _("Show Time Ranges");
     }
     else
     {
         child = "date-list";
         icon_name = "x-office-calendar-symbolic";
-        tooltip = _("Show a calendar to select the date");
+        tooltip = _("Use Calendar");
     }
 
     gtk_stack_set_visible_child_name (GTK_STACK (popover->around_stack), child);
