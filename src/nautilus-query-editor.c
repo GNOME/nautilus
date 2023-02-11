@@ -657,6 +657,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     /* setup the filter menu button */
     editor->dropdown_button = gtk_menu_button_new ();
     gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->dropdown_button), "funnel-symbolic");
+    gtk_widget_set_tooltip_text (GTK_WIDGET (editor->dropdown_button), _("Filter Search Results"));
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
     gtk_widget_set_parent (editor->dropdown_button, GTK_WIDGET (editor));
     gtk_widget_add_css_class (editor->dropdown_button, "circular");

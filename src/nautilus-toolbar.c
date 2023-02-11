@@ -235,6 +235,7 @@ nautilus_toolbar_constructed (GObject *object)
     gtk_box_append (GTK_BOX (self->location_entry_container),
                     self->location_entry);
     self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic");
+    gtk_widget_set_tooltip_text (self->location_entry_close_button, _("Cancel"));
     gtk_box_append (GTK_BOX (self->location_entry_container),
                     self->location_entry_close_button);
     g_signal_connect (self->location_entry_close_button, "clicked",

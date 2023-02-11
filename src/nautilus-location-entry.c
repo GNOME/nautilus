@@ -707,6 +707,7 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *entry
             gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
                                                GTK_ENTRY_ICON_SECONDARY,
                                                "edit-clear-symbolic");
+            gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, _("Clear Entry"));
         }
         break;
 
@@ -715,6 +716,7 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *entry
             gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
                                                GTK_ENTRY_ICON_SECONDARY,
                                                "go-next-symbolic");
+            gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry), GTK_ENTRY_ICON_SECONDARY, _("Go to Location"));
         }
         break;
 
