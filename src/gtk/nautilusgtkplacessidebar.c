@@ -1156,7 +1156,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                    */
                   start_icon = g_volume_get_symbolic_icon (volume);
                   name = g_volume_get_name (volume);
-                  tooltip = g_strdup_printf (_("Mount and open “%s”"), name);
+                  tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
                   add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
                              NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
@@ -1184,7 +1184,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                */
               start_icon = g_drive_get_symbolic_icon (drive);
               name = g_drive_get_name (drive);
-              tooltip = g_strdup_printf (_("Mount and open “%s”"), name);
+              tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
               add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
                          NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
@@ -1384,7 +1384,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
         {
           start_icon = g_volume_get_symbolic_icon (volume);
           name = g_volume_get_name (volume);
-          tooltip = g_strdup_printf (_("Mount and open “%s”"), name);
+          tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
           add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
                      NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
