@@ -926,6 +926,16 @@ nautilus_window_slot_constructed (GObject *object)
 }
 
 static void
+action_focus_search (GSimpleAction *action,
+                     GVariant      *state,
+                     gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_set_search_visible (self, TRUE);
+}
+
+static void
 action_search_visible (GSimpleAction *action,
                        GVariant      *state,
                        gpointer       user_data)
@@ -1024,6 +1034,7 @@ const GActionEntry slot_entries[] =
     { "files-view-mode", NULL, "u", "uint32 " G_STRINGIFY (NAUTILUS_VIEW_INVALID_ID), action_files_view_mode },
     { "files-view-mode-toggle", action_files_view_mode_toggle },
     { "search-visible", NULL, NULL, "false", action_search_visible },
+    { "focus-search", action_focus_search },
 };
 
 static void
@@ -1152,7 +1163,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     nautilus_application_set_accelerator (app,
                                           "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_GRID_ID) ")",
                                           "<control>2");
-    nautilus_application_set_accelerators (app, "slot.search-visible", search_visible_accels);
+    nautilus_application_set_accelerators (app, "slot.focus-search", search_visible_accels);
 
     self->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
     self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
