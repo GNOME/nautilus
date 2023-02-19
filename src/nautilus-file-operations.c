@@ -42,13 +42,13 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-string.h>
 
+#include <adwaita.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib.h>
-#include <libadwaita-1/adwaita.h>
 
 #include "nautilus-error-reporting.h"
 #include "nautilus-operations-ui-manager.h"

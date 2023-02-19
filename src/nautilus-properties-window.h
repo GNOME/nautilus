@@ -23,8 +23,8 @@
 
 #pragma once
 
+#include <adwaita.h>
 #include <gtk/gtk.h>
-#include <libadwaita-1/adwaita.h>
 
 #define NAUTILUS_TYPE_PROPERTIES_WINDOW (nautilus_properties_window_get_type ())
 

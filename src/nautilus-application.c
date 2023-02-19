@@ -26,6 +26,7 @@
 
 #include "nautilus-application.h"
 
+#include <adwaita.h>
 #include <eel/eel-stock-dialogs.h>
 #include <fcntl.h>
 #include <gdk/gdk.h>
@@ -33,7 +34,6 @@
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
-#include <libadwaita-1/adwaita.h>
 #include <nautilus-extension.h>
 #include <sys/stat.h>
 #include <sys/types.h>

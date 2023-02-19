@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <libadwaita-1/adwaita.h>
+#include <adwaita.h>
 
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"

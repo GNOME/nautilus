@@ -6,7 +6,7 @@
 
 #include "nautilus-app-chooser.h"
 
-#include <libadwaita-1/adwaita.h>
+#include <adwaita.h>
 #include <glib/gi18n.h>
 
 #include <eel/eel-string.h>

@@ -6,8 +6,8 @@
 
 #pragma once
 
+#include <adwaita.h>
 #include <gtk/gtk.h>
-#include <libadwaita-1/adwaita.h>
 
 #include "nautilus-window-slot.h"
 

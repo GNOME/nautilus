@@ -17,9 +17,9 @@
  *
  */
 
+#include <adwaita.h>
 #include <glib/gi18n.h>
 #include <gnome-autoar/gnome-autoar.h>
-#include <libadwaita-1/adwaita.h>
 
 #include <eel/eel-vfs-extensions.h>
 

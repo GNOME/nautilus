@@ -25,9 +25,9 @@
 
 #include "nautilus-preferences-window.h"
 
+#include <adwaita.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <libadwaita-1/adwaita.h>
 
 #include <glib/gi18n.h>
 

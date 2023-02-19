@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <libadwaita-1/adwaita.h>
+#include <adwaita.h>
 
 #include "nautilus-types.h"
 #include "nautilus-view-item.h"

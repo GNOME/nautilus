@@ -22,10 +22,10 @@
 
 #pragma once
 
+#include <adwaita.h>
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <libadwaita-1/adwaita.h>
 
 G_BEGIN_DECLS
 

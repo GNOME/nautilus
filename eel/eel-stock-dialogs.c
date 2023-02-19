@@ -22,9 +22,9 @@
 #include <config.h>
 #include "eel-stock-dialogs.h"
 
+#include <adwaita.h>
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
-#include <libadwaita-1/adwaita.h>
 
 #define TIMED_WAIT_STANDARD_DURATION 2000
 #define TIMED_WAIT_MIN_TIME_UP 3000

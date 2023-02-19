@@ -22,12 +22,12 @@
 
 #include <config.h>
 
+#include <adwaita.h>
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include <errno.h>
 #include <gtk/gtk.h>
-#include <libadwaita-1/adwaita.h>
 #include <gio/gio.h>
 
 #include <glib/gi18n.h>

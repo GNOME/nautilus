@@ -18,9 +18,9 @@
 
 #pragma once
 
+#include <adwaita.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include <libadwaita-1/adwaita.h>
 
 G_BEGIN_DECLS
 
