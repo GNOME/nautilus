@@ -35,8 +35,10 @@
                   <object class="GtkBox">
                     <child>
                       <object class="GtkButton" id="select_date_button">
-                        <property name="tooltip_text" translatable="yes">Select a date</property>
                         <property name="hexpand">True</property>
+                        <accessibility>
+                          <relation name="labelled-by">select_date_button_label</relation>
+                        </accessibility>
                         <child>
                           <object class="GtkLabel" id="select_date_button_label">
                             <property name="label" translatable="yes">Select Dates…</property>
@@ -217,7 +219,9 @@
                 <property name="name">type-button</property>
                 <property name="child">
                   <object class="GtkButton" id="select_type_button">
-                    <property name="tooltip_text" translatable="yes">Which file types will be searched</property>
+                    <accessibility>
+                      <relation name="labelled-by">type_label</relation>
+                    </accessibility>
                     <signal name="clicked" handler="select_type_button_clicked" object="NautilusSearchPopover" swapped="no"/>
                     <child>
                       <object class="GtkBox">
