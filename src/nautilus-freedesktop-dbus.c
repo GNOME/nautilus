@@ -163,20 +163,6 @@ name_lost_cb (GDBusConnection *connection,
 }
 
 static void
-nautilus_freedesktop_dbus_constructed (GObject *object)
-{
-    NautilusFreedesktopDBus *fdb = NAUTILUS_FREEDESKTOP_DBUS (object);
-
-    fdb->owner_id = g_bus_own_name_on_connection (fdb->connection,
-                                                  NAUTILUS_FDO_DBUS_NAME,
-                                                  G_BUS_NAME_OWNER_FLAGS_NONE,
-                                                  name_acquired_cb,
-                                                  name_lost_cb,
-                                                  fdb,
-                                                  NULL);
-}
-
-static void
 nautilus_freedesktop_dbus_dispose (GObject *object)
 {
     NautilusFreedesktopDBus *fdb = (NautilusFreedesktopDBus *) object;
@@ -252,7 +238,6 @@ nautilus_freedesktop_dbus_class_init (NautilusFreedesktopDBusClass *klass)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->dispose = nautilus_freedesktop_dbus_dispose;
-    object_class->constructed = nautilus_freedesktop_dbus_constructed;
     object_class->get_property = nautilus_freedesktop_dbus_get_property;
     object_class->set_property = nautilus_freedesktop_dbus_set_property;
 
@@ -301,7 +286,6 @@ nautilus_freedesktop_dbus_set_open_windows_with_locations (NautilusFreedesktopDB
                                                                         locations);
 }
 
-/* Tries to own the org.freedesktop.FileManager1 service name */
 NautilusFreedesktopDBus *
 nautilus_freedesktop_dbus_new (GDBusConnection *connection)
 {
@@ -310,6 +294,7 @@ nautilus_freedesktop_dbus_new (GDBusConnection *connection)
                          NULL);
 }
 
+/* Tries to own the org.freedesktop.FileManager1 service name */
 gboolean
 nautilus_freedesktop_dbus_register (NautilusFreedesktopDBus  *fdb,
                                     GError                  **error)
@@ -331,12 +316,26 @@ nautilus_freedesktop_dbus_register (NautilusFreedesktopDBus  *fdb,
                           G_CALLBACK (skeleton_handle_show_item_properties_cb), fdb);
     }
 
+    fdb->owner_id = g_bus_own_name_on_connection (fdb->connection,
+                                                  NAUTILUS_FDO_DBUS_NAME,
+                                                  G_BUS_NAME_OWNER_FLAGS_NONE,
+                                                  name_acquired_cb,
+                                                  name_lost_cb,
+                                                  fdb,
+                                                  NULL);
+
     return success;
 }
 
 void
 nautilus_freedesktop_dbus_unregister (NautilusFreedesktopDBus *fdb)
 {
+    if (fdb->owner_id != 0)
+    {
+        g_bus_unown_name (fdb->owner_id);
+        fdb->owner_id = 0;
+    }
+
     g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (fdb->skeleton));
 
     g_signal_handlers_disconnect_by_data (fdb->skeleton, fdb);
