@@ -18,16 +18,15 @@
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004, 2005, 2006.
 # Juanje Ojeda Croissier <jojeda@emergya.es>, 2009.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2010, 2011, 2012.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2010-2022.
-# Daniel Mustieles García <daniel.mustieles@gmail.com>, 2022-2023.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2022-2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2023-01-25 21:30+0000\n"
-"PO-Revision-Date: 2023-02-01 17:53+0100\n"
-"Last-Translator: Daniel Mustieles García <daniel.mustieles@gmail.com>\n"
+"PO-Revision-Date: 2023-02-28 11:03+0100\n"
+"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -370,13 +369,15 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:173
 msgid "Whether GTK 4 settings migration happened"
-msgstr ""
+msgstr "Indica si se ha realizado la migración de la configuración a GTK 4"
 
 #: data/org.gnome.nautilus.gschema.xml:174
 msgid ""
 "Whether settings shared with GtkFileChooser have been migrated from their "
 "GTK 3 key to the GTK 4 ones."
 msgstr ""
+"Indica si la configuración compartida con GtkFileChooser se ha migrado de "
+"las claves en versión GTK 3 a la versión GTK 4."
 
 #: data/org.gnome.nautilus.gschema.xml:178
 msgid "What viewer should be used when searching"
@@ -1134,18 +1135,18 @@ msgstr "Carpeta personal"
 #: src/nautilus-clipboard.c:80
 #, c-format
 msgid "Clipboard string cannot be NULL."
-msgstr ""
+msgstr "La cadena del portapapeles no puede ser NULL"
 
 #. Translators: Do not translate 'cut' and 'copy'. These are literal keywords.
 #: src/nautilus-clipboard.c:89
 #, c-format
 msgid "Nautilus Clipboard must begin with “cut” or “copy”."
-msgstr ""
+msgstr "El portapapeles de Nautilus debe comenzar con «cut» o «copy»."
 
 #: src/nautilus-clipboard.c:98
 #, c-format
 msgid "Nautilus Clipboard must not have empty lines."
-msgstr ""
+msgstr "El portapapeles de Nautilus no debe tener líneas vacías."
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-program-chooser.c:1196
@@ -1506,6 +1507,8 @@ msgid ""
 "Could not rename “%s” because a process is using it. If it's open in another "
 "application, close it before renaming it."
 msgstr ""
+"No se pudo renombrar «%s» porque un proceso lo está usando. Si lo ha abierto "
+"otra aplicación, ciérrela antes de renombrarlo."
 
 # src/file-manager/fm-error-reporting.c:64
 #. fall through
@@ -2819,7 +2822,7 @@ msgstr "Guardando imagen del portapapeles a un archivo"
 
 #: src/nautilus-file-operations.c:8078
 msgid "Successfully pasted clipboard image to file"
-msgstr ""
+msgstr "Imagen del portapapeles pegada correctamente en el archivo"
 
 #: src/nautilus-file-operations.c:8105
 msgid "Failed to paste image"
@@ -4525,11 +4528,11 @@ msgstr ""
 
 #: src/nautilus-special-location-bar.c:150
 msgid ""
-"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
-"\">Learn more…</a>"
+"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+"templates\">Learn more…</a>"
 msgstr ""
-"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
-"\">Aprender más…</a>"
+"<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+"templates\">Aprender más…</a>"
 
 #: src/nautilus-special-location-bar.c:156
 msgid "Executable files in this folder will appear in the Scripts menu."
@@ -10975,9 +10978,9 @@ msgstr "Lista de atajos, puntos de montaje y marcadores comunes."
 #~ "\"name\", \"size\", \"type\", \"modification_date\", and \"emblems\"."
 #~ msgstr ""
 #~ "El criterio de ordenación de los elementos en la vista de icono. Los "
-#~ "valores posibles son \"name\" (nombre), \"size\" (tamaño), \"type"
-#~ "\" (tipo), \"modification_date\" (fecha de modificación) y \"emblems"
-#~ "\" (emblemas)."
+#~ "valores posibles son \"name\" (nombre), \"size\" (tamaño), "
+#~ "\"type\" (tipo), \"modification_date\" (fecha de modificación) y "
+#~ "\"emblems\" (emblemas)."
 
 #~ msgid "Use manual layout in new windows"
 #~ msgstr "Utilizar una organización manual en las ventanas nuevas"
