@@ -848,13 +848,10 @@ static void
 real_sort_directories_first_changed (NautilusFilesView *files_view)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (files_view);
-    NautilusViewModel *model;
 
     self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
 
-    /* Reset the sorter to trigger ressorting */
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-    nautilus_view_model_set_sorter (model, nautilus_view_model_get_sorter (model));
+    nautilus_list_base_reset_sort (NAUTILUS_LIST_BASE (self));
 }
 
 static void

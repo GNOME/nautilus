@@ -1892,3 +1892,13 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (drop_target));
     priv->view_drop_target = drop_target;
 }
+
+void
+nautilus_list_base_reset_sort (NautilusListBase *self)
+{
+    NautilusViewModel *model;
+
+    /* Reset the sorter to trigger ressorting */
+    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+    nautilus_view_model_set_sorter (model, nautilus_view_model_get_sorter (model));
+}
