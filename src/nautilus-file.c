@@ -2478,6 +2478,7 @@ update_info_internal (NautilusFile *file,
     const char *trash_orig_path;
     const char *group, *owner, *owner_real;
     gboolean free_owner, free_group;
+    const char *edit_name;
 
     if (file->details->is_gone)
     {
@@ -2506,9 +2507,11 @@ update_info_internal (NautilusFile *file,
     }
     file->details->got_file_info = TRUE;
 
+    edit_name = g_file_info_get_attribute_string (info,
+                                                  G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
     changed |= nautilus_file_set_display_name (file,
                                                g_file_info_get_display_name (info),
-                                               g_file_info_get_edit_name (info),
+                                               edit_name,
                                                FALSE);
 
     file_type = g_file_info_get_file_type (info);
@@ -2554,14 +2557,18 @@ update_info_internal (NautilusFile *file,
         }
     }
 
-    is_symlink = g_file_info_get_is_symlink (info);
+    is_symlink = g_file_info_get_attribute_boolean (info,
+                                                    G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK);
     if (file->details->is_symlink != is_symlink)
     {
         changed = TRUE;
     }
     file->details->is_symlink = is_symlink;
 
-    is_hidden = g_file_info_get_is_hidden (info) || g_file_info_get_is_backup (info);
+    is_hidden = g_file_info_get_attribute_boolean (info,
+                                                   G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
+                g_file_info_get_attribute_boolean (info,
+                                                   G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
     if (file->details->is_hidden != is_hidden)
     {
         changed = TRUE;
@@ -2786,7 +2793,8 @@ update_info_internal (NautilusFile *file,
     }
     file->details->size = size;
 
-    sort_order = g_file_info_get_sort_order (info);
+    sort_order = g_file_info_get_attribute_int32 (info,
+                                                  G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER);
     if (file->details->sort_order != sort_order)
     {
         changed = TRUE;
@@ -2845,7 +2853,8 @@ update_info_internal (NautilusFile *file,
         file->details->thumbnailing_failed = thumbnailing_failed;
     }
 
-    symlink_name = g_file_info_get_symlink_target (info);
+    symlink_name = g_file_info_get_attribute_byte_string (info,
+                                                          G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET);
     if (g_strcmp0 (file->details->symlink_name, symlink_name) != 0)
     {
         changed = TRUE;
@@ -2853,7 +2862,8 @@ update_info_internal (NautilusFile *file,
         file->details->symlink_name = g_strdup (symlink_name);
     }
 
-    mime_type = g_file_info_get_content_type (info);
+    mime_type = g_file_info_get_attribute_string (info,
+                                                  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
     if (mime_type == NULL)
     {
         mime_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
