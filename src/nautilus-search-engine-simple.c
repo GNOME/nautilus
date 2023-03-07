@@ -330,7 +330,10 @@ visit_directory (GFile            *dir,
             goto next;
         }
 
-        is_hidden = g_file_info_get_is_hidden (info) || g_file_info_get_is_backup (info);
+        is_hidden = g_file_info_get_attribute_boolean (info,
+                                                       G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
+                    g_file_info_get_attribute_boolean (info,
+                                                       G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
         if (is_hidden && !nautilus_query_get_show_hidden_files (data->query))
         {
             goto next;
@@ -342,7 +345,8 @@ visit_directory (GFile            *dir,
 
         if (found && data->mime_types->len > 0)
         {
-            mime_type = g_file_info_get_content_type (info);
+            mime_type = g_file_info_get_attribute_string (info,
+                                                          G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
             found = FALSE;
 
             for (gint i = 0; i < data->mime_types->len; i++)

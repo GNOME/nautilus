@@ -171,8 +171,13 @@ is_file_valid_recursive (NautilusSearchEngineRecent  *self,
 
     if (!nautilus_query_get_show_hidden_files (self->query))
     {
-        if (!g_file_info_get_is_hidden (file_info) &&
-            !g_file_info_get_is_backup (file_info))
+        gboolean is_hidden;
+
+        is_hidden = g_file_info_get_attribute_boolean (file_info,
+                                                       G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
+                    g_file_info_get_attribute_boolean (file_info,
+                                                       G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
+        if (!is_hidden)
         {
             g_autoptr (GFile) parent = g_file_get_parent (file);
 
