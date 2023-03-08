@@ -51,6 +51,7 @@ struct _NautilusSearchEngineTracker
 
     TrackerSparqlConnection *connection;
     NautilusQuery *query;
+    GHashTable *statements;
 
     gboolean query_pending;
     GQueue *hits_pending;
@@ -91,6 +92,7 @@ finalize (GObject *object)
 
     g_clear_object (&tracker->query);
     g_queue_free_full (tracker->hits_pending, g_object_unref);
+    g_clear_pointer (&tracker->statements, g_hash_table_unref);
     /* This is a singleton, no need to unref. */
     tracker->connection = NULL;
 
@@ -524,7 +526,14 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         }
     }
 
-    stmt = create_statement (provider, features);
+    stmt = g_hash_table_lookup (tracker->statements, GUINT_TO_POINTER (features));
+
+    if (!stmt)
+    {
+        stmt = create_statement (provider, features);
+        g_hash_table_insert (tracker->statements,
+                             GUINT_TO_POINTER (features), stmt);
+    }
 
     location = nautilus_query_get_location (tracker->query);
     location_uri = g_file_get_uri (location);
@@ -590,8 +599,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                                             tracker->cancellable,
                                             query_callback,
                                             tracker);
-
-    g_object_unref (stmt);
 }
 
 static void
@@ -695,6 +702,8 @@ nautilus_search_engine_tracker_init (NautilusSearchEngineTracker *engine)
     GError *error = NULL;
 
     engine->hits_pending = g_queue_new ();
+    engine->statements = g_hash_table_new_full (NULL, NULL, NULL,
+                                                g_object_unref);
 
     engine->connection = nautilus_tracker_get_miner_fs_connection (&error);
     if (error)
