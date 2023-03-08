@@ -31,9 +31,9 @@
 
 G_DECLARE_FINAL_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, NAUTILUS, FREEDESKTOP_DBUS, GObject);
 
-NautilusFreedesktopDBus * nautilus_freedesktop_dbus_new (GDBusConnection *connection);
+NautilusFreedesktopDBus * nautilus_freedesktop_dbus_new (void);
 
-gboolean nautilus_freedesktop_dbus_register (NautilusFreedesktopDBus *fdb, GError **error);
+gboolean nautilus_freedesktop_dbus_register (NautilusFreedesktopDBus *fdb, GDBusConnection *connection, GError **error);
 void nautilus_freedesktop_dbus_unregister (NautilusFreedesktopDBus *fdb);
 
 void nautilus_freedesktop_dbus_set_open_locations (NautilusFreedesktopDBus *fdb, const gchar **locations);

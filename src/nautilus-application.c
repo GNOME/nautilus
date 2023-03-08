@@ -1222,8 +1222,8 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
-    priv->fdb_manager = nautilus_freedesktop_dbus_new (connection);
-    if (!nautilus_freedesktop_dbus_register (priv->fdb_manager, error))
+    priv->fdb_manager = nautilus_freedesktop_dbus_new ();
+    if (!nautilus_freedesktop_dbus_register (priv->fdb_manager, connection, error))
     {
         return FALSE;
     }

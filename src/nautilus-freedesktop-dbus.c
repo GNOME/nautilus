@@ -40,14 +40,6 @@ struct _NautilusFreedesktopDBus
 
     /* Our DBus implementation skeleton */
     NautilusFreedesktopFileManager1 *skeleton;
-
-    GDBusConnection *connection;
-};
-
-enum
-{
-    PROP_0,
-    PROP_CONNECTION,
 };
 
 G_DEFINE_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, G_TYPE_OBJECT);
@@ -179,57 +171,7 @@ nautilus_freedesktop_dbus_dispose (GObject *object)
         fdb->skeleton = NULL;
     }
 
-    g_clear_object (&fdb->connection);
-
     G_OBJECT_CLASS (nautilus_freedesktop_dbus_parent_class)->dispose (object);
-}
-
-static void
-nautilus_freedesktop_dbus_set_property (GObject      *object,
-                                        guint         prop_id,
-                                        const GValue *value,
-                                        GParamSpec   *pspec)
-{
-    NautilusFreedesktopDBus *fdb = NAUTILUS_FREEDESKTOP_DBUS (object);
-
-    switch (prop_id)
-    {
-        case PROP_CONNECTION:
-        {
-            g_set_object (&fdb->connection, g_value_get_object (value));
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-        break;
-    }
-}
-
-static void
-nautilus_freedesktop_dbus_get_property (GObject    *object,
-                                        guint       prop_id,
-                                        GValue     *value,
-                                        GParamSpec *pspec)
-{
-    NautilusFreedesktopDBus *fdb = NAUTILUS_FREEDESKTOP_DBUS (object);
-
-    switch (prop_id)
-    {
-        case PROP_CONNECTION:
-        {
-            g_value_set_object (value, fdb->connection);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-        break;
-    }
 }
 
 static void
@@ -238,17 +180,6 @@ nautilus_freedesktop_dbus_class_init (NautilusFreedesktopDBusClass *klass)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->dispose = nautilus_freedesktop_dbus_dispose;
-    object_class->get_property = nautilus_freedesktop_dbus_get_property;
-    object_class->set_property = nautilus_freedesktop_dbus_set_property;
-
-    g_object_class_install_property (object_class,
-                                     PROP_CONNECTION,
-                                     g_param_spec_object ("connection",
-                                                          "Connection",
-                                                          "GDBus connection property",
-                                                          G_TYPE_DBUS_CONNECTION,
-                                                          G_PARAM_CONSTRUCT_ONLY |
-                                                          G_PARAM_READWRITE));
 }
 
 static void
@@ -287,22 +218,21 @@ nautilus_freedesktop_dbus_set_open_windows_with_locations (NautilusFreedesktopDB
 }
 
 NautilusFreedesktopDBus *
-nautilus_freedesktop_dbus_new (GDBusConnection *connection)
+nautilus_freedesktop_dbus_new (void)
 {
-    return g_object_new (NAUTILUS_TYPE_FREEDESKTOP_DBUS,
-                         "connection", connection,
-                         NULL);
+    return g_object_new (NAUTILUS_TYPE_FREEDESKTOP_DBUS, NULL);
 }
 
 /* Tries to own the org.freedesktop.FileManager1 service name */
 gboolean
 nautilus_freedesktop_dbus_register (NautilusFreedesktopDBus  *fdb,
+                                    GDBusConnection          *connection,
                                     GError                  **error)
 {
     gboolean success;
 
     success = g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fdb->skeleton),
-                                                fdb->connection,
+                                                connection,
                                                 NAUTILUS_FDO_DBUS_PATH,
                                                 error);
 
@@ -316,7 +246,7 @@ nautilus_freedesktop_dbus_register (NautilusFreedesktopDBus  *fdb,
                           G_CALLBACK (skeleton_handle_show_item_properties_cb), fdb);
     }
 
-    fdb->owner_id = g_bus_own_name_on_connection (fdb->connection,
+    fdb->owner_id = g_bus_own_name_on_connection (connection,
                                                   NAUTILUS_FDO_DBUS_NAME,
                                                   G_BUS_NAME_OWNER_FLAGS_NONE,
                                                   name_acquired_cb,
