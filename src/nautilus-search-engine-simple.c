@@ -302,7 +302,8 @@ visit_directory (GFile            *dir,
     enumerator = g_file_enumerate_children (dir,
                                             data->mime_types->len > 0 ?
                                             STD_ATTRIBUTES ","
-                                            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE
+                                            G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+                                            G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE
                                             :
                                             STD_ATTRIBUTES
                                             ,
@@ -347,6 +348,12 @@ visit_directory (GFile            *dir,
         {
             mime_type = g_file_info_get_attribute_string (info,
                                                           G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+            if (mime_type == NULL)
+            {
+                mime_type = g_file_info_get_attribute_string (info,
+                                                              G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
+            }
+
             found = FALSE;
 
             for (gint i = 0; mime_type != NULL && i < data->mime_types->len; i++)
