@@ -33,6 +33,18 @@
 #include <gio/gio.h>
 #include <libtracker-sparql/tracker-sparql.h>
 
+typedef enum
+{
+    SEARCH_FEATURE_NONE = 0,
+    SEARCH_FEATURE_TERMS = 1 << 0,
+    SEARCH_FEATURE_CONTENT = 1 << 1,
+    SEARCH_FEATURE_MIMETYPE = 1 << 2,
+    SEARCH_FEATURE_RECURSIVE = 1 << 3,
+    SEARCH_FEATURE_ATIME = 1 << 4,
+    SEARCH_FEATURE_MTIME = 1 << 5,
+    SEARCH_FEATURE_CTIME = 1 << 6,
+} SearchFeatures;
+
 struct _NautilusSearchEngineTracker
 {
     GObject parent_instance;
@@ -277,16 +289,16 @@ query_callback (GObject      *object,
                 gpointer      user_data)
 {
     NautilusSearchEngineTracker *tracker;
-    TrackerSparqlConnection *connection;
+    TrackerSparqlStatement *stmt;
     TrackerSparqlCursor *cursor;
     GError *error = NULL;
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (user_data);
 
-    connection = TRACKER_SPARQL_CONNECTION (object);
-    cursor = tracker_sparql_connection_query_finish (connection,
-                                                     result,
-                                                     &error);
+    stmt = TRACKER_SPARQL_STATEMENT (object);
+    cursor = tracker_sparql_statement_execute_finish (stmt,
+                                                      result,
+                                                      &error);
 
     if (error != NULL)
     {
@@ -317,15 +329,192 @@ search_finished_idle (gpointer user_data)
  */
 #define FILENAME_RANK "5.0"
 
-static void
-nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
+static TrackerSparqlStatement *
+create_statement (NautilusSearchProvider *provider,
+                  SearchFeatures          features)
 {
     NautilusSearchEngineTracker *tracker;
     gchar *query_text, *search_text, *location_uri, *downcase;
     GFile *location;
     GString *sparql;
     g_autoptr (GPtrArray) mimetypes = NULL;
+    TrackerSparqlStatement *stmt;
     GPtrArray *date_range;
+
+    tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
+
+    query_text = nautilus_query_get_text (tracker->query);
+    downcase = g_utf8_strdown (query_text, -1);
+    search_text = tracker_sparql_escape_string (downcase);
+    g_free (query_text);
+    g_free (downcase);
+
+    location = nautilus_query_get_location (tracker->query);
+    location_uri = location ? g_file_get_uri (location) : NULL;
+    mimetypes = nautilus_query_get_mime_types (tracker->query);
+    date_range = nautilus_query_get_date_range (tracker->query);
+
+    sparql = g_string_new ("SELECT DISTINCT"
+                           " ?url"
+                           " xsd:double(COALESCE(?rank2, ?rank1)) AS ?rank"
+                           " nfo:fileLastModified(?file)"
+                           " nfo:fileCreated(?file)"
+                           " nfo:fileLastAccessed(?file)");
+
+    if (features & SEARCH_FEATURE_CONTENT)
+    {
+        g_string_append (sparql,
+                         "fts:snippet(?content,"
+                         "            '_NAUTILUS_SNIPPET_DELIM_START_',"
+                         "            '_NAUTILUS_SNIPPET_DELIM_END_', "
+                         "            '…',"
+                         "            20)");
+    }
+
+    g_string_append (sparql, "FROM tracker:FileSystem ");
+
+    if (features & SEARCH_FEATURE_CONTENT)
+    {
+        g_string_append (sparql, "FROM tracker:Documents ");
+    }
+
+    g_string_append (sparql,
+                     "\nWHERE {"
+                     "  ?file a nfo:FileDataObject;"
+                     "  nfo:fileLastModified ?mtime;"
+                     "  nfo:fileLastAccessed ?atime;"
+                     "  nie:dataSource/tracker:available true;"
+                     "  nie:url ?url."
+                     "  OPTIONAL { ?file nfo:fileCreated ?ctime.}");
+
+    if (features & SEARCH_FEATURE_MIMETYPE)
+    {
+        g_string_append (sparql,
+                         "  ?content nie:isStoredAs ?file;"
+                         "    nie:mimeType ?mime");
+    }
+
+    if (features & SEARCH_FEATURE_TERMS)
+    {
+        if (features & SEARCH_FEATURE_CONTENT)
+        {
+            /* Use fts:match only for content search to not lose some filename results due to stop words. */
+            g_string_append_printf (sparql,
+                                    " { "
+                                    " ?content nie:isStoredAs ?file ."
+                                    " ?content fts:match \"%s*\" ."
+                                    " BIND(fts:rank(?content) AS ?rank1) ."
+                                    " } UNION",
+                                    search_text);
+        }
+
+        g_string_append_printf (sparql,
+                                " {"
+                                " ?file nfo:fileName ?filename ."
+                                " FILTER(fn:contains(fn:lower-case(?filename), '%s')) ."
+                                " BIND(" FILENAME_RANK " AS ?rank2) ."
+                                " }",
+                                search_text);
+    }
+
+    g_string_append_printf (sparql, " . FILTER( ");
+
+    if (!(features & SEARCH_FEATURE_RECURSIVE))
+    {
+        g_string_append_printf (sparql, "tracker:uri-is-parent('%s', ?url)", location_uri);
+    }
+    else
+    {
+        /* STRSTARTS is faster than tracker:uri-is-descendant().
+         * See https://gitlab.gnome.org/GNOME/tracker/-/issues/243
+         */
+        g_string_append_printf (sparql, "STRSTARTS(?url, '%s/')", location_uri);
+    }
+
+    if (features &
+        (SEARCH_FEATURE_ATIME | SEARCH_FEATURE_MTIME | SEARCH_FEATURE_CTIME))
+    {
+        gchar *initial_date_format;
+        gchar *end_date_format;
+        GDateTime *initial_date;
+        GDateTime *end_date;
+        GDateTime *shifted_end_date;
+
+        initial_date = g_ptr_array_index (date_range, 0);
+        end_date = g_ptr_array_index (date_range, 1);
+        /* As we do for other searches, we want to make the end date inclusive.
+         * For that, add a day to it */
+        shifted_end_date = g_date_time_add_days (end_date, 1);
+
+        initial_date_format = g_date_time_format_iso8601 (initial_date);
+        end_date_format = g_date_time_format_iso8601 (shifted_end_date);
+
+        g_string_append (sparql, " && ");
+
+        if (features & SEARCH_FEATURE_ATIME)
+        {
+            g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", initial_date_format);
+            g_string_append_printf (sparql, " && ?atime <= \"%s\"^^xsd:dateTime", end_date_format);
+        }
+        else if (features & SEARCH_FEATURE_MTIME)
+        {
+            g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", initial_date_format);
+            g_string_append_printf (sparql, " && ?mtime <= \"%s\"^^xsd:dateTime", end_date_format);
+        }
+        else if (features & SEARCH_FEATURE_CTIME)
+        {
+            g_string_append_printf (sparql, "?ctime >= \"%s\"^^xsd:dateTime", initial_date_format);
+            g_string_append_printf (sparql, " && ?ctime <= \"%s\"^^xsd:dateTime", end_date_format);
+        }
+
+
+        g_free (initial_date_format);
+        g_free (end_date_format);
+    }
+
+    if (features & SEARCH_FEATURE_MIMETYPE)
+    {
+        g_string_append (sparql, " && (");
+
+        for (gint i = 0; i < mimetypes->len; i++)
+        {
+            if (i != 0)
+            {
+                g_string_append (sparql, " || ");
+            }
+
+            g_string_append_printf (sparql, "fn:contains(?mime, '%s')",
+                                    (gchar *) g_ptr_array_index (mimetypes, i));
+        }
+        g_string_append (sparql, ")\n");
+    }
+
+    g_string_append (sparql, ")} ORDER BY DESC (?rank)");
+
+    stmt = tracker_sparql_connection_query_statement (tracker->connection,
+                                                      sparql->str,
+                                                      NULL,
+                                                      NULL);
+    g_string_free (sparql, TRUE);
+
+    g_clear_pointer (&date_range, g_ptr_array_unref);
+    g_free (search_text);
+    g_free (location_uri);
+    g_object_unref (location);
+
+    return stmt;
+}
+
+static void
+nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
+{
+    NautilusSearchEngineTracker *tracker;
+    gchar *query_text;
+    g_autoptr (GPtrArray) mimetypes = NULL;
+    g_autoptr (GPtrArray) date_range = NULL;
+    NautilusQuerySearchType type;
+    TrackerSparqlStatement *stmt;
+    SearchFeatures features = 0;
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
@@ -349,163 +538,53 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     tracker->fts_enabled = nautilus_query_get_search_content (tracker->query);
 
     query_text = nautilus_query_get_text (tracker->query);
-    downcase = g_utf8_strdown (query_text, -1);
-    search_text = tracker_sparql_escape_string (downcase);
-    g_free (query_text);
-    g_free (downcase);
-
-    location = nautilus_query_get_location (tracker->query);
-    location_uri = location ? g_file_get_uri (location) : NULL;
     mimetypes = nautilus_query_get_mime_types (tracker->query);
+    date_range = nautilus_query_get_date_range (tracker->query);
+    type = nautilus_query_get_search_type (tracker->query);
 
-    sparql = g_string_new ("SELECT DISTINCT"
-                           " ?url"
-                           " xsd:double(COALESCE(?rank2, ?rank1)) AS ?rank"
-                           " nfo:fileLastModified(?file)"
-                           " nfo:fileCreated(?file)"
-                           " nfo:fileLastAccessed(?file)");
-
-    if (tracker->fts_enabled && *search_text)
+    if (*query_text)
     {
-        g_string_append (sparql,
-                         "fts:snippet(?content,"
-                         "            '_NAUTILUS_SNIPPET_DELIM_START_',"
-                         "            '_NAUTILUS_SNIPPET_DELIM_END_', "
-                         "            '…',"
-                         "            20)");
+        features |= SEARCH_FEATURE_TERMS;
     }
-
-    g_string_append (sparql, "FROM tracker:FileSystem ");
-
     if (tracker->fts_enabled)
     {
-        g_string_append (sparql, "FROM tracker:Documents ");
+        features |= SEARCH_FEATURE_CONTENT;
     }
-
-    g_string_append (sparql,
-                     "\nWHERE {"
-                     "  ?file a nfo:FileDataObject;"
-                     "  nfo:fileLastModified ?mtime;"
-                     "  nfo:fileLastAccessed ?atime;"
-                     "  nie:dataSource/tracker:available true;"
-                     "  nie:url ?url."
-                     "  OPTIONAL { ?file nfo:fileCreated ?ctime.}");
-
+    if (tracker->recursive)
+    {
+        features |= SEARCH_FEATURE_RECURSIVE;
+    }
     if (mimetypes->len > 0)
     {
-        g_string_append (sparql,
-                         "  ?content nie:isStoredAs ?file;"
-                         "    nie:mimeType ?mime");
+        features |= SEARCH_FEATURE_MIMETYPE;
     }
 
-    if (tracker->fts_enabled && *search_text)
-    {
-        /* Use fts:match only for content search to not lose some filename results due to stop words. */
-        g_string_append_printf (sparql,
-                                " { "
-                                " ?content nie:isStoredAs ?file ."
-                                " ?content fts:match \"%s*\" ."
-                                " BIND(fts:rank(?content) AS ?rank1) ."
-                                " } UNION",
-                                search_text);
-    }
-
-    g_string_append_printf (sparql,
-                            " {"
-                            " ?file nfo:fileName ?filename ."
-                            " FILTER(fn:contains(fn:lower-case(?filename), '%s')) ."
-                            " BIND(" FILENAME_RANK " AS ?rank2) ."
-                            " }",
-                            search_text);
-
-    g_string_append_printf (sparql, " . FILTER( ");
-
-    if (!tracker->recursive)
-    {
-        g_string_append_printf (sparql, "tracker:uri-is-parent('%s', ?url)", location_uri);
-    }
-    else
-    {
-        /* STRSTARTS is faster than tracker:uri-is-descendant().
-         * See https://gitlab.gnome.org/GNOME/tracker/-/issues/243
-         */
-        g_string_append_printf (sparql, "STRSTARTS(?url, '%s/')", location_uri);
-    }
-
-    date_range = nautilus_query_get_date_range (tracker->query);
     if (date_range)
     {
-        NautilusQuerySearchType type;
-        gchar *initial_date_format;
-        gchar *end_date_format;
-        GDateTime *initial_date;
-        GDateTime *end_date;
-        GDateTime *shifted_end_date;
-
-        initial_date = g_ptr_array_index (date_range, 0);
-        end_date = g_ptr_array_index (date_range, 1);
-        /* As we do for other searches, we want to make the end date inclusive.
-         * For that, add a day to it */
-        shifted_end_date = g_date_time_add_days (end_date, 1);
-
-        type = nautilus_query_get_search_type (tracker->query);
-        initial_date_format = g_date_time_format_iso8601 (initial_date);
-        end_date_format = g_date_time_format_iso8601 (shifted_end_date);
-
-        g_string_append (sparql, " && ");
-
         if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
         {
-            g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", initial_date_format);
-            g_string_append_printf (sparql, " && ?atime <= \"%s\"^^xsd:dateTime", end_date_format);
+            features |= SEARCH_FEATURE_ATIME;
         }
         else if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
         {
-            g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", initial_date_format);
-            g_string_append_printf (sparql, " && ?mtime <= \"%s\"^^xsd:dateTime", end_date_format);
+            features |= SEARCH_FEATURE_MTIME;
         }
-        else
+        else if (type == NAUTILUS_QUERY_SEARCH_TYPE_CREATED)
         {
-            g_string_append_printf (sparql, "?ctime >= \"%s\"^^xsd:dateTime", initial_date_format);
-            g_string_append_printf (sparql, " && ?ctime <= \"%s\"^^xsd:dateTime", end_date_format);
+            features |= SEARCH_FEATURE_CTIME;
         }
-
-
-        g_free (initial_date_format);
-        g_free (end_date_format);
-        g_ptr_array_unref (date_range);
     }
 
-    if (mimetypes->len > 0)
-    {
-        g_string_append (sparql, " && (");
-
-        for (gint i = 0; i < mimetypes->len; i++)
-        {
-            if (i != 0)
-            {
-                g_string_append (sparql, " || ");
-            }
-
-            g_string_append_printf (sparql, "fn:contains(?mime, '%s')",
-                                    (gchar *) g_ptr_array_index (mimetypes, i));
-        }
-        g_string_append (sparql, ")\n");
-    }
-
-    g_string_append (sparql, ")} ORDER BY DESC (?rank)");
+    stmt = create_statement (provider, features);
 
     tracker->cancellable = g_cancellable_new ();
-    tracker_sparql_connection_query_async (tracker->connection,
-                                           sparql->str,
-                                           tracker->cancellable,
-                                           query_callback,
-                                           tracker);
-    g_string_free (sparql, TRUE);
+    tracker_sparql_statement_execute_async (stmt,
+                                            tracker->cancellable,
+                                            query_callback,
+                                            tracker);
 
-    g_free (search_text);
-    g_free (location_uri);
-    g_object_unref (location);
+    g_free (query_text);
+    g_object_unref (stmt);
 }
 
 static void
