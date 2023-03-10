@@ -344,9 +344,9 @@ create_statement (NautilusSearchProvider *provider,
     sparql = g_string_new ("SELECT DISTINCT"
                            " ?url"
                            " xsd:double(COALESCE(?rank2, ?rank1)) AS ?rank"
-                           " nfo:fileLastModified(?file)"
-                           " nfo:fileCreated(?file)"
-                           " nfo:fileLastAccessed(?file)");
+                           " ?mtime"
+                           " ?ctime"
+                           " ?atime");
 
     if (features & SEARCH_FEATURE_CONTENT)
     {
