@@ -335,39 +335,31 @@ create_statement (NautilusSearchProvider *provider,
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
-    sparql = g_string_new ("SELECT DISTINCT"
-                           " ?url"
-                           " ?rank"
-                           " ?mtime"
-                           " ?ctime"
-                           " ?atime");
+#define VARIABLES \
+        " ?url" \
+        " ?rank"  \
+        " ?mtime" \
+        " ?ctime" \
+        " ?atime" \
+        " ?snippet"
 
-    if (features & SEARCH_FEATURE_CONTENT)
-    {
-        g_string_append (sparql, "?snippet ");
-    }
+#define TRIPLE_PATTERN \
+        "?file a nfo:FileDataObject;" \
+        "  nfo:fileLastModified ?mtime;" \
+        "  nfo:fileLastAccessed ?atime;" \
+        "  nfo:fileCreated ?ctime;" \
+        "  nie:dataSource/tracker:available true;" \
+        "  nie:url ?url."
 
-    g_string_append (sparql, "FROM tracker:FileSystem ");
-
-    if (features & SEARCH_FEATURE_CONTENT)
-    {
-        g_string_append (sparql, "FROM tracker:Documents ");
-    }
-
-    g_string_append (sparql,
-                     "\nWHERE {"
-                     "  ?file a nfo:FileDataObject;"
-                     "  nfo:fileLastModified ?mtime;"
-                     "  nfo:fileLastAccessed ?atime;"
-                     "  nfo:fileCreated ?ctime;"
-                     "  nie:dataSource/tracker:available true;"
-                     "  nie:url ?url.");
+    sparql = g_string_new ("SELECT DISTINCT " VARIABLES " WHERE {");
 
     if (features & SEARCH_FEATURE_MIMETYPE)
     {
         g_string_append (sparql,
-                         "  ?content nie:isStoredAs ?file;"
-                         "    nie:mimeType ?mime");
+                         "  GRAPH ?g {"
+                         "    ?content nie:isStoredAs ?file;"
+                         "      nie:mimeType ?mime"
+                         "  }");
     }
 
     if (features & SEARCH_FEATURE_TERMS)
@@ -376,14 +368,23 @@ create_statement (NautilusSearchProvider *provider,
         {
             g_string_append (sparql,
                              " { "
-                             "   ?content nie:isStoredAs ?file ."
-                             "   ?content fts:match ~match ."
-                             "   BIND(fts:rank(?content) AS ?rank) ."
-                             "   BIND(fts:snippet(?content,"
-                             "                    '_NAUTILUS_SNIPPET_DELIM_START_',"
-                             "                    '_NAUTILUS_SNIPPET_DELIM_END_',"
-                             "                    '…',"
-                             "                    20) AS ?snippet)"
+                             "   SELECT ?file " VARIABLES " {"
+                             "     GRAPH tracker:Documents {"
+                             "       ?file a nfo:FileDataObject ."
+                             "       ?content nie:isStoredAs ?file ."
+                             "       ?content fts:match ~match ."
+                             "       BIND(fts:rank(?content) AS ?rank) ."
+                             "       BIND(fts:snippet(?content,"
+                             "                        '_NAUTILUS_SNIPPET_DELIM_START_',"
+                             "                        '_NAUTILUS_SNIPPET_DELIM_END_',"
+                             "                        '…',"
+                             "                        20) AS ?snippet)"
+                             "     }"
+                             "     GRAPH tracker:FileSystem {"
+                             TRIPLE_PATTERN
+                             "     }"
+                             "   }"
+                             "   ORDER BY DESC (?rank)"
                              " } UNION");
         }
 
@@ -394,8 +395,22 @@ create_statement (NautilusSearchProvider *provider,
          */
         g_string_append (sparql,
                          " {"
-                         "   ?file fts:match ~match ."
-                         "   BIND(fts:rank(?file) AS ?rank) ."
+                         "   SELECT ?file " VARIABLES " {"
+                         "     GRAPH tracker:FileSystem {"
+                         TRIPLE_PATTERN
+                         "       ?file fts:match ~match ."
+                         "       BIND(fts:rank(?file) AS ?rank) ."
+                         "     }"
+                         "   }"
+                         "   ORDER BY DESC (?rank)"
+                         " }");
+    }
+    else
+    {
+        g_string_append (sparql,
+                         " GRAPH tracker:FileSystem {"
+                         TRIPLE_PATTERN
+                         "   BIND (0 AS ?rank)"
                          " }");
     }
 
@@ -440,7 +455,7 @@ create_statement (NautilusSearchProvider *provider,
         g_string_append (sparql, " && CONTAINS(~mimeTypes, ?mime)");
     }
 
-    g_string_append (sparql, ")} ORDER BY DESC (?rank)");
+    g_string_append (sparql, ")}");
 
     stmt = tracker_sparql_connection_query_statement (tracker->connection,
                                                       sparql->str,
