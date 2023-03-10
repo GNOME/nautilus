@@ -370,9 +370,9 @@ create_statement (NautilusSearchProvider *provider,
                      "  ?file a nfo:FileDataObject;"
                      "  nfo:fileLastModified ?mtime;"
                      "  nfo:fileLastAccessed ?atime;"
+                     "  nfo:fileCreated ?ctime;"
                      "  nie:dataSource/tracker:available true;"
-                     "  nie:url ?url."
-                     "  OPTIONAL { ?file nfo:fileCreated ?ctime.}");
+                     "  nie:url ?url.");
 
     if (features & SEARCH_FEATURE_MIMETYPE)
     {
