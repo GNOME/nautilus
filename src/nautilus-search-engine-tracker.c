@@ -343,19 +343,14 @@ create_statement (NautilusSearchProvider *provider,
 
     sparql = g_string_new ("SELECT DISTINCT"
                            " ?url"
-                           " xsd:double(COALESCE(?rank2, ?rank1)) AS ?rank"
+                           " ?rank"
                            " ?mtime"
                            " ?ctime"
                            " ?atime");
 
     if (features & SEARCH_FEATURE_CONTENT)
     {
-        g_string_append (sparql,
-                         "fts:snippet(?content,"
-                         "            '_NAUTILUS_SNIPPET_DELIM_START_',"
-                         "            '_NAUTILUS_SNIPPET_DELIM_END_',"
-                         "            '…',"
-                         "            20)");
+        g_string_append (sparql, "?snippet ");
     }
 
     g_string_append (sparql, "FROM tracker:FileSystem ");
@@ -388,9 +383,14 @@ create_statement (NautilusSearchProvider *provider,
             /* Use fts:match only for content search to not lose some filename results due to stop words. */
             g_string_append (sparql,
                              " { "
-                             " ?content nie:isStoredAs ?file ."
-                             " ?content fts:match ~match ."
-                             " BIND(fts:rank(?content) AS ?rank1) ."
+                             "   ?content nie:isStoredAs ?file ."
+                             "   ?content fts:match ~match ."
+                             "   BIND(fts:rank(?content) AS ?rank) ."
+                             "   BIND(fts:snippet(?content,"
+                             "                    '_NAUTILUS_SNIPPET_DELIM_START_',"
+                             "                    '_NAUTILUS_SNIPPET_DELIM_END_',"
+                             "                    '…',"
+                             "                    20) AS ?snippet)"
                              " } UNION");
         }
 
@@ -398,7 +398,7 @@ create_statement (NautilusSearchProvider *provider,
                          " {"
                          " ?file nfo:fileName ?filename ."
                          " FILTER(fn:contains(fn:lower-case(?filename), ~match)) ."
-                         " BIND(" FILENAME_RANK " AS ?rank2) ."
+                         " BIND(" FILENAME_RANK " AS ?rank) ."
                          " }");
     }
 
