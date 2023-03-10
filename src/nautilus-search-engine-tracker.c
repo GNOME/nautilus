@@ -325,12 +325,6 @@ search_finished_idle (gpointer user_data)
     return FALSE;
 }
 
-/* This is used to compensate rank if fts:rank is not set (resp. fts:match is
- * not used). The value was determined experimentally. I am convinced that
- * fts:rank is currently always set to 5.0 in case of filename match.
- */
-#define FILENAME_RANK "5.0"
-
 static TrackerSparqlStatement *
 create_statement (NautilusSearchProvider *provider,
                   SearchFeatures          features)
@@ -380,7 +374,6 @@ create_statement (NautilusSearchProvider *provider,
     {
         if (features & SEARCH_FEATURE_CONTENT)
         {
-            /* Use fts:match only for content search to not lose some filename results due to stop words. */
             g_string_append (sparql,
                              " { "
                              "   ?content nie:isStoredAs ?file ."
@@ -394,11 +387,15 @@ create_statement (NautilusSearchProvider *provider,
                              " } UNION");
         }
 
+        /* Note: Do not be fooled by `fts:match` bellow. It matches only the
+         * filename here, unlike its usage above. This is because it's used
+         * with `nfo:FileDataObject`, not `nie:InformationElement`. The only
+         * full-text indexed property of `nfo:FileDataObject` is `nfo:fileName`.
+         */
         g_string_append (sparql,
                          " {"
-                         " ?file nfo:fileName ?filename ."
-                         " FILTER(fn:contains(fn:lower-case(?filename), ~match)) ."
-                         " BIND(" FILENAME_RANK " AS ?rank) ."
+                         "   ?file fts:match ~match ."
+                         "   BIND(fts:rank(?file) AS ?rank) ."
                          " }");
     }
 
@@ -541,10 +538,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     if (*query_text)
     {
-        g_autofree gchar *search_text = NULL;
-
-        search_text = g_utf8_strdown (query_text, -1);
-        tracker_sparql_statement_bind_string (stmt, "match", search_text);
+        tracker_sparql_statement_bind_string (stmt, "match", query_text);
     }
 
     if (mimetypes->len > 0)
