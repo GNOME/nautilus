@@ -4612,11 +4612,7 @@ nautilus_gtk_places_sidebar_set_location (NautilusGtkPlacesSidebar *sidebar,
 
   gtk_list_box_unselect_all (GTK_LIST_BOX (sidebar->list_box));
 
-  if (sidebar->current_location != NULL)
-    g_object_unref (sidebar->current_location);
-  sidebar->current_location = location;
-  if (sidebar->current_location != NULL)
-    g_object_ref (sidebar->current_location);
+  g_set_object (&sidebar->current_location, location);
 
   if (location == NULL)
     goto out;
