@@ -728,6 +728,7 @@ action_clone_window (GSimpleAction *action,
         {
             location = nautilus_window_slot_get_pending_location (active_slot);
         }
+        g_object_ref (location);
     }
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), location,
