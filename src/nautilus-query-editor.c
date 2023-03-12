@@ -49,7 +49,7 @@ struct _NautilusQueryEditor
     GtkWidget *mime_types_tag;
     GtkWidget *date_range_tag;
 
-    guint search_changed_timeout_id;
+    guint search_changed_idle_id;
     gboolean change_frozen;
 
     GFile *location;
@@ -79,12 +79,6 @@ static guint signals[LAST_SIGNAL];
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_WIDGET);
-
-/* A hunt-and-peck typist types at 25-35 words per minute, which means 342 to 480ms between strokes.
- * An average touch typist types at 50-70 wpm, which means 171 to 240ms "under ideal conditions".
- * A 150ms default search triggering delay is too short even for fast typists in general,
- * so wait 400ms after typing, to improve performance by not spamming search engines: */
-#define SEARCH_CHANGED_TIMEOUT 400
 
 static void
 update_fts_sensitivity (NautilusQueryEditor *editor)
@@ -138,7 +132,7 @@ nautilus_query_editor_dispose (GObject *object)
 
     editor = NAUTILUS_QUERY_EDITOR (object);
 
-    g_clear_handle_id (&editor->search_changed_timeout_id, g_source_remove);
+    g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
 
     gtk_widget_unparent (gtk_widget_get_first_child (GTK_WIDGET (editor)));
     g_clear_pointer (&editor->tags_box, gtk_widget_unparent);
@@ -384,7 +378,7 @@ entry_changed_internal (NautilusQueryEditor *editor)
     const gchar *text = gtk_editable_get_text (GTK_EDITABLE (editor->text));
     gboolean is_empty = (text == NULL && *text == '\0');
 
-    editor->search_changed_timeout_id = 0;
+    editor->search_changed_idle_id = 0;
 
     gtk_widget_set_child_visible (editor->clear_icon, !is_empty);
 
@@ -412,10 +406,9 @@ entry_changed_cb (GtkWidget           *entry,
         return;
     }
 
-    g_clear_handle_id (&editor->search_changed_timeout_id, g_source_remove);
-    editor->search_changed_timeout_id = g_timeout_add (SEARCH_CHANGED_TIMEOUT,
-                                                       G_SOURCE_FUNC (entry_changed_internal),
-                                                       editor);
+    g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
+    editor->search_changed_idle_id = g_idle_add (G_SOURCE_FUNC (entry_changed_internal),
+                                                 editor);
 }
 
 static GtkWidget *
