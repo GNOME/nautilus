@@ -5,14 +5,15 @@
 # Andraž Tori <andraz.tori1@guest.arnes.si>, 2000.
 # Matjaž Horvat <m@owca.info>, 2006.
 # Matej Urbančič <mateju@src.gnome.org> 2007–2023.
+# Martin Srebotnjak <miles@filmsi.net>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2023-02-28 11:56+0000\n"
-"PO-Revision-Date: 2023-02-28 22:17+0100\n"
-"Last-Translator: Matej Urbančič <mateju@src.gnome.org>\n"
+"POT-Creation-Date: 2023-03-10 22:46+0000\n"
+"PO-Revision-Date: 2023-03-14 18:11+0100\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +22,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || "
 "n%100==4 ? 3 : 0);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -50,13 +51,6 @@ msgstr ""
 "omogoča brskanje in upravljanje datotek tudi znotraj različnih programov."
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:12
-#, fuzzy
-#| msgid ""
-#| "Nautilus supports all the basic functions of a file manager and more. It "
-#| "can search and manage your files and folders, both locally and on a "
-#| "network, read and write data to and from removable media, run scripts, "
-#| "and launch applications. It has three views: Icon Grid, Icon List, and "
-#| "Tree List. Its functions can be extended with plugins and scripts."
 msgid ""
 "Nautilus supports all the basic functions of a file manager and more. It can "
 "search and manage your files and folders, both locally and on a network, "
@@ -67,7 +61,7 @@ msgstr ""
 "Program Nautilus podpira vse osnovne funkcije upravljalnika datotek in še "
 "mnogo več. Omogoča iskanje in urejanje datotek in map krajevno in v omrežju, "
 "branje in pisanje podatkov na odstranljive nosilce, zagon skriptov in "
-"programov. Podpira tri poglede; ikonski, seznamski in drevesni. Vse funkcije "
+"programov. Podpira tri poglede: ikonski, seznamski in drevesni. Vse funkcije "
 "je mogoče razširiti s vstavki in skripti."
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2380
@@ -93,7 +87,7 @@ msgid "Search"
 msgstr "Iskanje"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
-#: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:321
+#: src/nautilus-file.c:4491 src/nautilus-file-utilities.c:321
 #: src/nautilus-pathbar.c:381 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1432
 msgid "Other Locations"
@@ -206,10 +200,6 @@ msgid "Show the package installer for unknown MIME types"
 msgstr "Pokaži namestilnik paketov za neznane vrste IME."
 
 #: data/org.gnome.nautilus.gschema.xml:114
-#, fuzzy
-#| msgid ""
-#| "Whether to show the user a package installer dialog in case an unknown "
-#| "MIME type is opened, in order to search for an application to handle it."
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an app to handle it."
@@ -344,14 +334,18 @@ msgstr ""
 "»pokaži skrito«."
 
 #: data/org.gnome.nautilus.gschema.xml:173
+#, fuzzy
 msgid "Whether GTK 4 settings migration happened"
-msgstr ""
+msgstr "Ali je prišlo do selitve nastavitev GTK 4"
 
 #: data/org.gnome.nautilus.gschema.xml:174
+#, fuzzy
 msgid ""
 "Whether settings shared with GtkFileChooser have been migrated from their "
 "GTK 3 key to the GTK 4 ones."
 msgstr ""
+"Ali so bile nastavitve v skupni rabi z gtkFileChooser migrirane iz ključa "
+"GTK 3 v ključe GTK 4."
 
 #: data/org.gnome.nautilus.gschema.xml:178
 msgid "What viewer should be used when searching"
@@ -452,9 +446,6 @@ msgid "Initial size of the window"
 msgstr "Začetna velikost okna"
 
 #: data/org.gnome.nautilus.gschema.xml:246
-#, fuzzy
-#| msgid ""
-#| "A tuple containing the initial width and height of the application window."
 msgid "A tuple containing the initial width and height of the app window."
 msgstr "Niz s shranjenimi podatki višine in širine programskega okna."
 
@@ -854,8 +845,7 @@ msgid "[URI…]"
 msgstr "[URI …]"
 
 #: src/nautilus-app-chooser.c:77
-#, fuzzy, c-format
-#| msgid "Error while setting “%s” as default application: %s"
+#, c-format
 msgid "Error while setting “%s” as default app: %s"
 msgstr "Prišlo je do napake med nastavljanjem »%s« kot privzetega programa: %s"
 
@@ -895,8 +885,9 @@ msgstr ""
 "%s"
 
 #: src/nautilus-autorun-software.c:150
+#, fuzzy
 msgid "The program is not marked as executable."
-msgstr ""
+msgstr "Program ni označen kot izvršilni."
 
 #: src/nautilus-autorun-software.c:153
 #, c-format
@@ -1059,20 +1050,20 @@ msgid "Home"
 msgstr "Domača mapa"
 
 #: src/nautilus-clipboard.c:80
-#, c-format
+#, fuzzy, c-format
 msgid "Clipboard string cannot be NULL."
-msgstr ""
+msgstr "Niz odložišča ne more biti NULL."
 
 #. Translators: Do not translate 'cut' and 'copy'. These are literal keywords.
 #: src/nautilus-clipboard.c:89
-#, c-format
+#, fuzzy, c-format
 msgid "Nautilus Clipboard must begin with “cut” or “copy”."
-msgstr ""
+msgstr "Odložišče Nautilusa se mora začeti z »cut« ali »copy«."
 
 #: src/nautilus-clipboard.c:98
-#, c-format
+#, fuzzy, c-format
 msgid "Nautilus Clipboard must not have empty lines."
-msgstr ""
+msgstr "Odložišče Nautilusa ne sme imeti praznih vrstic."
 
 #: src/nautilus-column-utilities.c:58 src/gtk/nautilusgtkplacessidebar.c:2351
 msgid "Name"
@@ -1268,7 +1259,7 @@ msgid "Details: The proxy has not been created."
 msgstr "Podrobnosti: posredniški strežnik ni ustvarjen."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:672
+#: src/nautilus-directory.c:677
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -1365,16 +1356,12 @@ msgid "You do not have the permissions necessary to rename “%s”."
 msgstr "Za preimenovanje datoteke »%s« so zahtevana posebna dovoljenja."
 
 #: src/nautilus-error-reporting.c:283
-#, fuzzy, c-format
-#| msgid ""
-#| "The name “%s” is not valid because it contains the character “/”. Please "
-#| "use a different name."
+#, c-format
 msgid ""
 "The name “%s” is not valid because it contains the character “%c”. Please "
 "use a different name."
 msgstr ""
-"Ime »%s« ni veljavno, ker vsebuje tudi poševnico » / «. Izberite drugačno "
-"ime."
+"Ime »%s« ni veljavno, ker vsebuje tudi znak »%c«. Izberite drugačno ime."
 
 #: src/nautilus-error-reporting.c:291
 #, c-format
@@ -1387,11 +1374,13 @@ msgid "The name “%s” is too long. Please use a different name."
 msgstr "Ime »%s« je predolgo. Izberite drugačno ime."
 
 #: src/nautilus-error-reporting.c:308
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Could not rename “%s” because a process is using it. If it's open in another "
 "application, close it before renaming it."
 msgstr ""
+"»%s« ni mogoče preimenovati, ker ga proces uporablja. Če je odprta v drugem "
+"programu, jo zaprite, preden jo preimenujete."
 
 #. fall through
 #: src/nautilus-error-reporting.c:333
@@ -1408,97 +1397,97 @@ msgstr "Predmeta ni mogoče preimenovati."
 msgid "Renaming “%s” to “%s”."
 msgstr "Preimenovanje »%s« v »%s«."
 
-#: src/nautilus-file.c:1348 src/nautilus-vfs-file.c:389
+#: src/nautilus-file.c:1349 src/nautilus-vfs-file.c:389
 msgid "This file cannot be mounted"
 msgstr "Datoteke ni mogoče priklopiti."
 
-#: src/nautilus-file.c:1402
+#: src/nautilus-file.c:1403
 msgid "This file cannot be unmounted"
 msgstr "Datoteke ni mogoče odklopiti."
 
-#: src/nautilus-file.c:1449
+#: src/nautilus-file.c:1450
 msgid "This file cannot be ejected"
 msgstr "Datoteke ni mogoče izvreči"
 
-#: src/nautilus-file.c:1494 src/nautilus-vfs-file.c:580
+#: src/nautilus-file.c:1495 src/nautilus-vfs-file.c:580
 msgid "This file cannot be started"
 msgstr "Datoteke ni mogoče zagnati"
 
-#: src/nautilus-file.c:1553 src/nautilus-file.c:1593
+#: src/nautilus-file.c:1554 src/nautilus-file.c:1594
 msgid "This file cannot be stopped"
 msgstr "Datoteke ni mogoče zaustaviti"
 
-#: src/nautilus-file.c:1973
+#: src/nautilus-file.c:1974
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Poševnice v imenih datotek niso dovoljene"
 
-#: src/nautilus-file.c:2016
+#: src/nautilus-file.c:2017
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Datotek vrhnje ravni ni mogoče preimenovati"
 
-#: src/nautilus-file.c:2100
+#: src/nautilus-file.c:2101
 #, c-format
 msgid "File not found"
 msgstr "Datoteke ni mogoče najti"
 
-#: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:325
+#: src/nautilus-file.c:4495 src/nautilus-file-utilities.c:325
 #: src/nautilus-pathbar.c:386 src/gtk/nautilusgtkplacessidebar.c:994
 msgid "Starred"
 msgstr "Označeno z zvezdico"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5363
+#: src/nautilus-file.c:5370
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5368
+#: src/nautilus-file.c:5375
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: src/nautilus-file.c:5377
+#: src/nautilus-file.c:5384
 #, no-c-format
 msgid "Yesterday"
 msgstr "Včeraj"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5386
+#: src/nautilus-file.c:5393
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Včeraj ob %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5393
+#: src/nautilus-file.c:5400
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Včeraj ob %l:%M %p"
 
-#: src/nautilus-file.c:5403
+#: src/nautilus-file.c:5410
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5412
+#: src/nautilus-file.c:5419
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5419
+#: src/nautilus-file.c:5426
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5430
+#: src/nautilus-file.c:5437
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
@@ -1506,7 +1495,7 @@ msgstr "%-e %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5440
+#: src/nautilus-file.c:5447
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e %b %H:%M"
@@ -1514,14 +1503,14 @@ msgstr "%-e %b %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5448
+#: src/nautilus-file.c:5455
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5459
+#: src/nautilus-file.c:5466
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
@@ -1529,7 +1518,7 @@ msgstr "%-e %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5469
+#: src/nautilus-file.c:5476
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y %H:%M"
@@ -1537,48 +1526,48 @@ msgstr "%-e %b %Y %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5477
+#: src/nautilus-file.c:5484
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y %l:%M %p"
 
-#: src/nautilus-file.c:5489
+#: src/nautilus-file.c:5496
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:5915
+#: src/nautilus-file.c:5931
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Nastavljanje dovoljenj ni dovoljeno"
 
-#: src/nautilus-file.c:6253
+#: src/nautilus-file.c:6269
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Ni dovoljeno določanje lastnkia"
 
-#: src/nautilus-file.c:6272
+#: src/nautilus-file.c:6288
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "Navedeni lastnik »%s« ne obstaja"
 
-#: src/nautilus-file.c:6572
+#: src/nautilus-file.c:6588
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Nastavljanje skupine ni dovoljeno"
 
-#: src/nautilus-file.c:6591
+#: src/nautilus-file.c:6607
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "Navedena skupina »%s« ne obstaja"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6733
+#: src/nautilus-file.c:6749
 #, c-format
 msgid "%s (You)"
 msgstr "%s (Vi)"
 
-#: src/nautilus-file.c:6765
+#: src/nautilus-file.c:6781
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
@@ -1587,7 +1576,7 @@ msgstr[1] "%'u predmet"
 msgstr[2] "%'u predmeta"
 msgstr[3] "%'u predmeti"
 
-#: src/nautilus-file.c:6766
+#: src/nautilus-file.c:6782
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
@@ -1596,7 +1585,7 @@ msgstr[1] "%'u mapa"
 msgstr[2] "%'u mapi"
 msgstr[3] "%'u mape"
 
-#: src/nautilus-file.c:6767
+#: src/nautilus-file.c:6783
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1605,7 +1594,7 @@ msgstr[1] "%'u datoteka"
 msgstr[2] "%'u datoteki"
 msgstr[3] "%'u datoteke"
 
-#: src/nautilus-file.c:6851
+#: src/nautilus-file.c:6867
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1615,93 +1604,93 @@ msgstr[2] "%s bajta"
 msgstr[3] "%s bajti"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7261
+#: src/nautilus-file.c:7277
 msgid "? bytes"
 msgstr "? bajtov"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7273
+#: src/nautilus-file.c:7289
 msgid "? items"
 msgstr "? predmetov"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:7282
+#: src/nautilus-file.c:7298
 msgid "Unknown type"
 msgstr "Neznana vrsta"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7313
+#: src/nautilus-file.c:7329
 msgid "Unknown"
 msgstr "Neznano"
 
-#: src/nautilus-file.c:7351 src/nautilus-file.c:7359 src/nautilus-file.c:7418
+#: src/nautilus-file.c:7367 src/nautilus-file.c:7375 src/nautilus-file.c:7434
 msgid "Program"
 msgstr "Program"
 
-#: src/nautilus-file.c:7352
+#: src/nautilus-file.c:7368
 msgid "Audio"
 msgstr "Zvok"
 
-#: src/nautilus-file.c:7353
+#: src/nautilus-file.c:7369
 msgid "Font"
 msgstr "Pisava"
 
-#: src/nautilus-file.c:7354
+#: src/nautilus-file.c:7370
 msgid "Image"
 msgstr "Slika"
 
-#: src/nautilus-file.c:7355
+#: src/nautilus-file.c:7371
 msgid "Archive"
 msgstr "Arhiv"
 
-#: src/nautilus-file.c:7356
+#: src/nautilus-file.c:7372
 msgid "Markup"
 msgstr "Označevanje"
 
-#: src/nautilus-file.c:7357 src/nautilus-file.c:7358
+#: src/nautilus-file.c:7373 src/nautilus-file.c:7374
 msgid "Text"
 msgstr "Besedilo"
 
-#: src/nautilus-file.c:7360 src/nautilus-mime-actions.c:215
+#: src/nautilus-file.c:7376 src/nautilus-mime-actions.c:215
 msgid "Video"
 msgstr "Video"
 
-#: src/nautilus-file.c:7361
+#: src/nautilus-file.c:7377
 msgid "Contacts"
 msgstr "Stiki"
 
-#: src/nautilus-file.c:7362
+#: src/nautilus-file.c:7378
 msgid "Calendar"
 msgstr "Koledar"
 
-#: src/nautilus-file.c:7363
+#: src/nautilus-file.c:7379
 msgid "Document"
 msgstr "Dokument"
 
-#: src/nautilus-file.c:7364 src/nautilus-mime-actions.c:189
+#: src/nautilus-file.c:7380 src/nautilus-mime-actions.c:189
 msgid "Presentation"
 msgstr "Predstavitev"
 
-#: src/nautilus-file.c:7365 src/nautilus-mime-actions.c:197
+#: src/nautilus-file.c:7381 src/nautilus-mime-actions.c:197
 msgid "Spreadsheet"
 msgstr "Preglednica"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7392
+#: src/nautilus-file.c:7408
 msgid "Other"
 msgstr "Drugo"
 
-#: src/nautilus-file.c:7420
+#: src/nautilus-file.c:7436
 msgid "Binary"
 msgstr "Dvojiško"
 
-#: src/nautilus-file.c:7425
+#: src/nautilus-file.c:7441
 msgid "Folder"
 msgstr "Mapa"
 
-#: src/nautilus-file.c:7464
+#: src/nautilus-file.c:7480
 msgid "Link"
 msgstr "Povezava"
 
@@ -1710,17 +1699,17 @@ msgstr "Povezava"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7470 src/nautilus-file-operations.c:502
+#: src/nautilus-file.c:7486 src/nautilus-file-operations.c:502
 #, c-format
 msgid "Link to %s"
 msgstr "Povezava do %s"
 
-#: src/nautilus-file.c:7488 src/nautilus-file.c:7504 src/nautilus-file.c:7520
+#: src/nautilus-file.c:7504 src/nautilus-file.c:7520 src/nautilus-file.c:7536
 msgid "Link (broken)"
 msgstr "Povezava (prekinjena)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7760
+#: src/nautilus-file.c:7776
 #, c-format
 msgid "%s Free"
 msgstr "Prosto %s"
@@ -2075,23 +2064,23 @@ msgstr "Prišlo je do napake med brisanjem."
 
 #: src/nautilus-file-operations.c:2067
 #, c-format
-msgid "There was an error deleting the folder “%s”."
-msgstr "Prišlo je do napake med brisanjem mape »%s«."
-
-#: src/nautilus-file-operations.c:2070
-#, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
 msgstr "Ni ustreznih dovoljenj za brisanje mape »%s«."
 
-#: src/nautilus-file-operations.c:2077
+#: src/nautilus-file-operations.c:2070
 #, c-format
-msgid "There was an error deleting the file “%s”."
-msgstr "Prišlo je do napake med brisanjem datoteke »%s«."
+msgid "There was an error deleting the folder “%s”."
+msgstr "Prišlo je do napake med brisanjem mape »%s«."
 
-#: src/nautilus-file-operations.c:2080
+#: src/nautilus-file-operations.c:2077
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
 msgstr "Ni ustreznih dovoljenj za brisanje datoteke »%s«."
+
+#: src/nautilus-file-operations.c:2080
+#, c-format
+msgid "There was an error deleting the file “%s”."
+msgstr "Prišlo je do napake med brisanjem datoteke »%s«."
 
 #: src/nautilus-file-operations.c:2207
 #, c-format
@@ -2630,16 +2619,19 @@ msgstr "Prišlo je do napake med ustvarjanjem mape v %s."
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
 #: src/nautilus-file-operations.c:8049
+#, fuzzy
 msgid "Pasted image"
-msgstr ""
+msgstr "Prilepljena slika"
 
 #: src/nautilus-file-operations.c:8071
+#, fuzzy
 msgid "Saving clipboard image to file"
-msgstr ""
+msgstr "Shranjevanje slike odložišča v datoteko"
 
 #: src/nautilus-file-operations.c:8078
+#, fuzzy
 msgid "Successfully pasted clipboard image to file"
-msgstr ""
+msgstr "Slika odložišča uspešno prilepljena v datoteko"
 
 #: src/nautilus-file-operations.c:8105
 msgid "Failed to paste image"
@@ -2647,7 +2639,7 @@ msgstr "Prilepljanje slike je spodletelo"
 
 #: src/nautilus-file-operations.c:8171
 msgid "Retrieving clipboard data"
-msgstr ""
+msgstr "Pridobivanje podatkov odložišča"
 
 #: src/nautilus-file-operations.c:8385
 msgid "Emptying Trash"
@@ -3676,8 +3668,7 @@ msgid "The file is of an unknown type"
 msgstr "Datoteka je neznane vrste"
 
 #: src/nautilus-mime-actions.c:1186
-#, fuzzy, c-format
-#| msgid "There is no application installed for “%s” files"
+#, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "Ni nameščenega programa, ki podpira vrsto datotek »%s«"
 
@@ -3686,8 +3677,6 @@ msgid "_Select App"
 msgstr "_Izbor programa"
 
 #: src/nautilus-mime-actions.c:1228
-#, fuzzy
-#| msgid "There was an internal error trying to search for applications:"
 msgid "There was an internal error trying to search for apps:"
 msgstr "Prišlo je do notranje napake med iskanjem programa:"
 
@@ -3700,10 +3689,7 @@ msgid "_Search in Software"
 msgstr "_Iskanje programske opreme"
 
 #: src/nautilus-mime-actions.c:1342
-#, fuzzy, c-format
-#| msgid ""
-#| "There is no application installed for “%s” files. Do you want to search "
-#| "for an application to open this file?"
+#, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
 "to open this file?"
@@ -3912,10 +3898,6 @@ msgid "File conflict"
 msgstr "Datoteke v sporu"
 
 #: src/nautilus-operations-ui-manager.c:591
-#, fuzzy
-#| msgid ""
-#| "Password-protected archives are not yet supported. This list contains "
-#| "applications that can open the archive."
 msgid ""
 "Password-protected archives are not yet supported. This list contains apps "
 "that can open the archive."
@@ -5891,2297 +5873,3 @@ msgstr "Stranska vrstica"
 #: src/gtk/nautilusgtkplacessidebar.c:3990
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Seznam splošnih tipkovnih bližnjic, točk priklopa in zaznamkov."
-
-#~ msgid "Tile View"
-#~ msgstr "Mrežni pogled"
-
-#~ msgid "Show location bar in new windows"
-#~ msgstr "V novih oknih pokaži vrstico mesta"
-
-#~ msgid ""
-#~ "If set to true, newly opened windows will have the location bar visible."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da imajo novo odprta okna vidno vrstico mesta."
-
-#~ msgid "Drag and drop is only supported on local file systems."
-#~ msgstr ""
-#~ "Način povleci in spusti je podprt le na krajevnih datotečnih sistemih."
-
-#~ msgid "dropped data"
-#~ msgstr "izpisani podatki"
-
-#~ msgid "_Select Application"
-#~ msgstr "_Izberi program"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Open file and close window"
-#~ msgstr "Odpre datoteko in zapre okno"
-
-#~ msgid "New Tab"
-#~ msgstr "Nov zavihek"
-
-#~ msgid "Empty Trash"
-#~ msgstr "Izprazni smeti"
-
-#~ msgid "Where to position newly open tabs in browser windows"
-#~ msgstr "Kam naj se postavijo na novo odprti zavihki okna brskalnika"
-
-#~ msgid ""
-#~ "If set to “after-current-tab”, then new tabs are inserted after the "
-#~ "current tab. If set to “end”, then new tabs are appended to the end of "
-#~ "the tab list."
-#~ msgstr ""
-#~ "Izbrana možnost »za trenutnim zavihkom»« omogoča, da bodo na novo odprti "
-#~ "zavihki postavljeni vedno za trenutno izbrani zavihek. Možnost »na "
-#~ "koncu«, pa odpre nov zavihek kot zadnji v vrsti."
-
-#~ msgid "Enable new experimental views"
-#~ msgstr "Omogoči nove preizkusne poglede"
-
-#~ msgid ""
-#~ "Whether to use the new experimental views using the latest GTK+ widgets "
-#~ "to help giving feedback and shaping their future."
-#~ msgstr ""
-#~ "Ali naj bodo omogočeni tudi preizkusni gradniki pogledov GTK+, namenjeni "
-#~ "predstavitvi in zbiranju mnenj o uporabnosti."
-
-# http://en.wikipedia.org/wiki/Ellipsis
-#~ msgid "Text Ellipsis Limit"
-#~ msgstr "Omejitev dolžine tripičja"
-
-#~ msgid ""
-#~ "A string specifying how parts of overlong file names should be replaced "
-#~ "by ellipses, depending on the zoom level. Each of the list entries is of "
-#~ "the form “Zoom Level:Integer”. For each specified zoom level, if the "
-#~ "given integer is larger than 0, the file name will not exceed the given "
-#~ "number of lines. If the integer is 0 or smaller, no limit is imposed on "
-#~ "the specified zoom level. A default entry of the form “Integer” without "
-#~ "any specified zoom level is also allowed. It defines the maximum number "
-#~ "of lines for all other zoom levels. Examples: 0 — always display overlong "
-#~ "file names; 3 — shorten file names if they exceed three lines; smallest:5,"
-#~ "smaller:4,0 — shorten file names if they exceed five lines for zoom level "
-#~ "“smallest”. Shorten file names if they exceed four lines for zoom level "
-#~ "“smaller”. Do not shorten file names for other zoom levels. Available "
-#~ "zoom levels: small, standard, large."
-#~ msgstr ""
-#~ "Niz, ki določa, kako naj bodo predolga imena datotek prikazana na namizju "
-#~ "okrajšana glede na raven približanja. Vsak vnos seznama je v obliki "
-#~ "»ravni približanja:številka«. Za vsako navedeno raven povečave velja, da "
-#~ "v primeru številke večje od 0, ime datoteke ne bo preseglo navedenega "
-#~ "števila vrstic. Če je številka manjša ali enaka 0, ni omejitve dolžine. "
-#~ "Privzeti vnos »številke« brez določene povečave je prav tako dovoljen. "
-#~ "Določa največje sprejemljivo število vrstic za vse preostale vrednosti "
-#~ "povečave. Na primer: vrednost 0 vedno prikaži polno ime datoteke, 3 "
-#~ "okrajšaj ime, če je daljše od treh vrstic; najmanjše:5, manjše:4,0 pa "
-#~ "okrajša ime, če je to daljše od petih vrstic pri »najmanjši« povečavi. "
-#~ "Okrajša tudi imena datotek, če so daljša od štirih vrstic pri »najmanjši« "
-#~ "povečavi. Imena datotek za druge vrednosti povečav niso okrajšana. Na "
-#~ "voljo so ravni povečave: majhno, običajno in veliko."
-
-#~ msgid "Width of the side pane"
-#~ msgstr "Širina stranskega pladnja"
-
-#~ msgid "The default width of the side pane in new windows."
-#~ msgstr "Privzeta širina stranskega pladnja v novih oknih."
-
-#~ msgid "Show side pane in new windows"
-#~ msgstr "V novih oknih pokaži stranski pladenj"
-
-#~ msgid ""
-#~ "If set to true, newly opened windows will have the side pane visible."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da imajo novo odprta okna viden stranski pladenj."
-
-#~ msgid "X"
-#~ msgstr "X"
-
-#~ msgid "Y"
-#~ msgstr "Y"
-
-#~ msgctxt "Title"
-#~ msgid "Unknown"
-#~ msgstr "Neznan"
-
-#~ msgctxt "Artist"
-#~ msgid "Unknown"
-#~ msgstr "Neznan"
-
-#~ msgctxt "Album"
-#~ msgid "Unknown"
-#~ msgstr "Neznan"
-
-#~ msgctxt "Year"
-#~ msgid "Unknown"
-#~ msgstr "Neznano"
-
-#~ msgctxt "Media container"
-#~ msgid "Unknown"
-#~ msgstr "Neznan"
-
-#~ msgctxt "Dimensions"
-#~ msgid "N/A"
-#~ msgstr "niso na voljo"
-
-#~ msgctxt "Video codec"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgctxt "Video bit rate"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgctxt "Frame rate"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgctxt "Audio bit rate"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgctxt "Audio codec"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgid "0 Hz"
-#~ msgstr "0 Hz"
-
-#~ msgid "0 Channels"
-#~ msgstr "0 kanalov"
-
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgctxt "Stream bit rate"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgctxt "Sample rate"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgctxt "Number of audio channels"
-#~ msgid "N/A"
-#~ msgstr "ni na voljo"
-
-#~ msgid "Title:"
-#~ msgstr "Naslov:"
-
-#~ msgid "Codec:"
-#~ msgstr "Kodek:"
-
-#~ msgid "Send to…"
-#~ msgstr "Pošlji na …"
-
-#~ msgid "Send file by mail…"
-#~ msgstr "Pošlji datoteko z elektronsko pošto …"
-
-#~ msgid "Send files by mail…"
-#~ msgstr "Pošlji datoteke z elektronsko pošto …"
-
-#~ msgid "The selection rectangle"
-#~ msgstr "Pravokotnik izbire"
-
-# Add the "name of the currentu user" as an altarnate option.
-#~ msgid "Me"
-#~ msgstr "Jaz"
-
-#~ msgid "Wallpapers"
-#~ msgstr "Ozadja namizja"
-
-#~ msgid "Extract Here"
-#~ msgstr "Razširi na to mesto"
-
-#~ msgid "(Empty)"
-#~ msgstr "(prazno)"
-
-#~ msgid "Use Default"
-#~ msgstr "Uporabi privzeto"
-
-#, c-format
-#~ msgid "Do you want to view %d location?"
-#~ msgid_plural "Do you want to view %d locations?"
-#~ msgstr[0] "Ali si želite ogledati %d mest?"
-#~ msgstr[1] "Ali si želite ogledati %d mesto?"
-#~ msgstr[2] "Ali si želite ogledati %d mesti?"
-#~ msgstr[3] "Ali si želite ogledati %d mesta?"
-
-#~ msgid "_Name"
-#~ msgid_plural "_Names"
-#~ msgstr[0] "_Ime"
-#~ msgstr[1] "_Ime"
-#~ msgstr[2] "_Ime"
-#~ msgstr[3] "_Ime"
-
-#, c-format
-#~ msgctxt "folder"
-#~ msgid "%s Properties"
-#~ msgstr "Lastnosti %s"
-
-#, c-format
-#~ msgctxt "file"
-#~ msgid "%s Properties"
-#~ msgstr "Lastnosti %s"
-
-#, c-format
-#~ msgctxt "MIME type description (MIME type)"
-#~ msgid "%s (%s)"
-#~ msgstr "%s (%s)"
-
-#~ msgid "nothing"
-#~ msgstr "ničesar"
-
-#~ msgid "unreadable"
-#~ msgstr "neberljiva"
-
-#~ msgid "no "
-#~ msgstr "ne "
-
-#~ msgid "list"
-#~ msgstr "seznam"
-
-#~ msgid "read"
-#~ msgstr "branje"
-
-#~ msgid "create/delete"
-#~ msgstr "ustvarjanje/brisanje"
-
-#~ msgid "write"
-#~ msgstr "pisanje"
-
-#~ msgid "access"
-#~ msgstr "dostop"
-
-#, c-format
-#~ msgid "Error while adding “%s”: %s"
-#~ msgstr "Prišlo je do napake med dodajanjem »%s«: %s"
-
-#~ msgid "Could not add application"
-#~ msgstr "Ni mogoče dodati programa"
-
-#~ msgid "Could not forget association"
-#~ msgstr "Ni mogoče pozabiti asociacije"
-
-#, c-format
-#~ msgid "%s document"
-#~ msgstr "dokument %s"
-
-#, c-format
-#~ msgid "Open all files of type “%s” with"
-#~ msgstr "Odpri vse datoteke vrste  »%s« s programom"
-
-#, c-format
-#~ msgid "Select an application to open “%s” and other files of type “%s”"
-#~ msgstr "Izbor programa za odpiranje »%s« in drugih datotek vrste »%s«"
-
-#~ msgid "Trashed items are automatically deleted after a period of time"
-#~ msgstr "Predmeti v smeteh bodo samodejno izbrisani po določenem času"
-
-#~ msgid "Display system controls for trash content"
-#~ msgstr "PRikaz sistemskih nastavitev za vsebino smeti"
-
-#~ msgid "_Restore"
-#~ msgstr "_Obnovi"
-
-#~ msgid "Restore selected items to their original position"
-#~ msgstr "Obnovi izbrane predmete na njihov izvirni položaj"
-
-#~ msgid "_Empty…"
-#~ msgstr "_Izprazni …"
-
-#~ msgid "Delete all items in the Trash"
-#~ msgstr "Izbriši vse predmete v smeteh"
-
-#~ msgid "Show grid"
-#~ msgstr "Pokaži mrežo"
-
-#~ msgid "Show list"
-#~ msgstr "Pokaži seznam"
-
-#~ msgid "Show List"
-#~ msgstr "Pokaži seznam"
-
-#, c-format
-#~ msgid "“%s” deleted"
-#~ msgstr "Predmet »%s« je izbrisan"
-
-#~ msgid "Access and organize your files"
-#~ msgstr "Dostop in upravljanje z datotekami"
-
-#~ msgid "New _Folder"
-#~ msgstr "Nova _mapa"
-
-#~ msgid "Open With Other _Application"
-#~ msgstr "Odpri s _programom"
-
-#~ msgid "Set As Wallpaper"
-#~ msgstr "Nastavi kot sliko ozadja"
-
-#~ msgid "_Extract Here"
-#~ msgstr "_Razširi na to mesto"
-
-#~ msgid "Tags"
-#~ msgstr "Oznake"
-
-#~ msgctxt "menu item"
-#~ msgid "Star"
-#~ msgstr "Zvezdica"
-
-#~ msgid "Contents"
-#~ msgstr "Vsebina"
-
-#~ msgid "Volume"
-#~ msgstr "Nosilec"
-
-#~ msgid "Free space"
-#~ msgstr "Neporabljen prostor"
-
-#~ msgid "Total capacity"
-#~ msgstr "Skupna zmogljivost"
-
-#~ msgid "Basic"
-#~ msgstr "Osnovno"
-
-#~ msgid "Execute"
-#~ msgstr "Izvajanje"
-
-#~ msgid "Reset"
-#~ msgstr "Ponastavi"
-
-#~ msgid "_Forget"
-#~ msgstr "_Pozabi"
-
-#~ msgid "_Add"
-#~ msgstr "_Dodaj"
-
-#~ msgid "Set as default"
-#~ msgstr "Nastavi kot privzeto"
-
-#~ msgid "Starred files will appear here"
-#~ msgstr "Datoteke, označene z zvezdico, bodo prikazane na tem mestu."
-
-#~ msgid "Show _Sidebar"
-#~ msgstr "Pokaži _stransko vrstico"
-
-#~ msgid "Go back"
-#~ msgstr "Pojdi nazaj"
-
-#~ msgid "Go forward"
-#~ msgstr "Pojdi naprej"
-
-#~ msgid "Toggle view"
-#~ msgstr "Preklop pogled"
-
-#~ msgid "Reset zoom"
-#~ msgstr "Ponastavi približanje"
-
-#~ msgid "No recent servers found"
-#~ msgstr "Ni najdenih nedavnih strežnikov"
-
-#~ msgid "No results found"
-#~ msgstr "Ni zadetkov"
-
-#, c-format
-#~ msgid "Unable to unmount “%s”"
-#~ msgstr "Nosilca »%s« ni mogoče odklopiti"
-
-#~ msgid "_Add Bookmark"
-#~ msgstr "_Dodaj zaznamek"
-
-#~ msgid "_Remove"
-#~ msgstr "_Odstrani"
-
-#, c-format
-#~ msgid "%f N / %f W (%.0f m)"
-#~ msgstr "%f S / %f Z (%.0f m)"
-
-#, c-format
-#~ msgid "This will open %'d separate tab."
-#~ msgid_plural "This will open %'d separate tabs."
-#~ msgstr[0] "Odprlo se bo %'d ločenih zavihkov."
-#~ msgstr[1] "Odprlo se bo %'d ločen zavihek."
-#~ msgstr[2] "Odprla se bosta %'d ločena zavihka."
-#~ msgstr[3] "Odprli se bodo %'d ločeni zavihki."
-
-#, c-format
-#~ msgid "This will open %'d separate window."
-#~ msgid_plural "This will open %'d separate windows."
-#~ msgstr[0] "Odprlo se bo %'d ločenih oken."
-#~ msgstr[1] "To bo odprlo %'d ločeno okno."
-#~ msgstr[2] "To bo odprlo %'d ločeni okni."
-#~ msgstr[3] "To bo odprlo %'d ločena okna."
-
-#~ msgid "Forget association"
-#~ msgstr "Pozabi asociacijo"
-
-#~ msgid "Edit"
-#~ msgstr "Uredi"
-
-#~ msgid "Cut"
-#~ msgstr "Izreži"
-
-#~ msgid "Copy"
-#~ msgstr "Kopiraj"
-
-#~ msgid "Paste"
-#~ msgstr "Prilepi"
-
-#~ msgid "Select All"
-#~ msgstr "Izberi vse"
-
-#~ msgid ""
-#~ "Whether to ask for confirmation when deleting files, or emptying the Trash"
-#~ msgstr ""
-#~ "Ali naj program zahteva potrditev pred premikanjem datotek v smeti ali "
-#~ "pred brisanjem"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will ask for confirmation when you attempt "
-#~ "to delete files, or empty the Trash."
-#~ msgstr ""
-#~ "Izbrana možnost omogoča, da program Nautilus pred brisanjem ali "
-#~ "prestavljanjem predmetov v smeti vedno vpraša za potrditev."
-
-#~ msgid "What to do with executable text files when activated"
-#~ msgstr "Kaj storiti z izvedljivimi besedilnimi datotekami, ko so dejavne"
-
-#~ msgid ""
-#~ "What to do with executable text files when they are activated (single or "
-#~ "double clicked). Possible values are “launch” to launch them as programs, "
-#~ "“ask” to ask what to do via a dialog, and “display” to display them as "
-#~ "text files."
-#~ msgstr ""
-#~ "Kaj naj se zgodi z izvedljivimi besedilnimi datotekami po enojnem ali "
-#~ "dvojnem kliku miške. Mogoče vrednosti so »zaženi« za zagon datoteke kot "
-#~ "programa, »vprašaj« za prikaz pogovornega okna z izbirami in »odpri« za "
-#~ "prikaz vsebine kot besedila."
-
-#~ msgid "Do you want to run “%s”, or display its contents?"
-#~ msgstr "Ali želite »%s« zagnati ali prikazati vsebino?"
-
-#~ msgid "“%s” is an executable text file."
-#~ msgstr "Datoteka »%s« je izvedljiva besedilna datoteka."
-
-#~ msgid "Run in _Terminal"
-#~ msgstr "Zaženi v _terminalu"
-
-#~ msgid "_Display"
-#~ msgstr "_Pokaži"
-
-#~ msgid "%d MB"
-#~ msgstr "%d MB"
-
-#~ msgctxt "preferences"
-#~ msgid "Sort"
-#~ msgstr "Razvrščanje"
-
-#~ msgid "Allow folders to be _expanded"
-#~ msgstr "Dovoli _razširjanje map"
-
-#~ msgid "Views"
-#~ msgstr "Pogledi"
-
-#~ msgid "Open Action"
-#~ msgstr "Način odpiranja predmetov"
-
-#~ msgid "_Single click to open items"
-#~ msgstr "_Enojni klik za odpiranje"
-
-#~ msgid "Link Creation"
-#~ msgstr "Ustvarjanje povezav"
-
-#~ msgid "Show action to create symbolic _links"
-#~ msgstr "Pokaži možnost za ustvarjanje _simbolnih povezav"
-
-#~ msgid "Executable Text Files"
-#~ msgstr "Izvedljive besedilne datoteke"
-
-#~ msgid "_Display them"
-#~ msgstr "_Pokaži vsebino"
-
-#~ msgid "_Run them"
-#~ msgstr "_Zaženi kot programe"
-
-#~ msgid "_Ask what to do"
-#~ msgstr "_Vprašaj, kaj storiti"
-
-#~ msgid "Ask before _emptying the Trash"
-#~ msgstr "Vprašaj pred _praznjenjem Smeti"
-
-#~ msgid "Show action to _permanently delete files and folders"
-#~ msgstr "Pokaži možnost za _trajno brisanje datotek in map"
-
-#~ msgid "Behavior"
-#~ msgstr "Obnašanje"
-
-#~ msgid "Choose the order of information to appear in the list view."
-#~ msgstr "Izbor vrstnega reda prikaza stolpcev v seznamskem pogledu"
-
-#~ msgid "List Columns"
-#~ msgstr "Stolpci seznama"
-
-#~ msgid "_Never"
-#~ msgstr "_Ne išči po podmapah"
-
-#~ msgid "Thumbnails"
-#~ msgstr "Sličice"
-
-#~ msgid "_Files on this computer only"
-#~ msgstr "Le za _krajevne datoteke"
-
-#~ msgid "N_ever"
-#~ msgstr "N_ikoli ne pokaži"
-
-#~ msgid "Onl_y for files smaller than:"
-#~ msgstr "_Le za datoteke, manjše kot:"
-
-#~ msgid "File count"
-#~ msgstr "Štetje datotek"
-
-#~ msgid "F_olders on this computer only"
-#~ msgstr "Le v mapah na _tem računalniku"
-
-#~ msgid "Ne_ver"
-#~ msgstr "Ni_koli ne preštevaj"
-
-#~ msgid "Search & Preview"
-#~ msgstr "Iskanje in predogled"
-
-#~ msgid "Always"
-#~ msgstr "Vedno"
-
-#~ msgid "Local Files Only"
-#~ msgstr "Le krajevne datoteke"
-
-#~ msgid "Small"
-#~ msgstr "Majhno"
-
-#~ msgid "Standard"
-#~ msgstr "Običajno"
-
-#~ msgid "Large"
-#~ msgstr "Veliko"
-
-#~ msgid "By Name"
-#~ msgstr "po imenu"
-
-#~ msgid "By Size"
-#~ msgstr "po velikosti"
-
-#~ msgid "By Type"
-#~ msgstr "po vrsti"
-
-#~ msgid "By Modification Date"
-#~ msgstr "po datumu spremembe"
-
-#~ msgid "By Access Date"
-#~ msgstr "po datumu zadnjega dostopa"
-
-#~ msgid "By Trashed Date"
-#~ msgstr "po datumu premika v smeti"
-
-#~ msgid "_Name:"
-#~ msgid_plural "_Names:"
-#~ msgstr[0] "_Imena:"
-#~ msgstr[1] "_Ime:"
-#~ msgstr[2] "_Imeni:"
-#~ msgstr[3] "_Imena:"
-
-#~ msgid "Parent folder:"
-#~ msgstr "Nadrejena mapa:"
-
-#~ msgid "Original folder:"
-#~ msgstr "Izvorna mapa:"
-
-#~ msgid "Accessed:"
-#~ msgstr "Zadnji dostop:"
-
-#~ msgid "Modified:"
-#~ msgstr "Spremenjeno:"
-
-#~ msgid "Owner:"
-#~ msgstr "Lastnik:"
-
-#~ msgid "Group:"
-#~ msgstr "Skupina:"
-
-#~ msgid "Others:"
-#~ msgstr "Drugo:"
-
-#~ msgid "Create the initial window with the given geometry."
-#~ msgstr "Ustvari začetno okno s podano geometrijo."
-
-#~ msgid "GEOMETRY"
-#~ msgstr "GEOMETRIJA"
-
-#~ msgid "Only create windows for explicitly specified URIs."
-#~ msgstr "Ustvari le okna za posebej navedene URIje."
-
-#~ msgid "Nautilus"
-#~ msgstr "Nautilus"
-
-#~ msgid "application-x-executable"
-#~ msgstr "application-x-executable"
-
-#~ msgid "List view"
-#~ msgstr "Seznamski pikaz"
-
-#~ msgid "@icon@"
-#~ msgstr "@icon@"
-
-#~ msgid "smb://"
-#~ msgstr "smb://"
-
-#~ msgid "Prefere_nces"
-#~ msgstr "_Možnosti"
-
-#~ msgid "_About"
-#~ msgstr "_O programu"
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to the Trash"
-#~ msgstr ""
-#~ "Pokaži opozorilno okno za spreminjanje bližnjice za premikanje v smeti"
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to the "
-#~ "Trash from Control + Delete to just Delete."
-#~ msgstr ""
-#~ "Pokaži opozorilno okno za spreminjanje bližnjica za premikanje v smeti iz "
-#~ "CTRL + DEL v le tipko Izbriši"
-
-#~ msgid "Delete Shortcuts Have Changed"
-#~ msgstr "Bližnjice brisanja so spremenjene"
-
-#~ msgid ""
-#~ "With the latest version of Files, you no longer need to hold Ctrl to "
-#~ "delete — the Delete key will work when pressed on its own."
-#~ msgstr ""
-#~ "Z zadnjo različico programa je mogoče uporabiti tipko izbriši samostojno, "
-#~ "torej brez pritisnjene krmilke."
-
-#~ msgid "Got it"
-#~ msgstr "Razumem"
-
-#~ msgid "Experimental"
-#~ msgstr "Preizkusno"
-
-#~ msgid "Use the new _views"
-#~ msgstr "Uporabi preizkusne _poglede"
-
-#~ msgid "Help"
-#~ msgstr "Pomoč"
-
-#~ msgid "About"
-#~ msgstr "O programu"
-
-#~ msgid "Open menu"
-#~ msgstr "Odpri meni"
-
-#~ msgid "URL"
-#~ msgstr "URL"
-
-#~ msgid "Command"
-#~ msgstr "Ukaz"
-
-#~ msgid "Probably the content of the file is an invalid desktop file format"
-#~ msgstr ""
-#~ "Najverjetneje je vsebina datoteke okvarjena vrsta datoteke nastavitev "
-#~ "namizja"
-
-#~ msgid "Unable to mark launcher trusted (executable)"
-#~ msgstr "Zaganjalnika ni mogoče označiti kot vrednega zaupanja (izvedljiv)"
-
-#~ msgid "Untrusted application launcher"
-#~ msgstr "Nepreverjen zaganjalnik programov"
-
-#~ msgid ""
-#~ "The application launcher “%s” has not been marked as trusted. If you do "
-#~ "not know the source of this file, launching it may be unsafe."
-#~ msgstr ""
-#~ "Zaganjalnik programa »%s« ni označen kot zaupanja vreden. V primeru, da "
-#~ "vira te datoteke ne poznate, zagon morda ni varen."
-
-#~ msgid "Trust and _Launch"
-#~ msgstr "Zaupaj in _zaženi"
-
-#~ msgid "Searching devices only"
-#~ msgstr "Iskanje naprav"
-
-#~ msgid "New folder"
-#~ msgstr "Nova mapa"
-
-#~ msgid "Bookmark this location"
-#~ msgstr "Ustvari zaznamek tega mesta"
-
-#~ msgid "Action menu"
-#~ msgstr "Meni dejanj"
-
-#~ msgid "Open action menu"
-#~ msgstr "Odpri meni dejanj"
-
-#~ msgid "View mode toggle"
-#~ msgstr "Preklop načina pogleda"
-
-#~ msgid "Toggle between grid and list view"
-#~ msgstr "Preklopi med mrežnim in seznamskim pogledom"
-
-#~ msgid "Search files"
-#~ msgstr "Poišči datoteke"
-
-#~ msgid "Operations in progress"
-#~ msgstr "Izvajajo se opravila"
-
-#~ msgid "Show operations in progress"
-#~ msgstr "Pokaži dejavna opravila"
-
-#~ msgid "MIME Type"
-#~ msgstr "Vrsta MIME"
-
-#~ msgid "The MIME type of the file."
-#~ msgstr "Vrsta MIME datoteke."
-
-#~ msgid "approximately %'d hour"
-#~ msgid_plural "approximately %'d hours"
-#~ msgstr[0] "približno %'d ur"
-#~ msgstr[1] "približno %'d ura"
-#~ msgstr[2] "približno %'d uri"
-#~ msgstr[3] "približno %'d ure"
-
-#~ msgid "org.gnome.Nautilus"
-#~ msgstr "org.gnome.Nautilus"
-
-#~ msgid "Bulk rename utility"
-#~ msgstr "Pripomoček za paketno preimenovanje"
-
-#~ msgid ""
-#~ "If set, Nautilus will append URIs of selected files and treat the result "
-#~ "as a command line for bulk renaming. Bulk rename applications can "
-#~ "register themselves in this key by setting the key to a space-separated "
-#~ "string of their executable name and any command line options. If the "
-#~ "executable name is not set to a full path, it will be searched for in the "
-#~ "search path."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da Nautilus pripne URI-je izbranih datotek in "
-#~ "rezultat obravnava kot ukazno vrstico za paketno preimenovanje. Programi "
-#~ "paketnega preimenovanja se lahko vpišejo v ta ključ z nastavitvijo ključa "
-#~ "na s presledki ločen niz njihovega izvedljivega imena in katerihkoli "
-#~ "možnosti ukazne vrstice. V primeru da ime izvedljive datoteke ni določeno "
-#~ "na polno pot, bo bilo iskano v iskalni poti."
-
-#~ msgid "Default zoom level used by the icon view."
-#~ msgstr "Privzeto približanje prikaza ikon."
-
-#~ msgid "Default Thumbnail Icon Size"
-#~ msgstr "Privzeta velikost sličic ikon"
-
-#~ msgid ""
-#~ "The default size of an icon for a thumbnail in the icon view when using "
-#~ "NAUTILUS_ICON_SIZE_STANDARD size."
-#~ msgstr ""
-#~ "Privzeta velikost sličic v prikazu ikon, določena pri običajni velikosti."
-
-#~ msgid "Default zoom level used by the list view."
-#~ msgstr "Privzeto približanje seznamskega prikaza."
-
-#~ msgid "Default list of columns visible in the list view."
-#~ msgstr "Privzet seznam stolpcev vidnih v seznamskem prikazu."
-
-#~ msgid "Default column order in the list view."
-#~ msgstr "Privzet vrstni red stolpcev v seznamskem prikazu."
-
-#~ msgctxt "desktop-font"
-#~ msgid "''"
-#~ msgstr "''"
-
-#~ msgid "Desktop font"
-#~ msgstr "Pisava namizja"
-
-#~ msgid "The font description used for the icons on the desktop."
-#~ msgstr "Opis pisave, ki naj se uporabi za ikone in na namizju."
-
-#~ msgid "Home icon visible on desktop"
-#~ msgstr "Ikona Domov vidna na namizju"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the home folder will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da je ikona s povezavo na domačo mapo prikazana "
-#~ "na namizju."
-
-#~ msgid "Trash icon visible on desktop"
-#~ msgstr "Ikona smeti vidna na namizju"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Trash will be put on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da je ikona s povezavo do smeti prikazana na "
-#~ "namizju."
-
-#~ msgid "Show mounted volumes on the desktop"
-#~ msgstr "Pokaži priklopljene nosilce na namizju"
-
-#~ msgid ""
-#~ "If this is set to true, icons linking to mounted volumes will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da so ikone s povezavo na priklopljene naprave "
-#~ "prikazane na namizju."
-
-#~ msgid "Network Servers icon visible on the desktop"
-#~ msgstr "Ikona omrežni strežniki vidna na namizju"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Network Servers view will "
-#~ "be put on the desktop."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da je ikona s povezavo na omrežne strežnike "
-#~ "prikazana na namizju."
-
-#~ msgctxt "home-icon-name"
-#~ msgid "'Home'"
-#~ msgstr "'Osebna mapa'"
-
-#~ msgid "Desktop home icon name"
-#~ msgstr "Ime ikone Dom na namizju"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the home icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ime lahko nastavite, če želite za ikono doma na namizju nastaviti ime po "
-#~ "meri."
-
-#~ msgctxt "trash-icon-name"
-#~ msgid "'Trash'"
-#~ msgstr "'Smeti'"
-
-#~ msgid "Desktop Trash icon name"
-#~ msgstr "Ime ikone Smeti na namizju"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the Trash icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ime lahko nastavite, če želite za ikono smeti na namizju nastaviti ime po "
-#~ "meri."
-
-#~ msgctxt "network-icon-name"
-#~ msgid "'Network Servers'"
-#~ msgstr "»Omrežni strežniki«"
-
-#~ msgid "Network servers icon name"
-#~ msgstr "Ime ikone omrežni strežniki"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the network servers "
-#~ "icon on the desktop."
-#~ msgstr ""
-#~ "Ime lahko nastavite, če želite za ikono omrežnih strežnikov na namizju "
-#~ "nastaviti ime po meri."
-
-#~ msgid ""
-#~ "An integer specifying how parts of overlong file names should be replaced "
-#~ "by ellipses on the desktop. If the number is larger than 0, the file name "
-#~ "will not exceed the given number of lines. If the number is 0 or smaller, "
-#~ "no limit is imposed on the number of displayed lines."
-#~ msgstr ""
-#~ "Število, ki določa kako bodo deli predolgih imen datotek prikazani na "
-#~ "namizju v oglatih oklepajih. V primeru, da je številka večja od 0, ime ne "
-#~ "bo preseglo določene vrednosti. V primeru, da je vrednost 0 ali manjša od "
-#~ "0, ni omejitve dolžine imena."
-
-#~ msgid "Fade the background on change"
-#~ msgstr "Pojemaj ozadje ob spremembi"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will use a fade effect to change the "
-#~ "desktop background."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da Nautilus uporabi učinek pojemanja za spremembo "
-#~ "ozadja namizja."
-
-#~ msgid "The geometry string for a navigation window"
-#~ msgstr "Niz geometrije za kno krmarjenja"
-
-#~ msgid "Show more _details"
-#~ msgstr "Pokaži več _podrobnosti"
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (neveljaven Unicode)"
-
-#~ msgid "Always manage the desktop (ignore the GSettings preference)."
-#~ msgstr "Vedno upravljaj namizja (prezri nastavitve GSettings)."
-
-#~ msgid "on the desktop"
-#~ msgstr "na namizju"
-
-#~ msgid "Unable to rename desktop icon"
-#~ msgstr "Ni mogoče preimenovati namizne ikone"
-
-#~ msgid "Could not remove the already existing folder %s."
-#~ msgstr "Ni mogoče odstraniti že obstoječe mape %s."
-
-#~ msgid "Could not remove the already existing file %s."
-#~ msgstr "Ni mogoče odstraniti že obstoječe datoteke %s."
-
-#~ msgid "Author"
-#~ msgstr "Avtor"
-
-#~ msgid "Created By"
-#~ msgstr "Ustvarili"
-
-#~ msgid "Disclaimer"
-#~ msgstr "Izjava"
-
-#~ msgid "Warning"
-#~ msgstr "Opozorilo"
-
-#~ msgid "Source"
-#~ msgstr "Vir"
-
-#~ msgid "Date Taken"
-#~ msgstr "Datum posnetka"
-
-#~ msgid "Date Digitized"
-#~ msgstr "Datum digitalizacije"
-
-#~ msgid "Date Modified"
-#~ msgstr "Datum spremembe"
-
-#~ msgid "Items:"
-#~ msgstr "Predmeti:"
-
-#~ msgid "_Keep aligned"
-#~ msgstr "_Ohrani poravnano"
-
-#~ msgid "Organize _Desktop by Name"
-#~ msgstr "Razvrsti predmete po _imenu"
-
-#~ msgid "Change _Background"
-#~ msgstr "Spremeni _ozadje"
-
-#~ msgid "Resize Icon…"
-#~ msgstr "Spremeni velikost ikone ..."
-
-#~ msgid "Restore Icon’s Original Size"
-#~ msgstr "Obnovi izvorno velikost ikone"
-
-#~ msgid "Set as _default"
-#~ msgstr "Nastavi kot _privzeto"
-
-#~ msgid "Open operations in progress"
-#~ msgstr "Izvajajo se odprta opravila"
-
-#~ msgid ""
-#~ "Whether to extract compressed files instead of opening them in another "
-#~ "application"
-#~ msgstr ""
-#~ "Ali naj bodo stisnjene datoteke razširjene namesto, da se paket odpre v "
-#~ "drugem programu"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will automatically extract compressed files "
-#~ "instead of opening them in another application"
-#~ msgstr ""
-#~ "Izbrana možnost omogoči samodejno razširjanje stisnjenih datotek, namesto "
-#~ "odpiranja v zunanjem programu"
-
-#~ msgid "This will open %d separate application."
-#~ msgid_plural "This will open %d separate applications."
-#~ msgstr[0] "Z dejanjem se bo odprlo %d ločenih programov."
-#~ msgstr[1] "Z dejanjem se bo odprl %d ločen program."
-#~ msgstr[2] "Z dejanjem se bosta odprla %d ločena programa."
-#~ msgstr[3] "Z dejanjem se bodo odprli %d ločeni programi."
-
-#~ msgid "100 KB"
-#~ msgstr "100 KB"
-
-#~ msgid "500 KB"
-#~ msgstr "500 KB"
-
-#~ msgid "1 MB"
-#~ msgstr "1 MB"
-
-#~ msgid "3 MB"
-#~ msgstr "3 MB"
-
-#~ msgid "5 MB"
-#~ msgstr "5 MB"
-
-#~ msgid "10 MB"
-#~ msgstr "10 MB"
-
-#~ msgid "100 MB"
-#~ msgstr "100 MB"
-
-#~ msgid "1 GB"
-#~ msgstr "1 GB"
-
-#~ msgid "2 GB"
-#~ msgstr "2 GB"
-
-#~ msgid "4 GB"
-#~ msgstr "4 GB"
-
-#~ msgid "Compressed Files"
-#~ msgstr "Stisnjene datoteke"
-
-#~ msgid "E_xtract the files on open"
-#~ msgstr "Razširi datoteke ob _odpiranju"
-
-#~ msgid "A file must have a name."
-#~ msgstr "Datoteka mora biti poimenovana."
-
-#~ msgid "Move %d item to '%s'"
-#~ msgid_plural "Move %d items to '%s'"
-#~ msgstr[0] "Premakni %d predmetov v »%s«"
-#~ msgstr[1] "Premakni %d predmet v »%s«"
-#~ msgstr[2] "Premakni %d predmeta v »%s«"
-#~ msgstr[3] "Premakni %d predmete v »%s«"
-
-#~ msgid "Move '%s' back to '%s'"
-#~ msgstr "Premakni »%s« nazaj v »%s«"
-
-#~ msgid "Move '%s' to '%s'"
-#~ msgstr "Premakni »%s« v »%s«"
-
-#~ msgid "Delete '%s'"
-#~ msgstr "Izbriši »%s«"
-
-#~ msgid "Copy '%s' to '%s'"
-#~ msgstr "Kopiraj »%s« v »%s«"
-
-#~ msgid "Duplicate %d item in '%s'"
-#~ msgid_plural "Duplicate %d items in '%s'"
-#~ msgstr[0] "Podvoji %d predmetov v »%s«"
-#~ msgstr[1] "Podvoji %d predmet v »%s«"
-#~ msgstr[2] "Podvoji %d predmeta v »%s«"
-#~ msgstr[3] "Podvoji %d predmete v »%s«"
-
-#~ msgid "Duplicate '%s' in '%s'"
-#~ msgstr "Podvoji »%s« v »%s«"
-
-#~ msgid "Rename '%s' as '%s'"
-#~ msgstr "Preimenuj »%s« v »%s«"
-
-#~ msgid "Restore '%s' to '%s'"
-#~ msgstr "Obnovi »%s« na »%s«"
-
-#~ msgid "Set group of '%s' to '%s'"
-#~ msgstr "Nastavi skupino »%s« na »%s«"
-
-#~ msgid "Set owner of '%s' to '%s'"
-#~ msgstr "Nastavi lastnika »%s« na »%s«"
-
-#~ msgid "Extract '%s'"
-#~ msgstr "Razširi »%s«"
-
-#~ msgid "_Launch Anyway"
-#~ msgstr "_Vseeno zaženi"
-
-#~ msgid "Mark as _Trusted"
-#~ msgstr "Označi kot _zaupanja vredno"
-
-#~ msgid "Remote location - only searching the current folder"
-#~ msgstr "Oddaljeno mesto – iskanje le po trenutni mapi"
-
-#~ msgid "smb://foo.example.com, ssh://192.168.0.1"
-#~ msgstr "smb://domena.primer.si, ssh://192.168.0.1"
-
-#~ msgid "Show folders first in windows"
-#~ msgstr "V oknih najprej pokaži mape"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus shows folders prior to showing files in the "
-#~ "icon and list views."
-#~ msgstr ""
-#~ "Izbrana možnost omogoča, da Nautilus v seznamskem prikazu in prikazu ikon "
-#~ "prikaže mape pred datotekami."
-
-#~ msgid ""
-#~ "Files in the folder “%B” cannot be deleted because you do not have "
-#~ "permissions to see them."
-#~ msgstr ""
-#~ "Datotek v mapi »%B« ni mogoče izbrisati, ker ni ustreznih dovoljenj za "
-#~ "ogled."
-
-#~ msgid ""
-#~ "The folder “%B” cannot be deleted because you do not have permissions to "
-#~ "read it."
-#~ msgstr ""
-#~ "Mape »%B« ni mogoče izbrisati, ker ni ustreznih dovoljenja za branje."
-
-#~ msgid "Could not remove the folder %B."
-#~ msgstr "Ni mogoče odstraniti mape %B."
-
-#~ msgid "Could not remove files from the already existing folder %F."
-#~ msgstr "Ni mogoče odstraniti datotek iz obstoječe mape %F."
-
-#~ msgid "--no-desktop and --force-desktop cannot be used together."
-#~ msgstr ""
-#~ "možnosti --no-desktop in --force-desktop ni mogoče uporabiti sočasno."
-
-#~ msgid "Never manage the desktop (ignore the GSettings preference)."
-#~ msgstr "Nikoli ne upravljaj namizja (prezri nastavitve GSettings)."
-
-#~ msgid "View menu"
-#~ msgstr "Meni pogleda"
-
-#~ msgctxt "Sort Criterion"
-#~ msgid "_Name"
-#~ msgstr "_Ime"
-
-#~ msgid "Search _Relevance"
-#~ msgstr "Poišči po _pomembnosti"
-
-#~ msgid "Re_verse Order"
-#~ msgstr "O_brnjen vrstni red"
-
-#~ msgid "Apply this action to all files"
-#~ msgstr "Uveljavi to dejanje za vse datoteke"
-
-#~ msgid "Untitled %s"
-#~ msgstr "Neimenovana predloga %s"
-
-#~ msgid "Where to position newly open tabs in browser windows."
-#~ msgstr "Kam naj se postavi novo odprti zavihek okna."
-
-#~ msgid "Whether to enable recursive search or not"
-#~ msgstr "Ali naj bo omogočeno iskanje po strukturi map"
-
-#~ msgid "Enables or disables recursive search in Nautilus."
-#~ msgstr "Omogoči oziroma onemogoči iskanje po strukturi map v Nautilusu"
-
-#~ msgid ""
-#~ "Whether to ask for confirmation when deleting files, or emptying Trash"
-#~ msgstr ""
-#~ "Ali naj program zahteva potrditev pred premikanjem datotek v smeti ali "
-#~ "pred brisanjem."
-
-#~ msgid "Show the package installer for unknown mime types"
-#~ msgstr "Pokaži namestilnik paketov za neznane vrste datotek."
-
-#~ msgid ""
-#~ "Whether to show the user a package installer dialog in case an unknown "
-#~ "mime type is opened, in order to search for an application to handle it."
-#~ msgstr ""
-#~ "Ali naj se v primeru, da je zagnana neznana vrsta mime, uporabniku pokaže "
-#~ "pogovorno okno namestilnika paketov za iskanje ustreznega programa za "
-#~ "upravljanje neznane vrste mime."
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to trash"
-#~ msgstr ""
-#~ "Pokaži opozorilno okno za spreminjanje bližnjice za premikanje v smeti."
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to trash "
-#~ "from control + delete to just delete."
-#~ msgstr ""
-#~ "Pokaži opozorilno okno za spreminjanje bližnjica za premikanje v smeti iz "
-#~ "CTRL + DEL v le tipko Izbriši."
-
-#~ msgid ""
-#~ "Speed tradeoff for when to show a file as a thumbnail. If set to "
-#~ "\"always\" then always thumbnail, even if the folder is on a remote "
-#~ "server. If set to \"local-only\" then only show thumbnails for local file "
-#~ "systems. If set to \"never\" then never bother to thumbnail files, just "
-#~ "use a generic icon. Despite what the name may suggest, this applies to "
-#~ "any previewable file type."
-#~ msgstr ""
-#~ "Kdaj naj se prikaže predogled predstavnih datotek kot sličica. Možnost "
-#~ "\"always\" (vedno) omogoči prikaz tudi, če je datoteka na oddaljenem "
-#~ "strežniku. Nastavitev \"local_only\" (le krajevno) določa prikaz le za "
-#~ "datoteke na krajevnih datotečnih sistemih. V primeru nastavitve "
-#~ "\"never\" (nikoli) se sličice s predogledi ne ustvarijo in je prikazana "
-#~ "le splošna ikona. Izbira se izvede na vseh datoteka in ni odvisna od "
-#~ "imena datoteke."
-
-#~ msgid ""
-#~ "If true, files in new windows will be sorted in reverse order. ie, if "
-#~ "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
-#~ "they will be sorted from \"z\" to \"a\"; if sorted by size, instead of "
-#~ "being incrementally they will be sorted decrementally."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da so datoteke v novih oknih razvrščene v "
-#~ "obratnem vrstnem redu. Primer: če so razvrščene po imenu, bodo namesto od "
-#~ "črke \"a\" do \"ž\" razvrščene od črke \"ž\" do črke \"a\". V primeru, da "
-#~ "so urejene po velikosti, bodo namesto od večje proti manjši urejene od "
-#~ "manjše proti večji."
-
-#~ msgid "Whether to switch to the list view on search"
-#~ msgstr "Ali naj se pogled preklopi v seznamski pogled ob iskanju"
-
-#~ msgid ""
-#~ "If this is set to true, view mode will be switched to the list view while "
-#~ "searching. However, if the user changes the mode manually, this will be "
-#~ "disabled."
-#~ msgstr ""
-#~ "Izbrana možnost omogoča spremembo pogleda v seznamski pogled med "
-#~ "iskanjem. Z ročnim spreminjanjem pogleda se ta možnost prezre."
-
-#~ msgid ""
-#~ "If this is set to true, when performing a drag and drop operation the "
-#~ "hovered folder will open automatically after a timeout"
-#~ msgstr ""
-#~ "Možnost omogoča, da se mapa pod miško s pritisnjenim gumbom po določenem "
-#~ "času samodejno odpre."
-
-#~ msgid ""
-#~ "The default size of an icon for a thumbnail in the icon view when using "
-#~ "NAUTILUS_ICON_SIZE_SMALL size."
-#~ msgstr ""
-#~ "Privzeta velikost sličic v prikazu ikon, določena z možnostjo "
-#~ "NAUTILUS_ICON_SIZE_SMALL."
-
-#~ msgid ""
-#~ "A string specifying how parts of overlong file names should be replaced "
-#~ "by ellipses, depending on the zoom level. Each of the list entries is of "
-#~ "the form \"Zoom Level:Integer\". For each specified zoom level, if the "
-#~ "given integer is larger than 0, the file name will not exceed the given "
-#~ "number of lines. If the integer is 0 or smaller, no limit is imposed on "
-#~ "the specified zoom level. A default entry of the form \"Integer\" without "
-#~ "any specified zoom level is also allowed. It defines the maximum number "
-#~ "of lines for all other zoom levels. Examples: 0 - always display overlong "
-#~ "file names; 3 - shorten file names if they exceed three lines; smallest:5,"
-#~ "smaller:4,0 - shorten file names if they exceed five lines for zoom level "
-#~ "\"smallest\". Shorten file names if they exceed four lines for zoom level "
-#~ "\"smaller\". Do not shorten file names for other zoom levels. Available "
-#~ "zoom levels: small, standard, large"
-#~ msgstr ""
-#~ "Niz, ki določa kako bodo predolga imena datotek prikazana na namizju v "
-#~ "oglatih oklepajih glede na raven približanja. Vsak vnos seznama je v "
-#~ "obliki \"Približanje:številka\". Za vsako navedeno raven povečave velja, "
-#~ "da v primeru številke večje od 0, ime datoteke ne bo preseglo določenega "
-#~ "števila vrstic. V primeru, da je številka manjša ali enaka 0 ni omejitve "
-#~ "dolžine imena. Privzeti vnos \"številka\" brez določene vrednosti "
-#~ "povečave je prav tako dovoljen. Določa največje število vrstic za vse "
-#~ "ostale vrednosti povečave. Primer: 0 - vedno prikaži polno ime datoteke; "
-#~ "3 - skrajšaj ime, če je daljše od treh vrstic; najmanjše:5, manjše:4,0 - "
-#~ "skrči ime, če je daljše od petih vrstic pri povečavi \"najmanjše\". Skrči "
-#~ "tudi imena datotek, če so daljša od štirih vrstic pri povečavi "
-#~ "\"manjše\". Imena datotek za druge vrednosti povečav niso skrčena. Na "
-#~ "voljo so ravni povečave: majhno, običajno in veliko."
-
-#~ msgid ""
-#~ "Whether a tree should be used for list view navigation instead of a flat "
-#~ "list"
-#~ msgstr "Ali naj bo drevesni pogled uporabljen za premikanje med mapami"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the trash will be put on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Izbrana možnost določi, da je ikona s povezavo do smeti prikazana na "
-#~ "namizju."
-
-#~ msgid "Desktop trash icon name"
-#~ msgstr "Ime ikone Smeti na namizju"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the trash icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ime lahko nastavite, če želite za ikono smeti na namizju nastaviti ime po "
-#~ "meri."
-
-#~ msgid "The geometry string for a navigation window."
-#~ msgstr "Niz geometrije za krmilno okno."
-
-#~ msgid "Whether the navigation window should be maximized."
-#~ msgstr "Ali naj bo okno krmarjenja razpeto."
-
-#~ msgid ""
-#~ "Nautilus 3.0 deprecated this directory and tried migrating this "
-#~ "configuration to ~/.config/nautilus"
-#~ msgstr ""
-#~ "Z različico programa Nautilus 3.0 je ta mapa opuščena, vsebina pa je "
-#~ "premaknjena v mapo ~/.config/nautilus"
-
-#~ msgid "No bookmarks defined"
-#~ msgstr "Noben zaznamek ni določen"
-
-#~ msgid "Remove"
-#~ msgstr "Odstrani"
-
-#~ msgid "Move Up"
-#~ msgstr "Premakni navzgor"
-
-#~ msgid "Move Down"
-#~ msgstr "Premakni navzdol"
-
-#~ msgctxt "Bookmark"
-#~ msgid "_Name"
-#~ msgstr "_Ime"
-
-#~ msgid "Files Preferences"
-#~ msgstr "Možnosti datotek"
-
-#~ msgid "Default View"
-#~ msgstr "Privzet pogled"
-
-#~ msgid "_Arrange items:"
-#~ msgstr "_Razporedi predmete:"
-
-#~ msgid "_Run executable text files when they are opened"
-#~ msgstr "Po kliku izvedljive besedilne datoteke za_ženi"
-
-#~ msgid "_View executable text files when they are opened"
-#~ msgstr "Po kliku si izvedljive besedilne datoteke o_glej"
-
-#~ msgid "_Ask each time"
-#~ msgstr "_Vsakič vprašaj"
-
-#~ msgid "Ask before _emptying the Trash or deleting files"
-#~ msgstr "_Vprašaj pred praznjenjem Smeti ali brisanjem datotek"
-
-#~ msgid "Icon Captions"
-#~ msgstr "Naslovi ikon"
-
-#~ msgid ""
-#~ "Choose the order of information to appear beneath icon names. More "
-#~ "information will appear when zooming in closer."
-#~ msgstr ""
-#~ "Izberite vrstni red podatkov, ki naj se pojavijo pod imeni ikon. Več "
-#~ "podatkov se pojavi ob približanju."
-
-#~ msgid "Navigate folders in a tree"
-#~ msgstr "Brskanje map v drevesnem načinu"
-
-#~ msgid "Display"
-#~ msgstr "Prikaz"
-
-#~ msgid "Show _thumbnails:"
-#~ msgstr "Pokaži _sličice:"
-
-#~ msgid "_Only for files smaller than:"
-#~ msgstr "_Le za datoteke, manjše kot:"
-
-#~ msgid "Count _number of items:"
-#~ msgstr "Preštej š_tevilo predmetov:"
-
-#~ msgid "Preview"
-#~ msgstr "Predogled"
-
-#~ msgid "Pdf / Postscript"
-#~ msgstr "Pdf / Postscript"
-
-#~ msgid "Any"
-#~ msgstr "Katerikoli"
-
-#~ msgid "Remove this criterion from the search"
-#~ msgstr "Odstrani ta kriterij iz iskanja"
-
-#~ msgid "Current"
-#~ msgstr "Trenutno"
-
-#~ msgid "All Files"
-#~ msgstr "Vse datoteke"
-
-#~ msgid "Add a new criterion to this search"
-#~ msgstr "Dodaj nov kriterij iskanja"
-
-#~ msgid "Connect to Server"
-#~ msgstr "Povezava s strežnikom"
-
-#~ msgid "The text of the label."
-#~ msgstr "Besedilo oznake."
-
-#~ msgid "Justification"
-#~ msgstr "Poravnava"
-
-#~ msgid ""
-#~ "The alignment of the lines in the text of the label relative to each "
-#~ "other. This does NOT affect the alignment of the label within its "
-#~ "allocation. See GtkMisc::xalign for that."
-#~ msgstr ""
-#~ "Poravnava vrstic v besedilu oznak, relativno ena na drugo. Nastavitev ne "
-#~ "vpliva na poravnavo nalepk znotraj dodelitve. Za več podrobnosti si "
-#~ "oglejte GtkMisc:xalign"
-
-#~ msgid "Line wrap"
-#~ msgstr "Prelom vrstic"
-
-#~ msgid "If set, wrap lines if the text becomes too wide."
-#~ msgstr ""
-#~ "Izbrana možnost določi prelom vrstic, kadar je besedilo širše od zaslona."
-
-#~ msgid "Cursor Position"
-#~ msgstr "Položaj kazalke"
-
-#~ msgid "The current position of the insertion cursor in chars."
-#~ msgstr "Trenutni položaj vstavitvenega kazalke v znakih."
-
-#~ msgid "Selection Bound"
-#~ msgstr "Drugi konec izbire"
-
-#~ msgid ""
-#~ "The position of the opposite end of the selection from the cursor in "
-#~ "chars."
-#~ msgstr "Mesto nasprotnega konca izbire od kazalke v znakih."
-
-#~ msgid "You cannot move the volume “%s” to the trash."
-#~ msgstr "Nosilca “%s“ ni mogoče premakniti v smeti."
-
-#~ msgid ""
-#~ "If you want to eject the volume, please use Eject in the popup menu of "
-#~ "the volume."
-#~ msgstr ""
-#~ "V primeru, da želite napravo izvreči, uporabite možnost Izvrzi v pojavnem "
-#~ "meniju naprave."
-
-#~ msgid ""
-#~ "If you want to unmount the volume, please use Unmount Volume in the popup "
-#~ "menu of the volume."
-#~ msgstr ""
-#~ "V primeru, da želite napravo odklopiti, uporabite možnost Odklopi napravo "
-#~ "v pojavnem meniju naprave."
-
-#~ msgid "%'d file left to delete"
-#~ msgid_plural "%'d files left to delete"
-#~ msgstr[0] "%'d preostalih datotek za brisanje"
-#~ msgstr[1] "%'d preostala datoteka za brisanje"
-#~ msgstr[2] "%'d preostali datoteki za brisanje"
-#~ msgstr[3] "%'d preostale datoteke za brisanje"
-
-#~ msgid "Deleting files"
-#~ msgstr "Brisanje datotek"
-
-#~ msgid "%T left"
-#~ msgid_plural "%T left"
-#~ msgstr[0] "%T preostalih"
-#~ msgstr[1] "%T preostala"
-#~ msgstr[2] "%T preostali"
-#~ msgstr[3] "%T preostale"
-
-#~ msgid "Moving files to trash"
-#~ msgstr "Premikanje datotek v smeti"
-
-#~ msgid "%'d file left to trash"
-#~ msgid_plural "%'d files left to trash"
-#~ msgstr[0] "%'d preostalih datotek za premikanje v smeti"
-#~ msgstr[1] "%'d preostala datoteka za premikanje v smeti"
-#~ msgstr[2] "%'d preostali datoteki za premikanje v smeti"
-#~ msgstr[3] "%'d preostale datoteke za premikanje v smeti"
-
-#~ msgid "Moving file %'d of %'d (in “%B”) to “%B”"
-#~ msgstr "Premikanje datoteke %'d od %'d (iz “%B”) v “%B”"
-
-#~ msgid "Copying file %'d of %'d (in “%B”) to “%B”"
-#~ msgstr "Kopiranje datoteke %'d od %'d (iz “%B”) v “%B”"
-
-#~ msgid "Duplicating file %'d of %'d (in “%B”)"
-#~ msgstr "Podvajanje datoteke %'d od %'d (iz “%B”)"
-
-#~ msgid "Moving file %'d of %'d to “%B”"
-#~ msgstr "Premikanje datoteke %'d od %'d v “%B”"
-
-#~ msgid "Copying file %'d of %'d to “%B”"
-#~ msgstr "Kopiranje datoteke %'d od %'d v “%B”"
-
-#~ msgid "Duplicating file %'d of %'d"
-#~ msgstr "Podvajanje datoteke %'d od %'d"
-
-#~ msgid "%S of %S"
-#~ msgstr "%S od %S"
-
-#~ msgid "%S of %S — %T left (%S/sec)"
-#~ msgid_plural "%S of %S — %T left (%S/sec)"
-#~ msgstr[0] "%S od %S — %T preostalih (%S/sek)"
-#~ msgstr[1] "%S od %S — %T preostala (%S/sek)"
-#~ msgstr[2] "%S od %S — %T preostali (%S/sek)"
-#~ msgstr[3] "%S od %S — %T preostale (%S/sek)"
-
-#~ msgid "Preparing to Move to “%B”"
-#~ msgstr "Priprava na premikanje predmetov v “%B”"
-
-#~ msgid "Could not register the application"
-#~ msgstr "Ni mogoče vpisati programa"
-
-#~ msgid "Connect to _Server…"
-#~ msgstr "Poveži s _strežnikom ..."
-
-#~ msgid "Unable to display location"
-#~ msgstr "Mesta ni mogoče prikazati"
-
-#~ msgid "Print but do not open the URI"
-#~ msgstr "Natisni, vendar ne odpri naslova URI"
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Add connect to server mount"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Dodaj povezavo priklopu strežnika"
-
-#~ msgid "This file server type is not recognized."
-#~ msgstr "Ta vrsta datotečnega sistema ni prepoznana."
-
-#~ msgid "This doesn't look like an address."
-#~ msgstr "Vnos ni videti kot pravilno zapisan naslov."
-
-#~ msgid "For example, %s"
-#~ msgstr "Na primer %s"
-
-#~ msgid "_Clear All"
-#~ msgstr "Počisti _vse"
-
-#~ msgid "_Recent Servers"
-#~ msgstr "Ne_davni strežniki"
-
-#~ msgid "C_onnect"
-#~ msgstr "_Poveži se"
-
-#~ msgid "View _new folders using:"
-#~ msgstr "Za ogled _novih map uporabi:"
-
-#~ msgid "Show hidden and _backup files"
-#~ msgstr "Pokaži _skrite datoteke in varnostne kopije"
-
-#~ msgid "Icon View Defaults"
-#~ msgstr "Privzeti ikonski pogled"
-
-#~ msgid "Default _zoom level:"
-#~ msgstr "P_rivzeta raven približanja:"
-
-#~ msgid "List View Defaults"
-#~ msgstr "Privzeti seznamski pogled"
-
-#~ msgid "D_efault zoom level:"
-#~ msgstr "Pr_ivzeta raven približanja:"
-
-#~ msgid ""
-#~ "With the latest version of Files, you no longer need to hold Ctrl to "
-#~ "delete - the Delete key will work when pressed on its own."
-#~ msgstr ""
-#~ "V najnovejši različici programa Datoteke ni več treba držati tipke CTRL "
-#~ "ob pritisku tipke Del. Brisanje deluje tudi brez tega."
-
-#~ msgid "Please drag just one image to set a custom icon."
-#~ msgstr "Povlecite le eno sliko za nastavitev ikone po meri."
-
-#~ msgid "%s Properties"
-#~ msgstr "Lastnosti %s"
-
-#~ msgid "Last _Opened"
-#~ msgstr "Nazadnje _odprto"
-
-#~ msgid "Saved search"
-#~ msgstr "Shranjeno iskanje"
-
-#~ msgid "Cut the selected text to the clipboard"
-#~ msgstr "Izreže izbrano besedilo na odložišče"
-
-#~ msgid "Copy the selected text to the clipboard"
-#~ msgstr "Kopira izbrano besedilo na odložišče"
-
-#~ msgid "Paste the text stored on the clipboard"
-#~ msgstr "Prilepi besedilo shranjeno na odložišču"
-
-#~ msgid "Select all the text in a text field"
-#~ msgstr "Izbere vse besedilo v polju besedila"
-
-#~ msgid "Move _Up"
-#~ msgstr "Premakni navz_gor"
-
-#~ msgid "Move Dow_n"
-#~ msgstr "Premakni navz_dol"
-
-#~ msgid "Use De_fault"
-#~ msgstr "Uporabi _privzeto"
-
-#~ msgid "%R"
-#~ msgstr "%R"
-
-#~ msgid "%b %-e"
-#~ msgstr "%b %-e"
-
-#~ msgid "%a, %b %e %Y %T"
-#~ msgstr "%a, %e. %b %Y %T"
-
-#~ msgid "Whether to enable immediate deletion"
-#~ msgstr "Ali naj bo omogočen neposreden izbris datotek"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will have a feature allowing you to delete "
-#~ "a file immediately and in-place, instead of moving it to the trash. This "
-#~ "feature can be dangerous, so use caution."
-#~ msgstr ""
-#~ "Izbrana možnost omogoči neposredno brisanje datoteke v Nautilusu namesto "
-#~ "premika v smeti. Ta možnost je lahko nevarna, zato jo uporabljajte "
-#~ "previdno."
-
-#~ msgid "--geometry cannot be used with more than one URI."
-#~ msgstr "--geometry ni mogoče uporabiti z več kot enim URI-jem."
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Browse the file system with the file manager"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Prebrskaj datotečni sistem z upravljalnikom datotek"
-
-#~ msgid "_Bookmarks"
-#~ msgstr "_Zaznamki"
-
-#~ msgid "Display icons in the opposite order"
-#~ msgstr "Pokaži ikone v obratnem vrstnem redu"
-
-#~ msgid "Keep icons lined up on a grid"
-#~ msgstr "Ohrani ikone postavljene na mrežo"
-
-#~ msgid "_Manually"
-#~ msgstr "_Ročno"
-
-#~ msgid "Leave icons wherever they are dropped"
-#~ msgstr "Pusti ikone tam kjer so spuščene"
-
-#~ msgid "By _Name"
-#~ msgstr "Po ime_nu"
-
-#~ msgid "Keep icons sorted by name in rows"
-#~ msgstr "Ikone naj bodo razvrščene po imenu v vrsticah"
-
-#~ msgid "By _Size"
-#~ msgstr "Po veliko_sti"
-
-#~ msgid "Keep icons sorted by size in rows"
-#~ msgstr "Ikone naj bodo razvrščene po velikosti v vrsticah"
-
-#~ msgid "By _Type"
-#~ msgstr "Po _vrsti"
-
-#~ msgid "Keep icons sorted by type in rows"
-#~ msgstr "Ikone naj bodo razvrščene po vrsti v vrsticah"
-
-#~ msgid "By Modification _Date"
-#~ msgstr "Po _datumu spremembe"
-
-#~ msgid "Keep icons sorted by modification date in rows"
-#~ msgstr "Ikone naj bodo razvrščene po datumu spremembe v vrsticah"
-
-#~ msgid "By _Access Date"
-#~ msgstr "Po _datumu dostopa"
-
-#~ msgid "Keep icons sorted by access date in rows"
-#~ msgstr "Ikone naj bodo razvrščene po datumu spremembe v vrsticah"
-
-#~ msgid "By T_rash Time"
-#~ msgstr "po _času premika v smeti"
-
-#~ msgid "Keep icons sorted by trash time in rows"
-#~ msgstr "Ikone naj bodo urejene po datumu premika v smeti v vrsticah"
-
-#~ msgid "Keep icons sorted by search relevance in rows"
-#~ msgstr "Ikone naj bodo razvrščene v vrsticah po pomembnosti iskanja"
-
-#~ msgid "E_mpty Trash"
-#~ msgstr "I_zprazni smeti"
-
-#~ msgid "Restore Icons' Original Si_zes"
-#~ msgstr "Obnovi i_zvorno velikost ikon"
-
-#~ msgid ""
-#~ "Show a window that lets you set your desktop background's pattern or color"
-#~ msgstr ""
-#~ "Pokaže okno, ki omogoča nastavitev barve ali vzorca ozadja vašega namizja"
-
-#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
-#~ msgstr ""
-#~ "Premesti ikone, da se bodo bolje prilegale oknu in se ne bodo prekrivale"
-
-#~ msgid "Make the selected icons resizable"
-#~ msgstr "Omogoči spremenljivo velikost izbranih ikon"
-
-#~ msgid "Restore each selected icon to its original size"
-#~ msgstr "Obnovi izvorne velikosti vseh izbranih ikon"
-
-#~ msgid "I_nclude a Delete command that bypasses Trash"
-#~ msgstr "_Omogoči ukaz Izbriši, ki obide Smeti"
-
-#~ msgid "33%"
-#~ msgstr "33%"
-
-#~ msgid "50%"
-#~ msgstr "50%"
-
-#~ msgid "66%"
-#~ msgstr "66%"
-
-#~ msgid "100%"
-#~ msgstr "100%"
-
-#~ msgid "150%"
-#~ msgstr "150%"
-
-#~ msgid "200%"
-#~ msgstr "200%"
-
-#~ msgid "400%"
-#~ msgstr "400%"
-
-#~ msgid "Select the columns visible in this folder"
-#~ msgstr "Izberite stolpce, ki naj bodo vidni v tej mapi"
-
-#~ msgid "Location:"
-#~ msgstr "Mesto:"
-
-#~ msgid "Location options"
-#~ msgstr "Možnosti mesta"
-
-#~ msgid "Save Search as"
-#~ msgstr "Shrani iskanje kot"
-
-#~ msgid "_Save"
-#~ msgstr "_Shrani"
-
-#~ msgid "Search _name:"
-#~ msgstr "_Ime iskanja:"
-
-#~ msgid "_Folder:"
-#~ msgstr "_Mapa:"
-
-#~ msgid "Select Folder to Save Search In"
-#~ msgstr "Izberite mapo za shranjevanje iskanja"
-
-#~ msgid "Use “%s” to open the selected item"
-#~ msgid_plural "Use “%s” to open the selected items"
-#~ msgstr[0] "Uporabi “%s” za odpiranje izbranih predmetov"
-#~ msgstr[1] "Uporabi “%s” za odpiranje izbranega predmeta"
-#~ msgstr[2] "Uporabi “%s” za odpiranje izbranih predmetov"
-#~ msgstr[3] "Uporabi “%s” za odpiranje izbranih predmetov"
-
-#~ msgid "Run “%s” on any selected items"
-#~ msgstr "Zaženi “%s” na izbranih predmetih"
-
-#~ msgid "Create a new document from template “%s”"
-#~ msgstr "Ustvari novo predlogo iz predloge “%s”"
-
-#~ msgid "Open Wit_h"
-#~ msgstr "Odpri _z"
-
-#~ msgid "Choose a program with which to open the selected item"
-#~ msgstr "Izberite program s katerim naj se odpre izbran predmet"
-
-#~ msgid "View or modify the properties of each selected item"
-#~ msgstr "Poglej ali spremeni lastnosti vsakega izbranega predmeta"
-
-#~ msgid "Create a new empty folder inside this folder"
-#~ msgstr "V tej mapi ustvari novo prazno mapo"
-
-#~ msgid "New Folder with Selection"
-#~ msgstr "Nova mapa z izborom"
-
-#~ msgid "Create a new folder containing the selected items"
-#~ msgstr "Ustvari novo mapo, ki vsebuje izbrane predmete"
-
-#~ msgid "Open the selected item in this window"
-#~ msgstr "Odpri izbran predmet v tem oknu"
-
-#~ msgid "Open the selected item's location in this window"
-#~ msgstr "Odpre vsako mesto izbranega predmet v oknu"
-
-#~ msgid "Open in Navigation Window"
-#~ msgstr "Odpri v oknu za krmarjenje"
-
-#~ msgid "Open each selected item in a navigation window"
-#~ msgstr "Odpre vsak izbran predmet v oknu za krmarjenje"
-
-#~ msgid "Open each selected item in a new tab"
-#~ msgstr "Odpri vsako izbrano povezavo v novem zavihku"
-
-#~ msgid "Other _Application…"
-#~ msgstr "Drugi programi ..."
-
-#~ msgid "Show the folder containing the scripts that appear in this menu"
-#~ msgstr "Pokaži mapo, ki vsebuje skripte tega menija"
-
-#~ msgid "Prepare the selected files to be moved with a Paste command"
-#~ msgstr "Pripravi izbrane datoteke za premikanje z ukazom Prilepi"
-
-#~ msgid "Prepare the selected files to be copied with a Paste command"
-#~ msgstr "Pripravi izbrane datoteke za kopiranje z ukazom Prilepi"
-
-#~ msgid "Move or copy files previously selected by a Cut or Copy command"
-#~ msgstr ""
-#~ "Premakni ali kopiraj datoteke, predhodno izbrane z ukazom Izreži ali "
-#~ "Kopiraj"
-
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut or Copy command into the "
-#~ "selected folder"
-#~ msgstr ""
-#~ "Premakni ali kopiraj datoteke, predhodno izbrane z ukazom Izreži ali "
-#~ "Kopiraj, v izbrano mapo"
-
-#~ msgid "Copy selected files to another location"
-#~ msgstr "Kopiraj izbrane datoteke na drugo mesto"
-
-#~ msgid "Move selected files to another location"
-#~ msgstr "Premakni izbrane datoteke na drugo mesto"
-
-#~ msgid "Select all items in this window"
-#~ msgstr "Izberi vse predmete v tem oknu"
-
-#~ msgid "Select I_tems Matching…"
-#~ msgstr "Izberi skladne _predmete ..."
-
-#~ msgid "Select items in this window matching a given pattern"
-#~ msgstr "Izberi predmete v tem oknu, ki se skladajo z danim vzorcu"
-
-#~ msgid "_Invert Selection"
-#~ msgstr "_Obrni izbor"
-
-#~ msgid "Select all and only the items that are not currently selected"
-#~ msgstr "Izberi vse in le trenutno neizbrane predmete"
-
-#~ msgid "Ma_ke Link"
-#~ msgid_plural "Ma_ke Links"
-#~ msgstr[0] "_Naredi več povezav"
-#~ msgstr[1] "_Naredi povezavo"
-#~ msgstr[2] "_Naredi povezavi"
-#~ msgstr[3] "_Naredi povezave"
-
-#~ msgid "Create a symbolic link for each selected item"
-#~ msgstr "Ustvari simbolno povezavo za vsak izbran predmet"
-
-#~ msgid "Make item the wallpaper"
-#~ msgstr "Nastavi sliko za ozadje"
-
-#~ msgid "Move each selected item to the Trash"
-#~ msgstr "Premakne vsak izbran predmet v Smeti"
-
-#~ msgid "Delete each selected item, without moving to the Trash"
-#~ msgstr "Izbriše vsak izbran predmet, brez prestavljanja v Smeti"
-
-#~ msgid "Undo the last action"
-#~ msgstr "Razveljavi zadnje dejanje"
-
-#~ msgid "Redo the last undone action"
-#~ msgstr "Ponovno uveljavi zadnje razveljavljeno dejanje"
-
-#~ msgid ""
-#~ "Reset sorting order and zoom level to match preferences for this view"
-#~ msgstr ""
-#~ "Ponastavi vrstni red in raven približanja, da bo ustrezala možnostim za "
-#~ "ta prikaz"
-
-#~ msgid "Mount the selected volume"
-#~ msgstr "Priklopi izbrani nosilec"
-
-#~ msgid "Unmount the selected volume"
-#~ msgstr "Odklopi izbrani nosilec"
-
-#~ msgid "Eject the selected volume"
-#~ msgstr "Izvrzi izbrani nosilec"
-
-#~ msgid "Start the selected volume"
-#~ msgstr "Zažene izbrani nosilec"
-
-#~ msgid "Stop the selected volume"
-#~ msgstr "Zaustavi izbrani nosilec"
-
-#~ msgid "Detect media in the selected drive"
-#~ msgstr "Zazna vrsto nosilca v izbranem pogonu"
-
-#~ msgid "Mount the volume associated with the open folder"
-#~ msgstr "Priklopi napravo povezano z odprto mapo"
-
-#~ msgid "Unmount the volume associated with the open folder"
-#~ msgstr "Odklopi nosilec povezan z odprto mapo"
-
-#~ msgid "Eject the volume associated with the open folder"
-#~ msgstr "Izvrzi nosilec povezan z odprto mapo"
-
-#~ msgid "Start the volume associated with the open folder"
-#~ msgstr "Zaženi nosilec povezan z odprto mapo"
-
-#~ msgid "Stop the volume associated with the open folder"
-#~ msgstr "Zaustavi nosilec povezan z odprto mapo"
-
-#~ msgid "Open File and Close window"
-#~ msgstr "Odpri datoteko in zapri okno"
-
-#~ msgid "Sa_ve Search"
-#~ msgstr "S_hrani iskanje"
-
-#~ msgid "Save the edited search"
-#~ msgstr "Shrani urejeno iskanje"
-
-#~ msgid "Sa_ve Search As…"
-#~ msgstr "S_hrani iskanje kot ..."
-
-#~ msgid "Save the current search as a file"
-#~ msgstr "Shrani trenutno iskanje kot datoteko"
-
-#~ msgid "Open this folder in a navigation window"
-#~ msgstr "Odpri to mapo v oknu za krmarjenje"
-
-#~ msgid "Open this folder in a new tab"
-#~ msgstr "Odpri to mapo v v novem zavihku"
-
-#~ msgid "Prepare this folder to be moved with a Paste command"
-#~ msgstr "Pripravi to mapo za premikanje z ukazom Prilepi"
-
-#~ msgid "Prepare this folder to be copied with a Paste command"
-#~ msgstr "Pripravi to mapo za kopiranje z ukazom Prilepi"
-
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut or Copy command into this "
-#~ "folder"
-#~ msgstr ""
-#~ "Premakni ali kopiraj datoteke izbrane z ukazom Izreži ali Kopiraj v to "
-#~ "mapo"
-
-#~ msgid "Move this folder to the Trash"
-#~ msgstr "Premakni mapo v Smeti"
-
-#~ msgid "Delete this folder, without moving to the Trash"
-#~ msgstr "Izbriši to mapo brez premikanja v Smeti"
-
-#~ msgid "Mount the volume associated with this folder"
-#~ msgstr "Priklopi nosilec, povezan s to mapo"
-
-#~ msgid "Unmount the volume associated with this folder"
-#~ msgstr "Odklopi nosilec, povezan s to mapo"
-
-#~ msgid "Eject the volume associated with this folder"
-#~ msgstr "Izvrzi nosilec povezan z izbrano mapo"
-
-#~ msgid "Start the volume associated with this folder"
-#~ msgstr "Zaženi nosilec povezan s to mapo"
-
-#~ msgid "Stop the volume associated with this folder"
-#~ msgstr "Zaustavi nosilec povezan s to mapo"
-
-#~ msgid "View or modify the properties of this folder"
-#~ msgstr "Poglej ali spremeni lastnosti te mape"
-
-#~ msgid "Toggle the display of hidden files in the current window"
-#~ msgstr "Preklopi prikaz skritih datotek v trenutnem oknu"
-
-#~ msgid "Run or manage scripts"
-#~ msgstr "Zaženi ali upravljaj skripte"
-
-#~ msgid "Move the open folder out of the trash to “%s”"
-#~ msgstr "Premakni odprto mapo iz smeti “%s”"
-
-#~ msgid "Move the selected folder out of the trash to “%s”"
-#~ msgstr "Premakni izbrano mapo iz smeti v “%s”"
-
-#~ msgid "Move the selected folders out of the trash to “%s”"
-#~ msgstr "Premakni izbrane mape iz smeti v “%s”"
-
-#~ msgid "Move the selected folder out of the trash"
-#~ msgstr "Premakni izbrano mapo iz smeti"
-
-#~ msgid "Move the selected folders out of the trash"
-#~ msgstr "Premakni izbrane mape iz smeti"
-
-#~ msgid "Move the selected file out of the trash to “%s”"
-#~ msgstr "Premakni izbrano datoteko iz smeti v “%s”"
-
-#~ msgid "Move the selected files out of the trash to “%s”"
-#~ msgstr "Premakni izbrane datoteke iz smeti v “%s”"
-
-#~ msgid "Move the selected file out of the trash"
-#~ msgstr "Premakni izbrano datoteko iz smeti"
-
-#~ msgid "Move the selected files out of the trash"
-#~ msgstr "Premakni izbrane datoteke iz smeti"
-
-#~ msgid "Move the selected item out of the trash to “%s”"
-#~ msgstr "Premakni izbrani predmet iz smeti v “%s”"
-
-#~ msgid "Move the selected items out of the trash to “%s”"
-#~ msgstr "Premakni izbrane predmete iz smeti v “%s”"
-
-#~ msgid "Move the selected item out of the trash"
-#~ msgstr "Premakni izbrani predmet iz smeti"
-
-#~ msgid "Move the selected items out of the trash"
-#~ msgstr "Premakni izbrane predmete iz smeti"
-
-#~ msgid "Start the selected drive"
-#~ msgstr "Zaženi izbrani pogon"
-
-#~ msgid "Connect to the selected drive"
-#~ msgstr "Poveži se z izbranim pogonom"
-
-#~ msgid "Start the selected multi-disk drive"
-#~ msgstr "Zažene več-diskovni pogon"
-
-#~ msgid "Unlock the selected drive"
-#~ msgstr "Odklene izbrani pogon"
-
-#~ msgid "Stop the selected drive"
-#~ msgstr "Zaustavi izbrani pogon"
-
-#~ msgid "Safely remove the selected drive"
-#~ msgstr "Varno odstrani izbrani pogon"
-
-#~ msgid "Disconnect the selected drive"
-#~ msgstr "Prekine povezavo z izbranim pogonom"
-
-#~ msgid "Stop the selected multi-disk drive"
-#~ msgstr "Zaustavi več-diskovni pogon"
-
-#~ msgid "Lock the selected drive"
-#~ msgstr "Zaklene izbrani pogon"
-
-#~ msgid "Start the drive associated with the open folder"
-#~ msgstr "Zaženi pogon povezan z odprto mapo"
-
-#~ msgid "Connect to the drive associated with the open folder"
-#~ msgstr "Poveži se s pogonom povezanim z odprto mapo"
-
-#~ msgid "Start the multi-disk drive associated with the open folder"
-#~ msgstr "Zaženi več-diskovni pogon povezan z odprto mapo"
-
-#~ msgid "Unlock the drive associated with the open folder"
-#~ msgstr "Odklene pogon povezan z odprto mapo"
-
-#~ msgid "_Stop the drive associated with the open folder"
-#~ msgstr "_Zaustavi pogon povezan z odprto mapo"
-
-#~ msgid "Safely remove the drive associated with the open folder"
-#~ msgstr "Varno odstrani pogon povezan z odprto mapo"
-
-#~ msgid "Disconnect the drive associated with the open folder"
-#~ msgstr "Prekini povezavo pogona povezanega z odprto mapo"
-
-#~ msgid "Stop the multi-disk drive associated with the open folder"
-#~ msgstr "Zaustavi več-diskovni pogon povezan z odprto mapo"
-
-#~ msgid "Lock the drive associated with the open folder"
-#~ msgstr "Zakleni pogon povezan z odprto mapo"
-
-#~ msgid "Delete the open folder permanently"
-#~ msgstr "Za vedno izbriše odprto mapo"
-
-#~ msgid "Move the open folder to the Trash"
-#~ msgstr "Premakne odprto mapo v Smeti"
-
-#~ msgid "_Open With %s"
-#~ msgstr "_Odpri s programom %s"
-
-#~ msgid "Open in %'d New _Window"
-#~ msgid_plural "Open in %'d New _Windows"
-#~ msgstr[0] "Odpri v %'d novih _oknih"
-#~ msgstr[1] "Odpri v %'d novem _oknu"
-#~ msgstr[2] "Odpri v %'d novih _oknih"
-#~ msgstr[3] "Odpri v %'d novih _oknih"
-
-#~ msgid "Open in %'d New _Tab"
-#~ msgid_plural "Open in %'d New _Tabs"
-#~ msgstr[0] "Odpri v %'d novih _zavihkih"
-#~ msgstr[1] "Odpri v %'d novem _zavihku"
-#~ msgstr[2] "Odpri v %'d novih _zavihkih"
-#~ msgstr[3] "Odpri v %'d novih _zavihkih"
-
-#~ msgid "Delete all selected items permanently"
-#~ msgstr "Trajno izbriši vse izbrane predmete"
-
-#~ msgid "Remo_ve from Recent"
-#~ msgstr "Odstrani iz _nedavnih"
-
-#~ msgid "Remove each selected item from the recently used list"
-#~ msgstr ""
-#~ "Odstrani vsak izbran predmet iz seznama nedavno uporabljenih predmetov"
-
-#~ msgid "View or modify the properties of the open folder"
-#~ msgstr "Preglej ali spremeni lastnosti odprte mape"
-
-#~ msgid "Copyright © %Id–%Id The Files authors"
-#~ msgstr "Avtorske pravice © %Id–%Id Avtorji programa The Files"
-
-#~ msgid "Close this folder"
-#~ msgstr "Zapri to mapo"
-
-#~ msgid "Edit Nautilus preferences"
-#~ msgstr "Uredi nastavitve Nautilusa"
-
-#~ msgid "Open _Parent"
-#~ msgstr "Odpri _nadrejeno"
-
-#~ msgid "Open the parent folder"
-#~ msgstr "Odpre nadrejeno mapo"
-
-#~ msgid "Stop loading the current location"
-#~ msgstr "Zaustavi nalaganje trenutnega mesta"
-
-#~ msgid "Reload the current location"
-#~ msgstr "Ponovno naloži trenutno mesto"
-
-#~ msgid "_All Topics"
-#~ msgstr "_Vse teme"
-
-#~ msgid "Display Nautilus help"
-#~ msgstr "Pokaži pomoč za Nautilus"
-
-#~ msgid ""
-#~ "Locate files based on file name and type. Save your searches for later "
-#~ "use."
-#~ msgstr ""
-#~ "Iskanje datotek po imenu ali vrsti in shranjevanje iskanj za kasnejšo "
-#~ "uporabo."
-
-#~ msgid "Arrange files by name, size, type, or when they were changed."
-#~ msgstr ""
-#~ "Razvrščanje datotek po imenu, velikosti, vrsti ali datumu zadnje "
-#~ "spremembe."
-
-#~ msgid "Find a lost file"
-#~ msgstr "Najdi izgubljeno datoteko"
-
-#~ msgid ""
-#~ "Follow these tips if you can't find a file you created or downloaded."
-#~ msgstr "Namigi za iskanje ustvarjenih ali prejetih datotek."
-
-#~ msgid "Share and transfer files"
-#~ msgstr "Souporaba in prenos datotek"
-
-#~ msgid ""
-#~ "Easily transfer files to your contacts and devices from the file manager."
-#~ msgstr ""
-#~ "Enostaven prenos datotek drugim uporabnikom in na naprave preko "
-#~ "upravljalnika datotek."
-
-#~ msgid "Display credits for the creators of Nautilus"
-#~ msgstr "Pokaže zasluge ustvarjalcev programa Nautilus"
-
-#~ msgid "Zoom _In"
-#~ msgstr "_Približaj"
-
-#~ msgid "Increase the view size"
-#~ msgstr "Približa pogled"
-
-#~ msgid "Zoom _Out"
-#~ msgstr "_Oddalji"
-
-#~ msgid "Decrease the view size"
-#~ msgstr "Oddalji pogled"
-
-#~ msgid "Normal Si_ze"
-#~ msgstr "Običajna _velikost"
-
-#~ msgid "Use the normal view size"
-#~ msgstr "Uporabi običajno velikost pogleda"
-
-#~ msgid "Connect to a remote computer or shared disk"
-#~ msgstr "Povezava z oddaljenim strežnikom ali diskom"
-
-#~ msgid "_Home"
-#~ msgstr "_Domov"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "Odpre še eno Nautilusovo okno za prikazano mesto"
-
-#~ msgid "Open another tab for the displayed location"
-#~ msgstr "Odpre še en zavihek za prikazano mesto"
-
-#~ msgid "Close _All Windows"
-#~ msgstr "Zapri vs_a okna"
-
-#~ msgid "Close all Navigation windows"
-#~ msgstr "Zapri vsa okna za krmarjenje"
-
-#~ msgid "Go to the previous visited location"
-#~ msgstr "Pojdi na prejšnje obiskano mesto"
-
-#~ msgid "Go to the next visited location"
-#~ msgstr "Pojdi na naslednje obiskano mesto"
-
-#~ msgid "Specify a location to open"
-#~ msgstr "Navedite mesto, ki ga želite odpreti"
-
-#~ msgid "Add a bookmark for the current location"
-#~ msgstr "Ustvari zaznamek trenutnega mesta"
-
-#~ msgid "_Bookmarks…"
-#~ msgstr "_Zaznamki ..."
-
-#~ msgid "Display and edit bookmarks"
-#~ msgstr "Prikaz in urejanje zaznamkov"
-
-#~ msgid "_Previous Tab"
-#~ msgstr "_Predhodni zavihek"
-
-#~ msgid "Activate previous tab"
-#~ msgstr "Pokaži predhodni zavihek"
-
-#~ msgid "_Next Tab"
-#~ msgstr "_Naslednji zavihek"
-
-#~ msgid "Activate next tab"
-#~ msgstr "Pokaži naslednji zavihek"
-
-#~ msgid "Move current tab to left"
-#~ msgstr "Premakni trenutni zavihek levo"
-
-#~ msgid "Move current tab to right"
-#~ msgstr "Premakni trenutni zavihek desno"
-
-#~ msgid "Change the visibility of this window's side pane"
-#~ msgstr "Spremeni vidnost stranskega pladnja trenutnega okna"
-
-#~ msgid "_Search for Files…"
-#~ msgstr "_Poišči datoteke ..."
-
-#~ msgid "Search documents and folders by name"
-#~ msgstr "Iskanje dokumentov in map po imenu"
-
-#~ msgid "List"
-#~ msgstr "Seznam"
-
-#~ msgid "View items as a list"
-#~ msgstr "Poglej predmete kot seznam"
-
-#~ msgid "View items as a grid of icons"
-#~ msgstr "Pokaži predmete kot razpredelnico ikon"
-
-#~ msgid "_Up"
-#~ msgstr "_Gor"
-
-#~ msgid "There was an error displaying help."
-#~ msgstr "Prišlo je do napake med prikazovanem pomoči."
-
-#~ msgid "_Browse"
-#~ msgstr "Pre_brskaj"
-
-#~ msgid ""
-#~ "Files is free software; you can redistribute it and/or modify it under "
-#~ "the terms of the GNU General Public License as published by the Free "
-#~ "Software Foundation; either version 2 of the License, or (at your option) "
-#~ "any later version."
-#~ msgstr ""
-#~ "Program Files je prosta programska oprema; program lahko razširjate in/"
-#~ "ali spreminjate pod pogoji Splošnega dovoljenja GNU (GNU General "
-#~ "PublicLicense), kot ga je objavila ustanova Free Software Foundation; "
-#~ "bodisi različice 2 ali (po vaši izbiri) katerekoli poznejše različice."
-
-#~ msgid ""
-#~ "Files is distributed in the hope that it will be useful, but WITHOUT ANY "
-#~ "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-#~ "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-#~ "details."
-#~ msgstr ""
-#~ "Program Files se razširja v upanju, da bo uporaben, vendar BREZ "
-#~ "VSAKRŠNEGA JAMSTVA; tudi brez posredne zagotovitve CENOVNE VREDNOSTI ali "
-#~ "PRIMERNOSTI ZA DOLOČEN NAMEN.  Za podrobnosti glejte besedilo GNU General "
-#~ "Public License."
-
-#~ msgid ""
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with Nautilus; if not, write to the Free Software Foundation, Inc., 51 "
-#~ "Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
-#~ msgstr ""
-#~ "Skupaj s programom bi morali prejeti kopijo GNU Splošne javne licence. V "
-#~ "primeru, da je niste, pišite na Free Software Foundation, Inc., 51 "
-#~ "Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
