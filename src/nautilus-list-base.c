@@ -313,6 +313,28 @@ open_context_menu_on_press (NautilusListBase *self,
 }
 
 static void
+rubberband_set_state (NautilusListBase *self,
+                      gboolean          enabled)
+{
+    /* This is a temporary workaround to deal with the rubberbanding issues
+     * during a drag and drop. Disable rubberband on item press and enable
+     * rubberband on item release/stop. See:
+     * https://gitlab.gnome.org/GNOME/gtk/-/issues/5670 */
+
+    GtkWidget *view;
+
+    view = NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
+    if (GTK_IS_GRID_VIEW (view))
+    {
+        gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (view), enabled);
+    }
+    else if (GTK_IS_COLUMN_VIEW (view))
+    {
+        gtk_column_view_set_enable_rubberband (GTK_COLUMN_VIEW (view), enabled);
+    }
+}
+
+static void
 on_item_click_pressed (GtkGestureClick *gesture,
                        gint             n_press,
                        gdouble          x,
@@ -336,6 +358,8 @@ on_item_click_pressed (GtkGestureClick *gesture,
                                  button == GDK_BUTTON_PRIMARY &&
                                  n_press == 1 &&
                                  !selection_mode);
+
+    rubberband_set_state (self, FALSE);
 
     /* It's safe to claim event sequence on press in the following cases because
      * they don't interfere with touch scrolling. */
@@ -395,6 +419,7 @@ on_item_click_released (GtkGestureClick *gesture,
         activate_selection_on_click (self, FALSE);
     }
 
+    rubberband_set_state (self, TRUE);
     priv->activate_on_release = FALSE;
     priv->deny_background_click = FALSE;
 }
@@ -407,6 +432,7 @@ on_item_click_stopped (GtkGestureClick *gesture,
     g_autoptr (NautilusListBase) self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
+    rubberband_set_state (self, TRUE);
     priv->activate_on_release = FALSE;
     priv->deny_background_click = FALSE;
 }
@@ -977,6 +1003,9 @@ real_begin_loading (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    /* Temporary workaround */
+    rubberband_set_state (self, TRUE);
 
     /*TODO move this to the files view class begin_loading and hook up? */
 
