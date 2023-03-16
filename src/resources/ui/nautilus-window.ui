@@ -46,34 +46,26 @@
     <child>
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <child>
+          <object class="AdwToolbarView">
+            <property name="top-bar-style">raised</property>
+            <property name="bottom-bar-style">raised</property>
+            <child type="top">
               <object class="NautilusToolbar" id="toolbar">
                 <property name="show-toolbar-children">True</property>
-                <property name="sidebar-button-active" bind-source="content_flap" bind-property="reveal-flap" bind-flags="bidirectional|sync-create"/>
+                <property name="sidebar-button-active" bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
                 <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
               </object>
             </child>
             <child>
-              <object class="AdwFlap" id="content_flap">
-                <property name="swipe-to-close" bind-source="content_flap" bind-property="folded" bind-flags="sync-create"/>
-                <property name="fold-policy">never</property>
-                <child type="flap">
+              <object class="AdwOverlaySplitView" id="split_view">
+                <property name="sidebar">
                   <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
                     <property name="vexpand">True</property>
                     <property name="show-other-locations">True</property>
                     <property name="show-starred-location">True</property>
-                    <property name="width-request">240</property>
-                    <style>
-                      <class name="background"/>
-                    </style>
                   </object>
-                </child>
-                <child type="separator">
-                  <object class="GtkSeparator"/>
-                </child>
-                <child>
+                </property>
+                <property name="content">
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
                     <child>
@@ -87,10 +79,10 @@
                       </object>
                     </child>
                   </object>
-                </child>
+                </property>
               </object>
             </child>
-            <child>
+            <child type="bottom">
               <object class="GtkActionBar" id="action_bar">
                 <property name="revealed">False</property>
                 <child type="start">
@@ -120,7 +112,7 @@
     <child>
       <object class="AdwBreakpoint">
         <condition>max-width: 500sp</condition>
-        <setter object="content_flap" property="fold-policy">always</setter>
+        <setter object="split_view" property="collapsed">True</setter>
         <setter object="toolbar" property="show-sidebar-button">True</setter>
         <setter object="toolbar" property="show-toolbar-children">False</setter>
         <setter object="action_bar" property="revealed">True</setter>

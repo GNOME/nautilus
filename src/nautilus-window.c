@@ -103,7 +103,7 @@ struct _NautilusWindow
     GList *slots;
     NautilusWindowSlot *active_slot; /* weak reference */
 
-    GtkWidget *content_flap;
+    GtkWidget *split_view;
 
     /* Side Pane */
     GtkWidget *places_sidebar;     /* the actual GtkPlacesSidebar */
@@ -1017,8 +1017,8 @@ action_toggle_sidebar (GSimpleAction *action,
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
     gboolean revealed;
 
-    revealed = adw_flap_get_reveal_flap (ADW_FLAP (window->content_flap));
-    adw_flap_set_reveal_flap (ADW_FLAP (window->content_flap), !revealed);
+    revealed = adw_overlay_split_view_get_show_sidebar (ADW_OVERLAY_SPLIT_VIEW (window->split_view));
+    adw_overlay_split_view_set_show_sidebar (ADW_OVERLAY_SPLIT_VIEW (window->split_view), !revealed);
 }
 
 
@@ -1612,7 +1612,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 #undef ACCELS
 
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "toggle-sidebar");
-    g_object_bind_property (window->content_flap, "folded",
+    g_object_bind_property (window->split_view, "collapsed",
                             action, "enabled", G_BINDING_SYNC_CREATE);
 }
 
@@ -2302,7 +2302,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_flap);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, split_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
