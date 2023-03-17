@@ -3748,7 +3748,6 @@ get_pending_key (GList *file_list)
     GList *uris = NULL;
     GList *l;
     GString *key;
-    char *ret;
 
     uris = NULL;
     for (l = file_list; l != NULL; l = l->next)
@@ -3766,10 +3765,7 @@ get_pending_key (GList *file_list)
 
     g_list_free_full (uris, g_free);
 
-    ret = key->str;
-    g_string_free (key, FALSE);
-
-    return ret;
+    return g_string_free (key, FALSE);
 }
 
 static StartupData *
