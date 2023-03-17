@@ -464,9 +464,6 @@ nautilus_search_hit_class_init (NautilusSearchHitClass *class)
 static void
 nautilus_search_hit_init (NautilusSearchHit *hit)
 {
-    hit = G_TYPE_INSTANCE_GET_PRIVATE (hit,
-                                       NAUTILUS_TYPE_SEARCH_HIT,
-                                       NautilusSearchHit);
 }
 
 NautilusSearchHit *
