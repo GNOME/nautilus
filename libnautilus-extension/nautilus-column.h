@@ -49,7 +49,6 @@ G_DECLARE_FINAL_TYPE (NautilusColumn, nautilus_column, NAUTILUS, COLUMN, GObject
 
 /**
  * nautilus_column_new:
- *
  * @name: (not nullable): identifier of the column
  * @attribute: (not nullable): the file attribute to be displayed in the column
  * @label: (not nullable): the user-visible label for the column
