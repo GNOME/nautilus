@@ -746,7 +746,7 @@ on_drag_motion (GtkDropTarget *target,
                 gpointer       user_data)
 {
     ButtonData *button_data = user_data;
-    GdkDragAction action;
+    GdkDragAction action = 0;
     const GValue *value;
     graphene_point_t start;
 
@@ -759,12 +759,7 @@ on_drag_motion (GtkDropTarget *target,
     if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
         GSList *items = g_value_get_boxed (value);
-
-        if (items == NULL)
-        {
-            action = 0;
-        }
-        else
+        if (items != NULL)
         {
             action = nautilus_dnd_get_preferred_action (button_data->file, items->data);
         }
