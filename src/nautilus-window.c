@@ -1476,28 +1476,22 @@ extra_drag_value_cb (AdwTabBar    *self,
 {
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
     g_autoptr (NautilusFile) file = nautilus_file_get (nautilus_window_slot_get_location (slot));
-    GdkDragAction action;
+    GdkDragAction action = 0;
 
-    if (value == NULL)
+    if (value != NULL)
     {
-        action = 0;
-    }
-    else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
-    {
-        GSList *file_list = g_value_get_boxed (value);
-
-        if (file_list == NULL)
+        if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
         {
-            action = 0;
+            GSList *file_list = g_value_get_boxed (value);
+            if (file_list != NULL)
+            {
+                action = nautilus_dnd_get_preferred_action (file, G_FILE (file_list->data));
+            }
         }
-        else
+        else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
         {
-            action = nautilus_dnd_get_preferred_action (file, G_FILE (file_list->data));
+            action = GDK_ACTION_COPY;
         }
-    }
-    else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
-    {
-        action = GDK_ACTION_COPY;
     }
 
     /* We set the preferred action on the drop from the results of this function,
