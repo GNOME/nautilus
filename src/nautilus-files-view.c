@@ -3232,7 +3232,8 @@ nautilus_files_view_focus (GtkWidget        *widget,
     /* In general, we want to forward focus movement to the main child. However,
      * we must chain up for default focus handling in case the focus in in any
      * other child, e.g. a popover. */
-    if (gtk_widget_is_ancestor (focus, widget) &&
+    if (focus != NULL &&
+        gtk_widget_is_ancestor (focus, widget) &&
         !gtk_widget_is_ancestor (focus, priv->scrolled_window))
     {
         if (GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->focus (widget, direction))
