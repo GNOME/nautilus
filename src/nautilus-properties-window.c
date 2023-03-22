@@ -3001,8 +3001,8 @@ update_execution_row (GtkWidget         *row,
                                          G_CALLBACK (execution_bit_changed),
                                          self);
 
-        gtk_switch_set_state (self->execution_switch,
-                              target_perm->file_exec_permissions == PERMISSION_EXEC);
+        gtk_switch_set_active (self->execution_switch,
+                               target_perm->file_exec_permissions == PERMISSION_EXEC);
 
         g_signal_handlers_unblock_by_func (self->execution_switch,
                                            G_CALLBACK (execution_bit_changed),
