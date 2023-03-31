@@ -278,9 +278,7 @@ G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 #define DELETE _("_Delete")
 #define DELETE_ALL _("Delete _All")
 #define REPLACE _("_Replace")
-#define REPLACE_ALL _("Replace _All")
 #define MERGE _("_Merge")
-#define MERGE_ALL _("Merge _All")
 #define COPY_FORCE _("Copy _Anyway")
 #define FORCE_OPERATION _("Proceed _Anyway")
 #define EMPTY_TRASH _("Empty _Trash")
@@ -291,9 +289,7 @@ is_all_button_text (const char *button_text)
     g_assert (button_text != NULL);
 
     return !strcmp (button_text, SKIP_ALL) ||
-           !strcmp (button_text, REPLACE_ALL) ||
-           !strcmp (button_text, DELETE_ALL) ||
-           !strcmp (button_text, MERGE_ALL);
+           !strcmp (button_text, DELETE_ALL);
 }
 
 static void scan_sources (GList      *files,
