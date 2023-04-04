@@ -14,3 +14,14 @@
 .disk-space-free {
   color: alpha(currentColor, 0.3);
 }
+
+.nautilus-list-view columnview > listview > row.activatable:hover,
+.nautilus-grid-view gridview > child.activatable:hover {
+  box-shadow: inset 0 0 0 1px @borders;
+}
+
+.nautilus-list-view columnview > listview > row:selected,
+.nautilus-grid-view gridview > child:selected {
+  box-shadow: inset 0 0 0 1px alpha(@accent_color, .6);
+}
+
