@@ -1880,7 +1880,6 @@ trash_file (CommonJob     *job,
     else if (response == 2)         /* skip */
     {
         *skipped_file = TRUE;
-        job->skip_all_error = TRUE;
     }
     else if (response == 3)         /* delete all */
     {
