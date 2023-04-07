@@ -741,6 +741,11 @@ real_perform_drop (NautilusListBase *self,
         GSList *source_file_list = g_value_get_boxed (value);
         GList *source_uri_list = NULL;
 
+        if (source_file_list == NULL)
+        {
+            return;
+        }
+
         for (GSList *l = source_file_list; l != NULL; l = l->next)
         {
             source_uri_list = g_list_prepend (source_uri_list, g_file_get_uri (l->data));

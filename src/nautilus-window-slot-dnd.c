@@ -276,6 +276,11 @@ slot_proxy_handle_drop (GtkDropTarget *target,
             GSList *items = g_value_get_boxed (value);
             GdkDragAction actions;
 
+            if (items == NULL)
+            {
+                return;
+            }
+
             for (GSList *l = items; l != NULL; l = l->next)
             {
                 uri_list = g_list_prepend (uri_list, g_file_get_uri (l->data));

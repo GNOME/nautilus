@@ -963,6 +963,11 @@ places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
     char *dest_uri;
     GList *source_uri_list;
 
+    if (source_file_list == NULL)
+    {
+        return;
+    }
+
     dest_uri = g_file_get_uri (dest_file);
     source_uri_list = build_uri_list_from_gfile_list (source_file_list);
 
