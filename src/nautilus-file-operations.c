@@ -6110,8 +6110,6 @@ move_files (CopyMoveJob   *job,
             same_fs = has_fs_id (src, dest_fs_id);
         }
 
-        /* Set overwrite to true, as the user has
-         *  selected overwrite on all toplevel items */
         skipped_file = FALSE;
         copy_move_file (job, src, job->destination,
                         same_fs, FALSE, dest_fs_type,
