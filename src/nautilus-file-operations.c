@@ -2664,12 +2664,12 @@ scan_dir (GFile      *dir,
                              dir_info);
     }
 
-    /* Stash a copy of the struct to restore state before goto retry. Note that
+    /* Stash a copy of the struct to restore state when retrying. Note that
      * this assumes the code below does not access any pointer member */
     saved_info = *source_info;
 
-retry:
-
+    while (TRUE)
+    {
         if (dir_info != NULL)
         {
             dir_info->num_files_children = 0;
@@ -2747,7 +2747,7 @@ retry:
                 {
                     g_clear_list (&subdirs, g_object_unref);
                     *source_info = saved_info;
-                    goto retry;
+                    continue;
                 }
                 else if (response == RESPONSE_SKIP)
                 {
@@ -2816,12 +2816,15 @@ retry:
             }
             else if (response == RESPONSE_RETRY)
             {
-                goto retry;
+                continue;
             }
             else
             {
                 g_assert_not_reached ();
             }
+        }
+
+        break;
     }
 
     if (!skip_subdirs)
@@ -2850,7 +2853,8 @@ scan_file (GFile      *file,
 
     dirs = g_queue_new ();
 
-retry:
+    while (TRUE)
+    {
         error = NULL;
         info = g_file_query_info (file,
                                   G_FILE_ATTRIBUTE_STANDARD_TYPE ","
@@ -2925,12 +2929,15 @@ retry:
             }
             else if (response == RESPONSE_RETRY)
             {
-                goto retry;
+                continue;
             }
             else
             {
                 g_assert_not_reached ();
             }
+        }
+
+        break;
     }
 
     while (!job_aborted (job) &&
@@ -2996,7 +3003,8 @@ verify_destination (CommonJob   *job,
         *dest_fs_id = NULL;
     }
 
-retry:
+    while (TRUE)
+    {
         error = NULL;
         info = g_file_query_info (dest,
                                   G_FILE_ATTRIBUTE_STANDARD_TYPE ","
@@ -3042,7 +3050,7 @@ retry:
             }
             else if (response == RESPONSE_RETRY)
             {
-                goto retry;
+                continue;
             }
             else
             {
@@ -3058,7 +3066,7 @@ retry:
             /* Record that destination is a symlink and do real stat() once again */
             dest_is_symlink = TRUE;
             g_object_unref (info);
-            goto retry;
+            continue;
         }
 
         if (dest_fs_id)
@@ -3142,7 +3150,7 @@ retry:
                 }
                 else if (response == RESPONSE_RETRY)
                 {
-                    goto retry;
+                    continue;
                 }
                 else if (response == RESPONSE_COPY_FORCE)
                 {
@@ -3153,6 +3161,9 @@ retry:
                     g_assert_not_reached ();
                 }
             }
+        }
+
+        break;
     }
 
     if (!job_aborted (job) &&
@@ -3991,7 +4002,8 @@ create_dest_dir (CommonJob  *job,
 
     handled_invalid_filename = *dest_fs_type != NULL;
 
-retry:
+    while (TRUE)
+    {
         /* First create the directory, then copy stuff to it before
          *  copying the attributes, because we need to be sure we can write to it */
 
@@ -4086,13 +4098,16 @@ retry:
             }
             else if (response == RESPONSE_RETRY)
             {
-                goto retry;
+                continue;
             }
             else
             {
                 g_assert_not_reached ();
             }
             return CREATE_DEST_DIR_FAILED;
+        }
+
+        break;
     }
     nautilus_file_changes_queue_file_added (*dest);
 
@@ -4194,7 +4209,9 @@ copy_move_directory (CopyMoveJob   *copy_job,
     dest_fs_type = NULL;
 
     skip_error = should_skip_readdir_error (job, src);
-retry:
+
+    while (TRUE)
+    {
         error = NULL;
         enumerator = g_file_enumerate_children (src,
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME,
@@ -4361,12 +4378,15 @@ retry:
             }
             else if (response == RESPONSE_RETRY)
             {
-                goto retry;
+                continue;
             }
             else
             {
                 g_assert_not_reached ();
             }
+        }
+
+        break;
     }
 
     if (src_info != NULL)
@@ -4717,9 +4737,8 @@ copy_move_file (CopyMoveJob   *copy_job,
         goto out;
     }
 
-
-retry:
-
+    while (TRUE)
+    {
         error = NULL;
         flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
         if (overwrite)
@@ -4827,7 +4846,7 @@ retry:
                 dest = new_dest;
 
                 g_error_free (error);
-                goto retry;
+                continue;
             }
             else
             {
@@ -4850,7 +4869,7 @@ retry:
             {
                 g_object_unref (dest);
                 dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
-                goto retry;
+                continue;
             }
 
             source_is_directory = is_dir (src, job->cancellable);
@@ -4866,14 +4885,14 @@ retry:
             {
                 /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
                 overwrite = TRUE;
-                goto retry;
+                continue;
             }
 
             if ((is_merge && job->merge_all) ||
                 (!is_merge && job->replace_all))
             {
                 overwrite = TRUE;
-                goto retry;
+                continue;
             }
 
             if (job->skip_all_conflict)
@@ -4911,7 +4930,7 @@ retry:
                 }
                 overwrite = TRUE;
                 file_conflict_response_free (response);
-                goto retry;
+                continue;
             }
             else if (response->id == CONFLICT_RESPONSE_RENAME)
             {
@@ -4919,7 +4938,7 @@ retry:
                 dest = get_target_file_for_display_name (dest_dir,
                                                          response->new_name);
                 file_conflict_response_free (response);
-                goto retry;
+                continue;
             }
             else
             {
@@ -5011,7 +5030,7 @@ retry:
                 /* destination changed, since it was an invalid file name */
                 g_assert (*dest_fs_type != NULL);
                 handled_invalid_filename = TRUE;
-                goto retry;
+                continue;
             }
 
             g_object_unref (dest);
@@ -5044,6 +5063,9 @@ retry:
                               source_info->num_files,
                               source_info->num_files > transfer_info->num_files);
             g_error_free (error);
+        }
+
+        break;
     }
 out:
     *skipped_file = TRUE;     /* Or aborted, but same-same */
@@ -5462,9 +5484,8 @@ move_file_prepare (CopyMoveJob  *move_job,
         return;
     }
 
-
-retry:
-
+    while (TRUE)
+    {
         flags = G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_NO_FALLBACK_FOR_MOVE;
         if (overwrite)
         {
@@ -5510,7 +5531,7 @@ retry:
             {
                 g_object_unref (dest);
                 dest = new_dest;
-                goto retry;
+                continue;
             }
             else
             {
@@ -5540,14 +5561,14 @@ retry:
             {
                 /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
                 overwrite = TRUE;
-                goto retry;
+                continue;
             }
 
             if ((is_merge && job->merge_all) ||
                 (!is_merge && job->replace_all))
             {
                 overwrite = TRUE;
-                goto retry;
+                continue;
             }
 
             if (job->skip_all_conflict)
@@ -5585,7 +5606,7 @@ retry:
                 }
                 overwrite = TRUE;
                 file_conflict_response_free (response);
-                goto retry;
+                continue;
             }
             else if (response->id == CONFLICT_RESPONSE_RENAME)
             {
@@ -5593,7 +5614,7 @@ retry:
                 dest = get_target_file_for_display_name (dest_dir,
                                                          response->new_name);
                 file_conflict_response_free (response);
-                goto retry;
+                continue;
             }
             else
             {
@@ -5638,6 +5659,9 @@ retry:
                               files_left > 1);
 
             g_error_free (error);
+        }
+
+        break;
     }
 }
 
@@ -6017,7 +6041,8 @@ link_file (CopyMoveJob  *job,
 
     dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
 
-retry:
+    while (TRUE)
+    {
         error = NULL;
         not_local = FALSE;
 
@@ -6066,7 +6091,7 @@ retry:
                 dest = new_dest;
                 g_error_free (error);
 
-                goto retry;
+                continue;
             }
             else
             {
@@ -6079,7 +6104,7 @@ retry:
             g_object_unref (dest);
             dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count++);
             g_error_free (error);
-            goto retry;
+            continue;
         }
         else if (error != NULL && IS_IO_ERROR (error, CANCELLED))
         {
@@ -6127,6 +6152,9 @@ retry:
             {
                 g_error_free (error);
             }
+        }
+
+        break;
     }
 }
 
@@ -6746,8 +6774,8 @@ create_task_thread_func (GTask        *task,
     }
     count = 1;
 
-retry:
-
+    while (TRUE)
+    {
         error = NULL;
         if (job->make_dir)
         {
@@ -6920,7 +6948,7 @@ retry:
                     }
 
                     g_error_free (error);
-                    goto retry;
+                    continue;
                 }
             }
 
@@ -6940,7 +6968,7 @@ retry:
                     dest = g_file_get_child (job->dest_dir, filename2);
                 }
                 g_error_free (error);
-                goto retry;
+                continue;
             }
             else if (IS_IO_ERROR (error, CANCELLED))
             {
@@ -6978,6 +7006,9 @@ retry:
 
                 g_error_free (error);
             }
+        }
+
+        break;
     }
 }
 
