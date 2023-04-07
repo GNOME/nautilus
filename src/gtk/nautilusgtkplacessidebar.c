@@ -1656,8 +1656,9 @@ drag_motion_callback (GtkDropTarget    *target,
   row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (sidebar->list_box), y);
 
   start = sidebar->hover_start_point;
-  if (row != sidebar->hover_row ||
-      gtk_drag_check_threshold (GTK_WIDGET (sidebar), start.x, start.y, x, y))
+  if (sidebar->drag_row == NULL &&
+      (row != sidebar->hover_row ||
+      gtk_drag_check_threshold (GTK_WIDGET (sidebar), start.x, start.y, x, y)))
     {
       g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
       sidebar->hover_row = row;
