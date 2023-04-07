@@ -853,6 +853,60 @@ real_sort_directories_first_changed (NautilusFilesView *files_view)
     nautilus_view_model_sort (nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self)));
 }
 
+static char *
+real_get_backing_uri (NautilusFilesView *view)
+{
+    NautilusListView *self = NAUTILUS_LIST_VIEW (view);
+    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+    g_autoptr (NautilusFile) common_parent = NULL;
+
+    if (!self->expand_as_a_tree)
+    {
+        return NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->get_backing_uri (view);
+    }
+
+    /* If we are using tree expanders use the items parent, unless it
+     * is an expanded folder, in which case we should that folder directly.
+     * When dealing with multiple selections, use the same rules, but only
+     * if a common parent exists. */
+
+    for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (model)); i++)
+    {
+        g_autoptr (GtkTreeListRow) row = g_list_model_get_item (G_LIST_MODEL (model), i);
+        g_autoptr (NautilusViewItem) item = NULL;
+        g_autoptr (NautilusFile) parent_file = NULL;
+        NautilusFile *file;
+        NautilusFile *current_parent;
+
+        if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), i))
+        {
+            continue;
+        }
+
+        item = gtk_tree_list_row_get_item (row);
+        file = nautilus_view_item_get_file (item);
+        parent_file = nautilus_file_get_parent (file);
+        current_parent = gtk_tree_list_row_get_expanded (row) ? file : parent_file;
+
+        if (common_parent == NULL)
+        {
+            common_parent = nautilus_file_ref (current_parent);
+        }
+        else if (current_parent != common_parent)
+        {
+            g_clear_pointer (&common_parent, nautilus_file_unref);
+            break;
+        }
+    }
+
+    if (common_parent != NULL)
+    {
+        return nautilus_file_get_uri (common_parent);
+    }
+
+    return NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->get_backing_uri (view);
+}
+
 static guint
 real_get_view_id (NautilusFilesView *files_view)
 {
@@ -1485,6 +1539,7 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
     files_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
+    files_view_class->get_backing_uri = real_get_backing_uri;
     files_view_class->get_view_id = real_get_view_id;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
