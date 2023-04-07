@@ -354,6 +354,7 @@ create_view_ui (NautilusListView *self)
      * hover). Setting it to FALSE gives us the expected behavior. */
     gtk_column_view_set_single_click_activate (GTK_COLUMN_VIEW (widget), FALSE);
     gtk_column_view_set_enable_rubberband (GTK_COLUMN_VIEW (widget), TRUE);
+    gtk_column_view_set_tab_behavior (GTK_COLUMN_VIEW (widget), GTK_LIST_TAB_ITEM);
 
     /* While we don't want to use GTK's click activation, we'll let it handle
      * the key activation part (with Enter).

@@ -542,6 +542,7 @@ create_view_ui (NautilusGridView *self)
     gtk_grid_view_set_single_click_activate (GTK_GRID_VIEW (widget), FALSE);
     gtk_grid_view_set_max_columns (GTK_GRID_VIEW (widget), 20);
     gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (widget), TRUE);
+    gtk_grid_view_set_tab_behavior (GTK_GRID_VIEW (widget), GTK_LIST_TAB_ITEM);
 
     /* While we don't want to use GTK's click activation, we'll let it handle
      * the key activation part (with Enter).
