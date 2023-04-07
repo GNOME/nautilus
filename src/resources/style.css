@@ -207,10 +207,16 @@
   padding-bottom: 3px;
 }
 
-.nautilus-list-view:not(.compact) image.star {
-  padding: 6px;
+/* Star button needs to extend beyond its cell, into the padding of the row. */
+.nautilus-list-view button.star {
+  margin-top: -3px;
+  margin-bottom: -3px;
 }
 
+.nautilus-list-view.compact button.star {
+  min-height: 24px;
+  min-width: 24px;
+}
 .nautilus-list-view menubutton.fts-snippet > button {
   border-radius: 100px;
   padding-top: 2px;
@@ -248,7 +254,7 @@
   opacity: 0.55;
 }
 
-.view image.star:hover {
+.view button.star:hover {
   opacity: 1;
 }
 
@@ -257,7 +263,7 @@
   to {}
 }
 
-.view image.star.added {
+.view button.star.added image {
   animation: rotate_star 0.4s ease;
 }
 

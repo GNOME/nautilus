@@ -13,19 +13,14 @@ struct _NautilusStarCell
 
     GSignalGroup *item_signal_group;
 
-    GtkImage *star;
+    GtkButton *star;
 };
 
 G_DEFINE_TYPE (NautilusStarCell, nautilus_star_cell, NAUTILUS_TYPE_VIEW_CELL)
 
 static void
-on_star_click_released (GtkGestureClick *gesture,
-                        gint             n_press,
-                        gdouble          x,
-                        gdouble          y,
-                        gpointer         user_data)
+toggle_star (NautilusStarCell *self)
 {
-    NautilusStarCell *self = user_data;
     NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
@@ -54,12 +49,10 @@ on_star_click_released (GtkGestureClick *gesture,
                                          NULL);
         gtk_widget_add_css_class (GTK_WIDGET (self->star), "added");
     }
-
-    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static void
-update_star (GtkImage     *star,
+update_star (GtkButton    *star,
              NautilusFile *file)
 {
     gboolean is_starred;
@@ -71,7 +64,7 @@ update_star (GtkImage     *star,
     is_starred = nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (),
                                                        file_uri);
 
-    gtk_image_set_from_icon_name (star, is_starred ? "starred-symbolic" : "non-starred-symbolic");
+    gtk_button_set_icon_name (star, is_starred ? "starred-symbolic" : "non-starred-symbolic");
 }
 
 static void
@@ -113,22 +106,19 @@ static void
 nautilus_star_cell_init (NautilusStarCell *self)
 {
     GtkWidget *star;
-    GtkGesture *gesture;
 
     /* Create star icon */
-    star = gtk_image_new ();
+    star = gtk_button_new ();
     gtk_widget_set_halign (star, GTK_ALIGN_END);
     gtk_widget_set_valign (star, GTK_ALIGN_CENTER);
     gtk_widget_add_css_class (star, "dim-label");
     gtk_widget_add_css_class (star, "star");
+    gtk_widget_add_css_class (star, "flat");
+    gtk_widget_add_css_class (star, "circular");
     adw_bin_set_child (ADW_BIN (self), star);
-    self->star = GTK_IMAGE (star);
+    self->star = GTK_BUTTON (star);
 
-    /* Make it clickable */
-    gesture = gtk_gesture_click_new ();
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), GDK_BUTTON_PRIMARY);
-    g_signal_connect (gesture, "released", G_CALLBACK (on_star_click_released), self);
-    gtk_widget_add_controller (star, GTK_EVENT_CONTROLLER (gesture));
+    g_signal_connect_swapped (self->star, "clicked", G_CALLBACK (toggle_star), self);
 
     /* Update on tag changes */
     g_signal_connect_object (nautilus_tag_manager_get (), "starred-changed",
