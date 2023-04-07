@@ -7843,7 +7843,10 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "properties");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 TRUE);
+                                 selection_count != 0 ||
+                                 (!selection_contains_recent &&
+                                  !selection_contains_search &&
+                                  !selection_contains_starred));
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "current-directory-properties");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
