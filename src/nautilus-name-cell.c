@@ -197,7 +197,13 @@ update_emblems (NautilusNameCell *self)
     emblems = nautilus_file_get_emblem_icons (file);
     for (GList *l = emblems; l != NULL; l = l->next)
     {
-        if (!gtk_icon_theme_has_gicon (theme, l->data))
+        g_autoptr (GtkIconPaintable) icon_paintable = NULL;
+
+        /* Workaround for gtk_icon_theme_has_gicon() ignoring unthemed icons.
+         * See: https://gitlab.gnome.org/GNOME/nautilus/-/issues/2789 and
+         * https://gitlab.gnome.org/GNOME/gtk/-/issues/5709 */
+        icon_paintable = gtk_icon_theme_lookup_by_gicon (theme, l->data, 16, 1, 0, 0);
+        if (g_strcmp0 (gtk_icon_paintable_get_icon_name (icon_paintable), "image-missing") == 0)
         {
             g_autofree gchar *icon_string = g_icon_to_string (l->data);
             g_warning ("Failed to add emblem. “%s” not found in the icon theme",
