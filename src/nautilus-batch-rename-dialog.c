@@ -1584,9 +1584,11 @@ get_tags_intersecting_sorted (NautilusBatchRenameDialog *self,
             if (text_changed_mode == TEXT_WAS_DELETED)
             {
                 selection_intersects_tag_start = end_position > tag_data->position &&
-                                                 end_position <= tag_end_position;
+                                                 end_position <= tag_end_position &&
+                                                 start_position <= tag_data->position;
                 selection_intersects_tag_end = start_position >= tag_data->position &&
-                                               start_position < tag_end_position;
+                                               start_position < tag_end_position &&
+                                               end_position >= tag_end_position;
                 tag_is_contained_in_selection = start_position <= tag_data->position &&
                                                 end_position >= tag_end_position;
             }
