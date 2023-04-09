@@ -179,7 +179,7 @@ struct _NautilusPropertiesWindow
 
     GList *value_fields;
 
-    GList *mime_list;
+    char *mime_type;
 
     gboolean deep_count_finished;
     GList *deep_count_files;
@@ -1002,31 +1002,6 @@ remove_from_dialog (NautilusPropertiesWindow *self,
 }
 
 static gboolean
-mime_list_equal (GList *a,
-                 GList *b)
-{
-    while (a && b)
-    {
-        if (strcmp (a->data, b->data))
-        {
-            return FALSE;
-        }
-        a = a->next;
-        b = b->next;
-    }
-
-    return (a == b);
-}
-
-static GList *
-get_mime_list (NautilusPropertiesWindow *self)
-{
-    return g_list_copy_deep (self->target_files,
-                             (GCopyFunc) nautilus_file_get_mime_type,
-                             NULL);
-}
-
-static gboolean
 start_spinner_callback (NautilusPropertiesWindow *self)
 {
     gtk_widget_set_visible (self->contents_spinner, TRUE);
@@ -1288,10 +1263,24 @@ update_permissions_navigation_row (NautilusPropertiesWindow *self,
 }
 
 static void
+update_extension_list (NautilusPropertiesWindow *self)
+{
+    char *mime_type = is_multi_file_window (self) ?
+                      NULL : nautilus_file_get_mime_type (get_target_file (self));
+
+    if (g_strcmp0 (self->mime_type, mime_type) != 0)
+    {
+        g_free (self->mime_type);
+        self->mime_type = mime_type;
+
+        refresh_extension_model_pages (self);
+    }
+}
+
+static void
 properties_window_update (NautilusPropertiesWindow *self,
                           GList                    *files)
 {
-    GList *mime_list;
     NautilusFile *changed_file;
     gboolean dirty_original = FALSE;
     gboolean dirty_target = FALSE;
@@ -1354,18 +1343,7 @@ properties_window_update (NautilusPropertiesWindow *self,
                         self);
     }
 
-    mime_list = get_mime_list (self);
-
-    if (self->mime_list != NULL)
-    {
-        if (!mime_list_equal (self->mime_list, mime_list))
-        {
-            refresh_extension_model_pages (self);
-        }
-
-        g_list_free_full (self->mime_list, g_free);
-    }
-    self->mime_list = mime_list;
+    update_extension_list (self);
 }
 
 static gboolean
@@ -4088,7 +4066,7 @@ real_finalize (GObject *object)
 
     self = NAUTILUS_PROPERTIES_WINDOW (object);
 
-    g_list_free_full (self->mime_list, g_free);
+    g_free (self->mime_type);
 
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
