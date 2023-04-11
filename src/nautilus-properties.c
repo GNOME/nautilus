@@ -1319,20 +1319,6 @@ update_files_callback (gpointer data)
 }
 
 static void
-schedule_files_update (NautilusPropertiesWidget *self)
-{
-    g_assert (NAUTILUS_IS_PROPERTIES_WIDGET (self));
-
-    if (self->update_files_timeout_id == 0)
-    {
-        self->update_files_timeout_id
-            = g_timeout_add_once (FILES_UPDATE_INTERVAL,
-                                  (GSourceOnceFunc) update_files_callback,
-                                  self);
-    }
-}
-
-static void
 value_label_update (GtkLabel                 *label,
                     NautilusPropertiesWidget *self)
 {
@@ -3565,7 +3551,14 @@ file_changed_callback (NautilusFile *file,
     {
         nautilus_file_ref (file);
         self->changed_files = g_list_prepend (self->changed_files, file);
-        schedule_files_update (self);
+
+        if (self->update_files_timeout_id == 0)
+        {
+            /* Schedule new update */
+            self->update_files_timeout_id = g_timeout_add_once (FILES_UPDATE_INTERVAL,
+                                                                (GSourceOnceFunc) update_files_callback,
+                                                                self);
+        }
     }
 }
 
