@@ -424,7 +424,6 @@ permission_value_to_string (PermissionValue permission_value,
 #define CHOWN_CHGRP_TIMEOUT                     300 /* milliseconds */
 
 static void schedule_directory_contents_update (NautilusPropertiesWidget *self);
-static void directory_contents_value_field_update (NautilusPropertiesWidget *self);
 static void file_changed_callback (NautilusFile *file,
                                    gpointer      user_data);
 static void update_execution_row (GtkWidget       *row,
@@ -435,8 +434,6 @@ static void value_label_update (GtkLabel                 *field,
                                 NautilusPropertiesWidget *self);
 static void value_row_update (AdwActionRow             *row,
                               NautilusPropertiesWidget *self);
-static void properties_widget_update (NautilusPropertiesWidget *self,
-                                      GList                    *files);
 static void cancel_group_change_callback (GroupChange *change);
 static void cancel_owner_change_callback (OwnerChange *change);
 static void update_owner_row (AdwComboRow     *row,
