@@ -960,13 +960,11 @@ remove_from_dialog (NautilusPropertiesWidget *self,
     g_object_unref (file);
 }
 
-static gboolean
+static void
 start_spinner_callback (NautilusPropertiesWidget *self)
 {
     gtk_widget_set_visible (self->contents_spinner, TRUE);
     self->deep_count_spinner_timeout_id = 0;
-
-    return FALSE;
 }
 
 static void
@@ -975,9 +973,9 @@ schedule_start_spinner (NautilusPropertiesWidget *self)
     if (self->deep_count_spinner_timeout_id == 0)
     {
         self->deep_count_spinner_timeout_id
-            = g_timeout_add_seconds (1,
-                                     (GSourceFunc) start_spinner_callback,
-                                     self);
+            = g_timeout_add_once (1000,
+                                  (GSourceOnceFunc) start_spinner_callback,
+                                  self);
     }
 }
 
@@ -1297,7 +1295,7 @@ properties_widget_update (NautilusPropertiesWidget *self,
     update_extension_list (self);
 }
 
-static gboolean
+static void
 update_files_callback (gpointer data)
 {
     NautilusPropertiesWidget *self;
@@ -1318,8 +1316,6 @@ update_files_callback (gpointer data)
         nautilus_file_list_free (self->changed_files);
         self->changed_files = NULL;
     }
-
-    return FALSE;
 }
 
 static void
@@ -1330,9 +1326,9 @@ schedule_files_update (NautilusPropertiesWidget *self)
     if (self->update_files_timeout_id == 0)
     {
         self->update_files_timeout_id
-            = g_timeout_add (FILES_UPDATE_INTERVAL,
-                             update_files_callback,
-                             self);
+            = g_timeout_add_once (FILES_UPDATE_INTERVAL,
+                                  (GSourceOnceFunc) update_files_callback,
+                                  self);
     }
 }
 
@@ -1552,7 +1548,7 @@ cancel_group_change_callback (GroupChange *change)
     nautilus_file_cancel (change->file, (NautilusFileOperationCallback) group_change_callback, change);
 }
 
-static gboolean
+static void
 schedule_group_change_timeout (GroupChange *change)
 {
     g_assert (NAUTILUS_IS_PROPERTIES_WIDGET (change->widget));
@@ -1569,8 +1565,6 @@ schedule_group_change_timeout (GroupChange *change)
     nautilus_file_set_group
         (change->file, change->group,
         (NautilusFileOperationCallback) group_change_callback, change);
-
-    return FALSE;
 }
 
 static void
@@ -1590,9 +1584,9 @@ schedule_group_change (NautilusPropertiesWidget *self,
     change->group = g_strdup (group);
     change->widget = g_object_ref (self);
     change->timeout =
-        g_timeout_add (CHOWN_CHGRP_TIMEOUT,
-                       (GSourceFunc) schedule_group_change_timeout,
-                       change);
+        g_timeout_add_once (CHOWN_CHGRP_TIMEOUT,
+                            (GSourceOnceFunc) schedule_group_change_timeout,
+                            change);
 
     self->group_change = change;
 }
@@ -1699,7 +1693,7 @@ cancel_owner_change_callback (OwnerChange *change)
     nautilus_file_cancel (change->file, (NautilusFileOperationCallback) owner_change_callback, change);
 }
 
-static gboolean
+static void
 schedule_owner_change_timeout (OwnerChange *change)
 {
     g_assert (NAUTILUS_IS_PROPERTIES_WIDGET (change->widget));
@@ -1716,8 +1710,6 @@ schedule_owner_change_timeout (OwnerChange *change)
     nautilus_file_set_owner
         (change->file, change->owner,
         (NautilusFileOperationCallback) owner_change_callback, change);
-
-    return FALSE;
 }
 
 static void
@@ -1737,9 +1729,9 @@ schedule_owner_change (NautilusPropertiesWidget *self,
     change->owner = g_strdup (owner);
     change->widget = g_object_ref (self);
     change->timeout =
-        g_timeout_add (CHOWN_CHGRP_TIMEOUT,
-                       (GSourceFunc) schedule_owner_change_timeout,
-                       change);
+        g_timeout_add_once (CHOWN_CHGRP_TIMEOUT,
+                            (GSourceOnceFunc) schedule_owner_change_timeout,
+                            change);
 
     self->owner_change = change;
 }
@@ -2090,7 +2082,7 @@ directory_contents_value_field_update (NautilusPropertiesWidget *self)
     }
 }
 
-static gboolean
+static void
 update_directory_contents_callback (gpointer data)
 {
     NautilusPropertiesWidget *self;
@@ -2099,8 +2091,6 @@ update_directory_contents_callback (gpointer data)
 
     self->update_directory_contents_timeout_id = 0;
     directory_contents_value_field_update (self);
-
-    return FALSE;
 }
 
 static void
@@ -2111,9 +2101,9 @@ schedule_directory_contents_update (NautilusPropertiesWidget *self)
     if (self->update_directory_contents_timeout_id == 0)
     {
         self->update_directory_contents_timeout_id
-            = g_timeout_add (DIRECTORY_CONTENTS_UPDATE_INTERVAL,
-                             update_directory_contents_callback,
-                             self);
+            = g_timeout_add_once (DIRECTORY_CONTENTS_UPDATE_INTERVAL,
+                                  (GSourceOnceFunc) update_directory_contents_callback,
+                                  self);
     }
 }
 
