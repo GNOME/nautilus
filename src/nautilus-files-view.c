@@ -4341,6 +4341,11 @@ process_old_files (NautilusFilesView *view)
         for (GList *node = files_added; node != NULL; node = node->next)
         {
             pending = node->data;
+            if (nautilus_file_is_gone (pending->file))
+            {
+                g_warning ("Attempted to add a non-existent file to the view.");
+                continue;
+            }
             pending_additions = g_list_prepend (pending_additions, pending->file);
             /* Acknowledge the files that were pending to be revealed */
             if (g_hash_table_contains (priv->pending_reveal, pending->file))
