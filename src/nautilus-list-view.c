@@ -866,7 +866,7 @@ real_get_backing_uri (NautilusFilesView *view)
     }
 
     /* If we are using tree expanders use the items parent, unless it
-     * is an expanded folder, in which case we should that folder directly.
+     * is an expanded folder, in which case we should use that folder directly.
      * When dealing with multiple selections, use the same rules, but only
      * if a common parent exists. */
 
