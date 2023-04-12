@@ -23,3 +23,13 @@ RUN dnf builddep -y gtk4 \
  && ninja install -C _build \
  && cd .. \
  && rm -rf libadwaita
+
+RUN dnf builddep -y gnome-autoar \
+ && dnf clean all \
+ && git clone --depth 1 https://gitlab.gnome.org/GNOME/gnome-autoar.git \
+ && cd gnome-autoar \
+ && meson setup _build --prefix /usr \
+ && ninja -C _build \
+ && ninja install -C _build \
+ && cd .. \
+ && rm -rf gnome-autoar
