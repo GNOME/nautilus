@@ -771,6 +771,10 @@ on_drag_motion (GtkDropTarget *target,
             action = nautilus_dnd_get_preferred_action (button_data->file, items->data);
         }
     }
+    else if (G_VALUE_HOLDS (value, GDK_TYPE_TEXTURE))
+    {
+        action = GDK_ACTION_COPY;
+    }
 
     start = button_data->hover_start_point;
     if (gtk_drag_check_threshold (button_data->button, start.x, start.y, x, y))
@@ -1255,7 +1259,7 @@ make_button_data (NautilusPathBar *self,
 
     gtk_drop_target_set_preload (target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */
-    gtk_drop_target_set_gtypes (target, (GType[1]) { GDK_TYPE_FILE_LIST }, 1);
+    gtk_drop_target_set_gtypes (target, (GType[2]) { GDK_TYPE_TEXTURE, GDK_TYPE_FILE_LIST }, 2);
     g_signal_connect (target, "enter", G_CALLBACK (on_drag_motion), button_data);
     g_signal_connect (target, "motion", G_CALLBACK (on_drag_motion), button_data);
     g_signal_connect (target, "drop", G_CALLBACK (on_drag_drop), button_data);

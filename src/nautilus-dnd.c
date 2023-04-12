@@ -8,9 +8,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include <glib/gi18n.h>
+
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-files-view.h"
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-tag-manager.h"
 
@@ -255,6 +258,13 @@ nautilus_dnd_perform_drop (NautilusFilesView *view,
                                               g_value_get_string (value),
                                               target_uri, action);
         return TRUE;
+    }
+    else if (G_VALUE_HOLDS (value, GDK_TYPE_TEXTURE))
+    {
+        g_autofree char *dest_uri = g_file_get_uri (target_location);
+        GdkTexture *texture = g_value_get_object (value);
+
+        nautilus_file_view_save_image_from_texture (view, texture, dest_uri, _("Dropped image"));
     }
     else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {

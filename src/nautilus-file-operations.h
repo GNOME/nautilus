@@ -171,3 +171,12 @@ nautilus_file_operations_paste_image_from_clipboard (GtkWidget                  
                                                     const char                     *parent_dir_uri,
                                                     NautilusCopyCallback            done_callback,
                                                     gpointer                        done_callback_data);
+
+void
+nautilus_file_operations_save_image_from_texture (GtkWidget                      *parent_view,
+                                                  NautilusFileOperationsDBusData *dbus_data,
+                                                  const char                     *parent_dir_uri,
+                                                  const char                     *base_name,
+                                                  GdkTexture                     *texture,
+                                                  NautilusCopyCallback            done_callback,
+                                                  gpointer                        done_callback_data);

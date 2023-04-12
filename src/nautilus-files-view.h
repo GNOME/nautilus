@@ -263,6 +263,10 @@ void              nautilus_files_view_move_copy_items            (NautilusFilesV
                                                                   const GList            *item_uris,
                                                                   const char             *target_uri,
                                                                   int                     copy_action);
+void              nautilus_file_view_save_image_from_texture    (NautilusFilesView       *view,
+                                                                 GdkTexture              *texture,
+                                                                 const char              *target_uri,
+                                                                 const char              *base_name);
 void              nautilus_files_view_new_file_with_initial_contents (NautilusFilesView  *view,
                                                                       const char         *parent_uri,
                                                                       const char         *filename,

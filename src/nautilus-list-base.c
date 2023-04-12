@@ -677,7 +677,7 @@ get_preferred_action (NautilusFile *target_file,
             action = nautilus_dnd_get_preferred_action (target_file, NULL);
         }
     }
-    else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
+    else if (G_VALUE_HOLDS (value, G_TYPE_STRING) || G_VALUE_HOLDS (value, GDK_TYPE_TEXTURE))
     {
         action = GDK_ACTION_COPY;
     }
@@ -941,7 +941,7 @@ setup_cell_common (GObject          *listitem,
     drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
     gtk_drop_target_set_preload (drop_target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */
-    gtk_drop_target_set_gtypes (drop_target, (GType[2]) { GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 2);
+    gtk_drop_target_set_gtypes (drop_target, (GType[3]) { GDK_TYPE_TEXTURE, GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 3);
     g_signal_connect (drop_target, "enter", G_CALLBACK (on_item_drag_enter), cell);
     g_signal_connect (drop_target, "notify::value", G_CALLBACK (on_item_drag_value_notify), cell);
     g_signal_connect (drop_target, "leave", G_CALLBACK (on_item_drag_leave), cell);
@@ -1898,7 +1898,7 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     drop_target = gtk_drop_target_new (G_TYPE_INVALID, GDK_ACTION_ALL);
     gtk_drop_target_set_preload (drop_target, TRUE);
     /* TODO: Implement GDK_TYPE_STRING */
-    gtk_drop_target_set_gtypes (drop_target, (GType[2]) { GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 2);
+    gtk_drop_target_set_gtypes (drop_target, (GType[3]) { GDK_TYPE_TEXTURE, GDK_TYPE_FILE_LIST, G_TYPE_STRING }, 3);
     g_signal_connect (drop_target, "enter", G_CALLBACK (on_view_drag_enter), self);
     g_signal_connect (drop_target, "notify::value", G_CALLBACK (on_view_drag_value_notify), self);
     g_signal_connect (drop_target, "motion", G_CALLBACK (on_view_drag_motion), self);

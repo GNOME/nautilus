@@ -9023,6 +9023,19 @@ nautilus_files_view_get_uri (NautilusFilesView *view)
     return nautilus_directory_get_uri (priv->model);
 }
 
+void nautilus_file_view_save_image_from_texture (NautilusFilesView *view,
+                                                 GdkTexture        *texture,
+                                                 const char        *dest_uri,
+                                                 const char        *base_name)
+{
+    nautilus_file_operations_save_image_from_texture (GTK_WIDGET (view), NULL,
+                                                      dest_uri,
+                                                      base_name,
+                                                      texture,
+                                                      copy_move_done_callback,
+                                                      pre_copy_move (view));
+}
+
 void
 nautilus_files_view_move_copy_items (NautilusFilesView *view,
                                      const GList       *item_uris,

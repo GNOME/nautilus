@@ -8185,6 +8185,41 @@ nautilus_file_operations_paste_image_from_clipboard (GtkWidget                  
 }
 
 void
+nautilus_file_operations_save_image_from_texture (GtkWidget                      *parent_view,
+                                                  NautilusFileOperationsDBusData *dbus_data,
+                                                  const char                     *parent_dir_uri,
+                                                  const char                     *base_name,
+                                                  GdkTexture                     *texture,
+                                                  NautilusCopyCallback            done_callback,
+                                                  gpointer                        done_callback_data)
+{
+    SaveImageJob *job;
+    GtkWindow *parent_window = NULL;
+    g_autoptr (GTask) task = NULL;
+
+    if (parent_view)
+    {
+        parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
+    }
+
+    job = op_job_new (SaveImageJob, parent_window, dbus_data);
+    /* Translators: This is used to auto-generate a file name for saved images
+     * i.e. "Dropped image.png", "Dropped image 1.png", ... */
+    job->base_name = g_strdup (base_name);
+    job->dest_dir = g_file_new_for_uri (parent_dir_uri);
+    job->texture = g_object_ref (texture);
+    job->done_callback = done_callback;
+    job->done_callback_data = done_callback_data;
+
+    nautilus_progress_info_start (job->common.progress);
+    nautilus_progress_info_set_status (job->common.progress, _("Retrieving image data"));
+
+    task = g_task_new (NULL, NULL, save_image_task_done, job);
+    g_task_set_task_data (task, job, NULL);
+    g_task_run_in_thread (task, save_image_thread_func);
+}
+
+void
 nautilus_file_operations_new_file_from_template (GtkWidget              *parent_view,
                                                  const char             *parent_dir,
                                                  const char             *target_filename,

@@ -1496,7 +1496,7 @@ extra_drag_value_cb (AdwTabBar    *self,
                 action = nautilus_dnd_get_preferred_action (file, G_FILE (file_list->data));
             }
         }
-        else if (G_VALUE_HOLDS (value, G_TYPE_STRING))
+        else if (G_VALUE_HOLDS (value, G_TYPE_STRING) || G_VALUE_HOLDS (value, GDK_TYPE_TEXTURE))
         {
             action = GDK_ACTION_COPY;
         }
@@ -1650,7 +1650,7 @@ nautilus_window_constructed (GObject *self)
     {
         adw_tab_bar_setup_extra_drop_target (window->tab_bar,
                                              GDK_ACTION_COPY | GDK_ACTION_MOVE,
-                                             (GType [2]) {GDK_TYPE_FILE_LIST, G_TYPE_STRING}, 2);
+                                             (GType [3]) {GDK_TYPE_TEXTURE, GDK_TYPE_FILE_LIST, G_TYPE_STRING}, 3);
         adw_tab_bar_set_extra_drag_preload (window->tab_bar, TRUE);
         g_signal_connect (window->tab_bar, "extra-drag-value", G_CALLBACK (extra_drag_value_cb), NULL);
         g_signal_connect (window->tab_bar, "extra-drag-drop", G_CALLBACK (extra_drag_drop_cb), NULL);
