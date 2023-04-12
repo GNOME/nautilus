@@ -243,9 +243,10 @@ typedef struct
     GFile *dest_dir;
     gboolean success;
     GBytes *bytes;
+    char *base_name;
     NautilusCopyCallback done_callback;
     gpointer done_callback_data;
-} PasteImageJob;
+} SaveImageJob;
 
 static void
 source_info_clear (SourceInfo *source_info)
@@ -8034,12 +8035,12 @@ nautilus_file_operations_new_folder (GtkWidget                      *parent_view
 }
 
 static void
-paste_image_thread_func (GTask        *task,
-                         gpointer      source_object,
-                         gpointer      task_data,
-                         GCancellable *cancellable)
+save_image_thread_func (GTask        *task,
+                        gpointer      source_object,
+                        gpointer      task_data,
+                        GCancellable *cancellable)
 {
-    PasteImageJob *job = task_data;
+    SaveImageJob *job = task_data;
     g_autoptr (GError) output_error = NULL;
     g_autoptr (GFileOutputStream) stream = NULL;
     int i = 0;
@@ -8049,12 +8050,9 @@ paste_image_thread_func (GTask        *task,
         g_autoptr (GError) stream_error = NULL;
         g_autofree gchar *filename = NULL;
         g_autofree gchar *suffix = NULL;
-        /* Translators: This is used to auto-generate a file name for pasted images from
-         * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ... */
-        const gchar *base_name = _("Pasted image");
 
         suffix = i == 0 ? g_strdup (".png") : g_strdup_printf (" %d.png", i);
-        filename = g_strdup_printf ("%s%s", base_name, suffix);
+        filename = g_strdup_printf ("%s%s", job->base_name, suffix);
         job->location = g_file_get_child (job->dest_dir, filename);
         stream = g_file_create (job->location, 0, job->common.cancellable, &stream_error);
         if (stream_error == NULL)
@@ -8073,23 +8071,23 @@ paste_image_thread_func (GTask        *task,
     }
 
     nautilus_progress_info_set_progress (job->common.progress, .75, 1);
-    nautilus_progress_info_set_status (job->common.progress, _("Saving clipboard image to file"));
+    nautilus_progress_info_set_status (job->common.progress, _("Saving image to file"));
     nautilus_progress_info_set_details (job->common.progress, "");
     g_output_stream_write_bytes (G_OUTPUT_STREAM (stream), job->bytes, job->common.cancellable, &output_error);
     if (output_error == NULL)
     {
         job->success = TRUE;
         nautilus_progress_info_set_progress (job->common.progress, 1, 1);
-        nautilus_progress_info_set_status (job->common.progress, _("Successfully pasted clipboard image to file"));
+        nautilus_progress_info_set_status (job->common.progress, _("Successfully saved image to file"));
     }
 }
 
 static void
-paste_image_task_done (GObject      *source_object,
-                       GAsyncResult *res,
-                       gpointer      user_data)
+save_image_task_done (GObject      *source_object,
+                      GAsyncResult *res,
+                      gpointer      user_data)
 {
-    PasteImageJob *job = user_data;
+    SaveImageJob *job = user_data;
     g_autoptr (GHashTable) debuting_files = NULL;
 
     debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
@@ -8099,7 +8097,10 @@ paste_image_task_done (GObject      *source_object,
         g_hash_table_insert (debuting_files, g_object_ref (job->location), job->location);
     }
 
-    job->done_callback (debuting_files, job->success, job->done_callback_data);
+    if (job->done_callback != NULL)
+    {
+        job->done_callback (debuting_files, job->success, job->done_callback_data);
+    }
 
     if (!job->success)
     {
@@ -8107,9 +8108,10 @@ paste_image_task_done (GObject      *source_object,
         {
             g_file_delete (job->location, NULL, NULL);
         }
-        nautilus_progress_info_set_status (job->common.progress, _("Failed to paste image"));
+        nautilus_progress_info_set_status (job->common.progress, _("Failed to save image"));
     }
 
+    g_free (job->base_name);
     g_clear_object (&job->location);
     g_clear_object (&job->dest_dir);
     g_clear_pointer (&job->bytes, g_bytes_unref);
@@ -8118,35 +8120,35 @@ paste_image_task_done (GObject      *source_object,
 }
 
 static void
-paste_image_received_callback (GObject      *source_object,
-                               GAsyncResult *res,
-                               gpointer      user_data)
+clipboard_image_received_callback (GObject      *source_object,
+                                   GAsyncResult *res,
+                                   gpointer      user_data)
 {
     GdkClipboard *clipboard = GDK_CLIPBOARD (source_object);
-    PasteImageJob *job = user_data;
+    SaveImageJob *job = user_data;
     g_autoptr (GTask) task = NULL;
     g_autoptr (GdkTexture) texture = NULL;
     g_autoptr (GError) clipboard_error = NULL;
 
     if (job_aborted ((CommonJob *) job))
     {
-        paste_image_task_done (NULL, NULL, job);
+        save_image_task_done (NULL, NULL, job);
         return;
     }
 
     texture = gdk_clipboard_read_texture_finish (clipboard, res, &clipboard_error);
     if (clipboard_error != NULL)
     {
-        paste_image_task_done (NULL, NULL, job);
+        save_image_task_done (NULL, NULL, job);
         return;
     }
 
     job->bytes = gdk_texture_save_to_png_bytes (texture);
     nautilus_progress_info_set_progress (job->common.progress, .5, 1);
 
-    task = g_task_new (NULL, NULL, paste_image_task_done, job);
+    task = g_task_new (NULL, NULL, save_image_task_done, job);
     g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread (task, paste_image_thread_func);
+    g_task_run_in_thread (task, save_image_thread_func);
 }
 
 void
@@ -8156,7 +8158,7 @@ nautilus_file_operations_paste_image_from_clipboard (GtkWidget                  
                                                      NautilusCopyCallback            done_callback,
                                                      gpointer                        done_callback_data)
 {
-    PasteImageJob *job;
+    SaveImageJob *job;
     GtkWindow *parent_window = NULL;
     GdkClipboard *clipboard = gtk_widget_get_clipboard (parent_view);
 
@@ -8165,7 +8167,10 @@ nautilus_file_operations_paste_image_from_clipboard (GtkWidget                  
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    job = op_job_new (PasteImageJob, parent_window, dbus_data);
+    job = op_job_new (SaveImageJob, parent_window, dbus_data);
+    /* Translators: This is used to auto-generate a file name for pasted images from
+     * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ... */
+    job->base_name = g_strdup (_("Pasted image"));
     job->dest_dir = g_file_new_for_uri (parent_dir_uri);
     job->location = NULL;
     job->bytes = NULL;
@@ -8174,7 +8179,7 @@ nautilus_file_operations_paste_image_from_clipboard (GtkWidget                  
 
     nautilus_progress_info_start (job->common.progress);
     nautilus_progress_info_set_status (job->common.progress, _("Retrieving clipboard data"));
-    gdk_clipboard_read_texture_async (clipboard, job->common.cancellable, paste_image_received_callback, job);
+    gdk_clipboard_read_texture_async (clipboard, job->common.cancellable, clipboard_image_received_callback, job);
 }
 
 void
