@@ -15,6 +15,7 @@ RUN dnf builddep -y gtk4 \
  && rm -rf gtk
 
  RUN dnf builddep -y libadwaita \
+ && dnf install -y appstream-devel \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/libadwaita.git \
  && cd libadwaita \
