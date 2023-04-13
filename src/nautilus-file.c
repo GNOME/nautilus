@@ -5368,99 +5368,40 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
 
         days_ago = g_date_time_difference (today_midnight, file_date) / G_TIME_SPAN_DAY;
 
-        /* Show only the time if date is on today */
+        /* Show the word "Today" and time if date is on today */
         if (days_ago == 0)
         {
             if (use_24_hour)
             {
-                /* Translators: Time in 24h format */
-                format = _("%H:%M");
+                /* Translators: this is the word "Today" followed by
+                 * a time in 24h format. i.e. "Today 23:04" */
+                /* xgettext:no-c-format */
+                format = _("Today %H:%M");
             }
             else
             {
-                /* Translators: Time in 12h format */
-                format = _("%l:%M %p");
+                /* Translators: this is the word Today followed by
+                 * a time in 12h format. i.e. "Today 9:04 PM" */
+                /* xgettext:no-c-format */
+                format = _("Today %l:%M %p");
             }
         }
         /* Show the word "Yesterday" and time if date is on yesterday */
         else if (days_ago == 1)
         {
-            if (date_format == NAUTILUS_DATE_FORMAT_REGULAR)
+            if (use_24_hour)
             {
+                /* Translators: this is the word Yesterday followed by
+                 * a time in 24h format. i.e. "Yesterday 23:04" */
                 /* xgettext:no-c-format */
-                format = _("Yesterday");
+                format = _("Yesterday %H:%M");
             }
             else
             {
-                if (use_24_hour)
-                {
-                    /* Translators: this is the word Yesterday followed by
-                     * a time in 24h format. i.e. "Yesterday 23:04" */
-                    /* xgettext:no-c-format */
-                    format = _("Yesterday %H:%M");
-                }
-                else
-                {
-                    /* Translators: this is the word Yesterday followed by
-                     * a time in 12h format. i.e. "Yesterday 9:04 PM" */
-                    /* xgettext:no-c-format */
-                    format = _("Yesterday %l:%M %p");
-                }
-            }
-        }
-        /* Show a week day and time if date is in the last week */
-        else if (days_ago > 1 && days_ago < 7)
-        {
-            if (date_format == NAUTILUS_DATE_FORMAT_REGULAR)
-            {
+                /* Translators: this is the word Yesterday followed by
+                 * a time in 12h format. i.e. "Yesterday 9:04 PM" */
                 /* xgettext:no-c-format */
-                format = _("%a");
-            }
-            else
-            {
-                if (use_24_hour)
-                {
-                    /* Translators: this is the name of the week day followed by
-                     * a time in 24h format. i.e. "Monday 23:04" */
-                    /* xgettext:no-c-format */
-                    format = _("%a %H:%M");
-                }
-                else
-                {
-                    /* Translators: this is the week day name followed by
-                     * a time in 12h format. i.e. "Monday 9:04 PM" */
-                    /* xgettext:no-c-format */
-                    format = _("%a %l:%M %p");
-                }
-            }
-        }
-        else if (g_date_time_get_year (file_date) == g_date_time_get_year (now))
-        {
-            if (date_format == NAUTILUS_DATE_FORMAT_REGULAR)
-            {
-                /* Translators: this is the day of the month followed
-                 * by the abbreviated month name i.e. "3 Feb" */
-                /* xgettext:no-c-format */
-                format = _("%-e %b");
-            }
-            else
-            {
-                if (use_24_hour)
-                {
-                    /* Translators: this is the day of the month followed
-                     * by the abbreviated month name followed by a time in
-                     * 24h format i.e. "3 Feb 23:04" */
-                    /* xgettext:no-c-format */
-                    format = _("%-e %b %H:%M");
-                }
-                else
-                {
-                    /* Translators: this is the day of the month followed
-                     * by the abbreviated month name followed by a time in
-                     * 12h format i.e. "3 Feb 9:04" */
-                    /* xgettext:no-c-format */
-                    format = _("%-e %b %l:%M %p");
-                }
+                format = _("Yesterday %l:%M %p");
             }
         }
         else
@@ -5499,8 +5440,22 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     }
     else
     {
-        /* xgettext:no-c-format */
-        format = _("%c");
+        if (use_24_hour)
+        {
+            /* Translators: this is the day number followed by the full month
+             * name followed by the year followed by a time in 24h format
+             * with seconds i.e. "3 February 2015 23:04:00" */
+            /* xgettext:no-c-format */
+            format = _("%-e %B %Y %H:%M:%S");
+        }
+        else
+        {
+            /* Translators: this is the day number followed by the full month
+             * name followed by the year followed by a time in 12h format
+             * with seconds i.e. "3 February 2015 9:04:00 PM" */
+            /* xgettext:no-c-format */
+            format = _("%-e %B %Y %l:%M:%S %p");
+        }
     }
 
     result = g_date_time_format (file_date_time, format);
