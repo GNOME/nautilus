@@ -923,58 +923,6 @@ real_get_view_id (NautilusFilesView *files_view)
 }
 
 static void
-on_item_click_released_workaround (GtkGestureClick *gesture,
-                                   gint             n_press,
-                                   gdouble          x,
-                                   gdouble          y,
-                                   gpointer         user_data)
-{
-    NautilusViewCell *cell = user_data;
-    NautilusListView *self = NAUTILUS_LIST_VIEW (nautilus_view_cell_get_view (cell));
-    GdkModifierType modifiers;
-
-    modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
-    if (n_press == 1 &&
-        modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK))
-    {
-        NautilusViewModel *model;
-        g_autoptr (NautilusViewItem) item = NULL;
-        guint i;
-
-        model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-        item = nautilus_view_cell_get_item (cell);
-        g_return_if_fail (item != NULL);
-        i = nautilus_view_model_get_index (model, item);
-
-        gtk_widget_activate_action (GTK_WIDGET (cell),
-                                    "list.select-item",
-                                    "(ubb)",
-                                    i,
-                                    modifiers & GDK_CONTROL_MASK,
-                                    modifiers & GDK_SHIFT_MASK);
-    }
-}
-
-/* This whole event handler is a workaround to a GtkColumnView bug: it
- * activates the list|select-item action twice, which may cause the
- * second activation to reverse the effects of the first:
- * https://gitlab.gnome.org/GNOME/gtk/-/issues/4819
- *
- * As a workaround, we are going to activate the action a 3rd time.
- * The third time is the charm, as the saying goes. */
-static void
-setup_selection_click_workaround (NautilusViewCell *cell)
-{
-    GtkEventController *controller;
-
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_PRIMARY);
-    g_signal_connect (controller, "released", G_CALLBACK (on_item_click_released_workaround), cell);
-}
-
-static void
 setup_name_cell (GtkSignalListItemFactory *factory,
                  GtkListItem              *listitem,
                  gpointer                  user_data)
@@ -992,8 +940,6 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     {
         nautilus_name_cell_show_snippet (NAUTILUS_NAME_CELL (cell));
     }
-
-    setup_selection_click_workaround (cell);
 }
 
 static void
@@ -1046,7 +992,6 @@ setup_star_cell (GtkSignalListItemFactory *factory,
 
     cell = nautilus_star_cell_new (NAUTILUS_LIST_BASE (user_data));
     setup_cell_common (listitem, cell);
-    setup_selection_click_workaround (cell);
 }
 
 static void
@@ -1062,7 +1007,6 @@ setup_label_cell (GtkSignalListItemFactory *factory,
 
     cell = nautilus_label_cell_new (NAUTILUS_LIST_BASE (user_data), nautilus_column);
     setup_cell_common (listitem, cell);
-    setup_selection_click_workaround (cell);
 }
 
 static void
