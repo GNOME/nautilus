@@ -112,6 +112,7 @@ struct _NautilusWindow
 
     /* Notifications */
     AdwToastOverlay *toast_overlay;
+    AdwToast *last_undo_toast;
 
     /* Toolbar */
     GtkWidget *toolbar;
@@ -1275,12 +1276,19 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             }
         }
 
+        if (window->last_undo_toast != NULL)
+        {
+            adw_toast_dismiss (window->last_undo_toast);
+            g_clear_weak_pointer (&window->last_undo_toast);
+        }
+
         if (popup_toast)
         {
             toast = adw_toast_new (label);
             adw_toast_set_button_label (toast, _("Undo"));
             adw_toast_set_action_name (toast, "win.undo");
             adw_toast_set_priority (toast, ADW_TOAST_PRIORITY_HIGH);
+            g_set_weak_pointer (&window->last_undo_toast, toast);
             adw_toast_overlay_add_toast (window->toast_overlay, toast);
         }
     }
