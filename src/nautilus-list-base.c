@@ -908,7 +908,7 @@ on_view_drop (GtkDropTarget *target,
 }
 
 void
-setup_cell_common (GtkListItem      *listitem,
+setup_cell_common (GObject          *listitem,
                    NautilusViewCell *cell)
 {
     GtkExpression *expression;
@@ -918,8 +918,6 @@ setup_cell_common (GtkListItem      *listitem,
     expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
     expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
     gtk_expression_bind (expression, cell, "item", listitem);
-
-    gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (GTK_WIDGET (cell), controller);

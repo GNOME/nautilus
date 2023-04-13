@@ -31,6 +31,12 @@ G_DEFINE_TYPE (NautilusGridView, nautilus_grid_view, NAUTILUS_TYPE_LIST_BASE)
 
 static guint get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level);
 
+static NautilusViewItem *
+get_view_item (GtkListItem *listitem)
+{
+    return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (listitem))));
+}
+
 static gint
 nautilus_grid_view_sort (gconstpointer a,
                          gconstpointer b,
@@ -444,7 +450,7 @@ bind_cell (GtkSignalListItemFactory *factory,
     g_autoptr (NautilusViewItem) item = NULL;
 
     cell = gtk_list_item_get_child (listitem);
-    item = listitem_get_view_item (listitem);
+    item = get_view_item (listitem);
     g_return_if_fail (item != NULL);
 
     nautilus_view_item_set_item_ui (item, cell);
@@ -477,7 +483,7 @@ unbind_cell (GtkSignalListItemFactory *factory,
 {
     g_autoptr (NautilusViewItem) item = NULL;
 
-    item = listitem_get_view_item (listitem);
+    item = get_view_item (listitem);
 
     /* item may be NULL when row has just been destroyed. */
     if (item != NULL)
@@ -495,7 +501,8 @@ setup_cell (GtkSignalListItemFactory *factory,
     NautilusGridCell *cell;
 
     cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
-    setup_cell_common (listitem, NAUTILUS_VIEW_CELL (cell));
+    gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
+    setup_cell_common (G_OBJECT (listitem), NAUTILUS_VIEW_CELL (cell));
     setup_cell_hover (NAUTILUS_VIEW_CELL (cell));
 
     nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);

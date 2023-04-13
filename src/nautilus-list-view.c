@@ -63,6 +63,12 @@ static const char *default_columns_for_trash[] =
     "name", "size", "trashed_on", NULL
 };
 
+static NautilusViewItem *
+get_view_item (GtkColumnViewCell *cell)
+{
+    return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (cell))));
+}
+
 static guint
 get_icon_size_for_zoom_level (NautilusListZoomLevel zoom_level)
 {
@@ -1122,14 +1128,15 @@ tree_expander_shortcut_cb (GtkWidget *widget,
 
 static void
 setup_name_cell (GtkSignalListItemFactory *factory,
-                 GtkListItem              *listitem,
+                 GtkColumnViewCell        *listitem,
                  gpointer                  user_data)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
     NautilusViewCell *cell;
 
     cell = nautilus_name_cell_new (NAUTILUS_LIST_BASE (self));
-    setup_cell_common (listitem, cell);
+    gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
+    setup_cell_common (G_OBJECT (listitem), cell);
     setup_cell_hover_inner_target (cell, nautilus_name_cell_get_content (NAUTILUS_NAME_CELL (cell)));
 
     nautilus_name_cell_set_path (NAUTILUS_NAME_CELL (cell),
@@ -1184,17 +1191,17 @@ on_row_children_changed (GObject    *gobject,
 
 static void
 bind_name_cell (GtkSignalListItemFactory *factory,
-                GtkListItem              *listitem,
+                GtkColumnViewCell        *listitem,
                 gpointer                  user_data)
 {
     GtkWidget *cell;
     NautilusListView *self = user_data;
     g_autoptr (NautilusViewItem) item = NULL;
 
-    cell = gtk_list_item_get_child (listitem);
-    item = listitem_get_view_item (listitem);
+    cell = gtk_column_view_cell_get_child (listitem);
+    item = get_view_item (listitem);
 
-    nautilus_view_item_set_item_ui (item, gtk_list_item_get_child (listitem));
+    nautilus_view_item_set_item_ui (item, gtk_column_view_cell_get_child (listitem));
 
     if (nautilus_view_cell_once (NAUTILUS_VIEW_CELL (cell)))
     {
@@ -1213,7 +1220,7 @@ bind_name_cell (GtkSignalListItemFactory *factory,
     if (self->expand_as_a_tree)
     {
         GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (cell));
-        GtkTreeListRow *row = GTK_TREE_LIST_ROW (gtk_list_item_get_item (listitem));
+        GtkTreeListRow *row = GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (listitem));
 
         g_signal_connect_object (row,
                                  "notify::expanded",
@@ -1228,13 +1235,13 @@ bind_name_cell (GtkSignalListItemFactory *factory,
 
 static void
 unbind_name_cell (GtkSignalListItemFactory *factory,
-                  GtkListItem              *listitem,
+                  GtkColumnViewCell        *listitem,
                   gpointer                  user_data)
 {
     NautilusListView *self = user_data;
     g_autoptr (NautilusViewItem) item = NULL;
 
-    item = listitem_get_view_item (listitem);
+    item = get_view_item (listitem);
     if (item == NULL)
     {
         /* The row is gone */
@@ -1246,10 +1253,10 @@ unbind_name_cell (GtkSignalListItemFactory *factory,
 
     if (self->expand_as_a_tree)
     {
-        g_signal_handlers_disconnect_by_func (gtk_list_item_get_item (listitem),
+        g_signal_handlers_disconnect_by_func (gtk_column_view_cell_get_item (listitem),
                                               on_row_expanded_changed,
                                               self);
-        g_signal_handlers_disconnect_by_func (gtk_list_item_get_item (listitem),
+        g_signal_handlers_disconnect_by_func (gtk_column_view_cell_get_item (listitem),
                                               on_row_children_changed,
                                               self);
     }
@@ -1257,19 +1264,20 @@ unbind_name_cell (GtkSignalListItemFactory *factory,
 
 static void
 setup_star_cell (GtkSignalListItemFactory *factory,
-                 GtkListItem              *listitem,
+                 GtkColumnViewCell        *listitem,
                  gpointer                  user_data)
 {
     NautilusViewCell *cell;
 
     cell = nautilus_star_cell_new (NAUTILUS_LIST_BASE (user_data));
-    setup_cell_common (listitem, cell);
+    gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
+    setup_cell_common (G_OBJECT (listitem), cell);
     setup_cell_hover (cell);
 }
 
 static void
 setup_label_cell (GtkSignalListItemFactory *factory,
-                  GtkListItem              *listitem,
+                  GtkColumnViewCell        *listitem,
                   gpointer                  user_data)
 {
     NautilusListView *self = user_data;
@@ -1279,7 +1287,8 @@ setup_label_cell (GtkSignalListItemFactory *factory,
     nautilus_column = g_hash_table_lookup (self->factory_to_column_map, factory);
 
     cell = nautilus_label_cell_new (NAUTILUS_LIST_BASE (user_data), nautilus_column);
-    setup_cell_common (listitem, cell);
+    gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
+    setup_cell_common (G_OBJECT (listitem), cell);
     setup_cell_hover (cell);
 }
 

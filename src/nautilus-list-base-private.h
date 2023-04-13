@@ -26,7 +26,7 @@ void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 void                          set_directory_sort_metadata       (NautilusFile *file,
                                                                  const gchar  *sort_attribute,
                                                                  gboolean      reversed);
-void                          setup_cell_common                 (GtkListItem      *listitem,
+void                          setup_cell_common                 (GObject          *listitem,
                                                                  NautilusViewCell *cell);
 void                          setup_cell_hover                  (NautilusViewCell *cell);
 void                          setup_cell_hover_inner_target     (NautilusViewCell *cell,
@@ -34,8 +34,5 @@ void                          setup_cell_hover_inner_target     (NautilusViewCel
 
 void                          set_focus_item                    (NautilusListBase *self,
                                                                  NautilusViewItem *item);
-
-#define listitem_get_view_item(li) \
-(NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (li)))))
 
 G_END_DECLS
