@@ -7210,8 +7210,8 @@ update_actions_clipboard_contents_received (GObject      *source_object,
                                             GAsyncResult *res,
                                             gpointer      user_data)
 {
-    NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
     NautilusClipboard *clip = NULL;
     gboolean can_link_from_copied_files;
     gboolean settings_show_create_link;
@@ -7222,8 +7222,15 @@ update_actions_clipboard_contents_received (GObject      *source_object,
     const GValue *value;
 
     value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, NULL);
+    if (value == NULL)
+    {
+        return;
+    }
 
-    if (value != NULL && G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+
+    if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
     {
         clip = g_value_get_boxed (value);
     }

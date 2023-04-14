@@ -1302,14 +1302,23 @@ on_clipboard_contents_received (GObject      *source_object,
                                 GAsyncResult *res,
                                 gpointer      user_data)
 {
-    NautilusFilesView *files_view = NAUTILUS_FILES_VIEW (user_data);
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    NautilusFilesView *files_view;
+    NautilusListBase *self;
+    NautilusListBasePrivate *priv;
     NautilusClipboard *clip;
     NautilusViewItem *item;
     const GValue *value;
 
     value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, NULL);
+
+    if (value == NULL)
+    {
+        return;
+    }
+
+    files_view = NAUTILUS_FILES_VIEW (user_data);
+    self = NAUTILUS_LIST_BASE (files_view);
+    priv = nautilus_list_base_get_instance_private (self);
 
     for (GList *l = priv->cut_files; l != NULL; l = l->next)
     {
@@ -1321,7 +1330,7 @@ on_clipboard_contents_received (GObject      *source_object,
     }
     g_clear_list (&priv->cut_files, g_object_unref);
 
-    if (value != NULL && G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
+    if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
     {
         clip = g_value_get_boxed (value);
     }
