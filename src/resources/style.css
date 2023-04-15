@@ -229,31 +229,6 @@
   box-shadow: none;
 }
 
-.nautilus-list-view columnview > listview > row.activatable:hover,
-.nautilus-grid-view gridview > child.activatable:hover {
-  background-color: alpha(currentColor, .04);
-}
-
-.nautilus-list-view columnview > listview > row.activatable:active,
-.nautilus-grid-view gridview > child.activatable:active {
-  background-color: alpha(currentColor, .08);
-}
-
-.nautilus-list-view columnview > listview > row:selected,
-.nautilus-grid-view gridview > child:selected {
-  background-color: alpha(@accent_bg_color, .15);
-}
-
-.nautilus-list-view columnview > listview > row.activatable:selected:hover,
-.nautilus-grid-view gridview > child.activatable:selected:hover {
-  background-color: alpha(@accent_bg_color, .20);
-}
-
-.nautilus-list-view columnview > listview > row.activatable:selected:active,
-.nautilus-grid-view gridview > child.activatable:selected:active {
-  background-color: alpha(@accent_bg_color, .25);
-}
-
 .view .thumbnail {
   background: url('/org/gnome/nautilus/Checkerboard.png') repeat;
   border-radius: 2px;
