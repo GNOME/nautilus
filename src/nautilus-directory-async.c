@@ -857,8 +857,7 @@ notify_files_changed_while_being_added (NautilusDirectory *directory)
 static gboolean
 dequeue_pending_idle_callback (gpointer callback_data)
 {
-    NautilusDirectory *directory;
-    GList *pending_file_info;
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (callback_data);
     GList *node, *next;
     NautilusFile *file;
     GList *changed_files, *added_files;
@@ -866,21 +865,18 @@ dequeue_pending_idle_callback (gpointer callback_data)
     const char *name;
     DirectoryLoadState *dir_load_state;
 
-    directory = NAUTILUS_DIRECTORY (callback_data);
-
-    nautilus_directory_ref (directory);
-
     directory->details->dequeue_pending_idle_id = 0;
 
     /* Handle the files in the order we saw them. */
-    pending_file_info = g_list_reverse (directory->details->pending_file_info);
-    directory->details->pending_file_info = NULL;
+    g_autolist (GFileInfo) pending_file_info =
+        g_list_reverse (g_steal_pointer (&directory->details->pending_file_info));
 
     /* If we are no longer monitoring, then throw away these. */
     if (!nautilus_directory_is_file_list_monitored (directory))
     {
         nautilus_directory_async_state_changed (directory);
-        goto drain;
+
+        return FALSE;
     }
 
     added_files = NULL;
@@ -994,13 +990,9 @@ dequeue_pending_idle_callback (gpointer callback_data)
      * See Bug 703179 and issue #1576 for a situation this happens. */
     notify_files_changed_while_being_added (directory);
 
-drain:
-    g_list_free_full (pending_file_info, g_object_unref);
-
     /* Get the state machine running again. */
     nautilus_directory_async_state_changed (directory);
 
-    nautilus_directory_unref (directory);
     return FALSE;
 }
 
