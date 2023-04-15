@@ -139,20 +139,18 @@ autorun (GMount *mount)
         if (chdir (cwd_for_program) == 0)
         {
             execl (path_to_spawn, path_to_spawn, program_parameter, NULL);
-            error_string = g_strdup_printf (_("Unable to start the program:\n%s"), strerror (errno));
-            goto out;
         }
         error_string = g_strdup_printf (_("Unable to start the program:\n%s"), strerror (errno));
-        goto out;
     }
     else if (!executable)
     {
         error_string = g_strdup (_("The program is not marked as executable."));
-        goto out;
     }
-    error_string = g_strdup_printf (_("Unable to locate the program"));
+    else
+    {
+        error_string = g_strdup_printf (_("Unable to locate the program"));
+    }
 
-out:
     if (error_string != NULL)
     {
         AdwDialog *dialog;
