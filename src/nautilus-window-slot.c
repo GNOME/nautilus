@@ -2020,35 +2020,29 @@ static void
 got_file_info_for_view_selection_callback (NautilusFile *file,
                                            gpointer      callback_data)
 {
-    GError *error = NULL;
-    NautilusWindowSlot *self;
-    GFile *location;
-
-    self = callback_data;
+    g_autoptr (NautilusFile) ready_file = file;
+    g_autoptr (GError) error = NULL;
+    NautilusWindowSlot *self = callback_data;
 
     g_assert (self->determine_view_file == file);
     self->determine_view_file = NULL;
 
-    if (handle_mount_if_needed (self, file))
+    if (handle_mount_if_needed (self, ready_file) ||
+        handle_regular_file_if_needed (self, ready_file))
     {
-        goto done;
-    }
-
-    if (handle_regular_file_if_needed (self, file))
-    {
-        goto done;
+        return;
     }
 
     if (self->mount_error)
     {
         error = g_error_copy (self->mount_error);
     }
-    else if (nautilus_file_get_file_info_error (file) != NULL)
+    else if (nautilus_file_get_file_info_error (ready_file) != NULL)
     {
-        error = g_error_copy (nautilus_file_get_file_info_error (file));
+        error = g_error_copy (nautilus_file_get_file_info_error (ready_file));
     }
 
-    location = self->pending_location;
+    GFile *location = self->pending_location;
 
     if (error == NULL)
     {
@@ -2080,7 +2074,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
         GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
 
         nautilus_window_slot_display_view_selection_failure (window,
-                                                             file,
+                                                             ready_file,
                                                              location,
                                                              error);
 
@@ -2128,11 +2122,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
              */
         }
     }
-
-done:
-    g_clear_error (&error);
-
-    nautilus_file_unref (file);
 }
 
 static void
