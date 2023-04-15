@@ -1099,16 +1099,11 @@ nautilus_file_can_eject (NautilusFile *file)
 gboolean
 nautilus_file_can_start (NautilusFile *file)
 {
-    gboolean ret;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    ret = FALSE;
 
     if (file->details->can_start)
     {
-        ret = TRUE;
-        goto out;
+        return TRUE;
     }
 
     if (file->details->mount != NULL)
@@ -1121,23 +1116,17 @@ nautilus_file_can_start (NautilusFile *file)
         }
     }
 
-out:
-    return ret;
+    return FALSE;
 }
 
 gboolean
 nautilus_file_can_start_degraded (NautilusFile *file)
 {
-    gboolean ret;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    ret = FALSE;
 
     if (file->details->can_start_degraded)
     {
-        ret = TRUE;
-        goto out;
+        return TRUE;
     }
 
     if (file->details->mount != NULL)
@@ -1150,23 +1139,17 @@ nautilus_file_can_start_degraded (NautilusFile *file)
         }
     }
 
-out:
-    return ret;
+    return FALSE;
 }
 
 gboolean
 nautilus_file_can_poll_for_media (NautilusFile *file)
 {
-    gboolean ret;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    ret = FALSE;
 
     if (file->details->can_poll_for_media)
     {
-        ret = TRUE;
-        goto out;
+        return TRUE;
     }
 
     if (file->details->mount != NULL)
@@ -1179,23 +1162,17 @@ nautilus_file_can_poll_for_media (NautilusFile *file)
         }
     }
 
-out:
-    return ret;
+    return FALSE;
 }
 
 gboolean
 nautilus_file_is_media_check_automatic (NautilusFile *file)
 {
-    gboolean ret;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    ret = FALSE;
 
     if (file->details->is_media_check_automatic)
     {
-        ret = TRUE;
-        goto out;
+        return TRUE;
     }
 
     if (file->details->mount != NULL)
@@ -1208,24 +1185,18 @@ nautilus_file_is_media_check_automatic (NautilusFile *file)
         }
     }
 
-out:
-    return ret;
+    return FALSE;
 }
 
 
 gboolean
 nautilus_file_can_stop (NautilusFile *file)
 {
-    gboolean ret;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    ret = FALSE;
 
     if (file->details->can_stop)
     {
-        ret = TRUE;
-        goto out;
+        return TRUE;
     }
 
     if (file->details->mount != NULL)
@@ -1238,21 +1209,17 @@ nautilus_file_can_stop (NautilusFile *file)
         }
     }
 
-out:
-    return ret;
+    return FALSE;
 }
 
 GDriveStartStopType
 nautilus_file_get_start_stop_type (NautilusFile *file)
 {
-    GDriveStartStopType ret;
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), G_DRIVE_START_STOP_TYPE_UNKNOWN);
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    ret = file->details->start_stop_type;
-    if (ret != G_DRIVE_START_STOP_TYPE_UNKNOWN)
+    if (file->details->start_stop_type != G_DRIVE_START_STOP_TYPE_UNKNOWN)
     {
-        goto out;
+        return file->details->start_stop_type;
     }
 
     if (file->details->mount != NULL)
@@ -1265,8 +1232,7 @@ nautilus_file_get_start_stop_type (NautilusFile *file)
         }
     }
 
-out:
-    return ret;
+    return G_DRIVE_START_STOP_TYPE_UNKNOWN;
 }
 
 void
@@ -4836,14 +4802,13 @@ GIcon *
 nautilus_file_get_gicon (NautilusFile          *file,
                          NautilusFileIconFlags  flags)
 {
-    GIcon *icon;
-
     if (file == NULL)
     {
         return NULL;
     }
 
-    icon = get_custom_icon (file);
+    GIcon *icon = get_custom_icon (file);
+
     if (icon != NULL)
     {
         return icon;
@@ -4855,22 +4820,16 @@ nautilus_file_get_gicon (NautilusFile          *file,
 
         if (icon != NULL)
         {
-            goto out;
+            return icon;
         }
     }
 
-    if (file->details->icon)
+    if (file->details->icon != NULL)
     {
-        icon = g_object_ref (file->details->icon);
+        return g_object_ref (file->details->icon);
     }
 
-out:
-    if (icon == NULL)
-    {
-        icon = g_object_ref (get_default_file_icon ());
-    }
-
-    return icon;
+    return g_object_ref (get_default_file_icon ());
 }
 
 const char *
