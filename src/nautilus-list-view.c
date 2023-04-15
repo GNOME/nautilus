@@ -1098,9 +1098,10 @@ static void
 setup_selection_click_workaround (NautilusViewCell *cell)
 {
     GtkEventController *controller;
+    GtkWidget *row_widget = gtk_widget_get_parent (gtk_widget_get_parent (GTK_WIDGET (cell)));
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
+    gtk_widget_add_controller (row_widget, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_PRIMARY);
     g_signal_connect (controller, "released", G_CALLBACK (on_item_click_released_workaround), cell);
@@ -1192,8 +1193,6 @@ setup_name_cell (GtkSignalListItemFactory *factory,
         nautilus_name_cell_show_snippet (NAUTILUS_NAME_CELL (cell));
     }
 
-    setup_selection_click_workaround (cell);
-
     if (self->expand_as_a_tree)
     {
         GtkTreeExpander *expander;
@@ -1262,6 +1261,9 @@ bind_name_cell (GtkSignalListItemFactory *factory,
         gtk_accessible_update_relation (GTK_ACCESSIBLE (row_widget),
                                         GTK_ACCESSIBLE_RELATION_LABELLED_BY, cell, NULL,
                                         -1);
+        /* When GTK 4.10.2 gets released, we should revert this and re-apply
+         * commit 2e10ed11d960cb6343719d680e29d742dc86d664 */
+        setup_selection_click_workaround (cell);
     }
 
     if (self->expand_as_a_tree)
@@ -1319,7 +1321,6 @@ setup_star_cell (GtkSignalListItemFactory *factory,
     cell = nautilus_star_cell_new (NAUTILUS_LIST_BASE (user_data));
     setup_cell_common (listitem, cell);
     setup_cell_hover (cell);
-    setup_selection_click_workaround (cell);
 }
 
 static void
@@ -1336,7 +1337,6 @@ setup_label_cell (GtkSignalListItemFactory *factory,
     cell = nautilus_label_cell_new (NAUTILUS_LIST_BASE (user_data), nautilus_column);
     setup_cell_common (listitem, cell);
     setup_cell_hover (cell);
-    setup_selection_click_workaround (cell);
 }
 
 static void
