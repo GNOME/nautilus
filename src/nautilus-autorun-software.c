@@ -250,7 +250,7 @@ main (int   argc,
     if (argc != 2)
     {
         g_print ("Usage: %s mount-uri\n", argv[0]);
-        goto out;
+        return 0;
     }
 
     /* instantiate monitor so we get the "unmounted" signal properly */
@@ -258,21 +258,21 @@ main (int   argc,
     if (monitor == NULL)
     {
         g_warning ("Unable to connect to the volume monitor");
-        goto out;
+        return 0;
     }
 
     file = g_file_new_for_commandline_arg (argv[1]);
     if (file == NULL)
     {
         g_warning ("Unable to parse mount URI");
-        goto out;
+        return 0;
     }
 
     mount = g_file_find_enclosing_mount (file, NULL, &error);
     if (mount == NULL)
     {
         g_warning ("Unable to find device for URI: %s", error->message);
-        goto out;
+        return 0;
     }
 
     present_autorun_for_software_dialog (mount);
@@ -282,6 +282,5 @@ main (int   argc,
         g_main_context_iteration (NULL, TRUE);
     }
 
-out:
     return 0;
 }
