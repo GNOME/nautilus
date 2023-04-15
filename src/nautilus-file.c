@@ -4762,18 +4762,12 @@ nautilus_file_get_gicon (NautilusFile          *file,
     {
         return icon;
     }
-
-    if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON)
+    else if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON &&
+             (icon = get_mount_icon (file, FALSE)) != NULL)
     {
-        icon = get_mount_icon (file, FALSE);
-
-        if (icon != NULL)
-        {
-            return icon;
-        }
+        return icon;
     }
-
-    if (file->details->icon != NULL)
+    else if (file->details->icon != NULL)
     {
         return g_object_ref (file->details->icon);
     }
