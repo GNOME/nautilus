@@ -500,32 +500,23 @@ search_cancel_callback (NautilusDirectory         *directory,
                         NautilusDirectoryCallback  callback,
                         gpointer                   callback_data)
 {
-    NautilusSearchDirectory *self;
+    NautilusSearchDirectory *self = NAUTILUS_SEARCH_DIRECTORY (directory);
     SearchCallback *search_callback;
 
-    self = NAUTILUS_SEARCH_DIRECTORY (directory);
-    search_callback = search_callback_find (self, callback, callback_data);
-
-    if (search_callback)
+    if ((search_callback = search_callback_find (self, callback, callback_data)) != NULL)
     {
         self->callback_list = g_list_remove (self->callback_list, search_callback);
 
         search_callback_destroy (search_callback);
-
-        goto done;
     }
-
     /* Check for a pending callback */
-    search_callback = search_callback_find_pending (self, callback, callback_data);
-
-    if (search_callback)
+    else if ((search_callback = search_callback_find_pending (self, callback, callback_data)) != NULL)
     {
         self->pending_callback_list = g_list_remove (self->pending_callback_list, search_callback);
 
         search_callback_destroy (search_callback);
     }
 
-done:
     if (!self->callback_list && !self->pending_callback_list)
     {
         stop_search (self);
