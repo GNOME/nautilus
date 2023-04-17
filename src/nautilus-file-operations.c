@@ -2002,6 +2002,14 @@ delete_file_recursively (GFile          *file,
 
     if (callback)
     {
+        if (!success && error == NULL)
+        {
+            /* Enumeration succeeded, but we've failed to delete at least one child. */
+            error = g_error_new (G_IO_ERROR,
+                                 G_IO_ERROR_NOT_EMPTY,
+                                 _("Failed to delete all child files"));
+        }
+
         callback (file, error, callback_data);
     }
 
