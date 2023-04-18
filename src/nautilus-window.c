@@ -1502,12 +1502,6 @@ extra_drag_value_cb (AdwTabBar    *self,
         }
     }
 
-    /* We set the preferred action on the drop from the results of this function,
-     * but since we don't have access to the GtkDropTarget, we can't get the preferred
-     * action in ::drop, so let's set it as data on the page. We probably should
-     * expose the preferred action within libadwaita.
-     */
-    g_object_set_data (G_OBJECT (page), "drag-action", GINT_TO_POINTER (action));
     return action;
 }
 
@@ -1520,7 +1514,7 @@ extra_drag_drop_cb (AdwTabBar    *self,
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (slot));
     GFile *target_location = nautilus_window_slot_get_location (slot);
-    GdkDragAction action = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (page), "drag-action"));
+    GdkDragAction action = adw_tab_bar_get_extra_drag_preferred_action (self);
 
     return nautilus_dnd_perform_drop (view, value, action, target_location);
 }
