@@ -5346,18 +5346,25 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     file_date_time = g_date_time_new_from_unix_local (file_time_raw);
     if (date_format != NAUTILUS_DATE_FORMAT_FULL)
     {
+        GTimeZone *local_tz;
         GDateTime *file_date;
 
-        now = g_date_time_new_now_local ();
-        today_midnight = g_date_time_new_local (g_date_time_get_year (now),
-                                                g_date_time_get_month (now),
-                                                g_date_time_get_day_of_month (now),
-                                                0, 0, 0);
+        /* Re-use local time zone, because every time a new local time zone is
+         * created, glib needs to check if the time zone file has changed */
+        local_tz = g_date_time_get_timezone (file_date_time);
 
-        file_date = g_date_time_new_local (g_date_time_get_year (file_date_time),
-                                           g_date_time_get_month (file_date_time),
-                                           g_date_time_get_day_of_month (file_date_time),
-                                           0, 0, 0);
+        now = g_date_time_new_now (local_tz);
+        today_midnight = g_date_time_new (local_tz,
+                                          g_date_time_get_year (now),
+                                          g_date_time_get_month (now),
+                                          g_date_time_get_day_of_month (now),
+                                          0, 0, 0);
+
+        file_date = g_date_time_new (local_tz,
+                                     g_date_time_get_year (file_date_time),
+                                     g_date_time_get_month (file_date_time),
+                                     g_date_time_get_day_of_month (file_date_time),
+                                     0, 0, 0);
 
         days_ago = g_date_time_difference (today_midnight, file_date) / G_TIME_SPAN_DAY;
 
