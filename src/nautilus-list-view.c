@@ -930,7 +930,7 @@ on_item_click_released_workaround (GtkGestureClick *gesture,
                                    gpointer         user_data)
 {
     NautilusViewCell *cell = user_data;
-    NautilusListView *self = NAUTILUS_LIST_VIEW (nautilus_view_cell_get_view (cell));
+    g_autoptr (NautilusListView) self = NAUTILUS_LIST_VIEW (nautilus_view_cell_get_view (cell));
     GdkModifierType modifiers;
 
     modifiers = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
