@@ -15,6 +15,19 @@ for building GNOME apps with Flatpak and GNOME Builder.
 
 Commit messages should follow the expected format [detailed here](https://wiki.gnome.org/Git/CommitMessages).
 
+### Update default branch
+
+The default development branch of nautilus has been renamed to `main`. To
+update your local checkout, use:
+```sh
+git checkout master
+git branch -m master main
+git fetch
+git branch --unset-upstream
+git branch -u origin/main
+git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
+```
+
 ## Runtime dependencies
 - [Bubblewrap](https://github.com/projectatomic/bubblewrap) installed. Used for security reasons.
 - [Tracker (including tracker-miners)](https://gitlab.gnome.org/GNOME/tracker) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
