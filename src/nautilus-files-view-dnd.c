@@ -41,7 +41,7 @@
 #include "nautilus-ui-utilities.h"
 
 #define GET_ANCESTOR(obj) \
-    GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
+        GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
 
 void
 nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
