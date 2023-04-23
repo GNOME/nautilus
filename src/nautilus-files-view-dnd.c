@@ -41,7 +41,7 @@
 #include "nautilus-ui-utilities.h"
 
 #define GET_ANCESTOR(obj) \
-    GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
+        GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
 
 #define MAX_LEN_FILENAME 64
 #define MIN_LEN_FILENAME 8

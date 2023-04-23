@@ -639,8 +639,8 @@ special_directory_get_icon (GUserDirectory directory,
                             gboolean       symbolic)
 {
 #define ICON_CASE(x)                                                     \
-        case G_USER_DIRECTORY_ ## x:                                     \
-            return (symbolic) ? g_themed_icon_new (NAUTILUS_ICON_FOLDER_ ## x) : g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER_ ## x);
+            case G_USER_DIRECTORY_ ## x:                                     \
+                return (symbolic) ? g_themed_icon_new (NAUTILUS_ICON_FOLDER_ ## x) : g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER_ ## x);
 
     switch (directory)
     {

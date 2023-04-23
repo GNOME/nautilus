@@ -38,23 +38,23 @@
 
 /* bool preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET                       \
-    "sort_folders_first_switch"
+        "sort_folders_first_switch"
 #define NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET                  \
-    "show_delete_permanently_switch"
+        "show_delete_permanently_switch"
 #define NAUTILUS_PREFERENCES_DIALOG_CREATE_LINK_WIDGET                         \
-    "show_create_link_switch"
+        "show_create_link_switch"
 #define NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET                  \
-    "use_tree_view_switch"
+        "use_tree_view_switch"
 
 /* combo preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO                          \
-    "open_action_row"
+        "open_action_row"
 #define NAUTILUS_PREFERENCES_DIALOG_SEARCH_RECURSIVE_ROW                       \
-    "search_recursive_row"
+        "search_recursive_row"
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAILS_ROW                       \
-    "thumbnails_row"
+        "thumbnails_row"
 #define NAUTILUS_PREFERENCES_DIALOG_COUNT_ROW                       \
-    "count_row"
+        "count_row"
 
 static const char * const speed_tradeoff_values[] =
 {
