@@ -37,7 +37,7 @@
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
-static GDBusProxy *previewer_v2_proxy = NULL;
+static GDBusProxy * previewer_v2_proxy = NULL;
 
 static gboolean
 ensure_previewer_v2_proxy (void)

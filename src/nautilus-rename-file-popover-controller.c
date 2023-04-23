@@ -368,7 +368,7 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
 
     gtk_label_set_text (GTK_LABEL (self->title_label),
                         self->target_is_folder ? _("Rename Folder") :
-                        _("Rename File"));
+                                                 _("Rename File"));
 
     edit_name = nautilus_file_get_edit_name (self->target_file);
 

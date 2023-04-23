@@ -43,7 +43,7 @@ fill_menu (NautilusHistoryControls *self,
     const gchar *name;
 
     list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
-           nautilus_window_slot_get_forward_history (self->window_slot);
+                  nautilus_window_slot_get_forward_history (self->window_slot);
 
     index = 0;
     while (list != NULL)

@@ -69,18 +69,18 @@ enum
 };
 
 #define QUERY_STARRED_FILES \
-    "SELECT ?file " \
-    "{ " \
-    "    ?file a nautilus:File ; " \
-    "        nautilus:starred true . " \
-    "}"
+        "SELECT ?file " \
+        "{ " \
+        "    ?file a nautilus:File ; " \
+        "        nautilus:starred true . " \
+        "}"
 
 #define QUERY_FILE_IS_STARRED \
-    "ASK " \
-    "{ " \
-    "    ~file a nautilus:File ; " \
-    "        nautilus:starred true . " \
-    "}"
+        "ASK " \
+        "{ " \
+        "    ~file a nautilus:File ; " \
+        "        nautilus:starred true . " \
+        "}"
 
 static guint signals[LAST_SIGNAL];
 
