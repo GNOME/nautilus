@@ -105,7 +105,7 @@ on_application_selected (GtkAppChooserWidget *widget,
     default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
     is_default = default_app != NULL && g_app_info_equal (info, default_app);
 
-    gtk_switch_set_state (GTK_SWITCH (self->set_as_default_switch), is_default);
+    gtk_switch_set_active (GTK_SWITCH (self->set_as_default_switch), is_default);
     gtk_widget_set_sensitive (GTK_WIDGET (self->set_as_default_switch), !is_default);
 }
 

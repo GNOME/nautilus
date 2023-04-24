@@ -2961,7 +2961,7 @@ execution_bit_changed (NautilusPropertiesWindow *self,
     const FilterType filter_type = FILES_ONLY;
 
     /* if activated from switch, switch state is already toggled, thus invert value via XOR. */
-    gboolean active = gtk_switch_get_state (self->execution_switch) ^ GTK_IS_SWITCH (widget);
+    gboolean active = gtk_switch_get_active (self->execution_switch) ^ GTK_IS_SWITCH (widget);
     gboolean set_executable = !active;
 
     update_permissions (self,
