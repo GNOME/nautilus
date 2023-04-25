@@ -965,13 +965,22 @@ on_item_click_released_workaround (GtkGestureClick *gesture,
 static void
 setup_selection_click_workaround (NautilusViewCell *cell)
 {
+#if GTK_MAJOR_VERSION == 4
     GtkEventController *controller;
 
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (GTK_WIDGET (cell), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_PRIMARY);
-    g_signal_connect (controller, "released", G_CALLBACK (on_item_click_released_workaround), cell);
+    if (gtk_check_version (4, 10, 2) != NULL)
+    {
+        /* This workaround was fixed in 4.10.2, but not 4.8.x.  Usually
+         * Nautilus 43 is typically installed with GTK 4.8, but that's not
+         * always true.
+         */
+        controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+        gtk_widget_add_controller (GTK_WIDGET (cell), controller);
+        gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
+        gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_PRIMARY);
+        g_signal_connect (controller, "released", G_CALLBACK (on_item_click_released_workaround), cell);
+    }
+#endif
 }
 
 static void
