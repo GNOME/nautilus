@@ -94,7 +94,7 @@ toolbar_update_appearance (NautilusToolbar *self)
                                                   NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
 
     if (self->window_slot != NULL &&
-        nautilus_window_slot_get_searching (self->window_slot))
+        nautilus_window_slot_get_search_visible (self->window_slot))
     {
         gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "search");
     }
@@ -551,7 +551,7 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                   G_CALLBACK (slot_on_extensions_background_menu_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::templates-menu",
                                   G_CALLBACK (slot_on_templates_menu_changed), self);
-        g_signal_connect_swapped (self->window_slot, "notify::searching",
+        g_signal_connect_swapped (self->window_slot, "notify::search-visible",
                                   G_CALLBACK (toolbar_update_appearance), self);
     }
 

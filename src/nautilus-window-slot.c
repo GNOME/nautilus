@@ -56,7 +56,7 @@ enum
     PROP_EXTENSIONS_BACKGROUND_MENU,
     PROP_TEMPLATES_MENU,
     PROP_LOADING,
-    PROP_SEARCHING,
+    PROP_SEARCH_VISIBLE,
     PROP_SELECTION,
     PROP_LOCATION,
     PROP_TOOLTIP,
@@ -143,7 +143,6 @@ struct _NautilusWindowSlot
     GBinding *selection_binding;
     GBinding *extensions_background_menu_binding;
     GBinding *templates_menu_binding;
-    gboolean searching;
     GList *selection;
 };
 
@@ -168,7 +167,6 @@ static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
                                                      gboolean            visible);
-static gboolean nautilus_window_slot_get_search_visible (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
 static void update_search_information (NautilusWindowSlot *self);
@@ -572,21 +570,21 @@ nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
     g_action_change_state (action, g_variant_new_boolean (visible));
 }
 
-static gboolean
+gboolean
 nautilus_window_slot_get_search_visible (NautilusWindowSlot *self)
 {
     GAction *action;
     GVariant *state;
-    gboolean searching;
+    gboolean search_visible;
 
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
                                          "search-visible");
     state = g_action_get_state (action);
-    searching = g_variant_get_boolean (state);
+    search_visible = g_variant_get_boolean (state);
 
     g_variant_unref (state);
 
-    return searching;
+    return search_visible;
 }
 
 void
@@ -679,14 +677,6 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
 }
 
 static void
-nautilus_window_slot_set_searching (NautilusWindowSlot *self,
-                                    gboolean            searching)
-{
-    self->searching = searching;
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCHING]);
-}
-
-static void
 nautilus_window_slot_set_selection (NautilusWindowSlot *self,
                                     GList              *selection)
 {
@@ -736,9 +726,9 @@ nautilus_window_slot_set_property (GObject      *object,
         }
         break;
 
-        case PROP_SEARCHING:
+        case PROP_SEARCH_VISIBLE:
         {
-            nautilus_window_slot_set_searching (self, g_value_get_boolean (value));
+            nautilus_window_slot_set_search_visible (self, g_value_get_boolean (value));
         }
         break;
 
@@ -857,9 +847,9 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
 
-        case PROP_SEARCHING:
+        case PROP_SEARCH_VISIBLE:
         {
-            g_value_set_boolean (value, nautilus_window_slot_get_searching (self));
+            g_value_set_boolean (value, nautilus_window_slot_get_search_visible (self));
         }
         break;
 
@@ -887,12 +877,6 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
     }
-}
-
-gboolean
-nautilus_window_slot_get_searching (NautilusWindowSlot *self)
-{
-    return self->searching;
 }
 
 GList *
@@ -956,13 +940,13 @@ action_search_visible (GSimpleAction *action,
         if (g_variant_get_boolean (state))
         {
             show_query_editor (self);
-            nautilus_window_slot_set_searching (self, TRUE);
         }
         else
         {
             hide_query_editor (self);
-            nautilus_window_slot_set_searching (self, FALSE);
         }
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCH_VISIBLE]);
 
         update_search_information (self);
     }
@@ -1045,7 +1029,7 @@ update_search_information (NautilusWindowSlot *self)
 {
     GFile *location;
 
-    if (!nautilus_window_slot_get_searching (self))
+    if (!nautilus_window_slot_get_search_visible (self))
     {
         gtk_revealer_set_reveal_child (self->search_info_label_revealer, FALSE);
 
@@ -2803,8 +2787,10 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         widget = GTK_WIDGET (self->content_view);
         gtk_box_append (GTK_BOX (self), widget);
         gtk_widget_set_vexpand (widget, TRUE);
+        /* Note that this is not bidirectional and that we may also change
+         * :search-visible alone, e.g. when clicking the search button. */
         self->searching_binding = g_object_bind_property (self->content_view, "searching",
-                                                          self, "searching",
+                                                          self, "search-visible",
                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         self->selection_binding = g_object_bind_property (self->content_view, "selection",
                                                           self, "selection",
@@ -2968,12 +2954,16 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               FALSE,
                               G_PARAM_READABLE);
 
-    properties[PROP_SEARCHING] =
-        g_param_spec_boolean ("searching",
-                              "Whether the current view of the slot is searching",
-                              "Whether the current view of the slot is searching. Proxy property from the view",
+    /**
+     * NautilusWindowSlot:search-visible:
+     *
+     * Whether the search query editor is to be shown for this slot.
+     * This doesn't necessarily mean the view is showing search results.
+     */
+    properties[PROP_SEARCH_VISIBLE] =
+        g_param_spec_boolean ("search-visible", "", "",
                               FALSE,
-                              G_PARAM_READWRITE);
+                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_SELECTION] =
         g_param_spec_pointer ("selection",
