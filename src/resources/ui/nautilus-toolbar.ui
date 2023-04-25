@@ -113,6 +113,11 @@
                 <property name="valign">center</property>
                 <property name="action_name">slot.search-visible</property>
                 <property name="icon_name">edit-find-symbolic</property>
+                <binding name="active">
+                  <lookup name="searching">
+                    <lookup name="window-slot">NautilusToolbar</lookup>
+                  </lookup>
+                </binding>
               </object>
             </child>
           </object>
