@@ -401,12 +401,13 @@ static void
 entry_changed_cb (GtkWidget           *entry,
                   NautilusQueryEditor *editor)
 {
+    g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
+
     if (editor->change_frozen)
     {
         return;
     }
 
-    g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
     editor->search_changed_idle_id = g_idle_add (G_SOURCE_FUNC (entry_changed_internal),
                                                  editor);
 }
