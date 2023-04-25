@@ -738,7 +738,16 @@ nautilus_window_slot_set_property (GObject      *object,
 
         case PROP_SEARCHING:
         {
-            nautilus_window_slot_set_searching (self, g_value_get_boolean (value));
+            /* Should be nautilus_window_slot_set_searching(), but then
+             * the search-visible action would get out of sync with this
+             * property. See discussion in https://gitlab.gnome.org/GNOME/nautilus/-/merge_requests/1157
+             */
+            nautilus_window_slot_set_search_visible (self, g_value_get_boolean (value));
+            /* The previous call should have already caused the action
+             * to call nautilus_window_slot_set_searching(), but it
+             * doesn't hurt to make sure we set our boolean propperly.
+             */
+            self->searching = g_value_get_boolean (value);
         }
         break;
 
