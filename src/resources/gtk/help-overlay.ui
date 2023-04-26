@@ -160,12 +160,28 @@
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes" context="shortcut window">Go back</property>
                 <property name="accelerator">&lt;alt&gt;Left</property>
+                <property name="direction">GTK_TEXT_DIR_LTR</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Go back</property>
+                <property name="accelerator">&lt;alt&gt;Right</property>
+                <property name="direction">GTK_TEXT_DIR_RTL</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes" context="shortcut window">Go forward</property>
                 <property name="accelerator">&lt;alt&gt;Right</property>
+                <property name="direction">GTK_TEXT_DIR_LTR</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Go forward</property>
+                <property name="accelerator">&lt;alt&gt;Left</property>
+                <property name="direction">GTK_TEXT_DIR_RTL</property>
               </object>
             </child>
             <child>
@@ -267,12 +283,28 @@
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes" context="shortcut window">Expand folder</property>
                 <property name="accelerator">Right</property>
+                <property name="direction">GTK_TEXT_DIR_LTR</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Expand folder</property>
+                <property name="accelerator">Left</property>
+                <property name="direction">GTK_TEXT_DIR_RTL</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes" context="shortcut window">Collapse folder</property>
                 <property name="accelerator">Left</property>
+                <property name="direction">GTK_TEXT_DIR_LTR</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Collapse folder</property>
+                <property name="accelerator">Right</property>
+                <property name="direction">GTK_TEXT_DIR_RTL</property>
               </object>
             </child>
           </object>
