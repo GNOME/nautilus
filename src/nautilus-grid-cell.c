@@ -5,6 +5,7 @@
  */
 
 #include "nautilus-grid-cell.h"
+#include "nautilus-tag-manager.h"
 
 struct _NautilusGridCell
 {
@@ -101,15 +102,23 @@ update_emblems (NautilusGridCell *self)
     GtkWidget *child;
     GtkIconTheme *theme;
     g_autolist (GIcon) emblems = NULL;
+    g_autofree gchar *file_uri = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
+    file_uri = nautilus_file_get_uri (file);
 
     /* Remove old emblems. */
     while ((child = gtk_widget_get_first_child (self->emblems_box)) != NULL)
     {
         gtk_box_remove (GTK_BOX (self->emblems_box), child);
+    }
+
+    if (nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (), file_uri))
+    {
+        gtk_box_append (GTK_BOX (self->emblems_box),
+                        gtk_image_new_from_icon_name ("starred-symbolic"));
     }
 
     theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
@@ -134,7 +143,6 @@ update_emblems (NautilusGridCell *self)
                         gtk_image_new_from_gicon (l->data));
     }
 }
-
 
 static void
 on_file_changed (NautilusGridCell *self)
@@ -211,6 +219,28 @@ on_label_query_tooltip (GtkWidget  *widget,
 }
 
 static void
+on_starred_changed (NautilusTagManager *tag_manager,
+                    GList              *changed_files,
+                    gpointer            user_data)
+{
+    NautilusGridCell *self = NAUTILUS_GRID_CELL (user_data);
+    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusFile *file;
+
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    if (item == NULL)
+    {
+        return;
+    }
+
+    file = nautilus_view_item_get_file (item);
+    if (g_list_find (changed_files, file))
+    {
+        update_emblems (self);
+    }
+}
+
+static void
 finalize (GObject *object)
 {
     NautilusGridCell *self = (NautilusGridCell *) object;
@@ -249,6 +279,9 @@ nautilus_grid_cell_init (NautilusGridCell *self)
                       G_CALLBACK (on_icon_size_changed), NULL);
     g_signal_connect (self->label, "query-tooltip",
                       G_CALLBACK (on_label_query_tooltip), NULL);
+
+    g_signal_connect_object (nautilus_tag_manager_get (), "starred-changed",
+                             G_CALLBACK (on_starred_changed), self, G_CONNECT_DEFAULT);
 
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
