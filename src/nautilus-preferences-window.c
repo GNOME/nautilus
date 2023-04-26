@@ -93,8 +93,10 @@ create_icon_caption_combo_row_items (AdwComboRow *combo_row,
 
         g_object_get (G_OBJECT (column), "name", &name, NULL);
 
-        /* Don't show name here, it doesn't make sense */
-        if (!strcmp (name, "name"))
+        /* Don't show name here, it doesn't make sense
+         * starred is instead shown as an emblem for the grid view
+         */
+        if (!strcmp (name, "name") || !strcmp (name, "starred"))
         {
             continue;
         }
