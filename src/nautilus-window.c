@@ -1557,6 +1557,18 @@ const GActionEntry win_entries[] =
 };
 
 static void
+window_set_back_forward_accelerators (void)
+{
+    GApplication *app = g_application_get_default ();
+    gboolean ltr = (gtk_widget_get_default_direction () == GTK_TEXT_DIR_LTR);
+
+#define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
+
+    nautilus_application_set_accelerators (app, "win.back", ACCELS (ltr ? "<alt>Left" : "<alt>Right", "Back"));
+    nautilus_application_set_accelerators (app, "win.forward", ACCELS (ltr ? "<alt>Right" : "<alt>Left", "Forward"));
+}
+
+static void
 nautilus_window_initialize_actions (NautilusWindow *window)
 {
     GApplication *app;
@@ -1569,11 +1581,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
                                      win_entries, G_N_ELEMENTS (win_entries),
                                      window);
 
-#define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
-
     app = g_application_get_default ();
-    nautilus_application_set_accelerators (app, "win.back", ACCELS ("<alt>Left", "Back"));
-    nautilus_application_set_accelerators (app, "win.forward", ACCELS ("<alt>Right", "Forward"));
+    window_set_back_forward_accelerators ();
     nautilus_application_set_accelerators (app, "win.enter-location", ACCELS ("<control>l", "Go", "OpenURL"));
     nautilus_application_set_accelerator (app, "win.new-tab", "<control>t");
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
@@ -2299,6 +2308,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);
+
+    gtk_widget_class_bind_template_callback (wclass, window_set_back_forward_accelerators);
 
     signals[SLOT_ADDED] =
         g_signal_new ("slot-added",

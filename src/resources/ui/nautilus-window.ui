@@ -40,6 +40,7 @@
   <template class="NautilusWindow" parent="AdwApplicationWindow">
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>
+    <signal name="direction-changed" handler="window_set_back_forward_accelerators"/>
     <child>
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
