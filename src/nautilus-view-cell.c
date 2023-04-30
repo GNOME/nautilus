@@ -86,7 +86,7 @@ nautilus_view_cell_set_property (GObject      *object,
     {
         case PROP_VIEW:
         {
-            priv->view = g_value_get_object (value);
+            g_set_weak_pointer (&priv->view, g_value_get_object (value));
         }
         break;
 
@@ -116,6 +116,7 @@ nautilus_view_cell_finalize (GObject *object)
     NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
 
     g_clear_object (&priv->item);
+    g_clear_weak_pointer (&priv->view);
 
     G_OBJECT_CLASS (nautilus_view_cell_parent_class)->finalize (object);
 }
