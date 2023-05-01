@@ -1025,7 +1025,6 @@ typedef struct
     NautilusOpenFlags flags;
     char *activation_directory;
     gboolean user_confirmation;
-    char *uri;
     GDBusProxy *proxy;
     GtkWidget *dialog;
 } ActivateParametersInstall;
@@ -1050,13 +1049,11 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
     nautilus_file_unref (parameters_install->file);
     nautilus_file_list_free (parameters_install->files);
     g_free (parameters_install->activation_directory);
-    g_free (parameters_install->uri);
     g_free (parameters_install);
 }
 
 static char *
-get_application_no_mime_type_handler_message (NautilusFile *file,
-                                              char         *uri)
+get_application_no_mime_type_handler_message (NautilusFile *file)
 {
     char *uri_for_display;
     char *name;
@@ -1164,7 +1161,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
     g_autofree char *content_type_description = NULL;
 
     char *mime_type = nautilus_file_get_mime_type (parameters->file);
-    char *error_message = get_application_no_mime_type_handler_message (parameters->file, parameters->uri);
+    char *error_message = get_application_no_mime_type_handler_message (parameters->file);
 
     if (g_content_type_is_unknown (mime_type))
     {
@@ -1320,8 +1317,7 @@ pk_proxy_appeared_cb (GObject      *source,
 
     mime_type = nautilus_file_get_mime_type (parameters_install->file);
     content_type_description = g_content_type_get_description (mime_type);
-    error_message = get_application_no_mime_type_handler_message (parameters_install->file,
-                                                                  parameters_install->uri);
+    error_message = get_application_no_mime_type_handler_message (parameters_install->file);
     /* use a custom dialog to prompt the user to install new software */
     dialog = adw_message_dialog_new (parameters_install->parent_window, error_message, NULL);
     adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
@@ -1372,7 +1368,6 @@ application_unhandled_uri (ActivateParameters *parameters,
     parameters_install->files = get_file_list_for_launch_locations (parameters->locations);
     parameters_install->flags = parameters->flags;
     parameters_install->user_confirmation = parameters->user_confirmation;
-    parameters_install->uri = g_strdup (uri);
 
 #ifdef ENABLE_PACKAGEKIT
     /* allow an admin to disable the PackageKit search functionality */
