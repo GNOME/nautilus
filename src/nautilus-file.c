@@ -6010,35 +6010,40 @@ static char *
 get_real_name (const char *name,
                const char *gecos)
 {
-    char *locale_string, *part_before_comma, *capitalized_login_name, *real_name;
+    char *part_before_comma, *capitalized_login_name, *real_name;
+    const char *locale_string;
+    g_auto (GStrv) geco_parts = NULL;
 
     if (gecos == NULL)
     {
         return NULL;
     }
 
-    locale_string = eel_str_strip_substring_and_after (gecos, ",");
+    geco_parts = g_strsplit (gecos, ",", 2);
+    if (geco_parts == NULL)
+    {
+        return NULL;
+    }
+
+    locale_string = geco_parts[0];
     if (!g_utf8_validate (locale_string, -1, NULL))
     {
         part_before_comma = g_locale_to_utf8 (locale_string, -1, NULL, NULL, NULL);
-        g_free (locale_string);
     }
     else
     {
-        part_before_comma = locale_string;
+        part_before_comma = g_strdup (locale_string);
     }
 
     if (!g_utf8_validate (name, -1, NULL))
     {
-        locale_string = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+        g_autofree gchar *login_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+        capitalized_login_name = eel_str_capitalize (login_name);
     }
     else
     {
-        locale_string = g_strdup (name);
+        capitalized_login_name = eel_str_capitalize (name);
     }
-
-    capitalized_login_name = eel_str_capitalize (locale_string);
-    g_free (locale_string);
 
     if (capitalized_login_name == NULL)
     {

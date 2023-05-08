@@ -59,10 +59,6 @@ gchar   *eel_str_middle_truncate           (const gchar   *string,
                                             guint          truncate_length);
 
 
-/* Remove all characters after the passed-in substring. */
-char *   eel_str_strip_substring_and_after (const char    *str,
-					    const char    *substring);
-
 /* Replace all occurrences of substring with replacement. */
 char *   eel_str_replace_substring         (const char    *str,
 					    const char    *substring,

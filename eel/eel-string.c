@@ -172,39 +172,6 @@ eel_str_middle_truncate (const gchar *string,
 }
 
 /**
- * eel_str_strip_substring_and_after:
- * @string: input string
- * @substring: (not nullable): substring to use in search
- *
- * Returns: (transfer full): a copy of @string with the first occurence of
- * @substring removed, along with any trailing characters.
- * If @string is %NULL, returns %NULL.
- */
-char *
-eel_str_strip_substring_and_after (const char *string,
-                                   const char *substring)
-{
-    const char *substring_position;
-
-    g_return_val_if_fail (substring != NULL, g_strdup (string));
-    g_return_val_if_fail (substring[0] != '\0', g_strdup (string));
-
-    if (string == NULL)
-    {
-        return NULL;
-    }
-
-    substring_position = strstr (string, substring);
-    if (substring_position == NULL)
-    {
-        return g_strdup (string);
-    }
-
-    return g_strndup (string,
-                      substring_position - string);
-}
-
-/**
  * eel_str_replace_substring:
  * @string: input string
  * @substring: (not nullable): string to be replaced
@@ -464,13 +431,6 @@ eel_self_check_string (void)
     EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 13), "something_odd");
     EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("ääääääääää", 5), "ää…ää");
     EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("あぃいぅうぇえぉ", 7), "あぃい…ぇえぉ");
-
-    EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after (NULL, "bar"), NULL);
-    EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after ("", "bar"), "");
-    EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after ("foo", "bar"), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after ("foo bar", "bar"), "foo ");
-    EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after ("foo bar xxx", "bar"), "foo ");
-    EEL_CHECK_STRING_RESULT (eel_str_strip_substring_and_after ("bar", "bar"), "");
 
     EEL_CHECK_STRING_RESULT (eel_str_replace_substring (NULL, "foo", NULL), NULL);
     EEL_CHECK_STRING_RESULT (eel_str_replace_substring (NULL, "foo", "bar"), NULL);
