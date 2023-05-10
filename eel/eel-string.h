@@ -34,9 +34,6 @@
 
 /* NULL is allowed for all the str parameters to these functions. */
 
-/* Escape function for '_' character. */
-char *   eel_str_double_underscores        (const char    *str);
-
 /* Capitalize a string */
 char *   eel_str_capitalize                (const char    *str);
 
@@ -57,12 +54,6 @@ char *   eel_str_capitalize                (const char    *str);
  */
 gchar   *eel_str_middle_truncate           (const gchar   *string,
                                             guint          truncate_length);
-
-
-/* Replace all occurrences of substring with replacement. */
-char *   eel_str_replace_substring         (const char    *str,
-					    const char    *substring,
-					    const char    *replacement);
 
 /**
  * eel_str_get_common_prefix:

@@ -5342,7 +5342,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     gint days_ago;
     const gchar *format;
     gchar *result;
-    gchar *result_with_ratio;
+    GString *time_label;
 
     if (!nautilus_file_get_date (file, date_type, &file_time_raw))
     {
@@ -5486,10 +5486,10 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
 
     /* Replace ":" with ratio. Replacement is done afterward because g_date_time_format
      * may fail with utf8 chars in some locales */
-    result_with_ratio = eel_str_replace_substring (result, ":", "∶");
-    g_free (result);
+    time_label = g_string_new_take (g_steal_pointer (&result));
+    g_string_replace (time_label, ":", "∶", 0);
 
-    return result_with_ratio;
+    return g_string_free_and_steal (time_label);
 }
 
 static void
@@ -6051,9 +6051,9 @@ get_real_name (const char *name,
     }
     else
     {
-        real_name = eel_str_replace_substring
-                        (part_before_comma, "&", capitalized_login_name);
-        g_free (part_before_comma);
+        GString *real_name_str = g_string_new_take (g_steal_pointer (&part_before_comma));
+        g_string_replace (real_name_str, "&", capitalized_login_name, 0);
+        real_name = g_string_free_and_steal (real_name_str);
     }
 
 

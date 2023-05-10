@@ -582,6 +582,27 @@ set_floating_bar_status (NautilusFilesView *view,
                             floating_bar_set_status_data_free);
 }
 
+/**
+ * escape_underscores:
+ * @to_escape: input string
+ *
+ * This is used to preserve underscore characters in strings, when they would
+ * otherwise be used for mnemonics.
+ *
+ * Returns: A copy of @to_escape, with underscore characters duplicated.
+ * If @to_escape doesn't contain underscores, returns a copy of it.
+ * If @to_escape is %NULL, returns an empty string.
+ */
+static char *
+escape_underscores (const char *to_escape)
+{
+    GString *string = g_string_new (to_escape);
+
+    g_string_replace (string, "_", "__", 0);
+
+    return g_string_free_and_steal (string);
+}
+
 static char *
 real_get_backing_uri (NautilusFilesView *view)
 {
@@ -5676,7 +5697,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
     g_action_map_add_action (G_ACTION_MAP (priv->view_action_group), action);
 
     detailed_action_name = g_strconcat ("view.", action_name, NULL);
-    label = eel_str_double_underscores (name);
+    label = escape_underscores (name);
     menu_item = g_menu_item_new (label, detailed_action_name);
 
     mimetype_icon = get_menu_icon_for_file (file, GTK_WIDGET (view));
@@ -5852,7 +5873,7 @@ update_directory_in_templates_menu (NautilusFilesView *view,
                     g_autofree char *label = NULL;
 
                     display_name = nautilus_file_get_display_name (file);
-                    label = eel_str_double_underscores (display_name);
+                    label = escape_underscores (display_name);
                     menu_item = g_menu_item_new_submenu (label, children_menu);
                     g_menu_append_item (menu, menu_item);
                     any_templates = TRUE;
@@ -8052,9 +8073,7 @@ update_selection_menu (NautilusFilesView *view,
 
     if (app != NULL)
     {
-        char *escaped_app;
-
-        escaped_app = eel_str_double_underscores (g_app_info_get_name (app));
+        g_autofree char *escaped_app = escape_underscores (g_app_info_get_name (app));
         item_label = g_strdup_printf (_("Open With %s"), escaped_app);
 
         app_icon = g_app_info_get_icon (app);
@@ -8062,7 +8081,6 @@ update_selection_menu (NautilusFilesView *view,
         {
             g_object_ref (app_icon);
         }
-        g_free (escaped_app);
         g_object_unref (app);
     }
     else if (show_run)

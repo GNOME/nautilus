@@ -33,57 +33,6 @@
 #endif
 
 /**
- * eel_str_double_underscores:
- * @string: input string
- *
- * This is used if you want to preserve underscore characters
- * when creating a label with gtk_label_new_with_mnemonic().
- *
- * Returns: a newly allocated copy of @string,
- * with a doubled number of underscores.
- * If @string doesn't contain underscores, returns a copy of it.
- * If @string is %NULL, returns %NULL.
- */
-char *
-eel_str_double_underscores (const char *string)
-{
-    int underscores;
-    const char *p;
-    char *q;
-    char *escaped;
-
-    if (string == NULL)
-    {
-        return NULL;
-    }
-
-    underscores = 0;
-    for (p = string; *p != '\0'; p++)
-    {
-        underscores += (*p == '_');
-    }
-
-    if (underscores == 0)
-    {
-        return g_strdup (string);
-    }
-
-    escaped = g_new (char, strlen (string) + underscores + 1);
-    for (p = string, q = escaped; *p != '\0'; p++, q++)
-    {
-        /* Add an extra underscore. */
-        if (*p == '_')
-        {
-            *q++ = '_';
-        }
-        *q = *p;
-    }
-    *q = '\0';
-
-    return escaped;
-}
-
-/**
  * eel_str_capitalize:
  * @string: input string
  *
@@ -169,70 +118,6 @@ eel_str_middle_truncate (const gchar *string,
     right_substring = g_utf8_substring (string, length - num_right_chars, length);
 
     return g_strconcat (left_substring, ellipsis, right_substring, NULL);
-}
-
-/**
- * eel_str_replace_substring:
- * @string: input string
- * @substring: (not nullable): string to be replaced
- * @replacement: string used as replacement
- *
- * Returns: (transfer full): a copy of @string with all occurences of @substring
- * replaced with @replacement.
- */
-char *
-eel_str_replace_substring (const char *string,
-                           const char *substring,
-                           const char *replacement)
-{
-    int substring_length, replacement_length, result_length, remaining_length;
-    const char *p, *substring_position;
-    char *result, *result_position;
-
-    g_return_val_if_fail (substring != NULL, g_strdup (string));
-    g_return_val_if_fail (substring[0] != '\0', g_strdup (string));
-
-    if (string == NULL)
-    {
-        return NULL;
-    }
-
-    substring_length = substring ? strlen (substring) : 0;
-    replacement_length = replacement ? strlen (replacement) : 0;
-
-    result_length = strlen (string);
-    for (p = string;; p = substring_position + substring_length)
-    {
-        substring_position = strstr (p, substring);
-        if (substring_position == NULL)
-        {
-            break;
-        }
-        result_length += replacement_length - substring_length;
-    }
-
-    result = g_malloc (result_length + 1);
-
-    result_position = result;
-    for (p = string;; p = substring_position + substring_length)
-    {
-        substring_position = strstr (p, substring);
-        if (substring_position == NULL)
-        {
-            remaining_length = strlen (p);
-            memcpy (result_position, p, remaining_length);
-            result_position += remaining_length;
-            break;
-        }
-        memcpy (result_position, p, substring_position - p);
-        result_position += substring_position - p;
-        memcpy (result_position, replacement, replacement_length);
-        result_position += replacement_length;
-    }
-    g_assert (result_position - result == result_length);
-    result_position[0] = '\0';
-
-    return result;
 }
 
 /**
@@ -384,15 +269,6 @@ enum
 void
 eel_self_check_string (void)
 {
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores (NULL), NULL);
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores (""), "");
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores ("_"), "__");
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores ("foo"), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores ("foo_bar"), "foo__bar");
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores ("foo_bar_2"), "foo__bar__2");
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores ("_foo"), "__foo");
-    EEL_CHECK_STRING_RESULT (eel_str_double_underscores ("foo_"), "foo__");
-
     EEL_CHECK_STRING_RESULT (eel_str_capitalize (NULL), NULL);
     EEL_CHECK_STRING_RESULT (eel_str_capitalize (""), "");
     EEL_CHECK_STRING_RESULT (eel_str_capitalize ("foo"), "Foo");
@@ -431,17 +307,6 @@ eel_self_check_string (void)
     EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 13), "something_odd");
     EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("ääääääääää", 5), "ää…ää");
     EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("あぃいぅうぇえぉ", 7), "あぃい…ぇえぉ");
-
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring (NULL, "foo", NULL), NULL);
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring (NULL, "foo", "bar"), NULL);
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("bar", "foo", NULL), "bar");
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("", "foo", ""), "");
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("", "foo", "bar"), "");
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("bar", "foo", ""), "bar");
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("xxx", "x", "foo"), "foofoofoo");
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("fff", "f", "foo"), "foofoofoo");
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("foofoofoo", "foo", "f"), "fff");
-    EEL_CHECK_STRING_RESULT (eel_str_replace_substring ("foofoofoo", "f", ""), "oooooo");
 }
 
 #endif /* !EEL_OMIT_SELF_CHECK */
