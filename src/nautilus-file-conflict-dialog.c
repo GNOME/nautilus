@@ -255,6 +255,16 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 }
 
 static void
+nautilus_file_conflict_dialog_dispose (GObject *object)
+{
+    NautilusFileConflictDialog *self = NAUTILUS_FILE_CONFLICT_DIALOG (object);
+
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG);
+
+    G_OBJECT_CLASS (nautilus_file_conflict_dialog_parent_class)->dispose (object);
+}
+
+static void
 do_finalize (GObject *self)
 {
     NautilusFileConflictDialog *dialog = NAUTILUS_FILE_CONFLICT_DIALOG (self);
@@ -293,6 +303,7 @@ nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass
     gtk_widget_class_bind_template_callback (widget_class, checkbox_toggled_cb);
     gtk_widget_class_bind_template_callback (widget_class, reset_button_clicked_cb);
 
+    G_OBJECT_CLASS (klass)->dispose = nautilus_file_conflict_dialog_dispose;
     G_OBJECT_CLASS (klass)->finalize = do_finalize;
 }
 

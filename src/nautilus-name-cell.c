@@ -345,6 +345,16 @@ nautilus_name_cell_init (NautilusNameCell *self)
 }
 
 static void
+nautilus_name_cell_dispose (GObject *object)
+{
+    NautilusNameCell *self = (NautilusNameCell *) object;
+
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_NAME_CELL);
+
+    G_OBJECT_CLASS (nautilus_name_cell_parent_class)->dispose (object);
+}
+
+static void
 nautilus_name_cell_finalize (GObject *object)
 {
     NautilusNameCell *self = (NautilusNameCell *) object;
@@ -361,6 +371,7 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+    object_class->dispose = nautilus_name_cell_dispose;
     object_class->finalize = nautilus_name_cell_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");

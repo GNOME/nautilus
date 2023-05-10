@@ -3520,6 +3520,9 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_object (&priv->outgoing_search);
     g_clear_object (&priv->location);
 
+    adw_bin_set_child (ADW_BIN (view), NULL);
+    gtk_widget_dispose_template (GTK_WIDGET (view), NAUTILUS_TYPE_FILES_VIEW);
+
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->dispose (object);
 }
 

@@ -558,6 +558,16 @@ nautilus_column_chooser_constructed (GObject *object)
 }
 
 static void
+nautilus_column_chooser_dispose (GObject *object)
+{
+    NautilusColumnChooser *self = NAUTILUS_COLUMN_CHOOSER (object);
+
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_COLUMN_CHOOSER);
+
+    G_OBJECT_CLASS (nautilus_column_chooser_parent_class)->dispose (object);
+}
+
+static void
 nautilus_column_chooser_finalize (GObject *object)
 {
     NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (object);
@@ -576,6 +586,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 
     oclass->set_property = nautilus_column_chooser_set_property;
     oclass->constructed = nautilus_column_chooser_constructed;
+    oclass->dispose = nautilus_column_chooser_dispose;
     oclass->finalize = nautilus_column_chooser_finalize;
 
     win_class->close_request = nautilus_column_chooser_close_request;

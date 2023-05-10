@@ -232,6 +232,16 @@ nautilus_app_chooser_constructed (GObject *object)
 }
 
 static void
+nautilus_app_chooser_dispose (GObject *object)
+{
+    NautilusAppChooser *self = (NautilusAppChooser *) object;
+
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_APP_CHOOSER);
+
+    G_OBJECT_CLASS (nautilus_app_chooser_parent_class)->dispose (object);
+}
+
+static void
 nautilus_app_chooser_finalize (GObject *object)
 {
     NautilusAppChooser *self = (NautilusAppChooser *) object;
@@ -248,6 +258,7 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+    object_class->dispose = nautilus_app_chooser_dispose;
     object_class->finalize = nautilus_app_chooser_finalize;
     object_class->constructed = nautilus_app_chooser_constructed;
     object_class->set_property = nautilus_app_chooser_set_property;

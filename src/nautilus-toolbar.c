@@ -289,6 +289,11 @@ nautilus_toolbar_set_property (GObject      *object,
 static void
 nautilus_toolbar_dispose (GObject *object)
 {
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
+
+    adw_bin_set_child (ADW_BIN (object), NULL);
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_TOOLBAR);
+
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
 }
 

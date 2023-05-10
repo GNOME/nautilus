@@ -144,6 +144,17 @@ nautilus_view_controls_set_property (GObject      *object,
 }
 
 static void
+nautilus_view_controls_dispose (GObject *obj)
+{
+    NautilusViewControls *self = NAUTILUS_VIEW_CONTROLS (obj);
+
+    adw_bin_set_child (ADW_BIN (self), NULL);
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_VIEW_CONTROLS);
+
+    G_OBJECT_CLASS (nautilus_view_controls_parent_class)->dispose (obj);
+}
+
+static void
 nautilus_view_controls_finalize (GObject *obj)
 {
     NautilusViewControls *self = NAUTILUS_VIEW_CONTROLS (obj);
@@ -163,6 +174,7 @@ nautilus_view_controls_class_init (NautilusViewControlsClass *klass)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+    object_class->dispose = nautilus_view_controls_dispose;
     object_class->finalize = nautilus_view_controls_finalize;
     object_class->get_property = nautilus_view_controls_get_property;
     object_class->set_property = nautilus_view_controls_set_property;

@@ -437,6 +437,8 @@ nautilus_gtk_places_view_dispose (GObject *object)
   g_clear_pointer (&view->popup_menu, gtk_widget_unparent);
   g_clear_weak_pointer (&view->row_for_action);
 
+  gtk_widget_dispose_template (GTK_WIDGET (view), NAUTILUS_TYPE_GTK_PLACES_VIEW);
+
   G_OBJECT_CLASS (nautilus_gtk_places_view_parent_class)->dispose (object);
 }
 

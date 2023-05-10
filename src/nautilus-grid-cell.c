@@ -235,6 +235,16 @@ on_starred_changed (NautilusTagManager *tag_manager,
 }
 
 static void
+nautilus_grid_cell_dispose (GObject *object)
+{
+    NautilusGridCell *self = (NautilusGridCell *) object;
+
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_GRID_CELL);
+
+    G_OBJECT_CLASS (nautilus_grid_cell_parent_class)->dispose (object);
+}
+
+static void
 finalize (GObject *object)
 {
     NautilusGridCell *self = (NautilusGridCell *) object;
@@ -249,6 +259,7 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+    object_class->dispose = nautilus_grid_cell_dispose;
     object_class->finalize = finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-grid-cell.ui");

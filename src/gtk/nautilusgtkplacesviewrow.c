@@ -201,6 +201,17 @@ measure_available_space (NautilusGtkPlacesViewRow *row)
 }
 
 static void
+nautilus_gtk_places_view_row_dispose (GObject *object)
+{
+  NautilusGtkPlacesViewRow *self = NAUTILUS_GTK_PLACES_VIEW_ROW (object);
+
+  gtk_list_box_row_set_child (GTK_LIST_BOX_ROW (self), NULL);
+  gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_GTK_PLACES_VIEW_ROW);
+
+  G_OBJECT_CLASS (nautilus_gtk_places_view_row_parent_class)->dispose (object);
+}
+
+static void
 nautilus_gtk_places_view_row_finalize (GObject *object)
 {
   NautilusGtkPlacesViewRow *self = NAUTILUS_GTK_PLACES_VIEW_ROW (object);
@@ -334,6 +345,7 @@ nautilus_gtk_places_view_row_class_init (NautilusGtkPlacesViewRowClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+  object_class->dispose = nautilus_gtk_places_view_row_dispose;
   object_class->finalize = nautilus_gtk_places_view_row_finalize;
   object_class->get_property = nautilus_gtk_places_view_row_get_property;
   object_class->set_property = nautilus_gtk_places_view_row_set_property;

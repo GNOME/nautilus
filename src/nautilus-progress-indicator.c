@@ -498,6 +498,17 @@ nautilus_progress_indicator_constructed (GObject *object)
 }
 
 static void
+nautilus_progress_indicator_dispose (GObject *obj)
+{
+    NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (obj);
+
+    adw_bin_set_child (ADW_BIN (self), NULL);
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_PROGRESS_INDICATOR);
+
+    G_OBJECT_CLASS (nautilus_progress_indicator_parent_class)->dispose (obj);
+}
+
+static void
 nautilus_progress_indicator_finalize (GObject *obj)
 {
     NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (obj);
@@ -521,6 +532,7 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
     object_class->constructed = nautilus_progress_indicator_constructed;
+    object_class->dispose = nautilus_progress_indicator_dispose;
     object_class->finalize = nautilus_progress_indicator_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class,

@@ -209,6 +209,9 @@ nautilus_history_controls_dispose (GObject *object)
     g_clear_pointer (&self->back_menu, gtk_widget_unparent);
     g_clear_pointer (&self->forward_menu, gtk_widget_unparent);
 
+    adw_bin_set_child (ADW_BIN (self), NULL);
+    gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_HISTORY_CONTROLS);
+
     G_OBJECT_CLASS (nautilus_history_controls_parent_class)->dispose (object);
 }
 
