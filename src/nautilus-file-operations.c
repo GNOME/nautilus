@@ -9189,6 +9189,7 @@ compress_task_thread_func (GTask        *task,
     CompressJob *compress_job = task_data;
     g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     g_autoptr (AutoarCompressor) compressor = NULL;
+    GList *l;
 
     g_timer_start (compress_job->common.time);
 
@@ -9201,6 +9202,26 @@ compress_task_thread_func (GTask        *task,
 
     compress_job->total_files = source_info.num_files;
     compress_job->total_size = source_info.num_bytes;
+
+    /* take out files that should be skipped */
+    l = compress_job->source_files;
+    while (l != NULL)
+    {
+        GList *next = l->next;
+        if (should_skip_file ((CommonJob *) compress_job, l->data))
+        {
+            compress_job->source_files = g_list_remove_link (compress_job->source_files, l);
+            g_list_free_full (l, g_object_unref);
+        }
+        l = next;
+    }
+
+    if (compress_job->source_files == NULL)
+    {
+        compress_job->success = FALSE;
+        g_clear_object (&compress_job->common.undo_info);
+        return;
+    }
 
     compressor = autoar_compressor_new (compress_job->source_files,
                                         compress_job->output_file,
