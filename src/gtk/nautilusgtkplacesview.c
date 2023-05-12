@@ -434,6 +434,7 @@ nautilus_gtk_places_view_dispose (GObject *object)
   g_cancellable_cancel (view->cancellable);
   g_cancellable_cancel (view->networks_fetching_cancellable);
   g_clear_pointer (&view->popup_menu, gtk_widget_unparent);
+  g_clear_weak_pointer (&view->row_for_action);
 
   G_OBJECT_CLASS (nautilus_gtk_places_view_parent_class)->dispose (object);
 }
@@ -1376,7 +1377,6 @@ unmount_ready_cb (GObject      *source_mount,
     return;
   }
 
-  view->row_for_action = NULL;
   view->unmounting_mount = FALSE;
   update_loading (view);
 
@@ -1817,7 +1817,7 @@ real_popup_menu (GtkWidget *widget,
                                    &(GdkRectangle){x_in_view, y_in_view, 0, 0});
     }
 
-  view->row_for_action = row;
+  g_set_weak_pointer (&view->row_for_action, row);
   if (view->row_for_action)
     g_object_set_data (G_OBJECT (view->row_for_action), "menu", view->popup_menu);
 
