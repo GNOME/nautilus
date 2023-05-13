@@ -79,7 +79,7 @@ get_column_names (NautilusColumnChooser *chooser,
     for (guint i = 0; i < g_list_model_get_n_items (chooser->model); i++)
     {
         g_autoptr (NautilusColumn) column = g_list_model_get_item (chooser->model, i);
-        char *name;
+        g_autofree char *name = NULL;
         gboolean visible;
 
         g_object_get (column, "name", &name, "visible", &visible, NULL);
@@ -87,10 +87,6 @@ get_column_names (NautilusColumnChooser *chooser,
         if (!only_visible || visible)
         {
             g_strv_builder_add (builder, name);
-        }
-        else
-        {
-            g_free (name);
         }
     }
 
