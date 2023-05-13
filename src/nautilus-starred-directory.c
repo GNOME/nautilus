@@ -98,7 +98,7 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
     NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
     GList *l;
     GList *tmp_l;
-    GList *new_starred_files;
+    g_autoptr (GList) new_starred_files = NULL;
     GList *monitor_list;
     FavoriteMonitor *monitor;
     NautilusFile *file;
@@ -240,6 +240,8 @@ real_call_when_ready (NautilusDirectory         *directory,
     callback (NAUTILUS_DIRECTORY (directory),
               file_list,
               callback_data);
+
+    nautilus_file_list_free (file_list);
 }
 
 static gboolean
@@ -439,7 +441,7 @@ real_get_file_list (NautilusDirectory *directory)
 static void
 nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
 {
-    GList *starred_files;
+    g_autoptr (GList) starred_files = NULL;
     NautilusFile *file;
     GList *l;
     GList *file_list;

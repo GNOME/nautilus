@@ -1974,7 +1974,7 @@ static void
 nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
                                              NautilusFile      *target_file)
 {
-    GdkRectangle *pointing_to;
+    g_autofree GdkRectangle *pointing_to = NULL;
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -7515,7 +7515,6 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean can_star_current_directory;
     gboolean show_star;
     gboolean show_unstar;
-    gchar *uri;
     g_autoptr (GAppInfo) app_info_mailto = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -7893,6 +7892,7 @@ real_update_actions_state (NautilusFilesView *view)
     for (l = selection; l != NULL; l = l->next)
     {
         NautilusFile *file;
+        g_autofree gchar *uri = NULL;
 
         file = NAUTILUS_FILE (l->data);
         uri = nautilus_file_get_uri (file);
@@ -7910,8 +7910,6 @@ real_update_actions_state (NautilusFilesView *view)
         {
             show_unstar = FALSE;
         }
-
-        g_free (uri);
     }
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),

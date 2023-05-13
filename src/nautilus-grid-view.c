@@ -366,13 +366,14 @@ action_sort_order_changed (GSimpleAction *action,
                            GVariant      *value,
                            gpointer       user_data)
 {
+    g_autoptr (GVariant) old_value = g_action_get_state (G_ACTION (action));
     const gchar *target_name;
     NautilusGridView *self = NAUTILUS_GRID_VIEW (user_data);
     NautilusViewModel *model;
     g_autoptr (GtkCustomSorter) sorter = NULL;
 
     /* Don't resort if the action is in the same state as before */
-    if (g_variant_equal (value, g_action_get_state (G_ACTION (action))))
+    if (g_variant_equal (value, old_value))
     {
         return;
     }

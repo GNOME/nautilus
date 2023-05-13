@@ -680,6 +680,8 @@ static void
 nautilus_window_slot_set_selection (NautilusWindowSlot *self,
                                     GList              *selection)
 {
+    nautilus_file_list_free (self->selection);
+
     self->selection = selection;
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SELECTION]);
 }
@@ -2876,6 +2878,7 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_object (&self->location);
     g_clear_object (&self->pending_file_to_activate);
     g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
+    g_clear_pointer (&self->selection, nautilus_file_list_free);
 
     g_clear_object (&self->current_location_bookmark);
     g_clear_object (&self->last_location_bookmark);

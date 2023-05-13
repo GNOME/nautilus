@@ -2074,7 +2074,7 @@ mount_volume (NautilusGtkSidebarRow *row,
               GVolume       *volume)
 {
   NautilusGtkPlacesSidebar *sidebar;
-  GMountOperation *mount_op;
+  g_autoptr (GMountOperation) mount_op = NULL;
 
   g_object_get (row, "sidebar", &sidebar, NULL);
 
