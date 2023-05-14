@@ -193,7 +193,7 @@ check_required_directories (NautilusApplication *self)
                                              directories_as_string->str);
         }
 
-        show_dialog (error_string, detail_string, NULL, GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (error_string, detail_string, NULL);
 
         g_string_free (directories_as_string, TRUE);
     }

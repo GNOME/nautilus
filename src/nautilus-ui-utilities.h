@@ -70,10 +70,10 @@ gboolean    nautilus_date_time_is_between_dates     (GDateTime         *date,
                                                      GDateTime         *initial_date,
                                                      GDateTime         *end_date);
 
-AdwMessageDialog * show_dialog                      (const gchar       *primary_text,
-                                                     const gchar       *secondary_text,
-                                                     GtkWindow         *parent,
-                                                     GtkMessageType     type);
+void
+nautilus_show_ok_dialog (const char *primary_text,
+                         const char *secondary_text,
+                         GtkWindow  *parent);
 
 void        show_unmount_progress_cb                (GMountOperation   *op,
                                                      const gchar       *message,

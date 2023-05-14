@@ -283,10 +283,9 @@ show_error_message (NautilusSidebar *self,
                     const char      *primary,
                     const char      *secondary)
 {
-    show_dialog (primary,
-                 secondary,
-                 GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
-                 GTK_MESSAGE_ERROR);
+    nautilus_show_ok_dialog (primary,
+                             secondary,
+                             GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
 }
 
 static void

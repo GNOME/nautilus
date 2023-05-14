@@ -339,11 +339,10 @@ nautilus_date_time_is_between_dates (GDateTime *date,
     return in_between;
 }
 
-AdwMessageDialog *
-show_dialog (const gchar    *primary_text,
-             const gchar    *secondary_text,
-             GtkWindow      *parent,
-             GtkMessageType  type)
+void
+nautilus_show_ok_dialog (const gchar *primary_text,
+                         const gchar *secondary_text,
+                         GtkWindow   *parent)
 {
     GtkWidget *dialog;
 
@@ -359,8 +358,6 @@ show_dialog (const gchar    *primary_text,
     adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
 
     gtk_window_present (GTK_WINDOW (dialog));
-
-    return ADW_MESSAGE_DIALOG (dialog);
 }
 
 static void

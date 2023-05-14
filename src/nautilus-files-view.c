@@ -2787,31 +2787,27 @@ action_paste_files_accel (GSimpleAction *action,
 
     if (showing_starred_directory (view))
     {
-        show_dialog (_("Could not paste files"),
-                     _("Cannot paste files into Starred"),
-                     nautilus_files_view_get_containing_window (view),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (_("Could not paste files"),
+                                 _("Cannot paste files into Starred"),
+                                 nautilus_files_view_get_containing_window (view));
     }
     else if (showing_recent_directory (view))
     {
-        show_dialog (_("Could not paste files"),
-                     _("Cannot paste files into Recent"),
-                     nautilus_files_view_get_containing_window (view),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (_("Could not paste files"),
+                                 _("Cannot paste files into Recent"),
+                                 nautilus_files_view_get_containing_window (view));
     }
     else if (showing_trash_directory (view))
     {
-        show_dialog (_("Could not paste files"),
-                     _("Cannot paste files into Trash"),
-                     nautilus_files_view_get_containing_window (view),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (_("Could not paste files"),
+                                 _("Cannot paste files into Trash"),
+                                 nautilus_files_view_get_containing_window (view));
     }
     else if (nautilus_files_view_is_read_only (view))
     {
-        show_dialog (_("Could not paste files"),
-                     _("Permissions do not allow pasting files in this directory"),
-                     nautilus_files_view_get_containing_window (view),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (_("Could not paste files"),
+                                 _("Permissions do not allow pasting files in this directory"),
+                                 nautilus_files_view_get_containing_window (view));
     }
     else
     {
@@ -6202,10 +6198,9 @@ send_email_done (GObject      *source_object,
     xdp_portal_compose_email_finish (XDP_PORTAL (source_object), res, &error);
     if (error != NULL)
     {
-        show_dialog (_("Error sending email."),
-                     error->message,
-                     window,
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (_("Error sending email."),
+                                 error->message,
+                                 window);
     }
 }
 
@@ -6479,10 +6474,9 @@ file_mount_callback (NautilusFile *file,
         /* Translators: %s is a file name formatted for display */
         g_autofree char *text = g_strdup_printf (_("Unable to access “%s”"),
                                                  nautilus_file_get_display_name (file));
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (text,
+                                 error->message,
+                                 GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
     }
 }
 
@@ -6505,10 +6499,9 @@ file_unmount_callback (NautilusFile *file,
         /* Translators: %s is a file name formatted for display */
         g_autofree char *text = g_strdup_printf (_("Unable to remove “%s”"),
                                                  nautilus_file_get_display_name (file));
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (text,
+                                 error->message,
+                                 GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
     }
 }
 
@@ -6528,10 +6521,9 @@ file_eject_callback (NautilusFile *file,
         /* Translators: %s is a file name formatted for display */
         g_autofree char *text = g_strdup_printf (_("Unable to eject “%s”"),
                                                  nautilus_file_get_display_name (file));
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (text,
+                                 error->message,
+                                 GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
     }
 }
 
@@ -6548,10 +6540,9 @@ file_stop_callback (NautilusFile *file,
          (error->code != G_IO_ERROR_CANCELLED &&
           error->code != G_IO_ERROR_FAILED_HANDLED)))
     {
-        show_dialog (_("Unable to stop drive"),
-                     error->message,
-                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (_("Unable to stop drive"),
+                                 error->message,
+                                 GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
     }
 }
 
@@ -6660,10 +6651,9 @@ file_start_callback (NautilusFile *file,
         const char *name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         g_autofree char *text = g_strdup_printf (_("Unable to start “%s”"), name);
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))),
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (text,
+                                 error->message,
+                                 GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))));
     }
 }
 

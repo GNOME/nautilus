@@ -572,10 +572,9 @@ nautilus_restore_files_from_trash (GList     *files,
         g_autofree char *message = g_strdup_printf (_("Could not determine original location of “%s” "),
                                                     nautilus_file_get_display_name (file));
 
-        show_dialog (message,
-                     _("The item cannot be restored from trash"),
-                     parent_window,
-                     GTK_MESSAGE_WARNING);
+        nautilus_show_ok_dialog (message,
+                                 _("The item cannot be restored from trash"),
+                                 parent_window);
     }
 
     if (original_dirs_hash != NULL)

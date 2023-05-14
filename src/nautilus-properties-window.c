@@ -674,10 +674,9 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
 
     if (!exactly_one)
     {
-        show_dialog (_("You cannot assign more than one custom icon at a time!"),
-                     _("Please drop just one image to set a custom icon."),
-                     window,
-                     GTK_MESSAGE_ERROR);
+        nautilus_show_ok_dialog (_("You cannot assign more than one custom icon at a time!"),
+                                 _("Please drop just one image to set a custom icon."),
+                                 window);
     }
     else
     {
@@ -691,17 +690,15 @@ nautilus_properties_window_drag_drop_cb (GtkDropTarget *target,
         {
             if (!g_file_is_native (file_list->data))
             {
-                show_dialog (_("The file that you dropped is not local."),
-                             _("You can only use local images as custom icons."),
-                             window,
-                             GTK_MESSAGE_ERROR);
+                nautilus_show_ok_dialog (_("The file that you dropped is not local."),
+                                         _("You can only use local images as custom icons."),
+                                         window);
             }
             else
             {
-                show_dialog (_("The file that you dropped is not an image."),
-                             _("You can only use local images as custom icons."),
-                             window,
-                             GTK_MESSAGE_ERROR);
+                nautilus_show_ok_dialog (_("The file that you dropped is not an image."),
+                                         _("You can only use local images as custom icons."),
+                                         window);
             }
         }
     }

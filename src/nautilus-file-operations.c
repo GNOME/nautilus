@@ -2312,10 +2312,9 @@ unmount_mount_callback (GObject      *source_object,
                 primary = g_strdup_printf (_("Unable to unmount “%s”"),
                                            mount_name);
             }
-            show_dialog (primary,
-                         error->message,
-                         data->parent_window,
-                         GTK_MESSAGE_ERROR);
+            nautilus_show_ok_dialog (primary,
+                                     error->message,
+                                     data->parent_window);
             g_free (primary);
         }
     }
@@ -2629,10 +2628,9 @@ volume_mount_cb (GObject      *source_object,
             primary = g_strdup_printf (_("Unable to access “%s”"), name);
             g_free (name);
             success = FALSE;
-            show_dialog (primary,
-                         error->message,
-                         parent,
-                         GTK_MESSAGE_ERROR);
+            nautilus_show_ok_dialog (primary,
+                                     error->message,
+                                     parent);
             g_free (primary);
         }
     }
