@@ -3274,19 +3274,11 @@ retry:
 
     if (file_type != G_FILE_TYPE_DIRECTORY)
     {
-        g_autofree gchar *basename = NULL;
+        g_autofree gchar *basename = get_basename (dest);
+        g_autofree char *heading = g_strdup_printf (_("Error while copying to “%s”."), basename);
+        const char * body = _("The destination is not a folder.");
 
-        basename = get_basename (dest);
-        primary = g_strdup_printf (_("Error while copying to “%s”."), basename);
-        secondary = g_strdup (_("The destination is not a folder."));
-
-        run_error (job,
-                   primary,
-                   secondary,
-                   NULL,
-                   FALSE,
-                   CANCEL,
-                   NULL);
+        nautilus_show_ok_dialog (heading, body, GTK_WIDGET (job->parent_window));
 
         abort_job (job);
         return;
@@ -3391,19 +3383,11 @@ retry:
         g_file_info_get_attribute_boolean (fsinfo,
                                            G_FILE_ATTRIBUTE_FILESYSTEM_READONLY))
     {
-        g_autofree gchar *basename = NULL;
+        g_autofree gchar *basename = get_basename (dest);
+        g_autofree gchar *heading = g_strdup_printf (_("Error while copying to “%s”."), basename);
+        const char *body = _("The destination is read-only.");
 
-        basename = get_basename (dest);
-        primary = g_strdup_printf (_("Error while copying to “%s”."), basename);
-        secondary = g_strdup (_("The destination is read-only."));
-
-        run_error (job,
-                   primary,
-                   secondary,
-                   NULL,
-                   FALSE,
-                   CANCEL,
-                   NULL);
+        nautilus_show_ok_dialog (heading, body, GTK_WIDGET (job->parent_window));
 
         g_error_free (error);
 
@@ -4826,7 +4810,6 @@ get_target_file_from_source_display_name (CopyMoveJob *copy_job,
     CommonJob *job;
     g_autoptr (GError) error = NULL;
     g_autoptr (GFileInfo) info = NULL;
-    gchar *primary;
     GFile *dest = NULL;
 
     job = (CommonJob *) copy_job;
@@ -4834,22 +4817,11 @@ get_target_file_from_source_display_name (CopyMoveJob *copy_job,
     info = g_file_query_info (src, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, 0, NULL, &error);
     if (info == NULL)
     {
-        if (copy_job->is_move)
-        {
-            primary = g_strdup (_("Error while moving."));
-        }
-        else
-        {
-            primary = g_strdup (_("Error while copying."));
-        }
+        const char *heading = copy_job->is_move ?
+                              _("Error while moving.") :
+                              _("Error while copying.");
 
-        run_error (job,
-                   primary,
-                   error->message,
-                   NULL,
-                   FALSE,
-                   CANCEL,
-                   NULL);
+        nautilus_show_ok_dialog (heading, error->message, GTK_WIDGET (job->parent_window));
 
         abort_job (job);
     }
@@ -8157,18 +8129,15 @@ extract_job_on_scanned (AutoarExtractor *extractor,
     {
         GFile *source_file = autoar_extractor_get_source_file (extractor);
         g_autofree gchar *basename = get_basename (source_file);
+        g_autofree char *primary = g_strdup_printf (_("Not enough free space to extract “%s”"),
+                                                    basename);
+        GtkWidget *parent = GTK_WIDGET (extract_job->common.parent_window);
 
         nautilus_progress_info_take_status (extract_job->common.progress,
                                             g_strdup_printf (_("Error extracting “%s”"),
                                                              basename),
                                             NULL);
-        run_error (&extract_job->common,
-                   g_strdup_printf (_("Not enough free space to extract “%s”"), basename),
-                   NULL,
-                   NULL,
-                   FALSE,
-                   CANCEL,
-                   NULL);
+        nautilus_show_ok_dialog (primary, NULL, parent);
 
         abort_job ((CommonJob *) extract_job);
     }
@@ -8614,13 +8583,9 @@ compress_job_on_error (AutoarCompressor *compressor,
     nautilus_progress_info_take_status (compress_job->common.progress,
                                         status, short_status);
 
-    run_error ((CommonJob *) compress_job,
-               g_strdup (_("There was an error while compressing files.")),
-               g_strdup (error->message),
-               NULL,
-               FALSE,
-               CANCEL,
-               NULL);
+    nautilus_show_ok_dialog (_("There was an error while compressing files."),
+                             error->message,
+                             GTK_WIDGET (compress_job->common.parent_window));
 
     abort_job ((CommonJob *) compress_job);
 }
