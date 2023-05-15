@@ -1407,9 +1407,9 @@ out:
 }
 
 static void
-launch_default_for_uris_callback (GObject      *source_object,
-                                  GAsyncResult *res,
-                                  gpointer      user_data)
+sandboxed_launcher_callback (GObject      *source_object,
+                             GAsyncResult *res,
+                             gpointer      user_data)
 {
     ActivateParameters *activation_params;
     char *uri;
@@ -1418,7 +1418,7 @@ launch_default_for_uris_callback (GObject      *source_object,
     activation_params = user_data;
     uri = g_queue_pop_head (activation_params->open_in_app_uris);
 
-    nautilus_launch_default_for_uri_finish (res, &error);
+    gtk_file_launcher_launch_finish (GTK_FILE_LAUNCHER (source_object), res, &error);
     if (error == NULL)
     {
         gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
@@ -1426,11 +1426,14 @@ launch_default_for_uris_callback (GObject      *source_object,
 
     if (!g_queue_is_empty (activation_params->open_in_app_uris))
     {
-        nautilus_launch_default_for_uri_async (g_queue_peek_head (activation_params->open_in_app_uris),
-                                               activation_params->parent_window,
-                                               activation_params->cancellable,
-                                               launch_default_for_uris_callback,
-                                               g_steal_pointer (&activation_params));
+        g_autoptr (GFile) location = g_file_new_for_uri (g_queue_peek_head (activation_params->open_in_app_uris));
+        GtkFileLauncher *launcher = gtk_file_launcher_new (location);
+
+        gtk_file_launcher_launch (launcher,
+                                  activation_params->parent_window,
+                                  activation_params->cancellable,
+                                  sandboxed_launcher_callback,
+                                  g_steal_pointer (&activation_params));
     }
     else
     {
@@ -1657,14 +1660,18 @@ activate_files_internal (ActivateParameters *parameters)
     if (!g_queue_is_empty (parameters->open_in_app_uris) && nautilus_application_is_sandboxed ())
     {
         const char *uri;
+        g_autoptr (GFile) location = NULL;
+        g_autoptr (GtkFileLauncher) launcher = NULL;
 
         uri = g_queue_peek_head (parameters->open_in_app_uris);
+        location = g_file_new_for_uri (uri);
+        launcher = gtk_file_launcher_new (location);
 
-        nautilus_launch_default_for_uri_async (uri,
-                                               parameters->parent_window,
-                                               parameters->cancellable,
-                                               launch_default_for_uris_callback,
-                                               g_steal_pointer (&parameters));
+        gtk_file_launcher_launch (launcher,
+                                  parameters->parent_window,
+                                  parameters->cancellable,
+                                  sandboxed_launcher_callback,
+                                  g_steal_pointer (&parameters));
         return;
     }
 
