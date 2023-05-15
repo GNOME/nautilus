@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eel.HEAD.he\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2023-05-04 21:41+0000\n"
-"PO-Revision-Date: 2023-05-07 18:51+0300\n"
+"POT-Creation-Date: 2023-05-09 21:46+0000\n"
+"PO-Revision-Date: 2023-05-15 16:16+0300\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew <yoseforb@gmail.com>\n"
 "Language: he\n"
@@ -38,7 +38,7 @@ msgstr "הפעלת התכנה"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:112
-#: src/nautilus-window.c:2380
+#: src/nautilus-window.c:2391
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:39
 msgid "Files"
 msgstr "קבצים"
@@ -70,7 +70,7 @@ msgstr ""
 "וממדיות נתיקות, להריץ תסריטים ולשגר יישומים. יש לו שלוש תצוגות: רשת סמלים, "
 "רשימת סמלים ורשימת עץ. ניתן להרחיב את הפעולות שלו עם תוספים ותסריטים."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2382
+#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2393
 msgid "The GNOME Project"
 msgstr "מיזם GNOME"
 
@@ -87,7 +87,7 @@ msgstr "תצוגת רשימה"
 #: src/nautilus-search-directory-file.c:177
 #: src/nautilus-search-directory-file.c:234
 #: src/nautilus-search-directory-file.c:274
-#: src/resources/ui/nautilus-search-popover.ui:272
+#: src/resources/ui/nautilus-search-popover.ui:276
 #: src/resources/ui/nautilus-toolbar.ui:111
 msgid "Search"
 msgstr "חיפוש"
@@ -1109,7 +1109,7 @@ msgstr "התאריך בו ניגשו לקובץ."
 
 #: src/nautilus-column-utilities.c:117
 #: src/resources/ui/nautilus-properties-window.ui:582
-#: src/resources/ui/nautilus-search-popover.ui:176
+#: src/resources/ui/nautilus-search-popover.ui:178
 msgid "Created"
 msgstr "נוצר"
 
@@ -1267,7 +1267,7 @@ msgid "_Link Here"
 msgstr "_קישור לכאן"
 
 #: src/nautilus-dnd.c:133 src/nautilus-file-operations.c:3035
-#: src/nautilus-mime-actions.c:607
+#: src/nautilus-mime-actions.c:607 src/nautilus-toolbar.c:238
 #: src/resources/ui/nautilus-compress-dialog.ui:83
 #: src/resources/ui/nautilus-create-folder-dialog.ui:45
 msgid "Cancel"
@@ -2051,9 +2051,9 @@ msgstr[1] "‫(%d קבצים לשנייה)"
 msgstr[2] "‫(%d קבצים לשנייה)"
 msgstr[3] "‫(%d קבצים לשנייה)"
 
+# msgid_plural "Preparing to delete %'d files (%s)"
 #: src/nautilus-file-operations.c:2010
 #, c-format
-# msgid_plural "Preparing to delete %'d files (%s)"
 msgid "Failed to delete all child files"
 msgstr ""
 
@@ -3554,8 +3554,16 @@ msgstr "מכיל מוזיקה ותמונות"
 msgid "Contains photos and music"
 msgstr "מכיל תמונות ומוזיקה"
 
+#: src/nautilus-location-entry.c:710
+msgid "Clear Entry"
+msgstr "פינוי הרשומה"
+
+#: src/nautilus-location-entry.c:719
+msgid "Go to Location"
+msgstr "מעבר למיקום"
+
 #: src/nautilus-mime-actions.c:108
-#: src/resources/ui/nautilus-search-popover.ui:227
+#: src/resources/ui/nautilus-search-popover.ui:231
 msgid "Anything"
 msgstr "כל דבר"
 
@@ -4155,6 +4163,10 @@ msgstr "חיפוש קבצים ותיקיות"
 msgid "Clear entry"
 msgstr "ניקוי הרשומה"
 
+#: src/nautilus-query-editor.c:660
+msgid "Filter Search Results"
+msgstr "סינון תוצאות חיפוש"
+
 #: src/nautilus-rename-file-popover-controller.c:370
 msgid "Rename Folder"
 msgstr "שינוי שם לתיקייה"
@@ -4168,13 +4180,13 @@ msgid "Unable to complete the requested search"
 msgstr "לא ניתן להשלים את החיפוש המבוקש"
 
 #: src/nautilus-search-popover.c:293
-msgid "Show a list to select the date"
-msgstr "הצגת רשימה לבחירת התאריך"
+msgid "Show Time Ranges"
+msgstr "הצגת טווח זמנים"
 
 #: src/nautilus-search-popover.c:299
-#: src/resources/ui/nautilus-search-popover.ui:70
-msgid "Show a calendar to select the date"
-msgstr "הצגת לוח שנה לבחירת תאריך"
+#: src/resources/ui/nautilus-search-popover.ui:72
+msgid "Use Calendar"
+msgstr "שימוש ביומן"
 
 #. Add the no date filter element first
 #: src/nautilus-search-popover.c:418
@@ -4195,7 +4207,7 @@ msgid "Select"
 msgstr "בחירה"
 
 #: src/nautilus-search-popover.c:728
-#: src/resources/ui/nautilus-search-popover.ui:42
+#: src/resources/ui/nautilus-search-popover.ui:44
 msgid "Select Dates…"
 msgstr "בחירת תאריכים…"
 
@@ -4353,11 +4365,11 @@ msgstr "קדימה"
 msgid "“%s” moved to trash"
 msgstr "‏„%s” הועבר לאשפה"
 
+# msgid_plural "%'d files left to trash"
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
 #: src/nautilus-window.c:1195
 #, c-format
-# msgid_plural "%'d files left to trash"
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
 msgstr[0] "קובץ אחד הועבר לאשפה"
@@ -4388,15 +4400,15 @@ msgstr[3] "הוסר כוכב מ־%d פריטים"
 msgid "Open %s"
 msgstr "פתיחת %s"
 
-#: src/nautilus-window.c:2369
+#: src/nautilus-window.c:2380
 msgid "No plugins currently installed."
 msgstr "לא מותקנים תוספים."
 
-#: src/nautilus-window.c:2373
+#: src/nautilus-window.c:2384
 msgid "Currently installed plugins:"
 msgstr "תוספים מותקנים:"
 
-#: src/nautilus-window.c:2375
+#: src/nautilus-window.c:2386
 msgid "For bug testing only, the following command can be used:"
 msgstr "אך ורק לבדיקת תקלות, ניתן להשתמש בפקודה הבאה:"
 
@@ -4404,7 +4416,7 @@ msgstr "אך ורק לבדיקת תקלות, ניתן להשתמש בפקודה 
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2397
+#: src/nautilus-window.c:2408
 msgid "translator-credits"
 msgstr ""
 "גיל אשר <dolfin@rpg.org.il>\n"
@@ -4632,172 +4644,172 @@ msgctxt "shortcut window"
 msgid "Navigation"
 msgstr "ניווט"
 
-#: src/resources/gtk/help-overlay.ui:161
+#: src/resources/gtk/help-overlay.ui:161 src/resources/gtk/help-overlay.ui:168
 msgctxt "shortcut window"
 msgid "Go back"
 msgstr "אחורה"
 
-#: src/resources/gtk/help-overlay.ui:167
+#: src/resources/gtk/help-overlay.ui:175 src/resources/gtk/help-overlay.ui:182
 msgctxt "shortcut window"
 msgid "Go forward"
 msgstr "קדימה"
 
-#: src/resources/gtk/help-overlay.ui:173
+#: src/resources/gtk/help-overlay.ui:189
 msgctxt "shortcut window"
 msgid "Go up"
 msgstr "למעלה"
 
-#: src/resources/gtk/help-overlay.ui:179
+#: src/resources/gtk/help-overlay.ui:195
 msgctxt "shortcut window"
 msgid "Go down"
 msgstr "למטה"
 
-#: src/resources/gtk/help-overlay.ui:185
+#: src/resources/gtk/help-overlay.ui:201
 msgctxt "shortcut window"
 msgid "Go to home folder"
 msgstr "מעבר לתיקיית הבית"
 
-#: src/resources/gtk/help-overlay.ui:191
+#: src/resources/gtk/help-overlay.ui:207
 msgctxt "shortcut window"
 msgid "Enter location"
 msgstr "הזנת מיקום"
 
-#: src/resources/gtk/help-overlay.ui:197
+#: src/resources/gtk/help-overlay.ui:213
 msgctxt "shortcut window"
 msgid "Location bar with root location"
 msgstr "שורת המיקום עם מיקום השורש /"
 
-#: src/resources/gtk/help-overlay.ui:203
+#: src/resources/gtk/help-overlay.ui:219
 msgctxt "shortcut window"
 msgid "Location bar with home location"
 msgstr "סרגל המיקום עם מיקום תיקיית הבית"
 
-#: src/resources/gtk/help-overlay.ui:211
+#: src/resources/gtk/help-overlay.ui:227
 msgctxt "shortcut window"
 msgid "View"
 msgstr "תצוגה"
 
-#: src/resources/gtk/help-overlay.ui:214
+#: src/resources/gtk/help-overlay.ui:230
 msgctxt "shortcut window"
 msgid "Zoom in"
 msgstr "התקרבות"
 
-#: src/resources/gtk/help-overlay.ui:220
+#: src/resources/gtk/help-overlay.ui:236
 msgctxt "shortcut window"
 msgid "Zoom out"
 msgstr "התרחקות"
 
-#: src/resources/gtk/help-overlay.ui:226
+#: src/resources/gtk/help-overlay.ui:242
 msgctxt "shortcut window"
 msgid "Reset zoom"
 msgstr "איפוס התקריב"
 
-#: src/resources/gtk/help-overlay.ui:232
+#: src/resources/gtk/help-overlay.ui:248
 msgctxt "shortcut window"
 msgid "Refresh view"
 msgstr "רענון התצוגה"
 
-#: src/resources/gtk/help-overlay.ui:238
+#: src/resources/gtk/help-overlay.ui:254
 msgctxt "shortcut window"
 msgid "Show/hide hidden files"
 msgstr "הצגת קבצים מוסתרים"
 
-#: src/resources/gtk/help-overlay.ui:244
+#: src/resources/gtk/help-overlay.ui:260
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
 msgstr "הצגת סרגל הצד"
 
-#: src/resources/gtk/help-overlay.ui:250
+#: src/resources/gtk/help-overlay.ui:266
 msgctxt "shortcut window"
 msgid "Show/hide action menu"
 msgstr "הצגת תפריט פעולה"
 
-#: src/resources/gtk/help-overlay.ui:256
+#: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "List view"
 msgstr "תצוגת רשימה"
 
-#: src/resources/gtk/help-overlay.ui:262
+#: src/resources/gtk/help-overlay.ui:278
 msgctxt "shortcut window"
 msgid "Grid view"
 msgstr "תצוגת רשת"
 
-#: src/resources/gtk/help-overlay.ui:268
+#: src/resources/gtk/help-overlay.ui:284 src/resources/gtk/help-overlay.ui:291
 msgctxt "shortcut window"
 msgid "Expand folder"
 msgstr "הרחבת תיקייה"
 
-#: src/resources/gtk/help-overlay.ui:274
+#: src/resources/gtk/help-overlay.ui:298 src/resources/gtk/help-overlay.ui:305
 msgctxt "shortcut window"
 msgid "Collapse folder"
 msgstr "כיווץ תיקייה"
 
-#: src/resources/gtk/help-overlay.ui:282
+#: src/resources/gtk/help-overlay.ui:314
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "עריכה"
 
-#: src/resources/gtk/help-overlay.ui:285
+#: src/resources/gtk/help-overlay.ui:317
 msgctxt "shortcut window"
 msgid "Create folder"
 msgstr "יצירת תיקייה"
 
-#: src/resources/gtk/help-overlay.ui:291
+#: src/resources/gtk/help-overlay.ui:323
 msgctxt "shortcut window"
 msgid "Rename"
 msgstr "שינוי שם"
 
-#: src/resources/gtk/help-overlay.ui:297
+#: src/resources/gtk/help-overlay.ui:329
 msgctxt "shortcut window"
 msgid "Move to trash"
 msgstr "העברה לאשפה"
 
-#: src/resources/gtk/help-overlay.ui:303
+#: src/resources/gtk/help-overlay.ui:335
 msgctxt "shortcut window"
 msgid "Delete permanently"
 msgstr "מחיקה לצמיתות"
 
-#: src/resources/gtk/help-overlay.ui:309
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Create link to copied item"
 msgstr "יצירת קישור להעתקת פריט"
 
-#: src/resources/gtk/help-overlay.ui:315
+#: src/resources/gtk/help-overlay.ui:347
 msgctxt "shortcut window"
 msgid "Create link to selected item"
 msgstr "יצירת קישור לבחירת פריט"
 
-#: src/resources/gtk/help-overlay.ui:321
+#: src/resources/gtk/help-overlay.ui:353
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "גזירה"
 
-#: src/resources/gtk/help-overlay.ui:327
+#: src/resources/gtk/help-overlay.ui:359
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "העתקה"
 
-#: src/resources/gtk/help-overlay.ui:333
+#: src/resources/gtk/help-overlay.ui:365
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "הדבקה"
 
-#: src/resources/gtk/help-overlay.ui:339
+#: src/resources/gtk/help-overlay.ui:371
 msgctxt "shortcut window"
 msgid "Select all"
 msgstr "בחירת הכול"
 
-#: src/resources/gtk/help-overlay.ui:345
+#: src/resources/gtk/help-overlay.ui:377
 msgctxt "shortcut window"
 msgid "Invert selection"
 msgstr "היפוך הבחירה"
 
-#: src/resources/gtk/help-overlay.ui:351
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Select items matching"
 msgstr "בחירת פריטים שמתאימים"
 
-#: src/resources/gtk/help-overlay.ui:357
+#: src/resources/gtk/help-overlay.ui:389
 msgctxt "shortcut window"
 msgid "Show item properties"
 msgstr "הצגת מאפיין פריט"
@@ -5151,7 +5163,7 @@ msgid "View of the current folder"
 msgstr "תצוגה של התיקייה הנוכחית"
 
 #: src/resources/ui/nautilus-name-cell.ui:102
-msgid "Full text match"
+msgid "Full Text Match"
 msgstr "התאמת טקסט מלאה"
 
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
@@ -5413,49 +5425,41 @@ msgstr "שם קובץ חדש"
 msgid "When"
 msgstr "מתי"
 
-#: src/resources/ui/nautilus-search-popover.ui:38
-msgid "Select a date"
-msgstr "בחירת תאריך"
+#: src/resources/ui/nautilus-search-popover.ui:54
+msgid "Clear Date Filter"
+msgstr "ניקוי מסנן התאריך"
 
-#: src/resources/ui/nautilus-search-popover.ui:52
-msgid "Clear the currently selected date"
-msgstr "ניקוי התאריך הנבחר הנוכחי"
-
-#: src/resources/ui/nautilus-search-popover.ui:93
+#: src/resources/ui/nautilus-search-popover.ui:95
 msgid "Since…"
 msgstr "מאז…"
 
-#: src/resources/ui/nautilus-search-popover.ui:152
+#: src/resources/ui/nautilus-search-popover.ui:154
 msgid "Last _modified"
 msgstr "_שינוי אחרון"
 
-#: src/resources/ui/nautilus-search-popover.ui:164
+#: src/resources/ui/nautilus-search-popover.ui:166
 msgid "Last _used"
 msgstr "שי_מוש אחרון"
 
-#: src/resources/ui/nautilus-search-popover.ui:198
+#: src/resources/ui/nautilus-search-popover.ui:200
 msgid "What"
 msgstr "מה"
 
-#: src/resources/ui/nautilus-search-popover.ui:220
-msgid "Which file types will be searched"
-msgstr "סוגי הקבצים לחיפוש"
-
-#: src/resources/ui/nautilus-search-popover.ui:289
+#: src/resources/ui/nautilus-search-popover.ui:293
 msgid "Full Text"
 msgstr "טקסט מלא"
 
-#: src/resources/ui/nautilus-search-popover.ui:290
-msgid "Search on the file content and name"
-msgstr "חיפוש בשם ובתוכן הקובץ"
+#: src/resources/ui/nautilus-search-popover.ui:294
+msgid "Search Inside Files"
+msgstr "חיפוש בתוך קבצים"
 
-#: src/resources/ui/nautilus-search-popover.ui:298
+#: src/resources/ui/nautilus-search-popover.ui:302
 msgid "File Name"
 msgstr "שם הקובץ"
 
-#: src/resources/ui/nautilus-search-popover.ui:299
-msgid "Search only on the file name"
-msgstr "חיפוש בשם הקובץ בלבד"
+#: src/resources/ui/nautilus-search-popover.ui:303
+msgid "Don't Search Inside Files"
+msgstr "לא לחפש בתוך קבצים"
 
 #: src/resources/ui/nautilus-toolbar.ui:7
 msgid "New _Window"
@@ -5490,19 +5494,19 @@ msgid "_About Files"
 msgstr "_על אודות קבצים"
 
 #: src/resources/ui/nautilus-toolbar.ui:129
-msgid "Show sidebar"
-msgstr "הצגת הסרגל הצדי"
+msgid "Show Sidebar"
+msgstr "הצגת סרגל הצד"
 
 #: src/resources/ui/nautilus-toolbar.ui:191
 msgid "Main Menu"
 msgstr "תפריט ראשי"
 
 #: src/resources/ui/nautilus-toolbar.ui:202
-msgid "Zoom out"
+msgid "Zoom Out"
 msgstr "התרחקות"
 
 #: src/resources/ui/nautilus-toolbar.ui:212
-msgid "Zoom in"
+msgid "Zoom In"
 msgstr "התקרבות"
 
 #. This is used to sort by name in the toolbar view menu
@@ -5766,7 +5770,7 @@ msgstr "פתיחת האשפה"
 #: src/gtk/nautilusgtkplacessidebar.c:1187
 #: src/gtk/nautilusgtkplacessidebar.c:1387
 #, c-format
-msgid "Mount and open “%s”"
+msgid "Mount and Open “%s”"
 msgstr "לעגן ולפתוח את „%s”"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1282
@@ -5858,6 +5862,36 @@ msgstr "סרגל צד"
 #: src/gtk/nautilusgtkplacessidebar.c:3991
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "רשימה של צירופי מקשים, נקודות עגינה וסימניות נפוצות."
+
+#~ msgid "Show a list to select the date"
+#~ msgstr "הצגת רשימה לבחירת התאריך"
+
+#~ msgid "Show a calendar to select the date"
+#~ msgstr "הצגת לוח שנה לבחירת תאריך"
+
+#~ msgid "Select a date"
+#~ msgstr "בחירת תאריך"
+
+#~ msgid "Clear the currently selected date"
+#~ msgstr "ניקוי התאריך הנבחר הנוכחי"
+
+#~ msgid "Which file types will be searched"
+#~ msgstr "סוגי הקבצים לחיפוש"
+
+#~ msgid "Search on the file content and name"
+#~ msgstr "חיפוש בשם ובתוכן הקובץ"
+
+#~ msgid "Search only on the file name"
+#~ msgstr "חיפוש בשם הקובץ בלבד"
+
+#~ msgid "Show sidebar"
+#~ msgstr "הצגת הסרגל הצדי"
+
+#~ msgid "Zoom out"
+#~ msgstr "התרחקות"
+
+#~ msgid "Zoom in"
+#~ msgstr "התקרבות"
 
 #, c-format
 #~ msgid "%d file deleted"
@@ -6219,9 +6253,6 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 
 #~ msgid "Access and organize your files"
 #~ msgstr "גישה לקבצים שלך וארגונם"
-
-#~ msgid "Show _Sidebar"
-#~ msgstr "הצגת סרגל ה_צד"
 
 #~ msgid "Wallpapers"
 #~ msgstr "רקעים"
@@ -6964,9 +6995,6 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 #~ msgid "Toggle between grid and list view"
 #~ msgstr "מעבר בין תצוגה רשימה לתצוגת רשת"
 
-#~ msgid "Search files"
-#~ msgstr "חיפוש קבצים"
-
 #~ msgid "Operations in progress"
 #~ msgstr "פעולות בהתקדמות"
 
@@ -7001,14 +7029,8 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 #~ msgid "Rena_me"
 #~ msgstr "_שינוי שם"
 
-#~ msgid "Zoom Out"
-#~ msgstr "התרחקות"
-
 #~ msgid "Reset Zoom"
 #~ msgstr "איפוס התקריב"
-
-#~ msgid "Zoom In"
-#~ msgstr "התקרבות"
 
 #~ msgid "Untitled %s"
 #~ msgstr "%s ללא שם"
@@ -8503,9 +8525,6 @@ msgstr "רשימה של צירופי מקשים, נקודות עגינה וסי�
 
 #~ msgid "_Search for:"
 #~ msgstr "‏_חיפוש אחר:"
-
-#~ msgid "Search results"
-#~ msgstr "תוצאות חיפוש"
 
 #~ msgid "Search:"
 #~ msgstr "חיפוש:"
