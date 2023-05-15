@@ -91,12 +91,6 @@ typedef struct
     GList *unhandled_open_in_app_uris;
 } ActivateParameters;
 
-typedef struct
-{
-    ActivateParameters *activation_params;
-    GQueue *uris;
-} ApplicationLaunchAsyncParameters;
-
 /* Microsoft mime types at https://blogs.msdn.microsoft.com/vsofficedeveloper/2008/05/08/office-2007-file-format-mime-types-for-http-content-streaming-2/ */
 struct
 {
@@ -891,15 +885,6 @@ activation_parameters_free (ActivateParameters *parameters)
 }
 
 static void
-application_launch_async_parameters_free (ApplicationLaunchAsyncParameters *parameters)
-{
-    g_queue_free (parameters->uris);
-    activation_parameters_free (parameters->activation_params);
-
-    g_free (parameters);
-}
-
-static void
 cancel_activate_callback (gpointer callback_data)
 {
     ActivateParameters *parameters = callback_data;
@@ -1426,14 +1411,12 @@ launch_default_for_uris_callback (GObject      *source_object,
                                   GAsyncResult *res,
                                   gpointer      user_data)
 {
-    ApplicationLaunchAsyncParameters *params;
     ActivateParameters *activation_params;
     char *uri;
     g_autoptr (GError) error = NULL;
 
-    params = user_data;
-    activation_params = params->activation_params;
-    uri = g_queue_pop_head (params->uris);
+    activation_params = user_data;
+    uri = g_queue_pop_head (activation_params->open_in_app_uris);
 
     nautilus_launch_default_for_uri_finish (res, &error);
     if (error == NULL)
@@ -1441,17 +1424,17 @@ launch_default_for_uris_callback (GObject      *source_object,
         gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
     }
 
-    if (!g_queue_is_empty (params->uris))
+    if (!g_queue_is_empty (activation_params->open_in_app_uris))
     {
-        nautilus_launch_default_for_uri_async (g_queue_peek_head (params->uris),
+        nautilus_launch_default_for_uri_async (g_queue_peek_head (activation_params->open_in_app_uris),
                                                activation_params->parent_window,
                                                activation_params->cancellable,
                                                launch_default_for_uris_callback,
-                                               params);
+                                               g_steal_pointer (&activation_params));
     }
     else
     {
-        application_launch_async_parameters_free (params);
+        activation_parameters_free (activation_params);
     }
 }
 
@@ -1674,19 +1657,14 @@ activate_files_internal (ActivateParameters *parameters)
     if (!g_queue_is_empty (parameters->open_in_app_uris) && nautilus_application_is_sandboxed ())
     {
         const char *uri;
-        ApplicationLaunchAsyncParameters *async_params;
 
         uri = g_queue_peek_head (parameters->open_in_app_uris);
-
-        async_params = g_new0 (ApplicationLaunchAsyncParameters, 1);
-        async_params->activation_params = parameters;
-        async_params->uris = g_steal_pointer (&parameters->open_in_app_uris);
 
         nautilus_launch_default_for_uri_async (uri,
                                                parameters->parent_window,
                                                parameters->cancellable,
                                                launch_default_for_uris_callback,
-                                               async_params);
+                                               g_steal_pointer (&parameters));
         return;
     }
 
