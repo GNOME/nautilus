@@ -1411,24 +1411,25 @@ sandboxed_launcher_callback (GObject      *source_object,
                              GAsyncResult *res,
                              gpointer      user_data)
 {
-    ActivateParameters *activation_params;
-    char *uri;
+    GtkFileLauncher *launcher = GTK_FILE_LAUNCHER (source_object);
+    ActivateParameters *activation_params = (ActivateParameters *) user_data;
     g_autoptr (GError) error = NULL;
 
-    activation_params = user_data;
-    uri = g_queue_pop_head (activation_params->open_in_app_uris);
-
-    gtk_file_launcher_launch_finish (GTK_FILE_LAUNCHER (source_object), res, &error);
+    gtk_file_launcher_launch_finish (launcher, res, &error);
     if (error == NULL)
     {
+        /* Extract URI from the launched file and add it to recents. */
+        g_autofree gchar *uri = g_file_get_uri (gtk_file_launcher_get_file (launcher));
         gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
     }
 
     if (!g_queue_is_empty (activation_params->open_in_app_uris))
     {
-        g_autoptr (GFile) location = g_file_new_for_uri (g_queue_peek_head (activation_params->open_in_app_uris));
-        GtkFileLauncher *launcher = gtk_file_launcher_new (location);
+        /* Take next file off the queue to launch it. */
+        const gchar *uri = g_queue_pop_head (activation_params->open_in_app_uris);
+        g_autoptr (GFile) location = g_file_new_for_uri (uri);
 
+        gtk_file_launcher_set_file (launcher, location);
         gtk_file_launcher_launch (launcher,
                                   activation_params->parent_window,
                                   activation_params->cancellable,
@@ -1659,13 +1660,17 @@ activate_files_internal (ActivateParameters *parameters)
 
     if (!g_queue_is_empty (parameters->open_in_app_uris) && nautilus_application_is_sandboxed ())
     {
-        const char *uri;
-        g_autoptr (GFile) location = NULL;
-        g_autoptr (GtkFileLauncher) launcher = NULL;
-
-        uri = g_queue_peek_head (parameters->open_in_app_uris);
-        location = g_file_new_for_uri (uri);
-        launcher = gtk_file_launcher_new (location);
+        /* Use GtkFileLauncher as a convenient wrapper for the portal.
+         *
+         * Here we won't launch all files in the queue at once in a 'for' loop,
+         * because we could get multiple portal dialogs at the same time.
+         *
+         * So, instead, we launch one at a time, waiting for the async callback
+         * to launch the next one.
+         */
+        const gchar *uri = g_queue_pop_head (parameters->open_in_app_uris);
+        g_autoptr (GFile) location = g_file_new_for_uri (uri);
+        g_autoptr (GtkFileLauncher) launcher = gtk_file_launcher_new (location);
 
         gtk_file_launcher_launch (launcher,
                                   parameters->parent_window,
