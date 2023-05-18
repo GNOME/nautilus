@@ -1404,6 +1404,62 @@ action_open_item_new_tab (GSimpleAction *action,
 }
 
 static void
+sandboxed_choose_program_callback (GObject      *source_object,
+                                   GAsyncResult *res,
+                                   gpointer      user_data)
+{
+    XdpPortal *portal = XDP_PORTAL (source_object);
+    GList *files = user_data;
+
+    if (xdp_portal_open_uri_finish (portal, res, NULL))
+    {
+        /* Extract URI from the opened file and add it to recents. */
+        g_autofree gchar *uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
+        gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
+    }
+
+    /* Remove hanlded file from the list top of the list. */
+    g_object_unref (files->data);
+    files = g_list_remove_link (files, files);
+
+    if (files != NULL)
+    {
+        /* Ask to choose app and open the next file. */
+        g_autofree gchar *uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
+
+        xdp_portal_open_uri (portal,
+                             g_object_get_data (G_OBJECT (portal), "nautilus-parent"),
+                             uri,
+                             XDP_OPEN_URI_FLAG_ASK,
+                             NULL,
+                             sandboxed_choose_program_callback,
+                             g_steal_pointer (&files));
+    }
+}
+
+static void
+sandboxed_choose_program (NautilusFilesView *view,
+                          GList             *files,
+                          GtkWindow         *window)
+{
+    g_autoptr (XdpPortal) portal = xdp_portal_new ();
+    XdpParent *parent = xdp_parent_new_gtk (window);
+    g_autofree gchar *uri = nautilus_file_get_uri (NAUTILUS_FILE (files->data));
+
+    g_object_set_data_full (G_OBJECT (portal), "nautilus-parent",
+                            parent, (GDestroyNotify) xdp_parent_free);
+
+    /* Ask to choose app and open the first file. */
+    xdp_portal_open_uri (portal,
+                         parent,
+                         uri,
+                         XDP_OPEN_URI_FLAG_ASK,
+                         NULL,
+                         sandboxed_choose_program_callback,
+                         g_steal_pointer (&files));
+}
+
+static void
 app_chooser_dialog_response_cb (GtkDialog *dialog,
                                 gint       response_id,
                                 gpointer   user_data)
@@ -1439,6 +1495,12 @@ choose_program (NautilusFilesView *view,
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
     parent_window = nautilus_files_view_get_containing_window (view);
+
+    if (nautilus_application_is_sandboxed ())
+    {
+        sandboxed_choose_program (view, g_steal_pointer (&files), parent_window);
+        return;
+    }
 
     dialog = GTK_WIDGET (nautilus_app_chooser_new (files, parent_window));
     g_object_set_data_full (G_OBJECT (dialog),
