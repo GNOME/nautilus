@@ -348,7 +348,6 @@ create_statement (NautilusSearchProvider *provider,
         "  nfo:fileLastModified ?mtime;" \
         "  nfo:fileLastAccessed ?atime;" \
         "  nfo:fileCreated ?ctime;" \
-        "  nie:dataSource/tracker:available true;" \
         "  nie:url ?url."
 
     sparql = g_string_new ("SELECT DISTINCT " VARIABLES " WHERE {");
