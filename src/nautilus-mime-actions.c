@@ -459,6 +459,14 @@ nautilus_mime_get_default_application_for_files (GList *files)
 
     g_assert (files != NULL);
 
+    if (nautilus_application_is_sandboxed ())
+    {
+        /* While running as a flatpak, we don't know the default app. The code
+         * bellow might even get a wrong result because it may find matches
+         * inside the sandbox which are incorrect. */
+        return NULL;
+    }
+
     sorted_files = g_list_sort (g_list_copy (files), (GCompareFunc) file_compare_by_mime_type);
 
     app = NULL;
