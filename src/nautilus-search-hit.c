@@ -60,9 +60,9 @@ void
 nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
                                     NautilusQuery     *query)
 {
-    GDateTime *now;
     GFile *query_location;
     GFile *hit_location;
+    guint dir_count = 0;
     GTimeSpan m_diff = G_MAXINT64;
     GTimeSpan a_diff = G_MAXINT64;
     GTimeSpan t_diff = G_MAXINT64;
@@ -76,7 +76,6 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     if (g_file_has_prefix (hit_location, query_location))
     {
         GFile *parent, *location;
-        guint dir_count = 0;
 
         parent = g_file_get_parent (hit_location);
 
@@ -96,41 +95,47 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     }
     g_object_unref (hit_location);
 
-    now = g_date_time_new_now_local ();
-    if (hit->modification_time != NULL)
+    /* Recency bonus is useful for recursive search, but unwanted for results
+     * from the current folder, which should always sort by filename match,
+     * which makes prefix matches sort first. */
+    if (dir_count != 0)
     {
-        m_diff = g_date_time_difference (now, hit->modification_time);
-    }
-    if (hit->access_time != NULL)
-    {
-        a_diff = g_date_time_difference (now, hit->access_time);
-    }
-    m_diff /= G_TIME_SPAN_DAY;
-    a_diff /= G_TIME_SPAN_DAY;
-    t_diff = MIN (m_diff, a_diff);
-    if (t_diff > 90)
-    {
-        recent_bonus = 0.0;
-    }
-    else if (t_diff > 30)
-    {
-        recent_bonus = 10.0;
-    }
-    else if (t_diff > 14)
-    {
-        recent_bonus = 30.0;
-    }
-    else if (t_diff > 7)
-    {
-        recent_bonus = 50.0;
-    }
-    else if (t_diff > 1)
-    {
-        recent_bonus = 70.0;
-    }
-    else
-    {
-        recent_bonus = 100.0;
+        g_autoptr (GDateTime) now = g_date_time_new_now_local ();
+        if (hit->modification_time != NULL)
+        {
+            m_diff = g_date_time_difference (now, hit->modification_time);
+        }
+        if (hit->access_time != NULL)
+        {
+            a_diff = g_date_time_difference (now, hit->access_time);
+        }
+        m_diff /= G_TIME_SPAN_DAY;
+        a_diff /= G_TIME_SPAN_DAY;
+        t_diff = MIN (m_diff, a_diff);
+        if (t_diff > 90)
+        {
+            recent_bonus = 0.0;
+        }
+        else if (t_diff > 30)
+        {
+            recent_bonus = 10.0;
+        }
+        else if (t_diff > 14)
+        {
+            recent_bonus = 30.0;
+        }
+        else if (t_diff > 7)
+        {
+            recent_bonus = 50.0;
+        }
+        else if (t_diff > 1)
+        {
+            recent_bonus = 70.0;
+        }
+        else
+        {
+            recent_bonus = 100.0;
+        }
     }
 
     if (hit->fts_rank > 0)
@@ -146,7 +151,6 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     DEBUG ("Hit %s computed relevance %.2f (%.2f + %.2f + %.2f)", hit->uri, hit->relevance,
            proximity_bonus, recent_bonus, match_bonus);
 
-    g_date_time_unref (now);
     g_object_unref (query_location);
 }
 
