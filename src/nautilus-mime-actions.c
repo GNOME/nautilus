@@ -37,12 +37,9 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-metadata.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-window.h"
-#include "nautilus-window-slot.h"
 
 typedef enum
 {

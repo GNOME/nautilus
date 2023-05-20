@@ -23,7 +23,6 @@
 #pragma once
 
 #include <gio/gio.h>
-#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include "nautilus-types.h"

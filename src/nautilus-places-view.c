@@ -17,6 +17,7 @@
  */
 
 #include <adwaita.h>
+#include <glib/gi18n.h>
 
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
