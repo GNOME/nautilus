@@ -50,7 +50,7 @@ get_truncated_name_for_file (NautilusFile *file)
 
     file_name = nautilus_file_get_display_name (file);
 
-    return eel_str_middle_truncate (file_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+    return g_utf8_truncate_middle (file_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
 }
 
 void
@@ -98,8 +98,8 @@ nautilus_report_error_loading_directory (NautilusFile *file,
             {
                 g_autofree char *truncated_error_message = NULL;
 
-                truncated_error_message = eel_str_middle_truncate (error->message,
-                                                                   MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
+                truncated_error_message = g_utf8_truncate_middle (error->message,
+                                                                  MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
                 message = g_strdup_printf (_("Sorry, could not display all the contents of “%s”: %s"), truncated_name,
                                            truncated_error_message);
@@ -155,8 +155,8 @@ nautilus_report_error_setting_group (NautilusFile *file,
     {
         g_autofree char *truncated_error_message = NULL;
 
-        truncated_error_message = eel_str_middle_truncate (error->message,
-                                                           MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
+        truncated_error_message = g_utf8_truncate_middle (error->message,
+                                                          MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
         /* We should invent decent error messages for every case we actually experience. */
         g_warning ("Hit unhandled case %s:%d in nautilus_report_error_setting_group",
@@ -186,8 +186,8 @@ nautilus_report_error_setting_owner (NautilusFile *file,
 
     truncated_name = get_truncated_name_for_file (file);
 
-    truncated_error_message = eel_str_middle_truncate (error->message,
-                                                       MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
+    truncated_error_message = g_utf8_truncate_middle (error->message,
+                                                      MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
     message = g_strdup_printf (_("Sorry, could not change the owner of “%s”: %s"),
                                truncated_name, truncated_error_message);
 
@@ -210,8 +210,8 @@ nautilus_report_error_setting_permissions (NautilusFile *file,
 
     truncated_name = get_truncated_name_for_file (file);
 
-    truncated_error_message = eel_str_middle_truncate (error->message,
-                                                       MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
+    truncated_error_message = g_utf8_truncate_middle (error->message,
+                                                      MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
     message = g_strdup_printf (_("Sorry, could not change the permissions of “%s”: %s"),
                                truncated_name, truncated_error_message);
 
@@ -242,7 +242,7 @@ nautilus_report_error_renaming_file (NautilusFile *file,
      * in them won't get wrapped, and can create insanely wide dialog boxes.
      */
     truncated_old_name = get_truncated_name_for_file (file);
-    truncated_new_name = eel_str_middle_truncate (new_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+    truncated_new_name = g_utf8_truncate_middle (new_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
 
     if (error->domain == G_IO_ERROR)
     {
@@ -323,8 +323,8 @@ nautilus_report_error_renaming_file (NautilusFile *file,
     {
         g_autofree char *truncated_error_message = NULL;
 
-        truncated_error_message = eel_str_middle_truncate (error->message,
-                                                           MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
+        truncated_error_message = g_utf8_truncate_middle (error->message,
+                                                          MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
         /* We should invent decent error messages for every case we actually experience. */
         g_warning ("Hit unhandled case %s:%d in nautilus_report_error_renaming_file",
@@ -446,7 +446,7 @@ nautilus_rename_file (NautilusFile                  *file,
 
     /* Start the timed wait to cancel the rename. */
     truncated_old_name = get_truncated_name_for_file (file);
-    truncated_new_name = eel_str_middle_truncate (new_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+    truncated_new_name = g_utf8_truncate_middle (new_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
     wait_message = g_strdup_printf (_("Renaming “%s” to “%s”."),
                                     truncated_old_name,
                                     truncated_new_name);

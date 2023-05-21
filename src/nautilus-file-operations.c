@@ -1075,7 +1075,7 @@ get_basename (GFile *file)
     if (name != NULL)
     {
         tmp = name;
-        name = eel_str_middle_truncate (tmp, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+        name = g_utf8_truncate_middle (tmp, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
         g_free (tmp);
     }
 
@@ -1091,7 +1091,7 @@ get_truncated_parse_name (GFile *file)
 
     parse_name = g_file_get_parse_name (file);
 
-    return eel_str_middle_truncate (parse_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+    return g_utf8_truncate_middle (parse_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
 }
 
 #define op_job_new(__type, parent_window, dbus_data) ((__type *) (init_common (sizeof (__type), parent_window, dbus_data)))

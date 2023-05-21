@@ -1065,7 +1065,7 @@ get_application_no_mime_type_handler_message (NautilusFile *file)
      * though the dialog uses wrapped text, if the URI doesn't contain
      * white space then the text-wrapping code is too stupid to wrap it.
      */
-    uri_for_display = eel_str_middle_truncate (name, MAX_URI_IN_DIALOG_LENGTH);
+    uri_for_display = g_utf8_truncate_middle (name, MAX_URI_IN_DIALOG_LENGTH);
     error_message = g_strdup_printf (_("Could Not Display “%s”"), uri_for_display);
     g_free (uri_for_display);
     g_free (name);

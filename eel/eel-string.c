@@ -70,57 +70,6 @@ eel_str_capitalize (const char *string)
 }
 
 /**
- * eel_str_middle_truncate:
- * @string: (not nullable): input string
- * truncate_length: length of the truncated string
- *
- * Returns: (transfer full): a newly-allocated copy of @string with its middle
- * truncated and replaced with ellipsis to fit into @truncate_length characters.
- * If length of @string is already small enough, returns a copy of @string.
- */
-gchar *
-eel_str_middle_truncate (const gchar *string,
-                         guint        truncate_length)
-{
-    const gchar ellipsis[] = "…";
-    glong ellipsis_length;
-    glong length;
-    glong num_left_chars;
-    glong num_right_chars;
-    g_autofree gchar *left_substring = NULL;
-    g_autofree gchar *right_substring = NULL;
-
-    g_return_val_if_fail (string != NULL, NULL);
-    g_return_val_if_fail (truncate_length > 0, NULL);
-
-    ellipsis_length = g_utf8_strlen (ellipsis, -1);
-
-    /* Our ellipsis string + one character on each side. */
-    if (truncate_length < ellipsis_length + 2)
-    {
-        return g_strdup (string);
-    }
-
-    length = g_utf8_strlen (string, -1);
-
-    if (length <= truncate_length)
-    {
-        return g_strdup (string);
-    }
-
-    num_left_chars = (truncate_length - ellipsis_length) / 2;
-    num_right_chars = truncate_length - num_left_chars - ellipsis_length;
-
-    g_assert (num_left_chars > 0);
-    g_assert (num_right_chars > 0);
-
-    left_substring = g_utf8_substring (string, 0, num_left_chars);
-    right_substring = g_utf8_substring (string, length - num_right_chars, length);
-
-    return g_strconcat (left_substring, ellipsis, right_substring, NULL);
-}
-
-/**
  * get_common_prefix_length:
  * @str_a: first string
  * @str_b: second string
@@ -273,40 +222,6 @@ eel_self_check_string (void)
     EEL_CHECK_STRING_RESULT (eel_str_capitalize (""), "");
     EEL_CHECK_STRING_RESULT (eel_str_capitalize ("foo"), "Foo");
     EEL_CHECK_STRING_RESULT (eel_str_capitalize ("Foo"), "Foo");
-
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("foo", 0), NULL);
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("foo", 1), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("foo", 3), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("foo", 4), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("foo", 5), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("foo", 6), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("foo", 7), "foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 0), NULL);
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 1), "a_much_longer_foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 2), "a_much_longer_foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 3), "a…o");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 4), "a…oo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 5), "a_…oo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 6), "a_…foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 7), "a_m…foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 8), "a_m…_foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("a_much_longer_foo", 9), "a_mu…_foo");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 8), "som…even");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 8), "som…_odd");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 9), "some…even");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 9), "some…_odd");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 10), "some…_even");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 10), "some…g_odd");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 11), "somet…_even");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 11), "somet…g_odd");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 12), "somet…g_even");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 12), "somet…ng_odd");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 13), "someth…g_even");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 13), "something_odd");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_even", 14), "something_even");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("something_odd", 13), "something_odd");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("ääääääääää", 5), "ää…ää");
-    EEL_CHECK_STRING_RESULT (eel_str_middle_truncate ("あぃいぅうぇえぉ", 7), "あぃい…ぇえぉ");
 }
 
 #endif /* !EEL_OMIT_SELF_CHECK */

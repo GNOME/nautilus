@@ -38,24 +38,6 @@
 char *   eel_str_capitalize                (const char    *str);
 
 /**
- * eel_str_middle_truncate:
- * @string: the string to truncate
- * @truncate_length: the length limit at which to truncate
- *
- * If @string is longer than @truncate_length, replaces the middle with an
- * ellipsis so the resulting string is exactly @truncate_length characters
- * in length. Otherwise, returns a copy of @string.
- *
- * Do not use to ellipsize whole labels, only substrings that appear in them,
- * e.g. file names.
- *
- * Returns: @string, truncated at the middle to @truncate_length or a copy
- * if it was not longer than @truncate_length.
- */
-gchar   *eel_str_middle_truncate           (const gchar   *string,
-                                            guint          truncate_length);
-
-/**
  * eel_str_get_common_prefix:
  * @str: set of strings
  * @min_required_len: the minimum number of characters required in the prefix
