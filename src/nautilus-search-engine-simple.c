@@ -34,6 +34,7 @@
 #include <gio/gio.h>
 
 #define BATCH_SIZE 500
+#define CREATE_THREAD_DELAY_MS 500
 
 enum
 {
@@ -58,7 +59,6 @@ typedef struct
     GList *hits;
 
     NautilusQuery *query;
-
     gint processing_id;
     GMutex idle_mutex;
     /* The following data can be accessed from different threads
@@ -73,6 +73,7 @@ struct _NautilusSearchEngineSimple
 {
     GObject parent_instance;
     NautilusQuery *query;
+    guint create_thread_timeout_id;
 
     SearchThreadData *active_search;
 };
@@ -90,6 +91,7 @@ finalize (GObject *object)
 {
     NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
     g_clear_object (&simple->query);
+    g_clear_handle_id (&simple->create_thread_timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_search_engine_simple_parent_class)->finalize (object);
 }
@@ -505,11 +507,20 @@ search_thread_func (gpointer user_data)
 }
 
 static void
+create_thread_timeout (gpointer user_data)
+{
+    NautilusSearchEngineSimple *simple = user_data;
+    g_autoptr (GThread) thread = NULL;
+
+    simple->create_thread_timeout_id = 0;
+    thread = g_thread_new ("nautilus-search-simple", search_thread_func, simple->active_search);
+}
+
+static void
 nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineSimple *simple;
     SearchThreadData *data;
-    GThread *thread;
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
@@ -522,12 +533,12 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
 
     data = search_thread_data_new (simple, simple->query);
 
-    thread = g_thread_new ("nautilus-search-simple", search_thread_func, data);
     simple->active_search = data;
+    simple->create_thread_timeout_id = g_timeout_add_once (CREATE_THREAD_DELAY_MS,
+                                                           create_thread_timeout,
+                                                           simple);
 
     g_object_notify (G_OBJECT (provider), "running");
-
-    g_thread_unref (thread);
 }
 
 static void
@@ -539,6 +550,14 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
     {
         DEBUG ("Simple engine stop");
         g_cancellable_cancel (simple->active_search->cancellable);
+
+        if (simple->create_thread_timeout_id != 0)
+        {
+            /* Thread wasn't started, so we must call this directly from here.*/
+            search_thread_done (simple->active_search);
+
+            g_clear_handle_id (&simple->create_thread_timeout_id, g_source_remove);
+        }
     }
 }
 
