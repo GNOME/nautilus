@@ -41,6 +41,7 @@ struct _NautilusSearchEngineClass
 NautilusSearchEngine *nautilus_search_engine_new                (void);
 NautilusSearchEngineModel *
                       nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
+void                  nautilus_search_engine_enable_recent (NautilusSearchEngine *engine);
 
 G_END_DECLS
 

@@ -502,6 +502,7 @@ execute_search (NautilusShellSearchProvider  *self,
 
     /* start searching */
     g_debug ("*** Search engine search started");
+    nautilus_search_engine_enable_recent (pending_search->engine);
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (pending_search->engine),
                                         query);
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (pending_search->engine));

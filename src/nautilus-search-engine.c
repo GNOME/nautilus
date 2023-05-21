@@ -46,6 +46,7 @@ typedef struct
 
     gboolean running;
     gboolean restart;
+    gboolean recent_enabled;
 } NautilusSearchEnginePrivate;
 
 enum
@@ -117,6 +118,10 @@ search_engine_start_real_recent (NautilusSearchEngine *engine)
     NautilusSearchEnginePrivate *priv;
 
     priv = nautilus_search_engine_get_instance_private (engine);
+    if (!priv->recent_enabled)
+    {
+        return;
+    }
 
     priv->providers_running++;
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->recent));
@@ -525,6 +530,10 @@ nautilus_search_engine_init (NautilusSearchEngine *engine)
 
     priv->recent = nautilus_search_engine_recent_new ();
     connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->recent));
+
+    /* The recent engine is really only meant for the shell search provider,
+     * where it might get search hits that are not indexed by tracker. */
+    priv->recent_enabled = FALSE;
 }
 
 NautilusSearchEngine *
@@ -545,6 +554,14 @@ nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine)
     priv = nautilus_search_engine_get_instance_private (engine);
 
     return priv->model;
+}
+
+void
+nautilus_search_engine_enable_recent (NautilusSearchEngine *engine)
+{
+    NautilusSearchEnginePrivate *priv = nautilus_search_engine_get_instance_private (engine);
+
+    priv->recent_enabled = TRUE;
 }
 
 gboolean

@@ -112,6 +112,7 @@ search_thread_add_hits_idle (gpointer user_data)
     g_clear_object (&self->cancellable);
     g_free (search_hits);
 
+    DEBUG ("Recent engine finished");
     nautilus_search_provider_finished (provider,
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
     g_object_notify (G_OBJECT (provider), "running");
@@ -368,6 +369,7 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
     g_return_if_fail (self->query);
     g_return_if_fail (self->cancellable == NULL);
 
+    DEBUG ("Recent engine start");
     location = nautilus_query_get_location (self->query);
 
     if (!is_recursive_search (NAUTILUS_SEARCH_ENGINE_TYPE_INDEXED,
