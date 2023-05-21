@@ -208,7 +208,7 @@ test_many_strings (void)
     for (i = 0; i < 500; ++i)
     {
         filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
-        list = g_list_append (list, filename);
+        list = g_list_prepend (list, filename);
     }
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
@@ -235,7 +235,7 @@ test_many_strings_last_differs (void)
             filename[2] = 'X';
         }
 
-        list = g_list_append (list, filename);
+        list = g_list_prepend (list, filename);
     }
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
@@ -262,7 +262,7 @@ test_many_strings_first_differs (void)
             filename[2] = 'X';
         }
 
-        list = g_list_append (list, filename);
+        list = g_list_prepend (list, filename);
     }
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
