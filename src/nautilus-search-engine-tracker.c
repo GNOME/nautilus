@@ -196,6 +196,7 @@ cursor_callback (GObject      *object,
         search_finished (tracker, error);
 
         g_clear_error (&error);
+        tracker_sparql_cursor_close (cursor);
         g_clear_object (&cursor);
 
         return;
