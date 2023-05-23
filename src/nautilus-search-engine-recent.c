@@ -22,7 +22,6 @@
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-search-engine-recent.h"
-#include "nautilus-search-engine-private.h"
 #include "nautilus-ui-utilities.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
@@ -363,22 +362,12 @@ static void
 nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
-    g_autoptr (GFile) location = NULL;
     g_autoptr (GThread) thread = NULL;
 
     g_return_if_fail (self->query);
     g_return_if_fail (self->cancellable == NULL);
 
     DEBUG ("Recent engine start");
-    location = nautilus_query_get_location (self->query);
-
-    if (!is_recursive_search (NAUTILUS_SEARCH_ENGINE_TYPE_INDEXED,
-                              nautilus_query_get_recursive (self->query),
-                              location))
-    {
-        search_add_hits_idle (self, NULL);
-        return;
-    }
 
     self->running = TRUE;
     self->cancellable = g_cancellable_new ();
