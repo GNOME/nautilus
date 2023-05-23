@@ -434,7 +434,7 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
     view = nautilus_window_slot_get_current_view (self);
 
     nautilus_view_set_search_query (view, query);
-    nautilus_window_slot_open_location_full (self, nautilus_view_get_location (view), 0, NULL);
+    nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
 }
 
 static void
@@ -455,13 +455,15 @@ hide_query_editor (NautilusWindowSlot *self)
     {
         g_autolist (NautilusFile) selection = NULL;
 
+        /* Save current selection to restore it after leaving search results.
+         * This allows finding a file from current folder using search, then
+         * press [Esc], and have the selected search result still selected and
+         * revealed in the unfiltered folder view. */
         selection = nautilus_view_get_selection (view);
 
         nautilus_view_set_search_query (view, NULL);
-        nautilus_window_slot_open_location_full (self,
-                                                 nautilus_view_get_location (view),
-                                                 0,
-                                                 selection);
+        nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
+        nautilus_view_set_selection (view, selection);
     }
 
     if (nautilus_window_slot_get_active (self))
