@@ -114,9 +114,6 @@ typedef enum
 /* Recent files */
 #define NAUTILUS_PREFERENCES_RECENT_FILES_ENABLED          "remember-recent-files"
 
-/* Default view when searching */
-#define NAUTILUS_PREFERENCES_SEARCH_VIEW "search-view"
-
 /* Search behaviour */
 #define NAUTILUS_PREFERENCES_RECURSIVE_SEARCH "recursive-search"
 

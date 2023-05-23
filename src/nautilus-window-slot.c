@@ -131,7 +131,6 @@ struct _NautilusWindowSlot
     GCancellable *mount_cancellable;
     GError *mount_error;
     gboolean tried_mount;
-    gint view_mode_before_search;
     gint view_mode_before_places;
 
     /* Menus */
@@ -199,8 +198,6 @@ nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
 
     self->forward_list = g_steal_pointer (&data->forward_list);
 
-    self->view_mode_before_search = data->view_before_search;
-
     g_set_object (&self->current_location_bookmark, data->current_location_bookmark);
 
     self->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
@@ -234,7 +231,6 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     data->back_list = back_list;
     data->forward_list = forward_list;
     data->file = nautilus_file_get (self->location);
-    data->view_before_search = self->view_mode_before_search;
     g_set_object (&data->current_location_bookmark, self->current_location_bookmark);
 
     return data;
@@ -265,30 +261,12 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
         return view;
     }
 
-    /* If we are in search, try to use by default list view. */
-    if (nautilus_file_is_in_search (file))
-    {
-        /* If it's already set, is because we already made the change to search mode,
-         * so the view mode of the current view will be the one search is using,
-         * which is not the one we are interested in */
-        if (self->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID &&
-            NAUTILUS_IS_FILES_VIEW (self->content_view))
-        {
-            self->view_mode_before_search = nautilus_view_get_view_id (self->content_view);
-        }
-        view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SEARCH_VIEW);
-    }
-    else if (self->content_view != NULL)
+    if (self->content_view != NULL)
     {
         /* If there is already a view, just use the view mode that it's currently using, or
-         * if we were on search before, use what we were using before entering
-         * search mode */
-        if (self->view_mode_before_search != NAUTILUS_VIEW_INVALID_ID)
-        {
-            view_id = self->view_mode_before_search;
-            self->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
-        }
-        else if (NAUTILUS_IS_PLACES_VIEW (self->content_view))
+         * if we were on "Other Locations" before, use what we were using before entering
+         * it. */
+        if (NAUTILUS_IS_PLACES_VIEW (self->content_view))
         {
             view_id = self->view_mode_before_places;
             self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
@@ -972,17 +950,12 @@ static void
 change_files_view_mode (NautilusWindowSlot *self,
                         guint               view_id)
 {
-    const gchar *preferences_key;
-
     if (!nautilus_window_slot_content_view_matches (self, view_id))
     {
         nautilus_window_slot_set_content_view (self, view_id);
     }
-    preferences_key = nautilus_view_is_searching (nautilus_window_slot_get_current_view (self)) ?
-                      NAUTILUS_PREFERENCES_SEARCH_VIEW :
-                      NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER;
 
-    g_settings_set_enum (nautilus_preferences, preferences_key, view_id);
+    g_settings_set_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, view_id);
 }
 
 static void
@@ -1167,7 +1140,6 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                           "<control>2");
     nautilus_application_set_accelerators (app, "slot.focus-search", search_visible_accels);
 
-    self->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
     self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
 }
 
