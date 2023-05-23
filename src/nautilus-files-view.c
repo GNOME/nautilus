@@ -340,10 +340,6 @@ static gboolean nautilus_files_view_is_searching (NautilusView *view);
 
 static void     nautilus_files_view_iface_init (NautilusViewInterface *view);
 
-static void     set_search_query_internal (NautilusFilesView *files_view,
-                                           NautilusQuery     *query,
-                                           NautilusDirectory *base_model);
-
 static gboolean nautilus_files_view_is_read_only (NautilusFilesView *view);
 static void nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
                                                GList        *selection);
@@ -3695,32 +3691,11 @@ nautilus_files_view_set_location (NautilusView *view,
                                   GFile        *location)
 {
     NautilusDirectory *directory;
-    NautilusFilesView *files_view;
 
     nautilus_profile_start (NULL);
-    files_view = NAUTILUS_FILES_VIEW (view);
     directory = nautilus_directory_get (location);
 
-    nautilus_files_view_stop_loading (files_view);
-    /* In case we want to load a previous search we need to extract the real
-     * location and the search location, and load the directory when everything
-     * is ready. That's why we cannot use the nautilus_view_set_query, because
-     * to set a query we need a previous location loaded, but to load a search
-     * location we need to know the real location behind it. */
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
-    {
-        NautilusQuery *previous_query;
-        NautilusDirectory *base_model;
-
-        base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (directory));
-        previous_query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-        set_search_query_internal (files_view, previous_query, base_model);
-        g_object_unref (previous_query);
-    }
-    else
-    {
-        load_directory (NAUTILUS_FILES_VIEW (view), directory);
-    }
+    load_directory (NAUTILUS_FILES_VIEW (view), directory);
     nautilus_directory_unref (directory);
     nautilus_profile_end (NULL);
 }
@@ -9393,10 +9368,10 @@ nautilus_files_view_get_search_query (NautilusView *view)
 }
 
 static void
-set_search_query_internal (NautilusFilesView *files_view,
-                           NautilusQuery     *query,
-                           NautilusDirectory *base_model)
+nautilus_files_view_set_search_query (NautilusView  *view,
+                                      NautilusQuery *query)
 {
+    NautilusFilesView *files_view = NAUTILUS_FILES_VIEW (view);
     GFile *location;
     NautilusFilesViewPrivate *priv;
 
@@ -9404,23 +9379,16 @@ set_search_query_internal (NautilusFilesView *files_view,
     priv = nautilus_files_view_get_instance_private (files_view);
 
     g_set_object (&priv->search_query, query);
-    g_object_notify (G_OBJECT (files_view), "search-query");
+    g_object_notify (G_OBJECT (view), "search-query");
 
     if (!nautilus_query_is_empty (query))
     {
-        if (nautilus_view_is_searching (NAUTILUS_VIEW (files_view)))
+        if (nautilus_view_is_searching (view))
         {
             /*
              * Reuse the search directory and reload it.
              */
             nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (priv->model), query);
-            /* It's important to use load_directory instead of set_location,
-             * since the location is already correct, however we need
-             * to reload the directory with the new query set. But
-             * set_location has a check for wheter the location is a
-             * search directory, so setting the location to a search
-             * directory when is already serching will enter a loop.
-             */
             load_directory (files_view, priv->model);
         }
         else
@@ -9433,12 +9401,12 @@ set_search_query_internal (NautilusFilesView *files_view,
 
             directory = nautilus_directory_get (location);
             g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
-            nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (directory), base_model);
+            nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (directory), priv->model);
             nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 
             load_directory (files_view, directory);
 
-            g_object_notify (G_OBJECT (files_view), "searching");
+            g_object_notify (G_OBJECT (view), "searching");
 
             nautilus_directory_unref (directory);
             g_free (uri);
@@ -9446,37 +9414,17 @@ set_search_query_internal (NautilusFilesView *files_view,
     }
     else
     {
-        if (nautilus_view_is_searching (NAUTILUS_VIEW (files_view)))
+        if (nautilus_view_is_searching (view))
         {
+            NautilusDirectory *base_model;
+
+            base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (priv->model));
             location = nautilus_directory_get_location (base_model);
 
-            nautilus_view_set_location (NAUTILUS_VIEW (files_view), location);
+            nautilus_view_set_location (view, location);
         }
     }
     g_clear_object (&location);
-}
-
-static void
-nautilus_files_view_set_search_query (NautilusView  *view,
-                                      NautilusQuery *query)
-{
-    NautilusDirectory *base_model;
-    NautilusFilesView *files_view;
-    NautilusFilesViewPrivate *priv;
-
-    files_view = NAUTILUS_FILES_VIEW (view);
-    priv = nautilus_files_view_get_instance_private (files_view);
-
-    if (nautilus_view_is_searching (view))
-    {
-        base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (priv->model));
-    }
-    else
-    {
-        base_model = priv->model;
-    }
-
-    set_search_query_internal (NAUTILUS_FILES_VIEW (view), query, base_model);
 }
 
 static GFile *
