@@ -40,7 +40,6 @@ G_DECLARE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW
 typedef struct
 {
     NautilusFile *file;
-    gint view_before_search;
     GList *back_list;
     GList *forward_list;
     NautilusBookmark *current_location_bookmark;
