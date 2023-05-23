@@ -434,7 +434,9 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
     view = nautilus_window_slot_get_current_view (self);
 
     nautilus_view_set_search_query (view, query);
-    nautilus_window_slot_open_location_full (self, nautilus_view_get_location (view), 0, NULL);
+
+    /* Slot title may need to be updated for search query. */
+    nautilus_window_slot_update_title (self);
 }
 
 static void
@@ -455,13 +457,14 @@ hide_query_editor (NautilusWindowSlot *self)
     {
         g_autolist (NautilusFile) selection = NULL;
 
+        /* Save current selection to restore it after leaving search results.
+         * This allows finding a file from current folder using search, then
+         * press [Esc], and have the selected search result still selected and
+         * revealed in the unfiltered folder view. */
         selection = nautilus_view_get_selection (view);
 
         nautilus_view_set_search_query (view, NULL);
-        nautilus_window_slot_open_location_full (self,
-                                                 nautilus_view_get_location (view),
-                                                 0,
-                                                 selection);
+        nautilus_view_set_selection (view, selection);
     }
 
     if (nautilus_window_slot_get_active (self))
@@ -3097,8 +3100,19 @@ void
 nautilus_window_slot_update_title (NautilusWindowSlot *self)
 {
     NautilusWindow *window;
+    NautilusView *view;
     g_autofree char *title = NULL;
-    title = nautilus_compute_title_for_location (self->location);
+    GFile *location_for_title = self->location;
+
+    view = nautilus_window_slot_get_current_view (self);
+    if (nautilus_view_is_searching (view))
+    {
+        /* The view location while searching is the NautilusSearchDirectory
+         * instance, while the slot's location is the searched location. */
+        location_for_title = nautilus_view_get_location (view);
+    }
+
+    title = nautilus_compute_title_for_location (location_for_title);
     window = nautilus_window_slot_get_window (self);
 
     if (g_strcmp0 (title, self->title) != 0)
