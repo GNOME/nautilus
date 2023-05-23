@@ -22,7 +22,6 @@
 #include <config.h>
 #include "nautilus-search-engine-simple.h"
 
-#include "nautilus-search-engine-private.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
@@ -288,7 +287,7 @@ visit_directory (GFile            *dir,
 {
     g_autoptr (GPtrArray) date_range = NULL;
     NautilusQuerySearchType type;
-    NautilusQueryRecursive recursive;
+    NautilusQueryRecursive recursive_flag;
     GFileEnumerator *enumerator;
     GFileInfo *info;
     GFile *child;
@@ -318,7 +317,7 @@ visit_directory (GFile            *dir,
     }
 
     type = nautilus_query_get_search_type (data->query);
-    recursive = nautilus_query_get_recursive (data->query);
+    recursive_flag = nautilus_query_get_recursive (data->query);
     date_range = nautilus_query_get_date_range (data->query);
 
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
@@ -326,6 +325,7 @@ visit_directory (GFile            *dir,
         g_autoptr (GDateTime) mtime = NULL;
         g_autoptr (GDateTime) atime = NULL;
         g_autoptr (GDateTime) ctime = NULL;
+        gboolean recursive = FALSE;
 
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
@@ -431,10 +431,29 @@ visit_directory (GFile            *dir,
             send_batch_in_idle (data);
         }
 
-        if (recursive != NAUTILUS_QUERY_RECURSIVE_NEVER &&
-            g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
-            is_recursive_search (NAUTILUS_SEARCH_ENGINE_TYPE_NON_INDEXED,
-                                 recursive, child))
+        if (recursive_flag != NAUTILUS_QUERY_RECURSIVE_NEVER &&
+            g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+        {
+            if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS)
+            {
+                recursive = TRUE;
+            }
+            else if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
+            {
+                g_autoptr (GFileInfo) file_system_info = NULL;
+
+                file_system_info = g_file_query_filesystem_info (child,
+                                                                 G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE,
+                                                                 NULL, NULL);
+                if (file_system_info != NULL)
+                {
+                    recursive = !g_file_info_get_attribute_boolean (file_system_info,
+                                                                    G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
+                }
+            }
+        }
+
+        if (recursive)
         {
             id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
             visited = FALSE;

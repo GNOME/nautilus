@@ -21,7 +21,6 @@
 
 #include <config.h>
 #include "nautilus-search-engine.h"
-#include "nautilus-search-engine-private.h"
 
 #include "nautilus-file-utilities.h"
 #include "nautilus-search-engine-model.h"
@@ -562,44 +561,4 @@ nautilus_search_engine_enable_recent (NautilusSearchEngine *engine)
     NautilusSearchEnginePrivate *priv = nautilus_search_engine_get_instance_private (engine);
 
     priv->recent_enabled = TRUE;
-}
-
-gboolean
-is_recursive_search (NautilusSearchEngineType  engine_type,
-                     NautilusQueryRecursive    recursive,
-                     GFile                    *location)
-{
-    switch (recursive)
-    {
-        case NAUTILUS_QUERY_RECURSIVE_NEVER:
-        {
-            return FALSE;
-        }
-
-        case NAUTILUS_QUERY_RECURSIVE_ALWAYS:
-        {
-            return TRUE;
-        }
-
-        case NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY:
-        {
-            return engine_type == NAUTILUS_SEARCH_ENGINE_TYPE_INDEXED;
-        }
-
-        case NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY:
-        {
-            g_autoptr (GFileInfo) file_system_info = NULL;
-
-            file_system_info = g_file_query_filesystem_info (location,
-                                                             G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE,
-                                                             NULL, NULL);
-            if (file_system_info != NULL)
-            {
-                return !g_file_info_get_attribute_boolean (file_system_info,
-                                                           G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
-            }
-        }
-    }
-
-    return TRUE;
 }
