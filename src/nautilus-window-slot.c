@@ -1481,7 +1481,17 @@ viewed_file_changed_callback (NautilusFile       *file,
                 go_to_file = g_file_new_for_path (g_get_home_dir ());
             }
 
-            nautilus_window_slot_open_location_full (self, go_to_file, 0, NULL);
+            if (g_file_equal (location, go_to_file))
+            {
+                /* Path gone by time out may have been remounted by
+                 * `nautilus_find_existing_uri_in_hierarchy()`.
+                 */
+                nautilus_window_slot_force_reload (self);
+            }
+            else
+            {
+                nautilus_window_slot_open_location_full (self, go_to_file, 0, NULL);
+            }
 
             g_object_unref (go_to_file);
             g_object_unref (location);
