@@ -118,6 +118,9 @@
 /* Delay to show the Loading... floating bar */
 #define FLOATING_BAR_LOADING_DELAY 200 /* ms */
 
+/* Delay to clear search results (avoid while flasing while typing) */
+#define SEARCH_TRANSITION_TIMEOUT 200 /* ms */
+
 #define MIN_COMMON_FILENAME_PREFIX_LENGTH 4
 
 enum
@@ -185,6 +188,9 @@ typedef struct
     guint update_context_menus_timeout_id;
     guint update_status_idle_id;
     guint reveal_selection_idle_id;
+
+    guint search_transition_timeout_id;
+    gboolean begin_loading_delayed;
 
     guint display_pending_source_id;
     guint changes_timeout_id;
@@ -351,6 +357,7 @@ static void copy_move_done_callback (GHashTable *debuting_files,
                                      gboolean    success,
                                      gpointer    data);
 static CopyMoveDoneData * pre_copy_move (NautilusFilesView *directory_view);
+static void search_transition_emit_delayed_signals_if_pending (NautilusFilesView *view);
 
 static void     nautilus_files_view_display_selection_info (NautilusFilesView *view);
 static char *   nautilus_files_view_get_uri (NautilusFilesView *view);
@@ -3360,6 +3367,8 @@ nautilus_files_view_dispose (GObject *object)
     remove_update_context_menus_timeout_callback (view);
     remove_update_status_idle_callback (view);
 
+    g_clear_handle_id (&priv->search_transition_timeout_id, g_source_remove);
+
     if (priv->display_selection_idle_id != 0)
     {
         g_source_remove (priv->display_selection_idle_id);
@@ -3931,6 +3940,7 @@ done_loading (NautilusFilesView *view,
     }
 
     priv->loading = FALSE;
+    g_clear_handle_id (&priv->search_transition_timeout_id, g_source_remove);
     g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
     g_object_notify (G_OBJECT (view), "loading");
 
@@ -4432,6 +4442,8 @@ process_old_files (NautilusFilesView *view)
 
         if (files_added != NULL)
         {
+            search_transition_emit_delayed_signals_if_pending (view);
+
             g_signal_emit (view,
                            signals[ADD_FILES], 0, pending_additions);
         }
@@ -8739,18 +8751,79 @@ file_changed_callback (NautilusFile *file,
 static void
 emit_clear (NautilusFilesView *self)
 {
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    if (priv->search_transition_timeout_id != 0)
+    {
+        /* Scheduled to be emitted later. */
+        return;
+    }
+
     g_signal_emit (self, signals[CLEAR], 0);
 }
 
 static void
 emit_begin_loading (NautilusFilesView *self)
 {
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    if (priv->search_transition_timeout_id != 0)
+    {
+        /* Mark it to be emitted later, as we haven't cleared old contents yet. */
+        priv->begin_loading_delayed = TRUE;
+        return;
+    }
+    priv->begin_loading_delayed = FALSE;
+
     /* Tell interested parties that we've begun loading this directory now.
      * Subclasses use this to know that the new metadata is now available.
      */
     nautilus_profile_start ("BEGIN_LOADING");
     g_signal_emit (self, signals[BEGIN_LOADING], 0);
     nautilus_profile_end ("BEGIN_LOADING");
+}
+
+static void
+search_transition_emit_delayed_signals (gpointer user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    priv->search_transition_timeout_id = 0;
+
+    emit_clear (self);
+
+    if (priv->begin_loading_delayed)
+    {
+        emit_begin_loading (self);
+    }
+}
+
+static void
+search_transition_emit_delayed_signals_if_pending (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    if (priv->search_transition_timeout_id != 0)
+    {
+        g_clear_handle_id (&priv->search_transition_timeout_id, g_source_remove);
+        search_transition_emit_delayed_signals (self);
+    }
+}
+
+static void
+search_transition_schedule_delayed_signals (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    if (priv->search_transition_timeout_id == 0)
+    {
+        guint id = g_timeout_add_once (SEARCH_TRANSITION_TIMEOUT,
+                                       search_transition_emit_delayed_signals,
+                                       self);
+
+        priv->search_transition_timeout_id = id;
+    }
 }
 
 /**
@@ -8777,6 +8850,13 @@ load_directory (NautilusFilesView *view,
     nautilus_profile_start (NULL);
 
     nautilus_files_view_stop_loading (view);
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory) || NAUTILUS_IS_SEARCH_DIRECTORY (priv->model))
+    {
+        /* To make search feel fast and smooth as if it were filtering the
+         * current view, avoid blanking the view temporarily. */
+        search_transition_schedule_delayed_signals (view);
+    }
+
     emit_clear (view);
 
     priv->loading = TRUE;
