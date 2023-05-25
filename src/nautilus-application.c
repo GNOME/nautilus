@@ -293,12 +293,16 @@ get_window_slot_for_location (NautilusApplication *self,
     NautilusWindow *window;
     NautilusFile *file;
     GList *l, *sl;
+    GFileType type = g_file_query_file_type (location, G_FILE_QUERY_INFO_NONE, NULL);
+    g_autofree char *uri = g_file_get_uri (location);
 
     priv = nautilus_application_get_instance_private (self);
     slot = NULL;
-    file = nautilus_file_get (location);
+    file = nautilus_file_get_existing (location);
 
-    if (!nautilus_file_is_directory (file) && !nautilus_file_is_other_locations (file) &&
+    if (file != NULL &&
+        !nautilus_file_is_directory (file) &&
+        !nautilus_file_is_other_locations (file) &&
         g_file_has_parent (location, NULL))
     {
         location = g_file_get_parent (location);
