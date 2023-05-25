@@ -288,56 +288,41 @@ static NautilusWindowSlot *
 get_window_slot_for_location (NautilusApplication *self,
                               GFile               *location)
 {
-    NautilusApplicationPrivate *priv;
-    NautilusWindowSlot *slot;
-    NautilusWindow *window;
-    NautilusFile *file;
-    GList *l, *sl;
+    NautilusApplicationPrivate *priv = nautilus_application_get_instance_private (self);
     GFileType type = g_file_query_file_type (location, G_FILE_QUERY_INFO_NONE, NULL);
     g_autofree char *uri = g_file_get_uri (location);
-
-    priv = nautilus_application_get_instance_private (self);
-    slot = NULL;
-    file = nautilus_file_get_existing (location);
+    g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
+    g_autoptr (GFile) searched_location = NULL;
 
     if (file != NULL &&
         !nautilus_file_is_directory (file) &&
         !nautilus_file_is_other_locations (file) &&
         g_file_has_parent (location, NULL))
     {
-        location = g_file_get_parent (location);
+        searched_location = g_file_get_parent (location);
     }
     else
     {
-        g_object_ref (location);
+        searched_location = g_object_ref (location);
     }
 
-    for (l = priv->windows; l != NULL; l = l->next)
+    for (GList *l = priv->windows; l != NULL; l = l->next)
     {
-        window = l->data;
+        NautilusWindow *window = l->data;
 
-        for (sl = nautilus_window_get_slots (window); sl; sl = sl->next)
+        for (GList *sl = nautilus_window_get_slots (window); sl; sl = sl->next)
         {
-            NautilusWindowSlot *current = sl->data;
-            GFile *slot_location = nautilus_window_slot_get_location (current);
+            NautilusWindowSlot *slot = sl->data;
+            GFile *slot_location = nautilus_window_slot_get_location (slot);
 
-            if (slot_location && g_file_equal (slot_location, location))
+            if (slot_location && g_file_equal (slot_location, searched_location))
             {
-                slot = current;
-                break;
+                return slot;
             }
         }
-
-        if (slot)
-        {
-            break;
-        }
     }
 
-    nautilus_file_unref (file);
-    g_object_unref (location);
-
-    return slot;
+    return NULL;
 }
 
 void
