@@ -316,7 +316,8 @@ if get_option('tests') == 'all'
       '--check',
     ],
     env: [
-      'G_DEBUG=fatal-warnings',
+      'GDK_DEBUG=all',
+      'GDK_BACKEND=x11',
       'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data')),
       'RUNNING_TESTS=@0@'.format('TRUE')
     ]

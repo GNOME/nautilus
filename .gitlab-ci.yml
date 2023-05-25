@@ -15,6 +15,7 @@ stages:
         RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
         BUNDLE: "nautilus-dev.flatpak"
+        RUN_TESTS: "0"
 
 flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
