@@ -153,8 +153,21 @@
     },
     {
       "buildsystem": "meson",
+      "run-tests": true,
       "builddir": true,
       "name": "nautilus",
+      "build-options": {
+        "test-args": [
+          "--device=dri",
+          "--share=ipc",
+          "--socket=fallback-x11",
+          "--socket=wayland",
+          "--talk-name=org.gtk.vfs.*",
+          "--talk-name=org.gtk.MountOperationHandler",
+          "--filesystem=xdg-run/gvfsd",
+          "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:FileSystem"
+        ]
+      },
       "config-opts": [
         "--libdir=/app/lib",
         "-Dprofile=Devel",
