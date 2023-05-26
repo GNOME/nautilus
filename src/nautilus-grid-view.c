@@ -459,10 +459,6 @@ bind_cell (GtkSignalListItemFactory *factory,
         parent = gtk_widget_get_parent (cell);
         gtk_widget_set_halign (parent, GTK_ALIGN_CENTER);
         gtk_widget_set_valign (parent, GTK_ALIGN_START);
-        gtk_widget_set_margin_top (parent, 3);
-        gtk_widget_set_margin_bottom (parent, 3);
-        gtk_widget_set_margin_start (parent, 3);
-        gtk_widget_set_margin_end (parent, 3);
 
         gtk_accessible_update_relation (GTK_ACCESSIBLE (parent),
                                         GTK_ACCESSIBLE_RELATION_LABELLED_BY, cell, NULL,

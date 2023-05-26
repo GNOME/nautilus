@@ -140,7 +140,8 @@
 
 /* Grid view */
 .nautilus-grid-view gridview {
-  padding: 15px;
+  padding: 18px;
+  border-spacing: 6px;
 }
 
 .nautilus-grid-view gridview > child {
@@ -161,8 +162,13 @@
   padding-right: 24px;
 }
 .nautilus-list-view columnview > listview {
-  padding-top: 12px;
+  padding-top: 16px;
   padding-bottom: 24px;
+  border-spacing: 8px;
+}
+
+.nautilus-list-view.compact columnview > listview {
+  border-spacing: 4px;
 }
 
 /* Use negative margins to extend rubberbanding area into the columnview's
@@ -178,13 +184,6 @@
 
 .nautilus-list-view columnview > listview > row {
   border-radius: 6px;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-.nautilus-list-view.compact columnview > listview > row {
-  margin-top: 2px;
-  margin-bottom: 2px;
 }
 
 /* GTK unconditionally sets padding on GtkColumnViewCell, even with .data-table.
