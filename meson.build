@@ -3,7 +3,7 @@ project('nautilus', 'c',
 
   # Do not forget when releasing:
   #  * Update version in data/org.gnome.Nautilus.appdata.xml.in.in
-  version: '44.2',
+  version: '44.3',
 
   meson_version: '>= 0.59.0',
   license: 'GPL-3.0-or-later'
