@@ -131,7 +131,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
 {
     NautilusSearchEngineModel *model = user_data;
     g_autoptr (GPtrArray) mime_types = NULL;
-    gchar *uri, *display_name;
+    gchar *uri;
     GList *files, *hits, *l;
     NautilusFile *file;
     gdouble match;
@@ -147,6 +147,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
     for (l = files; l != NULL; l = l->next)
     {
+        g_autofree gchar *display_name = NULL;
         g_autoptr (GDateTime) mtime = NULL;
         g_autoptr (GDateTime) atime = NULL;
         g_autoptr (GDateTime) ctime = NULL;
@@ -156,8 +157,12 @@ model_directory_ready_cb (NautilusDirectory *directory,
         display_name = nautilus_file_get_display_name (file);
         match = nautilus_query_matches_string (model->query, display_name);
         found = (match > -1);
+        if (!found)
+        {
+            continue;
+        }
 
-        if (found && mime_types->len > 0)
+        if (mime_types->len > 0)
         {
             found = FALSE;
 
@@ -169,6 +174,10 @@ model_directory_ready_cb (NautilusDirectory *directory,
                     break;
                 }
             }
+        }
+        if (!found)
+        {
+            continue;
         }
 
         mtime = g_date_time_new_from_unix_local (nautilus_file_get_mtime (file));
@@ -230,8 +239,6 @@ model_directory_ready_cb (NautilusDirectory *directory,
 
             g_free (uri);
         }
-
-        g_free (display_name);
     }
 
     nautilus_file_list_free (files);
