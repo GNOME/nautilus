@@ -127,6 +127,9 @@ typedef enum
 /* Gtk settings migration happened */
 #define NAUTILUS_PREFERENCES_MIGRATED_GTK_SETTINGS "migrated-gtk-settings"
 
+/* Technical date and time format */
+#define NAUTILUS_PREFERENCES_USE_NUMERICAL_DATE "numerical-date"
+
 void nautilus_global_preferences_init                      (void);
 
 extern GSettings *nautilus_preferences;

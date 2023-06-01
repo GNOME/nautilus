@@ -41,6 +41,8 @@
         "show_create_link_row"
 #define NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET                  \
         "use_tree_view_row"
+#define NAUTILUS_PREFERENCES_DIALOG_USE_NUMERICAL_DATE_WIDGET                   \
+        "use_numerical_date_switch"
 
 /* combo preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO                          \
@@ -333,6 +335,9 @@ nautilus_preferences_window_setup (GtkBuilder *builder)
     bind_builder_bool (builder, nautilus_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET,
                        NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
+    bind_builder_bool (builder, nautilus_preferences,
+                       NAUTILUS_PREFERENCES_DIALOG_USE_NUMERICAL_DATE_WIDGET,
+                       NAUTILUS_PREFERENCES_USE_NUMERICAL_DATE);
 
     bind_builder_combo_row (builder, nautilus_preferences,
                             NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO,

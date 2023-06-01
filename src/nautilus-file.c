@@ -125,6 +125,7 @@ static GHashTable *symbolic_links;
 static guint64 cached_thumbnail_limit;
 static NautilusSpeedTradeoffValue show_file_thumbs;
 static gboolean use_24_hour;
+static gboolean use_numerical_date;
 
 static NautilusSpeedTradeoffValue show_directory_item_count;
 
@@ -5033,7 +5034,44 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     uselocale (forced_locale);
 
     file_date_time = g_date_time_new_from_unix_local (file_time_raw);
-    if (date_format != NAUTILUS_DATE_FORMAT_FULL)
+    if (use_numerical_date)
+    {
+        if (date_format == NAUTILUS_DATE_FORMAT_FULL)
+        {
+            if (use_24_hour)
+            {
+                /* Translators: this is meant to be numerical date format with
+                 * time in 24h format with seconds i.e. "12/31/2023 23:59:59" */
+                /* xgettext:no-c-format */
+                format = _("%m/%d/%Y %H:%M:%S");
+            }
+            else
+            {
+                /* Translators: this is meant to be numerical date format with
+                 * time in 12h format with seconds i.e. "12/31/2023 11:59:59 PM" */
+                /* xgettext:no-c-format */
+                format = _("%m/%d/%Y %I:%M:%S %p");
+            }
+        }
+        else
+        {
+            if (use_24_hour)
+            {
+                /* Translators: this is meant to be numerical date format with
+                 * time in 24h format i.e. "12/31/2023 23:59" */
+                /* xgettext:no-c-format */
+                format = _("%m/%d/%Y %H:%M");
+            }
+            else
+            {
+                /* Translators: this is meant to be numerical date format with
+                 * time in 12h format i.e. "12/31/2023 11:59 PM" */
+                /* xgettext:no-c-format */
+                format = _("%m/%d/%Y %I:%M %p");
+            }
+        }
+    }
+    else if (date_format != NAUTILUS_DATE_FORMAT_FULL)
     {
         GTimeZone *local_tz;
         GDateTime *file_date;
@@ -5168,6 +5206,13 @@ clock_format_changed_callback (gpointer data)
 
     clock_format = g_settings_get_enum (gnome_interface_preferences, "clock-format");
     use_24_hour = (clock_format == G_DESKTOP_CLOCK_FORMAT_24H);
+}
+
+static void
+use_numerical_date_changed_callback (NautilusFile *file)
+{
+    use_numerical_date = g_settings_get_boolean (nautilus_preferences,
+                                                 NAUTILUS_PREFERENCES_USE_NUMERICAL_DATE);
 }
 
 static void
@@ -8789,6 +8834,11 @@ nautilus_file_class_init (NautilusFileClass *class)
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
                               G_CALLBACK (show_thumbnails_changed_callback),
+                              NULL);
+    use_numerical_date_changed_callback (NULL);
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_USE_NUMERICAL_DATE,
+                              G_CALLBACK (use_numerical_date_changed_callback),
                               NULL);
 
     g_signal_connect (nautilus_signaller_get_current (),

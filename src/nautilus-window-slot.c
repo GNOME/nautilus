@@ -1088,6 +1088,11 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                              "changed::recursive-search",
                              G_CALLBACK (recursive_search_preferences_changed),
                              self, 0);
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_USE_NUMERICAL_DATE,
+                             G_CALLBACK (nautilus_window_slot_queue_reload),
+                             self,
+                             G_CONNECT_SWAPPED);
 
     self->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (self->slot_action_group),

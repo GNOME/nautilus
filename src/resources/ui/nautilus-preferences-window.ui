@@ -29,6 +29,21 @@
               </object>
             </child>
             <child>
+              <object class="AdwActionRow">
+                <property name="activatable_widget">use_numerical_date_switch</property>
+                <property name="subtitle" translatable="yes">Always show the full date and time</property>
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Detailed Date and _Time</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <child>
+                  <object class="GtkSwitch" id="use_numerical_date_switch">
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="AdwComboRow" id="open_action_row">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Action to Open Items</property>
