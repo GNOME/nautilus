@@ -18,12 +18,21 @@
 G_DEFINE_AUTO_CLEANUP_FREE_FUNC (locale_t, freelocale, (locale_t) 0)
 
 static gboolean use_24_hour;
+static gboolean use_detailed_date_format;
 
 static void
 clock_format_changed_callback (gpointer)
 {
     gint clock_format = g_settings_get_enum (gnome_interface_preferences, "clock-format");
     use_24_hour = (clock_format == G_DESKTOP_CLOCK_FORMAT_24H);
+}
+
+static void
+date_format_changed_callback (gpointer)
+{
+    NautilusDateTimeFormat format = g_settings_get_enum (nautilus_preferences,
+                                                         NAUTILUS_PREFERENCES_DATE_TIME_FORMAT);
+    use_detailed_date_format = (format == NAUTILUS_DATE_TIME_FORMAT_DETAILED);
 }
 
 void
@@ -34,11 +43,18 @@ nautilus_date_setup_preferences (void)
                               "changed::clock-format",
                               G_CALLBACK (clock_format_changed_callback),
                               NULL);
+
+    date_format_changed_callback (NULL);
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
+                              G_CALLBACK (date_format_changed_callback),
+                              NULL);
 }
 
 static char *
 date_to_str (GDateTime *timestamp,
-             gboolean   use_short_format)
+             gboolean   use_short_format,
+             gboolean   detailed_date)
 {
     const char *time_locale = setlocale (LC_TIME, NULL);
     locale_t current_locale = uselocale ((locale_t) 0);
@@ -57,7 +73,24 @@ date_to_str (GDateTime *timestamp,
     forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
     uselocale (forced_locale);
 
-    if (use_short_format)
+    if (use_short_format && detailed_date)
+    {
+        if (use_24_hour)
+        {
+            /* Translators: date and time in 24h format,
+             * i.e. "12/31/2023 23:59" */
+            /* xgettext:no-c-format */
+            format = _("%m/%d/%Y %H:%M");
+        }
+        else
+        {
+            /* Translators: date and time in 12h format,
+             * i.e. "12/31/2023 11:59 PM" */
+            /* xgettext:no-c-format */
+            format = _("%m/%d/%Y %I:%M %p");
+        }
+    }
+    else if (use_short_format)
     {
         /* Re-use local time zone, because every time a new local time zone is
          * created, GLib needs to check if the time zone file has changed */
@@ -156,5 +189,5 @@ char *
 nautilus_date_to_str (GDateTime *timestamp,
                       gboolean   use_short_format)
 {
-    return date_to_str (timestamp, use_short_format);
+    return date_to_str (timestamp, use_short_format, use_detailed_date_format);
 }

@@ -11,6 +11,11 @@
     <value value="1" nick="double"/>
   </enum>
 
+  <enum id="org.gnome.nautilus.DateTimeFormat">
+    <value value="0" nick="simple"/>
+    <value value="1" nick="detailed"/>
+  </enum>
+
   <enum id="org.gnome.nautilus.ActivationChoice">
     <value value="0" nick="launch"/>
     <value value="1" nick="display"/>
@@ -182,6 +187,11 @@
       <default>true</default>
       <summary>Whether to have full text search enabled by default when opening a new window/tab</summary>
       <description>If set to true, Files will also match the file contents besides the name. This toggles the default active state, which can still be overridden in the search popover</description>
+    </key>
+    <key name="date-time-format" enum="org.gnome.nautilus.DateTimeFormat">
+      <default>'simple'</default>
+      <summary>How to display file timestamps in the views</summary>
+      <description>If set to 'simple', Files will show Today and Yesterday with time, otherwise the exact date without time. If set to 'detailed', it will always show the exact date and time.</description>
     </key>
   </schema>
 
