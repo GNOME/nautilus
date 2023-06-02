@@ -2091,6 +2091,8 @@ directory_contents_value_field_update (NautilusPropertiesWindow *self)
 {
     NautilusRequestStatus file_status;
     g_autofree char *text = NULL;
+    g_autofree char *bytes_str = NULL;
+    g_autofree char *tooltip = NULL;
     guint directory_count;
     guint file_count;
     guint total_count;
@@ -2195,8 +2197,16 @@ directory_contents_value_field_update (NautilusPropertiesWindow *self)
         }
     }
 
+    bytes_str = g_strdup_printf ("%'" G_GOFFSET_FORMAT, total_size);
+
+    tooltip = g_strdup_printf (ngettext ("%s byte", "%s bytes", total_size),
+                               bytes_str);
+
     gtk_label_set_text (GTK_LABEL (self->contents_value_label),
                         text);
+
+    gtk_widget_set_tooltip_text (GTK_WIDGET (self->contents_value_label),
+                                 tooltip);
 
     if (!deep_count_active)
     {
