@@ -392,8 +392,9 @@ void nautilus_preferences_window_show(GtkWindow *window)
 
     if (preferences_window != NULL)
     {
-        gtk_window_present (GTK_WINDOW (preferences_window));
-        return;
+        /* Destroy existing window, which might be hidden behind other windows,
+         * attached to another parent. */
+        gtk_window_destroy (GTK_WINDOW (preferences_window));
     }
 
     builder = gtk_builder_new ();
