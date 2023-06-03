@@ -26,11 +26,7 @@
 #include "nautilus-preferences-window.h"
 
 #include <adwaita.h>
-#include <gtk/gtk.h>
-#include <gio/gio.h>
-
 #include <glib/gi18n.h>
-
 #include <nautilus-extension.h>
 
 #include "nautilus-column-utilities.h"
@@ -71,21 +67,24 @@ static const char * const icon_captions_components[] =
 
 static GtkWidget *preferences_window = NULL;
 
-static void list_store_append_string (GListStore  *list_store,
-                                      const gchar *string)
+static void
+list_store_append_string (GListStore  *list_store,
+                          const gchar *string)
 {
     g_autoptr (GtkStringObject) obj = gtk_string_object_new (string);
     g_list_store_append (list_store, obj);
 }
 
-static void free_column_names_array(GPtrArray *column_names)
+static void
+free_column_names_array (GPtrArray *column_names)
 {
     g_ptr_array_foreach (column_names, (GFunc) g_free, NULL);
     g_ptr_array_free (column_names, TRUE);
 }
 
-static void create_icon_caption_combo_row_items(AdwComboRow *combo_row,
-                                                GList       *columns)
+static void
+create_icon_caption_combo_row_items (AdwComboRow *combo_row,
+                                     GList       *columns)
 {
     GListStore *list_store = g_list_store_new (GTK_TYPE_STRING_OBJECT);
     GList *l;
@@ -125,9 +124,10 @@ static void create_icon_caption_combo_row_items(AdwComboRow *combo_row,
                             (GDestroyNotify) free_column_names_array);
 }
 
-static void icon_captions_changed_callback(AdwComboRow *widget,
-                                           GParamSpec  *pspec,
-                                           gpointer     user_data)
+static void
+icon_captions_changed_callback (AdwComboRow *widget,
+                                GParamSpec  *pspec,
+                                gpointer     user_data)
 {
     GPtrArray *captions;
     GtkBuilder *builder;
@@ -161,9 +161,10 @@ static void icon_captions_changed_callback(AdwComboRow *widget,
     g_ptr_array_free (captions, TRUE);
 }
 
-static void update_caption_combo_row(GtkBuilder *builder,
-                                     const char *combo_row_name,
-                                     const char *name)
+static void
+update_caption_combo_row (GtkBuilder *builder,
+                          const char *combo_row_name,
+                          const char *name)
 {
     GtkWidget *combo_row;
     int i;
@@ -189,7 +190,8 @@ static void update_caption_combo_row(GtkBuilder *builder,
         combo_row, G_CALLBACK (icon_captions_changed_callback), builder);
 }
 
-static void update_icon_captions_from_settings(GtkBuilder *builder)
+static void
+update_icon_captions_from_settings (GtkBuilder *builder)
 {
     char **captions;
     int i, j;
@@ -253,27 +255,30 @@ nautilus_preferences_window_setup_icon_caption_page (GtkBuilder *builder)
     update_icon_captions_from_settings (builder);
 }
 
-static void bind_builder_bool(GtkBuilder *builder,
-                              GSettings  *settings,
-                              const char *widget_name,
-                              const char *prefs)
+static void
+bind_builder_bool (GtkBuilder *builder,
+                   GSettings  *settings,
+                   const char *widget_name,
+                   const char *prefs)
 {
     g_settings_bind (settings, prefs, gtk_builder_get_object (builder, widget_name),
                      "active", G_SETTINGS_BIND_DEFAULT);
 }
 
-static GVariant *combo_row_mapping_set(const GValue       *gvalue,
-                                       const GVariantType *expected_type,
-                                       gpointer            user_data)
+static GVariant *
+combo_row_mapping_set (const GValue       *gvalue,
+                       const GVariantType *expected_type,
+                       gpointer            user_data)
 {
     const gchar **values = user_data;
 
     return g_variant_new_string (values[g_value_get_uint (gvalue)]);
 }
 
-static gboolean combo_row_mapping_get(GValue   *gvalue,
-                                      GVariant *variant,
-                                      gpointer  user_data)
+static gboolean
+combo_row_mapping_get (GValue   *gvalue,
+                       GVariant *variant,
+                       gpointer  user_data)
 {
     const gchar **values = user_data;
     const gchar *value;
@@ -293,11 +298,12 @@ static gboolean combo_row_mapping_get(GValue   *gvalue,
     return FALSE;
 }
 
-static void bind_builder_combo_row(GtkBuilder  *builder,
-                                   GSettings   *settings,
-                                   const char  *widget_name,
-                                   const char  *prefs,
-                                   const char **values)
+static void
+bind_builder_combo_row (GtkBuilder  *builder,
+                        GSettings   *settings,
+                        const char  *widget_name,
+                        const char  *prefs,
+                        const char **values)
 {
     g_settings_bind_with_mapping (settings, prefs, gtk_builder_get_object (builder, widget_name),
                                   "selected", G_SETTINGS_BIND_DEFAULT,
@@ -305,9 +311,10 @@ static void bind_builder_combo_row(GtkBuilder  *builder,
                                   (gpointer) values, NULL);
 }
 
-static void setup_combo (GtkBuilder  *builder,
-                         const char  *widget_name,
-                         const char **strings)
+static void
+setup_combo (GtkBuilder  *builder,
+             const char  *widget_name,
+             const char **strings)
 {
     AdwComboRow *combo_row;
     GListStore *list_store;
@@ -325,8 +332,9 @@ static void setup_combo (GtkBuilder  *builder,
     adw_combo_row_set_model (combo_row, G_LIST_MODEL (list_store));
 }
 
-static void nautilus_preferences_window_setup(GtkBuilder *builder,
-                                              GtkWindow  *parent_window)
+static void
+nautilus_preferences_window_setup (GtkBuilder *builder,
+                                   GtkWindow  *parent_window)
 {
     GtkWidget *window;
 
@@ -385,7 +393,8 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     gtk_window_present (GTK_WINDOW (preferences_window));
 }
 
-void nautilus_preferences_window_show(GtkWindow *window)
+void
+nautilus_preferences_window_show (GtkWindow *window)
 {
     GtkBuilder *builder;
     g_autoptr (GError) error = NULL;
