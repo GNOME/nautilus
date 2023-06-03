@@ -165,6 +165,15 @@ nautilus_query_editor_grab_focus (GtkWidget *widget)
     return FALSE;
 }
 
+void
+nautilus_query_editor_select_all_text (NautilusQueryEditor *editor)
+{
+    if (gtk_widget_get_visible (GTK_WIDGET (editor)))
+    {
+        gtk_widget_grab_focus (editor->text);
+    }
+}
+
 static void
 nautilus_query_editor_get_property (GObject    *object,
                                     guint       prop_id,

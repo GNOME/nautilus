@@ -931,8 +931,10 @@ action_focus_search (GSimpleAction *action,
                      gpointer       user_data)
 {
     NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+    NautilusQueryEditor *editor = nautilus_window_slot_get_query_editor (self);
 
     nautilus_window_slot_set_search_visible (self, TRUE);
+    nautilus_query_editor_select_all_text (editor);
 }
 
 static void

@@ -63,9 +63,14 @@ GFile         *nautilus_query_editor_get_location (NautilusQueryEditor *editor);
  */
 void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                                                    GFile               *location);
+/**
+ * nautilus_query_editor_select_all_text:
+ *
+ * @editor: A #NautilusQueryEditor instance.
+ */
+void           nautilus_query_editor_select_all_text (NautilusQueryEditor   *editor);
 
-gboolean
-nautilus_query_editor_handle_event (NautilusQueryEditor   *self,
-                                    GtkEventControllerKey *controller,
-                                    guint                  keyval,
-                                    GdkModifierType        state);
+gboolean       nautilus_query_editor_handle_event    (NautilusQueryEditor   *self,
+                                                      GtkEventControllerKey *controller,
+                                                      guint                  keyval,
+                                                      GdkModifierType        state);
