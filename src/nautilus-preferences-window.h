@@ -28,6 +28,6 @@
 
 G_BEGIN_DECLS
 
-void nautilus_preferences_window_show (GtkWindow *window);
+void nautilus_preferences_window_show (GtkWindow *parent_window);
 
 G_END_DECLS

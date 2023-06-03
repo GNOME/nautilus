@@ -65,8 +65,6 @@ static const char * const icon_captions_components[] =
     "captions_0_comborow", "captions_1_comborow", "captions_2_comborow", NULL
 };
 
-static GtkWidget *preferences_window = NULL;
-
 static void
 list_store_append_string (GListStore  *list_store,
                           const gchar *string)
@@ -333,11 +331,8 @@ setup_combo (GtkBuilder  *builder,
 }
 
 static void
-nautilus_preferences_window_setup (GtkBuilder *builder,
-                                   GtkWindow  *parent_window)
+nautilus_preferences_window_setup (GtkBuilder *builder)
 {
-    GtkWidget *window;
-
     setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO,
                  (const char *[]) { _("Single click"), _("Double click"), NULL });
     setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_SEARCH_RECURSIVE_ROW,
@@ -379,43 +374,28 @@ nautilus_preferences_window_setup (GtkBuilder *builder,
                             (const char **) speed_tradeoff_values);
 
     nautilus_preferences_window_setup_icon_caption_page (builder);
-
-    /* UI callbacks */
-    window = GTK_WIDGET (gtk_builder_get_object (builder, "preferences_window"));
-    preferences_window = window;
-
-    gtk_window_set_icon_name (GTK_WINDOW (preferences_window), APPLICATION_ID);
-
-    g_object_add_weak_pointer (G_OBJECT (window), (gpointer *) &preferences_window);
-
-    gtk_window_set_transient_for (GTK_WINDOW (preferences_window), parent_window);
-
-    gtk_window_present (GTK_WINDOW (preferences_window));
 }
 
 void
-nautilus_preferences_window_show (GtkWindow *window)
+nautilus_preferences_window_show (GtkWindow *parent_window)
 {
-    GtkBuilder *builder;
-    g_autoptr (GError) error = NULL;
+    static GtkWindow *preferences_window = NULL;
+    g_autoptr (GtkBuilder) builder = NULL;
 
     if (preferences_window != NULL)
     {
         /* Destroy existing window, which might be hidden behind other windows,
          * attached to another parent. */
-        gtk_window_destroy (GTK_WINDOW (preferences_window));
+        gtk_window_destroy (preferences_window);
     }
 
-    builder = gtk_builder_new ();
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-preferences-window.ui");
+    nautilus_preferences_window_setup (builder);
 
-    gtk_builder_add_from_resource (
-        builder, "/org/gnome/nautilus/ui/nautilus-preferences-window.ui", &error);
-    if (error != NULL)
-    {
-        g_error ("Failed to add nautilus-preferences-window.ui: %s", error->message);
-    }
+    preferences_window = GTK_WINDOW (gtk_builder_get_object (builder, "preferences_window"));
+    g_object_add_weak_pointer (G_OBJECT (preferences_window), (gpointer *) &preferences_window);
 
-    nautilus_preferences_window_setup (builder, window);
-
-    g_object_unref (builder);
+    gtk_window_set_icon_name (preferences_window, APPLICATION_ID);
+    gtk_window_set_transient_for (preferences_window, parent_window);
+    gtk_window_present (preferences_window);
 }
