@@ -74,52 +74,42 @@ list_store_append_string (GListStore  *list_store,
 }
 
 static void
-free_column_names_array (GPtrArray *column_names)
-{
-    g_ptr_array_foreach (column_names, (GFunc) g_free, NULL);
-    g_ptr_array_free (column_names, TRUE);
-}
-
-static void
 create_icon_caption_combo_row_items (AdwComboRow *combo_row,
                                      GList       *columns)
 {
-    g_autoptr (GListStore) list_store = g_list_store_new (GTK_TYPE_STRING_OBJECT);
+    g_autoptr (GListStore) list_store = g_list_store_new (NAUTILUS_TYPE_COLUMN);
+    g_autoptr (NautilusColumn) none = NULL;
+    g_autoptr (GtkExpression) expression = NULL;
     GList *l;
-    GPtrArray *column_names;
 
-    column_names = g_ptr_array_new ();
+    expression = gtk_property_expression_new (NAUTILUS_TYPE_COLUMN, NULL, "label");
+    adw_combo_row_set_expression (combo_row, expression);
 
-    /* Translators: this is referred to captions under icons. */
-    list_store_append_string (list_store, _("None"));
-    g_ptr_array_add (column_names, g_strdup ("none"));
+    none = g_object_new (NAUTILUS_TYPE_COLUMN,
+                         "name", "none",
+                         /* Translators: this is referred to captions under icons. */
+                         "label", _("None"),
+                         NULL);
+    g_list_store_append (list_store, none);
 
     for (l = columns; l != NULL; l = l->next)
     {
         NautilusColumn *column;
-        char *name;
-        char *label;
+        g_autofree char *name = NULL;
 
         column = NAUTILUS_COLUMN (l->data);
 
-        g_object_get (G_OBJECT (column), "name", &name, "label", &label, NULL);
+        g_object_get (G_OBJECT (column), "name", &name, NULL);
 
         /* Don't show name here, it doesn't make sense */
         if (!strcmp (name, "name"))
         {
-            g_free (name);
-            g_free (label);
             continue;
         }
 
-        list_store_append_string (list_store, label);
-        g_ptr_array_add (column_names, name);
-
-        g_free (label);
+        g_list_store_append (list_store, column);
     }
     adw_combo_row_set_model (combo_row, G_LIST_MODEL (list_store));
-    g_object_set_data_full (G_OBJECT (combo_row), "column_names", column_names,
-                            (GDestroyNotify) free_column_names_array);
 }
 
 static void
@@ -138,17 +128,19 @@ icon_captions_changed_callback (AdwComboRow *widget,
     for (i = 0; icon_captions_components[i] != NULL; i++)
     {
         GtkWidget *combo_row;
-        int selected_index;
-        GPtrArray *column_names;
+        GObject *selected_column;
         char *name;
 
         combo_row = GTK_WIDGET (
             gtk_builder_get_object (builder, icon_captions_components[i]));
-        selected_index = adw_combo_row_get_selected (ADW_COMBO_ROW (combo_row));
+        selected_column = adw_combo_row_get_selected_item (ADW_COMBO_ROW (combo_row));
+        if (G_UNLIKELY (!NAUTILUS_IS_COLUMN (selected_column)))
+        {
+            g_warn_if_reached ();
+            continue;
+        }
 
-        column_names = g_object_get_data (G_OBJECT (combo_row), "column_names");
-
-        name = g_ptr_array_index (column_names, selected_index);
+        g_object_get (selected_column, "name", &name, NULL);
         g_ptr_array_add (captions, name);
     }
     g_ptr_array_add (captions, NULL);
@@ -164,20 +156,25 @@ update_caption_combo_row (GtkBuilder *builder,
                           const char *combo_row_name,
                           const char *name)
 {
-    GtkWidget *combo_row;
+    AdwComboRow *combo_row;
     int i;
-    GPtrArray *column_names;
+    GListModel *model;
+    guint n_columns;
 
-    combo_row = GTK_WIDGET (gtk_builder_get_object (builder, combo_row_name));
+    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (builder, combo_row_name));
+    model = adw_combo_row_get_model (combo_row);
+    n_columns = g_list_model_get_n_items (model);
 
     g_signal_handlers_block_by_func (
         combo_row, G_CALLBACK (icon_captions_changed_callback), builder);
 
-    column_names = g_object_get_data (G_OBJECT (combo_row), "column_names");
-
-    for (i = 0; i < column_names->len; ++i)
+    for (i = 0; i < n_columns; ++i)
     {
-        if (!strcmp (name, g_ptr_array_index (column_names, i)))
+        g_autoptr (NautilusColumn) column_i = g_list_model_get_item (model, i);
+        g_autofree char *name_i = NULL;
+
+        g_object_get (column_i, "name", &name_i, NULL);
+        if (g_strcmp0 (name, name_i) == 0)
         {
             adw_combo_row_set_selected (ADW_COMBO_ROW (combo_row), i);
             break;
