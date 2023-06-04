@@ -66,14 +66,6 @@ static const char * const icon_captions_components[] =
 };
 
 static void
-list_store_append_string (GListStore  *list_store,
-                          const gchar *string)
-{
-    g_autoptr (GtkStringObject) obj = gtk_string_object_new (string);
-    g_list_store_append (list_store, obj);
-}
-
-static void
 create_icon_caption_combo_row_items (AdwComboRow *combo_row,
                                      GList       *columns)
 {
@@ -312,18 +304,12 @@ setup_combo (GtkBuilder  *builder,
              const char **strings)
 {
     AdwComboRow *combo_row;
-    g_autoptr (GListStore) list_store = NULL;
+    g_autoptr (GtkStringList) list_store = NULL;
 
     combo_row = (AdwComboRow *) gtk_builder_get_object (builder, widget_name);
     g_assert (ADW_IS_COMBO_ROW (combo_row));
 
-    list_store = g_list_store_new (GTK_TYPE_STRING_OBJECT);
-
-    for (gsize i = 0; strings[i]; i++)
-    {
-        list_store_append_string (list_store, strings[i]);
-    }
-
+    list_store = gtk_string_list_new (strings);
     adw_combo_row_set_model (combo_row, G_LIST_MODEL (list_store));
 }
 
