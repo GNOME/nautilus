@@ -84,7 +84,7 @@ static void
 create_icon_caption_combo_row_items (AdwComboRow *combo_row,
                                      GList       *columns)
 {
-    GListStore *list_store = g_list_store_new (GTK_TYPE_STRING_OBJECT);
+    g_autoptr (GListStore) list_store = g_list_store_new (GTK_TYPE_STRING_OBJECT);
     GList *l;
     GPtrArray *column_names;
 
@@ -315,7 +315,7 @@ setup_combo (GtkBuilder  *builder,
              const char **strings)
 {
     AdwComboRow *combo_row;
-    GListStore *list_store;
+    g_autoptr (GListStore) list_store = NULL;
 
     combo_row = (AdwComboRow *) gtk_builder_get_object (builder, widget_name);
     g_assert (ADW_IS_COMBO_ROW (combo_row));
