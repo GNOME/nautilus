@@ -110,10 +110,8 @@ icon_captions_changed_callback (AdwComboRow *widget,
                                 gpointer     user_data)
 {
     GPtrArray *captions;
-    GtkBuilder *builder;
+    GPtrArray *combo_rows = (GPtrArray *) user_data;
     int i;
-
-    builder = GTK_BUILDER (user_data);
 
     captions = g_ptr_array_new ();
 
@@ -123,8 +121,7 @@ icon_captions_changed_callback (AdwComboRow *widget,
         GObject *selected_column;
         char *name;
 
-        combo_row = GTK_WIDGET (
-            gtk_builder_get_object (builder, icon_captions_components[i]));
+        combo_row = g_ptr_array_index (combo_rows, i);
         selected_column = adw_combo_row_get_selected_item (ADW_COMBO_ROW (combo_row));
         if (G_UNLIKELY (!NAUTILUS_IS_COLUMN (selected_column)))
         {
@@ -144,8 +141,8 @@ icon_captions_changed_callback (AdwComboRow *widget,
 }
 
 static void
-update_caption_combo_row (GtkBuilder *builder,
-                          const char *combo_row_name,
+update_caption_combo_row (GPtrArray  *combo_rows,
+                          int         combo_row_i,
                           const char *name)
 {
     AdwComboRow *combo_row;
@@ -153,12 +150,12 @@ update_caption_combo_row (GtkBuilder *builder,
     GListModel *model;
     guint n_columns;
 
-    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (builder, combo_row_name));
+    combo_row = ADW_COMBO_ROW (g_ptr_array_index (combo_rows, combo_row_i));
     model = adw_combo_row_get_model (combo_row);
     n_columns = g_list_model_get_n_items (model);
 
     g_signal_handlers_block_by_func (
-        combo_row, G_CALLBACK (icon_captions_changed_callback), builder);
+        combo_row, G_CALLBACK (icon_captions_changed_callback), combo_rows);
 
     for (i = 0; i < n_columns; ++i)
     {
@@ -174,11 +171,11 @@ update_caption_combo_row (GtkBuilder *builder,
     }
 
     g_signal_handlers_unblock_by_func (
-        combo_row, G_CALLBACK (icon_captions_changed_callback), builder);
+        combo_row, G_CALLBACK (icon_captions_changed_callback), combo_rows);
 }
 
 static void
-update_icon_captions_from_settings (GtkBuilder *builder)
+update_icon_captions_from_settings (GPtrArray *combo_rows)
 {
     char **captions;
     int i, j;
@@ -204,7 +201,7 @@ update_icon_captions_from_settings (GtkBuilder *builder)
             data = "none";
         }
 
-        update_caption_combo_row (builder, icon_captions_components[i], data);
+        update_caption_combo_row (combo_rows, i, data);
     }
 
     g_strfreev (captions);
@@ -213,6 +210,7 @@ update_icon_captions_from_settings (GtkBuilder *builder)
 static void
 nautilus_preferences_window_setup_icon_caption_page (GtkBuilder *builder)
 {
+    g_autoptr (GPtrArray) combo_rows = g_ptr_array_sized_new (G_N_ELEMENTS (icon_captions_components));
     GList *columns;
     int i;
     gboolean writable;
@@ -228,18 +226,19 @@ nautilus_preferences_window_setup_icon_caption_page (GtkBuilder *builder)
 
         combo_row = GTK_WIDGET (
             gtk_builder_get_object (builder, icon_captions_components[i]));
+        g_ptr_array_add (combo_rows, combo_row);
 
         create_icon_caption_combo_row_items (ADW_COMBO_ROW (combo_row), columns);
         gtk_widget_set_sensitive (combo_row, writable);
 
         g_signal_connect_data (
             combo_row, "notify::selected", G_CALLBACK (icon_captions_changed_callback),
-            g_object_ref (builder), (GClosureNotify) g_object_unref, 0);
+            g_ptr_array_ref (combo_rows), (GClosureNotify) g_ptr_array_unref, 0);
     }
 
     nautilus_column_list_free (columns);
 
-    update_icon_captions_from_settings (builder);
+    update_icon_captions_from_settings (combo_rows);
 }
 
 static void
