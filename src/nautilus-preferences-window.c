@@ -109,17 +109,15 @@ icon_captions_changed_callback (AdwComboRow *widget,
                                 GParamSpec  *pspec,
                                 gpointer     user_data)
 {
-    GPtrArray *captions;
+    g_autoptr (GStrvBuilder) builder = g_strv_builder_new ();
+    g_auto (GStrv) captions = NULL;
     GPtrArray *combo_rows = (GPtrArray *) user_data;
-    int i;
 
-    captions = g_ptr_array_new ();
-
-    for (i = 0; icon_captions_components[i] != NULL; i++)
+    for (int i = 0; icon_captions_components[i] != NULL; i++)
     {
         GtkWidget *combo_row;
         GObject *selected_column;
-        char *name;
+        g_autofree char *name = NULL;
 
         combo_row = g_ptr_array_index (combo_rows, i);
         selected_column = adw_combo_row_get_selected_item (ADW_COMBO_ROW (combo_row));
@@ -130,14 +128,13 @@ icon_captions_changed_callback (AdwComboRow *widget,
         }
 
         g_object_get (selected_column, "name", &name, NULL);
-        g_ptr_array_add (captions, name);
+        g_strv_builder_add (builder, name);
     }
-    g_ptr_array_add (captions, NULL);
+    captions = g_strv_builder_end (builder);
 
     g_settings_set_strv (nautilus_icon_view_preferences,
                          NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS,
-                         (const char **) captions->pdata);
-    g_ptr_array_free (captions, TRUE);
+                         (const char **) captions);
 }
 
 static void
@@ -177,7 +174,7 @@ update_caption_combo_row (GPtrArray  *combo_rows,
 static void
 update_icon_captions_from_settings (GPtrArray *combo_rows)
 {
-    char **captions;
+    g_auto (GStrv) captions = NULL;
     int i, j;
 
     captions = g_settings_get_strv (nautilus_icon_view_preferences,
@@ -189,7 +186,7 @@ update_icon_captions_from_settings (GPtrArray *combo_rows)
 
     for (i = 0, j = 0; icon_captions_components[i] != NULL; i++)
     {
-        char *data;
+        const char *data;
 
         if (captions[j])
         {
@@ -203,8 +200,6 @@ update_icon_captions_from_settings (GPtrArray *combo_rows)
 
         update_caption_combo_row (combo_rows, i, data);
     }
-
-    g_strfreev (captions);
 }
 
 static void
