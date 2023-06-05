@@ -75,12 +75,12 @@
     <key type="b" name="always-use-location-entry">
       <default>false</default>
       <summary>Always use the location entry, instead of the pathbar</summary>
-      <description>If set to true, then Nautilus browser windows will always use a textual input entry for the location toolbar, instead of the pathbar.</description>
+      <description>If set to true, Files will always use a textual input entry for the location toolbar, instead of the pathbar.</description>
     </key>
     <key name="recursive-search" enum="org.gnome.nautilus.SpeedTradeoff">
       <default>'local-only'</default>
       <summary>Where to perform recursive search</summary>
-      <description>In which locations Nautilus should search on subfolders. Available values are “local-only”, “always”, “never”.</description>
+      <description>Locations in which Files should search subfolders. Available values are “local-only”, “always”, “never”.</description>
     </key>
     <key name="search-filter-time-type" enum="org.gnome.nautilus.SearchFilterTimeType">
       <default>'last_modified'</default>
@@ -90,12 +90,12 @@
     <key type="b" name="show-delete-permanently">
       <default>false</default>
       <summary>Whether to show a context menu item to delete permanently</summary>
-      <description>If set to true, then Nautilus will show a delete permanently context menu item to bypass the Trash.</description>
+      <description>If set to true, Files will show a delete permanently context menu item to bypass the Trash.</description>
     </key>
     <key type="b" name="show-create-link">
       <default>false</default>
       <summary>Whether to show context menu items to create links from copied or selected files</summary>
-      <description>If set to true, then Nautilus will show context menu items to create links from the copied or selected files.</description>
+      <description>If set to true, Files will show context menu items to create links from the copied or selected files.</description>
     </key>
     <key name="show-directory-item-counts" enum="org.gnome.nautilus.SpeedTradeoff">
       <aliases><alias value='local_only' target='local-only'/></aliases>
@@ -115,8 +115,8 @@
     </key>
     <key type="b" name="mouse-use-extra-buttons">
       <default>true</default>
-      <summary>Use extra mouse button events in Nautilus’ browser window</summary>
-      <description>For users with mice that have “Forward” and “Back” buttons, this key will determine if any action is taken inside of Nautilus when either is pressed.</description>
+      <summary>Use extra mouse button events in Files</summary>
+      <description>For users with mice that have “Forward” and “Back” buttons, this key will determine if any action is taken inside of Files when either is pressed.</description>
     </key>
     <key type="u" name="mouse-forward-button">
       <default>9</default>
@@ -181,7 +181,7 @@
     <key type="b" name="fts-enabled">
       <default>true</default>
       <summary>Whether to have full text search enabled by default when opening a new window/tab</summary>
-      <description>If set to true, then Nautilus will also match the file contents besides the name. This toggles the default active state, which can still be overridden in the search popover</description>
+      <description>If set to true, Files will also match the file contents besides the name. This toggles the default active state, which can still be overridden in the search popover</description>
     </key>
   </schema>
 
