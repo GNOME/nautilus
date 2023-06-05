@@ -337,26 +337,6 @@ metadata_hash_free (GHashTable *hash)
 }
 
 static gboolean
-_g_strv_equal (GStrv a,
-               GStrv b)
-{
-    if (g_strv_length (a) != g_strv_length (b))
-    {
-        return FALSE;
-    }
-
-    for (int i = 0; a[i] != NULL; i++)
-    {
-        if (strcmp (a[i], b[i]) != 0)
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-
-static gboolean
 metadata_hash_equal (GHashTable *hash1,
                      GHashTable *hash2)
 {
@@ -391,7 +371,7 @@ metadata_hash_equal (GHashTable *hash1,
         id = GPOINTER_TO_UINT (key1);
         if (id & METADATA_ID_IS_LIST_MASK)
         {
-            if (!_g_strv_equal ((char **) value1, (char **) value2))
+            if (!g_strv_equal ((const char * const *) value1, (const char * const *) value2))
             {
                 return FALSE;
             }
