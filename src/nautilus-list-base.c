@@ -1158,48 +1158,13 @@ real_remove_file (NautilusFilesView *files_view,
     }
 }
 
-static GQueue *
-convert_glist_to_queue (GList *list)
-{
-    GList *l;
-    GQueue *queue;
-
-    queue = g_queue_new ();
-    for (l = list; l != NULL; l = l->next)
-    {
-        g_queue_push_tail (queue, l->data);
-    }
-
-    return queue;
-}
-
-static GQueue *
-convert_files_to_items (NautilusListBase *self,
-                        GQueue           *files)
-{
-    GList *l;
-    GQueue *models;
-
-    models = g_queue_new ();
-    for (l = g_queue_peek_head_link (files); l != NULL; l = l->next)
-    {
-        NautilusViewItem *item;
-
-        item = nautilus_view_item_new (NAUTILUS_FILE (l->data));
-        g_queue_push_tail (models, item);
-    }
-
-    return models;
-}
-
 static void
 real_set_selection (NautilusFilesView *files_view,
                     GList             *selection)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GQueue) selection_files = NULL;
-    g_autoptr (GQueue) selection_items = NULL;
+    g_autoptr (GList) selection_items = NULL;
     g_autoptr (GtkBitset) update_set = NULL;
     g_autoptr (GtkBitset) new_selection_set = NULL;
     g_autoptr (GtkBitset) old_selection_set = NULL;
@@ -1210,18 +1175,17 @@ real_set_selection (NautilusFilesView *files_view,
     new_selection_set = gtk_bitset_new_empty ();
 
     /* Convert file list into set of model indices */
-    selection_files = convert_glist_to_queue (selection);
-    selection_items = nautilus_view_model_get_items_from_files (priv->model, selection_files);
-    for (GList *l = g_queue_peek_head_link (selection_items); l != NULL; l = l->next)
+    selection_items = nautilus_view_model_get_items_from_files (priv->model, selection);
+    for (GList *l = selection_items; l != NULL; l = l->next)
     {
         gtk_bitset_add (new_selection_set,
                         nautilus_view_model_get_index (priv->model, l->data));
     }
 
     /* Set focus on the first selected row. */
-    if (!g_queue_is_empty (selection_items))
+    if (selection_items != NULL)
     {
-        NautilusViewItem *item = g_queue_peek_head (selection_items);
+        NautilusViewItem *item = selection_items->data;
         set_focus_item (self, item);
     }
 
@@ -1498,11 +1462,9 @@ real_add_files (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GQueue) files_queue = NULL;
-    g_autoqueue (NautilusViewItem) items = NULL;
+    g_autolist (NautilusViewItem) items = NULL;
 
-    files_queue = convert_glist_to_queue (files);
-    items = convert_files_to_items (self, files_queue);
+    items = g_list_copy_deep (files, (GCopyFunc) nautilus_view_item_new, NULL);
     nautilus_view_model_add_items (priv->model, items);
 }
 

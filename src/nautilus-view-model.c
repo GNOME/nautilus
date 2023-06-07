@@ -366,26 +366,24 @@ nautilus_view_model_sort (NautilusViewModel *self)
     gtk_sort_list_model_set_sorter (self->sort_model, sorter);
 }
 
-GQueue *
+GList *
 nautilus_view_model_get_items_from_files (NautilusViewModel *self,
-                                          GQueue            *files)
+                                          GList             *files)
 {
-    GList *l;
-    GQueue *items;
+    GList *items = NULL;
 
-    items = g_queue_new ();
-    for (l = g_queue_peek_head_link (files); l != NULL; l = l->next)
+    for (GList *l = files; l != NULL; l = l->next)
     {
         NautilusViewItem *item;
 
         item = nautilus_view_model_get_item_from_file (self, l->data);
         if (item != NULL)
         {
-            g_queue_push_tail (items, item);
+            items = g_list_prepend (items, item);
         }
     }
 
-    return items;
+    return g_list_reverse (items);
 }
 
 NautilusViewItem *
@@ -456,16 +454,16 @@ splice_items_into_common_parent (NautilusViewModel *self,
 
 void
 nautilus_view_model_add_items (NautilusViewModel *self,
-                               GQueue            *items)
+                               GList             *items)
 {
     g_autoptr (GPtrArray) array = g_ptr_array_new ();
     g_autoptr (NautilusFile) previous_parent = NULL;
-    GList *l;
+    g_autoptr (GList) sorted_items = NULL;
     NautilusViewItem *item;
 
-    g_queue_sort (items, compare_data_func, self);
+    sorted_items = g_list_sort_with_data (g_list_copy (items), compare_data_func, self);
 
-    for (l = g_queue_peek_head_link (items); l != NULL; l = l->next)
+    for (GList *l = sorted_items; l != NULL; l = l->next)
     {
         g_autoptr (NautilusFile) parent = NULL;
 
