@@ -1640,17 +1640,22 @@ nautilus_window_constructed (GObject *self)
 
     setup_tab_view (window);
 
-    /* Lets not support GDK_ACTION_LINK for now.  This only impacts x11
-     * and on x11 we are using a hack in list-base to handle GDK_ACTION_LINK
-     * which we can not replicate here because we don't have access to the
-     * GtkDropTarget to check the actions on the GdkDrag.
+    /* Only allow tab DnD in Wayland.  We are using a hack in list-base to
+     * get the preferred action which we can not replicate here because we
+     * don't have access to the GtkDropTarget to check the actions on the GdkDrag.
+     * See: https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4982
      */
-    adw_tab_bar_setup_extra_drop_target (window->tab_bar,
-                                         GDK_ACTION_COPY | GDK_ACTION_MOVE,
-                                         (GType [2]) {GDK_TYPE_FILE_LIST, G_TYPE_STRING}, 2);
-    adw_tab_bar_set_extra_drag_preload (window->tab_bar, TRUE);
-    g_signal_connect (window->tab_bar, "extra-drag-value", G_CALLBACK (extra_drag_value_cb), NULL);
-    g_signal_connect (window->tab_bar, "extra-drag-drop", G_CALLBACK (extra_drag_drop_cb), NULL);
+#ifdef GDK_WINDOWING_WAYLAND
+    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        adw_tab_bar_setup_extra_drop_target (window->tab_bar,
+                                             GDK_ACTION_COPY | GDK_ACTION_MOVE,
+                                             (GType [2]) {GDK_TYPE_FILE_LIST, G_TYPE_STRING}, 2);
+        adw_tab_bar_set_extra_drag_preload (window->tab_bar, TRUE);
+        g_signal_connect (window->tab_bar, "extra-drag-value", G_CALLBACK (extra_drag_value_cb), NULL);
+        g_signal_connect (window->tab_bar, "extra-drag-drop", G_CALLBACK (extra_drag_drop_cb), NULL);
+    }
+#endif
 
     nautilus_window_set_up_sidebar (window);
 
