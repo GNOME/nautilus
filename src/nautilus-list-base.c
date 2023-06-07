@@ -1630,7 +1630,7 @@ real_preview_selection_event (NautilusFilesView *files_view,
     }
 
     gtk_selection_model_select_item (GTK_SELECTION_MODEL (priv->model), i, TRUE);
-    item = g_list_model_get_item (G_LIST_MODEL (priv->model), i);
+    item = get_view_item (G_LIST_MODEL (priv->model), i);
     set_focus_item (self, item);
 }
 
