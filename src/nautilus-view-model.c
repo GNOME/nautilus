@@ -461,6 +461,8 @@ nautilus_view_model_add_items (NautilusViewModel *self,
     g_autoptr (GList) sorted_items = NULL;
     NautilusViewItem *item;
 
+    /* The first added file becomes the initial focus and scroll anchor, so we
+     * need to sort items before adding them to the internal model. */
     sorted_items = g_list_sort_with_data (g_list_copy (items), compare_data_func, self);
 
     for (GList *l = sorted_items; l != NULL; l = l->next)
