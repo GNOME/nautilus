@@ -2172,6 +2172,17 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     GFile *old_location;
     g_autofree char *scroll_pos = NULL;
 
+    if (back)
+    {
+        /* While searching, maybe the user means to go "back" to no search. */
+        NautilusView *view = nautilus_window_slot_get_current_view (self);
+        if (nautilus_view_is_searching (view))
+        {
+            nautilus_window_slot_set_search_visible (self, FALSE);
+            return;
+        }
+    }
+
     list = back ? self->back_list : self->forward_list;
     len = g_list_length (list);
 
