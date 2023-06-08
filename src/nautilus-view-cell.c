@@ -27,6 +27,8 @@ struct _NautilusViewCellPrivate
     NautilusListBase *view; /* Unowned */
     NautilusViewItem *item; /* Owned reference */
 
+    guint icon_size;
+
     gboolean called_once;
 };
 
@@ -38,6 +40,7 @@ enum
     PROP_0,
     PROP_VIEW,
     PROP_ITEM,
+    PROP_ICON_SIZE,
     N_PROPS
 };
 
@@ -63,6 +66,12 @@ nautilus_view_cell_get_property (GObject    *object,
         case PROP_ITEM:
         {
             g_value_set_object (value, priv->item);
+        }
+        break;
+
+        case PROP_ICON_SIZE:
+        {
+            g_value_set_uint (value, priv->icon_size);
         }
         break;
 
@@ -93,6 +102,12 @@ nautilus_view_cell_set_property (GObject      *object,
         case PROP_ITEM:
         {
             g_set_object (&priv->item, g_value_get_object (value));
+        }
+        break;
+
+        case PROP_ICON_SIZE:
+        {
+            priv->icon_size = g_value_get_uint (value);
         }
         break;
 
@@ -138,6 +153,12 @@ nautilus_view_cell_class_init (NautilusViewCellClass *klass)
                                                  "", "",
                                                  NAUTILUS_TYPE_VIEW_ITEM,
                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
+                                                    "", "",
+                                                    NAUTILUS_LIST_ICON_SIZE_SMALL,
+                                                    NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
+                                                    NAUTILUS_GRID_ICON_SIZE_LARGE,
+                                                    G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, N_PROPS, properties);
 }

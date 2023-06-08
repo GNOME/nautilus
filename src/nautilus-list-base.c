@@ -62,6 +62,15 @@ struct _NautilusListBasePrivate
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
 
+enum
+{
+    PROP_0,
+    PROP_ICON_SIZE,
+    N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
+
 static const char *
 get_sort_attribute_from_sort_type (NautilusFileSortType sort_type)
 {
@@ -1794,6 +1803,29 @@ nautilus_list_base_focus (GtkWidget        *widget,
 }
 
 static void
+nautilus_list_base_get_property (GObject    *object,
+                                 guint       prop_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
+{
+    NautilusListBase *self = NAUTILUS_LIST_BASE (object);
+
+    switch (prop_id)
+    {
+        case PROP_ICON_SIZE:
+        {
+            g_value_set_uint (value, nautilus_list_base_get_icon_size (self));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_list_base_class_init (NautilusListBaseClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -1802,6 +1834,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     object_class->dispose = nautilus_list_base_dispose;
     object_class->finalize = nautilus_list_base_finalize;
+    object_class->get_property = nautilus_list_base_get_property;
 
     widget_class->focus = nautilus_list_base_focus;
 
@@ -1826,6 +1859,14 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
     files_view_class->preview_selection_event = real_preview_selection_event;
+
+    properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
+                                                    "", "",
+                                                    NAUTILUS_LIST_ICON_SIZE_SMALL,
+                                                    NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
+                                                    NAUTILUS_GRID_ICON_SIZE_LARGE,
+                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
