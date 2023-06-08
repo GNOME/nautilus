@@ -163,12 +163,11 @@ set_zoom_level (NautilusGridView *self,
     self->zoom_level = new_level;
 
     /* The zoom level may change how many captions are allowed. Update it before
-     * setting the icon size, under the assumption that NautilusGridCell
+     * notifying the icon size change, under the assumption that NautilusGridCell
      * updates captions whenever the icon size is set*/
     set_captions_from_preferences (self);
 
-    nautilus_list_base_set_icon_size (NAUTILUS_LIST_BASE (self),
-                                      get_icon_size_for_zoom_level (new_level));
+    g_object_notify (G_OBJECT (self), "icon-size");
 
     nautilus_files_view_update_toolbar_menus (NAUTILUS_FILES_VIEW (self));
 }
@@ -425,8 +424,7 @@ on_captions_preferences_changed (NautilusGridView *self)
 
     /* Hack: this relies on the assumption that NautilusGridCell updates
      * captions whenever the icon size is set (even if it's the same value). */
-    nautilus_list_base_set_icon_size (NAUTILUS_LIST_BASE (self),
-                                      get_icon_size_for_zoom_level (self->zoom_level));
+    g_object_notify (G_OBJECT (self), "icon-size");
 }
 
 static void
@@ -500,6 +498,10 @@ setup_cell (GtkSignalListItemFactory *factory,
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
     setup_cell_common (G_OBJECT (listitem), NAUTILUS_VIEW_CELL (cell));
     setup_cell_hover (NAUTILUS_VIEW_CELL (cell));
+
+    g_object_bind_property (self, "icon-size",
+                            cell, "icon-size",
+                            G_BINDING_SYNC_CREATE);
 
     nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);
 }

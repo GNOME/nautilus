@@ -490,8 +490,7 @@ set_zoom_level (NautilusListView *self,
 {
     self->zoom_level = new_level;
 
-    nautilus_list_base_set_icon_size (NAUTILUS_LIST_BASE (self),
-                                      get_icon_size_for_zoom_level (new_level));
+    g_object_notify (G_OBJECT (self), "icon-size");
 
     if (self->zoom_level == NAUTILUS_LIST_ZOOM_LEVEL_SMALL)
     {
@@ -938,6 +937,10 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     gtk_column_view_cell_set_child (listitem, GTK_WIDGET (cell));
     setup_cell_common (G_OBJECT (listitem), cell);
     setup_cell_hover_inner_target (cell, nautilus_name_cell_get_content (NAUTILUS_NAME_CELL (cell)));
+
+    g_object_bind_property (self, "icon-size",
+                            cell, "icon-size",
+                            G_BINDING_SYNC_CREATE);
 
     nautilus_name_cell_set_path (NAUTILUS_NAME_CELL (cell),
                                  self->path_attribute_q,

@@ -206,25 +206,6 @@ update_sort_order_from_metadata_and_preferences (NautilusListBase *self)
 }
 
 void
-nautilus_list_base_set_icon_size (NautilusListBase *self,
-                                  gint              icon_size)
-{
-    GListModel *model;
-    guint n_items;
-
-    model = G_LIST_MODEL (nautilus_list_base_get_model (self));
-
-    n_items = g_list_model_get_n_items (model);
-    for (guint i = 0; i < n_items; i++)
-    {
-        g_autoptr (NautilusViewItem) current_item = NULL;
-
-        current_item = get_view_item (model, i);
-        nautilus_view_item_set_icon_size (current_item, icon_size);
-    }
-}
-
-void
 set_focus_item (NautilusListBase *self,
                 NautilusViewItem *item)
 {
@@ -1204,8 +1185,7 @@ convert_files_to_items (NautilusListBase *self,
     {
         NautilusViewItem *item;
 
-        item = nautilus_view_item_new (NAUTILUS_FILE (l->data),
-                                       nautilus_list_base_get_icon_size (self));
+        item = nautilus_view_item_new (NAUTILUS_FILE (l->data));
         g_queue_push_tail (models, item);
     }
 

@@ -17,13 +17,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusViewItem, nautilus_view_item, NAUTILUS, VIEW_ITEM, GObject)
 
-NautilusViewItem * nautilus_view_item_new           (NautilusFile *file,
-                                                     guint         icon_size);
+NautilusViewItem * nautilus_view_item_new           (NautilusFile *file);
 
-void               nautilus_view_item_set_icon_size (NautilusViewItem *self,
-                                                     guint             icon_size);
-
-guint              nautilus_view_item_get_icon_size (NautilusViewItem *self);
 void               nautilus_view_item_set_cut       (NautilusViewItem *self,
                                                      gboolean          is_cut);
 void               nautilus_view_item_set_drag_accept (NautilusViewItem *self,

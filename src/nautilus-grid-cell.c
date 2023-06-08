@@ -39,7 +39,7 @@ update_icon (NautilusGridCell *self)
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
-    icon_size = nautilus_view_item_get_icon_size (item);
+    g_object_get (self, "icon-size", &icon_size, NULL);
     scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
 
@@ -157,8 +157,16 @@ on_file_changed (NautilusGridCell *self)
 }
 
 static void
-on_item_size_changed (NautilusGridCell *self)
+on_icon_size_changed (NautilusGridCell *self)
 {
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+
+    if (item == NULL)
+    {
+        /* Cell is not bound to an item yet. Do nothing. */
+        return NULL;
+    }
+
     update_icon (self);
     update_captions (self);
 }
@@ -237,13 +245,13 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    g_signal_connect (self, "notify::icon-size",
+                      G_CALLBACK (on_icon_size_changed), NULL);
     g_signal_connect (self->label, "query-tooltip",
                       G_CALLBACK (on_label_query_tooltip), NULL);
 
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::icon-size",
-                                    (GCallback) on_item_size_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
                                     (GCallback) on_item_is_cut_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",

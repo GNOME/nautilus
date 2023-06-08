@@ -18,8 +18,6 @@ G_BEGIN_DECLS
 
 /* Methods */
 NautilusViewModel *nautilus_list_base_get_model     (NautilusListBase *self);
-void               nautilus_list_base_set_icon_size (NautilusListBase *self,
-                                                            gint                    icon_size);
 void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 
 /* Shareable helpers */

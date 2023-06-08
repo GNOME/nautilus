@@ -9,7 +9,6 @@
 struct _NautilusViewItem
 {
     GObject parent_instance;
-    guint icon_size;
     gboolean is_cut;
     gboolean drag_accept;
     gboolean is_loading;
@@ -23,7 +22,6 @@ enum
 {
     PROP_0,
     PROP_FILE,
-    PROP_ICON_SIZE,
     PROP_IS_CUT,
     PROP_DRAG_ACCEPT,
     PROP_IS_LOADING,
@@ -76,12 +74,6 @@ nautilus_view_item_get_property (GObject    *object,
         }
         break;
 
-        case PROP_ICON_SIZE:
-        {
-            g_value_set_int (value, self->icon_size);
-        }
-        break;
-
         case PROP_IS_CUT:
         {
             g_value_set_boolean (value, self->is_cut);
@@ -120,12 +112,6 @@ nautilus_view_item_set_property (GObject      *object,
         case PROP_FILE:
         {
             self->file = g_value_dup_object (value);
-        }
-        break;
-
-        case PROP_ICON_SIZE:
-        {
-            self->icon_size = g_value_get_int (value);
         }
         break;
 
@@ -169,12 +155,6 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
     object_class->get_property = nautilus_view_item_get_property;
     object_class->set_property = nautilus_view_item_set_property;
 
-    properties[PROP_ICON_SIZE] = g_param_spec_int ("icon-size",
-                                                   "", "",
-                                                   NAUTILUS_LIST_ICON_SIZE_SMALL,
-                                                   NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
-                                                   NAUTILUS_GRID_ICON_SIZE_LARGE,
-                                                   G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS);
     properties[PROP_IS_CUT] = g_param_spec_boolean ("is-cut",
                                                     "", "",
                                                     FALSE,
@@ -203,30 +183,11 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
 }
 
 NautilusViewItem *
-nautilus_view_item_new (NautilusFile *file,
-                        guint         icon_size)
+nautilus_view_item_new (NautilusFile *file)
 {
     return g_object_new (NAUTILUS_TYPE_VIEW_ITEM,
                          "file", file,
-                         "icon-size", icon_size,
                          NULL);
-}
-
-guint
-nautilus_view_item_get_icon_size (NautilusViewItem *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (self), -1);
-
-    return self->icon_size;
-}
-
-void
-nautilus_view_item_set_icon_size (NautilusViewItem *self,
-                                  guint             icon_size)
-{
-    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
-
-    g_object_set (self, "icon-size", icon_size, NULL);
 }
 
 void

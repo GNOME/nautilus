@@ -142,7 +142,7 @@ update_icon (NautilusNameCell *self)
     g_return_if_fail (item != NULL);
 
     file = nautilus_view_item_get_file (item);
-    icon_size = nautilus_view_item_get_icon_size (item);
+    g_object_get (self, "icon-size", &icon_size, NULL);
     scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
 
@@ -229,8 +229,16 @@ on_file_changed (NautilusNameCell *self)
 }
 
 static void
-on_item_size_changed (NautilusNameCell *self)
+on_icon_size_changed (NautilusNameCell *self)
 {
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+
+    if (item == NULL)
+    {
+        /* Cell is not bound to an item yet. Do nothing. */
+        return NULL;
+    }
+
     update_icon (self);
 }
 
@@ -320,10 +328,11 @@ nautilus_name_cell_init (NautilusNameCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    g_signal_connect (self, "notify::icon-size",
+                      G_CALLBACK (on_icon_size_changed), NULL);
+
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::icon-size",
-                                    (GCallback) on_item_size_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::drag-accept",
                                     (GCallback) on_item_drag_accept_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
