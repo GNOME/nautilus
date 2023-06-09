@@ -199,39 +199,20 @@
       </object>
     </child>
     <child>
-      <object class="GtkActionBar" id="actionbar">
+      <object class="GtkSeparator"/>
+    </child>
+    <child>
+      <object class="GtkBox" id="actionbar">
         <property name="hexpand">1</property>
         <style>
-          <class name="background"/>
+          <class name="toolbar"/>
         </style>
         <child>
-          <object class="GtkLabel">
-            <property name="hexpand">1</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">Connect to _Server</property>
-            <property name="mnemonic-widget">address_entry</property>
-            <property name="use-underline">1</property>
-            <attributes>
-              <attribute name="weight" value="bold"></attribute>
-            </attributes>
-          </object>
-        </child>
-        <child type="end">
-          <object class="GtkButton" id="connect_button">
-            <property name="label" translatable="yes">Con_nect</property>
-            <property name="use-underline">1</property>
-            <property name="sensitive">0</property>
-            <property name="valign">3</property>
-            <signal name="clicked" handler="on_connect_button_clicked" object="NautilusGtkPlacesView" swapped="yes"/>
-          </object>
-        </child>
-        <child type="end">
           <object class="GtkBox">
-            <property name="hexpand">1</property>
             <child>
               <object class="GtkEntry" id="address_entry">
-                <property name="hexpand">1</property>
-                <property name="width-chars">20</property>
+                <property name="width-chars">10</property>
+                <property name="max-width-chars">34</property>
                 <property name="placeholder-text" translatable="yes">Enter server address…</property>
                 <property name="secondary-icon-name">dialog-question-symbolic</property>
                 <property name="completion">address_entry_completion</property>
@@ -253,6 +234,16 @@
             <style>
               <class name="linked"/>
             </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="connect_button">
+            <property name="label" translatable="yes">Con_nect</property>
+            <property name="use-underline">1</property>
+            <property name="can-shrink">true</property>
+            <property name="sensitive">0</property>
+            <property name="valign">3</property>
+            <signal name="clicked" handler="on_connect_button_clicked" object="NautilusGtkPlacesView" swapped="yes"/>
           </object>
         </child>
       </object>
