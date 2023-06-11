@@ -44,6 +44,8 @@ struct _NautilusTagManager
     GHashTable *starred_file_uris;
     GFile *home;
 
+    GList *pending_changed_files;
+
     GCancellable *cancellable;
 };
 
@@ -217,7 +219,6 @@ on_get_starred_files_cursor_callback (GObject      *object,
     const gchar *url;
     gboolean success;
     NautilusTagManager *self;
-    GList *changed_files;
     NautilusFile *file;
 
     cursor = TRACKER_SPARQL_CURSOR (object);
@@ -233,6 +234,12 @@ on_get_starred_files_cursor_callback (GObject      *object,
             g_warning ("Error on getting all tags cursor callback: %s", error->message);
         }
 
+        if (self->pending_changed_files != NULL)
+        {
+            g_signal_emit_by_name (self, "starred-changed", self->pending_changed_files);
+            g_clear_pointer (&self->pending_changed_files, nautilus_file_list_free);
+        }
+
         g_clear_object (&cursor);
         return;
     }
@@ -245,11 +252,7 @@ on_get_starred_files_cursor_callback (GObject      *object,
 
     if (file)
     {
-        changed_files = g_list_prepend (NULL, file);
-
-        g_signal_emit_by_name (self, "starred-changed", changed_files);
-
-        nautilus_file_list_free (changed_files);
+        self->pending_changed_files = g_list_prepend (self->pending_changed_files, file);
     }
     else
     {
@@ -542,6 +545,7 @@ nautilus_tag_manager_finalize (GObject *object)
     g_clear_object (&self->db);
     g_clear_object (&self->query_file_is_starred);
     g_clear_object (&self->query_starred_files);
+    g_clear_pointer (&self->pending_changed_files, nautilus_file_list_free);
 
     g_hash_table_destroy (self->starred_file_uris);
     g_clear_object (&self->home);
