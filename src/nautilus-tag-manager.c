@@ -184,29 +184,30 @@ on_update_callback (GObject      *object,
  * nautilus_tag_manager_get_starred_files:
  * @self: The tag manager singleton
  *
- * Returns: (element-type gchar*) (transfer container): A list of the starred urls.
+ * Returns: (element-type gchar*) (transfer full): A list of the starred NautilusFile.
  */
 GList *
 nautilus_tag_manager_get_starred_files (NautilusTagManager *self)
 {
     GHashTableIter starred_iter;
     gchar *starred_uri;
-    GList *starred_file_uris = NULL;
+    GList *starred_files = NULL;
 
     g_hash_table_iter_init (&starred_iter, self->starred_file_uris);
     while (g_hash_table_iter_next (&starred_iter, (gpointer *) &starred_uri, NULL))
     {
-        g_autoptr (GFile) file = g_file_new_for_uri (starred_uri);
+        g_autoptr (GFile) location = g_file_new_for_uri (starred_uri);
+        NautilusFile *file = nautilus_file_get (location);
 
-        /* Skip files ouside $HOME, because we don't support starring these yet.
+        /* Skip files outside $HOME, because we don't support starring these yet.
          * See comment on nautilus_tag_manager_can_star_contents() */
-        if (g_file_has_prefix (file, self->home))
+        if (g_file_has_prefix (location, self->home))
         {
-            starred_file_uris = g_list_prepend (starred_file_uris, starred_uri);
+            starred_files = g_list_prepend (starred_files, file);
         }
     }
 
-    return starred_file_uris;
+    return starred_files;
 }
 
 static void

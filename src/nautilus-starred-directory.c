@@ -98,14 +98,12 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
     NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
     GList *l;
     GList *tmp_l;
-    g_autoptr (GList) new_starred_files = NULL;
+    g_autolist (NautilusFile) new_starred_files = NULL;
     GList *monitor_list;
     FavoriteMonitor *monitor;
-    NautilusFile *file;
     GHashTable *uri_table;
     GList *files_added;
     GList *files_removed;
-    gchar *uri;
 
     files_added = NULL;
     files_removed = NULL;
@@ -124,10 +122,11 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
 
     for (l = new_starred_files; l != NULL; l = l->next)
     {
-        if (!g_hash_table_contains (uri_table, l->data))
-        {
-            file = nautilus_file_get_by_uri ((gchar *) l->data);
+        NautilusFile *file = l->data;
+        g_autofree char *uri = nautilus_file_get_uri (file);
 
+        if (!g_hash_table_contains (uri_table, uri))
+        {
             for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
             {
                 monitor = monitor_list->data;
@@ -138,14 +137,14 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
 
             g_signal_connect (file, "changed", G_CALLBACK (file_changed), self);
 
-            files_added = g_list_prepend (files_added, file);
+            files_added = g_list_prepend (files_added, nautilus_file_ref (file));
         }
     }
 
     l = self->files;
     while (l != NULL)
     {
-        uri = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
+        g_autofree char *uri = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
 
         if (!nautilus_tag_manager_file_is_starred (tag_manager, uri))
         {
@@ -170,8 +169,6 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
         {
             l = l->next;
         }
-
-        g_free (uri);
     }
 
     if (files_added)
@@ -441,8 +438,7 @@ real_get_file_list (NautilusDirectory *directory)
 static void
 nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
 {
-    g_autoptr (GList) starred_files = NULL;
-    NautilusFile *file;
+    g_autolist (NautilusFile) starred_files = NULL;
     GList *l;
     GList *file_list;
     FavoriteMonitor *monitor;
@@ -454,7 +450,7 @@ nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
 
     for (l = starred_files; l != NULL; l = l->next)
     {
-        file = nautilus_file_get_by_uri ((gchar *) l->data);
+        NautilusFile *file = l->data;
 
         g_signal_connect (file, "changed", G_CALLBACK (file_changed), self);
 
@@ -466,7 +462,7 @@ nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
             nautilus_file_monitor_add (file, monitor, monitor->monitor_attributes);
         }
 
-        file_list = g_list_prepend (file_list, file);
+        file_list = g_list_prepend (file_list, nautilus_file_ref (file));
     }
 
     nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (self), file_list);
