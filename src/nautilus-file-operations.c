@@ -4357,32 +4357,30 @@ make_file_name_valid_for_dest_fs (char       *filename,
 }
 
 static GFile *
-get_unique_target_file (GFile      *src,
-                        GFile      *dest_dir,
-                        gboolean    same_fs,
-                        const char *dest_fs_type,
-                        int         count)
+get_unique_target_file (GFile        *src,
+                        GFile        *dest_dir,
+                        GCancellable *cancellable,
+                        gboolean      same_fs,
+                        const char   *dest_fs_type,
+                        int           count)
 {
     const char *editname, *end;
     char *basename, *new_name;
     GFileInfo *info;
     GFile *dest;
     int max_length;
-    NautilusFile *file;
-    gboolean ignore_extension;
+    gboolean ignore_extension = FALSE;
 
     max_length = nautilus_get_max_child_name_length_for_location (dest_dir);
 
-    file = nautilus_file_get (src);
-    ignore_extension = nautilus_file_is_directory (file);
-    nautilus_file_unref (file);
-
     dest = NULL;
     info = g_file_query_info (src,
-                              G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME,
-                              0, NULL, NULL);
+                              G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME ","
+                              G_FILE_ATTRIBUTE_STANDARD_TYPE,
+                              0, cancellable, NULL);
     if (info != NULL)
     {
+        ignore_extension = (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY);
         editname = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME);
 
         if (editname != NULL)
@@ -5416,7 +5414,7 @@ copy_move_file (CopyMoveJob   *copy_job,
 
     if (unique_names)
     {
-        dest = get_unique_target_file (src, dest_dir, same_fs, *dest_fs_type, unique_name_nr++);
+        dest = get_unique_target_file (src, dest_dir, job->cancellable, same_fs, *dest_fs_type, unique_name_nr++);
     }
     else if (copy_job->target_name != NULL)
     {
@@ -5622,7 +5620,7 @@ retry:
 
         if (unique_names)
         {
-            new_dest = get_unique_target_file (src, dest_dir, same_fs, *dest_fs_type, unique_name_nr);
+            new_dest = get_unique_target_file (src, dest_dir, job->cancellable, same_fs, *dest_fs_type, unique_name_nr);
         }
         else
         {
@@ -5660,7 +5658,7 @@ retry:
         if (unique_names)
         {
             g_object_unref (dest);
-            dest = get_unique_target_file (src, dest_dir, same_fs, *dest_fs_type, unique_name_nr++);
+            dest = get_unique_target_file (src, dest_dir, job->cancellable, same_fs, *dest_fs_type, unique_name_nr++);
             goto retry;
         }
 
@@ -7853,9 +7851,11 @@ retry:
                 filename_base = filename;
                 if (job->src != NULL)
                 {
-                    g_autoptr (NautilusFile) file = NULL;
-                    file = nautilus_file_get (job->src);
-                    if (!nautilus_file_is_directory (file))
+                    GFileType file_type;
+                    file_type = g_file_query_file_type (job->src,
+                                                        G_FILE_QUERY_INFO_NONE,
+                                                        common->cancellable);
+                    if (file_type != G_FILE_TYPE_DIRECTORY)
                     {
                         filename_base = eel_filename_strip_extension (filename);
                     }
@@ -7906,10 +7906,11 @@ retry:
             filename_base = filename;
             if (job->src != NULL)
             {
-                g_autoptr (NautilusFile) file = NULL;
-
-                file = nautilus_file_get (job->src);
-                if (!nautilus_file_is_directory (file))
+                GFileType file_type;
+                file_type = g_file_query_file_type (job->src,
+                                                    G_FILE_QUERY_INFO_NONE,
+                                                    common->cancellable);
+                if (file_type != G_FILE_TYPE_DIRECTORY)
                 {
                     filename_base = eel_filename_strip_extension (filename);
                 }
