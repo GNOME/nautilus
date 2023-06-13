@@ -320,6 +320,19 @@ static void nautilus_file_operations_move (GTask        *task,
                                            gpointer      task_data,
                                            GCancellable *cancellable);
 
+static gboolean
+is_dir (GFile        *file,
+        GCancellable *cancellable)
+{
+    GFileType file_type;
+
+    file_type = g_file_query_file_type (file,
+                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                        cancellable);
+
+    return file_type == G_FILE_TYPE_DIRECTORY;
+}
+
 /* keep in time with get_formatted_time ()
  *
  * This counts and outputs the number of “time units”
@@ -2032,7 +2045,6 @@ file_deleted_callback (GFile    *file,
     CommonJob *job;
     SourceInfo *source_info;
     TransferInfo *transfer_info;
-    GFileType file_type;
     char *primary;
     char *secondary;
     char *details = NULL;
@@ -2063,13 +2075,9 @@ file_deleted_callback (GFile    *file,
 
     primary = g_strdup (_("Error while deleting."));
 
-    file_type = g_file_query_file_type (file,
-                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                        job->cancellable);
-
     basename = get_basename (file);
 
-    if (file_type == G_FILE_TYPE_DIRECTORY)
+    if (is_dir (file, job->cancellable))
     {
         secondary = IS_IO_ERROR (error, PERMISSION_DENIED) ?
                     g_strdup_printf (_("You do not have sufficient permissions "
@@ -4592,18 +4600,6 @@ has_fs_id (GFile      *file,
     return res;
 }
 
-static gboolean
-is_dir (GFile *file)
-{
-    GFileType file_type;
-
-    file_type = g_file_query_file_type (file,
-                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                        NULL);
-
-    return file_type == G_FILE_TYPE_DIRECTORY;
-}
-
 static GFile *
 map_possibly_volatile_file_to_real (GFile         *volatile_file,
                                     GCancellable  *cancellable,
@@ -5656,8 +5652,8 @@ retry:
         gboolean is_merge;
         FileConflictResponse *response;
 
-        source_is_directory = is_dir (src);
-        destination_is_directory = is_dir (dest);
+        source_is_directory = is_dir (src, job->cancellable);
+        destination_is_directory = is_dir (dest, job->cancellable);
 
         g_error_free (error);
 
@@ -6413,8 +6409,8 @@ retry:
         gboolean is_merge;
         FileConflictResponse *response;
 
-        source_is_directory = is_dir (src);
-        destination_is_directory = is_dir (dest);
+        source_is_directory = is_dir (src, job->cancellable);
+        destination_is_directory = is_dir (dest, job->cancellable);
 
         g_error_free (error);
 
