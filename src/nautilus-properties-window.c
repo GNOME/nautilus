@@ -83,7 +83,7 @@ struct _NautilusPropertiesWindow
 
     AdwWindowTitle *window_title;
 
-    GtkStack *page_stack;
+    AdwNavigationView *nav_view;
 
     /* Basic page */
 
@@ -528,7 +528,7 @@ navigate_main_page (NautilusPropertiesWindow *self,
                     GParamSpec               *params,
                     GtkWidget                *widget)
 {
-    gtk_stack_set_visible_child_name (self->page_stack, "main");
+    adw_navigation_view_pop_to_tag (self->nav_view, "main");
 }
 
 static void
@@ -536,7 +536,7 @@ navigate_permissions_page (NautilusPropertiesWindow *self,
                            GParamSpec               *params,
                            GtkWidget                *widget)
 {
-    gtk_stack_set_visible_child_name (self->page_stack, "permissions");
+    adw_navigation_view_push_by_tag (self->nav_view, "permissions");
 }
 
 static void
@@ -945,7 +945,7 @@ navigate_extension_model_page (AdwPreferencesRow        *row,
 
     adw_window_title_set_title (self->extension_title, adw_preferences_row_get_title (row));
 
-    gtk_stack_set_visible_child_name (self->page_stack, "extension");
+    adw_navigation_view_push_by_tag (self->nav_view, "extension");
 }
 
 static GtkWidget *
@@ -4302,7 +4302,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, page_stack);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, nav_view);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button);

@@ -7,12 +7,10 @@
     <property name="modal">True</property>
     <property name="default-width">480</property>
     <child>
-      <object class="GtkStack" id="page_stack">
-        <property name="hexpand">True</property>
-        <property name="transition-type">over-left-right</property>
+      <object class="AdwNavigationView" id="nav_view">
         <child>
-          <object class="GtkStackPage">
-            <property name="name">main</property>
+          <object class="AdwNavigationPage">
+            <property name="tag">main</property>
             <property name="child">
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
@@ -672,8 +670,8 @@
           </object>
         </child>
         <child>
-          <object class="GtkStackPage">
-            <property name="name">permissions</property>
+          <object class="AdwNavigationPage">
+            <property name="tag">permissions</property>
             <property name="child">
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
@@ -929,15 +927,11 @@
           </object>
         </child>
         <child>
-          <object class="GtkStackPage">
-            <property name="name">extension</property>
+          <object class="AdwNavigationPage">
+            <property name="tag">extension</property>
             <property name="child">
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <style>
-                  <class name="background"/>
-                </style>
-                <child>
+              <object class="AdwToolbarView">
+                <child type="top">
                   <object class="GtkHeaderBar">
                     <property name="title-widget">
                       <object class="AdwWindowTitle" id="extension_title"/>
@@ -950,7 +944,7 @@
                     </child>
                   </object>
                 </child>
-                <child>
+                <property name="content">
                   <object class="GtkScrolledWindow">
                     <property name="hscrollbar-policy">never</property>
                     <property name="vexpand">true</property>
@@ -972,7 +966,7 @@
                       </object>
                     </property>
                   </object>
-                </child>
+                </property>
               </object>
             </property>
           </object>
