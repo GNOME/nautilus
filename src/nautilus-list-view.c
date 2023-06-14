@@ -574,6 +574,8 @@ real_begin_loading (NautilusFilesView *files_view)
         self->expand_as_a_tree = FALSE;
     }
 
+    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
+
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
 }
@@ -1213,7 +1215,6 @@ nautilus_list_view_init (NautilusListView *self)
 
     setup_view_columns (self);
 
-    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
     directories_sorter = gtk_custom_sorter_new (sort_directories_func, &self->directories_first, NULL);
 
     sorter = gtk_multi_sorter_new ();

@@ -56,6 +56,16 @@ nautilus_grid_view_sort (gconstpointer a,
 }
 
 static void
+real_begin_loading (NautilusFilesView *files_view)
+{
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_view);
+
+    NAUTILUS_FILES_VIEW_CLASS (nautilus_grid_view_parent_class)->begin_loading (files_view);
+
+    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
+}
+
+static void
 real_bump_zoom_level (NautilusFilesView *files_view,
                       int                zoom_increment)
 {
@@ -557,6 +567,7 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     object_class->dispose = dispose;
     object_class->finalize = finalize;
 
+    files_view_class->begin_loading = real_begin_loading;
     files_view_class->bump_zoom_level = real_bump_zoom_level;
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
