@@ -2258,11 +2258,11 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
     g_object_ref (location);
     current_pos = NULL;
 
-    if (self->new_content_view)
+    if (self->content_view)
     {
         selection = nautilus_view_get_selection (self->content_view);
 
-        if (NAUTILUS_IS_FILES_VIEW (self->new_content_view))
+        if (NAUTILUS_IS_FILES_VIEW (self->content_view))
         {
             current_pos = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
         }
