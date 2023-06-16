@@ -42,9 +42,6 @@ struct _NautilusListView
     gboolean directories_first;
     gboolean expand_as_a_tree;
 
-    GQuark path_attribute_q;
-    GFile *file_path_base_location;
-
     GtkColumnViewColumn *star_column;
     GtkWidget *column_editor;
     GHashTable *factory_to_column_map;
@@ -295,32 +292,6 @@ update_columns_settings_from_metadata_and_preferences (NautilusListView *self)
     apply_columns_settings (self, column_order, visible_columns);
 }
 
-static GFile *
-get_base_location (NautilusListView *self)
-{
-    NautilusDirectory *directory;
-    GFile *base_location = NULL;
-
-    directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self));
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
-    {
-        g_autoptr (NautilusQuery) query = NULL;
-        g_autoptr (GFile) location = NULL;
-
-        query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-        location = nautilus_query_get_location (query);
-
-        if (!nautilus_is_recent_directory (location) &&
-            !nautilus_is_starred_directory (location) &&
-            !nautilus_is_trash_directory (location))
-        {
-            base_location = g_steal_pointer (&location);
-        }
-    }
-
-    return base_location;
-}
-
 static void
 on_column_view_item_activated (GtkGridView *grid_view,
                                guint        position,
@@ -545,21 +516,11 @@ real_begin_loading (NautilusFilesView *files_view)
     self->expand_as_a_tree = g_settings_get_boolean (nautilus_list_view_preferences,
                                                      NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
 
-    self->path_attribute_q = 0;
-    g_clear_object (&self->file_path_base_location);
     file = nautilus_files_view_get_directory_as_file (files_view);
-    if (nautilus_file_is_in_trash (file))
+    if (nautilus_file_is_in_search (file) ||
+        nautilus_file_is_in_recent (file) ||
+        nautilus_file_is_in_starred (file))
     {
-        self->path_attribute_q = g_quark_from_string ("trash_orig_path");
-        self->file_path_base_location = get_base_location (self);
-    }
-    else if (nautilus_file_is_in_search (file) ||
-             nautilus_file_is_in_recent (file) ||
-             nautilus_file_is_in_starred (file))
-    {
-        self->path_attribute_q = g_quark_from_string ("where");
-        self->file_path_base_location = get_base_location (self);
-
         /* Forcefully disabling tree in these special locations because this
          * view and its model currently don't expect the same file appearing
          * more than once.
@@ -943,9 +904,6 @@ setup_name_cell (GtkSignalListItemFactory *factory,
                             cell, "icon-size",
                             G_BINDING_SYNC_CREATE);
 
-    nautilus_view_cell_set_path (cell,
-                                 self->path_attribute_q,
-                                 self->file_path_base_location);
     if (NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self))))
     {
         nautilus_name_cell_show_snippet (NAUTILUS_NAME_CELL (cell));
@@ -1266,7 +1224,6 @@ nautilus_list_view_dispose (GObject *object)
                                           nautilus_list_view_reload,
                                           self);
 
-    g_clear_object (&self->file_path_base_location);
     g_clear_pointer (&self->factory_to_column_map, g_hash_table_destroy);
 
     g_signal_handlers_disconnect_by_func (gtk_column_view_get_sorter (self->view_ui), on_sorter_changed, self);

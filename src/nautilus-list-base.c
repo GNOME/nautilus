@@ -15,8 +15,10 @@
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-metadata.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-search-directory.h"
 #include "nautilus-thumbnails.h"
 
 #ifdef GDK_WINDOWING_X11
@@ -42,6 +44,9 @@ struct _NautilusListBasePrivate
     NautilusViewModel *model;
 
     GList *cut_files;
+
+    GQuark path_attribute_q;
+    GFile *file_path_base_location;
 
     guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
@@ -910,9 +915,15 @@ void
 setup_cell_common (GObject          *listitem,
                    NautilusViewCell *cell)
 {
+    NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkExpression *expression;
     GtkEventController *controller;
     GtkDropTarget *drop_target;
+
+    nautilus_view_cell_set_path (cell,
+                                 priv->path_attribute_q,
+                                 priv->file_path_base_location);
 
     expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
     expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
@@ -995,11 +1006,38 @@ typedef struct
     GQuark attribute_q;
 } NautilusListBaseSortData;
 
+static GFile *
+get_base_location (NautilusListBase *self)
+{
+    NautilusDirectory *directory;
+    GFile *base_location = NULL;
+
+    directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self));
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
+    {
+        g_autoptr (NautilusQuery) query = NULL;
+        g_autoptr (GFile) location = NULL;
+
+        query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+        location = nautilus_query_get_location (query);
+
+        if (!nautilus_is_recent_directory (location) &&
+            !nautilus_is_starred_directory (location) &&
+            !nautilus_is_trash_directory (location))
+        {
+            base_location = g_steal_pointer (&location);
+        }
+    }
+
+    return base_location;
+}
+
 static void
 real_begin_loading (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    NautilusFile *file;
 
     /* Temporary workaround */
     rubberband_set_state (self, TRUE);
@@ -1028,6 +1066,22 @@ real_begin_loading (NautilusFilesView *files_view)
         priv->drag_view_action = get_preferred_action (nautilus_files_view_get_directory_as_file (files_view),
                                                        gtk_drop_target_get_value (priv->view_drop_target));
         priv->drag_item_action = 0;
+    }
+
+    priv->path_attribute_q = 0;
+    g_clear_object (&priv->file_path_base_location);
+    file = nautilus_files_view_get_directory_as_file (files_view);
+    if (nautilus_file_is_in_trash (file))
+    {
+        priv->path_attribute_q = g_quark_from_string ("trash_orig_path");
+        priv->file_path_base_location = get_base_location (self);
+    }
+    else if (nautilus_file_is_in_search (file) ||
+             nautilus_file_is_in_recent (file) ||
+             nautilus_file_is_in_starred (file))
+    {
+        priv->path_attribute_q = g_quark_from_string ("where");
+        priv->file_path_base_location = get_base_location (self);
     }
 }
 
@@ -1617,6 +1671,8 @@ nautilus_list_base_dispose (GObject *object)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (object);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    g_clear_object (&priv->file_path_base_location);
 
     g_clear_handle_id (&priv->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&priv->prioritize_thumbnailing_handle_id, g_source_remove);
