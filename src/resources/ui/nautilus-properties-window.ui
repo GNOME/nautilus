@@ -12,12 +12,19 @@
           <object class="AdwNavigationPage">
             <property name="tag">main</property>
             <property name="child">
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="AdwHeaderBar"/>
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <child type="start">
+                      <object class="GtkButton" id="star_button">
+                        <property name="visible">false</property>
+                        <property name="valign">start</property>
+                        <signal name="clicked" handler="star_clicked" swapped="yes"/>
+                      </object>
+                    </child>
+                  </object>
                 </child>
-                <child>
+                <property name="content">
                   <object class="GtkScrolledWindow">
                     <property name="hscrollbar-policy">never</property>
                     <property name="vexpand">true</property>
@@ -25,7 +32,6 @@
                     <property name="propagate-natural-height">true</property>
                     <property name="child">
                       <object class="AdwClamp">
-                        <property name="margin-top">18</property>
                         <property name="margin-bottom">18</property>
                         <property name="margin-start">18</property>
                         <property name="margin-end">18</property>
@@ -65,17 +71,6 @@
                                         </property>
                                       </object>
                                     </child>
-                                  </object>
-                                </child>
-                                <child type="end">
-                                  <object class="GtkButton" id="star_button">
-                                    <property name="visible">false</property>
-                                    <property name="valign">start</property>
-                                    <signal name="clicked" handler="star_clicked" swapped="yes"/>
-                                    <style>
-                                      <class name="circular"/>
-                                      <class name="flat"/>
-                                    </style>
                                   </object>
                                 </child>
                               </object>
@@ -661,7 +656,7 @@
                       </object>
                     </property>
                   </object>
-                </child>
+                </property>
               </object>
             </property>
           </object>
@@ -671,12 +666,11 @@
             <property name="tag">permissions</property>
             <property name="title" translatable="yes">Set Custom Permissions</property>
             <property name="child">
-              <object class="GtkBox">
-              <property name="orientation">vertical</property>
-                <child>
+              <object class="AdwToolbarView">
+                <child type="top">
                   <object class="AdwHeaderBar"/>
                 </child>
-                <child>
+                <property name="content">
                   <object class="GtkScrolledWindow">
                     <property name="hscrollbar-policy">never</property>
                     <property name="vexpand">true</property>
@@ -904,7 +898,7 @@
                       </object>
                     </property>
                   </object>
-                </child>
+                </property>
               </object>
             </property>
           </object>
