@@ -15,7 +15,7 @@
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkHeaderBar"/>
+                  <object class="AdwHeaderBar"/>
                 </child>
                 <child>
                   <object class="GtkScrolledWindow">
@@ -29,9 +29,6 @@
                         <property name="margin-bottom">18</property>
                         <property name="margin-start">18</property>
                         <property name="margin-end">18</property>
-                        <style>
-                          <class name="background"/>
-                        </style>
                         <property name="child">
                           <object class="GtkBox" id="basic_box">
                             <property name="orientation">vertical</property>
@@ -672,26 +669,12 @@
         <child>
           <object class="AdwNavigationPage">
             <property name="tag">permissions</property>
+            <property name="title" translatable="yes">Set Custom Permissions</property>
             <property name="child">
               <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <style>
-                  <class name="background"/>
-                </style>
+              <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkHeaderBar">
-                    <property name="title-widget">
-                      <object class="AdwWindowTitle">
-                        <property name="title" translatable="yes">Set Custom Permissions</property>
-                      </object>
-                    </property>
-                    <child type="start">
-                      <object class="GtkButton">
-                        <property name="icon-name">go-previous-symbolic</property>
-                        <signal name="clicked" handler="navigate_main_page" object="NautilusPropertiesWindow" swapped="yes"/>
-                      </object>
-                    </child>
-                  </object>
+                  <object class="AdwHeaderBar"/>
                 </child>
                 <child>
                   <object class="GtkScrolledWindow">
@@ -932,17 +915,7 @@
             <property name="child">
               <object class="AdwToolbarView">
                 <child type="top">
-                  <object class="GtkHeaderBar">
-                    <property name="title-widget">
-                      <object class="AdwWindowTitle" id="extension_title"/>
-                    </property>
-                    <child type="start">
-                      <object class="GtkButton">
-                        <property name="icon-name">go-previous-symbolic</property>
-                        <signal name="clicked" handler="navigate_main_page" object="NautilusPropertiesWindow" swapped="yes"/>
-                      </object>
-                    </child>
-                  </object>
+                  <object class="AdwHeaderBar"/>
                 </child>
                 <property name="content">
                   <object class="GtkScrolledWindow">

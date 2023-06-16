@@ -177,7 +177,6 @@ struct _NautilusPropertiesWindow
 
     /* Extensions */
     GtkListBox *extension_list_box;
-    AdwWindowTitle *extension_title;
 
     GList *value_fields;
 
@@ -521,14 +520,6 @@ static NautilusFile *
 get_target_file (NautilusPropertiesWindow *self)
 {
     return NAUTILUS_FILE (self->target_files->data);
-}
-
-static void
-navigate_main_page (NautilusPropertiesWindow *self,
-                    GParamSpec               *params,
-                    GtkWidget                *widget)
-{
-    adw_navigation_view_pop_to_tag (self->nav_view, "main");
 }
 
 static void
@@ -937,15 +928,17 @@ navigate_extension_model_page (AdwPreferencesRow        *row,
                                NautilusPropertiesWindow *self)
 {
     GListModel *list_model = g_object_get_data (G_OBJECT (row), "nautilus-extension-properties-model");
+    AdwNavigationPage *page;
+
     gtk_list_box_bind_model (self->extension_list_box,
                              list_model,
                              (GtkListBoxCreateWidgetFunc) create_extension_group_row,
                              self,
                              NULL);
 
-    adw_window_title_set_title (self->extension_title, adw_preferences_row_get_title (row));
-
-    adw_navigation_view_push_by_tag (self->nav_view, "extension");
+    page = adw_navigation_view_find_page (ADW_NAVIGATION_VIEW (self->nav_view), "extension");
+    adw_navigation_page_set_title (page, adw_preferences_row_get_title (row));
+    adw_navigation_view_push (self->nav_view, page);
 }
 
 static GtkWidget *
@@ -4360,14 +4353,12 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_title);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_list_box);
 
     gtk_widget_class_bind_template_callback (widget_class, star_clicked);
     gtk_widget_class_bind_template_callback (widget_class, open_in_disks);
     gtk_widget_class_bind_template_callback (widget_class, open_parent_folder);
     gtk_widget_class_bind_template_callback (widget_class, open_link_target);
-    gtk_widget_class_bind_template_callback (widget_class, navigate_main_page);
     gtk_widget_class_bind_template_callback (widget_class, navigate_permissions_page);
 }
 
