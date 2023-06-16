@@ -35,72 +35,13 @@ struct _NautilusNameCell
 
 G_DEFINE_TYPE (NautilusNameCell, nautilus_name_cell, NAUTILUS_TYPE_VIEW_CELL)
 
-static gchar *
-get_path_text (NautilusFile *file,
-               GQuark        path_attribute_q,
-               GFile        *base_location)
-{
-    g_autofree gchar *path = NULL;
-    g_autoptr (GFile) dir_location = NULL;
-    g_autoptr (GFile) home_location = g_file_new_for_path (g_get_home_dir ());
-    g_autoptr (GFile) root_location = g_file_new_for_path ("/");
-    GFile *relative_location_base;
-
-    if (path_attribute_q == 0)
-    {
-        return NULL;
-    }
-
-    path = nautilus_file_get_string_attribute_q (file, path_attribute_q);
-    dir_location = g_file_new_for_commandline_arg (path);
-
-    if (base_location != NULL && g_file_equal (base_location, dir_location))
-    {
-        /* Only occurs when search result is
-         * a direct child of the base location
-         */
-        return NULL;
-    }
-
-    if (g_file_equal (dir_location, home_location))
-    {
-        return nautilus_compute_title_for_location (home_location);
-    }
-
-    relative_location_base = base_location;
-    if (relative_location_base == NULL)
-    {
-        /* Only occurs in Recent, Starred and Trash. */
-        relative_location_base = home_location;
-    }
-
-    if (!g_file_equal (relative_location_base, root_location) &&
-        g_file_has_prefix (dir_location, relative_location_base))
-    {
-        g_autofree gchar *relative_path = NULL;
-        g_autofree gchar *display_name = NULL;
-
-        relative_path = g_file_get_relative_path (relative_location_base, dir_location);
-        display_name = g_filename_display_name (relative_path);
-
-        /* Ensure a trailing slash to emphasize it is a directory */
-        if (g_str_has_suffix (display_name, G_DIR_SEPARATOR_S))
-        {
-            return g_steal_pointer (&display_name);
-        }
-
-        return g_strconcat (display_name, G_DIR_SEPARATOR_S, NULL);
-    }
-
-    return g_steal_pointer (&path);
-}
-
 static void
 update_labels (NautilusNameCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
     g_autofree gchar *display_name = NULL;
+    g_autofree gchar *path = NULL;
     g_autofree gchar *path_text = NULL;
     const gchar *fts_snippet = NULL;
 
@@ -109,9 +50,9 @@ update_labels (NautilusNameCell *self)
     file = nautilus_view_item_get_file (item);
 
     display_name = nautilus_file_get_display_name (file);
-    path_text = get_path_text (file,
-                               self->path_attribute_q,
-                               self->file_path_base_location);
+
+    path = nautilus_file_get_string_attribute_q (file, self->path_attribute_q);
+    path_text = nautilus_get_path_to_display (path, self->file_path_base_location);
     if (self->show_snippet)
     {
         fts_snippet = nautilus_file_get_search_fts_snippet (file);

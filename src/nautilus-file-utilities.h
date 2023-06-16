@@ -52,6 +52,8 @@ char *   nautilus_get_templates_directory            (void);
 char *   nautilus_get_templates_directory_uri        (void);
 
 char *	 nautilus_compute_title_for_location	     (GFile *file);
+gchar *  nautilus_get_path_to_display                (gchar *path,
+                                                      GFile *base_location);
 
 gboolean nautilus_is_file_roller_installed           (void);
 
