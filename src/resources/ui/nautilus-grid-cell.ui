@@ -64,6 +64,22 @@
                   </object>
                 </child>
                 <child>
+                  <object class="GtkLabel" id="path">
+                    <property name="visible">False</property>
+                    <property name="ellipsize">start</property>
+                    <property name="justify">center</property>
+                    <property name="halign">fill</property>
+                    <property name="xalign">0.5</property>
+                    <attributes>
+                      <attribute name="insert-hyphens" value="false"></attribute>
+                    </attributes>
+                    <style>
+                      <class name="caption"/>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkLabel" id="first_caption">
                     <property name="ellipsize">end</property>
                     <property name="justify">center</property>

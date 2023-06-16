@@ -5,6 +5,8 @@
  */
 
 #include "nautilus-grid-cell.h"
+
+#include "nautilus-file-utilities.h"
 #include "nautilus-tag-manager.h"
 
 struct _NautilusGridCell
@@ -13,12 +15,16 @@ struct _NautilusGridCell
 
     GSignalGroup *item_signal_group;
 
+    GQuark path_attribute_q;
+    GFile *file_path_base_location;
+
     GQuark *caption_attributes;
 
     GtkWidget *fixed_height_box;
     GtkWidget *icon;
     GtkWidget *emblems_box;
     GtkWidget *label;
+    GtkWidget *path;
     GtkWidget *first_caption;
     GtkWidget *second_caption;
     GtkWidget *third_caption;
@@ -145,6 +151,32 @@ update_emblems (NautilusGridCell *self)
 }
 
 static void
+update_labels (NautilusGridCell *self)
+{
+    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusFile *file;
+    g_autofree gchar *display_name = NULL;
+    g_autofree gchar *path = NULL;
+    g_autofree gchar *path_text = NULL;
+
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_return_if_fail (item != NULL);
+    file = nautilus_view_item_get_file (item);
+
+    display_name = nautilus_file_get_display_name (file);
+    if (self->path_attribute_q != 0)
+    {
+        path = nautilus_file_get_string_attribute_q (file, self->path_attribute_q);
+        path_text = nautilus_get_path_to_display (path, self->file_path_base_location);
+    }
+
+    gtk_label_set_text (GTK_LABEL (self->label), display_name);
+    gtk_label_set_text (GTK_LABEL (self->path), path_text);
+
+    gtk_widget_set_visible (self->path, (path_text != NULL));
+}
+
+static void
 on_file_changed (NautilusGridCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
@@ -157,10 +189,7 @@ on_file_changed (NautilusGridCell *self)
 
     update_icon (self);
     update_emblems (self);
-
-    name = nautilus_file_get_display_name (file);
-
-    gtk_label_set_text (GTK_LABEL (self->label), name);
+    update_labels (self);
     update_captions (self);
 }
 
@@ -241,11 +270,23 @@ on_starred_changed (NautilusTagManager *tag_manager,
 }
 
 static void
+nautilus_grid_cell_set_path (NautilusViewCell *view_cell,
+                             GQuark            path_attribute_q,
+                             GFile            *base_location)
+{
+    NautilusGridCell *self = NAUTILUS_GRID_CELL (view_cell);
+
+    self->path_attribute_q = path_attribute_q;
+    g_set_object (&self->file_path_base_location, base_location);
+}
+
+static void
 finalize (GObject *object)
 {
     NautilusGridCell *self = (NautilusGridCell *) object;
 
     g_object_unref (self->item_signal_group);
+    g_clear_object (&self->file_path_base_location);
     G_OBJECT_CLASS (nautilus_grid_cell_parent_class)->finalize (object);
 }
 
@@ -254,8 +295,10 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+    NautilusViewCellClass *cell_class = NAUTILUS_VIEW_CELL_CLASS (klass);
 
     object_class->finalize = finalize;
+    cell_class->set_path = nautilus_grid_cell_set_path;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-grid-cell.ui");
 
@@ -263,6 +306,7 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, emblems_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, path);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, second_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, third_caption);
