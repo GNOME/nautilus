@@ -943,7 +943,7 @@ setup_name_cell (GtkSignalListItemFactory *factory,
                             cell, "icon-size",
                             G_BINDING_SYNC_CREATE);
 
-    nautilus_name_cell_set_path (NAUTILUS_NAME_CELL (cell),
+    nautilus_view_cell_set_path (cell,
                                  self->path_attribute_q,
                                  self->file_path_base_location);
     if (NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self))))

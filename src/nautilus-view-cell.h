@@ -20,12 +20,20 @@ G_DECLARE_DERIVABLE_TYPE (NautilusViewCell, nautilus_view_cell, NAUTILUS, VIEW_C
 struct _NautilusViewCellClass
 {
     AdwBinClass parent_class;
+
+    /* Private virtual methods */
+    void (*set_path) (NautilusViewCell *self,
+                      GQuark            path_attribute_q,
+                      GFile            *base_location);
 };
 
 NautilusListBase *nautilus_view_cell_get_view (NautilusViewCell *self);
 void nautilus_view_cell_set_item (NautilusViewCell      *self,
                                   NautilusViewItem *item);
 NautilusViewItem *nautilus_view_cell_get_item (NautilusViewCell *self);
+void nautilus_view_cell_set_path (NautilusViewCell *self,
+                                  GQuark            path_attribute_q,
+                                  GFile            *base_location);
 gboolean nautilus_view_cell_once (NautilusViewCell *self);
 
 G_END_DECLS

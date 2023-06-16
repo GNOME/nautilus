@@ -210,3 +210,16 @@ nautilus_view_cell_get_item (NautilusViewCell *self)
 
     return item;
 }
+
+void
+nautilus_view_cell_set_path (NautilusViewCell *self,
+                             GQuark            path_attribute_q,
+                             GFile            *base_location)
+{
+    NautilusViewCellClass *klass = NAUTILUS_VIEW_CELL_CLASS (G_OBJECT_GET_CLASS (self));
+
+    if (klass->set_path != NULL)
+    {
+        (klass->set_path) (self, path_attribute_q, base_location);
+    }
+}

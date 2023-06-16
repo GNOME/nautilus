@@ -15,9 +15,6 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (NautilusNameCell, nautilus_name_cell, NAUTILUS, NAME_CELL, NautilusViewCell)
 
 NautilusViewCell * nautilus_name_cell_new (NautilusListBase *view);
-void nautilus_name_cell_set_path (NautilusNameCell *self,
-                                  GQuark            path_attribute_q,
-                                  GFile            *base_location);
 void nautilus_name_cell_show_snippet (NautilusNameCell *self);
 GtkTreeExpander * nautilus_name_cell_get_expander (NautilusNameCell *self);
 GtkWidget * nautilus_name_cell_get_content (NautilusNameCell *self);

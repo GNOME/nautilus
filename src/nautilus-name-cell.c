@@ -324,6 +324,17 @@ on_item_is_loading_changed (NautilusNameCell *self)
 }
 
 static void
+nautilus_name_cell_set_path (NautilusViewCell *view_cell,
+                             GQuark            path_attribute_q,
+                             GFile            *base_location)
+{
+    NautilusNameCell *self = NAUTILUS_NAME_CELL (view_cell);
+
+    self->path_attribute_q = path_attribute_q;
+    g_set_object (&self->file_path_base_location, base_location);
+}
+
+static void
 nautilus_name_cell_init (NautilusNameCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
@@ -366,8 +377,10 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+    NautilusViewCellClass *cell_class = NAUTILUS_VIEW_CELL_CLASS (klass);
 
     object_class->finalize = nautilus_name_cell_finalize;
+    cell_class->set_path = nautilus_name_cell_set_path;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-name-cell.ui");
 
@@ -389,15 +402,6 @@ nautilus_name_cell_new (NautilusListBase *view)
     return NAUTILUS_VIEW_CELL (g_object_new (NAUTILUS_TYPE_NAME_CELL,
                                              "view", view,
                                              NULL));
-}
-
-void
-nautilus_name_cell_set_path (NautilusNameCell *self,
-                             GQuark            path_attribute_q,
-                             GFile            *base_location)
-{
-    self->path_attribute_q = path_attribute_q;
-    g_set_object (&self->file_path_base_location, base_location);
 }
 
 void
