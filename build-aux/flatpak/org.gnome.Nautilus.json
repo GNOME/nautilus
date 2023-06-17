@@ -69,13 +69,7 @@
     {
       "name": "tracker-miners",
       "buildsystem": "meson",
-      "cleanup": [
-        "/etc",
-        "/libexec/tracker-3",
-        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Extract.service",
-        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service",
-        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service"
-      ],
+      "cleanup": [ "/bin", "/etc" ],
       "config-opts": [
         "-Ddomain_prefix=org.gnome.NautilusDevel",
         "-Dextract=true",
@@ -84,7 +78,8 @@
         "-Dminer_fs=true",
         "-Dminer_fs_cache_location=$XDG_CACHE_HOME/nautilus/miner/files",
         "-Dminer_rss=false",
-        "-Dsystemd_user_services=false",
+        "-Dsystemd_user_services=true",
+        "-Dsystemd_user_services_dir=$XDG_DATA_HOME/dbus-1/services",
         "-Dwriteback=false",
         "-Dbattery_detection=none"
       ],

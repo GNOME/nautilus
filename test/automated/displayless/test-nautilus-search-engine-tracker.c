@@ -138,6 +138,7 @@ main (int   argc,
     g_autoptr (GFile) location = NULL;
     g_autoptr (GError) error = NULL;
     const gchar *indexed_tmpdir;
+    const gchar *busname = APPLICATION_ID ".Tracker3.Miner.Files";
 
     nautilus_tracker_setup_host_miner_fs_connection_sync ();
 
@@ -148,7 +149,7 @@ main (int   argc,
                  "to ensure a private Tracker indexer daemon is used.");
     }
 
-    connection = tracker_sparql_connection_bus_new ("org.freedesktop.Tracker3.Miner.Files", NULL, NULL, &error);
+    connection = tracker_sparql_connection_bus_new (busname, NULL, NULL, &error);
 
     g_assert_no_error (error);
 

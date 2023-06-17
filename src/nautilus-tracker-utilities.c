@@ -103,7 +103,7 @@ void
 nautilus_tracker_setup_host_miner_fs_connection_sync (void)
 {
     g_autoptr (GError) error = NULL;
-    const gchar *busname = "org.freedesktop.Tracker3.Miner.Files";
+    const gchar *busname = APPLICATION_ID ".Tracker3.Miner.Files";
 
     g_message ("Starting %s", busname);
     tracker_miner_fs_connection = tracker_sparql_connection_bus_new (busname, NULL, NULL, &error);
@@ -141,3 +141,4 @@ nautilus_tracker_get_miner_fs_connection (GError **error)
 
     return tracker_miner_fs_connection;
 }
+
