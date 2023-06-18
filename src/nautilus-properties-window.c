@@ -719,11 +719,13 @@ star_clicked (NautilusPropertiesWindow *self)
     {
         nautilus_tag_manager_unstar_files (tag_manager, G_OBJECT (self),
                                            &(GList){ file, NULL }, NULL, NULL);
+        gtk_widget_remove_css_class (self->star_button, "added");
     }
     else
     {
         nautilus_tag_manager_star_files (tag_manager, G_OBJECT (self),
                                          &(GList){ file, NULL }, NULL, NULL);
+        gtk_widget_add_css_class (self->star_button, "added");
     }
 }
 
