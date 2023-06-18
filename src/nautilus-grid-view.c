@@ -31,11 +31,8 @@ G_DEFINE_TYPE (NautilusGridView, nautilus_grid_view, NAUTILUS_TYPE_LIST_BASE)
 
 static guint get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level);
 
-static NautilusViewItem *
-get_view_item (GtkListItem *listitem)
-{
-    return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (listitem))));
-}
+#define get_view_item(li) \
+        (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (li)))))
 
 static gint
 nautilus_grid_view_sort (gconstpointer a,

@@ -53,11 +53,8 @@ struct _NautilusListView
 
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
 
-static NautilusViewItem *
-get_view_item (GtkColumnViewCell *cell)
-{
-    return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (cell))));
-}
+#define get_view_item(cell) \
+        (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (cell)))))
 
 static guint
 get_icon_size_for_zoom_level (NautilusListZoomLevel zoom_level)
