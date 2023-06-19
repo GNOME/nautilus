@@ -225,7 +225,6 @@ typedef struct
     gboolean sort_directories_first;
 
     gboolean show_hidden_files;
-    gboolean ignore_hidden_file_preferences;
 
     gboolean selection_was_removed;
 
@@ -2646,11 +2645,6 @@ nautilus_files_view_set_show_hidden_files (NautilusFilesView *view,
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->ignore_hidden_file_preferences)
-    {
-        return;
-    }
 
     if (show_hidden != priv->show_hidden_files)
     {
@@ -9042,24 +9036,6 @@ nautilus_files_view_should_show_file (NautilusFilesView *view,
 
     return nautilus_file_should_show (file,
                                       priv->show_hidden_files);
-}
-
-void
-nautilus_files_view_ignore_hidden_file_preferences (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    g_return_if_fail (priv->model == NULL);
-
-    if (priv->ignore_hidden_file_preferences)
-    {
-        return;
-    }
-
-    priv->show_hidden_files = FALSE;
-    priv->ignore_hidden_file_preferences = TRUE;
 }
 
 char *

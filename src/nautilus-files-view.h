@@ -256,7 +256,6 @@ void                nautilus_files_view_pop_up_selection_context_menu    (Nautil
 gboolean            nautilus_files_view_should_show_file                 (NautilusFilesView *view,
                                                                           NautilusFile      *file);
 gboolean            nautilus_files_view_should_sort_directories_first    (NautilusFilesView *view);
-void                nautilus_files_view_ignore_hidden_file_preferences   (NautilusFilesView *view);
 
 gboolean            nautilus_files_view_has_subdirectory                (NautilusFilesView *view,
                                                                          NautilusDirectory *directory);
