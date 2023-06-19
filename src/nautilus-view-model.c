@@ -88,6 +88,22 @@ nautilus_view_model_list_model_init (GListModelInterface *iface)
     iface->get_item = nautilus_view_model_get_item;
 }
 
+static void
+nautilus_view_model_get_section (GtkSectionModel *model,
+                                 guint            position,
+                                 guint           *out_start,
+                                 guint           *out_end)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
+
+    gtk_section_model_get_section (GTK_SECTION_MODEL (self->sort_model), position, out_start, out_end);
+}
+
+static void
+nautilus_view_model_section_model_init (GtkSectionModelInterface *iface)
+{
+    iface->get_section = nautilus_view_model_get_section;
+}
 
 static gboolean
 nautilus_view_model_is_selected (GtkSelectionModel *model,
@@ -136,6 +152,8 @@ nautilus_view_model_selection_model_init (GtkSelectionModelInterface *iface)
 G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL,
                                                 nautilus_view_model_list_model_init)
+                         G_IMPLEMENT_INTERFACE (GTK_TYPE_SECTION_MODEL,
+                                                nautilus_view_model_section_model_init)
                          G_IMPLEMENT_INTERFACE (GTK_TYPE_SELECTION_MODEL,
                                                 nautilus_view_model_selection_model_init))
 
@@ -166,6 +184,9 @@ dispose (GObject *object)
     {
         g_signal_handlers_disconnect_by_func (self->sort_model,
                                               g_list_model_items_changed,
+                                              self);
+        g_signal_handlers_disconnect_by_func (self->sort_model,
+                                              gtk_section_model_sections_changed,
                                               self);
         g_object_unref (self->sort_model);
         self->sort_model = NULL;
@@ -280,6 +301,8 @@ constructed (GObject *object)
 
     g_signal_connect_swapped (self->sort_model, "items-changed",
                               G_CALLBACK (g_list_model_items_changed), self);
+    g_signal_connect_swapped (self->sort_model, "sections-changed",
+                              G_CALLBACK (gtk_section_model_sections_changed), self);
     g_signal_connect_swapped (self->selection_model, "selection-changed",
                               G_CALLBACK (gtk_selection_model_selection_changed), self);
 }
