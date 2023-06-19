@@ -205,8 +205,6 @@ struct _NautilusFilesViewClass {
         void           (* scroll_to_file)    (NautilusFilesView *view,
                                               const char        *uri);
 
-        NautilusWindow * (*get_window)       (NautilusFilesView *view);
-
         GdkRectangle * (* compute_rename_popover_pointing_to) (NautilusFilesView *view);
 
         GdkRectangle * (* reveal_for_selection_context_menu) (NautilusFilesView *view);
@@ -224,9 +222,6 @@ NautilusFilesView *      nautilus_files_view_new                         (guint 
 
 /* Functions callable from the user interface and elsewhere. */
 NautilusWindowSlot *nautilus_files_view_get_nautilus_window_slot         (NautilusFilesView *view);
-char *              nautilus_files_view_get_uri                          (NautilusFilesView *view);
-
-void                nautilus_files_view_display_selection_info           (NautilusFilesView *view);
 
 /* Wrappers for signal emitters. These are normally called
  * only by NautilusFilesView itself. They have corresponding signals
@@ -253,8 +248,6 @@ void                nautilus_files_view_pop_up_background_context_menu   (Nautil
 void                nautilus_files_view_pop_up_selection_context_menu    (NautilusFilesView *view,
                                                                           gdouble            x,
                                                                           gdouble            y);
-gboolean            nautilus_files_view_should_show_file                 (NautilusFilesView *view,
-                                                                          NautilusFile      *file);
 gboolean            nautilus_files_view_should_sort_directories_first    (NautilusFilesView *view);
 
 gboolean            nautilus_files_view_has_subdirectory                (NautilusFilesView *view,
@@ -263,9 +256,6 @@ void                nautilus_files_view_add_subdirectory                (Nautilu
                                                                          NautilusDirectory *directory);
 void                nautilus_files_view_remove_subdirectory             (NautilusFilesView *view,
                                                                          NautilusDirectory *directory);
-
-gboolean            nautilus_files_view_is_editable              (NautilusFilesView      *view);
-NautilusWindow *    nautilus_files_view_get_window               (NautilusFilesView      *view);
 
 /* file operations */
 char *            nautilus_files_view_get_backing_uri            (NautilusFilesView      *view);
@@ -287,18 +277,10 @@ void              nautilus_files_view_stop_loading               (NautilusFilesV
 char *            nautilus_files_view_get_first_visible_file     (NautilusFilesView      *view);
 void              nautilus_files_view_scroll_to_file             (NautilusFilesView      *view,
                                                                   const char             *uri);
-char *            nautilus_files_view_get_title                  (NautilusFilesView      *view);
-void              nautilus_files_view_bump_zoom_level            (NautilusFilesView      *view,
-                                                                  int                     zoom_increment);
-gboolean          nautilus_files_view_can_zoom_in                (NautilusFilesView      *view);
-gboolean          nautilus_files_view_can_zoom_out               (NautilusFilesView      *view);
 
 void              nautilus_files_view_update_context_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_toolbar_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_actions_state       (NautilusFilesView      *view);
-
-void              nautilus_files_view_action_show_hidden_files   (NautilusFilesView      *view,
-                                                                  gboolean                show_hidden);
 
 GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesView      *view);
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);

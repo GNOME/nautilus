@@ -352,6 +352,11 @@ static void copy_move_done_callback (GHashTable *debuting_files,
                                      gpointer    data);
 static CopyMoveDoneData * pre_copy_move (NautilusFilesView *directory_view);
 
+static void     nautilus_files_view_display_selection_info (NautilusFilesView *view);
+static char *   nautilus_files_view_get_uri (NautilusFilesView *view);
+static gboolean nautilus_files_view_should_show_file (NautilusFilesView *view,
+                                                      NautilusFile      *file);
+
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
                          ADW_TYPE_BIN,
@@ -846,10 +851,10 @@ nautilus_files_view_is_empty (NautilusFilesView *view)
 /**
  * nautilus_files_view_bump_zoom_level:
  *
- * bump the current zoom level by invoking the relevant subclass through the slot
+ * bump the current zoom level by invoking the relevant subclass
  *
  **/
-void
+static void
 nautilus_files_view_bump_zoom_level (NautilusFilesView *view,
                                      int                zoom_increment)
 {
@@ -867,7 +872,7 @@ nautilus_files_view_bump_zoom_level (NautilusFilesView *view,
  * Return value: TRUE if @view can be zoomed any closer, FALSE otherwise.
  *
  **/
-gboolean
+static gboolean
 nautilus_files_view_can_zoom_in (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
@@ -884,7 +889,7 @@ nautilus_files_view_can_zoom_in (NautilusFilesView *view)
  * Return value: TRUE if @view can be zoomed any further away, FALSE otherwise.
  *
  **/
-gboolean
+static gboolean
 nautilus_files_view_can_zoom_out (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
@@ -1075,7 +1080,7 @@ create_templates_parameters_free (CreateTemplateParameters *parameters)
     g_free (parameters);
 }
 
-NautilusWindow *
+static NautilusWindow *
 nautilus_files_view_get_window (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -3433,7 +3438,7 @@ nautilus_files_view_finalize (GObject *object)
  * @view: NautilusFilesView for which to display selection info.
  *
  **/
-void
+static void
 nautilus_files_view_display_selection_info (NautilusFilesView *view)
 {
     g_autolist (NautilusFile) selection = NULL;
@@ -8951,7 +8956,7 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
     disconnect_model_handlers (view);
 }
 
-gboolean
+static gboolean
 nautilus_files_view_is_editable (NautilusFilesView *view)
 {
     NautilusDirectory *directory;
@@ -8990,7 +8995,7 @@ nautilus_files_view_is_read_only (NautilusFilesView *view)
  * Returns whether or not this file should be displayed based on
  * current filtering options.
  */
-gboolean
+static gboolean
 nautilus_files_view_should_show_file (NautilusFilesView *view,
                                       NautilusFile      *file)
 {
@@ -9002,7 +9007,7 @@ nautilus_files_view_should_show_file (NautilusFilesView *view,
                                       priv->show_hidden_files);
 }
 
-char *
+static char *
 nautilus_files_view_get_uri (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -9553,7 +9558,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       G_TYPE_NONE, 0);
 
     klass->get_backing_uri = real_get_backing_uri;
-    klass->get_window = nautilus_files_view_get_window;
     klass->update_context_menus = real_update_context_menus;
     klass->update_actions_state = real_update_actions_state;
     klass->check_empty_states = real_check_empty_states;
