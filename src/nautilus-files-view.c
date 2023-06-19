@@ -139,7 +139,6 @@ enum
 enum
 {
     PROP_WINDOW_SLOT = 1,
-    PROP_SUPPORTS_ZOOMING,
     PROP_ICON,
     PROP_SEARCHING,
     PROP_LOADING,
@@ -174,8 +173,6 @@ typedef struct
     NautilusRenameFilePopoverController *rename_file_controller;
     NautilusNewFolderDialogController *new_folder_controller;
     NautilusCompressDialogController *compress_controller;
-
-    gboolean supports_zooming;
 
     GList *scripts_directory_list;
     GList *templates_directory_list;
@@ -858,11 +855,6 @@ nautilus_files_view_bump_zoom_level (NautilusFilesView *view,
 {
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
-    if (!nautilus_files_view_supports_zooming (view))
-    {
-        return;
-    }
-
     NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->bump_zoom_level (view, zoom_increment);
 }
 
@@ -879,11 +871,6 @@ gboolean
 nautilus_files_view_can_zoom_in (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
-
-    if (!nautilus_files_view_supports_zooming (view))
-    {
-        return FALSE;
-    }
 
     return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_zoom_in (view);
 }
@@ -902,24 +889,7 @@ nautilus_files_view_can_zoom_out (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
 
-    if (!nautilus_files_view_supports_zooming (view))
-    {
-        return FALSE;
-    }
-
     return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_zoom_out (view);
-}
-
-gboolean
-nautilus_files_view_supports_zooming (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
-
-    return priv->supports_zooming;
 }
 
 /**
@@ -930,11 +900,6 @@ nautilus_files_view_supports_zooming (NautilusFilesView *view)
 static void
 nautilus_files_view_restore_standard_zoom_level (NautilusFilesView *view)
 {
-    if (!nautilus_files_view_supports_zooming (view))
-    {
-        return;
-    }
-
     NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_standard_zoom_level (view);
 }
 
@@ -7931,8 +7896,7 @@ real_update_actions_state (NautilusFilesView *view)
                                  nautilus_files_view_can_zoom_out (view));
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "zoom-standard");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 nautilus_files_view_supports_zooming (view) && !zoom_level_is_default);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !zoom_level_is_default);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "zoom-to-level");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
@@ -9220,12 +9184,6 @@ nautilus_files_view_set_property (GObject      *object,
         }
         break;
 
-        case PROP_SUPPORTS_ZOOMING:
-        {
-            priv->supports_zooming = g_value_get_boolean (value);
-        }
-        break;
-
         case PROP_LOCATION:
         {
             nautilus_view_set_location (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
@@ -9609,15 +9567,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                              NAUTILUS_TYPE_WINDOW_SLOT,
                              G_PARAM_WRITABLE |
                              G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (
-        oclass,
-        PROP_SUPPORTS_ZOOMING,
-        g_param_spec_boolean ("supports-zooming",
-                              "Supports zooming",
-                              "Whether the view supports zooming",
-                              TRUE,
-                              G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
-                              G_PARAM_STATIC_STRINGS));
 
     g_object_class_override_property (oclass, PROP_LOADING, "loading");
     g_object_class_override_property (oclass, PROP_SEARCHING, "searching");

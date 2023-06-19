@@ -288,7 +288,6 @@ char *            nautilus_files_view_get_first_visible_file     (NautilusFilesV
 void              nautilus_files_view_scroll_to_file             (NautilusFilesView      *view,
                                                                   const char             *uri);
 char *            nautilus_files_view_get_title                  (NautilusFilesView      *view);
-gboolean          nautilus_files_view_supports_zooming           (NautilusFilesView      *view);
 void              nautilus_files_view_bump_zoom_level            (NautilusFilesView      *view,
                                                                   int                     zoom_increment);
 gboolean          nautilus_files_view_can_zoom_in                (NautilusFilesView      *view);
