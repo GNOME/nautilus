@@ -26,7 +26,9 @@
 /* For section and place type enums */
 #include "nautilusgtkplacessidebarprivate.h"
 
+#ifdef HAVE_CLOUDPROVIDERS
 #include <cloudproviders.h>
+#endif
 
 struct _NautilusGtkSidebarRow
 {
@@ -83,6 +85,8 @@ enum
 
 static GParamSpec *properties [LAST_PROP];
 
+#ifdef HAVE_CLOUDPROVIDERS
+
 static void
 cloud_row_update (NautilusGtkSidebarRow *self)
 {
@@ -123,6 +127,8 @@ cloud_row_update (NautilusGtkSidebarRow *self)
   if (end_icon != NULL)
     g_object_unref (end_icon);
 }
+
+#endif
 
 static void
 nautilus_gtk_sidebar_row_get_property (GObject    *object,
@@ -322,6 +328,7 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
       break;
 
     case PROP_CLOUD_PROVIDER_ACCOUNT:
+#ifdef HAVE_CLOUDPROVIDERS
       if (self->cloud_provider_account != NULL)
         g_signal_handlers_disconnect_by_data (self->cloud_provider_account, self);
 
@@ -336,6 +343,7 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
           g_signal_connect_swapped (self->cloud_provider_account, "notify::status-details",
                                     G_CALLBACK (cloud_row_update), self);
         }
+#endif
       break;
 
     case PROP_PLACEHOLDER:
@@ -464,9 +472,11 @@ nautilus_gtk_sidebar_row_finalize (GObject *object)
   g_clear_object (&self->drive);
   g_clear_object (&self->volume);
   g_clear_object (&self->mount);
+#ifdef HAVE_CLOUDPROVIDERS
   if (self->cloud_provider_account != NULL)
     g_signal_handlers_disconnect_by_data (self->cloud_provider_account, self);
   g_clear_object (&self->cloud_provider_account);
+#endif
 
   G_OBJECT_CLASS (nautilus_gtk_sidebar_row_parent_class)->finalize (object);
 }

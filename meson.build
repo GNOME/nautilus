@@ -114,7 +114,10 @@ if get_option('selinux')
 endif
 tracker_sparql = dependency('tracker-sparql-3.0')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
-cloudproviders = dependency('cloudproviders', version: '>= 0.3.1')
+cloudproviders = []
+if get_option('cloudproviders')
+  cloudproviders = dependency('cloudproviders', version: '>= 0.3.1')
+endif
 gi_docgen = find_program('gi-docgen', required: get_option('docs'))
 
 ####################
@@ -156,6 +159,7 @@ conf.set_quoted('VERSION', version_string)
 conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
 conf.set('HAVE_SELINUX', get_option('selinux'))
+conf.set('HAVE_CLOUDPROVIDERS', get_option('cloudproviders'))
 
 #############################################################
 # config.h dependency, add to target dependencies if needed #

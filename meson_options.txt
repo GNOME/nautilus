@@ -38,6 +38,12 @@ option(
   value: false,
   description: 'Enable SELinux context support in file properties dialog',
 )
+option(
+  'cloudproviders',
+  type: 'boolean',
+  value: true,
+  description: 'Enable the cloudproviders support',
+)
 ################
 # End features #
 ################
