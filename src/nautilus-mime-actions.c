@@ -1439,7 +1439,7 @@ sandboxed_launcher_callback (GObject      *source_object,
                                   activation_params->parent_window,
                                   activation_params->cancellable,
                                   sandboxed_launcher_callback,
-                                  g_steal_pointer (&activation_params));
+                                  activation_params /* callback takes ownership */);
     }
     else
     {
@@ -1681,7 +1681,7 @@ activate_files_internal (ActivateParameters *parameters)
                                   parameters->parent_window,
                                   parameters->cancellable,
                                   sandboxed_launcher_callback,
-                                  g_steal_pointer (&parameters));
+                                  parameters /* callback takes ownership */);
         return;
     }
 
