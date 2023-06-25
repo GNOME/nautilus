@@ -72,8 +72,6 @@
             </property>
             <property name="content">
               <object class="AdwToolbarView">
-                <property name="top-bar-style">raised</property>
-                <property name="bottom-bar-style">raised</property>
                 <child type="top">
                   <object class="NautilusToolbar" id="toolbar">
                     <property name="show-toolbar-children">True</property>
@@ -81,19 +79,14 @@
                     <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                   </object>
                 </child>
+                <child type="top">
+                  <object class="AdwTabBar" id="tab_bar">
+                    <property name="view">tab_view</property>
+                  </object>
+                </child>
                 <child>
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="AdwTabBar" id="tab_bar">
-                        <property name="view">tab_view</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="AdwTabView" id="tab_view">
-                        <property name="menu-model">tab_menu_model</property>
-                      </object>
-                    </child>
+                  <object class="AdwTabView" id="tab_view">
+                    <property name="menu-model">tab_menu_model</property>
                   </object>
                 </child>
                 <child type="bottom">

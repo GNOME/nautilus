@@ -1842,8 +1842,6 @@ nautilus_list_base_init (NautilusListBase *self)
     GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
 
-    gtk_widget_add_css_class (GTK_WIDGET (self), "view");
-
     g_signal_connect_object (nautilus_preferences,
                              "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
                              G_CALLBACK (default_sort_order_changed_callback),
