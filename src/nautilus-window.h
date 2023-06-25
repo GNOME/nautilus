@@ -89,7 +89,8 @@ AdwTabView * nautilus_window_get_tab_view (NautilusWindow *window);
 
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);
 
-GtkWidget *nautilus_window_get_toolbar (NautilusWindow *window);
+GMenuModel *nautilus_window_get_undo_redo_section (NautilusWindow *window);
+gboolean    nautilus_window_is_menu_visible       (NautilusWindow *toolbar);
 
 /* sync window GUI with current slot. Used when changing slots,
  * and when updating the slot state.

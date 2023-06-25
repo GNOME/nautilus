@@ -51,9 +51,6 @@ struct _NautilusToolbar
 
     gboolean show_location_entry;
 
-    GtkWidget *app_button;
-    GMenuModel *undo_redo_section;
-
     GtkWidget *sidebar_button;
     gboolean show_sidebar_button;
     gboolean sidebar_button_active;
@@ -137,6 +134,7 @@ undo_manager_changed (NautilusToolbar *self)
     g_autoptr (GMenu) updated_section = g_menu_new ();
     g_autoptr (GMenuItem) undo_menu_item = NULL;
     g_autoptr (GMenuItem) redo_menu_item = NULL;
+    NautilusWindow *window;
 
     /* Look up the last action from the undo manager, and get the text that
      * describes it, e.g. "Undo Create Folder"/"Redo Create Folder"
@@ -177,8 +175,13 @@ undo_manager_changed (NautilusToolbar *self)
     g_menu_append_item (updated_section, redo_menu_item);
     update_action (self, "redo", redo_active);
 
-    nautilus_gmenu_set_from_model (G_MENU (self->undo_redo_section),
-                                   G_MENU_MODEL (updated_section));
+    if (self->window_slot != NULL)
+    {
+        window = nautilus_window_slot_get_window (self->window_slot);
+
+        nautilus_gmenu_set_from_model (G_MENU (nautilus_window_get_undo_redo_section (window)),
+                                       G_MENU_MODEL (updated_section));
+    }
 }
 
 static void
@@ -452,8 +455,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
@@ -586,17 +587,4 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
     }
 
     nautilus_toolbar_set_window_slot_real (self, window_slot);
-}
-
-gboolean
-nautilus_toolbar_is_menu_visible (NautilusToolbar *self)
-{
-    GtkWidget *menu;
-
-    g_return_val_if_fail (NAUTILUS_IS_TOOLBAR (self), FALSE);
-
-    menu = GTK_WIDGET (gtk_menu_button_get_popover (GTK_MENU_BUTTON (self->app_button)));
-    g_return_val_if_fail (menu != NULL, FALSE);
-
-    return gtk_widget_is_visible (menu);
 }

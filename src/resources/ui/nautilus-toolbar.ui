@@ -1,67 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <menu id="app_menu">
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">New _Window</attribute>
-        <attribute name="action">app.clone-window</attribute>
-        <attribute name="verb-icon">window-new-symbolic</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">New _Tab</attribute>
-        <attribute name="action">win.new-tab</attribute>
-        <attribute name="verb-icon">tab-new-symbolic</attribute>
-      </item>
-    </section>
-    <section>
-      <attribute name="label" translatable="yes">Icon Size</attribute>
-      <attribute name="display-hint">inline-buttons</attribute>
-      <item>
-        <attribute name="custom">zoom-out</attribute>
-      </item>
-      <item>
-        <attribute name="custom">zoom-in</attribute>
-      </item>
-    </section>
-    <section id="undo_redo_section">
-      <!-- Note: This section is often recreated by undo_manager_changed() to
-           change the labels of the actions. If you change anything here,
-           remember to change in the code as well. -->
-      <item>
-        <attribute name="label" translatable="yes">_Undo</attribute>
-        <attribute name="action">win.undo</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Redo</attribute>
-        <attribute name="action">win.undo</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">Show _Hidden Files</attribute>
-        <attribute name="action">view.show-hidden-files</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">_Preferences</attribute>
-        <attribute name="action">app.preferences</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
-        <attribute name="action">win.show-help-overlay</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_Help</attribute>
-        <attribute name="action">app.help</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">_About Files</attribute>
-        <attribute name="action">app.about</attribute>
-      </item>
-    </section>
-  </menu>
   <template class="NautilusToolbar" parent="AdwBin">
     <child>
       <object class="AdwHeaderBar">
@@ -146,39 +85,6 @@
                 </style>
               </object>
             </child>
-          </object>
-        </child>
-        <child type="end">
-          <object class="GtkMenuButton" id="app_button">
-            <property name="tooltip-text" translatable="yes">Main Menu</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="icon_name">open-menu-symbolic</property>
-            <property name="popover">
-              <object class="GtkPopoverMenu">
-                <property name="menu-model">app_menu</property>
-                <child type="zoom-out">
-                  <object class="GtkButton">
-                    <property name="icon-name">zoom-out-symbolic</property>
-                    <property name="action-name">view.zoom-out</property>
-                    <property name="tooltip-text" translatable="yes">Zoom Out</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
-                  </object>
-                </child>
-                <child type="zoom-in">
-                  <object class="GtkButton">
-                    <property name="icon-name">zoom-in-symbolic</property>
-                    <property name="action-name">view.zoom-in</property>
-                    <property name="tooltip-text" translatable="yes">Zoom In</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
-                  </object>
-                </child>
-              </object>
-            </property>
           </object>
         </child>
         <child type="end">

@@ -2596,7 +2596,7 @@ view_started_loading (NautilusWindowSlot *self,
     /* Only grab focus if the menu isn't showing. Otherwise the menu disappears
      * e.g. when the user toggles Show Hidden Files
      */
-    if (!nautilus_toolbar_is_menu_visible (NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (self->window))))
+    if (!nautilus_window_is_menu_visible (self->window))
     {
         gtk_widget_grab_focus (GTK_WIDGET (self->window));
     }

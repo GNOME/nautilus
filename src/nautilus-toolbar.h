@@ -45,8 +45,6 @@ void       nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
                                                 NautilusWindowSlot *slot);
 
-gboolean   nautilus_toolbar_is_menu_visible    (NautilusToolbar *toolbar);
-
 void       nautilus_toolbar_on_window_constructed       (NautilusToolbar *toolbar);
 
 void nautilus_toolbar_set_window_slot (NautilusToolbar    *self,

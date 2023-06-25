@@ -96,6 +96,9 @@ struct _NautilusWindow
 {
     AdwApplicationWindow parent_instance;
 
+    GtkWidget *app_button;
+    GMenuModel *undo_redo_section;
+
     AdwTabView *tab_view;
     AdwTabBar *tab_bar;
     AdwTabPage *menu_page;
@@ -1348,12 +1351,12 @@ on_path_bar_open_location (NautilusWindow    *window,
     }
 }
 
-GtkWidget *
-nautilus_window_get_toolbar (NautilusWindow *window)
+GMenuModel *
+nautilus_window_get_undo_redo_section (NautilusWindow *window)
 {
     g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
-    return window->toolbar;
+    return window->undo_redo_section;
 }
 
 static void
@@ -2301,6 +2304,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, app_button);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, undo_redo_section);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, split_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
@@ -2423,4 +2428,17 @@ nautilus_window_search (NautilusWindow *window,
     {
         g_warning ("Trying search on a slot but no active slot present");
     }
+}
+
+gboolean
+nautilus_window_is_menu_visible (NautilusWindow *self)
+{
+    GtkWidget *menu;
+
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW (self), FALSE);
+
+    menu = GTK_WIDGET (gtk_menu_button_get_popover (GTK_MENU_BUTTON (self->app_button)));
+    g_return_val_if_fail (menu != NULL, FALSE);
+
+    return gtk_widget_is_visible (menu);
 }
