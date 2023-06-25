@@ -46,26 +46,26 @@
     <child>
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
-          <object class="AdwToolbarView">
-            <property name="top-bar-style">raised</property>
-            <property name="bottom-bar-style">raised</property>
-            <child type="top">
-              <object class="NautilusToolbar" id="toolbar">
-                <property name="show-toolbar-children">True</property>
-                <property name="sidebar-button-active" bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
-                <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
+          <object class="AdwOverlaySplitView" id="split_view">
+            <property name="sidebar">
+              <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
+                <property name="vexpand">True</property>
+                <property name="show-other-locations">True</property>
+                <property name="show-starred-location">True</property>
               </object>
-            </child>
-            <child>
-              <object class="AdwOverlaySplitView" id="split_view">
-                <property name="sidebar">
-                  <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
-                    <property name="vexpand">True</property>
-                    <property name="show-other-locations">True</property>
-                    <property name="show-starred-location">True</property>
+            </property>
+            <property name="content">
+              <object class="AdwToolbarView">
+                <property name="top-bar-style">raised</property>
+                <property name="bottom-bar-style">raised</property>
+                <child type="top">
+                  <object class="NautilusToolbar" id="toolbar">
+                    <property name="show-toolbar-children">True</property>
+                    <property name="sidebar-button-active" bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
+                    <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                   </object>
-                </property>
-                <property name="content">
+                </child>
+                <child>
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
                     <child>
@@ -79,32 +79,32 @@
                       </object>
                     </child>
                   </object>
-                </property>
-              </object>
-            </child>
-            <child type="bottom">
-              <object class="GtkActionBar" id="action_bar">
-                <property name="revealed">False</property>
-                <child type="start">
-                  <object class="NautilusHistoryControls">
-                    <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
-                  </object>
                 </child>
-                <child type="end">
-                  <object class="GtkBox">
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="NautilusProgressIndicator"/>
-                    </child>
-                    <child>
-                      <object class="NautilusViewControls">
+                <child type="bottom">
+                  <object class="GtkActionBar" id="action_bar">
+                    <property name="revealed">False</property>
+                    <child type="start">
+                      <object class="NautilusHistoryControls">
                         <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
+                      </object>
+                    </child>
+                    <child type="end">
+                      <object class="GtkBox">
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="NautilusProgressIndicator"/>
+                        </child>
+                        <child>
+                          <object class="NautilusViewControls">
+                            <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
                 </child>
               </object>
-            </child>
+            </property>
           </object>
         </property>
       </object>
