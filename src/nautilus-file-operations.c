@@ -242,8 +242,8 @@ typedef struct
     GFile *location;
     GFile *dest_dir;
     gboolean success;
-    GBytes *bytes;
     char *base_name;
+    GdkTexture *texture;
     NautilusCopyCallback done_callback;
     gpointer done_callback_data;
 } SaveImageJob;
@@ -8041,6 +8041,7 @@ save_image_thread_func (GTask        *task,
                         GCancellable *cancellable)
 {
     SaveImageJob *job = task_data;
+    g_autoptr (GBytes) bytes = NULL;
     g_autoptr (GError) output_error = NULL;
     g_autoptr (GFileOutputStream) stream = NULL;
     int i = 0;
@@ -8070,10 +8071,12 @@ save_image_thread_func (GTask        *task,
         }
     }
 
-    nautilus_progress_info_set_progress (job->common.progress, .75, 1);
+    nautilus_progress_info_set_progress (job->common.progress, .35, 1);
     nautilus_progress_info_set_status (job->common.progress, _("Saving image to file"));
+    bytes = gdk_texture_save_to_png_bytes (job->texture);
+    nautilus_progress_info_set_progress (job->common.progress, .65, 1);
     nautilus_progress_info_set_details (job->common.progress, "");
-    g_output_stream_write_bytes (G_OUTPUT_STREAM (stream), job->bytes, job->common.cancellable, &output_error);
+    g_output_stream_write_bytes (G_OUTPUT_STREAM (stream), bytes, job->common.cancellable, &output_error);
     if (output_error == NULL)
     {
         job->success = TRUE;
@@ -8114,7 +8117,7 @@ save_image_task_done (GObject      *source_object,
     g_free (job->base_name);
     g_clear_object (&job->location);
     g_clear_object (&job->dest_dir);
-    g_clear_pointer (&job->bytes, g_bytes_unref);
+    g_clear_object (&job->texture);
 
     finalize_common ((CommonJob *) job);
 }
@@ -8143,8 +8146,8 @@ clipboard_image_received_callback (GObject      *source_object,
         return;
     }
 
-    job->bytes = gdk_texture_save_to_png_bytes (texture);
-    nautilus_progress_info_set_progress (job->common.progress, .5, 1);
+    job->texture = g_object_ref (texture);
+    nautilus_progress_info_set_progress (job->common.progress, .25, 1);
 
     task = g_task_new (NULL, NULL, save_image_task_done, job);
     g_task_set_task_data (task, job, NULL);
@@ -8173,7 +8176,6 @@ nautilus_file_operations_paste_image_from_clipboard (GtkWidget                  
     job->base_name = g_strdup (_("Pasted image"));
     job->dest_dir = g_file_new_for_uri (parent_dir_uri);
     job->location = NULL;
-    job->bytes = NULL;
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
 
