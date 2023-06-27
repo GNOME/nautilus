@@ -129,6 +129,7 @@
         "-Dbackend-gtk4=enabled",
         "-Dbackend-gtk3=disabled",
         "-Dbackend-qt5=disabled",
+        "-Dvapi=false",
         "--libdir=/app/lib",
         "--buildtype=debugoptimized"
       ],
@@ -144,6 +145,9 @@
       "name": "libcloudproviders",
       "buildsystem": "meson",
       "builddir": true,
+      "config-opts": [
+      	"-Dvapigen=false"
+      ],
       "sources" : [
         {
           "type": "git",
