@@ -3187,13 +3187,18 @@ static GActionEntry entries[] = {
 };
 
 static gboolean
-should_show_format_command (GVolume *volume,
-                            gchar   *uri)
+should_show_format_command (GVolume *volume)
 {
     g_autofree gchar *unix_device_id = NULL;
     gboolean disks_available;
+    g_autoptr (GFile) activation_root = NULL;
 
-    if (volume == NULL || !G_IS_VOLUME (volume) || g_str_has_prefix (uri, "mtp://"))
+    if (volume == NULL || !G_IS_VOLUME (volume))
+      return FALSE;
+
+    /* Don't show format command for MTP and GPhoto2 devices. */
+    activation_root = g_volume_get_activation_root (volume);
+    if (activation_root != NULL && !g_file_is_native (activation_root))
       return FALSE;
 
     unix_device_id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
@@ -3471,7 +3476,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
       g_object_unref (item);
     }
 
-  if (should_show_format_command (volume, uri))
+  if (should_show_format_command (volume))
     {
       item = g_menu_item_new (_("Format…"), "row.format");
       g_menu_append_item (section, item);
