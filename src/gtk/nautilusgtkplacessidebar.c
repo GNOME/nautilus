@@ -3461,7 +3461,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
       g_object_unref (item);
     }
 
-  if (show_stop && !show_unmount)
+  if (show_stop)
     {
       const guint ss_type = g_drive_get_start_stop_type (drive);
       const char *stop_label = _("_Stop");
