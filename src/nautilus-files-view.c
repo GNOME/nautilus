@@ -3262,6 +3262,7 @@ slot_active_changed (NautilusWindowSlot *slot,
          */
         nautilus_files_view_update_context_menus (view);
         nautilus_files_view_update_toolbar_menus (view);
+        nautilus_files_view_preview_update (view);
 
         schedule_update_context_menus (view);
 
