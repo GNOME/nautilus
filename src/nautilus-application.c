@@ -88,8 +88,6 @@ typedef struct
     NautilusTagManager *tag_manager;
 
     NautilusDBusLauncher *dbus_launcher;
-
-    guint previewer_selection_id;
 } NautilusApplicationPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, ADW_TYPE_APPLICATION);
@@ -1234,7 +1232,7 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
-    priv->previewer_selection_id = nautilus_previewer_connect_selection_event (connection);
+    nautilus_previewer_setup ();
 
     return TRUE;
 }
@@ -1266,12 +1264,7 @@ nautilus_application_dbus_unregister (GApplication    *app,
         g_clear_object (&priv->search_provider);
     }
 
-    if (priv->previewer_selection_id != 0)
-    {
-        nautilus_previewer_disconnect_selection_event (connection,
-                                                       priv->previewer_selection_id);
-        priv->previewer_selection_id = 0;
-    }
+    nautilus_previewer_teardown (connection);
 }
 
 static void
