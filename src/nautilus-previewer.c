@@ -33,9 +33,10 @@
 
 #include <gio/gio.h>
 
-#define PREVIEWER_DBUS_NAME "org.gnome.NautilusPreviewer"
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
-#define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
+
+static const char *previewer_dbus_name = "org.gnome.NautilusPreviewer" PROFILE;
+static const char *previewer_dbus_path = "/org/gnome/NautilusPreviewer" PROFILE;
 
 static gboolean previewer_ready = FALSE;
 static gboolean fetching_bus = FALSE;
@@ -45,6 +46,7 @@ static guint subscription_id = 0;
 static GCancellable *cancellable = NULL;
 
 
+static void create_new_bus (void);
 static void previewer_selection_event (GDBusConnection *connection,
                                        const gchar     *sender_name,
                                        const gchar     *object_path,
@@ -70,15 +72,21 @@ on_ping_finished (GObject      *object,
         previewer_ready = TRUE;
         fetching_bus = FALSE;
         subscription_id = g_dbus_connection_signal_subscribe (connection,
-                                                              PREVIEWER_DBUS_NAME,
+                                                              previewer_dbus_name,
                                                               PREVIEWER2_DBUS_IFACE,
                                                               "SelectionEvent",
-                                                              PREVIEWER_DBUS_PATH,
+                                                              previewer_dbus_path,
                                                               NULL,
                                                               G_DBUS_SIGNAL_FLAGS_NONE,
                                                               previewer_selection_event,
                                                               NULL,
                                                               NULL);
+    }
+    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewerDevel") == 0)
+    {
+        previewer_dbus_name = "org.gnome.NautilusPreviewer";
+        previewer_dbus_path = "/org/gnome/NautilusPreviewer";
+        create_new_bus ();
     }
     else
     {
@@ -104,6 +112,12 @@ on_bus_ready (GObject      *object,
                            G_DBUS_CALL_FLAGS_NONE, G_MAXINT,
                            cancellable, on_ping_finished, NULL);
     }
+    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewerDevel") == 0)
+    {
+        previewer_dbus_name = "org.gnome.NautilusPreviewer";
+        previewer_dbus_path = "/org/gnome/NautilusPreviewer";
+        create_new_bus ();
+    }
     else
     {
         fetching_bus = FALSE;
@@ -117,8 +131,8 @@ create_new_bus (void)
     g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                               G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
                               NULL,
-                              PREVIEWER_DBUS_NAME,
-                              PREVIEWER_DBUS_PATH,
+                              previewer_dbus_name,
+                              previewer_dbus_path,
                               PREVIEWER2_DBUS_IFACE,
                               cancellable,
                               on_bus_ready,
