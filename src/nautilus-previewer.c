@@ -37,33 +37,110 @@
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
-static GDBusProxy * previewer_v2_proxy = NULL;
+static gboolean previewer_ready = FALSE;
+static gboolean fetching_bus = FALSE;
+static GDBusProxy *previewer_proxy = NULL;
+static guint subscription_id = 0;
+
+static GCancellable *cancellable = NULL;
+
+
+static void previewer_selection_event (GDBusConnection *connection,
+                                       const gchar     *sender_name,
+                                       const gchar     *object_path,
+                                       const gchar     *interface_name,
+                                       const gchar     *signal_name,
+                                       GVariant        *parameters,
+                                       gpointer         user_data);
+
+static void
+on_ping_finished (GObject      *object,
+                  GAsyncResult *res,
+                  gpointer      user_data)
+{
+    g_autoptr (GVariant) variant = NULL;
+    g_autoptr (GError) error = NULL;
+
+    variant = g_dbus_proxy_call_finish (G_DBUS_PROXY (object), res, &error);
+
+    if (error == NULL)
+    {
+        GDBusConnection *connection = g_dbus_proxy_get_connection (previewer_proxy);
+
+        previewer_ready = TRUE;
+        fetching_bus = FALSE;
+        subscription_id = g_dbus_connection_signal_subscribe (connection,
+                                                              PREVIEWER_DBUS_NAME,
+                                                              PREVIEWER2_DBUS_IFACE,
+                                                              "SelectionEvent",
+                                                              PREVIEWER_DBUS_PATH,
+                                                              NULL,
+                                                              G_DBUS_SIGNAL_FLAGS_NONE,
+                                                              previewer_selection_event,
+                                                              NULL,
+                                                              NULL);
+    }
+    else
+    {
+        fetching_bus = FALSE;
+        DEBUG ("Unable to create NautilusPreviewer2 proxy: %s", error->message);
+    }
+}
+
+static void
+on_bus_ready (GObject      *object,
+              GAsyncResult *res,
+              gpointer      user_data)
+{
+    g_autoptr (GError) error = NULL;
+
+    g_clear_object (&previewer_proxy);
+    previewer_proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+
+    if (error == NULL)
+    {
+        g_dbus_proxy_call (previewer_proxy,
+                           "org.freedesktop.DBus.Peer.Ping", NULL,
+                           G_DBUS_CALL_FLAGS_NONE, G_MAXINT,
+                           cancellable, on_ping_finished, NULL);
+    }
+    else
+    {
+        fetching_bus = FALSE;
+        DEBUG ("Unable to create NautilusPreviewer2 proxy: %s", error->message);
+    }
+}
+
+static void
+create_new_bus (void)
+{
+    g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                              G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
+                              NULL,
+                              PREVIEWER_DBUS_NAME,
+                              PREVIEWER_DBUS_PATH,
+                              PREVIEWER2_DBUS_IFACE,
+                              cancellable,
+                              on_bus_ready,
+                              NULL);
+}
 
 static gboolean
-ensure_previewer_v2_proxy (void)
+ensure_previewer_proxy (void)
 {
-    if (previewer_v2_proxy == NULL)
+    if (previewer_ready)
     {
-        g_autoptr (GError) error = NULL;
-        GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
-
-        previewer_v2_proxy = g_dbus_proxy_new_sync (connection,
-                                                    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
-                                                    NULL,
-                                                    PREVIEWER_DBUS_NAME,
-                                                    PREVIEWER_DBUS_PATH,
-                                                    PREVIEWER2_DBUS_IFACE,
-                                                    NULL,
-                                                    &error);
-
-        if (error != NULL)
-        {
-            DEBUG ("Unable to create NautilusPreviewer2 proxy: %s", error->message);
-            return FALSE;
-        }
+        return TRUE;
+    }
+    if (fetching_bus)
+    {
+        return FALSE;
     }
 
-    return TRUE;
+    fetching_bus = TRUE;
+
+    create_new_bus ();
+    return FALSE;
 }
 
 static void
@@ -88,18 +165,18 @@ nautilus_previewer_call_show_file (const gchar *uri,
                                    guint        xid,
                                    gboolean     close_if_already_visible)
 {
-    if (!ensure_previewer_v2_proxy ())
+    if (!ensure_previewer_proxy ())
     {
         return;
     }
 
-    g_dbus_proxy_call (previewer_v2_proxy,
+    g_dbus_proxy_call (previewer_proxy,
                        "ShowFile",
                        g_variant_new ("(ssb)",
                                       uri, window_handle, close_if_already_visible),
                        G_DBUS_CALL_FLAGS_NONE,
                        -1,
-                       NULL,
+                       cancellable,
                        previewer2_method_ready_cb,
                        NULL);
 }
@@ -107,18 +184,18 @@ nautilus_previewer_call_show_file (const gchar *uri,
 void
 nautilus_previewer_call_close (void)
 {
-    if (!ensure_previewer_v2_proxy ())
+    if (!ensure_previewer_proxy ())
     {
         return;
     }
 
     /* don't autostart the previewer if it's not running */
-    g_dbus_proxy_call (previewer_v2_proxy,
+    g_dbus_proxy_call (previewer_proxy,
                        "Close",
                        NULL,
                        G_DBUS_CALL_FLAGS_NO_AUTO_START,
                        -1,
-                       NULL,
+                       cancellable,
                        previewer2_method_ready_cb,
                        NULL);
 }
@@ -165,26 +242,23 @@ previewer_selection_event (GDBusConnection *connection,
     nautilus_files_view_preview_selection_event (NAUTILUS_FILES_VIEW (view), direction);
 }
 
-guint
-nautilus_previewer_connect_selection_event (GDBusConnection *connection)
+void
+nautilus_previewer_setup (void)
 {
-    return g_dbus_connection_signal_subscribe (connection,
-                                               PREVIEWER_DBUS_NAME,
-                                               PREVIEWER2_DBUS_IFACE,
-                                               "SelectionEvent",
-                                               PREVIEWER_DBUS_PATH,
-                                               NULL,
-                                               G_DBUS_SIGNAL_FLAGS_NONE,
-                                               previewer_selection_event,
-                                               NULL,
-                                               NULL);
+    ensure_previewer_proxy ();
 }
 
 void
-nautilus_previewer_disconnect_selection_event (GDBusConnection *connection,
-                                               guint            event_id)
+nautilus_previewer_teardown (GDBusConnection *connection)
 {
-    g_dbus_connection_signal_unsubscribe (connection, event_id);
+    if (subscription_id != 0)
+    {
+        g_dbus_connection_signal_unsubscribe (connection, subscription_id);
+    }
+
+    g_cancellable_cancel (cancellable);
+    g_clear_object (&cancellable);
+    g_clear_object (&previewer_proxy);
 }
 
 gboolean
@@ -192,12 +266,12 @@ nautilus_previewer_is_visible (void)
 {
     g_autoptr (GVariant) variant = NULL;
 
-    if (!ensure_previewer_v2_proxy ())
+    if (!ensure_previewer_proxy ())
     {
         return FALSE;
     }
 
-    variant = g_dbus_proxy_get_cached_property (previewer_v2_proxy, "Visible");
+    variant = g_dbus_proxy_get_cached_property (previewer_proxy, "Visible");
     if (variant)
     {
         return g_variant_get_boolean (variant);

@@ -35,8 +35,7 @@ void nautilus_previewer_call_close     (void);
 
 gboolean nautilus_previewer_is_visible (void);
 
-guint nautilus_previewer_connect_selection_event (GDBusConnection *connection);
-void  nautilus_previewer_disconnect_selection_event (GDBusConnection *connection,
-                                                     guint            event_id);
+void  nautilus_previewer_setup         (void);
+void  nautilus_previewer_teardown      (GDBusConnection *connection);
 
 G_END_DECLS
