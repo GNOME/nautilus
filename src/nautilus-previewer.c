@@ -124,6 +124,39 @@ nautilus_previewer_call_close (void)
 }
 
 static void
+on_window_handle_export (NautilusWindow *window,
+                         const char     *handle,
+                         guint           xid,
+                         gpointer        user_data)
+{
+    NautilusWindowSlot *slot;
+    NautilusView *view;
+    g_autoptr (GVariant) variant = NULL;
+    const char *parent_handle;
+    guint direction = GPOINTER_TO_INT (user_data);
+
+    slot = nautilus_window_get_active_slot (window);
+    view = nautilus_window_slot_get_current_view (slot);
+
+    if (!NAUTILUS_IS_FILES_VIEW (view))
+    {
+        return;
+    }
+
+    variant = g_dbus_proxy_get_cached_property (previewer_v2_proxy, "ParentHandle");
+    parent_handle = variant != NULL ? g_variant_get_string (variant, NULL) : NULL;
+
+    if (variant == NULL ||
+        g_strcmp0 (parent_handle, handle) == 0)
+    {
+        /* Only call if parent_handle matches window_handle or if parent_handle
+         * isn't available from Sushi.
+         */
+        nautilus_files_view_preview_selection_event (NAUTILUS_FILES_VIEW (view), direction);
+    }
+}
+
+static void
 previewer_selection_event (GDBusConnection *connection,
                            const gchar     *sender_name,
                            const gchar     *object_path,
@@ -135,8 +168,6 @@ previewer_selection_event (GDBusConnection *connection,
     GApplication *application = g_application_get_default ();
     GList *l, *windows = gtk_application_get_windows (GTK_APPLICATION (application));
     NautilusWindow *window = NULL;
-    NautilusWindowSlot *slot;
-    NautilusView *view;
     GtkDirectionType direction;
 
     for (l = windows; l != NULL; l = l->next)
@@ -153,16 +184,8 @@ previewer_selection_event (GDBusConnection *connection,
         return;
     }
 
-    slot = nautilus_window_get_active_slot (window);
-    view = nautilus_window_slot_get_current_view (slot);
-
-    if (!NAUTILUS_IS_FILES_VIEW (view))
-    {
-        return;
-    }
-
     g_variant_get (parameters, "(u)", &direction);
-    nautilus_files_view_preview_selection_event (NAUTILUS_FILES_VIEW (view), direction);
+    nautilus_window_export_handle(window, on_window_handle_export, GINT_TO_POINTER (direction));
 }
 
 guint
