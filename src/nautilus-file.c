@@ -40,6 +40,7 @@
 #include <libxml/parser.h>
 #include <sys/types.h>
 #include <limits.h>
+#include <locale.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -5315,6 +5316,8 @@ nautilus_file_get_trash_original_file_parent_as_string (NautilusFile *file)
     return filename;
 }
 
+G_DEFINE_AUTO_CLEANUP_FREE_FUNC (locale_t, freelocale, (locale_t) 0)
+
 /**
  * nautilus_file_get_date_as_string:
  *
@@ -5330,6 +5333,9 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                                   NautilusDateType    date_type,
                                   NautilusDateFormat  date_format)
 {
+    const char *time_locale;
+    locale_t current_locale;
+    g_auto (locale_t) forced_locale = (locale_t) 0;
     time_t file_time_raw;
     GDateTime *file_date_time, *now;
     GDateTime *today_midnight;
@@ -5342,6 +5348,20 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     {
         return NULL;
     }
+
+    /* We are going to pick a translatable string which defines a time format,
+     * which is then used to obtain a final string for the current time.
+     *
+     * The time locale might be different from the language we pick translations
+     * from; so, in order to avoid chimeric results (with some particles in one
+     * language and other particles in another language), we need to temporarily
+     * force translations to be obtained from the language corresponding to the
+     * time locale. The current locale settings are saved to be restored later.
+     */
+    time_locale = setlocale (LC_TIME, NULL);
+    current_locale = uselocale ((locale_t) 0);
+    forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
+    uselocale (forced_locale);
 
     file_date_time = g_date_time_new_from_unix_local (file_time_raw);
     if (date_format != NAUTILUS_DATE_FORMAT_FULL)
@@ -5457,6 +5477,9 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
             format = _("%-e %B %Y %l:%M:%S %p");
         }
     }
+
+    /* Restore locale settings */
+    uselocale (current_locale);
 
     result = g_date_time_format (file_date_time, format);
     g_date_time_unref (file_date_time);
