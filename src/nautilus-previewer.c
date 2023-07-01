@@ -223,6 +223,16 @@ handle_previewer_event (GDBusConnection *connection,
         return;
     }
 
+    /* The previewer may be shared with another Nautilus instance. Only react
+     * to events while the previewer is parented to our window. */
+    g_autoptr (GVariant) parent_handle = g_dbus_proxy_get_cached_property (previewer_proxy,
+                                                                           "ParentHandle");
+    if (parent_handle != NULL &&
+        g_strcmp0 (g_variant_get_string (parent_handle, NULL), exported_window_handle) != 0)
+    {
+        return;
+    }
+
     callback (files_view, parameters);
 }
 
