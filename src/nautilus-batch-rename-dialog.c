@@ -672,7 +672,6 @@ select_nth_conflict (NautilusBatchRenameDialog *dialog)
     gint nth_conflict;
     gint name_occurences;
     GtkAdjustment *adjustment;
-    GtkAllocation allocation;
     ConflictData *conflict_data;
     GtkListBoxRow *list_box_row;
 
@@ -703,8 +702,7 @@ select_nth_conflict (NautilusBatchRenameDialog *dialog)
 
     /* scroll to the selected row */
     adjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (dialog->scrolled_window));
-    gtk_widget_get_allocation (GTK_WIDGET (l->data), &allocation);
-    gtk_adjustment_set_value (adjustment, (allocation.height + 1) * nth_conflict_index);
+    gtk_adjustment_set_value (adjustment, (gtk_widget_get_height (GTK_WIDGET (l->data)) + 1) * nth_conflict_index);
 
     name_occurences = 0;
     for (l = dialog->new_names; l != NULL; l = l->next)

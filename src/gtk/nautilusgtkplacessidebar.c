@@ -2458,8 +2458,8 @@ _popover_set_pointing_to_widget (GtkPopover *popover,
   if (!gtk_widget_translate_coordinates (target, parent, 0, 0, &x, &y))
     return;
 
-  w = gtk_widget_get_allocated_width (GTK_WIDGET (target));
-  h = gtk_widget_get_allocated_height (GTK_WIDGET (target));
+  w = gtk_widget_get_width (GTK_WIDGET (target));
+  h = gtk_widget_get_height (GTK_WIDGET (target));
 
   gtk_popover_set_pointing_to (popover, &(GdkRectangle){x, y, w, h});
 }

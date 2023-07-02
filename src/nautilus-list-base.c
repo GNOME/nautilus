@@ -1307,7 +1307,7 @@ get_first_visible_item (NautilusListBase *self)
         if (item_ui != NULL && gtk_widget_get_mapped (item_ui))
         {
             GtkWidget *list_item_widget = gtk_widget_get_parent (item_ui);
-            gdouble h = gtk_widget_get_allocated_height (list_item_widget);
+            gdouble h = gtk_widget_get_height (list_item_widget);
             gdouble y;
 
             gtk_widget_translate_coordinates (list_item_widget, GTK_WIDGET (self),

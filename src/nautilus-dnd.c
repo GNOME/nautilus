@@ -147,8 +147,8 @@ nautilus_drag_drop_action_ask (GtkWidget     *widget,
 
     /* We don't have pointer coords here. Just pick the center of the widget. */
     gtk_popover_set_pointing_to (GTK_POPOVER (popover),
-                                 &(GdkRectangle){ .x = 0.5 * gtk_widget_get_allocated_width (widget),
-                                                  .y = 0.5 * gtk_widget_get_allocated_height (widget),
+                                 &(GdkRectangle){ .x = 0.5 * gtk_widget_get_width (widget),
+                                                  .y = 0.5 * gtk_widget_get_height (widget),
                                                   .width = 0, .height = 0 });
 
     gtk_popover_popup (GTK_POPOVER (popover));

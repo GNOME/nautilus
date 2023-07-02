@@ -281,9 +281,9 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     data = g_slice_new (CheckPointerData);
     data->floating_bar = self;
     data->x_down_limit = x_pos;
-    data->x_upper_limit = x_pos + gtk_widget_get_allocated_width (GTK_WIDGET (self));
+    data->x_upper_limit = x_pos + gtk_widget_get_width (GTK_WIDGET (self));
     data->y_down_limit = y_pos;
-    data->y_upper_limit = y_pos + gtk_widget_get_allocated_height (GTK_WIDGET (self));
+    data->y_upper_limit = y_pos + gtk_widget_get_height (GTK_WIDGET (self));
 
     self->hover_timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT, HOVER_HIDE_TIMEOUT_INTERVAL,
                                                  check_pointer_timeout, data,

@@ -405,8 +405,8 @@ on_operations_icon_draw (GtkDrawingArea            *drawing_area,
     }
 
 
-    width = gtk_widget_get_allocated_width (widget);
-    height = gtk_widget_get_allocated_height (widget);
+    width = gtk_widget_get_width (widget);
+    height = gtk_widget_get_height (widget);
 
     gdk_cairo_set_source_rgba (cr, &background);
     cairo_arc (cr,
