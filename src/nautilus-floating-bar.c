@@ -44,8 +44,7 @@ struct _NautilusFloatingBar
     guint hover_timeout_id;
 
     GtkEventController *motion_controller;
-    double pointer_x_in_parent_coordinates;
-    double pointer_y_in_parent_coordinates;
+    graphene_point_t pointer_in_parent_coordinates;
 };
 
 enum
@@ -205,10 +204,7 @@ nautilus_floating_bar_remove_hover_timeout (NautilusFloatingBar *self)
 typedef struct
 {
     NautilusFloatingBar *floating_bar;
-    gint x_down_limit;
-    gint x_upper_limit;
-    gint y_down_limit;
-    gint y_upper_limit;
+    graphene_rect_t out_bounds;
 } CheckPointerData;
 
 static void
@@ -222,15 +218,9 @@ check_pointer_timeout (gpointer user_data)
 {
     CheckPointerData *data = user_data;
     NautilusFloatingBar *self = data->floating_bar;
-    double pointer_x = self->pointer_x_in_parent_coordinates;
-    double pointer_y = self->pointer_y_in_parent_coordinates;
+    const graphene_point_t pointer = self->pointer_in_parent_coordinates;
 
-    if (pointer_x == -1 ||
-        pointer_y == -1 ||
-        pointer_x < data->x_down_limit ||
-        pointer_x > data->x_upper_limit ||
-        pointer_y < data->y_down_limit ||
-        pointer_y > data->y_upper_limit)
+    if (!graphene_rect_contains_point (&data->out_bounds, &pointer))
     {
         gtk_widget_set_visible (GTK_WIDGET (self), TRUE);
         self->hover_timeout_id = 0;
@@ -254,11 +244,10 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
     GtkWidget *parent;
     CheckPointerData *data;
-    gdouble x_pos;
-    gdouble y_pos;
+    graphene_rect_t bounds;
 
-    self->pointer_x_in_parent_coordinates = x;
-    self->pointer_y_in_parent_coordinates = y;
+    self->pointer_in_parent_coordinates.x = x;
+    self->pointer_in_parent_coordinates.y = y;
 
     if (self->is_interactive || !gtk_widget_is_visible (GTK_WIDGET (self)))
     {
@@ -266,9 +255,9 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     }
 
     parent = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
-    gtk_widget_translate_coordinates (GTK_WIDGET (self), parent, 0, 0, &x_pos, &y_pos);
 
-    if (x < x_pos || y < y_pos)
+    if (!gtk_widget_compute_bounds (GTK_WIDGET (self), parent, &bounds) ||
+        !graphene_rect_contains_point (&bounds, &self->pointer_in_parent_coordinates))
     {
         return;
     }
@@ -280,10 +269,7 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
 
     data = g_slice_new (CheckPointerData);
     data->floating_bar = self;
-    data->x_down_limit = x_pos;
-    data->x_upper_limit = x_pos + gtk_widget_get_width (GTK_WIDGET (self));
-    data->y_down_limit = y_pos;
-    data->y_upper_limit = y_pos + gtk_widget_get_height (GTK_WIDGET (self));
+    data->out_bounds = bounds;
 
     self->hover_timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT, HOVER_HIDE_TIMEOUT_INTERVAL,
                                                  check_pointer_timeout, data,
@@ -298,8 +284,8 @@ on_event_controller_motion_leave (GtkEventControllerMotion *controller,
 {
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (user_data);
 
-    self->pointer_x_in_parent_coordinates = -1;
-    self->pointer_y_in_parent_coordinates = -1;
+    self->pointer_in_parent_coordinates.x = -1;
+    self->pointer_in_parent_coordinates.y = -1;
 }
 
 static void
@@ -404,8 +390,8 @@ nautilus_floating_bar_init (NautilusFloatingBar *self)
     gtk_widget_add_css_class (GTK_WIDGET (self), "floating-bar");
 
     self->motion_controller = NULL;
-    self->pointer_x_in_parent_coordinates = -1;
-    self->pointer_y_in_parent_coordinates = -1;
+    self->pointer_in_parent_coordinates.x = -1;
+    self->pointer_in_parent_coordinates.y = -1;
 
     g_signal_connect (self,
                       "notify::parent",
