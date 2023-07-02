@@ -1,3 +1,39 @@
+Major changes in 45.alpha
+=====================
+
+* Enhancements:
+  - Boost search performance (Carlos Garnacho, António Fernandes)
+  - Redesign Visible Columns options, allow changing default columns (Corey Berla, Peter Eisenmann)
+  - Support dropping images from web pages (Corey Berla)
+  - Show bytes size as tooltip for folder properties too (Raihan)
+  - Indicate starred files in grid view (Gary Li)
+  - Support skipping errors while creating compressed archives (Gary Li)
+  - Make date and time format more consistent (Allan Day, Venkata Kesav Venna, Ondrej Holy)
+  - Make Ctrl+F refocus search bar, not cancel search (Khalid Abu Shawarib)
+  - Adapt sidebar width to window width, and use a breakpoint for adaptiveness (Christopher Davis)
+  - Allow moving keyboard focus within list rows (Corey Berla)
+  - Replace GtkComboBox with GtkDropDown (Corey Berla)
+  - Simplify Keyboard Shortcuts window definition (Sabri Ünal)
+  - Improve file opening experience while sandboxed (António Fernandes)
+* Bugfixes:
+  - Fix results ordering, and other search bugs (Eric Daigle, António Fernandes, Carlos Garnacho, Khalid Abu Shawarib)
+  - Fix tooltips, a11y labels, and i18n issues (sunflowerskater, Khalid Abu Shawarib, Automeris naranja, Sabri Ünal)
+  - Fix sushi integration bugs (Corey Berla)
+  - Don't hide incompletely deleted folders (Corey Berla)
+  - Show file renamed to hidden again on undo (Corey Berla)
+  - Don't state file was "deleted" if it was moved to trash (Sayan Bhattacharjee)
+  - Fix rubberband range behavior on list view (António Fernandes)
+  - Respect modifiers when dropping on tabs; disable broken tab drop target on X11 (Corey Berla)
+  - Fix bugs when reloading on autofs timeouts (Ondrej Holy)
+  - Don't offer to format volumes which cannot be formatted, e.g. MTP (Ondrej Holy)
+  - Fix multiple crashes (Corey Berla, António Fernandes)
+  - Fix multiple leaks (Khalid Abu Shawarib, António Fernandes)
+* Maintenance:
+  - Rename default branch to 'main' (Peter Eisenmann)
+  - Make libcloudproviders dependency optional again (Ondrej Holy)
+  - Improve reproducibility (Khem Raj)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 44.1
 =====================
 * Resolve some crashes (Peter Eisenmann, Gary Li, António Fernandes)
