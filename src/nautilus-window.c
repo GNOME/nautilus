@@ -2023,7 +2023,8 @@ nautilus_window_unexport_handle (NautilusWindow *window)
         GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
         if (GDK_IS_WAYLAND_TOPLEVEL (gdk_surface))
         {
-            gdk_wayland_toplevel_unexport_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface));
+            gdk_wayland_toplevel_drop_exported_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
+                                                       window->export_handle);
         }
     }
 #endif
