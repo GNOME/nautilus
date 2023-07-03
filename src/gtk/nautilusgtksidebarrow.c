@@ -690,7 +690,6 @@ nautilus_gtk_sidebar_row_clone (NautilusGtkSidebarRow *self)
                       "section-type", self->section_type,
                       "place-type", self->place_type,
                       "uri", self->uri,
-                      "file", self->file,
                       "drive", self->drive,
                       "volume", self->volume,
                       "mount", self->mount,
