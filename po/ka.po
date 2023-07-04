@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2023-01-24 17:51+0000\n"
-"PO-Revision-Date: 2023-01-24 20:27+0100\n"
+"POT-Creation-Date: 2023-07-02 15:46+0000\n"
+"PO-Revision-Date: 2023-07-04 18:34+0200\n"
 "Last-Translator: Ekaterine Papava <papava.e@gtu.ge>\n"
 "Language-Team: Georgian <(nothng)>\n"
 "Language: ka\n"
@@ -16,15 +16,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
 msgstr "პროგრამის გაშვება"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:112
-#: src/nautilus-window.c:2378
+#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
+#: src/nautilus-window.c:2390
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:39
 msgid "Files"
 msgstr "ფაილები"
@@ -53,7 +53,7 @@ msgid ""
 "can be extended with plugins and scripts."
 msgstr ""
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2380
+#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2392
 msgid "The GNOME Project"
 msgstr "პროექტი \"GNOME\""
 
@@ -70,15 +70,15 @@ msgstr "სიისებრი ხედი"
 #: src/nautilus-search-directory-file.c:177
 #: src/nautilus-search-directory-file.c:234
 #: src/nautilus-search-directory-file.c:274
-#: src/resources/ui/nautilus-search-popover.ui:272
+#: src/resources/ui/nautilus-search-popover.ui:276
 #: src/resources/ui/nautilus-toolbar.ui:111
 msgid "Search"
 msgstr "ძებნა"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:109
-#: src/nautilus-file.c:4480 src/nautilus-file-utilities.c:321
-#: src/nautilus-pathbar.c:381 src/gtk/nautilusgtkplacesview.ui:158
-#: src/gtk/nautilusgtkplacessidebar.c:1432
+#: src/nautilus-file.c:4491 src/nautilus-file-utilities.c:321
+#: src/nautilus-pathbar.c:385 src/gtk/nautilusgtkplacesview.ui:158
+#: src/gtk/nautilusgtkplacessidebar.c:1450
 msgid "Other Locations"
 msgstr "სხვა მდებარეობები"
 
@@ -87,7 +87,7 @@ msgstr "სხვა მდებარეობები"
 msgid "folder;manager;explore;disk;filesystem;nautilus;"
 msgstr "folder;manager;explore;disk;filesystem;nautilus;"
 
-#: data/org.gnome.Nautilus.desktop.in.in:20
+#: data/org.gnome.Nautilus.desktop.in.in:21
 msgid "New Window"
 msgstr "ახალი ფანჯარა"
 
@@ -287,7 +287,7 @@ msgstr ""
 #: data/org.gnome.nautilus.gschema.xml:174
 msgid ""
 "Whether settings shared with GtkFileChooser have been migrated from their "
-"GTK 3 key to the GTK 4 ones."
+"GTK 3 keys to the GTK 4 ones."
 msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:178
@@ -396,10 +396,10 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "ამ ოპერაციის გაჩერება გაუქმების ღილაკზე დაწოლით შეგიძლიათ."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-operations.c:271 src/nautilus-files-view.c:6025
-#: src/nautilus-files-view.c:6433 src/nautilus-mime-actions.c:596
-#: src/nautilus-mime-actions.c:1016 src/nautilus-mime-actions.c:1338
-#: src/nautilus-properties-window.c:4311 src/nautilus-search-popover.c:650
+#: src/nautilus-file-operations.c:272 src/nautilus-files-view.c:6017
+#: src/nautilus-files-view.c:6425 src/nautilus-mime-actions.c:595
+#: src/nautilus-mime-actions.c:1006 src/nautilus-mime-actions.c:1328
+#: src/nautilus-properties-window.c:4264 src/nautilus-search-popover.c:650
 #: src/resources/ui/nautilus-app-chooser.ui:103
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:101
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
@@ -538,7 +538,7 @@ msgstr "არხები"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:299
 #: extensions/image-properties/nautilus-image-properties-model.c:240
-#: src/nautilus-application.c:185 src/nautilus-window-slot.c:1603
+#: src/nautilus-application.c:183 src/nautilus-window-slot.c:1612
 msgid "Oops! Something went wrong."
 msgstr "რაღაც არასწორად ხდება."
 
@@ -682,7 +682,7 @@ msgstr "შეუძლებელია ნახატის ინფორ�
 msgid "Image Properties"
 msgstr "გამოსახულების თვისებები"
 
-#: src/nautilus-application.c:188
+#: src/nautilus-application.c:186
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -690,7 +690,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/nautilus-application.c:195
+#: src/nautilus-application.c:193
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -698,19 +698,19 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/nautilus-application.c:606
+#: src/nautilus-application.c:604
 msgid "--check cannot be used with other options."
 msgstr "პარამეტრი --check-ის სხვა პარამეტრებთან ერთად გამოყენება შეუძლებელია ."
 
-#: src/nautilus-application.c:614
+#: src/nautilus-application.c:612
 msgid "--quit cannot be used with URIs."
 msgstr "--quit პარამეტრის URI მისამართებით გამოყენება აკრძალულია."
 
-#: src/nautilus-application.c:623
+#: src/nautilus-application.c:621
 msgid "--select must be used with at least an URI."
 msgstr "--select -ს ერთ URL მაინც უნდა მიუთითოთ."
 
-#: src/nautilus-application.c:774
+#: src/nautilus-application.c:773
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -719,39 +719,39 @@ msgstr ""
 "შეცდომა დახმარების გაშვებისას: \n"
 "%s"
 
-#: src/nautilus-application.c:776 src/nautilus-autorun-software.c:162
-#: src/nautilus-mime-actions.c:1192 src/nautilus-ui-utilities.c:330
+#: src/nautilus-application.c:775 src/nautilus-autorun-software.c:162
+#: src/nautilus-mime-actions.c:1182 src/nautilus-ui-utilities.c:330
 msgid "_OK"
 msgstr "_OK"
 
-#: src/nautilus-application.c:894
+#: src/nautilus-application.c:893
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
 "supported."
 msgstr ""
 
-#: src/nautilus-application.c:994
+#: src/nautilus-application.c:993
 msgid "Perform a quick set of self-check tests."
 msgstr "სწრაფი ავტო-შემოწმების შესრულება."
 
-#: src/nautilus-application.c:997
+#: src/nautilus-application.c:996
 msgid "Show the version of the program."
 msgstr "პროგრამის ვერსიის ჩვენება."
 
-#: src/nautilus-application.c:999
+#: src/nautilus-application.c:998
 msgid "Always open a new window for browsing specified URIs"
 msgstr "მითითებული URI-ებისთვის ყოველთვის ცალკე ფანჯარა გაიხსნება"
 
-#: src/nautilus-application.c:1001
+#: src/nautilus-application.c:1000
 msgid "Quit Nautilus."
 msgstr "Nautilus-დან გასვლა."
 
-#: src/nautilus-application.c:1003
+#: src/nautilus-application.c:1002
 msgid "Select specified URI in parent folder."
 msgstr "მონიშნეთ მითითებული URI მშობელ საქაღალდეში."
 
-#: src/nautilus-application.c:1004
+#: src/nautilus-application.c:1003
 msgid "[URI…]"
 msgstr "[URI]"
 
@@ -853,13 +853,13 @@ msgstr "*.* არასწორი სახელია."
 msgid "“..” is not a valid name."
 msgstr "*..* არასწორი სახელია."
 
-#: src/nautilus-batch-rename-dialog.c:1880
+#: src/nautilus-batch-rename-dialog.c:1882
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
 msgstr[0] "%d საქაღალდის სახელის გადარქმევა"
 
-#: src/nautilus-batch-rename-dialog.c:1888
+#: src/nautilus-batch-rename-dialog.c:1890
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
@@ -867,7 +867,7 @@ msgstr[0] "%d ფაილის სახელის გადარქმე�
 
 #. To translators: %d is the total number of files and folders.
 #. * Singular case of the string is never used
-#: src/nautilus-batch-rename-dialog.c:1898
+#: src/nautilus-batch-rename-dialog.c:1900
 #, c-format
 msgid "Rename %d File and Folder"
 msgid_plural "Rename %d Files and Folders"
@@ -946,8 +946,8 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:302
-#: src/nautilus-pathbar.c:376 src/nautilus-shell-search-provider.c:330
-#: src/nautilus-window.c:159 src/gtk/nautilusgtkplacessidebar.c:1005
+#: src/nautilus-pathbar.c:380 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-window.c:160 src/gtk/nautilusgtkplacessidebar.c:1021
 msgid "Home"
 msgstr "სახლი"
 
@@ -967,143 +967,143 @@ msgstr ""
 msgid "Nautilus Clipboard must not have empty lines."
 msgstr ""
 
-#: src/nautilus-column-utilities.c:58 src/gtk/nautilusgtkplacessidebar.c:2351
+#: src/nautilus-column-utilities.c:71 src/gtk/nautilusgtkplacessidebar.c:2379
 msgid "Name"
 msgstr "სახელი"
 
-#: src/nautilus-column-utilities.c:59
+#: src/nautilus-column-utilities.c:72
 msgid "The name and icon of the file."
 msgstr "ფაილის დასახელება და პიქტოგრამა."
 
-#: src/nautilus-column-utilities.c:65
+#: src/nautilus-column-utilities.c:78
 msgid "Size"
 msgstr "ზომა"
 
-#: src/nautilus-column-utilities.c:66
+#: src/nautilus-column-utilities.c:79
 msgid "The size of the file."
 msgstr "ფაილის ზომა."
 
-#: src/nautilus-column-utilities.c:72
+#: src/nautilus-column-utilities.c:85
 msgid "Type"
 msgstr "ტიპით"
 
-#: src/nautilus-column-utilities.c:73
+#: src/nautilus-column-utilities.c:86
 msgid "The type of the file."
 msgstr "ფაილის ტიპი."
 
-#: src/nautilus-column-utilities.c:79
+#: src/nautilus-column-utilities.c:92
 #: src/resources/ui/nautilus-properties-window.ui:544
 msgid "Modified"
 msgstr "შეცვლილია"
 
-#: src/nautilus-column-utilities.c:80 src/nautilus-column-utilities.c:147
+#: src/nautilus-column-utilities.c:93 src/nautilus-column-utilities.c:160
 msgid "The date the file was modified."
 msgstr "ფაილის შეცვლის თარიღი."
 
-#: src/nautilus-column-utilities.c:88
+#: src/nautilus-column-utilities.c:101
 msgid "Detailed Type"
 msgstr "დეტალური ტიპი"
 
-#: src/nautilus-column-utilities.c:89
+#: src/nautilus-column-utilities.c:102
 msgid "The detailed type of the file."
 msgstr "ფაილის დეტალური ტიპი."
 
-#: src/nautilus-column-utilities.c:95
+#: src/nautilus-column-utilities.c:108
 #: src/resources/ui/nautilus-properties-window.ui:506
 msgid "Accessed"
 msgstr "ბოლო წვდომა"
 
-#: src/nautilus-column-utilities.c:96
+#: src/nautilus-column-utilities.c:109
 msgid "The date the file was accessed."
 msgstr "ფაილზე ბოლოს წვდომის თარიღი."
 
-#: src/nautilus-column-utilities.c:104
+#: src/nautilus-column-utilities.c:117
 #: src/resources/ui/nautilus-properties-window.ui:582
-#: src/resources/ui/nautilus-search-popover.ui:176
+#: src/resources/ui/nautilus-search-popover.ui:178
 msgid "Created"
 msgstr "შექმნილია"
 
-#: src/nautilus-column-utilities.c:105
+#: src/nautilus-column-utilities.c:118
 msgid "The date the file was created."
 msgstr "ფაილის შექმნის თარითი."
 
-#: src/nautilus-column-utilities.c:114
+#: src/nautilus-column-utilities.c:127
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:63
 msgid "Owner"
 msgstr "მფლობელი"
 
-#: src/nautilus-column-utilities.c:115
+#: src/nautilus-column-utilities.c:128
 msgid "The owner of the file."
 msgstr "ფაილის მფლობელი."
 
-#: src/nautilus-column-utilities.c:122
+#: src/nautilus-column-utilities.c:135
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:92
 msgid "Group"
 msgstr "ჯგუფი"
 
-#: src/nautilus-column-utilities.c:123
+#: src/nautilus-column-utilities.c:136
 msgid "The group of the file."
 msgstr "ფაილის ჯგუფი."
 
-#: src/nautilus-column-utilities.c:130
+#: src/nautilus-column-utilities.c:143
 msgid "Permissions"
 msgstr "წვდომები"
 
-#: src/nautilus-column-utilities.c:131
+#: src/nautilus-column-utilities.c:144
 msgid "The permissions of the file."
 msgstr "ფაილის წვდომები."
 
-#: src/nautilus-column-utilities.c:138
+#: src/nautilus-column-utilities.c:151
 msgid "Location"
 msgstr "მდებარეობა"
 
-#: src/nautilus-column-utilities.c:139
+#: src/nautilus-column-utilities.c:152
 msgid "The location of the file."
 msgstr "ფაილის მდებარეობა."
 
-#: src/nautilus-column-utilities.c:146
+#: src/nautilus-column-utilities.c:159
 msgid "Modified — Time"
 msgstr "ცვლილება — დრო"
 
-#: src/nautilus-column-utilities.c:155
+#: src/nautilus-column-utilities.c:168
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:51
 msgid "Recency"
 msgstr "Recency"
 
-#: src/nautilus-column-utilities.c:156
+#: src/nautilus-column-utilities.c:169
 msgid "The date the file was accessed by the user."
 msgstr "ფაილზე ბოლოს წვდომის თარიღი."
 
-#: src/nautilus-column-utilities.c:165 src/nautilus-properties-window.c:766
+#: src/nautilus-column-utilities.c:178 src/nautilus-properties-window.c:757
 msgid "Star"
 msgstr "ვარსკვლავი"
 
-#: src/nautilus-column-utilities.c:166
+#: src/nautilus-column-utilities.c:179
 msgid "Shows if file is starred."
 msgstr "ფაილის ვარსკვლავდასმულობის ჩვენება."
 
-#: src/nautilus-column-utilities.c:211
+#: src/nautilus-column-utilities.c:224
 msgid "Trashed On"
 msgstr "სანაგვე ყუთში გადატანის დრო"
 
-#: src/nautilus-column-utilities.c:212
+#: src/nautilus-column-utilities.c:225
 msgid "Date when file was moved to the Trash"
 msgstr "ფაილის სანაგვეში გადატანა შეუძლებელია"
 
-#: src/nautilus-column-utilities.c:219
+#: src/nautilus-column-utilities.c:232
 msgid "Original Location"
 msgstr "საწყისი მდებარეობა"
 
-#: src/nautilus-column-utilities.c:220
+#: src/nautilus-column-utilities.c:233
 msgid "Original location of file before moved to the Trash"
 msgstr "ფაილის საწყისი მდებარეობა ნაგვის ყუთში გადატანამდე"
 
-#: src/nautilus-column-utilities.c:238
+#: src/nautilus-column-utilities.c:251
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:58
 msgid "Relevance"
 msgstr "შესაბამისობა"
 
-#: src/nautilus-column-utilities.c:239
+#: src/nautilus-column-utilities.c:252
 msgid "Relevance rank for search"
 msgstr "შესაბამისობის რანგი ძებნისას"
 
@@ -1159,29 +1159,33 @@ msgid "Details: The proxy has not been created."
 msgstr "დეტალები: პროქსი არ შექმნილა."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:672
+#: src/nautilus-directory.c:677
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: src/nautilus-dnd.c:114
+#: src/nautilus-dnd.c:117
 msgid "_Move Here"
 msgstr "_აქ გადმოტანა"
 
-#: src/nautilus-dnd.c:119
+#: src/nautilus-dnd.c:122
 msgid "_Copy Here"
 msgstr "აქ _კოპირება"
 
-#: src/nautilus-dnd.c:124
+#: src/nautilus-dnd.c:127
 msgid "_Link Here"
 msgstr "აქ _ბმულის შექმნა"
 
-#: src/nautilus-dnd.c:133 src/nautilus-file-operations.c:3027
-#: src/nautilus-mime-actions.c:607
+#: src/nautilus-dnd.c:136 src/nautilus-file-operations.c:3044
+#: src/nautilus-mime-actions.c:606 src/nautilus-toolbar.c:234
 #: src/resources/ui/nautilus-compress-dialog.ui:83
 #: src/resources/ui/nautilus-create-folder-dialog.ui:45
 msgid "Cancel"
 msgstr "გაუქმება"
+
+#: src/nautilus-dnd.c:267
+msgid "Dropped image"
+msgstr "დაგდებული მონაცემები"
 
 #: src/nautilus-error-reporting.c:85
 #, c-format
@@ -1296,120 +1300,77 @@ msgstr "შეუძლებელია ელემენტის გად�
 msgid "Renaming “%s” to “%s”."
 msgstr "\"%s\" -ის \"%s\" -ად გადარქმევა."
 
-#: src/nautilus-file.c:1348 src/nautilus-vfs-file.c:389
+#: src/nautilus-file.c:1349 src/nautilus-vfs-file.c:389
 msgid "This file cannot be mounted"
 msgstr "შეუძლებელია მოცემული ფაილის მონტაჟი"
 
-#: src/nautilus-file.c:1402
+#: src/nautilus-file.c:1403
 msgid "This file cannot be unmounted"
 msgstr "ფაილის მოხსნა შეუძლებელია"
 
-#: src/nautilus-file.c:1449
+#: src/nautilus-file.c:1450
 msgid "This file cannot be ejected"
 msgstr "ფაილის გამოღება შეუძლებელია"
 
-#: src/nautilus-file.c:1494 src/nautilus-vfs-file.c:580
+#: src/nautilus-file.c:1495 src/nautilus-vfs-file.c:580
 msgid "This file cannot be started"
 msgstr "ფაილის გაშვება შეუძლებელია"
 
-#: src/nautilus-file.c:1553 src/nautilus-file.c:1593
+#: src/nautilus-file.c:1554 src/nautilus-file.c:1594
 msgid "This file cannot be stopped"
 msgstr "ფაილის გაჩერება შეუძლებელია"
 
-#: src/nautilus-file.c:1973
+#: src/nautilus-file.c:1974
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "დაუშვებელია სახელწოდებებში (/) ირიბის გამოყენება"
 
-#: src/nautilus-file.c:2016
+#: src/nautilus-file.c:2017
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "ზედა დონის ფაილების გადარქმევა შეუძლებელია"
 
-#: src/nautilus-file.c:2100
+#: src/nautilus-file.c:2101
 #, c-format
 msgid "File not found"
 msgstr "ფაილი ვერ მოიძებნა"
 
-#: src/nautilus-file.c:4484 src/nautilus-file-utilities.c:325
-#: src/nautilus-pathbar.c:386 src/gtk/nautilusgtkplacessidebar.c:994
+#: src/nautilus-file.c:4495 src/nautilus-file-utilities.c:325
+#: src/nautilus-pathbar.c:390 src/gtk/nautilusgtkplacessidebar.c:1010
 msgid "Starred"
 msgstr "ვარსკვლავდასმული"
 
-#. Translators: Time in 24h format
-#: src/nautilus-file.c:5363
-msgid "%H:%M"
-msgstr "%H:%M"
-
-#. Translators: Time in 12h format
-#: src/nautilus-file.c:5368
-msgid "%l:%M %p"
-msgstr "%l:%M %p"
-
-#: src/nautilus-file.c:5377
+#. Translators: this is the word "Today" followed by
+#. * a time in 24h format. i.e. "Today 23:04"
+#: src/nautilus-file.c:5379
 #, no-c-format
-msgid "Yesterday"
-msgstr "გუშინ"
+msgid "Today %H:%M"
+msgstr "%a %H:%M"
+
+#. Translators: this is the word Today followed by
+#. * a time in 12h format. i.e. "Today 9:04 PM"
+#: src/nautilus-file.c:5386
+#, no-c-format
+msgid "Today %l:%M %p"
+msgstr "დღეს %l:%M %p"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5386
+#: src/nautilus-file.c:5397
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "გუშინ %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5393
+#: src/nautilus-file.c:5404
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "გუშინ %l:%M %p"
 
-#: src/nautilus-file.c:5403
-#, no-c-format
-msgid "%a"
-msgstr "%a"
-
-#. Translators: this is the name of the week day followed by
-#. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5412
-#, no-c-format
-msgid "%a %H:%M"
-msgstr "%a %H:%M"
-
-#. Translators: this is the week day name followed by
-#. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5419
-#, no-c-format
-msgid "%a %l:%M %p"
-msgstr "%a %l:%M %p"
-
-#. Translators: this is the day of the month followed
-#. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5430
-#, no-c-format
-msgid "%-e %b"
-msgstr "%-e %b"
-
-#. Translators: this is the day of the month followed
-#. * by the abbreviated month name followed by a time in
-#. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5440
-#, no-c-format
-msgid "%-e %b %H:%M"
-msgstr "%-e %b %H:%M"
-
-#. Translators: this is the day of the month followed
-#. * by the abbreviated month name followed by a time in
-#. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5448
-#, no-c-format
-msgid "%-e %b %l:%M %p"
-msgstr "%-e %b %l:%M %p"
-
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5459
+#: src/nautilus-file.c:5414
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
@@ -1417,7 +1378,7 @@ msgstr "%-e %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5469
+#: src/nautilus-file.c:5424
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y %H:%M"
@@ -1425,159 +1386,170 @@ msgstr "%-e %b %Y %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5477
+#: src/nautilus-file.c:5432
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y %l:%M %p"
 
-#: src/nautilus-file.c:5489
+#. Translators: this is the day number followed by the full month
+#. * name followed by the year followed by a time in 24h format
+#. * with seconds i.e. "3 February 2015 23:04:00"
+#: src/nautilus-file.c:5449
 #, no-c-format
-msgid "%c"
-msgstr "%c"
+msgid "%-e %B %Y %H:%M:%S"
+msgstr "%-e %b %Y %H:%M"
 
-#: src/nautilus-file.c:5915
+#. Translators: this is the day number followed by the full month
+#. * name followed by the year followed by a time in 12h format
+#. * with seconds i.e. "3 February 2015 9:04:00 PM"
+#: src/nautilus-file.c:5457
+#, no-c-format
+msgid "%-e %B %Y %l:%M:%S %p"
+msgstr "%-e %b %Y %l:%M %p"
+
+#: src/nautilus-file.c:5893
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "შეუძლებელია უფლებების განსაზღვრა"
 
-#: src/nautilus-file.c:6253
+#: src/nautilus-file.c:6231
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "შეუძლებელია მფლობელის განსაზღვრა"
 
-#: src/nautilus-file.c:6272
+#: src/nautilus-file.c:6250
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "მითითებული მფლობელი \"%s\" არ არსებობს"
 
-#: src/nautilus-file.c:6572
+#: src/nautilus-file.c:6550
 #, c-format
 msgid "Not allowed to set group"
 msgstr "შეუძლებელია ჯგუფის განსაზღვრა"
 
-#: src/nautilus-file.c:6591
+#: src/nautilus-file.c:6569
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "მითითებული ჯგუფი '%s' არ არსებობს"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6733
+#: src/nautilus-file.c:6711
 #, c-format
 msgid "%s (You)"
 msgstr "%s (თქვენ)"
 
-#: src/nautilus-file.c:6765
+#: src/nautilus-file.c:6743
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u ელემენტი"
 
-#: src/nautilus-file.c:6766
+#: src/nautilus-file.c:6744
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u საქაღალდე"
 
-#: src/nautilus-file.c:6767
+#: src/nautilus-file.c:6745
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u ფაილი"
 
-#: src/nautilus-file.c:6851
+#: src/nautilus-file.c:6829 src/nautilus-properties-window.c:2202
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
 msgstr[0] "%s ბაიტი"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7261
+#: src/nautilus-file.c:7239
 msgid "? bytes"
 msgstr "? ბაიტი"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7273
+#: src/nautilus-file.c:7251
 msgid "? items"
 msgstr "? ელემენტი"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:7282
+#: src/nautilus-file.c:7260
 msgid "Unknown type"
 msgstr "უცნობი ტიპი"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7313
+#: src/nautilus-file.c:7291
 msgid "Unknown"
 msgstr "უცნობი"
 
-#: src/nautilus-file.c:7351 src/nautilus-file.c:7359 src/nautilus-file.c:7418
+#: src/nautilus-file.c:7329 src/nautilus-file.c:7337 src/nautilus-file.c:7396
 msgid "Program"
 msgstr "პროგრამა"
 
-#: src/nautilus-file.c:7352
+#: src/nautilus-file.c:7330
 msgid "Audio"
 msgstr "აუდიო"
 
-#: src/nautilus-file.c:7353
+#: src/nautilus-file.c:7331
 msgid "Font"
 msgstr "შრიფტი"
 
-#: src/nautilus-file.c:7354
+#: src/nautilus-file.c:7332
 msgid "Image"
 msgstr "გამოსახულება"
 
-#: src/nautilus-file.c:7355
+#: src/nautilus-file.c:7333
 msgid "Archive"
 msgstr "არქივი"
 
-#: src/nautilus-file.c:7356
+#: src/nautilus-file.c:7334
 msgid "Markup"
 msgstr "მარქაფი"
 
-#: src/nautilus-file.c:7357 src/nautilus-file.c:7358
+#: src/nautilus-file.c:7335 src/nautilus-file.c:7336
 msgid "Text"
 msgstr "ტექსტი"
 
-#: src/nautilus-file.c:7360 src/nautilus-mime-actions.c:215
+#: src/nautilus-file.c:7338 src/nautilus-mime-actions.c:206
 msgid "Video"
 msgstr "ვიდეო"
 
-#: src/nautilus-file.c:7361
+#: src/nautilus-file.c:7339
 msgid "Contacts"
 msgstr "კონტაქტები"
 
-#: src/nautilus-file.c:7362
+#: src/nautilus-file.c:7340
 msgid "Calendar"
 msgstr "კალენდარი"
 
-#: src/nautilus-file.c:7363
+#: src/nautilus-file.c:7341
 msgid "Document"
 msgstr "დოკუმენტი"
 
-#: src/nautilus-file.c:7364 src/nautilus-mime-actions.c:189
+#: src/nautilus-file.c:7342 src/nautilus-mime-actions.c:180
 msgid "Presentation"
 msgstr "პრეზენტაცია"
 
-#: src/nautilus-file.c:7365 src/nautilus-mime-actions.c:197
+#: src/nautilus-file.c:7343 src/nautilus-mime-actions.c:188
 msgid "Spreadsheet"
 msgstr "ელექტრონული ცხრილი"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7392
+#: src/nautilus-file.c:7370
 msgid "Other"
 msgstr "სხვა"
 
-#: src/nautilus-file.c:7420
+#: src/nautilus-file.c:7398
 msgid "Binary"
 msgstr "ბინარული"
 
-#: src/nautilus-file.c:7425
+#: src/nautilus-file.c:7403
 msgid "Folder"
 msgstr "საქაღალდე"
 
-#: src/nautilus-file.c:7464
+#: src/nautilus-file.c:7442
 msgid "Link"
 msgstr "Ბმული"
 
@@ -1586,17 +1558,17 @@ msgstr "Ბმული"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7470 src/nautilus-file-operations.c:502
+#: src/nautilus-file.c:7448 src/nautilus-file-operations.c:516
 #, c-format
 msgid "Link to %s"
 msgstr "ბმული %s -ზე"
 
-#: src/nautilus-file.c:7488 src/nautilus-file.c:7504 src/nautilus-file.c:7520
+#: src/nautilus-file.c:7466 src/nautilus-file.c:7482 src/nautilus-file.c:7498
 msgid "Link (broken)"
 msgstr "ბმული (გაწყვეტილი)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7760
+#: src/nautilus-file.c:7738
 #, c-format
 msgid "%s Free"
 msgstr "%s თავისუფალია"
@@ -1635,71 +1607,71 @@ msgstr "საქაღალდე ამ სახელით უკვე �
 msgid "A file with that name already exists."
 msgstr "ფაილი ამ სახელით უკვე არსებობს."
 
-#: src/nautilus-file-operations.c:272
+#: src/nautilus-file-operations.c:273
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:22
 msgid "_Skip"
 msgstr "_გამოტოვება"
 
-#: src/nautilus-file-operations.c:273
+#: src/nautilus-file-operations.c:274
 msgid "S_kip All"
 msgstr "ყველა_ს გამოტოვება"
 
-#: src/nautilus-file-operations.c:274
+#: src/nautilus-file-operations.c:275
 msgid "_Retry"
 msgstr "_თავიდან ცდა"
 
-#: src/nautilus-file-operations.c:275
+#: src/nautilus-file-operations.c:276
 msgid "_Delete"
 msgstr "სამუ_დამოდ წაშლა"
 
-#: src/nautilus-file-operations.c:276
+#: src/nautilus-file-operations.c:277
 msgid "Delete _All"
 msgstr "ყველ_აფრის წაშლა"
 
-#: src/nautilus-file-operations.c:277
+#: src/nautilus-file-operations.c:278
 msgid "_Replace"
 msgstr "_ჩანაცვლება"
 
-#: src/nautilus-file-operations.c:278
+#: src/nautilus-file-operations.c:279
 msgid "Replace _All"
 msgstr "ყველ_აფრის ჩანაცვლება"
 
-#: src/nautilus-file-operations.c:279
+#: src/nautilus-file-operations.c:280
 msgid "_Merge"
 msgstr "შ_ერწყმა"
 
-#: src/nautilus-file-operations.c:280
+#: src/nautilus-file-operations.c:281
 msgid "Merge _All"
 msgstr "ყველ_აფრის შერწყმა"
 
-#: src/nautilus-file-operations.c:281
+#: src/nautilus-file-operations.c:282
 msgid "Copy _Anyway"
 msgstr "მაინც _კოპირება"
 
-#: src/nautilus-file-operations.c:282 src/nautilus-file-operations.c:3028
+#: src/nautilus-file-operations.c:283 src/nautilus-file-operations.c:3045
 msgid "Empty _Trash"
 msgstr "სა_ნაგვე ყუთის დაცარიელება"
 
-#: src/nautilus-file-operations.c:382
+#: src/nautilus-file-operations.c:396
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d წამი"
 
-#: src/nautilus-file-operations.c:388 src/nautilus-file-operations.c:400
+#: src/nautilus-file-operations.c:402 src/nautilus-file-operations.c:414
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d წუთი"
 
-#: src/nautilus-file-operations.c:399 src/nautilus-file-operations.c:407
+#: src/nautilus-file-operations.c:413 src/nautilus-file-operations.c:421
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d საათი"
 
 #. appended to new link file
-#: src/nautilus-file-operations.c:509
+#: src/nautilus-file-operations.c:523
 #, c-format
 msgid "Another link to %s"
 msgstr "სხვა ბმული %s -ზე"
@@ -1708,25 +1680,25 @@ msgstr "სხვა ბმული %s -ზე"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: src/nautilus-file-operations.c:530
+#: src/nautilus-file-operations.c:544
 #, c-format
 msgid "%'dst link to %s"
 msgstr "მე %'d ბმული %s-ზე"
 
 #. appended to new link file
-#: src/nautilus-file-operations.c:537
+#: src/nautilus-file-operations.c:551
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "მე-%'d ბმული %s-ზე"
 
 #. appended to new link file
-#: src/nautilus-file-operations.c:544
+#: src/nautilus-file-operations.c:558
 #, c-format
 msgid "%'drd link to %s"
 msgstr "მე-%'d ბმული %s-ზე"
 
 #. appended to new link file
-#: src/nautilus-file-operations.c:551
+#: src/nautilus-file-operations.c:565
 #, c-format
 msgid "%'dth link to %s"
 msgstr "მე-%'d ბმული %s-ზე"
@@ -1736,12 +1708,12 @@ msgstr "მე-%'d ბმული %s-ზე"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: src/nautilus-file-operations.c:603
+#: src/nautilus-file-operations.c:617
 msgid " (copy)"
 msgstr " (ასლი)"
 
 #. localizers: tag used to detect the second copy of a file
-#: src/nautilus-file-operations.c:605
+#: src/nautilus-file-operations.c:619
 msgid " (another copy)"
 msgstr " (სხვა ასლი)"
 
@@ -1749,34 +1721,34 @@ msgstr " (სხვა ასლი)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: src/nautilus-file-operations.c:608 src/nautilus-file-operations.c:610
-#: src/nautilus-file-operations.c:612 src/nautilus-file-operations.c:622
+#: src/nautilus-file-operations.c:622 src/nautilus-file-operations.c:624
+#: src/nautilus-file-operations.c:626 src/nautilus-file-operations.c:636
 msgid "th copy)"
 msgstr "-ე ასლი)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: src/nautilus-file-operations.c:615
+#: src/nautilus-file-operations.c:629
 msgid "st copy)"
 msgstr "-ე ასლი)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: src/nautilus-file-operations.c:617
+#: src/nautilus-file-operations.c:631
 msgid "nd copy)"
 msgstr "-ე ასლი)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: src/nautilus-file-operations.c:619
+#: src/nautilus-file-operations.c:633
 msgid "rd copy)"
 msgstr "-ე ასლი)"
 
 #. localizers: appended to first file copy
-#: src/nautilus-file-operations.c:636
+#: src/nautilus-file-operations.c:650
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s·(ასლი)%s"
 
 #. localizers: appended to second file copy
-#: src/nautilus-file-operations.c:638
+#: src/nautilus-file-operations.c:652
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s (სხვა ასლი)%s"
@@ -1785,8 +1757,8 @@ msgstr "%s (სხვა ასლი)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: src/nautilus-file-operations.c:641 src/nautilus-file-operations.c:643
-#: src/nautilus-file-operations.c:645 src/nautilus-file-operations.c:659
+#: src/nautilus-file-operations.c:655 src/nautilus-file-operations.c:657
+#: src/nautilus-file-operations.c:659 src/nautilus-file-operations.c:673
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s (მე-%'d-ე ასლი)%s"
@@ -1796,45 +1768,45 @@ msgstr "%s (მე-%'d-ე ასლი)%s"
 #. * strings look like "%s (copy %'d)%s".
 #.
 #. localizers: appended to x1st file copy
-#: src/nautilus-file-operations.c:653
+#: src/nautilus-file-operations.c:667
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s (მე-%'d-ე ასლი)%s"
 
 #. localizers: appended to x2nd file copy
-#: src/nautilus-file-operations.c:655
+#: src/nautilus-file-operations.c:669
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s (მე-%'d-ე ასლი)%s"
 
 #. localizers: appended to x3rd file copy
-#: src/nautilus-file-operations.c:657
+#: src/nautilus-file-operations.c:671
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s (მე-%'d-ე ასლი)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: src/nautilus-file-operations.c:772
+#: src/nautilus-file-operations.c:786
 msgid " ("
 msgstr " ("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: src/nautilus-file-operations.c:782
+#: src/nautilus-file-operations.c:796
 #, c-format
 msgid " (%'d"
 msgstr " (%'d"
 
-#: src/nautilus-file-operations.c:1038 src/nautilus-properties-window.c:911
+#: src/nautilus-file-operations.c:1052 src/nautilus-properties-window.c:902
 msgid "unknown"
 msgstr "unknown"
 
-#: src/nautilus-file-operations.c:1687
+#: src/nautilus-file-operations.c:1701
 #, c-format
 msgid "Are you sure you want to permanently delete “%s” from the trash?"
 msgstr ""
 "დარწმუნებული ბრძანდებით რომ გნებავთ \"%s\"-ის სანაგვე ყუთიდან საბოლოოდ წაშლა?"
 
-#: src/nautilus-file-operations.c:1692
+#: src/nautilus-file-operations.c:1706
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1846,48 +1818,48 @@ msgstr[0] ""
 "დარწმუნებული ბრძანდებით რომ გნებავთ მონიშნული %'d ელემენტის სანაგვე ყუთიდან "
 "სამუდამოდ წაშლა?"
 
-#: src/nautilus-file-operations.c:1702 src/nautilus-file-operations.c:1765
+#: src/nautilus-file-operations.c:1716 src/nautilus-file-operations.c:1779
 msgid "If you delete an item, it will be permanently lost."
 msgstr "რომელიმე ელემენტის წაშლის შემთხვევაში, თქვენ მას სამუდამოდ დაკარგავთ."
 
-#: src/nautilus-file-operations.c:1717
+#: src/nautilus-file-operations.c:1731
 msgid "Empty all items from Trash?"
 msgstr "გნებავთ სანაგვე ყუთიდან ყველა ელემენტის წაშლა?"
 
-#: src/nautilus-file-operations.c:1721
+#: src/nautilus-file-operations.c:1735
 msgid "All items in the Trash will be permanently deleted."
 msgstr ""
 "მისამართების სიის გასუფთავების შემთხვევაში, თქვენ მათ სამუდამოდ წაშლით."
 
-#: src/nautilus-file-operations.c:1751
+#: src/nautilus-file-operations.c:1765
 #, c-format
 msgid "Are you sure you want to permanently delete “%s”?"
 msgstr "დარწმუნებული ხართ, რომ გსურთ %s-ის სამუდამოდ წაშლა?"
 
-#: src/nautilus-file-operations.c:1756
+#: src/nautilus-file-operations.c:1770
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] "ნამდვილად გნებავთ მონიშნული %'d ელემენტის სამუდამოდ წაშლა ?"
 
-#: src/nautilus-file-operations.c:1817
+#: src/nautilus-file-operations.c:1831
 #, c-format
 msgid "Deleted “%s”"
 msgstr "“%s” წაშლილია"
 
-#: src/nautilus-file-operations.c:1821
+#: src/nautilus-file-operations.c:1835
 #, c-format
 msgid "Deleting “%s”"
 msgstr "\"%s\"-ის წაშლა"
 
-#: src/nautilus-file-operations.c:1832
+#: src/nautilus-file-operations.c:1846
 #, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
 msgstr[0] "წაიშალა %'d ფაილი"
 
-#: src/nautilus-file-operations.c:1838
+#: src/nautilus-file-operations.c:1852
 #, c-format
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
@@ -1895,12 +1867,12 @@ msgstr[0] "იშლება %'d ფაილი"
 
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
-#: src/nautilus-file-operations.c:1866 src/nautilus-file-operations.c:1874
-#: src/nautilus-file-operations.c:1914 src/nautilus-file-operations.c:2257
-#: src/nautilus-file-operations.c:2265 src/nautilus-file-operations.c:2305
-#: src/nautilus-file-operations.c:4183 src/nautilus-file-operations.c:4191
-#: src/nautilus-file-operations.c:4262 src/nautilus-file-operations.c:9006
-#: src/nautilus-file-operations.c:9074
+#: src/nautilus-file-operations.c:1880 src/nautilus-file-operations.c:1888
+#: src/nautilus-file-operations.c:1928 src/nautilus-file-operations.c:2274
+#: src/nautilus-file-operations.c:2282 src/nautilus-file-operations.c:2322
+#: src/nautilus-file-operations.c:4200 src/nautilus-file-operations.c:4208
+#: src/nautilus-file-operations.c:4279 src/nautilus-file-operations.c:9053
+#: src/nautilus-file-operations.c:9121
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1910,99 +1882,104 @@ msgstr "%'d / %'d"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:1893 src/nautilus-file-operations.c:2284
+#: src/nautilus-file-operations.c:1907 src/nautilus-file-operations.c:2301
 #, c-format
 msgid "%'d / %'d — %s left"
 msgid_plural "%'d / %'d — %s left"
 msgstr[0] "%'d / %'d — %s დარჩენილია"
 
-#: src/nautilus-file-operations.c:1897 src/nautilus-file-operations.c:2287
+#: src/nautilus-file-operations.c:1911 src/nautilus-file-operations.c:2304
 #, c-format
 msgid "(%d file/sec)"
 msgid_plural "(%d files/sec)"
 msgstr[0] "(%d ფაილი/წმ)"
 
-#: src/nautilus-file-operations.c:2056 src/nautilus-file-operations.c:3352
+#: src/nautilus-file-operations.c:2024
+#, c-format
+msgid "Failed to delete all child files"
+msgstr "ყველა შვილი ფაილის წაშლის შეცდომა"
+
+#: src/nautilus-file-operations.c:2077 src/nautilus-file-operations.c:3369
 msgid "Error while deleting."
 msgstr "წაშლისას დაიშვა შეცდომა."
 
-#: src/nautilus-file-operations.c:2067
-#, c-format
-msgid "There was an error deleting the folder “%s”."
-msgstr "საქაღალდის წაშლის შეცდომა: \"%s\"."
-
-#: src/nautilus-file-operations.c:2070
+#: src/nautilus-file-operations.c:2084
 #, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
 msgstr "არ გაგაჩნიათ წვდომა საქაღალდის წასაშლელად: \"%s\"."
 
-#: src/nautilus-file-operations.c:2077
+#: src/nautilus-file-operations.c:2087
 #, c-format
-msgid "There was an error deleting the file “%s”."
-msgstr "შეცდომა \"%s\"-ის წაშლისას."
+msgid "There was an error deleting the folder “%s”."
+msgstr "საქაღალდის წაშლის შეცდომა: \"%s\"."
 
-#: src/nautilus-file-operations.c:2080
+#: src/nautilus-file-operations.c:2094
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
 msgstr "\"%s\"-ის წასაშლელად საკმარისი უფლებები არ გაგაჩნიათ."
 
-#: src/nautilus-file-operations.c:2207
+#: src/nautilus-file-operations.c:2097
+#, c-format
+msgid "There was an error deleting the file “%s”."
+msgstr "შეცდომა \"%s\"-ის წაშლისას."
+
+#: src/nautilus-file-operations.c:2224
 #, c-format
 msgid "Trashing “%s”"
 msgstr "“%s”-ის ნაგავში გადატანა"
 
-#: src/nautilus-file-operations.c:2211
+#: src/nautilus-file-operations.c:2228
 #, c-format
 msgid "Trashed “%s”"
 msgstr "%s ნაგავშია"
 
-#: src/nautilus-file-operations.c:2222
+#: src/nautilus-file-operations.c:2239
 #, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] "მიმდინარეობს %'d ფაილის ნაგავში გადაყრა"
 
-#: src/nautilus-file-operations.c:2228
+#: src/nautilus-file-operations.c:2245
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
 msgstr[0] "სანაგვე ყუთში გადატანილია %'d ფაილი"
 
 #. Translators: %s is a file name
-#: src/nautilus-file-operations.c:2377
+#: src/nautilus-file-operations.c:2394
 #, c-format
 msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
 msgstr ""
 "შეუძლებელია ფაილის (\"%s\") სანაგვე ყუთში გადატანა, გნებავთ მისი ახლავე "
 "წაშლა?"
 
-#: src/nautilus-file-operations.c:2389
+#: src/nautilus-file-operations.c:2406
 msgid "This remote location does not support sending items to the trash."
 msgstr ""
 
-#: src/nautilus-file-operations.c:2686
+#: src/nautilus-file-operations.c:2703
 msgid "Trashing Files"
 msgstr "ფაილების ნაგავში გადაყრა"
 
-#: src/nautilus-file-operations.c:2690
+#: src/nautilus-file-operations.c:2707
 msgid "Deleting Files"
 msgstr "ფაილების წაშლა"
 
-#: src/nautilus-file-operations.c:2847 src/gtk/nautilusgtkplacessidebar.c:2794
+#: src/nautilus-file-operations.c:2864 src/gtk/nautilusgtkplacessidebar.c:2822
 #, c-format
 msgid "Unable to eject %s"
 msgstr "შეუძლებელია გამოღება %s"
 
-#: src/nautilus-file-operations.c:2852
+#: src/nautilus-file-operations.c:2869
 #, c-format
 msgid "Unable to unmount %s"
 msgstr "%s-ის მოხსნის შეცდომა"
 
-#: src/nautilus-file-operations.c:3021
+#: src/nautilus-file-operations.c:3038
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "ტომის მოხსნამდე, გნებავთ სანაგვე ყუთის დაცარიელება?"
 
-#: src/nautilus-file-operations.c:3022
+#: src/nautilus-file-operations.c:3039
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -2010,67 +1987,67 @@ msgstr ""
 "ტომზე ადგილის განთავისუფლების მიზნით საჭიროა სანაგვე ყუთის დაცარიელება. "
 "სანაგვე ყუთში მყოფი ყველა ელემენტი სამუდამოდ დაიკარგება."
 
-#: src/nautilus-file-operations.c:3026
+#: src/nautilus-file-operations.c:3043
 msgid "Do _not Empty Trash"
 msgstr "არ _გაასუფთავო სანაგვე ყუთი"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3169 src/nautilus-files-view.c:6807
-#: src/gtk/nautilusgtkplacessidebar.c:2044
+#: src/nautilus-file-operations.c:3186 src/nautilus-files-view.c:6799
+#: src/gtk/nautilusgtkplacessidebar.c:2063
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "\"%s\"-სთან წვდომის შეცდომა"
 
-#: src/nautilus-file-operations.c:3254
+#: src/nautilus-file-operations.c:3271
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
 msgstr[0] "დასაკოპირებლად მზადდება %'d ფაილი (%s)"
 
-#: src/nautilus-file-operations.c:3267
+#: src/nautilus-file-operations.c:3284
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
 msgstr[0] "გადასატანად მზადდება %'d ფაილი (%s)"
 
-#: src/nautilus-file-operations.c:3280
+#: src/nautilus-file-operations.c:3297
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
 msgstr[0] "წასაშლელად მზადდება %'d ფაილი (%s)"
 
-#: src/nautilus-file-operations.c:3290
+#: src/nautilus-file-operations.c:3307
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "სანაგვე ყუთში გადასატანად მზადდება %'d"
 
-#: src/nautilus-file-operations.c:3299
+#: src/nautilus-file-operations.c:3316
 #, c-format
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
 msgstr[0] "მიმდინარეობს მზადება %'d ფაილის შესაკუმშად"
 
-#: src/nautilus-file-operations.c:3342 src/nautilus-file-operations.c:4785
-#: src/nautilus-file-operations.c:4977 src/nautilus-file-operations.c:5059
-#: src/nautilus-file-operations.c:5346
+#: src/nautilus-file-operations.c:3359 src/nautilus-file-operations.c:4788
+#: src/nautilus-file-operations.c:4980 src/nautilus-file-operations.c:5062
+#: src/nautilus-file-operations.c:5349
 msgid "Error while copying."
 msgstr "შეცდომა ასლის გადაღებისას."
 
-#: src/nautilus-file-operations.c:3347 src/nautilus-file-operations.c:4973
-#: src/nautilus-file-operations.c:5055 src/nautilus-file-operations.c:5342
+#: src/nautilus-file-operations.c:3364 src/nautilus-file-operations.c:4976
+#: src/nautilus-file-operations.c:5058 src/nautilus-file-operations.c:5345
 msgid "Error while moving."
 msgstr "შეცდომა გადატანისას."
 
-#: src/nautilus-file-operations.c:3357
+#: src/nautilus-file-operations.c:3374
 msgid "Error while moving files to trash."
 msgstr "შეცდომა ფაილების სანაგვე ყუთში გადატანისას."
 
-#: src/nautilus-file-operations.c:3362
+#: src/nautilus-file-operations.c:3379
 msgid "Error while compressing files."
 msgstr "შეცდომა ფაილების შეკუმშვისას."
 
-#: src/nautilus-file-operations.c:3454
+#: src/nautilus-file-operations.c:3471
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be handled because you do not have "
@@ -2079,14 +2056,14 @@ msgstr ""
 "შეუძლებელია ფაილების დამუშავება \"%s\" საქაღალდეში, რადგანაც თქვენ არ გაქვს "
 "მათი ხილვის უფლება."
 
-#: src/nautilus-file-operations.c:3460 src/nautilus-file-operations.c:4989
+#: src/nautilus-file-operations.c:3477 src/nautilus-file-operations.c:4992
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
 msgstr ""
 "შეცდომა \"%s\" საქაღალდეში მყოფი ფაილების შესახებ ინფორმაციის მიღებისას."
 
-#: src/nautilus-file-operations.c:3515
+#: src/nautilus-file-operations.c:3532
 #, c-format
 msgid ""
 "The folder “%s” cannot be handled because you do not have permissions to "
@@ -2094,12 +2071,12 @@ msgid ""
 msgstr ""
 "შეუძლებელია \"%s\" საქაღალდის დამუშავება. არ გაგაჩნიათ მისი წაკითხვის უფლება."
 
-#: src/nautilus-file-operations.c:3521 src/nautilus-file-operations.c:5071
+#: src/nautilus-file-operations.c:3538 src/nautilus-file-operations.c:5074
 #, c-format
 msgid "There was an error reading the folder “%s”."
 msgstr "შეცდომა \"%s\" საქაღალდის წაკითხვისას."
 
-#: src/nautilus-file-operations.c:3631
+#: src/nautilus-file-operations.c:3648
 #, c-format
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
@@ -2107,106 +2084,106 @@ msgid ""
 msgstr ""
 "შეუძლებელია \"%s\" ფაილის დამუშავება. არ გაგაჩნიათ მისი წაკითხვის უფლებები."
 
-#: src/nautilus-file-operations.c:3636
+#: src/nautilus-file-operations.c:3653
 #, c-format
 msgid "There was an error getting information about “%s”."
 msgstr "\"%s\"-ის შესახებ ინფორმაციის მიღების შეცდომა."
 
-#: src/nautilus-file-operations.c:3759 src/nautilus-file-operations.c:3821
-#: src/nautilus-file-operations.c:3876 src/nautilus-file-operations.c:3920
+#: src/nautilus-file-operations.c:3776 src/nautilus-file-operations.c:3838
+#: src/nautilus-file-operations.c:3893 src/nautilus-file-operations.c:3937
 #, c-format
 msgid "Error while copying to “%s”."
 msgstr "შეცდომა \"%s\"-ზე კოპირებისას."
 
-#: src/nautilus-file-operations.c:3764
+#: src/nautilus-file-operations.c:3781
 msgid "You do not have permissions to access the destination folder."
 msgstr "თქვენ არ გაქვთ წვდომა მითითებულ საქაღალდესთან."
 
-#: src/nautilus-file-operations.c:3768
+#: src/nautilus-file-operations.c:3785
 msgid "There was an error getting information about the destination."
 msgstr "სამიზნის შესახებ ინფორმაციის მოძებნის შეცდომა."
 
-#: src/nautilus-file-operations.c:3822
+#: src/nautilus-file-operations.c:3839
 msgid "The destination is not a folder."
 msgstr "დანიშნულება საქაღალდეს არ წარმოადგენს."
 
-#: src/nautilus-file-operations.c:3877
+#: src/nautilus-file-operations.c:3894
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr ""
 "დანიშნულების წერტილში ადგილი არაა. წაშალეთ რამე ადგილის გასათავისუფლებლად."
 
-#: src/nautilus-file-operations.c:3881
+#: src/nautilus-file-operations.c:3898
 #, c-format
 msgid "%s more space is required to copy to the destination."
 msgstr ""
 
-#: src/nautilus-file-operations.c:3921
+#: src/nautilus-file-operations.c:3938
 msgid "The destination is read-only."
 msgstr "დანიშნულება მხოლოდ-კითხვადი ტიპისაა."
 
-#: src/nautilus-file-operations.c:3998
+#: src/nautilus-file-operations.c:4015
 #, c-format
 msgid "Moving “%s” to “%s”"
 msgstr "გადატანა: “%s”-დან “%s”-ში"
 
-#: src/nautilus-file-operations.c:4002
+#: src/nautilus-file-operations.c:4019
 #, c-format
 msgid "Moved “%s” to “%s”"
 msgstr "გადატანილია: “%s”-დან “%s”-ში"
 
-#: src/nautilus-file-operations.c:4009
+#: src/nautilus-file-operations.c:4026
 #, c-format
 msgid "Copying “%s” to “%s”"
 msgstr "კოპირება: “%s”-დან “%s”-ში"
 
-#: src/nautilus-file-operations.c:4013
+#: src/nautilus-file-operations.c:4030
 #, c-format
 msgid "Copied “%s” to “%s”"
 msgstr "კოპირებულია: “%s”-დან “%s”-ში"
 
-#: src/nautilus-file-operations.c:4047
+#: src/nautilus-file-operations.c:4064
 #, c-format
 msgid "Duplicating “%s”"
 msgstr "\"%s\"-ის დუბლირება"
 
-#: src/nautilus-file-operations.c:4051
+#: src/nautilus-file-operations.c:4068
 #, c-format
 msgid "Duplicated “%s”"
 msgstr "\"%s\"-ის დუბლიკატი"
 
-#: src/nautilus-file-operations.c:4070
+#: src/nautilus-file-operations.c:4087
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
 msgstr[0] "გადამაქვს %'d ფაილი \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:4076
+#: src/nautilus-file-operations.c:4093
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
 msgstr[0] "%'d ფაილის კოპირება \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:4095
+#: src/nautilus-file-operations.c:4112
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
 msgstr[0] "გადამაქვს %'d ფაილი \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:4101
+#: src/nautilus-file-operations.c:4118
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
 msgstr[0] "%'d ფაილის ასლი გადატანილია \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:4124
+#: src/nautilus-file-operations.c:4141
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
 msgstr[0] "იქმნება %'d ფაილის დუპლიკატი (\"%s\"-ში)"
 
-#: src/nautilus-file-operations.c:4134
+#: src/nautilus-file-operations.c:4151
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
@@ -2219,9 +2196,9 @@ msgstr[0] "იქმნება %'d ფაილის დუპლიკატ
 #.
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
-#: src/nautilus-file-operations.c:4173 src/nautilus-file-operations.c:4233
-#: src/nautilus-file-operations.c:8519 src/nautilus-file-operations.c:8746
-#: src/nautilus-file-operations.c:9001 src/nautilus-file-operations.c:9044
+#: src/nautilus-file-operations.c:4190 src/nautilus-file-operations.c:4250
+#: src/nautilus-file-operations.c:8566 src/nautilus-file-operations.c:8793
+#: src/nautilus-file-operations.c:9048 src/nautilus-file-operations.c:9091
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2244,8 +2221,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4217 src/nautilus-file-operations.c:8537
-#: src/nautilus-file-operations.c:9033
+#: src/nautilus-file-operations.c:4234 src/nautilus-file-operations.c:8584
+#: src/nautilus-file-operations.c:9080
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2256,13 +2233,13 @@ msgstr[0] "%s - %s დან — დარჩენილია %s (%s/წმ)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4251 src/nautilus-file-operations.c:9063
+#: src/nautilus-file-operations.c:4268 src/nautilus-file-operations.c:9110
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
 msgstr[0] "%'d - %'d დან — დარჩენილია %s (%s/წმ)"
 
-#: src/nautilus-file-operations.c:4791
+#: src/nautilus-file-operations.c:4794
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
@@ -2271,12 +2248,12 @@ msgstr ""
 "საქაღალდის (%s)·გადაწერა შეუძლებელია, მისი დანიშნულების შექმნის წვდომა არ "
 "გაგაჩნიათ."
 
-#: src/nautilus-file-operations.c:4797
+#: src/nautilus-file-operations.c:4800
 #, c-format
 msgid "There was an error creating the folder “%s”."
 msgstr "საქაღალდის (\"%s\") შექმნის შეცდომა."
 
-#: src/nautilus-file-operations.c:4984
+#: src/nautilus-file-operations.c:4987
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
@@ -2285,11 +2262,11 @@ msgstr ""
 "საქაღალდიდან (\"%s\") ფაილების·გადაწერა შეუძლებელია, რადგან მათი დანახვის "
 "უფლება არ გაქვთ."
 
-#: src/nautilus-file-operations.c:5000
+#: src/nautilus-file-operations.c:5003
 msgid "_Skip files"
 msgstr "ფაილების _გამოტოვება"
 
-#: src/nautilus-file-operations.c:5066
+#: src/nautilus-file-operations.c:5069
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
@@ -2298,311 +2275,315 @@ msgstr ""
 "საქაღალდე (\"%s\")·გადაწერა შეუძლებელია, რადგანაც არ გაგაჩნიათ მისი "
 "წაკითხვის უფლებები."
 
-#: src/nautilus-file-operations.c:5131 src/nautilus-file-operations.c:5764
-#: src/nautilus-file-operations.c:6509
+#: src/nautilus-file-operations.c:5134 src/nautilus-file-operations.c:5767
+#: src/nautilus-file-operations.c:6512
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "შეცდომა \"%s\"-ის გადატანისას."
 
-#: src/nautilus-file-operations.c:5132
+#: src/nautilus-file-operations.c:5135
 msgid "Could not remove the source folder."
 msgstr "შეუძლებელია სანაგვე ყუთის საქაღალდის გადაადგილება."
 
-#: src/nautilus-file-operations.c:5348
+#: src/nautilus-file-operations.c:5351
 msgid "There was an error getting information about the source."
 msgstr "წყაროს შესახებ ინფორმაციის მოძებნის შეცდომა."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:5450 src/nautilus-file-operations.c:6267
+#: src/nautilus-file-operations.c:5453 src/nautilus-file-operations.c:6270
 msgid "You cannot move a folder into itself."
 msgstr "შეუძლებელია საქაღალდის საქაღალდეშივე გადატანა."
 
-#: src/nautilus-file-operations.c:5451 src/nautilus-file-operations.c:6268
+#: src/nautilus-file-operations.c:5454 src/nautilus-file-operations.c:6271
 msgid "You cannot copy a folder into itself."
 msgstr "შეუძლებელია საქაღალდის ასლის საქაღალდეშივე გაკეთება."
 
-#: src/nautilus-file-operations.c:5452 src/nautilus-file-operations.c:6269
+#: src/nautilus-file-operations.c:5455 src/nautilus-file-operations.c:6272
 msgid "The destination folder is inside the source folder."
 msgstr "დანიშნულების საქაღალდე წყარო საქაღალდეში მდებარეობს."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:5492 src/nautilus-file-operations.c:6310
+#: src/nautilus-file-operations.c:5495 src/nautilus-file-operations.c:6313
 msgid "You cannot move a file over itself."
 msgstr "ფაილის თავის თავში გადაანა შეუძლებელია."
 
-#: src/nautilus-file-operations.c:5493 src/nautilus-file-operations.c:6311
+#: src/nautilus-file-operations.c:5496 src/nautilus-file-operations.c:6314
 msgid "You cannot copy a file over itself."
 msgstr "ფაილს თავის თავში ვერ დააკოპირებთ."
 
-#: src/nautilus-file-operations.c:5494 src/nautilus-file-operations.c:6312
+#: src/nautilus-file-operations.c:5497 src/nautilus-file-operations.c:6315
 msgid "The source file would be overwritten by the destination."
 msgstr ""
 
-#: src/nautilus-file-operations.c:5768 src/nautilus-file-operations.c:5856
+#: src/nautilus-file-operations.c:5771 src/nautilus-file-operations.c:5859
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "შეცდომა \"%s\"-ის კოპირებისას."
 
-#: src/nautilus-file-operations.c:5771
+#: src/nautilus-file-operations.c:5774
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "%s-ის გადატანა უკვე არსებულ ფაილში იგივე სახელით შეუძლებელია."
 
-#: src/nautilus-file-operations.c:5858
+#: src/nautilus-file-operations.c:5861
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "შეცდომა ფაილის ასლის %s-ში გადატანისას."
 
-#: src/nautilus-file-operations.c:6048
+#: src/nautilus-file-operations.c:6051
 msgid "Copying Files"
 msgstr "ფაილების კოპირება"
 
-#: src/nautilus-file-operations.c:6168
+#: src/nautilus-file-operations.c:6171
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "\"%s\"-ის გადასატანად მომზადება"
 
-#: src/nautilus-file-operations.c:6172
+#: src/nautilus-file-operations.c:6175
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "მიმდინარეობს მზადება %'d ფაილების გადასატანად"
 
-#: src/nautilus-file-operations.c:6511
+#: src/nautilus-file-operations.c:6514
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "შეცდომა %s-ში ფაილების გადატანისას."
 
-#: src/nautilus-file-operations.c:6759
+#: src/nautilus-file-operations.c:6762
 msgid "Moving Files"
 msgstr "ფაილების გადატანა"
 
-#: src/nautilus-file-operations.c:6865
+#: src/nautilus-file-operations.c:6868
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "\"%s\"-ში ბმულების შექმნა"
 
-#: src/nautilus-file-operations.c:6869
+#: src/nautilus-file-operations.c:6872
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "იქმნება ბმული %'d ფაილზე"
 
-#: src/nautilus-file-operations.c:7019
+#: src/nautilus-file-operations.c:7022
 #, c-format
 msgid "Error while creating link to %s."
 msgstr "\"%s\"-სთან ბმულის შექმნის შეცდომა."
 
-#: src/nautilus-file-operations.c:7023
+#: src/nautilus-file-operations.c:7026
 msgid "Symbolic links only supported for local files"
 msgstr "სიმბოლური ბმულები მხოლოდ ლოკალური ფაილებისთვისაა მხარდაჭერილი"
 
-#: src/nautilus-file-operations.c:7028
+#: src/nautilus-file-operations.c:7031
 msgid "The target doesn’t support symbolic links."
 msgstr "დანიშნულების ადგილს სიმბოლური ბმების მხარდაჭერა არ გააჩნია."
 
-#: src/nautilus-file-operations.c:7036
+#: src/nautilus-file-operations.c:7039
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "შეცდომა %s -ში სიმბოლური ბმის შექმნისას."
 
-#: src/nautilus-file-operations.c:7366
+#: src/nautilus-file-operations.c:7369
 msgid "Setting permissions"
 msgstr "წვდომების დაყენება"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7659
+#: src/nautilus-file-operations.c:7662
 msgid "Untitled Folder"
 msgstr "ახალი საქაღალდე"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7674
+#: src/nautilus-file-operations.c:7677
 msgid "Untitled Document"
 msgstr "უსახელო დოკუმენტი"
 
-#: src/nautilus-file-operations.c:7957
+#: src/nautilus-file-operations.c:7963
 #, c-format
 msgid "Error while creating directory %s."
 msgstr "შეცდომა საქაღალდის შექმნისას: %s."
 
-#: src/nautilus-file-operations.c:7962
+#: src/nautilus-file-operations.c:7968
 #, c-format
 msgid "Error while creating file %s."
 msgstr "ფაილის შექმნის შეცდომა: %s."
 
-#: src/nautilus-file-operations.c:7966
+#: src/nautilus-file-operations.c:7972
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "შეცდომა საქაღალდის %s-ში შექმნისას."
 
+#: src/nautilus-file-operations.c:8075
+msgid "Saving image to file"
+msgstr "იქმნება ბმული %'d ფაილზე"
+
+#: src/nautilus-file-operations.c:8084
+msgid "Successfully saved image to file"
+msgstr "გამოსახულების ფაილში ჩაწერა წარმატებით დასრულდა"
+
+#: src/nautilus-file-operations.c:8114
+msgid "Failed to save image"
+msgstr "ფაილის შენახვის შეცდომა"
+
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:8049
+#: src/nautilus-file-operations.c:8176
 msgid "Pasted image"
-msgstr ""
+msgstr "ჩასმული გამოსახულება"
 
-#: src/nautilus-file-operations.c:8071
-msgid "Saving clipboard image to file"
-msgstr ""
-
-#: src/nautilus-file-operations.c:8078
-msgid "Successfully pasted clipboard image to file"
-msgstr ""
-
-#: src/nautilus-file-operations.c:8105
-msgid "Failed to paste image"
-msgstr "გამოსახულების ჩასმის შეცდომა"
-
-#: src/nautilus-file-operations.c:8171
+#: src/nautilus-file-operations.c:8183
 msgid "Retrieving clipboard data"
-msgstr ""
+msgstr "ბუფერის მონაცემების მიღება"
 
-#: src/nautilus-file-operations.c:8385
+#: src/nautilus-file-operations.c:8215
+msgid "Retrieving image data"
+msgstr "გამოსახულების მონაცემების მიღება"
+
+#: src/nautilus-file-operations.c:8432
 msgid "Emptying Trash"
 msgstr "სანაგვე ყუთის დაცარიელება"
 
-#: src/nautilus-file-operations.c:8427
+#: src/nautilus-file-operations.c:8474
 msgid "Verifying destination"
 msgstr "სამიზნის შემოწმება"
 
-#: src/nautilus-file-operations.c:8477
+#: src/nautilus-file-operations.c:8524
 #, c-format
 msgid "Extracting “%s”"
 msgstr "\"%s\"-ის გაშნა"
 
-#: src/nautilus-file-operations.c:8603 src/nautilus-file-operations.c:8693
+#: src/nautilus-file-operations.c:8650 src/nautilus-file-operations.c:8740
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "შეცდომა \"%s\"-ის გაშლისას."
 
-#: src/nautilus-file-operations.c:8610
+#: src/nautilus-file-operations.c:8657
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "შეცდომა \"%s\"-ის გაშლისას."
 
-#: src/nautilus-file-operations.c:8696
+#: src/nautilus-file-operations.c:8743
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "დისკზე %s-ის გაშლისთვის საკმარისი ადგილი არაა"
 
-#: src/nautilus-file-operations.c:8729
+#: src/nautilus-file-operations.c:8776
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "\"%s\" გაიშალა \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:8735
+#: src/nautilus-file-operations.c:8782
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "%'d ფაილი გაიშალა \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:8769
+#: src/nautilus-file-operations.c:8816
 msgid "Preparing to extract"
 msgstr "გაშლისთვის მომზადება"
 
-#: src/nautilus-file-operations.c:8897
+#: src/nautilus-file-operations.c:8944
 msgid "Extracting Files"
 msgstr "ფაილების გაშლა"
 
-#: src/nautilus-file-operations.c:8957
+#: src/nautilus-file-operations.c:9004
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "%s-ის შეკუმშვა \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:8963
+#: src/nautilus-file-operations.c:9010
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "%'d ფაილის შეკუმშვა \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:9111
+#: src/nautilus-file-operations.c:9158
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "\"%s\"-ის \"%s\"-ში შეკუმშვის შეცდომა"
 
-#: src/nautilus-file-operations.c:9117
+#: src/nautilus-file-operations.c:9164
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "%'d ფაილის \"%s\"-ში შეკუმშვის შეცდომა"
 
-#: src/nautilus-file-operations.c:9127
+#: src/nautilus-file-operations.c:9174
 msgid "There was an error while compressing files."
 msgstr "შეცდომა ფაილების შეკუმშვისას."
 
-#: src/nautilus-file-operations.c:9152
+#: src/nautilus-file-operations.c:9199
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "\"%s\" შეიკუმშა \"%s\"-ში"
 
-#: src/nautilus-file-operations.c:9158
+#: src/nautilus-file-operations.c:9205
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "%'d ფაილი \"%s\" -ში შეიკუმშა"
 
-#: src/nautilus-file-operations.c:9256
+#: src/nautilus-file-operations.c:9324
 msgid "Compressing Files"
 msgstr "ფაილების შეკუმშვა"
 
-#: src/nautilus-files-view.c:393
+#: src/nautilus-files-view.c:394
 msgid "Searching…"
 msgstr "ძებნა…"
 
-#: src/nautilus-files-view.c:393 src/nautilus-window-slot.c:938
+#: src/nautilus-files-view.c:394 src/nautilus-window-slot.c:924
 msgid "Loading…"
 msgstr "იტვირთება…"
 
-#: src/nautilus-files-view.c:1749
+#: src/nautilus-files-view.c:1780
 msgid "Examples: "
 msgstr "მაგალითები: "
 
-#: src/nautilus-files-view.c:2850
+#: src/nautilus-files-view.c:2876
 msgid "Could not paste files"
 msgstr "ფაილების ჩასმის შეცდომა"
 
-#: src/nautilus-files-view.c:2851
+#: src/nautilus-files-view.c:2877
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "წვდომები ამ საქაღალდეში ჩასმის უფლებას არ იძლევა"
 
-#: src/nautilus-files-view.c:2984
+#: src/nautilus-files-view.c:3010
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
 msgstr ""
 
-#: src/nautilus-files-view.c:3532 src/nautilus-files-view.c:3579
+#: src/nautilus-files-view.c:3519 src/nautilus-files-view.c:3566
 #, c-format
 msgid "“%s” selected"
 msgstr "მონიშნულია \"%s\" ელემენტი"
 
-#: src/nautilus-files-view.c:3536
+#: src/nautilus-files-view.c:3523
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d მონიშნული საქაღალდე"
 
-#: src/nautilus-files-view.c:3550
+#: src/nautilus-files-view.c:3537
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] "(შეიცავს %'d ჩანაწერს)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3565
+#: src/nautilus-files-view.c:3552
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(სულ შეიცავს %'d ელემენტს)"
 
-#: src/nautilus-files-view.c:3584
+#: src/nautilus-files-view.c:3571
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "%'d მონიშნული ელემენტი"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3593
+#: src/nautilus-files-view.c:3580
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2612,7 +2593,7 @@ msgstr[0] "%'d სხვა მონიშნული ელემენტი
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3608
+#: src/nautilus-files-view.c:3595
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2624,143 +2605,143 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3658
+#: src/nautilus-files-view.c:3645
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3756 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3743 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "შედეგების გარეშე"
 
-#: src/nautilus-files-view.c:3757 src/gtk/nautilusgtkplacesview.ui:194
+#: src/nautilus-files-view.c:3744 src/gtk/nautilusgtkplacesview.ui:194
 msgid "Try a different search."
 msgstr "სცადეთ სხვა ძებნა."
 
-#: src/nautilus-files-view.c:3762
+#: src/nautilus-files-view.c:3749
 msgid "Trash is Empty"
 msgstr "ნაგავი ცარიელია"
 
-#: src/nautilus-files-view.c:3768
+#: src/nautilus-files-view.c:3755
 msgid "No Starred Files"
 msgstr "ვარსკვლავდასმული ფაილების გარეშე"
 
-#: src/nautilus-files-view.c:3774
+#: src/nautilus-files-view.c:3761
 msgid "No Recent Files"
 msgstr "უკანასკნელი ფაილების გარეშე"
 
-#: src/nautilus-files-view.c:3780
+#: src/nautilus-files-view.c:3767
 msgid "Folder is Empty"
 msgstr "საქაღალდე ცარიელია"
 
-#: src/nautilus-files-view.c:6013
+#: src/nautilus-files-view.c:6005
 msgid "Select Move Destination"
 msgstr "აირჩიეთ გადატანის დანიშნულება"
 
-#: src/nautilus-files-view.c:6017
+#: src/nautilus-files-view.c:6009
 msgid "Select Copy Destination"
 msgstr "აირჩიეთ კოპირების დანიშნულება"
 
-#: src/nautilus-files-view.c:6026 src/nautilus-files-view.c:6434
+#: src/nautilus-files-view.c:6018 src/nautilus-files-view.c:6426
 #: src/resources/ui/nautilus-files-view-select-items.ui:16
 msgid "_Select"
 msgstr "_აირჩიეთ"
 
-#: src/nautilus-files-view.c:6430
+#: src/nautilus-files-view.c:6422
 msgid "Select Extract Destination"
 msgstr "აირჩიეთ გაშლის დანიშნულება"
 
-#: src/nautilus-files-view.c:6532
+#: src/nautilus-files-view.c:6524
 msgid "Error sending email."
 msgstr "ელფოსტის გაგზავნის შეცდომა."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6837
+#: src/nautilus-files-view.c:6829
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "წაშლის შეცდომა: %s"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6867 src/gtk/nautilusgtkplacessidebar.c:2765
+#: src/nautilus-files-view.c:6859 src/gtk/nautilusgtkplacessidebar.c:2793
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "\"%s\"-ის გამოღება შეუძლებელია"
 
-#: src/nautilus-files-view.c:6892
+#: src/nautilus-files-view.c:6884
 msgid "Unable to stop drive"
 msgstr "დისკის გაჩერების შეცდომა"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7005 src/gtk/nautilusgtkplacessidebar.c:2006
-#: src/gtk/nautilusgtkplacessidebar.c:2994
+#: src/nautilus-files-view.c:6997 src/gtk/nautilusgtkplacessidebar.c:2025
+#: src/gtk/nautilusgtkplacessidebar.c:3022
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "%s-ის გაშვების შეცდომა"
 
-#: src/nautilus-files-view.c:8001
+#: src/nautilus-files-view.c:8000
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "ახალი საქაღალდე მონიშნულით (%'d ჩანაწერი)"
 
-#: src/nautilus-files-view.c:8059
+#: src/nautilus-files-view.c:8058
 #, c-format
 msgid "Open With %s"
 msgstr "%s-ით გახსნა"
 
-#: src/nautilus-files-view.c:8071
+#: src/nautilus-files-view.c:8070
 msgid "Run"
 msgstr "გაშვება"
 
-#: src/nautilus-files-view.c:8076
+#: src/nautilus-files-view.c:8075
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:41
 msgid "Extract"
 msgstr "გაშლა"
 
-#: src/nautilus-files-view.c:8077
+#: src/nautilus-files-view.c:8076
 msgid "Extract to…"
 msgstr "გაშლა…"
 
-#: src/nautilus-files-view.c:8081
+#: src/nautilus-files-view.c:8080
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "გახსნა"
 
-#: src/nautilus-files-view.c:8159
+#: src/nautilus-files-view.c:8158
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
-#: src/gtk/nautilusgtkplacessidebar.c:3413
+#: src/gtk/nautilusgtkplacessidebar.c:3452
 msgid "_Start"
 msgstr "_დაწყება"
 
-#: src/nautilus-files-view.c:8165 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8164 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "_შეერთება"
 
-#: src/nautilus-files-view.c:8171
+#: src/nautilus-files-view.c:8170
 msgid "_Start Multi-disk Drive"
 msgstr "მრავალდისკოიანი მოწყობილობის ­_გაშვება"
 
-#: src/nautilus-files-view.c:8177
+#: src/nautilus-files-view.c:8176
 msgid "U_nlock Drive"
 msgstr "დისკის განბლოკვა"
 
-#: src/nautilus-files-view.c:8195
+#: src/nautilus-files-view.c:8194
 msgid "Stop Drive"
 msgstr "დისკის გაჩერება"
 
-#: src/nautilus-files-view.c:8201 src/gtk/nautilusgtkplacessidebar.c:3430
+#: src/nautilus-files-view.c:8200 src/gtk/nautilusgtkplacessidebar.c:3469
 msgid "_Safely Remove Drive"
 msgstr "დისკის _უსაფრთხოდ მოხსნა"
 
-#: src/nautilus-files-view.c:8207 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8206 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "_გათიშვა"
 
-#: src/nautilus-files-view.c:8213
+#: src/nautilus-files-view.c:8212
 msgid "_Stop Multi-disk Drive"
 msgstr "მ_რავალდისკიანი მოწყობილობის გაჩერება"
 
-#: src/nautilus-files-view.c:8219
+#: src/nautilus-files-view.c:8218
 msgid "_Lock Drive"
 msgstr "დისკის ჩაკეტვა"
 
@@ -2777,7 +2758,7 @@ msgstr "გადათრევა არ არის მხარდაჭე
 msgid "An invalid drag type was used."
 msgstr "გადათრევის მცდარი ტიპი იქნა გამოყენებული."
 
-#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1281
+#: src/nautilus-file-undo-operations.c:176 src/nautilus-window.c:1288
 msgid "Undo"
 msgstr "ბრძანების გაუქმება"
 
@@ -3280,122 +3261,130 @@ msgstr "შეიცავს მუსიკას და სურათებ
 msgid "Contains photos and music"
 msgstr "შეიცავს სურათებს და მუსიკას"
 
-#: src/nautilus-mime-actions.c:108
-#: src/resources/ui/nautilus-search-popover.ui:227
+#: src/nautilus-location-entry.c:710
+msgid "Clear Entry"
+msgstr "ჩანაწერის გასუფთავება"
+
+#: src/nautilus-location-entry.c:719
+msgid "Go to Location"
+msgstr "მდებარეობა"
+
+#: src/nautilus-mime-actions.c:99
+#: src/resources/ui/nautilus-search-popover.ui:231
 msgid "Anything"
 msgstr "ნებისმიერი"
 
-#: src/nautilus-mime-actions.c:118
+#: src/nautilus-mime-actions.c:109
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:51
 msgid "Folders"
 msgstr "საქაღალდეები"
 
-#: src/nautilus-mime-actions.c:122
+#: src/nautilus-mime-actions.c:113
 msgid "Documents"
 msgstr "დოკუმენტები"
 
-#: src/nautilus-mime-actions.c:139
+#: src/nautilus-mime-actions.c:130
 msgid "Illustration"
 msgstr "ილუსტრაცია"
 
-#: src/nautilus-mime-actions.c:151
+#: src/nautilus-mime-actions.c:142
 msgid "Music"
 msgstr "მუსიკა"
 
-#: src/nautilus-mime-actions.c:164
+#: src/nautilus-mime-actions.c:155
 msgid "PDF / PostScript"
 msgstr "Pdf / Postscript"
 
-#: src/nautilus-mime-actions.c:171
+#: src/nautilus-mime-actions.c:162
 msgid "Picture"
 msgstr "სურათი"
 
-#: src/nautilus-mime-actions.c:212
+#: src/nautilus-mime-actions.c:203
 msgid "Text File"
 msgstr "ტექსტური ფაილი"
 
-#: src/nautilus-mime-actions.c:581
+#: src/nautilus-mime-actions.c:580
 msgid "This link cannot be used because it has no target."
 msgstr "მოცემული ბმული გამოუყენებადია, რადგანაც მას არ გააჩნია დანიშნულება."
 
-#: src/nautilus-mime-actions.c:585
+#: src/nautilus-mime-actions.c:584
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr ""
 "მოცემული ბმული გამოუყენებადია, რადგანაც მისი დანიშნულება \"%s\" არ არსებობს."
 
-#: src/nautilus-mime-actions.c:593
+#: src/nautilus-mime-actions.c:592
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "ბმული \"%s\" გაწყვეტილია. გნებავთ მისი სანაგვე ყუთში მოთავსება?"
 
-#: src/nautilus-mime-actions.c:597
+#: src/nautilus-mime-actions.c:596
 #: src/resources/ui/nautilus-files-view-context-menus.ui:217
 msgid "Mo_ve to Trash"
 msgstr "სანაგვე ყუთში გადატანა"
 
-#: src/nautilus-mime-actions.c:604
+#: src/nautilus-mime-actions.c:603
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "გაწყვეტილი ბმული \"%s\"."
 
-#: src/nautilus-mime-actions.c:996
+#: src/nautilus-mime-actions.c:986
 msgid "Are you sure you want to open all files?"
 msgstr "ნამდვილად გნებავთ ყველა ფაილის გახსნა ?"
 
-#: src/nautilus-mime-actions.c:1000
+#: src/nautilus-mime-actions.c:990
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
 msgstr[0] "ეს %d-ს ცალკე ფანჯარაში გახსნის."
 
-#: src/nautilus-mime-actions.c:1005
+#: src/nautilus-mime-actions.c:995
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "ეს %d-ს ცალკე ჩანართში გახსნის."
 
-#: src/nautilus-mime-actions.c:1010
+#: src/nautilus-mime-actions.c:1000
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "ეს %d-ს ცალკე ფანჯარაში გახსნის."
 
-#: src/nautilus-mime-actions.c:1017
+#: src/nautilus-mime-actions.c:1007
 msgid "_Open All"
 msgstr "_ყველას გახსნა"
 
-#: src/nautilus-mime-actions.c:1082
+#: src/nautilus-mime-actions.c:1072
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr "\"%s\"-ის ჩვენება შეუძლებელია"
 
-#: src/nautilus-mime-actions.c:1181
+#: src/nautilus-mime-actions.c:1171
 msgid "The file is of an unknown type"
 msgstr "ფაილის უცნობი ტიპი"
 
-#: src/nautilus-mime-actions.c:1186
+#: src/nautilus-mime-actions.c:1176
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "ამ ტიპის (%s) ფაილის გახსნისთვის საჭირო პროგრამა ვერ მოიძებნა"
 
-#: src/nautilus-mime-actions.c:1191
+#: src/nautilus-mime-actions.c:1181
 msgid "_Select App"
 msgstr "აირჩიეთ _აპი"
 
-#: src/nautilus-mime-actions.c:1228
+#: src/nautilus-mime-actions.c:1218
 msgid "There was an internal error trying to search for apps:"
 msgstr "შიდა შეცდომა პროგრამის მოძებნისას:"
 
-#: src/nautilus-mime-actions.c:1230
+#: src/nautilus-mime-actions.c:1220
 msgid "Unable to search for app"
 msgstr "აპლიკაციის მოძებნის შეცდომა"
 
-#: src/nautilus-mime-actions.c:1339
+#: src/nautilus-mime-actions.c:1329
 msgid "_Search in Software"
 msgstr "პროგრამებში მოძებნა"
 
-#: src/nautilus-mime-actions.c:1342
+#: src/nautilus-mime-actions.c:1332
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
@@ -3403,21 +3392,21 @@ msgid ""
 msgstr ""
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1737 src/nautilus-mime-actions.c:2036
-#: src/gtk/nautilusgtkplacesview.c:1212 src/gtk/nautilusgtkplacesview.c:1309
+#: src/nautilus-mime-actions.c:1732 src/nautilus-mime-actions.c:2031
+#: src/gtk/nautilusgtkplacesview.c:1213 src/gtk/nautilusgtkplacesview.c:1310
 msgid "Unable to access location"
 msgstr "მდებარეობასთან წვდომა აკრძალულია"
 
-#: src/nautilus-mime-actions.c:2127
+#: src/nautilus-mime-actions.c:2122
 msgid "Unable to start location"
 msgstr "მდებარეობის გაშვების შეცდომა"
 
-#: src/nautilus-mime-actions.c:2220
+#: src/nautilus-mime-actions.c:2215
 #, c-format
 msgid "Opening “%s”."
 msgstr "იხსნება “%s”."
 
-#: src/nautilus-mime-actions.c:2225
+#: src/nautilus-mime-actions.c:2220
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3608,64 +3597,60 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "%s პაროლითაა დაცული."
 
-#: src/nautilus-pathbar.c:277
+#: src/nautilus-pathbar.c:279
 msgid "Current Folder Menu"
 msgstr "მშობელი საქაღალდე"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:364 src/nautilus-properties-window.c:860
-#: src/gtk/nautilusgtkplacesview.c:1104
+#: src/nautilus-pathbar.c:368 src/nautilus-properties-window.c:851
+#: src/gtk/nautilusgtkplacesview.c:1105
 msgid "Operating System"
 msgstr "ოპერაციული სისტემა"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:371
+#: src/nautilus-pathbar.c:375
 msgid "Administrator Root"
 msgstr "ადმინისტრატორის საწყისი"
 
-#: src/nautilus-places-view.c:134
+#: src/nautilus-places-view.c:135
 msgid "_Close"
 msgstr "_დახურვა"
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
-#. Translators: this is referred to the permissions
-#. * the user has in a directory.
-#.
-#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:397
-#: src/nautilus-properties-window.c:3156 src/nautilus-properties-window.c:3186
+#: src/nautilus-preferences-window.c:83 src/nautilus-properties-window.c:397
 msgid "None"
 msgstr "არაფერი"
 
-#: src/nautilus-preferences-window.c:334
+#: src/nautilus-preferences-window.c:316
 msgid "Single click"
 msgstr "ე_რთი წკაპი"
 
-#: src/nautilus-preferences-window.c:334
+#: src/nautilus-preferences-window.c:316
 msgid "Double click"
 msgstr "ორმაგი წკაპი"
 
-#: src/nautilus-preferences-window.c:336 src/nautilus-preferences-window.c:338
-#: src/nautilus-preferences-window.c:340
+#: src/nautilus-preferences-window.c:318 src/nautilus-preferences-window.c:320
+#: src/nautilus-preferences-window.c:322
 msgid "On this computer only"
 msgstr "მხოლოდ ამ კომპიუტერზე"
 
-#: src/nautilus-preferences-window.c:336
+#: src/nautilus-preferences-window.c:318
 msgid "All locations"
 msgstr "ყველა მდებარეობა"
 
-#: src/nautilus-preferences-window.c:336 src/nautilus-preferences-window.c:338
-#: src/nautilus-preferences-window.c:340
+#: src/nautilus-preferences-window.c:318 src/nautilus-preferences-window.c:320
+#: src/nautilus-preferences-window.c:322
 msgid "Never"
 msgstr "არასდროს"
 
-#: src/nautilus-preferences-window.c:338
+#: src/nautilus-preferences-window.c:320
 msgid "All files"
 msgstr "ყველა ფაილი"
 
-#: src/nautilus-preferences-window.c:340
+#: src/nautilus-preferences-window.c:322
 msgid "All folders"
 msgstr "ყველა საქაღალდე"
 
@@ -3729,11 +3714,11 @@ msgstr[0] "ფაილებზე %'d ოპერაცია მიმდი
 msgid "All file operations have been completed"
 msgstr "ფაილებზე ყველა ოპერაცია დასრულებულია"
 
-#: src/nautilus-properties-window.c:348 src/nautilus-properties-window.c:3199
+#: src/nautilus-properties-window.c:348
 msgid "Read and write"
 msgstr "კითხვა და ჩაწერა"
 
-#: src/nautilus-properties-window.c:352 src/nautilus-properties-window.c:3175
+#: src/nautilus-properties-window.c:352
 msgid "Create and delete files"
 msgstr "ფაილების შექმნა და წაშლა"
 
@@ -3741,15 +3726,15 @@ msgstr "ფაილების შექმნა და წაშლა"
 msgid "Read/write, no access"
 msgstr "ჩაწერა/წაკითხვაი, წვდომის გარეშე"
 
-#: src/nautilus-properties-window.c:363 src/nautilus-properties-window.c:3193
+#: src/nautilus-properties-window.c:363
 msgid "Read-only"
 msgstr "მხოლოდ წაკითხვა"
 
-#: src/nautilus-properties-window.c:367 src/nautilus-properties-window.c:3169
+#: src/nautilus-properties-window.c:367
 msgid "Access files"
 msgstr "ფაილებზე წვდომა"
 
-#: src/nautilus-properties-window.c:371 src/nautilus-properties-window.c:3163
+#: src/nautilus-properties-window.c:371
 msgid "List files only"
 msgstr "მხოლოდ ფაილების სია"
 
@@ -3765,93 +3750,93 @@ msgstr "მხოლოდ-ჩაწერა, წვდომის გარ�
 msgid "Access-only"
 msgstr "მხოლოდ-წვდომა"
 
-#: src/nautilus-properties-window.c:701
+#: src/nautilus-properties-window.c:692
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "შეუძლებელია ერთზე მეტი პერსონალური ხატულას მინიჭება!"
 
-#: src/nautilus-properties-window.c:702
+#: src/nautilus-properties-window.c:693
 msgid "Please drop just one image to set a custom icon."
 msgstr "ხატულის დასაყენებლად სურათი უბრალოდ ზედ დააგდეთ."
 
-#: src/nautilus-properties-window.c:718
+#: src/nautilus-properties-window.c:709
 msgid "The file that you dropped is not local."
 msgstr "თქვენს მიერ გადათრეული ფაილი ლოკალური არ არის."
 
-#: src/nautilus-properties-window.c:719 src/nautilus-properties-window.c:726
+#: src/nautilus-properties-window.c:710 src/nautilus-properties-window.c:717
 msgid "You can only use local images as custom icons."
 msgstr ""
 "თქვენ შეგიძლიათ პერსონალურ ხატულებად მხოლოდ ლოკალური გამოსახულებების "
 "გამოყენება."
 
-#: src/nautilus-properties-window.c:725
+#: src/nautilus-properties-window.c:716
 msgid "The file that you dropped is not an image."
 msgstr "თქვენს მიერ გადათრეული ფაილი არ არის გრაფიკული ტიპის."
 
 #. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:766
+#: src/nautilus-properties-window.c:757
 #: src/resources/ui/nautilus-files-view-context-menus.ui:247
 msgid "Unstar"
 msgstr "ვარსკვლავის მოხსნა"
 
-#: src/nautilus-properties-window.c:1703
+#: src/nautilus-properties-window.c:1694
 msgid "Cancel Group Change?"
 msgstr "გნებავთ ჯგუფის ცვლილების გაუქმება?"
 
-#: src/nautilus-properties-window.c:1853
+#: src/nautilus-properties-window.c:1844
 msgid "Cancel Owner Change?"
 msgstr "გნებავთ მფლობელის ცვლილების გაუქმება?"
 
-#: src/nautilus-properties-window.c:2005 src/nautilus-properties-window.c:2052
+#: src/nautilus-properties-window.c:1996 src/nautilus-properties-window.c:2043
 msgid "Multiple"
 msgstr "მრავალი"
 
-#: src/nautilus-properties-window.c:2176
+#: src/nautilus-properties-window.c:2169
 msgid "Empty folder"
 msgstr "საქაღალდე ცარიელია"
 
-#: src/nautilus-properties-window.c:2180
+#: src/nautilus-properties-window.c:2173
 msgid "Contents unreadable"
 msgstr "შემცველობის წაკითხვა შეუძლებელია"
 
-#: src/nautilus-properties-window.c:2192
+#: src/nautilus-properties-window.c:2185
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] "%'d ელემენტი, ზომით %s"
 
-#: src/nautilus-properties-window.c:2202
+#: src/nautilus-properties-window.c:2195
 msgid "(some contents unreadable)"
 msgstr "(წაუკითხვადი შინაარსის ფაილები)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2532
+#: src/nautilus-properties-window.c:2533
 #, c-format
 msgid "%s Filesystem"
 msgstr "%s ფაილური სისტემა"
 
-#: src/nautilus-properties-window.c:3687
+#: src/nautilus-properties-window.c:3644
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "\"%s\"-ის უფლებების დადგენა შეუძლებელია."
 
-#: src/nautilus-properties-window.c:4139
+#: src/nautilus-properties-window.c:4092
 msgid "Creating Properties window."
 msgstr "იქმნება პარამეტრების ფანჯარა."
 
-#: src/nautilus-properties-window.c:4308
+#: src/nautilus-properties-window.c:4261
 msgid "Select Custom Icon"
 msgstr "ხსვა პიქტოგრამის ამორჩევა"
 
-#: src/nautilus-properties-window.c:4310
+#: src/nautilus-properties-window.c:4263
 msgid "_Revert"
 msgstr "და_ბრუნება"
 
-#: src/nautilus-properties-window.c:4312
+#: src/nautilus-properties-window.c:4265
 #: src/resources/ui/nautilus-app-chooser.ui:109
 #: src/resources/ui/nautilus-files-view-context-menus.ui:84
-#: src/gtk/nautilusgtkplacesview.c:1695 src/gtk/nautilusgtkplacessidebar.c:3204
-#: src/gtk/nautilusgtkplacessidebar.c:3318
+#: src/gtk/nautilusgtkplacesview.c:1695 src/gtk/nautilusgtkplacessidebar.c:3238
+#: src/gtk/nautilusgtkplacessidebar.c:3357
 msgid "_Open"
 msgstr "_გახსნა"
 
@@ -3860,13 +3845,17 @@ msgstr "_გახსნა"
 msgid "Search for “%s”"
 msgstr "\"%s\"-ის მოძებნა"
 
-#: src/nautilus-query-editor.c:629
+#: src/nautilus-query-editor.c:632
 msgid "Search files and folders"
 msgstr "ფაილებისა და საქაღალდეების ძებნა"
 
-#: src/nautilus-query-editor.c:636
+#: src/nautilus-query-editor.c:639
 msgid "Clear entry"
 msgstr "ჩანაწერის გასუფთავება"
+
+#: src/nautilus-query-editor.c:663
+msgid "Filter Search Results"
+msgstr "ძიების შედეგების გაფილტვრა"
 
 #: src/nautilus-rename-file-popover-controller.c:370
 msgid "Rename Folder"
@@ -3876,18 +3865,18 @@ msgstr "საქაღალდის სახელის შეცვლა"
 msgid "Rename File"
 msgstr "ფაილის გადარქმევა"
 
-#: src/nautilus-search-engine.c:353
+#: src/nautilus-search-engine.c:357
 msgid "Unable to complete the requested search"
 msgstr "მოთხოვნილი ძებნის დასრულების შეცდომა"
 
 #: src/nautilus-search-popover.c:293
-msgid "Show a list to select the date"
-msgstr "სიის ჩვენება, თარიღის ასარჩევად"
+msgid "Show Time Ranges"
+msgstr "დროის დიაპაზონების ჩვენება"
 
 #: src/nautilus-search-popover.c:299
-#: src/resources/ui/nautilus-search-popover.ui:70
-msgid "Show a calendar to select the date"
-msgstr "თარიღის კალენდარიდან არჩევა"
+#: src/resources/ui/nautilus-search-popover.ui:72
+msgid "Use Calendar"
+msgstr "კალენდარი"
 
 #. Add the no date filter element first
 #: src/nautilus-search-popover.c:418
@@ -3908,13 +3897,13 @@ msgid "Select"
 msgstr "აირჩიეთ"
 
 #: src/nautilus-search-popover.c:728
-#: src/resources/ui/nautilus-search-popover.ui:42
+#: src/resources/ui/nautilus-search-popover.ui:44
 msgid "Select Dates…"
 msgstr "აირჩიეთ თარიღები…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:335
-#: src/gtk/nautilusgtkplacessidebar.c:1048
+#: src/gtk/nautilusgtkplacessidebar.c:1064
 msgid "Trash"
 msgstr "ნაგავი"
 
@@ -3955,11 +3944,11 @@ msgstr "გაზიარების მორგება"
 msgid "_Settings"
 msgstr "მორგება"
 
-#: src/nautilus-toolbar.c:170 src/resources/ui/nautilus-toolbar.ui:32
+#: src/nautilus-toolbar.c:166 src/resources/ui/nautilus-toolbar.ui:32
 msgid "_Undo"
 msgstr "_დაბრუნება"
 
-#: src/nautilus-toolbar.c:179 src/resources/ui/nautilus-toolbar.ui:36
+#: src/nautilus-toolbar.c:175 src/resources/ui/nautilus-toolbar.ui:36
 msgid "_Redo"
 msgstr "_გამეორება"
 
@@ -4011,69 +4000,69 @@ msgid "Last year"
 msgid_plural "%d years ago"
 msgstr[0] "%d წლის წინ"
 
-#: src/nautilus-window.c:158
+#: src/nautilus-window.c:159
 msgid "Parent folder"
 msgstr "მშობელი საქაღალდე"
 
-#: src/nautilus-window.c:160
+#: src/nautilus-window.c:161
 msgid "New tab"
 msgstr "ახალი _დაფა"
 
-#: src/nautilus-window.c:161
+#: src/nautilus-window.c:162
 msgid "Close current view"
 msgstr "მიდინარე ხედის დახურვა"
 
-#: src/nautilus-window.c:162 src/resources/ui/nautilus-history-controls.ui:11
+#: src/nautilus-window.c:163 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "უკან"
 
-#: src/nautilus-window.c:163 src/resources/ui/nautilus-history-controls.ui:19
+#: src/nautilus-window.c:164 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "წინ"
 
-#. Translators: only one item has been deleted and %s is its name.
-#: src/nautilus-window.c:1187
+#. Translators: only one item has been moved to trash and %s is its name.
+#: src/nautilus-window.c:1188
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "\"%s\" გადატანილია სანაგვე ყუთში"
 
-#. Translators: one or more items might have been deleted, and %d
+#. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:1194
+#: src/nautilus-window.c:1195
 #, c-format
-msgid "%d file deleted"
-msgid_plural "%d files deleted"
-msgstr[0] "%d ფაილი წაშლილია"
+msgid "%d file moved to trash"
+msgid_plural "%d files moved to trash"
+msgstr[0] "%d ფაილი გადატანილია სანაგვე ყუთში"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1215
+#: src/nautilus-window.c:1216
 #, c-format
 msgid "“%s” unstarred"
 msgstr "“%s” ვარკსვლავი მოიხსნა"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1221
+#: src/nautilus-window.c:1222
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
 msgstr[0] "%d ფაილს ვარკსვლავი მოეხსნა"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1317 src/gtk/nautilusgtkplacessidebar.c:897
+#: src/nautilus-window.c:1325 src/gtk/nautilusgtkplacessidebar.c:909
 #, c-format
 msgid "Open %s"
 msgstr "გახსენი %s"
 
-#: src/nautilus-window.c:2367
+#: src/nautilus-window.c:2379
 msgid "No plugins currently installed."
 msgstr "დამატებები დაყენებული არაა."
 
-#: src/nautilus-window.c:2371
+#: src/nautilus-window.c:2383
 msgid "Currently installed plugins:"
 msgstr "ამჟამად დაყენებული დამატებები:"
 
-#: src/nautilus-window.c:2373
+#: src/nautilus-window.c:2385
 msgid "For bug testing only, the following command can be used:"
 msgstr ""
 
@@ -4081,60 +4070,60 @@ msgstr ""
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2395
+#: src/nautilus-window.c:2407
 msgid "translator-credits"
 msgstr "თარგმანი-შესრულებულია"
 
-#: src/nautilus-window-slot.c:1069
+#: src/nautilus-window-slot.c:1068
 msgid "Searching locations only"
 msgstr "მხოლოდ მდებარეობებში ძებნა"
 
-#: src/nautilus-window-slot.c:1073
+#: src/nautilus-window-slot.c:1072
 msgid "Searching network locations only"
 msgstr "მხოლოდ ქსელურ მდებარეობებში ძებნა"
 
-#: src/nautilus-window-slot.c:1078
+#: src/nautilus-window-slot.c:1077
 msgid "Remote location — only searching the current folder"
 msgstr "დაშორებული მდებარეობა -- ძებნა მხოლოდ მიმდინარე საქაღალდეში მოხდება"
 
-#: src/nautilus-window-slot.c:1082
+#: src/nautilus-window-slot.c:1081
 msgid "Only searching the current folder"
 msgstr "მხოლოდ მიმდინარე საქაღალდეში ძებნა"
 
-#: src/nautilus-window-slot.c:1609
+#: src/nautilus-window-slot.c:1618
 msgid "Unable to display the contents of this folder."
 msgstr "საქაღალდეს შიგთავსი ნაჩვენები ვერ იქნება."
 
-#: src/nautilus-window-slot.c:1613
+#: src/nautilus-window-slot.c:1622
 msgid "This location doesn’t appear to be a folder."
 msgstr "მისამართი საქაღალდეს არ წარმოადგენს."
 
-#: src/nautilus-window-slot.c:1625
+#: src/nautilus-window-slot.c:1634
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "\"%s\"-ის პოვნა შეუძლებელია. გადაამოწმეთ მართლწერა და კიდევ სცადეთ."
 
-#: src/nautilus-window-slot.c:1630
+#: src/nautilus-window-slot.c:1639
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "მოთხოვნილი ფაილის მოძებნა შეუძლებელია. გადაამოწმეთ მართლწერა და თავიდან "
 "სცადეთ."
 
-#: src/nautilus-window-slot.c:1641
+#: src/nautilus-window-slot.c:1650
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "“%s” მდებარეობები მხარდაუჭერელია."
 
-#: src/nautilus-window-slot.c:1646
+#: src/nautilus-window-slot.c:1655
 msgid "Unable to handle this kind of location."
 msgstr "ამ ტიპის ადგილზე შესვლა არ შემიძლია."
 
-#: src/nautilus-window-slot.c:1654
+#: src/nautilus-window-slot.c:1663
 msgid "Unable to access the requested location."
 msgstr "მოთხოვნილ მდებარეობაზე წვდომა არ გაქვთ."
 
-#: src/nautilus-window-slot.c:1660
+#: src/nautilus-window-slot.c:1669
 msgid "Don’t have permission to access the requested location."
 msgstr "მოთხოვნილ მდებარეობასთან წვდომა არ გაგაჩნიათ."
 
@@ -4143,7 +4132,7 @@ msgstr "მოთხოვნილ მდებარეობასთან �
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1671
+#: src/nautilus-window-slot.c:1680
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4152,18 +4141,18 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1680
+#: src/nautilus-window-slot.c:1689
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
 msgstr ""
 
-#: src/nautilus-window-slot.c:1699
+#: src/nautilus-window-slot.c:1708
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "დაუმუშავებელი შეცდომის შეტყობინება: %s"
 
-#: src/nautilus-window-slot.c:1867
+#: src/nautilus-window-slot.c:1876
 #, c-format
 msgid "Unable to load location"
 msgstr "მდებარეობის ჩატვირთვის შეცდომა"
@@ -4302,172 +4291,172 @@ msgctxt "shortcut window"
 msgid "Navigation"
 msgstr "ნავიგაცია"
 
-#: src/resources/gtk/help-overlay.ui:161
+#: src/resources/gtk/help-overlay.ui:161 src/resources/gtk/help-overlay.ui:168
 msgctxt "shortcut window"
 msgid "Go back"
 msgstr "უკან დაბრუნება"
 
-#: src/resources/gtk/help-overlay.ui:167
+#: src/resources/gtk/help-overlay.ui:175 src/resources/gtk/help-overlay.ui:182
 msgctxt "shortcut window"
 msgid "Go forward"
 msgstr "წინ გადასვლა"
 
-#: src/resources/gtk/help-overlay.ui:173
+#: src/resources/gtk/help-overlay.ui:189
 msgctxt "shortcut window"
 msgid "Go up"
 msgstr "მაღლა ასვლა"
 
-#: src/resources/gtk/help-overlay.ui:179
+#: src/resources/gtk/help-overlay.ui:195
 msgctxt "shortcut window"
 msgid "Go down"
 msgstr "დაბლა ჩამოსვლა"
 
-#: src/resources/gtk/help-overlay.ui:185
+#: src/resources/gtk/help-overlay.ui:201
 msgctxt "shortcut window"
 msgid "Go to home folder"
 msgstr "საწყის საქაღალდეზე გადასვლა"
 
-#: src/resources/gtk/help-overlay.ui:191
+#: src/resources/gtk/help-overlay.ui:207
 msgctxt "shortcut window"
 msgid "Enter location"
 msgstr "შეიყვანეთ ადგილმდებარეობა"
 
-#: src/resources/gtk/help-overlay.ui:197
+#: src/resources/gtk/help-overlay.ui:213
 msgctxt "shortcut window"
 msgid "Location bar with root location"
 msgstr "მდებარეობის ზოლი root მდებარეობით"
 
-#: src/resources/gtk/help-overlay.ui:203
+#: src/resources/gtk/help-overlay.ui:219
 msgctxt "shortcut window"
 msgid "Location bar with home location"
 msgstr "მდებარეობის ზოლი საწყისი მდებარეობით"
 
-#: src/resources/gtk/help-overlay.ui:211
+#: src/resources/gtk/help-overlay.ui:227
 msgctxt "shortcut window"
 msgid "View"
 msgstr "ხედი"
 
-#: src/resources/gtk/help-overlay.ui:214
+#: src/resources/gtk/help-overlay.ui:230
 msgctxt "shortcut window"
 msgid "Zoom in"
 msgstr "&გადიდება"
 
-#: src/resources/gtk/help-overlay.ui:220
+#: src/resources/gtk/help-overlay.ui:236
 msgctxt "shortcut window"
 msgid "Zoom out"
 msgstr "დაპატარავება"
 
-#: src/resources/gtk/help-overlay.ui:226
+#: src/resources/gtk/help-overlay.ui:242
 msgctxt "shortcut window"
 msgid "Reset zoom"
 msgstr "გადიდების საწყისი პარამეტრები"
 
-#: src/resources/gtk/help-overlay.ui:232
+#: src/resources/gtk/help-overlay.ui:248
 msgctxt "shortcut window"
 msgid "Refresh view"
 msgstr "ხედის განახლება"
 
-#: src/resources/gtk/help-overlay.ui:238
+#: src/resources/gtk/help-overlay.ui:254
 msgctxt "shortcut window"
 msgid "Show/hide hidden files"
 msgstr "დამალული ფაილების ჩვენება"
 
-#: src/resources/gtk/help-overlay.ui:244
+#: src/resources/gtk/help-overlay.ui:260
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
 msgstr "გვერდითი ზოლის ჩვენება/დამალვა"
 
-#: src/resources/gtk/help-overlay.ui:250
+#: src/resources/gtk/help-overlay.ui:266
 msgctxt "shortcut window"
 msgid "Show/hide action menu"
 msgstr "აპლიკაციის მენიუს ჩვენება/დამალვა"
 
-#: src/resources/gtk/help-overlay.ui:256
+#: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "List view"
 msgstr "სიის ხედი"
 
-#: src/resources/gtk/help-overlay.ui:262
+#: src/resources/gtk/help-overlay.ui:278
 msgctxt "shortcut window"
 msgid "Grid view"
 msgstr "ბადის ხედი"
 
-#: src/resources/gtk/help-overlay.ui:268
+#: src/resources/gtk/help-overlay.ui:284 src/resources/gtk/help-overlay.ui:291
 msgctxt "shortcut window"
 msgid "Expand folder"
 msgstr "საქაღალდის გახსნა"
 
-#: src/resources/gtk/help-overlay.ui:274
+#: src/resources/gtk/help-overlay.ui:298 src/resources/gtk/help-overlay.ui:305
 msgctxt "shortcut window"
 msgid "Collapse folder"
 msgstr "საქაღალდის დახურვა"
 
-#: src/resources/gtk/help-overlay.ui:282
+#: src/resources/gtk/help-overlay.ui:314
 msgctxt "shortcut window"
 msgid "Editing"
 msgstr "ჩასწორება"
 
-#: src/resources/gtk/help-overlay.ui:285
+#: src/resources/gtk/help-overlay.ui:317
 msgctxt "shortcut window"
 msgid "Create folder"
 msgstr "საქაღალდის შექმნა"
 
-#: src/resources/gtk/help-overlay.ui:291
+#: src/resources/gtk/help-overlay.ui:323
 msgctxt "shortcut window"
 msgid "Rename"
 msgstr "%1 სურათის სახელის გადარქმევა"
 
-#: src/resources/gtk/help-overlay.ui:297
+#: src/resources/gtk/help-overlay.ui:329
 msgctxt "shortcut window"
 msgid "Move to trash"
 msgstr "ნაგავში მოთავსება"
 
-#: src/resources/gtk/help-overlay.ui:303
+#: src/resources/gtk/help-overlay.ui:335
 msgctxt "shortcut window"
 msgid "Delete permanently"
 msgstr "სამუდამოდ წაშლა"
 
-#: src/resources/gtk/help-overlay.ui:309
+#: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Create link to copied item"
 msgstr "კოპირებულ ელემენტამდე ბმულის შექმნა"
 
-#: src/resources/gtk/help-overlay.ui:315
+#: src/resources/gtk/help-overlay.ui:347
 msgctxt "shortcut window"
 msgid "Create link to selected item"
 msgstr "მონიშნულ ელემენტამდე ბმული შექმნა"
 
-#: src/resources/gtk/help-overlay.ui:321
+#: src/resources/gtk/help-overlay.ui:353
 msgctxt "shortcut window"
 msgid "Cut"
 msgstr "ამოჭრა"
 
-#: src/resources/gtk/help-overlay.ui:327
+#: src/resources/gtk/help-overlay.ui:359
 msgctxt "shortcut window"
 msgid "Copy"
 msgstr "ასლი"
 
-#: src/resources/gtk/help-overlay.ui:333
+#: src/resources/gtk/help-overlay.ui:365
 msgctxt "shortcut window"
 msgid "Paste"
 msgstr "ჩასმა"
 
-#: src/resources/gtk/help-overlay.ui:339
+#: src/resources/gtk/help-overlay.ui:371
 msgctxt "shortcut window"
 msgid "Select all"
 msgstr "ყველას მონიშვნა"
 
-#: src/resources/gtk/help-overlay.ui:345
+#: src/resources/gtk/help-overlay.ui:377
 msgctxt "shortcut window"
 msgid "Invert selection"
 msgstr "მონიშვნის ინვერსია"
 
-#: src/resources/gtk/help-overlay.ui:351
+#: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Select items matching"
 msgstr "აირჩიეთ დამთხვეული ელემენტები"
 
-#: src/resources/gtk/help-overlay.ui:357
+#: src/resources/gtk/help-overlay.ui:389
 msgctxt "shortcut window"
 msgid "Show item properties"
 msgstr "თვისებების ჩვენება"
@@ -4530,8 +4519,8 @@ msgstr "ფაილის საწყისი სახელი"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:107
 #: src/resources/ui/nautilus-rename-file-popover.ui:42
-#: src/gtk/nautilusgtkplacessidebar.c:2357
-#: src/gtk/nautilusgtkplacessidebar.c:3356
+#: src/gtk/nautilusgtkplacessidebar.c:2385
+#: src/gtk/nautilusgtkplacessidebar.c:3395
 msgid "_Rename"
 msgstr "სახელის შეცვლა"
 
@@ -4569,13 +4558,25 @@ msgstr "არსებულ ტექსტი"
 msgid "Replace With"
 msgstr "_ჩანაცვლება"
 
-#: src/resources/ui/nautilus-column-chooser.ui:94
-msgid "Reset to De_fault"
-msgstr "სტანდარტულ ხედზე გადართვა"
+#: src/resources/ui/nautilus-column-chooser.ui:16
+msgid "Visible Columns"
+msgstr "ხილული სვეტები"
 
-#: src/resources/ui/nautilus-column-chooser.ui:95
-msgid "Replace the current List Columns settings with the default settings"
-msgstr "მიმდინარე სიის სვეტების პარამეტრების ნაგულისხმები პარამეტრებით შეცვლა"
+#: src/resources/ui/nautilus-column-chooser.ui:26
+msgid "This folder uses custom settings"
+msgstr ""
+
+#: src/resources/ui/nautilus-column-chooser.ui:59
+msgid "Only Apply to Current Folder"
+msgstr "მხოლოდ მიმდინარე საქაღალდეში ძებნა"
+
+#: src/resources/ui/nautilus-column-chooser.ui:80
+msgid "Move _Up"
+msgstr "_აწევა"
+
+#: src/resources/ui/nautilus-column-chooser.ui:84
+msgid "Move _Down"
+msgstr "_ჩამოწევა"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
 msgid "Create Compressed Archive"
@@ -4709,27 +4710,27 @@ msgid "_Open Scripts Folder"
 msgstr "სკრ_იპტების საქაღალდის გახსნა"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:138
-#: src/gtk/nautilusgtkplacesview.c:1729 src/gtk/nautilusgtkplacessidebar.c:3378
+#: src/gtk/nautilusgtkplacesview.c:1729 src/gtk/nautilusgtkplacessidebar.c:3417
 msgid "_Mount"
 msgstr "_მიმაგრება"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:143
-#: src/gtk/nautilusgtkplacesview.c:1718 src/gtk/nautilusgtkplacessidebar.c:3387
+#: src/gtk/nautilusgtkplacesview.c:1718 src/gtk/nautilusgtkplacessidebar.c:3426
 msgid "_Unmount"
 msgstr "ტ_ომის მოხსნა"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:148
-#: src/gtk/nautilusgtkplacessidebar.c:3394
+#: src/gtk/nautilusgtkplacessidebar.c:3433
 msgid "_Eject"
 msgstr "_გამოღება"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:158
-#: src/gtk/nautilusgtkplacessidebar.c:3428
+#: src/gtk/nautilusgtkplacessidebar.c:3467
 msgid "_Stop"
 msgstr "_შეჩერება"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:163
-#: src/gtk/nautilusgtkplacessidebar.c:3404
+#: src/gtk/nautilusgtkplacessidebar.c:3443
 msgid "_Detect Media"
 msgstr "_დისკის დადგენა"
 
@@ -4758,7 +4759,7 @@ msgid "_Paste Into Folder"
 msgstr "_საქაღალდეში ჩასმა"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:197
-#: src/resources/ui/nautilus-preferences-window.ui:64
+#: src/resources/ui/nautilus-preferences-window.ui:63
 msgid "Create _Link"
 msgstr "_ბმულის შექმნა"
 
@@ -4808,16 +4809,8 @@ msgstr "სარჩევი ხედი"
 msgid "View of the current folder"
 msgstr "მიმდინარე საქაღალდის ხედი"
 
-#: src/resources/ui/nautilus-list-view-column-editor.ui:15
-msgid "Visible Columns"
-msgstr "ხილული სვეტები"
-
-#: src/resources/ui/nautilus-list-view-column-editor.ui:30
-msgid "Choose the order of information to appear in this folder:"
-msgstr "აირჩიეთ ამ საქაღალდეში ინფორმაციის ჩვენების მიმდევრობა:"
-
-#: src/resources/ui/nautilus-name-cell.ui:101
-msgid "Full text match"
+#: src/resources/ui/nautilus-name-cell.ui:103
+msgid "Full Text Match"
 msgstr "ტექსტის სრულად დამთხვევა"
 
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:5
@@ -4829,14 +4822,14 @@ msgid "Enter password…"
 msgstr "შეიყვანეთ პაროლი…"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacesview.c:1704 src/gtk/nautilusgtkplacessidebar.c:3219
-#: src/gtk/nautilusgtkplacessidebar.c:3335
+#: src/gtk/nautilusgtkplacesview.c:1704 src/gtk/nautilusgtkplacessidebar.c:3253
+#: src/gtk/nautilusgtkplacessidebar.c:3374
 msgid "Open in New _Window"
 msgstr "ახალ ფან_ჯარაში გახსნა"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacesview.c:1699 src/gtk/nautilusgtkplacessidebar.c:3212
-#: src/gtk/nautilusgtkplacessidebar.c:3326
+#: src/gtk/nautilusgtkplacesview.c:1699 src/gtk/nautilusgtkplacessidebar.c:3246
+#: src/gtk/nautilusgtkplacessidebar.c:3365
 msgid "Open in New _Tab"
 msgstr "ახ_ალ ჩანართში გახსნა"
 
@@ -4854,7 +4847,7 @@ msgid "St_op"
 msgstr "გაჩერება"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:49
-#: src/gtk/nautilusgtkplacessidebar.c:3346
+#: src/gtk/nautilusgtkplacessidebar.c:3385
 msgid "Add to _Bookmarks"
 msgstr "სანიშნეებში _დამატება"
 
@@ -4862,60 +4855,60 @@ msgstr "სანიშნეებში _დამატება"
 msgid "_Copy Location"
 msgstr "_მდებარეობის კოპირება"
 
-#: src/resources/ui/nautilus-preferences-window.ui:9
-#: src/resources/ui/nautilus-preferences-window.ui:13
+#: src/resources/ui/nautilus-preferences-window.ui:8
+#: src/resources/ui/nautilus-preferences-window.ui:12
 msgid "General"
 msgstr "ზოგადი"
 
-#: src/resources/ui/nautilus-preferences-window.ui:19
+#: src/resources/ui/nautilus-preferences-window.ui:18
 msgid "Sort _Folders Before Files"
 msgstr "საქაღალდეების ფაილებამდე ჩვენება"
 
-#: src/resources/ui/nautilus-preferences-window.ui:34
+#: src/resources/ui/nautilus-preferences-window.ui:33
 msgid "_Expandable Folders in List View"
 msgstr "_გაშლადი საქაღალდეები სიის ხედში"
 
-#: src/resources/ui/nautilus-preferences-window.ui:47
+#: src/resources/ui/nautilus-preferences-window.ui:46
 msgid "Action to Open Items"
 msgstr "ელემენტების გახსნის ქმედება"
 
-#: src/resources/ui/nautilus-preferences-window.ui:57
+#: src/resources/ui/nautilus-preferences-window.ui:56
 msgid "Optional Context Menu Actions"
 msgstr "კონტექსტური მენიუს არასავალდებულო ქმედებები"
 
-#: src/resources/ui/nautilus-preferences-window.ui:58
+#: src/resources/ui/nautilus-preferences-window.ui:57
 msgid ""
 "Show more actions in the menus. Keyboard shortcuts can be used even if the "
 "actions are not shown."
 msgstr ""
 
-#: src/resources/ui/nautilus-preferences-window.ui:79
+#: src/resources/ui/nautilus-preferences-window.ui:78
 msgid "_Delete Permanently"
 msgstr "_სამუდამოდ წაშლა"
 
-#: src/resources/ui/nautilus-preferences-window.ui:94
+#: src/resources/ui/nautilus-preferences-window.ui:93
 msgid "Performance"
 msgstr "წარმადობა"
 
-#: src/resources/ui/nautilus-preferences-window.ui:95
+#: src/resources/ui/nautilus-preferences-window.ui:94
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this computer, such as on a remote server."
 msgstr ""
 
-#: src/resources/ui/nautilus-preferences-window.ui:100
+#: src/resources/ui/nautilus-preferences-window.ui:99
 msgid "Search in Subfolders"
 msgstr "ქვესაქაღალდეებში ძებნა"
 
-#: src/resources/ui/nautilus-preferences-window.ui:109
+#: src/resources/ui/nautilus-preferences-window.ui:108
 msgid "Show Thumbnails"
 msgstr "მინიატურების ჩვენება"
 
-#: src/resources/ui/nautilus-preferences-window.ui:118
+#: src/resources/ui/nautilus-preferences-window.ui:117
 msgid "Count Number of Files in Folders"
 msgstr "საქაღალდეში მყოფი ელემენტების რაოდენობის ჩვენება"
 
-#: src/resources/ui/nautilus-preferences-window.ui:128
+#: src/resources/ui/nautilus-preferences-window.ui:127
 msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
@@ -4923,24 +4916,24 @@ msgstr ""
 "ხატულის შესახებ ინფორმაციის გამოჩენის მიმდევრობა. პიქტოგრამის გადიდების "
 "შემთხვევაში მის შესახებ ინფორმაცია გაფართოვდება."
 
-#: src/resources/ui/nautilus-preferences-window.ui:129
+#: src/resources/ui/nautilus-preferences-window.ui:128
 msgid "Grid View Captions"
 msgstr "ბადის ხედის წარწერები"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:134
+#: src/resources/ui/nautilus-preferences-window.ui:133
 msgctxt "the n-th position of an icon caption"
 msgid "First"
 msgstr "პირველი"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:143
+#: src/resources/ui/nautilus-preferences-window.ui:142
 msgctxt "the n-th position of an icon caption"
 msgid "Second"
 msgstr "წამი"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:152
+#: src/resources/ui/nautilus-preferences-window.ui:151
 msgctxt "the n-th position of an icon caption"
 msgid "Third"
 msgstr "მესამე"
@@ -4962,7 +4955,7 @@ msgid "Show operations"
 msgstr "ოპერაციების ჩვენება"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
-#: src/gtk/nautilusgtkplacessidebar.c:3452
+#: src/gtk/nautilusgtkplacessidebar.c:3491
 msgid "Properties"
 msgstr "თვისებები"
 
@@ -5059,11 +5052,11 @@ msgstr "ფაილის _წვდომა"
 msgid "_Group"
 msgstr "ჯ_გუფი"
 
-#: src/resources/ui/nautilus-properties-window.ui:868
+#: src/resources/ui/nautilus-properties-window.ui:877
 msgid "Security Context"
 msgstr "უსაფრთხოების კონტექსტი"
 
-#: src/resources/ui/nautilus-properties-window.ui:889
+#: src/resources/ui/nautilus-properties-window.ui:910
 msgid "Change Permissions for Enclosed Files…"
 msgstr "დართულ ფაილებზე უფლებების დამტკიცება…"
 
@@ -5075,49 +5068,41 @@ msgstr "ახალი ფაილის სახელი"
 msgid "When"
 msgstr "როდის"
 
-#: src/resources/ui/nautilus-search-popover.ui:38
-msgid "Select a date"
-msgstr "აირჩიეთ თარიღი"
+#: src/resources/ui/nautilus-search-popover.ui:54
+msgid "Clear Date Filter"
+msgstr "ჩანაწერის გასუფთავება"
 
-#: src/resources/ui/nautilus-search-popover.ui:52
-msgid "Clear the currently selected date"
-msgstr "ამჯამად მონიშნული თარიღის გასუფთავება"
-
-#: src/resources/ui/nautilus-search-popover.ui:93
+#: src/resources/ui/nautilus-search-popover.ui:95
 msgid "Since…"
 msgstr "მას შემდეგ…"
 
-#: src/resources/ui/nautilus-search-popover.ui:152
+#: src/resources/ui/nautilus-search-popover.ui:154
 msgid "Last _modified"
 msgstr "ბოლო ცვლილება"
 
-#: src/resources/ui/nautilus-search-popover.ui:164
+#: src/resources/ui/nautilus-search-popover.ui:166
 msgid "Last _used"
 msgstr "ბოლოს _გამოყენებული"
 
-#: src/resources/ui/nautilus-search-popover.ui:198
+#: src/resources/ui/nautilus-search-popover.ui:200
 msgid "What"
 msgstr "რა"
 
-#: src/resources/ui/nautilus-search-popover.ui:220
-msgid "Which file types will be searched"
-msgstr "მოსაძებნი ფაილის ტიპები"
-
-#: src/resources/ui/nautilus-search-popover.ui:289
+#: src/resources/ui/nautilus-search-popover.ui:293
 msgid "Full Text"
 msgstr "ტექსტი"
 
-#: src/resources/ui/nautilus-search-popover.ui:290
-msgid "Search on the file content and name"
-msgstr "ფაილის შემცველობისა და სახელის მოძებნა"
+#: src/resources/ui/nautilus-search-popover.ui:294
+msgid "Search Inside Files"
+msgstr "_ფარული ფაილების ჩვენება"
 
-#: src/resources/ui/nautilus-search-popover.ui:298
+#: src/resources/ui/nautilus-search-popover.ui:302
 msgid "File Name"
 msgstr "ფაილის სახელი"
 
-#: src/resources/ui/nautilus-search-popover.ui:299
-msgid "Search only on the file name"
-msgstr "მხოლოდ ფაილის სახელით ძებნა"
+#: src/resources/ui/nautilus-search-popover.ui:303
+msgid "Don't Search Inside Files"
+msgstr ""
 
 #: src/resources/ui/nautilus-toolbar.ui:7
 msgid "New _Window"
@@ -5152,19 +5137,19 @@ msgid "_About Files"
 msgstr "ფაილების შესახებ"
 
 #: src/resources/ui/nautilus-toolbar.ui:129
-msgid "Show sidebar"
+msgid "Show Sidebar"
 msgstr "გვერდითა ზოლის ჩვენება"
 
-#: src/resources/ui/nautilus-toolbar.ui:191
+#: src/resources/ui/nautilus-toolbar.ui:153
 msgid "Main Menu"
 msgstr "მთავარი მენიუ"
 
-#: src/resources/ui/nautilus-toolbar.ui:202
-msgid "Zoom out"
+#: src/resources/ui/nautilus-toolbar.ui:164
+msgid "Zoom Out"
 msgstr "დაპატარავება"
 
-#: src/resources/ui/nautilus-toolbar.ui:212
-msgid "Zoom in"
+#: src/resources/ui/nautilus-toolbar.ui:174
+msgid "Zoom In"
 msgstr "&გადიდება"
 
 #. This is used to sort by name in the toolbar view menu
@@ -5234,25 +5219,25 @@ msgstr "დაფის დ_ახურვა"
 msgid "Close _Other Tabs"
 msgstr "_სხვა ჩანართების დახურვა"
 
-#: src/resources/ui/nautilus-window.ui:42
+#: src/resources/ui/nautilus-window.ui:44
 msgid "_Files"
 msgstr "_ფაილები"
 
-#: src/gtk/nautilusgtkplacesview.c:888
+#: src/gtk/nautilusgtkplacesview.c:889
 msgid "Searching for network locations"
 msgstr "ქსელური მდებარეობების ძებნა"
 
-#: src/gtk/nautilusgtkplacesview.c:895
+#: src/gtk/nautilusgtkplacesview.c:896
 msgid "No network locations found"
 msgstr "ქსელური მდებარეობების გარეშე"
 
 #. Restore from Cancel to Connect
-#: src/gtk/nautilusgtkplacesview.c:1230 src/gtk/nautilusgtkplacesview.ui:221
+#: src/gtk/nautilusgtkplacesview.c:1231 src/gtk/nautilusgtkplacesview.ui:241
 msgid "Con_nect"
 msgstr "_დაკავშირება"
 
 #. if it wasn't cancelled show a dialog
-#: src/gtk/nautilusgtkplacesview.c:1368
+#: src/gtk/nautilusgtkplacesview.c:1369
 msgid "Unable to unmount volume"
 msgstr "ტომის მოხსნა შეუძლებელია"
 
@@ -5323,13 +5308,13 @@ msgid_plural "%s / %s available"
 msgstr[0] "%s / %s ხელმისაწვდომია"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:490
-#: src/gtk/nautilusgtkplacessidebar.c:417
+#: src/gtk/nautilusgtkplacessidebar.c:425
 msgid "Disconnect"
 msgstr "გათიშვა"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:490
 #: src/gtk/nautilusgtkplacesviewrow.ui:53
-#: src/gtk/nautilusgtkplacessidebar.c:421
+#: src/gtk/nautilusgtkplacessidebar.c:429
 msgid "Unmount"
 msgstr "მოხსნა"
 
@@ -5364,11 +5349,7 @@ msgstr "ბოლო სერვერები"
 msgid "List of common local and remote mountpoints."
 msgstr "მიღებული ლოკალური და დაშორებული მიმაგრების წერტილების ჩვენება."
 
-#: src/gtk/nautilusgtkplacesview.ui:211
-msgid "Connect to _Server"
-msgstr "სერვერთან დაკავშირება"
-
-#: src/gtk/nautilusgtkplacesview.ui:235
+#: src/gtk/nautilusgtkplacesview.ui:216
 msgid "Enter server address…"
 msgstr "შეიყვანეთ სერვერის მისამართი…"
 
@@ -5382,145 +5363,211 @@ msgstr "%s სანიშნეების სიაში არ არსე
 msgid "%s already exists in the bookmarks list"
 msgstr "%s უკვე არსებობს სანიშნეების სიაში"
 
-#: src/gtk/nautilusgtkplacessidebar.c:419
+#: src/gtk/nautilusgtkplacessidebar.c:427
 msgid "Eject"
 msgstr "გამოღება"
 
-#: src/gtk/nautilusgtkplacessidebar.c:983
+#: src/gtk/nautilusgtkplacessidebar.c:999
 msgid "Recent"
 msgstr "Ბოლო"
 
-#: src/gtk/nautilusgtkplacessidebar.c:985
+#: src/gtk/nautilusgtkplacessidebar.c:1001
 msgid "Recent files"
 msgstr "უკანასკნელი ფაილების სია"
 
-#: src/gtk/nautilusgtkplacessidebar.c:996
+#: src/gtk/nautilusgtkplacessidebar.c:1012
 msgid "Starred files"
 msgstr "ვარსკვლავდასმული ფაილები"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1007
+#: src/gtk/nautilusgtkplacessidebar.c:1023
 msgid "Open your personal folder"
 msgstr "პირადი საქაღალდის გახსნა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1020
+#: src/gtk/nautilusgtkplacessidebar.c:1036
 msgid "Desktop"
 msgstr "სამუშაო მაგიდა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1022
+#: src/gtk/nautilusgtkplacessidebar.c:1038
 msgid "Open the contents of your desktop in a folder"
 msgstr "თქვენი სამუშაო მაგიდის შემცველობის საქაღალდეში გახსნა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1036
+#: src/gtk/nautilusgtkplacessidebar.c:1052
 msgid "Enter Location"
 msgstr "შეიყვანეთ ადგილმდებარეობა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1038
+#: src/gtk/nautilusgtkplacessidebar.c:1054
 msgid "Manually enter a location"
 msgstr "მდებარეობის ხელით შეყვანა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1050
+#: src/gtk/nautilusgtkplacessidebar.c:1066
 msgid "Open the trash"
 msgstr "ნაგვის გახსნა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1159
-#: src/gtk/nautilusgtkplacessidebar.c:1187
-#: src/gtk/nautilusgtkplacessidebar.c:1387
+#: src/gtk/nautilusgtkplacessidebar.c:1177
+#: src/gtk/nautilusgtkplacessidebar.c:1205
+#: src/gtk/nautilusgtkplacessidebar.c:1405
 #, c-format
-msgid "Mount and open “%s”"
+msgid "Mount and Open “%s”"
 msgstr "\"%s\"-ის მიმაგრება და გახსნა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1282
+#: src/gtk/nautilusgtkplacessidebar.c:1300
 msgid "Open the contents of the file system"
 msgstr "ფაილური სისტემის შემცველობის გახსნა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1365
+#: src/gtk/nautilusgtkplacessidebar.c:1383
 msgid "New bookmark"
 msgstr "ახალი სანიშნე"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1367
+#: src/gtk/nautilusgtkplacessidebar.c:1385
 msgid "Add a new bookmark"
 msgstr "ახალი სანიშნის დამატება"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1433
+#: src/gtk/nautilusgtkplacessidebar.c:1451
 msgid "Show other locations"
 msgstr "სხვა მდებარეობების ჩვენება"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/gtk/nautilusgtkplacessidebar.c:2042
+#: src/gtk/nautilusgtkplacessidebar.c:2061
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "\"%s\"-ის განბლოკვის შეცდომა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2275
+#: src/gtk/nautilusgtkplacessidebar.c:2303
 msgid "This name is already taken"
 msgstr "სახელი უკვე არსებობს"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2736
+#: src/gtk/nautilusgtkplacessidebar.c:2764
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "\"%s\"-ის გაჩერება შეუძლებელია"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2946
+#: src/gtk/nautilusgtkplacessidebar.c:2974
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "%s-ის შემოწმება, შეიცვალა თუ არა მედია, შეუძლებელია"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3351
+#: src/gtk/nautilusgtkplacessidebar.c:3390
 msgid "_Remove from Bookmarks"
 msgstr "_სანიშნეებიდან წაშლა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3365
+#: src/gtk/nautilusgtkplacessidebar.c:3404
 msgid "Empty Trash…"
 msgstr "ნაგვის _ყუთის დაცარიელება…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3415
+#: src/gtk/nautilusgtkplacessidebar.c:3454
 msgid "_Power On"
 msgstr "_ჩართვა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3416
+#: src/gtk/nautilusgtkplacessidebar.c:3455
 msgid "_Connect Drive"
 msgstr "_დისკის მიერთება"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3417
+#: src/gtk/nautilusgtkplacessidebar.c:3456
 msgid "_Start Multi-disk Device"
 msgstr "_მრავალდისკიანი მოწყობილობის გაშვება"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3418
+#: src/gtk/nautilusgtkplacessidebar.c:3457
 msgid "_Unlock Device"
 msgstr "დისკის _განბლოკვა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3431
+#: src/gtk/nautilusgtkplacessidebar.c:3470
 msgid "_Disconnect Drive"
 msgstr "დი_სკის მოხსნა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3432
+#: src/gtk/nautilusgtkplacessidebar.c:3471
 msgid "_Stop Multi-disk Device"
 msgstr "მ_რავალდისკიანი მოწყობილობის გაჩერება"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3433
+#: src/gtk/nautilusgtkplacessidebar.c:3472
 msgid "_Lock Device"
 msgstr "დისკის _ჩაკეტვა"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3442
+#: src/gtk/nautilusgtkplacessidebar.c:3481
 msgid "Format…"
 msgstr "ფორმატი…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3950
+#: src/gtk/nautilusgtkplacessidebar.c:3989
 msgid "Computer"
 msgstr "კომპიუტერი"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3988
+#: src/gtk/nautilusgtkplacessidebar.c:4029
 msgid "Sidebar"
 msgstr "გვერდითი ზოლი"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3990
+#: src/gtk/nautilusgtkplacessidebar.c:4031
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "მიღებული მალსახმობების, მიმაგრების წერტილების და სანიშნების სია."
 
-#~ msgid "dropped data"
-#~ msgstr "დაგდებული მონაცემები"
+#~ msgid "%H:%M"
+#~ msgstr "%H:%M"
+
+#~ msgid "%l:%M %p"
+#~ msgstr "%l:%M %p"
+
+#, no-c-format
+#~ msgid "Yesterday"
+#~ msgstr "გუშინ"
+
+#, no-c-format
+#~ msgid "%a"
+#~ msgstr "%a"
+
+#, no-c-format
+#~ msgid "%-e %b"
+#~ msgstr "%-e %b"
+
+#, no-c-format
+#~ msgid "%-e %b %H:%M"
+#~ msgstr "%-e %b %H:%M"
+
+#, no-c-format
+#~ msgid "%-e %b %l:%M %p"
+#~ msgstr "%-e %b %l:%M %p"
+
+#, no-c-format
+#~ msgid "%c"
+#~ msgstr "%c"
+
+#~ msgid "Show a list to select the date"
+#~ msgstr "სიის ჩვენება, თარიღის ასარჩევად"
+
+#~ msgid "Show a calendar to select the date"
+#~ msgstr "თარიღის კალენდარიდან არჩევა"
+
+#, c-format
+#~ msgid "%d file deleted"
+#~ msgid_plural "%d files deleted"
+#~ msgstr[0] "%d ფაილი წაშლილია"
+
+#~ msgid "Reset to De_fault"
+#~ msgstr "სტანდარტულ ხედზე გადართვა"
+
+#~ msgid "Replace the current List Columns settings with the default settings"
+#~ msgstr ""
+#~ "მიმდინარე სიის სვეტების პარამეტრების ნაგულისხმები პარამეტრებით შეცვლა"
+
+#~ msgid "Choose the order of information to appear in this folder:"
+#~ msgstr "აირჩიეთ ამ საქაღალდეში ინფორმაციის ჩვენების მიმდევრობა:"
+
+#~ msgid "Select a date"
+#~ msgstr "აირჩიეთ თარიღი"
+
+#~ msgid "Clear the currently selected date"
+#~ msgstr "ამჯამად მონიშნული თარიღის გასუფთავება"
+
+#~ msgid "Which file types will be searched"
+#~ msgstr "მოსაძებნი ფაილის ტიპები"
+
+#~ msgid "Search on the file content and name"
+#~ msgstr "ფაილის შემცველობისა და სახელის მოძებნა"
+
+#~ msgid "Search only on the file name"
+#~ msgstr "მხოლოდ ფაილის სახელით ძებნა"
+
+#~ msgid "Connect to _Server"
+#~ msgstr "სერვერთან დაკავშირება"
 
 #~ msgid "_Select Application"
 #~ msgstr "პროგრამის ამორჩევა"
