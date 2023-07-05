@@ -49,7 +49,6 @@ struct _NautilusListView
     GtkColumnViewColumn *star_column;
     GtkWidget *column_editor;
     GHashTable *factory_to_column_map;
-    gboolean column_header_was_clicked;
 };
 
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
@@ -404,10 +403,10 @@ on_sorter_changed (GtkSorter       *sorter,
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
     GtkColumnViewSorter *column_view_sorter = GTK_COLUMN_VIEW_SORTER (sorter);
-    GActionGroup *action_group;
-    gboolean reversed;
+    GAction *action;
     GtkColumnViewColumn *primary;
     const char *sort_text;
+    gboolean reversed;
 
     primary = gtk_column_view_sorter_get_primary_sort_column (column_view_sorter);
 
@@ -416,15 +415,18 @@ on_sorter_changed (GtkSorter       *sorter,
         return;
     }
 
-    reversed = gtk_column_view_sorter_get_primary_sort_order (column_view_sorter);
-    action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
-
     sort_text = gtk_column_view_column_get_id (primary);
+    reversed = gtk_column_view_sorter_get_primary_sort_order (column_view_sorter);
 
-    self->column_header_was_clicked = TRUE;
+    set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
+                                 sort_text,
+                                 reversed);
 
-    g_action_group_change_action_state (action_group, "sort",
-                                        g_variant_new ("(sb)", sort_text, reversed));
+    /* Update the state of the view.sort action, even if this change was not
+     * triggered by the action, to update the selected item in the sort menu. */
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->action_group), "sort");
+    g_simple_action_set_state (G_SIMPLE_ACTION (action),
+                               g_variant_new ("(sb)", sort_text, reversed));
 }
 
 static void
@@ -438,7 +440,6 @@ action_sort_order_changed (GSimpleAction *action,
     NautilusListView *self;
     GListModel *view_columns;
     g_autoptr (GtkColumnViewColumn) sort_column = NULL;
-    GtkSorter *sorter;
 
     /* Don't resort if the action is in the same state as before */
     if (g_variant_equal (value, old_value))
@@ -464,24 +465,15 @@ action_sort_order_changed (GSimpleAction *action,
         }
     }
 
-    sorter = gtk_column_view_get_sorter (self->view_ui);
+    /* Clear sorting before setting new sort column, to avoid double triangle,
+     * as per https://gitlab.gnome.org/GNOME/gtk/-/issues/4696#note_1578945 */
+    gtk_column_view_sort_by_column (self->view_ui, NULL, FALSE);
 
-    /* Initiate default sort or sort from the view menu, but not when the header was clicked */
-    if (!self->column_header_was_clicked)
-    {
-        g_signal_handlers_block_by_func (sorter, on_sorter_changed, self);
-        gtk_column_view_sort_by_column (self->view_ui, NULL, FALSE);
-        gtk_column_view_sort_by_column (self->view_ui, sort_column, reversed);
-        g_signal_handlers_unblock_by_func (sorter, on_sorter_changed, self);
-    }
+    gtk_column_view_sort_by_column (self->view_ui, sort_column, reversed);
 
-    self->column_header_was_clicked = FALSE;
-
-    set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                 target_name,
-                                 reversed);
-
-    g_simple_action_set_state (action, value);
+    /* Usually, one calls g_simple_action_set_state() here. However, at this
+     * point, it has already been called by on_sorter_changed(), as a side
+     * effect of calling gtk_column_view_sort_by_column(). */
 }
 
 static void
