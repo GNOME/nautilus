@@ -84,34 +84,6 @@ get_view_item (GListModel *model,
     return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
 }
 
-static char *
-get_directory_sort_by (NautilusFile *file,
-                       gboolean     *reversed)
-{
-    NautilusFileSortType default_sort;
-    char *sort_by = NULL;
-
-    default_sort = nautilus_file_get_default_sort_type (file, reversed);
-
-    if (default_sort == NAUTILUS_FILE_SORT_BY_RECENCY ||
-        default_sort == NAUTILUS_FILE_SORT_BY_TRASHED_TIME ||
-        default_sort == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
-    {
-        /* These defaults are important. Ignore metadata. */
-        return g_strdup (nautilus_file_sort_type_get_attribute (default_sort));
-    }
-
-    sort_by = nautilus_file_get_metadata (file,
-                                          NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                          nautilus_file_sort_type_get_attribute (default_sort));
-
-    *reversed = nautilus_file_get_boolean_metadata (file,
-                                                    NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-                                                    *reversed);
-
-    return sort_by;
-}
-
 void
 set_directory_sort_metadata (NautilusFile *file,
                              const gchar  *sort_attribute,
@@ -124,23 +96,6 @@ set_directory_sort_metadata (NautilusFile *file,
     nautilus_file_set_boolean_metadata (file,
                                         NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
                                         reversed);
-}
-
-static void
-update_sort_order_from_metadata_and_preferences (NautilusListBase *self)
-{
-    g_autofree char *sort_attribute = NULL;
-    GActionGroup *view_action_group;
-    gboolean reversed;
-
-    sort_attribute = get_directory_sort_by (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                            &reversed);
-    view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
-    g_action_group_change_action_state (view_action_group,
-                                        "sort",
-                                        g_variant_new ("(sb)",
-                                                       sort_attribute,
-                                                       reversed));
 }
 
 void
@@ -936,21 +891,10 @@ real_begin_loading (NautilusFilesView *files_view)
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
+    NAUTILUS_FILES_VIEW_CLASS (nautilus_list_base_parent_class)->begin_loading (files_view);
+
     /* Temporary workaround */
     rubberband_set_state (self, TRUE);
-
-    /*TODO move this to the files view class begin_loading and hook up? */
-
-
-    /* TODO: This calls sort once, and update_context_menus calls update_actions
-     * which calls the action again
-     */
-    update_sort_order_from_metadata_and_preferences (NAUTILUS_LIST_BASE (files_view));
-
-    /* We could have changed to the trash directory or to searching, and then
-     * we need to update the menus */
-    nautilus_files_view_update_context_menus (files_view);
-    nautilus_files_view_update_toolbar_menus (files_view);
 
     /* When double clicking on an item this deny_background_click can persist
      * because the new view interrupts the gesture sequence, so lets reset it.*/
@@ -1592,12 +1536,6 @@ real_preview_selection_event (NautilusFilesView *files_view,
 }
 
 static void
-default_sort_order_changed_callback (NautilusListBase *self)
-{
-    update_sort_order_from_metadata_and_preferences (self);
-}
-
-static void
 nautilus_list_base_dispose (GObject *object)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (object);
@@ -1814,17 +1752,6 @@ nautilus_list_base_init (NautilusListBase *self)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
-
-    g_signal_connect_object (nautilus_preferences,
-                             "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
-                             G_CALLBACK (default_sort_order_changed_callback),
-                             self,
-                             G_CONNECT_SWAPPED);
-    g_signal_connect_object (nautilus_preferences,
-                             "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
-                             G_CALLBACK (default_sort_order_changed_callback),
-                             self,
-                             G_CONNECT_SWAPPED);
 
     /* React to clipboard changes */
     g_signal_connect_object (gdk_display_get_clipboard (gdk_display_get_default ()),

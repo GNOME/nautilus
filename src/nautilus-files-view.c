@@ -612,6 +612,60 @@ escape_underscores (const char *to_escape)
 }
 
 static char *
+get_directory_sort_by (NautilusFile *file,
+                       gboolean     *reversed)
+{
+    NautilusFileSortType default_sort;
+    char *sort_by = NULL;
+
+    default_sort = nautilus_file_get_default_sort_type (file, reversed);
+
+    if (default_sort == NAUTILUS_FILE_SORT_BY_RECENCY ||
+        default_sort == NAUTILUS_FILE_SORT_BY_TRASHED_TIME ||
+        default_sort == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
+    {
+        /* These defaults are important. Ignore metadata. */
+        return g_strdup (nautilus_file_sort_type_get_attribute (default_sort));
+    }
+
+    sort_by = nautilus_file_get_metadata (file,
+                                          NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+                                          nautilus_file_sort_type_get_attribute (default_sort));
+
+    *reversed = nautilus_file_get_boolean_metadata (file,
+                                                    NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+                                                    *reversed);
+
+    return sort_by;
+}
+
+static void
+update_sort_order_from_metadata_and_preferences (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    g_autofree char *sort_attribute = NULL;
+    gboolean reversed;
+
+    sort_attribute = get_directory_sort_by (priv->directory_as_file, &reversed);
+    g_action_group_change_action_state (priv->view_action_group,
+                                        "sort",
+                                        g_variant_new ("(sb)",
+                                                       sort_attribute,
+                                                       reversed));
+}
+
+static void
+real_begin_loading (NautilusFilesView *self)
+{
+    update_sort_order_from_metadata_and_preferences (self);
+
+    /* We could have changed to the trash directory or to searching, and then
+     * we need to update the menus */
+    nautilus_files_view_update_context_menus (self);
+    nautilus_files_view_update_toolbar_menus (self);
+}
+
+static char *
 real_get_backing_uri (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -9761,6 +9815,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
+    klass->begin_loading = real_begin_loading;
     klass->get_backing_uri = real_get_backing_uri;
     klass->update_context_menus = real_update_context_menus;
     klass->update_actions_state = real_update_actions_state;
@@ -9971,6 +10026,16 @@ nautilus_files_view_init (NautilusFilesView *view)
                               "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
                               G_CALLBACK (click_policy_changed_callback),
                               view);
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
+                             G_CALLBACK (update_sort_order_from_metadata_and_preferences),
+                             view,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
+                             G_CALLBACK (update_sort_order_from_metadata_and_preferences),
+                             view,
+                             G_CONNECT_SWAPPED);
     g_signal_connect_swapped (gtk_filechooser_preferences,
                               "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
                               G_CALLBACK (sort_directories_first_changed_callback), view);
