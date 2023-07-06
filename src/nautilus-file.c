@@ -4393,7 +4393,6 @@ nautilus_file_set_time_metadata (NautilusFile *file,
 void
 nautilus_file_set_boolean_metadata (NautilusFile *file,
                                     const char   *key,
-                                    gboolean      default_metadata,
                                     gboolean      metadata)
 {
     g_return_if_fail (NAUTILUS_IS_FILE (file));
@@ -4401,7 +4400,7 @@ nautilus_file_set_boolean_metadata (NautilusFile *file,
     g_return_if_fail (key[0] != '\0');
 
     nautilus_file_set_metadata (file, key,
-                                default_metadata ? "true" : "false",
+                                NULL, /* No default needed. Boolean string below is never NULL. */
                                 metadata ? "true" : "false");
 }
 

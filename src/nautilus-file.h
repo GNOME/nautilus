@@ -363,7 +363,6 @@ gboolean                nautilus_file_get_boolean_metadata              (Nautilu
 									 gboolean                        default_metadata);
 void                    nautilus_file_set_boolean_metadata              (NautilusFile                   *file,
 									 const char                     *key,
-									 gboolean                        default_metadata,
 									 gboolean                        metadata);
 int                     nautilus_file_get_integer_metadata              (NautilusFile                   *file,
 									 const char                     *key,

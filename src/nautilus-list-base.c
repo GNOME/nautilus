@@ -187,7 +187,6 @@ set_directory_sort_metadata (NautilusFile *file,
                                 sort_attribute);
     nautilus_file_set_boolean_metadata (file,
                                         NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-                                        default_reversed,
                                         reversed);
 }
 
