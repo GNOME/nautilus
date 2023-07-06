@@ -669,11 +669,16 @@ update_sort_order_from_metadata_and_preferences (NautilusFilesView *self)
     gboolean reversed;
 
     sort_attribute = get_directory_sort_by (priv->directory_as_file, &reversed);
+
+    g_signal_handlers_block_by_func (priv->view_action_group, on_sort_action_state_changed, self);
+
     g_action_group_change_action_state (priv->view_action_group,
                                         "sort",
                                         g_variant_new ("(sb)",
                                                        sort_attribute,
                                                        reversed));
+
+    g_signal_handlers_unblock_by_func (priv->view_action_group, on_sort_action_state_changed, self);
 }
 
 static void
