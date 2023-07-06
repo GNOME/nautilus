@@ -8758,6 +8758,85 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
                                 NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
 }
 
+const char *
+nautilus_file_sort_type_get_attribute (NautilusFileSortType sort_type)
+{
+    GQuark sort_q = 0;
+
+    switch (sort_type)
+    {
+        case NAUTILUS_FILE_SORT_BY_DISPLAY_NAME:
+        {
+            sort_q = attribute_name_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_SIZE:
+        {
+            sort_q = attribute_size_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_TYPE:
+        {
+            sort_q = attribute_type_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_MTIME:
+        {
+            sort_q = attribute_date_modified_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_ATIME:
+        {
+            sort_q = attribute_date_accessed_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_BTIME:
+        {
+            sort_q = attribute_date_created_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
+        {
+            sort_q = attribute_trashed_on_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE:
+        {
+            sort_q = attribute_search_relevance_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_RECENCY:
+        {
+            sort_q = attribute_recency_q;
+        }
+        break;
+
+        case NAUTILUS_FILE_SORT_BY_STARRED:
+        {
+            sort_q = attribute_starred_q;
+        }
+        break;
+
+        default:
+        {
+            g_assert_not_reached ();
+        }
+        break;
+    }
+
+    g_assert (sort_q != 0);
+
+    return g_quark_to_string (sort_q);
+}
+
 static int
 compare_by_display_name_cover (gconstpointer a,
                                gconstpointer b)
