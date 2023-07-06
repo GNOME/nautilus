@@ -21,9 +21,6 @@ NautilusViewModel *nautilus_list_base_get_model     (NautilusListBase *self);
 void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 
 /* Shareable helpers */
-void                          set_directory_sort_metadata       (NautilusFile *file,
-                                                                 const gchar  *sort_attribute,
-                                                                 gboolean      reversed);
 void                          setup_cell_common                 (GObject          *listitem,
                                                                  NautilusViewCell *cell);
 void                          setup_cell_hover                  (NautilusViewCell *cell);

@@ -391,9 +391,6 @@ action_sort_order_changed (GSimpleAction *action,
     sorter = gtk_custom_sorter_new (nautilus_grid_view_sort, self, NULL);
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
-    set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                 target_name,
-                                 self->reversed);
 
     g_simple_action_set_state (action, value);
 }

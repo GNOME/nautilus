@@ -418,10 +418,6 @@ on_sorter_changed (GtkSorter       *sorter,
     sort_text = gtk_column_view_column_get_id (primary);
     reversed = gtk_column_view_sorter_get_primary_sort_order (column_view_sorter);
 
-    set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                 sort_text,
-                                 reversed);
-
     /* Update the state of the view.sort action, even if this change was not
      * triggered by the action, to update the selected item in the sort menu. */
     action = g_action_map_lookup_action (G_ACTION_MAP (self->action_group), "sort");

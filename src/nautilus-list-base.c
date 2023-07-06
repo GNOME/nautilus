@@ -85,20 +85,6 @@ get_view_item (GListModel *model,
 }
 
 void
-set_directory_sort_metadata (NautilusFile *file,
-                             const gchar  *sort_attribute,
-                             gboolean      reversed)
-{
-    nautilus_file_set_metadata (file,
-                                NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                NULL,
-                                sort_attribute);
-    nautilus_file_set_boolean_metadata (file,
-                                        NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-                                        reversed);
-}
-
-void
 set_focus_item (NautilusListBase *self,
                 NautilusViewItem *item)
 {

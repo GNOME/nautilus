@@ -611,6 +611,28 @@ escape_underscores (const char *to_escape)
     return g_string_free_and_steal (string);
 }
 
+static void
+on_sort_action_state_changed (GActionGroup *action_group,
+                              gchar        *action_name,
+                              GVariant     *value,
+                              gpointer      user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    const gchar *target_name;
+    gboolean reversed;
+
+    g_variant_get (value, "(&sb)", &target_name, &reversed);
+
+    nautilus_file_set_metadata (priv->directory_as_file,
+                                NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+                                NULL,
+                                target_name);
+    nautilus_file_set_boolean_metadata (priv->directory_as_file,
+                                        NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+                                        reversed);
+}
+
 static char *
 get_directory_sort_by (NautilusFile *file,
                        gboolean     *reversed)
@@ -10056,6 +10078,9 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_widget_insert_action_group (GTK_WIDGET (view),
                                     "view",
                                     G_ACTION_GROUP (priv->view_action_group));
+    g_signal_connect_object (priv->view_action_group, "action-state-changed::sort",
+                             G_CALLBACK (on_sort_action_state_changed), view, 0);
+
     app = g_application_get_default ();
 
     /* NOTE: Please do not add any key here that could interfere with
