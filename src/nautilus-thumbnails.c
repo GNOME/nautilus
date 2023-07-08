@@ -63,6 +63,9 @@ typedef struct
     char *image_uri;
     char *mime_type;
     time_t original_file_mtime;
+    time_t updated_file_mtime;
+
+    GCancellable *cancellable;
 } NautilusThumbnailInfo;
 
 /*
@@ -126,6 +129,7 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
 {
     g_free (info->image_uri);
     g_free (info->mime_type);
+    g_clear_object (&info->cancellable);
     g_free (info);
 }
 
@@ -385,6 +389,7 @@ nautilus_create_thumbnail (NautilusFile *file)
     info = g_new0 (NautilusThumbnailInfo, 1);
     info->image_uri = nautilus_file_get_uri (file);
     info->mime_type = nautilus_file_get_mime_type (file);
+    info->cancellable = g_cancellable_new ();
 
     /* Hopefully the NautilusFile will already have the image file mtime,
      *  so we can just use that. Otherwise we have to get it ourselves. */
@@ -400,6 +405,7 @@ nautilus_create_thumbnail (NautilusFile *file)
     }
 
     info->original_file_mtime = file_mtime;
+    info->updated_file_mtime = file_mtime;
 
 
     DEBUG ("(Main Thread) Locking mutex\n");
@@ -445,7 +451,7 @@ nautilus_create_thumbnail (NautilusFile *file)
 
         /* The file in the queue might need a new original mtime */
         existing_info = existing->data;
-        existing_info->original_file_mtime = info->original_file_mtime;
+        existing_info->updated_file_mtime = info->original_file_mtime;
         free_thumbnail_info (info);
     }
 
@@ -523,7 +529,7 @@ thumbnail_thread_func (GTask        *task,
          *  are creating it. */
         info = g_queue_peek_head ((GQueue *) &thumbnails_to_make);
         currently_thumbnailing = info;
-        current_orig_mtime = info->original_file_mtime;
+        current_orig_mtime = info->updated_file_mtime;
         /*********************************
          * MUTEX UNLOCKED
          *********************************/
