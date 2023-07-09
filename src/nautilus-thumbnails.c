@@ -133,7 +133,7 @@ get_thumbnail_factory (void)
 {
     static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
 
-    if (thumbnail_factory == NULL)
+    if (G_UNLIKELY (thumbnail_factory == NULL))
     {
         GdkDisplay *display = gdk_display_get_default ();
         GListModel *monitors = gdk_display_get_monitors (display);
@@ -172,7 +172,7 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
     GList *node;
     NautilusThumbnailInfo *info;
 
-    if (thumbnails_to_make_hash == NULL)
+    if (G_UNLIKELY (thumbnails_to_make_hash == NULL))
     {
         return;
     }
@@ -198,7 +198,7 @@ nautilus_thumbnail_prioritize (const char *file_uri)
 {
     GList *node;
 
-    if (thumbnails_to_make_hash == NULL)
+    if (G_UNLIKELY (thumbnails_to_make_hash == NULL))
     {
         return;
     }
@@ -350,7 +350,7 @@ nautilus_create_thumbnail (NautilusFile *file)
     info->original_file_mtime = file_mtime;
     info->updated_file_mtime = file_mtime;
 
-    if (thumbnails_to_make_hash == NULL)
+    if (G_UNLIKELY (thumbnails_to_make_hash == NULL))
     {
         thumbnails_to_make_hash = g_hash_table_new (g_str_hash,
                                                     g_str_equal);
@@ -542,7 +542,7 @@ thumbnail_starter_cb (gpointer data)
     thumbnail_factory = get_thumbnail_factory ();
     thumbnail_thread_starter_id = 0;
 
-    if (max_threads == 0)
+    if (G_UNLIKELY (max_threads == 0))
     {
         max_threads = MAX_THUMBNAILING_THREADS
     }
