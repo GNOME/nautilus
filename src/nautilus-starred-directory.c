@@ -437,8 +437,6 @@ nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
         file_list = g_list_prepend (file_list, nautilus_file_ref (file));
     }
 
-    nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (self), file_list);
-
     self->files = file_list;
 }
 
