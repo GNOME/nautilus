@@ -148,8 +148,6 @@ on_update_callback (GObject      *object,
 
     if (error == NULL)
     {
-        /* FIXME: make sure data->tag_manager->starred_file_uris is up to date */
-
         if (!nautilus_file_undo_manager_is_operating ())
         {
             NautilusFileUndoInfo *undo_info;
@@ -159,8 +157,6 @@ on_update_callback (GObject      *object,
 
             g_object_unref (undo_info);
         }
-
-        g_signal_emit_by_name (data->tag_manager, "starred-changed", nautilus_file_list_copy (data->selection));
 
         g_task_return_boolean (data->task, TRUE);
         g_object_unref (data->task);
@@ -731,7 +727,6 @@ update_moved_uris_callback (GObject      *object,
                             gpointer      user_data)
 {
     g_autoptr (GError) error = NULL;
-    g_autoptr (GPtrArray) new_uris = user_data;
 
     tracker_sparql_connection_update_finish (TRACKER_SPARQL_CONNECTION (object),
                                              result,
@@ -740,19 +735,6 @@ update_moved_uris_callback (GObject      *object,
     if (error != NULL && error->code != G_IO_ERROR_CANCELLED)
     {
         g_warning ("Error updating moved uris: %s", error->message);
-    }
-    else
-    {
-        g_autolist (NautilusFile) updated_files = NULL;
-
-        for (guint i = 0; i < new_uris->len; i++)
-        {
-            gchar *new_uri = g_ptr_array_index (new_uris, i);
-
-            updated_files = g_list_prepend (updated_files, nautilus_file_get_by_uri (new_uri));
-        }
-
-        g_signal_emit_by_name (tag_manager, "starred-changed", updated_files);
     }
 }
 
@@ -846,15 +828,11 @@ nautilus_tag_manager_update_moved_uris (NautilusTagManager *self,
 
     g_string_append (query, "}");
 
-    /* Forward the new_uris list to later pass in the ::files-changed signal.
-     * There is no need to pass the old_uris because the file model is updated
-     * independently; we need only inform the view where to display stars now.
-     */
     tracker_sparql_connection_update_async (self->db,
                                             query->str,
                                             self->cancellable,
                                             update_moved_uris_callback,
-                                            g_steal_pointer (&new_uris));
+                                            NULL);
 }
 
 static void
