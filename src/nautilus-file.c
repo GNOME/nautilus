@@ -6017,7 +6017,16 @@ get_real_name (const char *name,
         return NULL;
     }
 
-    locale_string = eel_str_strip_substring_and_after (gecos, ",");
+    if (gecos[0] == '\0')
+    {
+        locale_string = g_strdup (gecos);
+    }
+    else
+    {
+        g_auto (GStrv) gecos_split = g_strsplit (gecos, ",", 0);
+        locale_string = g_strdup (gecos_split[0]);
+    }
+
     if (!g_utf8_validate (locale_string, -1, NULL))
     {
         part_before_comma = g_locale_to_utf8 (locale_string, -1, NULL, NULL, NULL);
