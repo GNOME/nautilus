@@ -386,32 +386,6 @@ eel_str_get_common_prefix (GList *strs,
     return common_part;
 }
 
-/**************** Custom printf ***********/
-
-typedef struct
-{
-    const char *start;
-    const char *end;
-    GString *format;
-    int arg_pos;
-    int width_pos;
-    int width_format_index;
-    int precision_pos;
-    int precision_format_index;
-} ConversionInfo;
-
-enum
-{
-    ARG_TYPE_INVALID,
-    ARG_TYPE_INT,
-    ARG_TYPE_LONG,
-    ARG_TYPE_LONG_LONG,
-    ARG_TYPE_SIZE,
-    ARG_TYPE_LONG_DOUBLE,
-    ARG_TYPE_DOUBLE,
-    ARG_TYPE_POINTER
-};
-
 #if !defined (EEL_OMIT_SELF_CHECK)
 
 void
