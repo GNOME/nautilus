@@ -271,6 +271,8 @@ void                   nautilus_file_info_providers_done                (Nautilu
 /* Thumbnailing: */
 void          nautilus_file_set_is_thumbnailing            (NautilusFile           *file,
 							    gboolean                is_thumbnailing);
+gboolean          nautilus_file_set_thumbnail              (NautilusFile           *file,
+                                                            GdkPixbuf              *pixbuf);
 
 NautilusFileOperation *nautilus_file_operation_new      (NautilusFile                  *file,
 							 NautilusFileOperationCallback  callback,

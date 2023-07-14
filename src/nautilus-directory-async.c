@@ -3617,35 +3617,9 @@ thumbnail_done (NautilusDirectory *directory,
                 NautilusFile      *file,
                 GdkPixbuf         *pixbuf)
 {
-    const char *thumb_mtime_str;
-    time_t thumb_mtime = 0;
-
-    file->details->thumbnail_is_up_to_date = TRUE;
-    if (file->details->thumbnail)
+    if (!nautilus_file_set_thumbnail (file, pixbuf))
     {
-        g_object_unref (file->details->thumbnail);
-        file->details->thumbnail = NULL;
-    }
-
-    if (pixbuf)
-    {
-        thumb_mtime_str = gdk_pixbuf_get_option (pixbuf, "tEXt::Thumb::MTime");
-        if (thumb_mtime_str)
-        {
-            thumb_mtime = atol (thumb_mtime_str);
-        }
-
-        if (thumb_mtime == 0 ||
-            thumb_mtime == file->details->mtime)
-        {
-            file->details->thumbnail = g_object_ref (pixbuf);
-            file->details->thumbnail_mtime = thumb_mtime;
-        }
-        else
-        {
-            g_free (file->details->thumbnail_path);
-            file->details->thumbnail_path = NULL;
-        }
+        g_clear_pointer (&file->details->thumbnail_path, g_free);
     }
 
     nautilus_directory_async_state_changed (directory);

@@ -51,7 +51,7 @@
 /* This specific number of processors seems to work ok even on relatively slow
  * computers. However, this might not be the effective number of processors
  * used simultaneously because of main thread load and I/O bounds. */
-#define MAX_THUMBNAILING_THREADS ceil (g_get_num_processors () / 3);
+#define MAX_THUMBNAILING_THREADS ceil (g_get_num_processors () / 2);
 
 static gboolean thumbnail_starter_cb (gpointer data);
 
@@ -217,29 +217,6 @@ nautilus_thumbnail_prioritize (const char *file_uri)
  * Thumbnail Thread Functions.
  ***************************************************************************/
 
-
-static gboolean
-thumbnail_thread_notify_file_changed (gpointer image_uri)
-{
-    NautilusFile *file;
-
-    file = nautilus_file_get_by_uri ((char *) image_uri);
-
-    DEBUG ("(Thumbnail Thread) Notifying file changed file:%p uri: %s\n", file, (char *) image_uri);
-
-    if (file != NULL)
-    {
-        nautilus_file_set_is_thumbnailing (file, FALSE);
-        nautilus_file_invalidate_attributes (file,
-                                             NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL |
-                                             NAUTILUS_FILE_ATTRIBUTE_INFO);
-        nautilus_file_unref (file);
-    }
-    g_free (image_uri);
-
-    return FALSE;
-}
-
 static GHashTable *
 get_types_table (void)
 {
@@ -400,7 +377,9 @@ nautilus_create_thumbnail (NautilusFile *file)
 static void
 thumbnail_finalize (NautilusThumbnailInfo *info)
 {
-    thumbnail_thread_notify_file_changed (g_strdup (info->image_uri));
+    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (info->image_uri);
+
+    nautilus_file_set_is_thumbnailing (file, FALSE);
     g_hash_table_remove (currently_thumbnailing_hash, info->image_uri);
     running_threads -= 1;
 
@@ -483,6 +462,7 @@ thumbnail_generated_cb (GObject      *source_object,
     NautilusThumbnailInfo *info = data;
     g_autoptr (GError) error = NULL;
     g_autoptr (GdkPixbuf) pixbuf = NULL;
+    g_autoptr (NautilusFile) file = NULL;
 
     pixbuf = gnome_desktop_thumbnail_factory_generate_thumbnail_finish (thumbnail_factory,
                                                                         result,
@@ -497,10 +477,20 @@ thumbnail_generated_cb (GObject      *source_object,
         return;
     }
 
+    file = nautilus_file_get_by_uri (info->image_uri);
+
     if (pixbuf != NULL)
     {
+        g_autofree gchar *mtime = g_strdup_printf ("%lu", info->updated_file_mtime);
+
         DEBUG ("(Thumbnail Async Thread) Saving thumbnail: %s\n",
                info->image_uri);
+
+        /* This is needed since the attribute is not set on the pixbuf,
+         *  only the written thumbnail file.
+         */
+        gdk_pixbuf_set_option (pixbuf, "tEXt::Thumb::MTime", mtime);
+        nautilus_file_set_thumbnail (file, pixbuf);
 
         gnome_desktop_thumbnail_factory_save_thumbnail_async (thumbnail_factory,
                                                               pixbuf,
@@ -522,6 +512,8 @@ thumbnail_generated_cb (GObject      *source_object,
                                                                        thumbnail_failed_cb,
                                                                        info);
     }
+
+    nautilus_file_changed (file);
 }
 
 /* This function is added as a very low priority idle function to start the
@@ -534,9 +526,12 @@ thumbnail_starter_cb (gpointer data)
 {
     GnomeDesktopThumbnailFactory *thumbnail_factory;
     NautilusThumbnailInfo *info = NULL;
+    gint ignored_thumbnails = 0;
     time_t current_orig_mtime = 0;
     time_t current_time;
     guint backoff_time;
+    guint backoff_time_min = THUMBNAIL_CREATION_DELAY_SECS + 1;
+    GList *node;
 
     DEBUG ("(Main Thread) Creating thumbnails thread\n");
 
@@ -549,7 +544,7 @@ thumbnail_starter_cb (gpointer data)
     }
 
     /* We loop until the queue is empty, or we reach the thread limit. */
-    while (!g_queue_is_empty (&thumbnails_to_make) &&
+    while (ignored_thumbnails < g_queue_get_length (&thumbnails_to_make) &&
            running_threads <= max_threads)
     {
         info = g_queue_pop_head (&thumbnails_to_make);
@@ -566,13 +561,14 @@ thumbnail_starter_cb (gpointer data)
             DEBUG ("(Thumbnail Thread) Skipping: %s\n",
                    info->image_uri);
 
+            /* Only retain the smallest backoff time */
             backoff_time = THUMBNAIL_CREATION_DELAY_SECS - (current_time - current_orig_mtime);
-            /* Reschedule thumbnailing via a change notification */
-            g_timeout_add_seconds (backoff_time,
-                                   thumbnail_thread_notify_file_changed,
-                                   g_strdup (info->image_uri));
-            free_thumbnail_info (info);
+            backoff_time_min = MIN (backoff_time, backoff_time_min);
 
+            g_queue_push_tail (&thumbnails_to_make, info);
+            node = g_queue_peek_tail_link (&thumbnails_to_make);
+            g_hash_table_insert (thumbnails_to_make_hash, info->image_uri, node);
+            ignored_thumbnails += 1;
             continue;
         }
 
@@ -589,6 +585,14 @@ thumbnail_starter_cb (gpointer data)
                                                                   info->cancellable,
                                                                   thumbnail_generated_cb,
                                                                   info);
+    }
+
+    /* Reschedule thumbnailing via a change notification */
+    if (thumbnail_thread_starter_id == 0 &&
+        ignored_thumbnails > 0)
+    {
+        thumbnail_thread_starter_id = g_timeout_add_seconds (backoff_time_min,
+                                                             thumbnail_starter_cb, NULL);
     }
 
     return G_SOURCE_REMOVE;
