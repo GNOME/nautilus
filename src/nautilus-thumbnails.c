@@ -48,6 +48,11 @@
 /* Cool-off period between last file modification time and thumbnail creation */
 #define THUMBNAIL_CREATION_DELAY_SECS 3
 
+/* This specific number of processors seems to work ok even on relatively slow
+ * computers. However, this might not be the effective number of processors
+ * used simultaneously because of main thread load and I/O bounds. */
+#define MAX_THUMBNAILING_THREADS ceil (g_get_num_processors () / 3);
+
 static gboolean thumbnail_starter_cb (gpointer data);
 
 /* structure used for making thumbnails, associating a uri with where the thumbnail is to be stored */
@@ -77,9 +82,14 @@ static GQueue thumbnails_to_make = G_QUEUE_INIT;
 /* Quickly check if uri is in thumbnails_to_make list */
 static GHashTable *thumbnails_to_make_hash = NULL;
 
-/* The currently thumbnailed icon. it also exists in the thumbnails_to_make list
- * to avoid adding it again. */
-static NautilusThumbnailInfo *currently_thumbnailing = NULL;
+/* The icons being currently thumbnailed. */
+static GHashTable *currently_thumbnailing_hash = NULL;
+
+/* The number of currently running threads. */
+static gint running_threads = 0;
+
+/* The maximum number of threads allowed. */
+static guint max_threads = 0;
 
 static gboolean
 get_file_mtime (const char *file_uri,
@@ -160,6 +170,7 @@ void
 nautilus_thumbnail_remove_from_queue (const char *file_uri)
 {
     GList *node;
+    NautilusThumbnailInfo *info;
 
     if (thumbnails_to_make_hash == NULL)
     {
@@ -167,22 +178,18 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
     }
 
     node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
-    if (node == NULL)
-    {
-        return;
-    }
-
-    if (node->data == currently_thumbnailing)
-    {
-        NautilusThumbnailInfo *info = node->data;
-
-        g_cancellable_cancel (info->cancellable);
-    }
-    else
+    if (node != NULL)
     {
         g_hash_table_remove (thumbnails_to_make_hash, file_uri);
         free_thumbnail_info (node->data);
         g_queue_delete_link (&thumbnails_to_make, node);
+        return;
+    }
+
+    info = g_hash_table_lookup (currently_thumbnailing_hash, file_uri);
+    if (info != NULL)
+    {
+        g_cancellable_cancel (info->cancellable);
     }
 }
 
@@ -198,7 +205,7 @@ nautilus_thumbnail_prioritize (const char *file_uri)
 
     node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
 
-    if (node != NULL && node->data != currently_thumbnailing)
+    if (node != NULL)
     {
         g_queue_unlink (&thumbnails_to_make, node);
         g_queue_push_head_link (&thumbnails_to_make, node);
@@ -347,11 +354,16 @@ nautilus_create_thumbnail (NautilusFile *file)
     {
         thumbnails_to_make_hash = g_hash_table_new (g_str_hash,
                                                     g_str_equal);
+        currently_thumbnailing_hash = g_hash_table_new (g_str_hash,
+                                                        g_str_equal);
     }
 
-    /* Check if it is already in the list of thumbnails to make. */
+    /* Check if it is already in the list of thumbnails to make or
+     *  currently being made. */
     existing = g_hash_table_lookup (thumbnails_to_make_hash, info->image_uri);
-    if (existing == NULL)
+    existing_info = g_hash_table_lookup (currently_thumbnailing_hash, info->image_uri);
+
+    if (existing == NULL && existing_info == NULL)
     {
         /* Add the thumbnail to the list. */
         DEBUG ("(Main Thread) Adding thumbnail: %s\n",
@@ -361,12 +373,11 @@ nautilus_create_thumbnail (NautilusFile *file)
         g_hash_table_insert (thumbnails_to_make_hash,
                              info->image_uri,
                              node);
-        /* If the thumbnail thread isn't running, and we haven't
-         *  scheduled an idle function to start it up, do that now.
-         *  We don't want to start it until all the other work is done,
-         *  so the GUI will be updated as quickly as possible.*/
-        if (currently_thumbnailing == NULL &&
-            thumbnail_thread_starter_id == 0)
+
+        /* If we didn't schedule the thumbnail function to start on idle, do
+         *  that now. We don't want to start it until all the other work is
+         *  done, so the GUI will be updated as quickly as possible. */
+        if (thumbnail_thread_starter_id == 0)
         {
             thumbnail_thread_starter_id = g_idle_add_full (G_PRIORITY_LOW, thumbnail_starter_cb, NULL, NULL);
         }
@@ -377,7 +388,10 @@ nautilus_create_thumbnail (NautilusFile *file)
                info->image_uri);
 
         /* The file in the queue might need a new original mtime */
-        existing_info = existing->data;
+        if (existing_info == NULL)
+        {
+            existing_info = existing->data;
+        }
         existing_info->updated_file_mtime = info->original_file_mtime;
         free_thumbnail_info (info);
     }
@@ -386,27 +400,26 @@ nautilus_create_thumbnail (NautilusFile *file)
 static void
 thumbnail_finalize (NautilusThumbnailInfo *info)
 {
-    GList *node;
-
     thumbnail_thread_notify_file_changed (g_strdup (info->image_uri));
-    currently_thumbnailing = NULL;
+    g_hash_table_remove (currently_thumbnailing_hash, info->image_uri);
+    running_threads -= 1;
 
-    /* Pop the last thumbnail we just made off the head of the
-     *  list and free it. Don't pop the thumbnail off the queue if the
-     *  original file mtime of the request changed. Then we need to
-     *  redo the thumbnail.
-     */
+    /*  If the original file mtime of the request changed, then
+     *  we need to redo the thumbnail. */
     if (info->original_file_mtime == info->updated_file_mtime ||
         g_cancellable_is_cancelled (info->cancellable))
     {
-        node = g_hash_table_lookup (thumbnails_to_make_hash, info->image_uri);
-        g_hash_table_remove (thumbnails_to_make_hash, info->image_uri);
         free_thumbnail_info (info);
-        g_queue_delete_link (&thumbnails_to_make, node);
     }
     else
     {
+        GList *node;
+
         info->original_file_mtime = info->updated_file_mtime;
+
+        g_queue_push_tail (&thumbnails_to_make, info);
+        node = g_queue_peek_tail_link (&thumbnails_to_make);
+        g_hash_table_insert (thumbnails_to_make_hash, info->image_uri, node);
     }
 
     if (g_queue_is_empty (&thumbnails_to_make))
@@ -529,15 +542,19 @@ thumbnail_starter_cb (gpointer data)
     thumbnail_factory = get_thumbnail_factory ();
     thumbnail_thread_starter_id = 0;
 
-    /* We loop until the queue is empty, or if we already
-     * have a thumbnail in progress.
-     */
-    while (!g_queue_is_empty (&thumbnails_to_make) &&
-           currently_thumbnailing == NULL)
+    if (max_threads == 0)
     {
-        info = g_queue_peek_head (&thumbnails_to_make);
-        current_orig_mtime = info->updated_file_mtime;
+        max_threads = MAX_THUMBNAILING_THREADS
+    }
 
+    /* We loop until the queue is empty, or we reach the thread limit. */
+    while (!g_queue_is_empty (&thumbnails_to_make) &&
+           running_threads <= max_threads)
+    {
+        info = g_queue_pop_head (&thumbnails_to_make);
+        g_hash_table_remove (thumbnails_to_make_hash, info->image_uri);
+
+        current_orig_mtime = info->updated_file_mtime;
         time (&current_time);
 
         /* Don't try to create a thumbnail if the file was modified recently.
@@ -551,7 +568,8 @@ thumbnail_starter_cb (gpointer data)
             /* Reschedule thumbnailing via a change notification */
             g_timeout_add_seconds (1, thumbnail_thread_notify_file_changed,
                                    g_strdup (info->image_uri));
-            nautilus_thumbnail_remove_from_queue (info->image_uri);
+            free_thumbnail_info (info);
+
             continue;
         }
 
@@ -559,7 +577,8 @@ thumbnail_starter_cb (gpointer data)
         DEBUG ("(Thumbnail Thread) Creating thumbnail: %s\n",
                info->image_uri);
 
-        currently_thumbnailing = info;
+        running_threads += 1;
+        g_hash_table_insert (currently_thumbnailing_hash, info->image_uri, info);
 
         gnome_desktop_thumbnail_factory_generate_thumbnail_async (thumbnail_factory,
                                                                   info->image_uri,
