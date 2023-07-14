@@ -536,6 +536,7 @@ thumbnail_starter_cb (gpointer data)
     NautilusThumbnailInfo *info = NULL;
     time_t current_orig_mtime = 0;
     time_t current_time;
+    guint backoff_time;
 
     DEBUG ("(Main Thread) Creating thumbnails thread\n");
 
@@ -565,8 +566,10 @@ thumbnail_starter_cb (gpointer data)
             DEBUG ("(Thumbnail Thread) Skipping: %s\n",
                    info->image_uri);
 
+            backoff_time = THUMBNAIL_CREATION_DELAY_SECS - (current_time - current_orig_mtime);
             /* Reschedule thumbnailing via a change notification */
-            g_timeout_add_seconds (1, thumbnail_thread_notify_file_changed,
+            g_timeout_add_seconds (backoff_time,
+                                   thumbnail_thread_notify_file_changed,
                                    g_strdup (info->image_uri));
             free_thumbnail_info (info);
 
