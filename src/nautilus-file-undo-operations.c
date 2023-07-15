@@ -474,8 +474,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_RESTORE_FROM_TRASH)
     {
-        *undo_label = g_strdup (_("_Undo Restore from Trash"));
-        *redo_label = g_strdup (_("_Redo Restore from Trash"));
+        *undo_label = g_strdup (_("_Undo Restore From Trash"));
+        *redo_label = g_strdup (_("_Redo Restore From Trash"));
 
         if (count > 1)
         {
@@ -843,8 +843,8 @@ create_strings_func (NautilusFileUndoInfo  *info,
     {
         *redo_description = g_strdup_printf (_("Create new file “%s” from template "), name);
 
-        *undo_label = g_strdup (_("_Undo Create from Template"));
-        *redo_label = g_strdup (_("_Redo Create from Template"));
+        *undo_label = g_strdup (_("_Undo Create From Template"));
+        *redo_label = g_strdup (_("_Redo Create From Template"));
     }
     else
     {
