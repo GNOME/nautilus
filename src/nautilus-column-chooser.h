@@ -25,7 +25,7 @@
 #include <gtk/gtk.h>
 #include "nautilus-file.h"
 
-#include <libadwaita-1/adwaita.h>
+#include <adwaita.h>
 
 #define NAUTILUS_TYPE_COLUMN_CHOOSER nautilus_column_chooser_get_type()
 
