@@ -309,6 +309,13 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                                                           "Label to display to the user",
                                                           NULL,
                                                           G_PARAM_READWRITE));
+    /**
+     * NautilusMenuItem:tip:
+     *
+     * This property has no effect.
+     *
+     * Deprecated: 43
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_TIP,
                                      g_param_spec_string ("tip",
@@ -316,6 +323,13 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                                                           "Tooltip for the menu item",
                                                           NULL,
                                                           G_PARAM_READWRITE));
+    /**
+     * NautilusMenuItem:icon:
+     *
+     * This property has no effect.
+     *
+     * Deprecated: 43
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_ICON,
                                      g_param_spec_string ("icon",
@@ -331,6 +345,13 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                                                            "Whether the menu item is sensitive",
                                                            TRUE,
                                                            G_PARAM_READWRITE));
+    /**
+     * NautilusMenuItem:priority:
+     *
+     * This property has no effect.
+     *
+     * Deprecated: 43
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_PRIORITY,
                                      g_param_spec_boolean ("priority",
