@@ -78,7 +78,6 @@ NautilusMenu     *nautilus_menu_new              (void);
 /**
  * nautilus_menu_append_item:
  * @menu: a #NautilusMenu
- * @item: (transfer full): a #NautilusMenuItem to append
  */
 void              nautilus_menu_append_item      (NautilusMenu     *menu,
                                                   NautilusMenuItem *item);
