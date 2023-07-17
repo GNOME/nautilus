@@ -440,6 +440,8 @@ file_open_callback (GObject      *object,
         g_warning ("Error reading %s: %s", uri, error->message);
         load_finished (self);
     }
+
+    g_object_unref (data->file_info);
 }
 
 static void
@@ -487,7 +489,7 @@ nautilus_image_properties_model_load_from_file_info (NautilusImagesPropertiesMod
     data = g_new0 (FileOpenData, 1);
 
     data->self = self;
-    data->file_info = file_info;
+    data->file_info = g_object_ref (file_info);
 
     g_file_read_async (file,
                        G_PRIORITY_DEFAULT,
