@@ -8,6 +8,18 @@
 #include "nautilus-properties-model.h"
 #include "nautilus-properties-item.h"
 
+/**
+ * NautilusPropertiesModel:
+ *
+ * A model to implement custom file Properties.
+ *
+ * `NautilusPropertiesModel` is an model that describes a set of file properties.
+ * Extensions can provide `NautilusPropertiesModel` objects by registering a
+ * [iface@PropertiesModelProvider] and returning them from
+ * [method@PropertiesModelProvider.get_models], which will be called by
+ * the main application when creating file properties.
+ */
+
 enum
 {
     PROP_0,
@@ -26,6 +38,15 @@ struct _NautilusPropertiesModel
 
 G_DEFINE_TYPE (NautilusPropertiesModel, nautilus_properties_model, G_TYPE_OBJECT)
 
+/**
+ * nautilus_properties_model_new:
+ * @title: the user-visible name for the set of properties in this model
+ * @model: a [iface@Gio.ListModel] containing #NautilusPropertyItem objects.
+ *
+ * Create a new `NautilusPropertiesModel`.
+ *
+ * Returns: (transfer full): a new #NautilusPropertiesModel
+ */
 NautilusPropertiesModel *
 nautilus_properties_model_new (const char *title,
                                GListModel *model)
@@ -136,23 +157,50 @@ nautilus_properties_model_class_init (NautilusPropertiesModelClass *class)
     G_OBJECT_CLASS (class)->get_property = nautilus_properties_model_get_property;
     G_OBJECT_CLASS (class)->set_property = nautilus_properties_model_set_property;
 
+    /**
+     * NautilusPropertiesModel:title:
+     *
+     * The user visible title
+     */
     pspec = g_param_spec_string ("title", "", "",
                                  NULL,
                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property (G_OBJECT_CLASS (class), PROP_TITLE, pspec);
 
+    /**
+     * NautilusPropertiesModel:model
+     *
+     * The item model.
+     */
     pspec = g_param_spec_object ("model", "", "",
                                  G_TYPE_LIST_MODEL,
                                  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property (G_OBJECT_CLASS (class), PROP_MODEL, pspec);
 }
 
+/**
+ * nautilus_properties_model_get_title:
+ *
+ * Get the user-visible title.
+ *
+ * Returns: (transfer none): the title of this #NautilusPropertiesModel
+ */
 const char *
 nautilus_properties_model_get_title (NautilusPropertiesModel *self)
 {
     return self->title;
 }
 
+/**
+ * nautilus_properties_model_set_title:
+ * @title: the new title
+ *
+ * Set a user-visible name for the set of properties in this model.
+ *
+ * It should work both as a window title and as a boxed list row.
+ * Exactly where it is shown in the UI may vary in the future.
+ *
+ */
 void
 nautilus_properties_model_set_title (NautilusPropertiesModel *self,
                                      const char              *title)
@@ -160,6 +208,13 @@ nautilus_properties_model_set_title (NautilusPropertiesModel *self,
     g_object_set (self, "title", title, NULL);
 }
 
+/**
+ * nautilus_properties_model_get_model:
+ *
+ * Gets the properties items provided by this model.
+ *
+ * Returns: (transfer none): a [iface@Gio.ListModel] containing [class@PropertiesItem].
+ */
 GListModel *
 nautilus_properties_model_get_model (NautilusPropertiesModel *self)
 {

@@ -26,6 +26,29 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
+/**
+ * NautilusMenu:
+ *
+ * A submenu linked to a [class@NautilusMenuItem].
+ *
+ * `NautilusMenu` is an object that describes a submenu in a file manager
+ * menu. Extensions can provide `NautilusMenu` objects by attaching them to
+ * `NautilusMenuItem` objects, using [method@NautilusMenuItem.set_submenu].
+ */
+
+/**
+ * NautilusMenuItem:
+ *
+ * An individual item with a Nautilus context menu.
+ *
+ * `NautilusMenuItem` is an object that describes an item in a file manager
+ * menu. Extensions can provide `NautilusMenuItem` objects by registering a
+ * [iface@NautilusMenuProvider] and returning them from
+ * [method@NautilusMenuProvider.get_file_items], or
+ * [method@NautilusMenuProvider.get_background_items], which will be called by the
+ * main application when creating menus.
+ */
+
 struct _NautilusMenu
 {
     GObject parent_instance;
@@ -35,6 +58,12 @@ struct _NautilusMenu
 
 G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
 
+/**
+ * nautilus_menu_append_item:
+ *
+ * Append a [class@NautilusMenuItem] to the current `NautilusMenu`.
+ *
+ */
 void
 nautilus_menu_append_item (NautilusMenu     *self,
                            NautilusMenuItem *menu_item)
@@ -45,6 +74,13 @@ nautilus_menu_append_item (NautilusMenu     *self,
     self->item_list = g_list_append (self->item_list, g_object_ref (menu_item));
 }
 
+/**
+ * nautilus_menu_get_items:
+ *
+ * Get a list of [class@NautilusMenuItem] for the current `NautilusMenu`.
+ *
+ * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided #NautilusMenuItem list
+ */
 GList *
 nautilus_menu_get_items (NautilusMenu *self)
 {
@@ -58,6 +94,13 @@ nautilus_menu_get_items (NautilusMenu *self)
     return item_list;
 }
 
+/**
+ * nautilus_menu_item_list_free:
+ * @item_list: (element-type NautilusMenuItem): a list of #NautilusMenuItem
+ *
+ * Deep frees a list of `NautilusMenuItem`.
+ *
+ */
 void
 nautilus_menu_item_list_free (GList *item_list)
 {
@@ -91,6 +134,13 @@ nautilus_menu_class_init (NautilusMenuClass *klass)
     object_class->finalize = nautilus_menu_finalize;
 }
 
+/**
+ * nautilus_menu_new:
+ *
+ * Creates a new `NautilusMenu`
+ *
+ * Returns: a new `NautilusMenu`.
+ */
 NautilusMenu *
 nautilus_menu_new (void)
 {

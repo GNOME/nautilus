@@ -44,22 +44,12 @@ G_DECLARE_INTERFACE (NautilusInfoProvider, nautilus_info_provider,
                      GObject)
 
 /**
- * SECTION:nautilus-info-provider
- * @title: NautilusInfoProvider
- * @short_description: Interface to provide additional information about files
- *
- * #NautilusInfoProvider allows extension to provide additional information about
- * files. When nautilus_info_provider_update_file_info() is called by the application,
- * extensions will know that it's time to add extra information to the provided
- * #NautilusFileInfo.
- */
-
-/**
  * NautilusOperationHandle:
  *
- * Handle for asynchronous interfaces. These are opaque handles that must
- * be unique within an extension object. These are returned by operations
- * that return #NAUTILUS_OPERATION_IN_PROGRESS.
+ * Handle for asynchronous interfaces.
+ *
+ * These are opaque handles that must be unique within an extension object.
+ * These are set by operations that return `NAUTILUS_OPERATION_IN_PROGRESS`.
  */
 typedef struct _NautilusOperationHandle NautilusOperationHandle;
 
@@ -73,34 +63,14 @@ typedef struct _NautilusOperationHandle NautilusOperationHandle;
  *  and call the callback closure when the operation is complete.
  *
  * Return values for asynchronous operations performed by the extension.
- * See nautilus_info_provider_update_file_info().
  */
 typedef enum
 {
-    /* Returned if the call succeeded, and the extension is done 
-     * with the request */
     NAUTILUS_OPERATION_COMPLETE,
-
-    /* Returned if the call failed */
     NAUTILUS_OPERATION_FAILED,
-
-    /* Returned if the extension has begun an async operation. 
-     * If this is returned, the extension must set the handle 
-     * parameter and call the callback closure when the 
-     * operation is complete. */
     NAUTILUS_OPERATION_IN_PROGRESS
 } NautilusOperationResult;
 
-/**
- * NautilusInfoProviderInterface:
- * @g_iface: The parent interface.
- * @update_file_info: Returns a #NautilusOperationResult.
- *                    See nautilus_info_provider_update_file_info() for details.
- * @cancel_update: Cancels a previous call to nautilus_info_provider_update_file_info().
- *                 See nautilus_info_provider_cancel_update() for details.
- *
- * Interface for extensions to provide additional information about files.
- */
 struct _NautilusInfoProviderInterface
 {
     GTypeInterface g_iface;
@@ -113,41 +83,14 @@ struct _NautilusInfoProviderInterface
                                                  NautilusOperationHandle  *handle);
 };
 
-/* Interface Functions */
-/**
- * nautilus_info_provider_update_file_info:
- * @provider: a #NautilusInfoProvider
- * @file: a #NautilusFileInfo
- * @update_complete: the closure to invoke at some later time when returning
- *                   @NAUTILUS_OPERATION_IN_PROGRESS.
- * @handle: (transfer none) (nullable) (out): an opaque #NautilusOperationHandle
- *           that must be set when returning @NAUTILUS_OPERATION_IN_PROGRESS.
- *
- * Returns: A #NautilusOperationResult.
- */
 NautilusOperationResult nautilus_info_provider_update_file_info       (NautilusInfoProvider     *provider,
                                                                        NautilusFileInfo         *file,
                                                                        GClosure                 *update_complete,
                                                                        NautilusOperationHandle **handle);
-/**
- * nautilus_info_provider_cancel_update:
- * @provider: a #NautilusInfoProvider
- * @handle: the opaque #NautilusOperationHandle returned from a previous call to
- *          nautilus_info_provider_update_file_info().
- */
+
 void                    nautilus_info_provider_cancel_update          (NautilusInfoProvider     *provider,
                                                                        NautilusOperationHandle  *handle);
 
-
-
-/* Helper functions for implementations */
-/**
- * nautilus_info_provider_update_complete_invoke:
- * @update_complete: a #GClosure
- * @provider: a #NautilusInfoProvider
- * @handle: an opaque #NautilusOperationHandle
- * @result: a #NautilusOperationResult
- */
 void                    nautilus_info_provider_update_complete_invoke (GClosure                 *update_complete,
                                                                        NautilusInfoProvider     *provider,
                                                                        NautilusOperationHandle  *handle,

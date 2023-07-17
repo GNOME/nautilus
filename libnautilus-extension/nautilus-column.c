@@ -23,6 +23,18 @@
 
 #include "nautilus-column.h"
 
+/**
+ * NautilusColumn:
+ *
+ * List view column descriptor object.
+ *
+ * `NautilusColumn` is an object that describes a column in the file manager
+ * list view. Extensions can provide `NautilusColumn` by registering a
+ * [iface@ColumnProvider] and returning them from
+ * [method@ColumnProvider.get_columns], which will be called by the main
+ * application when creating a view.
+ */
+
 enum
 {
     PROP_0,
@@ -52,6 +64,17 @@ struct _NautilusColumn
 
 G_DEFINE_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
 
+/**
+ * nautilus_column_new:
+ * @name: (not nullable): identifier of the column
+ * @attribute: (not nullable): the file attribute to be displayed in the column
+ * @label: (not nullable): the user-visible label for the column
+ * @description: (not nullable): a user-visible description of the column
+ *
+ * Creates a new [class@Column] object.
+ *
+ * Returns: (transfer full): a new column
+ */
 NautilusColumn *
 nautilus_column_new (const char *name,
                      const char *attribute,
@@ -324,8 +347,10 @@ nautilus_column_class_init (NautilusColumnClass *class)
     /**
      * NautilusColumn:default-sort-order: (type gboolean)
      *
-     * Actually meant to store the enum values of GtkSortType, but we don't want
-     * extensions to depend on GTK. Also, this is for internal consumption only.
+     * The enum values of GtkSortType
+     *
+     * Uses enum because we don't want extensions to depend on Gtk. This property
+     * is not meant to be used by extensions.
      *
      * Stability: Private: Internal to the application.
      */
@@ -341,6 +366,7 @@ nautilus_column_class_init (NautilusColumnClass *class)
      * NautilusColumn:visible: (type gboolean)
      *
      * Whether to show the NautilusColumn in a ColumnChooser.
+     *
      * This is not meant to be used by extensions. The value may be changed
      * over the life of the NautilusColumn.
      *

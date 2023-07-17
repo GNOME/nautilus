@@ -25,6 +25,17 @@
 
 #include "nautilus-extension-enum-types.h"
 
+/**
+ * NautilusInfoProvider:
+ *
+ * Interface to provide additional information about files
+ *
+ * `NautilusInfoProvider` allows extension to provide additional information about
+ * files. When [method@InfoProvider.update_file_info] is called by the application,
+ * extensions will know that it's time to add extra information to the provided
+ * [iface@FileInfo].
+ */
+
 G_DEFINE_INTERFACE (NautilusInfoProvider, nautilus_info_provider, G_TYPE_OBJECT)
 
 static void
@@ -32,6 +43,18 @@ nautilus_info_provider_default_init (NautilusInfoProviderInterface *klass)
 {
 }
 
+/**
+ * nautilus_info_provider_update_file_info:
+ * @file: a file requesting updated info.
+ * @update_complete: the closure to invoke at some later time when returning
+ *                   @NAUTILUS_OPERATION_IN_PROGRESS.
+ * @handle: (transfer none) (nullable) (out): an opaque #NautilusOperationHandle
+ *           that must be set when returning @NAUTILUS_OPERATION_IN_PROGRESS.
+ *
+ * Called when the Nautilus application is requesting updated file information.
+ *
+ * Returns: whether the operation finished.
+ */
 NautilusOperationResult
 nautilus_info_provider_update_file_info (NautilusInfoProvider     *self,
                                          NautilusFileInfo         *file,
@@ -54,6 +77,17 @@ nautilus_info_provider_update_file_info (NautilusInfoProvider     *self,
     return iface->update_file_info (self, file, update_complete, handle);
 }
 
+/**
+ * nautilus_info_provider_cancel_update:
+ * @provider: a #NautilusInfoProvider
+ * @handle: the opaque #NautilusOperationHandle returned from a previous call to
+ *          nautilus_info_provider_update_file_info().
+ *
+ * Called when the Nautilus application has canceled an update.
+ *
+ * This method is only relevant if [method@InfoProvider.update_file_info] was returned with
+ * `NAUTILUS_OPERATION_IN_PROGRESS`.
+ */
 void
 nautilus_info_provider_cancel_update (NautilusInfoProvider    *self,
                                       NautilusOperationHandle *handle)
@@ -70,6 +104,15 @@ nautilus_info_provider_cancel_update (NautilusInfoProvider    *self,
     iface->cancel_update (self, handle);
 }
 
+/**
+ * nautilus_info_provider_update_complete_invoke:
+ * @update_complete: the closure to call
+ * @provider: an info provider
+ * @handle: the handle for the given closure
+ * @result: either `NAUTILUS_OPERATION_COMPLETE` or `NAUTILUS_OPERATION_FAILED`
+ *
+ * Complete an async file info update.
+ */
 void
 nautilus_info_provider_update_complete_invoke (GClosure                *update_complete,
                                                NautilusInfoProvider    *provider,

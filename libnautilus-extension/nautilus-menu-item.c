@@ -59,6 +59,17 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
+/**
+ * nautilus_menu_item_new:
+ * @name: the identifier for the menu item
+ * @label: the user-visible label of the menu item
+ * @tip: (nullable): this has no effect
+ * @icon: (nullable): this has no effect
+ *
+ * Creates a new menu item that can be added to the toolbar or to a contextual menu.
+ *
+ * Returns: (transfer full): a new #NautilusMenuItem
+ */
 NautilusMenuItem *
 nautilus_menu_item_new (const char *name,
                         const char *label,
@@ -80,6 +91,12 @@ nautilus_menu_item_new (const char *name,
     return item;
 }
 
+/**
+ * nautilus_menu_item_activate:
+ * @item: pointer to a #NautilusMenuItem
+ *
+ * Emits #NautilusMenuItem::activate.
+ */
 void
 nautilus_menu_item_activate (NautilusMenuItem *self)
 {
@@ -88,6 +105,13 @@ nautilus_menu_item_activate (NautilusMenuItem *self)
     g_signal_emit (self, signals[ACTIVATE], 0);
 }
 
+/**
+ * nautilus_menu_item_set_submenu:
+ * @item: pointer to a #NautilusMenuItem
+ * @menu: (transfer full): pointer to a #NautilusMenu to attach to the button
+ *
+ * Attaches a menu to the given #NautilusMenuItem.
+ */
 void
 nautilus_menu_item_set_submenu (NautilusMenuItem *self,
                                 NautilusMenu     *menu)
@@ -295,6 +319,11 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
+    /**
+     * NautilusMenuItem:name:
+     *
+     * A unique identifier for the `NautilusMenuItem`.  This is not user visible.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_NAME,
                                      g_param_spec_string ("name",
@@ -302,6 +331,11 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                                                           "Name of the item",
                                                           NULL,
                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
+    /**
+     * NautilusMenuItem:label:
+     *
+     * A user visible string describing the `NautilusMenuItem`.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_LABEL,
                                      g_param_spec_string ("label",
@@ -337,7 +371,12 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                                                           "Name of the icon to display in the menu item",
                                                           NULL,
                                                           G_PARAM_READWRITE));
-
+    /**
+     * NautilusMenuItem:sensitive:
+     *
+     * Whether the `NautilusMenuItem` should be sensitive (i.e. clickable).
+     *
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_SENSITIVE,
                                      g_param_spec_boolean ("sensitive",
@@ -359,6 +398,11 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                                                            "Show priority text in toolbars",
                                                            TRUE,
                                                            G_PARAM_READWRITE));
+    /**
+     * NautilusMenuItem:menu:
+     *
+     * A submenu for the current `NautilusMenuItem`.
+     */
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_MENU,
                                      g_param_spec_object ("menu",

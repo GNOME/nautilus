@@ -31,16 +31,11 @@
 #include <libnautilus-extension/nautilus-properties-model-provider.h>
 #include <libnautilus-extension/nautilus-properties-item.h>
 
-/**
- * SECTION:nautilus-extension
- * @title: Extension entry points
- */
-
 G_BEGIN_DECLS
 
 /**
  * nautilus_module_initialize: (skip)
- * @module: a #GTypeModule used in type registration
+ * @module: a module used in type registration
  *
  * Called when the extension is begin loaded to register the types it exports
  * and to perform other initializations.
