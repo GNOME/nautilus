@@ -21,40 +21,11 @@ G_DECLARE_FINAL_TYPE (NautilusPropertiesItem,
                       NAUTILUS, PROPERTIES_ITEM,
                       GObject)
 
-/**
- * SECTION:nautilus-properties-item
- * @name: NautilusPropertiesItem
- * @value: Properties item descriptor object
- *
- * #NautilusPropertiesItem is an object that describes a name & value pair in
- * file properties. Extensions can provide #NautilusPropertiesItem objects in
- * models provided by #NautilusPropertiesModel.
- */
-
-/**
- * nautilus_properties_item_new:
- * @name: the user-visible name for the properties item.
- * @value: the user-visible value for the properties item.
- *
- * Returns: (transfer full): a new #NautilusPropertiesItem
- */
 NautilusPropertiesItem *nautilus_properties_item_new (const char *name,
                                                       const char *value);
 
-/**
- * nautilus_properties_item_get_name:
- * @self: the properties item
- *
- * Returns: (transfer none): the name of this #NautilusPropertiesItem
- */
 const char *nautilus_properties_item_get_name (NautilusPropertiesItem *self);
 
-/**
- * nautilus_properties_item_get_value:
- * @self: the properties item
- *
- * Returns: (transfer none): the value of this #NautilusPropertiesItem
- */
 const char * nautilus_properties_item_get_value (NautilusPropertiesItem *self);
 
 

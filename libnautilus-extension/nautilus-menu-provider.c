@@ -25,6 +25,15 @@
 #include <config.h>
 #include "nautilus-menu-provider.h"
 
+/**
+ * NautilusMenuProvider:
+ *
+ * Interface to provide additional menu items.
+ *
+ * `NautilusMenuProvider` allows extensions to provide additional menu items
+ * in the file manager menus.
+ */
+
 G_DEFINE_INTERFACE (NautilusMenuProvider, nautilus_menu_provider, G_TYPE_OBJECT)
 
 enum
@@ -38,7 +47,11 @@ static guint signals[LAST_SIGNAL];
 static void
 nautilus_menu_provider_default_init (NautilusMenuProviderInterface *klass)
 {
-    /* This signal should be emited each time the extension modify the list of menu items */
+    /**
+     * NautilusMenuProvider::items-updated:
+     *
+     * A signal to be emitted whenever the extension modifies the list of menu items.
+     */
     signals[ITEMS_UPDATED] = g_signal_new ("items-updated",
                                            NAUTILUS_TYPE_MENU_PROVIDER,
                                            G_SIGNAL_RUN_LAST,
@@ -48,6 +61,14 @@ nautilus_menu_provider_default_init (NautilusMenuProviderInterface *klass)
                                            G_TYPE_NONE, 0);
 }
 
+/**
+ * nautilus_menu_provider_get_file_items:
+ * @files: (element-type NautilusFileInfo): a list of selected files
+ *
+ * Called whenever the selected files in a view changes.
+ *
+ * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of items.
+ */
 GList *
 nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
                                        GList                *files)
@@ -66,6 +87,14 @@ nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
     return NULL;
 }
 
+/**
+ * nautilus_menu_provider_get_background_items:
+ * @current_folder: the folder for which background items are requested
+ *
+ * Called at least once whenever the current view changes.
+ *
+ * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of items.
+ */
 GList *
 nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
                                              NautilusFileInfo     *current_folder)
@@ -85,6 +114,11 @@ nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
     return NULL;
 }
 
+/**
+ * nautilus_menu_provider_emit_items_updated_signal:
+ *
+ * Emits [signal@MenuProvider::items-updated].
+ */
 void
 nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider)
 {

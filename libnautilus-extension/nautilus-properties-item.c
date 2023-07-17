@@ -7,6 +7,16 @@
 #include <config.h>
 #include "nautilus-properties-item.h"
 
+/**
+ * NautilusPropertiesItem:
+ *
+ * A single element in a file's properties.
+ *
+ * A file's properties will consist of one or more `NautilusPropertiesItem`.
+ * Each item is a name/value pair.  Items are added to their corresponding
+ * [property@NautilusPropertiesModel:model].
+ */
+
 enum
 {
     PROP_0,
@@ -25,6 +35,15 @@ struct _NautilusPropertiesItem
 
 G_DEFINE_TYPE (NautilusPropertiesItem, nautilus_properties_item, G_TYPE_OBJECT)
 
+/**
+ * nautilus_properties_item_new:
+ * @name: the user-visible name for the properties item.
+ * @value: the user-visible value for the properties item.
+ *
+ * Create a new `NautilusPropertiesItem`
+ *
+ * returns: (transfer full): a new `NautilusPropertiesItem`
+ */
 NautilusPropertiesItem *
 nautilus_properties_item_new (const char *name,
                               const char *value)
@@ -125,23 +144,47 @@ nautilus_properties_item_class_init (NautilusPropertiesItemClass *class)
     G_OBJECT_CLASS (class)->get_property = nautilus_properties_item_get_property;
     G_OBJECT_CLASS (class)->set_property = nautilus_properties_item_set_property;
 
+    /**
+     * NautilusPropertiesItem:name:
+     *
+     * The user-visible name.
+     */
     pspec = g_param_spec_string ("name", "", "",
                                  NULL,
                                  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property (G_OBJECT_CLASS (class), PROP_NAME, pspec);
 
+    /**
+     * NautilusPropertiesItem:value:
+     *
+     * The user-visible value.
+     */
     pspec = g_param_spec_string ("value", "", "",
                                  NULL,
                                  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_property (G_OBJECT_CLASS (class), PROP_VALUE, pspec);
 }
 
+/**
+ * nautilus_properties_item_get_name:
+ *
+ * Get the name.
+ *
+ * Returns: (transfer none): the name of this `NautilusPropertiesItem`
+ */
 const char *
 nautilus_properties_item_get_name (NautilusPropertiesItem *self)
 {
     return self->name;
 }
 
+/**
+ * nautilus_properties_item_get_value:
+ *
+ * Get the value.
+ *
+ * Returns: (transfer none): the value of this `NautilusPropertiesItem`
+ */
 const char *
 nautilus_properties_item_get_value (NautilusPropertiesItem *self)
 {

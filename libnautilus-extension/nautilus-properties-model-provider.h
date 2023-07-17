@@ -21,23 +21,6 @@ G_DECLARE_INTERFACE (NautilusPropertiesModelProvider,
                      NAUTILUS, PROPERTIES_MODEL_PROVIDER,
                      GObject)
 
-/**
- * SECTION:nautilus-properties-model-provider
- * @title: NautilusPropertiesModelProvider
- * @short_description: Interface to provide additional properties
- *
- * #NautilusPropertiesModelProvider allows extension to provide additional
- * information for the file properties.
- */
-
-/**
- * NautilusPropertiesModelProviderInterface:
- * @g_iface: The parent interface.
- * @get_models: Returns a #GList of #NautilusPropertiesModel.
- *   See nautilus_properties_model_provider_get_models() for details.
- *
- * Interface for extensions to provide additional properties.
- */
 struct _NautilusPropertiesModelProviderInterface
 {
     GTypeInterface g_iface;
@@ -46,20 +29,6 @@ struct _NautilusPropertiesModelProviderInterface
                           GList                           *files);
 };
 
-/**
- * nautilus_properties_model_provider_get_models:
- * @provider: a #NautilusPropertiesModelProvider
- * @files: (element-type NautilusFileInfo): a #GList of #NautilusFileInfo
- *
- * This function is called by the application when it wants properties models
- * from the extension.
- *
- * This function is called in the main thread before the Properties are shown,
- * so it should return quickly. The models can be populated and updated
- * asynchronously.
- *
- * Returns: (nullable) (element-type NautilusPropertiesModel) (transfer full): A #GList of allocated #NautilusPropertiesModel models.
- */
 GList *nautilus_properties_model_provider_get_models (NautilusPropertiesModelProvider *provider,
                                                       GList                           *files);
 
