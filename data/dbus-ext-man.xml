@@ -4,6 +4,7 @@
 <node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
   <interface name="org.gnome.Nautilus.ExtensionManager">
     <property type="a(ssss)" name="ColumnList" access="read"></property>"
+    <property type="s" name="ExtensionList" access="read"></property>
     <method name="Properties">
       <arg name="files" direction="in" type="as"></arg>
       <arg type="aa{sv}" name="property_model" direction="out"></arg>

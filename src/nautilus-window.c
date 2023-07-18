@@ -51,8 +51,10 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
+#include "nautilus-ext-man-generated.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
@@ -60,7 +62,6 @@
 #include "nautilus-location-entry.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-module.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-profile.h"
 #include "nautilus-signaller.h"
@@ -2354,8 +2355,8 @@ nautilus_window_new (void)
 void
 nautilus_window_show_about_dialog (NautilusWindow *window)
 {
-    g_autofree gchar *module_names = nautilus_module_get_installed_module_names ();
     g_autofree gchar *debug_info = NULL;
+    NautilusExtensionManager *proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
 
     const gchar *designers[] =
     {
@@ -2373,17 +2374,20 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
         "Sun Microsystems",
         NULL
     };
-
-    if (module_names == NULL)
+    if (proxy != NULL)
     {
-        debug_info = g_strdup (_("No plugins currently installed."));
-    }
-    else
-    {
-        debug_info = g_strconcat (_("Currently installed plugins:"), "\n\n",
-                                  module_names, "\n\n",
-                                  _("For bug testing only, the following command can be used:"), "\n"
-                                  "NAUTILUS_DISABLE_PLUGINS=TRUE nautilus", NULL);
+        const char *module_names = nautilus_extension_manager_get_extension_list (proxy);
+        if (module_names == NULL)
+        {
+            debug_info = g_strdup (_("No plugins currently installed."));
+        }
+        else
+        {
+            debug_info = g_strconcat (_("Currently installed plugins:"), "\n\n",
+                                      module_names, "\n\n",
+                                      _("For bug testing only, the following command can be used:"), "\n"
+                                      "NAUTILUS_DISABLE_PLUGINS=TRUE nautilus", NULL);
+        }
     }
 
     adw_show_about_window (window ? GTK_WINDOW (window) : NULL,
