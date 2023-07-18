@@ -62,7 +62,6 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
-#include "nautilus-module.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
@@ -923,7 +922,6 @@ finalize (GObject *object)
     g_list_free_full (file->details->mime_list, g_free);
     g_list_free_full (file->details->pending_extension_emblems, g_free);
     g_list_free_full (file->details->extension_emblems, g_free);
-    g_list_free_full (file->details->pending_info_providers, g_object_unref);
 
     if (file->details->pending_extension_attributes)
     {
@@ -1110,7 +1108,7 @@ nautilus_file_can_write (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return nautilus_file_info_can_write (NAUTILUS_FILE_INFO (file));
+    return file->details->can_write;
 }
 
 /**
@@ -8467,13 +8465,7 @@ invalidate_mount (NautilusFile *file)
 void
 nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
-    if (file->details->pending_info_providers)
-    {
-        g_list_free_full (file->details->pending_info_providers, g_object_unref);
-    }
-
-    file->details->pending_info_providers =
-        nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
+    file->details->info_providers_up_to_date = FALSE;
 }
 
 void
@@ -9243,7 +9235,7 @@ void
 nautilus_file_add_emblem (NautilusFile *file,
                           const char   *emblem_name)
 {
-    if (file->details->pending_info_providers)
+    if (!file->details->info_providers_up_to_date)
     {
         file->details->pending_extension_emblems = g_list_prepend (file->details->pending_extension_emblems,
                                                                    g_strdup (emblem_name));
@@ -9262,7 +9254,7 @@ nautilus_file_add_string_attribute (NautilusFile *file,
                                     const char   *attribute_name,
                                     const char   *value)
 {
-    if (file->details->pending_info_providers != NULL)
+    if (!file->details->info_providers_up_to_date)
     {
         /* Lazily create hashtable */
         if (file->details->pending_extension_attributes == NULL)

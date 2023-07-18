@@ -222,6 +222,9 @@ nautilus_directory_finalize (GObject *object)
     g_assert (directory->details->dequeue_pending_idle_id == 0);
     g_list_free_full (directory->details->pending_file_info, g_object_unref);
 
+    g_cancellable_cancel (directory->details->extension_cancellable);
+    g_clear_object (&directory->details->extension_cancellable);
+
     G_OBJECT_CLASS (nautilus_directory_parent_class)->finalize (object);
 }
 
@@ -345,6 +348,7 @@ nautilus_directory_init (NautilusDirectory *directory)
     directory->details->low_priority_queue = nautilus_file_queue_new ();
     directory->details->extension_queue = nautilus_file_queue_new ();
     directory->details->monitor_table = g_hash_table_new (NULL, NULL);
+    directory->details->extension_cancellable = g_cancellable_new ();
 }
 
 NautilusDirectory *

@@ -22,6 +22,33 @@ G_DECLARE_FINAL_TYPE (NautilusExtApp, nautilus_ext_app, NAUTILUS, EXT_APP, GAppl
 
 G_DEFINE_FINAL_TYPE (NautilusExtApp, nautilus_ext_app, G_TYPE_APPLICATION)
 
+typedef struct
+{
+    NautilusExtensionManager *manager;
+    GDBusMethodInvocation    *invocation;
+    char *str;
+} DBusData;
+
+static DBusData *
+dbus_data_new (NautilusExtensionManager *manager,
+               GDBusMethodInvocation    *invocation)
+{
+    DBusData *data = g_new0 (DBusData, 1);
+
+    data->manager = g_object_ref (manager);
+    data->invocation = g_object_ref (invocation);
+
+    return data;
+}
+
+static void
+dbus_data_free (DBusData *data)
+{
+    g_clear_object (&data->manager);
+    g_clear_object (&data->invocation);
+    g_free (data);
+}
+
 
 static char *
 get_extension_id (NautilusExtApp   *self,
@@ -264,6 +291,59 @@ properties_close (NautilusExtensionManager *manager,
     return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
 
+static void
+info_provider_callback (NautilusInfoProvider    *provider,
+                        NautilusOperationHandle *handle,
+                        NautilusOperationResult  result,
+                        gpointer                 user_data)
+{
+    DBusData *data = user_data;
+
+    nautilus_extension_manager_complete_info_update (data->manager, data->invocation);
+}
+
+static gboolean
+info_update (NautilusExtensionManager *manager,
+             GDBusMethodInvocation    *invocation,
+             const char               *uri,
+             NautilusExtApp           *self)
+{
+
+    g_autolist (GObject) providers = NULL;
+    g_autoptr (NautilusFileInfo) file = nautilus_file_info_new (uri);
+    gboolean all_results_complete = TRUE;
+
+    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
+
+    for (GList *l = providers; l != NULL; l = l->next)
+    {
+        g_autoptr (GClosure) update_complete = NULL;
+        NautilusOperationHandle *handle;
+        NautilusOperationResult result;
+        DBusData *data = dbus_data_new (manager, invocation);
+
+        update_complete = g_cclosure_new (G_CALLBACK (info_provider_callback),
+                                          data,
+                                          (GClosureNotify) dbus_data_free);
+        g_closure_set_marshal (update_complete,
+                               g_cclosure_marshal_generic);
+
+        result = nautilus_info_provider_update_file_info
+                     (l->data,
+                     file,
+                     update_complete,
+                     &handle);
+
+        all_results_complete &= (result == NAUTILUS_OPERATION_COMPLETE);
+    }
+
+    if (all_results_complete)
+    {
+        nautilus_extension_manager_complete_info_update (manager, invocation);
+    }
+
+    return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
 
 static void
 get_columns (NautilusExtApp *self)
@@ -309,6 +389,7 @@ dbus_register (GApplication    *application,
     g_signal_connect (app->manager, "handle-menu-item-activate", G_CALLBACK (menu_item_activate), app);
     g_signal_connect (app->manager, "handle-properties", G_CALLBACK (properties), app);
     g_signal_connect (app->manager, "handle-properties-close", G_CALLBACK (properties_close), app);
+    g_signal_connect (app->manager, "handle-info-update", G_CALLBACK (info_update), app);
 
     return TRUE;
 }

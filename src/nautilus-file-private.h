@@ -110,8 +110,8 @@ struct NautilusFilePrivate
 	 */
 	GList *operations_in_progress;
 
-	/* NautilusInfoProviders that need to be run for this file */
-	GList *pending_info_providers;
+	gboolean info_providers_up_to_date;
+	gboolean info_providers_running;
 
 	/* Emblems provided by extensions */
 	GList *extension_emblems;

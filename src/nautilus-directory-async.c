@@ -25,10 +25,12 @@
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_ASYNC_JOBS
 
+#include "nautilus-dbus-launcher.h"
 #include "nautilus-debug.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-enums.h"
+#include "nautilus-ext-man-generated.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-queue.h"
 #include "nautilus-global-preferences.h"
@@ -1764,11 +1766,6 @@ nautilus_async_destroying_file (NautilusFile *file)
         directory->details->get_info_file = NULL;
         changed = TRUE;
     }
-    if (directory->details->extension_info_file == file)
-    {
-        directory->details->extension_info_file = NULL;
-        changed = TRUE;
-    }
 
     if (directory->details->thumbnail_state != NULL &&
         directory->details->thumbnail_state->file == file)
@@ -1847,7 +1844,7 @@ should_get_mime_list (NautilusFile *file)
 static gboolean
 lacks_extension_info (NautilusFile *file)
 {
-    return file->details->pending_info_providers != NULL;
+    return !file->details->info_providers_up_to_date;
 }
 
 static gboolean
@@ -4237,137 +4234,34 @@ filesystem_info_start (NautilusDirectory *directory,
 }
 
 static void
-extension_info_cancel (NautilusDirectory *directory)
+finish_info_provider (GObject      *object,
+                      GAsyncResult *res,
+                      gpointer      user_data)
 {
-    if (directory->details->extension_info_in_progress != NULL)
+    NautilusExtensionManager *manager = NAUTILUS_EXTENSION_MANAGER (object);
+    NautilusFile *file = user_data;
+    g_autoptr (GError) error = NULL;
+
+    file->details->info_providers_running = FALSE;
+
+    nautilus_extension_manager_call_info_update_finish (manager, res, &error);
+
+    if (error != NULL)
     {
-        if (directory->details->extension_info_idle)
-        {
-            g_source_remove (directory->details->extension_info_idle);
-        }
-        else
-        {
-            nautilus_info_provider_cancel_update
-                (directory->details->extension_info_provider,
-                directory->details->extension_info_in_progress);
-        }
-
-        directory->details->extension_info_in_progress = NULL;
-        directory->details->extension_info_file = NULL;
-        directory->details->extension_info_provider = NULL;
-        directory->details->extension_info_idle = 0;
-
-        async_job_end (directory, "extension info");
+        file->details->info_providers_up_to_date = TRUE;
     }
+
+    nautilus_file_info_providers_done (file);
 }
 
 static void
-extension_info_stop (NautilusDirectory *directory)
+extension_info_start (NautilusFile      *file)
 {
-    if (directory->details->extension_info_in_progress != NULL)
+    NautilusExtensionManager *proxy;
+    g_autofree char *uri = nautilus_file_get_uri (file);
+
+    if (file->details->info_providers_running)
     {
-        NautilusFile *file;
-
-        file = directory->details->extension_info_file;
-        if (file != NULL)
-        {
-            g_assert (NAUTILUS_IS_FILE (file));
-            g_assert (file->details->directory == directory);
-            if (is_needy (file, lacks_extension_info, REQUEST_EXTENSION_INFO))
-            {
-                return;
-            }
-        }
-
-        /* The info is not wanted, so stop it. */
-        extension_info_cancel (directory);
-    }
-}
-
-static void
-finish_info_provider (NautilusDirectory    *directory,
-                      NautilusFile         *file,
-                      NautilusInfoProvider *provider)
-{
-    file->details->pending_info_providers =
-        g_list_remove (file->details->pending_info_providers,
-                       provider);
-    g_object_unref (provider);
-
-    nautilus_directory_async_state_changed (directory);
-
-    if (file->details->pending_info_providers == NULL)
-    {
-        nautilus_file_info_providers_done (file);
-    }
-}
-
-
-static gboolean
-info_provider_idle_callback (gpointer user_data)
-{
-    InfoProviderResponse *response;
-    NautilusDirectory *directory;
-
-    response = user_data;
-    directory = response->directory;
-
-    if (response->handle != directory->details->extension_info_in_progress
-        || response->provider != directory->details->extension_info_provider)
-    {
-        g_warning ("Unexpected plugin response.  This probably indicates a bug in a Nautilus extension: handle=%p", response->handle);
-    }
-    else
-    {
-        NautilusFile *file;
-        async_job_end (directory, "extension info");
-
-        file = directory->details->extension_info_file;
-
-        directory->details->extension_info_file = NULL;
-        directory->details->extension_info_provider = NULL;
-        directory->details->extension_info_in_progress = NULL;
-        directory->details->extension_info_idle = 0;
-
-        finish_info_provider (directory, file, response->provider);
-    }
-
-    return FALSE;
-}
-
-static void
-info_provider_callback (NautilusInfoProvider    *provider,
-                        NautilusOperationHandle *handle,
-                        NautilusOperationResult  result,
-                        gpointer                 user_data)
-{
-    InfoProviderResponse *response;
-
-    response = g_new0 (InfoProviderResponse, 1);
-    response->provider = provider;
-    response->handle = handle;
-    response->result = result;
-    response->directory = NAUTILUS_DIRECTORY (user_data);
-
-    response->directory->details->extension_info_idle =
-        g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
-                         info_provider_idle_callback, response,
-                         g_free);
-}
-
-static void
-extension_info_start (NautilusDirectory *directory,
-                      NautilusFile      *file,
-                      gboolean          *doing_io)
-{
-    NautilusInfoProvider *provider;
-    NautilusOperationResult result;
-    NautilusOperationHandle *handle;
-    GClosure *update_complete;
-
-    if (directory->details->extension_info_in_progress != NULL)
-    {
-        *doing_io = TRUE;
         return;
     }
 
@@ -4375,40 +4269,12 @@ extension_info_start (NautilusDirectory *directory,
     {
         return;
     }
-    *doing_io = TRUE;
 
-    if (!async_job_start (directory, "extension info"))
+    proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
+    if (proxy != NULL)
     {
-        return;
-    }
-
-    provider = file->details->pending_info_providers->data;
-
-    update_complete = g_cclosure_new (G_CALLBACK (info_provider_callback),
-                                      directory,
-                                      NULL);
-    g_closure_set_marshal (update_complete,
-                           g_cclosure_marshal_generic);
-
-    result = nautilus_info_provider_update_file_info
-                 (provider,
-                 NAUTILUS_FILE_INFO (file),
-                 update_complete,
-                 &handle);
-
-    g_closure_unref (update_complete);
-
-    if (result == NAUTILUS_OPERATION_COMPLETE ||
-        result == NAUTILUS_OPERATION_FAILED)
-    {
-        finish_info_provider (directory, file, provider);
-        async_job_end (directory, "extension info");
-    }
-    else
-    {
-        directory->details->extension_info_in_progress = handle;
-        directory->details->extension_info_provider = provider;
-        directory->details->extension_info_file = file;
+        file->details->info_providers_running = TRUE;
+        nautilus_extension_manager_call_info_update (proxy, uri, NULL, finish_info_provider, file);
     }
 }
 
@@ -4426,7 +4292,6 @@ start_or_stop_io (NautilusDirectory *directory)
     directory_count_stop (directory);
     deep_count_stop (directory);
     mime_list_stop (directory);
-    extension_info_stop (directory);
     mount_stop (directory);
     thumbnail_stop (directory);
     filesystem_info_stop (directory);
@@ -4475,11 +4340,7 @@ start_or_stop_io (NautilusDirectory *directory)
         file = nautilus_file_queue_head (directory->details->extension_queue);
 
         /* Start getting attributes if possible */
-        extension_info_start (directory, file, &doing_io);
-        if (doing_io)
-        {
-            return;
-        }
+        extension_info_start (file);
 
         nautilus_directory_remove_file_from_work_queue (directory, file);
     }
@@ -4533,7 +4394,9 @@ nautilus_directory_cancel (NautilusDirectory *directory)
     file_list_cancel (directory);
     mime_list_cancel (directory);
     new_files_cancel (directory);
-    extension_info_cancel (directory);
+    g_cancellable_cancel (directory->details->extension_cancellable);
+    g_clear_object (&directory->details->extension_cancellable);
+    directory->details->extension_cancellable = g_cancellable_new ();
     thumbnail_cancel (directory);
     mount_cancel (directory);
     filesystem_info_cancel (directory);
@@ -4653,7 +4516,9 @@ cancel_loading_attributes (NautilusDirectory      *directory,
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_EXTENSION_INFO))
     {
-        extension_info_cancel (directory);
+        g_cancellable_cancel (directory->details->extension_cancellable);
+        g_clear_object (&directory->details->extension_cancellable);
+        directory->details->extension_cancellable = g_cancellable_new ();
     }
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL))

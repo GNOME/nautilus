@@ -116,10 +116,7 @@ struct NautilusDirectoryPrivate
 	NautilusFile *get_info_file;
 	GetInfoState *get_info_in_progress;
 
-	NautilusFile *extension_info_file;
-	NautilusInfoProvider *extension_info_provider;
-	NautilusOperationHandle *extension_info_in_progress;
-	guint extension_info_idle;
+	GCancellable *extension_cancellable;
 
 	ThumbnailState *thumbnail_state;
 
