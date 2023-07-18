@@ -9,6 +9,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "nautilus-ext-man-generated.h"
 #include "nautilus-file.h"
 
 #define NAUTILUS_TYPE_DBUS_LAUNCHER (nautilus_dbus_launcher_get_type())
@@ -36,4 +37,6 @@ void nautilus_dbus_launcher_call (NautilusDBusLauncher    *self,
                                   const gchar             *method_name,
                                   GVariant                *parameters,
                                   GtkWindow               *window);
+
+NautilusExtensionManager * nautilus_dbus_launcher_get_ext_man_proxy (void);
 

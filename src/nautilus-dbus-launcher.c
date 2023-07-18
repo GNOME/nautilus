@@ -8,6 +8,7 @@
 
 #include <glib/gi18n.h>
 
+#include "nautilus-ext-man-generated.h"
 #include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
 
@@ -31,6 +32,7 @@ struct _NautilusDBusLauncher
 G_DEFINE_TYPE (NautilusDBusLauncher, nautilus_dbus_launcher, G_TYPE_OBJECT)
 
 static NautilusDBusLauncher *launcher = NULL;
+static NautilusExtensionManager *ext_man_proxy = NULL;
 
 static void
 on_nautilus_dbus_launcher_call_finished   (GObject      *source_object,
@@ -137,6 +139,20 @@ nautilus_dbus_launcher_create_proxy (NautilusDBusLauncherData *data,
                               data);
 }
 
+NautilusExtensionManager *
+nautilus_dbus_launcher_get_ext_man_proxy (void)
+{
+    return ext_man_proxy;
+}
+
+static void
+on_ext_man_proxy_received (GObject      *object,
+                           GAsyncResult *res,
+                           gpointer      user_data)
+{
+    ext_man_proxy = nautilus_extension_manager_proxy_new_for_bus_finish (res, NULL);
+}
+
 gboolean nautilus_dbus_launcher_is_available (NautilusDBusLauncher   *self,
                                               NautilusDBusLauncherApp app)
 {
@@ -227,4 +243,12 @@ nautilus_dbus_launcher_init (NautilusDBusLauncher *self)
     nautilus_dbus_launcher_create_proxy (self->data[NAUTILUS_DBUS_LAUNCHER_CONSOLE],
                                          "org.gnome.Console", "/org/gnome/Console",
                                          "org.freedesktop.Application");
+
+    nautilus_extension_manager_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+                                                  G_DBUS_PROXY_FLAGS_NONE,
+                                                  "org.gnome.Nautilus.ExtensionManager",
+                                                  "/org/gnome/Nautilus/ExtensionManager",
+                                                  self->cancellable,
+                                                  on_ext_man_proxy_received,
+                                                  self);
 }
