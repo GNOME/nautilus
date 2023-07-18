@@ -16,13 +16,13 @@ typedef struct
 {
     GDBusProxy *proxy;
     gchar *error;
-    GCancellable *cancellable;
     gboolean ping_on_creation;
 } NautilusDBusLauncherData;
 
 struct _NautilusDBusLauncher
 {
     GObject parent;
+    GCancellable *cancellable;
 
     NautilusDBusLauncherApp last_app_initialized;
     NautilusDBusLauncherData *data[NAUTILUS_DBUS_LAUNCHER_N_APPS];
@@ -67,8 +67,6 @@ on_nautilus_dbus_launcher_ping_finished   (GObject      *source_object,
     {
         data->error = g_strdup (error->message);
     }
-
-    g_clear_object (&data->cancellable);
 }
 
 void
@@ -112,13 +110,12 @@ on_nautilus_dbus_proxy_ready (GObject      *source_object,
     {
         g_warning ("Error creating proxy %s", error->message);
         data->error = g_strdup (error->message);
-        g_clear_object (&data->cancellable);
     }
     else if (data->ping_on_creation)
     {
         g_dbus_proxy_call (data->proxy,
                            "org.freedesktop.DBus.Peer.Ping", NULL,
-                           G_DBUS_CALL_FLAGS_NONE, G_MAXINT, data->cancellable,
+                           G_DBUS_CALL_FLAGS_NONE, G_MAXINT, launcher->cancellable,
                            on_nautilus_dbus_launcher_ping_finished, data);
     }
 }
@@ -135,7 +132,7 @@ nautilus_dbus_launcher_create_proxy (NautilusDBusLauncherData *data,
                               name,
                               object_path,
                               interface,
-                              data->cancellable,
+                              NULL,
                               on_nautilus_dbus_proxy_ready,
                               data);
 }
@@ -170,12 +167,13 @@ nautilus_dbus_launcher_finalize (GObject *object)
 {
     NautilusDBusLauncher *self = NAUTILUS_DBUS_LAUNCHER (object);
 
+    g_cancellable_cancel (self->cancellable);
+    g_clear_object (&self->cancellable);
+
     for (gint i = 1; i <= self->last_app_initialized; i++)
     {
         g_clear_object (&self->data[i]->proxy);
         g_free (self->data[i]->error);
-        g_cancellable_cancel (self->data[i]->cancellable);
-        g_clear_object (&self->data[i]->cancellable);
         g_free (self->data[i]);
     }
 
@@ -204,7 +202,6 @@ nautilus_dbus_launcher_data_init (NautilusDBusLauncher    *self,
     data->proxy = NULL;
     data->error = NULL;
     data->ping_on_creation = ping_on_creation;
-    data->cancellable = g_cancellable_new ();
 
     self->data[app] = data;
     self->last_app_initialized = app;
@@ -213,6 +210,8 @@ nautilus_dbus_launcher_data_init (NautilusDBusLauncher    *self,
 static void
 nautilus_dbus_launcher_init (NautilusDBusLauncher *self)
 {
+    self->cancellable = g_cancellable_new ();
+
     nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_SETTINGS, FALSE);
     nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_DISKS, TRUE);
     nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_CONSOLE, TRUE);
