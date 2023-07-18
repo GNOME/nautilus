@@ -211,8 +211,6 @@ libnautilus_sources = [
   'nautilus-lib-self-check-functions.h',
   'nautilus-metadata.h',
   'nautilus-metadata.c',
-  'nautilus-module.c',
-  'nautilus-module.h',
   'nautilus-monitor.c',
   'nautilus-monitor.h',
   'nautilus-profile.c',

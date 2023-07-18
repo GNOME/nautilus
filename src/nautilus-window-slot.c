@@ -41,7 +41,6 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-module.h"
 #include "nautilus-monitor.h"
 #include "nautilus-profile.h"
 #include "nautilus-ui-utilities.h"
