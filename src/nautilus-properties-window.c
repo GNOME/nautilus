@@ -40,13 +40,13 @@
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
+#include "nautilus-ext-man-generated.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-module.h"
 #include "nautilus-properties-model.h"
 #include "nautilus-properties-item.h"
 #include "nautilus-signaller.h"
@@ -133,6 +133,8 @@ struct _NautilusPropertiesWindow
     GtkWidget *permissions_value_label;
 
     GtkWidget *extension_models_list_box;
+    GListModel *extensions_list;
+    GCancellable *cancellable;
 
     /* Permissions page */
 
@@ -3649,34 +3651,153 @@ setup_permissions_page (NautilusPropertiesWindow *self)
     }
 }
 
+static NautilusExtensionManager *proxy = NULL;
+
 static void
-refresh_extension_model_pages (NautilusPropertiesWindow *self)
+set_model_from_variant (GListStore *store,
+                        GVariant   *items)
 {
-    g_autoptr (GListStore) extensions_list = g_list_store_new (NAUTILUS_TYPE_PROPERTIES_MODEL);
-    g_autolist (NautilusPropertiesModel) all_models = NULL;
-    g_autolist (GObject) providers =
-        nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER);
+    g_list_store_remove_all (store);
 
-    for (GList *l = providers; l != NULL; l = l->next)
+    for (guint j = 0; j < g_variant_n_children (items); j++)
     {
-        GList *models = nautilus_properties_model_provider_get_models (l->data, self->original_files);
+        g_autoptr (NautilusPropertiesItem) item = NULL;
+        g_autofree char *name = NULL;
+        g_autofree char *value = NULL;
 
-        all_models = g_list_concat (all_models, models);
+        g_variant_get_child (items, j, "(ss)", &name, &value);
+        item = nautilus_properties_item_new (name, value);
+        g_list_store_append (store, item);
+    }
+}
+
+static void
+clear_extensions_list (NautilusPropertiesWindow *self)
+{
+    if (self->extensions_list == NULL)
+    {
+        return;
     }
 
-    for (GList *l = all_models; l != NULL; l = l->next)
+    for (guint i = 0; i < g_list_model_get_n_items (self->extensions_list); i++)
     {
-        g_list_store_append (extensions_list, NAUTILUS_PROPERTIES_MODEL (l->data));
+        g_autoptr (NautilusPropertiesModel) model = g_list_model_get_item (self->extensions_list, i);
+        GListModel *items_model = nautilus_properties_model_get_model (model);
+        const char *timestamp;
+
+        timestamp = g_object_get_data (G_OBJECT (items_model), "timestamp");
+        nautilus_extension_manager_call_properties_close (proxy, timestamp, NULL, NULL, NULL);
+    }
+
+    g_clear_object (&self->extensions_list);
+}
+
+static void
+property_extensions_changed (NautilusExtensionManager *man,
+                             const char               *timestamp,
+                             GVariant                 *items,
+                             gpointer                  user_data)
+{
+    NautilusPropertiesWindow *self = user_data;
+
+    if (self->extensions_list == NULL)
+    {
+        return;
+    }
+
+    for (guint i = 0; i < g_list_model_get_n_items (self->extensions_list); i++)
+    {
+        g_autoptr (NautilusPropertiesModel) prop_model = g_list_model_get_item (self->extensions_list, i);
+        GListModel *items_model = nautilus_properties_model_get_model (prop_model);
+        const char *model_timestamp;
+
+        model_timestamp = g_object_get_data (G_OBJECT (items_model), "timestamp");
+
+        if (g_strcmp0 (timestamp, model_timestamp) == 0)
+        {
+            set_model_from_variant (G_LIST_STORE (items_model), items);
+        }
+    }
+}
+
+static void
+on_property_extension_received (GObject      *object,
+                                GAsyncResult *res,
+                                gpointer      user_data)
+{
+    NautilusExtensionManager *man = NAUTILUS_EXTENSION_MANAGER (object);
+    GVariant *result = NULL;
+    g_autoptr (GError) error = NULL;
+    NautilusPropertiesWindow *self = user_data;
+
+    nautilus_extension_manager_call_properties_finish (man, &result, res, &error);
+
+    if (error != NULL)
+    {
+        gtk_widget_set_visible (self->extension_models_list_box, FALSE);
+        return;
+    }
+
+    clear_extensions_list (self);
+    self->extensions_list = G_LIST_MODEL (g_list_store_new (NAUTILUS_TYPE_PROPERTIES_MODEL));
+
+    for (int i = 0; i < g_variant_n_children (result); i++)
+    {
+        g_autoptr (GListModel) list_model = NULL;
+        g_autoptr (NautilusPropertiesModel) model = NULL;
+        GVariant *dict;
+        GVariant *items;
+        char *title;
+        char *timestamp;
+
+        dict = g_variant_get_child_value (result, i);
+        g_variant_lookup (dict, "title", "s", &title);
+        g_variant_lookup (dict, "timestamp", "s", &timestamp);
+        items = g_variant_lookup_value (dict, "items", G_VARIANT_TYPE_ARRAY);
+
+        list_model = G_LIST_MODEL (g_list_store_new (NAUTILUS_TYPE_PROPERTIES_ITEM));
+        g_object_set_data_full (G_OBJECT (list_model), "timestamp", timestamp, g_free);
+        model = nautilus_properties_model_new (title, list_model);
+        set_model_from_variant (G_LIST_STORE (list_model), items);
+
+        g_list_store_append (G_LIST_STORE (self->extensions_list), model);
     }
 
     gtk_widget_set_visible (self->extension_models_list_box,
-                            g_list_model_get_n_items (G_LIST_MODEL (extensions_list)) > 0);
+                            g_list_model_get_n_items (self->extensions_list) > 0);
 
     gtk_list_box_bind_model (GTK_LIST_BOX (self->extension_models_list_box),
-                             G_LIST_MODEL (extensions_list),
+                             self->extensions_list,
                              (GtkListBoxCreateWidgetFunc) add_extension_model_page,
                              self,
                              NULL);
+}
+
+static void
+refresh_extension_model_pages (NautilusPropertiesWindow *self)
+{
+    gint timestamp = 0;
+    g_autoptr (GStrvBuilder) builder = g_strv_builder_new ();
+    g_auto (GStrv) files = NULL;
+
+    for (GList *l = self->original_files; l != NULL; l = l->next)
+    {
+        g_autofree char *uri = nautilus_file_get_uri (l->data);
+
+        g_strv_builder_add (builder, uri);
+    }
+
+    if (G_UNLIKELY (proxy == NULL))
+    {
+
+    }
+
+    g_signal_connect (proxy, "properties-changed", G_CALLBACK (property_extensions_changed), self);
+    files = g_strv_builder_end (builder);
+    nautilus_extension_manager_call_properties (proxy,
+                                                (const char * const *) files,
+                                                self->cancellable,
+                                                on_property_extension_received, self);
 }
 
 static gboolean
@@ -4139,6 +4260,10 @@ real_dispose (GObject *object)
     g_clear_pointer (&self->initial_permissions, g_hash_table_destroy);
 
     g_clear_list (&self->value_fields, NULL);
+    clear_extensions_list (self);
+    g_signal_handlers_disconnect_by_func (proxy, property_extensions_changed, self);
+    g_cancellable_cancel (self->cancellable);
+    g_clear_object (&self->cancellable);
 
     g_clear_handle_id (&self->update_directory_contents_timeout_id, g_source_remove);
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
@@ -4410,4 +4535,5 @@ static void
 nautilus_properties_window_init (NautilusPropertiesWindow *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
+    self->cancellable = g_cancellable_new ();
 }

@@ -172,6 +172,98 @@ menu_item_activate (NautilusExtensionManager *manager,
     return G_DBUS_METHOD_INVOCATION_HANDLED;
 }
 
+static GVariant *
+get_properties_items_variant (GListModel *items)
+{
+    GVariantBuilder builder;
+
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(ss)"));
+
+    for (guint i = 0; i < g_list_model_get_n_items (items); i++)
+    {
+        g_autoptr (NautilusPropertiesItem) item = g_list_model_get_item (items, i);
+        const char *name = nautilus_properties_item_get_name (item);
+        const char *value = nautilus_properties_item_get_value (item);
+
+        g_variant_builder_add (&builder, "(ss)", g_strdup (name), g_strdup (value));
+    }
+
+    return g_variant_builder_end (&builder);
+}
+
+static void
+properties_items_changed (GListModel *self,
+                          guint       position,
+                          guint       removed,
+                          guint       added,
+                          gpointer    user_data)
+{
+    NautilusExtensionManager *manager = user_data;
+    GVariant *item_variant = get_properties_items_variant (self);
+    const char *timestamp = g_object_get_data (G_OBJECT (self), "timestamp");
+
+    nautilus_extension_manager_emit_properties_changed (manager, timestamp, item_variant);
+}
+
+static gboolean
+properties (NautilusExtensionManager *manager,
+            GDBusMethodInvocation    *invocation,
+            const char * const       *uris,
+            NautilusExtApp           *self)
+{
+    GVariantBuilder builder;
+    g_autolist (GObject) providers = NULL;
+    g_autolist (NautilusPropertiesModel) all_models = NULL;
+    g_autolist (GObject) files = NULL;
+
+    for (guint i = 0; uris[i] != NULL; i++)
+    {
+        files = g_list_prepend (files, nautilus_file_info_new (uris[i]));
+    }
+
+    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTIES_MODEL_PROVIDER);
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("aa{sv}"));
+
+    for (GList *l = providers; l != NULL; l = l->next)
+    {
+        GList *models = nautilus_properties_model_provider_get_models (l->data, files);
+
+        all_models = g_list_concat (all_models, models);
+    }
+
+    for (GList *l = all_models; l != NULL; l = l->next)
+    {
+        const char *title = nautilus_properties_model_get_title (l->data);
+        GListModel *item_model = nautilus_properties_model_get_model (l->data);
+        GVariant *item_variant = get_properties_items_variant (item_model);
+        char *timestamp = g_strdup_printf ("%ld", g_get_monotonic_time ());
+
+        g_hash_table_insert (self->extensions, g_strdup (timestamp), g_object_ref (l->data));
+        g_signal_connect (item_model, "items-changed", G_CALLBACK (properties_items_changed), manager);
+        g_object_set_data_full (G_OBJECT (item_model), "timestamp", timestamp, g_free);
+
+        g_variant_builder_add_parsed (&builder, "{'title': <%s>, 'items': %v, 'timestamp': <%s>}",
+                                      title, item_variant, timestamp);
+    }
+
+    nautilus_extension_manager_complete_properties (manager, invocation, g_variant_builder_end (&builder));
+
+    return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+properties_close (NautilusExtensionManager *manager,
+                  GDBusMethodInvocation    *invocation,
+                  const char               *timestamp,
+                  NautilusExtApp           *self)
+{
+    g_hash_table_remove (self->extensions, timestamp);
+
+    nautilus_extension_manager_complete_properties_close (manager, invocation);
+
+    return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
 
 static void
 get_columns (NautilusExtApp *self)
@@ -215,6 +307,8 @@ dbus_register (GApplication    *application,
     g_signal_connect (app->manager, "handle-background-menu", G_CALLBACK (background_menu), app);
     g_signal_connect (app->manager, "handle-selection-menu", G_CALLBACK (selection_menu), app);
     g_signal_connect (app->manager, "handle-menu-item-activate", G_CALLBACK (menu_item_activate), app);
+    g_signal_connect (app->manager, "handle-properties", G_CALLBACK (properties), app);
+    g_signal_connect (app->manager, "handle-properties-close", G_CALLBACK (properties_close), app);
 
     return TRUE;
 }

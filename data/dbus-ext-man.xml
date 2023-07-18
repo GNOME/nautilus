@@ -4,6 +4,17 @@
 <node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
   <interface name="org.gnome.Nautilus.ExtensionManager">
     <property type="a(ssss)" name="ColumnList" access="read"></property>"
+    <method name="Properties">
+      <arg name="files" direction="in" type="as"></arg>
+      <arg type="aa{sv}" name="property_model" direction="out"></arg>
+    </method>
+    <method name="PropertiesClose">
+      <arg type="s" name="timestamp" direction="in"></arg>
+    </method>
+    <signal name="PropertiesChanged">
+      <arg type="s" name="timestamp" direction="out"></arg>
+      <arg type="a(ss)" name="items" direction="out"></arg>
+    </signal>
     <method name="BackgroundMenu">
       <arg type="s" name="directory_uri" direction="in"></arg>
       <arg type="aa{sv}" name="menu_model" direction="out"></arg>
