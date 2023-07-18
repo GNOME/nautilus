@@ -25,10 +25,11 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include <nautilus-extension.h>
+#include "nautilus-dbus-launcher.h"
+#include "nautilus-ext-man-generated.h"
 #include "nautilus-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
-#include "nautilus-module.h"
 
 static const char *default_column_order[] =
 {
@@ -187,25 +188,34 @@ get_builtin_columns (void)
 static GList *
 get_extension_columns (void)
 {
-    GList *columns;
-    GList *providers;
-    GList *l;
+    GVariant *result;
+    GList *columns = NULL;
+    NautilusExtensionManager *proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
 
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_COLUMN_PROVIDER);
-
-    columns = NULL;
-
-    for (l = providers; l != NULL; l = l->next)
+    if (proxy == NULL)
     {
-        NautilusColumnProvider *provider;
-        GList *provider_columns;
-
-        provider = NAUTILUS_COLUMN_PROVIDER (l->data);
-        provider_columns = nautilus_column_provider_get_columns (provider);
-        columns = g_list_concat (columns, provider_columns);
+        return NULL;
     }
 
-    nautilus_module_extension_list_free (providers);
+    result = nautilus_extension_manager_get_column_list (proxy);
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
+    for (guint i = 0; i < g_variant_n_children (result); i++)
+    {
+        g_autofree char *name = NULL;
+        g_autofree char *attribute = NULL;
+        g_autofree char *label = NULL;
+        g_autofree char *description = NULL;
+        NautilusColumn *col;
+
+        g_variant_get_child (result, i, "(ssss)", &name, &attribute, &label, &description);
+        col = nautilus_column_new (name, attribute, label, description);
+
+        columns = g_list_prepend (columns, col);
+    }
 
     return columns;
 }

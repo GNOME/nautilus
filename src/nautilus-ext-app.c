@@ -20,6 +20,35 @@ G_DECLARE_FINAL_TYPE (NautilusExtApp, nautilus_ext_app, NAUTILUS, EXT_APP, GAppl
 G_DEFINE_FINAL_TYPE (NautilusExtApp, nautilus_ext_app, G_TYPE_APPLICATION)
 
 
+static void
+get_columns (NautilusExtApp *self)
+{
+    GVariantBuilder builder;
+    g_autolist (GObject) providers = NULL;
+
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("a(ssss)"));
+    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_COLUMN_PROVIDER);
+    for (GList *l = providers; l != NULL; l = l->next)
+    {
+        g_autolist (GObject) columns = nautilus_column_provider_get_columns (l->data);
+        for (GList *c = columns; c != NULL; c = c->next)
+        {
+            g_autofree char *name = NULL;
+            g_autofree char *attribute = NULL;
+            g_autofree char *label = NULL;
+            g_autofree char *description = NULL;
+
+            g_object_get (G_OBJECT (c->data),
+                          "name", &name,
+                          "attribute", &attribute,
+                          "label", &label,
+                          "description", &description, NULL);
+            g_variant_builder_add (&builder, "(ssss)", name, attribute, label, description);
+        }
+    }
+    nautilus_extension_manager_set_column_list (self->manager, g_variant_builder_end (&builder));
+}
+
 static gboolean
 dbus_register (GApplication    *application,
                GDBusConnection *connection,
@@ -43,6 +72,8 @@ startup (GApplication *app)
     nautilus_module_setup ();
     extension_list = nautilus_module_get_installed_module_names ();
     nautilus_extension_manager_set_extension_list (self->manager, extension_list);
+
+    get_columns (self);
 
     g_application_hold (app);
 
