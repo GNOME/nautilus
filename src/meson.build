@@ -23,6 +23,7 @@ libnautilus_sources = [
     ]
   ),
   resources,
+  file_info_codegen,
   gnome.gdbus_codegen(
     'nautilus-freedesktop-generated',
     join_paths(
@@ -189,6 +190,8 @@ libnautilus_sources = [
   'nautilus-file-utilities.h',
   'nautilus-file.c',
   'nautilus-file.h',
+  'nautilus-file-impl-manager.c',
+  'nautilus-file-impl-manager.h',
   'nautilus-global-preferences.c',
   'nautilus-global-preferences.h',
   'nautilus-icon-info.c',

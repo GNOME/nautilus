@@ -47,6 +47,7 @@
 #include "nautilus-dbus-manager.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
+#include "nautilus-file-impl-manager.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
@@ -74,6 +75,7 @@ typedef struct
     NautilusProgressPersistenceHandler *progress_handler;
     NautilusDBusManager *dbus_manager;
     NautilusFreedesktopDBus *fdb_manager;
+    NautilusFileImplManager *file_impl_manager;
 
     NautilusBookmarkList *bookmark_list;
 
@@ -1222,6 +1224,12 @@ nautilus_application_dbus_register (GApplication     *app,
 
     priv->fdb_manager = nautilus_freedesktop_dbus_new ();
     if (!nautilus_freedesktop_dbus_register (priv->fdb_manager, connection, error))
+    {
+        return FALSE;
+    }
+
+    priv->file_impl_manager = nautilus_file_impl_manager_new ();
+    if (!nautilus_file_impl_manager_register (priv->file_impl_manager, connection, error))
     {
         return FALSE;
     }

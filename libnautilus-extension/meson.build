@@ -28,9 +28,19 @@ libnautilus_extension_enums = gnome.mkenums_simple(
   ]
 )
 
+file_info_codegen = gnome.gdbus_codegen(
+    'nautilus-file-generated',
+    join_paths(
+      meson.project_source_root(), 'data', 'file-impl.xml'
+    ),
+    interface_prefix: 'org.gnome.Nautilus',
+    namespace: 'Nautilus'
+)
+
 libnautilus_extension_sources = [
   libnautilus_extension_enums,
   libnautilus_extension_headers,
+  file_info_codegen,
   'nautilus-column-provider.c',
   'nautilus-column.c',
   'nautilus-extension.h',

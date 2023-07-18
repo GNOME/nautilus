@@ -1,0 +1,69 @@
+<!DOCTYPE node PUBLIC
+    "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+    "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd" >
+<node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+  <interface name="org.gnome.Nautilus.FileImpl">
+    <method name="IsGone">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="b" name="result" direction="out"></arg>
+    </method>
+    <method name="GetName">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="result" direction="out"></arg>
+    </method>
+    <method name="GetParentUri">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="result" direction="out"></arg>
+    </method>
+    <method name="GetUriScheme">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="result" direction="out"></arg>
+    </method>
+    <method name="GetMimeType">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="result" direction="out"></arg>
+    </method>
+    <method name="HasMount">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="b" name="result" direction="out"></arg>
+    </method>
+    <method name="IsMimeType">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="mime_type" direction="in"></arg>
+      <arg type="b" name="result" direction="out"></arg>
+    </method>
+    <method name="IsDirectory">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="b" name="result" direction="out"></arg>
+    </method>
+    <method name="AddEmblem">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="emblem_name" direction="in"></arg>
+    </method>
+    <method name="GetStringAttribute">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="attribute_name" direction="in"></arg>
+      <arg type="s" name="result" direction="out"></arg>
+    </method>
+    <method name="AddStringAttribute">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="attribute_name" direction="in"></arg>
+      <arg type="s" name="attribute_value" direction="in"></arg>
+    </method>
+    <method name="InvalidateExtensionInfo">
+      <arg type="s" name="uri" direction="in"></arg>
+    </method>
+    <method name="GetActivationUri">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="s" name="result" direction="out"></arg>
+    </method>
+    <method name="GetFileType">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="u" name="result" direction="out"></arg>
+    </method>
+    <method name="CanWrite">
+      <arg type="s" name="uri" direction="in"></arg>
+      <arg type="b" name="result" direction="out"></arg>
+    </method>
+  </interface>
+</node>
