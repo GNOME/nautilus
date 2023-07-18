@@ -391,6 +391,9 @@ char *                  nautilus_file_get_string_attribute_with_default (Nautilu
 									 const char                     *attribute_name);
 char *                  nautilus_file_get_string_attribute_with_default_q (NautilusFile                  *file,
 									 GQuark                          attribute_q);
+void                    nautilus_file_add_string_attribute              (NautilusFile *file,
+                                                                         const char   *attribute_name,
+                                                                         const char   *value);
 
 /* Matching with another URI. */
 gboolean                nautilus_file_matches_uri                       (NautilusFile                   *file,
@@ -456,6 +459,8 @@ GdkPaintable *          nautilus_file_get_icon_paintable                (Nautilu
 									 NautilusFileIconFlags           flags);
 
 GList *                 nautilus_file_get_emblem_icons                  (NautilusFile                   *file);
+void                    nautilus_file_add_emblem                        (NautilusFile *file,
+                                                                         const char   *emblem_name);
 
 /* Whether the file should open inside a view */
 gboolean                nautilus_file_opens_in_view                     (NautilusFile                   *file);
