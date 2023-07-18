@@ -58,6 +58,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
+#include "nautilus-ext-man-generated.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-name-widget-controller.h"
@@ -73,7 +74,6 @@
 #include "nautilus-list-view.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-module.h"
 #include "nautilus-new-folder-dialog-controller.h"
 #include "nautilus-previewer.h"
 #include "nautilus-profile.h"
@@ -231,7 +231,9 @@ typedef struct
     GList *subdirectory_list;
 
     GMenu *selection_menu_model;
+    GMenu *selection_extensions_menu_model;
     GMenu *background_menu_model;
+    GMenu *background_extensions_menu_model;
 
     GtkWidget *selection_menu;
     GtkWidget *background_menu;
@@ -262,7 +264,7 @@ typedef struct
     GMenuModel *scripts_menu;
 
     GCancellable *clipboard_cancellable;
-
+    GCancellable *menu_cancellable;
     GCancellable *starred_cancellable;
 
     gulong name_accepted_handler_id;
@@ -3302,6 +3304,7 @@ nautilus_files_view_dispose (GObject *object)
     NautilusFilesViewPrivate *priv;
     GdkClipboard *clipboard;
     GList *node, *next;
+    NautilusExtensionManager *proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
 
     view = NAUTILUS_FILES_VIEW (object);
     priv = nautilus_files_view_get_instance_private (view);
@@ -3383,6 +3386,7 @@ nautilus_files_view_dispose (GObject *object)
                                           schedule_update_context_menus, view);
     g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
                                           nautilus_files_view_trash_state_changed_callback, view);
+    g_signal_handlers_disconnect_by_func (proxy, schedule_update_context_menus, view);
 
     clipboard = gdk_display_get_clipboard (gdk_display_get_default ());
     g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, view);
@@ -3427,6 +3431,9 @@ nautilus_files_view_finalize (GObject *object)
 
     g_cancellable_cancel (priv->starred_cancellable);
     g_clear_object (&priv->starred_cancellable);
+
+    g_cancellable_cancel (priv->menu_cancellable);
+    g_clear_object (&priv->menu_cancellable);
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
 }
@@ -5011,196 +5018,207 @@ get_menu_icon_for_file (NautilusFile *file,
     return nautilus_file_get_icon_texture (file, 16, scale, 0);
 }
 
-static GList *
-get_extension_selection_menu_items (NautilusFilesView *view)
-{
-    GList *items;
-    GList *providers;
-    GList *l;
-    g_autolist (NautilusFile) selection = NULL;
-
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-    items = NULL;
-
-    for (l = providers; l != NULL; l = l->next)
-    {
-        NautilusMenuProvider *provider;
-        GList *file_items;
-
-        provider = NAUTILUS_MENU_PROVIDER (l->data);
-        file_items = nautilus_menu_provider_get_file_items (provider,
-                                                            selection);
-        items = g_list_concat (items, file_items);
-    }
-
-    nautilus_module_extension_list_free (providers);
-
-    return items;
-}
-
-static GList *
-get_extension_background_menu_items (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-    GList *items;
-    GList *providers;
-    GList *l;
-
-    priv = nautilus_files_view_get_instance_private (view);
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-    items = NULL;
-
-    for (l = providers; l != NULL; l = l->next)
-    {
-        NautilusMenuProvider *provider;
-        NautilusFileInfo *file_info;
-        GList *file_items;
-
-        provider = NAUTILUS_MENU_PROVIDER (l->data);
-        file_info = NAUTILUS_FILE_INFO (priv->directory_as_file);
-        file_items = nautilus_menu_provider_get_background_items (provider,
-                                                                  file_info);
-        items = g_list_concat (items, file_items);
-    }
-
-    nautilus_module_extension_list_free (providers);
-
-    return items;
-}
-
 static void
 extension_action_callback (GSimpleAction *action,
                            GVariant      *state,
                            gpointer       user_data)
 {
-    NautilusMenuItem *item = user_data;
-    nautilus_menu_item_activate (item);
+    NautilusFilesView *view = user_data;
+    NautilusExtensionManager *proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    const char *name = g_action_get_name (G_ACTION (action));
+
+    if (proxy != NULL)
+    {
+        nautilus_extension_manager_call_menu_item_activate (proxy, name,
+                                                            priv->menu_cancellable,
+                                                            NULL, NULL);
+    }
 }
 
 static void
 add_extension_action (NautilusFilesView *view,
-                      NautilusMenuItem  *item,
-                      const char        *action_name)
+                      const char        *action_name,
+                      gboolean           sensitive)
 {
     NautilusFilesViewPrivate *priv;
-    gboolean sensitive;
-    GSimpleAction *action;
+    g_autoptr (GSimpleAction) action = g_simple_action_new (action_name, NULL);
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    g_object_get (item,
-                  "sensitive", &sensitive,
-                  NULL);
+    g_signal_connect (action, "activate", G_CALLBACK (extension_action_callback), view);
 
-    action = g_simple_action_new (action_name, NULL);
-    g_signal_connect_data (action, "activate",
-                           G_CALLBACK (extension_action_callback),
-                           g_object_ref (item),
-                           (GClosureNotify) g_object_unref, 0);
-
-    g_action_map_add_action (G_ACTION_MAP (priv->view_action_group),
-                             G_ACTION (action));
+    g_action_map_add_action (G_ACTION_MAP (priv->view_action_group), G_ACTION (action));
     g_simple_action_set_enabled (action, sensitive);
-
-    g_object_unref (action);
 }
 
 static GMenuModel *
-build_menu_for_extension_menu_items (NautilusFilesView *view,
-                                     const gchar       *extension_prefix,
-                                     GList             *menu_items)
+get_menu_from_variant (NautilusFilesView *view,
+                       GVariant          *variant)
 {
-    GList *l;
-    GMenu *gmenu;
-    gint idx = 0;
+    GMenu *menu = g_menu_new ();
 
-    gmenu = g_menu_new ();
-
-    for (l = menu_items; l; l = l->next)
+    if (variant == NULL)
     {
-        NautilusMenuItem *item;
-        NautilusMenu *menu;
-        GMenuItem *menu_item;
-        char *name, *label;
-        g_autofree gchar *escaped_name = NULL;
-        char *extension_id, *detailed_action_name;
-
-        item = NAUTILUS_MENU_ITEM (l->data);
-
-        g_object_get (item,
-                      "label", &label,
-                      "menu", &menu,
-                      "name", &name,
-                      NULL);
-
-        escaped_name = g_uri_escape_string (name, NULL, TRUE);
-        extension_id = g_strdup_printf ("extension_%s_%d_%s",
-                                        extension_prefix, idx, escaped_name);
-        add_extension_action (view, item, extension_id);
-
-        detailed_action_name = g_strconcat ("view.", extension_id, NULL);
-        menu_item = g_menu_item_new (label, detailed_action_name);
-
-        if (menu != NULL)
-        {
-            GList *children;
-            g_autoptr (GMenuModel) children_menu = NULL;
-
-            children = nautilus_menu_get_items (menu);
-            children_menu = build_menu_for_extension_menu_items (view, extension_id, children);
-            g_menu_item_set_submenu (menu_item, children_menu);
-
-            nautilus_menu_item_list_free (children);
-        }
-
-        g_menu_append_item (gmenu, menu_item);
-        idx++;
-
-        g_free (extension_id);
-        g_free (detailed_action_name);
-        g_free (name);
-        g_free (label);
-        g_object_unref (menu_item);
+        return G_MENU_MODEL (menu);
     }
 
-    return G_MENU_MODEL (gmenu);
+    for (guint i = 0; i < g_variant_n_children (variant); i++)
+    {
+        GVariant *child = g_variant_get_child_value (variant, i);
+        GVariantDict *vardict = g_variant_dict_new (child);
+        GMenuItem *item;
+        gboolean sensitive;
+        g_autofree char *label = NULL;
+        g_autofree char *extension_id = NULL;
+        g_autofree char *detailed_action_name = NULL;
+
+        g_variant_dict_lookup (vardict, "label", "s", &label);
+        g_variant_dict_lookup (vardict, "sensitive", "b", &sensitive);
+        g_variant_dict_lookup (vardict, "id", "s", &extension_id);
+
+        detailed_action_name = g_strconcat ("view.", extension_id, NULL);
+        item = g_menu_item_new (label, detailed_action_name);
+        add_extension_action (view, extension_id, sensitive);
+
+        if (g_variant_dict_contains (vardict, "menu"))
+        {
+            g_autoptr (GMenuModel) submenu = NULL;
+            g_autoptr (GVariant) submenu_variant = NULL;
+
+            submenu_variant = g_variant_dict_lookup_value (vardict, "menu", G_VARIANT_TYPE_ARRAY);
+            submenu = get_menu_from_variant (view, submenu_variant);
+            g_menu_item_set_submenu (item, submenu);
+        }
+
+        g_menu_append_item (menu, item);
+    }
+
+    return G_MENU_MODEL (menu);
 }
 
 static void
-update_extensions_menus (NautilusFilesView *view,
-                         GtkBuilder        *builder)
+selection_cb (GObject      *object,
+              GAsyncResult *res,
+              gpointer      user_data)
 {
-    GList *selection_items, *background_items;
-    GObject *object;
-    g_autoptr (GMenuModel) background_menu = NULL;
-    g_autoptr (GMenuModel) selection_menu = NULL;
+    NautilusExtensionManager *man = NAUTILUS_EXTENSION_MANAGER (object);
+    g_autoptr (GError) error = NULL;
+    GVariant *results;
+    NautilusFilesView *view = user_data;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
-    selection_items = get_extension_selection_menu_items (view);
-    if (selection_items != NULL)
+    nautilus_extension_manager_call_selection_menu_finish (man, &results, res, &error);
+
+    if(error != NULL)
     {
-        selection_menu = build_menu_for_extension_menu_items (view, "extensions",
-                                                              selection_items);
+        if (error->code != G_IO_ERROR_CANCELLED)
+        {
+            g_warning ("Selection extension menu error: %s", error->message);
+        }
 
-        object = gtk_builder_get_object (builder, "selection-extensions-section");
-        nautilus_gmenu_set_from_model (G_MENU (object), selection_menu);
-
-        nautilus_menu_item_list_free (selection_items);
+        return;
     }
 
-    background_items = get_extension_background_menu_items (view);
-    if (background_items != NULL)
+    if (g_variant_n_children (results) > 0)
     {
-        background_menu = build_menu_for_extension_menu_items (view, "extensions",
-                                                               background_items);
+        g_autoptr (GMenuModel) selection_menu = get_menu_from_variant (view, results);
 
-        object = gtk_builder_get_object (builder, "background-extensions-section");
-        nautilus_gmenu_set_from_model (G_MENU (object), background_menu);
+        nautilus_gmenu_set_from_model (priv->selection_extensions_menu_model, selection_menu);
+    }
+}
 
-        nautilus_menu_item_list_free (background_items);
+static void
+update_extension_selection_menu_items (NautilusFilesView *view)
+{
+    NautilusExtensionManager *proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
+    g_autolist (NautilusFile) selection = NULL;
+    g_autoptr (GStrvBuilder) builder = g_strv_builder_new ();
+    g_auto (GStrv) uris = NULL;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    for (GList *l = selection; l != NULL; l = l->next)
+    {
+        g_autofree char *uri = nautilus_file_get_uri (l->data);
+        g_strv_builder_add (builder, uri);
+    }
+
+    uris = g_strv_builder_end (builder);
+
+    if (proxy == NULL)
+    {
+        return;
+    }
+
+    nautilus_extension_manager_call_selection_menu (proxy,
+                                                    (const char * const *) uris,
+                                                    priv->menu_cancellable,
+                                                    selection_cb, view);
+}
+
+static void
+background_cb (GObject      *object,
+               GAsyncResult *res,
+               gpointer      user_data)
+{
+    NautilusExtensionManager *man = NAUTILUS_EXTENSION_MANAGER (object);
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GMenuModel) background_menu = NULL;
+    GVariant *results;
+    NautilusFilesView *view = user_data;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    nautilus_extension_manager_call_background_menu_finish (man, &results, res, &error);
+
+    if (error != NULL)
+    {
+        if (error->code != G_IO_ERROR_CANCELLED)
+        {
+            g_warning ("Background extension menu error: %s", error->message);
+        }
+
+        return;
+    }
+
+    if (g_variant_n_children (results) > 0)
+    {
+        background_menu = get_menu_from_variant (view, results);
+        nautilus_gmenu_set_from_model (priv->background_extensions_menu_model, background_menu);
     }
 
     nautilus_view_set_extensions_background_menu (NAUTILUS_VIEW (view), background_menu);
+}
+
+static void
+update_extension_background_menu_items (NautilusFilesView *view)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    g_autofree char *uri = nautilus_file_get_uri (priv->directory_as_file);
+    NautilusExtensionManager *proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
+
+    if (proxy == NULL)
+    {
+        return;
+    }
+
+    nautilus_extension_manager_call_background_menu (proxy,
+                                                     uri,
+                                                     priv->menu_cancellable,
+                                                     background_cb, view);
+}
+
+static void
+update_extensions_menus (NautilusFilesView *view)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    g_cancellable_cancel (priv->menu_cancellable);
+    g_clear_object (&priv->menu_cancellable);
+    priv->menu_cancellable = g_cancellable_new ();
+
+    update_extension_selection_menu_items (view);
+    update_extension_background_menu_items (view);
 }
 
 static char *
@@ -8306,6 +8324,8 @@ real_update_context_menus (NautilusFilesView *view)
 
     g_clear_object (&priv->background_menu_model);
     g_clear_object (&priv->selection_menu_model);
+    g_clear_object (&priv->background_extensions_menu_model);
+    g_clear_object (&priv->selection_extensions_menu_model);
 
     object = gtk_builder_get_object (builder, "background-menu");
     priv->background_menu_model = g_object_ref (G_MENU (object));
@@ -8313,9 +8333,15 @@ real_update_context_menus (NautilusFilesView *view)
     object = gtk_builder_get_object (builder, "selection-menu");
     priv->selection_menu_model = g_object_ref (G_MENU (object));
 
+    object = gtk_builder_get_object (builder, "background-extensions-section");
+    priv->background_extensions_menu_model = g_object_ref (G_MENU (object));
+
+    object = gtk_builder_get_object (builder, "selection-extensions-section");
+    priv->selection_extensions_menu_model = g_object_ref (G_MENU (object));
+
     update_selection_menu (view, builder);
     update_background_menu (view, builder);
-    update_extensions_menus (view, builder);
+    update_extensions_menus (view);
 
     nautilus_files_view_update_actions_state (view);
 }
@@ -9653,6 +9679,7 @@ static void
 nautilus_files_view_init (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
+    NautilusExtensionManager *proxy = nautilus_dbus_launcher_get_ext_man_proxy ();
     GtkBuilder *builder;
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
@@ -9765,8 +9792,11 @@ nautilus_files_view_init (NautilusFilesView *view)
                       G_CALLBACK (on_clipboard_owner_changed), view);
 
     /* Register to menu provider extension signal managing menu updates */
-    g_signal_connect_object (nautilus_signaller_get_current (), "popup-menu-changed",
-                             G_CALLBACK (schedule_update_context_menus), view, G_CONNECT_SWAPPED);
+    if (proxy != NULL)
+    {
+        g_signal_connect_swapped (proxy, "menu-items-updated",
+                                  G_CALLBACK (schedule_update_context_menus), view);
+    }
 
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,

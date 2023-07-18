@@ -4,5 +4,18 @@
 <node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
   <interface name="org.gnome.Nautilus.ExtensionManager">
     <property type="a(ssss)" name="ColumnList" access="read"></property>"
+    <method name="BackgroundMenu">
+      <arg type="s" name="directory_uri" direction="in"></arg>
+      <arg type="aa{sv}" name="menu_model" direction="out"></arg>
+    </method>
+    <method name="SelectionMenu">
+      <arg type="as" name="file_uris" direction="in"></arg>
+      <arg type="aa{sv}" name="menu_model" direction="out"></arg>
+    </method>
+    <signal name="MenuItemsUpdated">
+    </signal>
+    <method name="MenuItemActivate">
+      <arg type="s" name="action_name" direction="in"></arg>
+    </method>
   </interface>
 </node>

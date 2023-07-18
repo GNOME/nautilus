@@ -55,7 +55,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-module.h"
 #include "nautilus-preferences-window.h"
 #include "nautilus-previewer.h"
 #include "nautilus-profile.h"
@@ -211,35 +210,6 @@ check_required_directories (NautilusApplication *self)
     nautilus_profile_end (NULL);
 
     return ret;
-}
-
-static void
-menu_provider_items_updated_handler (NautilusMenuProvider *provider,
-                                     GtkWidget            *parent_window,
-                                     gpointer              data)
-{
-    g_signal_emit_by_name (nautilus_signaller_get_current (),
-                           "popup-menu-changed");
-}
-
-static void
-menu_provider_init_callback (void)
-{
-    GList *providers;
-    GList *l;
-
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
-
-    for (l = providers; l != NULL; l = l->next)
-    {
-        NautilusMenuProvider *provider = NAUTILUS_MENU_PROVIDER (l->data);
-
-        g_signal_connect_after (G_OBJECT (provider), "items-updated",
-                                (GCallback) menu_provider_items_updated_handler,
-                                NULL);
-    }
-
-    nautilus_module_extension_list_free (providers);
 }
 
 NautilusWindow *
@@ -1171,9 +1141,6 @@ nautilus_application_startup (GApplication *app)
 
     /* initialize preferences and create the global GSettings objects */
     nautilus_global_preferences_init ();
-
-    /* attach menu-provider module callback */
-    menu_provider_init_callback ();
 
     /* Initialize the UI handler singleton for file operations */
     priv->progress_handler = nautilus_progress_persistence_handler_new (G_OBJECT (self));

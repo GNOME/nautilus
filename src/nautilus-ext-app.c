@@ -9,6 +9,9 @@
 struct _NautilusExtApp
 {
     GApplication parent;
+
+    GHashTable *extensions;
+
     NautilusExtensionManager *manager;
 
     guint export_id;
@@ -18,6 +21,156 @@ struct _NautilusExtApp
 G_DECLARE_FINAL_TYPE (NautilusExtApp, nautilus_ext_app, NAUTILUS, EXT_APP, GApplication)
 
 G_DEFINE_FINAL_TYPE (NautilusExtApp, nautilus_ext_app, G_TYPE_APPLICATION)
+
+
+static char *
+get_extension_id (NautilusExtApp   *self,
+                  NautilusMenuItem *item,
+                  const char       *extension_prefix,
+                  guint             idx)
+{
+    g_autofree char *name = NULL;
+    g_autofree char *escaped_name = NULL;
+    char *extension_id = NULL;
+
+    g_object_get (G_OBJECT (item), "name", &name, NULL);
+    escaped_name = g_uri_escape_string (name, NULL, TRUE);
+
+    extension_id = g_strdup_printf ("extension_%s_%d_%s",
+                                    extension_prefix, idx, escaped_name);
+    g_hash_table_replace (self->extensions, g_strdup (extension_id), g_object_ref (item));
+
+    return extension_id;
+}
+
+static GVariant *
+menu_items_to_variant (NautilusExtApp *self,
+                       GList          *list,
+                       const char     *extension_prefix)
+{
+    guint idx = 0;
+    GVariantBuilder builder;
+
+    g_variant_builder_init (&builder, G_VARIANT_TYPE ("aa{sv}"));
+
+    for (GList *l = list; l != NULL; l = l->next)
+    {
+        char *label;
+        gboolean sensitive;
+        NautilusMenuItem *item = l->data;
+        NautilusMenu *menu;
+        g_autofree char * extension_id = NULL;
+
+        g_object_get (item,
+                      "label", &label,
+                      "sensitive", &sensitive,
+                      "menu", &menu, NULL);
+
+        extension_id = get_extension_id (self, item, extension_prefix, idx);
+
+        if (menu == NULL)
+        {
+            g_variant_builder_add_parsed (&builder,
+                                          "{'label': <%s>, 'sensitive': <%b>, 'id': <%s>}",
+                                          label, sensitive, extension_id);
+        }
+        else
+        {
+            GVariant *variant_menu;
+            g_autolist (GObject) menu_items = nautilus_menu_get_items (menu);
+
+            variant_menu = menu_items_to_variant (self, menu_items, extension_prefix);
+            g_variant_builder_add_parsed (&builder,
+                                          "{'label': <%s>, 'sensitive': <%b>, 'id': <%s>, 'menu': %v}",
+                                          label, sensitive, extension_id, variant_menu);
+        }
+
+        idx++;
+    }
+
+    return g_variant_builder_end (&builder);
+}
+
+static gboolean
+background_menu (NautilusExtensionManager *manager,
+                 GDBusMethodInvocation    *invocation,
+                 const char               *directory_uri,
+                 NautilusExtApp           *self)
+{
+    g_autolist (GObject) providers = NULL;
+    g_autoptr (NautilusFileInfo) file = nautilus_file_info_new (directory_uri);
+    g_autolist (GObject) all_items = NULL;
+    GVariant *result;
+
+    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+
+    for (GList *l = providers; l != NULL; l = l->next)
+    {
+        GList *items = nautilus_menu_provider_get_background_items (l->data, file);
+
+        g_signal_connect_object (l->data, "items-updated",
+                                 G_CALLBACK (nautilus_extension_manager_emit_menu_items_updated),
+                                 self->manager, G_CONNECT_SWAPPED);
+        all_items = g_list_concat (all_items, items);
+    }
+
+    result = menu_items_to_variant (self, all_items, "background");
+
+    nautilus_extension_manager_complete_background_menu (manager, invocation, result);
+
+    return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+selection_menu (NautilusExtensionManager *manager,
+                GDBusMethodInvocation    *invocation,
+                const char              **file_uris,
+                NautilusExtApp           *self)
+{
+    g_autolist (GObject) providers = NULL;
+    g_autolist (NautilusFileInfo) files = NULL;
+    g_autolist (GObject) all_items = NULL;
+    GVariant *result;
+
+    for (guint i = 0; file_uris[i] != NULL; i++)
+    {
+        files = g_list_prepend (files, nautilus_file_info_new (file_uris[i]));
+    }
+
+    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_MENU_PROVIDER);
+
+    for (GList *l = providers; l != NULL; l = l->next)
+    {
+        GList *items = nautilus_menu_provider_get_file_items (l->data, files);
+
+        g_signal_connect_object (l->data, "items-updated",
+                                 G_CALLBACK (nautilus_extension_manager_emit_menu_items_updated),
+                                 self->manager, G_CONNECT_SWAPPED);
+        all_items = g_list_concat (all_items, items);
+    }
+
+    result = menu_items_to_variant (self, all_items, "selection");
+
+    nautilus_extension_manager_complete_selection_menu (manager, invocation, result);
+
+    return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static gboolean
+menu_item_activate (NautilusExtensionManager *manager,
+                    GDBusMethodInvocation    *invocation,
+                    const char               *action_name,
+                    NautilusExtApp           *self)
+{
+    NautilusMenuItem *item;
+
+    item = g_hash_table_lookup (self->extensions, action_name);
+    nautilus_menu_item_activate (item);
+
+    nautilus_extension_manager_complete_menu_item_activate (manager, invocation);
+
+    return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
 
 
 static void
@@ -59,6 +212,9 @@ dbus_register (GApplication    *application,
 
     app->manager = nautilus_extension_manager_skeleton_new ();
     g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (app->manager), connection, object_path, NULL);
+    g_signal_connect (app->manager, "handle-background-menu", G_CALLBACK (background_menu), app);
+    g_signal_connect (app->manager, "handle-selection-menu", G_CALLBACK (selection_menu), app);
+    g_signal_connect (app->manager, "handle-menu-item-activate", G_CALLBACK (menu_item_activate), app);
 
     return TRUE;
 }
@@ -81,18 +237,29 @@ startup (GApplication *app)
 }
 
 static void
+nautilus_ext_app_dispose (GObject *object)
+{
+    NautilusExtApp *self = NAUTILUS_EXT_APP (object);
+
+    g_clear_pointer (&self->extensions, g_hash_table_destroy);
+}
+
+static void
 nautilus_ext_app_class_init (NautilusExtAppClass *klass)
 {
     GApplicationClass *app_class = G_APPLICATION_CLASS (klass);
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     app_class->dbus_register = dbus_register;
     app_class->startup = startup;
 
+    object_class->dispose = nautilus_ext_app_dispose;
 }
 
 static void
 nautilus_ext_app_init (NautilusExtApp *self)
 {
+    self->extensions = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 }
 
 int
