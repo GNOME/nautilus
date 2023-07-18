@@ -8,6 +8,13 @@ resources = gnome.compile_resources(
   extra_args: '--manual-register'
 )
 
+ext_man_codegen = gnome.gdbus_codegen(
+    'nautilus-ext-man-generated',
+    sources: join_paths(meson.project_source_root(), 'data', 'dbus-ext-man.xml'),
+    interface_prefix: 'org.gnome.Nautilus',
+    namespace: 'Nautilus'
+)
+
 libnautilus_sources = [
   gnome.mkenums(
     'nautilus-enum-types',
@@ -23,6 +30,7 @@ libnautilus_sources = [
     ]
   ),
   resources,
+  ext_man_codegen,
   file_info_codegen,
   gnome.gdbus_codegen(
     'nautilus-freedesktop-generated',
@@ -341,5 +349,26 @@ executable(
     gtk,
     libadwaita,
   ],
+  install: true
+)
+
+ext_man_sources = [
+  'nautilus-ext-app.c',
+  'nautilus-module.c',
+  'nautilus-module.h',
+  ext_man_codegen,
+]
+
+executable(
+  'nautilus-ext-app',
+  ext_man_sources,
+  include_directories: nautilus_include_dirs,
+  dependencies: [
+    config_h,
+    gio,
+    gmodule,
+    nautilus_extension,
+  ],
+  install_dir: libexecdir,
   install: true
 )

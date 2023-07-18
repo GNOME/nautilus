@@ -22,6 +22,7 @@ datadir = get_option('datadir')
 desktopdir = join_paths(datadir, 'applications')
 includedir = get_option('includedir')
 libdir = get_option('libdir')
+libexecdir = join_paths(get_option('prefix'), get_option('libexecdir'))
 localedir = get_option('localedir')
 docdir = datadir / 'doc'
 extensiondir = join_paths(libdir, 'nautilus', 'extensions-' + nautilus_extension_version)
