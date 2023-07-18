@@ -18,14 +18,27 @@
  *
  */
 
+#include "config.h"
+
+#include <gio/gio.h>
+#include <glib.h>
+
 #include "nautilus-file-info.h"
+
+#include "nautilus-file-generated.h"
+
+struct _NautilusFileInfo {
+    GObject parent;
+
+    char *uri;
+};
+
+G_DEFINE_TYPE (NautilusFileInfo, nautilus_file_info, G_TYPE_OBJECT)
 
 #include "nautilus-extension-private.h"
 
-G_DEFINE_INTERFACE (NautilusFileInfo, nautilus_file_info, G_TYPE_OBJECT)
+static NautilusFileImpl *proxy = NULL;
 
-NautilusFileInfo * (*nautilus_file_info_getter)(GFile   *location,
-                                                gboolean create);
 
 GList *
 nautilus_file_info_list_copy (GList *files)
@@ -45,262 +58,257 @@ nautilus_file_info_list_copy (GList *files)
 void
 nautilus_file_info_list_free (GList *files)
 {
-    GList *l;
-
-    for (l = files; l != NULL; l = l->next)
-    {
-        g_object_unref (G_OBJECT (l->data));
-    }
-
-    g_list_free (files);
-}
-
-static void
-nautilus_file_info_default_init (NautilusFileInfoInterface *klass)
-{
+    g_list_free_full (files, g_object_unref);
 }
 
 gboolean
 nautilus_file_info_is_gone (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    gboolean result;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), FALSE);
+    nautilus_file_impl_call_is_gone_sync (proxy, self->uri, &result, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return FALSE;
+    }
 
-    g_return_val_if_fail (iface->is_gone != NULL, FALSE);
-
-    return iface->is_gone (self);
+    return result;
 }
 
 GFileType
 nautilus_file_info_get_file_type (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    GFileType file_type;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), G_FILE_TYPE_UNKNOWN);
+    nautilus_file_impl_call_get_file_type_sync (proxy, self->uri, &file_type, NULL, &error);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return G_FILE_TYPE_UNKNOWN;
+    }
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_val_if_fail (iface->get_file_type != NULL, G_FILE_TYPE_UNKNOWN);
-
-    return iface->get_file_type (self);
+    return file_type;
 }
 
 char *
 nautilus_file_info_get_name (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    char *name;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
+    nautilus_file_impl_call_get_name_sync (proxy, self->uri, &name, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return NULL;
+    }
 
-    g_return_val_if_fail (iface->get_name != NULL, NULL);
-
-    return iface->get_name (self);
+    return name;
 }
 
 GFile *
 nautilus_file_info_get_location (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
-
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_val_if_fail (iface->get_location != NULL, NULL);
-
-    return iface->get_location (self);
+    return g_file_new_for_uri (self->uri);
 }
+
 char *
 nautilus_file_info_get_uri (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
-
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_val_if_fail (iface->get_uri != NULL, NULL);
-
-    return iface->get_uri (self);
+    return g_strdup (self->uri);
 }
 
 char *
 nautilus_file_info_get_activation_uri (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    char *activation_uri;
+    nautilus_file_impl_call_get_activation_uri_sync (proxy, self->uri, &activation_uri, NULL, &error);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return NULL;
+    }
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
-
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_val_if_fail (iface->get_activation_uri != NULL, NULL);
-
-    return iface->get_activation_uri (self);
-}
-
-GFile *
-nautilus_file_info_get_parent_location (NautilusFileInfo *self)
-{
-    NautilusFileInfoInterface *iface;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
-
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_val_if_fail (iface->get_parent_location != NULL, NULL);
-
-    return iface->get_parent_location (self);
+    return activation_uri;
 }
 
 char *
 nautilus_file_info_get_parent_uri (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    char *parent_uri;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
+    nautilus_file_impl_call_get_parent_uri_sync (proxy, self->uri, &parent_uri, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return NULL;
+    }
 
-    g_return_val_if_fail (iface->get_parent_uri != NULL, NULL);
+    return parent_uri;
+}
 
-    return iface->get_parent_uri (self);
+GFile *
+nautilus_file_info_get_parent_location (NautilusFileInfo *self)
+{
+    g_autofree char *parent_uri = nautilus_file_info_get_parent_uri (self);
+
+    return g_file_new_for_uri (parent_uri);
 }
 
 NautilusFileInfo *
 nautilus_file_info_get_parent_info (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autofree char *parent_uri = nautilus_file_info_get_parent_uri (self);
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
-
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_val_if_fail (iface->get_parent_info != NULL, NULL);
-
-    return iface->get_parent_info (self);
+    return nautilus_file_info_new (parent_uri);
 }
 
 GMount *
 nautilus_file_info_get_mount (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFile) location = g_file_new_for_uri (self->uri);
+    gboolean has_mount;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
+    nautilus_file_impl_call_has_mount_sync (proxy, self->uri, &has_mount, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return NULL;
+    }
 
-    g_return_val_if_fail (iface->get_mount != NULL, NULL);
+    if (has_mount)
+    {
+        return g_file_find_enclosing_mount (location, NULL, NULL);
+    }
 
-    return iface->get_mount (self);
+    return NULL;
 }
 
 char *
 nautilus_file_info_get_uri_scheme (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    char *uri_scheme;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
+    nautilus_file_impl_call_get_uri_scheme_sync (proxy, self->uri, &uri_scheme, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return NULL;
+    }
 
-    g_return_val_if_fail (iface->get_uri_scheme != NULL, NULL);
-
-    return iface->get_uri_scheme (self);
+    return uri_scheme;
 }
 
 char *
 nautilus_file_info_get_mime_type (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    char *mime_type;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
+    nautilus_file_impl_call_get_mime_type_sync (proxy, self->uri, &mime_type, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return NULL;
+    }
 
-    g_return_val_if_fail (iface->get_mime_type != NULL, NULL);
-
-    return iface->get_mime_type (self);
+    return mime_type;
 }
 
 gboolean
 nautilus_file_info_is_mime_type (NautilusFileInfo *self,
                                  const char       *mime_type)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    gboolean result;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), FALSE);
-    g_return_val_if_fail (mime_type != NULL, FALSE);
+    nautilus_file_impl_call_is_mime_type_sync (proxy, self->uri, mime_type, &result, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return FALSE;
+    }
 
-    g_return_val_if_fail (iface->is_mime_type != NULL, FALSE);
-
-    return iface->is_mime_type (self, mime_type);
+    return result;
 }
 
 gboolean
 nautilus_file_info_is_directory (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    gboolean result;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), FALSE);
+    nautilus_file_impl_call_is_directory_sync (proxy, self->uri, &result, NULL, &error);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return FALSE;
+    }
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_val_if_fail (iface->is_directory != NULL, FALSE);
-
-    return iface->is_directory (self);
+    return result;
 }
 
 gboolean
 nautilus_file_info_can_write (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    gboolean result;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), FALSE);
+    nautilus_file_impl_call_can_write_sync (proxy, self->uri, &result, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return FALSE;
+    }
 
-    g_return_val_if_fail (iface->can_write != NULL, FALSE);
-
-    return iface->can_write (self);
+    return result;
 }
 
 void
 nautilus_file_info_add_emblem (NautilusFileInfo *self,
                                const char       *emblem_name)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
 
-    g_return_if_fail (NAUTILUS_IS_FILE_INFO (self));
-    g_return_if_fail (emblem_name != NULL && emblem_name[0] != '\0');
+    nautilus_file_impl_call_add_emblem_sync (proxy, self->uri, emblem_name, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_if_fail (iface->add_emblem != NULL);
-
-    iface->add_emblem (self, emblem_name);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+    }
 }
 
 char *
 nautilus_file_info_get_string_attribute (NautilusFileInfo *self,
                                          const char       *attribute_name)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
+    char *string_attribute;
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (self), NULL);
-    g_return_val_if_fail (attribute_name != NULL, NULL);
+    nautilus_file_impl_call_get_string_attribute_sync (proxy, self->uri, attribute_name, &string_attribute, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+        return NULL;
+    }
 
-    g_return_val_if_fail (iface->get_string_attribute != NULL, NULL);
-
-    return iface->get_string_attribute (self, attribute_name);
+    return string_attribute;
 }
 
 void
@@ -308,69 +316,83 @@ nautilus_file_info_add_string_attribute (NautilusFileInfo *self,
                                          const char       *attribute_name,
                                          const char       *value)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
 
-    g_return_if_fail (NAUTILUS_IS_FILE_INFO (self));
-    g_return_if_fail (attribute_name != NULL);
-    g_return_if_fail (value != NULL);
+    nautilus_file_impl_call_add_string_attribute_sync (proxy, self->uri, attribute_name, value, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_if_fail (iface->add_string_attribute != NULL);
-
-    iface->add_string_attribute (self, attribute_name, value);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+    }
 }
 
 void
 nautilus_file_info_invalidate_extension_info (NautilusFileInfo *self)
 {
-    NautilusFileInfoInterface *iface;
+    g_autoptr (GError) error = NULL;
 
-    g_return_if_fail (NAUTILUS_IS_FILE_INFO (self));
+    nautilus_file_impl_call_invalidate_extension_info_sync (proxy, self->uri, NULL, &error);
 
-    iface = NAUTILUS_FILE_INFO_GET_IFACE (self);
-
-    g_return_if_fail (iface->invalidate_extension_info != NULL);
-
-    iface->invalidate_extension_info (self);
+    if (error != NULL)
+    {
+        g_warning ("Error calling FileImpl: %s", error->message);
+    }
 }
 
 NautilusFileInfo *
 nautilus_file_info_lookup (GFile *location)
 {
-    g_return_val_if_fail (G_IS_FILE (location), NULL);
-
-    return nautilus_file_info_getter (location, FALSE);
+    return nautilus_file_info_create (location);
 }
 
 NautilusFileInfo *
 nautilus_file_info_create (GFile *location)
 {
-    g_return_val_if_fail (G_IS_FILE (location), NULL);
+    g_autofree char *uri = g_file_get_uri (location);
 
-    return nautilus_file_info_getter (location, TRUE);
+    return nautilus_file_info_new (uri);
 }
 
 NautilusFileInfo *
 nautilus_file_info_lookup_for_uri (const char *uri)
 {
-    g_autoptr (GFile) location = NULL;
-
-    g_return_val_if_fail (uri != NULL, NULL);
-
-    location = g_file_new_for_uri (uri);
-
-    return nautilus_file_info_lookup (location);
+    return nautilus_file_info_new (uri);
 }
 
 NautilusFileInfo *
 nautilus_file_info_create_for_uri (const char *uri)
 {
-    g_autoptr (GFile) location = NULL;
+    return nautilus_file_info_new (uri);
+}
 
-    g_return_val_if_fail (uri != NULL, NULL);
+NautilusFileInfo *
+nautilus_file_info_new (const char *uri)
+{
+    NautilusFileInfo *file_info = g_object_new (NAUTILUS_TYPE_FILE_INFO, NULL);
 
-    location = g_file_new_for_uri (uri);
+    file_info->uri = g_strdup (uri);
 
-    return nautilus_file_info_create (location);
+    return file_info;
+}
+
+static void
+nautilus_file_info_class_init (NautilusFileInfoClass *klass)
+{
+    GError *error = NULL;
+
+    proxy = nautilus_file_impl_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                                       G_DBUS_PROXY_FLAGS_NONE,
+                                                       "org.gnome.Nautilus" PROFILE,
+                                                       "/org/gnome/Nautilus" PROFILE "/FileImpl",
+                                                       NULL, &error);
+    if (error != NULL)
+    {
+        g_warning ("Error retrieving file impl proxy: %s", error->message);
+    }
+}
+
+static void
+nautilus_file_info_init (NautilusFileInfo *self)
+{
+
 }
