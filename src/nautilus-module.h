@@ -30,6 +30,7 @@ void   nautilus_module_setup                   (void);
 GList *nautilus_module_get_extensions_for_type (GType  type);
 void   nautilus_module_extension_list_free     (GList *list);
 gchar *nautilus_module_get_installed_module_names (void);
+void   free_module_objects                        (void);
 
 
 /* Add a type to the module interface - allows nautilus to add its own modules

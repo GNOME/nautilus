@@ -277,7 +277,6 @@ nautilus_deps = [
   config_h,
   eel_2,
   gio_unix,
-  gmodule,
   gnome_autoar,
   gnome_desktop,
   libadwaita,

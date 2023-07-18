@@ -1172,11 +1172,6 @@ nautilus_application_startup (GApplication *app)
     /* initialize preferences and create the global GSettings objects */
     nautilus_global_preferences_init ();
 
-    /* initialize nautilus modules */
-    nautilus_profile_start ("Modules");
-    nautilus_module_setup ();
-    nautilus_profile_end ("Modules");
-
     /* attach menu-provider module callback */
     menu_provider_init_callback ();
 
