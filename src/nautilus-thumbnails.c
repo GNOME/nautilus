@@ -167,8 +167,18 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
     if (thumbnails_to_make_hash)
     {
         node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
+        if (node == NULL)
+        {
+            return;
+        }
 
-        if (node && node->data != currently_thumbnailing)
+        if (node->data == currently_thumbnailing)
+        {
+            NautilusThumbnailInfo *info = node->data;
+
+            g_cancellable_cancel (info->cancellable);
+        }
+        else
         {
             g_hash_table_remove (thumbnails_to_make_hash, file_uri);
             free_thumbnail_info (node->data);
@@ -463,6 +473,15 @@ thumbnail_generated_cb (GObject      *source_object,
     pixbuf = gnome_desktop_thumbnail_factory_generate_thumbnail_finish (thumbnail_factory,
                                                                         result,
                                                                         &error);
+
+    if (g_cancellable_is_cancelled (info->cancellable))
+    {
+        DEBUG ("(Thumbnail Async Thread) Cancelled thumbnail: %s\n",
+               info->image_uri);
+
+        thumbnail_finalize (info);
+        return;
+    }
 
     if (pixbuf != NULL)
     {
