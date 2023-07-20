@@ -226,36 +226,22 @@ get_common_prefix_length (char *str_a,
 }
 
 char *
-nautilus_filename_get_common_prefix (GList *strs,
+nautilus_filename_get_common_prefix (char **strv,
                                      int    min_required_len)
 {
-    GList *l;
     g_autofree char *common_part = NULL;
-    char *name;
     char *truncated;
     int matching_chars;
 
-    if (strs == NULL)
+    if (strv == NULL || strv[0] == NULL)
     {
         return NULL;
     }
 
-    common_part = NULL;
-    for (l = strs; l != NULL; l = l->next)
+    common_part = g_strdup (strv[0]);
+    for (int i = 1; strv[i] != NULL; i++)
     {
-        name = l->data;
-        if (name == NULL)
-        {
-            return NULL;
-        }
-
-        if (l->prev == NULL)
-        {
-            common_part = g_strdup (name);
-            continue;
-        }
-
-        matching_chars = get_common_prefix_length (common_part, name, min_required_len);
+        matching_chars = get_common_prefix_length (common_part, strv[i], min_required_len);
 
         if (matching_chars == -1)
         {

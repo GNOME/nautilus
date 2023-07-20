@@ -45,15 +45,15 @@ nautilus_filename_for_link (const char *name,
 
 /**
  * nautilus_filename_get_common_prefix:
- * @strs: a list of strings
+ * @strv: array of strings
  * @min_required_len: the minimum number of characters required in the prefix
  *
- * Returns: (transfer full): the common prefix for strings in @strs.
+ * Returns: (transfer full): the common prefix for strings in @strv.
  * If no such prefix exists or if the common prefix is smaller than
  * @min_required_len, %NULL is returned.
  */
 char *
-nautilus_filename_get_common_prefix (GList *strs,
+nautilus_filename_get_common_prefix (char **strv,
                                      int    min_required_len);
 
 /**
