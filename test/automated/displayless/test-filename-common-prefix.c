@@ -5,150 +5,142 @@
 
 
 static void
-free_list_and_result (GList *list,
-                      char  *result)
-{
-    g_list_free (list);
-    g_free (result);
-}
-
-static void
 test_has_large_enough_common_prefix (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "foo-1.txt");
-    list = g_list_append (list, "foo-1.tar");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "foo-1.txt",
+        "foo-1.tar",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("foo-1.t", ==, actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_has_common_prefix_that_equals_the_min_required_length (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "food");
-    list = g_list_append (list, "foody");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "food",
+        "foody",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("food", ==, actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_has_common_prefix_that_equals_the_min_required_length2 (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "foody");
-    list = g_list_append (list, "food");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "foody",
+        "food",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("food", ==, actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_many_strings_with_common_prefix (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "some text that matches abcde");
-    list = g_list_append (list, "some text that matches abc22");
-    list = g_list_append (list, "some text that 11");
-    list = g_list_append (list, "some text that matches---");
-    list = g_list_append (list, "some text that matches £$$");
-    list = g_list_append (list, "some text that matches.txt");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "some text that matches abcde",
+        "some text that matches abc22",
+        "some text that 11",
+        "some text that matches---",
+        "some text that matches £$$",
+        "some text that matches.txt",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("some text that ", ==, actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_strings_with_unicode_characters_that_have_common_prefix (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "ƹƱƱƬ");
-    list = g_list_append (list, "ƹƱƱƬƧƥƧ");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "ƹƱƱƬ",
+        "ƹƱƱƬƧƥƧ",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("ƹƱƱƬ", ==, actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_no_common_prefix (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "fyod");
-    list = g_list_append (list, "completely different string");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "fyod",
+        "completely different string",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_has_common_prefix_but_smaller_than_min_required_length (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "fyod");
-    list = g_list_append (list, "fyoa");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "fyod",
+        "fyoa",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_first_character_differs (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "tyodaa");
-    list = g_list_append (list, "fyodaa");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "tyodaa",
+        "fyodaa",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
-
-    free_list_and_result (list, actual);
 }
 
 static void
 test_strings_with_unicode_characters_that_dont_have_common_prefix (void)
 {
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "ƹƱƱƬ");
-    list = g_list_append (list, "ƹƱƢƱƬƧƥƧ");
+    g_autofree char *actual = NULL;
+    char *list[] =
+    {
+        "ƹƱƱƬ",
+        "ƹƱƢƱƬƧƥƧ",
+        NULL
+    };
 
     actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
-
-    free_list_and_result (list, actual);
 }
 
 

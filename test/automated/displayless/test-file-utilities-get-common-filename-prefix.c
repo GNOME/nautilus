@@ -4,23 +4,15 @@
 #include "src/nautilus-file-utilities.h"
 
 
-/* Helper function to abstract away the GList creation and make tests more readable. */
-static GList *
-make_list (char *str1,
-           char *str2)
-{
-    GList *list = NULL;
-    list = g_list_prepend (list, str1);
-    list = g_list_prepend (list, str2);
-    return list;
-}
-
-
 static void
 test_has_large_enough_common_prefix (void)
 {
-    g_autoptr (GList) list = make_list ("test",
-                                        "tests");
+    char *list[] =
+    {
+        "test",
+        "tests",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("test", ==, actual);
@@ -29,8 +21,12 @@ test_has_large_enough_common_prefix (void)
 static void
 test_has_large_enough_common_prefix_with_spaces_in_middle (void)
 {
-    g_autoptr (GList) list = make_list ("Cpt J Yossarian r1",
-                                        "Cpt J Yossarian a1");
+    char *list[] =
+    {
+        "Cpt J Yossarian r1",
+        "Cpt J Yossarian a1",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("Cpt J Yossarian", ==, actual);
@@ -39,8 +35,12 @@ test_has_large_enough_common_prefix_with_spaces_in_middle (void)
 static void
 test_has_large_enough_common_prefix_with_punctuation_in_middle (void)
 {
-    g_autoptr (GList) list = make_list ("Cpt-J_Yossarian r1",
-                                        "Cpt-J_Yossarian a1");
+    char *list[] =
+    {
+        "Cpt-J_Yossarian r1",
+        "Cpt-J_Yossarian a1",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("Cpt-J_Yossarian", ==, actual);
@@ -49,8 +49,12 @@ test_has_large_enough_common_prefix_with_punctuation_in_middle (void)
 static void
 test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension (void)
 {
-    g_autoptr (GList) list = make_list ("Cpt-J, Yossarian.xml",
-                                        "Cpt-J, Yossarian.xsl");
+    char *list[] =
+    {
+        "Cpt-J, Yossarian.xml",
+        "Cpt-J, Yossarian.xsl",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("Cpt-J, Yossarian", ==, actual);
@@ -59,8 +63,12 @@ test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension (vo
 static void
 test_doesnt_have_large_enough_common_prefix (void)
 {
-    g_autoptr (GList) list = make_list ("foo",
-                                        "foob");
+    char *list[] =
+    {
+        "foo",
+        "foob",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_null (actual);
@@ -69,8 +77,12 @@ test_doesnt_have_large_enough_common_prefix (void)
 static void
 test_doesnt_have_large_enough_common_prefix_completely_different_strings (void)
 {
-    g_autoptr (GList) list = make_list ("this string really",
-                                        "isn't the same as the other");
+    char *list[] =
+    {
+        "this string really",
+        "isn't the same as the other",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_null (actual);
@@ -79,8 +91,12 @@ test_doesnt_have_large_enough_common_prefix_completely_different_strings (void)
 static void
 test_doesnt_have_large_enough_common_prefix_first_character_differs (void)
 {
-    g_autoptr (GList) list = make_list ("foo",
-                                        "roo");
+    char *list[] =
+    {
+        "foo",
+        "roo",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_null (actual);
@@ -89,8 +105,12 @@ test_doesnt_have_large_enough_common_prefix_first_character_differs (void)
 static void
 test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_string (void)
 {
-    g_autoptr (GList) list = make_list ("fools",
-                                        "rools");
+    char *list[] =
+    {
+        "fools",
+        "rools",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_null (actual);
@@ -99,8 +119,12 @@ test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_strin
 static void
 test_has_large_enough_common_prefix_until_extension_removed (void)
 {
-    g_autoptr (GList) list = make_list ("tes.txt",
-                                        "tes.tar");
+    char *list[] =
+    {
+        "tes.txt",
+        "tes.tar",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_null (actual);
@@ -109,8 +133,12 @@ test_has_large_enough_common_prefix_until_extension_removed (void)
 static void
 test_extension_is_removed (void)
 {
-    g_autoptr (GList) list = make_list ("nau tilus.c",
-                                        "nau tilus.cpp");
+    char *list[] =
+    {
+        "nau tilus.c",
+        "nau tilus.cpp",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("nau tilus", ==, actual);
@@ -119,8 +147,12 @@ test_extension_is_removed (void)
 static void
 test_whitespace_is_removed (void)
 {
-    g_autoptr (GList) list = make_list ("nautilus ",
-                                        "nautilus two");
+    char *list[] =
+    {
+        "nautilus ",
+        "nautilus two",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("nautilus", ==, actual);
@@ -129,8 +161,12 @@ test_whitespace_is_removed (void)
 static void
 test_whitespace_and_extension_are_removed (void)
 {
-    g_autoptr (GList) list = make_list ("nautilus !£ $\"    foo.tar.gz",
-                                        "nautilus !£ $\"  .lzma");
+    char *list[] =
+    {
+        "nautilus !£ $\"    foo.tar.gz",
+        "nautilus !£ $\"  .lzma",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("nautilus !£ $\"", ==, actual);
@@ -139,9 +175,12 @@ test_whitespace_and_extension_are_removed (void)
 static void
 test_punctuation_is_preserved (void)
 {
-    g_autoptr (GList) list = make_list (
+    char *list[] =
+    {
         "nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\".mp4",
-        "nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\".srt");
+        "nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\".srt",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\"", ==, actual);
@@ -150,8 +189,12 @@ test_punctuation_is_preserved (void)
 static void
 test_unicode_on_outside (void)
 {
-    g_autoptr (GList) list = make_list ("ӶtestӶ234",
-                                        "ӶtestӶ1");
+    char *list[] =
+    {
+        "ӶtestӶ234",
+        "ӶtestӶ1",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("ӶtestӶ", ==, actual);
@@ -160,8 +203,12 @@ test_unicode_on_outside (void)
 static void
 test_unicode_on_inside (void)
 {
-    g_autoptr (GList) list = make_list ("QQӶtestӶabb234",
-                                        "QQӶtestӶabb1");
+    char *list[] =
+    {
+        "QQӶtestӶabb234",
+        "QQӶtestӶabb1",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("QQӶtestӶabb", ==, actual);
@@ -170,8 +217,12 @@ test_unicode_on_inside (void)
 static void
 test_unicode_whole_string (void)
 {
-    g_autoptr (GList) list = make_list ("ǣȸʸͻͻΎΘΛ",
-                                        "ǣȸʸͻͻΎΘ");
+    char *list[] =
+    {
+        "ǣȸʸͻͻΎΘΛ",
+        "ǣȸʸͻͻΎΘ",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("ǣȸʸͻͻΎΘ", ==, actual);
@@ -180,8 +231,12 @@ test_unicode_whole_string (void)
 static void
 test_unicode_extension (void)
 {
-    g_autoptr (GList) list = make_list ("test.ǣȸʸͻͻΎΘΛ",
-                                        "test.ǣȸʸͻͻΎΘ");
+    char *list[] =
+    {
+        "test.ǣȸʸͻͻΎΘΛ",
+        "test.ǣȸʸͻͻΎΘ",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("test", ==, actual);
@@ -190,8 +245,12 @@ test_unicode_extension (void)
 static void
 test_unicode_with_punctuation (void)
 {
-    g_autoptr (GList) list = make_list ("ǣȸʸ- ͻͻΎΘ$%%^",
-                                        "ǣȸʸ- ͻͻΎΘ$%%&");
+    char *list[] =
+    {
+        "ǣȸʸ- ͻͻΎΘ$%%^",
+        "ǣȸʸ- ͻͻΎΘ$%%&",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
 
     g_assert_cmpstr ("ǣȸʸ- ͻͻΎΘ$%%", ==, actual);
@@ -200,60 +259,54 @@ test_unicode_with_punctuation (void)
 static void
 test_many_strings (void)
 {
-    GList *list = NULL;
-    char *actual;
-    char *filename;
-    int i;
+    const int n_strings = 500;
+    g_auto (GStrv) list = g_new (char *, n_strings + 1);
+    g_autofree char *actual = NULL;
 
-    for (i = 0; i < 500; ++i)
+    for (int i = 0; i < n_strings; ++i)
     {
-        filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
-        list = g_list_prepend (list, filename);
+        list[i] = g_strdup_printf ("we are no longer the knights who say nii%d", i);
     }
+    list[n_strings] = NULL;
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
     g_assert_cmpstr ("we are no longer the knights who say nii", ==, actual);
-
-    g_free (actual);
-    g_list_free_full (list, g_free);
 }
 
 static void
 test_many_strings_last_differs (void)
 {
-    GList *list = NULL;
-    char *actual;
+    const int n_strings = 500;
+    g_auto (GStrv) list = g_new (char *, n_strings + 1);
+    g_autofree char *actual = NULL;
     char *filename;
-    int i;
 
-    for (i = 0; i < 500; ++i)
+    for (int i = 0; i < n_strings; ++i)
     {
         filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
 
-        if (i == 499)
+        if (i == n_strings - 1)
         {
             filename[2] = 'X';
         }
 
-        list = g_list_prepend (list, filename);
+        list[i] = filename;
     }
+    list[n_strings] = NULL;
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
     g_assert_null (actual);
-
-    g_free (actual);
-    g_list_free_full (list, g_free);
 }
 
 static void
 test_many_strings_first_differs (void)
 {
-    GList *list = NULL;
-    char *actual;
+    const int n_strings = 500;
+    g_auto (GStrv) list = g_new (char *, n_strings + 1);
+    g_autofree char *actual = NULL;
     char *filename;
-    int i;
 
-    for (i = 0; i < 500; ++i)
+    for (int i = 0; i < n_strings; ++i)
     {
         filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
 
@@ -262,21 +315,23 @@ test_many_strings_first_differs (void)
             filename[2] = 'X';
         }
 
-        list = g_list_prepend (list, filename);
+        list[i] = filename;
     }
+    list[n_strings] = NULL;
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
     g_assert_null (actual);
-
-    g_free (actual);
-    g_list_free_full (list, g_free);
 }
 
 static void
 test_smaller_min_length_and_does_have_common_prefix (void)
 {
-    g_autoptr (GList) list = make_list ("CA",
-                                        "CB");
+    char *list[] =
+    {
+        "CA",
+        "CB",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 1);
 
     g_assert_cmpstr ("C", ==, actual);
@@ -285,8 +340,12 @@ test_smaller_min_length_and_does_have_common_prefix (void)
 static void
 test_smaller_min_length_and_doesnt_have_common_prefix (void)
 {
-    g_autoptr (GList) list = make_list ("CA",
-                                        "BB");
+    char *list[] =
+    {
+        "CA",
+        "BB",
+        NULL
+    };
     g_autofree char *actual = nautilus_get_common_filename_prefix_from_filenames (list, 1);
 
     g_assert_null (actual);

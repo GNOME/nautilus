@@ -103,13 +103,13 @@ char * nautilus_get_common_filename_prefix (GList *file_list,
 
 /**
  * nautilus_get_common_filename_prefix_from_filenames:
- * @filename_list: set of file names (char *)
+ * @filenames: an array of filenames
  * @min_required_len: the minimum number of characters required in the prefix
  *
  * Returns: the common filename prefix for a set of filenames, or NULL if
  * there isn't a common prefix of length min_required_len
  */
-char * nautilus_get_common_filename_prefix_from_filenames (GList *filename_list,
+char * nautilus_get_common_filename_prefix_from_filenames (char **filenames,
                                                            int    min_required_len);
 
 /**

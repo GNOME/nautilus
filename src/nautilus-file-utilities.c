@@ -1156,9 +1156,9 @@ char *
 nautilus_get_common_filename_prefix (GList *file_list,
                                      int    min_required_len)
 {
-    GList *file_names = NULL;
-    GList *directory_names = NULL;
-    char *result_files;
+    g_autoptr (GPtrArray) file_names = NULL;
+    g_autoptr (GPtrArray) directory_names = NULL;
+    g_autofree char *result_files = NULL;
     g_autofree char *result = NULL;
     g_autofree char *result_trimmed = NULL;
 
@@ -1166,6 +1166,9 @@ nautilus_get_common_filename_prefix (GList *file_list,
     {
         return NULL;
     }
+
+    file_names = g_ptr_array_new_null_terminated (0, g_free, TRUE);
+    directory_names = g_ptr_array_new_null_terminated (0, g_free, TRUE);
 
     for (GList *l = file_list; l != NULL; l = l->next)
     {
@@ -1180,30 +1183,28 @@ nautilus_get_common_filename_prefix (GList *file_list,
          */
         if (nautilus_file_is_directory (l->data))
         {
-            directory_names = g_list_prepend (directory_names, name);
+            g_ptr_array_add (directory_names, name);
         }
         else
         {
-            file_names = g_list_prepend (file_names, name);
+            g_ptr_array_add (file_names, name);
         }
     }
 
-    result_files = nautilus_get_common_filename_prefix_from_filenames (file_names, min_required_len);
+    result_files = nautilus_get_common_filename_prefix_from_filenames ((char **) file_names->pdata,
+                                                                       min_required_len);
 
-    if (directory_names == NULL)
+    if (directory_names->len == 0)
     {
-        return result_files;
+        return g_steal_pointer (&result_files);
     }
 
     if (result_files != NULL)
     {
-        directory_names = g_list_prepend (directory_names, result_files);
+        g_ptr_array_add (directory_names, result_files);
     }
 
-    result = nautilus_filename_get_common_prefix (directory_names, min_required_len);
-
-    g_list_free_full (file_names, g_free);
-    g_list_free_full (directory_names, g_free);
+    result = nautilus_filename_get_common_prefix ((char **) directory_names->pdata, min_required_len);
 
     if (result == NULL)
     {
@@ -1221,30 +1222,29 @@ nautilus_get_common_filename_prefix (GList *file_list,
 }
 
 char *
-nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
+nautilus_get_common_filename_prefix_from_filenames (char **filenames,
                                                     int    min_required_len)
 {
-    GList *stripped_filenames = NULL;
+    g_autoptr (GPtrArray) stripped_filenames = NULL;
     g_autofree char *common_prefix = NULL;
     g_autofree char *truncated = NULL;
     int common_prefix_len;
 
-    for (GList *i = filenames; i != NULL; i = i->next)
-    {
-        gchar *stripped_filename;
-
-        stripped_filename = eel_filename_strip_extension (i->data);
-
-        stripped_filenames = g_list_prepend (stripped_filenames, stripped_filename);
-    }
-
-    common_prefix = nautilus_filename_get_common_prefix (stripped_filenames, min_required_len);
-    if (common_prefix == NULL)
+    if (filenames == NULL || filenames[0] == NULL)
     {
         return NULL;
     }
 
-    g_list_free_full (stripped_filenames, g_free);
+    stripped_filenames = g_ptr_array_new_from_null_terminated_array ((gpointer *) filenames,
+                                                                     (GCopyFunc) eel_filename_strip_extension,
+                                                                     NULL,
+                                                                     g_free);
+
+    common_prefix = nautilus_filename_get_common_prefix ((char **) stripped_filenames->pdata, min_required_len);
+    if (common_prefix == NULL)
+    {
+        return NULL;
+    }
 
     truncated = trim_whitespace (common_prefix);
 
