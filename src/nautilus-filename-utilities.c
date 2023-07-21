@@ -170,96 +170,49 @@ nautilus_filename_for_link (const char *name,
     return result;
 }
 
-/**
- * get_common_prefix_length:
- * @str_a: first string
- * @str_b: second string
- * @min_required_len: the minimum number of characters required in the prefix
- *
- * Returns: the size of the common prefix of two strings, in characters.
- * If there's no common prefix, or the common prefix is smaller than
- * min_required_len, this will return -1
- */
-static int
-get_common_prefix_length (char *str_a,
-                          char *str_b,
-                          int   min_required_len)
-{
-    int a_len;
-    int b_len;
-    int intersection_len;
-    int matching_chars;
-    char *a;
-    char *b;
-
-    a_len = g_utf8_strlen (str_a, -1);
-    b_len = g_utf8_strlen (str_b, -1);
-
-    intersection_len = MIN (a_len, b_len);
-    if (intersection_len < min_required_len)
-    {
-        return -1;
-    }
-
-    matching_chars = 0;
-    a = str_a;
-    b = str_b;
-    while (matching_chars < intersection_len)
-    {
-        if (g_utf8_get_char (a) != g_utf8_get_char (b))
-        {
-            break;
-        }
-
-        ++matching_chars;
-
-        a = g_utf8_next_char (a);
-        b = g_utf8_next_char (b);
-    }
-
-    if (matching_chars < min_required_len)
-    {
-        return -1;
-    }
-
-    return matching_chars;
-}
-
 char *
 nautilus_filename_get_common_prefix (char **strv,
                                      int    min_required_len)
 {
-    g_autofree char *common_part = NULL;
-    char *truncated;
-    int matching_chars;
+    glong common_len;
 
     if (strv == NULL || strv[0] == NULL)
     {
         return NULL;
     }
 
-    common_part = g_strdup (strv[0]);
-    for (int i = 1; strv[i] != NULL; i++)
-    {
-        matching_chars = get_common_prefix_length (common_part, strv[i], min_required_len);
+    common_len = g_utf8_strlen (strv[0], -1);
 
-        if (matching_chars == -1)
+    for (guint i = 1; strv[i] != NULL; i++)
+    {
+        char *character_a = strv[0];
+        char *character_b = strv[i];
+
+        common_len = MIN (common_len, g_utf8_strlen (strv[i], -1));
+        if (common_len < min_required_len)
         {
             return NULL;
         }
 
-        truncated = g_utf8_substring (common_part, 0, matching_chars);
-        g_free (common_part);
-        common_part = truncated;
+        for (guint pos = 0; pos < common_len; pos++)
+        {
+            if (g_utf8_get_char (character_a) != g_utf8_get_char (character_b))
+            {
+                common_len = pos;
+                break;
+            }
+
+            character_a = g_utf8_next_char (character_a);
+            character_b = g_utf8_next_char (character_b);
+        }
     }
 
-    matching_chars = g_utf8_strlen (common_part, -1);
-    if (matching_chars < min_required_len)
+    if (common_len < min_required_len)
     {
         return NULL;
     }
 
-    return g_steal_pointer (&common_part);
+    return g_utf8_substring (strv[0], 0, common_len);
 }
 
 gboolean
