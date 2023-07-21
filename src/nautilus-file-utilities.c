@@ -291,7 +291,7 @@ char *
 nautilus_compute_title_for_location (GFile *location)
 {
     NautilusFile *file;
-    GMount *mount;
+    g_autoptr (GMount) mount = NULL;
     char *title;
 
     /* TODO-gio: This doesn't really work all that great if the
@@ -302,13 +302,10 @@ nautilus_compute_title_for_location (GFile *location)
         return g_strdup (_("Home"));
     }
 
-    if ((mount = nautilus_get_mounted_mount_for_root (location)) != NULL)
+    mount = nautilus_get_mounted_mount_for_root (location);
+    if (mount != NULL)
     {
-        title = g_mount_get_name (mount);
-
-        g_object_unref (mount);
-
-        return title;
+        return g_mount_get_name (mount);
     }
 
     title = NULL;
@@ -1228,8 +1225,8 @@ nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
                                                     int    min_required_len)
 {
     GList *stripped_filenames = NULL;
-    char *common_prefix;
-    char *truncated;
+    g_autofree char *common_prefix = NULL;
+    g_autofree char *truncated = NULL;
     int common_prefix_len;
 
     for (GList *i = filenames; i != NULL; i = i->next)
@@ -1250,16 +1247,14 @@ nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
     g_list_free_full (stripped_filenames, g_free);
 
     truncated = trim_whitespace (common_prefix);
-    g_free (common_prefix);
 
     common_prefix_len = g_utf8_strlen (truncated, -1);
     if (common_prefix_len < min_required_len)
     {
-        g_free (truncated);
         return NULL;
     }
 
-    return truncated;
+    return g_steal_pointer (&truncated);
 }
 
 glong
