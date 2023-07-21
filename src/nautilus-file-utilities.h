@@ -55,11 +55,6 @@ gboolean nautilus_is_file_roller_installed           (void);
 GIcon *  nautilus_special_directory_get_icon         (GUserDirectory directory);
 GIcon *  nautilus_special_directory_get_symbolic_icon (GUserDirectory directory);
 
-gboolean nautilus_uri_parse                          (const char  *uri,
-						      char       **host,
-						      guint16     *port,
-						      char       **userinfo);
-
 /* Return an allocated file location that is guranteed to be unique, but
  * tries to make the location name readable to users.
  * This isn't race-free, so don't use for security-related things
