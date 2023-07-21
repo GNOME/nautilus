@@ -245,7 +245,7 @@ nautilus_filename_get_common_prefix (GList *strs,
                                      int    min_required_len)
 {
     GList *l;
-    char *common_part;
+    g_autofree char *common_part = NULL;
     char *name;
     char *truncated;
     int matching_chars;
@@ -261,7 +261,6 @@ nautilus_filename_get_common_prefix (GList *strs,
         name = l->data;
         if (name == NULL)
         {
-            g_free (common_part);
             return NULL;
         }
 
@@ -275,7 +274,6 @@ nautilus_filename_get_common_prefix (GList *strs,
 
         if (matching_chars == -1)
         {
-            g_free (common_part);
             return NULL;
         }
 
@@ -287,11 +285,10 @@ nautilus_filename_get_common_prefix (GList *strs,
     matching_chars = g_utf8_strlen (common_part, -1);
     if (matching_chars < min_required_len)
     {
-        g_free (common_part);
         return NULL;
     }
 
-    return common_part;
+    return g_steal_pointer (&common_part);
 }
 
 
