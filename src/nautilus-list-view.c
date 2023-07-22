@@ -114,7 +114,7 @@ apply_columns_settings (NautilusListView  *self,
     int column_i = 0;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
-    directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self));
+    directory = nautilus_files_view_get_directory (NAUTILUS_FILES_VIEW (self));
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
         NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
@@ -301,7 +301,7 @@ get_base_location (NautilusListView *self)
     NautilusDirectory *directory;
     GFile *base_location = NULL;
 
-    directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self));
+    directory = nautilus_files_view_get_directory (NAUTILUS_FILES_VIEW (self));
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
         NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
@@ -940,7 +940,7 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     nautilus_name_cell_set_path (NAUTILUS_NAME_CELL (cell),
                                  self->path_attribute_q,
                                  self->file_path_base_location);
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self))))
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_files_view_get_directory (NAUTILUS_FILES_VIEW (self))))
     {
         nautilus_name_cell_show_snippet (NAUTILUS_NAME_CELL (cell));
     }

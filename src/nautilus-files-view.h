@@ -240,7 +240,7 @@ void                nautilus_files_view_activate_file                    (Nautil
                                                                           NautilusFile      *file,
                                                                           NautilusOpenFlags  flags);
 void                nautilus_files_view_notify_selection_changed         (NautilusFilesView *view);
-NautilusDirectory  *nautilus_files_view_get_model                        (NautilusFilesView *view);
+NautilusDirectory  *nautilus_files_view_get_directory                    (NautilusFilesView *view);
 NautilusFile       *nautilus_files_view_get_directory_as_file            (NautilusFilesView *view);
 void                nautilus_files_view_pop_up_background_context_menu   (NautilusFilesView *view,
                                                                           gdouble            x,

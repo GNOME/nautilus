@@ -167,7 +167,7 @@ typedef struct
     GtkWidget *overlay;
 
     NautilusWindowSlot *slot;
-    NautilusDirectory *model;
+    NautilusDirectory *directory;
     NautilusFile *directory_as_file;
     GFile *location;
     guint dir_merge_id;
@@ -325,7 +325,7 @@ static void     remove_update_status_idle_callback (NautilusFilesView *view);
 static void     reset_update_interval (NautilusFilesView *view);
 static void     schedule_idle_display_of_pending_files (NautilusFilesView *view);
 static void     unschedule_display_of_pending_files (NautilusFilesView *view);
-static void     disconnect_model_handlers (NautilusFilesView *view);
+static void     disconnect_directory_handlers (NautilusFilesView *view);
 static void     metadata_for_directory_as_file_ready_callback (NautilusFile *file,
                                                                gpointer      callback_data);
 static void     metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
@@ -708,12 +708,12 @@ real_get_backing_uri (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->model == NULL)
+    if (priv->directory == NULL)
     {
         return NULL;
     }
 
-    return nautilus_directory_get_uri (priv->model);
+    return nautilus_directory_get_uri (priv->directory);
 }
 
 /**
@@ -1042,12 +1042,12 @@ nautilus_files_view_is_searching (NautilusView *view)
     files_view = NAUTILUS_FILES_VIEW (view);
     priv = nautilus_files_view_get_instance_private (files_view);
 
-    if (!priv->model)
+    if (!priv->directory)
     {
         return FALSE;
     }
 
-    return NAUTILUS_IS_SEARCH_DIRECTORY (priv->model);
+    return NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory);
 }
 
 static guint
@@ -1248,7 +1248,7 @@ get_view_directory (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    uri = nautilus_directory_get_uri (priv->model);
+    uri = nautilus_directory_get_uri (priv->directory);
     f = g_file_new_for_uri (uri);
     path = g_file_get_path (f);
     g_object_unref (f);
@@ -1849,7 +1849,7 @@ pattern_select_response_cb (GtkWidget *dialog,
         case GTK_RESPONSE_OK:
         {
             entry = g_object_get_data (G_OBJECT (dialog), "entry");
-            directory = nautilus_files_view_get_model (view);
+            directory = nautilus_files_view_get_directory (view);
             selection = nautilus_directory_match_pattern (directory,
                                                           gtk_editable_get_text (GTK_EDITABLE (entry)));
 
@@ -2741,9 +2741,9 @@ nautilus_files_view_set_show_hidden_files (NautilusFilesView *view,
                                 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
                                 show_hidden);
 
-        if (priv->model != NULL)
+        if (priv->directory != NULL)
         {
-            load_directory (view, priv->model);
+            load_directory (view, priv->directory);
         }
     }
 }
@@ -3429,10 +3429,10 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
     g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
 
-    if (priv->model)
+    if (priv->directory)
     {
-        nautilus_directory_unref (priv->model);
-        priv->model = NULL;
+        nautilus_directory_unref (priv->directory);
+        priv->directory = NULL;
     }
 
     for (node = priv->scripts_directory_list; node != NULL; node = next)
@@ -3824,11 +3824,11 @@ globalize_search (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
 
-    g_return_if_fail (NAUTILUS_IS_SEARCH_DIRECTORY (priv->model));
+    g_return_if_fail (NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory));
     g_return_if_fail (priv->search_query != NULL);
 
     nautilus_query_set_location (priv->search_query, NULL);
-    load_directory (self, priv->model);
+    load_directory (self, priv->directory);
 }
 
 static void
@@ -3840,9 +3840,9 @@ update_extend_search_revealer (NautilusFilesView *self)
     gboolean search_is_global = FALSE;
     gboolean can_show_search_everywhere = FALSE;
 
-    if (!is_empty && NAUTILUS_IS_SEARCH_DIRECTORY (priv->model))
+    if (!is_empty && NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
     {
-        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->model);
+        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
         g_autoptr (GFile) queried_location = NULL;
 
         queried_location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
@@ -3906,9 +3906,9 @@ real_check_empty_states (NautilusFilesView *view)
     {
         adw_status_page_set_child (status_page, NULL);
 
-        if (NAUTILUS_IS_SEARCH_DIRECTORY (priv->model))
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
         {
-            NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->model);
+            NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
             g_autoptr (GFile) queried_location = NULL;
             gboolean global_search;
 
@@ -4278,7 +4278,7 @@ view_file_still_belongs (NautilusFilesView *view,
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->model != fad->directory &&
+    if (priv->directory != fad->directory &&
         g_list_find (priv->subdirectory_list, fad->directory) == NULL)
     {
         return FALSE;
@@ -4627,8 +4627,8 @@ display_pending_files (NautilusFilesView *view)
         nautilus_files_view_select_first (view);
     }
 
-    if (priv->model != NULL
-        && nautilus_directory_are_all_files_seen (priv->model)
+    if (priv->directory != NULL
+        && nautilus_directory_are_all_files_seen (priv->directory)
         && g_hash_table_size (priv->non_ready_files) == 0)
     {
         done_loading (view, TRUE);
@@ -5043,7 +5043,7 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
         NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
     nautilus_directory_file_monitor_add (directory,
-                                         &priv->model,
+                                         &priv->directory,
                                          priv->show_hidden_files,
                                          attributes,
                                          files_added_callback, view);
@@ -5086,7 +5086,7 @@ nautilus_files_view_remove_subdirectory (NautilusFilesView *view,
                                           G_CALLBACK (subdirectory_done_loading),
                                           view);
 
-    nautilus_directory_file_monitor_remove (directory, &priv->model);
+    nautilus_directory_file_monitor_remove (directory, &priv->directory);
 
     nautilus_directory_unref (directory);
 }
@@ -5111,16 +5111,16 @@ nautilus_files_view_get_loading (NautilusFilesView *view)
 }
 
 /**
- * nautilus_files_view_get_model:
+ * nautilus_files_view_get_directory:
  *
- * Get the model for this NautilusFilesView.
+ * Get the model directory for this NautilusFilesView.
  * @view: NautilusFilesView of interest.
  *
  * Return value: NautilusDirectory for this view.
  *
  **/
 NautilusDirectory *
-nautilus_files_view_get_model (NautilusFilesView *view)
+nautilus_files_view_get_directory (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -5128,7 +5128,7 @@ nautilus_files_view_get_model (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    return priv->model;
+    return priv->directory;
 }
 
 GtkWidget *
@@ -5437,20 +5437,20 @@ change_to_view_directory (NautilusFilesView *view)
 
 static char **
 get_file_names_as_parameter_array (GList             *selection,
-                                   NautilusDirectory *model)
+                                   NautilusDirectory *directory)
 {
     char **parameters;
-    g_autoptr (GFile) model_location = NULL;
+    g_autoptr (GFile) directory_location = NULL;
     int i;
 
-    if (model == NULL)
+    if (directory == NULL)
     {
         return NULL;
     }
 
     parameters = g_new (char *, g_list_length (selection) + 1);
 
-    model_location = nautilus_directory_get_location (model);
+    directory_location = nautilus_directory_get_location (directory);
 
     i = 0;
     for (GList *node = selection; node != NULL; node = node->next, i++)
@@ -5466,7 +5466,7 @@ get_file_names_as_parameter_array (GList             *selection,
         }
 
         file_location = nautilus_file_get_location (file);
-        parameters[i] = g_file_get_relative_path (model_location, file_location);
+        parameters[i] = g_file_get_relative_path (directory_location, file_location);
         if (parameters[i] == NULL)
         {
             parameters[i] = g_file_get_path (file_location);
@@ -5555,7 +5555,7 @@ set_script_environment_variables (NautilusFilesView *view,
     uris = get_file_uris_as_newline_delimited_string (selected_files);
     g_setenv ("NAUTILUS_SCRIPT_SELECTED_URIS", uris, TRUE);
 
-    uri = nautilus_directory_get_uri (priv->model);
+    uri = nautilus_directory_get_uri (priv->directory);
     g_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
 }
 
@@ -5596,7 +5596,7 @@ run_script (GSimpleAction *action,
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (launch_parameters->directory_view));
     set_script_environment_variables (launch_parameters->directory_view, selection);
 
-    parameters = get_file_names_as_parameter_array (selection, priv->model);
+    parameters = get_file_names_as_parameter_array (selection, priv->directory);
 
     display = gtk_widget_get_display (GTK_WIDGET (launch_parameters->directory_view));
 
@@ -6241,7 +6241,7 @@ copy_or_move_selection (NautilusFilesView *view,
 
     if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
     {
-        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->model);
+        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
         location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
     }
     else if (showing_starred_directory (view))
@@ -6250,7 +6250,7 @@ copy_or_move_selection (NautilusFilesView *view,
     }
     else
     {
-        location = nautilus_directory_get_location (priv->model);
+        location = nautilus_directory_get_location (priv->directory);
     }
 
     gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
@@ -6412,7 +6412,7 @@ real_action_rename (NautilusFilesView *view)
             gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
 
             dialog = nautilus_batch_rename_dialog_new (selection,
-                                                       nautilus_files_view_get_model (view),
+                                                       nautilus_files_view_get_directory (view),
                                                        window);
 
             gtk_window_present (GTK_WINDOW (dialog));
@@ -6648,13 +6648,13 @@ extract_files_to_chosen_location (NautilusFilesView *view,
      */
     if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
     {
-        NautilusSearchDirectory *search_directory = NAUTILUS_SEARCH_DIRECTORY (priv->model);
+        NautilusSearchDirectory *search_directory = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
 
         location = nautilus_query_get_location (nautilus_search_directory_get_query (search_directory));
     }
     else
     {
-        location = nautilus_directory_get_location (priv->model);
+        location = nautilus_directory_get_location (priv->directory);
     }
 
     gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
@@ -8940,7 +8940,7 @@ load_directory (NautilusFilesView *view,
     nautilus_profile_start (NULL);
 
     nautilus_files_view_stop_loading (view);
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory) || NAUTILUS_IS_SEARCH_DIRECTORY (priv->model))
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory) || NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
     {
         /* To make search feel fast and smooth as if it were filtering the
          * current view, avoid blanking the view temporarily. */
@@ -8986,10 +8986,10 @@ load_directory (NautilusFilesView *view,
     }
 
     /* Avoid freeing it and won't be able to ref it */
-    if (priv->model != directory)
+    if (priv->directory != directory)
     {
-        nautilus_directory_unref (priv->model);
-        priv->model = nautilus_directory_ref (directory);
+        nautilus_directory_unref (priv->directory);
+        priv->directory = nautilus_directory_ref (directory);
     }
 
     nautilus_file_unref (priv->directory_as_file);
@@ -9017,7 +9017,7 @@ load_directory (NautilusFilesView *view,
         attributes,
         metadata_for_directory_as_file_ready_callback, view);
     nautilus_directory_call_when_ready
-        (priv->model,
+        (priv->directory,
         attributes,
         FALSE,
         metadata_for_files_in_directory_ready_callback, view);
@@ -9054,7 +9054,7 @@ finish_loading (NautilusFilesView *view)
     nautilus_files_view_check_empty_states (view);
     update_extend_search_revealer (view);
 
-    if (nautilus_directory_are_all_files_seen (priv->model))
+    if (nautilus_directory_are_all_files_seen (priv->directory))
     {
         /* Unschedule a pending update and schedule a new one with the minimal
          * update interval. This gives the view a short chance at gathering the
@@ -9067,9 +9067,9 @@ finish_loading (NautilusFilesView *view)
     /* Start loading. */
 
     /* Connect handlers to learn about loading progress. */
-    priv->done_loading_handler_id = g_signal_connect (priv->model, "done-loading",
+    priv->done_loading_handler_id = g_signal_connect (priv->directory, "done-loading",
                                                       G_CALLBACK (done_loading_callback), view);
-    priv->load_error_handler_id = g_signal_connect (priv->model, "load-error",
+    priv->load_error_handler_id = g_signal_connect (priv->directory, "load-error",
                                                     G_CALLBACK (load_error_callback), view);
 
     /* Monitor the things needed to get the right icon. Also
@@ -9085,14 +9085,14 @@ finish_loading (NautilusFilesView *view)
         NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
     priv->files_added_handler_id = g_signal_connect
-                                       (priv->model, "files-added",
+                                       (priv->directory, "files-added",
                                        G_CALLBACK (files_added_callback), view);
     priv->files_changed_handler_id = g_signal_connect
-                                         (priv->model, "files-changed",
+                                         (priv->directory, "files-changed",
                                          G_CALLBACK (files_changed_callback), view);
 
-    nautilus_directory_file_monitor_add (priv->model,
-                                         &priv->model,
+    nautilus_directory_file_monitor_add (priv->directory,
+                                         &priv->directory,
                                          priv->show_hidden_files,
                                          attributes,
                                          files_added_callback, view);
@@ -9152,7 +9152,7 @@ metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
     priv = nautilus_files_view_get_instance_private (view);
-    g_assert (priv->model == directory);
+    g_assert (priv->directory == directory);
     g_assert (priv->metadata_for_files_in_directory_pending);
 
     nautilus_profile_start (NULL);
@@ -9164,29 +9164,29 @@ metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
 }
 
 static void
-disconnect_model_handlers (NautilusFilesView *view)
+disconnect_directory_handlers (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->model == NULL)
+    if (priv->directory == NULL)
     {
         return;
     }
-    g_clear_signal_handler (&priv->files_added_handler_id, priv->model);
-    g_clear_signal_handler (&priv->files_changed_handler_id, priv->model);
-    g_clear_signal_handler (&priv->done_loading_handler_id, priv->model);
-    g_clear_signal_handler (&priv->load_error_handler_id, priv->model);
+    g_clear_signal_handler (&priv->files_added_handler_id, priv->directory);
+    g_clear_signal_handler (&priv->files_changed_handler_id, priv->directory);
+    g_clear_signal_handler (&priv->done_loading_handler_id, priv->directory);
+    g_clear_signal_handler (&priv->load_error_handler_id, priv->directory);
     g_clear_signal_handler (&priv->file_changed_handler_id, priv->directory_as_file);
     nautilus_file_cancel_call_when_ready (priv->directory_as_file,
                                           metadata_for_directory_as_file_ready_callback,
                                           view);
-    nautilus_directory_cancel_callback (priv->model,
+    nautilus_directory_cancel_callback (priv->directory,
                                         metadata_for_files_in_directory_ready_callback,
                                         view);
-    nautilus_directory_file_monitor_remove (priv->model,
-                                            &priv->model);
+    nautilus_directory_file_monitor_remove (priv->directory,
+                                            &priv->directory);
     nautilus_file_monitor_remove (priv->directory_as_file,
                                   &priv->directory_as_file);
 }
@@ -9242,7 +9242,7 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
 
     done_loading (view, FALSE);
 
-    disconnect_model_handlers (view);
+    disconnect_directory_handlers (view);
 }
 
 static gboolean
@@ -9250,7 +9250,7 @@ nautilus_files_view_is_editable (NautilusFilesView *view)
 {
     NautilusDirectory *directory;
 
-    directory = nautilus_files_view_get_model (view);
+    directory = nautilus_files_view_get_directory (view);
 
     if (directory != NULL)
     {
@@ -9305,11 +9305,11 @@ nautilus_files_view_get_uri (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->model == NULL)
+    if (priv->directory == NULL)
     {
         return NULL;
     }
-    return nautilus_directory_get_uri (priv->model);
+    return nautilus_directory_get_uri (priv->directory);
 }
 
 void nautilus_file_view_save_image_from_texture (NautilusFilesView *view,
@@ -9659,8 +9659,8 @@ nautilus_files_view_set_search_query (NautilusView  *view,
             /*
              * Reuse the search directory and reload it.
              */
-            nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (priv->model), query);
-            load_directory (files_view, priv->model);
+            nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (priv->directory), query);
+            load_directory (files_view, priv->directory);
         }
         else
         {
@@ -9709,7 +9709,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
              * adding a reference to the search directory, preventing its
              * destruction during the location change.
              */
-            priv->outgoing_search = g_object_ref (priv->model);
+            priv->outgoing_search = g_object_ref (priv->directory);
 
             nautilus_view_set_location (view, location);
         }
