@@ -171,8 +171,8 @@ nautilus_filename_for_link (const char *name,
 }
 
 char *
-nautilus_filename_get_common_prefix (char **strv,
-                                     int    min_required_len)
+nautilus_filename_get_common_prefix (const char * const *strv,
+                                     int                 min_required_len)
 {
     glong common_len;
 
@@ -185,8 +185,8 @@ nautilus_filename_get_common_prefix (char **strv,
 
     for (guint i = 1; strv[i] != NULL; i++)
     {
-        char *character_a = strv[0];
-        char *character_b = strv[i];
+        const char *character_a = strv[0];
+        const char *character_b = strv[i];
 
         common_len = MIN (common_len, g_utf8_strlen (strv[i], -1));
         if (common_len < min_required_len)

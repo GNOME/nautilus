@@ -53,8 +53,8 @@ nautilus_filename_for_link (const char *name,
  * @min_required_len, %NULL is returned.
  */
 char *
-nautilus_filename_get_common_prefix (char **strv,
-                                     int    min_required_len);
+nautilus_filename_get_common_prefix (const char * const *strv,
+                                     int                 min_required_len);
 
 /**
  * nautilus_filename_shorten_base:

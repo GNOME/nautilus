@@ -1191,7 +1191,7 @@ nautilus_get_common_filename_prefix (GList *file_list,
         }
     }
 
-    result_files = nautilus_get_common_filename_prefix_from_filenames ((char **) file_names->pdata,
+    result_files = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) file_names->pdata,
                                                                        min_required_len);
 
     if (directory_names->len == 0)
@@ -1204,7 +1204,8 @@ nautilus_get_common_filename_prefix (GList *file_list,
         g_ptr_array_add (directory_names, result_files);
     }
 
-    result = nautilus_filename_get_common_prefix ((char **) directory_names->pdata, min_required_len);
+    result = nautilus_filename_get_common_prefix ((const char * const *) directory_names->pdata,
+                                                  min_required_len);
 
     if (result == NULL)
     {
@@ -1222,8 +1223,8 @@ nautilus_get_common_filename_prefix (GList *file_list,
 }
 
 char *
-nautilus_get_common_filename_prefix_from_filenames (char **filenames,
-                                                    int    min_required_len)
+nautilus_get_common_filename_prefix_from_filenames (const char * const *filenames,
+                                                    int                 min_required_len)
 {
     g_autoptr (GPtrArray) stripped_filenames = NULL;
     g_autofree char *common_prefix = NULL;
@@ -1240,7 +1241,8 @@ nautilus_get_common_filename_prefix_from_filenames (char **filenames,
                                                                      NULL,
                                                                      g_free);
 
-    common_prefix = nautilus_filename_get_common_prefix ((char **) stripped_filenames->pdata, min_required_len);
+    common_prefix = nautilus_filename_get_common_prefix ((const char * const *) stripped_filenames->pdata,
+                                                         min_required_len);
     if (common_prefix == NULL)
     {
         return NULL;

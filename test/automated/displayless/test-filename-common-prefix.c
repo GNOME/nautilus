@@ -8,7 +8,7 @@ static void
 test_has_large_enough_common_prefix (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "foo-1.txt",
         "foo-1.tar",
@@ -23,7 +23,7 @@ static void
 test_has_common_prefix_that_equals_the_min_required_length (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "food",
         "foody",
@@ -38,7 +38,7 @@ static void
 test_has_common_prefix_that_equals_the_min_required_length2 (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "foody",
         "food",
@@ -53,7 +53,7 @@ static void
 test_many_strings_with_common_prefix (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "some text that matches abcde",
         "some text that matches abc22",
@@ -72,7 +72,7 @@ static void
 test_strings_with_unicode_characters_that_have_common_prefix (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "ƹƱƱƬ",
         "ƹƱƱƬƧƥƧ",
@@ -87,7 +87,7 @@ static void
 test_no_common_prefix (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "fyod",
         "completely different string",
@@ -102,7 +102,7 @@ static void
 test_has_common_prefix_but_smaller_than_min_required_length (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "fyod",
         "fyoa",
@@ -117,7 +117,7 @@ static void
 test_first_character_differs (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "tyodaa",
         "fyodaa",
@@ -132,7 +132,7 @@ static void
 test_strings_with_unicode_characters_that_dont_have_common_prefix (void)
 {
     g_autofree char *actual = NULL;
-    char *list[] =
+    const char *list[] =
     {
         "ƹƱƱƬ",
         "ƹƱƢƱƬƧƥƧ",
