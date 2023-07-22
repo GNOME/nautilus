@@ -21,8 +21,8 @@ nautilus_filename_for_link (const char *name,
                             int         max_length);
 
 char *
-nautilus_filename_get_common_prefix (char **strv,
-                                     int    min_required_len);
+nautilus_filename_get_common_prefix (const char * const *strv,
+                                     int                 min_required_len);
 
 const char *
 nautilus_filename_get_extension (const char *filename);

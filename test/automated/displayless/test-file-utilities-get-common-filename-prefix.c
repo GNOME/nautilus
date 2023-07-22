@@ -7,7 +7,7 @@
 static void
 test_has_large_enough_common_prefix (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "test",
         "tests",
@@ -21,7 +21,7 @@ test_has_large_enough_common_prefix (void)
 static void
 test_has_large_enough_common_prefix_with_spaces_in_middle (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "Cpt J Yossarian r1",
         "Cpt J Yossarian a1",
@@ -35,7 +35,7 @@ test_has_large_enough_common_prefix_with_spaces_in_middle (void)
 static void
 test_has_large_enough_common_prefix_with_punctuation_in_middle (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "Cpt-J_Yossarian r1",
         "Cpt-J_Yossarian a1",
@@ -49,7 +49,7 @@ test_has_large_enough_common_prefix_with_punctuation_in_middle (void)
 static void
 test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "Cpt-J, Yossarian.xml",
         "Cpt-J, Yossarian.xsl",
@@ -63,7 +63,7 @@ test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension (vo
 static void
 test_doesnt_have_large_enough_common_prefix (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "foo",
         "foob",
@@ -77,7 +77,7 @@ test_doesnt_have_large_enough_common_prefix (void)
 static void
 test_doesnt_have_large_enough_common_prefix_completely_different_strings (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "this string really",
         "isn't the same as the other",
@@ -91,7 +91,7 @@ test_doesnt_have_large_enough_common_prefix_completely_different_strings (void)
 static void
 test_doesnt_have_large_enough_common_prefix_first_character_differs (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "foo",
         "roo",
@@ -105,7 +105,7 @@ test_doesnt_have_large_enough_common_prefix_first_character_differs (void)
 static void
 test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_string (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "fools",
         "rools",
@@ -119,7 +119,7 @@ test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_strin
 static void
 test_has_large_enough_common_prefix_until_extension_removed (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "tes.txt",
         "tes.tar",
@@ -133,7 +133,7 @@ test_has_large_enough_common_prefix_until_extension_removed (void)
 static void
 test_extension_is_removed (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "nau tilus.c",
         "nau tilus.cpp",
@@ -147,7 +147,7 @@ test_extension_is_removed (void)
 static void
 test_whitespace_is_removed (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "nautilus ",
         "nautilus two",
@@ -161,7 +161,7 @@ test_whitespace_is_removed (void)
 static void
 test_whitespace_and_extension_are_removed (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "nautilus !£ $\"    foo.tar.gz",
         "nautilus !£ $\"  .lzma",
@@ -175,7 +175,7 @@ test_whitespace_and_extension_are_removed (void)
 static void
 test_punctuation_is_preserved (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\".mp4",
         "nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\".srt",
@@ -189,7 +189,7 @@ test_punctuation_is_preserved (void)
 static void
 test_unicode_on_outside (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "ӶtestӶ234",
         "ӶtestӶ1",
@@ -203,7 +203,7 @@ test_unicode_on_outside (void)
 static void
 test_unicode_on_inside (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "QQӶtestӶabb234",
         "QQӶtestӶabb1",
@@ -217,7 +217,7 @@ test_unicode_on_inside (void)
 static void
 test_unicode_whole_string (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "ǣȸʸͻͻΎΘΛ",
         "ǣȸʸͻͻΎΘ",
@@ -231,7 +231,7 @@ test_unicode_whole_string (void)
 static void
 test_unicode_extension (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "test.ǣȸʸͻͻΎΘΛ",
         "test.ǣȸʸͻͻΎΘ",
@@ -245,7 +245,7 @@ test_unicode_extension (void)
 static void
 test_unicode_with_punctuation (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "ǣȸʸ- ͻͻΎΘ$%%^",
         "ǣȸʸ- ͻͻΎΘ$%%&",
@@ -269,7 +269,7 @@ test_many_strings (void)
     }
     list[n_strings] = NULL;
 
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
+    actual = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) list, 4);
     g_assert_cmpstr ("we are no longer the knights who say nii", ==, actual);
 }
 
@@ -294,7 +294,7 @@ test_many_strings_last_differs (void)
     }
     list[n_strings] = NULL;
 
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
+    actual = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) list, 4);
     g_assert_null (actual);
 }
 
@@ -319,14 +319,14 @@ test_many_strings_first_differs (void)
     }
     list[n_strings] = NULL;
 
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
+    actual = nautilus_get_common_filename_prefix_from_filenames ((const char * const *) list, 4);
     g_assert_null (actual);
 }
 
 static void
 test_smaller_min_length_and_does_have_common_prefix (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "CA",
         "CB",
@@ -340,7 +340,7 @@ test_smaller_min_length_and_does_have_common_prefix (void)
 static void
 test_smaller_min_length_and_doesnt_have_common_prefix (void)
 {
-    char *list[] =
+    const char *list[] =
     {
         "CA",
         "BB",

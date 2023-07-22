@@ -109,8 +109,8 @@ char * nautilus_get_common_filename_prefix (GList *file_list,
  * Returns: the common filename prefix for a set of filenames, or NULL if
  * there isn't a common prefix of length min_required_len
  */
-char * nautilus_get_common_filename_prefix_from_filenames (char **filenames,
-                                                           int    min_required_len);
+char * nautilus_get_common_filename_prefix_from_filenames (const char * const *filenames,
+                                                           int                 min_required_len);
 
 /**
  * nautilus_get_max_child_name_for_location:
