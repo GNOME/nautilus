@@ -412,18 +412,15 @@ filtering_changed_callback (gpointer callback_data)
 void
 emit_change_signals_for_all_files (NautilusDirectory *directory)
 {
-    GList *files;
+    g_autolist (NautilusFile) files = NULL;
 
-    files = g_list_copy (directory->details->file_list);
+    files = nautilus_file_list_copy (directory->details->file_list);
     if (directory->details->as_file != NULL)
     {
-        files = g_list_prepend (files, directory->details->as_file);
+        files = g_list_prepend (files, g_object_ref (directory->details->as_file));
     }
 
-    nautilus_file_list_ref (files);
     nautilus_directory_emit_change_signals (directory, files);
-
-    nautilus_file_list_free (files);
 }
 
 void

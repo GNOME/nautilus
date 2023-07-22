@@ -581,11 +581,11 @@ nautilus_restore_files_from_trash (GList     *files,
 {
     NautilusFile *file;
     GHashTable *original_dirs_hash;
-    GList *unhandled_files, *l;
+    g_autolist (NautilusFile) unhandled_files = NULL;
 
     original_dirs_hash = nautilus_trashed_files_get_original_directories (files, &unhandled_files);
 
-    for (l = unhandled_files; l != NULL; l = l->next)
+    for (GList *l = unhandled_files; l != NULL; l = l->next)
     {
         g_autofree char *message;
 
@@ -604,8 +604,6 @@ nautilus_restore_files_from_trash (GList     *files,
         restore_files_ensure_parent_directories (original_dirs_hash, parent_window);
         g_hash_table_unref (original_dirs_hash);
     }
-
-    nautilus_file_list_unref (unhandled_files);
 }
 
 typedef struct

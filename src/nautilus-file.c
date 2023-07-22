@@ -8563,31 +8563,6 @@ nautilus_file_list_debug (GList *files)
 }
 
 /**
- * nautilus_file_list_ref
- *
- * Ref all the files in a list.
- * @list: GList of files.
- **/
-GList *
-nautilus_file_list_ref (GList *list)
-{
-    g_list_foreach (list, (GFunc) nautilus_file_ref, NULL);
-    return list;
-}
-
-/**
- * nautilus_file_list_unref
- *
- * Unref all the files in a list.
- * @list: GList of files.
- **/
-void
-nautilus_file_list_unref (GList *list)
-{
-    g_list_foreach (list, (GFunc) nautilus_file_unref, NULL);
-}
-
-/**
  * nautilus_file_list_free
  *
  * Free a list of files after unrefing them.
@@ -8596,8 +8571,7 @@ nautilus_file_list_unref (GList *list)
 void
 nautilus_file_list_free (GList *list)
 {
-    nautilus_file_list_unref (list);
-    g_list_free (list);
+    g_list_free_full (list, (GDestroyNotify) nautilus_file_unref);
 }
 
 /**
@@ -8609,7 +8583,7 @@ nautilus_file_list_free (GList *list)
 GList *
 nautilus_file_list_copy (GList *list)
 {
-    return g_list_copy (nautilus_file_list_ref (list));
+    return g_list_copy_deep (list, (GCopyFunc) nautilus_file_ref, NULL);
 }
 
 /**

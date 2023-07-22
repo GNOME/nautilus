@@ -450,8 +450,6 @@ gboolean                nautilus_file_is_thumbnailing                   (Nautilu
 /* Convenience functions for dealing with a list of NautilusFile objects that each have a ref.
  * These are just convenient names for functions that work on lists of GtkObject *.
  */
-GList *                 nautilus_file_list_ref                          (GList                          *file_list);
-void                    nautilus_file_list_unref                        (GList                          *file_list);
 void                    nautilus_file_list_free                         (GList                          *file_list);
 GList *                 nautilus_file_list_copy                         (GList                          *file_list);
 GList *			nautilus_file_list_sort_by_display_name		(GList				*file_list);

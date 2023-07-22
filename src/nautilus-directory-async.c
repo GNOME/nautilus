@@ -2271,7 +2271,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
     {
         g_assert (!directory->details->directory_load_in_progress);
         directory->details->file_list_monitored = TRUE;
-        nautilus_file_list_ref (directory->details->file_list);
+        g_list_foreach (directory->details->file_list, (GFunc) nautilus_file_ref, NULL);
     }
 
     if (directory->details->directory_loaded ||
@@ -2324,7 +2324,7 @@ nautilus_directory_stop_monitoring_file_list (NautilusDirectory *directory)
 
     directory->details->file_list_monitored = FALSE;
     file_list_cancel (directory);
-    nautilus_file_list_unref (directory->details->file_list);
+    g_list_foreach (directory->details->file_list, (GFunc) nautilus_file_unref, NULL);
     directory->details->directory_loaded = FALSE;
 }
 
