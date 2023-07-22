@@ -25,30 +25,6 @@ test_file_refcount_single_file (void)
 }
 
 static void
-test_file_refcount_file_list (void)
-{
-    NautilusFile *file_1 = nautilus_file_get_by_uri ("file:///etc");
-    NautilusFile *file_2 = nautilus_file_get_by_uri ("file:///usr");
-
-    GList *list = NULL;
-    list = g_list_prepend (list, file_1);
-    list = g_list_prepend (list, file_2);
-    nautilus_file_list_ref (list);
-
-    g_assert_cmpint (G_OBJECT (file_1)->ref_count, ==, 2);
-    g_assert_cmpint (G_OBJECT (file_2)->ref_count, ==, 2);
-
-    nautilus_file_list_unref (list);
-
-    g_assert_cmpint (G_OBJECT (file_1)->ref_count, ==, 1);
-    g_assert_cmpint (G_OBJECT (file_2)->ref_count, ==, 1);
-
-    nautilus_file_list_free (list);
-
-    g_assert_cmpint (nautilus_directory_number_outstanding (), ==, 0);
-}
-
-static void
 test_file_check_name (void)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home/");
@@ -121,8 +97,6 @@ main (int   argc,
 
     g_test_add_func ("/file-refcount/single-file",
                      test_file_refcount_single_file);
-    g_test_add_func ("/file-refcount/file-list",
-                     test_file_refcount_file_list);
     g_test_add_func ("/file-check-name/1.0",
                      test_file_check_name);
     g_test_add_func ("/file-duplicate-pointers/1.0",
