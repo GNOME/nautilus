@@ -257,6 +257,7 @@ void                nautilus_files_view_add_subdirectory                (Nautilu
                                                                          NautilusDirectory *directory);
 void                nautilus_files_view_remove_subdirectory             (NautilusFilesView *view,
                                                                          NautilusDirectory *directory);
+gpointer            nautilus_files_view_get_model                       (NautilusFilesView *view);
 
 /* file operations */
 char *            nautilus_files_view_get_backing_uri            (NautilusFilesView      *view);

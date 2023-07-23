@@ -1773,13 +1773,7 @@ nautilus_list_base_init (NautilusListBase *self)
     g_signal_connect (vadjustment, "changed", (GCallback) on_vadjustment_changed, self);
     g_signal_connect (vadjustment, "value-changed", (GCallback) on_vadjustment_changed, self);
 
-    priv->model = nautilus_view_model_new ();
-
-    g_signal_connect_object (GTK_SELECTION_MODEL (priv->model),
-                             "selection-changed",
-                             G_CALLBACK (nautilus_files_view_notify_selection_changed),
-                             NAUTILUS_FILES_VIEW (self),
-                             G_CONNECT_SWAPPED);
+    priv->model = NAUTILUS_VIEW_MODEL (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self)));
 
     set_click_mode_from_settings (self);
 

@@ -64,6 +64,7 @@
 #include "nautilus-filename-utilities.h"
 #include "nautilus-floating-bar.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-grid-view.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-icon-names.h"
 #include "nautilus-list-view.h"
@@ -83,7 +84,7 @@
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
-#include "nautilus-grid-view.h"
+#include "nautilus-view-model.h"
 #include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
 
@@ -166,6 +167,8 @@ typedef struct
     NautilusFile *directory_as_file;
     GFile *location;
     guint dir_merge_id;
+
+    NautilusViewModel *model;
 
     NautilusQuery *search_query;
     GFile *location_before_search;
@@ -3369,6 +3372,7 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_object (&priv->location_before_search);
     g_clear_object (&priv->outgoing_search);
     g_clear_object (&priv->location);
+    g_clear_object (&priv->model);
 
     adw_bin_set_child (ADW_BIN (view), NULL);
     gtk_widget_dispose_template (GTK_WIDGET (view), NAUTILUS_TYPE_FILES_VIEW);
@@ -9804,6 +9808,13 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
+    priv->model = nautilus_view_model_new ();
+    g_signal_connect_object (GTK_SELECTION_MODEL (priv->model),
+                             "selection-changed",
+                             G_CALLBACK (nautilus_files_view_notify_selection_changed),
+                             view,
+                             G_CONNECT_SWAPPED);
+
     /* Toolbar menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
     priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
@@ -10014,4 +10025,14 @@ nautilus_files_view_new (guint               id,
     }
 
     return view;
+}
+
+/* Temporary helper to be removed in upcoming Merge Requests. Generic pointer to
+ * avoid including nautilus-view-model.h in the header */
+gpointer
+nautilus_files_view_get_model (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    return (gpointer) g_object_ref (priv->model);
 }
