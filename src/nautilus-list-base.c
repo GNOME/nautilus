@@ -43,7 +43,6 @@ struct _NautilusListBasePrivate
 
     GList *cut_files;
 
-    guint scroll_to_file_handle_id;
     guint prioritize_thumbnailing_handle_id;
     GtkAdjustment *vadjustment;
 
@@ -901,7 +900,6 @@ real_clear (NautilusFilesView *files_view)
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
-    g_clear_handle_id (&priv->scroll_to_file_handle_id, g_source_remove);
     nautilus_view_model_remove_all_items (priv->model);
 }
 
@@ -1396,57 +1394,21 @@ real_get_last_visible_file (NautilusFilesView *files_view)
     return uri;
 }
 
-typedef struct
-{
-    NautilusListBase *view;
-    char *uri;
-} ScrollToFileData;
-
-static void
-scroll_to_file_data_free (ScrollToFileData *data)
-{
-    g_free (data->uri);
-    g_free (data);
-}
-
-static gboolean
-scroll_to_file_on_idle (ScrollToFileData *data)
-{
-    NautilusListBase *self = data->view;
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (NautilusFile) file = NULL;
-    NautilusViewItem *item;
-    guint i;
-
-    priv->scroll_to_file_handle_id = 0;
-
-    file = nautilus_file_get_existing_by_uri (data->uri);
-    item = nautilus_view_model_find_item_for_file (priv->model, file);
-    g_return_val_if_fail (item != NULL, G_SOURCE_REMOVE);
-
-    i = nautilus_view_model_get_index (priv->model, item);
-    nautilus_list_base_scroll_to_item (self, i);
-
-    return G_SOURCE_REMOVE;
-}
-
 static void
 real_scroll_to_file (NautilusFilesView *files_view,
                      const char        *uri)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    ScrollToFileData *data;
-    guint handle_id;
+    g_autoptr (NautilusFile) file = nautilus_file_get_existing_by_uri (uri);
+    NautilusViewItem *item;
+    guint i;
 
-    data = g_new (ScrollToFileData, 1);
-    data->view = self;
-    data->uri = g_strdup (uri);
-    handle_id = g_idle_add_full (G_PRIORITY_LOW,
-                                 (GSourceFunc) scroll_to_file_on_idle,
-                                 data,
-                                 (GDestroyNotify) scroll_to_file_data_free);
-    priv->scroll_to_file_handle_id = handle_id;
+    item = nautilus_view_model_find_item_for_file (priv->model, file);
+    g_return_if_fail (item != NULL);
+
+    i = nautilus_view_model_get_index (priv->model, item);
+    nautilus_list_base_scroll_to_item (self, i);
 }
 
 static void
@@ -1587,7 +1549,6 @@ nautilus_list_base_dispose (GObject *object)
     NautilusListBase *self = NAUTILUS_LIST_BASE (object);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
-    g_clear_handle_id (&priv->scroll_to_file_handle_id, g_source_remove);
     g_clear_handle_id (&priv->prioritize_thumbnailing_handle_id, g_source_remove);
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
