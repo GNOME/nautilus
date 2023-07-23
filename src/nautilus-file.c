@@ -5392,7 +5392,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                 /* Translators: this is the word "Today" followed by
                  * a time in 24h format. i.e. "Today 23:04" */
                 /* xgettext:no-c-format */
-                format = _("Today %H:%M");
+                format = _("Today %-H:%M");
             }
             else
             {
@@ -5468,7 +5468,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
         {
             /* Translators: this is the day number followed by the full month
              * name followed by the year followed by a time in 12h format
-             * with seconds i.e. "3 February 2015 9:04:00 PM" */
+             * with seconds i.e. "3 February 2015 09:04:00 PM" */
             /* xgettext:no-c-format */
             format = _("%-e %B %Y %I:%M:%S %p");
         }
