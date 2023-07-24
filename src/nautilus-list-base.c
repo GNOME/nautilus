@@ -971,6 +971,10 @@ update_clipboard_status (NautilusFilesView *view)
                                         on_clipboard_contents_received,
                                         view);
     }
+    else
+    {
+        nautilus_view_model_set_cut_files (priv->model, NULL);
+    }
 }
 
 static void
