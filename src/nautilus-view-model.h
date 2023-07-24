@@ -36,5 +36,7 @@ void nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
                                              NautilusViewItem  *item);
 void nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
                                            gboolean           expand_as_a_tree);
+void nautilus_view_model_set_cut_files (NautilusViewModel *self,
+                                        GList             *cut_files);
 
 G_END_DECLS

@@ -15,6 +15,7 @@ struct _NautilusViewModel
     GtkMultiSelection *selection_model;
 
     gboolean expand_as_a_tree;
+    GList *cut_files;
 };
 
 static inline GListStore *
@@ -206,6 +207,8 @@ finalize (GObject *object)
 
     g_hash_table_destroy (self->map_files_to_model);
     g_hash_table_destroy (self->directory_reverse_map);
+
+    g_clear_list (&self->cut_files, g_object_unref);
 }
 
 static void
@@ -621,4 +624,32 @@ nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
                                       gboolean           expand_as_a_tree)
 {
     self->expand_as_a_tree = expand_as_a_tree;
+}
+
+void
+nautilus_view_model_set_cut_files (NautilusViewModel *self,
+                                   GList             *cut_files)
+{
+    NautilusViewItem *item;
+
+    for (GList *l = self->cut_files; l != NULL; l = l->next)
+    {
+        item = nautilus_view_model_get_item_for_file (self, l->data);
+        if (item != NULL)
+        {
+            nautilus_view_item_set_cut (item, FALSE);
+        }
+    }
+    g_clear_list (&self->cut_files, g_object_unref);
+
+    for (GList *l = cut_files; l != NULL; l = l->next)
+    {
+        item = nautilus_view_model_get_item_for_file (self, l->data);
+        if (item != NULL)
+        {
+            self->cut_files = g_list_prepend (self->cut_files,
+                                              g_object_ref (l->data));
+            nautilus_view_item_set_cut (item, TRUE);
+        }
+    }
 }

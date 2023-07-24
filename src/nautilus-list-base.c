@@ -41,8 +41,6 @@ struct _NautilusListBasePrivate
 {
     NautilusViewModel *model;
 
-    GList *cut_files;
-
     guint prioritize_thumbnailing_handle_id;
     GtkAdjustment *vadjustment;
 
@@ -929,12 +927,11 @@ on_clipboard_contents_received (GObject      *source_object,
                                 GAsyncResult *res,
                                 gpointer      user_data)
 {
-    NautilusFilesView *files_view;
-    NautilusListBase *self;
-    NautilusListBasePrivate *priv;
+    NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     NautilusClipboard *clip;
-    NautilusViewItem *item;
     const GValue *value;
+    GList *cut_files = NULL;
 
     value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, NULL);
 
@@ -943,44 +940,16 @@ on_clipboard_contents_received (GObject      *source_object,
         return;
     }
 
-    files_view = NAUTILUS_FILES_VIEW (user_data);
-    self = NAUTILUS_LIST_BASE (files_view);
-    priv = nautilus_list_base_get_instance_private (self);
-
-    for (GList *l = priv->cut_files; l != NULL; l = l->next)
-    {
-        item = nautilus_view_model_get_item_for_file (priv->model, l->data);
-        if (item != NULL)
-        {
-            nautilus_view_item_set_cut (item, FALSE);
-        }
-    }
-    g_clear_list (&priv->cut_files, g_object_unref);
-
     if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
     {
         clip = g_value_get_boxed (value);
-    }
-    else
-    {
-        return;
-    }
-
-    if (clip != NULL && nautilus_clipboard_is_cut (clip))
-    {
-        priv->cut_files = g_list_copy_deep (nautilus_clipboard_peek_files (clip),
-                                            (GCopyFunc) g_object_ref,
-                                            NULL);
-    }
-
-    for (GList *l = priv->cut_files; l != NULL; l = l->next)
-    {
-        item = nautilus_view_model_get_item_for_file (priv->model, l->data);
-        if (item != NULL)
+        if (clip != NULL && nautilus_clipboard_is_cut (clip))
         {
-            nautilus_view_item_set_cut (item, TRUE);
+            cut_files = nautilus_clipboard_peek_files (clip);
         }
     }
+
+    nautilus_view_model_set_cut_files (priv->model, cut_files);
 }
 
 static void
@@ -1276,7 +1245,6 @@ nautilus_list_base_finalize (GObject *object)
     NautilusListBase *self = NAUTILUS_LIST_BASE (object);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
-    g_clear_list (&priv->cut_files, g_object_unref);
     /* Clear cancellable in finalize to prevent null usage */
     g_clear_object (&priv->clipboard_cancellable);
 
