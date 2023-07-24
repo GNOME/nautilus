@@ -2960,16 +2960,6 @@ action_create_links (GSimpleAction *action,
     paste_files (view, NULL, TRUE);
 }
 
-static void
-click_policy_changed_callback (gpointer callback_data)
-{
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (callback_data);
-
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->click_policy_changed (view);
-}
-
 gboolean
 nautilus_files_view_should_sort_directories_first (NautilusFilesView *view)
 {
@@ -3358,8 +3348,6 @@ nautilus_files_view_dispose (GObject *object)
 
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           schedule_update_context_menus, view);
-    g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                          click_policy_changed_callback, view);
     g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
                                           sort_directories_first_changed_callback, view);
     g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
@@ -9824,10 +9812,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_signal_connect_object (nautilus_signaller_get_current (), "popup-menu-changed",
                              G_CALLBACK (schedule_update_context_menus), view, G_CONNECT_SWAPPED);
 
-    g_signal_connect_swapped (nautilus_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
-                              G_CALLBACK (click_policy_changed_callback),
-                              view);
     g_signal_connect_object (nautilus_preferences,
                              "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
                              G_CALLBACK (update_sort_order_from_metadata_and_preferences),

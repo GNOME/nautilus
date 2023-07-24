@@ -896,12 +896,6 @@ set_click_mode_from_settings (NautilusListBase *self)
     priv->single_click_mode = (click_policy == NAUTILUS_CLICK_POLICY_SINGLE);
 }
 
-static void
-real_click_policy_changed (NautilusFilesView *files_view)
-{
-    set_click_mode_from_settings (NAUTILUS_LIST_BASE (files_view));
-}
-
 static guint
 get_first_selected_item (NautilusListBase *self)
 {
@@ -1442,7 +1436,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     widget_class->focus = nautilus_list_base_focus;
 
     files_view_class->begin_loading = real_begin_loading;
-    files_view_class->click_policy_changed = real_click_policy_changed;
     files_view_class->end_loading = real_end_loading;
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->get_last_visible_file = real_get_last_visible_file;
@@ -1482,6 +1475,10 @@ nautilus_list_base_init (NautilusListBase *self)
 
     priv->model = NAUTILUS_VIEW_MODEL (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self)));
 
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
+                             G_CALLBACK (set_click_mode_from_settings), self,
+                             G_CONNECT_SWAPPED);
     set_click_mode_from_settings (self);
 
     priv->clipboard_cancellable = g_cancellable_new ();

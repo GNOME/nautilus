@@ -144,11 +144,6 @@ struct _NautilusFilesViewClass {
 
         void    (* update_actions_state)     (NautilusFilesView *view);
 
-        /* Preference change callbacks, overridden by icon and list views.
-         * Icon and list views respond by synchronizing to the new preference
-         * values and forcing an update if appropriate.
-         */
-        void        (* click_policy_changed) (NautilusFilesView *view);
         void        (* sort_directories_first_changed) (NautilusFilesView *view);
 
         /* Get the id for this view. Its a guint*/
