@@ -680,6 +680,58 @@ real_begin_loading (NautilusFilesView *self)
     nautilus_files_view_update_toolbar_menus (self);
 }
 
+static void
+update_cut_status_callback (GObject      *source_object,
+                            GAsyncResult *res,
+                            gpointer      user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    const GValue *value;
+    GList *cut_files = NULL;
+
+    value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, NULL);
+    if (value != NULL &&
+        G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
+    {
+        NautilusClipboard *clip = g_value_get_boxed (value);
+        if (clip != NULL && nautilus_clipboard_is_cut (clip))
+        {
+            cut_files = nautilus_clipboard_peek_files (clip);
+        }
+    }
+
+    nautilus_view_model_set_cut_files (priv->model, cut_files);
+}
+
+static void
+update_cut_status (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    GdkClipboard *clipboard = gtk_widget_get_clipboard (GTK_WIDGET (self));
+    GdkContentFormats *formats = gdk_clipboard_get_formats (clipboard);
+
+    if (gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD))
+    {
+        gdk_clipboard_read_value_async (clipboard, NAUTILUS_TYPE_CLIPBOARD,
+                                        G_PRIORITY_DEFAULT,
+                                        priv->clipboard_cancellable,
+                                        update_cut_status_callback,
+                                        self);
+    }
+    else
+    {
+        nautilus_view_model_set_cut_files (priv->model, NULL);
+    }
+}
+
+static void
+real_end_loading (NautilusFilesView *self,
+                  gboolean           all_files_seen)
+{
+    update_cut_status (self);
+}
+
 static char *
 real_get_backing_uri (NautilusFilesView *view)
 {
@@ -7370,6 +7422,8 @@ on_clipboard_owner_changed (GdkClipboard *clipboard,
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
 
+    update_cut_status (self);
+
     /* We need to update paste and paste-like actions */
     nautilus_files_view_update_actions_state (self);
 }
@@ -9612,6 +9666,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     klass->file_changed = real_file_changed;
     klass->end_file_changes = real_end_file_changes;
     klass->begin_loading = real_begin_loading;
+    klass->end_loading = real_end_loading;
     klass->get_backing_uri = real_get_backing_uri;
     klass->update_context_menus = real_update_context_menus;
     klass->update_actions_state = real_update_actions_state;

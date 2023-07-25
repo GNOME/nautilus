@@ -6,7 +6,6 @@
 
 #include "nautilus-list-base-private.h"
 
-#include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
 #include "nautilus-view-cell.h"
 #include "nautilus-view-item.h"
@@ -53,8 +52,6 @@ struct _NautilusListBasePrivate
     graphene_point_t hover_start_point;
     guint hover_timer_id;
     GtkDropTarget *view_drop_target;
-
-    GCancellable *clipboard_cancellable;
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
@@ -922,75 +919,6 @@ real_reveal_selection (NautilusFilesView *files_view)
     nautilus_list_base_scroll_to_item (self, get_first_selected_item (self));
 }
 
-static void
-on_clipboard_contents_received (GObject      *source_object,
-                                GAsyncResult *res,
-                                gpointer      user_data)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusClipboard *clip;
-    const GValue *value;
-    GList *cut_files = NULL;
-
-    value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, NULL);
-
-    if (value == NULL)
-    {
-        return;
-    }
-
-    if (G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
-    {
-        clip = g_value_get_boxed (value);
-        if (clip != NULL && nautilus_clipboard_is_cut (clip))
-        {
-            cut_files = nautilus_clipboard_peek_files (clip);
-        }
-    }
-
-    nautilus_view_model_set_cut_files (priv->model, cut_files);
-}
-
-static void
-update_clipboard_status (NautilusFilesView *view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    GdkClipboard *clipboard;
-    GdkContentFormats *formats;
-
-    clipboard = gtk_widget_get_clipboard (GTK_WIDGET (view));
-    formats = gdk_clipboard_get_formats (clipboard);
-
-    if (gdk_content_formats_contain_gtype (formats, NAUTILUS_TYPE_CLIPBOARD))
-    {
-        gdk_clipboard_read_value_async (clipboard, NAUTILUS_TYPE_CLIPBOARD,
-                                        G_PRIORITY_DEFAULT,
-                                        priv->clipboard_cancellable,
-                                        on_clipboard_contents_received,
-                                        view);
-    }
-    else
-    {
-        nautilus_view_model_set_cut_files (priv->model, NULL);
-    }
-}
-
-static void
-on_clipboard_owner_changed (GdkClipboard *clipboard,
-                            gpointer      user_data)
-{
-    update_clipboard_status (NAUTILUS_FILES_VIEW (user_data));
-}
-
-static void
-real_end_loading (NautilusFilesView *files_view,
-                  gboolean           all_files_seen)
-{
-    update_clipboard_status (files_view);
-}
-
 static guint
 get_first_visible_item (NautilusListBase *self)
 {
@@ -1238,20 +1166,12 @@ nautilus_list_base_dispose (GObject *object)
     g_clear_handle_id (&priv->prioritize_thumbnailing_handle_id, g_source_remove);
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
-    g_cancellable_cancel (priv->clipboard_cancellable);
-
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->dispose (object);
 }
 
 static void
 nautilus_list_base_finalize (GObject *object)
 {
-    NautilusListBase *self = NAUTILUS_LIST_BASE (object);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    /* Clear cancellable in finalize to prevent null usage */
-    g_clear_object (&priv->clipboard_cancellable);
-
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->finalize (object);
 }
 
@@ -1408,7 +1328,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     widget_class->focus = nautilus_list_base_focus;
 
     files_view_class->begin_loading = real_begin_loading;
-    files_view_class->end_loading = real_end_loading;
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->get_last_visible_file = real_get_last_visible_file;
     files_view_class->reveal_selection = real_reveal_selection;
@@ -1433,11 +1352,6 @@ nautilus_list_base_init (NautilusListBase *self)
     GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
 
-    /* React to clipboard changes */
-    g_signal_connect_object (gdk_display_get_clipboard (gdk_display_get_default ()),
-                             "changed",
-                             G_CALLBACK (on_clipboard_owner_changed), self, 0);
-
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
@@ -1452,8 +1366,6 @@ nautilus_list_base_init (NautilusListBase *self)
                              G_CALLBACK (set_click_mode_from_settings), self,
                              G_CONNECT_SWAPPED);
     set_click_mode_from_settings (self);
-
-    priv->clipboard_cancellable = g_cancellable_new ();
 }
 
 NautilusViewModel *

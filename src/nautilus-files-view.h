@@ -84,9 +84,7 @@ struct _NautilusFilesViewClass {
         void         (* begin_loading)       (NautilusFilesView *view);
 
         /* The 'end_loading' signal is emitted after all of the contents
-         * of a directory are added to the view. It can be replaced by a
-         * subclass to do any necessary clean-up. The default implementation
-         * does nothing.
+         * of a directory are added to the view.
          *
          * If all_files_seen is true, the handler may assume that
          * no load error ocurred, and all files of the underlying
