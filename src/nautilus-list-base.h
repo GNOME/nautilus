@@ -27,6 +27,10 @@ struct _NautilusListBaseClass
                                       guint               position,
                                       GtkListScrollFlags  flags,
                                       GtkScrollInfo      *scroll);
+
+        /* Subclass override must chain-up to base implementation. */
+        void       (*setup_directory) (NautilusListBase  *self,
+                                       NautilusDirectory *directory);
 };
 
 void nautilus_list_base_preview_selection_event (NautilusListBase *self,
@@ -35,5 +39,7 @@ void nautilus_list_base_set_cursor (NautilusListBase *self,
                                     guint             position,
                                     gboolean          select,
                                     gboolean          scroll_to);
+void    nautilus_list_base_setup_directory         (NautilusListBase  *self,
+                                                    NautilusDirectory *directory);
 
 G_END_DECLS

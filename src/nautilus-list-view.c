@@ -515,13 +515,14 @@ const GActionEntry list_view_entries[] =
 };
 
 static void
-real_begin_loading (NautilusFilesView *files_view)
+nautilus_list_view_setup_directory (NautilusListBase  *list_base,
+                                    NautilusDirectory *new_directory)
 {
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_view);
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
     NautilusViewModel *model;
     NautilusFile *file;
 
-    NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->begin_loading (files_view);
+    NAUTILUS_LIST_BASE_CLASS (nautilus_list_view_parent_class)->setup_directory (list_base, new_directory);
 
     update_columns_settings_from_metadata_and_preferences (self);
 
@@ -530,7 +531,7 @@ real_begin_loading (NautilusFilesView *files_view)
 
     self->path_attribute_q = 0;
     g_clear_object (&self->file_path_base_location);
-    file = nautilus_files_view_get_directory_as_file (files_view);
+    file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
     if (nautilus_file_is_in_trash (file))
     {
         self->path_attribute_q = g_quark_from_string ("trash_orig_path");
@@ -1278,7 +1279,6 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     object_class->dispose = nautilus_list_view_dispose;
     object_class->finalize = nautilus_list_view_finalize;
 
-    files_view_class->begin_loading = real_begin_loading;
     files_view_class->bump_zoom_level = real_bump_zoom_level;
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
@@ -1291,6 +1291,7 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->scroll_to = real_scroll_to;
+    list_base_view_class->setup_directory = nautilus_list_view_setup_directory;
 }
 
 NautilusListView *

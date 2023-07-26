@@ -53,11 +53,12 @@ nautilus_grid_view_sort (gconstpointer a,
 }
 
 static void
-real_begin_loading (NautilusFilesView *files_view)
+nautilus_grid_view_setup_directory (NautilusListBase  *list_base,
+                                    NautilusDirectory *new_directory)
 {
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_view);
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
 
-    NAUTILUS_FILES_VIEW_CLASS (nautilus_grid_view_parent_class)->begin_loading (files_view);
+    NAUTILUS_LIST_BASE_CLASS (nautilus_grid_view_parent_class)->setup_directory (list_base, new_directory);
 
     self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
 }
@@ -561,7 +562,6 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     object_class->dispose = dispose;
     object_class->finalize = finalize;
 
-    files_view_class->begin_loading = real_begin_loading;
     files_view_class->bump_zoom_level = real_bump_zoom_level;
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
@@ -574,6 +574,7 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->preview_selection_event = real_preview_selection_event;
     list_base_view_class->scroll_to = real_scroll_to;
+    list_base_view_class->setup_directory = nautilus_grid_view_setup_directory;
 }
 
 static void

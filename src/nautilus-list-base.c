@@ -855,12 +855,10 @@ typedef struct
 } NautilusListBaseSortData;
 
 static void
-real_begin_loading (NautilusFilesView *files_view)
+base_setup_directory (NautilusListBase  *self,
+                      NautilusDirectory *directory)
 {
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    NAUTILUS_FILES_VIEW_CLASS (nautilus_list_base_parent_class)->begin_loading (files_view);
 
     /* Temporary workaround */
     rubberband_set_state (self, TRUE);
@@ -873,7 +871,7 @@ real_begin_loading (NautilusFilesView *files_view)
      * are ignored. Update DnD variables here upon navigating to a directory*/
     if (gtk_drop_target_get_current_drop (priv->view_drop_target) != NULL)
     {
-        priv->drag_view_action = get_preferred_action (nautilus_files_view_get_directory_as_file (files_view),
+        priv->drag_view_action = get_preferred_action (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
                                                        gtk_drop_target_get_value (priv->view_drop_target));
         priv->drag_item_action = 0;
     }
@@ -1326,7 +1324,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     widget_class->focus = nautilus_list_base_focus;
 
-    files_view_class->begin_loading = real_begin_loading;
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->get_last_visible_file = real_get_last_visible_file;
     files_view_class->reveal_selection = real_reveal_selection;
@@ -1335,6 +1332,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
 
     klass->preview_selection_event = default_preview_selection_event;
+    klass->setup_directory = base_setup_directory;
 
     properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
                                                     "", "",
@@ -1413,4 +1411,16 @@ nautilus_list_base_preview_selection_event (NautilusListBase *self,
                                             GtkDirectionType  direction)
 {
     NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->preview_selection_event (self, direction);
+}
+
+/* This should be called when changing view directory, but only once information
+ * on the new directory file is ready, becase we need it to define sorting,
+ * drop action. etc. We defer on NautilusFilesView the responsibility of calling
+ * this at the right time, which, at the time of writing, is the default hanlder
+ * of the NautilusFilesView::begin-loading signal. */
+void
+nautilus_list_base_setup_directory (NautilusListBase  *self,
+                                    NautilusDirectory *directory)
+{
+    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->setup_directory (self, directory);
 }

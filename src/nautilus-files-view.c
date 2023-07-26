@@ -678,6 +678,8 @@ real_begin_loading (NautilusFilesView *self)
      * we need to update the menus */
     nautilus_files_view_update_context_menus (self);
     nautilus_files_view_update_toolbar_menus (self);
+
+    nautilus_list_base_setup_directory (NAUTILUS_LIST_BASE (self), nautilus_files_view_get_directory (self));
 }
 
 static void
