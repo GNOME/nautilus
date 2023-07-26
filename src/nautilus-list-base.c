@@ -1125,10 +1125,9 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 }
 
 static void
-real_preview_selection_event (NautilusFilesView *files_view,
-                              GtkDirectionType   direction)
+default_preview_selection_event (NautilusListBase *self,
+                                 GtkDirectionType  direction)
 {
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     guint i;
     gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL);
@@ -1334,7 +1333,8 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->scroll_to_file = real_scroll_to_file;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
-    files_view_class->preview_selection_event = real_preview_selection_event;
+
+    klass->preview_selection_event = default_preview_selection_event;
 
     properties[PROP_ICON_SIZE] = g_param_spec_uint ("icon-size",
                                                     "", "",
@@ -1406,4 +1406,11 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_view_drop), self);
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (drop_target));
     priv->view_drop_target = drop_target;
+}
+
+void
+nautilus_list_base_preview_selection_event (NautilusListBase *self,
+                                            GtkDirectionType  direction)
+{
+    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->preview_selection_event (self, direction);
 }

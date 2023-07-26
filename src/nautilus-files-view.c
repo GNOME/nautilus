@@ -1466,7 +1466,7 @@ void
 nautilus_files_view_preview_selection_event (NautilusFilesView *view,
                                              GtkDirectionType   direction)
 {
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->preview_selection_event (view, direction);
+    nautilus_list_base_preview_selection_event (NAUTILUS_LIST_BASE (view), direction);
 }
 
 void

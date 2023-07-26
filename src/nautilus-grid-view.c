@@ -221,10 +221,10 @@ real_can_zoom_out (NautilusFilesView *files_view)
 /* The generic implementation in src/nautilus-list-base.c doesn't allow the
  * 2-dimensional movements expected from a grid. Let's hack GTK here. */
 static void
-real_preview_selection_event (NautilusFilesView *files_view,
-                              GtkDirectionType   direction)
+real_preview_selection_event (NautilusListBase *list_base,
+                              GtkDirectionType  direction)
 {
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_view);
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
     guint direction_keyval;
     g_autoptr (GtkShortcutTrigger) direction_trigger = NULL;
     g_autoptr (GListModel) controllers = NULL;
@@ -303,7 +303,7 @@ real_preview_selection_event (NautilusFilesView *files_view,
     /* If the hack fails (GTK may change it's internal behavior), fallback. */
     if (!success)
     {
-        NAUTILUS_FILES_VIEW_CLASS (nautilus_grid_view_parent_class)->preview_selection_event (files_view, direction);
+        NAUTILUS_LIST_BASE_CLASS (nautilus_grid_view_parent_class)->preview_selection_event (list_base, direction);
     }
 }
 
@@ -569,10 +569,10 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     files_view_class->get_view_id = real_get_view_id;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
-    files_view_class->preview_selection_event = real_preview_selection_event;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_ui = real_get_view_ui;
+    list_base_view_class->preview_selection_event = real_preview_selection_event;
     list_base_view_class->scroll_to = real_scroll_to;
 }
 

@@ -162,9 +162,6 @@ struct _NautilusFilesViewClass {
         /* Use this to show an optional visual feedback when the directory is empty.
          * By default it shows a widget overlay on top of the view */
         void           (* check_empty_states)          (NautilusFilesView *view);
-
-        void           (* preview_selection_event)     (NautilusFilesView *view,
-                                                        GtkDirectionType   direction);
 };
 
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
