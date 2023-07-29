@@ -286,30 +286,12 @@
           </object>
         </child>
         <child>
-          <object class="GtkBox">
-            <property name="hexpand">True</property>
-            <child>
-              <object class="GtkToggleButton" id="full_text_search_button">
-                <property name="label" translatable="yes">Full Text</property>
-                <property name="tooltip_text" translatable="yes">Search Inside Files</property>
-                <property name="hexpand">True</property>
-                <property name="active">True</property>
-                <signal name="toggled" handler="search_fts_mode_changed" object="NautilusSearchPopover" swapped="no" />
-              </object>
-            </child>
-            <child>
-              <object class="GtkToggleButton" id="filename_search_button">
-                <property name="label" translatable="yes">File Name</property>
-                <property name="tooltip_text" translatable="yes">Don't Search Inside Files</property>
-                <property name="hexpand">True</property>
-                <property name="group">full_text_search_button</property>
-                <property name="active">True</property>
-                <signal name="toggled" handler="search_fts_mode_changed" object="NautilusSearchPopover" swapped="no"/>
-              </object>
-            </child>
-            <style>
-              <class name="linked"/>
-            </style>
+          <object class="AdwToggleGroup" id="search_toggles">
+            <signal name="notify::active" handler="search_fts_mode_changed" object="NautilusSearchPopover" swapped="no"/>
+            <toggles>
+              <toggle id="full-text" translatable="yes">Full Text</toggle>
+              <toggle id="file-name" translatable="yes">File Name</toggle>
+            </toggles>
             <layout>
               <property name="column">0</property>
               <property name="row">6</property>
@@ -323,8 +305,6 @@
   <object class="GtkSizeGroup">
     <property name="mode">vertical</property>
     <widgets>
-      <widget name="full_text_search_button"/>
-      <widget name="filename_search_button"/>
       <widget name="select_date_button"/>
       <widget name="clear_date_button"/>
     </widgets>
