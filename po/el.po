@@ -69,7 +69,7 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2023-07-15 15:50+0000\n"
-"PO-Revision-Date: 2023-07-29 10:13+0300\n"
+"PO-Revision-Date: 2023-07-29 10:55+0300\n"
 "Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
 "Language-Team: Ελληνικά <>\n"
 "Language: el\n"
@@ -415,10 +415,6 @@ msgid "Whether GTK 4 settings migration happened"
 msgstr "Αν έγινε η μετάβαση στις ρυθμίσεις του GTK 4"
 
 #: data/org.gnome.nautilus.gschema.xml:174
-#, fuzzy
-#| msgid ""
-#| "Whether settings shared with GtkFileChooser have been migrated from their "
-#| "GTK 3 key to the GTK 4 ones."
 msgid ""
 "Whether settings shared with GtkFileChooser have been migrated from their "
 "GTK 3 keys to the GTK 4 ones."
@@ -1370,10 +1366,8 @@ msgid "Cancel"
 msgstr "Ακύρωση"
 
 #: src/nautilus-dnd.c:267
-#, fuzzy
-#| msgid "Pasted image"
 msgid "Dropped image"
-msgstr "Επικόλληση εικόνας"
+msgstr "Απορριφθείσα εικόνα"
 
 #: src/nautilus-error-reporting.c:85
 #, c-format
@@ -3097,14 +3091,10 @@ msgid "_Redo Move"
 msgstr "Επανά_ληψη μετακίνησης"
 
 #: src/nautilus-file-undo-operations.c:477
-#, fuzzy
-#| msgid "_Undo Restore from Trash"
 msgid "_Undo Restore From Trash"
 msgstr "_Αναίρεση επαναφοράς από τα απορρίμματα"
 
 #: src/nautilus-file-undo-operations.c:478
-#, fuzzy
-#| msgid "_Redo Restore from Trash"
 msgid "_Redo Restore From Trash"
 msgstr "_Επανάληψη επαναφοράς από τα απορρίμματα"
 
@@ -3289,14 +3279,10 @@ msgid "Create new file “%s” from template "
 msgstr "Δημιουργία νέου αρχείου «%s» από το πρότυπο "
 
 #: src/nautilus-file-undo-operations.c:846
-#, fuzzy
-#| msgid "_Undo Create from Template"
 msgid "_Undo Create From Template"
 msgstr "_Αναίρεση δημιουργίας από το πρότυπο"
 
 #: src/nautilus-file-undo-operations.c:847
-#, fuzzy
-#| msgid "_Redo Create from Template"
 msgid "_Redo Create From Template"
 msgstr "_Επανάληψη δημιουργίας από το πρότυπο"
 
@@ -4223,7 +4209,7 @@ msgstr "Αδυναμία ολοκλήρωσης της ζητούμενης αν
 
 #: src/nautilus-search-popover.c:293
 msgid "Show Time Ranges"
-msgstr ""
+msgstr "Εμφάνιση χρονικών περιοχών"
 
 #: src/nautilus-search-popover.c:299
 #: src/resources/ui/nautilus-search-popover.ui:72
@@ -4407,12 +4393,11 @@ msgstr "Το «%s» μετακινήθηκε στον κάδο απορριμμ�
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
 #: src/nautilus-window.c:1195
-#, fuzzy, c-format
-#| msgid "“%s” moved to trash"
+#, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
-msgstr[0] "Το «%s» μετακινήθηκε στον κάδο απορριμμάτων"
-msgstr[1] "Το «%s» μετακινήθηκε στον κάδο απορριμμάτων"
+msgstr[0] "Το αρχείο «%d» μετακινήθηκε στον κάδο απορριμμάτων"
+msgstr[1] "Τα αρχεία «%d» μετακινήθηκαν στον κάδο απορριμμάτων"
 
 #
 #. Translators: one item has been unstarred and %s is its name.
@@ -4983,20 +4968,16 @@ msgid "This folder uses custom settings"
 msgstr "Αυτός ο φάκελος χρησιμοποιεί προσαρμοσμένες ρυθμίσεις"
 
 #: src/resources/ui/nautilus-column-chooser.ui:59
-#, fuzzy
-#| msgid "Only searching the current folder"
 msgid "Only Apply to Current Folder"
-msgstr "Αναζήτηση μόνο στον τρέχων φάκελο"
+msgstr "Εφαρμογή μόνο στον τρέχων φάκελο"
 
 #: src/resources/ui/nautilus-column-chooser.ui:80
 msgid "Move _Up"
-msgstr ""
+msgstr "Μετακίνηση προς τα _επάνω"
 
 #: src/resources/ui/nautilus-column-chooser.ui:84
-#, fuzzy
-#| msgid "Move to…"
 msgid "Move _Down"
-msgstr "Μετακίνηση σε…"
+msgstr "Μετακίνηση προς τα _κάτω"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
 msgid "Create Compressed Archive"
@@ -5206,8 +5187,6 @@ msgid "Email…"
 msgstr "Ηλεκτρονική αλληλογραφία…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:222
-#, fuzzy
-#| msgid "_Delete from Trash…"
 msgid "_Delete From Trash…"
 msgstr "_Διαγραφή από τα απορρίμματα…"
 
@@ -5221,8 +5200,6 @@ msgid "_Restore From Trash"
 msgstr "_Επαναφορά από τα απορρίμματα"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:242
-#, fuzzy
-#| msgid "_Remove from Recent"
 msgid "_Remove From Recent"
 msgstr "Α_φαίρεση από τα πρόσφατα"
 
