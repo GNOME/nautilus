@@ -29,6 +29,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-query.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-directory-file.h"
 #include "nautilus-search-engine-model.h"
 #include "nautilus-search-engine.h"
@@ -756,11 +757,7 @@ search_is_editable (NautilusDirectory *directory)
 static gboolean
 real_handles_location (GFile *location)
 {
-    g_autofree gchar *uri = NULL;
-
-    uri = g_file_get_uri (location);
-
-    return eel_uri_is_search (uri);
+    return g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH);
 }
 
 static void
