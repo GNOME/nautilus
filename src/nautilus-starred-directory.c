@@ -20,6 +20,7 @@
 #include "nautilus-tag-manager.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-directory-private.h"
+#include "nautilus-scheme.h"
 #include <glib/gi18n.h>
 
 struct _NautilusFavoriteDirectory
@@ -302,16 +303,7 @@ real_monitor_remove (NautilusDirectory *directory,
 static gboolean
 real_handles_location (GFile *location)
 {
-    g_autofree gchar *uri = NULL;
-
-    uri = g_file_get_uri (location);
-
-    if (eel_uri_is_starred (uri))
-    {
-        return TRUE;
-    }
-
-    return FALSE;
+    return g_file_has_uri_scheme (location, SCHEME_STARRED);
 }
 
 static FavoriteCallback *
