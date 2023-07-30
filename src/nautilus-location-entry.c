@@ -31,6 +31,7 @@
 #include "nautilus-location-entry.h"
 
 #include "nautilus-application.h"
+#include "nautilus-scheme.h"
 #include "nautilus-window.h"
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
@@ -215,7 +216,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
                                       GFile                 *location)
 {
     NautilusLocationEntryPrivate *priv;
-    gchar *uri, *formatted_uri;
+    gchar *formatted_uri;
 
     g_assert (location != NULL);
 
@@ -223,10 +224,9 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
 
     /* Note: This is called in reaction to external changes, and
      * thus should not emit the LOCATION_CHANGED signal. */
-    uri = g_file_get_uri (location);
     formatted_uri = g_file_get_parse_name (location);
 
-    if (eel_uri_is_search (uri))
+    if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
     {
         nautilus_location_entry_set_special_text (entry, "");
     }
@@ -248,7 +248,6 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
     /* invalidate the completions list */
     gtk_list_store_clear (priv->completions_store);
 
-    g_free (uri);
     g_free (formatted_uri);
 }
 
