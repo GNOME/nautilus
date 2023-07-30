@@ -119,6 +119,7 @@ libnautilus_sources = [
   'nautilus-properties-window.h',
   'nautilus-query-editor.c',
   'nautilus-query-editor.h',
+  'nautilus-scheme.h',
   'nautilus-search-popover.c',
   'nautilus-self-check-functions.c',
   'nautilus-self-check-functions.h',
