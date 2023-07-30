@@ -63,6 +63,7 @@
 #include "nautilus-module.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-profile.h"
+#include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-trash-monitor.h"
@@ -574,7 +575,6 @@ location_to_tooltip (GBinding           *binding,
                      NautilusWindowSlot *slot)
 {
     GFile *location = g_value_get_object (input);
-    g_autofree gchar *location_name = NULL;
 
     if (location == NULL)
     {
@@ -584,14 +584,14 @@ location_to_tooltip (GBinding           *binding,
     /* Set the tooltip on the label's parent (the tab label hbox),
      * so it covers all of the tab label.
      */
-    location_name = g_file_get_parse_name (location);
 
-    if (eel_uri_is_search (location_name))
+    if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
     {
         g_value_set_string (output, nautilus_window_slot_get_title (slot));
     }
     else
     {
+        g_autofree gchar *location_name = g_file_get_parse_name (location);
         g_value_set_string (output, location_name);
     }
 
@@ -753,7 +753,6 @@ nautilus_window_new_tab (NautilusWindow *window)
     NautilusWindowSlot *current_slot;
     AdwTabPage *page;
     GFile *location;
-    g_autofree gchar *uri = NULL;
 
     page = get_current_page (window);
     current_slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
@@ -761,8 +760,7 @@ nautilus_window_new_tab (NautilusWindow *window)
 
     if (location != NULL)
     {
-        uri = g_file_get_uri (location);
-        if (eel_uri_is_search (uri))
+        if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
         {
             location = g_file_new_for_path (g_get_home_dir ());
         }
@@ -1267,7 +1265,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             /* Don't pop up a notification if the focus is not in the this
              * window. This is an easy way to know from which window was the
              * unstart operation made */
-            if (eel_uri_is_starred (g_file_get_uri (location)) &&
+            if (g_file_has_uri_scheme (location, SCHEME_STARRED) &&
                 gtk_window_is_active (GTK_WINDOW (window)) &&
                 !nautilus_file_undo_info_starred_is_starred (NAUTILUS_FILE_UNDO_INFO_STARRED (undo_info)))
             {
