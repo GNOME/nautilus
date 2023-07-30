@@ -59,6 +59,7 @@
 #include "nautilus-previewer.h"
 #include "nautilus-profile.h"
 #include "nautilus-progress-persistence-handler.h"
+#include "nautilus-scheme.h"
 #include "nautilus-self-check-functions.h"
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-signaller.h"
@@ -876,7 +877,7 @@ nautilus_application_handle_file_args (NautilusApplication *self,
                 g_free (cwd);
             }
 
-            if (nautilus_is_search_directory (file))
+            if (g_file_has_uri_scheme (file, SCHEME_NAUTILUS_SEARCH))
             {
                 g_autofree char *error_string = NULL;
                 error_string = g_strdup_printf (_("“%s” is an internal protocol. "

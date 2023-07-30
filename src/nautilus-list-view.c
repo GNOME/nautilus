@@ -23,6 +23,7 @@
 #include "nautilus-label-cell.h"
 #include "nautilus-metadata.h"
 #include "nautilus-name-cell.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-star-cell.h"
 #include "nautilus-tag-manager.h"
@@ -140,7 +141,7 @@ apply_columns_settings (NautilusListView  *self,
 
     /* always show star column if supported */
     if (nautilus_tag_manager_can_star_contents (nautilus_tag_manager_get (), location) ||
-        nautilus_is_starred_directory (location))
+        g_file_has_uri_scheme (location, SCHEME_STARRED))
     {
         g_hash_table_insert (visible_columns_hash, g_strdup ("starred"), g_strdup ("starred"));
     }
@@ -310,9 +311,9 @@ get_base_location (NautilusListView *self)
         query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
         location = nautilus_query_get_location (query);
 
-        if (!nautilus_is_recent_directory (location) &&
-            !nautilus_is_starred_directory (location) &&
-            !nautilus_is_trash_directory (location))
+        if (!g_file_has_uri_scheme (location, SCHEME_RECENT) &&
+            !g_file_has_uri_scheme (location, SCHEME_STARRED) &&
+            !g_file_has_uri_scheme (location, SCHEME_TRASH))
         {
             base_location = g_steal_pointer (&location);
         }

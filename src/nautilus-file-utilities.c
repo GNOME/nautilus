@@ -470,58 +470,6 @@ nautilus_is_root_directory (GFile *dir)
     return g_file_equal (dir, root_dir);
 }
 
-gboolean
-nautilus_is_search_directory (GFile *dir)
-{
-    g_autofree gchar *uri = NULL;
-
-    uri = g_file_get_uri (dir);
-    return eel_uri_is_search (uri);
-}
-
-gboolean
-nautilus_is_recent_directory (GFile *dir)
-{
-    g_autofree gchar *uri = NULL;
-
-    uri = g_file_get_uri (dir);
-
-    return eel_uri_is_recent (uri);
-}
-
-gboolean
-nautilus_is_starred_directory (GFile *dir)
-{
-    g_autofree gchar *uri = NULL;
-
-    uri = g_file_get_uri (dir);
-
-    if (eel_uri_is_starred (uri))
-    {
-        return TRUE;
-    }
-
-    return FALSE;
-}
-
-gboolean
-nautilus_is_trash_directory (GFile *dir)
-{
-    g_autofree gchar *uri = NULL;
-
-    uri = g_file_get_uri (dir);
-    return eel_uri_is_trash (uri);
-}
-
-gboolean
-nautilus_is_other_locations_directory (GFile *dir)
-{
-    g_autofree gchar *uri = NULL;
-
-    uri = g_file_get_uri (dir);
-    return eel_uri_is_other_locations (uri);
-}
-
 GMount *
 nautilus_get_mounted_mount_for_root (GFile *location)
 {

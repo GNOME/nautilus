@@ -33,6 +33,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
+#include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
@@ -985,12 +986,12 @@ setup_button_type (ButtonData      *button_data,
         button_data->type = HOME_BUTTON;
         button_data->is_root = TRUE;
     }
-    else if (nautilus_is_recent_directory (location))
+    else if (g_file_has_uri_scheme (location, SCHEME_RECENT))
     {
         button_data->type = RECENT_BUTTON;
         button_data->is_root = TRUE;
     }
-    else if (nautilus_is_starred_directory (location))
+    else if (g_file_has_uri_scheme (location, SCHEME_STARRED))
     {
         button_data->type = STARRED_BUTTON;
         button_data->is_root = TRUE;
@@ -1001,7 +1002,7 @@ setup_button_type (ButtonData      *button_data,
         button_data->type = MOUNT_BUTTON;
         button_data->is_root = TRUE;
     }
-    else if (nautilus_is_other_locations_directory (location))
+    else if (g_file_has_uri_scheme (location, SCHEME_OTHER_LOCATIONS))
     {
         button_data->type = OTHER_LOCATIONS_BUTTON;
         button_data->is_root = TRUE;

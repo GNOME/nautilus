@@ -28,6 +28,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-icon-names.h"
+#include "nautilus-scheme.h"
 
 #include <gio/gio.h>
 #include <string.h>
@@ -619,16 +620,16 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
         return FALSE;
     }
 
-    if (nautilus_is_search_directory (location))
+    if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
     {
         return FALSE;
     }
 
-    if (nautilus_is_recent_directory (location) ||
-        nautilus_is_starred_directory (location) ||
+    if (g_file_has_uri_scheme (location, SCHEME_RECENT) ||
+        g_file_has_uri_scheme (location, SCHEME_STARRED) ||
         nautilus_is_home_directory (location) ||
-        nautilus_is_trash_directory (location) ||
-        nautilus_is_other_locations_directory (location))
+        g_file_has_uri_scheme (location, SCHEME_TRASH) ||
+        g_file_has_uri_scheme (location, SCHEME_OTHER_LOCATIONS))
     {
         /* Already in the sidebar */
         return FALSE;
