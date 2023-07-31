@@ -64,6 +64,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
+#include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
@@ -4052,14 +4053,9 @@ nautilus_file_is_home (NautilusFile *file)
 gboolean
 nautilus_file_is_in_search (NautilusFile *file)
 {
-    char *uri;
-    gboolean ret;
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
 
-    uri = nautilus_file_get_uri (file);
-    ret = eel_uri_is_search (uri);
-    g_free (uri);
-
-    return ret;
+    return g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH);
 }
 
 static gboolean
@@ -8053,13 +8049,13 @@ nautilus_file_is_other_locations (NautilusFile *file)
 gboolean
 nautilus_file_is_starred_location (NautilusFile *file)
 {
-    g_autofree gchar *uri = NULL;
+    g_autoptr (GFile) location = NULL;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    uri = nautilus_file_get_uri (file);
+    location = nautilus_file_get_location (file);
 
-    return eel_uri_is_starred (uri);
+    return g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH);
 }
 
 /**

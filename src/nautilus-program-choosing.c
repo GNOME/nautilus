@@ -25,6 +25,7 @@
 
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
+#include "nautilus-scheme.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
 #include <eel/eel-vfs-extensions.h>
@@ -40,21 +41,21 @@ static void
 add_file_to_recent (NautilusFile *file,
                     GAppInfo     *application)
 {
+    const gchar *scheme;
     GtkRecentData recent_data;
-    char *uri;
-
-    uri = nautilus_file_get_activation_uri (file);
+    g_autofree char *uri = nautilus_file_get_activation_uri (file);
     if (uri == NULL)
     {
         uri = nautilus_file_get_uri (file);
     }
 
     /* do not add trash:// etc */
-    if (eel_uri_is_trash (uri) ||
-        eel_uri_is_search (uri) ||
-        eel_uri_is_recent (uri))
+    scheme = g_uri_peek_scheme (uri);
+    if (scheme != NULL &&
+        (g_str_equal (scheme, SCHEME_TRASH) ||
+         g_str_equal (scheme, SCHEME_NAUTILUS_SEARCH) ||
+         g_str_equal (scheme, SCHEME_RECENT)))
     {
-        g_free (uri);
         return;
     }
 
@@ -74,8 +75,6 @@ add_file_to_recent (NautilusFile *file,
     g_free (recent_data.mime_type);
     g_free (recent_data.app_name);
     g_free (recent_data.app_exec);
-
-    g_free (uri);
 }
 void
 nautilus_launch_application_for_mount (GAppInfo  *app_info,

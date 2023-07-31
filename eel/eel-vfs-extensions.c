@@ -36,44 +36,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-gboolean
-eel_uri_is_starred (const gchar *uri)
-{
-    return g_str_has_prefix (uri, "starred:");
-}
-
-/* It also matches trashed folders inside Trash,
- * use `eel_uri_is_trash_root` if that's not desirable. */
-gboolean
-eel_uri_is_trash (const char *uri)
-{
-    return g_str_has_prefix (uri, "trash:");
-}
-
-gboolean
-eel_uri_is_trash_root (const char *uri)
-{
-    return g_strcmp0 (uri, "trash:///") == 0;
-}
-
-gboolean
-eel_uri_is_recent (const char *uri)
-{
-    return g_str_has_prefix (uri, "recent:");
-}
-
-gboolean
-eel_uri_is_search (const char *uri)
-{
-    return g_str_has_prefix (uri, EEL_SEARCH_URI);
-}
-
-gboolean
-eel_uri_is_other_locations (const char *uri)
-{
-    return g_str_has_prefix (uri, "other-locations:");
-}
-
 /**
  * eel_filename_get_extension_offset:
  * @filename: a null-terminated string representing the basename of a file, with

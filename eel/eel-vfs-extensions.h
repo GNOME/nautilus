@@ -33,13 +33,6 @@ G_BEGIN_DECLS
 #define	EEL_TRASH_URI "trash:"
 #define EEL_SEARCH_URI "x-nautilus-search:"
 
-gboolean           eel_uri_is_starred                  (const char           *uri);
-gboolean           eel_uri_is_trash                      (const char           *uri);
-gboolean           eel_uri_is_trash_root                 (const char           *uri);
-gboolean           eel_uri_is_search                     (const char           *uri);
-gboolean           eel_uri_is_other_locations            (const char           *uri);
-gboolean           eel_uri_is_recent                     (const char           *uri);
-
 char *             eel_filename_strip_extension          (const char           *filename);
 void               eel_filename_get_rename_region        (const char           *filename,
 							  int                  *start_offset,
