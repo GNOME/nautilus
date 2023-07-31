@@ -80,6 +80,7 @@
 #include "nautilus-program-choosing.h"
 #include "nautilus-properties-window.h"
 #include "nautilus-rename-file-popover-controller.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
@@ -3721,37 +3722,41 @@ nautilus_files_view_check_empty_states (NautilusFilesView *view)
     NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->check_empty_states (view);
 }
 
+static gboolean
+check_is_trash_root (const GFile *file)
+{
+    return (g_file_has_uri_scheme (file, SCHEME_TRASH) &&
+            !g_file_has_parent (file, NULL));
+}
+
 static void
 real_check_empty_states (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
-    g_autofree gchar *uri = NULL;
     AdwStatusPage *status_page = ADW_STATUS_PAGE (priv->empty_view_page);
 
     if (!priv->loading &&
         nautilus_files_view_is_empty (view))
     {
-        uri = g_file_get_uri (priv->location);
-
-        if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
+        if (g_file_has_uri_scheme (priv->location, SCHEME_NAUTILUS_SEARCH))
         {
             adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
             adw_status_page_set_title (status_page, _("No Results Found"));
             adw_status_page_set_description (status_page, _("Try a different search."));
         }
-        else if (eel_uri_is_trash_root (uri))
+        else if (check_is_trash_root (priv->location))
         {
             adw_status_page_set_icon_name (status_page, "user-trash-symbolic");
             adw_status_page_set_title (status_page, _("Trash is Empty"));
             adw_status_page_set_description (status_page, NULL);
         }
-        else if (eel_uri_is_starred (uri))
+        else if (g_file_has_uri_scheme (priv->location, SCHEME_STARRED))
         {
             adw_status_page_set_icon_name (status_page, "starred-symbolic");
             adw_status_page_set_title (status_page, _("No Starred Files"));
             adw_status_page_set_description (status_page, NULL);
         }
-        else if (eel_uri_is_recent (uri))
+        else if (g_file_has_uri_scheme (priv->location, SCHEME_RECENT))
         {
             adw_status_page_set_icon_name (status_page, "document-open-recent-symbolic");
             adw_status_page_set_title (status_page, _("No Recent Files"));
