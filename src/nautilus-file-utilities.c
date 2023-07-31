@@ -1031,7 +1031,7 @@ nautilus_get_max_child_name_length_for_location (GFile *location)
         max_child_name_length = name_max;
         if (path_max != -1)
         {
-            max_child_name_length = CLAMP ((path_max - 1) - strlen (path),
+            max_child_name_length = CLAMP ((path_max - 1) - (glong) strlen (path),
                                            0,
                                            max_child_name_length);
         }
