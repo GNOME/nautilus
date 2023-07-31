@@ -24,7 +24,7 @@ struct _NautilusIconInfo
     GObject parent;
 
     gboolean sole_owner;
-    gint64 last_use_time;
+    guint64 last_use_time;
     GdkPaintable *paintable;
 
     char *icon_name;
@@ -166,7 +166,7 @@ static guint reap_cache_timeout = 0;
 
 #define MICROSEC_PER_SEC ((guint64) 1000000L)
 
-static guint time_now;
+static guint64 time_now;
 
 static gboolean
 reap_old_icon (gpointer key,

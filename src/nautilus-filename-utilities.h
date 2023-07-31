@@ -38,7 +38,7 @@ nautilus_filename_get_extension_char_offset (const char *filename);
 gboolean
 nautilus_filename_shorten_base (char       **filename,
                                 const char  *base,
-                                int          max_length);
+                                size_t       max_length);
 
 char *
 nautilus_filename_strip_extension (const char *filename);

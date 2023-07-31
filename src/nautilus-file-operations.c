@@ -3315,7 +3315,7 @@ retry:
         free_size = g_file_info_get_attribute_uint64 (fsinfo,
                                                       G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
 
-        if (free_size < required_size)
+        if (free_size < (guint64) required_size)
         {
             g_autofree gchar *basename = NULL;
             g_autofree gchar *formatted_size = NULL;
@@ -3785,12 +3785,11 @@ make_file_name_valid_for_dest_fs (char       *filename,
             !strcmp (dest_fs_type, "cifs"))
         {
             gboolean ret;
-            int i, old_len;
+            guint old_len = strlen (filename);
 
             ret = fat_str_replace (filename, '_');
 
-            old_len = strlen (filename);
-            for (i = 0; i < old_len; i++)
+            for (guint i = 0; i < old_len; i++)
             {
                 if (filename[i] != ' ')
                 {

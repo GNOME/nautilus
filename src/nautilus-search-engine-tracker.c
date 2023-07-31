@@ -571,9 +571,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     if (mimetypes->len > 0)
     {
         g_autoptr (GString) mimetype_str = NULL;
-        gint i;
 
-        for (i = 0; i < mimetypes->len; i++)
+        for (guint i = 0; i < mimetypes->len; i++)
         {
             const gchar *mimetype;
 

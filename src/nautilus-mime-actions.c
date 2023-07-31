@@ -2271,14 +2271,14 @@ nautilus_mime_activate_file (GtkWindow          *parent_window,
     g_list_free (files);
 }
 
-gint
+guint
 nautilus_mime_types_get_number_of_groups (void)
 {
     return G_N_ELEMENTS (mimetype_groups);
 }
 
 const gchar *
-nautilus_mime_types_group_get_name (gint group_index)
+nautilus_mime_types_group_get_name (guint group_index)
 {
     g_return_val_if_fail (group_index < G_N_ELEMENTS (mimetype_groups), NULL);
 
@@ -2286,7 +2286,7 @@ nautilus_mime_types_group_get_name (gint group_index)
 }
 
 GPtrArray *
-nautilus_mime_types_group_get_mimetypes (gint group_index)
+nautilus_mime_types_group_get_mimetypes (guint group_index)
 {
     GStrv group;
     GPtrArray *mimetypes;

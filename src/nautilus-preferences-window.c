@@ -145,7 +145,6 @@ update_caption_combo_row (GPtrArray  *combo_rows,
                           const char *name)
 {
     AdwComboRow *combo_row;
-    int i;
     GListModel *model;
     guint n_columns;
 
@@ -156,7 +155,7 @@ update_caption_combo_row (GPtrArray  *combo_rows,
     g_signal_handlers_block_by_func (
         combo_row, G_CALLBACK (icon_captions_changed_callback), combo_rows);
 
-    for (i = 0; i < n_columns; ++i)
+    for (guint i = 0; i < n_columns; ++i)
     {
         g_autoptr (NautilusColumn) column_i = g_list_model_get_item (model, i);
         g_autofree char *name_i = NULL;

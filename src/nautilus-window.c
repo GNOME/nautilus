@@ -68,8 +68,8 @@
 
 /* Forward and back buttons on the mouse */
 static gboolean mouse_extra_buttons = TRUE;
-static int mouse_forward_button = 9;
-static int mouse_back_button = 8;
+static guint mouse_forward_button = 9;
+static guint mouse_back_button = 8;
 
 static void mouse_back_button_changed (gpointer callback_data);
 static void mouse_forward_button_changed (gpointer callback_data);
@@ -2166,7 +2166,7 @@ mouse_back_button_changed (gpointer callback_data)
 {
     int new_back_button;
 
-    new_back_button = g_settings_get_int (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON);
+    new_back_button = g_settings_get_uint (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON);
 
     /* Bounds checking */
     if (new_back_button < 6 || new_back_button > UPPER_MOUSE_LIMIT)
@@ -2182,7 +2182,7 @@ mouse_forward_button_changed (gpointer callback_data)
 {
     int new_forward_button;
 
-    new_forward_button = g_settings_get_int (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON);
+    new_forward_button = g_settings_get_uint (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON);
 
     /* Bounds checking */
     if (new_forward_button < 6 || new_forward_button > UPPER_MOUSE_LIMIT)

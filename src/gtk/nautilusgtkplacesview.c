@@ -533,7 +533,6 @@ populate_servers (NautilusGtkPlacesView *view)
   GtkWidget *child;
   char **uris;
   gsize num_uris;
-  int i;
 
   server_list = server_list_load (view);
 
@@ -557,7 +556,7 @@ populate_servers (NautilusGtkPlacesView *view)
 
   gtk_list_store_clear (view->completion_store);
 
-  for (i = 0; i < num_uris; i++)
+  for (gsize i = 0; i < num_uris; i++)
     {
       RemoveServerData *data;
       GtkTreeIter iter;

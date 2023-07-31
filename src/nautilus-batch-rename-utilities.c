@@ -355,7 +355,6 @@ batch_rename_format (NautilusFile *file,
     gboolean added_tag;
     MetadataType metadata_type;
     const char *file_name;
-    gint i;
     gchar *metadata;
 
     file_name = nautilus_file_get_display_name (file);
@@ -366,7 +365,7 @@ batch_rename_format (NautilusFile *file,
         added_tag = FALSE;
         tag_string = l->data;
 
-        for (i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
+        for (guint i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
         {
             g_autofree gchar *tag_text_representation = NULL;
 
@@ -410,7 +409,7 @@ batch_rename_format (NautilusFile *file,
             continue;
         }
 
-        for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
+        for (guint i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
         {
             g_autofree gchar *tag_text_representation = NULL;
 

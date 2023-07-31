@@ -198,7 +198,7 @@ nautilus_search_engine_start_by_target (NautilusSearchProvider     *provider,
 {
     NautilusSearchEngine *engine;
     NautilusSearchEnginePrivate *priv;
-    gint num_finished;
+    guint num_finished;
 
     engine = NAUTILUS_SEARCH_ENGINE (provider);
     priv = nautilus_search_engine_get_instance_private (engine);
@@ -239,7 +239,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngine *engine;
     NautilusSearchEnginePrivate *priv;
-    gint num_finished;
+    guint num_finished;
 
     engine = NAUTILUS_SEARCH_ENGINE (provider);
     priv = nautilus_search_engine_get_instance_private (engine);
@@ -339,7 +339,7 @@ static void
 check_providers_status (NautilusSearchEngine *engine)
 {
     NautilusSearchEnginePrivate *priv;
-    gint num_finished;
+    guint num_finished;
 
     priv = nautilus_search_engine_get_instance_private (engine);
     num_finished = priv->providers_error + priv->providers_finished;

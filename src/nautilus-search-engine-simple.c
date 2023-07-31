@@ -352,7 +352,7 @@ visit_directory (GFile            *dir,
 
             found = FALSE;
 
-            for (gint i = 0; mime_type != NULL && i < data->mime_types->len; i++)
+            for (guint i = 0; mime_type != NULL && i < data->mime_types->len; i++)
             {
                 if (g_content_type_is_a (mime_type, g_ptr_array_index (data->mime_types, i)))
                 {

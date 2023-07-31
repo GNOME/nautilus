@@ -452,7 +452,6 @@ extension_dropdown_setup (NautilusCompressDialogController *self)
     GListStore *store;
     NautilusCompressItem *item;
     NautilusCompressionFormat format;
-    gint i;
 
     store = g_list_store_new (NAUTILUS_TYPE_COMPRESS_ITEM);
     item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_ZIP,
@@ -498,7 +497,7 @@ extension_dropdown_setup (NautilusCompressDialogController *self)
 
     format = g_settings_get_enum (nautilus_compression_preferences,
                                   NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
-    for (i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (store)); i++)
+    for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (store)); i++)
     {
         item = g_list_model_get_item (G_LIST_MODEL (store), i);
         if (item->format == format)

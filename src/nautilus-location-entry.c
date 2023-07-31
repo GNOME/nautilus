@@ -309,7 +309,7 @@ update_completions_store (gpointer callback_data)
     char *completion;
     int i;
     GtkTreeIter iter;
-    int current_dir_strlen;
+    guint current_dir_strlen;
 
     entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     priv = nautilus_location_entry_get_instance_private (entry);

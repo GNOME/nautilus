@@ -285,7 +285,7 @@ file_read_callback (GObject      *object,
 
     if (count_read > 0)
     {
-        g_assert (count_read <= sizeof (self->buffer));
+        g_assert ((gsize) count_read <= sizeof (self->buffer));
 
         if (self->pixbuf_still_loading)
         {

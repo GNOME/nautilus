@@ -259,7 +259,6 @@ nautilus_keyfile_metadata_update_from_keyfile (NautilusFile *file,
     gsize length, values_length;
     GKeyFile *keyfile;
     GFileInfo *info;
-    gint idx;
     gboolean res;
 
     keyfile = get_keyfile (keyfile_filename);
@@ -276,7 +275,7 @@ nautilus_keyfile_metadata_update_from_keyfile (NautilusFile *file,
 
     info = g_file_info_new ();
 
-    for (idx = 0; idx < length; idx++)
+    for (guint idx = 0; idx < length; idx++)
     {
         key = keys[idx];
         values = g_key_file_get_string_list (keyfile,

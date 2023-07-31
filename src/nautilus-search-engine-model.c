@@ -165,7 +165,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
         {
             found = FALSE;
 
-            for (gint i = 0; i < mime_types->len; i++)
+            for (guint i = 0; i < mime_types->len; i++)
             {
                 if (nautilus_file_is_mime_type (file, g_ptr_array_index (mime_types, i)))
                 {

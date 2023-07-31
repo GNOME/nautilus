@@ -98,7 +98,7 @@ create_appendix_name (const char      *name,
     g_assert (count_increment > 0);
 
     const char *extension = ignore_extension ? "" : nautilus_filename_get_extension (name);
-    size_t extensionless_length = ignore_extension ? strlen (name) : extension - name;
+    size_t extensionless_length = ignore_extension ? strlen (name) : (size_t) (extension - name);
     size_t base_length;
     size_t count;
     parse_previous_name (name, extensionless_length, parser_func, &base_length, &count);
@@ -357,7 +357,7 @@ nautilus_filename_get_extension (const char *filename)
      * This will also catch .tar.jpg, but such cases seem contrived and this
      * is better than maintaing a list of all possible .tar extensions. */
     size_t tar_extension_length = strlen (".tar");
-    if (extension - filename > tar_extension_length &&
+    if (filename + tar_extension_length < extension &&
         strncmp (extension - tar_extension_length, ".tar", tar_extension_length) == 0)
     {
         return extension - tar_extension_length;
@@ -399,7 +399,7 @@ nautilus_filename_get_extension_char_offset (const char *filename)
 gboolean
 nautilus_filename_shorten_base (char       **filename,
                                 const char  *base,
-                                int          max_length)
+                                size_t       max_length)
 {
     size_t filename_length = strlen (*filename);
 
@@ -425,7 +425,7 @@ nautilus_filename_shorten_base (char       **filename,
         {
             reduce_pos = g_utf8_find_prev_char (base, reduce_pos);
         }
-        while (reduce_pos - base > reduced_length);
+        while (base + reduced_length < reduce_pos);
 
         /* Recalculate length, as it could be off by some bytes due to UTF-8 */
         reduced_length = reduce_pos - base;

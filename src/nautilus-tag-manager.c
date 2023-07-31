@@ -449,7 +449,6 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
 {
     TrackerNotifierEvent *event;
     NautilusTagManager *self;
-    int i;
     const gchar *file_url;
     GError *error = NULL;
     TrackerSparqlCursor *cursor;
@@ -460,7 +459,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
 
     self = NAUTILUS_TAG_MANAGER (user_data);
 
-    for (i = 0; i < events->len; i++)
+    for (guint i = 0; i < events->len; i++)
     {
         event = g_ptr_array_index (events, i);
 

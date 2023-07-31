@@ -1658,7 +1658,7 @@ prioritize_thumbnailing_on_idle (NautilusListBase *self)
     last_index = next_index - 1;
 
     /* Do the iteration in reverse to give higher priority to the top */
-    for (gint i = 0; i <= last_index - first_index; i++)
+    for (guint i = 0; i <= last_index - first_index; i++)
     {
         g_autoptr (NautilusViewItem) item = NULL;
 

@@ -166,7 +166,7 @@ char *                  nautilus_file_get_parent_uri                    (Nautilu
 char *                  nautilus_file_get_parent_uri_for_display        (NautilusFile                   *file);
 const char *            nautilus_file_get_thumbnail_path                (NautilusFile                   *file);
 gboolean                nautilus_file_can_get_size                      (NautilusFile                   *file);
-goffset                 nautilus_file_get_size                          (NautilusFile                   *file);
+guint64                 nautilus_file_get_size                          (NautilusFile                   *file);
 time_t                  nautilus_file_get_mtime                         (NautilusFile                   *file);
 time_t                  nautilus_file_get_atime                         (NautilusFile                   *file);
 time_t                  nautilus_file_get_btime                         (NautilusFile                   *file);

@@ -49,9 +49,8 @@ tracker_events_cb (TrackerNotifier *self,
                    gpointer         user_data)
 {
     TrackerAwaitFileData *data = user_data;
-    int i;
 
-    for (i = 0; i < events->len; i++)
+    for (guint i = 0; i < events->len; i++)
     {
         TrackerNotifierEvent *event = g_ptr_array_index (events, i);
 

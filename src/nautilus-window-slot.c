@@ -2360,7 +2360,6 @@ handle_go_direction (NautilusWindowSlot *self,
     GList **list_ptr, **other_list_ptr;
     GList *list, *other_list, *link;
     NautilusBookmark *bookmark;
-    gint i;
     list_ptr = (forward) ? (&self->forward_list) : (&self->back_list);
     other_list_ptr = (forward) ? (&self->back_list) : (&self->forward_list);
     list = *list_ptr;
@@ -2380,7 +2379,7 @@ handle_go_direction (NautilusWindowSlot *self,
     g_object_ref (other_list->data);
 
     /* Move extra links from the list to the other list */
-    for (i = 0; i < self->location_change_distance; ++i)
+    for (guint i = 0; i < self->location_change_distance; ++i)
     {
         bookmark = NAUTILUS_BOOKMARK (list->data);
         list = g_list_remove (list, bookmark);

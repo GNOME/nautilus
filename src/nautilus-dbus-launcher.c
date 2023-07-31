@@ -228,7 +228,7 @@ nautilus_dbus_launcher_finalize (GObject *object)
     g_clear_object (&self->cancellable);
     g_clear_object (&self->proxy);
 
-    for (gint i = 1; i <= self->last_app_initialized; i++)
+    for (guint i = 1; i <= self->last_app_initialized; i++)
     {
         g_clear_object (&self->data[i]->proxy);
         g_free (self->data[i]);

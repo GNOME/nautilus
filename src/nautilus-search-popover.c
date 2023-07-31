@@ -495,12 +495,10 @@ static void
 fill_types_listbox (NautilusSearchPopover *popover)
 {
     GtkWidget *row;
-    int i;
-    gint n_groups;
+    guint n_groups = nautilus_mime_types_get_number_of_groups ();
 
-    n_groups = nautilus_mime_types_get_number_of_groups ();
     /* Mimetypes */
-    for (i = 0; i < n_groups; i++)
+    for (guint i = 0; i < n_groups; i++)
     {
         /* On the third row, which is right below "Folders", there should be an
          * separator to logically group the types.

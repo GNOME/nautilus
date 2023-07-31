@@ -5328,7 +5328,7 @@ nautilus_file_can_get_size (NautilusFile *file)
  * Returns: Size in bytes.
  *
  **/
-goffset
+guint64
 nautilus_file_get_size (NautilusFile *file)
 {
     /* Before we have info on the file, we don't know the size. */
@@ -7046,9 +7046,7 @@ get_basic_type_for_mime_type (const char *mime_type)
     icon_name = g_content_type_get_generic_icon_name (mime_type);
     if (icon_name != NULL)
     {
-        int i;
-
-        for (i = 0; i < G_N_ELEMENTS (mime_type_map); i++)
+        for (guint i = 0; i < G_N_ELEMENTS (mime_type_map); i++)
         {
             if (strcmp (mime_type_map[i].icon_name, icon_name) == 0)
             {

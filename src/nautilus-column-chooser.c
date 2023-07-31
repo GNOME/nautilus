@@ -295,7 +295,7 @@ on_create_row_menu_cb (GtkMenuButton *menu_button,
 {
     GAction *action_up;
     GAction *action_down;
-    int row_index = gtk_list_box_row_get_index (row);
+    guint row_index = gtk_list_box_row_get_index (row);
     NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (
         gtk_widget_get_ancestor (GTK_WIDGET (row), NAUTILUS_TYPE_COLUMN_CHOOSER));
 

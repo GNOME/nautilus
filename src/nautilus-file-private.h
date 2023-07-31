@@ -204,8 +204,8 @@ struct NautilusFilePrivate
 typedef struct {
 	NautilusFile *file;
 	GList *files;
-	gint renamed_files;
-	gint skipped_files;
+	guint renamed_files;
+	guint skipped_files;
 	GCancellable *cancellable;
 	NautilusFileOperationCallback callback;
 	gpointer callback_data;

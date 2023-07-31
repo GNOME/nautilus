@@ -85,7 +85,7 @@ static GHashTable *thumbnails_to_make_hash = NULL;
 static GHashTable *currently_thumbnailing_hash = NULL;
 
 /* The number of currently running threads. */
-static gint running_threads = 0;
+static guint running_threads = 0;
 
 /* The maximum number of threads allowed. */
 static guint max_threads = 0;
@@ -524,7 +524,7 @@ thumbnail_starter_cb (gpointer data)
 {
     GnomeDesktopThumbnailFactory *thumbnail_factory;
     NautilusThumbnailInfo *info = NULL;
-    gint ignored_thumbnails = 0;
+    guint ignored_thumbnails = 0;
     time_t current_orig_mtime = 0;
     time_t current_time;
     guint backoff_time;
