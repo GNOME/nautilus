@@ -5680,23 +5680,27 @@ static void
 nautilus_load_custom_accel_for_scripts (void)
 {
     gchar *path, *contents;
-    gchar **lines, **result;
+    gchar **lines;
     GError *error = NULL;
     const int max_len = 100;
-    int i;
 
     path = g_build_filename (g_get_user_config_dir (), SHORTCUTS_PATH, NULL);
 
     if (g_file_get_contents (path, &contents, NULL, &error))
     {
         lines = g_strsplit (contents, "\n", -1);
-        for (i = 0; lines[i] && (strstr (lines[i], " ") > 0); i++)
+        for (guint i = 0; lines[i] != NULL; i++)
         {
-            result = g_strsplit (lines[i], " ", 2);
+            g_auto (GStrv) result = g_strsplit (lines[i], " ", 2);
+
+            if (result[0] == NULL || result[1] == NULL)
+            {
+                continue;
+            }
+
             g_hash_table_insert (script_accels,
                                  g_strndup (result[1], max_len),
                                  g_strndup (result[0], max_len));
-            g_strfreev (result);
         }
 
         g_free (contents);
