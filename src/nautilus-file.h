@@ -240,9 +240,9 @@ gboolean                nautilus_file_can_get_owner                     (Nautilu
 gboolean                nautilus_file_can_set_owner                     (NautilusFile                   *file);
 gboolean                nautilus_file_can_get_group                     (NautilusFile                   *file);
 gboolean                nautilus_file_can_set_group                     (NautilusFile                   *file);
-const uid_t             nautilus_file_get_uid                           (NautilusFile                   *file);
+uid_t                   nautilus_file_get_uid                           (NautilusFile                   *file);
 char *                  nautilus_file_get_owner_name                    (NautilusFile                   *file);
-const gid_t             nautilus_file_get_gid                           (NautilusFile                   *file);
+gid_t                   nautilus_file_get_gid                           (NautilusFile                   *file);
 const char *            nautilus_file_get_group_name                    (NautilusFile                   *file);
 GList *                 nautilus_get_user_names                         (void);
 GList *                 nautilus_get_all_group_names                    (void);

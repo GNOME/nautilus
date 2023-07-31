@@ -5835,7 +5835,7 @@ nautilus_file_can_get_owner (NautilusFile *file)
  *
  * Return value: (transfer none): the user id.
  */
-const uid_t
+uid_t
 nautilus_file_get_uid (NautilusFile *file)
 {
     return file->details->uid;
@@ -6042,7 +6042,7 @@ nautilus_file_can_get_group (NautilusFile *file)
  *
  * Return value: (transfer none): the group id.
  */
-const gid_t
+gid_t
 nautilus_file_get_gid (NautilusFile *file)
 {
     return file->details->gid;
