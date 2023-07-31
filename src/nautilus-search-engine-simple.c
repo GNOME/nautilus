@@ -573,7 +573,7 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
         if (simple->create_thread_timeout_id != 0)
         {
             /* Thread wasn't started, so we must call this directly from here.*/
-            search_thread_done (simple->active_search);
+            finish_search_thread (simple->active_search);
 
             g_clear_handle_id (&simple->create_thread_timeout_id, g_source_remove);
         }
