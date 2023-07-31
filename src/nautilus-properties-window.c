@@ -1690,10 +1690,9 @@ changed_group_callback (AdwComboRow              *row,
                         NautilusPropertiesWindow *self)
 {
     guint selected_pos = adw_combo_row_get_selected (row);
-
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
 
-    if (selected_pos >= 0)
+    if (selected_pos != GTK_INVALID_LIST_POSITION)
     {
         NautilusFile *file = get_target_file (self);
         GListModel *list = adw_combo_row_get_model (row);
@@ -1843,7 +1842,7 @@ changed_owner_callback (AdwComboRow              *row,
     guint selected_pos = adw_combo_row_get_selected (row);
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
 
-    if (selected_pos >= 0)
+    if (selected_pos != GTK_INVALID_LIST_POSITION)
     {
         NautilusFile *file = get_target_file (self);
 
