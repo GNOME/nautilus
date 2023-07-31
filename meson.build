@@ -61,6 +61,10 @@ add_project_arguments(
     '-Werror=strict-prototypes',
     '-Werror=undef',
     '-Werror=uninitialized',
+    # There are currently too many warnings caused by deprecations, hindering the usefulness
+    # of any other warnings. Disable them until
+    # https://gitlab.gnome.org/GNOME/nautilus/-/issues/2722 is resolved.
+    '-Wno-deprecated-declarations',
     # Context: https://gitlab.com/freedesktop-sdk/freedesktop-sdk/commit/ce54a2527555e51e4ebf4cce9cbb6259cafa89a4
     # -O2 and -fexceptions unmask some cases of -Wmaybe-uninitialized, which
     # become errors for some reason (I’m guessing because of the
