@@ -102,22 +102,25 @@ list_changed (NautilusColumnChooser *chooser)
     g_signal_emit (chooser, signals[CHANGED], 0, column_order, visible_columns);
 }
 
+/**
+ * @up: TRUE when moving up (decreasing position), FALSE when moving down
+ */
 static void
 move_row (NautilusColumnChooser *chooser,
           GtkListBoxRow         *row,
-          guint                  increment)
+          gboolean               up)
 {
     guint i = gtk_list_box_row_get_index (row);
     g_autoptr (NautilusColumn) column = g_list_model_get_item (chooser->model, i);
     guint n_items = g_list_model_get_n_items (chooser->model);
 
-    if (increment == 0 || i + increment < 0 || i + increment >= n_items)
+    if ((up && i <= 0) || (!up && i >= n_items))
     {
         return;
     }
 
     g_list_store_remove (G_LIST_STORE (chooser->model), i);
-    g_list_store_insert (G_LIST_STORE (chooser->model), i + increment, column);
+    g_list_store_insert (G_LIST_STORE (chooser->model), i + up ? -1 : 1, column);
 
     list_changed (chooser);
 }
@@ -138,7 +141,7 @@ static void action_move_row_up (GSimpleAction *action,
 
     g_assert (GTK_IS_LIST_BOX_ROW (chooser->row_with_open_menu));
 
-    move_row (chooser, chooser->row_with_open_menu, -1);
+    move_row (chooser, chooser->row_with_open_menu, TRUE);
 }
 
 static void action_move_row_down (GSimpleAction *action,
@@ -149,7 +152,7 @@ static void action_move_row_down (GSimpleAction *action,
 
     g_assert (GTK_IS_LIST_BOX_ROW (chooser->row_with_open_menu));
 
-    move_row (chooser, chooser->row_with_open_menu, 1);
+    move_row (chooser, chooser->row_with_open_menu, FALSE);
 }
 
 const GActionEntry column_chooser_actions[] =
