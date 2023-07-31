@@ -20,7 +20,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-async-jobs"
 
-#include <libxml/parser.h>
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -35,7 +35,6 @@
 #include <gnome-autoar/gnome-autoar.h>
 #include <grp.h>
 #include <gtk/gtk.h>
-#include <libxml/parser.h>
 #include <sys/types.h>
 #include <limits.h>
 #include <locale.h>
