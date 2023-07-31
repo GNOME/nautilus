@@ -8678,57 +8678,6 @@ nautilus_file_list_copy (GList *list)
     return g_list_copy (nautilus_file_list_ref (list));
 }
 
-static gboolean
-get_attributes_for_default_sort_type (NautilusFile *file,
-                                      gboolean     *is_recent,
-                                      gboolean     *is_download,
-                                      gboolean     *is_trash,
-                                      gboolean     *is_search)
-{
-    gboolean is_recent_dir, is_download_dir, is_trash_dir, is_search_dir, retval;
-
-    *is_recent = FALSE;
-    *is_download = FALSE;
-    *is_trash = FALSE;
-    *is_search = FALSE;
-    retval = FALSE;
-
-    /* special handling for certain directories */
-    if (file && nautilus_file_is_directory (file))
-    {
-        is_recent_dir =
-            nautilus_file_is_in_recent (file);
-        is_download_dir =
-            nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD);
-        is_trash_dir =
-            nautilus_file_is_in_trash (file);
-        is_search_dir =
-            nautilus_file_is_in_search (file);
-
-        if (is_download_dir)
-        {
-            *is_download = TRUE;
-            retval = TRUE;
-        }
-        else if (is_trash_dir)
-        {
-            *is_trash = TRUE;
-            retval = TRUE;
-        }
-        else if (is_recent_dir)
-        {
-            *is_recent = TRUE;
-            retval = TRUE;
-        }
-        else if (is_search_dir)
-        {
-            *is_search = TRUE;
-            retval = TRUE;
-        }
-    }
-
-    return retval;
-}
 /**
  * nautilus_file_get_default_sort_type:
  * @file: A #NautilusFile representing a location
@@ -8746,59 +8695,36 @@ NautilusFileSortType
 nautilus_file_get_default_sort_type (NautilusFile *file,
                                      gboolean     *reversed)
 {
-    NautilusFileSortType retval;
-    gboolean is_recent;
-    gboolean is_download;
-    gboolean is_trash;
-    gboolean is_search;
-    gboolean res;
+    g_assert (reversed != NULL);
 
-    retval = g_settings_get_enum (nautilus_preferences,
-                                  NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
-    is_recent = FALSE;
-    is_download = FALSE;
-    is_trash = FALSE;
-    is_search = FALSE;
-    res = get_attributes_for_default_sort_type (file, &is_recent, &is_download, &is_trash, &is_search);
-
-    if (res)
+    /* Special handling for certain directories */
+    if (nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD))
     {
-        if (is_recent)
-        {
-            retval = NAUTILUS_FILE_SORT_BY_RECENCY;
-        }
-        else if (is_download)
-        {
-            retval = NAUTILUS_FILE_SORT_BY_MTIME;
-        }
-        else if (is_trash)
-        {
-            retval = NAUTILUS_FILE_SORT_BY_TRASHED_TIME;
-        }
-        else if (is_search)
-        {
-            retval = NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
-
-        if (reversed != NULL)
-        {
-            *reversed = res;
-        }
+        *reversed = TRUE;
+        return NAUTILUS_FILE_SORT_BY_MTIME;
     }
-    else
+    else if (nautilus_file_is_in_trash (file))
     {
-        if (reversed != NULL)
-        {
-            *reversed = g_settings_get_boolean (nautilus_preferences,
-                                                NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
-        }
+        *reversed = TRUE;
+        return NAUTILUS_FILE_SORT_BY_TRASHED_TIME;
+    }
+    else if (nautilus_file_is_in_recent (file))
+    {
+        *reversed = TRUE;
+        return NAUTILUS_FILE_SORT_BY_RECENCY;
+    }
+    else if (nautilus_file_is_in_search (file))
+    {
+        *reversed = TRUE;
+        return NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE;
     }
 
-    return retval;
+    /* Use defaults */
+    *reversed = g_settings_get_boolean (nautilus_preferences,
+                                        NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
+
+    return g_settings_get_enum (nautilus_preferences,
+                                NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
 }
 
 static int
