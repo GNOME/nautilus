@@ -2980,7 +2980,7 @@ list_store_append_nautilus_permission_entry (GListStore      *list,
     g_list_store_append (list, entry);
 }
 
-static gint
+static guint
 get_permission_value_list_position (GListModel      *list,
                                     PermissionValue  wanted_permissions)
 {
@@ -2995,7 +2995,7 @@ get_permission_value_list_position (GListModel      *list,
         }
     }
 
-    return -1;
+    return GTK_INVALID_LIST_POSITION;
 }
 
 static void
@@ -3008,7 +3008,7 @@ update_permission_row (AdwComboRow       *row,
     FilterType filter_type;
     gboolean is_folder;
     GListModel *model;
-    gint position;
+    guint position;
 
     model = adw_combo_row_get_model (row);
 
