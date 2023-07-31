@@ -754,7 +754,7 @@ action_quit (GSimpleAction *action,
     g_list_free (windows);
 }
 
-const static GActionEntry app_entries[] =
+static const GActionEntry app_entries[] =
 {
     { "new-window", action_new_window, NULL, NULL, NULL },
     { "clone-window", action_clone_window, NULL, NULL, NULL },
