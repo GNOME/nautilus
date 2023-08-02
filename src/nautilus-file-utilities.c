@@ -23,6 +23,7 @@
 #include "nautilus-file-utilities.h"
 
 #include "nautilus-application.h"
+#include "nautilus-blank-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-filename-utilities.h"
@@ -1043,6 +1044,7 @@ nautilus_ensure_extension_builtins (void)
      * that they will be registered by the time the extension point
      * is iterating over its extensions.
      */
+    g_type_ensure (NAUTILUS_TYPE_BLANK_DIRECTORY);
     g_type_ensure (NAUTILUS_TYPE_NETWORK_DIRECTORY);
     g_type_ensure (NAUTILUS_TYPE_SEARCH_DIRECTORY);
     g_type_ensure (NAUTILUS_TYPE_STARRED_DIRECTORY);

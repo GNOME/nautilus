@@ -7,6 +7,7 @@
 #pragma once
 
 #define SCHEME_ADMIN "admin"
+#define SCHEME_BLANK "x-nautilus-blank"
 #define SCHEME_BURN "burn"
 #define SCHEME_COMPUTER "computer"
 #define SCHEME_SEARCH "x-nautilus-search"

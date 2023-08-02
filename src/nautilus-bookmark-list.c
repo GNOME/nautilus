@@ -625,7 +625,8 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
         return FALSE;
     }
 
-    if (g_file_has_uri_scheme (location, SCHEME_RECENT) ||
+    if (g_file_has_uri_scheme (location, SCHEME_BLANK) ||
+        g_file_has_uri_scheme (location, SCHEME_RECENT) ||
         g_file_has_uri_scheme (location, SCHEME_STARRED) ||
         nautilus_is_home_directory (location) ||
         g_file_has_uri_scheme (location, SCHEME_TRASH))
