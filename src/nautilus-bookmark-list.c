@@ -629,6 +629,7 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
         g_file_has_uri_scheme (location, SCHEME_STARRED) ||
         nautilus_is_home_directory (location) ||
         g_file_has_uri_scheme (location, SCHEME_TRASH) ||
+        g_file_has_uri_scheme (location, SCHEME_GLOBAL_SEARCH) ||
         g_file_has_uri_scheme (location, SCHEME_OTHER_LOCATIONS))
     {
         /* Already in the sidebar */
@@ -669,3 +670,4 @@ nautilus_bookmark_list_get_all (NautilusBookmarkList *bookmarks)
 
     return bookmarks->list;
 }
+

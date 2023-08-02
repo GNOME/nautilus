@@ -29,6 +29,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-global-search-directory.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
 #include "nautilus-ui-utilities.h"
@@ -1326,6 +1327,7 @@ nautilus_ensure_extension_builtins (void)
      */
     g_type_ensure (NAUTILUS_TYPE_SEARCH_DIRECTORY);
     g_type_ensure (NAUTILUS_TYPE_STARRED_DIRECTORY);
+    g_type_ensure (NAUTILUS_TYPE_GLOBAL_SEARCH_DIRECTORY);
 }
 
 void

@@ -9,6 +9,7 @@
 #define SCHEME_ADMIN "admin"
 #define SCHEME_BURN "burn"
 #define SCHEME_SEARCH "x-nautilus-search"
+#define SCHEME_GLOBAL_SEARCH "x-nautilus-global-search"
 #define SCHEME_OTHER_LOCATIONS "other-locations"
 #define SCHEME_NETWORK "network"
 #define SCHEME_RECENT "recent"

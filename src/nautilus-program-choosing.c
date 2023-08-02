@@ -54,6 +54,7 @@ add_file_to_recent (NautilusFile *file,
     if (scheme != NULL &&
         (g_str_equal (scheme, SCHEME_TRASH) ||
          g_str_equal (scheme, SCHEME_SEARCH) ||
+         g_str_equal (scheme, SCHEME_GLOBAL_SEARCH) ||
          g_str_equal (scheme, SCHEME_RECENT)))
     {
         return;
@@ -466,3 +467,4 @@ nautilus_launch_desktop_file (const char  *desktop_file_uri,
     g_object_unref (context);
     g_object_unref (app_info);
 }
+

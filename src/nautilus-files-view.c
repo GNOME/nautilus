@@ -3744,6 +3744,12 @@ real_check_empty_states (NautilusFilesView *view)
             adw_status_page_set_title (status_page, _("No Results Found"));
             adw_status_page_set_description (status_page, _("Try a different search."));
         }
+        else if (g_file_has_uri_scheme (priv->location, SCHEME_GLOBAL_SEARCH))
+        {
+            adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
+            adw_status_page_set_title (status_page, _("Type to Search Everywhere"));
+            adw_status_page_set_description (status_page, NULL);
+        }
         else if (check_is_trash_root (priv->location))
         {
             adw_status_page_set_icon_name (status_page, "user-trash-symbolic");
@@ -9875,3 +9881,4 @@ nautilus_files_view_new (guint               id,
 
     return view;
 }
+

@@ -192,6 +192,8 @@ libnautilus_sources = [
   'nautilus-file.h',
   'nautilus-global-preferences.c',
   'nautilus-global-preferences.h',
+  'nautilus-global-search-directory.c',
+  'nautilus-global-search-directory.h',
   'nautilus-icon-info.c',
   'nautilus-icon-info.h',
   'nautilus-icon-names.h',
