@@ -42,15 +42,16 @@ static void
 totem_properties_plugin_register_type (GTypeModule *module)
 {
 	const GTypeInfo info = {
-		sizeof (GObjectClass),
-		(GBaseInitFunc) NULL,
-		(GBaseFinalizeFunc) NULL,
-		(GClassInitFunc) NULL,
-		NULL,
-		NULL,
-		sizeof (GObject),
-		0,
-		(GInstanceInitFunc) NULL
+		.class_size = sizeof (GObjectClass),
+		.base_init = (GBaseInitFunc) NULL,
+		.base_finalize = (GBaseFinalizeFunc) NULL,
+		.class_init = (GClassInitFunc) NULL,
+		.class_finalize = NULL,
+		.class_data = NULL,
+		.instance_size = sizeof (GObject),
+		.n_preallocs = 0,
+		.instance_init = (GInstanceInitFunc) NULL,
+		.value_table = NULL
 	};
 	const GInterfaceInfo properties_model_provider_iface_info = {
 		(GInterfaceInitFunc)properties_model_provider_iface_init,
