@@ -64,6 +64,12 @@ add_project_arguments(
     # of any other warnings. Disable them until
     # https://gitlab.gnome.org/GNOME/nautilus/-/issues/2722 is resolved.
     '-Wno-deprecated-declarations',
+    # We want the general warnings in Wextra, but as GLib functions commonly accept additional
+    # user data, warnings for function casts are not feasible. Neither are warnings for unused
+    # parameters, as parameters in callbacks commonly aren't used.
+    '-Wextra',
+    '-Wno-cast-function-type',
+    '-Wno-unused-parameter',
     # Context: https://gitlab.com/freedesktop-sdk/freedesktop-sdk/commit/ce54a2527555e51e4ebf4cce9cbb6259cafa89a4
     # -O2 and -fexceptions unmask some cases of -Wmaybe-uninitialized, which
     # become errors for some reason (I’m guessing because of the
