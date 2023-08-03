@@ -60,6 +60,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
+#include "nautilus-scheme.h"
 #include "nautilus-ui-utilities.h"
 
 #ifdef GDK_WINDOWING_X11
@@ -1224,8 +1225,8 @@ can_delete_without_confirm (GFile *file)
     /* In the case of testing, we want to be able to delete
      * without asking for confirmation from the user.
      */
-    if (g_file_has_uri_scheme (file, "burn") ||
-        g_file_has_uri_scheme (file, "recent") ||
+    if (g_file_has_uri_scheme (file, SCHEME_BURN) ||
+        g_file_has_uri_scheme (file, SCHEME_RECENT) ||
         !g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
     {
         return TRUE;
@@ -7464,7 +7465,7 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
     if (target_dir)
     {
         dest = g_file_new_for_uri (target_dir);
-        if (g_file_has_uri_scheme (dest, "burn"))
+        if (g_file_has_uri_scheme (dest, SCHEME_BURN))
         {
             target_is_mapping = TRUE;
         }
@@ -7474,7 +7475,7 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
 
     for (p = locations; p != NULL; p = p->next)
     {
-        if (!g_file_has_uri_scheme ((GFile * ) p->data, "burn"))
+        if (!g_file_has_uri_scheme ((GFile * ) p->data, SCHEME_BURN))
         {
             have_nonmapping_source = TRUE;
         }
@@ -8426,7 +8427,7 @@ nautilus_file_operations_empty_trash (GtkWidget                      *parent_vie
 
     job = op_job_new (EmptyTrashJob, parent_window, dbus_data);
     job->trash_dirs = g_list_prepend (job->trash_dirs,
-                                      g_file_new_for_uri ("trash:"));
+                                      g_file_new_for_uri (SCHEME_TRASH ":"));
     job->should_confirm = ask_confirmation;
 
     inhibit_power_manager ((CommonJob *) job, _("Emptying Trash"));
