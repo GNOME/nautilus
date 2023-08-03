@@ -25,12 +25,12 @@ RUN dnf builddep -y gtk4 \
  && cd .. \
  && rm -rf libadwaita
 
-RUN dnf builddep -y gnome-autoar \
+RUN dnf builddep -y glib \
  && dnf clean all \
- && git clone --depth 1 https://gitlab.gnome.org/GNOME/gnome-autoar.git \
- && cd gnome-autoar \
+ && git clone --depth 1 https://gitlab.gnome.org/GNOME/glib.git \
+ && cd glib \
  && meson setup _build --prefix /usr \
  && ninja -C _build \
  && ninja install -C _build \
  && cd .. \
- && rm -rf gnome-autoar
+ && rm -rf glib
