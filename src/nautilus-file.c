@@ -5392,14 +5392,14 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                 /* Translators: this is the word "Today" followed by
                  * a time in 24h format. i.e. "Today 23:04" */
                 /* xgettext:no-c-format */
-                format = _("Today %H:%M");
+                format = _("Today %-H:%M");
             }
             else
             {
                 /* Translators: this is the word Today followed by
                  * a time in 12h format. i.e. "Today 9:04 PM" */
                 /* xgettext:no-c-format */
-                format = _("Today %l:%M %p");
+                format = _("Today %-I:%M %p");
             }
         }
         /* Show the word "Yesterday" and time if date is on yesterday */
@@ -5410,14 +5410,14 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                 /* Translators: this is the word Yesterday followed by
                  * a time in 24h format. i.e. "Yesterday 23:04" */
                 /* xgettext:no-c-format */
-                format = _("Yesterday %H:%M");
+                format = _("Yesterday %-H:%M");
             }
             else
             {
                 /* Translators: this is the word Yesterday followed by
                  * a time in 12h format. i.e. "Yesterday 9:04 PM" */
                 /* xgettext:no-c-format */
-                format = _("Yesterday %l:%M %p");
+                format = _("Yesterday %-I:%M %p");
             }
         }
         else
@@ -5437,7 +5437,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                      * by the abbreviated month name followed by the year followed
                      * by a time in 24h format i.e. "3 Feb 2015 23:04" */
                     /* xgettext:no-c-format */
-                    format = _("%-e %b %Y %H:%M");
+                    format = _("%-e %b %Y %-H:%M");
                 }
                 else
                 {
@@ -5445,7 +5445,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                      * by the abbreviated month name followed by the year followed
                      * by a time in 12h format i.e. "3 Feb 2015 9:04 PM" */
                     /* xgettext:no-c-format */
-                    format = _("%-e %b %Y %l:%M %p");
+                    format = _("%-e %b %Y %-I:%M %p");
                 }
             }
         }
@@ -5468,9 +5468,9 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
         {
             /* Translators: this is the day number followed by the full month
              * name followed by the year followed by a time in 12h format
-             * with seconds i.e. "3 February 2015 9:04:00 PM" */
+             * with seconds i.e. "3 February 2015 09:04:00 PM" */
             /* xgettext:no-c-format */
-            format = _("%-e %B %Y %l:%M:%S %p");
+            format = _("%-e %B %Y %I:%M:%S %p");
         }
     }
 
