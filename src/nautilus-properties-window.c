@@ -1459,7 +1459,13 @@ static gsize
 get_first_word_length (const gchar *str)
 {
     const gchar *space_pos = g_strstr_len (str, -1, " ");
-    return space_pos ? space_pos - str : strlen (str);
+    if (space_pos != NULL)
+    {
+        /* Calculate length through pointer arithmetic. */
+        return (gsize) (space_pos - str);
+    }
+
+    return strlen (str);
 }
 
 static void
