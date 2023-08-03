@@ -528,8 +528,8 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->is_symlink = FALSE;
     file->details->is_hidden = FALSE;
     file->details->is_mountpoint = FALSE;
-    file->details->uid = -1;
-    file->details->gid = -1;
+    file->details->has_uid = FALSE;
+    file->details->has_gid = FALSE;
     file->details->can_read = TRUE;
     file->details->can_write = TRUE;
     file->details->can_execute = TRUE;
@@ -2357,7 +2357,10 @@ update_info_internal (NautilusFile *file,
     gboolean can_start, can_start_degraded, can_stop, can_poll_for_media, is_media_check_automatic;
     GDriveStartStopType start_stop_type;
     gboolean thumbnailing_failed;
-    int uid, gid;
+    gboolean has_uid = FALSE;
+    uid_t uid = 0;
+    gboolean has_gid = FALSE;
+    gid_t gid = 0;
     goffset size;
     int sort_order;
     time_t atime, mtime, btime;
@@ -2618,11 +2621,10 @@ update_info_internal (NautilusFile *file,
     free_group = FALSE;
     group = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_OWNER_GROUP);
 
-    uid = -1;
-    gid = -1;
     if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_UID))
     {
         uid = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_UID);
+        has_uid = TRUE;
         if (owner == NULL)
         {
             free_owner = TRUE;
@@ -2632,18 +2634,23 @@ update_info_internal (NautilusFile *file,
     if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_GID))
     {
         gid = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_GID);
+        has_gid = TRUE;
         if (group == NULL)
         {
             free_group = TRUE;
             group = g_strdup_printf ("%d", gid);
         }
     }
-    if (file->details->uid != uid ||
-        file->details->gid != gid)
+    if (file->details->has_uid != has_uid ||
+        (file->details->has_uid && file->details->uid != uid) ||
+        file->details->has_gid != has_gid ||
+        (file->details->has_gid && file->details->gid != gid))
     {
         changed = TRUE;
     }
+    file->details->has_uid = has_uid;
     file->details->uid = uid;
+    file->details->has_gid = has_gid;
     file->details->gid = gid;
 
     if (g_strcmp0 (file->details->owner, owner) != 0)
@@ -5513,14 +5520,14 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 
     location = nautilus_file_get_location (file);
 
-    if (file->details->uid != -1 &&
+    if (file->details->has_uid &&
         g_file_is_native (location))
     {
         /* Check the user. */
         user_id = geteuid ();
 
         /* Owner is allowed to set permissions. */
-        if (user_id == (uid_t) file->details->uid)
+        if (user_id == file->details->uid)
         {
             return TRUE;
         }
@@ -5823,7 +5830,7 @@ gboolean
 nautilus_file_can_get_owner (NautilusFile *file)
 {
     /* Before we have info on a file, the owner is unknown. */
-    return file->details->uid != -1;
+    return file->details->has_uid;
 }
 
 /**
@@ -5948,7 +5955,7 @@ nautilus_file_set_owner (NautilusFile                  *file,
      * don't want to send the file-changed signal if nothing
      * changed.
      */
-    if (new_id == (uid_t) file->details->uid)
+    if (file->details->has_uid && new_id == file->details->uid)
     {
         (*callback)(file, NULL, NULL, callback_data);
         return;
@@ -6030,7 +6037,7 @@ gboolean
 nautilus_file_can_get_group (NautilusFile *file)
 {
     /* Before we have info on a file, the group is unknown. */
-    return file->details->gid != -1;
+    return file->details->has_gid;
 }
 
 /**
@@ -6094,7 +6101,7 @@ nautilus_file_can_set_group (NautilusFile *file)
     user_id = geteuid ();
 
     /* Owner is allowed to set group (with restrictions). */
-    if (user_id == (uid_t) file->details->uid)
+    if (file->details->has_uid && user_id == file->details->uid)
     {
         return TRUE;
     }
@@ -6191,7 +6198,7 @@ nautilus_file_get_settable_group_names (NautilusFile *file)
         /* Root is allowed to set group to anything. */
         result = nautilus_get_all_group_names ();
     }
-    else if (user_id == (uid_t) file->details->uid)
+    else if (file->details->has_uid && user_id == file->details->uid)
     {
         /* Owner is allowed to set group to any that owner is member of. */
         result = nautilus_get_group_names_for_user ();
@@ -6263,7 +6270,7 @@ nautilus_file_set_group (NautilusFile                  *file,
         return;
     }
 
-    if (new_id == (gid_t) file->details->gid)
+    if (file->details->has_gid && new_id == file->details->gid)
     {
         (*callback)(file, NULL, NULL, callback_data);
         return;
@@ -6394,7 +6401,7 @@ nautilus_file_get_owner_as_string (NautilusFile *file,
     }
 
     if (include_real_name &&
-        file->details->uid == getuid ())
+        file->details->has_uid && file->details->uid == getuid ())
     {
         /* Translators: This is a username followed by "(You)" to indicate the file is owned by the current user */
         user_name = g_strdup_printf (_("%s (You)"), file->details->owner);

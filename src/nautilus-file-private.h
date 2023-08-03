@@ -57,8 +57,10 @@ struct NautilusFilePrivate
 	int sort_order;
 	
 	guint32 permissions;
-	int uid; /* -1 is none */
-	int gid; /* -1 is none */
+	gboolean has_uid;
+	uid_t uid;
+	gboolean has_gid;
+	gid_t gid;
 
 	GRefString *owner;
 	GRefString *owner_real;
