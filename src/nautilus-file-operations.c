@@ -1552,7 +1552,7 @@ file_deleted_callback (GFile    *file,
 static void
 delete_files (CommonJob *job,
               GList     *files,
-              int       *files_skipped)
+              guint     *files_skipped)
 {
     GList *l;
     GFile *file;
@@ -1939,7 +1939,7 @@ source_info_remove_file_from_count (GFile      *file,
 static void
 trash_files (CommonJob *job,
              GList     *files,
-             int       *files_skipped)
+             guint     *files_skipped)
 {
     GList *l;
     GFile *file;
@@ -2034,7 +2034,7 @@ trash_or_delete_internal (GTask        *task,
     CommonJob *common;
     gboolean must_confirm_delete_in_trash;
     gboolean must_confirm_delete;
-    int files_skipped;
+    guint files_skipped = 0;
 
     common = (CommonJob *) job;
 
@@ -2042,7 +2042,6 @@ trash_or_delete_internal (GTask        *task,
 
     must_confirm_delete_in_trash = FALSE;
     must_confirm_delete = FALSE;
-    files_skipped = 0;
 
     for (l = job->files; l != NULL; l = l->next)
     {
