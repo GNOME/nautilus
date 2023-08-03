@@ -5437,7 +5437,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                      * by the abbreviated month name followed by the year followed
                      * by a time in 24h format i.e. "3 Feb 2015 23:04" */
                     /* xgettext:no-c-format */
-                    format = _("%-e %b %Y %H:%M");
+                    format = _("%-e %b %Y %-H:%M");
                 }
                 else
                 {
@@ -5445,7 +5445,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                      * by the abbreviated month name followed by the year followed
                      * by a time in 12h format i.e. "3 Feb 2015 9:04 PM" */
                     /* xgettext:no-c-format */
-                    format = _("%-e %b %Y %I:%M %p");
+                    format = _("%-e %b %Y %-I:%M %p");
                 }
             }
         }
