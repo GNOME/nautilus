@@ -89,7 +89,7 @@ action_show_file_transfers (GSimpleAction *action,
 
 static GActionEntry progress_persistence_entries[] =
 {
-    { "show-file-transfers", action_show_file_transfers, NULL, NULL, NULL }
+    { .name = "show-file-transfers", .activate = action_show_file_transfers }
 };
 
 static void

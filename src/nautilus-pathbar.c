@@ -140,9 +140,9 @@ static void nautilus_path_bar_clear_buttons (NautilusPathBar *self);
 
 const GActionEntry path_bar_actions[] =
 {
-    { "open-item-new-tab", action_pathbar_open_item_new_tab },
-    { "open-item-new-window", action_pathbar_open_item_new_window },
-    { "properties", action_pathbar_properties}
+    { .name = "open-item-new-tab", .activate = action_pathbar_open_item_new_tab },
+    { .name = "open-item-new-window", .activate = action_pathbar_open_item_new_window },
+    { .name = "properties", .activate = action_pathbar_properties}
 };
 
 

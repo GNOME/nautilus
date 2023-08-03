@@ -1003,10 +1003,14 @@ action_files_view_mode (GSimpleAction *action,
 
 const GActionEntry slot_entries[] =
 {
-    { "files-view-mode", NULL, "u", "uint32 " G_STRINGIFY (NAUTILUS_VIEW_INVALID_ID), action_files_view_mode },
-    { "files-view-mode-toggle", action_files_view_mode_toggle },
-    { "search-visible", NULL, NULL, "false", action_search_visible },
-    { "focus-search", action_focus_search },
+    {
+        .name = "files-view-mode", .parameter_type = "u",
+        .state = "uint32 " G_STRINGIFY (NAUTILUS_VIEW_INVALID_ID),
+        .change_state = action_files_view_mode
+    },
+    { .name = "files-view-mode-toggle", .activate = action_files_view_mode_toggle },
+    { .name = "search-visible", .state = "false", .change_state = action_search_visible },
+    { .name = "focus-search", .activate = action_focus_search },
 };
 
 static void

@@ -157,8 +157,8 @@ static void action_move_row_down (GSimpleAction *action,
 
 const GActionEntry column_chooser_actions[] =
 {
-    { "move-up", action_move_row_up },
-    { "move-down", action_move_row_down }
+    { .name = "move-up", .activate = action_move_row_up },
+    { .name = "move-down", .activate = action_move_row_down }
 };
 
 static void

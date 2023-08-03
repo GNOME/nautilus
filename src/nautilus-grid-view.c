@@ -548,8 +548,8 @@ create_view_ui (NautilusGridView *self)
 
 const GActionEntry view_icon_actions[] =
 {
-    { "sort", NULL, "(sb)", "('invalid',false)", action_sort_order_changed },
-    { "zoom-to-level", NULL, NULL, "100", action_zoom_to_level }
+    { .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)", .change_state = action_sort_order_changed },
+    { .name = "zoom-to-level", .state = "100", .change_state = action_zoom_to_level }
 };
 
 static void

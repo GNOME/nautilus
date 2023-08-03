@@ -515,9 +515,12 @@ action_zoom_to_level (GSimpleAction *action,
 
 const GActionEntry list_view_entries[] =
 {
-    { "visible-columns", action_visible_columns },
-    { "sort", NULL, "(sb)", "('invalid',false)", action_sort_order_changed },
-    { "zoom-to-level", NULL, NULL, "1", action_zoom_to_level }
+    { .name = "visible-columns", .activate = action_visible_columns },
+    {
+        .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)",
+        .change_state = action_sort_order_changed
+    },
+    { .name = "zoom-to-level", .state = "1", .change_state = action_zoom_to_level }
 };
 
 static void

@@ -756,13 +756,13 @@ action_quit (GSimpleAction *action,
 
 static const GActionEntry app_entries[] =
 {
-    { "new-window", action_new_window, NULL, NULL, NULL },
-    { "clone-window", action_clone_window, NULL, NULL, NULL },
-    { "preferences", action_preferences, NULL, NULL, NULL },
-    { "about", action_about, NULL, NULL, NULL },
-    { "help", action_help, NULL, NULL, NULL },
-    { "quit", action_quit, NULL, NULL, NULL },
-    { "kill", action_kill, NULL, NULL, NULL },
+    { .name = "new-window", .activate = action_new_window },
+    { .name = "clone-window", .activate = action_clone_window },
+    { .name = "preferences", .activate = action_preferences },
+    { .name = "about", .activate = action_about },
+    { .name = "help", .activate = action_help },
+    { .name = "quit", .activate = action_quit },
+    { .name = "kill", .activate = action_kill },
 };
 
 static void

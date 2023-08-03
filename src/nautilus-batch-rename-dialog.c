@@ -248,20 +248,23 @@ add_numbering_tag (GSimpleAction *action,
 
 const GActionEntry dialog_entries[] =
 {
-    { "numbering-order-changed", NULL, "s", "'name-ascending'", change_numbering_order },
-    { "add-numbering-no-zero-pad-tag", add_numbering_tag },
-    { "add-numbering-one-zero-pad-tag", add_numbering_tag },
-    { "add-numbering-two-zero-pad-tag", add_numbering_tag },
-    { "add-original-file-name-tag", add_metadata_tag },
-    { "add-creation-date-tag", add_metadata_tag },
-    { "add-equipment-tag", add_metadata_tag },
-    { "add-season-number-tag", add_metadata_tag },
-    { "add-episode-number-tag", add_metadata_tag },
-    { "add-video-album-tag", add_metadata_tag },
-    { "add-track-number-tag", add_metadata_tag },
-    { "add-artist-name-tag", add_metadata_tag },
-    { "add-title-tag", add_metadata_tag },
-    { "add-album-name-tag", add_metadata_tag },
+    {
+        .name = "numbering-order-changed", .parameter_type = "s", .state = "'name-ascending'",
+        .change_state = change_numbering_order
+    },
+    { .name = "add-numbering-no-zero-pad-tag", .activate = add_numbering_tag },
+    { .name = "add-numbering-one-zero-pad-tag", .activate = add_numbering_tag },
+    { .name = "add-numbering-two-zero-pad-tag", .activate = add_numbering_tag },
+    { .name = "add-original-file-name-tag", .activate = add_metadata_tag },
+    { .name = "add-creation-date-tag", .activate = add_metadata_tag },
+    { .name = "add-equipment-tag", .activate = add_metadata_tag },
+    { .name = "add-season-number-tag", .activate = add_metadata_tag },
+    { .name = "add-episode-number-tag", .activate = add_metadata_tag },
+    { .name = "add-video-album-tag", .activate = add_metadata_tag },
+    { .name = "add-track-number-tag", .activate = add_metadata_tag },
+    { .name = "add-artist-name-tag", .activate = add_metadata_tag },
+    { .name = "add-title-tag", .activate = add_metadata_tag },
+    { .name = "add-album-name-tag", .activate = add_metadata_tag },
 };
 
 static gint
