@@ -35,7 +35,7 @@ toggle_star (NautilusStarCell *self)
     {
         nautilus_tag_manager_unstar_files (tag_manager,
                                            G_OBJECT (item),
-                                           &(GList){ file, NULL },
+                                           &(GList){ .data = file },
                                            NULL,
                                            NULL);
         gtk_widget_remove_css_class (GTK_WIDGET (self->star), "added");
@@ -44,7 +44,7 @@ toggle_star (NautilusStarCell *self)
     {
         nautilus_tag_manager_star_files (tag_manager,
                                          G_OBJECT (item),
-                                         &(GList){ file, NULL },
+                                         &(GList){ .data = file },
                                          NULL,
                                          NULL);
         gtk_widget_add_css_class (GTK_WIDGET (self->star), "added");

@@ -951,7 +951,7 @@ real_file_changed (NautilusFilesView *files_view,
         /* When a file that was hidden is not hidden anymore (e.g. undoing the
          * rename operation which made it hidden), we get a change notification
          * for a file that's not in our model. Let's add it then. */
-        real_add_files (files_view, &(GList){file, NULL});
+        real_add_files (files_view, &(GList){ .data = file });
     }
 }
 static gboolean

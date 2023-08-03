@@ -1565,7 +1565,7 @@ properties_cb (GtkWidget  *widget,
 
   if (file)
     {
-      list = &(GList){file, NULL};
+      list = &(GList){.data = file};
       nautilus_properties_window_present (list, widget, NULL, NULL, NULL);
     }
 }

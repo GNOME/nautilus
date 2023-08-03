@@ -716,13 +716,13 @@ star_clicked (NautilusPropertiesWindow *self)
     if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
     {
         nautilus_tag_manager_unstar_files (tag_manager, G_OBJECT (self),
-                                           &(GList){ file, NULL }, NULL, NULL);
+                                           &(GList){ .data = file }, NULL, NULL);
         gtk_widget_remove_css_class (self->star_button, "added");
     }
     else
     {
         nautilus_tag_manager_star_files (tag_manager, G_OBJECT (self),
-                                         &(GList){ file, NULL }, NULL, NULL);
+                                         &(GList){ .data = file }, NULL, NULL);
         gtk_widget_add_css_class (self->star_button, "added");
     }
 }
@@ -2526,7 +2526,7 @@ open_parent_folder (NautilusPropertiesWindow *self)
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                              parent_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
-                                             &(GList){get_original_file (self), NULL},
+                                             &(GList){ .data = get_original_file (self) },
                                              NULL, NULL);
 }
 
@@ -2548,7 +2548,7 @@ open_link_target (NautilusPropertiesWindow *self)
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                              parent_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
-                                             &(GList){link_target_file, NULL},
+                                             &(GList){ .data = link_target_file },
                                              NULL, NULL);
 }
 
