@@ -620,7 +620,7 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
         return FALSE;
     }
 
-    if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
+    if (g_file_has_uri_scheme (location, SCHEME_SEARCH))
     {
         return FALSE;
     }

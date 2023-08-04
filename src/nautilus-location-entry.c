@@ -226,7 +226,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
      * thus should not emit the LOCATION_CHANGED signal. */
     formatted_uri = g_file_get_parse_name (location);
 
-    if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
+    if (g_file_has_uri_scheme (location, SCHEME_SEARCH))
     {
         nautilus_location_entry_set_special_text (entry, "");
     }
