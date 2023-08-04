@@ -169,14 +169,37 @@ get_activatable_names (NautilusDBusLauncher *self)
 }
 
 static void
+activatable_services_changed (GDBusConnection *connection,
+                              const gchar     *sender_name,
+                              const gchar     *object_path,
+                              const gchar     *interface_name,
+                              const gchar     *signal_name,
+                              GVariant        *parameters,
+                              gpointer         user_data)
+{
+    NautilusDBusLauncher *self = user_data;
+
+    get_activatable_names (self);
+}
+
+static void
 proxy_ready (GObject      *object,
              GAsyncResult *res,
              gpointer      user_data)
 {
     NautilusDBusLauncher *self = user_data;
+    GDBusConnection *connection;
 
     self->proxy = g_dbus_proxy_new_for_bus_finish (res, NULL);
     get_activatable_names (self);
+    connection = g_dbus_proxy_get_connection (self->proxy);
+    g_dbus_connection_signal_subscribe (connection,
+                                        "org.freedesktop.DBus",
+                                        "org.freedesktop.DBus",
+                                        "ActivatableServicesChanged",
+                                        "/org/freedesktop/DBus",
+                                        NULL, G_DBUS_SIGNAL_FLAGS_NONE,
+                                        activatable_services_changed, self, NULL);
 }
 
 NautilusDBusLauncher *
