@@ -877,7 +877,7 @@ nautilus_application_handle_file_args (NautilusApplication *self,
                 g_free (cwd);
             }
 
-            if (g_file_has_uri_scheme (file, SCHEME_NAUTILUS_SEARCH))
+            if (g_file_has_uri_scheme (file, SCHEME_SEARCH))
             {
                 g_autofree char *error_string = NULL;
                 error_string = g_strdup_printf (_("“%s” is an internal protocol. "

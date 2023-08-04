@@ -757,7 +757,7 @@ search_is_editable (NautilusDirectory *directory)
 static gboolean
 real_handles_location (GFile *location)
 {
-    return g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH);
+    return g_file_has_uri_scheme (location, SCHEME_SEARCH);
 }
 
 static void

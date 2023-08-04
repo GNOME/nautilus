@@ -3738,7 +3738,7 @@ real_check_empty_states (NautilusFilesView *view)
     if (!priv->loading &&
         nautilus_files_view_is_empty (view))
     {
-        if (g_file_has_uri_scheme (priv->location, SCHEME_NAUTILUS_SEARCH))
+        if (g_file_has_uri_scheme (priv->location, SCHEME_SEARCH))
         {
             adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
             adw_status_page_set_title (status_page, _("No Results Found"));

@@ -4055,7 +4055,7 @@ nautilus_file_is_in_search (NautilusFile *file)
 {
     g_autoptr (GFile) location = nautilus_file_get_location (file);
 
-    return g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH);
+    return g_file_has_uri_scheme (location, SCHEME_SEARCH);
 }
 
 static gboolean
@@ -8055,7 +8055,7 @@ nautilus_file_is_starred_location (NautilusFile *file)
 
     location = nautilus_file_get_location (file);
 
-    return g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH);
+    return g_file_has_uri_scheme (location, SCHEME_SEARCH);
 }
 
 /**

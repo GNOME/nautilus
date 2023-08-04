@@ -585,7 +585,7 @@ location_to_tooltip (GBinding           *binding,
      * so it covers all of the tab label.
      */
 
-    if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
+    if (g_file_has_uri_scheme (location, SCHEME_SEARCH))
     {
         g_value_set_string (output, nautilus_window_slot_get_title (slot));
     }
@@ -760,7 +760,7 @@ nautilus_window_new_tab (NautilusWindow *window)
 
     if (location != NULL)
     {
-        if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_SEARCH))
+        if (g_file_has_uri_scheme (location, SCHEME_SEARCH))
         {
             location = g_file_new_for_path (g_get_home_dir ());
         }

@@ -53,7 +53,7 @@ add_file_to_recent (NautilusFile *file,
     scheme = g_uri_peek_scheme (uri);
     if (scheme != NULL &&
         (g_str_equal (scheme, SCHEME_TRASH) ||
-         g_str_equal (scheme, SCHEME_NAUTILUS_SEARCH) ||
+         g_str_equal (scheme, SCHEME_SEARCH) ||
          g_str_equal (scheme, SCHEME_RECENT)))
     {
         return;
