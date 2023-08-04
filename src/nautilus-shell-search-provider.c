@@ -119,6 +119,7 @@ pending_search_free (PendingSearch *search)
 {
     g_hash_table_destroy (search->hits);
     g_clear_object (&search->query);
+    g_signal_handlers_disconnect_by_data (G_OBJECT (search->engine), search);
     g_clear_object (&search->engine);
     g_clear_object (&search->invocation);
 
@@ -148,19 +149,28 @@ cancel_current_search (NautilusShellSearchProvider *self)
 {
     if (self->current_search != NULL)
     {
+        NautilusSearchProvider *engine;
+
         g_debug ("*** Cancel current search");
-        nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->current_search->engine));
+
+        engine = NAUTILUS_SEARCH_PROVIDER (self->current_search->engine);
+        /* The finish signal may be emitted during the call to nautilus_search_provider_stop
+         * which causes shell_search_provider to free the engine. Increase
+         * the ref count to prevent use after free issues.
+         */
+        g_object_ref (engine);
+        nautilus_search_provider_stop (engine);
+        g_object_unref (engine);
     }
 }
 
 static void
 cancel_current_search_ignoring_partial_results (NautilusShellSearchProvider *self)
 {
+    cancel_current_search (self);
+
     if (self->current_search != NULL)
     {
-        cancel_current_search (self);
-        g_signal_handlers_disconnect_by_data (G_OBJECT (self->current_search->engine),
-                                              self->current_search);
         pending_search_finish (self->current_search, self->current_search->invocation,
                                g_variant_new ("(as)", NULL));
     }
