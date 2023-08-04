@@ -22,6 +22,7 @@
 #include <config.h>
 #include "nautilus-search-engine-simple.h"
 
+#include "nautilus-scheme.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
@@ -497,6 +498,14 @@ search_thread_func (gpointer user_data)
 
     /* Insert id for toplevel directory into visited */
     dir = g_queue_peek_head (data->directories);
+
+    /* This engine is not meant for global search. */
+    if (g_file_has_uri_scheme (dir, SCHEME_GLOBAL_SEARCH))
+    {
+        finish_search_thread (data);
+        return;
+    }
+
     info = g_file_query_info (dir, G_FILE_ATTRIBUTE_ID_FILE, 0, data->cancellable, NULL);
     if (info)
     {

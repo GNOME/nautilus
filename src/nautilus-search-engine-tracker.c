@@ -23,6 +23,8 @@
 #include "nautilus-search-engine-tracker.h"
 
 #include "nautilus-file.h"
+#include "nautilus-global-search-directory.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-tracker-utilities.h"
@@ -43,6 +45,7 @@ typedef enum
     SEARCH_FEATURE_ATIME = 1 << 4,
     SEARCH_FEATURE_MTIME = 1 << 5,
     SEARCH_FEATURE_CTIME = 1 << 6,
+    SEARCH_FEATURE_LOCATION = 1 << 7,
 } SearchFeatures;
 
 struct _NautilusSearchEngineTracker
@@ -416,7 +419,12 @@ create_statement (NautilusSearchProvider *provider,
 
     g_string_append (sparql, " . FILTER( ");
 
-    if (!(features & SEARCH_FEATURE_RECURSIVE))
+    if (!(features & SEARCH_FEATURE_LOCATION))
+    {
+        /* Global search. Match any location. */
+        g_string_append (sparql, "true");
+    }
+    else if (!(features & SEARCH_FEATURE_RECURSIVE))
     {
         g_string_append (sparql, "tracker:uri-is-parent(~location, ?url)");
     }
@@ -538,6 +546,13 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         }
     }
 
+    location = nautilus_query_get_location (tracker->query);
+    location_uri = g_file_get_uri (location);
+    if (!g_str_has_prefix (location_uri, SCHEME_GLOBAL_SEARCH))
+    {
+        features |= SEARCH_FEATURE_LOCATION;
+    }
+
     stmt = g_hash_table_lookup (tracker->statements, GUINT_TO_POINTER (features));
 
     if (!stmt)
@@ -547,9 +562,10 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                              GUINT_TO_POINTER (features), stmt);
     }
 
-    location = nautilus_query_get_location (tracker->query);
-    location_uri = g_file_get_uri (location);
-    tracker_sparql_statement_bind_string (stmt, "location", location_uri);
+    if (features & SEARCH_FEATURE_LOCATION)
+    {
+        tracker_sparql_statement_bind_string (stmt, "location", location_uri);
+    }
 
     if (*query_text)
     {
@@ -645,8 +661,16 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
     if (recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
     {
         g_autoptr (GFile) location = nautilus_query_get_location (query);
-        g_autoptr (NautilusFile) location_file = nautilus_file_get (location);
-        tracker->recursive = !nautilus_file_is_remote (location_file);
+
+        if (location != NULL)
+        {
+            g_autoptr (NautilusFile) location_file = nautilus_file_get (location);
+            tracker->recursive = !nautilus_file_is_remote (location_file);
+        }
+        else
+        {
+            /* If not searching by location, recursiveness is irrelevant. */
+        }
     }
     else
     {
@@ -737,3 +761,4 @@ nautilus_search_engine_tracker_new (void)
 {
     return g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER, NULL);
 }
+

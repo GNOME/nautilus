@@ -19,6 +19,7 @@
  */
 
 #include <config.h>
+#include "nautilus-scheme.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-search-engine-recent.h"
@@ -204,6 +205,7 @@ recent_thread_func (gpointer user_data)
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
     g_autoptr (GPtrArray) mime_types = NULL;
+    gboolean global_search;
     GList *recent_items;
     GList *hits;
     GList *l;
@@ -215,6 +217,7 @@ recent_thread_func (gpointer user_data)
     mime_types = nautilus_query_get_mime_types (self->query);
     date_range = nautilus_query_get_date_range (self->query);
     query_location = nautilus_query_get_location (self->query);
+    global_search = g_file_has_uri_scheme (query_location, SCHEME_GLOBAL_SEARCH);
 
     for (l = recent_items; l != NULL; l = l->next)
     {
@@ -227,7 +230,7 @@ recent_thread_func (gpointer user_data)
         uri = gtk_recent_info_get_uri (info);
         file = g_file_new_for_uri (uri);
 
-        if (!g_file_has_prefix (file, query_location))
+        if (!global_search && !g_file_has_prefix (file, query_location))
         {
             continue;
         }
