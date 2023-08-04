@@ -100,7 +100,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
                         NautilusQuery              *query)
 {
     SearchThreadData *data;
-    GFile *location;
 
     data = g_new0 (SearchThreadData, 1);
 
@@ -108,10 +107,6 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
     data->directories = g_queue_new ();
     data->visited = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
     data->query = g_object_ref (query);
-
-    location = nautilus_query_get_location (query);
-
-    g_queue_push_tail (data->directories, location);
     data->mime_types = nautilus_query_get_mime_types (query);
 
     data->cancellable = g_cancellable_new ();
@@ -540,6 +535,7 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineSimple *simple;
     SearchThreadData *data;
+    g_autoptr (GFile) location = NULL;
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
@@ -553,11 +549,21 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
     data = search_thread_data_new (simple, simple->query);
 
     simple->active_search = data;
+    g_object_notify (G_OBJECT (provider), "running");
+
+    location = nautilus_query_get_location (simple->query);
+    if (location == NULL)
+    {
+        /* Global search. Nothing for this engine to do.*/
+        finish_search_thread (data);
+        return;
+    }
+
+    g_queue_push_tail (data->directories, g_steal_pointer (&location));
+
     simple->create_thread_timeout_id = g_timeout_add_once (CREATE_THREAD_DELAY_MS,
                                                            create_thread_timeout,
                                                            simple);
-
-    g_object_notify (G_OBJECT (provider), "running");
 }
 
 static void

@@ -43,6 +43,7 @@ typedef enum
     SEARCH_FEATURE_ATIME = 1 << 4,
     SEARCH_FEATURE_MTIME = 1 << 5,
     SEARCH_FEATURE_CTIME = 1 << 6,
+    SEARCH_FEATURE_LOCATION = 1 << 7,
 } SearchFeatures;
 
 struct _NautilusSearchEngineTracker
@@ -416,7 +417,12 @@ create_statement (NautilusSearchProvider *provider,
 
     g_string_append (sparql, " . FILTER( ");
 
-    if (!(features & SEARCH_FEATURE_RECURSIVE))
+    if (!(features & SEARCH_FEATURE_LOCATION))
+    {
+        /* Global search. Match any location. */
+        g_string_append (sparql, "true");
+    }
+    else if (!(features & SEARCH_FEATURE_RECURSIVE))
     {
         g_string_append (sparql, "tracker:uri-is-parent(~location, ?url)");
     }
@@ -471,7 +477,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineTracker *tracker;
     g_autofree gchar *query_text = NULL;
-    g_autofree gchar *location_uri = NULL;
     g_autoptr (GPtrArray) mimetypes = NULL;
     g_autoptr (GPtrArray) date_range = NULL;
     NautilusQuerySearchType type;
@@ -538,6 +543,12 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         }
     }
 
+    location = nautilus_query_get_location (tracker->query);
+    if (location != NULL)
+    {
+        features |= SEARCH_FEATURE_LOCATION;
+    }
+
     stmt = g_hash_table_lookup (tracker->statements, GUINT_TO_POINTER (features));
 
     if (!stmt)
@@ -547,9 +558,11 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                              GUINT_TO_POINTER (features), stmt);
     }
 
-    location = nautilus_query_get_location (tracker->query);
-    location_uri = g_file_get_uri (location);
-    tracker_sparql_statement_bind_string (stmt, "location", location_uri);
+    if (location != NULL)
+    {
+        g_autofree gchar *location_uri = g_file_get_uri (location);
+        tracker_sparql_statement_bind_string (stmt, "location", location_uri);
+    }
 
     if (*query_text)
     {
@@ -646,7 +659,8 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
     {
         g_autoptr (GFile) location = nautilus_query_get_location (query);
         g_autoptr (NautilusFile) location_file = nautilus_file_get (location);
-        tracker->recursive = !nautilus_file_is_remote (location_file);
+
+        tracker->recursive = location_file != NULL && !nautilus_file_is_remote (location_file);
     }
     else
     {

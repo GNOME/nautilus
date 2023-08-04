@@ -227,7 +227,7 @@ recent_thread_func (gpointer user_data)
         uri = gtk_recent_info_get_uri (info);
         file = g_file_new_for_uri (uri);
 
-        if (!g_file_has_prefix (file, query_location))
+        if (query_location != NULL && !g_file_has_prefix (file, query_location))
         {
             continue;
         }

@@ -380,8 +380,7 @@ void
 nautilus_search_engine_model_set_model (NautilusSearchEngineModel *model,
                                         NautilusDirectory         *directory)
 {
-    g_clear_object (&model->directory);
-    model->directory = nautilus_directory_ref (directory);
+    g_set_object (&model->directory, directory);
 }
 
 NautilusDirectory *
