@@ -46,6 +46,7 @@ struct _NautilusToolbar
     GtkWidget *path_bar_container;
     GtkWidget *location_entry_container;
     GtkWidget *search_container;
+    GtkWidget *search_button;
     GtkWidget *toolbar_switcher;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
@@ -106,6 +107,13 @@ toolbar_update_appearance (NautilusToolbar *self)
     {
         gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "pathbar");
     }
+
+    /* Search button should be hidden in global search. Too bad we can't invert
+     * booleans when binding expressions, otherwise this would be doable from
+     * the UI definition. */
+    gtk_widget_set_visible (self->search_button,
+                            (self->window_slot != NULL &&
+                             !nautilus_window_slot_is_in_global_search (self->window_slot)));
 }
 
 static void
@@ -457,6 +465,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, app_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);

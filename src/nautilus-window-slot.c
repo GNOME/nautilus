@@ -30,6 +30,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
 #include "nautilus-query-editor.h"
+#include "nautilus-scheme.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
@@ -95,6 +96,7 @@ struct _NautilusWindowSlot
     NautilusFile *viewed_file;
     gboolean viewed_file_seen;
     gboolean viewed_file_in_trash;
+    gboolean in_global_search;
 
     /* Information about bookmarks and history list */
     NautilusBookmark *current_location_bookmark;
@@ -926,6 +928,13 @@ action_search_visible (GSimpleAction *action,
     GVariant *current_state;
 
     self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    if (self->in_global_search && !g_variant_get_boolean (state))
+    {
+        /* We don't allow hiding search bar in global search. */
+        return;
+    }
+
     current_state = g_action_get_state (G_ACTION (action));
     if (g_variant_get_boolean (current_state) != g_variant_get_boolean (state))
     {
@@ -1356,6 +1365,25 @@ begin_location_change (NautilusWindowSlot         *self,
 }
 
 static void
+update_for_global_search (NautilusWindowSlot *self)
+{
+    gboolean was_in_global_search = self->in_global_search;
+    gboolean searching_from_global_search;
+
+    /* If we started a search from global search, we are still in global search. */
+    searching_from_global_search = (self->in_global_search &&
+                                    g_file_has_uri_scheme (self->location, SCHEME_SEARCH));
+    self->in_global_search = (searching_from_global_search ||
+                              g_file_has_uri_scheme (self->location, SCHEME_GLOBAL_SEARCH));
+
+    if (was_in_global_search != self->in_global_search)
+    {
+        /* Notify toolbar to show/hide folder search button accordingly. */
+        nautilus_window_slot_set_search_visible (self, self->in_global_search);
+    }
+}
+
+static void
 nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                    GFile              *location)
 {
@@ -1374,6 +1402,7 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
     old_location = self->location;
     self->location = g_object_ref (location);
 
+    update_for_global_search (self);
     if (nautilus_window_slot_get_active (self))
     {
         nautilus_window_sync_location_widgets (self->window);
@@ -3399,4 +3428,12 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
 
     return self->query_editor;
+}
+
+gboolean
+nautilus_window_slot_is_in_global_search (NautilusWindowSlot *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), FALSE);
+
+    return self->in_global_search;
 }
