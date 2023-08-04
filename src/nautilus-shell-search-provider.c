@@ -30,6 +30,8 @@
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-global-search-directory.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-engine.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
@@ -445,15 +447,15 @@ static NautilusQuery *
 shell_query_new (gchar **terms)
 {
     NautilusQuery *query;
-    g_autoptr (GFile) home = NULL;
+    g_autoptr (GFile) global_search = NULL;
     g_autofree gchar *terms_joined = NULL;
 
     terms_joined = g_strjoinv (" ", terms);
-    home = g_file_new_for_path (g_get_home_dir ());
+    global_search = g_file_new_for_uri (SCHEME_GLOBAL_SEARCH);
 
     query = nautilus_query_new ();
     nautilus_query_set_text (query, terms_joined);
-    nautilus_query_set_location (query, home);
+    nautilus_query_set_location (query, global_search);
 
     return query;
 }
@@ -874,3 +876,4 @@ nautilus_shell_search_provider_unregister (NautilusShellSearchProvider *self)
 {
     g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->skeleton));
 }
+
