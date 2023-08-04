@@ -17,7 +17,8 @@ typedef struct
     GDBusProxy *proxy;
     gchar *error;
     GCancellable *cancellable;
-    gboolean ping_on_creation;
+    const char *name;
+    gboolean available;
 } NautilusDBusLauncherData;
 
 struct _NautilusDBusLauncher
@@ -25,6 +26,7 @@ struct _NautilusDBusLauncher
     GObject parent;
 
     GCancellable *cancellable;
+    GDBusProxy *proxy;
     NautilusDBusLauncherApp last_app_initialized;
     NautilusDBusLauncherData *data[NAUTILUS_DBUS_LAUNCHER_N_APPS];
 };
@@ -51,22 +53,6 @@ on_nautilus_dbus_launcher_call_finished   (GObject      *source_object,
                      message,
                      window,
                      GTK_MESSAGE_ERROR);
-    }
-}
-
-static void
-on_nautilus_dbus_launcher_ping_finished   (GObject      *source_object,
-                                           GAsyncResult *res,
-                                           gpointer      user_data)
-{
-    NautilusDBusLauncherData *data = user_data;
-    g_autoptr (GError) error = NULL;
-
-    g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
-
-    if (error != NULL)
-    {
-        data->error = g_strdup (error->message);
     }
 }
 
@@ -112,13 +98,6 @@ on_nautilus_dbus_proxy_ready (GObject      *source_object,
         g_warning ("Error creating proxy %s", error->message);
         data->error = g_strdup (error->message);
     }
-    else if (data->ping_on_creation)
-    {
-        g_dbus_proxy_call (data->proxy,
-                           "org.freedesktop.DBus.Peer.Ping", NULL,
-                           G_DBUS_CALL_FLAGS_NONE, G_MAXINT, launcher->cancellable,
-                           on_nautilus_dbus_launcher_ping_finished, data);
-    }
 }
 
 static void
@@ -127,6 +106,8 @@ nautilus_dbus_launcher_create_proxy (NautilusDBusLauncherData *data,
                                      const gchar              *object_path,
                                      const gchar              *interface)
 {
+    data->name = name;
+
     g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                               G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
                               NULL,
@@ -138,10 +119,64 @@ nautilus_dbus_launcher_create_proxy (NautilusDBusLauncherData *data,
                               data);
 }
 
-gboolean nautilus_dbus_launcher_is_available (NautilusDBusLauncher   *self,
-                                              NautilusDBusLauncherApp app)
+gboolean
+nautilus_dbus_launcher_is_available (NautilusDBusLauncher    *self,
+                                     NautilusDBusLauncherApp  app)
 {
-    return self->data[app]->error == NULL && self->data[app]->proxy != NULL;
+    return (self->data[app]->available && self->data[app]->proxy != NULL);
+}
+
+static void
+activatable_names_received (GObject      *object,
+                            GAsyncResult *res,
+                            gpointer      user_data)
+{
+    NautilusDBusLauncher *self = user_data;
+    g_auto (GStrv) activatable_names = NULL;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GVariant) names = NULL;
+
+    names = g_dbus_proxy_call_finish (G_DBUS_PROXY (object), res, &error);
+    if (error == NULL)
+    {
+        g_variant_get (names, "(^as)", &activatable_names);
+    }
+    else
+    {
+        g_warning ("Error receiving activatable names: %s", error->message);
+    }
+
+    for (guint i = 1; i < NAUTILUS_DBUS_LAUNCHER_N_APPS; i++)
+    {
+        if (activatable_names != NULL)
+        {
+            self->data[i]->available = g_strv_contains ((const char * const *) activatable_names,
+                                                        self->data[i]->name);
+        }
+        else
+        {
+            self->data[i]->available = FALSE;
+        }
+    }
+}
+
+static void
+get_activatable_names (NautilusDBusLauncher *self)
+{
+    g_dbus_proxy_call (self->proxy, "ListActivatableNames", NULL,
+                       G_DBUS_CALL_FLAGS_NONE, G_MAXINT,
+                       self->cancellable, activatable_names_received, self);
+}
+
+static void
+proxy_ready (GObject      *object,
+             GAsyncResult *res,
+             gpointer      user_data)
+{
+    NautilusDBusLauncher *self = user_data;
+
+    self->proxy = g_dbus_proxy_new_for_bus_finish (res, NULL);
+    get_activatable_names (self);
 }
 
 NautilusDBusLauncher *
@@ -170,6 +205,7 @@ nautilus_dbus_launcher_finalize (GObject *object)
 
     g_cancellable_cancel (self->cancellable);
     g_clear_object (&self->cancellable);
+    g_clear_object (&self->proxy);
 
     for (gint i = 1; i <= self->last_app_initialized; i++)
     {
@@ -193,8 +229,7 @@ nautilus_dbus_launcher_class_init (NautilusDBusLauncherClass *klass)
 
 static void
 nautilus_dbus_launcher_data_init (NautilusDBusLauncher    *self,
-                                  NautilusDBusLauncherApp  app,
-                                  gboolean                 ping_on_creation)
+                                  NautilusDBusLauncherApp  app)
 {
     NautilusDBusLauncherData *data;
     g_assert_true (app == self->last_app_initialized + 1);
@@ -202,7 +237,6 @@ nautilus_dbus_launcher_data_init (NautilusDBusLauncher    *self,
     data = g_new0 (NautilusDBusLauncherData, 1);
     data->proxy = NULL;
     data->error = NULL;
-    data->ping_on_creation = ping_on_creation;
 
     data->cancellable = self->cancellable;
     self->data[app] = data;
@@ -214,9 +248,15 @@ nautilus_dbus_launcher_init (NautilusDBusLauncher *self)
 {
     self->cancellable = g_cancellable_new ();
 
-    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_SETTINGS, FALSE);
-    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_DISKS, TRUE);
-    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_CONSOLE, TRUE);
+    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_SETTINGS);
+    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_DISKS);
+    nautilus_dbus_launcher_data_init (self, NAUTILUS_DBUS_LAUNCHER_CONSOLE);
+
+    g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION, G_DBUS_PROXY_FLAGS_NONE, NULL,
+                              "org.freedesktop.DBus",
+                              "/org/freedesktop/DBus",
+                              "org.freedesktop.DBus",
+                              self->cancellable, proxy_ready, self);
 
     nautilus_dbus_launcher_create_proxy (self->data[NAUTILUS_DBUS_LAUNCHER_SETTINGS],
                                          "org.gnome.Settings", "/org/gnome/Settings",
