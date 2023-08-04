@@ -15,7 +15,6 @@
 typedef struct
 {
     GDBusProxy *proxy;
-    gchar *error;
     GCancellable *cancellable;
     const char *name;
     gboolean available;
@@ -96,7 +95,6 @@ on_nautilus_dbus_proxy_ready (GObject      *source_object,
     if (error != NULL)
     {
         g_warning ("Error creating proxy %s", error->message);
-        data->error = g_strdup (error->message);
     }
 }
 
@@ -233,7 +231,6 @@ nautilus_dbus_launcher_finalize (GObject *object)
     for (gint i = 1; i <= self->last_app_initialized; i++)
     {
         g_clear_object (&self->data[i]->proxy);
-        g_free (self->data[i]->error);
         g_free (self->data[i]);
     }
 
@@ -258,8 +255,6 @@ nautilus_dbus_launcher_data_init (NautilusDBusLauncher    *self,
     g_assert_true (app == self->last_app_initialized + 1);
 
     data = g_new0 (NautilusDBusLauncherData, 1);
-    data->proxy = NULL;
-    data->error = NULL;
 
     data->cancellable = self->cancellable;
     self->data[app] = data;
