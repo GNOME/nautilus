@@ -621,7 +621,6 @@ result_list_attributes_ready_cb (GList    *file_list,
     ResultMetasData *data = user_data;
     GVariantBuilder meta;
     NautilusFile *file;
-    GFile *file_location;
     GList *l;
     gchar *uri, *display_name;
     gchar *path, *description;
@@ -635,6 +634,9 @@ result_list_attributes_ready_cb (GList    *file_list,
 
     for (l = file_list; l != NULL; l = l->next)
     {
+        g_autoptr (GFile) file_location = NULL;
+        g_autoptr (GVariant) icon_variant = NULL;
+
         file = l->data;
         g_variant_builder_init (&meta, G_VARIANT_TYPE ("a{sv}"));
 
@@ -675,8 +677,9 @@ result_list_attributes_ready_cb (GList    *file_list,
                                                             NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS));
         }
 
+        icon_variant = g_icon_serialize (gicon);
         g_variant_builder_add (&meta, "{sv}",
-                               "icon", g_icon_serialize (gicon));
+                               "icon", icon_variant);
         g_object_unref (gicon);
 
         meta_variant = g_variant_builder_end (&meta);

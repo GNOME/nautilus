@@ -78,6 +78,7 @@ finalize (GObject *object)
     g_free (query->text);
     g_strfreev (query->prepared_words);
     g_clear_object (&query->location);
+    g_clear_pointer (&query->mime_types, g_ptr_array_unref);
     g_clear_pointer (&query->date_range, g_ptr_array_unref);
     g_mutex_clear (&query->prepared_words_mutex);
 
