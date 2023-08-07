@@ -2561,16 +2561,18 @@ nautilus_gtk_places_view_set_search_query (NautilusGtkPlacesView *view,
 {
   g_return_if_fail (NAUTILUS_IS_GTK_PLACES_VIEW (view));
 
-  if (g_strcmp0 (view->search_query, query_text) != 0)
-    {
-      g_clear_pointer (&view->search_query, g_free);
-      view->search_query = g_utf8_strdown (query_text, -1);
+  if (g_strcmp0 (view->search_query, query_text) == 0)
+    return;
 
-      gtk_list_box_invalidate_filter (GTK_LIST_BOX (view->listbox));
-      gtk_list_box_invalidate_headers (GTK_LIST_BOX (view->listbox));
+  g_clear_pointer (&view->search_query, g_free);
 
-      update_view_mode (view);
-    }
+  if (query_text != NULL)
+    view->search_query = g_utf8_strdown (query_text, -1);
+
+  gtk_list_box_invalidate_filter (GTK_LIST_BOX (view->listbox));
+  gtk_list_box_invalidate_headers (GTK_LIST_BOX (view->listbox));
+
+  update_view_mode (view);
 }
 
 /*
