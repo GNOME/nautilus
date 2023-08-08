@@ -6014,7 +6014,6 @@ copy_or_move_selection (NautilusFilesView *view,
     CopyCallbackData *copy_data;
     GList *selection;
     const gchar *title;
-    NautilusDirectory *directory;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -6049,8 +6048,8 @@ copy_or_move_selection (NautilusFilesView *view,
 
     if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
     {
-        directory = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (priv->model));
-        location = nautilus_directory_get_location (directory);
+        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->model);
+        location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
     }
     else if (showing_starred_directory (view))
     {
@@ -6456,12 +6455,9 @@ extract_files_to_chosen_location (NautilusFilesView *view,
      */
     if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
     {
-        NautilusSearchDirectory *search_directory;
-        NautilusDirectory *directory;
+        NautilusSearchDirectory *search_directory = NAUTILUS_SEARCH_DIRECTORY (priv->model);
 
-        search_directory = NAUTILUS_SEARCH_DIRECTORY (priv->model);
-        directory = nautilus_search_directory_get_base_model (search_directory);
-        location = nautilus_directory_get_location (directory);
+        location = nautilus_query_get_location (nautilus_search_directory_get_query (search_directory));
     }
     else
     {
@@ -9370,10 +9366,9 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                                       NautilusQuery *query)
 {
     NautilusFilesView *files_view = NAUTILUS_FILES_VIEW (view);
-    GFile *location;
+    g_autoptr (GFile) location = NULL;
     NautilusFilesViewPrivate *priv;
 
-    location = NULL;
     priv = nautilus_files_view_get_instance_private (files_view);
 
     g_set_object (&priv->search_query, query);
@@ -9414,15 +9409,13 @@ nautilus_files_view_set_search_query (NautilusView  *view,
     {
         if (nautilus_view_is_searching (view))
         {
-            NautilusDirectory *base_model;
+            NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->model);
 
-            base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (priv->model));
-            location = nautilus_directory_get_location (base_model);
+            location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
 
             nautilus_view_set_location (view, location);
         }
     }
-    g_clear_object (&location);
 }
 
 static GFile *

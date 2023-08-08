@@ -711,7 +711,6 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                                     GFile               *location)
 {
     g_autoptr (NautilusDirectory) directory = NULL;
-    NautilusDirectory *base_model;
     gboolean should_notify;
 
     g_return_if_fail (NAUTILUS_IS_QUERY_EDITOR (editor));
@@ -723,10 +722,10 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
     directory = nautilus_directory_get (location);
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
+        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
         g_autoptr (GFile) real_location = NULL;
 
-        base_model = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (directory));
-        real_location = nautilus_directory_get_location (base_model);
+        real_location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
 
         should_notify = g_set_object (&editor->location, real_location);
     }
