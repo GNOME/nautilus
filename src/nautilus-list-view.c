@@ -118,10 +118,9 @@ apply_columns_settings (NautilusListView  *self,
     directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self));
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
-        g_autoptr (NautilusQuery) query = NULL;
+        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
 
-        query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-        location = nautilus_query_get_location (query);
+        location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
     }
     else
     {
@@ -305,11 +304,10 @@ get_base_location (NautilusListView *self)
     directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self));
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
-        g_autoptr (NautilusQuery) query = NULL;
+        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
         g_autoptr (GFile) location = NULL;
 
-        query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-        location = nautilus_query_get_location (query);
+        location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
 
         if (!g_file_has_uri_scheme (location, SCHEME_RECENT) &&
             !g_file_has_uri_scheme (location, SCHEME_STARRED) &&

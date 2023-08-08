@@ -208,8 +208,6 @@ nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile 
 {
     NautilusFile *file;
     NautilusDirectory *directory;
-    NautilusSearchDirectory *search_dir;
-    NautilusQuery *query;
     char *display_name;
     gboolean changed;
 
@@ -219,13 +217,12 @@ nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile 
     directory = nautilus_file_get_directory (file);
     if (directory != NULL)
     {
-        search_dir = NAUTILUS_SEARCH_DIRECTORY (directory);
-        query = nautilus_search_directory_get_query (search_dir);
+        NautilusSearchDirectory *search_dir = NAUTILUS_SEARCH_DIRECTORY (directory);
+        NautilusQuery *query = nautilus_search_directory_get_query (search_dir);
 
         if (query != NULL)
         {
             display_name = nautilus_query_to_readable_string (query);
-            g_object_unref (query);
         }
     }
 

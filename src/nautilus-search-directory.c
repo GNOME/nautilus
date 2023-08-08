@@ -808,7 +808,7 @@ search_get_property (GObject    *object,
 
         case PROP_QUERY:
         {
-            g_value_take_object (value, nautilus_search_directory_get_query (self));
+            g_value_set_object (value, nautilus_search_directory_get_query (self));
         }
         break;
 
@@ -962,11 +962,9 @@ nautilus_search_directory_class_init (NautilusSearchDirectoryClass *class)
                              NAUTILUS_TYPE_DIRECTORY,
                              G_PARAM_READWRITE);
     properties[PROP_QUERY] =
-        g_param_spec_object ("query",
-                             "The query",
-                             "The query for this search directory",
+        g_param_spec_object ("query", NULL, NULL,
                              NAUTILUS_TYPE_QUERY,
-                             G_PARAM_READWRITE);
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
@@ -1030,15 +1028,10 @@ void
 nautilus_search_directory_set_query (NautilusSearchDirectory *self,
                                      NautilusQuery           *query)
 {
-    NautilusFile *file;
-    NautilusQuery *old_query;
+    g_autoptr (NautilusFile) file = NULL;
 
-    old_query = self->query;
-
-    if (self->query != query)
+    if (g_set_object (&self->query, query))
     {
-        self->query = g_object_ref (query);
-
         g_clear_pointer (&self->binding, g_binding_unbind);
 
         if (query)
@@ -1049,8 +1042,6 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *self,
         }
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_QUERY]);
-
-        g_clear_object (&old_query);
     }
 
     file = nautilus_directory_get_existing_corresponding_file (NAUTILUS_DIRECTORY (self));
@@ -1058,16 +1049,10 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *self,
     {
         nautilus_search_directory_file_update_display_name (NAUTILUS_SEARCH_DIRECTORY_FILE (file));
     }
-    nautilus_file_unref (file);
 }
 
 NautilusQuery *
 nautilus_search_directory_get_query (NautilusSearchDirectory *self)
 {
-    if (self->query != NULL)
-    {
-        return g_object_ref (self->query);
-    }
-
-    return NULL;
+    return self->query;
 }
