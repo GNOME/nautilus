@@ -9394,7 +9394,6 @@ nautilus_files_view_set_search_query (NautilusView  *view,
 
             directory = nautilus_directory_get (location);
             g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
-            nautilus_search_directory_set_base_model (NAUTILUS_SEARCH_DIRECTORY (directory), priv->model);
             nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 
             load_directory (files_view, directory);

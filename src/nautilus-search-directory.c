@@ -96,7 +96,6 @@ typedef struct
 enum
 {
     PROP_0,
-    PROP_BASE_MODEL,
     PROP_QUERY,
     NUM_PROPERTIES
 };
@@ -770,12 +769,6 @@ search_set_property (GObject      *object,
 
     switch (property_id)
     {
-        case PROP_BASE_MODEL:
-        {
-            nautilus_search_directory_set_base_model (self, g_value_get_object (value));
-        }
-        break;
-
         case PROP_QUERY:
         {
             nautilus_search_directory_set_query (self, g_value_get_object (value));
@@ -800,12 +793,6 @@ search_get_property (GObject    *object,
 
     switch (property_id)
     {
-        case PROP_BASE_MODEL:
-        {
-            g_value_set_object (value, nautilus_search_directory_get_base_model (self));
-        }
-        break;
-
         case PROP_QUERY:
         {
             g_value_set_object (value, nautilus_search_directory_get_query (self));
@@ -955,12 +942,6 @@ nautilus_search_directory_class_init (NautilusSearchDirectoryClass *class)
     directory_class->is_editable = search_is_editable;
     directory_class->handles_location = real_handles_location;
 
-    properties[PROP_BASE_MODEL] =
-        g_param_spec_object ("base-model",
-                             "The base model",
-                             "The base directory model for this directory",
-                             NAUTILUS_TYPE_DIRECTORY,
-                             G_PARAM_READWRITE);
     properties[PROP_QUERY] =
         g_param_spec_object ("query", NULL, NULL,
                              NAUTILUS_TYPE_QUERY,
@@ -969,32 +950,18 @@ nautilus_search_directory_class_init (NautilusSearchDirectoryClass *class)
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
-void
-nautilus_search_directory_set_base_model (NautilusSearchDirectory *self,
-                                          NautilusDirectory       *base_model)
+static void
+update_base_model (NautilusSearchDirectory *self)
 {
+    g_autoptr (GFile) query_location = NULL;
+    g_autoptr (NautilusDirectory) base_model = NULL;
+
+    query_location = self->query != NULL ? nautilus_query_get_location (self->query) : NULL;
+    base_model = nautilus_directory_get (query_location);
+
     if (self->base_model == base_model)
     {
         return;
-    }
-
-    if (self->query != NULL)
-    {
-        GFile *query_location, *model_location;
-        gboolean is_equal;
-
-        query_location = nautilus_query_get_location (self->query);
-        model_location = nautilus_directory_get_location (base_model);
-
-        is_equal = g_file_equal (model_location, query_location);
-
-        g_object_unref (model_location);
-        g_object_unref (query_location);
-
-        if (!is_equal)
-        {
-            return;
-        }
     }
 
     clear_base_model (self);
@@ -1006,14 +973,6 @@ nautilus_search_directory_set_base_model (NautilusSearchDirectory *self,
                                              TRUE, NAUTILUS_FILE_ATTRIBUTE_INFO,
                                              NULL, NULL);
     }
-
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_BASE_MODEL]);
-}
-
-NautilusDirectory *
-nautilus_search_directory_get_base_model (NautilusSearchDirectory *self)
-{
-    return self->base_model;
 }
 
 char *
@@ -1043,6 +1002,10 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *self,
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_QUERY]);
     }
+
+    /* Even if the query is the same, its parameters might have changed, so we
+     * ensure the base model and the display name are up-to-date. */
+    update_base_model (self);
 
     file = nautilus_directory_get_existing_corresponding_file (NAUTILUS_DIRECTORY (self));
     if (file != NULL)

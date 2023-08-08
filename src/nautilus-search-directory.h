@@ -36,8 +36,3 @@ char   *nautilus_search_directory_generate_new_uri     (void);
 NautilusQuery *nautilus_search_directory_get_query       (NautilusSearchDirectory *self);
 void           nautilus_search_directory_set_query       (NautilusSearchDirectory *self,
 							  NautilusQuery           *query);
-
-NautilusDirectory *
-               nautilus_search_directory_get_base_model (NautilusSearchDirectory  *self);
-void           nautilus_search_directory_set_base_model (NautilusSearchDirectory  *self,
-							 NautilusDirectory        *base_model);
