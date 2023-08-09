@@ -456,15 +456,15 @@ static NautilusQuery *
 shell_query_new (gchar **terms)
 {
     NautilusQuery *query;
-    g_autoptr (GFile) home = NULL;
     g_autofree gchar *terms_joined = NULL;
 
     terms_joined = g_strjoinv (" ", terms);
-    home = g_file_new_for_path (g_get_home_dir ());
 
     query = nautilus_query_new ();
     nautilus_query_set_text (query, terms_joined);
-    nautilus_query_set_location (query, home);
+    /* Global search is not limited by location. */
+    nautilus_query_set_location (query, NULL);
+    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
 
     return query;
 }
@@ -488,7 +488,6 @@ execute_search (NautilusShellSearchProvider  *self,
     }
 
     query = shell_query_new (terms);
-    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
     nautilus_query_set_show_hidden_files (query, FALSE);
 
     pending_search = g_slice_new0 (PendingSearch);
@@ -800,24 +799,6 @@ handle_launch_search (NautilusShellSearchProvider2  *skeleton,
 {
     GApplication *app = g_application_get_default ();
     g_autoptr (NautilusQuery) query = shell_query_new (terms);
-    NautilusQueryRecursive recursive = location_settings_search_get_recursive ();
-
-    /*
-     * If no recursive search is enabled, we still want to be able to
-     * show the same results we presented in the overview when nautilus
-     * is explicitly launched to access to more results, and thus we perform
-     * a query showing results coming from index-based search engines.
-     * Otherwise we respect the global setting for recursivity.
-     */
-    if (recursive == NAUTILUS_QUERY_RECURSIVE_NEVER)
-    {
-        nautilus_query_set_recursive (query,
-                                      NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
-    }
-    else
-    {
-        nautilus_query_set_recursive (query, recursive);
-    }
 
     nautilus_application_search (NAUTILUS_APPLICATION (app), query);
 
