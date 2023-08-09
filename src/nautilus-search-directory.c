@@ -1022,11 +1022,8 @@ char *
 nautilus_search_directory_generate_new_uri (void)
 {
     static int counter = 0;
-    char *uri;
 
-    uri = g_strdup_printf (EEL_SEARCH_URI "//%d/", counter++);
-
-    return uri;
+    return g_strdup_printf (SCHEME_SEARCH "://%d/", counter++);
 }
 
 void

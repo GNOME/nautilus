@@ -882,7 +882,7 @@ nautilus_application_handle_file_args (NautilusApplication *self,
                 g_autofree char *error_string = NULL;
                 error_string = g_strdup_printf (_("“%s” is an internal protocol. "
                                                   "Opening this location directly is not supported."),
-                                                EEL_SEARCH_URI);
+                                                SCHEME_SEARCH ":");
 
                 g_printerr ("%s\n", error_string);
             }
