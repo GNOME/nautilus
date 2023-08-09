@@ -26,6 +26,7 @@
 
 #include "nautilus-application.h"
 #include "nautilus-file.h"
+#include "nautilus-scheme.h"
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
@@ -101,7 +102,7 @@ open_location_cb (NautilusPlacesView         *view,
         GtkRoot *window;
         char *path;
 
-        path = "other-locations:///";
+        path = SCHEME_OTHER_LOCATIONS ":///";
         file = nautilus_file_get (location);
         window = gtk_widget_get_root (GTK_WIDGET (view));
 
@@ -232,31 +233,22 @@ static void
 nautilus_places_view_set_location (NautilusView *view,
                                    GFile        *location)
 {
-    if (location)
+    NautilusPlacesViewPrivate *priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+
+    if (location != NULL &&
+        !g_file_has_uri_scheme (location, SCHEME_OTHER_LOCATIONS))
     {
-        NautilusPlacesViewPrivate *priv;
-        gchar *uri;
-
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
-        uri = g_file_get_uri (location);
-
         /*
          * If it's not trying to open the places view itself, simply
          * delegates the location to application, which takes care of
          * selecting the appropriate view.
          */
-        if (g_strcmp0 (uri, "other-locations:///") != 0)
-        {
-            nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                     location, 0, NULL, NULL, NULL);
-        }
-        else
-        {
-            g_set_object (&priv->location, location);
-        }
-
-        g_free (uri);
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                 location, 0, NULL, NULL, NULL);
+        return;
     }
+
+    g_set_object (&priv->location, location);
 }
 
 static GList *
@@ -378,7 +370,7 @@ nautilus_places_view_init (NautilusPlacesView *self)
     priv = nautilus_places_view_get_instance_private (self);
 
     /* Location */
-    priv->location = g_file_new_for_uri ("other-locations:///");
+    priv->location = g_file_new_for_uri (SCHEME_OTHER_LOCATIONS ":///");
 
     /* Places view */
     priv->places_view = nautilus_gtk_places_view_new ();

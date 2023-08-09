@@ -899,7 +899,7 @@ places_sidebar_show_other_locations_with_flags (NautilusWindow             *wind
 {
     GFile *location;
 
-    location = g_file_new_for_uri ("other-locations:///");
+    location = g_file_new_for_uri (SCHEME_OTHER_LOCATIONS ":///");
 
     open_location_cb (window, location, open_flags);
 

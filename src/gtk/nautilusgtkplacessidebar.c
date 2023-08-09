@@ -1448,7 +1448,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
       add_place (sidebar, NAUTILUS_GTK_PLACES_OTHER_LOCATIONS,
                  NAUTILUS_GTK_PLACES_SECTION_OTHER_LOCATIONS,
-                 _("Other Locations"), start_icon, NULL, "other-locations:///",
+                 _("Other Locations"), start_icon, NULL, SCHEME_OTHER_LOCATIONS ":///",
                  NULL, NULL, NULL, NULL, 0, _("Show other locations"));
 
       g_object_unref (start_icon);

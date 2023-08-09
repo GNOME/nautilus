@@ -8024,17 +8024,13 @@ nautilus_file_is_remote (NautilusFile *file)
 gboolean
 nautilus_file_is_other_locations (NautilusFile *file)
 {
-    gboolean is_other_locations;
-    gchar *uri;
+    g_autoptr (GFile) location = NULL;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    uri = nautilus_file_get_uri (file);
-    is_other_locations = g_strcmp0 (uri, "other-locations:///") == 0;
+    location = nautilus_file_get_location (file);
 
-    g_free (uri);
-
-    return is_other_locations;
+    return nautilus_is_root_for_scheme (location, SCHEME_OTHER_LOCATIONS);
 }
 
 /**
