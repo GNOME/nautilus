@@ -2620,7 +2620,7 @@ trash_or_delete_internal (GTask        *task,
         file = l->data;
 
         if (job->try_trash &&
-            g_file_has_uri_scheme (file, "trash"))
+            g_file_has_uri_scheme (file, SCHEME_TRASH))
         {
             must_confirm_delete_in_trash = TRUE;
             to_delete_files = g_list_prepend (to_delete_files, file);
@@ -4530,7 +4530,7 @@ get_target_file_with_custom_name (GFile       *src,
             copyname = NULL;
 
             /* if file is being restored from trash make sure it uses its original name */
-            if (g_file_has_uri_scheme (src, "trash"))
+            if (g_file_has_uri_scheme (src, SCHEME_TRASH))
             {
                 copyname = g_path_get_basename (g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH));
             }
@@ -6769,7 +6769,7 @@ nautilus_file_operations_move (GTask        *task,
 
         src_dir = g_file_get_parent ((job->files)->data);
 
-        if (g_file_has_uri_scheme (g_list_first (job->files)->data, "trash"))
+        if (g_file_has_uri_scheme (g_list_first (job->files)->data, SCHEME_TRASH))
         {
             job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_RESTORE_FROM_TRASH,
                                                                      g_list_length (job->files),
@@ -7536,7 +7536,7 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
     }
     else if (copy_action == GDK_ACTION_MOVE)
     {
-        if (g_file_has_uri_scheme (dest, "trash"))
+        if (g_file_has_uri_scheme (dest, SCHEME_TRASH))
         {
             MoveTrashCBData *cb_data;
 
@@ -8322,7 +8322,7 @@ delete_trash_file (CommonJob *job,
          * For that reason, it is enough to call g_file_delete on top-level
          * items only.
          */
-        should_recurse = !g_file_has_uri_scheme (file, "trash");
+        should_recurse = !g_file_has_uri_scheme (file, SCHEME_TRASH);
 
         enumerator = g_file_enumerate_children (file,
                                                 G_FILE_ATTRIBUTE_STANDARD_NAME ","

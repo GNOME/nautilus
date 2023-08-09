@@ -15,6 +15,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-files-view.h"
 #include "nautilus-files-view-dnd.h"
+#include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"
 
 static gboolean
@@ -223,7 +224,7 @@ nautilus_dnd_get_preferred_action (NautilusFile *target_file,
         return GDK_ACTION_COPY;
     }
 
-    if (g_file_has_uri_scheme (dropped, "trash"))
+    if (g_file_has_uri_scheme (dropped, SCHEME_TRASH))
     {
         return GDK_ACTION_MOVE;
     }

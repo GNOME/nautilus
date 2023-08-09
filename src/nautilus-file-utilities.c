@@ -29,6 +29,7 @@
 #include "nautilus-metadata.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
 #include "nautilus-ui-utilities.h"
@@ -468,6 +469,14 @@ nautilus_is_root_directory (GFile *dir)
     }
 
     return g_file_equal (dir, root_dir);
+}
+
+gboolean
+nautilus_is_root_for_scheme (GFile      *dir,
+                             const char *scheme)
+{
+    return (g_file_has_uri_scheme (dir, scheme) &&
+            !g_file_has_parent (dir, NULL));
 }
 
 GMount *

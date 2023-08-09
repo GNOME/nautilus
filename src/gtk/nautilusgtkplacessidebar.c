@@ -41,6 +41,7 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-properties-window.h"
+#include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
 
 #ifdef GDK_WINDOWING_X11
@@ -1061,7 +1062,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       start_icon = nautilus_trash_monitor_get_symbolic_icon ();
       sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
                                       NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                                      _("Trash"), start_icon, NULL, "trash:///",
+                                      _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
                                       NULL, NULL, NULL, NULL, 0,
                                       _("Open the trash"));
       g_object_add_weak_pointer (G_OBJECT (sidebar->trash_row),
@@ -3319,7 +3320,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   if (uri != NULL)
     {
       file = g_file_new_for_uri (uri);
-      trash = g_file_new_for_uri("trash:///");
+      trash = g_file_new_for_uri (SCHEME_TRASH ":///");
       is_trash = g_file_equal (trash, file);
       show_properties = (g_file_is_native (file) || is_trash || mount != NULL);
     }

@@ -30,6 +30,7 @@
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-engine.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
@@ -342,7 +343,7 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
     g_free (uri);
 
     /* trash */
-    candidate = search_hit_candidate_new ("trash:///", _("Trash"));
+    candidate = search_hit_candidate_new (SCHEME_TRASH ":///", _("Trash"));
     candidates = g_list_prepend (candidates, candidate);
 
     /* now add mounts */

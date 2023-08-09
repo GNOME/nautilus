@@ -1012,7 +1012,7 @@ setup_button_type (ButtonData      *button_data,
         button_data->type = ADMIN_ROOT_BUTTON;
         button_data->is_root = TRUE;
     }
-    else if (strcmp (uri, "trash:///") == 0)
+    else if (nautilus_is_root_for_scheme (location, SCHEME_TRASH))
     {
         button_data->type = TRASH_BUTTON;
         button_data->is_root = TRUE;

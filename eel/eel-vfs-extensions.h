@@ -30,7 +30,6 @@
 
 G_BEGIN_DECLS
 
-#define	EEL_TRASH_URI "trash:"
 #define EEL_SEARCH_URI "x-nautilus-search:"
 
 char *             eel_filename_strip_extension          (const char           *filename);

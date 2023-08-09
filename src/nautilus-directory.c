@@ -35,6 +35,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-profile.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-directory-file.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
@@ -815,7 +816,7 @@ nautilus_directory_is_in_trash (NautilusDirectory *directory)
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "trash");
+    return g_file_has_uri_scheme (directory->details->location, SCHEME_TRASH);
 }
 
 gboolean

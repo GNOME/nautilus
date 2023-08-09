@@ -3722,13 +3722,6 @@ nautilus_files_view_check_empty_states (NautilusFilesView *view)
     NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->check_empty_states (view);
 }
 
-static gboolean
-check_is_trash_root (const GFile *file)
-{
-    return (g_file_has_uri_scheme (file, SCHEME_TRASH) &&
-            !g_file_has_parent (file, NULL));
-}
-
 static void
 real_check_empty_states (NautilusFilesView *view)
 {
@@ -3744,7 +3737,7 @@ real_check_empty_states (NautilusFilesView *view)
             adw_status_page_set_title (status_page, _("No Results Found"));
             adw_status_page_set_description (status_page, _("Try a different search."));
         }
-        else if (check_is_trash_root (priv->location))
+        else if (nautilus_is_root_for_scheme (priv->location, SCHEME_TRASH))
         {
             adw_status_page_set_icon_name (status_page, "user-trash-symbolic");
             adw_status_page_set_title (status_page, _("Trash is Empty"));

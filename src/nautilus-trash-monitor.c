@@ -23,6 +23,8 @@
 
 #include <eel/eel-debug.h>
 
+#include "nautilus-scheme.h"
+
 #define UPDATE_RATE_SECONDS 1
 
 struct _NautilusTrashMonitor
@@ -166,7 +168,7 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
         return;
     }
 
-    location = g_file_new_for_uri ("trash:///");
+    location = g_file_new_for_uri (SCHEME_TRASH ":///");
     g_file_query_info_async (location,
                              G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT,
                              G_FILE_QUERY_INFO_NONE,
@@ -200,7 +202,7 @@ nautilus_trash_monitor_init (NautilusTrashMonitor *trash_monitor)
 
     trash_monitor->empty = TRUE;
 
-    location = g_file_new_for_uri ("trash:///");
+    location = g_file_new_for_uri (SCHEME_TRASH ":///");
 
     trash_monitor->file_monitor = g_file_monitor_file (location, 0, NULL, NULL);
     trash_monitor->pending = FALSE;

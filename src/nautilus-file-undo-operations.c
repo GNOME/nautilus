@@ -32,6 +32,7 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
+#include "nautilus-scheme.h"
 #include "nautilus-tag-manager.h"
 
 
@@ -1712,7 +1713,7 @@ trash_retrieve_files_to_restore_thread (GTask        *task,
     to_restore = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
                                         g_object_unref, g_object_unref);
 
-    trash = g_file_new_for_uri ("trash:///");
+    trash = g_file_new_for_uri (SCHEME_TRASH ":///");
 
     enumerator = g_file_enumerate_children (trash,
                                             G_FILE_ATTRIBUTE_STANDARD_NAME ","

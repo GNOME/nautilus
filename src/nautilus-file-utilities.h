@@ -37,6 +37,8 @@
 char *   nautilus_get_user_directory                 (void);
 char *   nautilus_get_home_directory_uri             (void);
 gboolean nautilus_is_root_directory                  (GFile *dir);
+gboolean nautilus_is_root_for_scheme                 (GFile      *dir,
+                                                      const char *scheme);
 gboolean nautilus_is_home_directory                  (GFile *dir);
 gboolean nautilus_is_home_directory_file             (GFile *dir,
 						      const char *filename);
