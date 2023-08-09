@@ -9411,6 +9411,10 @@ nautilus_files_view_set_search_query (NautilusView  *view,
             NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->model);
 
             location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
+            if (location == NULL)
+            {
+                location = g_file_new_for_path (g_get_home_dir ());
+            }
 
             nautilus_view_set_location (view, location);
         }

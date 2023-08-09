@@ -246,11 +246,9 @@ nautilus_query_class_init (NautilusQueryClass *class)
      */
     g_object_class_install_property (gobject_class,
                                      PROP_LOCATION,
-                                     g_param_spec_object ("location",
-                                                          "Location of the query",
-                                                          "The location of the query",
+                                     g_param_spec_object ("location", NULL, NULL,
                                                           G_TYPE_FILE,
-                                                          G_PARAM_READWRITE));
+                                                          G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
 
     /**
      * NautilusQuery::mimetypes: (type GPtrArray) (element-type gchar*)
@@ -341,7 +339,6 @@ nautilus_query_class_init (NautilusQueryClass *class)
 static void
 nautilus_query_init (NautilusQuery *query)
 {
-    query->location = g_file_new_for_path (g_get_home_dir ());
     query->mime_types = g_ptr_array_new ();
     query->show_hidden = TRUE;
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
@@ -453,6 +450,11 @@ GFile *
 nautilus_query_get_location (NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
+
+    if (query->location == NULL)
+    {
+        return NULL;
+    }
 
     return g_object_ref (query->location);
 }

@@ -60,7 +60,7 @@ void
 nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
                                     NautilusQuery     *query)
 {
-    GFile *query_location;
+    g_autoptr (GFile) query_location = NULL;
     GFile *hit_location;
     guint dir_count = 0;
     GTimeSpan m_diff = G_MAXINT64;
@@ -73,7 +73,8 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     query_location = nautilus_query_get_location (query);
     hit_location = g_file_new_for_uri (hit->uri);
 
-    if (g_file_has_prefix (hit_location, query_location))
+    if (query_location != NULL &&
+        g_file_has_prefix (hit_location, query_location))
     {
         GFile *parent, *location;
 
@@ -150,8 +151,6 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     hit->relevance = recent_bonus + proximity_bonus + match_bonus;
     DEBUG ("Hit %s computed relevance %.2f (%.2f + %.2f + %.2f)", hit->uri, hit->relevance,
            proximity_bonus, recent_bonus, match_bonus);
-
-    g_object_unref (query_location);
 }
 
 const char *
