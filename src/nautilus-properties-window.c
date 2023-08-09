@@ -2235,11 +2235,9 @@ is_network_directory (NautilusFile *file)
 static gboolean
 is_burn_directory (NautilusFile *file)
 {
-    g_autofree char *file_uri = NULL;
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
 
-    file_uri = nautilus_file_get_uri (file);
-
-    return strcmp (file_uri, "burn:///") == 0;
+    return nautilus_is_root_for_scheme (location, SCHEME_BURN);
 }
 
 
