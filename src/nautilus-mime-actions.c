@@ -38,6 +38,7 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-program-choosing.h"
+#include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
 
@@ -1640,12 +1641,8 @@ activate_files_internal (ActivateParameters *parameters)
                  !nautilus_file_can_read (file) ||
                  !nautilus_file_can_execute (file)))
             {
-                g_autofree gchar *file_path = NULL;
-
                 g_free (uri);
-
-                file_path = g_file_get_path (location);
-                uri = g_strconcat ("admin://", file_path, NULL);
+                uri = g_strconcat (SCHEME_ADMIN "://", g_file_peek_path (location), NULL);
             }
 
             location_with_permissions = g_file_new_for_uri (uri);

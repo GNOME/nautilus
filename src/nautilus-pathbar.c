@@ -975,7 +975,6 @@ setup_button_type (ButtonData      *button_data,
                    GFile           *location)
 {
     g_autoptr (GMount) mount = NULL;
-    g_autofree gchar *uri = NULL;
 
     if (nautilus_is_root_directory (location))
     {
@@ -1007,7 +1006,7 @@ setup_button_type (ButtonData      *button_data,
         button_data->type = OTHER_LOCATIONS_BUTTON;
         button_data->is_root = TRUE;
     }
-    else if (strcmp ((uri = g_file_get_uri (location)), "admin:///") == 0)
+    else if (nautilus_is_root_for_scheme (location, SCHEME_ADMIN))
     {
         button_data->type = ADMIN_ROOT_BUTTON;
         button_data->is_root = TRUE;

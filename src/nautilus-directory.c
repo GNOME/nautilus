@@ -855,7 +855,7 @@ nautilus_directory_is_in_admin (NautilusDirectory *directory)
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "admin");
+    return g_file_has_uri_scheme (directory->details->location, SCHEME_ADMIN);
 }
 
 gboolean
