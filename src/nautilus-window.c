@@ -229,7 +229,7 @@ action_go_starred (GSimpleAction *action,
     g_autoptr (GFile) starred = NULL;
 
     window = NAUTILUS_WINDOW (user_data);
-    starred = g_file_new_for_uri ("starred:///");
+    starred = g_file_new_for_uri (SCHEME_STARRED ":///");
 
     nautilus_window_open_location_full (window, starred, 0, NULL, NULL);
 }
@@ -912,7 +912,7 @@ places_sidebar_show_starred_location (NautilusWindow             *window,
 {
     GFile *location;
 
-    location = g_file_new_for_uri ("starred:///");
+    location = g_file_new_for_uri (SCHEME_STARRED ":///");
 
     open_location_cb (window, location, open_flags);
 

@@ -1008,7 +1008,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       start_icon = g_themed_icon_new_with_default_fallbacks ("starred-symbolic");
       add_place (sidebar, NAUTILUS_GTK_PLACES_STARRED_LOCATION,
                  NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                 _("Starred"), start_icon, NULL, "starred:///",
+                 _("Starred"), start_icon, NULL, SCHEME_STARRED ":///",
                  NULL, NULL, NULL, NULL, 0,
                  _("Starred files"));
       g_object_unref (start_icon);

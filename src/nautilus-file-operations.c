@@ -7495,7 +7495,7 @@ nautilus_file_operations_copy_move (const GList                    *item_uris,
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    if (g_file_has_uri_scheme (dest, "starred"))
+    if (g_file_has_uri_scheme (dest, SCHEME_STARRED))
     {
         g_autolist (NautilusFile) source_file_list = NULL;
 

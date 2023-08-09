@@ -842,7 +842,7 @@ nautilus_directory_is_in_starred (NautilusDirectory *directory)
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "starred");
+    return g_file_has_uri_scheme (directory->details->location, SCHEME_STARRED);
 }
 
 gboolean
