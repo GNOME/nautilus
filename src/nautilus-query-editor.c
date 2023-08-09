@@ -31,6 +31,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
@@ -87,14 +88,10 @@ update_fts_sensitivity (NautilusQueryEditor *editor)
 
     if (editor->location)
     {
-        g_autoptr (NautilusFile) file = NULL;
-        g_autofree gchar *uri = NULL;
-
-        file = nautilus_file_get (editor->location);
-        uri = g_file_get_uri (editor->location);
+        g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
 
         fts_sensitive = !nautilus_file_is_other_locations (file) &&
-                        !g_str_has_prefix (uri, "network://") &&
+                        !g_file_has_uri_scheme (editor->location, SCHEME_NETWORK) &&
                         !(nautilus_file_is_remote (file) &&
                           location_settings_search_get_recursive_for_location (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
         nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),

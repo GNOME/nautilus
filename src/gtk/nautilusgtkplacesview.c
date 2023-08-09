@@ -30,6 +30,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-properties-window.h"
+#include "nautilus-scheme.h"
 
 /*< private >
  * NautilusGtkPlacesView:
@@ -911,7 +912,7 @@ monitor_network (NautilusGtkPlacesView *view)
     return;
 
   error = NULL;
-  network_file = g_file_new_for_uri ("network:///");
+  network_file = g_file_new_for_uri (SCHEME_NETWORK ":///");
   view->network_monitor = g_file_monitor (network_file,
                                           G_FILE_MONITOR_NONE,
                                           NULL,
@@ -1051,13 +1052,13 @@ fetch_networks (NautilusGtkPlacesView *view)
   supported_uris = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
 
   for (found = FALSE; !found && supported_uris && supported_uris[0]; supported_uris++)
-    if (g_strcmp0 (supported_uris[0], "network") == 0)
+    if (g_strcmp0 (supported_uris[0], SCHEME_NETWORK) == 0)
       found = TRUE;
 
   if (!found)
     return;
 
-  network_file = g_file_new_for_uri ("network:///");
+  network_file = g_file_new_for_uri (SCHEME_NETWORK ":///");
 
   g_cancellable_cancel (view->networks_fetching_cancellable);
   g_clear_object (&view->networks_fetching_cancellable);

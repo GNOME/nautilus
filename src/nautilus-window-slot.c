@@ -30,6 +30,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
 #include "nautilus-query-editor.h"
+#include "nautilus-scheme.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
@@ -1032,17 +1033,15 @@ update_search_information (NautilusWindowSlot *self)
     {
         g_autoptr (NautilusFile) file = NULL;
         gchar *label;
-        g_autofree gchar *uri = NULL;
 
         file = nautilus_file_get (location);
         label = NULL;
-        uri = g_file_get_uri (location);
 
         if (nautilus_file_is_other_locations (file))
         {
             label = _("Searching locations only");
         }
-        else if (g_str_has_prefix (uri, "network://"))
+        else if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK))
         {
             label = _("Searching network locations only");
         }
