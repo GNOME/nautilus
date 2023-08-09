@@ -19,8 +19,6 @@
 
 #include <glib/gi18n.h>
 
-#include <eel/eel-vfs-extensions.h>
-
 #include "nautilus-new-folder-dialog-controller.h"
 
 

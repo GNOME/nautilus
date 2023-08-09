@@ -29,9 +29,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-file-utilities.h"
 #include <math.h>
-#include <eel/eel-string.h>
-#include <eel/eel-debug.h>
-#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <errno.h>
 #include <stdio.h>

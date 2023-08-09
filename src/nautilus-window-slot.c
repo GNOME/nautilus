@@ -46,7 +46,6 @@
 #include "nautilus-monitor.h"
 #include "nautilus-profile.h"
 #include "nautilus-ui-utilities.h"
-#include <eel/eel-vfs-extensions.h>
 
 enum
 {

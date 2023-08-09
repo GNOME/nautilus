@@ -28,7 +28,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
-#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>

@@ -25,7 +25,6 @@
 
 #include "nautilus-bookmark.h"
 
-#include <eel/eel-vfs-extensions.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>

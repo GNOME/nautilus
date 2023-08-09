@@ -30,9 +30,6 @@
 #include "nautilus-files-view.h"
 #include "nautilus-application.h"
 
-#include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
-
 #include <glib/gi18n.h>
 
 #include "nautilus-clipboard.h"

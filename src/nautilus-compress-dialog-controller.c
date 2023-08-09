@@ -21,8 +21,6 @@
 #include <glib/gi18n.h>
 #include <gnome-autoar/gnome-autoar.h>
 
-#include <eel/eel-vfs-extensions.h>
-
 #include "nautilus-compress-dialog-controller.h"
 
 #include "nautilus-global-preferences.h"

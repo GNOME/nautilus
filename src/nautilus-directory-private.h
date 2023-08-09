@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include <eel/eel-vfs-extensions.h>
 #include <gio/gio.h>
 #include <nautilus-extension.h>
 
