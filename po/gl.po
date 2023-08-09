@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2023-08-04 14:36+0000\n"
-"PO-Revision-Date: 2023-08-09 09:57+0200\n"
+"POT-Creation-Date: 2023-08-09 07:58+0000\n"
+"PO-Revision-Date: 2023-08-09 10:06+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <Proxecto Trasno <proxecto@trasno.gal>>\n"
 "Language: gl\n"
@@ -356,10 +356,6 @@ msgid "Whether GTK 4 settings migration happened"
 msgstr "Indica se se realizou a migración das preferencias de GTK 4"
 
 #: data/org.gnome.nautilus.gschema.xml:174
-#, fuzzy
-#| msgid ""
-#| "Whether settings shared with GtkFileChooser have been migrated from their "
-#| "GTK 3 key to the GTK 4 ones."
 msgid ""
 "Whether settings shared with GtkFileChooser have been migrated from their "
 "GTK 3 keys to the GTK 4 ones."
@@ -1039,7 +1035,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:113 src/nautilus-file-utilities.c:302
-#: src/nautilus-pathbar.c:381 src/nautilus-shell-search-provider.c:330
+#: src/nautilus-pathbar.c:381 src/nautilus-shell-search-provider.c:340
 #: src/nautilus-window.c:161 src/gtk/nautilusgtkplacessidebar.c:1021
 msgid "Home"
 msgstr "Cartafol persoal"
@@ -2011,11 +2007,9 @@ msgstr[0] "(%d ficheiros/seg)"
 msgstr[1] "(%d ficheiros/seg)"
 
 #: src/nautilus-file-operations.c:2025
-#, fuzzy, c-format
-#| msgid "Preparing to delete %'d file (%s)"
-#| msgid_plural "Preparing to delete %'d files (%s)"
+#, c-format
 msgid "Failed to delete all child files"
-msgstr "Preparándose para eliminar %'d ficheiro (%s)"
+msgstr "Produciuse un fallo ao eliminar todos os ficheiros fillo"
 
 #: src/nautilus-file-operations.c:2078 src/nautilus-file-operations.c:3370
 msgid "Error while deleting."
@@ -2970,14 +2964,10 @@ msgid "_Redo Move"
 msgstr "_Refacer mover"
 
 #: src/nautilus-file-undo-operations.c:477
-#, fuzzy
-#| msgid "_Undo Restore from Trash"
 msgid "_Undo Restore From Trash"
 msgstr "_Desfacer restaurar desde o lixo"
 
 #: src/nautilus-file-undo-operations.c:478
-#, fuzzy
-#| msgid "_Redo Restore from Trash"
 msgid "_Redo Restore From Trash"
 msgstr "_Refacer restaurar desde o lixo"
 
@@ -3161,14 +3151,10 @@ msgid "Create new file “%s” from template "
 msgstr "Crear un novo ficheiro «%s» desde o modelo "
 
 #: src/nautilus-file-undo-operations.c:846
-#, fuzzy
-#| msgid "_Undo Create from Template"
 msgid "_Undo Create From Template"
 msgstr "_Desfacer crear desde modelo"
 
 #: src/nautilus-file-undo-operations.c:847
-#, fuzzy
-#| msgid "_Redo Create from Template"
 msgid "_Redo Create From Template"
 msgstr "_Refacer crear desde modelo"
 
@@ -4050,7 +4036,7 @@ msgstr "Limpar entrada"
 
 #: src/nautilus-query-editor.c:663
 msgid "Filter Search Results"
-msgstr ""
+msgstr "Filtrar os resultados da busca"
 
 #: src/nautilus-rename-file-popover-controller.c:370
 msgid "Rename Folder"
@@ -4066,7 +4052,7 @@ msgstr "Non foi posíbel completar a busca solicitada"
 
 #: src/nautilus-search-popover.c:293
 msgid "Show Time Ranges"
-msgstr ""
+msgstr "Mostra rangos de tempo"
 
 #: src/nautilus-search-popover.c:299
 #: src/resources/ui/nautilus-search-popover.ui:72
@@ -4097,7 +4083,7 @@ msgid "Select Dates…"
 msgstr "Seleccionar datas…"
 
 #. trash
-#: src/nautilus-shell-search-provider.c:335
+#: src/nautilus-shell-search-provider.c:345
 #: src/gtk/nautilusgtkplacessidebar.c:1064
 msgid "Trash"
 msgstr "Lixo"
@@ -4242,12 +4228,11 @@ msgstr "«%s» movido ao lixo"
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
 #: src/nautilus-window.c:1193
-#, fuzzy, c-format
-#| msgid "“%s” moved to trash"
+#, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
-msgstr[0] "«%s» movido ao lixo"
-msgstr[1] "«%s» movido ao lixo"
+msgstr[0] "%d ficheiro movido ao lixo"
+msgstr[1] "%d ficheiros movidos ao lixo"
 
 #. Translators: one item has been unstarred and %s is its name.
 #: src/nautilus-window.c:1214
@@ -4795,7 +4780,7 @@ msgstr "Columnas visíbeis"
 
 #: src/resources/ui/nautilus-column-chooser.ui:26
 msgid "This folder uses custom settings"
-msgstr ""
+msgstr "Este cartafol usa preferencias personalizadas"
 
 #: src/resources/ui/nautilus-column-chooser.ui:59
 msgid "Only Apply to Current Folder"
@@ -4803,7 +4788,7 @@ msgstr "Aplicar só no cartafol actual"
 
 #: src/resources/ui/nautilus-column-chooser.ui:80
 msgid "Move _Up"
-msgstr ""
+msgstr "_Subir"
 
 #: src/resources/ui/nautilus-column-chooser.ui:84
 msgid "Move _Down"
