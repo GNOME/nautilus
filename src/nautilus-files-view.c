@@ -170,6 +170,7 @@ typedef struct
     guint dir_merge_id;
 
     NautilusQuery *search_query;
+    GFile *location_before_search;
 
     NautilusRenameFilePopoverController *rename_file_controller;
     NautilusNewFolderDialogController *new_folder_controller;
@@ -3412,6 +3413,7 @@ nautilus_files_view_dispose (GObject *object)
     priv->directory_as_file = NULL;
 
     g_clear_object (&priv->search_query);
+    g_clear_object (&priv->location_before_search);
     g_clear_object (&priv->location);
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->dispose (object);
@@ -9486,6 +9488,7 @@ nautilus_files_view_set_search_query (NautilusView  *view,
             g_assert (NAUTILUS_IS_SEARCH_DIRECTORY (directory));
             nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 
+            g_set_object (&priv->location_before_search, priv->location);
             load_directory (files_view, directory);
 
             g_object_notify (G_OBJECT (view), "searching");
@@ -9498,15 +9501,18 @@ nautilus_files_view_set_search_query (NautilusView  *view,
     {
         if (nautilus_view_is_searching (view))
         {
-            NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->model);
+            location = g_steal_pointer (&priv->location_before_search);
 
-            location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
-            if (location == NULL)
+            if (G_UNLIKELY (location == NULL))
             {
+                g_warn_if_reached ();
                 location = g_file_new_for_path (g_get_home_dir ());
+                nautilus_window_slot_open_location_full (priv->slot, location, 0, NULL);
             }
-
-            nautilus_view_set_location (view, location);
+            else
+            {
+                nautilus_view_set_location (view, location);
+            }
         }
     }
 }
