@@ -183,12 +183,6 @@ nautilus_query_editor_get_property (GObject    *object,
 
     switch (prop_id)
     {
-        case PROP_LOCATION:
-        {
-            g_value_set_object (value, editor->location);
-        }
-        break;
-
         case PROP_QUERY:
         {
             g_value_set_object (value, editor->query);
@@ -302,15 +296,14 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
     /**
      * NautilusQueryEditor::location:
      *
-     * The current location of the query editor.
+     * Binding target for the slot's location. To be applied to the existing
+     * query, or when creating a new one.
      */
     g_object_class_install_property (gobject_class,
                                      PROP_LOCATION,
-                                     g_param_spec_object ("location",
-                                                          "Location of the search",
-                                                          "The current location of the editor",
+                                     g_param_spec_object ("location", NULL, NULL,
                                                           G_TYPE_FILE,
-                                                          G_PARAM_READWRITE));
+                                                          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
     /**
      * NautilusQueryEditor::query:
@@ -329,14 +322,6 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
     gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BOX_LAYOUT);
     gtk_widget_class_set_css_name (widget_class, "entry");
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_SEARCH_BOX);
-}
-
-GFile *
-nautilus_query_editor_get_location (NautilusQueryEditor *editor)
-{
-    g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (editor), NULL);
-
-    return g_object_ref (editor->location);
 }
 
 static void

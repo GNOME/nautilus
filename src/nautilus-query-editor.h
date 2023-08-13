@@ -48,14 +48,6 @@ NautilusQuery *nautilus_query_editor_get_query    (NautilusQueryEditor *editor);
 void           nautilus_query_editor_set_query    (NautilusQueryEditor *editor,
                                                    NautilusQuery       *query);
 /**
- * nautilus_query_editor_get_location:
- *
- * @editor: A #NautilusQueryEditor instance.
- *
- * Returns: (nullable) (transfer full): The location of the current search.
- */
-GFile         *nautilus_query_editor_get_location (NautilusQueryEditor *editor);
-/**
  * nautilus_query_editor_set_location:
  *
  * @editor: A #NautilusQueryEditor instance.
