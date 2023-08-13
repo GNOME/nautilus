@@ -172,7 +172,7 @@ on_icon_size_changed (NautilusGridCell *self)
     if (item == NULL)
     {
         /* Cell is not bound to an item yet. Do nothing. */
-        return NULL;
+        return;
     }
 
     update_icon (self);
