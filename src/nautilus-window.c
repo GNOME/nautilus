@@ -995,7 +995,7 @@ action_restore_tab (GSimpleAction *action,
 
     data = g_queue_pop_head (window->tab_data_queue);
 
-    location = nautilus_file_get_location (data->file);
+    location = nautilus_bookmark_get_location (data->current_location_bookmark);
 
     slot = nautilus_window_create_and_init_slot (window, flags);
 

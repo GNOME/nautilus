@@ -184,7 +184,6 @@ free_navigation_state (gpointer data)
 
     g_list_free_full (navigation_state->back_list, g_object_unref);
     g_list_free_full (navigation_state->forward_list, g_object_unref);
-    nautilus_file_unref (navigation_state->file);
     g_clear_object (&navigation_state->current_location_bookmark);
 
     g_free (navigation_state);
@@ -230,7 +229,6 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     data = g_new0 (NautilusNavigationState, 1);
     data->back_list = back_list;
     data->forward_list = forward_list;
-    data->file = nautilus_file_get (self->location);
     g_set_object (&data->current_location_bookmark, self->current_location_bookmark);
 
     return data;
