@@ -234,6 +234,12 @@
   box-shadow: none;
 }
 
+/* Reserve empty space for the "Search Everywhere" overlaid button */
+.view.extra-bottom-padding gridview,
+.view.extra-bottom-padding listview {
+  padding-bottom: 66px;
+}
+
 .view .thumbnail {
   background: url('/org/gnome/nautilus/Checkerboard.png') repeat;
   border-radius: 2px;
