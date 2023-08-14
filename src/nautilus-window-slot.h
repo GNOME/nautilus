@@ -42,6 +42,7 @@ typedef struct
     GList *back_list;
     GList *forward_list;
     NautilusBookmark *current_location_bookmark;
+    NautilusQuery *current_search_query;
 } NautilusNavigationState;
 
 NautilusWindowSlot * nautilus_window_slot_new              (NautilusWindow     *window);

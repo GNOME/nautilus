@@ -2065,6 +2065,7 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
             state->forward_list = g_list_prepend (state->forward_list, state->current_location_bookmark);
             state->current_location_bookmark = state->back_list->data;
             state->back_list = state->back_list->next;
+            g_clear_object (&state->current_search_query);
         }
         break;
 
@@ -2073,6 +2074,7 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
             state->back_list = g_list_prepend (state->back_list, state->current_location_bookmark);
             state->current_location_bookmark = state->forward_list->data;
             state->forward_list = state->forward_list->next;
+            g_clear_object (&state->current_search_query);
         }
         break;
 
