@@ -658,7 +658,8 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
     if (recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
     {
         g_autoptr (GFile) location = nautilus_query_get_location (query);
-        g_autoptr (NautilusFile) location_file = nautilus_file_get (location);
+        g_autoptr (NautilusFile) location_file = (location != NULL ?
+                                                  nautilus_file_get (location) : NULL);
 
         tracker->recursive = location_file != NULL && !nautilus_file_is_remote (location_file);
     }
