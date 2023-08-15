@@ -2670,45 +2670,106 @@ scan_dir (GFile      *dir,
 
 retry:
 
-    if (dir_info != NULL)
-    {
-        dir_info->num_files_children = 0;
-        dir_info->num_bytes_children = 0;
-    }
-
-    error = NULL;
-    enumerator = g_file_enumerate_children (dir,
-                                            G_FILE_ATTRIBUTE_STANDARD_NAME ","
-                                            G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                                            G_FILE_ATTRIBUTE_STANDARD_SIZE,
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            job->cancellable,
-                                            &error);
-    if (enumerator)
-    {
-        error = NULL;
-        while ((info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL)
+        if (dir_info != NULL)
         {
-            count_file (info, job, source_info, dir_info);
-
-            if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
-            {
-                subdir = g_file_get_child (dir,
-                                           g_file_info_get_name (info));
-
-                subdirs = g_list_prepend (subdirs, subdir);
-            }
-
-            g_object_unref (info);
+            dir_info->num_files_children = 0;
+            dir_info->num_bytes_children = 0;
         }
-        g_file_enumerator_close (enumerator, job->cancellable, NULL);
-        g_object_unref (enumerator);
 
-        if (error && IS_IO_ERROR (error, CANCELLED))
+        error = NULL;
+        enumerator = g_file_enumerate_children (dir,
+                                                G_FILE_ATTRIBUTE_STANDARD_NAME ","
+                                                G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+                                                G_FILE_ATTRIBUTE_STANDARD_SIZE,
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                job->cancellable,
+                                                &error);
+        if (enumerator)
+        {
+            error = NULL;
+            while ((info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL)
+            {
+                count_file (info, job, source_info, dir_info);
+
+                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+                {
+                    subdir = g_file_get_child (dir,
+                                               g_file_info_get_name (info));
+
+                    subdirs = g_list_prepend (subdirs, subdir);
+                }
+
+                g_object_unref (info);
+            }
+            g_file_enumerator_close (enumerator, job->cancellable, NULL);
+            g_object_unref (enumerator);
+
+            if (error && IS_IO_ERROR (error, CANCELLED))
+            {
+                g_error_free (error);
+            }
+            else if (error)
+            {
+                g_autofree gchar *basename = NULL;
+                g_autofree gchar *primary = get_scan_primary (source_info->op);
+                g_autofree gchar *secondary = NULL;
+                const char *details = NULL;
+
+                basename = get_basename (dir);
+
+                if (IS_IO_ERROR (error, PERMISSION_DENIED))
+                {
+                    secondary = g_strdup_printf (_("Files in the folder “%s” cannot be handled "
+                                                   "because you do not have permissions to see them."),
+                                                 basename);
+                }
+                else
+                {
+                    secondary = g_strdup_printf (_("There was an error getting information about the "
+                                                   "files in the folder “%s”."), basename);
+                    details = error->message;
+                }
+
+                response = run_dialog (job,
+                                       primary,
+                                       secondary,
+                                       details,
+                                       RESPONSE_SKIP | RESPONSE_RETRY);
+
+                g_error_free (error);
+
+                if (response == RESPONSE_CANCEL)
+                {
+                    abort_job (job);
+                    skip_subdirs = TRUE;
+                }
+                else if (response == RESPONSE_RETRY)
+                {
+                    g_clear_list (&subdirs, g_object_unref);
+                    *source_info = saved_info;
+                    goto retry;
+                }
+                else if (response == RESPONSE_SKIP)
+                {
+                    skip_readdir_error (job, dir);
+                }
+                else
+                {
+                    g_assert_not_reached ();
+                }
+            }
+        }
+        else if (job->skip_all_error)
+        {
+            g_error_free (error);
+            skip_file (job, dir);
+            skip_subdirs = TRUE;
+        }
+        else if (IS_IO_ERROR (error, CANCELLED))
         {
             g_error_free (error);
         }
-        else if (error)
+        else
         {
             g_autofree gchar *basename = NULL;
             g_autofree gchar *primary = get_scan_primary (source_info->op);
@@ -2716,25 +2777,26 @@ retry:
             const char *details = NULL;
 
             basename = get_basename (dir);
-
             if (IS_IO_ERROR (error, PERMISSION_DENIED))
             {
-                secondary = g_strdup_printf (_("Files in the folder “%s” cannot be handled "
-                                               "because you do not have permissions to see them."),
+                secondary = g_strdup_printf (_("The folder “%s” cannot be handled because you "
+                                               "do not have permissions to read it."),
                                              basename);
             }
             else
             {
-                secondary = g_strdup_printf (_("There was an error getting information about the "
-                                               "files in the folder “%s”."), basename);
+                secondary = g_strdup_printf (_("There was an error reading the folder “%s”."),
+                                             basename);
                 details = error->message;
             }
-
+            /* set show_all to TRUE here, as we don't know how many
+             * files we'll end up processing yet.
+             */
             response = run_dialog (job,
                                    primary,
                                    secondary,
                                    details,
-                                   RESPONSE_SKIP | RESPONSE_RETRY);
+                                   RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
 
             g_error_free (error);
 
@@ -2743,85 +2805,23 @@ retry:
                 abort_job (job);
                 skip_subdirs = TRUE;
             }
+            else if (response == RESPONSE_SKIP || response == RESPONSE_SKIP_ALL)
+            {
+                if (response == RESPONSE_SKIP_ALL)
+                {
+                    job->skip_all_error = TRUE;
+                }
+                skip_file (job, dir);
+                skip_subdirs = TRUE;
+            }
             else if (response == RESPONSE_RETRY)
             {
-                g_clear_list (&subdirs, g_object_unref);
-                *source_info = saved_info;
                 goto retry;
-            }
-            else if (response == RESPONSE_SKIP)
-            {
-                skip_readdir_error (job, dir);
             }
             else
             {
                 g_assert_not_reached ();
             }
-        }
-    }
-    else if (job->skip_all_error)
-    {
-        g_error_free (error);
-        skip_file (job, dir);
-        skip_subdirs = TRUE;
-    }
-    else if (IS_IO_ERROR (error, CANCELLED))
-    {
-        g_error_free (error);
-    }
-    else
-    {
-        g_autofree gchar *basename = NULL;
-        g_autofree gchar *primary = get_scan_primary (source_info->op);
-        g_autofree gchar *secondary = NULL;
-        const char *details = NULL;
-
-        basename = get_basename (dir);
-        if (IS_IO_ERROR (error, PERMISSION_DENIED))
-        {
-            secondary = g_strdup_printf (_("The folder “%s” cannot be handled because you "
-                                           "do not have permissions to read it."),
-                                         basename);
-        }
-        else
-        {
-            secondary = g_strdup_printf (_("There was an error reading the folder “%s”."),
-                                         basename);
-            details = error->message;
-        }
-        /* set show_all to TRUE here, as we don't know how many
-         * files we'll end up processing yet.
-         */
-        response = run_dialog (job,
-                               primary,
-                               secondary,
-                               details,
-                               RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
-
-        g_error_free (error);
-
-        if (response == RESPONSE_CANCEL)
-        {
-            abort_job (job);
-            skip_subdirs = TRUE;
-        }
-        else if (response == RESPONSE_SKIP || response == RESPONSE_SKIP_ALL)
-        {
-            if (response == RESPONSE_SKIP_ALL)
-            {
-                job->skip_all_error = TRUE;
-            }
-            skip_file (job, dir);
-            skip_subdirs = TRUE;
-        }
-        else if (response == RESPONSE_RETRY)
-        {
-            goto retry;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
     }
 
     if (!skip_subdirs)
@@ -2851,86 +2851,86 @@ scan_file (GFile      *file,
     dirs = g_queue_new ();
 
 retry:
-    error = NULL;
-    info = g_file_query_info (file,
-                              G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                              G_FILE_ATTRIBUTE_STANDARD_SIZE,
-                              G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                              job->cancellable,
-                              &error);
+        error = NULL;
+        info = g_file_query_info (file,
+                                  G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+                                  G_FILE_ATTRIBUTE_STANDARD_SIZE,
+                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                  job->cancellable,
+                                  &error);
 
-    if (info)
-    {
-        count_file (info, job, source_info, NULL);
-
-        /* trashing operation doesn't recurse */
-        if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
-            source_info->op != OP_KIND_TRASH)
+        if (info)
         {
-            g_queue_push_head (dirs, g_object_ref (file));
-        }
-        g_object_unref (info);
-    }
-    else if (job->skip_all_error)
-    {
-        g_error_free (error);
-        skip_file (job, file);
-    }
-    else if (IS_IO_ERROR (error, CANCELLED))
-    {
-        g_error_free (error);
-    }
-    else
-    {
-        g_autofree gchar *basename = NULL;
-        g_autofree gchar *primary = get_scan_primary (source_info->op);
-        g_autofree gchar *secondary = NULL;
-        const char *details = NULL;
+            count_file (info, job, source_info, NULL);
 
-        basename = get_basename (file);
-
-        if (IS_IO_ERROR (error, PERMISSION_DENIED))
-        {
-            secondary = g_strdup_printf (_("The file “%s” cannot be handled because you do not have "
-                                           "permissions to read it."), basename);
-        }
-        else
-        {
-            secondary = g_strdup_printf (_("There was an error getting information about “%s”."),
-                                         basename);
-            details = error->message;
-        }
-        /* set show_all to TRUE here, as we don't know how many
-         * files we'll end up processing yet.
-         */
-        response = run_dialog (job,
-                               primary,
-                               secondary,
-                               details,
-                               RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
-
-        g_error_free (error);
-
-        if (response == RESPONSE_CANCEL)
-        {
-            abort_job (job);
-        }
-        else if (response == RESPONSE_SKIP || response == RESPONSE_SKIP_ALL)
-        {
-            if (response == RESPONSE_SKIP_ALL)
+            /* trashing operation doesn't recurse */
+            if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
+                source_info->op != OP_KIND_TRASH)
             {
-                job->skip_all_error = TRUE;
+                g_queue_push_head (dirs, g_object_ref (file));
             }
+            g_object_unref (info);
+        }
+        else if (job->skip_all_error)
+        {
+            g_error_free (error);
             skip_file (job, file);
         }
-        else if (response == RESPONSE_RETRY)
+        else if (IS_IO_ERROR (error, CANCELLED))
         {
-            goto retry;
+            g_error_free (error);
         }
         else
         {
-            g_assert_not_reached ();
-        }
+            g_autofree gchar *basename = NULL;
+            g_autofree gchar *primary = get_scan_primary (source_info->op);
+            g_autofree gchar *secondary = NULL;
+            const char *details = NULL;
+
+            basename = get_basename (file);
+
+            if (IS_IO_ERROR (error, PERMISSION_DENIED))
+            {
+                secondary = g_strdup_printf (_("The file “%s” cannot be handled because you do not have "
+                                               "permissions to read it."), basename);
+            }
+            else
+            {
+                secondary = g_strdup_printf (_("There was an error getting information about “%s”."),
+                                             basename);
+                details = error->message;
+            }
+            /* set show_all to TRUE here, as we don't know how many
+             * files we'll end up processing yet.
+             */
+            response = run_dialog (job,
+                                   primary,
+                                   secondary,
+                                   details,
+                                   RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
+
+            g_error_free (error);
+
+            if (response == RESPONSE_CANCEL)
+            {
+                abort_job (job);
+            }
+            else if (response == RESPONSE_SKIP || response == RESPONSE_SKIP_ALL)
+            {
+                if (response == RESPONSE_SKIP_ALL)
+                {
+                    job->skip_all_error = TRUE;
+                }
+                skip_file (job, file);
+            }
+            else if (response == RESPONSE_RETRY)
+            {
+                goto retry;
+            }
+            else
+            {
+                g_assert_not_reached ();
+            }
     }
 
     while (!job_aborted (job) &&
@@ -2997,145 +2997,44 @@ verify_destination (CommonJob   *job,
     }
 
 retry:
+        error = NULL;
+        info = g_file_query_info (dest,
+                                  G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+                                  G_FILE_ATTRIBUTE_ID_FILESYSTEM,
+                                  dest_is_symlink ? G_FILE_QUERY_INFO_NONE : G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                  job->cancellable,
+                                  &error);
 
-    error = NULL;
-    info = g_file_query_info (dest,
-                              G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                              G_FILE_ATTRIBUTE_ID_FILESYSTEM,
-                              dest_is_symlink ? G_FILE_QUERY_INFO_NONE : G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                              job->cancellable,
-                              &error);
-
-    if (info == NULL)
-    {
-        if (IS_IO_ERROR (error, CANCELLED))
+        if (info == NULL)
         {
-            g_error_free (error);
-            return;
-        }
+            if (IS_IO_ERROR (error, CANCELLED))
+            {
+                g_error_free (error);
+                return;
+            }
 
-        g_autofree gchar *basename = get_basename (dest);
-        g_autofree gchar *primary = g_strdup_printf (_("Error while copying to “%s”."), basename);
-        const char *secondary;
-        const char *details = NULL;
-
-        if (IS_IO_ERROR (error, PERMISSION_DENIED))
-        {
-            secondary = _("You do not have permissions to access the destination folder.");
-        }
-        else
-        {
-            secondary = _("There was an error getting information about the destination.");
-            details = error->message;
-        }
-
-        response = run_dialog (job,
-                               primary,
-                               secondary,
-                               details,
-                               RESPONSE_RETRY);
-
-        g_error_free (error);
-
-        if (response == RESPONSE_CANCEL)
-        {
-            abort_job (job);
-        }
-        else if (response == RESPONSE_RETRY)
-        {
-            goto retry;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
-
-        return;
-    }
-
-    file_type = g_file_info_get_file_type (info);
-    if (!dest_is_symlink && file_type == G_FILE_TYPE_SYMBOLIC_LINK)
-    {
-        /* Record that destination is a symlink and do real stat() once again */
-        dest_is_symlink = TRUE;
-        g_object_unref (info);
-        goto retry;
-    }
-
-    if (dest_fs_id)
-    {
-        *dest_fs_id =
-            g_strdup (g_file_info_get_attribute_string (info,
-                                                        G_FILE_ATTRIBUTE_ID_FILESYSTEM));
-    }
-
-    g_object_unref (info);
-
-    if (file_type != G_FILE_TYPE_DIRECTORY)
-    {
-        g_autofree gchar *basename = get_basename (dest);
-        g_autofree char *heading = g_strdup_printf (_("Error while copying to “%s”."), basename);
-        const char *body = _("The destination is not a folder.");
-
-        nautilus_show_ok_dialog (heading, body, GTK_WIDGET (job->parent_window));
-
-        abort_job (job);
-        return;
-    }
-
-    if (dest_is_symlink)
-    {
-        /* We can't reliably statfs() destination if it's a symlink, thus not doing any further checks. */
-        return;
-    }
-
-    fsinfo = g_file_query_filesystem_info (dest,
-                                           G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
-                                           G_FILE_ATTRIBUTE_FILESYSTEM_READONLY ","
-                                           G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
-                                           job->cancellable,
-                                           NULL);
-
-    if (fsinfo == NULL)
-    {
-        /* All sorts of things can go wrong getting the fs info (like not supported)
-         * only check these things if the fs returns them
-         */
-        return;
-    }
-
-    /* ramfs reports a free size, but that size is always 0. If we're copying to ramfs,
-     * skip the free size check. */
-    fs_type = g_file_info_get_attribute_string (fsinfo,
-                                                G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
-
-    if (required_size > 0 &&
-        g_strcmp0 (fs_type, "ramfs") != 0 &&
-        g_file_info_has_attribute (fsinfo, G_FILE_ATTRIBUTE_FILESYSTEM_FREE))
-    {
-        free_size = g_file_info_get_attribute_uint64 (fsinfo,
-                                                      G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-
-        if (free_size < (guint64) required_size)
-        {
             g_autofree gchar *basename = get_basename (dest);
-            g_autofree gchar *formatted_size = NULL;
             g_autofree gchar *primary = g_strdup_printf (_("Error while copying to “%s”."), basename);
             const char *secondary;
-            g_autofree char *details = NULL;
+            const char *details = NULL;
 
-            size_difference = required_size - free_size;
-            secondary = _("There is not enough space on the destination. Try to remove files to make space.");
-
-            formatted_size = g_format_size (size_difference);
-            details = g_strdup_printf (_("%s more space is required to copy to the destination."),
-                                       formatted_size);
+            if (IS_IO_ERROR (error, PERMISSION_DENIED))
+            {
+                secondary = _("You do not have permissions to access the destination folder.");
+            }
+            else
+            {
+                secondary = _("There was an error getting information about the destination.");
+                details = error->message;
+            }
 
             response = run_dialog (job,
                                    primary,
                                    secondary,
                                    details,
-                                   RESPONSE_COPY_FORCE | RESPONSE_RETRY);
+                                   RESPONSE_RETRY);
+
+            g_error_free (error);
 
             if (response == RESPONSE_CANCEL)
             {
@@ -3145,15 +3044,115 @@ retry:
             {
                 goto retry;
             }
-            else if (response == RESPONSE_COPY_FORCE)
-            {
-                /* We are forced to copy - just fall through ... */
-            }
             else
             {
                 g_assert_not_reached ();
             }
+
+            return;
         }
+
+        file_type = g_file_info_get_file_type (info);
+        if (!dest_is_symlink && file_type == G_FILE_TYPE_SYMBOLIC_LINK)
+        {
+            /* Record that destination is a symlink and do real stat() once again */
+            dest_is_symlink = TRUE;
+            g_object_unref (info);
+            goto retry;
+        }
+
+        if (dest_fs_id)
+        {
+            *dest_fs_id =
+                g_strdup (g_file_info_get_attribute_string (info,
+                                                            G_FILE_ATTRIBUTE_ID_FILESYSTEM));
+        }
+
+        g_object_unref (info);
+
+        if (file_type != G_FILE_TYPE_DIRECTORY)
+        {
+            g_autofree gchar *basename = get_basename (dest);
+            g_autofree char *heading = g_strdup_printf (_("Error while copying to “%s”."), basename);
+            const char *body = _("The destination is not a folder.");
+
+            nautilus_show_ok_dialog (heading, body, GTK_WIDGET (job->parent_window));
+
+            abort_job (job);
+            return;
+        }
+
+        if (dest_is_symlink)
+        {
+            /* We can't reliably statfs() destination if it's a symlink, thus not doing any further checks. */
+            return;
+        }
+
+        fsinfo = g_file_query_filesystem_info (dest,
+                                               G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
+                                               G_FILE_ATTRIBUTE_FILESYSTEM_READONLY ","
+                                               G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+                                               job->cancellable,
+                                               NULL);
+
+        if (fsinfo == NULL)
+        {
+            /* All sorts of things can go wrong getting the fs info (like not supported)
+             * only check these things if the fs returns them
+             */
+            return;
+        }
+
+        /* ramfs reports a free size, but that size is always 0. If we're copying to ramfs,
+         * skip the free size check. */
+        fs_type = g_file_info_get_attribute_string (fsinfo,
+                                                    G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+
+        if (required_size > 0 &&
+            g_strcmp0 (fs_type, "ramfs") != 0 &&
+            g_file_info_has_attribute (fsinfo, G_FILE_ATTRIBUTE_FILESYSTEM_FREE))
+        {
+            free_size = g_file_info_get_attribute_uint64 (fsinfo,
+                                                          G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+
+            if (free_size < (guint64) required_size)
+            {
+                g_autofree gchar *basename = get_basename (dest);
+                g_autofree gchar *formatted_size = NULL;
+                g_autofree gchar *primary = g_strdup_printf (_("Error while copying to “%s”."), basename);
+                const char *secondary;
+                g_autofree char *details = NULL;
+
+                size_difference = required_size - free_size;
+                secondary = _("There is not enough space on the destination. Try to remove files to make space.");
+
+                formatted_size = g_format_size (size_difference);
+                details = g_strdup_printf (_("%s more space is required to copy to the destination."),
+                                           formatted_size);
+
+                response = run_dialog (job,
+                                       primary,
+                                       secondary,
+                                       details,
+                                       RESPONSE_COPY_FORCE | RESPONSE_RETRY);
+
+                if (response == RESPONSE_CANCEL)
+                {
+                    abort_job (job);
+                }
+                else if (response == RESPONSE_RETRY)
+                {
+                    goto retry;
+                }
+                else if (response == RESPONSE_COPY_FORCE)
+                {
+                    /* We are forced to copy - just fall through ... */
+                }
+                else
+                {
+                    g_assert_not_reached ();
+                }
+            }
     }
 
     if (!job_aborted (job) &&
@@ -3993,107 +3992,107 @@ create_dest_dir (CommonJob  *job,
     handled_invalid_filename = *dest_fs_type != NULL;
 
 retry:
-    /* First create the directory, then copy stuff to it before
-     *  copying the attributes, because we need to be sure we can write to it */
+        /* First create the directory, then copy stuff to it before
+         *  copying the attributes, because we need to be sure we can write to it */
 
-    error = NULL;
-    res = g_file_make_directory (*dest, job->cancellable, &error);
+        error = NULL;
+        res = g_file_make_directory (*dest, job->cancellable, &error);
 
-    if (res)
-    {
-        GFile *real;
-
-        real = map_possibly_volatile_file_to_real (*dest, job->cancellable, &error);
-        if (real == NULL)
+        if (res)
         {
-            res = FALSE;
-        }
-        else
-        {
-            g_object_unref (*dest);
-            *dest = real;
-        }
-    }
+            GFile *real;
 
-    if (!res)
-    {
-        if (IS_IO_ERROR (error, CANCELLED))
-        {
-            g_error_free (error);
-            return CREATE_DEST_DIR_FAILED;
-        }
-        else if (IS_IO_ERROR (error, INVALID_FILENAME) &&
-                 !handled_invalid_filename)
-        {
-            handled_invalid_filename = TRUE;
-
-            g_assert (*dest_fs_type == NULL);
-
-            dest_dir = g_file_get_parent (*dest);
-
-            if (dest_dir != NULL)
+            real = map_possibly_volatile_file_to_real (*dest, job->cancellable, &error);
+            if (real == NULL)
             {
-                *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
-
-                new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
-                g_object_unref (dest_dir);
-
-                if (!g_file_equal (*dest, new_dest))
-                {
-                    g_object_unref (*dest);
-                    *dest = new_dest;
-                    g_error_free (error);
-                    return CREATE_DEST_DIR_RETRY;
-                }
-                else
-                {
-                    g_object_unref (new_dest);
-                }
+                res = FALSE;
+            }
+            else
+            {
+                g_object_unref (*dest);
+                *dest = real;
             }
         }
 
-        g_autofree char *secondary = NULL;
-        const char *details = NULL;
-        g_autofree gchar *basename = get_basename (src);
+        if (!res)
+        {
+            if (IS_IO_ERROR (error, CANCELLED))
+            {
+                g_error_free (error);
+                return CREATE_DEST_DIR_FAILED;
+            }
+            else if (IS_IO_ERROR (error, INVALID_FILENAME) &&
+                     !handled_invalid_filename)
+            {
+                handled_invalid_filename = TRUE;
 
-        if (IS_IO_ERROR (error, PERMISSION_DENIED))
-        {
-            secondary = g_strdup_printf (_("The folder “%s” cannot be copied because you do not "
-                                           "have permissions to create it in the destination."),
-                                         basename);
-        }
-        else
-        {
-            secondary = g_strdup_printf (_("There was an error creating the folder “%s”."),
-                                         basename);
-            details = error->message;
-        }
+                g_assert (*dest_fs_type == NULL);
 
-        response = run_dialog (job,
-                               _("Error while copying."),
-                               secondary,
-                               details,
-                               RESPONSE_SKIP | RESPONSE_RETRY);
+                dest_dir = g_file_get_parent (*dest);
 
-        g_error_free (error);
+                if (dest_dir != NULL)
+                {
+                    *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
 
-        if (response == RESPONSE_CANCEL)
-        {
-            abort_job (job);
-        }
-        else if (response == RESPONSE_SKIP)
-        {
-            /* Skip: Do Nothing  */
-        }
-        else if (response == RESPONSE_RETRY)
-        {
-            goto retry;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
-        return CREATE_DEST_DIR_FAILED;
+                    new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+                    g_object_unref (dest_dir);
+
+                    if (!g_file_equal (*dest, new_dest))
+                    {
+                        g_object_unref (*dest);
+                        *dest = new_dest;
+                        g_error_free (error);
+                        return CREATE_DEST_DIR_RETRY;
+                    }
+                    else
+                    {
+                        g_object_unref (new_dest);
+                    }
+                }
+            }
+
+            g_autofree char *secondary = NULL;
+            const char *details = NULL;
+            g_autofree gchar *basename = get_basename (src);
+
+            if (IS_IO_ERROR (error, PERMISSION_DENIED))
+            {
+                secondary = g_strdup_printf (_("The folder “%s” cannot be copied because you do not "
+                                               "have permissions to create it in the destination."),
+                                             basename);
+            }
+            else
+            {
+                secondary = g_strdup_printf (_("There was an error creating the folder “%s”."),
+                                             basename);
+                details = error->message;
+            }
+
+            response = run_dialog (job,
+                                   _("Error while copying."),
+                                   secondary,
+                                   details,
+                                   RESPONSE_SKIP | RESPONSE_RETRY);
+
+            g_error_free (error);
+
+            if (response == RESPONSE_CANCEL)
+            {
+                abort_job (job);
+            }
+            else if (response == RESPONSE_SKIP)
+            {
+                /* Skip: Do Nothing  */
+            }
+            else if (response == RESPONSE_RETRY)
+            {
+                goto retry;
+            }
+            else
+            {
+                g_assert_not_reached ();
+            }
+            return CREATE_DEST_DIR_FAILED;
     }
     nautilus_file_changes_queue_file_added (*dest);
 
@@ -4196,42 +4195,124 @@ copy_move_directory (CopyMoveJob   *copy_job,
 
     skip_error = should_skip_readdir_error (job, src);
 retry:
-    error = NULL;
-    enumerator = g_file_enumerate_children (src,
-                                            G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                            job->cancellable,
-                                            &error);
-    if (enumerator)
-    {
         error = NULL;
-
-        while (!job_aborted (job) &&
-               (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error ? NULL : &error)) != NULL)
+        enumerator = g_file_enumerate_children (src,
+                                                G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                job->cancellable,
+                                                &error);
+        if (enumerator)
         {
-            src_file = g_file_get_child (src,
-                                         g_file_info_get_name (info));
-            copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
-                            source_info, transfer_info, NULL, FALSE, &local_skipped_file,
-                            reset_perms);
+            error = NULL;
 
-            if (local_skipped_file)
+            while (!job_aborted (job) &&
+                   (info = g_file_enumerator_next_file (enumerator, job->cancellable, skip_error ? NULL : &error)) != NULL)
             {
-                source_info_remove_file_from_count (src_file, job, source_info);
-                report_copy_progress (copy_job, source_info, transfer_info);
+                src_file = g_file_get_child (src,
+                                             g_file_info_get_name (info));
+                copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
+                                source_info, transfer_info, NULL, FALSE, &local_skipped_file,
+                                reset_perms);
+
+                if (local_skipped_file)
+                {
+                    source_info_remove_file_from_count (src_file, job, source_info);
+                    report_copy_progress (copy_job, source_info, transfer_info);
+                }
+
+                g_object_unref (src_file);
+                g_object_unref (info);
+            }
+            g_file_enumerator_close (enumerator, job->cancellable, NULL);
+            g_object_unref (enumerator);
+
+            if (error && IS_IO_ERROR (error, CANCELLED))
+            {
+                g_error_free (error);
+            }
+            else if (error)
+            {
+                g_autofree gchar *basename = NULL;
+                const char *primary;
+                g_autofree char *secondary = NULL;
+                const char *details = NULL;
+
+                if (copy_job->is_move)
+                {
+                    primary = _("Error while moving.");
+                }
+                else
+                {
+                    primary = _("Error while copying.");
+                }
+                basename = get_basename (src);
+
+                if (IS_IO_ERROR (error, PERMISSION_DENIED))
+                {
+                    secondary = g_strdup_printf (_("Files in the folder “%s” cannot be copied because you do "
+                                                   "not have permissions to see them."), basename);
+                }
+                else
+                {
+                    secondary = g_strdup_printf (_("There was an error getting information about "
+                                                   "the files in the folder “%s”."),
+                                                 basename);
+                    details = error->message;
+                }
+
+                response = run_dialog (job,
+                                       primary,
+                                       secondary,
+                                       details,
+                                       RESPONSE_SKIP_FILES);
+
+                g_error_free (error);
+
+                if (response == RESPONSE_CANCEL)
+                {
+                    abort_job (job);
+                }
+                else if (response == RESPONSE_SKIP_FILES)
+                {
+                    /* Skip: Do Nothing */
+                    local_skipped_file = TRUE;
+                }
+                else
+                {
+                    g_assert_not_reached ();
+                }
             }
 
-            g_object_unref (src_file);
-            g_object_unref (info);
-        }
-        g_file_enumerator_close (enumerator, job->cancellable, NULL);
-        g_object_unref (enumerator);
+            /* Count the copied directory as a file */
+            transfer_info->num_files++;
 
-        if (error && IS_IO_ERROR (error, CANCELLED))
+            info = g_file_query_info (src,
+                                      G_FILE_ATTRIBUTE_STANDARD_SIZE,
+                                      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                      job->cancellable,
+                                      NULL);
+
+            g_warn_if_fail (info != NULL);
+
+            if (info != NULL)
+            {
+                transfer_info->num_bytes += g_file_info_get_size (info);
+
+                g_object_unref (info);
+            }
+
+            report_copy_progress (copy_job, source_info, transfer_info);
+
+            if (debuting_files)
+            {
+                g_hash_table_replace (debuting_files, g_object_ref (*dest), GINT_TO_POINTER (create_dest));
+            }
+        }
+        else if (IS_IO_ERROR (error, CANCELLED))
         {
             g_error_free (error);
         }
-        else if (error)
+        else
         {
             g_autofree gchar *basename = NULL;
             const char *primary;
@@ -4250,14 +4331,14 @@ retry:
 
             if (IS_IO_ERROR (error, PERMISSION_DENIED))
             {
-                secondary = g_strdup_printf (_("Files in the folder “%s” cannot be copied because you do "
-                                               "not have permissions to see them."), basename);
+                secondary = g_strdup_printf (_("The folder “%s” cannot be copied because you do not have "
+                                               "permissions to read it."), basename);
             }
             else
             {
-                secondary = g_strdup_printf (_("There was an error getting information about "
-                                               "the files in the folder “%s”."),
+                secondary = g_strdup_printf (_("There was an error reading the folder “%s”."),
                                              basename);
+
                 details = error->message;
             }
 
@@ -4265,7 +4346,7 @@ retry:
                                    primary,
                                    secondary,
                                    details,
-                                   RESPONSE_SKIP_FILES);
+                                   RESPONSE_SKIP | RESPONSE_RETRY);
 
             g_error_free (error);
 
@@ -4273,101 +4354,19 @@ retry:
             {
                 abort_job (job);
             }
-            else if (response == RESPONSE_SKIP_FILES)
+            else if (response == RESPONSE_SKIP)
             {
-                /* Skip: Do Nothing */
-                local_skipped_file = TRUE;
+                /* Skip: Do Nothing  */
+                *skipped_file = TRUE;
+            }
+            else if (response == RESPONSE_RETRY)
+            {
+                goto retry;
             }
             else
             {
                 g_assert_not_reached ();
             }
-        }
-
-        /* Count the copied directory as a file */
-        transfer_info->num_files++;
-
-        info = g_file_query_info (src,
-                                  G_FILE_ATTRIBUTE_STANDARD_SIZE,
-                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                  job->cancellable,
-                                  NULL);
-
-        g_warn_if_fail (info != NULL);
-
-        if (info != NULL)
-        {
-            transfer_info->num_bytes += g_file_info_get_size (info);
-
-            g_object_unref (info);
-        }
-
-        report_copy_progress (copy_job, source_info, transfer_info);
-
-        if (debuting_files)
-        {
-            g_hash_table_replace (debuting_files, g_object_ref (*dest), GINT_TO_POINTER (create_dest));
-        }
-    }
-    else if (IS_IO_ERROR (error, CANCELLED))
-    {
-        g_error_free (error);
-    }
-    else
-    {
-        g_autofree gchar *basename = NULL;
-        const char *primary;
-        g_autofree char *secondary = NULL;
-        const char *details = NULL;
-
-        if (copy_job->is_move)
-        {
-            primary = _("Error while moving.");
-        }
-        else
-        {
-            primary = _("Error while copying.");
-        }
-        basename = get_basename (src);
-
-        if (IS_IO_ERROR (error, PERMISSION_DENIED))
-        {
-            secondary = g_strdup_printf (_("The folder “%s” cannot be copied because you do not have "
-                                           "permissions to read it."), basename);
-        }
-        else
-        {
-            secondary = g_strdup_printf (_("There was an error reading the folder “%s”."),
-                                         basename);
-
-            details = error->message;
-        }
-
-        response = run_dialog (job,
-                               primary,
-                               secondary,
-                               details,
-                               RESPONSE_SKIP | RESPONSE_RETRY);
-
-        g_error_free (error);
-
-        if (response == RESPONSE_CANCEL)
-        {
-            abort_job (job);
-        }
-        else if (response == RESPONSE_SKIP)
-        {
-            /* Skip: Do Nothing  */
-            *skipped_file = TRUE;
-        }
-        else if (response == RESPONSE_RETRY)
-        {
-            goto retry;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
     }
 
     if (src_info != NULL)
@@ -4721,330 +4720,330 @@ copy_move_file (CopyMoveJob   *copy_job,
 
 retry:
 
-    error = NULL;
-    flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
-    if (overwrite)
-    {
-        flags |= G_FILE_COPY_OVERWRITE;
-    }
-    if (reset_perms)
-    {
-        flags |= G_FILE_COPY_TARGET_DEFAULT_PERMS;
-    }
-
-    pdata.job = copy_job;
-    pdata.last_size = 0;
-    pdata.source_info = source_info;
-    pdata.transfer_info = transfer_info;
-
-    if (copy_job->is_move)
-    {
-        res = g_file_move (src, dest,
-                           flags,
-                           job->cancellable,
-                           copy_file_progress_callback,
-                           &pdata,
-                           &error);
-    }
-    else
-    {
-        res = g_file_copy (src, dest,
-                           flags,
-                           job->cancellable,
-                           copy_file_progress_callback,
-                           &pdata,
-                           &error);
-    }
-
-    if (res)
-    {
-        GFile *real;
-
-        real = map_possibly_volatile_file_to_real (dest, job->cancellable, &error);
-        if (real == NULL)
+        error = NULL;
+        flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
+        if (overwrite)
         {
-            res = FALSE;
+            flags |= G_FILE_COPY_OVERWRITE;
         }
-        else
+        if (reset_perms)
         {
-            g_object_unref (dest);
-            dest = real;
+            flags |= G_FILE_COPY_TARGET_DEFAULT_PERMS;
         }
-    }
 
-    if (res)
-    {
-        transfer_info->num_files++;
-        report_copy_progress (copy_job, source_info, transfer_info);
+        pdata.job = copy_job;
+        pdata.last_size = 0;
+        pdata.source_info = source_info;
+        pdata.transfer_info = transfer_info;
 
-        if (debuting_files)
-        {
-            g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (!overwrite));
-        }
         if (copy_job->is_move)
         {
-            nautilus_file_changes_queue_file_moved (src, dest);
+            res = g_file_move (src, dest,
+                               flags,
+                               job->cancellable,
+                               copy_file_progress_callback,
+                               &pdata,
+                               &error);
         }
         else
         {
-            nautilus_file_changes_queue_file_added (dest);
+            res = g_file_copy (src, dest,
+                               flags,
+                               job->cancellable,
+                               copy_file_progress_callback,
+                               &pdata,
+                               &error);
         }
 
-        if (job->undo_info != NULL)
+        if (res)
         {
-            nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (job->undo_info),
-                                                                src, dest);
-        }
+            GFile *real;
 
-        g_object_unref (dest);
-        return;
-    }
-
-    /* On smb shares INVALID_ARGUMENT is typically returned instead of INVALID_FILENAME
-     * (i.e. FAT_FORBIDDEN_CHARACTER) except with '\' where NOT_DIRECTORY is returned
-     */
-    if (!handled_invalid_filename &&
-        (IS_IO_ERROR (error, INVALID_FILENAME) ||
-         IS_IO_ERROR (error, INVALID_ARGUMENT) ||
-         IS_IO_ERROR (error, NOT_DIRECTORY)))
-    {
-        handled_invalid_filename = TRUE;
-
-        g_assert (*dest_fs_type == NULL);
-        *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
-
-        if (unique_names)
-        {
-            new_dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr);
-        }
-        else
-        {
-            new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
-        }
-
-        if (!g_file_equal (dest, new_dest))
-        {
-            g_object_unref (dest);
-            dest = new_dest;
-
-            g_error_free (error);
-            goto retry;
-        }
-        else
-        {
-            g_object_unref (new_dest);
-        }
-    }
-
-    /* Conflict */
-    if (!overwrite &&
-        IS_IO_ERROR (error, EXISTS))
-    {
-        gboolean source_is_directory;
-        gboolean destination_is_directory;
-        gboolean is_merge;
-        FileConflictResponse *response;
-
-        g_error_free (error);
-
-        if (unique_names)
-        {
-            g_object_unref (dest);
-            dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
-            goto retry;
-        }
-
-        source_is_directory = is_dir (src, job->cancellable);
-        destination_is_directory = is_dir (dest, job->cancellable);
-
-        is_merge = FALSE;
-
-        if (source_is_directory && destination_is_directory)
-        {
-            is_merge = TRUE;
-        }
-        else if (!source_is_directory && destination_is_directory)
-        {
-            /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
-            overwrite = TRUE;
-            goto retry;
-        }
-
-        if ((is_merge && job->merge_all) ||
-            (!is_merge && job->replace_all))
-        {
-            overwrite = TRUE;
-            goto retry;
-        }
-
-        if (job->skip_all_conflict)
-        {
-            goto out;
-        }
-
-        response = handle_copy_move_conflict (job, src, dest, dest_dir, destination_is_directory);
-
-        if (response->id == CONFLICT_RESPONSE_CANCEL)
-        {
-            file_conflict_response_free (response);
-            abort_job (job);
-        }
-        else if (response->id == CONFLICT_RESPONSE_SKIP)
-        {
-            if (response->apply_to_all)
+            real = map_possibly_volatile_file_to_real (dest, job->cancellable, &error);
+            if (real == NULL)
             {
-                job->skip_all_conflict = TRUE;
+                res = FALSE;
             }
-            file_conflict_response_free (response);
-        }
-        else if (response->id == CONFLICT_RESPONSE_REPLACE)             /* merge/replace */
-        {
-            if (response->apply_to_all)
+            else
             {
-                if (is_merge)
-                {
-                    job->merge_all = TRUE;
-                }
-                else
-                {
-                    job->replace_all = TRUE;
-                }
+                g_object_unref (dest);
+                dest = real;
             }
-            overwrite = TRUE;
-            file_conflict_response_free (response);
-            goto retry;
         }
-        else if (response->id == CONFLICT_RESPONSE_RENAME)
-        {
-            g_object_unref (dest);
-            dest = get_target_file_for_display_name (dest_dir,
-                                                     response->new_name);
-            file_conflict_response_free (response);
-            goto retry;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
-    }
-    /* Needs to recurse */
-    else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
-             IS_IO_ERROR (error, WOULD_MERGE))
-    {
-        gboolean is_merge;
 
-        is_merge = error->code == G_IO_ERROR_WOULD_MERGE;
-        would_recurse = error->code == G_IO_ERROR_WOULD_RECURSE;
-        g_error_free (error);
-
-        if (overwrite && would_recurse)
+        if (res)
         {
-            error = NULL;
+            transfer_info->num_files++;
+            report_copy_progress (copy_job, source_info, transfer_info);
 
-            /* Copying a dir onto file, first remove the file */
-            if (!g_file_delete (dest, job->cancellable, &error) &&
-                !IS_IO_ERROR (error, NOT_FOUND))
+            if (debuting_files)
             {
-                if (job->skip_all_error)
-                {
-                    g_error_free (error);
-                    goto out;
-                }
+                g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (!overwrite));
+            }
+            if (copy_job->is_move)
+            {
+                nautilus_file_changes_queue_file_moved (src, dest);
+            }
+            else
+            {
+                nautilus_file_changes_queue_file_added (dest);
+            }
 
-                g_autofree gchar *basename = get_basename (src);
-                g_autofree gchar *filename = NULL;
-                g_autofree char *primary = NULL;
-                g_autofree char *secondary = NULL;
-                const char *details = NULL;
+            if (job->undo_info != NULL)
+            {
+                nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (job->undo_info),
+                                                                    src, dest);
+            }
 
-                if (copy_job->is_move)
-                {
-                    primary = g_strdup_printf (_("Error while moving “%s”."), basename);
-                }
-                else
-                {
-                    primary = g_strdup_printf (_("Error while copying “%s”."), basename);
-                }
-                filename = get_truncated_parse_name (dest_dir);
-                secondary = g_strdup_printf (_("Could not remove the already existing file "
-                                               "with the same name in %s."),
-                                             filename);
-                details = error->message;
+            g_object_unref (dest);
+            return;
+        }
 
-                /* setting TRUE on show_all here, as we could have
-                 * another error on the same file later.
-                 */
-                show_skip_dialog (job,
-                                  primary,
-                                  secondary,
-                                  details,
-                                  source_info->num_files,
-                                  TRUE);
+        /* On smb shares INVALID_ARGUMENT is typically returned instead of INVALID_FILENAME
+         * (i.e. FAT_FORBIDDEN_CHARACTER) except with '\' where NOT_DIRECTORY is returned
+         */
+        if (!handled_invalid_filename &&
+            (IS_IO_ERROR (error, INVALID_FILENAME) ||
+             IS_IO_ERROR (error, INVALID_ARGUMENT) ||
+             IS_IO_ERROR (error, NOT_DIRECTORY)))
+        {
+            handled_invalid_filename = TRUE;
+
+            g_assert (*dest_fs_type == NULL);
+            *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
+
+            if (unique_names)
+            {
+                new_dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr);
+            }
+            else
+            {
+                new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+            }
+
+            if (!g_file_equal (dest, new_dest))
+            {
+                g_object_unref (dest);
+                dest = new_dest;
 
                 g_error_free (error);
+                goto retry;
+            }
+            else
+            {
+                g_object_unref (new_dest);
+            }
+        }
 
+        /* Conflict */
+        if (!overwrite &&
+            IS_IO_ERROR (error, EXISTS))
+        {
+            gboolean source_is_directory;
+            gboolean destination_is_directory;
+            gboolean is_merge;
+            FileConflictResponse *response;
+
+            g_error_free (error);
+
+            if (unique_names)
+            {
+                g_object_unref (dest);
+                dest = get_unique_target_file (src, dest_dir, job->cancellable, *dest_fs_type, unique_name_nr++);
+                goto retry;
+            }
+
+            source_is_directory = is_dir (src, job->cancellable);
+            destination_is_directory = is_dir (dest, job->cancellable);
+
+            is_merge = FALSE;
+
+            if (source_is_directory && destination_is_directory)
+            {
+                is_merge = TRUE;
+            }
+            else if (!source_is_directory && destination_is_directory)
+            {
+                /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
+                overwrite = TRUE;
+                goto retry;
+            }
+
+            if ((is_merge && job->merge_all) ||
+                (!is_merge && job->replace_all))
+            {
+                overwrite = TRUE;
+                goto retry;
+            }
+
+            if (job->skip_all_conflict)
+            {
                 goto out;
             }
-            if (error)
+
+            response = handle_copy_move_conflict (job, src, dest, dest_dir, destination_is_directory);
+
+            if (response->id == CONFLICT_RESPONSE_CANCEL)
             {
-                g_error_free (error);
-                error = NULL;
+                file_conflict_response_free (response);
+                abort_job (job);
             }
-            nautilus_file_changes_queue_file_removed (dest);
+            else if (response->id == CONFLICT_RESPONSE_SKIP)
+            {
+                if (response->apply_to_all)
+                {
+                    job->skip_all_conflict = TRUE;
+                }
+                file_conflict_response_free (response);
+            }
+            else if (response->id == CONFLICT_RESPONSE_REPLACE)             /* merge/replace */
+            {
+                if (response->apply_to_all)
+                {
+                    if (is_merge)
+                    {
+                        job->merge_all = TRUE;
+                    }
+                    else
+                    {
+                        job->replace_all = TRUE;
+                    }
+                }
+                overwrite = TRUE;
+                file_conflict_response_free (response);
+                goto retry;
+            }
+            else if (response->id == CONFLICT_RESPONSE_RENAME)
+            {
+                g_object_unref (dest);
+                dest = get_target_file_for_display_name (dest_dir,
+                                                         response->new_name);
+                file_conflict_response_free (response);
+                goto retry;
+            }
+            else
+            {
+                g_assert_not_reached ();
+            }
         }
-
-        if (is_merge)
+        /* Needs to recurse */
+        else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
+                 IS_IO_ERROR (error, WOULD_MERGE))
         {
-            /* On merge we now write in the target directory, which may not
-             *   be in the same directory as the source, even if the parent is
-             *   (if the merged directory is a mountpoint). This could cause
-             *   problems as we then don't transcode filenames.
-             *   We just set same_fs to FALSE which is safe but a bit slower. */
-            same_fs = FALSE;
-        }
+            gboolean is_merge;
 
-        if (!copy_move_directory (copy_job, src, &dest, same_fs,
-                                  would_recurse, dest_fs_type,
-                                  source_info, transfer_info,
-                                  debuting_files, skipped_file,
-                                  reset_perms))
-        {
-            /* destination changed, since it was an invalid file name */
-            g_assert (*dest_fs_type != NULL);
-            handled_invalid_filename = TRUE;
-            goto retry;
-        }
+            is_merge = error->code == G_IO_ERROR_WOULD_MERGE;
+            would_recurse = error->code == G_IO_ERROR_WOULD_RECURSE;
+            g_error_free (error);
 
-        g_object_unref (dest);
-        return;
-    }
-    else if (IS_IO_ERROR (error, CANCELLED))
-    {
-        g_error_free (error);
-    }
-    /* Other error */
-    else
-    {
-        if (job->skip_all_error)
+            if (overwrite && would_recurse)
+            {
+                error = NULL;
+
+                /* Copying a dir onto file, first remove the file */
+                if (!g_file_delete (dest, job->cancellable, &error) &&
+                    !IS_IO_ERROR (error, NOT_FOUND))
+                {
+                    if (job->skip_all_error)
+                    {
+                        g_error_free (error);
+                        goto out;
+                    }
+
+                    g_autofree gchar *basename = get_basename (src);
+                    g_autofree gchar *filename = NULL;
+                    g_autofree char *primary = NULL;
+                    g_autofree char *secondary = NULL;
+                    const char *details = NULL;
+
+                    if (copy_job->is_move)
+                    {
+                        primary = g_strdup_printf (_("Error while moving “%s”."), basename);
+                    }
+                    else
+                    {
+                        primary = g_strdup_printf (_("Error while copying “%s”."), basename);
+                    }
+                    filename = get_truncated_parse_name (dest_dir);
+                    secondary = g_strdup_printf (_("Could not remove the already existing file "
+                                                   "with the same name in %s."),
+                                                 filename);
+                    details = error->message;
+
+                    /* setting TRUE on show_all here, as we could have
+                     * another error on the same file later.
+                     */
+                    show_skip_dialog (job,
+                                      primary,
+                                      secondary,
+                                      details,
+                                      source_info->num_files,
+                                      TRUE);
+
+                    g_error_free (error);
+
+                    goto out;
+                }
+                if (error)
+                {
+                    g_error_free (error);
+                    error = NULL;
+                }
+                nautilus_file_changes_queue_file_removed (dest);
+            }
+
+            if (is_merge)
+            {
+                /* On merge we now write in the target directory, which may not
+                 *   be in the same directory as the source, even if the parent is
+                 *   (if the merged directory is a mountpoint). This could cause
+                 *   problems as we then don't transcode filenames.
+                 *   We just set same_fs to FALSE which is safe but a bit slower. */
+                same_fs = FALSE;
+            }
+
+            if (!copy_move_directory (copy_job, src, &dest, same_fs,
+                                      would_recurse, dest_fs_type,
+                                      source_info, transfer_info,
+                                      debuting_files, skipped_file,
+                                      reset_perms))
+            {
+                /* destination changed, since it was an invalid file name */
+                g_assert (*dest_fs_type != NULL);
+                handled_invalid_filename = TRUE;
+                goto retry;
+            }
+
+            g_object_unref (dest);
+            return;
+        }
+        else if (IS_IO_ERROR (error, CANCELLED))
         {
             g_error_free (error);
-            goto out;
         }
+        /* Other error */
+        else
+        {
+            if (job->skip_all_error)
+            {
+                g_error_free (error);
+                goto out;
+            }
 
-        g_autofree gchar *basename = get_basename (src);
-        g_autofree gchar *filename = get_truncated_parse_name (dest_dir);
-        g_autofree char *primary = g_strdup_printf (_("Error while copying “%s”."), basename);
-        g_autofree char *secondary = g_strdup_printf (_("There was an error copying the file into %s."),
-                                                      filename);
-        const char *details = error->message;
+            g_autofree gchar *basename = get_basename (src);
+            g_autofree gchar *filename = get_truncated_parse_name (dest_dir);
+            g_autofree char *primary = g_strdup_printf (_("Error while copying “%s”."), basename);
+            g_autofree char *secondary = g_strdup_printf (_("There was an error copying the file into %s."),
+                                                          filename);
+            const char *details = error->message;
 
-        show_skip_dialog (job,
-                          primary,
-                          secondary,
-                          details,
-                          source_info->num_files,
-                          source_info->num_files > transfer_info->num_files);
-        g_error_free (error);
+            show_skip_dialog (job,
+                              primary,
+                              secondary,
+                              details,
+                              source_info->num_files,
+                              source_info->num_files > transfer_info->num_files);
+            g_error_free (error);
     }
 out:
     *skipped_file = TRUE;     /* Or aborted, but same-same */
@@ -5466,179 +5465,179 @@ move_file_prepare (CopyMoveJob  *move_job,
 
 retry:
 
-    flags = G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_NO_FALLBACK_FOR_MOVE;
-    if (overwrite)
-    {
-        flags |= G_FILE_COPY_OVERWRITE;
-    }
-
-    error = NULL;
-    if (g_file_move (src, dest,
-                     flags,
-                     job->cancellable,
-                     NULL,
-                     NULL,
-                     &error))
-    {
-        nautilus_file_changes_queue_file_moved (src, dest);
-
-        if (job->undo_info != NULL)
+        flags = G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_NO_FALLBACK_FOR_MOVE;
+        if (overwrite)
         {
-            nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (job->undo_info),
-                                                                src, dest);
+            flags |= G_FILE_COPY_OVERWRITE;
         }
 
-        if (debuting_files != NULL)
+        error = NULL;
+        if (g_file_move (src, dest,
+                         flags,
+                         job->cancellable,
+                         NULL,
+                         NULL,
+                         &error))
         {
-            g_hash_table_replace (debuting_files, g_steal_pointer (&dest), GINT_TO_POINTER (TRUE));
-        }
+            nautilus_file_changes_queue_file_moved (src, dest);
 
-        return;
-    }
+            if (job->undo_info != NULL)
+            {
+                nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (job->undo_info),
+                                                                    src, dest);
+            }
 
-    if (IS_IO_ERROR (error, INVALID_FILENAME) &&
-        !handled_invalid_filename)
-    {
-        g_error_free (error);
+            if (debuting_files != NULL)
+            {
+                g_hash_table_replace (debuting_files, g_steal_pointer (&dest), GINT_TO_POINTER (TRUE));
+            }
 
-        handled_invalid_filename = TRUE;
-
-        g_assert (*dest_fs_type == NULL);
-        *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
-
-        new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
-        if (!g_file_equal (dest, new_dest))
-        {
-            g_object_unref (dest);
-            dest = new_dest;
-            goto retry;
-        }
-        else
-        {
-            g_object_unref (new_dest);
-        }
-    }
-    /* Conflict */
-    else if (!overwrite &&
-             IS_IO_ERROR (error, EXISTS))
-    {
-        gboolean source_is_directory;
-        gboolean destination_is_directory;
-        gboolean is_merge;
-        FileConflictResponse *response;
-
-        source_is_directory = is_dir (src, job->cancellable);
-        destination_is_directory = is_dir (dest, job->cancellable);
-
-        g_error_free (error);
-
-        is_merge = FALSE;
-        if (source_is_directory && destination_is_directory)
-        {
-            is_merge = TRUE;
-        }
-        else if (!source_is_directory && destination_is_directory)
-        {
-            /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
-            overwrite = TRUE;
-            goto retry;
-        }
-
-        if ((is_merge && job->merge_all) ||
-            (!is_merge && job->replace_all))
-        {
-            overwrite = TRUE;
-            goto retry;
-        }
-
-        if (job->skip_all_conflict)
-        {
             return;
         }
 
-        response = handle_copy_move_conflict (job, src, dest, dest_dir, destination_is_directory);
-
-        if (response->id == CONFLICT_RESPONSE_CANCEL)
-        {
-            file_conflict_response_free (response);
-            abort_job (job);
-        }
-        else if (response->id == CONFLICT_RESPONSE_SKIP)
-        {
-            if (response->apply_to_all)
-            {
-                job->skip_all_conflict = TRUE;
-            }
-            file_conflict_response_free (response);
-        }
-        else if (response->id == CONFLICT_RESPONSE_REPLACE)             /* merge/replace */
-        {
-            if (response->apply_to_all)
-            {
-                if (is_merge)
-                {
-                    job->merge_all = TRUE;
-                }
-                else
-                {
-                    job->replace_all = TRUE;
-                }
-            }
-            overwrite = TRUE;
-            file_conflict_response_free (response);
-            goto retry;
-        }
-        else if (response->id == CONFLICT_RESPONSE_RENAME)
-        {
-            g_object_unref (dest);
-            dest = get_target_file_for_display_name (dest_dir,
-                                                     response->new_name);
-            file_conflict_response_free (response);
-            goto retry;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
-    }
-    else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
-             IS_IO_ERROR (error, WOULD_MERGE) ||
-             IS_IO_ERROR (error, NOT_SUPPORTED))
-    {
-        g_error_free (error);
-
-        fallback = move_copy_file_callback_new (src,
-                                                overwrite);
-        *fallback_files = g_list_prepend (*fallback_files, fallback);
-    }
-    else if (IS_IO_ERROR (error, CANCELLED))
-    {
-        g_error_free (error);
-    }
-    /* Other error */
-    else
-    {
-        if (job->skip_all_error)
+        if (IS_IO_ERROR (error, INVALID_FILENAME) &&
+            !handled_invalid_filename)
         {
             g_error_free (error);
-            return;
+
+            handled_invalid_filename = TRUE;
+
+            g_assert (*dest_fs_type == NULL);
+            *dest_fs_type = query_fs_type (dest_dir, job->cancellable);
+
+            new_dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+            if (!g_file_equal (dest, new_dest))
+            {
+                g_object_unref (dest);
+                dest = new_dest;
+                goto retry;
+            }
+            else
+            {
+                g_object_unref (new_dest);
+            }
         }
+        /* Conflict */
+        else if (!overwrite &&
+                 IS_IO_ERROR (error, EXISTS))
+        {
+            gboolean source_is_directory;
+            gboolean destination_is_directory;
+            gboolean is_merge;
+            FileConflictResponse *response;
 
-        g_autofree gchar *basename = get_basename (src);
-        g_autofree gchar *filename = get_truncated_parse_name (dest_dir);
-        g_autofree char *primary = g_strdup_printf (_("Error while moving “%s”."), basename);
-        g_autofree char *secondary = g_strdup_printf (_("There was an error moving the file into %s."),
-                                                      filename);
-        const char *details = error->message;
+            source_is_directory = is_dir (src, job->cancellable);
+            destination_is_directory = is_dir (dest, job->cancellable);
 
-        show_skip_dialog (job,
-                          primary,
-                          secondary,
-                          details,
-                          total,
-                          files_left > 1);
+            g_error_free (error);
 
-        g_error_free (error);
+            is_merge = FALSE;
+            if (source_is_directory && destination_is_directory)
+            {
+                is_merge = TRUE;
+            }
+            else if (!source_is_directory && destination_is_directory)
+            {
+                /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
+                overwrite = TRUE;
+                goto retry;
+            }
+
+            if ((is_merge && job->merge_all) ||
+                (!is_merge && job->replace_all))
+            {
+                overwrite = TRUE;
+                goto retry;
+            }
+
+            if (job->skip_all_conflict)
+            {
+                return;
+            }
+
+            response = handle_copy_move_conflict (job, src, dest, dest_dir, destination_is_directory);
+
+            if (response->id == CONFLICT_RESPONSE_CANCEL)
+            {
+                file_conflict_response_free (response);
+                abort_job (job);
+            }
+            else if (response->id == CONFLICT_RESPONSE_SKIP)
+            {
+                if (response->apply_to_all)
+                {
+                    job->skip_all_conflict = TRUE;
+                }
+                file_conflict_response_free (response);
+            }
+            else if (response->id == CONFLICT_RESPONSE_REPLACE)             /* merge/replace */
+            {
+                if (response->apply_to_all)
+                {
+                    if (is_merge)
+                    {
+                        job->merge_all = TRUE;
+                    }
+                    else
+                    {
+                        job->replace_all = TRUE;
+                    }
+                }
+                overwrite = TRUE;
+                file_conflict_response_free (response);
+                goto retry;
+            }
+            else if (response->id == CONFLICT_RESPONSE_RENAME)
+            {
+                g_object_unref (dest);
+                dest = get_target_file_for_display_name (dest_dir,
+                                                         response->new_name);
+                file_conflict_response_free (response);
+                goto retry;
+            }
+            else
+            {
+                g_assert_not_reached ();
+            }
+        }
+        else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
+                 IS_IO_ERROR (error, WOULD_MERGE) ||
+                 IS_IO_ERROR (error, NOT_SUPPORTED))
+        {
+            g_error_free (error);
+
+            fallback = move_copy_file_callback_new (src,
+                                                    overwrite);
+            *fallback_files = g_list_prepend (*fallback_files, fallback);
+        }
+        else if (IS_IO_ERROR (error, CANCELLED))
+        {
+            g_error_free (error);
+        }
+        /* Other error */
+        else
+        {
+            if (job->skip_all_error)
+            {
+                g_error_free (error);
+                return;
+            }
+
+            g_autofree gchar *basename = get_basename (src);
+            g_autofree gchar *filename = get_truncated_parse_name (dest_dir);
+            g_autofree char *primary = g_strdup_printf (_("Error while moving “%s”."), basename);
+            g_autofree char *secondary = g_strdup_printf (_("There was an error moving the file into %s."),
+                                                          filename);
+            const char *details = error->message;
+
+            show_skip_dialog (job,
+                              primary,
+                              secondary,
+                              details,
+                              total,
+                              files_left > 1);
+
+            g_error_free (error);
     }
 }
 
@@ -6019,115 +6018,115 @@ link_file (CopyMoveJob  *job,
     dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
 
 retry:
-    error = NULL;
-    not_local = FALSE;
+        error = NULL;
+        not_local = FALSE;
 
-    path = get_abs_path_for_symlink (src, dest);
-    if (path == NULL)
-    {
-        not_local = TRUE;
-    }
-    else if (g_file_make_symbolic_link (dest,
-                                        path,
-                                        common->cancellable,
-                                        &error))
-    {
-        if (common->undo_info != NULL)
+        path = get_abs_path_for_symlink (src, dest);
+        if (path == NULL)
         {
-            nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (common->undo_info),
-                                                                src, dest);
+            not_local = TRUE;
         }
-
-        g_free (path);
-        if (debuting_files)
+        else if (g_file_make_symbolic_link (dest,
+                                            path,
+                                            common->cancellable,
+                                            &error))
         {
-            g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
-        }
+            if (common->undo_info != NULL)
+            {
+                nautilus_file_undo_info_ext_add_origin_target_pair (NAUTILUS_FILE_UNDO_INFO_EXT (common->undo_info),
+                                                                    src, dest);
+            }
 
-        nautilus_file_changes_queue_file_added (dest);
+            g_free (path);
+            if (debuting_files)
+            {
+                g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
+            }
 
-        return;
-    }
-    g_free (path);
+            nautilus_file_changes_queue_file_added (dest);
 
-    if (error != NULL &&
-        IS_IO_ERROR (error, INVALID_FILENAME) &&
-        !handled_invalid_filename)
-    {
-        handled_invalid_filename = TRUE;
-
-        g_assert (*dest_fs_type == NULL);
-        *dest_fs_type = query_fs_type (dest_dir, common->cancellable);
-
-        new_dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
-
-        if (!g_file_equal (dest, new_dest))
-        {
-            g_object_unref (dest);
-            dest = new_dest;
-            g_error_free (error);
-
-            goto retry;
-        }
-        else
-        {
-            g_object_unref (new_dest);
-        }
-    }
-    /* Conflict */
-    if (error != NULL && IS_IO_ERROR (error, EXISTS))
-    {
-        g_object_unref (dest);
-        dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count++);
-        g_error_free (error);
-        goto retry;
-    }
-    else if (error != NULL && IS_IO_ERROR (error, CANCELLED))
-    {
-        g_error_free (error);
-    }
-    /* Other error */
-    else if (error != NULL)
-    {
-        if (common->skip_all_error)
-        {
             return;
         }
-        g_autofree gchar *basename = get_basename (src);
-        g_autofree char *primary = g_strdup_printf (_("Error while creating link to %s."),
-                                                    basename);
-        g_autofree char *secondary = NULL;
-        const char *details = NULL;
+        g_free (path);
 
-        if (not_local)
+        if (error != NULL &&
+            IS_IO_ERROR (error, INVALID_FILENAME) &&
+            !handled_invalid_filename)
         {
-            secondary = g_strdup (_("Symbolic links only supported for local files"));
+            handled_invalid_filename = TRUE;
+
+            g_assert (*dest_fs_type == NULL);
+            *dest_fs_type = query_fs_type (dest_dir, common->cancellable);
+
+            new_dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count);
+
+            if (!g_file_equal (dest, new_dest))
+            {
+                g_object_unref (dest);
+                dest = new_dest;
+                g_error_free (error);
+
+                goto retry;
+            }
+            else
+            {
+                g_object_unref (new_dest);
+            }
         }
-        else if (IS_IO_ERROR (error, NOT_SUPPORTED))
+        /* Conflict */
+        if (error != NULL && IS_IO_ERROR (error, EXISTS))
         {
-            secondary = g_strdup (_("The target doesn’t support symbolic links."));
+            g_object_unref (dest);
+            dest = get_target_file_for_link (src, dest_dir, *dest_fs_type, count++);
+            g_error_free (error);
+            goto retry;
         }
-        else
-        {
-            g_autofree gchar *filename = NULL;
-
-            filename = get_truncated_parse_name (dest_dir);
-            secondary = g_strdup_printf (_("There was an error creating the symlink in %s."),
-                                         filename);
-            details = error->message;
-        }
-
-        show_skip_dialog (common,
-                          primary,
-                          secondary,
-                          details,
-                          total,
-                          files_left > 1);
-
-        if (error)
+        else if (error != NULL && IS_IO_ERROR (error, CANCELLED))
         {
             g_error_free (error);
         }
+        /* Other error */
+        else if (error != NULL)
+        {
+            if (common->skip_all_error)
+            {
+                return;
+            }
+            g_autofree gchar *basename = get_basename (src);
+            g_autofree char *primary = g_strdup_printf (_("Error while creating link to %s."),
+                                                        basename);
+            g_autofree char *secondary = NULL;
+            const char *details = NULL;
+
+            if (not_local)
+            {
+                secondary = g_strdup (_("Symbolic links only supported for local files"));
+            }
+            else if (IS_IO_ERROR (error, NOT_SUPPORTED))
+            {
+                secondary = g_strdup (_("The target doesn’t support symbolic links."));
+            }
+            else
+            {
+                g_autofree gchar *filename = NULL;
+
+                filename = get_truncated_parse_name (dest_dir);
+                secondary = g_strdup_printf (_("There was an error creating the symlink in %s."),
+                                             filename);
+                details = error->message;
+            }
+
+            show_skip_dialog (common,
+                              primary,
+                              secondary,
+                              details,
+                              total,
+                              files_left > 1);
+
+            if (error)
+            {
+                g_error_free (error);
+            }
     }
 }
 
@@ -6749,46 +6748,12 @@ create_task_thread_func (GTask        *task,
 
 retry:
 
-    error = NULL;
-    if (job->make_dir)
-    {
-        res = g_file_make_directory (dest,
-                                     common->cancellable,
-                                     &error);
-
-        if (res)
+        error = NULL;
+        if (job->make_dir)
         {
-            GFile *real;
-
-            real = map_possibly_volatile_file_to_real (dest, common->cancellable, &error);
-            if (real == NULL)
-            {
-                res = FALSE;
-            }
-            else
-            {
-                g_object_unref (dest);
-                dest = real;
-            }
-        }
-
-        if (res && common->undo_info != NULL)
-        {
-            nautilus_file_undo_info_create_set_data (NAUTILUS_FILE_UNDO_INFO_CREATE (common->undo_info),
-                                                     dest, NULL, 0);
-        }
-    }
-    else
-    {
-        if (job->src)
-        {
-            res = g_file_copy (job->src,
-                               dest,
-                               G_FILE_COPY_TARGET_DEFAULT_PERMS |
-                               (job->new_mtime ? G_FILE_COPY_TARGET_DEFAULT_MODIFIED_TIME : 0),
-                               common->cancellable,
-                               NULL, NULL,
-                               &error);
+            res = g_file_make_directory (dest,
+                                         common->cancellable,
+                                         &error);
 
             if (res)
             {
@@ -6808,177 +6773,211 @@ retry:
 
             if (res && common->undo_info != NULL)
             {
-                g_autofree gchar *uri = NULL;
-
-                uri = g_file_get_uri (job->src);
                 nautilus_file_undo_info_create_set_data (NAUTILUS_FILE_UNDO_INFO_CREATE (common->undo_info),
-                                                         dest, uri, 0);
+                                                         dest, NULL, 0);
             }
         }
         else
         {
-            data = NULL;
-            length = 0;
-            if (job->src_data)
+            if (job->src)
             {
-                data = job->src_data;
-                length = job->length;
-            }
+                res = g_file_copy (job->src,
+                                   dest,
+                                   G_FILE_COPY_TARGET_DEFAULT_PERMS |
+                                   (job->new_mtime ? G_FILE_COPY_TARGET_DEFAULT_MODIFIED_TIME : 0),
+                                   common->cancellable,
+                                   NULL, NULL,
+                                   &error);
 
-            out = g_file_create (dest,
-                                 G_FILE_CREATE_NONE,
-                                 common->cancellable,
-                                 &error);
-            if (out)
-            {
-                GFile *real;
-
-                real = map_possibly_volatile_file_to_real_on_write (dest,
-                                                                    out,
-                                                                    common->cancellable,
-                                                                    &error);
-                if (real == NULL)
+                if (res)
                 {
-                    res = FALSE;
-                    g_object_unref (out);
+                    GFile *real;
+
+                    real = map_possibly_volatile_file_to_real (dest, common->cancellable, &error);
+                    if (real == NULL)
+                    {
+                        res = FALSE;
+                    }
+                    else
+                    {
+                        g_object_unref (dest);
+                        dest = real;
+                    }
+                }
+
+                if (res && common->undo_info != NULL)
+                {
+                    g_autofree gchar *uri = NULL;
+
+                    uri = g_file_get_uri (job->src);
+                    nautilus_file_undo_info_create_set_data (NAUTILUS_FILE_UNDO_INFO_CREATE (common->undo_info),
+                                                             dest, uri, 0);
+                }
+            }
+            else
+            {
+                data = NULL;
+                length = 0;
+                if (job->src_data)
+                {
+                    data = job->src_data;
+                    length = job->length;
+                }
+
+                out = g_file_create (dest,
+                                     G_FILE_CREATE_NONE,
+                                     common->cancellable,
+                                     &error);
+                if (out)
+                {
+                    GFile *real;
+
+                    real = map_possibly_volatile_file_to_real_on_write (dest,
+                                                                        out,
+                                                                        common->cancellable,
+                                                                        &error);
+                    if (real == NULL)
+                    {
+                        res = FALSE;
+                        g_object_unref (out);
+                    }
+                    else
+                    {
+                        g_object_unref (dest);
+                        dest = real;
+
+                        res = g_output_stream_write_all (G_OUTPUT_STREAM (out),
+                                                         data, length,
+                                                         NULL,
+                                                         common->cancellable,
+                                                         &error);
+                        if (res)
+                        {
+                            res = g_output_stream_close (G_OUTPUT_STREAM (out),
+                                                         common->cancellable,
+                                                         &error);
+
+                            if (res && common->undo_info != NULL)
+                            {
+                                nautilus_file_undo_info_create_set_data (NAUTILUS_FILE_UNDO_INFO_CREATE (common->undo_info),
+                                                                         dest, data, length);
+                            }
+                        }
+
+                        /* This will close if the write failed and we didn't close */
+                        g_object_unref (out);
+                    }
                 }
                 else
                 {
-                    g_object_unref (dest);
-                    dest = real;
-
-                    res = g_output_stream_write_all (G_OUTPUT_STREAM (out),
-                                                     data, length,
-                                                     NULL,
-                                                     common->cancellable,
-                                                     &error);
-                    if (res)
-                    {
-                        res = g_output_stream_close (G_OUTPUT_STREAM (out),
-                                                     common->cancellable,
-                                                     &error);
-
-                        if (res && common->undo_info != NULL)
-                        {
-                            nautilus_file_undo_info_create_set_data (NAUTILUS_FILE_UNDO_INFO_CREATE (common->undo_info),
-                                                                     dest, data, length);
-                        }
-                    }
-
-                    /* This will close if the write failed and we didn't close */
-                    g_object_unref (out);
+                    res = FALSE;
                 }
             }
-            else
-            {
-                res = FALSE;
-            }
         }
-    }
 
-    if (res)
-    {
-        job->created_file = g_object_ref (dest);
-        nautilus_file_changes_queue_file_added (dest);
-        dest_uri = g_file_get_uri (dest);
-        gtk_recent_manager_add_item (gtk_recent_manager_get_default (), dest_uri);
-    }
-    else
-    {
-        g_assert (error != NULL);
-
-        if (IS_IO_ERROR (error, INVALID_FILENAME) &&
-            !handled_invalid_filename)
+        if (res)
         {
-            g_autofree gchar *new_filename = NULL;
+            job->created_file = g_object_ref (dest);
+            nautilus_file_changes_queue_file_added (dest);
+            dest_uri = g_file_get_uri (dest);
+            gtk_recent_manager_add_item (gtk_recent_manager_get_default (), dest_uri);
+        }
+        else
+        {
+            g_assert (error != NULL);
 
-            handled_invalid_filename = TRUE;
-
-            g_assert (dest_fs_type == NULL);
-            dest_fs_type = query_fs_type (job->dest_dir, common->cancellable);
-
-            if (count == 1)
+            if (IS_IO_ERROR (error, INVALID_FILENAME) &&
+                !handled_invalid_filename)
             {
-                new_filename = g_strdup (filename);
+                g_autofree gchar *new_filename = NULL;
+
+                handled_invalid_filename = TRUE;
+
+                g_assert (dest_fs_type == NULL);
+                dest_fs_type = query_fs_type (job->dest_dir, common->cancellable);
+
+                if (count == 1)
+                {
+                    new_filename = g_strdup (filename);
+                }
+                else
+                {
+                    gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
+                    new_filename = nautilus_filename_for_conflict (filename, count, max_length, use_extension);
+                }
+
+                if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type))
+                {
+                    g_object_unref (dest);
+
+                    if (filename_is_utf8)
+                    {
+                        dest = g_file_get_child_for_display_name (job->dest_dir, new_filename, NULL);
+                    }
+                    if (dest == NULL)
+                    {
+                        dest = g_file_get_child (job->dest_dir, new_filename);
+                    }
+
+                    g_error_free (error);
+                    goto retry;
+                }
             }
-            else
+
+            if (IS_IO_ERROR (error, EXISTS))
             {
                 gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
-                new_filename = nautilus_filename_for_conflict (filename, count, max_length, use_extension);
-            }
+                g_autofree gchar *filename2 = nautilus_filename_for_conflict (filename, ++count, max_length, use_extension);
 
-            if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type))
-            {
-                g_object_unref (dest);
-
+                make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
+                g_clear_object (&dest);
                 if (filename_is_utf8)
                 {
-                    dest = g_file_get_child_for_display_name (job->dest_dir, new_filename, NULL);
+                    dest = g_file_get_child_for_display_name (job->dest_dir, filename2, NULL);
                 }
                 if (dest == NULL)
                 {
-                    dest = g_file_get_child (job->dest_dir, new_filename);
+                    dest = g_file_get_child (job->dest_dir, filename2);
                 }
-
                 g_error_free (error);
                 goto retry;
             }
-        }
-
-        if (IS_IO_ERROR (error, EXISTS))
-        {
-            gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
-            g_autofree gchar *filename2 = nautilus_filename_for_conflict (filename, ++count, max_length, use_extension);
-
-            make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
-            g_clear_object (&dest);
-            if (filename_is_utf8)
+            else if (IS_IO_ERROR (error, CANCELLED))
             {
-                dest = g_file_get_child_for_display_name (job->dest_dir, filename2, NULL);
+                g_error_free (error);
             }
-            if (dest == NULL)
-            {
-                dest = g_file_get_child (job->dest_dir, filename2);
-            }
-            g_error_free (error);
-            goto retry;
-        }
-        else if (IS_IO_ERROR (error, CANCELLED))
-        {
-            g_error_free (error);
-        }
-        /* Other error */
-        else
-        {
-            g_autofree gchar *basename = get_basename (dest);
-            g_autofree gchar *parse_name = NULL;
-            g_autofree char *primary = NULL;
-            g_autofree char *secondary = NULL;
-            const char *details = error->message;
-
-            if (job->make_dir)
-            {
-                primary = g_strdup_printf (_("Error while creating directory “%s”."),
-                                           basename);
-            }
+            /* Other error */
             else
             {
-                primary = g_strdup_printf (_("Error while creating file “%s”."),
-                                           basename);
+                g_autofree gchar *basename = get_basename (dest);
+                g_autofree gchar *parse_name = NULL;
+                g_autofree char *primary = NULL;
+                g_autofree char *secondary = NULL;
+                const char *details = error->message;
+
+                if (job->make_dir)
+                {
+                    primary = g_strdup_printf (_("Error while creating directory “%s”."),
+                                               basename);
+                }
+                else
+                {
+                    primary = g_strdup_printf (_("Error while creating file “%s”."),
+                                               basename);
+                }
+                parse_name = get_truncated_parse_name (job->dest_dir);
+                secondary = g_strdup_printf (_("There was an error creating the directory in %s."),
+                                             parse_name);
+
+                show_skip_dialog (common,
+                                  primary,
+                                  secondary,
+                                  details,
+                                  1,
+                                  FALSE);
+
+                g_error_free (error);
             }
-            parse_name = get_truncated_parse_name (job->dest_dir);
-            secondary = g_strdup_printf (_("There was an error creating the directory in %s."),
-                                         parse_name);
-
-            show_skip_dialog (common,
-                              primary,
-                              secondary,
-                              details,
-                              1,
-                              FALSE);
-
-            g_error_free (error);
-        }
     }
 }
 
