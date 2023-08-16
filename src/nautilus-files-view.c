@@ -8736,6 +8736,23 @@ file_changed_callback (NautilusFile *file,
     schedule_update_status (view);
 }
 
+static void
+emit_clear (NautilusFilesView *self)
+{
+    g_signal_emit (self, signals[CLEAR], 0);
+}
+
+static void
+emit_begin_loading (NautilusFilesView *self)
+{
+    /* Tell interested parties that we've begun loading this directory now.
+     * Subclasses use this to know that the new metadata is now available.
+     */
+    nautilus_profile_start ("BEGIN_LOADING");
+    g_signal_emit (self, signals[BEGIN_LOADING], 0);
+    nautilus_profile_end ("BEGIN_LOADING");
+}
+
 /**
  * load_directory:
  *
@@ -8760,7 +8777,7 @@ load_directory (NautilusFilesView *view,
     nautilus_profile_start (NULL);
 
     nautilus_files_view_stop_loading (view);
-    g_signal_emit (view, signals[CLEAR], 0);
+    emit_clear (view);
 
     priv->loading = TRUE;
 
@@ -8862,12 +8879,7 @@ finish_loading (NautilusFilesView *view)
 
     nautilus_profile_start (NULL);
 
-    /* Tell interested parties that we've begun loading this directory now.
-     * Subclasses use this to know that the new metadata is now available.
-     */
-    nautilus_profile_start ("BEGIN_LOADING");
-    g_signal_emit (view, signals[BEGIN_LOADING], 0);
-    nautilus_profile_end ("BEGIN_LOADING");
+    emit_begin_loading (view);
 
     nautilus_files_view_check_empty_states (view);
     update_extend_search_revealer (view);
