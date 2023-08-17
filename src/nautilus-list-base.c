@@ -1635,7 +1635,6 @@ nautilus_list_base_dispose (GObject *object)
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
     g_cancellable_cancel (priv->clipboard_cancellable);
-    g_clear_object (&priv->clipboard_cancellable);
 
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->dispose (object);
 }
@@ -1647,6 +1646,8 @@ nautilus_list_base_finalize (GObject *object)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     g_clear_list (&priv->cut_files, g_object_unref);
+    /* Clear cancellable in finalize to prevent null usage */
+    g_clear_object (&priv->clipboard_cancellable);
 
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->finalize (object);
 }
