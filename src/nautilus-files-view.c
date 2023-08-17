@@ -174,6 +174,7 @@ typedef struct
 
     NautilusQuery *search_query;
     GFile *location_before_search;
+    NautilusDirectory *outgoing_search;
 
     NautilusRenameFilePopoverController *rename_file_controller;
     NautilusNewFolderDialogController *new_folder_controller;
@@ -3423,6 +3424,7 @@ nautilus_files_view_dispose (GObject *object)
 
     g_clear_object (&priv->search_query);
     g_clear_object (&priv->location_before_search);
+    g_clear_object (&priv->outgoing_search);
     g_clear_object (&priv->location);
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->dispose (object);
@@ -9007,6 +9009,10 @@ finish_loading (NautilusFilesView *view)
                                          attributes,
                                          files_added_callback, view);
 
+    /* If escaping search we can release the search directory now that the view
+     * is now monitoring the base directory directly. */
+    g_clear_object (&priv->outgoing_search);
+
     nautilus_profile_end (NULL);
 }
 
@@ -9600,11 +9606,24 @@ nautilus_files_view_set_search_query (NautilusView  *view,
                 g_warn_if_reached ();
                 location = g_file_new_for_path (g_get_home_dir ());
                 nautilus_window_slot_open_location_full (priv->slot, location, 0, NULL);
+                return;
             }
-            else
-            {
-                nautilus_view_set_location (view, location);
-            }
+
+            /* OPTIMIZATION: Fast and cheap loading coming back from search.
+             *
+             * The search directory has been monitoring its base directory. This
+             * means the later's file list is already loaded and up-to-date. By
+             * keeping it continuously monitored, we can avoid reloading the
+             * directory from scratch, which saves time and disk/network usage.
+             *
+             * So, we need to keep the search directory alive until after the
+             * view sets up its own monitor. This can be achieved by holding
+             * adding a reference to the search directory, preventing its
+             * destruction during the location change.
+             */
+            priv->outgoing_search = g_object_ref (priv->model);
+
+            nautilus_view_set_location (view, location);
         }
     }
 }
