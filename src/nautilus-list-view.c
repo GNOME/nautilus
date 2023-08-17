@@ -1068,6 +1068,11 @@ tree_expander_shortcut_cb (GtkWidget *widget,
     char *action;
     guint keyval = GPOINTER_TO_INT (user_data);
 
+    if (!self->expand_as_a_tree)
+    {
+        return FALSE;
+    }
+
     /* Hack to find the focus item. */
     child = gtk_root_get_focus (gtk_widget_get_root (widget));
     while (child != NULL && !NAUTILUS_IS_VIEW_CELL (child))
