@@ -1484,7 +1484,7 @@ hover_timer (gpointer user_data)
   if (open_folder_on_hover && sidebar->hover_row != NULL)
     {
       g_object_get (sidebar->hover_row, "uri", &uri, NULL);
-      if (uri != NULL)
+      if (uri != NULL && g_strcmp0 (uri, SCHEME_TRASH ":///") != 0)
         {
           location = g_file_new_for_uri (uri);
           emit_open_location (sidebar, location, 0);
