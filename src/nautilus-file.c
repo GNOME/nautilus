@@ -3814,8 +3814,9 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
                 {
                     result = compare_by_full_path (file_1, file_2);
 
-                    /* ensure alphabetical order for files of the same relevance */
-                    reversed = FALSE;
+                    /* ensure alphabetical order for files of the same relevance
+                     * grows in reverse (higher character = lower relevance) */
+                    result = -result;
                 }
             }
             break;
