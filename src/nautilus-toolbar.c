@@ -27,7 +27,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
-#include "nautilus-file-undo-manager.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-history-controls.h"
 #include "nautilus-location-entry.h"
@@ -105,86 +104,6 @@ toolbar_update_appearance (NautilusToolbar *self)
 }
 
 static void
-update_action (NautilusToolbar *self,
-               const char      *action_name,
-               gboolean         enabled)
-{
-    GtkWidget *window;
-    GAction *action;
-
-    window = gtk_widget_get_ancestor (GTK_WIDGET (self), NAUTILUS_TYPE_WINDOW);
-
-    /* Activate/deactivate */
-    action = g_action_map_lookup_action (G_ACTION_MAP (window), action_name);
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
-}
-
-static void
-undo_manager_changed (NautilusToolbar *self)
-{
-    NautilusFileUndoInfo *info;
-    NautilusFileUndoManagerState undo_state;
-    gboolean undo_active;
-    gboolean redo_active;
-    g_autofree gchar *undo_label = NULL;
-    g_autofree gchar *redo_label = NULL;
-    g_autofree gchar *undo_description = NULL;
-    g_autofree gchar *redo_description = NULL;
-    gboolean is_undo;
-    g_autoptr (GMenu) updated_section = g_menu_new ();
-    g_autoptr (GMenuItem) undo_menu_item = NULL;
-    g_autoptr (GMenuItem) redo_menu_item = NULL;
-    NautilusWindow *window;
-
-    /* Look up the last action from the undo manager, and get the text that
-     * describes it, e.g. "Undo Create Folder"/"Redo Create Folder"
-     */
-    info = nautilus_file_undo_manager_get_action ();
-    undo_state = nautilus_file_undo_manager_get_state ();
-    undo_active = redo_active = FALSE;
-    if (info != NULL && undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)
-    {
-        is_undo = undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
-
-        /* The last action can either be undone/redone. Activate the corresponding
-         * menu item and deactivate the other
-         */
-        undo_active = is_undo;
-        redo_active = !is_undo;
-        nautilus_file_undo_info_get_strings (info, &undo_label, &undo_description,
-                                             &redo_label, &redo_description);
-    }
-
-    /* Set the label of the undo and redo menu items, and activate them appropriately
-     */
-    if (!undo_active || undo_label == NULL)
-    {
-        g_free (undo_label);
-        undo_label = g_strdup (_("_Undo"));
-    }
-    undo_menu_item = g_menu_item_new (undo_label, "win.undo");
-    g_menu_append_item (updated_section, undo_menu_item);
-    update_action (self, "undo", undo_active);
-
-    if (!redo_active || redo_label == NULL)
-    {
-        g_free (redo_label);
-        redo_label = g_strdup (_("_Redo"));
-    }
-    redo_menu_item = g_menu_item_new (redo_label, "win.redo");
-    g_menu_append_item (updated_section, redo_menu_item);
-    update_action (self, "redo", redo_active);
-
-    if (self->window_slot != NULL)
-    {
-        window = nautilus_window_slot_get_window (self->window_slot);
-
-        nautilus_gmenu_set_from_model (G_MENU (nautilus_window_get_undo_redo_section (window)),
-                                       G_MENU_MODEL (updated_section));
-    }
-}
-
-static void
 on_location_entry_close (GtkWidget       *close_button,
                          NautilusToolbar *self)
 {
@@ -258,21 +177,6 @@ nautilus_toolbar_init (NautilusToolbar *self)
     g_type_ensure (NAUTILUS_TYPE_VIEW_CONTROLS);
 
     gtk_widget_init_template (GTK_WIDGET (self));
-}
-
-void
-nautilus_toolbar_on_window_constructed (NautilusToolbar *self)
-{
-    /* undo_manager_changed manipulates the window actions, so set it up
-     * after the window and it's actions have been constructed
-     */
-    g_signal_connect_object (nautilus_file_undo_manager_get (),
-                             "undo-changed",
-                             G_CALLBACK (undo_manager_changed),
-                             self,
-                             G_CONNECT_SWAPPED);
-
-    undo_manager_changed (self);
 }
 
 static void
