@@ -176,11 +176,11 @@
                     <property name="view">tab_view</property>
                   </object>
                 </child>
-                <child>
+                <property name="content">
                   <object class="AdwTabView" id="tab_view">
                     <property name="menu-model">tab_menu_model</property>
                   </object>
-                </child>
+                </property>
                 <child type="bottom">
                   <object class="GtkActionBar" id="action_bar">
                     <property name="revealed">False</property>
