@@ -32,7 +32,6 @@
 #include "nautilus-history-controls.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
-#include "nautilus-progress-indicator.h"
 #include "nautilus-view-controls.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
@@ -253,7 +252,6 @@ static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
     g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
-    g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
     g_type_ensure (NAUTILUS_TYPE_VIEW_CONTROLS);
 
     gtk_widget_init_template (GTK_WIDGET (self));

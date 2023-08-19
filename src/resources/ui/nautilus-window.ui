@@ -48,10 +48,26 @@
         <property name="child">
           <object class="AdwOverlaySplitView" id="split_view">
             <property name="sidebar">
-              <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
-                <property name="vexpand">True</property>
-                <property name="show-other-locations">True</property>
-                <property name="show-starred-location">True</property>
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar">
+                    <child type="start">
+                      <object class="NautilusProgressIndicator"/>
+                    </child>
+                    <property name="title-widget">
+                      <object class="AdwWindowTitle">
+                        <property name="title" translatable="yes">Places</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <property name="content">
+                  <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
+                    <property name="vexpand">True</property>
+                    <property name="show-other-locations">True</property>
+                    <property name="show-starred-location">True</property>
+                  </object>
+                </property>
               </object>
             </property>
             <property name="content">

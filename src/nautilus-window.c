@@ -61,6 +61,7 @@
 #include "nautilus-module.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-profile.h"
+#include "nautilus-progress-indicator.h"
 #include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
 #include "nautilus-toolbar.h"
@@ -2164,6 +2165,7 @@ nautilus_window_init (NautilusWindow *window)
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
+    g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
     gtk_widget_init_template (GTK_WIDGET (window));
 
     g_signal_connect_object (window->places_sidebar,
