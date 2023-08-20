@@ -190,16 +190,8 @@
                       </object>
                     </child>
                     <child type="end">
-                      <object class="GtkBox">
-                        <property name="spacing">6</property>
-                        <child>
-                          <object class="NautilusProgressIndicator"/>
-                        </child>
-                        <child>
-                          <object class="NautilusViewControls">
-                            <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
-                          </object>
-                        </child>
+                      <object class="NautilusViewControls">
+                        <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                       </object>
                     </child>
                   </object>
