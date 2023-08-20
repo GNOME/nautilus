@@ -30,13 +30,6 @@
           </object>
         </child>
         <child type="overlay">
-          <object class="NautilusFloatingBar" id="floating_bar">
-            <property name="halign">end</property>
-            <property name="valign">end</property>
-            <property name="spacing">8</property>
-          </object>
-        </child>
-        <child type="overlay">
           <object class="GtkRevealer" id="extend_search_revealer">
             <property name="transition-type">swing-up</property>
             <property name="halign">start</property>
@@ -56,6 +49,13 @@
                 </style>
               </object>
             </child>
+          </object>
+        </child>
+        <child type="overlay">
+          <object class="NautilusFloatingBar" id="floating_bar">
+            <property name="halign">end</property>
+            <property name="valign">end</property>
+            <property name="spacing">8</property>
           </object>
         </child>
       </object>
