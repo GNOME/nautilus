@@ -140,7 +140,7 @@ get_view_item (GListModel *model,
     g_autoptr (GtkTreeListRow) row = g_list_model_get_item (model, position);
 
     g_return_val_if_fail (GTK_IS_TREE_LIST_ROW (row), NULL);
-    return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (row)));
+    return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
 }
 
 static char *
