@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2023-08-18 06:20+0000\n"
-"PO-Revision-Date: 2023-08-18 17:02+0200\n"
+"POT-Creation-Date: 2023-08-20 15:24+0000\n"
+"PO-Revision-Date: 2023-08-21 17:10+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -32,7 +32,7 @@ msgstr "Uruchamianie oprogramowania"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:104
-#: src/nautilus-window.c:2388
+#: src/nautilus-window.c:2447
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:39
 msgid "Files"
 msgstr "Pliki"
@@ -67,7 +67,7 @@ msgstr ""
 "siatkę ikon, listę ikon i listę w formie drzewa. Jego funkcje mogą być "
 "rozszerzane za pomocą wtyczek i skryptów."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2390
+#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2449
 msgid "The GNOME Project"
 msgstr "Projekt GNOME"
 
@@ -85,7 +85,7 @@ msgstr "Widok listy"
 #: src/nautilus-search-directory-file.c:231
 #: src/nautilus-search-directory-file.c:271
 #: src/resources/ui/nautilus-search-popover.ui:276
-#: src/resources/ui/nautilus-toolbar.ui:111
+#: src/resources/ui/nautilus-toolbar.ui:50
 msgid "Search"
 msgstr "Wyszukiwanie"
 
@@ -1038,7 +1038,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:112 src/nautilus-file-utilities.c:303
 #: src/nautilus-pathbar.c:381 src/nautilus-shell-search-provider.c:341
-#: src/nautilus-window.c:159 src/gtk/nautilusgtkplacessidebar.c:1022
+#: src/nautilus-window.c:163 src/gtk/nautilusgtkplacessidebar.c:1022
 msgid "Home"
 msgstr "Katalog domowy"
 
@@ -1272,7 +1272,7 @@ msgid "_Link Here"
 msgstr "Utwórz tutaj d_owiązanie"
 
 #: src/nautilus-dnd.c:137 src/nautilus-file-operations.c:3045
-#: src/nautilus-mime-actions.c:607 src/nautilus-toolbar.c:234
+#: src/nautilus-mime-actions.c:607 src/nautilus-toolbar.c:155
 #: src/resources/ui/nautilus-compress-dialog.ui:83
 #: src/resources/ui/nautilus-create-folder-dialog.ui:45
 msgid "Cancel"
@@ -2936,7 +2936,7 @@ msgstr "Przeciąganie i upuszczanie obiektów nie jest obsługiwane."
 msgid "An invalid drag type was used."
 msgstr "Użyto nieprawidłowego typu przeciąganych danych."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1284
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1350
 msgid "Undo"
 msgstr "Cofnij"
 
@@ -4200,14 +4200,6 @@ msgstr "Ustawienia udostępniania"
 msgid "_Settings"
 msgstr "_Ustawienia"
 
-#: src/nautilus-toolbar.c:166 src/resources/ui/nautilus-toolbar.ui:32
-msgid "_Undo"
-msgstr "C_ofnij"
-
-#: src/nautilus-toolbar.c:175 src/resources/ui/nautilus-toolbar.ui:36
-msgid "_Redo"
-msgstr "Po_nów"
-
 #: src/nautilus-ui-utilities.c:234
 #, c-format
 msgid "Since %d day ago"
@@ -4272,35 +4264,35 @@ msgstr[0] "Ostatni rok"
 msgstr[1] "%d lata temu"
 msgstr[2] "%d lat temu"
 
-#: src/nautilus-window.c:158
+#: src/nautilus-window.c:162
 msgid "Parent folder"
 msgstr "Katalog nadrzędny"
 
-#: src/nautilus-window.c:160
+#: src/nautilus-window.c:164
 msgid "New tab"
 msgstr "Nowa karta"
 
-#: src/nautilus-window.c:161
+#: src/nautilus-window.c:165
 msgid "Close current view"
 msgstr "Zamknięcie bieżącego widoku"
 
-#: src/nautilus-window.c:162 src/resources/ui/nautilus-history-controls.ui:11
+#: src/nautilus-window.c:166 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Wstecz"
 
-#: src/nautilus-window.c:163 src/resources/ui/nautilus-history-controls.ui:19
+#: src/nautilus-window.c:167 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Dalej"
 
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:1184
+#: src/nautilus-window.c:1188
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "Przeniesiono „%s” do kosza"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:1191
+#: src/nautilus-window.c:1195
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4309,14 +4301,14 @@ msgstr[1] "Przeniesiono %d pliki do kosza"
 msgstr[2] "Przeniesiono %d plików do kosza"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1212
+#: src/nautilus-window.c:1216
 #, c-format
 msgid "“%s” unstarred"
 msgstr "Odznaczono „%s” jako ulubione"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1218
+#: src/nautilus-window.c:1222
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4324,21 +4316,29 @@ msgstr[0] "Odznaczono %d plik jako ulubiony"
 msgstr[1] "Odznaczono %d pliki jako ulubione"
 msgstr[2] "Odznaczono %d plików jako ulubione"
 
+#: src/nautilus-window.c:1267 src/resources/ui/nautilus-window.ui:32
+msgid "_Undo"
+msgstr "C_ofnij"
+
+#: src/nautilus-window.c:1277 src/resources/ui/nautilus-window.ui:36
+msgid "_Redo"
+msgstr "Po_nów"
+
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1321 src/gtk/nautilusgtkplacessidebar.c:910
+#: src/nautilus-window.c:1387 src/gtk/nautilusgtkplacessidebar.c:910
 #, c-format
 msgid "Open %s"
 msgstr "Otwórz „%s”"
 
-#: src/nautilus-window.c:2377
+#: src/nautilus-window.c:2436
 msgid "No plugins currently installed."
 msgstr "Obecnie nie zainstalowano żadnych wtyczek."
 
-#: src/nautilus-window.c:2381
+#: src/nautilus-window.c:2440
 msgid "Currently installed plugins:"
 msgstr "Obecnie zainstalowane wtyczki:"
 
-#: src/nautilus-window.c:2383
+#: src/nautilus-window.c:2442
 msgid "For bug testing only, the following command can be used:"
 msgstr "Tego polecenia można używać wyłącznie do testowania błędów:"
 
@@ -4346,7 +4346,7 @@ msgstr "Tego polecenia można używać wyłącznie do testowania błędów:"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2405
+#: src/nautilus-window.c:2464
 msgid "translator-credits"
 msgstr ""
 "Zbigniew Chyla <chyla@alice.ci.pwr.wroc.pl>, 2000-2003\n"
@@ -5400,53 +5400,9 @@ msgstr "Nazwa pliku"
 msgid "Don't Search Inside Files"
 msgstr "Bez wyszukiwania w środku plików"
 
-#: src/resources/ui/nautilus-toolbar.ui:7
-msgid "New _Window"
-msgstr "_Nowe okno"
-
-#: src/resources/ui/nautilus-toolbar.ui:12
-msgid "New _Tab"
-msgstr "Nowa _karta"
-
-#: src/resources/ui/nautilus-toolbar.ui:18
-msgid "Icon Size"
-msgstr "Rozmiar ikon"
-
-#: src/resources/ui/nautilus-toolbar.ui:42
-msgid "Show _Hidden Files"
-msgstr "_Ukryte pliki"
-
-#: src/resources/ui/nautilus-toolbar.ui:48
-msgid "_Preferences"
-msgstr "_Preferencje"
-
-#: src/resources/ui/nautilus-toolbar.ui:52
-msgid "_Keyboard Shortcuts"
-msgstr "_Skróty klawiszowe"
-
-#: src/resources/ui/nautilus-toolbar.ui:56
-msgid "_Help"
-msgstr "Pomo_c"
-
-#: src/resources/ui/nautilus-toolbar.ui:60
-msgid "_About Files"
-msgstr "_O programie"
-
-#: src/resources/ui/nautilus-toolbar.ui:129
+#: src/resources/ui/nautilus-toolbar.ui:68
 msgid "Show Sidebar"
 msgstr "Wyświetla panel boczny"
-
-#: src/resources/ui/nautilus-toolbar.ui:153
-msgid "Main Menu"
-msgstr "Menu główne"
-
-#: src/resources/ui/nautilus-toolbar.ui:164
-msgid "Zoom Out"
-msgstr "Pomniejsza"
-
-#: src/resources/ui/nautilus-toolbar.ui:174
-msgid "Zoom In"
-msgstr "Powiększa"
 
 #. This is used to sort by name in the toolbar view menu
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:8
@@ -5486,38 +5442,86 @@ msgid "View Options"
 msgstr "Opcje widoku"
 
 #: src/resources/ui/nautilus-window.ui:7
+msgid "New _Window"
+msgstr "_Nowe okno"
+
+#: src/resources/ui/nautilus-window.ui:12
+msgid "New _Tab"
+msgstr "Nowa _karta"
+
+#: src/resources/ui/nautilus-window.ui:18
+msgid "Icon Size"
+msgstr "Rozmiar ikon"
+
+#: src/resources/ui/nautilus-window.ui:42
+msgid "Show _Hidden Files"
+msgstr "_Ukryte pliki"
+
+#: src/resources/ui/nautilus-window.ui:48
+msgid "_Preferences"
+msgstr "_Preferencje"
+
+#: src/resources/ui/nautilus-window.ui:52
+msgid "_Keyboard Shortcuts"
+msgstr "_Skróty klawiszowe"
+
+#: src/resources/ui/nautilus-window.ui:56
+msgid "_Help"
+msgstr "Pomo_c"
+
+#: src/resources/ui/nautilus-window.ui:60
+msgid "_About Files"
+msgstr "_O programie"
+
+#: src/resources/ui/nautilus-window.ui:68
 msgid "_New Tab"
 msgstr "_Nowa karta"
 
-#: src/resources/ui/nautilus-window.ui:11
+#: src/resources/ui/nautilus-window.ui:72
 msgid "Re_store Closed Tab"
 msgstr "_Przywróć zamkniętą kartę"
 
-#: src/resources/ui/nautilus-window.ui:17
+#: src/resources/ui/nautilus-window.ui:78
 msgid "Move Tab to New _Window"
 msgstr "Przenieś kartę do no_wego okna"
 
 #. Translators: use “Move Tab _Right” for RTL languages
-#: src/resources/ui/nautilus-window.ui:21
+#: src/resources/ui/nautilus-window.ui:82
 msgid "Move Tab _Left"
 msgstr "Pr_zesuń kartę w lewo"
 
 #. Translators: use “Move Tab _Left” for RTL languages
-#: src/resources/ui/nautilus-window.ui:25
+#: src/resources/ui/nautilus-window.ui:86
 msgid "Move Tab _Right"
 msgstr "P_rzesuń kartę w prawo"
 
-#: src/resources/ui/nautilus-window.ui:31
+#: src/resources/ui/nautilus-window.ui:92
 msgid "_Close Tab"
 msgstr "Za_mknij kartę"
 
-#: src/resources/ui/nautilus-window.ui:35
+#: src/resources/ui/nautilus-window.ui:96
 msgid "Close _Other Tabs"
 msgstr "Zamk_nij inne karty"
 
-#: src/resources/ui/nautilus-window.ui:44
+#: src/resources/ui/nautilus-window.ui:105
 msgid "_Files"
 msgstr "_Pliki"
+
+#: src/resources/ui/nautilus-window.ui:120
+msgid "Places"
+msgstr "Miejsca"
+
+#: src/resources/ui/nautilus-window.ui:125
+msgid "Main Menu"
+msgstr "Menu główne"
+
+#: src/resources/ui/nautilus-window.ui:134
+msgid "Zoom Out"
+msgstr "Pomniejsza"
+
+#: src/resources/ui/nautilus-window.ui:144
+msgid "Zoom In"
+msgstr "Powiększa"
 
 #: src/gtk/nautilusgtkplacesview.c:890
 msgid "Searching for network locations"
