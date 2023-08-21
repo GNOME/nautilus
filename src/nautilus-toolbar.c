@@ -289,10 +289,6 @@ nautilus_toolbar_set_property (GObject      *object,
 static void
 nautilus_toolbar_dispose (GObject *object)
 {
-    NautilusToolbar *self;
-
-    self = NAUTILUS_TOOLBAR (object);
-
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
 }
 
