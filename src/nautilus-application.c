@@ -290,7 +290,6 @@ get_window_slot_for_location (NautilusApplication *self,
                               GFile               *location)
 {
     NautilusApplicationPrivate *priv = nautilus_application_get_instance_private (self);
-    GFileType type = g_file_query_file_type (location, G_FILE_QUERY_INFO_NONE, NULL);
     g_autofree char *uri = g_file_get_uri (location);
     g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
     g_autoptr (GFile) searched_location = NULL;
