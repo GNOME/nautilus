@@ -1680,7 +1680,7 @@ drag_motion_callback (GtkDropTarget    *target,
       gtk_drag_check_threshold (GTK_WIDGET (sidebar), start.x, start.y, x, y)))
     {
       g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
-      sidebar->hover_row = row;
+      g_set_weak_pointer (&sidebar->hover_row, row);
       sidebar->hover_timer_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, sidebar);
       sidebar->hover_start_point.x = x;
       sidebar->hover_start_point.y = y;
