@@ -1098,19 +1098,22 @@ get_selection (NautilusFilesView *files_view,
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     NautilusFile *view_file = nautilus_files_view_get_directory_as_file (files_view);
-    g_autoptr (GtkSelectionFilterModel) selection = NULL;
-    guint n_selected;
+    g_autoptr (GtkBitset) selection = NULL;
+    GtkBitsetIter iter;
+    guint i;
     GList *selected_files = NULL;
 
-    selection = gtk_selection_filter_model_new (GTK_SELECTION_MODEL (priv->model));
-    n_selected = g_list_model_get_n_items (G_LIST_MODEL (selection));
-    for (guint i = 0; i < n_selected; i++)
+    selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+
+    for (gtk_bitset_iter_init_last (&iter, selection, &i);
+         gtk_bitset_iter_is_valid (&iter);
+         gtk_bitset_iter_previous (&iter, &i))
     {
         g_autoptr (NautilusViewItem) item = NULL;
         g_autoptr (NautilusFile) parent = NULL;
         NautilusFile *file;
 
-        item = get_view_item (G_LIST_MODEL (selection), i);
+        item = get_view_item (G_LIST_MODEL (priv->model), i);
         file = nautilus_view_item_get_file (item);
         parent = nautilus_file_get_parent (file);
 
@@ -1129,8 +1132,6 @@ get_selection (NautilusFilesView *files_view,
         }
         selected_files = g_list_prepend (selected_files, g_object_ref (file));
     }
-
-    selected_files = g_list_reverse (selected_files);
 
     return selected_files;
 }
