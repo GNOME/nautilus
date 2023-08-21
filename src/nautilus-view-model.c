@@ -380,13 +380,12 @@ nautilus_view_model_set_sorter (NautilusViewModel *self,
 void
 nautilus_view_model_sort (NautilusViewModel *self)
 {
-    g_autoptr (GtkSorter) sorter = NULL;
+    GtkSorter *sorter = nautilus_view_model_get_sorter (self);
 
-    /* We are not supposed to call gtk_sorter_changed() from here, so let's
-     * re-set the sorter to trigger re-sorting of the list. Hold a reference
-     * to keep the sorter from getting destroyed while re-setting. */
-    sorter = g_object_ref (gtk_sort_list_model_get_sorter (self->sort_model));
-    gtk_sort_list_model_set_sorter (self->sort_model, sorter);
+    if (sorter != NULL)
+    {
+        gtk_sorter_changed (sorter, GTK_SORTER_CHANGE_DIFFERENT);
+    }
 }
 
 GList *
