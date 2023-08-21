@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2023-08-17 22:23+0000\n"
-"PO-Revision-Date: 2023-08-18 09:19+0300\n"
+"POT-Creation-Date: 2023-08-20 15:24+0000\n"
+"PO-Revision-Date: 2023-08-21 23:01+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -27,7 +27,7 @@ msgstr "Запустити програму"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:104
-#: src/nautilus-window.c:2388
+#: src/nautilus-window.c:2447
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:39
 msgid "Files"
 msgstr "Файли"
@@ -62,7 +62,7 @@ msgstr ""
 "піктограм, ієрархічний список. Можливості можна розширити за допомогою "
 "додатків і скриптів."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2390
+#: data/org.gnome.Nautilus.appdata.xml.in.in:34 src/nautilus-window.c:2449
 msgid "The GNOME Project"
 msgstr "Проєкт GNOME"
 
@@ -80,7 +80,7 @@ msgstr "Перегляд списком"
 #: src/nautilus-search-directory-file.c:231
 #: src/nautilus-search-directory-file.c:271
 #: src/resources/ui/nautilus-search-popover.ui:276
-#: src/resources/ui/nautilus-toolbar.ui:111
+#: src/resources/ui/nautilus-toolbar.ui:50
 msgid "Search"
 msgstr "Пошук"
 
@@ -1032,7 +1032,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:112 src/nautilus-file-utilities.c:303
 #: src/nautilus-pathbar.c:381 src/nautilus-shell-search-provider.c:341
-#: src/nautilus-window.c:159 src/gtk/nautilusgtkplacessidebar.c:1022
+#: src/nautilus-window.c:163 src/gtk/nautilusgtkplacessidebar.c:1022
 msgid "Home"
 msgstr "Домівка"
 
@@ -1045,7 +1045,8 @@ msgstr "Рядок у буфері обміну даними не може бу�
 #: src/nautilus-clipboard.c:89
 #, c-format
 msgid "Nautilus Clipboard must begin with “cut” or “copy”."
-msgstr "Вміст буфера обміну даними Nautilus має починатися з «cut» або «copy»."
+msgstr ""
+"Вміст буфера обміну даними Nautilus має починатися з «cut» або «copy»."
 
 #: src/nautilus-clipboard.c:98
 #, c-format
@@ -1262,7 +1263,7 @@ msgid "_Link Here"
 msgstr "_Сполучити сюди"
 
 #: src/nautilus-dnd.c:137 src/nautilus-file-operations.c:3045
-#: src/nautilus-mime-actions.c:607 src/nautilus-toolbar.c:234
+#: src/nautilus-mime-actions.c:607 src/nautilus-toolbar.c:155
 #: src/resources/ui/nautilus-compress-dialog.ui:83
 #: src/resources/ui/nautilus-create-folder-dialog.ui:45
 msgid "Cancel"
@@ -1274,7 +1275,8 @@ msgstr "Скинуте зображення"
 
 #: src/nautilus-error-reporting.c:85
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of “%s”."
+msgid ""
+"You do not have the permissions necessary to view the contents of “%s”."
 msgstr "Ви не маєте прав, потрібних для перегляду вмісту «%s»."
 
 #: src/nautilus-error-reporting.c:92
@@ -2958,7 +2960,7 @@ msgstr "Перетягування не підтримується."
 msgid "An invalid drag type was used."
 msgstr "Було використано неправильний тип перетягування."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1284
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1350
 msgid "Undo"
 msgstr "Повернути"
 
@@ -4208,9 +4210,11 @@ msgstr "Об'єкти у Смітнику із віком понад 1 годи�
 #, c-format
 msgid "Items in Trash older than %d day are automatically deleted"
 msgid_plural "Items in Trash older than %d days are automatically deleted"
-msgstr[0] "Об'єкти у Смітнику із віком понад %d день буде автоматично вилучено"
+msgstr[0] ""
+"Об'єкти у Смітнику із віком понад %d день буде автоматично вилучено"
 msgstr[1] "Об'єкти у Смітнику із віком понад %d дні буде автоматично вилучено"
-msgstr[2] "Об'єкти у Смітнику із віком понад %d днів буде автоматично вилучено"
+msgstr[2] ""
+"Об'єкти у Смітнику із віком понад %d днів буде автоматично вилучено"
 msgstr[3] "Об'єкти у Смітнику із віком понад день буде автоматично вилучено"
 
 #: src/nautilus-special-location-bar.c:149
@@ -4245,14 +4249,6 @@ msgstr "Параметри спільного користування"
 #: src/nautilus-special-location-bar.c:171
 msgid "_Settings"
 msgstr "П_араметри"
-
-#: src/nautilus-toolbar.c:166 src/resources/ui/nautilus-toolbar.ui:32
-msgid "_Undo"
-msgstr "_Повернути"
-
-#: src/nautilus-toolbar.c:175 src/resources/ui/nautilus-toolbar.ui:36
-msgid "_Redo"
-msgstr "Пов_торити"
 
 #: src/nautilus-ui-utilities.c:234
 #, c-format
@@ -4326,35 +4322,35 @@ msgstr[1] "%d роки тому"
 msgstr[2] "%d років тому"
 msgstr[3] "%d рік тому"
 
-#: src/nautilus-window.c:158
+#: src/nautilus-window.c:162
 msgid "Parent folder"
 msgstr "Батьківська тека"
 
-#: src/nautilus-window.c:160
+#: src/nautilus-window.c:164
 msgid "New tab"
 msgstr "Нова вкладка"
 
-#: src/nautilus-window.c:161
+#: src/nautilus-window.c:165
 msgid "Close current view"
 msgstr "Закрити поточний перегляд"
 
-#: src/nautilus-window.c:162 src/resources/ui/nautilus-history-controls.ui:11
+#: src/nautilus-window.c:166 src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window.c:163 src/resources/ui/nautilus-history-controls.ui:19
+#: src/nautilus-window.c:167 src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Вперед"
 
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:1184
+#: src/nautilus-window.c:1188
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "«%s» пересунуто до смітника"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:1191
+#: src/nautilus-window.c:1195
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4364,14 +4360,14 @@ msgstr[2] "%d файлів пересунуто до смітника"
 msgstr[3] "%d файл пересунуто до смітника"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1212
+#: src/nautilus-window.c:1216
 #, c-format
 msgid "“%s” unstarred"
 msgstr "Знято позначення зірками «%s»"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1218
+#: src/nautilus-window.c:1222
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4380,21 +4376,29 @@ msgstr[1] "Скасовано позначення зірками %d файлі�
 msgstr[2] "Скасовано позначення зірками %d файлів"
 msgstr[3] "Скасовано позначення зірками %d файла"
 
+#: src/nautilus-window.c:1267 src/resources/ui/nautilus-window.ui:32
+msgid "_Undo"
+msgstr "_Повернути"
+
+#: src/nautilus-window.c:1277 src/resources/ui/nautilus-window.ui:36
+msgid "_Redo"
+msgstr "Пов_торити"
+
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1321 src/gtk/nautilusgtkplacessidebar.c:910
+#: src/nautilus-window.c:1387 src/gtk/nautilusgtkplacessidebar.c:910
 #, c-format
 msgid "Open %s"
 msgstr "Відкрити %s"
 
-#: src/nautilus-window.c:2377
+#: src/nautilus-window.c:2436
 msgid "No plugins currently installed."
 msgstr "Зараз не встановлено жодних додатків."
 
-#: src/nautilus-window.c:2381
+#: src/nautilus-window.c:2440
 msgid "Currently installed plugins:"
 msgstr "Поточні встановлені додатки:"
 
-#: src/nautilus-window.c:2383
+#: src/nautilus-window.c:2442
 msgid "For bug testing only, the following command can be used:"
 msgstr "Лише для пошуку причини вад. Можете скористатися такою командою:"
 
@@ -4402,7 +4406,7 @@ msgstr "Лише для пошуку причини вад. Можете ско�
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2405
+#: src/nautilus-window.c:2464
 msgid "translator-credits"
 msgstr ""
 "Юрій Сирота <yuri@renome.rovno.ua>\n"
@@ -5447,53 +5451,9 @@ msgstr "Назва файла"
 msgid "Don't Search Inside Files"
 msgstr "Не шукати у файлах"
 
-#: src/resources/ui/nautilus-toolbar.ui:7
-msgid "New _Window"
-msgstr "Створити _вікно"
-
-#: src/resources/ui/nautilus-toolbar.ui:12
-msgid "New _Tab"
-msgstr "Нова _вкладка"
-
-#: src/resources/ui/nautilus-toolbar.ui:18
-msgid "Icon Size"
-msgstr "Розмір піктограм"
-
-#: src/resources/ui/nautilus-toolbar.ui:42
-msgid "Show _Hidden Files"
-msgstr "Показувати с_ховані файли"
-
-#: src/resources/ui/nautilus-toolbar.ui:48
-msgid "_Preferences"
-msgstr "_Налаштування"
-
-#: src/resources/ui/nautilus-toolbar.ui:52
-msgid "_Keyboard Shortcuts"
-msgstr "_Клавіатурні скорочення"
-
-#: src/resources/ui/nautilus-toolbar.ui:56
-msgid "_Help"
-msgstr "_Довідка"
-
-#: src/resources/ui/nautilus-toolbar.ui:60
-msgid "_About Files"
-msgstr "_Про файли"
-
-#: src/resources/ui/nautilus-toolbar.ui:129
+#: src/resources/ui/nautilus-toolbar.ui:68
 msgid "Show Sidebar"
 msgstr "Показати бічну панель"
-
-#: src/resources/ui/nautilus-toolbar.ui:153
-msgid "Main Menu"
-msgstr "Головне меню"
-
-#: src/resources/ui/nautilus-toolbar.ui:164
-msgid "Zoom Out"
-msgstr "Зменшити"
-
-#: src/resources/ui/nautilus-toolbar.ui:174
-msgid "Zoom In"
-msgstr "Збільшити"
 
 #. This is used to sort by name in the toolbar view menu
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:8
@@ -5533,38 +5493,88 @@ msgid "View Options"
 msgstr "Параметри перегляду"
 
 #: src/resources/ui/nautilus-window.ui:7
+msgid "New _Window"
+msgstr "Створити _вікно"
+
+#: src/resources/ui/nautilus-window.ui:12
+msgid "New _Tab"
+msgstr "Нова _вкладка"
+
+#: src/resources/ui/nautilus-window.ui:18
+msgid "Icon Size"
+msgstr "Розмір піктограм"
+
+#: src/resources/ui/nautilus-window.ui:42
+msgid "Show _Hidden Files"
+msgstr "Показувати с_ховані файли"
+
+#: src/resources/ui/nautilus-window.ui:48
+msgid "_Preferences"
+msgstr "_Налаштування"
+
+#: src/resources/ui/nautilus-window.ui:52
+msgid "_Keyboard Shortcuts"
+msgstr "_Клавіатурні скорочення"
+
+#: src/resources/ui/nautilus-window.ui:56
+msgid "_Help"
+msgstr "_Довідка"
+
+#: src/resources/ui/nautilus-window.ui:60
+msgid "_About Files"
+msgstr "_Про файли"
+
+#: src/resources/ui/nautilus-window.ui:68
 msgid "_New Tab"
 msgstr "_Нова вкладка"
 
-#: src/resources/ui/nautilus-window.ui:11
+#: src/resources/ui/nautilus-window.ui:72
 msgid "Re_store Closed Tab"
 msgstr "Від_новити закриту вкладку"
 
-#: src/resources/ui/nautilus-window.ui:17
+#: src/resources/ui/nautilus-window.ui:78
 msgid "Move Tab to New _Window"
 msgstr "Пересунути вкладку до нового ві_кна"
 
 #. Translators: use “Move Tab _Right” for RTL languages
-#: src/resources/ui/nautilus-window.ui:21
+#: src/resources/ui/nautilus-window.ui:82
 msgid "Move Tab _Left"
 msgstr "Перемістити вкладку _ліворуч"
 
 #. Translators: use “Move Tab _Left” for RTL languages
-#: src/resources/ui/nautilus-window.ui:25
+#: src/resources/ui/nautilus-window.ui:86
 msgid "Move Tab _Right"
 msgstr "Перемістити вкладку _праворуч"
 
-#: src/resources/ui/nautilus-window.ui:31
+#: src/resources/ui/nautilus-window.ui:92
 msgid "_Close Tab"
 msgstr "_Закрити вкладку"
 
-#: src/resources/ui/nautilus-window.ui:35
+#: src/resources/ui/nautilus-window.ui:96
 msgid "Close _Other Tabs"
 msgstr "Закрити _інші вкладки"
 
-#: src/resources/ui/nautilus-window.ui:44
+#: src/resources/ui/nautilus-window.ui:105
 msgid "_Files"
 msgstr "_Файли"
+
+#: src/resources/ui/nautilus-window.ui:120
+#| msgctxt "title"
+#| msgid "Replace"
+msgid "Places"
+msgstr "Місця"
+
+#: src/resources/ui/nautilus-window.ui:125
+msgid "Main Menu"
+msgstr "Головне меню"
+
+#: src/resources/ui/nautilus-window.ui:134
+msgid "Zoom Out"
+msgstr "Зменшити"
+
+#: src/resources/ui/nautilus-window.ui:144
+msgid "Zoom In"
+msgstr "Збільшити"
 
 #: src/gtk/nautilusgtkplacesview.c:890
 msgid "Searching for network locations"
