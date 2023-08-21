@@ -2352,8 +2352,17 @@ check_bookmark_location_matches (NautilusBookmark *bookmark,
 static void
 check_last_bookmark_location_matches_slot (NautilusWindowSlot *self)
 {
+    GFile *slot_location = nautilus_window_slot_get_location (self);
+
+    if (g_file_has_uri_scheme (slot_location, SCHEME_SEARCH))
+    {
+        /* In this case, it's expected not to match, because search is not
+         * saved into the history stack. */
+        return;
+    }
+
     check_bookmark_location_matches (self->last_location_bookmark,
-                                     nautilus_window_slot_get_location (self));
+                                     slot_location);
 }
 
 static void
