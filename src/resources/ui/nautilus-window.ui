@@ -104,6 +104,9 @@
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>
     <signal name="direction-changed" handler="window_set_back_forward_accelerators"/>
+    <style>
+      <class name="view"/>
+    </style>
     <child>
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
@@ -166,9 +169,6 @@
             </property>
             <property name="content">
               <object class="AdwToolbarView">
-                <style>
-                  <class name="view"/>
-                </style>
                 <child type="top">
                   <object class="NautilusToolbar" id="toolbar">
                     <property name="show-toolbar-children">True</property>
