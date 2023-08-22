@@ -72,7 +72,7 @@ static guint thumbnail_thread_starter_id = 0;
 
 /* The list of NautilusThumbnailInfo structs containing information about the
  *  thumbnails we are making. */
-static volatile GQueue thumbnails_to_make = G_QUEUE_INIT;
+static GQueue thumbnails_to_make = G_QUEUE_INIT;
 
 /* Quickly check if uri is in thumbnails_to_make list */
 static GHashTable *thumbnails_to_make_hash = NULL;
@@ -179,7 +179,7 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
         {
             g_hash_table_remove (thumbnails_to_make_hash, file_uri);
             free_thumbnail_info (node->data);
-            g_queue_delete_link ((GQueue *) &thumbnails_to_make, node);
+            g_queue_delete_link (&thumbnails_to_make, node);
         }
     }
 }
@@ -195,8 +195,8 @@ nautilus_thumbnail_prioritize (const char *file_uri)
 
         if (node && node->data != currently_thumbnailing)
         {
-            g_queue_unlink ((GQueue *) &thumbnails_to_make, node);
-            g_queue_push_head_link ((GQueue *) &thumbnails_to_make, node);
+            g_queue_unlink (&thumbnails_to_make, node);
+            g_queue_push_head_link (&thumbnails_to_make, node);
         }
     }
 }
@@ -352,8 +352,8 @@ nautilus_create_thumbnail (NautilusFile *file)
         /* Add the thumbnail to the list. */
         DEBUG ("(Main Thread) Adding thumbnail: %s\n",
                info->image_uri);
-        g_queue_push_tail ((GQueue *) &thumbnails_to_make, info);
-        node = g_queue_peek_tail_link ((GQueue *) &thumbnails_to_make);
+        g_queue_push_tail (&thumbnails_to_make, info);
+        node = g_queue_peek_tail_link (&thumbnails_to_make);
         g_hash_table_insert (thumbnails_to_make_hash,
                              info->image_uri,
                              node);
@@ -398,14 +398,14 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
         node = g_hash_table_lookup (thumbnails_to_make_hash, info->image_uri);
         g_hash_table_remove (thumbnails_to_make_hash, info->image_uri);
         free_thumbnail_info (info);
-        g_queue_delete_link ((GQueue *) &thumbnails_to_make, node);
+        g_queue_delete_link (&thumbnails_to_make, node);
     }
     else
     {
         info->original_file_mtime = info->updated_file_mtime;
     }
 
-    if (g_queue_is_empty ((GQueue *) &thumbnails_to_make))
+    if (g_queue_is_empty (&thumbnails_to_make))
     {
         DEBUG ("(Thumbnail Async Thread) Exiting\n");
     }
@@ -528,10 +528,10 @@ thumbnail_starter_cb (gpointer data)
     /* We loop until the queue is empty, or if we already
      * have a thumbnail in progress.
      */
-    while (!g_queue_is_empty ((GQueue *) &thumbnails_to_make) &&
+    while (!g_queue_is_empty (&thumbnails_to_make) &&
            currently_thumbnailing == NULL)
     {
-        info = g_queue_peek_head ((GQueue *) &thumbnails_to_make);
+        info = g_queue_peek_head (&thumbnails_to_make);
         current_orig_mtime = info->updated_file_mtime;
 
         time (&current_time);
