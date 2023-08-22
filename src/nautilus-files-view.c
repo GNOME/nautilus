@@ -621,6 +621,13 @@ on_sort_action_state_changed (GActionGroup *action_group,
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     const gchar *target_name;
     gboolean reversed;
+    g_autoptr (GVariant) old_value = g_action_group_get_action_state (action_group, action_name);
+
+    if (g_variant_equal (value, old_value))
+    {
+        /* Don't update metadata if the action is in the same state as before */
+        return;
+    }
 
     g_variant_get (value, "(&sb)", &target_name, &reversed);
 
