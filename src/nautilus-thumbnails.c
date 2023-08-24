@@ -94,7 +94,7 @@ get_file_mtime (const char *file_uri,
 
     file = g_file_new_for_uri (file_uri);
     info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, 0, NULL, NULL);
-    if (info)
+    if (info != NULL)
     {
         if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_TIME_MODIFIED))
         {
@@ -161,26 +161,28 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
 {
     GList *node;
 
-    if (thumbnails_to_make_hash)
+    if (thumbnails_to_make_hash == NULL)
     {
-        node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
-        if (node == NULL)
-        {
-            return;
-        }
+        return;
+    }
 
-        if (node->data == currently_thumbnailing)
-        {
-            NautilusThumbnailInfo *info = node->data;
+    node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
+    if (node == NULL)
+    {
+        return;
+    }
 
-            g_cancellable_cancel (info->cancellable);
-        }
-        else
-        {
-            g_hash_table_remove (thumbnails_to_make_hash, file_uri);
-            free_thumbnail_info (node->data);
-            g_queue_delete_link (&thumbnails_to_make, node);
-        }
+    if (node->data == currently_thumbnailing)
+    {
+        NautilusThumbnailInfo *info = node->data;
+
+        g_cancellable_cancel (info->cancellable);
+    }
+    else
+    {
+        g_hash_table_remove (thumbnails_to_make_hash, file_uri);
+        free_thumbnail_info (node->data);
+        g_queue_delete_link (&thumbnails_to_make, node);
     }
 }
 
@@ -189,15 +191,17 @@ nautilus_thumbnail_prioritize (const char *file_uri)
 {
     GList *node;
 
-    if (thumbnails_to_make_hash)
+    if (thumbnails_to_make_hash == NULL)
     {
-        node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
+        return;
+    }
 
-        if (node && node->data != currently_thumbnailing)
-        {
-            g_queue_unlink (&thumbnails_to_make, node);
-            g_queue_push_head_link (&thumbnails_to_make, node);
-        }
+    node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
+
+    if (node != NULL && node->data != currently_thumbnailing)
+    {
+        g_queue_unlink (&thumbnails_to_make, node);
+        g_queue_push_head_link (&thumbnails_to_make, node);
     }
 }
 
