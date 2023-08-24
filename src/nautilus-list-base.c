@@ -1755,8 +1755,9 @@ nautilus_list_base_focus (GtkWidget        *widget,
      * instead of having to cycle through every item (potentially many). */
     if (direction == GTK_DIR_TAB_FORWARD || direction == GTK_DIR_TAB_BACKWARD)
     {
+        GtkWidget *content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
         GtkWidget *focus_widget = gtk_root_get_focus (gtk_widget_get_root (widget));
-        if (focus_widget != NULL && gtk_widget_is_ancestor (focus_widget, widget))
+        if (focus_widget != NULL && gtk_widget_is_ancestor (focus_widget, content_widget))
         {
             return FALSE;
         }
