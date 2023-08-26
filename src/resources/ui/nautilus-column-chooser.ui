@@ -9,9 +9,8 @@
     <property name="height-request">294</property>
     <property name="destroy-with-parent">True</property>
     <property name="content">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <child>
+      <object class="AdwToolbarView">
+        <child type="top">
           <object class="GtkHeaderBar">
             <child type="title">
               <object class="AdwWindowTitle" id="window_title">
@@ -20,7 +19,7 @@
             </child>
           </object>
         </child>
-        <child>
+        <property name="content">
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <child>
@@ -47,30 +46,27 @@
                 </property>
               </object>
             </child>
+          </object>
+        </property>
+        <child type="bottom">
+          <object class="GtkListBox" id="use_custom_box">
+            <property name="selection-mode">none</property>
             <child>
-              <object class="GtkSeparator"/>
-            </child>
-            <child>
-              <object class="GtkListBox" id="use_custom_box">
-                <property name="selection-mode">none</property>
+              <object class="AdwActionRow">
+                <property name="hexpand">true</property>
+                <property name="selectable">false</property>
+                <property name="activatable_widget">use_custom_switch</property>
+                <property name="title" translatable="yes">Only Apply to Current Folder</property>
                 <child>
-                  <object class="AdwActionRow">
-                    <property name="hexpand">true</property>
-                    <property name="selectable">false</property>
-                    <property name="activatable_widget">use_custom_switch</property>
-                    <property name="title" translatable="yes">Only Apply to Current Folder</property>
-                    <child>
-                      <object class="GtkSwitch" id="use_custom_switch">
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
+                  <object class="GtkSwitch" id="use_custom_switch">
+                    <property name="valign">center</property>
                   </object>
                 </child>
-                <style>
-                  <class name="background"/>
-                </style>
               </object>
             </child>
+            <style>
+              <class name="background"/>
+            </style>
           </object>
         </child>
       </object>
