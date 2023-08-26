@@ -205,7 +205,6 @@ typedef struct
     /* Containers with FileAndDirectory* elements */
     GList *new_added_files;
     GList *new_changed_files;
-    GHashTable *non_ready_files;
     GList *old_added_files;
     GList *old_changed_files;
 
@@ -1249,27 +1248,6 @@ file_and_directory_free (gpointer data)
 }
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (FileAndDirectory, file_and_directory_free)
-
-static gboolean
-file_and_directory_equal (gconstpointer v1,
-                          gconstpointer v2)
-{
-    const FileAndDirectory *fad1, *fad2;
-    fad1 = v1;
-    fad2 = v2;
-
-    return (fad1->file == fad2->file &&
-            fad1->directory == fad2->directory);
-}
-
-static guint
-file_and_directory_hash  (gconstpointer v)
-{
-    const FileAndDirectory *fad;
-
-    fad = v;
-    return GPOINTER_TO_UINT (fad->file) ^ GPOINTER_TO_UINT (fad->directory);
-}
 
 static ScriptLaunchParameters *
 script_launch_parameters_new (NautilusFile      *file,
@@ -3524,7 +3502,6 @@ nautilus_files_view_finalize (GObject *object)
 
     g_free (priv->toolbar_menu_sections);
 
-    g_hash_table_destroy (priv->non_ready_files);
     g_hash_table_destroy (priv->pending_reveal);
 
     g_clear_object (&priv->clipboard_cancellable);
@@ -4283,15 +4260,7 @@ still_should_show_file (NautilusFilesView *view,
            view_file_still_belongs (view, fad);
 }
 
-static gboolean
-ready_to_load (NautilusFile *file)
-{
-    return nautilus_file_check_if_ready (file,
-                                         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
-}
-
 /* Go through all the new added and changed files.
- * Put any that are not ready to load in the non_ready_files hash table.
  * Add all the rest to the old_added_files and old_changed_files lists.
  * Sort the old_*_files lists if anything was added to them.
  */
@@ -4303,77 +4272,37 @@ process_new_files (NautilusFilesView *view)
     g_autolist (FileAndDirectory) new_changed_files = NULL;
     GList *old_added_files;
     GList *old_changed_files;
-    GHashTable *non_ready_files;
     GList *node, *next;
     FileAndDirectory *pending;
-    gboolean in_non_ready;
 
     priv = nautilus_files_view_get_instance_private (view);
 
     new_added_files = g_steal_pointer (&priv->new_added_files);
     new_changed_files = g_steal_pointer (&priv->new_changed_files);
 
-    non_ready_files = priv->non_ready_files;
-
     old_added_files = priv->old_added_files;
     old_changed_files = priv->old_changed_files;
 
-    /* Newly added files go into the old_added_files list if they're
-     * ready, and into the hash table if they're not.
-     */
+    /* Newly added files go into the old_added_files list if they should be shown */
     for (node = new_added_files; node != NULL; node = next)
     {
         next = node->next;
         pending = (FileAndDirectory *) node->data;
-        in_non_ready = g_hash_table_contains (non_ready_files, pending);
         if (nautilus_files_view_should_show_file (view, pending->file))
         {
-            if (ready_to_load (pending->file))
-            {
-                if (in_non_ready)
-                {
-                    g_hash_table_remove (non_ready_files, pending);
-                }
-                new_added_files = g_list_delete_link (new_added_files, node);
-                old_added_files = g_list_prepend (old_added_files, pending);
-            }
-            else
-            {
-                if (!in_non_ready)
-                {
-                    new_added_files = g_list_delete_link (new_added_files, node);
-                    g_hash_table_add (non_ready_files, pending);
-                }
-            }
+            new_added_files = g_list_delete_link (new_added_files, node);
+            old_added_files = g_list_prepend (old_added_files, pending);
         }
     }
 
-    /* Newly changed files go into the old_added_files list if they're ready
-     * and were seen non-ready in the past, into the old_changed_files list
-     * if they are read and were not seen non-ready in the past, and into
-     * the hash table if they're not ready.
-     */
+    /* Newly changed files go into the old_changed_files list */
     for (node = new_changed_files; node != NULL; node = next)
     {
         next = node->next;
         pending = (FileAndDirectory *) node->data;
-        if (!still_should_show_file (view, pending) || ready_to_load (pending->file))
-        {
-            if (g_hash_table_contains (non_ready_files, pending))
-            {
-                g_hash_table_remove (non_ready_files, pending);
-                if (still_should_show_file (view, pending))
-                {
-                    new_changed_files = g_list_delete_link (new_changed_files, node);
-                    old_added_files = g_list_prepend (old_added_files, pending);
-                }
-            }
-            else
-            {
-                new_changed_files = g_list_delete_link (new_changed_files, node);
-                old_changed_files = g_list_prepend (old_changed_files, pending);
-            }
-        }
+
+        new_changed_files = g_list_delete_link (new_changed_files, node);
+        old_changed_files = g_list_prepend (old_changed_files, pending);
     }
 
     if (old_added_files != priv->old_added_files)
@@ -4684,9 +4613,8 @@ display_pending_files (NautilusFilesView *view)
         nautilus_files_view_select_first (view);
     }
 
-    if (priv->directory != NULL
-        && nautilus_directory_are_all_files_seen (priv->directory)
-        && g_hash_table_size (priv->non_ready_files) == 0)
+    if (priv->model != NULL
+        && nautilus_directory_are_all_files_seen (priv->directory))
     {
         done_loading (view, TRUE);
     }
@@ -5015,23 +4943,17 @@ done_loading_callback (NautilusDirectory *directory,
                        gpointer           callback_data)
 {
     NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
 
     view = NAUTILUS_FILES_VIEW (callback_data);
-    priv = nautilus_files_view_get_instance_private (view);
 
-    process_new_files (view);
-    if (g_hash_table_size (priv->non_ready_files) == 0)
-    {
-        /* Unschedule a pending update and schedule a new one with the minimal
-         * update interval. This gives the view a short chance at gathering the
-         * (cached) deep counts.
-         */
-        unschedule_display_of_pending_files (view);
-        schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
+    /* Unschedule a pending update and schedule a new one with the minimal
+     * update interval. This gives the view a short chance at gathering the
+     * (cached) deep counts.
+     */
+    unschedule_display_of_pending_files (view);
+    schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
 
-        remove_loading_floating_bar (view);
-    }
+    remove_loading_floating_bar (view);
 }
 
 static void
@@ -9262,8 +9184,6 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
     g_list_free_full (priv->new_changed_files, file_and_directory_free);
     priv->new_changed_files = NULL;
 
-    g_hash_table_remove_all (priv->non_ready_files);
-
     g_list_free_full (priv->old_added_files, file_and_directory_free);
     priv->old_added_files = NULL;
 
@@ -10057,12 +9977,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_signal_connect_object (gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window)),
                              "value-changed",
                              G_CALLBACK (update_extend_search_revealer), view, G_CONNECT_SWAPPED);
-
-    priv->non_ready_files =
-        g_hash_table_new_full (file_and_directory_hash,
-                               file_and_directory_equal,
-                               file_and_directory_free,
-                               NULL);
 
     priv->pending_reveal = g_hash_table_new (NULL, NULL);
 
