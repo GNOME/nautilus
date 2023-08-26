@@ -1216,10 +1216,11 @@ real_set_selection (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GList) selection_items = NULL;
+    g_autoptr (GList) files_to_find = g_list_copy (selection);
     g_autoptr (GtkBitset) update_set = NULL;
     g_autoptr (GtkBitset) new_selection_set = NULL;
     g_autoptr (GtkBitset) old_selection_set = NULL;
+    guint n_items;
 
     old_selection_set = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
     /* We aren't allowed to modify the actual selection bitset */
@@ -1227,18 +1228,37 @@ real_set_selection (NautilusFilesView *files_view,
     new_selection_set = gtk_bitset_new_empty ();
 
     /* Convert file list into set of model indices */
-    selection_items = nautilus_view_model_find_items_for_files (priv->model, selection);
-    for (GList *l = selection_items; l != NULL; l = l->next)
+    n_items = g_list_model_get_n_items (G_LIST_MODEL (priv->model));
+    for (guint position = 0; position < n_items; position++)
     {
-        gtk_bitset_add (new_selection_set,
-                        nautilus_view_model_get_index (priv->model, l->data));
+        g_autoptr (NautilusViewItem) item = get_view_item (G_LIST_MODEL (priv->model), position);
+
+        GList *link = g_list_find (files_to_find, nautilus_view_item_get_file (item));
+        if (link != NULL)
+        {
+            /* Found item to select */
+            gtk_bitset_add (new_selection_set, position);
+
+            /* Remove found file from the list of files yet to find. */
+            files_to_find = g_list_delete_link (files_to_find, link);
+            if (files_to_find == NULL)
+            {
+                /* We've matched everything... */
+                break;
+            }
+        }
     }
+    /* ...have we not? */
+    g_warn_if_fail (files_to_find == NULL);
 
     /* Set focus on the first selected row. */
-    if (selection_items != NULL)
+    if (!gtk_bitset_is_empty (new_selection_set))
     {
-        NautilusViewItem *item = selection_items->data;
-        set_focus_item (self, item);
+        g_autoptr (NautilusViewItem) first_selected_item = NULL;
+        guint first_position = gtk_bitset_get_nth (new_selection_set, 0);
+
+        first_selected_item = get_view_item (G_LIST_MODEL (priv->model), first_position);
+        set_focus_item (self, first_selected_item);
     }
 
     gtk_bitset_union (update_set, new_selection_set);
