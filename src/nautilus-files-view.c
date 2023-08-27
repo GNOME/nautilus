@@ -27,7 +27,6 @@
 #include "nautilus-files-view.h"
 
 #include <eel/eel-stock-dialogs.h>
-#include <fcntl.h>
 #include <gdesktop-enums.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
@@ -41,8 +40,6 @@
 #include <math.h>
 #include <nautilus-extension.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include "nautilus-application.h"
 #include "nautilus-app-chooser.h"
@@ -3033,12 +3030,8 @@ show_hidden_files_changed_callback (gpointer callback_data)
 static gboolean
 set_up_scripts_directory_global (void)
 {
-    g_autofree gchar *old_scripts_directory_path = NULL;
-    g_autoptr (GFile) old_scripts_directory = NULL;
     g_autofree gchar *scripts_directory_path = NULL;
     g_autoptr (GFile) scripts_directory = NULL;
-    const char *override;
-    GFileType file_type;
     g_autoptr (GError) error = NULL;
 
     if (scripts_directory_uri != NULL)
@@ -3047,78 +3040,7 @@ set_up_scripts_directory_global (void)
     }
 
     scripts_directory_path = nautilus_get_scripts_directory_path ();
-
-    override = g_getenv ("GNOME22_USER_DIR");
-
-    if (override)
-    {
-        old_scripts_directory_path = g_build_filename (override,
-                                                       "nautilus-scripts",
-                                                       NULL);
-    }
-    else
-    {
-        old_scripts_directory_path = g_build_filename (g_get_home_dir (),
-                                                       ".gnome2",
-                                                       "nautilus-scripts",
-                                                       NULL);
-    }
-
-    old_scripts_directory = g_file_new_for_path (old_scripts_directory_path);
     scripts_directory = g_file_new_for_path (scripts_directory_path);
-
-    file_type = g_file_query_file_type (old_scripts_directory,
-                                        G_FILE_QUERY_INFO_NONE,
-                                        NULL);
-
-    if (file_type == G_FILE_TYPE_DIRECTORY &&
-        !g_file_query_exists (scripts_directory, NULL))
-    {
-        g_autoptr (GFile) updated = NULL;
-        const char *message;
-
-        /* test if we already attempted to migrate first */
-        updated = g_file_get_child (old_scripts_directory, "DEPRECATED-DIRECTORY");
-        message = _("Nautilus 3.6 deprecated this directory and tried migrating "
-                    "this configuration to ~/.local/share/nautilus");
-        if (!g_file_query_exists (updated, NULL))
-        {
-            g_autoptr (GFile) parent = NULL;
-
-            parent = g_file_get_parent (scripts_directory);
-            g_file_make_directory_with_parents (parent, NULL, &error);
-
-            if (error == NULL ||
-                g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
-            {
-                g_clear_error (&error);
-
-                g_file_set_attribute_uint32 (parent,
-                                             G_FILE_ATTRIBUTE_UNIX_MODE,
-                                             S_IRWXU,
-                                             G_FILE_QUERY_INFO_NONE,
-                                             NULL, NULL);
-
-                g_file_move (old_scripts_directory,
-                             scripts_directory,
-                             G_FILE_COPY_NONE,
-                             NULL, NULL, NULL,
-                             &error);
-
-                if (error == NULL)
-                {
-                    g_file_replace_contents (updated,
-                                             message, strlen (message),
-                                             NULL,
-                                             FALSE,
-                                             G_FILE_CREATE_PRIVATE,
-                                             NULL, NULL, NULL);
-                }
-            }
-
-            g_clear_error (&error);
-        }
-    }
 
     g_file_make_directory_with_parents (scripts_directory, NULL, &error);
 
