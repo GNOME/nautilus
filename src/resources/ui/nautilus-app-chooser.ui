@@ -73,17 +73,10 @@
                               <class name="background"/>
                             </style>
                             <child>
-                              <object class="AdwActionRow" id="set_default_row">
+                              <object class="AdwSwitchRow" id="set_default_row">
                                 <property name="hexpand">true</property>
                                 <property name="selectable">false</property>
-                                <property name="activatable-widget">set_as_default_switch</property>
                                 <property name="title" translatable="yes">Always use for this file type</property>
-                                <child>
-                                  <object class="GtkSwitch" id="set_as_default_switch">
-                                    <property name="halign">end</property>
-                                    <property name="valign">center</property>
-                                  </object>
-                                </child>
                               </object>
                             </child>
                           </object>

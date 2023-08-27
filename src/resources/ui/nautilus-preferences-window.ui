@@ -12,32 +12,20 @@
             <property name="title" translatable="yes">General</property>
             <property name="visible">True</property>
             <child>
-              <object class="AdwActionRow">
-                <property name="activatable_widget">sort_folders_first_switch</property>
+              <object class="AdwSwitchRow" id="sort_folders_first_switch">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Sort _Folders Before Files</property>
                 <property name="title_lines">0</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
-                <child>
-                  <object class="GtkSwitch" id="sort_folders_first_switch">
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
             <child>
-              <object class="AdwActionRow">
-                <property name="activatable_widget">use_tree_view_switch</property>
+              <object class="AdwSwitchRow" id="use_tree_view_switch">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">_Expandable Folders in List View</property>
                 <property name="title_lines">0</property>
                 <property name="use_underline">True</property>
-                <child>
-                  <object class="GtkSwitch" id="use_tree_view_switch">
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
             <child>
@@ -57,33 +45,21 @@
             <property name="description" translatable="yes">Show more actions in the menus. Keyboard shortcuts can be used even if the actions are not shown.</property>
             <property name="visible">True</property>
             <child>
-              <object class="AdwActionRow">
-                <property name="activatable_widget">show_create_link_switch</property>
+              <object class="AdwSwitchRow" id="show_create_link_switch">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">Create _Link</property>
                 <property name="title_lines">0</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
-                <child>
-                  <object class="GtkSwitch" id="show_create_link_switch">
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
             <child>
-              <object class="AdwActionRow">
-                <property name="activatable_widget">show_delete_permanently_switch</property>
+              <object class="AdwSwitchRow" id="show_delete_permanently_switch">
                 <property name="subtitle_lines">0</property>
                 <property name="title" translatable="yes">_Delete Permanently</property>
                 <property name="title_lines">0</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
-                <child>
-                  <object class="GtkSwitch" id="show_delete_permanently_switch">
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>

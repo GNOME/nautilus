@@ -52,16 +52,10 @@
           <object class="GtkListBox" id="use_custom_box">
             <property name="selection-mode">none</property>
             <child>
-              <object class="AdwActionRow">
+              <object class="AdwSwitchRow" id="use_custom_switch">
                 <property name="hexpand">true</property>
                 <property name="selectable">false</property>
-                <property name="activatable_widget">use_custom_switch</property>
                 <property name="title" translatable="yes">Only Apply to Current Folder</property>
-                <child>
-                  <object class="GtkSwitch" id="use_custom_switch">
-                    <property name="valign">center</property>
-                  </object>
-                </child>
               </object>
             </child>
             <style>

@@ -25,7 +25,6 @@ struct _NautilusAppChooser
     GtkWidget *app_chooser_widget_box;
     GtkWidget *label_description;
     GtkWidget *set_default_row;
-    GtkWidget *set_as_default_switch;
     GtkWidget *set_default_box;
 
     GtkWidget *app_chooser_widget;
@@ -56,9 +55,9 @@ open_cb (NautilusAppChooser *self)
     }
 
     /* The switch is insensitive if the selected app is already default */
-    if (gtk_widget_get_sensitive (self->set_as_default_switch))
+    if (gtk_widget_get_sensitive (self->set_default_row))
     {
-        set_new_default = gtk_switch_get_active (GTK_SWITCH (self->set_as_default_switch));
+        set_new_default = adw_switch_row_get_active (ADW_SWITCH_ROW (self->set_default_row));
     }
 
     if (set_new_default)
@@ -105,8 +104,8 @@ on_application_selected (GtkAppChooserWidget *widget,
     default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
     is_default = default_app != NULL && g_app_info_equal (info, default_app);
 
-    gtk_switch_set_state (GTK_SWITCH (self->set_as_default_switch), is_default);
-    gtk_widget_set_sensitive (GTK_WIDGET (self->set_as_default_switch), !is_default);
+    adw_switch_row_set_active (ADW_SWITCH_ROW (self->set_default_row), is_default);
+    gtk_widget_set_sensitive (GTK_WIDGET (self->set_default_row), !is_default);
 }
 
 static void
@@ -266,7 +265,6 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-app-chooser.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, app_chooser_widget_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_as_default_switch);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_description);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_box);

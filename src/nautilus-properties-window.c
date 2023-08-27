@@ -158,8 +158,7 @@ struct _NautilusPropertiesWindow
     AdwComboRow *others_folder_access_row;
     AdwComboRow *others_file_access_row;
 
-    AdwComboRow *execution_row;
-    GtkSwitch *execution_switch;
+    AdwSwitchRow *execution_row;
 
     GtkWidget *security_context_list_box;
     GtkWidget *security_context_value_label;
@@ -2915,9 +2914,7 @@ execution_bit_changed (NautilusPropertiesWindow *self,
     const guint32 permission_mask = UNIX_PERM_USER_EXEC | UNIX_PERM_GROUP_EXEC | UNIX_PERM_OTHER_EXEC;
     const FilterType filter_type = FILES_ONLY;
 
-    /* if activated from switch, switch state is already toggled, thus invert value via XOR. */
-    gboolean active = gtk_switch_get_state (self->execution_switch) ^ GTK_IS_SWITCH (widget);
-    gboolean set_executable = !active;
+    gboolean set_executable = adw_switch_row_get_active (self->execution_row);
 
     update_permissions (self,
                         set_executable ? permission_mask : 0,
@@ -2952,14 +2949,14 @@ update_execution_row (GtkWidget         *row,
     }
     else
     {
-        g_signal_handlers_block_by_func (self->execution_switch,
+        g_signal_handlers_block_by_func (self->execution_row,
                                          G_CALLBACK (execution_bit_changed),
                                          self);
 
-        gtk_switch_set_active (self->execution_switch,
-                               target_perm->file_exec_permissions == PERMISSION_EXEC);
+        adw_switch_row_set_active (self->execution_row,
+                                   target_perm->file_exec_permissions == PERMISSION_EXEC);
 
-        g_signal_handlers_unblock_by_func (self->execution_switch,
+        g_signal_handlers_unblock_by_func (self->execution_row,
                                            G_CALLBACK (execution_bit_changed),
                                            self);
 
@@ -3271,10 +3268,7 @@ create_simple_permissions (NautilusPropertiesWindow *self)
     }
 
     /* Connect execution bit switch, independent of whether it will be visible or not. */
-    g_signal_connect_swapped (self->execution_row, "activated",
-                              G_CALLBACK (execution_bit_changed),
-                              self);
-    g_signal_connect_swapped (self->execution_switch, "notify::active",
+    g_signal_connect_swapped (self->execution_row, "notify::active",
                               G_CALLBACK (execution_bit_changed),
                               self);
 }
@@ -4348,7 +4342,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_folder_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_switch);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
