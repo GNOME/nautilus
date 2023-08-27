@@ -224,19 +224,8 @@ real_scroll_to_item (NautilusListBase *list_base_view,
                      guint             position)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
-    GtkWidget *child;
 
-    child = gtk_widget_get_last_child (GTK_WIDGET (self->view_ui));
-
-    while (child != NULL && !GTK_IS_LIST_VIEW (child))
-    {
-        child = gtk_widget_get_prev_sibling (child);
-    }
-
-    if (child != NULL)
-    {
-        gtk_widget_activate_action (child, "list.scroll-to-item", "u", position);
-    }
+    gtk_column_view_scroll_to (self->view_ui, position, NULL, GTK_LIST_SCROLL_NONE, NULL);
 }
 
 static gint

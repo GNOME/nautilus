@@ -22,7 +22,7 @@ struct _NautilusListBaseClass
         guint      (*get_icon_size)  (NautilusListBase *self);
         GtkWidget *(*get_view_ui)    (NautilusListBase *self);
         void       (*scroll_to_item) (NautilusListBase *self,
-                                      guint                   position);
+                                      guint             position);
 };
 
 void    nautilus_list_base_set_focus_item          (NautilusListBase *self,

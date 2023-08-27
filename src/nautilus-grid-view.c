@@ -347,10 +347,7 @@ real_scroll_to_item (NautilusListBase *list_base_view,
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base_view);
 
-    gtk_widget_activate_action (GTK_WIDGET (self->view_ui),
-                                "list.scroll-to-item",
-                                "u",
-                                position);
+    gtk_grid_view_scroll_to (self->view_ui, position, GTK_LIST_SCROLL_NONE, NULL);
 }
 
 static void
