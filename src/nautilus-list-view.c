@@ -896,12 +896,12 @@ tree_expander_shortcut_cb (GtkWidget *widget,
 
         if (parent != NULL)
         {
-            g_autoptr (NautilusViewItem) parent_item = NULL;
+            guint parent_position = gtk_tree_list_row_get_position (parent);
 
-            parent_item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (parent));
-            g_return_val_if_fail (parent_item != NULL, FALSE);
+            g_return_val_if_fail (parent_position != GTK_INVALID_LIST_POSITION, FALSE);
 
-            nautilus_list_base_set_focus_item (NAUTILUS_LIST_BASE (self), parent_item);
+            gtk_column_view_scroll_to (self->view_ui, parent_position, NULL,
+                                       GTK_LIST_SCROLL_FOCUS | GTK_LIST_SCROLL_SELECT, NULL);
         }
     }
     else
