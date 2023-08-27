@@ -21,11 +21,15 @@ struct _NautilusListBaseClass
 
         guint      (*get_icon_size)  (NautilusListBase *self);
         GtkWidget *(*get_view_ui)    (NautilusListBase *self);
-        void       (*scroll_to_item) (NautilusListBase *self,
-                                      guint             position);
+        void       (*scroll_to)      (NautilusListBase   *self,
+                                      guint               position,
+                                      GtkListScrollFlags  flags,
+                                      GtkScrollInfo      *scroll);
 };
 
-void    nautilus_list_base_set_focus_item          (NautilusListBase *self,
-                                                    NautilusViewItem *item);
+void nautilus_list_base_set_cursor (NautilusListBase *self,
+                                    guint             position,
+                                    gboolean          select,
+                                    gboolean          scroll_to);
 
 G_END_DECLS

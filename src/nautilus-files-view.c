@@ -794,11 +794,12 @@ nautilus_files_view_call_set_selection (NautilusFilesView *self,
     /* Set focus on the first selected row. */
     if (!gtk_bitset_is_empty (new_selection_set))
     {
-        g_autoptr (NautilusViewItem) first_selected_item = NULL;
         guint first_position = gtk_bitset_get_nth (new_selection_set, 0);
 
-        first_selected_item = get_view_item (G_LIST_MODEL (priv->model), first_position);
-        nautilus_list_base_set_focus_item (NAUTILUS_LIST_BASE (self), first_selected_item);
+        /* Make the view also select the first one, to fix the bug reported in
+         * https://gitlab.gnome.org/GNOME/nautilus/-/issues/2294 . See also
+         * GTK ticket: https://gitlab.gnome.org/GNOME/gtk/-/issues/5485 */
+        nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), first_position, TRUE, FALSE);
     }
 
     gtk_bitset_union (update_set, new_selection_set);

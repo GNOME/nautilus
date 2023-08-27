@@ -220,12 +220,14 @@ apply_columns_settings (NautilusListView  *self,
 }
 
 static void
-real_scroll_to_item (NautilusListBase *list_base_view,
-                     guint             position)
+real_scroll_to (NautilusListBase   *list_base_view,
+                guint               position,
+                GtkListScrollFlags  flags,
+                GtkScrollInfo      *scroll)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
 
-    gtk_column_view_scroll_to (self->view_ui, position, NULL, GTK_LIST_SCROLL_NONE, NULL);
+    gtk_column_view_scroll_to (self->view_ui, position, NULL, flags, scroll);
 }
 
 static gint
@@ -1288,7 +1290,7 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
 
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_ui = real_get_view_ui;
-    list_base_view_class->scroll_to_item = real_scroll_to_item;
+    list_base_view_class->scroll_to = real_scroll_to;
 }
 
 NautilusListView *

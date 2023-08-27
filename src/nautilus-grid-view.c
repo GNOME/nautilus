@@ -342,12 +342,14 @@ real_get_view_ui (NautilusListBase *list_base_view)
 }
 
 static void
-real_scroll_to_item (NautilusListBase *list_base_view,
-                     guint             position)
+real_scroll_to (NautilusListBase   *list_base_view,
+                guint               position,
+                GtkListScrollFlags  flags,
+                GtkScrollInfo      *scroll)
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base_view);
 
-    gtk_grid_view_scroll_to (self->view_ui, position, GTK_LIST_SCROLL_NONE, NULL);
+    gtk_grid_view_scroll_to (self->view_ui, position, flags, scroll);
 }
 
 static void
@@ -571,7 +573,7 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
 
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_ui = real_get_view_ui;
-    list_base_view_class->scroll_to_item = real_scroll_to_item;
+    list_base_view_class->scroll_to = real_scroll_to;
 }
 
 static void

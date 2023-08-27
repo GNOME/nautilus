@@ -80,42 +80,36 @@ get_view_item (GListModel *model,
     return NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
 }
 
-void
-nautilus_list_base_set_focus_item (NautilusListBase *self,
-                                   NautilusViewItem *item)
+static inline void
+internal_scroll_to (NautilusListBase   *self,
+                    guint               position,
+                    GtkListScrollFlags  flags,
+                    GtkScrollInfo      *scroll)
 {
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    GtkWidget *item_widget = nautilus_view_item_get_item_ui (item);
-    GtkWidget *parent;
-
-    if (item_widget == NULL)
-    {
-        /* We can't set the focus if the item isn't created yet. Return early to prevent a crash */
-        return;
-    }
-
-    parent = gtk_widget_get_parent (item_widget);
-
-    if (!gtk_widget_grab_focus (parent))
-    {
-        /* In GtkColumnView, the parent is a cell; its parent is the row. */
-        gtk_widget_grab_focus (gtk_widget_get_parent (parent));
-    }
-
-    /* HACK: Grabbing focus is not enough for the listbase item tracker to
-     * acknowledge it. So, poke the internal actions to fix the bug reported
-     * in https://gitlab.gnome.org/GNOME/nautilus/-/issues/2294 */
-    gtk_widget_activate_action (item_widget,
-                                "list.select-item",
-                                "(ubb)",
-                                nautilus_view_model_get_index (priv->model, item),
-                                FALSE, FALSE);
+    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->scroll_to (self, position, flags, scroll);
 }
 
 static guint
 nautilus_list_base_get_icon_size (NautilusListBase *self)
 {
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_icon_size (self);
+}
+
+void
+nautilus_list_base_set_cursor (NautilusListBase *self,
+                               guint             position,
+                               gboolean          select,
+                               gboolean          scroll_to)
+{
+    GtkScrollInfo *info = gtk_scroll_info_new ();
+    GtkListScrollFlags flags = (select ?
+                                GTK_LIST_SCROLL_FOCUS | GTK_LIST_SCROLL_SELECT :
+                                GTK_LIST_SCROLL_FOCUS);
+
+    gtk_scroll_info_set_enable_vertical (info, scroll_to);
+    gtk_scroll_info_set_enable_horizontal (info, scroll_to);
+
+    internal_scroll_to (self, position, flags, info);
 }
 
 /* GtkListBase changes selection only with the primary button, and only after
@@ -133,8 +127,7 @@ select_single_item_if_not_selected (NautilusListBase *self,
     position = nautilus_view_model_get_index (model, item);
     if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), position))
     {
-        gtk_selection_model_select_item (GTK_SELECTION_MODEL (model), position, TRUE);
-        nautilus_list_base_set_focus_item (self, item);
+        nautilus_list_base_set_cursor (self, position, TRUE, FALSE);
     }
 }
 
@@ -851,7 +844,7 @@ static void
 nautilus_list_base_scroll_to_item (NautilusListBase *self,
                                    guint             position)
 {
-    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->scroll_to_item (self, position);
+    internal_scroll_to (self, position, GTK_LIST_SCROLL_NONE, NULL);
 }
 
 static GtkWidget *
@@ -1242,7 +1235,6 @@ real_preview_selection_event (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (NautilusViewItem) item = NULL;
     guint i;
     gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL);
 
@@ -1267,8 +1259,7 @@ real_preview_selection_event (NautilusFilesView *files_view,
         }
     }
 
-    item = get_view_item (G_LIST_MODEL (priv->model), i);
-    nautilus_list_base_set_focus_item (self, item);
+    nautilus_list_base_set_cursor (self, i, TRUE, TRUE);
 }
 
 static void
