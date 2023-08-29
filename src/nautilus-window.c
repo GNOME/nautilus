@@ -848,6 +848,7 @@ open_location_cb (NautilusWindow             *window,
 {
     NautilusOpenFlags flags;
     NautilusApplication *application;
+    AdwOverlaySplitView *split_view = ADW_OVERLAY_SPLIT_VIEW (window->split_view);
 
     switch (open_flags)
     {
@@ -878,6 +879,12 @@ open_location_cb (NautilusWindow             *window,
      */
     nautilus_application_open_location_full (application, location, flags,
                                              NULL, window, NULL);
+
+    if (adw_overlay_split_view_get_collapsed (split_view) &&
+        open_flags == NAUTILUS_GTK_PLACES_OPEN_NORMAL)
+    {
+        adw_overlay_split_view_set_show_sidebar (split_view, FALSE);
+    }
 }
 
 /* Callback used when the places sidebar needs us to present an error message */
