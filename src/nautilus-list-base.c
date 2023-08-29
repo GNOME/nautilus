@@ -1090,6 +1090,29 @@ real_file_changed (NautilusFilesView *files_view,
         real_add_files (files_view, &(GList){file, NULL});
     }
 }
+static gboolean
+is_ancestor_selected (GtkTreeListRow *row,
+                      GtkBitset      *selection)
+{
+    g_autoptr (GtkTreeListRow) parent = gtk_tree_list_row_get_parent (row);
+    GtkTreeListRow *grandparent;
+
+    /* Walk up the tree looking for a selected ancestor. */
+    while (parent != NULL)
+    {
+        guint parent_position = gtk_tree_list_row_get_position (parent);
+        if (gtk_bitset_contains (selection, parent_position))
+        {
+            return TRUE;
+        }
+
+        grandparent = gtk_tree_list_row_get_parent (parent);
+        g_object_unref (parent);
+        parent = grandparent;
+    }
+
+    return FALSE;
+}
 
 static GList *
 get_selection (NautilusFilesView *files_view,
@@ -1097,7 +1120,6 @@ get_selection (NautilusFilesView *files_view,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusFile *view_file = nautilus_files_view_get_directory_as_file (files_view);
     g_autoptr (GtkBitset) selection = NULL;
     GtkBitsetIter iter;
     guint i;
@@ -1109,27 +1131,22 @@ get_selection (NautilusFilesView *files_view,
          gtk_bitset_iter_is_valid (&iter);
          gtk_bitset_iter_previous (&iter, &i))
     {
+        g_autoptr (GtkTreeListRow) row = NULL;
         g_autoptr (NautilusViewItem) item = NULL;
-        g_autoptr (NautilusFile) parent = NULL;
         NautilusFile *file;
 
-        item = get_view_item (G_LIST_MODEL (priv->model), i);
-        file = nautilus_view_item_get_file (item);
-        parent = nautilus_file_get_parent (file);
+        row = GTK_TREE_LIST_ROW (g_list_model_get_item (G_LIST_MODEL (priv->model), i));
 
-        if (for_file_transfer && view_file != parent)
+        if (for_file_transfer && is_ancestor_selected (row, selection))
         {
-            /* If the parent is already selected don't include the child. */
-            NautilusViewItem *parent_item;
-            guint parent_pos;
-
-            parent_item = nautilus_view_model_find_item_for_file (priv->model, parent);
-            parent_pos = nautilus_view_model_get_index (priv->model, parent_item);
-            if (gtk_selection_model_is_selected (GTK_SELECTION_MODEL (priv->model), parent_pos))
-            {
-                continue;
-            }
+            /* If an ancestor is already selected, don't include its descendants
+             * in the selection of files to copy/move. */
+            continue;
         }
+
+        item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
+        file = nautilus_view_item_get_file (item);
+
         selected_files = g_list_prepend (selected_files, g_object_ref (file));
     }
 
