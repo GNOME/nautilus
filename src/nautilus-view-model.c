@@ -551,6 +551,15 @@ nautilus_view_model_add_items (NautilusViewModel *self,
     }
 }
 
+/**
+ * nautilus_view_model_get_index:
+ *
+ * @item: The item to find.
+ *
+ * Iterate the model linearly to find the index of @item. Avoid using in a loop.
+ *
+ * Returns: The position of the item in the list, or G_MAXUINT if not found.
+ */
 guint
 nautilus_view_model_get_index (NautilusViewModel *self,
                                NautilusViewItem  *item)
