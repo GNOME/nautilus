@@ -22,8 +22,6 @@
 #include "nautilus-file-name-widget-controller.h"
 #include "nautilus-file-utilities.h"
 
-#define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
-
 typedef struct
 {
     GtkWidget *error_revealer;
@@ -33,7 +31,6 @@ typedef struct
     NautilusDirectory *containing_directory;
 
     gboolean duplicated_is_folder;
-    gint duplicated_label_timeout_id;
 } NautilusFileNameWidgetControllerPrivate;
 
 enum
@@ -174,7 +171,7 @@ real_ignore_existing_file (NautilusFileNameWidgetController *self,
     return FALSE;
 }
 
-static gboolean
+static void
 duplicated_file_label_show (NautilusFileNameWidgetController *self)
 {
     NautilusFileNameWidgetControllerPrivate *priv;
@@ -193,10 +190,6 @@ duplicated_file_label_show (NautilusFileNameWidgetController *self)
 
     gtk_revealer_set_reveal_child (GTK_REVEALER (priv->error_revealer),
                                    TRUE);
-
-    priv->duplicated_label_timeout_id = 0;
-
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -228,12 +221,6 @@ file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *
 
     gtk_widget_set_sensitive (priv->activate_button, *valid_name && !*duplicated_name);
 
-    if (priv->duplicated_label_timeout_id != 0)
-    {
-        g_source_remove (priv->duplicated_label_timeout_id);
-        priv->duplicated_label_timeout_id = 0;
-    }
-
     if (*duplicated_name)
     {
         priv->duplicated_is_folder = nautilus_file_is_directory (existing_file);
@@ -251,12 +238,10 @@ file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *
                                                              gpointer           user_data)
 {
     NautilusFileNameWidgetController *controller;
-    NautilusFileNameWidgetControllerPrivate *priv;
     gboolean duplicated_name;
     gboolean valid_name;
 
     controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
-    priv = nautilus_file_name_widget_controller_get_instance_private (controller);
 
     file_name_widget_controller_process_new_name (controller,
                                                   &duplicated_name,
@@ -268,9 +253,7 @@ file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *
      * we are renaming also don't report as a duplicated */
     if (duplicated_name && valid_name)
     {
-        priv->duplicated_label_timeout_id = g_timeout_add (FILE_NAME_DUPLICATED_LABEL_TIMEOUT,
-                                                           (GSourceFunc) duplicated_file_label_show,
-                                                           controller);
+        duplicated_file_label_show (controller);
     }
 }
 
@@ -316,7 +299,6 @@ file_name_widget_controller_on_activate_directory_info_ready (NautilusDirectory 
          * error, not as a duplicated file) */
         if (duplicated_name && valid_name)
         {
-            /* Show it inmediatily since the user tried to trigger the action */
             duplicated_file_label_show (controller);
         }
     }
@@ -434,12 +416,6 @@ nautilus_file_name_widget_controller_finalize (GObject *object)
                                             file_name_widget_controller_on_activate_directory_info_ready,
                                             self);
         g_clear_object (&priv->containing_directory);
-    }
-
-    if (priv->duplicated_label_timeout_id > 0)
-    {
-        g_source_remove (priv->duplicated_label_timeout_id);
-        priv->duplicated_label_timeout_id = 0;
     }
 
     G_OBJECT_CLASS (nautilus_file_name_widget_controller_parent_class)->finalize (object);
