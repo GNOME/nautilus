@@ -186,6 +186,8 @@ libnautilus_sources = [
   'nautilus-file-utilities.h',
   'nautilus-file.c',
   'nautilus-file.h',
+  'nautilus-filename-message.h',
+  'nautilus-filename-message.c',
   'nautilus-filename-utilities.h',
   'nautilus-filename-utilities.c',
   'nautilus-global-preferences.c',
