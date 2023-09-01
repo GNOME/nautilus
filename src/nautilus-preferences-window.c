@@ -34,13 +34,13 @@
 
 /* bool preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET                       \
-        "sort_folders_first_switch"
+        "sort_folders_first_row"
 #define NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET                  \
-        "show_delete_permanently_switch"
+        "show_delete_permanently_row"
 #define NAUTILUS_PREFERENCES_DIALOG_CREATE_LINK_WIDGET                         \
-        "show_create_link_switch"
+        "show_create_link_row"
 #define NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET                  \
-        "use_tree_view_switch"
+        "use_tree_view_row"
 
 /* combo preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO                          \

@@ -43,7 +43,7 @@ struct _NautilusColumnChooser
     GtkWidget *window_title;
     GtkWidget *banner;
     GtkWidget *use_custom_box;
-    GtkWidget *use_custom_switch;
+    GtkWidget *use_custom_row;
 
     GMenuModel *row_button_menu;
     GActionGroup *action_group;
@@ -423,7 +423,7 @@ nautilus_column_chooser_close_request (GtkWindow *window)
     g_auto (GStrv) visible_columns = get_column_names (chooser, TRUE);
     gboolean has_custom;
 
-    has_custom = adw_switch_row_get_active (ADW_SWITCH_ROW (chooser->use_custom_switch));
+    has_custom = adw_switch_row_get_active (ADW_SWITCH_ROW (chooser->use_custom_row));
     if (has_custom)
     {
         nautilus_column_save_metadata (chooser->file, column_order, visible_columns);
@@ -485,7 +485,7 @@ use_default_clicked_callback (GtkWidget *button,
     set_column_order (chooser, default_order);
 
     gtk_widget_set_visible (chooser->use_custom_box, TRUE);
-    adw_switch_row_set_active (ADW_SWITCH_ROW (chooser->use_custom_switch), FALSE);
+    adw_switch_row_set_active (ADW_SWITCH_ROW (chooser->use_custom_row), FALSE);
     adw_banner_set_revealed (ADW_BANNER (chooser->banner), FALSE);
 
     list_changed (chooser);
@@ -547,7 +547,7 @@ nautilus_column_chooser_constructed (GObject *object)
                           (file_column_order != NULL && file_column_order[0] != NULL) ||
                           is_special_folder (chooser));
 
-    adw_switch_row_set_active (ADW_SWITCH_ROW (chooser->use_custom_switch), has_custom_columns);
+    adw_switch_row_set_active (ADW_SWITCH_ROW (chooser->use_custom_row), has_custom_columns);
     gtk_widget_set_visible (chooser->use_custom_box, !has_custom_columns);
     adw_banner_set_revealed (ADW_BANNER (chooser->banner), has_custom_columns);
 
@@ -596,7 +596,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, window_title);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, banner);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_switch);
+    gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_row);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, row_button_menu);
 
