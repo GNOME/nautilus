@@ -94,24 +94,6 @@ nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetCon
     }
 }
 
-static gboolean
-nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetController  *self,
-                                                    gchar                             *name,
-                                                    gchar                            **error_message)
-{
-    return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->name_is_valid (self,
-                                                                                 name,
-                                                                                 error_message);
-}
-
-static gboolean
-nautilus_file_name_widget_controller_ignore_existing_file (NautilusFileNameWidgetController *self,
-                                                           NautilusFile                     *existing_file)
-{
-    return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->ignore_existing_file (self,
-                                                                                        existing_file);
-}
-
 static gchar *
 real_get_new_name (NautilusFileNameWidgetController *self)
 {
@@ -122,139 +104,12 @@ real_get_new_name (NautilusFileNameWidgetController *self)
     return g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (priv->name_entry))));
 }
 
-static gboolean
-real_name_is_valid (NautilusFileNameWidgetController  *self,
-                    gchar                             *name,
-                    gchar                            **error_message)
-{
-    gboolean is_valid;
-
-    is_valid = TRUE;
-    if (strlen (name) == 0)
-    {
-        is_valid = FALSE;
-    }
-    else if (strstr (name, "/") != NULL)
-    {
-        is_valid = FALSE;
-        *error_message = _("File names cannot contain “/”.");
-    }
-    else if (strcmp (name, ".") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("A file cannot be called “.”.");
-    }
-    else if (strcmp (name, "..") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("A file cannot be called “..”.");
-    }
-    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
-    {
-        is_valid = FALSE;
-        *error_message = _("File name is too long.");
-    }
-
-    if (is_valid && g_str_has_prefix (name, "."))
-    {
-        /* We must warn about the side effect */
-        *error_message = _("Files with “.” at the beginning of their name are hidden.");
-    }
-
-    return is_valid;
-}
-
-static gboolean
-real_ignore_existing_file (NautilusFileNameWidgetController *self,
-                           NautilusFile                     *existing_file)
-{
-    return FALSE;
-}
-
-static void
-duplicated_file_label_show (NautilusFileNameWidgetController *self)
-{
-    NautilusFileNameWidgetControllerPrivate *priv;
-
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
-    if (priv->duplicated_is_folder)
-    {
-        gtk_label_set_label (GTK_LABEL (priv->error_label),
-                             _("A folder with that name already exists."));
-    }
-    else
-    {
-        gtk_label_set_label (GTK_LABEL (priv->error_label),
-                             _("A file with that name already exists."));
-    }
-
-    gtk_revealer_set_reveal_child (GTK_REVEALER (priv->error_revealer),
-                                   TRUE);
-}
-
-static void
-file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *controller,
-                                              gboolean                         *duplicated_name,
-                                              gboolean                         *valid_name)
-{
-    NautilusFileNameWidgetControllerPrivate *priv;
-    g_autofree gchar *name = NULL;
-    gchar *error_message = NULL;
-    NautilusFile *existing_file;
-    priv = nautilus_file_name_widget_controller_get_instance_private (controller);
-
-    g_return_if_fail (NAUTILUS_IS_DIRECTORY (priv->containing_directory));
-
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
-    *valid_name = nautilus_file_name_widget_controller_name_is_valid (controller,
-                                                                      name,
-                                                                      &error_message);
-
-    gtk_label_set_label (GTK_LABEL (priv->error_label), error_message);
-    gtk_revealer_set_reveal_child (GTK_REVEALER (priv->error_revealer),
-                                   error_message != NULL);
-
-    existing_file = nautilus_directory_get_file_by_name (priv->containing_directory, name);
-    *duplicated_name = existing_file != NULL &&
-                       !nautilus_file_name_widget_controller_ignore_existing_file (controller,
-                                                                                   existing_file);
-
-    gtk_widget_set_sensitive (priv->activate_button, *valid_name && !*duplicated_name);
-
-    if (*duplicated_name)
-    {
-        priv->duplicated_is_folder = nautilus_file_is_directory (existing_file);
-    }
-
-    if (existing_file != NULL)
-    {
-        nautilus_file_unref (existing_file);
-    }
-}
-
 static void
 file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *directory,
                                                              GList             *files,
                                                              gpointer           user_data)
 {
-    NautilusFileNameWidgetController *controller;
-    gboolean duplicated_name;
-    gboolean valid_name;
-
-    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
-
-    file_name_widget_controller_process_new_name (controller,
-                                                  &duplicated_name,
-                                                  &valid_name);
-
-    /* Report duplicated file only if not other message shown (for instance,
-     * folders like "." or ".." will always exists, but we consider it as an
-     * error, not as a duplicated file or if the name is the same as the file
-     * we are renaming also don't report as a duplicated */
-    if (duplicated_name && valid_name)
-    {
-        duplicated_file_label_show (controller);
-    }
+    NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (user_data)->update_name (user_data);
 }
 
 static void
@@ -278,29 +133,14 @@ file_name_widget_controller_on_activate_directory_info_ready (NautilusDirectory 
                                                               GList             *files,
                                                               gpointer           user_data)
 {
-    NautilusFileNameWidgetController *controller;
-    gboolean duplicated_name;
     gboolean valid_name;
 
-    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
+    valid_name = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (user_data)->update_name (user_data);
 
-    file_name_widget_controller_process_new_name (controller,
-                                                  &duplicated_name,
-                                                  &valid_name);
-
-    if (valid_name && !duplicated_name)
+    if (valid_name)
     {
+        NautilusFileNameWidgetController *controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
         g_signal_emit (controller, signals[NAME_ACCEPTED], 0);
-    }
-    else
-    {
-        /* Report duplicated file only if not other message shown (for instance,
-         * folders like "." or ".." will always exists, but we consider it as an
-         * error, not as a duplicated file) */
-        if (duplicated_name && valid_name)
-        {
-            duplicated_file_label_show (controller);
-        }
     }
 }
 
@@ -430,8 +270,6 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
     object_class->finalize = nautilus_file_name_widget_controller_finalize;
 
     klass->get_new_name = real_get_new_name;
-    klass->name_is_valid = real_name_is_valid;
-    klass->ignore_existing_file = real_ignore_existing_file;
 
     signals[NAME_ACCEPTED] =
         g_signal_new ("name-accepted",

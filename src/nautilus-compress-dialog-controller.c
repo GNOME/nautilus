@@ -23,6 +23,7 @@
 
 #include "nautilus-compress-dialog-controller.h"
 
+#include "nautilus-filename-message.h"
 #include "nautilus-global-preferences.h"
 
 struct _NautilusCompressDialogController
@@ -31,6 +32,7 @@ struct _NautilusCompressDialogController
 
     GtkWidget *compress_dialog;
     GtkWidget *activate_button;
+    GtkRevealer *error_revealer;
     GtkWidget *error_label;
     GtkWidget *name_entry;
     GtkWidget *extension_dropdown;
@@ -39,6 +41,8 @@ struct _NautilusCompressDialogController
     GtkWidget *passphrase_entry;
     GtkWidget *passphrase_confirm_label;
     GtkWidget *passphrase_confirm_entry;
+
+    NautilusDirectory *containing_directory;
 
     const char *extension;
     gchar *passphrase;
@@ -169,6 +173,24 @@ nautilus_compress_dialog_controller_get_new_name (NautilusFileNameWidgetControll
     }
 
     return g_strconcat (basename, self->extension, NULL);
+}
+
+static gboolean
+update_name (NautilusFileNameWidgetController *controller)
+{
+    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
+    g_autofree char *name = nautilus_compress_dialog_controller_get_new_name (controller);
+    NautilusFileNameMessage message = nautilus_filename_message_from_name (name,
+                                                                           self->containing_directory,
+                                                                           NULL);
+    gboolean is_valid = nautilus_filename_message_is_valid (message);
+    const char *error_message = nautilus_filename_message_archive_error (message);
+
+    gtk_label_set_label (GTK_LABEL (self->error_label), error_message);
+    gtk_revealer_set_reveal_child (self->error_revealer, error_message != NULL);
+    gtk_widget_set_sensitive (self->activate_button, is_valid);
+
+    return is_valid;
 }
 
 static void
@@ -561,6 +583,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
     self->compress_dialog = compress_dialog;
     self->activate_button = activate_button;
+    self->error_revealer = GTK_REVEALER (error_revealer);
     self->error_label = error_label;
     self->name_entry = name_entry;
     self->extension_dropdown = extension_dropdown;
@@ -569,6 +592,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     self->passphrase_entry = passphrase_entry;
     self->passphrase_confirm_label = passphrase_confirm_label;
     self->passphrase_confirm_entry = passphrase_confirm_entry;
+    self->containing_directory = nautilus_directory_ref (destination_directory);
 
     extension_dropdown_setup (self);
 
@@ -619,6 +643,7 @@ nautilus_compress_dialog_controller_finalize (GObject *object)
         self->compress_dialog = NULL;
     }
 
+    g_clear_object (&self->containing_directory);
     g_free (self->passphrase);
 
     G_OBJECT_CLASS (nautilus_compress_dialog_controller_parent_class)->finalize (object);
@@ -633,7 +658,7 @@ nautilus_compress_dialog_controller_class_init (NautilusCompressDialogController
     object_class->finalize = nautilus_compress_dialog_controller_finalize;
 
     parent_class->get_new_name = nautilus_compress_dialog_controller_get_new_name;
-    parent_class->name_is_valid = nautilus_compress_dialog_controller_name_is_valid;
+    parent_class->update_name = update_name;
 }
 
 const gchar *

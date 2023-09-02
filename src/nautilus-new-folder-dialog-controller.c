@@ -21,14 +21,20 @@
 
 #include "nautilus-new-folder-dialog-controller.h"
 
+#include "nautilus-filename-message.h"
+
 
 struct _NautilusNewFolderDialogController
 {
     NautilusFileNameWidgetController parent_instance;
 
     GtkWidget *new_folder_dialog;
+    GtkWidget *activate_button;
+    GtkRevealer *error_revealer;
+    GtkLabel *error_label;
 
     gboolean with_selection;
+    NautilusDirectory *containing_directory;
 
     gulong response_handler_id;
 };
@@ -36,44 +42,19 @@ struct _NautilusNewFolderDialogController
 G_DEFINE_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER)
 
 static gboolean
-nautilus_new_folder_dialog_controller_name_is_valid (NautilusFileNameWidgetController  *self,
-                                                     gchar                             *name,
-                                                     gchar                            **error_message)
+update_name (NautilusFileNameWidgetController *controller)
 {
-    gboolean is_valid;
+    NautilusNewFolderDialogController *self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (controller);
+    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (controller);
+    NautilusFileNameMessage message = nautilus_filename_message_from_name (name,
+                                                                           self->containing_directory,
+                                                                           NULL);
+    gboolean is_valid = nautilus_filename_message_is_valid (message);
+    const char *error_message = nautilus_filename_message_folder_error (message);
 
-    is_valid = TRUE;
-    if (strlen (name) == 0)
-    {
-        is_valid = FALSE;
-    }
-    else if (strstr (name, "/") != NULL)
-    {
-        is_valid = FALSE;
-        *error_message = _("Folder names cannot contain “/”.");
-    }
-    else if (strcmp (name, ".") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("A folder cannot be called “.”.");
-    }
-    else if (strcmp (name, "..") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("A folder cannot be called “..”.");
-    }
-    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
-    {
-        is_valid = FALSE;
-        *error_message = _("Folder name is too long.");
-    }
-
-    if (is_valid && g_str_has_prefix (name, "."))
-    {
-        /* We must warn about the side effect */
-        *error_message = _("Folders with “.” at the beginning of their name are hidden.");
-        return TRUE;
-    }
+    gtk_label_set_label (GTK_LABEL (self->error_label), error_message);
+    gtk_revealer_set_reveal_child (self->error_revealer, error_message != NULL);
+    gtk_widget_set_sensitive (self->activate_button, is_valid);
 
     return is_valid;
 }
@@ -130,6 +111,11 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
 
     self->new_folder_dialog = new_folder_dialog;
 
+    self->activate_button = activate_button;
+    self->error_revealer = GTK_REVEALER (error_revealer);
+    self->error_label = GTK_LABEL (error_label);
+
+    self->containing_directory = nautilus_directory_ref (destination_directory);
     self->response_handler_id = g_signal_connect (new_folder_dialog,
                                                   "response",
                                                   (GCallback) new_folder_dialog_controller_on_response,
@@ -174,6 +160,8 @@ nautilus_new_folder_dialog_controller_finalize (GObject *object)
         self->new_folder_dialog = NULL;
     }
 
+    g_clear_object (&self->containing_directory);
+
     G_OBJECT_CLASS (nautilus_new_folder_dialog_controller_parent_class)->finalize (object);
 }
 
@@ -185,5 +173,5 @@ nautilus_new_folder_dialog_controller_class_init (NautilusNewFolderDialogControl
 
     object_class->finalize = nautilus_new_folder_dialog_controller_finalize;
 
-    parent_class->name_is_valid = nautilus_new_folder_dialog_controller_name_is_valid;
+    parent_class->update_name = update_name;
 }

@@ -34,12 +34,7 @@ struct _NautilusFileNameWidgetControllerClass
 
         gchar *  (*get_new_name)         (NautilusFileNameWidgetController *controller);
 
-        gboolean (*name_is_valid)        (NautilusFileNameWidgetController  *controller,
-                                          gchar                             *name,
-                                          gchar                            **error_message);
-
-        gboolean (*ignore_existing_file) (NautilusFileNameWidgetController *controller,
-                                          NautilusFile                     *existing_file);
+        gboolean (*update_name)          (NautilusFileNameWidgetController *controller);
 
         void     (*name_accepted)        (NautilusFileNameWidgetController *controller);
 };
