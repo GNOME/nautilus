@@ -33,4 +33,5 @@ NautilusNewFolderDialogController * nautilus_new_folder_dialog_controller_new (G
                                                                                gboolean           with_selection,
                                                                                gchar             *initial_name);
 
+char * nautilus_new_folder_dialog_get_name (NautilusNewFolderDialogController *controller);
 gboolean nautilus_new_folder_dialog_controller_get_with_selection (NautilusNewFolderDialogController *controller);

@@ -29,6 +29,7 @@ struct _NautilusNewFolderDialogController
     NautilusFileNameWidgetController parent_instance;
 
     GtkWidget *new_folder_dialog;
+    GtkEditable *name_entry;
     GtkWidget *activate_button;
     GtkRevealer *error_revealer;
     GtkLabel *error_label;
@@ -45,7 +46,7 @@ static gboolean
 update_name (NautilusFileNameWidgetController *controller)
 {
     NautilusNewFolderDialogController *self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (controller);
-    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (controller);
+    g_autofree char *name = nautilus_new_folder_dialog_get_name (self);
     NautilusFileNameMessage message = nautilus_filename_message_from_name (name,
                                                                            self->containing_directory,
                                                                            NULL);
@@ -110,7 +111,7 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     self->with_selection = with_selection;
 
     self->new_folder_dialog = new_folder_dialog;
-
+    self->name_entry = GTK_EDITABLE (name_entry);
     self->activate_button = activate_button;
     self->error_revealer = GTK_REVEALER (error_revealer);
     self->error_label = GTK_LABEL (error_label);
@@ -133,6 +134,12 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     gtk_window_present (GTK_WINDOW (new_folder_dialog));
 
     return self;
+}
+
+char *
+nautilus_new_folder_dialog_get_name (NautilusNewFolderDialogController *self)
+{
+    return g_strstrip (g_strdup (gtk_editable_get_text (self->name_entry)));
 }
 
 gboolean

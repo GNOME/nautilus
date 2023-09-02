@@ -31,4 +31,8 @@ G_DECLARE_FINAL_TYPE (NautilusCompressDialogController, nautilus_compress_dialog
 NautilusCompressDialogController * nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                                                             NautilusDirectory *destination_directory,
                                                                             const char        *initial_name);
+
+char *
+nautilus_compress_dialog_controller_get_new_name (NautilusCompressDialogController *self);
+
 const gchar * nautilus_compress_dialog_controller_get_passphrase (NautilusCompressDialogController *controller);

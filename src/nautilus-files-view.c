@@ -2055,8 +2055,8 @@ disconnect_rename_controller_signals (NautilusFilesView *self)
 }
 
 static void
-rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
-                                                 gpointer                          user_data)
+rename_file_popover_controller_on_name_accepted (NautilusRenameFilePopoverController *popover,
+                                                 gpointer                             user_data)
 {
     NautilusFilesView *view;
     NautilusFile *target_file;
@@ -2066,7 +2066,7 @@ rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetControlle
     view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
 
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
+    name = nautilus_rename_file_popover_get_name (popover);
 
     target_file =
         nautilus_rename_file_popover_controller_get_target_file (priv->rename_file_controller);
@@ -2123,8 +2123,8 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 }
 
 static void
-new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
-                                               gpointer                          user_data)
+new_folder_dialog_controller_on_name_accepted (NautilusNewFolderDialogController *controller,
+                                               gpointer                           user_data)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
@@ -2142,7 +2142,7 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
 
     data = new_folder_data_new (view, with_selection);
 
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
+    name = nautilus_new_folder_dialog_get_name (controller);
     g_signal_connect_data (view,
                            "add-files",
                            G_CALLBACK (track_newly_added_locations),
@@ -2292,7 +2292,7 @@ out:
 }
 
 static void
-compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
+compress_dialog_controller_on_name_accepted (NautilusCompressDialogController *controller,
                                              gpointer                          user_data)
 {
     CompressCallbackData *callback_data = user_data;
@@ -2319,7 +2319,7 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     }
     source_files = g_list_reverse (source_files);
 
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
+    name = nautilus_compress_dialog_controller_get_new_name (controller);
     /* Get a parent from a random file. We assume all files has a common parent.
      * But don't assume the parent is the view location, since that's not the
      * case in list view when expand-folder setting is set

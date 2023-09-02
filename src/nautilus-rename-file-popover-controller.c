@@ -93,7 +93,7 @@ static gboolean
 update_name (NautilusFileNameWidgetController *controller)
 {
     NautilusRenameFilePopoverController *self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
-    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (controller);
+    g_autofree char *name = nautilus_rename_file_popover_get_name (NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller));
     NautilusFileNameMessage message = nautilus_filename_message_from_name (name,
                                                                            self->containing_directory,
                                                                            self->target_file_name);
@@ -240,6 +240,12 @@ nautilus_rename_file_popover_controller_new (GtkWidget *relative_to)
     gtk_widget_set_parent (rename_file_popover, relative_to);
 
     return self;
+}
+
+char *
+nautilus_rename_file_popover_get_name (NautilusRenameFilePopoverController *self)
+{
+    return g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->name_entry))));
 }
 
 NautilusFile *

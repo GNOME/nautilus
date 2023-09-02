@@ -146,19 +146,16 @@ nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetControl
     return is_valid;
 }
 
-static gchar *
-nautilus_compress_dialog_controller_get_new_name (NautilusFileNameWidgetController *controller)
+char *
+nautilus_compress_dialog_controller_get_new_name (NautilusCompressDialogController *self)
 {
-    NautilusCompressDialogController *self;
     g_autofree gchar *basename = NULL;
     gchar *error_message = NULL;
     gboolean valid_name;
 
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
-
-    basename = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_CLASS (nautilus_compress_dialog_controller_parent_class)->get_new_name (controller);
+    basename = g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->name_entry))));
     /* Do not check or add the extension if the name is invalid */
-    valid_name = nautilus_compress_dialog_controller_name_is_valid (controller,
+    valid_name = nautilus_compress_dialog_controller_name_is_valid (NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (self),
                                                                     basename,
                                                                     &error_message);
 
@@ -179,7 +176,7 @@ static gboolean
 update_name (NautilusFileNameWidgetController *controller)
 {
     NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
-    g_autofree char *name = nautilus_compress_dialog_controller_get_new_name (controller);
+    g_autofree char *name = nautilus_compress_dialog_controller_get_new_name (self);
     NautilusFileNameMessage message = nautilus_filename_message_from_name (name,
                                                                            self->containing_directory,
                                                                            NULL);
@@ -657,7 +654,6 @@ nautilus_compress_dialog_controller_class_init (NautilusCompressDialogController
 
     object_class->finalize = nautilus_compress_dialog_controller_finalize;
 
-    parent_class->get_new_name = nautilus_compress_dialog_controller_get_new_name;
     parent_class->update_name = update_name;
 }
 

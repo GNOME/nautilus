@@ -54,12 +54,6 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusFileNameWidgetController, nautilus_file_name_widget_controller, G_TYPE_OBJECT)
 
-gchar *
-nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *self)
-{
-    return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->get_new_name (self);
-}
-
 void
 nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *self,
                                                                NautilusDirectory                *directory)
@@ -92,16 +86,6 @@ nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetCon
     {
         return name_length > max_name_length;
     }
-}
-
-static gchar *
-real_get_new_name (NautilusFileNameWidgetController *self)
-{
-    NautilusFileNameWidgetControllerPrivate *priv;
-
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
-
-    return g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (priv->name_entry))));
 }
 
 static void
@@ -268,8 +252,6 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
 
     object_class->set_property = nautilus_file_name_widget_controller_set_property;
     object_class->finalize = nautilus_file_name_widget_controller_finalize;
-
-    klass->get_new_name = real_get_new_name;
 
     signals[NAME_ACCEPTED] =
         g_signal_new ("name-accepted",
