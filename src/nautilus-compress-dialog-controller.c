@@ -147,25 +147,15 @@ nautilus_compress_dialog_controller_get_new_name (NautilusFileNameWidgetControll
 {
     NautilusCompressDialogController *self;
     g_autofree gchar *basename = NULL;
-    gchar *error_message = NULL;
-    gboolean valid_name;
 
     self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
 
+    /* Chain up */
     basename = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_CLASS (nautilus_compress_dialog_controller_parent_class)->get_new_name (controller);
-    /* Do not check or add the extension if the name is invalid */
-    valid_name = nautilus_compress_dialog_controller_name_is_valid (controller,
-                                                                    basename,
-                                                                    &error_message);
-
-    if (!valid_name)
-    {
-        return g_strdup (basename);
-    }
 
     if (g_str_has_suffix (basename, self->extension))
     {
-        return g_strdup (basename);
+        return g_steal_pointer (&basename);
     }
 
     return g_strconcat (basename, self->extension, NULL);
