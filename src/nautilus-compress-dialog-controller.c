@@ -104,69 +104,14 @@ nautilus_compress_item_new (NautilusCompressionFormat  format,
     return item;
 }
 
-static gboolean
-nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetController  *self,
-                                                   gchar                             *name,
-                                                   gchar                            **error_message)
-{
-    gboolean is_valid;
-
-    is_valid = TRUE;
-    if (strlen (name) == 0)
-    {
-        is_valid = FALSE;
-    }
-    else if (strstr (name, "/") != NULL)
-    {
-        is_valid = FALSE;
-        *error_message = _("Archive names cannot contain “/”.");
-    }
-    else if (strcmp (name, ".") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("An archive cannot be called “.”.");
-    }
-    else if (strcmp (name, "..") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("An archive cannot be called “..”.");
-    }
-    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
-    {
-        is_valid = FALSE;
-        *error_message = _("Archive name is too long.");
-    }
-
-    if (is_valid && g_str_has_prefix (name, "."))
-    {
-        /* We must warn about the side effect */
-        *error_message = _("Archives with “.” at the beginning of their name are hidden.");
-    }
-
-    return is_valid;
-}
-
 char *
 nautilus_compress_dialog_controller_get_new_name (NautilusCompressDialogController *self)
 {
-    g_autofree gchar *basename = NULL;
-    gchar *error_message = NULL;
-    gboolean valid_name;
+    g_autofree gchar *basename = g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->name_entry))));
 
-    basename = g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->name_entry))));
-    /* Do not check or add the extension if the name is invalid */
-    valid_name = nautilus_compress_dialog_controller_name_is_valid (NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (self),
-                                                                    basename,
-                                                                    &error_message);
-
-    if (!valid_name)
+    if (basename == NULL || basename[0] == '\0' || g_str_has_suffix (basename, self->extension))
     {
-        return g_strdup (basename);
-    }
-
-    if (g_str_has_suffix (basename, self->extension))
-    {
-        return g_strdup (basename);
+        return g_steal_pointer (&basename);
     }
 
     return g_strconcat (basename, self->extension, NULL);

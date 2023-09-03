@@ -63,31 +63,6 @@ nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameW
     g_object_set (self, "containing-directory", directory, NULL);
 }
 
-gboolean
-nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController *self,
-                                                       gchar                            *name)
-{
-    NautilusFileNameWidgetControllerPrivate *priv;
-    size_t name_length;
-    g_autoptr (GFile) location = NULL;
-    glong max_name_length;
-
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
-    name_length = strlen (name);
-    location = nautilus_directory_get_location (priv->containing_directory);
-    max_name_length = nautilus_get_max_child_name_length_for_location (location);
-
-    if (max_name_length == -1)
-    {
-        /* We don't know, so let's give it a chance */
-        return FALSE;
-    }
-    else
-    {
-        return name_length > max_name_length;
-    }
-}
-
 static void
 file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *directory,
                                                              GList             *files,
