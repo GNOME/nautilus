@@ -93,7 +93,7 @@ nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetCon
     }
     else
     {
-        return name_length > max_name_length + 1;
+        return name_length > max_name_length;
     }
 }
 
