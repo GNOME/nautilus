@@ -1753,7 +1753,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     g_list_free (dialog->listbox_labels_old);
     g_list_free (dialog->listbox_icons);
 
-    for (l = dialog->selection_metadata; l != NULL; l = l->next)
+    for (l = dialog->selection_metadata; l != NULL; l = g_list_delete_link (l, l))
     {
         FileMetadata *file_metadata;
 
