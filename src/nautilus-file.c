@@ -915,11 +915,7 @@ finalize (GObject *object)
         g_object_unref (file->details->thumbnail);
     }
 
-    if (file->details->mount)
-    {
-        g_signal_handlers_disconnect_by_func (file->details->mount, file_mount_unmounted, file);
-        g_object_unref (file->details->mount);
-    }
+    g_clear_object (&file->details->mount);
 
     g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
     g_clear_pointer (&file->details->filesystem_type, g_ref_string_release);
@@ -7665,8 +7661,8 @@ nautilus_file_set_mount (NautilusFile *file,
     if (mount)
     {
         file->details->mount = g_object_ref (mount);
-        g_signal_connect (mount, "unmounted",
-                          G_CALLBACK (file_mount_unmounted), file);
+        g_signal_connect_object (mount, "unmounted",
+                                 G_CALLBACK (file_mount_unmounted), file, 0);
     }
 }
 
