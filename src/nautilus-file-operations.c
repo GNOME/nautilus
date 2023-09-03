@@ -8716,7 +8716,7 @@ extract_job_on_scanned (AutoarExtractor *extractor,
     ExtractJob *extract_job;
     GFile *source_file;
     g_autofree gchar *basename = NULL;
-    GFileInfo *fsinfo;
+    g_autoptr (GFileInfo) fsinfo = NULL;
     guint64 free_size;
 
     extract_job = user_data;

@@ -1511,7 +1511,7 @@ sandboxed_choose_program_callback (GObject      *source_object,
 
     /* Remove hanlded file from the list top of the list. */
     g_object_unref (files->data);
-    files = g_list_remove_link (files, files);
+    files = g_list_delete_link (files, files);
 
     if (files != NULL)
     {

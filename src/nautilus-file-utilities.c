@@ -487,13 +487,14 @@ nautilus_get_mounted_mount_for_root (GFile *location)
     GList *l;
     GMount *mount;
     GMount *result = NULL;
-    GFile *root = NULL;
 
     volume_monitor = g_volume_monitor_get ();
     mounts = g_volume_monitor_get_mounts (volume_monitor);
 
     for (l = mounts; l != NULL; l = l->next)
     {
+        g_autoptr (GFile) root = NULL;
+
         mount = l->data;
 
         if (g_mount_is_shadowed (mount))
@@ -509,7 +510,6 @@ nautilus_get_mounted_mount_for_root (GFile *location)
         }
     }
 
-    g_clear_object (&root);
     g_list_free_full (mounts, g_object_unref);
 
     return result;
