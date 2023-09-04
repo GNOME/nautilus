@@ -47,7 +47,6 @@ add_project_arguments(
     '-Wduplicated-branches',
     '-Wduplicated-cond',
     '-Wlogical-op',
-    '-Werror=declaration-after-statement',
     '-Werror=empty-body',
     '-Werror=format=2',
     '-Werror=implicit-function-declaration',
