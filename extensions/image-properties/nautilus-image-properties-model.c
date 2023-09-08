@@ -157,6 +157,28 @@ append_basic_info (NautilusImagesPropertiesModel *self)
 }
 
 static void
+format_exif_datetime (gchar **tag_value)
+{
+    gint year, month, day, hour, minute, seconds, count;
+
+    count = sscanf (*tag_value, "%d:%d:%d %d:%d:%d",
+                    &year, &month, &day, &hour, &minute, &seconds);
+
+    if (count == 6)
+    {
+        g_autoptr (GDateTime) datetime = g_date_time_new_utc (year, month, day,
+                                                              hour, minute, seconds);
+
+        if (datetime != NULL)
+        {
+            g_free (*tag_value);
+            /* TODO: Use the date format from Nautilus */
+            *tag_value = g_date_time_format (datetime, "%F %T");
+        }
+    }
+}
+
+static void
 append_gexiv2_tag (NautilusImagesPropertiesModel  *self,
                    const char                    **tag_names,
                    const char                     *tag_description)
@@ -179,6 +201,11 @@ append_gexiv2_tag (NautilusImagesPropertiesModel  *self,
             /* don't add empty tags - try next one */
             if (tag_value != NULL && strlen (tag_value) > 0)
             {
+                if (tag_names == created_on)
+                {
+                    format_exif_datetime (&tag_value);
+                }
+
                 append_item (self, tag_description, tag_value);
                 break;
             }
