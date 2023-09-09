@@ -181,11 +181,6 @@ struct _NautilusFilesViewClass {
 
         void    (* update_actions_state)     (NautilusFilesView *view);
 
-        /* is_empty is a function pointer that subclasses must
-         * override to report whether the view contains any items.
-         */
-        gboolean (* is_empty)                (NautilusFilesView *view);
-
         /* Preference change callbacks, overridden by icon and list views.
          * Icon and list views respond by synchronizing to the new preference
          * values and forcing an update if appropriate.

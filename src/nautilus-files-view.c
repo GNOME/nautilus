@@ -944,11 +944,11 @@ nautilus_files_view_supports_extract_here (NautilusFilesView *view)
 }
 
 static gboolean
-nautilus_files_view_is_empty (NautilusFilesView *view)
+nautilus_files_view_is_empty (NautilusFilesView *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
 
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_empty (view);
+    return g_list_model_get_n_items (G_LIST_MODEL (priv->model)) == 0;
 }
 
 /**

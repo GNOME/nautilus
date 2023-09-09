@@ -984,15 +984,6 @@ real_get_selection_for_file_transfer (NautilusFilesView *files_view)
     return get_selection (files_view, TRUE);
 }
 
-static gboolean
-real_is_empty (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    return g_list_model_get_n_items (G_LIST_MODEL (priv->model)) == 0;
-}
-
 static void
 real_end_file_changes (NautilusFilesView *files_view)
 {
@@ -1644,7 +1635,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->click_policy_changed = real_click_policy_changed;
     files_view_class->get_selection = real_get_selection;
     files_view_class->get_selection_for_file_transfer = real_get_selection_for_file_transfer;
-    files_view_class->is_empty = real_is_empty;
     files_view_class->select_all = real_select_all;
     files_view_class->set_selection = real_set_selection;
     files_view_class->invert_selection = real_invert_selection;
