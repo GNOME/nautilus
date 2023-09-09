@@ -1566,36 +1566,40 @@ real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
     return get_rectangle_for_item_ui (self, item_ui);
 }
 
+/**
+ * Gets area to popup the context menu from, ensuring it is currently visible.
+ *
+ * Don't use this if context menu is triggered by a pointing device (in which
+ * case it should popup from the position of the pointer). Instead, this is
+ * meant for non-pointer case, such as using the Menu key from the keyboard.
+ **/
 static GdkRectangle *
 real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GtkSelectionFilterModel) selection = NULL;
-    guint n_selected;
-    GtkWidget *focus_child;
+    g_autoptr (GtkBitset) selection = NULL;
     guint i;
+    g_autoptr (NautilusViewItem) item = NULL;
     GtkWidget *item_ui;
 
-    selection = gtk_selection_filter_model_new (GTK_SELECTION_MODEL (priv->model));
-    n_selected = g_list_model_get_n_items (G_LIST_MODEL (selection));
-    g_return_val_if_fail (n_selected > 0, NULL);
+    selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+    g_return_val_if_fail (!gtk_bitset_is_empty (selection), NULL);
 
-    /* Get the focused item_ui, if selected.
+    /* If multiple items are selected, we need to pick one. The ideal choice is
+     * the currently focused item, if it is part of the selection.
+     *
+     * (Sadly, that's not currently possible, because GTK doesn't let us know
+     * the focus position: https://gitlab.gnome.org/GNOME/gtk/-/issues/2891 )
+     *
      * Otherwise, get the selected item_ui which is sorted the lowest.*/
-    focus_child = gtk_widget_get_focus_child (nautilus_list_base_get_view_ui (self));
-    for (i = 0; i < n_selected; i++)
-    {
-        g_autoptr (NautilusViewItem) item = NULL;
+    i = gtk_bitset_get_minimum (selection);
 
-        item = get_view_item (G_LIST_MODEL (selection), i);
-        item_ui = nautilus_view_item_get_item_ui (item);
-        if (item_ui != NULL && gtk_widget_get_parent (item_ui) == focus_child)
-        {
-            break;
-        }
-    }
     nautilus_list_base_scroll_to_item (self, i);
+
+    item = get_view_item (G_LIST_MODEL (priv->model), i);
+    item_ui = nautilus_view_item_get_item_ui (item);
+    g_return_val_if_fail (item_ui != NULL, NULL);
 
     return get_rectangle_for_item_ui (self, item_ui);
 }
