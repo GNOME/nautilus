@@ -4354,6 +4354,73 @@ _g_lists_sort_and_check_for_intersection (GList **list_1,
 }
 
 static void
+real_add_files (NautilusFilesView *self,
+                GList             *files)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    g_autolist (NautilusViewItem) items = NULL;
+
+    items = g_list_copy_deep (files, (GCopyFunc) nautilus_view_item_new, NULL);
+    nautilus_view_model_add_items (priv->model, items);
+}
+
+static void
+real_remove_files (NautilusFilesView *self,
+                   GList             *files,
+                   NautilusDirectory *directory)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    g_autoptr (GList) items = NULL;
+
+    for (GList *l = files; l != NULL; l = l->next)
+    {
+        NautilusViewItem *item;
+
+        item = nautilus_view_model_find_item_for_file (priv->model, l->data);
+        if (item != NULL)
+        {
+            items = g_list_prepend (items, item);
+        }
+    }
+
+    if (items != NULL)
+    {
+        nautilus_view_model_remove_items (priv->model, items, directory);
+    }
+}
+
+static void
+real_file_changed (NautilusFilesView *self,
+                   NautilusFile      *file,
+                   NautilusDirectory *directory)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    g_autoptr (NautilusFile) directory_as_file = NULL;
+    NautilusViewItem *item;
+
+    directory_as_file = nautilus_directory_get_corresponding_file (directory);
+    if (file == directory_as_file)
+    {
+        /* We don't care about changes to the current directory itself here, so
+         * silently ignore it. This happens only with self-owned files.*/
+        return;
+    }
+
+    item = nautilus_view_model_find_item_for_file (priv->model, file);
+    if (item != NULL)
+    {
+        nautilus_view_item_file_changed (item);
+    }
+    else
+    {
+        /* When a file that was hidden is not hidden anymore (e.g. undoing the
+         * rename operation which made it hidden), we get a change notification
+         * for a file that's not in our model. Let's add it then. */
+        real_add_files (self, &(GList){ .data = file });
+    }
+}
+
+static void
 process_old_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -8687,6 +8754,14 @@ file_changed_callback (NautilusFile *file,
 }
 
 static void
+real_clear (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    nautilus_view_model_remove_all_items (priv->model);
+}
+
+static void
 emit_clear (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
@@ -9691,6 +9766,10 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
+    klass->clear = real_clear;
+    klass->add_files = real_add_files;
+    klass->remove_files = real_remove_files;
+    klass->file_changed = real_file_changed;
     klass->begin_loading = real_begin_loading;
     klass->get_backing_uri = real_get_backing_uri;
     klass->update_context_menus = real_update_context_menus;

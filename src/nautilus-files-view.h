@@ -56,7 +56,6 @@ struct _NautilusFilesViewClass {
         void         (* begin_file_changes)     (NautilusFilesView *view);
 
         /* The 'add_files' signal is emitted to add a set of files to the view.
-         * It must be replaced by each subclass.
          */
         void    (* add_files)                    (NautilusFilesView *view,
                                                   GList             *files);
@@ -66,7 +65,6 @@ struct _NautilusFilesViewClass {
 
         /* The 'file_changed' signal is emitted to signal a change in a file,
          * including the file being removed.
-         * It must be replaced by each subclass.
          */
         void         (* file_changed)         (NautilusFilesView *view,
                                                NautilusFile      *file,

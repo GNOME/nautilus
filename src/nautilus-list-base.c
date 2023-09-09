@@ -70,9 +70,6 @@ enum
 
 static GParamSpec *properties[N_PROPS] = { NULL, };
 
-static void real_add_files (NautilusFilesView *files_view,
-                            GList             *files);
-
 static inline NautilusViewItem *
 get_view_item (GListModel *model,
                guint       position)
@@ -895,15 +892,6 @@ real_begin_loading (NautilusFilesView *files_view)
 }
 
 static void
-real_clear (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    nautilus_view_model_remove_all_items (priv->model);
-}
-
-static void
 set_click_mode_from_settings (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
@@ -921,37 +909,6 @@ real_click_policy_changed (NautilusFilesView *files_view)
     set_click_mode_from_settings (NAUTILUS_LIST_BASE (files_view));
 }
 
-static void
-real_file_changed (NautilusFilesView *files_view,
-                   NautilusFile      *file,
-                   NautilusDirectory *directory)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    g_autoptr (NautilusFile) directory_as_file = NULL;
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusViewItem *item;
-
-    directory_as_file = nautilus_directory_get_corresponding_file (directory);
-    if (file == directory_as_file)
-    {
-        /* We don't care about changes to the current directory itself here, so
-         * silently ignore it. This happens only with self-owned files.*/
-        return;
-    }
-
-    item = nautilus_view_model_find_item_for_file (priv->model, file);
-    if (item != NULL)
-    {
-        nautilus_view_item_file_changed (item);
-    }
-    else
-    {
-        /* When a file that was hidden is not hidden anymore (e.g. undoing the
-         * rename operation which made it hidden), we get a change notification
-         * for a file that's not in our model. Let's add it then. */
-        real_add_files (files_view, &(GList){ .data = file });
-    }
-}
 static gboolean
 is_ancestor_selected (GtkTreeListRow *row,
                       GtkBitset      *selection)
@@ -1043,33 +1000,6 @@ real_end_file_changes (NautilusFilesView *files_view)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     nautilus_view_model_sort (priv->model);
-}
-
-static void
-real_remove_files (NautilusFilesView *files_view,
-                   GList             *files,
-                   NautilusDirectory *directory)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GList) items = NULL;
-
-    for (GList *l = files; l != NULL; l = l->next)
-    {
-        NautilusViewItem *item;
-
-        item = nautilus_view_model_find_item_for_file (priv->model, l->data);
-
-        if (item != NULL)
-        {
-            items = g_list_prepend (items, item);
-        }
-    }
-
-    if (items != NULL)
-    {
-        nautilus_view_model_remove_items (priv->model, items, directory);
-    }
 }
 
 static void
@@ -1412,18 +1342,6 @@ real_scroll_to_file (NautilusFilesView *files_view,
 }
 
 static void
-real_add_files (NautilusFilesView *files_view,
-                GList             *files)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autolist (NautilusViewItem) items = NULL;
-
-    items = g_list_copy_deep (files, (GCopyFunc) nautilus_view_item_new, NULL);
-    nautilus_view_model_add_items (priv->model, items);
-}
-
-static void
 real_select_first (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
@@ -1722,15 +1640,11 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     widget_class->focus = nautilus_list_base_focus;
 
-    files_view_class->add_files = real_add_files;
     files_view_class->begin_loading = real_begin_loading;
-    files_view_class->clear = real_clear;
     files_view_class->click_policy_changed = real_click_policy_changed;
-    files_view_class->file_changed = real_file_changed;
     files_view_class->get_selection = real_get_selection;
     files_view_class->get_selection_for_file_transfer = real_get_selection_for_file_transfer;
     files_view_class->is_empty = real_is_empty;
-    files_view_class->remove_files = real_remove_files;
     files_view_class->select_all = real_select_all;
     files_view_class->set_selection = real_set_selection;
     files_view_class->invert_selection = real_invert_selection;
