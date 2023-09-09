@@ -108,42 +108,6 @@ struct _NautilusFilesViewClass {
 
         char *        (* get_backing_uri)    (NautilusFilesView *view);
 
-        /* get_selection is not a signal; it is just a function pointer for
-         * subclasses to replace (override). Subclasses must replace it
-         * with a function that returns a newly-allocated GList of
-         * NautilusFile pointers.
-         */
-        GList *        (* get_selection)     (NautilusFilesView *view);
-
-        /* get_selection_for_file_transfer  is a function pointer for
-         * subclasses to replace (override). Subclasses must replace it
-         * with a function that returns a newly-allocated GList of
-         * NautilusFile pointers. The difference from get_selection is
-         * that any files in the selection that also has a parent folder
-         * in the selection is not included.
-         */
-        GList *        (* get_selection_for_file_transfer)(NautilusFilesView *view);
-
-        /* select_all is a function pointer that subclasses must override to
-         * select all of the items in the view */
-        void     (* select_all)              (NautilusFilesView *view);
-
-        /* select_first is a function pointer that subclasses must override to
-         * select the first item in the view */
-        void     (* select_first)            (NautilusFilesView *view);
-
-        /* set_selection is a function pointer that subclasses must
-         * override to select the specified items (and unselect all
-         * others). The argument is a list of NautilusFiles. */
-
-        void     (* set_selection)           (NautilusFilesView *view,
-                                              GList             *selection);
-
-        /* invert_selection is a function pointer that subclasses must
-         * override to invert selection. */
-
-        void     (* invert_selection)        (NautilusFilesView *view);
-
         /* bump_zoom_level is a function pointer that subclasses must override
          * to change the zoom level of an object. */
         void    (* bump_zoom_level)          (NautilusFilesView *view,

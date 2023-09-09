@@ -909,169 +909,6 @@ real_click_policy_changed (NautilusFilesView *files_view)
     set_click_mode_from_settings (NAUTILUS_LIST_BASE (files_view));
 }
 
-static gboolean
-is_ancestor_selected (GtkTreeListRow *row,
-                      GtkBitset      *selection)
-{
-    g_autoptr (GtkTreeListRow) parent = gtk_tree_list_row_get_parent (row);
-    GtkTreeListRow *grandparent;
-
-    /* Walk up the tree looking for a selected ancestor. */
-    while (parent != NULL)
-    {
-        guint parent_position = gtk_tree_list_row_get_position (parent);
-        if (gtk_bitset_contains (selection, parent_position))
-        {
-            return TRUE;
-        }
-
-        grandparent = gtk_tree_list_row_get_parent (parent);
-        g_object_unref (parent);
-        parent = grandparent;
-    }
-
-    return FALSE;
-}
-
-static GList *
-get_selection (NautilusFilesView *files_view,
-               gboolean           for_file_transfer)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GtkBitset) selection = NULL;
-    GtkBitsetIter iter;
-    guint i;
-    GList *selected_files = NULL;
-
-    selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
-
-    for (gtk_bitset_iter_init_last (&iter, selection, &i);
-         gtk_bitset_iter_is_valid (&iter);
-         gtk_bitset_iter_previous (&iter, &i))
-    {
-        g_autoptr (GtkTreeListRow) row = NULL;
-        g_autoptr (NautilusViewItem) item = NULL;
-        NautilusFile *file;
-
-        row = GTK_TREE_LIST_ROW (g_list_model_get_item (G_LIST_MODEL (priv->model), i));
-
-        if (for_file_transfer && is_ancestor_selected (row, selection))
-        {
-            /* If an ancestor is already selected, don't include its descendants
-             * in the selection of files to copy/move. */
-            continue;
-        }
-
-        item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
-        file = nautilus_view_item_get_file (item);
-
-        selected_files = g_list_prepend (selected_files, g_object_ref (file));
-    }
-
-    return selected_files;
-}
-
-static GList *
-real_get_selection (NautilusFilesView *files_view)
-{
-    return get_selection (files_view, FALSE);
-}
-
-static GList *
-real_get_selection_for_file_transfer (NautilusFilesView *files_view)
-{
-    return get_selection (files_view, TRUE);
-}
-
-static void
-real_set_selection (NautilusFilesView *files_view,
-                    GList             *selection)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GList) files_to_find = g_list_copy (selection);
-    g_autoptr (GtkBitset) update_set = NULL;
-    g_autoptr (GtkBitset) new_selection_set = NULL;
-    g_autoptr (GtkBitset) old_selection_set = NULL;
-    guint n_items;
-
-    old_selection_set = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
-    /* We aren't allowed to modify the actual selection bitset */
-    update_set = gtk_bitset_copy (old_selection_set);
-    new_selection_set = gtk_bitset_new_empty ();
-
-    /* Convert file list into set of model indices */
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (priv->model));
-    for (guint position = 0; position < n_items; position++)
-    {
-        g_autoptr (NautilusViewItem) item = get_view_item (G_LIST_MODEL (priv->model), position);
-
-        GList *link = g_list_find (files_to_find, nautilus_view_item_get_file (item));
-        if (link != NULL)
-        {
-            /* Found item to select */
-            gtk_bitset_add (new_selection_set, position);
-
-            /* Remove found file from the list of files yet to find. */
-            files_to_find = g_list_delete_link (files_to_find, link);
-            if (files_to_find == NULL)
-            {
-                /* We've matched everything... */
-                break;
-            }
-        }
-    }
-    /* ...have we not? */
-    g_warn_if_fail (files_to_find == NULL);
-
-    /* Set focus on the first selected row. */
-    if (!gtk_bitset_is_empty (new_selection_set))
-    {
-        g_autoptr (NautilusViewItem) first_selected_item = NULL;
-        guint first_position = gtk_bitset_get_nth (new_selection_set, 0);
-
-        first_selected_item = get_view_item (G_LIST_MODEL (priv->model), first_position);
-        nautilus_list_base_set_focus_item (self, first_selected_item);
-    }
-
-    gtk_bitset_union (update_set, new_selection_set);
-    gtk_selection_model_set_selection (GTK_SELECTION_MODEL (priv->model),
-                                       new_selection_set,
-                                       update_set);
-}
-
-static void
-real_select_all (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    gtk_selection_model_select_all (GTK_SELECTION_MODEL (priv->model));
-}
-
-static void
-real_invert_selection (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (priv->model);
-    g_autoptr (GtkBitset) selected = NULL;
-    g_autoptr (GtkBitset) all = NULL;
-    g_autoptr (GtkBitset) new_selected = NULL;
-
-    selected = gtk_selection_model_get_selection (selection_model);
-
-    /* We are going to flip the selection state of every item in the model. */
-    all = gtk_bitset_new_range (0, g_list_model_get_n_items (G_LIST_MODEL (priv->model)));
-
-    /* The new selection is all items minus the ones currently selected. */
-    new_selected = gtk_bitset_copy (all);
-    gtk_bitset_subtract (new_selected, selected);
-
-    gtk_selection_model_set_selection (selection_model, new_selected, all);
-}
-
 static guint
 get_first_selected_item (NautilusListBase *self)
 {
@@ -1321,15 +1158,6 @@ real_scroll_to_file (NautilusFilesView *files_view,
 
     i = nautilus_view_model_get_index (priv->model, item);
     nautilus_list_base_scroll_to_item (self, i);
-}
-
-static void
-real_select_first (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    gtk_selection_model_select_item (GTK_SELECTION_MODEL (priv->model), 0, TRUE);
 }
 
 static GdkRectangle *
@@ -1624,17 +1452,11 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     files_view_class->begin_loading = real_begin_loading;
     files_view_class->click_policy_changed = real_click_policy_changed;
-    files_view_class->get_selection = real_get_selection;
-    files_view_class->get_selection_for_file_transfer = real_get_selection_for_file_transfer;
-    files_view_class->select_all = real_select_all;
-    files_view_class->set_selection = real_set_selection;
-    files_view_class->invert_selection = real_invert_selection;
     files_view_class->end_loading = real_end_loading;
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->get_last_visible_file = real_get_last_visible_file;
     files_view_class->reveal_selection = real_reveal_selection;
     files_view_class->scroll_to_file = real_scroll_to_file;
-    files_view_class->select_first = real_select_first;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
     files_view_class->preview_selection_event = real_preview_selection_event;
