@@ -81,8 +81,8 @@ get_view_item (GListModel *model,
 }
 
 void
-set_focus_item (NautilusListBase *self,
-                NautilusViewItem *item)
+nautilus_list_base_set_focus_item (NautilusListBase *self,
+                                   NautilusViewItem *item)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkWidget *item_widget = nautilus_view_item_get_item_ui (item);
@@ -134,7 +134,7 @@ select_single_item_if_not_selected (NautilusListBase *self,
     if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), position))
     {
         gtk_selection_model_select_item (GTK_SELECTION_MODEL (model), position, TRUE);
-        set_focus_item (self, item);
+        nautilus_list_base_set_focus_item (self, item);
     }
 }
 
@@ -1032,7 +1032,7 @@ real_set_selection (NautilusFilesView *files_view,
         guint first_position = gtk_bitset_get_nth (new_selection_set, 0);
 
         first_selected_item = get_view_item (G_LIST_MODEL (priv->model), first_position);
-        set_focus_item (self, first_selected_item);
+        nautilus_list_base_set_focus_item (self, first_selected_item);
     }
 
     gtk_bitset_union (update_set, new_selection_set);
@@ -1440,7 +1440,7 @@ real_preview_selection_event (NautilusFilesView *files_view,
     }
 
     item = get_view_item (G_LIST_MODEL (priv->model), i);
-    set_focus_item (self, item);
+    nautilus_list_base_set_focus_item (self, item);
 }
 
 static void

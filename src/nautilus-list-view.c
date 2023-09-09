@@ -912,7 +912,7 @@ tree_expander_shortcut_cb (GtkWidget *widget,
             parent_item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (parent));
             g_return_val_if_fail (parent_item != NULL, FALSE);
 
-            set_focus_item (NAUTILUS_LIST_BASE (self), parent_item);
+            nautilus_list_base_set_focus_item (NAUTILUS_LIST_BASE (self), parent_item);
         }
     }
     else

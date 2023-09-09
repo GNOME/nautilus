@@ -7,6 +7,7 @@
 #pragma once
 
 #include "nautilus-files-view.h"
+#include "nautilus-view-item.h"
 
 G_BEGIN_DECLS
 
@@ -23,5 +24,8 @@ struct _NautilusListBaseClass
         void       (*scroll_to_item) (NautilusListBase *self,
                                       guint                   position);
 };
+
+void    nautilus_list_base_set_focus_item          (NautilusListBase *self,
+                                                    NautilusViewItem *item);
 
 G_END_DECLS

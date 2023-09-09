@@ -27,7 +27,4 @@ void                          setup_cell_hover                  (NautilusViewCel
 void                          setup_cell_hover_inner_target     (NautilusViewCell *cell,
                                                                  GtkWidget        *target);
 
-void                          set_focus_item                    (NautilusListBase *self,
-                                                                 NautilusViewItem *item);
-
 G_END_DECLS
