@@ -4264,11 +4264,13 @@ process_new_files (NautilusFilesView *view)
 }
 
 static void
-on_end_file_changes (NautilusFilesView *view)
+real_end_file_changes (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
+
+    nautilus_view_model_sort (priv->model);
 
     /* Addition and removal of files modify the empty state */
     nautilus_files_view_check_empty_states (view);
@@ -9770,6 +9772,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     klass->add_files = real_add_files;
     klass->remove_files = real_remove_files;
     klass->file_changed = real_file_changed;
+    klass->end_file_changes = real_end_file_changes;
     klass->begin_loading = real_begin_loading;
     klass->get_backing_uri = real_get_backing_uri;
     klass->update_context_menus = real_update_context_menus;
@@ -9899,10 +9902,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
     priv->toolbar_menu_sections->sort_section = G_MENU_MODEL (g_object_ref (gtk_builder_get_object (builder, "sort_section")));
 
-    g_signal_connect (view,
-                      "end-file-changes",
-                      G_CALLBACK (on_end_file_changes),
-                      view);
     g_signal_connect (view,
                       "notify::selection",
                       G_CALLBACK (nautilus_files_view_preview_update),

@@ -71,9 +71,8 @@ struct _NautilusFilesViewClass {
                                                NautilusDirectory *directory);
 
         /* The 'end_file_changes' signal is emitted after a set of files
-         * are added to the view. It can be replaced by a subclass to do any
+         * are added to the view. It can be connected to in order to do any
          * necessary cleanup (typically, cleanup for code in begin_file_changes).
-         * The default implementation does nothing.
          */
         void         (* end_file_changes)    (NautilusFilesView *view);
 
