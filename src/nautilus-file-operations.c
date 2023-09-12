@@ -121,6 +121,7 @@ typedef struct
     GFile *src;
     char *src_data;
     int length;
+    gboolean new_mtime;
     GFile *created_file;
     NautilusCreateCallback done_callback;
     gpointer done_callback_data;
@@ -7729,7 +7730,8 @@ retry:
         {
             res = g_file_copy (job->src,
                                dest,
-                               G_FILE_COPY_TARGET_DEFAULT_PERMS,
+                               G_FILE_COPY_TARGET_DEFAULT_PERMS |
+                               job->new_mtime ? G_FILE_COPY_TARGET_DEFAULT_MODIFIED_TIME : 0,
                                common->cancellable,
                                NULL, NULL,
                                &error);
@@ -8243,6 +8245,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget              *parent_
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
     job->filename = g_strdup (target_filename);
+    job->new_mtime = TRUE;
 
     if (template_uri)
     {
