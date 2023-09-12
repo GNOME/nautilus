@@ -49,8 +49,6 @@ typedef void (* NautilusUnmountCallback)   (gpointer    callback_data);
 typedef void (* NautilusExtractCallback)   (GList    *outputs,
                                             gpointer  callback_data);
 
-/* FIXME: int copy_action should be an enum */
-
 void nautilus_file_operations_copy_move   (const GList                    *item_uris,
                                            const char                     *target_dir_uri,
                                            GdkDragAction                   copy_action,
