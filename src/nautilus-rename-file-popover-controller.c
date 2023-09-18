@@ -78,21 +78,6 @@ reset_state (NautilusRenameFilePopoverController *self)
     gtk_popover_popdown (GTK_POPOVER (self));
 }
 
-/*
-static void
-rename_file_popover_controller_on_closed (GtkPopover *popover,
-                                          gpointer    user_data)
-{
-    NautilusRenameFilePopoverController *controller;
-
-    controller = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
-
-    reset_state (controller);
-
-    g_signal_emit_by_name (controller, "cancelled");
-}
-
-*/
 static void
 update_state (NautilusDirectory *,
               GList *,
@@ -315,18 +300,6 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
                                        RENAME_ENTRY_MAX_CHARS));
 }
 
-/*
-static void
-on_name_accepted (NautilusFileNameWidgetController *controller)
-{
-    NautilusRenameFilePopoverController *self;
-
-    self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
-
-    reset_state (self);
-}
-
-*/
 static void
 nautilus_rename_file_popover_controller_init (NautilusRenameFilePopoverController *self)
 {
