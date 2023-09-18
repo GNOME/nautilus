@@ -171,7 +171,7 @@ typedef struct
     GFile *location_before_search;
     NautilusDirectory *outgoing_search;
 
-    NautilusRenameFilePopoverController *rename_file_controller;
+    GtkWidget *rename_file_popover;
     NautilusNewFolderDialogController *new_folder_controller;
     NautilusCompressDialogController *compress_controller;
 
@@ -2068,7 +2068,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
 
-    nautilus_rename_file_popover_controller_show_for_file (priv->rename_file_controller,
+    nautilus_rename_file_popover_controller_show_for_file (NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (priv->rename_file_popover),
                                                            target_file,
                                                            pointing_to,
                                                            rename_file_popover_callback,
@@ -3321,6 +3321,7 @@ nautilus_files_view_dispose (GObject *object)
 
     g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
     g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
+    g_clear_pointer (&priv->rename_file_popover, gtk_widget_unparent);
 
     if (priv->directory)
     {
@@ -3429,7 +3430,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
-    g_clear_object (&priv->rename_file_controller);
     g_clear_object (&priv->new_folder_controller);
     g_clear_object (&priv->compress_controller);
     /* We don't own the slot, so no unref */
@@ -10015,7 +10015,8 @@ nautilus_files_view_init (NautilusFilesView *view)
     priv->starred_cancellable = g_cancellable_new ();
     priv->clipboard_cancellable = g_cancellable_new ();
 
-    priv->rename_file_controller = nautilus_rename_file_popover_controller_new (GTK_WIDGET (view));
+    priv->rename_file_popover = nautilus_rename_file_popover_controller_new ();
+    gtk_widget_set_parent (priv->rename_file_popover, GTK_WIDGET (view));
 }
 
 NautilusFilesView *

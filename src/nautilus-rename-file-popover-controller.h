@@ -29,9 +29,9 @@ typedef void (*NautilusRenameCallback) (NautilusFile *target_file,
                                         gpointer      user_data);
 
 #define NAUTILUS_TYPE_RENAME_FILE_POPOVER_CONTROLLER nautilus_rename_file_popover_controller_get_type ()
-G_DECLARE_FINAL_TYPE (NautilusRenameFilePopoverController, nautilus_rename_file_popover_controller, NAUTILUS, RENAME_FILE_POPOVER_CONTROLLER, GObject)
+G_DECLARE_FINAL_TYPE (NautilusRenameFilePopoverController, nautilus_rename_file_popover_controller, NAUTILUS, RENAME_FILE_POPOVER_CONTROLLER, GtkPopover)
 
-NautilusRenameFilePopoverController * nautilus_rename_file_popover_controller_new (GtkWidget *relative_to);
+GtkWidget *    nautilus_rename_file_popover_controller_new (void);
 
 void           nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopoverController *controller,
                                                                         NautilusFile                        *target_file,

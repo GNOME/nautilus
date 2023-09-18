@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkPopover" id="rename_file_popover">
+  <template class="NautilusRenameFilePopoverController" parent="GtkPopover">
+    <signal name="closed" handler="rename_file_popover_controller_on_closed"/>
     <property name="child">
       <object class="GtkBox">
         <property name="margin-start">18</property>
@@ -38,7 +39,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="rename_button">
+          <object class="GtkButton" id="activate_button">
             <property name="label" translatable="yes">_Rename</property>
             <property name="sensitive">False</property>
             <property name="halign">end</property>
@@ -50,5 +51,12 @@
         </child>
       </object>
     </property>
+  </template>
+  <object class="NautilusFilenameValidator" id="validator">
+    <property name="activate-button">activate_button</property>
+    <property name="error-revealer">error_revealer</property>
+    <property name="error-label">error_label</property>
+    <property name="name-entry">name_entry</property>
+    <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
   </object>
 </interface>
