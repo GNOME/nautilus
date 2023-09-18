@@ -271,9 +271,6 @@ typedef struct
     GCancellable *clipboard_cancellable;
 
     GCancellable *starred_cancellable;
-
-    gulong name_accepted_handler_id;
-    gulong cancelled_handler_id;
 } NautilusFilesViewPrivate;
 
 /**
@@ -2041,54 +2038,19 @@ nautilus_files_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 }
 
 static void
-disconnect_rename_controller_signals (NautilusFilesView *self)
+rename_file_popover_callback (NautilusFile *target_file,
+                              const char   *new_name,
+                              gpointer      user_data)
 {
-    NautilusFilesViewPrivate *priv;
-
-    g_assert (NAUTILUS_IS_FILES_VIEW (self));
-
-    priv = nautilus_files_view_get_instance_private (self);
-
-    g_clear_signal_handler (&priv->name_accepted_handler_id, priv->rename_file_controller);
-    g_clear_signal_handler (&priv->cancelled_handler_id, priv->rename_file_controller);
-}
-
-static void
-rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
-                                                 gpointer                          user_data)
-{
-    NautilusFilesView *view;
-    NautilusFile *target_file;
-    g_autofree gchar *name = NULL;
-    NautilusFilesViewPrivate *priv;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
-
-    target_file =
-        nautilus_rename_file_popover_controller_get_target_file (priv->rename_file_controller);
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
     /* Put it on the queue for reveal after the view acknowledges the change */
     g_hash_table_insert (priv->pending_reveal,
                          target_file,
                          GUINT_TO_POINTER (FALSE));
 
-    nautilus_rename_file (target_file, name, NULL, NULL);
-
-    disconnect_rename_controller_signals (view);
-}
-
-static void
-rename_file_popover_controller_on_cancelled (NautilusFileNameWidgetController *controller,
-                                             gpointer                          user_data)
-{
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-
-    disconnect_rename_controller_signals (view);
+    nautilus_rename_file (target_file, new_name, NULL, NULL);
 }
 
 static void
@@ -2109,16 +2071,9 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     nautilus_rename_file_popover_controller_show_for_file (priv->rename_file_controller,
                                                            target_file,
-                                                           pointing_to);
-
-    priv->name_accepted_handler_id = g_signal_connect (priv->rename_file_controller,
-                                                       "name-accepted",
-                                                       G_CALLBACK (rename_file_popover_controller_on_name_accepted),
-                                                       view);
-    priv->cancelled_handler_id = g_signal_connect (priv->rename_file_controller,
-                                                   "cancelled",
-                                                   G_CALLBACK (rename_file_popover_controller_on_cancelled),
-                                                   view);
+                                                           pointing_to,
+                                                           rename_file_popover_callback,
+                                                           view);
 }
 
 static void
