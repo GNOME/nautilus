@@ -29,6 +29,8 @@ struct _NautilusNewFolderDialogController
     GtkWidget *new_folder_dialog;
 
     gboolean with_selection;
+    NewFolderCallback callback;
+    gpointer callback_data;
 
     gulong response_handler_id;
 };
@@ -50,11 +52,22 @@ new_folder_dialog_controller_on_response (GtkDialog *dialog,
     }
 }
 
+static void
+on_name_accepted (NautilusFileNameWidgetController *controller)
+{
+    NautilusNewFolderDialogController *self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (controller);
+    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (controller);
+
+    self->callback (name, self->with_selection, self->callback_data);
+}
+
 NautilusNewFolderDialogController *
 nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                            NautilusDirectory *destination_directory,
                                            gboolean           with_selection,
-                                           gchar             *initial_name)
+                                           gchar             *initial_name,
+                                           NewFolderCallback  callback,
+                                           gpointer           callback_data)
 {
     NautilusNewFolderDialogController *self;
     g_autoptr (GtkBuilder) builder = NULL;
@@ -85,6 +98,10 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                          "target-is-folder", TRUE,
                          NULL);
 
+    g_signal_connect (self, "name-accepted",
+                      G_CALLBACK (on_name_accepted),
+                      NULL);
+
     self->with_selection = with_selection;
 
     self->new_folder_dialog = new_folder_dialog;
@@ -93,6 +110,8 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                                   "response",
                                                   (GCallback) new_folder_dialog_controller_on_response,
                                                   self);
+    self->callback = callback;
+    self->callback_data = callback_data;
 
     if (initial_name != NULL)
     {
@@ -106,12 +125,6 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     gtk_window_present (GTK_WINDOW (new_folder_dialog));
 
     return self;
-}
-
-gboolean
-nautilus_new_folder_dialog_controller_get_with_selection (NautilusNewFolderDialogController *self)
-{
-    return self->with_selection;
 }
 
 static void

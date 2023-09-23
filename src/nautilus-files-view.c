@@ -2122,26 +2122,21 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 }
 
 static void
-new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
-                                               gpointer                          user_data)
+create_new_folder_callback (const char *folder_name,
+                            gboolean    with_selection,
+                            gpointer    user_data)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
     NewFolderData *data;
     g_autofree gchar *parent_uri = NULL;
-    g_autofree gchar *name = NULL;
     NautilusFile *parent;
-    gboolean with_selection;
 
     view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
 
-    with_selection =
-        nautilus_new_folder_dialog_controller_get_with_selection (priv->new_folder_controller);
-
     data = new_folder_data_new (view, with_selection);
 
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
     g_signal_connect_data (view,
                            "add-files",
                            G_CALLBACK (track_newly_added_locations),
@@ -2153,7 +2148,7 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
     parent = nautilus_file_get_by_uri (parent_uri);
     nautilus_file_operations_new_folder (GTK_WIDGET (view),
                                          NULL,
-                                         parent_uri, name,
+                                         parent_uri, folder_name,
                                          new_folder_done, data);
 
     g_clear_object (&priv->new_folder_controller);
@@ -2210,12 +2205,10 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
                                                    containing_directory,
                                                    with_selection,
-                                                   common_prefix);
+                                                   common_prefix,
+                                                   create_new_folder_callback,
+                                                   view);
 
-    g_signal_connect (priv->new_folder_controller,
-                      "name-accepted",
-                      (GCallback) new_folder_dialog_controller_on_name_accepted,
-                      view);
     g_signal_connect (priv->new_folder_controller,
                       "cancelled",
                       (GCallback) new_folder_dialog_controller_on_cancelled,
