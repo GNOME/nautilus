@@ -173,7 +173,6 @@ typedef struct
 
     GtkWidget *rename_file_popover;
     NautilusNewFolderDialogController *new_folder_controller;
-    NautilusCompressDialogController *compress_controller;
 
     GList *scripts_directory_list;
     GList *templates_directory_list;
@@ -2239,19 +2238,10 @@ create_archive_callback (const char *archive_name,
     g_autoptr (GFile) output = NULL;
     g_autoptr (GFile) parent = NULL;
     NautilusCompressionFormat compression_format;
-    NautilusFilesViewPrivate *priv;
     AutoarFormat format;
     AutoarFilter filter;
 
     view = NAUTILUS_FILES_VIEW (callback_data->view);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (archive_name == NULL)
-    {
-        /* Cancelled */
-        g_clear_object (&priv->compress_controller);
-        return;
-    }
 
     for (l = callback_data->selection; l != NULL; l = l->next)
     {
@@ -2330,7 +2320,6 @@ create_archive_callback (const char *archive_name,
                                        data);
 
     g_list_free_full (source_files, g_object_unref);
-    g_clear_object (&priv->compress_controller);
 }
 
 static void
@@ -2344,18 +2333,11 @@ static void
 nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 {
     NautilusDirectory *containing_directory;
-    NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
     g_autofree char *common_prefix = NULL;
     g_autofree char *uri = NULL;
     CompressCallbackData *data;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->compress_controller != NULL)
-    {
-        return;
-    }
+    NautilusCompressDialogController *compress_controller;
 
     uri = nautilus_files_view_get_backing_uri (view);
     containing_directory = nautilus_directory_get_by_uri (uri);
@@ -2385,12 +2367,12 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     data->view = view;
     data->selection = nautilus_files_view_get_selection_for_file_transfer (view);
 
-    priv->compress_controller = nautilus_compress_dialog_controller_new (nautilus_files_view_get_containing_window (view),
-                                                                         containing_directory,
-                                                                         common_prefix,
-                                                                         create_archive_callback,
-                                                                         data);
-    g_object_weak_ref (G_OBJECT (priv->compress_controller),
+    compress_controller = nautilus_compress_dialog_controller_new (nautilus_files_view_get_containing_window (view),
+                                                                   containing_directory,
+                                                                   common_prefix,
+                                                                   create_archive_callback,
+                                                                   data);
+    g_object_weak_ref (G_OBJECT (compress_controller),
                        (GWeakNotify) compress_callback_data_free,
                        data);
 }
@@ -3431,7 +3413,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
     g_clear_object (&priv->new_folder_controller);
-    g_clear_object (&priv->compress_controller);
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
 

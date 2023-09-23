@@ -1,114 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkDialog" id="compress_dialog">
+  <template class="NautilusCompressDialogController" parent="AdwWindow">
     <property name="title" translatable="yes">Create Compressed Archive</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="destroy_with_parent">True</property>
-    <property name="use-header-bar">1</property>
     <property name="default-width">500</property>
     <property name="default-height">210</property>
-    <child internal-child="content_area">
-      <object class="GtkBox" id="content_area">
+    <property name="content">
+      <object class="GtkBox">
         <property name="orientation">vertical</property>
-        <property name="margin-top">30</property>
-        <property name="margin-bottom">30</property>
-        <property name="margin-start">30</property>
-        <property name="margin-end">30</property>
-        <property name="width-request">390</property>
-        <property name="halign">center</property>
-        <property name="spacing">6</property>
         <child>
-          <object class="GtkLabel" id="name_label">
-            <property name="label" translatable="yes">Archive name</property>
-            <property name="xalign">0</property>
-            <attributes>
-              <attribute name="weight" value="bold"></attribute>
-            </attributes>
+          <object class="GtkHeaderBar">
+            <property name="show-title-buttons">False</property>
+            <child type="start">
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Cancel</property>
+                <signal name="clicked" handler="gtk_window_close" swapped="yes"/>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton" id="activate_button">
+                <property name="label" translatable="yes">Create</property>
+                <property name="sensitive">False</property>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="GtkBox">
-            <property name="spacing">12</property>
+          <object class="GtkBox" id="content_area">
+            <property name="orientation">vertical</property>
+            <property name="margin-top">30</property>
+            <property name="margin-bottom">30</property>
+            <property name="margin-start">30</property>
+            <property name="margin-end">30</property>
+            <property name="width-request">390</property>
+            <property name="halign">center</property>
+            <property name="spacing">6</property>
             <child>
-              <object class="GtkEntry" id="name_entry">
-                <accessibility>
-                  <relation name="labelled-by">name_label</relation>
-                </accessibility>
-                <property name="hexpand">True</property>
-                <property name="width-chars">30</property>
+              <object class="GtkLabel" id="name_label">
+                <property name="label" translatable="yes">Archive name</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="weight" value="bold"></attribute>
+                </attributes>
               </object>
             </child>
             <child>
-              <object class="GtkDropDown" id="extension_dropdown"/>
+              <object class="GtkBox">
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkEntry" id="name_entry">
+                    <accessibility>
+                      <relation name="labelled-by">name_label</relation>
+                    </accessibility>
+                    <property name="hexpand">True</property>
+                    <property name="width-chars">30</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkDropDown" id="extension_dropdown">
+                    <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
+                  </object>
+                </child>
+              </object>
             </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkRevealer" id="error_revealer">
-            <property name="child">
-              <object class="GtkLabel" id="error_label">
-                <property name="margin_top">4</property>
-                <property name="margin_bottom">4</property>
+            <child>
+              <object class="GtkRevealer" id="error_revealer">
+                <property name="child">
+                  <object class="GtkLabel" id="error_label">
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="passphrase_label">
+                <property name="visible">False</property>
+                <property name="label" translatable="yes">Password</property>
+                <property name="margin-top">6</property>
                 <property name="xalign">0</property>
               </object>
-            </property>
+            </child>
+            <child>
+              <object class="GtkPasswordEntry" id="passphrase_entry">
+                <accessibility>
+                  <relation name="labelled-by">passphrase_label</relation>
+                </accessibility>
+                <property name="visible">False</property>
+                <property name="placeholder-text" translatable="yes">Enter a Password</property>
+                <property name="show-peek-icon">True</property>
+                <signal name="changed" handler="passphrase_entry_on_changed"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="passphrase_confirm_label">
+                <property name="visible">False</property>
+                <property name="label" translatable="yes">Confirm Password</property>
+                <property name="margin-top">6</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkPasswordEntry" id="passphrase_confirm_entry">
+                <accessibility>
+                  <relation name="labelled-by">passphrase_confirm_label</relation>
+                </accessibility>
+                <property name="visible">False</property>
+                <property name="placeholder-text" translatable="yes">Confirm Password</property>
+                <property name="show-peek-icon">True</property>
+                <signal name="changed" handler="passphrase_confirm_entry_on_changed"/>
+              </object>
+            </child>
           </object>
         </child>
+      </object>
+    </property>
+    <child>
+      <object class="GtkShortcutController">
+        <property name="scope">managed</property>
         <child>
-          <object class="GtkLabel" id="passphrase_label">
-            <property name="visible">False</property>
-            <property name="label" translatable="yes">Password</property>
-            <property name="margin-top">6</property>
-            <property name="xalign">0</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkPasswordEntry" id="passphrase_entry">
-            <accessibility>
-              <relation name="labelled-by">passphrase_label</relation>
-            </accessibility>
-            <property name="visible">False</property>
-            <property name="placeholder-text" translatable="yes">Enter a Password</property>
-            <property name="show-peek-icon">True</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel" id="passphrase_confirm_label">
-            <property name="visible">False</property>
-            <property name="label" translatable="yes">Confirm Password</property>
-            <property name="margin-top">6</property>
-            <property name="xalign">0</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkPasswordEntry" id="passphrase_confirm_entry">
-            <accessibility>
-              <relation name="labelled-by">passphrase_confirm_label</relation>
-            </accessibility>
-            <property name="visible">False</property>
-            <property name="placeholder-text" translatable="yes">Confirm Password</property>
-            <property name="show-peek-icon">True</property>
+          <object class="GtkShortcut">
+            <property name="trigger">Escape</property>
+            <property name="action">action(window.close)</property>
           </object>
         </child>
       </object>
     </child>
-    <child type="action">
-      <object class="GtkButton" id="cancel_button">
-        <property name="label" translatable="yes">Cancel</property>
-      </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="activate_button">
-        <property name="label" translatable="yes">Create</property>
-        <property name="sensitive">False</property>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="ok" default="true">activate_button</action-widget>
-      <action-widget response="cancel">cancel_button</action-widget>
-    </action-widgets>
-  </object>
+  </template>
   <object class="GtkSizeGroup" id="extension_sizegroup"/>
+  <object class="NautilusFilenameValidator" id="validator">
+    <property name="activate-button">activate_button</property>
+    <property name="error-revealer">error_revealer</property>
+    <property name="error-label">error_label</property>
+    <property name="name-entry">name_entry</property>
+    <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
+  </object>
 </interface>
