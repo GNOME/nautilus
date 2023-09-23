@@ -172,7 +172,6 @@ typedef struct
     NautilusDirectory *outgoing_search;
 
     GtkWidget *rename_file_popover;
-    NautilusNewFolderDialogController *new_folder_controller;
 
     GList *scripts_directory_list;
     GList *templates_directory_list;
@@ -2080,20 +2079,11 @@ create_new_folder_callback (const char *folder_name,
                             gpointer    user_data)
 {
     NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
     NewFolderData *data;
     g_autofree gchar *parent_uri = NULL;
     NautilusFile *parent;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (folder_name == NULL)
-    {
-        /* Cancelled */
-        g_clear_object (&priv->new_folder_controller);
-        return;
-    }
 
     data = new_folder_data_new (view, with_selection);
 
@@ -2111,8 +2101,6 @@ create_new_folder_callback (const char *folder_name,
                                          parent_uri, folder_name,
                                          new_folder_done, data);
 
-    g_clear_object (&priv->new_folder_controller);
-
     /* After the dialog is destroyed the focus, is probably in the menu item
      * that created the dialog, but we want the focus to be in the newly created
      * folder.
@@ -2127,16 +2115,8 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
                                            gboolean           with_selection)
 {
     g_autoptr (NautilusDirectory) containing_directory = NULL;
-    NautilusFilesViewPrivate *priv;
     g_autofree char *uri = NULL;
     g_autofree char *common_prefix = NULL;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->new_folder_controller != NULL)
-    {
-        return;
-    }
 
     uri = nautilus_files_view_get_backing_uri (view);
     containing_directory = nautilus_directory_get_by_uri (uri);
@@ -2148,13 +2128,12 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
     }
 
-    priv->new_folder_controller =
-        nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
-                                                   containing_directory,
-                                                   with_selection,
-                                                   common_prefix,
-                                                   create_new_folder_callback,
-                                                   view);
+    (void) nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
+                                                      containing_directory,
+                                                      with_selection,
+                                                      common_prefix,
+                                                      create_new_folder_callback,
+                                                      view);
 }
 
 typedef struct
@@ -3412,7 +3391,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
-    g_clear_object (&priv->new_folder_controller);
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
 

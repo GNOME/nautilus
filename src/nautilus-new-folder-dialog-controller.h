@@ -21,6 +21,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <adwaita.h>
 
 #include "nautilus-directory.h"
 
@@ -29,7 +30,7 @@ typedef void (*NewFolderCallback) (const char *new_name,
                                    gpointer    user_data);
 
 #define NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER nautilus_new_folder_dialog_controller_get_type ()
-G_DECLARE_FINAL_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS, NEW_FOLDER_DIALOG_CONTROLLER, GObject)
+G_DECLARE_FINAL_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS, NEW_FOLDER_DIALOG_CONTROLLER, AdwWindow)
 
 NautilusNewFolderDialogController * nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                                                                NautilusDirectory *destination_directory,

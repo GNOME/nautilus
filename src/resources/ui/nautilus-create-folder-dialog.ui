@@ -1,61 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkDialog" id="create_folder_dialog">
+  <template class="NautilusNewFolderDialogController" parent="AdwWindow">
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="destroy_with_parent">True</property>
     <property name="title" translatable="yes">New Folder</property>
-    <property name="use-header-bar">1</property>
     <property name="width_request">450</property>
-    <child internal-child="content_area">
-      <object class="GtkBox" id="content_area">
+    <property name="content">
+      <object class="GtkBox">
         <property name="orientation">vertical</property>
-        <property name="margin_top">18</property>
-        <property name="margin_bottom">12</property>
-        <property name="margin_start">18</property>
-        <property name="margin_end">18</property>
-        <property name="spacing">6</property>
         <child>
-          <object class="GtkLabel" id="name_label">
-            <property name="label" translatable="yes">Folder name</property>
-            <property name="xalign">0</property>
+          <object class="GtkHeaderBar">
+            <property name="show-title-buttons">False</property>
+            <child type="start">
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Cancel</property>
+                <signal name="clicked" handler="gtk_window_close" swapped="yes"/>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton" id="activate_button">
+                <property name="label" translatable="yes">Create</property>
+                <property name="sensitive">False</property>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="GtkEntry" id="name_entry">
-            <accessibility>
-              <relation name="labelled-by">name_label</relation>
-            </accessibility>
-          </object>
-        </child>
-        <child>
-          <object class="GtkRevealer" id="error_revealer">
-            <property name="child">
-              <object class="GtkLabel" id="error_label">
-                <property name="margin_top">4</property>
-                <property name="margin_bottom">4</property>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="margin_top">18</property>
+            <property name="margin_bottom">12</property>
+            <property name="margin_start">18</property>
+            <property name="margin_end">18</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="name_label">
+                <property name="label" translatable="yes">Folder name</property>
                 <property name="xalign">0</property>
               </object>
-            </property>
+            </child>
+            <child>
+              <object class="GtkEntry" id="name_entry">
+                <accessibility>
+                  <relation name="labelled-by">name_label</relation>
+                </accessibility>
+              </object>
+            </child>
+            <child>
+              <object class="GtkRevealer" id="error_revealer">
+                <property name="child">
+                  <object class="GtkLabel" id="error_label">
+                    <property name="margin_top">4</property>
+                    <property name="margin_bottom">4</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+    <child>
+      <object class="GtkShortcutController">
+        <property name="scope">managed</property>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">Escape</property>
+            <property name="action">action(window.close)</property>
           </object>
         </child>
       </object>
     </child>
-    <child type="action">
-      <object class="GtkButton" id="cancel_button">
-        <property name="label" translatable="yes">Cancel</property>
-      </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="ok_button">
-        <property name="label" translatable="yes">Create</property>
-        <property name="sensitive">False</property>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="ok" default="true">ok_button</action-widget>
-      <action-widget response="cancel">cancel_button</action-widget>
-    </action-widgets>
+  </template>
+  <object class="NautilusFilenameValidator" id="validator">
+    <property name="activate-button">activate_button</property>
+    <property name="error-revealer">error_revealer</property>
+    <property name="error-label">error_label</property>
+    <property name="name-entry">name_entry</property>
+    <property name="target-is-folder">true</property>
+    <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
   </object>
 </interface>
