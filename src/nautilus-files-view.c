@@ -2077,26 +2077,28 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 }
 
 static void
-new_folder_dialog_controller_on_name_accepted (NautilusNewFolderDialogController *controller,
-                                               gpointer                           user_data)
+clear_new_folder_dialog (NautilusFilesView *view)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    gtk_window_destroy (GTK_WINDOW (priv->new_folder_controller));
+    priv->new_folder_controller = NULL;
+}
+
+static void
+create_new_folder_callback (const char *folder_name,
+                            gboolean    from_selection,
+                            gpointer    user_data)
 {
     NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
     NewFolderData *data;
     g_autofree gchar *parent_uri = NULL;
-    g_autofree gchar *name = NULL;
     NautilusFile *parent;
-    gboolean with_selection;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
 
-    with_selection =
-        nautilus_new_folder_dialog_controller_get_with_selection (priv->new_folder_controller);
+    data = new_folder_data_new (view, from_selection);
 
-    data = new_folder_data_new (view, with_selection);
-
-    name = nautilus_new_folder_dialog_get_name (controller);
     g_signal_connect_data (view,
                            "add-files",
                            G_CALLBACK (track_newly_added_locations),
@@ -2108,10 +2110,10 @@ new_folder_dialog_controller_on_name_accepted (NautilusNewFolderDialogController
     parent = nautilus_file_get_by_uri (parent_uri);
     nautilus_file_operations_new_folder (GTK_WIDGET (view),
                                          NULL,
-                                         parent_uri, name,
+                                         parent_uri, folder_name,
                                          new_folder_done, data);
 
-    g_clear_object (&priv->new_folder_controller);
+    clear_new_folder_dialog (view);
 
     /* After the dialog is destroyed the focus, is probably in the menu item
      * that created the dialog, but we want the focus to be in the newly created
@@ -2120,19 +2122,6 @@ new_folder_dialog_controller_on_name_accepted (NautilusNewFolderDialogController
     gtk_widget_grab_focus (GTK_WIDGET (view));
 
     g_object_unref (parent);
-}
-
-static void
-new_folder_dialog_controller_on_cancelled (NautilusNewFolderDialogController *controller,
-                                           gpointer                           user_data)
-{
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    g_clear_object (&priv->new_folder_controller);
 }
 
 static void
@@ -2165,16 +2154,14 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
                                                    containing_directory,
                                                    with_selection,
-                                                   common_prefix);
+                                                   common_prefix,
+                                                   create_new_folder_callback,
+                                                   view);
 
-    g_signal_connect (priv->new_folder_controller,
-                      "name-accepted",
-                      (GCallback) new_folder_dialog_controller_on_name_accepted,
-                      view);
-    g_signal_connect (priv->new_folder_controller,
-                      "cancelled",
-                      (GCallback) new_folder_dialog_controller_on_cancelled,
-                      view);
+    g_signal_connect_swapped (priv->new_folder_controller,
+                              "close-request",
+                              (GCallback) clear_new_folder_dialog,
+                              view);
 }
 
 typedef struct
@@ -3347,6 +3334,10 @@ nautilus_files_view_dispose (GObject *object)
     {
         clear_compress_dialog (view);
     }
+    if (priv->new_folder_controller != NULL)
+    {
+        clear_new_folder_dialog (view);
+    }
 
     if (priv->directory)
     {
@@ -3455,7 +3446,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
-    g_clear_object (&priv->new_folder_controller);
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
 

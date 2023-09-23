@@ -21,17 +21,21 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <adwaita.h>
 
-#include "nautilus-file-name-widget-controller.h"
 #include "nautilus-directory.h"
 
 #define NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER nautilus_new_folder_dialog_controller_get_type ()
-G_DECLARE_FINAL_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS, NEW_FOLDER_DIALOG_CONTROLLER, NautilusFileNameWidgetController)
+G_DECLARE_FINAL_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS, NEW_FOLDER_DIALOG_CONTROLLER, AdwWindow)
 
-NautilusNewFolderDialogController * nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
-                                                                               NautilusDirectory *destination_directory,
-                                                                               gboolean           with_selection,
-                                                                               gchar             *initial_name);
+typedef void (*NewFolderCallback) (const char *new_name,
+                                   gboolean    from_selection,
+                                   gpointer    user_data);
 
-char * nautilus_new_folder_dialog_get_name (NautilusNewFolderDialogController *controller);
-gboolean nautilus_new_folder_dialog_controller_get_with_selection (NautilusNewFolderDialogController *controller);
+NautilusNewFolderDialogController *
+nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
+                                           NautilusDirectory *destination_directory,
+                                           gboolean           from_selection,
+                                           gchar             *initial_name,
+                                           NewFolderCallback  callback,
+                                           gpointer           callback_data);
