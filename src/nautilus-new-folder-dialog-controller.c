@@ -76,7 +76,6 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     GtkWidget *error_label;
     GtkWidget *name_entry;
     GtkWidget *activate_button;
-    GtkWidget *name_label;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-create-folder-dialog.ui");
     new_folder_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "create_folder_dialog"));
@@ -84,7 +83,6 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
     name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
     activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "ok_button"));
-    name_label = GTK_WIDGET (gtk_builder_get_object (builder, "name_label"));
 
     gtk_window_set_transient_for (GTK_WINDOW (new_folder_dialog),
                                   parent_window);
@@ -120,10 +118,6 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     {
         gtk_editable_set_text (GTK_EDITABLE (name_entry), initial_name);
     }
-
-    gtk_button_set_label (GTK_BUTTON (activate_button), _("Create"));
-    gtk_label_set_text (GTK_LABEL (name_label), _("Folder name"));
-    gtk_window_set_title (GTK_WINDOW (new_folder_dialog), _("New Folder"));
 
     gtk_window_present (GTK_WINDOW (new_folder_dialog));
 
