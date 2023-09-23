@@ -2291,12 +2291,12 @@ out:
 }
 
 static void
-compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
-                                             gpointer                          user_data)
+create_archive_callback (const char *archive_name,
+                         const char *passphrase,
+                         gpointer    user_data)
 {
     CompressCallbackData *callback_data = user_data;
     NautilusFilesView *view;
-    g_autofree gchar *name = NULL;
     GList *source_files = NULL;
     GList *l;
     CompressData *data;
@@ -2306,7 +2306,6 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     NautilusFilesViewPrivate *priv;
     AutoarFormat format;
     AutoarFilter filter;
-    const gchar *passphrase = NULL;
 
     view = NAUTILUS_FILES_VIEW (callback_data->view);
     priv = nautilus_files_view_get_instance_private (view);
@@ -2318,13 +2317,12 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     }
     source_files = g_list_reverse (source_files);
 
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
     /* Get a parent from a random file. We assume all files has a common parent.
      * But don't assume the parent is the view location, since that's not the
      * case in list view when expand-folder setting is set
      */
     parent = g_file_get_parent (G_FILE (g_list_first (source_files)->data));
-    output = g_file_get_child (parent, name);
+    output = g_file_get_child (parent, archive_name);
 
     data = g_new (CompressData, 1);
     data->view = view;
@@ -2356,7 +2354,6 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
         {
             format = AUTOAR_FORMAT_ZIP;
             filter = AUTOAR_FILTER_NONE;
-            passphrase = nautilus_compress_dialog_controller_get_passphrase (priv->compress_controller);
         }
         break;
 
@@ -2454,21 +2451,18 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
                                                              MIN_COMMON_FILENAME_PREFIX_LENGTH);
     }
 
-    priv->compress_controller = nautilus_compress_dialog_controller_new (nautilus_files_view_get_containing_window (view),
-                                                                         containing_directory,
-                                                                         common_prefix);
-
     data = g_new0 (CompressCallbackData, 1);
     data->view = view;
     data->selection = nautilus_files_view_get_selection_for_file_transfer (view);
 
-    g_signal_connect_data (priv->compress_controller,
-                           "name-accepted",
-                           (GCallback) compress_dialog_controller_on_name_accepted,
-                           data,
-                           (GClosureNotify) compress_callback_data_free,
-                           G_CONNECT_AFTER);
-
+    priv->compress_controller = nautilus_compress_dialog_controller_new (nautilus_files_view_get_containing_window (view),
+                                                                         containing_directory,
+                                                                         common_prefix,
+                                                                         create_archive_callback,
+                                                                         data);
+    g_object_weak_ref (G_OBJECT (priv->compress_controller),
+                       (GWeakNotify) compress_callback_data_free,
+                       data);
     g_signal_connect (priv->compress_controller,
                       "cancelled",
                       (GCallback) compress_dialog_controller_on_cancelled,

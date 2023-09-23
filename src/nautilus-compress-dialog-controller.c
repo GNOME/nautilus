@@ -40,6 +40,9 @@ struct _NautilusCompressDialogController
     GtkWidget *passphrase_confirm_label;
     GtkWidget *passphrase_confirm_entry;
 
+    CompressCallback callback;
+    gpointer callback_data;
+
     const char *extension;
     gchar *passphrase;
     gchar *passphrase_confirm;
@@ -447,10 +450,21 @@ extension_dropdown_setup (NautilusCompressDialogController *self)
     g_object_unref (list_factory);
 }
 
+static void
+on_name_accepted (NautilusFileNameWidgetController *controller)
+{
+    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
+    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (controller);
+
+    self->callback (name, self->passphrase, self->callback_data);
+}
+
 NautilusCompressDialogController *
 nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                          NautilusDirectory *destination_directory,
-                                         const char        *initial_name)
+                                         const char        *initial_name,
+                                         CompressCallback   callback,
+                                         gpointer           callback_data)
 {
     NautilusCompressDialogController *self;
     g_autoptr (GtkBuilder) builder = NULL;
@@ -489,7 +503,12 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                          "activate-button", activate_button,
                          "containing-directory", destination_directory, NULL);
 
+    g_signal_connect (self, "name-accepted",
+                      G_CALLBACK (on_name_accepted), NULL);
+
     self->compress_dialog = compress_dialog;
+    self->callback = callback;
+    self->callback_data = callback_data;
     self->activate_button = activate_button;
     self->error_label = error_label;
     self->name_entry = name_entry;
@@ -560,10 +579,4 @@ nautilus_compress_dialog_controller_class_init (NautilusCompressDialogController
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->finalize = nautilus_compress_dialog_controller_finalize;
-}
-
-const gchar *
-nautilus_compress_dialog_controller_get_passphrase (NautilusCompressDialogController *self)
-{
-    return self->passphrase;
 }
