@@ -1711,7 +1711,7 @@ drag_motion_callback (GtkDropTarget    *target,
            * of the row, we need to increase the order-index.
            */
           row_placeholder_index = row_index;
-          gtk_widget_translate_coordinates (GTK_WIDGET (sidebar), GTK_WIDGET (row),
+          gtk_widget_translate_coordinates (sidebar->list_box, GTK_WIDGET (row),
 		                            x, y,
 		                            &x, &y);
 
