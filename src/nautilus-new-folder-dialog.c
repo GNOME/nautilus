@@ -6,7 +6,7 @@
 
 #include <glib/gi18n.h>
 
-#include "nautilus-new-folder-dialog-controller.h"
+#include "nautilus-new-folder-dialog.h"
 
 #include "nautilus-filename-validator.h"
 
@@ -97,7 +97,7 @@ nautilus_new_folder_dialog_class_init (NautilusNewFolderDialogClass *klass)
     object_class->finalize = nautilus_new_folder_dialog_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class,
-                                                 "/org/gnome/nautilus/ui/nautilus-create-folder-dialog.ui");
+                                                 "/org/gnome/nautilus/ui/nautilus-new-folder-dialog.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, name_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, validator);

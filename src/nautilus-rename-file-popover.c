@@ -6,7 +6,7 @@
 
 #include <glib/gi18n.h>
 
-#include "nautilus-rename-file-popover-controller.h"
+#include "nautilus-rename-file-popover.h"
 
 #include "nautilus-directory.h"
 #include "nautilus-filename-validator.h"
