@@ -60,7 +60,6 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
 #include "nautilus-pathbar.h"
-#include "nautilus-profile.h"
 #include "nautilus-progress-indicator.h"
 #include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
@@ -1679,8 +1678,6 @@ nautilus_window_constructed (GObject *self)
 
     window = NAUTILUS_WINDOW (self);
 
-    nautilus_profile_start (NULL);
-
     G_OBJECT_CLASS (nautilus_window_parent_class)->constructed (self);
 
     application = NAUTILUS_APPLICATION (g_application_get_default ());
@@ -1726,8 +1723,6 @@ nautilus_window_constructed (GObject *self)
                                                     "changed",
                                                     G_CALLBACK (nautilus_window_sync_bookmarks),
                                                     window, G_CONNECT_SWAPPED);
-
-    nautilus_profile_end (NULL);
 }
 
 static void

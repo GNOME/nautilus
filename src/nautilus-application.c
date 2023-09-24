@@ -57,7 +57,6 @@
 #include "nautilus-module.h"
 #include "nautilus-preferences-window.h"
 #include "nautilus-previewer.h"
-#include "nautilus-profile.h"
 #include "nautilus-progress-persistence-handler.h"
 #include "nautilus-scheme.h"
 #include "nautilus-self-check-functions.h"
@@ -149,8 +148,6 @@ check_required_directories (NautilusApplication *self)
 
     g_assert (NAUTILUS_IS_APPLICATION (self));
 
-    nautilus_profile_start (NULL);
-
     ret = TRUE;
 
     user_directory = nautilus_get_user_directory ();
@@ -207,7 +204,6 @@ check_required_directories (NautilusApplication *self)
 
     g_slist_free (directories);
     g_free (user_directory);
-    nautilus_profile_end (NULL);
 
     return ret;
 }
@@ -251,7 +247,6 @@ nautilus_application_create_window (NautilusApplication *self)
     gint default_height = 0;
 
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
-    nautilus_profile_start (NULL);
 
     window = nautilus_window_new ();
 
@@ -280,7 +275,6 @@ nautilus_application_create_window (NautilusApplication *self)
     }
 
     DEBUG ("Creating a new navigation window");
-    nautilus_profile_end (NULL);
 
     return window;
 }
@@ -389,7 +383,6 @@ real_open_location_full (NautilusApplication *self,
     new_uri = g_file_get_uri (location);
 
     DEBUG ("Application opening location, old: %s, new: %s", old_uri, new_uri);
-    nautilus_profile_start ("Application opening location, old: %s, new: %s", old_uri, new_uri);
 
     g_free (old_uri);
     g_free (new_uri);
@@ -451,10 +444,7 @@ static NautilusWindow *
 open_window (NautilusApplication *self,
              GFile               *location)
 {
-    NautilusWindow *window;
-
-    nautilus_profile_start (NULL);
-    window = nautilus_application_create_window (self);
+    NautilusWindow *window = nautilus_application_create_window (self);
 
     if (location != NULL)
     {
@@ -469,8 +459,6 @@ open_window (NautilusApplication *self,
         g_object_unref (home);
     }
 
-    nautilus_profile_end (NULL);
-
     return window;
 }
 
@@ -483,8 +471,6 @@ nautilus_application_open_location (NautilusApplication *self,
     NautilusWindow *window;
     NautilusWindowSlot *slot;
     GList *sel_list = NULL;
-
-    nautilus_profile_start (NULL);
 
     if (selection != NULL)
     {
@@ -508,8 +494,6 @@ nautilus_application_open_location (NautilusApplication *self,
     {
         nautilus_file_list_free (sel_list);
     }
-
-    nautilus_profile_end (NULL);
 }
 
 /* Note: when launched from command line we do not reach this method
@@ -623,7 +607,6 @@ do_perform_self_checks (void)
 #ifndef NAUTILUS_OMIT_SELF_CHECK
     gtk_init ();
 
-    nautilus_profile_start (NULL);
     /* Run the checks (each twice) for nautilus and libnautilus-private. */
 
     nautilus_run_self_checks ();
@@ -633,7 +616,6 @@ do_perform_self_checks (void)
     nautilus_run_self_checks ();
     nautilus_run_lib_self_checks ();
     eel_exit_if_self_checks_failed ();
-    nautilus_profile_end (NULL);
 #endif
 
     return EXIT_SUCCESS;
@@ -932,8 +914,6 @@ nautilus_application_command_line (GApplication            *application,
     gint retval = -1;
     GVariantDict *options;
 
-    nautilus_profile_start (NULL);
-
     options = g_application_command_line_get_options_dict (command_line);
 
     if (g_variant_dict_contains (options, "version"))
@@ -967,8 +947,6 @@ nautilus_application_command_line (GApplication            *application,
     retval = nautilus_application_handle_file_args (self, options);
 
 out:
-    nautilus_profile_end (NULL);
-
     return retval;
 }
 
@@ -1142,10 +1120,7 @@ static void
 nautilus_application_startup (GApplication *app)
 {
     NautilusApplication *self = NAUTILUS_APPLICATION (app);
-    NautilusApplicationPrivate *priv;
-
-    nautilus_profile_start (NULL);
-    priv = nautilus_application_get_instance_private (self);
+    NautilusApplicationPrivate *priv = nautilus_application_get_instance_private (self);
 
     g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/nautilus");
 
@@ -1160,9 +1135,7 @@ nautilus_application_startup (GApplication *app)
     nautilus_global_preferences_init ();
 
     /* initialize nautilus modules */
-    nautilus_profile_start ("Modules");
     nautilus_module_setup ();
-    nautilus_profile_end ("Modules");
 
     /* attach menu-provider module callback */
     menu_provider_init_callback ();
@@ -1182,8 +1155,6 @@ nautilus_application_startup (GApplication *app)
         maybe_migrate_gtk_filechooser_preferences ();
         nautilus_tag_manager_maybe_migrate_tracker2_data (priv->tag_manager);
     }
-
-    nautilus_profile_end (NULL);
 
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
 

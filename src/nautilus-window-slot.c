@@ -44,7 +44,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-module.h"
 #include "nautilus-monitor.h"
-#include "nautilus-profile.h"
 #include "nautilus-ui-utilities.h"
 
 enum
@@ -1188,14 +1187,11 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
     if (old_location && g_file_equal (old_location, location) &&
         nautilus_file_selection_equal (old_selection, new_selection))
     {
-        goto done;
+        return;
     }
 
     begin_location_change (self, location, old_location, new_selection,
                            NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
-
-done:
-    nautilus_profile_end (NULL);
 }
 
 static GList *
@@ -1316,8 +1312,6 @@ begin_location_change (NautilusWindowSlot         *self,
               || type == NAUTILUS_LOCATION_CHANGE_FORWARD
               || distance == 0);
 
-    nautilus_profile_start (NULL);
-
     /* Avoid to update status from the current view in our async calls */
     nautilus_window_slot_disconnect_content_view (self);
     /* We are going to change the location, so make sure we stop any loading
@@ -1352,8 +1346,6 @@ begin_location_change (NautilusWindowSlot         *self,
                                    NAUTILUS_FILE_ATTRIBUTE_MOUNT,
                                    got_file_info_for_view_selection_callback,
                                    self);
-
-    nautilus_profile_end (NULL);
 }
 
 static void
@@ -1813,8 +1805,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
     g_assert (self->determine_view_file == file);
     self->determine_view_file = NULL;
 
-    nautilus_profile_start (NULL);
-
     if (handle_mount_if_needed (self, file))
     {
         goto done;
@@ -1952,7 +1942,6 @@ done:
     g_clear_error (&error);
 
     nautilus_file_unref (file);
-    nautilus_profile_end (NULL);
 }
 
 /* Load a view into the window, either reusing the old one or creating
@@ -1968,7 +1957,6 @@ setup_view (NautilusWindowSlot *self,
 {
     gboolean ret = TRUE;
     GFile *old_location;
-    nautilus_profile_start (NULL);
 
     nautilus_window_slot_disconnect_content_view (self);
 
@@ -2014,8 +2002,6 @@ setup_view (NautilusWindowSlot *self,
     change_view (self);
 
 out:
-    nautilus_profile_end (NULL);
-
     return ret;
 }
 
@@ -2027,12 +2013,10 @@ load_new_location (NautilusWindowSlot *self,
                    gboolean            tell_current_content_view,
                    gboolean            tell_new_content_view)
 {
-    NautilusView *view;
+    NautilusView *view = NULL;
     g_assert (self != NULL);
     g_assert (location != NULL);
 
-    view = NULL;
-    nautilus_profile_start (NULL);
     /* Note, these may recurse into report_load_underway */
     if (self->content_view != NULL && tell_current_content_view)
     {
@@ -2065,8 +2049,6 @@ load_new_location (NautilusWindowSlot *self,
             }
         }
     }
-
-    nautilus_profile_end (NULL);
 }
 
 static void
@@ -2647,8 +2629,6 @@ view_is_loading_changed_cb (GObject            *object,
 
     view = NAUTILUS_VIEW (object);
 
-    nautilus_profile_start (NULL);
-
     if (nautilus_view_is_loading (view))
     {
         view_started_loading (self, view);
@@ -2657,8 +2637,6 @@ view_is_loading_changed_cb (GObject            *object,
     {
         view_ended_loading (self, view);
     }
-
-    nautilus_profile_end (NULL);
 }
 
 static gboolean

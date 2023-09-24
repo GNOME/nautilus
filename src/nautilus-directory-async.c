@@ -33,7 +33,6 @@
 #include "nautilus-file-queue.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
-#include "nautilus-profile.h"
 #include "nautilus-signaller.h"
 
 /* turn this on to check if async. job calls are balanced */
@@ -804,7 +803,6 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
     {
         dir_uri = nautilus_directory_get_uri (directory);
     }
-    nautilus_profile_start ("uri %s file-uri %s client %p", dir_uri, file_uri, client);
     g_free (dir_uri);
     g_free (file_uri);
 
@@ -864,7 +862,6 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
 
     /* Kick off I/O. */
     nautilus_directory_async_state_changed (directory);
-    nautilus_profile_end (NULL);
 }
 
 static void
@@ -965,8 +962,6 @@ dequeue_pending_idle_callback (gpointer callback_data)
     directory = NAUTILUS_DIRECTORY (callback_data);
 
     nautilus_directory_ref (directory);
-
-    nautilus_profile_start ("nitems %d", g_list_length (directory->details->pending_file_info));
 
     directory->details->dequeue_pending_idle_id = 0;
 
@@ -1120,8 +1115,6 @@ drain:
     /* Get the state machine running again. */
     nautilus_directory_async_state_changed (directory);
 
-    nautilus_profile_end (NULL);
-
     nautilus_directory_unref (directory);
     return FALSE;
 }
@@ -1210,7 +1203,6 @@ directory_load_done (NautilusDirectory *directory,
 {
     GList *node;
 
-    nautilus_profile_start (NULL);
     g_object_ref (directory);
 
     directory->details->directory_loaded = TRUE;
@@ -1243,7 +1235,6 @@ directory_load_done (NautilusDirectory *directory,
     directory_load_cancel (directory);
 
     g_object_unref (directory);
-    nautilus_profile_end (NULL);
 }
 
 void
@@ -2409,8 +2400,6 @@ void
 nautilus_directory_force_reload_internal (NautilusDirectory      *directory,
                                           NautilusFileAttributes  file_attributes)
 {
-    nautilus_profile_start (NULL);
-
     /* invalidate attributes that are getting reloaded for all files */
     nautilus_directory_invalidate_file_attributes (directory, file_attributes);
 
@@ -2423,8 +2412,6 @@ nautilus_directory_force_reload_internal (NautilusDirectory      *directory,
 
     add_all_files_to_work_queue (directory);
     nautilus_directory_async_state_changed (directory);
-
-    nautilus_profile_end (NULL);
 }
 
 static gboolean
