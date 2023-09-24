@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusRenameFilePopoverController" parent="GtkPopover">
+  <template class="NautilusRenameFilePopover" parent="GtkPopover">
     <property name="default-widget">name_entry</property>
     <signal name="closed" handler="reset_state" swapped="yes"/>
     <property name="child">

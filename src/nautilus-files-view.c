@@ -171,9 +171,9 @@ typedef struct
     GFile *location_before_search;
     NautilusDirectory *outgoing_search;
 
-    NautilusRenameFilePopoverController *rename_file_controller;
-    NautilusNewFolderDialogController *new_folder_controller;
-    NautilusCompressDialogController *compress_controller;
+    NautilusRenameFilePopover *rename_file_popover;
+    NautilusNewFolderDialog *new_folder_dialog;
+    NautilusCompressDialog *compress_dialog;
     gpointer compress_callback_data;
 
     GList *scripts_directory_list;
@@ -2068,12 +2068,11 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
      */
     nautilus_files_view_reveal_selection (view);
 
-    nautilus_rename_file_popover_controller_show_for_file (priv->rename_file_controller,
-                                                           target_file);
+    nautilus_rename_file_popover_show_for_file (priv->rename_file_popover, target_file);
 
     pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
-    gtk_popover_set_pointing_to (GTK_POPOVER (priv->rename_file_controller), pointing_to);
-    gtk_popover_popup (GTK_POPOVER (priv->rename_file_controller));
+    gtk_popover_set_pointing_to (GTK_POPOVER (priv->rename_file_popover), pointing_to);
+    gtk_popover_popup (GTK_POPOVER (priv->rename_file_popover));
 }
 
 static void
@@ -2081,8 +2080,8 @@ clear_new_folder_dialog (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
-    gtk_window_destroy (GTK_WINDOW (priv->new_folder_controller));
-    priv->new_folder_controller = NULL;
+    gtk_window_destroy (GTK_WINDOW (priv->new_folder_dialog));
+    priv->new_folder_dialog = NULL;
 }
 
 static void
@@ -2135,7 +2134,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->new_folder_controller != NULL)
+    if (priv->new_folder_dialog != NULL)
     {
         return;
     }
@@ -2150,21 +2149,21 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
     }
 
-    priv->new_folder_controller =
-        nautilus_new_folder_dialog_controller_new (containing_directory,
-                                                   with_selection,
-                                                   common_prefix,
-                                                   create_new_folder_callback,
-                                                   view);
+    priv->new_folder_dialog =
+        nautilus_new_folder_dialog_new (containing_directory,
+                                        with_selection,
+                                        common_prefix,
+                                        create_new_folder_callback,
+                                        view);
 
-    g_signal_connect_swapped (priv->new_folder_controller,
+    g_signal_connect_swapped (priv->new_folder_dialog,
                               "close-request",
                               (GCallback) clear_new_folder_dialog,
                               view);
 
-    gtk_window_set_transient_for (GTK_WINDOW (priv->new_folder_controller),
+    gtk_window_set_transient_for (GTK_WINDOW (priv->new_folder_dialog),
                                   nautilus_files_view_get_containing_window (view));
-    gtk_window_present (GTK_WINDOW (priv->new_folder_controller));
+    gtk_window_present (GTK_WINDOW (priv->new_folder_dialog));
 }
 
 typedef struct
@@ -2241,8 +2240,8 @@ clear_compress_dialog (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     CompressCallbackData *callback_data = priv->compress_callback_data;
 
-    gtk_window_destroy (GTK_WINDOW (priv->compress_controller));
-    priv->compress_controller = NULL;
+    gtk_window_destroy (GTK_WINDOW (priv->compress_dialog));
+    priv->compress_dialog = NULL;
 
     nautilus_file_list_free (callback_data->selection);
     g_free (priv->compress_callback_data);
@@ -2359,7 +2358,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->compress_controller != NULL)
+    if (priv->compress_dialog != NULL)
     {
         return;
     }
@@ -2393,19 +2392,19 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     data->selection = nautilus_files_view_get_selection_for_file_transfer (view);
     priv->compress_callback_data = data;
 
-    priv->compress_controller = nautilus_compress_dialog_controller_new (containing_directory,
-                                                                         common_prefix,
-                                                                         create_archive_callback,
-                                                                         data);
+    priv->compress_dialog = nautilus_compress_dialog_new (containing_directory,
+                                                          common_prefix,
+                                                          create_archive_callback,
+                                                          data);
 
-    g_signal_connect_swapped (priv->compress_controller,
+    g_signal_connect_swapped (priv->compress_dialog,
                               "close-request",
                               (GCallback) clear_compress_dialog,
                               view);
 
-    gtk_window_set_transient_for (GTK_WINDOW (priv->compress_controller),
+    gtk_window_set_transient_for (GTK_WINDOW (priv->compress_dialog),
                                   nautilus_files_view_get_containing_window (view));
-    gtk_window_present (GTK_WINDOW (priv->compress_controller));
+    gtk_window_present (GTK_WINDOW (priv->compress_dialog));
 }
 
 static void
@@ -3334,13 +3333,13 @@ nautilus_files_view_dispose (GObject *object)
 
     g_clear_pointer (&priv->selection_menu, gtk_widget_unparent);
     g_clear_pointer (&priv->background_menu, gtk_widget_unparent);
-    gtk_widget_unparent (GTK_WIDGET (priv->rename_file_controller));
-    priv->rename_file_controller = NULL;
-    if (priv->compress_controller != NULL)
+    gtk_widget_unparent (GTK_WIDGET (priv->rename_file_popover));
+    priv->rename_file_popover = NULL;
+    if (priv->compress_dialog != NULL)
     {
         clear_compress_dialog (view);
     }
-    if (priv->new_folder_controller != NULL)
+    if (priv->new_folder_dialog != NULL)
     {
         clear_new_folder_dialog (view);
     }
@@ -10028,9 +10027,9 @@ nautilus_files_view_init (NautilusFilesView *view)
     priv->starred_cancellable = g_cancellable_new ();
     priv->clipboard_cancellable = g_cancellable_new ();
 
-    priv->rename_file_controller = nautilus_rename_file_popover_controller_new (rename_file_popover_callback);
+    priv->rename_file_popover = nautilus_rename_file_popover_new (rename_file_popover_callback);
 
-    gtk_widget_set_parent (GTK_WIDGET (priv->rename_file_controller), GTK_WIDGET (view));
+    gtk_widget_set_parent (GTK_WIDGET (priv->rename_file_popover), GTK_WIDGET (view));
 }
 
 NautilusFilesView *

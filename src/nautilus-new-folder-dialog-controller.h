@@ -1,20 +1,7 @@
-/* nautilus-new-folder-dialog-controller.h
+/*
+ * Copyright (C) 2023 The GNOME project contributors
  *
- * Copyright (C) 2016 the Nautilus developers
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #pragma once
@@ -25,16 +12,17 @@
 
 #include "nautilus-directory.h"
 
-#define NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER nautilus_new_folder_dialog_controller_get_type ()
-G_DECLARE_FINAL_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS, NEW_FOLDER_DIALOG_CONTROLLER, AdwWindow)
+#define NAUTILUS_TYPE_NEW_FOLDER_DIALOG nautilus_new_folder_dialog_get_type ()
+G_DECLARE_FINAL_TYPE (
+    NautilusNewFolderDialog, nautilus_new_folder_dialog, NAUTILUS, NEW_FOLDER_DIALOG, AdwWindow)
 
 typedef void (*NewFolderCallback) (const char *new_name,
                                    gboolean    from_selection,
                                    gpointer    user_data);
 
-NautilusNewFolderDialogController *
-nautilus_new_folder_dialog_controller_new (NautilusDirectory *destination_directory,
-                                           gboolean           from_selection,
-                                           gchar             *initial_name,
-                                           NewFolderCallback  callback,
-                                           gpointer           callback_data);
+NautilusNewFolderDialog *
+nautilus_new_folder_dialog_new (NautilusDirectory *destination_directory,
+                                gboolean           from_selection,
+                                gchar             *initial_name,
+                                NewFolderCallback  callback,
+                                gpointer           callback_data);

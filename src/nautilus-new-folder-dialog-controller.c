@@ -1,20 +1,7 @@
-/* nautilus-new-folder-dialog-controller.c
+/*
+ * Copyright (C) 2023 The GNOME project contributors
  *
- * Copyright (C) 2016 the Nautilus developers
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include <glib/gi18n.h>
@@ -25,7 +12,7 @@
 #include "nautilus-filename-message.h"
 
 
-struct _NautilusNewFolderDialogController
+struct _NautilusNewFolderDialog
 {
     AdwWindow parent_instance;
 
@@ -43,14 +30,14 @@ struct _NautilusNewFolderDialogController
     gboolean should_create;
 };
 
-G_DEFINE_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, ADW_TYPE_WINDOW)
+G_DEFINE_TYPE (NautilusNewFolderDialog, nautilus_new_folder_dialog, ADW_TYPE_WINDOW)
 
 static void
 update_state (NautilusDirectory *,
               GList *,
               gpointer user_data)
 {
-    NautilusNewFolderDialogController *self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (user_data);
+    NautilusNewFolderDialog *self = NAUTILUS_NEW_FOLDER_DIALOG (user_data);
     g_autofree char *name = g_strstrip (g_strdup (gtk_editable_get_text (self->name_entry)));
     NautilusFileNameMessage message = nautilus_filename_message_from_name (name,
                                                                            self->containing_directory,
@@ -73,7 +60,7 @@ update_state (NautilusDirectory *,
 }
 
 static void
-on_name_changed (NautilusNewFolderDialogController *self)
+on_name_changed (NautilusNewFolderDialog *self)
 {
     nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
@@ -83,20 +70,20 @@ on_name_changed (NautilusNewFolderDialogController *self)
 }
 
 static void
-try_accept_name (NautilusNewFolderDialogController *self)
+try_accept_name (NautilusNewFolderDialog *self)
 {
     self->should_create = TRUE;
     on_name_changed (self);
 }
 
-NautilusNewFolderDialogController *
-nautilus_new_folder_dialog_controller_new (NautilusDirectory *destination_directory,
-                                           gboolean           from_selection,
-                                           gchar             *initial_name,
-                                           NewFolderCallback  callback,
-                                           gpointer           callback_data)
+NautilusNewFolderDialog *
+nautilus_new_folder_dialog_new (NautilusDirectory *destination_directory,
+                                gboolean           from_selection,
+                                gchar             *initial_name,
+                                NewFolderCallback  callback,
+                                gpointer           callback_data)
 {
-    NautilusNewFolderDialogController *self = g_object_new (NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER, NULL);
+    NautilusNewFolderDialog *self = g_object_new (NAUTILUS_TYPE_NEW_FOLDER_DIALOG, NULL);
 
     self->from_selection = from_selection;
     self->containing_directory = nautilus_directory_ref (destination_directory);
@@ -113,7 +100,7 @@ nautilus_new_folder_dialog_controller_new (NautilusDirectory *destination_direct
 }
 
 static void
-nautilus_new_folder_dialog_controller_init (NautilusNewFolderDialogController *self)
+nautilus_new_folder_dialog_init (NautilusNewFolderDialog *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 }
@@ -121,40 +108,38 @@ nautilus_new_folder_dialog_controller_init (NautilusNewFolderDialogController *s
 static void
 new_folder_dialog_dispose (GObject *object)
 {
-    gtk_widget_dispose_template (GTK_WIDGET (object), NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER);
+    gtk_widget_dispose_template (GTK_WIDGET (object), NAUTILUS_TYPE_NEW_FOLDER_DIALOG);
 
-    G_OBJECT_CLASS (nautilus_new_folder_dialog_controller_parent_class)->dispose (object);
+    G_OBJECT_CLASS (nautilus_new_folder_dialog_parent_class)->dispose (object);
 }
 
 
 static void
-nautilus_new_folder_dialog_controller_finalize (GObject *object)
+nautilus_new_folder_dialog_finalize (GObject *object)
 {
-    NautilusNewFolderDialogController *self;
-
-    self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (object);
+    NautilusNewFolderDialog *self = NAUTILUS_NEW_FOLDER_DIALOG (object);
 
     g_clear_object (&self->containing_directory);
 
-    G_OBJECT_CLASS (nautilus_new_folder_dialog_controller_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_new_folder_dialog_parent_class)->finalize (object);
 }
 
 static void
-nautilus_new_folder_dialog_controller_class_init (NautilusNewFolderDialogControllerClass *klass)
+nautilus_new_folder_dialog_class_init (NautilusNewFolderDialogClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-    object_class->finalize = nautilus_new_folder_dialog_controller_finalize;
+    object_class->finalize = nautilus_new_folder_dialog_finalize;
     object_class->dispose = new_folder_dialog_dispose;
 
     gtk_widget_class_set_template_from_resource (
         widget_class, "/org/gnome/nautilus/ui/nautilus-create-folder-dialog.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialogController, activate_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialogController, error_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialogController, error_revealer);
-    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialogController, name_entry);
+    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, activate_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, error_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, error_revealer);
+    gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, name_entry);
 
     gtk_widget_class_bind_template_callback (widget_class, on_name_changed);
     gtk_widget_class_bind_template_callback (widget_class, try_accept_name);
