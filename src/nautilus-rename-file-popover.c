@@ -8,7 +8,7 @@
 
 #include <eel/eel-vfs-extensions.h>
 
-#include "nautilus-rename-file-popover-controller.h"
+#include "nautilus-rename-file-popover.h"
 
 #include "nautilus-directory.h"
 #include "nautilus-file-private.h"

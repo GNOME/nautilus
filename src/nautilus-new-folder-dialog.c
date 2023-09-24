@@ -7,7 +7,7 @@
 #include <glib/gi18n.h>
 #include <adwaita.h>
 
-#include "nautilus-new-folder-dialog-controller.h"
+#include "nautilus-new-folder-dialog.h"
 
 #include "nautilus-filename-message.h"
 
