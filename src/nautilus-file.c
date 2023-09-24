@@ -6011,7 +6011,7 @@ get_real_name (const char *name,
     const char *locale_string;
     g_auto (GStrv) geco_parts = NULL;
 
-    if (gecos == NULL)
+    if (gecos == NULL || gecos[0] == '\0')
     {
         return NULL;
     }
