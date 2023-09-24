@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusRenameFilePopoverController" parent="GtkPopover">
-    <signal name="closed" handler="rename_file_popover_controller_on_closed"/>
+  <template class="NautilusRenameFilePopover" parent="GtkPopover">
+    <signal name="closed" handler="on_closed"/>
     <property name="child">
       <object class="GtkBox">
         <property name="margin-start">18</property>
@@ -60,3 +60,4 @@
     <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
   </object>
 </interface>
+

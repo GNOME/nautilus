@@ -2066,11 +2066,11 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
 
-    nautilus_rename_file_popover_controller_show_for_file (NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (priv->rename_file_popover),
-                                                           target_file,
-                                                           pointing_to,
-                                                           rename_file_popover_callback,
-                                                           view);
+    nautilus_rename_file_popover_show_for_file (NAUTILUS_RENAME_FILE_POPOVER (priv->rename_file_popover),
+                                                target_file,
+                                                pointing_to,
+                                                rename_file_popover_callback,
+                                                view);
 }
 
 static void
@@ -2128,12 +2128,12 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
     }
 
-    (void) nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
-                                                      containing_directory,
-                                                      with_selection,
-                                                      common_prefix,
-                                                      create_new_folder_callback,
-                                                      view);
+    (void) nautilus_new_folder_dialog_new (nautilus_files_view_get_containing_window (view),
+                                           containing_directory,
+                                           with_selection,
+                                           common_prefix,
+                                           create_new_folder_callback,
+                                           view);
 }
 
 typedef struct
@@ -2316,7 +2316,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     g_autofree char *common_prefix = NULL;
     g_autofree char *uri = NULL;
     CompressCallbackData *data;
-    NautilusCompressDialogController *compress_controller;
+    NautilusCompressDialog *compress_dialog;
 
     uri = nautilus_files_view_get_backing_uri (view);
     containing_directory = nautilus_directory_get_by_uri (uri);
@@ -2346,12 +2346,12 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     data->view = view;
     data->selection = nautilus_files_view_get_selection_for_file_transfer (view);
 
-    compress_controller = nautilus_compress_dialog_controller_new (nautilus_files_view_get_containing_window (view),
-                                                                   containing_directory,
-                                                                   common_prefix,
-                                                                   create_archive_callback,
-                                                                   data);
-    g_object_weak_ref (G_OBJECT (compress_controller),
+    compress_dialog = nautilus_compress_dialog_new (nautilus_files_view_get_containing_window (view),
+                                                    containing_directory,
+                                                    common_prefix,
+                                                    create_archive_callback,
+                                                    data);
+    g_object_weak_ref (G_OBJECT (compress_dialog),
                        (GWeakNotify) compress_callback_data_free,
                        data);
 }
@@ -9974,7 +9974,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     priv->starred_cancellable = g_cancellable_new ();
     priv->clipboard_cancellable = g_cancellable_new ();
 
-    priv->rename_file_popover = nautilus_rename_file_popover_controller_new ();
+    priv->rename_file_popover = nautilus_rename_file_popover_new ();
     gtk_widget_set_parent (priv->rename_file_popover, GTK_WIDGET (view));
 }
 

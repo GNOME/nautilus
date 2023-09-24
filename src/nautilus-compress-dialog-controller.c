@@ -1,20 +1,7 @@
-/* nautilus-compress-dialog-controller.h
+/*
+ * Copyright (C) 2023 The GNOME project contributors
  *
- * Copyright (C) 2016 the Nautilus developers
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 #include <adwaita.h>
@@ -26,7 +13,7 @@
 #include "nautilus-filename-validator.h"
 #include "nautilus-global-preferences.h"
 
-struct _NautilusCompressDialogController
+struct _NautilusCompressDialog
 {
     AdwWindow parent_instance;
 
@@ -50,7 +37,7 @@ struct _NautilusCompressDialogController
     gchar *passphrase_confirm;
 };
 
-G_DEFINE_TYPE (NautilusCompressDialogController, nautilus_compress_dialog_controller, ADW_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusCompressDialog, nautilus_compress_dialog, ADW_TYPE_WINDOW);
 
 #define NAUTILUS_TYPE_COMPRESS_ITEM (nautilus_compress_item_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusCompressItem, nautilus_compress_item, NAUTILUS, COMPRESS_ITEM, GObject)
@@ -104,7 +91,7 @@ nautilus_compress_item_new (NautilusCompressionFormat  format,
 }
 
 static void
-update_selected_format (NautilusCompressDialogController *self)
+update_selected_format (NautilusCompressDialog *self)
 {
     gboolean show_passphrase = FALSE;
     guint selected;
@@ -226,11 +213,10 @@ extension_dropdown_bind (GtkSignalListItemFactory *factory,
                          GtkListItem              *list_item,
                          gpointer                  user_data)
 {
-    NautilusCompressDialogController *self;
+    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
     GtkWidget *title, *subtitle, *checkmark;
     NautilusCompressItem *item;
 
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
     item = gtk_list_item_get_item (list_item);
 
     title = g_object_get_data (G_OBJECT (list_item), "title");
@@ -267,10 +253,8 @@ extension_dropdown_unbind (GtkSignalListItemFactory *factory,
                            GtkListItem              *item,
                            gpointer                  user_data)
 {
-    NautilusCompressDialogController *self;
+    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
     GtkWidget *title;
-
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
 
     if (self->extension_dropdown == NULL)
     {
@@ -289,9 +273,9 @@ extension_dropdown_unbind (GtkSignalListItemFactory *factory,
 }
 
 static void
-update_passphrase (NautilusCompressDialogController  *self,
-                   gchar                            **passphrase,
-                   GtkEditable                       *editable)
+update_passphrase (NautilusCompressDialog  *self,
+                   gchar                  **passphrase,
+                   GtkEditable             *editable)
 {
     const gchar *error_message;
 
@@ -314,7 +298,7 @@ static void
 passphrase_entry_on_changed (GtkEditable *editable,
                              gpointer     user_data)
 {
-    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
 
     update_passphrase (self, &self->passphrase, editable);
 }
@@ -323,7 +307,7 @@ static void
 passphrase_confirm_entry_on_changed (GtkEditable *editable,
                                      gpointer     user_data)
 {
-    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
 
     update_passphrase (self, &self->passphrase_confirm, editable);
 }
@@ -333,10 +317,9 @@ activate_button_on_sensitive_notify (GObject    *gobject,
                                      GParamSpec *pspec,
                                      gpointer    user_data)
 {
-    NautilusCompressDialogController *self;
+    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
     NautilusCompressionFormat format;
 
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
     format = g_settings_get_enum (nautilus_compression_preferences,
                                   NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
     if (format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP &&
@@ -348,7 +331,7 @@ activate_button_on_sensitive_notify (GObject    *gobject,
 }
 
 static void
-extension_dropdown_setup (NautilusCompressDialogController *self)
+extension_dropdown_setup (NautilusCompressDialog *self)
 {
     GtkListItemFactory *factory, *list_factory;
     GListStore *store;
@@ -419,7 +402,7 @@ extension_dropdown_setup (NautilusCompressDialogController *self)
 }
 
 static void
-on_name_accepted (NautilusCompressDialogController *self)
+on_name_accepted (NautilusCompressDialog *self)
 {
     g_autofree char *name = nautilus_filename_validator_get_new_name (self->validator);
 
@@ -428,16 +411,16 @@ on_name_accepted (NautilusCompressDialogController *self)
     gtk_window_close (GTK_WINDOW (self));
 }
 
-NautilusCompressDialogController *
-nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
-                                         NautilusDirectory *destination_directory,
-                                         const char        *initial_name,
-                                         CompressCallback   callback,
-                                         gpointer           callback_data)
+NautilusCompressDialog *
+nautilus_compress_dialog_new (GtkWindow         *parent_window,
+                              NautilusDirectory *destination_directory,
+                              const char        *initial_name,
+                              CompressCallback   callback,
+                              gpointer           callback_data)
 {
-    NautilusCompressDialogController *self = g_object_new (NAUTILUS_TYPE_COMPRESS_DIALOG_CONTROLLER,
-                                                           "transient-for", parent_window,
-                                                           NULL);
+    NautilusCompressDialog *self = g_object_new (NAUTILUS_TYPE_COMPRESS_DIALOG,
+                                                 "transient-for", parent_window,
+                                                 NULL);
 
     nautilus_filename_validator_set_containing_directory (self->validator,
                                                           destination_directory);
@@ -457,7 +440,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 }
 
 static void
-nautilus_compress_dialog_controller_init (NautilusCompressDialogController *self)
+nautilus_compress_dialog_init (NautilusCompressDialog *self)
 {
     g_type_ensure (NAUTILUS_TYPE_FILENAME_VALIDATOR);
     gtk_widget_init_template (GTK_WIDGET (self));
@@ -468,47 +451,45 @@ nautilus_compress_dialog_controller_init (NautilusCompressDialogController *self
 }
 
 static void
-nautilus_compress_dialog_controller_dispose (GObject *object)
+nautilus_compress_dialog_dispose (GObject *object)
 {
-    gtk_widget_dispose_template (GTK_WIDGET (object), NAUTILUS_TYPE_COMPRESS_DIALOG_CONTROLLER);
+    gtk_widget_dispose_template (GTK_WIDGET (object), NAUTILUS_TYPE_COMPRESS_DIALOG);
 
-    G_OBJECT_CLASS (nautilus_compress_dialog_controller_parent_class)->dispose (object);
+    G_OBJECT_CLASS (nautilus_compress_dialog_parent_class)->dispose (object);
 }
 
 static void
-nautilus_compress_dialog_controller_finalize (GObject *object)
+nautilus_compress_dialog_finalize (GObject *object)
 {
-    NautilusCompressDialogController *self;
-
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (object);
+    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (object);
 
     g_free (self->passphrase);
 
-    G_OBJECT_CLASS (nautilus_compress_dialog_controller_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_compress_dialog_parent_class)->finalize (object);
 }
 
 static void
-nautilus_compress_dialog_controller_class_init (NautilusCompressDialogControllerClass *klass)
+nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-    object_class->finalize = nautilus_compress_dialog_controller_finalize;
-    object_class->dispose = nautilus_compress_dialog_controller_dispose;
+    object_class->finalize = nautilus_compress_dialog_finalize;
+    object_class->dispose = nautilus_compress_dialog_dispose;
 
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, activate_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, error_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, extension_dropdown);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, extension_sizegroup);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, name_entry);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, passphrase_confirm_entry);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, passphrase_confirm_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, passphrase_entry);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, passphrase_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, validator);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, activate_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, error_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, extension_dropdown);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, extension_sizegroup);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, name_entry);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_confirm_entry);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_confirm_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_entry);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, validator);
 
     gtk_widget_class_bind_template_callback (widget_class, passphrase_entry_on_changed);
     gtk_widget_class_bind_template_callback (widget_class, passphrase_confirm_entry_on_changed);
