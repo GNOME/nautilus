@@ -165,8 +165,6 @@ libnautilus_sources = [
   'nautilus-file-changes-queue.h',
   'nautilus-file-conflict-dialog.c',
   'nautilus-file-conflict-dialog.h',
-  'nautilus-file-name-widget-controller.c',
-  'nautilus-file-name-widget-controller.h',
   'nautilus-rename-file-popover-controller.c',
   'nautilus-rename-file-popover-controller.h',
   'nautilus-new-folder-dialog-controller.c',

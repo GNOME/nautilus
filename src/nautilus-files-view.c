@@ -57,7 +57,6 @@
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-changes-queue.h"
-#include "nautilus-file-name-widget-controller.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-undo-manager.h"
