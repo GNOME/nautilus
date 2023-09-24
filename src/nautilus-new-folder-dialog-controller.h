@@ -33,8 +33,7 @@ typedef void (*NewFolderCallback) (const char *new_name,
                                    gpointer    user_data);
 
 NautilusNewFolderDialogController *
-nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
-                                           NautilusDirectory *destination_directory,
+nautilus_new_folder_dialog_controller_new (NautilusDirectory *destination_directory,
                                            gboolean           from_selection,
                                            gchar             *initial_name,
                                            NewFolderCallback  callback,

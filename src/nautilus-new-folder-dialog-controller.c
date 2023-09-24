@@ -90,16 +90,13 @@ try_accept_name (NautilusNewFolderDialogController *self)
 }
 
 NautilusNewFolderDialogController *
-nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
-                                           NautilusDirectory *destination_directory,
+nautilus_new_folder_dialog_controller_new (NautilusDirectory *destination_directory,
                                            gboolean           from_selection,
                                            gchar             *initial_name,
                                            NewFolderCallback  callback,
                                            gpointer           callback_data)
 {
     NautilusNewFolderDialogController *self = g_object_new (NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER, NULL);
-
-    gtk_window_set_transient_for (GTK_WINDOW (self), parent_window);
 
     self->from_selection = from_selection;
     self->containing_directory = nautilus_directory_ref (destination_directory);
@@ -111,8 +108,6 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
         gtk_editable_set_text (GTK_EDITABLE (self->name_entry), initial_name);
     }
     gtk_widget_grab_focus (GTK_WIDGET (self->name_entry));
-
-    gtk_window_present (GTK_WINDOW (self));
 
     return self;
 }

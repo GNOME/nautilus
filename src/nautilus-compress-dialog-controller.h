@@ -32,8 +32,7 @@ typedef void (*CompressCallback) (const char *new_name,
                                   gpointer    user_data);
 
 NautilusCompressDialogController *
-nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
-                                         NautilusDirectory *destination_directory,
+nautilus_compress_dialog_controller_new (NautilusDirectory *destination_directory,
                                          gchar             *initial_name,
                                          CompressCallback   callback,
                                          gpointer           callback_data);

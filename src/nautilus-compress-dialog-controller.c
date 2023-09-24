@@ -470,15 +470,12 @@ extension_dropdown_setup (NautilusCompressDialogController *self)
 }
 
 NautilusCompressDialogController *
-nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
-                                         NautilusDirectory *destination_directory,
+nautilus_compress_dialog_controller_new (NautilusDirectory *destination_directory,
                                          gchar             *initial_name,
                                          CompressCallback   callback,
                                          gpointer           callback_data)
 {
     NautilusCompressDialogController *self = g_object_new (NAUTILUS_TYPE_COMPRESS_DIALOG_CONTROLLER, NULL);
-
-    gtk_window_set_transient_for (GTK_WINDOW (self), parent_window);
 
     self->containing_directory = nautilus_directory_ref (destination_directory);
     self->callback = callback;
@@ -491,8 +488,6 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
         gtk_editable_set_text (GTK_EDITABLE (self->name_entry), initial_name);
     }
     gtk_widget_grab_focus (self->name_entry);
-
-    gtk_window_present (GTK_WINDOW (self));
 
     return self;
 }

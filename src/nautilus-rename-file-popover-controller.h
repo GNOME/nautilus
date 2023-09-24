@@ -32,9 +32,7 @@ typedef void (*NautilusRenameCallback) (NautilusFile *target_file,
                                         gpointer      user_data);
 
 NautilusRenameFilePopoverController *
-nautilus_rename_file_popover_controller_new (GtkWidget              *relative_to,
-                                             NautilusRenameCallback  callback);
+nautilus_rename_file_popover_controller_new (NautilusRenameCallback  callback);
 
 void           nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopoverController *controller,
-                                                                        NautilusFile                        *target_file,
-                                                                        GdkRectangle                        *pointing_to);
+                                                                        NautilusFile                        *target_file);
