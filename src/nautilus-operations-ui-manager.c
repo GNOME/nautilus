@@ -625,24 +625,22 @@ typedef struct
     ContextInvokeData parent_type;
     GtkWindow *parent_window;
     const gchar *basename;
-    GtkEntry *passphrase_entry;
+    GtkPasswordEntry *passphrase_entry;
     gchar *passphrase;
 } PassphraseRequestData;
 
 static void
-on_request_passphrase_cb (GtkDialog *dialog,
-                          gint       response_id,
-                          gpointer   user_data)
+on_request_passphrase_cb (AdwMessageDialog *dialog,
+                          gchar            *response,
+                          gpointer          user_data)
 {
     PassphraseRequestData *data = user_data;
 
-    if (response_id != GTK_RESPONSE_CANCEL &&
-        response_id != GTK_RESPONSE_DELETE_EVENT)
+    if (g_str_equal (response, "extract"))
     {
         data->passphrase = g_strdup (gtk_editable_get_text (GTK_EDITABLE (data->passphrase_entry)));
     }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
     invoke_main_context_completed (data);
 }
 
@@ -653,18 +651,19 @@ run_passphrase_dialog (gpointer user_data)
     g_autofree gchar *label_str = NULL;
     g_autoptr (GtkBuilder) builder = NULL;
     GObject *dialog;
-    GObject *label;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-operations-ui-manager-request-passphrase.ui");
     dialog = gtk_builder_get_object (builder, "request_passphrase_dialog");
-    label = gtk_builder_get_object (builder, "label");
-    data->passphrase_entry = GTK_ENTRY (gtk_builder_get_object (builder, "entry"));
+    data->passphrase_entry = GTK_PASSWORD_ENTRY (gtk_builder_get_object (builder, "entry"));
 
-    label_str = g_strdup_printf (_("“%s” is password-protected."), data->basename);
-    gtk_label_set_text (GTK_LABEL (label), label_str);
+
+    adw_message_dialog_format_body (ADW_MESSAGE_DIALOG (dialog),
+                                    _("“%s” is password-protected."),
+                                    data->basename);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_request_passphrase_cb), data);
     gtk_window_set_transient_for (GTK_WINDOW (dialog), data->parent_window);
+
     gtk_window_present (GTK_WINDOW (dialog));
 
     return G_SOURCE_REMOVE;

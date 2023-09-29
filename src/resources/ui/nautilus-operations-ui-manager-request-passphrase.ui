@@ -1,49 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkDialog" id="request_passphrase_dialog">
-    <property name="title" translatable="yes">Password Required</property>
-    <property name="modal">True</property>
-    <property name="destroy-with-parent">True</property>
-    <property name="use-header-bar">1</property>
-    <child internal-child="content_area">
-      <object class="GtkBox">
-        <property name="margin-top">20</property>
-        <property name="margin-bottom">20</property>
-        <property name="margin-start">20</property>
-        <property name="margin-end">20</property>
-        <child>
-          <object class="GtkLabel" id="label">
-            <property name="max-width-chars">60</property>
-            <property name="wrap">True</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkEntry" id="entry">
-            <property name="activates-default">True</property>
-            <property name="valign">end</property>
-            <property name="vexpand">True</property>
-            <property name="placeholder-text" translatable="yes">Enter password…</property>
-            <property name="visibility">False</property>
-            <property name="input-purpose">password</property>
-          </object>
-        </child>
+  <object class="AdwMessageDialog" id="request_passphrase_dialog">
+    <property name="heading" translatable="yes">Password Required</property>
+    <property name="default-response">extract</property>
+    <property name="close-response">cancel</property>
+    <property name="extra-child">
+      <object class="GtkPasswordEntry" id="entry">
+        <property name="activates-default">True</property>
+        <property name="placeholder-text" translatable="yes">Enter password…</property>
+        <property name="show-peek-icon">True</property>
       </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="cancel_button">
-        <property name="label" translatable="yes">_Cancel</property>
-        <property name="use-underline">True</property>
-      </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="extract_button">
-        <property name="label" translatable="yes">Extract</property>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="cancel">cancel_button</action-widget>
-      <action-widget response="ok" default="true">extract_button</action-widget>
-    </action-widgets>
+    </property>
+    <responses>
+      <response id="cancel" translatable="yes">_Cancel</response>
+      <response id="extract" translatable="yes" appearance="suggested">Extract</response>
+    </responses>
   </object>
 </interface>
