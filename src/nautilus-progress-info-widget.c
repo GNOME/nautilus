@@ -127,6 +127,7 @@ nautilus_progress_info_widget_constructed (GObject *obj)
     if (nautilus_progress_info_get_is_finished (self->priv->info))
     {
         gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "object-select-symbolic");
+        gtk_widget_set_tooltip_text (GTK_WIDGET (self->priv->button), "Operation Finished");
     }
 
     gtk_widget_set_sensitive (self->priv->button,
