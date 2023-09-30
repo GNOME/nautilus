@@ -3795,7 +3795,27 @@ nautilus_files_view_set_location (NautilusView *view,
 {
     g_autoptr (NautilusDirectory) directory = nautilus_directory_get (location);
 
-    load_directory (NAUTILUS_FILES_VIEW (view), directory);
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
+    {
+        /* Special case.
+         *
+         * This may happen if switching view mode while searching. In that case,
+         * we need to run the previous query again with the new view, because
+         * `load_directory()` alone doesn't load the old results results for us.
+         *
+         * In this case we don't call `load_directory()` here because that's
+         * going to be called internally by `nautilus_view_set_search_query()`
+         */
+        NautilusQuery *previous_query;
+
+        previous_query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+        nautilus_view_set_search_query (view, previous_query);
+    }
+    else
+    {
+        /* Regular case */
+        load_directory (NAUTILUS_FILES_VIEW (view), directory);
+    }
 }
 
 static gboolean
