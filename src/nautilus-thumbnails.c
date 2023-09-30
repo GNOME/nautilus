@@ -481,7 +481,8 @@ thumbnail_generated_cb (GObject      *source_object,
 
     if (pixbuf != NULL)
     {
-        g_autofree gchar *mtime = g_strdup_printf ("%lu", info->updated_file_mtime);
+        g_autofree gchar *mtime = g_strdup_printf ("%" G_GINT64_FORMAT,
+                                                   (gint64) info->updated_file_mtime);
 
         DEBUG ("(Thumbnail Async Thread) Saving thumbnail: %s\n",
                info->image_uri);
