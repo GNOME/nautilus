@@ -4274,110 +4274,6 @@ nautilus_file_get_boolean_metadata (NautilusFile *file,
     return result;
 }
 
-int
-nautilus_file_get_integer_metadata (NautilusFile *file,
-                                    const char   *key,
-                                    int           default_metadata)
-{
-    char *result_as_string;
-    char default_as_string[32];
-    int result;
-    char c;
-
-    g_return_val_if_fail (key != NULL, default_metadata);
-    g_return_val_if_fail (key[0] != '\0', default_metadata);
-
-    if (file == NULL)
-    {
-        return default_metadata;
-    }
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
-
-    g_snprintf (default_as_string, sizeof (default_as_string), "%d", default_metadata);
-    result_as_string = nautilus_file_get_metadata
-                           (file, key, default_as_string);
-
-    /* Normally we can't get a a NULL, but we check for it here to
-     * handle the oddball case of a non-existent directory.
-     */
-    if (result_as_string == NULL)
-    {
-        result = default_metadata;
-    }
-    else
-    {
-        if (sscanf (result_as_string, " %d %c", &result, &c) != 1)
-        {
-            result = default_metadata;
-        }
-        g_free (result_as_string);
-    }
-
-    return result;
-}
-
-static gboolean
-get_time_from_time_string (const char *time_string,
-                           time_t     *time)
-{
-    long scanned_time;
-    char c;
-
-    g_assert (time != NULL);
-
-    /* Only accept string if it has one integer with nothing
-     * afterwards.
-     */
-    if (time_string == NULL ||
-        sscanf (time_string, "%ld%c", &scanned_time, &c) != 1)
-    {
-        return FALSE;
-    }
-    *time = (time_t) scanned_time;
-    return TRUE;
-}
-
-time_t
-nautilus_file_get_time_metadata (NautilusFile *file,
-                                 const char   *key)
-{
-    time_t time;
-    char *time_string;
-
-    time_string = nautilus_file_get_metadata (file, key, NULL);
-    if (!get_time_from_time_string (time_string, &time))
-    {
-        time = UNDEFINED_TIME;
-    }
-    g_free (time_string);
-
-    return time;
-}
-
-void
-nautilus_file_set_time_metadata (NautilusFile *file,
-                                 const char   *key,
-                                 time_t        time)
-{
-    char time_str[21];
-    char *metadata;
-
-    if (time != UNDEFINED_TIME)
-    {
-        /* 2^64 turns out to be 20 characters */
-        g_snprintf (time_str, 20, "%ld", (long int) time);
-        time_str[20] = '\0';
-        metadata = time_str;
-    }
-    else
-    {
-        metadata = NULL;
-    }
-
-    nautilus_file_set_metadata (file, key, NULL, metadata);
-}
-
-
 void
 nautilus_file_set_boolean_metadata (NautilusFile *file,
                                     const char   *key,
@@ -4390,26 +4286,6 @@ nautilus_file_set_boolean_metadata (NautilusFile *file,
     nautilus_file_set_metadata (file, key,
                                 NULL, /* No default needed. Boolean string below is never NULL. */
                                 metadata ? "true" : "false");
-}
-
-void
-nautilus_file_set_integer_metadata (NautilusFile *file,
-                                    const char   *key,
-                                    int           default_metadata,
-                                    int           metadata)
-{
-    char value_as_string[32];
-    char default_as_string[32];
-
-    g_return_if_fail (NAUTILUS_IS_FILE (file));
-    g_return_if_fail (key != NULL);
-    g_return_if_fail (key[0] != '\0');
-
-    g_snprintf (value_as_string, sizeof (value_as_string), "%d", metadata);
-    g_snprintf (default_as_string, sizeof (default_as_string), "%d", default_metadata);
-
-    nautilus_file_set_metadata (file, key,
-                                default_as_string, value_as_string);
 }
 
 static const char *

@@ -2004,14 +2004,6 @@ nautilus_self_check_directory (void)
      *  EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), FALSE);
      *  EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "test_boolean", TRUE), TRUE);
      *
-     *  nautilus_file_set_integer_metadata (file, "test_integer", 0, 17);
-     *  EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), 17);
-     *  nautilus_file_set_integer_metadata (file, "test_integer", 0, -1);
-     *  EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 0), -1);
-     *  nautilus_file_set_integer_metadata (file, "test_integer", 42, 42);
-     *  EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "test_integer", 42), 42);
-     *  EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (NULL, "test_integer", 42), 42);
-     *  EEL_CHECK_INTEGER_RESULT (nautilus_file_get_integer_metadata (file, "nonexistent_key", 42), 42);
      */
 
     EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_get_by_uri ("file:///etc") == directory, TRUE);
