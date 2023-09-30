@@ -9659,6 +9659,16 @@ nautilus_files_view_set_search_query (NautilusView  *view,
             nautilus_search_directory_set_query (NAUTILUS_SEARCH_DIRECTORY (directory), query);
 
             g_set_object (&priv->location_before_search, priv->location);
+            if (priv->location_before_search == NULL)
+            {
+                /* This may happen if switching view mode while searching, as
+                 * the new view doesn't have a location. In such cases, we can
+                 * assume the location before search from the query, if not NULL.
+                 */
+                g_autoptr (GFile) queried_location = nautilus_query_get_location (query);
+                g_set_object (&priv->location_before_search, queried_location);
+            }
+
             load_directory (files_view, directory);
 
             g_object_notify (G_OBJECT (view), "searching");
