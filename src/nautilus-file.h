@@ -364,21 +364,6 @@ gboolean                nautilus_file_get_boolean_metadata              (Nautilu
 void                    nautilus_file_set_boolean_metadata              (NautilusFile                   *file,
 									 const char                     *key,
 									 gboolean                        metadata);
-int                     nautilus_file_get_integer_metadata              (NautilusFile                   *file,
-									 const char                     *key,
-									 int                             default_metadata);
-void                    nautilus_file_set_integer_metadata              (NautilusFile                   *file,
-									 const char                     *key,
-									 int                             default_metadata,
-									 int                             metadata);
-
-#define UNDEFINED_TIME ((time_t) (-1))
-
-time_t                  nautilus_file_get_time_metadata                 (NautilusFile                  *file,
-									 const char                    *key);
-void                    nautilus_file_set_time_metadata                 (NautilusFile                  *file,
-									 const char                    *key,
-									 time_t                         time);
 
 
 /* Attributes for file objects as user-displayable strings. */
