@@ -618,7 +618,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     editor->clear_icon = gtk_image_new_from_icon_name (rtl ? "edit-clear-rtl-symbolic" :
                                                              "edit-clear-symbolic");
     g_object_set (editor->clear_icon, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
-    gtk_widget_set_tooltip_text (editor->clear_icon, _("Clear entry"));
+    gtk_widget_set_tooltip_text (editor->clear_icon, _("Clear Entry"));
     gtk_widget_set_child_visible (editor->clear_icon, FALSE);
     gtk_widget_set_parent (editor->clear_icon, GTK_WIDGET (editor));
 

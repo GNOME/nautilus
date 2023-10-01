@@ -999,7 +999,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                  NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
                  _("Recent"), start_icon, NULL, SCHEME_RECENT ":///",
                  NULL, NULL, NULL, NULL, 0,
-                 _("Recent files"));
+                 _("Recent Files"));
       g_object_unref (start_icon);
     }
 
@@ -1010,7 +1010,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                  NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
                  _("Starred"), start_icon, NULL, SCHEME_STARRED ":///",
                  NULL, NULL, NULL, NULL, 0,
-                 _("Starred files"));
+                 _("Starred Files"));
       g_object_unref (start_icon);
     }
 
@@ -1021,7 +1021,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
              NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
              _("Home"), start_icon, NULL, home_uri,
              NULL, NULL, NULL, NULL, 0,
-             _("Open your personal folder"));
+             _("Open Personal Folder"));
   g_object_unref (start_icon);
   g_free (home_uri);
 
@@ -1064,7 +1064,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                                       NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
                                       _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
                                       NULL, NULL, NULL, NULL, 0,
-                                      _("Open the trash"));
+                                      _("Open Trash"));
       g_object_add_weak_pointer (G_OBJECT (sidebar->trash_row),
                                  (gpointer *) &sidebar->trash_row);
       g_object_unref (start_icon);
@@ -1449,7 +1449,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       add_place (sidebar, NAUTILUS_GTK_PLACES_OTHER_LOCATIONS,
                  NAUTILUS_GTK_PLACES_SECTION_OTHER_LOCATIONS,
                  _("Other Locations"), start_icon, NULL, SCHEME_OTHER_LOCATIONS ":///",
-                 NULL, NULL, NULL, NULL, 0, _("Show other locations"));
+                 NULL, NULL, NULL, NULL, 0, _("Show Other Locations"));
 
       g_object_unref (start_icon);
     }
