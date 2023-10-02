@@ -9,6 +9,11 @@
 #include <glib.h>
 
 
+char *
+nautilus_filename_for_link (const char *name,
+                            size_t      count,
+                            int         max_length);
+
 const char *
 nautilus_filename_get_extension (const char *filename);
 

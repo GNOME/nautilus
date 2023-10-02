@@ -11,6 +11,46 @@
 
 
 /**
+ * nautilus_filename_for_link:
+ * @name: Name of the original file
+ * @count: Number of links to @name already existing
+ * @max_length: Maximum length that resulting file name can have
+ *
+ * Creates a new name for a link to @name, that is no longer than @max_length
+ * bytes long.
+ *
+ * Returns: (transfer full): A file name for a link to @name.
+ */
+char *
+nautilus_filename_for_link (const char *name,
+                            size_t      count,
+                            int         max_length)
+{
+    g_assert (name != NULL);
+
+    char *result;
+    if (count == 0)
+    {
+        /* Use identical name */
+        result = g_strdup (name);
+    }
+    else if (count == 1)
+    {
+        /* Translators: File name for new symlink. %s is target's name */
+        result = g_strdup_printf (_("Link to %s"), name);
+    }
+    else
+    {
+        /* Translators: File name for new symlink. %s is target's name, %lu is number of symlink. */
+        result = g_strdup_printf (_("Link to %s (%lu)"), name, count);
+    }
+
+    nautilus_filename_shorten_base (&result, name, max_length);
+
+    return result;
+}
+
+/**
  * nautilus_filename_get_extension:
  * @filename: a null-terminated file name.
  *
