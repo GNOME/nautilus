@@ -6,6 +6,9 @@ tests = [
   ['test-directory', [
     'test-directory.c'
   ]],
+  ['test-file-metadata', [
+    'test-file-metadata.c'
+  ]],
   ['test-file-utilities-get-common-filename-prefix', [
     'test-file-utilities-get-common-filename-prefix.c'
   ]],

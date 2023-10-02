@@ -159,13 +159,9 @@ vfs_file_set_metadata (NautilusFile *file,
                        const char   *key,
                        const char   *value)
 {
-    GFileInfo *info;
-    GFile *location;
-    char *gio_key;
+    g_autoptr (GFileInfo) info = g_file_info_new ();
+    g_autofree char *gio_key = g_strconcat ("metadata::", key, NULL);
 
-    info = g_file_info_new ();
-
-    gio_key = g_strconcat ("metadata::", key, NULL);
     if (value != NULL)
     {
         g_file_info_set_attribute_string (info, gio_key, value);
@@ -177,9 +173,14 @@ vfs_file_set_metadata (NautilusFile *file,
                                    G_FILE_ATTRIBUTE_TYPE_INVALID,
                                    NULL);
     }
-    g_free (gio_key);
 
-    location = nautilus_file_get_location (file);
+    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") == 0)
+    {
+        nautilus_file_update_metadata_from_info (file, info);
+        return;
+    }
+
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
     g_file_set_attributes_async (location,
                                  info,
                                  0,
@@ -187,8 +188,6 @@ vfs_file_set_metadata (NautilusFile *file,
                                  NULL,
                                  set_metadata_callback,
                                  nautilus_file_ref (file));
-    g_object_unref (location);
-    g_object_unref (info);
 }
 
 static void
@@ -196,13 +195,9 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
                                const char    *key,
                                char         **value)
 {
-    GFile *location;
-    GFileInfo *info;
-    char *gio_key;
+    g_autoptr (GFileInfo) info = g_file_info_new ();
+    g_autofree char *gio_key = g_strconcat ("metadata::", key, NULL);
 
-    info = g_file_info_new ();
-
-    gio_key = g_strconcat ("metadata::", key, NULL);
     if (value == NULL)
     {
         g_file_info_set_attribute (info, gio_key, G_FILE_ATTRIBUTE_TYPE_INVALID, NULL);
@@ -211,9 +206,14 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
     {
         g_file_info_set_attribute_stringv (info, gio_key, value);
     }
-    g_free (gio_key);
 
-    location = nautilus_file_get_location (file);
+    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") == 0)
+    {
+        nautilus_file_update_metadata_from_info (file, info);
+        return;
+    }
+
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
     g_file_set_attributes_async (location,
                                  info,
                                  0,
@@ -221,8 +221,6 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
                                  NULL,
                                  set_metadata_callback,
                                  nautilus_file_ref (file));
-    g_object_unref (info);
-    g_object_unref (location);
 }
 
 static gboolean
