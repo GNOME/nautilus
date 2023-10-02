@@ -1321,6 +1321,8 @@ nautilus_self_check_file_utilities (void)
 {
 }
 
+#endif /* !NAUTILUS_OMIT_SELF_CHECK */
+
 void
 nautilus_ensure_extension_builtins (void)
 {
@@ -1347,8 +1349,6 @@ nautilus_ensure_extension_points (void)
         g_once_init_leave (&once_init_value, 1);
     }
 }
-
-#endif /* !NAUTILUS_OMIT_SELF_CHECK */
 
 gboolean
 nautilus_file_can_rename_files (GList *files)
