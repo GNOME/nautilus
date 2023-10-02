@@ -1968,18 +1968,6 @@ nautilus_directory_dump (NautilusDirectory *directory)
 void
 nautilus_self_check_directory (void)
 {
-    /* FIXME: these need to be updated to the new metadata infrastructure
-     *  as make check doesn't pass.
-     *  nautilus_file_set_metadata (file, "test", "default", "value");
-     *  EEL_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value");
-     *
-     *  nautilus_file_set_boolean_metadata (file, "test_boolean", TRUE);
-     *  EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), TRUE);
-     *  nautilus_file_set_boolean_metadata (file, "test_boolean", FALSE);
-     *  EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (file, "test_boolean", TRUE), FALSE);
-     *  EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "test_boolean", TRUE), TRUE);
-     *
-     */
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
