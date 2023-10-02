@@ -3,6 +3,9 @@ trackertestutils = dependency('tracker-testutils-3.0')
 tracker_sandbox = find_program(trackertestutils.get_variable('command'))
 
 tests = [
+  ['test-directory', [
+    'test-directory.c'
+  ]],
   ['test-file-utilities-get-common-filename-prefix', [
     'test-file-utilities-get-common-filename-prefix.c'
   ]],
