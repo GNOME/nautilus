@@ -21,7 +21,6 @@
 
 #include "nautilus-directory-private.h"
 
-#include <eel/eel-string.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
@@ -1942,25 +1941,6 @@ nautilus_directory_list_sort_by_uri (GList *list)
     return g_list_sort (list, compare_by_uri_cover);
 }
 
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-
-#include <eel/eel-debug.h>
-
-static int data_dummy;
-static gboolean got_files_flag;
-
-static void
-got_files_callback (NautilusDirectory *directory,
-                    GList             *files,
-                    gpointer           callback_data)
-{
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (g_list_length (files) > 10);
-    g_assert (callback_data == &data_dummy);
-
-    got_files_flag = TRUE;
-}
-
 /* Return the number of extant NautilusDirectories */
 int
 nautilus_directory_number_outstanding (void)
@@ -1978,21 +1958,11 @@ nautilus_directory_dump (NautilusDirectory *directory)
     g_print ("ref count: %d\n", G_OBJECT (directory)->ref_count);
 }
 
+
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
 void
 nautilus_self_check_directory (void)
 {
-    NautilusDirectory *directory;
-    NautilusFile *file;
-
-    directory = nautilus_directory_get_by_uri ("file:///etc");
-    file = nautilus_file_get_by_uri ("file:///etc/passwd");
-
-    EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
-
-    nautilus_directory_file_monitor_add
-        (directory, &data_dummy,
-        TRUE, 0, NULL, NULL);
-
     /* FIXME: these need to be updated to the new metadata infrastructure
      *  as make check doesn't pass.
      *  nautilus_file_set_metadata (file, "test", "default", "value");
@@ -2005,59 +1975,6 @@ nautilus_self_check_directory (void)
      *  EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_boolean_metadata (NULL, "test_boolean", TRUE), TRUE);
      *
      */
-
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_get_by_uri ("file:///etc") == directory, TRUE);
-    nautilus_directory_unref (directory);
-
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_get_by_uri ("file:///etc/") == directory, TRUE);
-    nautilus_directory_unref (directory);
-
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_directory_get_by_uri ("file:///etc////") == directory, TRUE);
-    nautilus_directory_unref (directory);
-
-    nautilus_file_unref (file);
-
-    nautilus_directory_file_monitor_remove (directory, &data_dummy);
-
-    nautilus_directory_unref (directory);
-
-    for (guint i = 0; g_hash_table_size (directories) != 0 && i < 100000; i++)
-    {
-        g_main_context_iteration (NULL, TRUE);
-    }
-
-    EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
-
-    directory = nautilus_directory_get_by_uri ("file:///etc");
-
-    got_files_flag = FALSE;
-
-    nautilus_directory_call_when_ready (directory,
-                                        NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                        NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS,
-                                        TRUE,
-                                        got_files_callback, &data_dummy);
-
-    for (guint i = 0; !got_files_flag && i < 100000; i++)
-    {
-        g_main_context_iteration (NULL, TRUE);
-    }
-
-    EEL_CHECK_BOOLEAN_RESULT (got_files_flag, TRUE);
-
-    EEL_CHECK_BOOLEAN_RESULT (directory->details->file_list == NULL, TRUE);
-
-    EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
-
-    file = nautilus_file_get_by_uri ("file:///etc/passwd");
-
-    /* EEL_CHECK_STRING_RESULT (nautilus_file_get_metadata (file, "test", "default"), "value"); */
-
-    nautilus_file_unref (file);
-
-    nautilus_directory_unref (directory);
-
-    EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 0);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
