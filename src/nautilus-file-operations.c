@@ -426,124 +426,6 @@ get_formatted_time (int seconds)
                                       hours), hours);
 }
 
-/* Note that we have these two separate functions with separate format
- * strings for ease of localization.
- */
-
-static char *
-get_link_name (const char *name,
-               int         count,
-               int         max_length)
-{
-    const char *format;
-    char *result;
-    gboolean use_count;
-
-    g_assert (name != NULL);
-
-    if (count < 0)
-    {
-        g_warning ("bad count in get_link_name");
-        count = 0;
-    }
-
-    if (count <= 2)
-    {
-        /* Handle special cases for low numbers.
-         * Perhaps for some locales we will need to add more.
-         */
-        switch (count)
-        {
-            default:
-            {
-                g_assert_not_reached ();
-                /* fall through */
-            }
-
-            case 0:
-            {
-                /* duplicate original file name */
-                format = "%s";
-            }
-            break;
-
-            case 1:
-            {
-                /* appended to new link file */
-                format = _("Link to %s");
-            }
-            break;
-
-            case 2:
-            {
-                /* appended to new link file */
-                format = _("Another link to %s");
-            }
-            break;
-        }
-
-        use_count = FALSE;
-    }
-    else
-    {
-        /* Handle special cases for the first few numbers of each ten.
-         * For locales where getting this exactly right is difficult,
-         * these can just be made all the same as the general case below.
-         */
-        switch (count % 10)
-        {
-            case 1:
-            {
-                /* Localizers: Feel free to leave out the "st" suffix
-                 * if there's no way to do that nicely for a
-                 * particular language.
-                 */
-                format = _("%'dst link to %s");
-            }
-            break;
-
-            case 2:
-            {
-                /* appended to new link file */
-                format = _("%'dnd link to %s");
-            }
-            break;
-
-            case 3:
-            {
-                /* appended to new link file */
-                format = _("%'drd link to %s");
-            }
-            break;
-
-            default:
-            {
-                /* appended to new link file */
-                format = _("%'dth link to %s");
-            }
-            break;
-        }
-
-        use_count = TRUE;
-    }
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wformat-nonliteral"
-    if (use_count)
-    {
-        result = g_strdup_printf (format, count, name);
-    }
-    else
-    {
-        result = g_strdup_printf (format, name);
-    }
-#pragma GCC diagnostic pop
-
-    nautilus_filename_shorten_base (&result, name, max_length);
-    return result;
-}
-
-
 /* Localizers:
  * Feel free to leave out the st, nd, rd and th suffix or
  * make some or all of them match.
@@ -4365,7 +4247,7 @@ get_target_file_for_link (GFile      *src,
 
         if (editname != NULL)
         {
-            new_name = get_link_name (editname, count, max_length);
+            new_name = nautilus_filename_for_link (editname, count, max_length);
             make_file_name_valid_for_dest_fs (new_name, dest_fs_type);
             dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
             g_free (new_name);
@@ -4381,7 +4263,7 @@ get_target_file_for_link (GFile      *src,
 
         if (g_utf8_validate (basename, -1, NULL))
         {
-            new_name = get_link_name (basename, count, max_length);
+            new_name = nautilus_filename_for_link (basename, count, max_length);
             make_file_name_valid_for_dest_fs (new_name, dest_fs_type);
             dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
             g_free (new_name);
