@@ -10,6 +10,37 @@
 #include <glib/gi18n.h>
 
 
+char *
+nautilus_filename_for_link (const char *name,
+                            size_t      count,
+                            int         max_length)
+{
+    char *result;
+
+    g_assert (name != NULL);
+
+    if (count < 1)
+    {
+        g_warning ("bad count in nautilus_filename_for_link");
+        count = 1;
+    }
+
+    if (count == 1)
+    {
+        /* Translators: File name for new symlink. %s is target's name */
+        result = g_strdup_printf (_("Link to %s"), name);
+    }
+    else
+    {
+        /* Translators: File name for new symlink. %s is target's name, %lu is number of symlink. */
+        result = g_strdup_printf (_("Link to %s (%lu)"), name, count);
+    }
+
+    nautilus_filename_shorten_base (&result, name, max_length);
+
+    return result;
+}
+
 gboolean
 nautilus_filename_shorten_base (char       **filename,
                                 const char  *base,
