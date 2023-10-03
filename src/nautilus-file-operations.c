@@ -34,7 +34,6 @@
 #include "nautilus-file-operations.h"
 
 #include "nautilus-file-changes-queue.h"
-#include "nautilus-lib-self-check-functions.h"
 
 #include "nautilus-progress-info.h"
 
@@ -8748,12 +8747,3 @@ nautilus_file_operations_compress (GList                          *files,
     g_task_set_task_data (task, compress_job, NULL);
     g_task_run_in_thread (task, compress_task_thread_func);
 }
-
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-
-void
-nautilus_self_check_file_operations (void)
-{
-}
-
-#endif
