@@ -6,6 +6,9 @@ tests = [
   ['test-directory', [
     'test-directory.c'
   ]],
+  ['test-file', [
+    'test-file.c'
+  ]],
   ['test-file-metadata', [
     'test-file-metadata.c'
   ]],
