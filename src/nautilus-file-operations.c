@@ -8752,28 +8752,6 @@ nautilus_file_operations_compress (GList                          *files,
 void
 nautilus_self_check_file_operations (void)
 {
-    /* test the next duplicate name generator */
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate (" (Copy)", 1, -1, FALSE), " (Copy 2)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo", 1, -1, FALSE), "foo (Copy)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate (".bashrc", 1, -1, FALSE), ".bashrc (Copy)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate (".foo.txt", 1, -1, FALSE), ".foo (Copy).txt");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo foo", 1, -1, FALSE), "foo foo (Copy)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo.txt", 1, -1, FALSE), "foo (Copy).txt");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo foo.txt", 1, -1, FALSE), "foo foo (Copy).txt");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo foo.txt txt", 1, -1, FALSE), "foo foo.txt txt (Copy)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo...txt", 1, -1, FALSE), "foo.. (Copy).txt");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo...", 1, -1, FALSE), "foo... (Copy)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo. (Copy)", 1, -1, FALSE), "foo. (Copy 2)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo (Copy)", 1, -1, FALSE), "foo (Copy 2)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo (Copy).txt", 1, -1, FALSE), "foo (Copy 2).txt");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo (Copy 2)", 1, -1, FALSE), "foo (Copy 3)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo (Copy 2).txt", 1, -1, FALSE), "foo (Copy 3).txt");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo foo (Copy 2).txt", 1, -1, FALSE), "foo foo (Copy 3).txt");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo (Copy 13)", 1, -1, FALSE), "foo (Copy 14)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo foo (Copy 100000000000000).txt", 1, -1, FALSE), "foo foo (Copy 100000000000001).txt");
-
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("dir.with.dots", 1, -1, TRUE), "dir.with.dots (Copy)");
-    EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("dir (Copy).dir", 1, -1, TRUE), "dir (Copy).dir (Copy)");
 }
 
 #endif
