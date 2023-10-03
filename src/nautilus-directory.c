@@ -31,7 +31,6 @@
 #include "nautilus-file-queue.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory-file.h"
@@ -1962,12 +1961,3 @@ nautilus_directory_dump (NautilusDirectory *directory)
     g_print ("uri: %s\n", uri);
     g_print ("ref count: %d\n", G_OBJECT (directory)->ref_count);
 }
-
-
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-void
-nautilus_self_check_directory (void)
-{
-}
-
-#endif /* !NAUTILUS_OMIT_SELF_CHECK */

@@ -1,15 +1,10 @@
 libeel_2_sources = [
   'eel-debug.h',
   'eel-debug.c',
-  'eel-self-checks.h',
-  'eel-self-checks.c',
   'eel-stock-dialogs.h',
   'eel-stock-dialogs.c',
-  'eel-string.c',
   'eel-vfs-extensions.h',
   'eel-vfs-extensions.c',
-  'eel-lib-self-check-functions.h',
-  'eel-lib-self-check-functions.c',
 ]
 
 libeel_2_deps = [
@@ -32,16 +27,3 @@ eel_2 = declare_dependency(
   include_directories: nautilus_include_dirs,
   dependencies: libeel_2_deps
 )
-
-check_eel = executable(
-  'check-eel',
-  'check-program.c',
-  dependencies: [
-    eel_2,
-    xml
-  ]
-)
-
-if get_option('tests') == 'all'
-  test('check-eel', check_eel)
-endif

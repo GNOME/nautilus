@@ -59,7 +59,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
-#include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
 #include "nautilus-scheme.h"
@@ -9442,12 +9441,3 @@ nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
     iface->get_mount = get_mount;
     iface->can_write = can_write;
 }
-
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-
-void
-nautilus_self_check_file (void)
-{
-}
-
-#endif /* !NAUTILUS_OMIT_SELF_CHECK */
