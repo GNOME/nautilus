@@ -25,7 +25,6 @@
 
 #include <config.h>
 #include "eel-vfs-extensions.h"
-#include "eel-lib-self-check-functions.h"
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>

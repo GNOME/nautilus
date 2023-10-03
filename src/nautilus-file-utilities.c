@@ -26,7 +26,6 @@
 #include "nautilus-filename-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
-#include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
@@ -1314,15 +1313,6 @@ nautilus_get_max_child_name_length_for_location (GFile *location)
 
     return max_child_name_length;
 }
-
-#if !defined (NAUTILUS_OMIT_SELF_CHECK)
-
-void
-nautilus_self_check_file_utilities (void)
-{
-}
-
-#endif /* !NAUTILUS_OMIT_SELF_CHECK */
 
 void
 nautilus_ensure_extension_builtins (void)
