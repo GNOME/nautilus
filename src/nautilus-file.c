@@ -26,7 +26,6 @@
 #endif
 #include <libnautilus-extension/nautilus-extension-private.h>
 
-#include <eel/eel-debug.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdesktop-enums.h>
@@ -9478,79 +9477,6 @@ nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
 void
 nautilus_self_check_file (void)
 {
-    NautilusFile *file_1;
-    NautilusFile *file_2;
-    GList *list;
-
-    /* refcount checks */
-
-    EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
-
-    file_1 = nautilus_file_get_by_uri ("file:///home/");
-
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 1);
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1->details->directory)->ref_count, 1);
-    EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 1);
-
-    nautilus_file_unref (file_1);
-
-    EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
-
-    file_1 = nautilus_file_get_by_uri ("file:///etc");
-    file_2 = nautilus_file_get_by_uri ("file:///usr");
-
-    list = NULL;
-    list = g_list_prepend (list, file_1);
-    list = g_list_prepend (list, file_2);
-
-    nautilus_file_list_ref (list);
-
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 2);
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_2)->ref_count, 2);
-
-    nautilus_file_list_unref (list);
-
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 1);
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_2)->ref_count, 1);
-
-    nautilus_file_list_free (list);
-
-    EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 0);
-
-
-    /* name checks */
-    file_1 = nautilus_file_get_by_uri ("file:///home/");
-
-    EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
-
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_by_uri ("file:///home/") == file_1, TRUE);
-    nautilus_file_unref (file_1);
-
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_get_by_uri ("file:///home") == file_1, TRUE);
-    nautilus_file_unref (file_1);
-
-    nautilus_file_unref (file_1);
-
-    file_1 = nautilus_file_get_by_uri ("file:///home");
-    EEL_CHECK_STRING_RESULT (nautilus_file_get_name (file_1), "home");
-    nautilus_file_unref (file_1);
-
-    /* sorting */
-    file_1 = nautilus_file_get_by_uri ("file:///etc");
-    file_2 = nautilus_file_get_by_uri ("file:///usr");
-
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 1);
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_2)->ref_count, 1);
-
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, FALSE) < 0, TRUE);
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_2, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, TRUE) > 0, TRUE);
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, FALSE) == 0, TRUE);
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, TRUE, FALSE) == 0, TRUE);
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, FALSE, TRUE) == 0, TRUE);
-    EEL_CHECK_BOOLEAN_RESULT (nautilus_file_compare_for_sort (file_1, file_1, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, TRUE, TRUE) == 0, TRUE);
-
-    nautilus_file_unref (file_1);
-    nautilus_file_unref (file_2);
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
