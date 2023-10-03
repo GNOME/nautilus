@@ -53,13 +53,11 @@
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
-#include "nautilus-lib-self-check-functions.h"
 #include "nautilus-module.h"
 #include "nautilus-preferences-window.h"
 #include "nautilus-previewer.h"
 #include "nautilus-progress-persistence-handler.h"
 #include "nautilus-scheme.h"
-#include "nautilus-self-check-functions.h"
 #include "nautilus-shell-search-provider.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
@@ -498,7 +496,7 @@ nautilus_application_open_location (NautilusApplication *self,
 
 /* Note: when launched from command line we do not reach this method
  * since we manually handle the command line parameters in order to
- * parse --version, --check, etc.
+ * parse --version, etc.
  * However this method is called when open () is called via dbus, for
  * instance when gtk_uri_open () is called from outside.
  */
@@ -569,15 +567,6 @@ do_cmdline_sanity_checks (NautilusApplication *self,
 {
     gboolean retval = FALSE;
 
-    if (g_variant_dict_contains (options, "check") &&
-        (g_variant_dict_contains (options, G_OPTION_REMAINING) ||
-         g_variant_dict_contains (options, "quit")))
-    {
-        g_printerr ("%s\n",
-                    _("--check cannot be used with other options."));
-        goto out;
-    }
-
     if (g_variant_dict_contains (options, "quit") &&
         g_variant_dict_contains (options, G_OPTION_REMAINING))
     {
@@ -599,26 +588,6 @@ do_cmdline_sanity_checks (NautilusApplication *self,
 
 out:
     return retval;
-}
-
-static int
-do_perform_self_checks (void)
-{
-#ifndef NAUTILUS_OMIT_SELF_CHECK
-    gtk_init ();
-
-    /* Run the checks (each twice) for nautilus and libnautilus-private. */
-
-    nautilus_run_self_checks ();
-    nautilus_run_lib_self_checks ();
-    eel_exit_if_self_checks_failed ();
-
-    nautilus_run_self_checks ();
-    nautilus_run_lib_self_checks ();
-    eel_exit_if_self_checks_failed ();
-#endif
-
-    return EXIT_SUCCESS;
 }
 
 static void
@@ -930,12 +899,6 @@ nautilus_application_command_line (GApplication            *application,
         goto out;
     }
 
-    if (g_variant_dict_contains (options, "check"))
-    {
-        retval = do_perform_self_checks ();
-        goto out;
-    }
-
     if (g_variant_dict_contains (options, "quit"))
     {
         DEBUG ("Killing app, as requested");
@@ -955,10 +918,6 @@ nautilus_application_init (NautilusApplication *self)
 {
     static const GOptionEntry options[] =
     {
-#ifndef NAUTILUS_OMIT_SELF_CHECK
-        { "check", 'c', 0, G_OPTION_ARG_NONE, NULL,
-          N_("Perform a quick set of self-check tests."), NULL },
-#endif
         { "version", '\0', 0, G_OPTION_ARG_NONE, NULL,
           N_("Show the version of the program."), NULL },
         { "new-window", 'w', 0, G_OPTION_ARG_NONE, NULL,

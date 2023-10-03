@@ -122,8 +122,6 @@ libnautilus_sources = [
   'nautilus-query-editor.h',
   'nautilus-scheme.h',
   'nautilus-search-popover.c',
-  'nautilus-self-check-functions.c',
-  'nautilus-self-check-functions.h',
   'nautilus-shell-search-provider.c',
   'nautilus-star-cell.c',
   'nautilus-star-cell.h',
@@ -199,8 +197,6 @@ libnautilus_sources = [
   'nautilus-icon-names.h',
   'nautilus-keyfile-metadata.c',
   'nautilus-keyfile-metadata.h',
-  'nautilus-lib-self-check-functions.c',
-  'nautilus-lib-self-check-functions.h',
   'nautilus-metadata.h',
   'nautilus-metadata.c',
   'nautilus-module.c',
@@ -309,20 +305,6 @@ nautilus = executable(
   dependencies: libnautilus_dep,
   install: true
 )
-
-if get_option('tests') == 'all'
-  test(
-    'nautilus', nautilus,
-    args: [
-      '--check',
-    ],
-    env: [
-      'G_DEBUG=fatal-warnings',
-      'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.project_build_root(), 'data')),
-      'RUNNING_TESTS=@0@'.format('TRUE')
-    ]
-  )
-endif
 
 nautilus_autorun_software_sources = [
   'nautilus-autorun-software.c',
