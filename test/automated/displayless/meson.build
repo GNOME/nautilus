@@ -24,6 +24,9 @@ tests = [
   ['test-file-operations-move-files', [
     'test-file-operations-move-files.c'
   ]],
+  ['test-filename-duplication', [
+    'test-filename-duplication.c'
+  ]],
   ['test-nautilus-search-engine', [
     'test-nautilus-search-engine.c'
   ]],
