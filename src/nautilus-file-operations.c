@@ -55,6 +55,7 @@
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-conflict-dialog.h"
 #include "nautilus-file-private.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
@@ -425,51 +426,6 @@ get_formatted_time (int seconds)
                                       hours), hours);
 }
 
-static char *
-shorten_utf8_string (const char *base,
-                     int         reduce_by_num_bytes)
-{
-    int len;
-    char *ret;
-    const char *p;
-
-    len = strlen (base);
-    len -= reduce_by_num_bytes;
-
-    if (len <= 0)
-    {
-        return NULL;
-    }
-
-    ret = g_new (char, len + 1);
-
-    p = base;
-    while (len)
-    {
-        char *next;
-        next = g_utf8_next_char (p);
-        if (next - p > len || *next == '\0')
-        {
-            break;
-        }
-
-        len -= next - p;
-        p = next;
-    }
-
-    if (p - base == 0)
-    {
-        g_free (ret);
-        return NULL;
-    }
-    else
-    {
-        memcpy (ret, base, p - base);
-        ret[p - base] = '\0';
-        return ret;
-    }
-}
-
 /* Note that we have these two separate functions with separate format
  * strings for ease of localization.
  */
@@ -481,7 +437,6 @@ get_link_name (const char *name,
 {
     const char *format;
     char *result;
-    int unshortened_length;
     gboolean use_count;
 
     g_assert (name != NULL);
@@ -582,30 +537,9 @@ get_link_name (const char *name,
     {
         result = g_strdup_printf (format, name);
     }
-
-    if (max_length > 0 && (unshortened_length = strlen (result)) > max_length)
-    {
-        char *new_name;
-
-        new_name = shorten_utf8_string (name, unshortened_length - max_length);
-        if (new_name)
-        {
-            g_free (result);
-
-            if (use_count)
-            {
-                result = g_strdup_printf (format, count, new_name);
-            }
-            else
-            {
-                result = g_strdup_printf (format, new_name);
-            }
-
-            g_assert (strlen (result) <= max_length);
-            g_free (new_name);
-        }
-    }
 #pragma GCC diagnostic pop
+
+    nautilus_filename_shorten_base (&result, name, max_length);
     return result;
 }
 
@@ -832,7 +766,6 @@ make_next_duplicate_name (const char *base,
 {
     const char *format;
     char *result;
-    int unshortened_length;
     gboolean use_count;
 
     if (count < 1)
@@ -949,30 +882,9 @@ make_next_duplicate_name (const char *base,
     {
         result = g_strdup_printf (format, base, suffix);
     }
-
-    if (max_length > 0 && (unshortened_length = strlen (result)) > max_length)
-    {
-        char *new_base;
-
-        new_base = shorten_utf8_string (base, unshortened_length - max_length);
-        if (new_base)
-        {
-            g_free (result);
-
-            if (use_count)
-            {
-                result = g_strdup_printf (format, new_base, count, suffix);
-            }
-            else
-            {
-                result = g_strdup_printf (format, new_base, suffix);
-            }
-
-            g_assert (strlen (result) <= max_length);
-            g_free (new_base);
-        }
-    }
 #pragma GCC diagnostic pop
+
+    nautilus_filename_shorten_base (&result, base, max_length);
 
     return result;
 }
@@ -7849,7 +7761,6 @@ retry:
             }
             else
             {
-                g_autofree char *filename2 = NULL;
                 g_autofree char *suffix = NULL;
 
                 filename_base = filename;
@@ -7868,18 +7779,9 @@ retry:
                 offset = strlen (filename_base);
                 suffix = g_strdup (filename + offset);
 
-                filename2 = g_strdup_printf ("%s %d%s", filename_base, count, suffix);
+                new_filename = g_strdup_printf ("%s %d%s", filename_base, count, suffix);
 
-                new_filename = NULL;
-                if (max_length > 0 && strlen (filename2) > max_length)
-                {
-                    new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
-                }
-
-                if (new_filename == NULL)
-                {
-                    new_filename = g_strdup (filename2);
-                }
+                nautilus_filename_shorten_base (&new_filename, filename_base, max_length);
             }
 
             if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type))
@@ -7925,18 +7827,7 @@ retry:
             suffix = g_strdup (filename + offset);
 
             filename2 = g_strdup_printf ("%s %d%s", filename_base, ++count, suffix);
-
-            if (max_length > 0 && strlen (filename2) > max_length)
-            {
-                g_autofree char *new_filename = NULL;
-
-                new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
-                if (new_filename != NULL)
-                {
-                    g_free (filename2);
-                    filename2 = new_filename;
-                }
-            }
+            nautilus_filename_shorten_base (&filename2, filename2, max_length);
 
             make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
             if (filename_is_utf8)
