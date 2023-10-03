@@ -55,6 +55,7 @@
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-conflict-dialog.h"
 #include "nautilus-file-private.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
@@ -7872,7 +7873,6 @@ retry:
             }
             else
             {
-                g_autofree char *filename2 = NULL;
                 g_autofree char *suffix = NULL;
 
                 filename_base = filename;
@@ -7891,18 +7891,9 @@ retry:
                 offset = strlen (filename_base);
                 suffix = g_strdup (filename + offset);
 
-                filename2 = g_strdup_printf ("%s %d%s", filename_base, count, suffix);
+                new_filename = g_strdup_printf ("%s %d%s", filename_base, count, suffix);
 
-                new_filename = NULL;
-                if (max_length > 0 && strlen (filename2) > max_length)
-                {
-                    new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
-                }
-
-                if (new_filename == NULL)
-                {
-                    new_filename = g_strdup (filename2);
-                }
+                nautilus_filename_shorten_base (&new_filename, filename_base, max_length);
             }
 
             if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type))
@@ -7948,18 +7939,7 @@ retry:
             suffix = g_strdup (filename + offset);
 
             filename2 = g_strdup_printf ("%s %d%s", filename_base, ++count, suffix);
-
-            if (max_length > 0 && strlen (filename2) > max_length)
-            {
-                g_autofree char *new_filename = NULL;
-
-                new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
-                if (new_filename != NULL)
-                {
-                    g_free (filename2);
-                    filename2 = new_filename;
-                }
-            }
+            nautilus_filename_shorten_base (&filename2, filename_base, max_length);
 
             make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
             if (filename_is_utf8)
