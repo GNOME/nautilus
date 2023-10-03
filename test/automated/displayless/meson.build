@@ -12,17 +12,23 @@ tests = [
   ['test-file-metadata', [
     'test-file-metadata.c'
   ]],
-  ['test-file-utilities-get-common-filename-prefix', [
-    'test-file-utilities-get-common-filename-prefix.c'
-  ]],
-  ['test-file-utilities', [
-    'test-file-utilities.c'
+  ['test-file-operations-copy-files', [
+    'test-file-operations-copy-files.c'
   ]],
   ['test-file-operations-dir-has-files', [
     'test-file-operations-dir-has-files.c'
   ]],
   ['test-file-operations-move-files', [
     'test-file-operations-move-files.c'
+  ]],
+  ['test-file-operations-trash-or-delete', [
+    'test-file-operations-trash-or-delete.c'
+  ]],
+  ['test-file-utilities-get-common-filename-prefix', [
+    'test-file-utilities-get-common-filename-prefix.c'
+  ]],
+  ['test-file-utilities', [
+    'test-file-utilities.c'
   ]],
   ['test-filename-common-prefix', [
     'test-filename-common-prefix.c'
@@ -33,17 +39,11 @@ tests = [
   ['test-nautilus-search-engine', [
     'test-nautilus-search-engine.c'
   ]],
-  ['test-nautilus-search-engine-simple', [
-    'test-nautilus-search-engine-simple.c'
-  ]],
   ['test-nautilus-search-engine-model', [
     'test-nautilus-search-engine-model.c'
   ]],
-  ['test-file-operations-copy-files', [
-    'test-file-operations-copy-files.c'
-  ]],
-  ['test-file-operations-trash-or-delete', [
-    'test-file-operations-trash-or-delete.c'
+  ['test-nautilus-search-engine-simple', [
+    'test-nautilus-search-engine-simple.c'
   ]],
   ['test-ui-utilities', [
     'test-ui-utilities.c'
