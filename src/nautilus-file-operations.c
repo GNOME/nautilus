@@ -26,7 +26,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <locale.h>
 #include <math.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -8756,8 +8755,6 @@ nautilus_file_operations_compress (GList                          *files,
 void
 nautilus_self_check_file_operations (void)
 {
-    setlocale (LC_MESSAGES, "C");
-
     /* test the next duplicate name generator */
     EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate (" (Copy)", 1, -1, FALSE), " (Copy 2)");
     EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("foo", 1, -1, FALSE), "foo (Copy)");
@@ -8780,8 +8777,6 @@ nautilus_self_check_file_operations (void)
 
     EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("dir.with.dots", 1, -1, TRUE), "dir.with.dots (Copy)");
     EEL_CHECK_STRING_RESULT (nautilus_filename_create_duplicate ("dir (Copy).dir", 1, -1, TRUE), "dir (Copy).dir (Copy)");
-
-    setlocale (LC_MESSAGES, "");
 }
 
 #endif
