@@ -24,15 +24,7 @@
 
 G_BEGIN_DECLS
 
-typedef enum {
-    NAUTILUS_SPECIAL_LOCATION_SCRIPTS,
-    NAUTILUS_SPECIAL_LOCATION_SHARING,
-    NAUTILUS_SPECIAL_LOCATION_TEMPLATES,
-    NAUTILUS_SPECIAL_LOCATION_TRASH,
-    NAUTILUS_SPECIAL_LOCATION_TRASH_AUTO_EMPTIED,
-} NautilusSpecialLocation;
-
-void nautilus_location_banner_load (AdwBanner               *banner,
-                                    NautilusSpecialLocation  location);
+void nautilus_location_banner_load (AdwBanner *banner,
+                                    GFile     *location);
 
 G_END_DECLS

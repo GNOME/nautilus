@@ -25,9 +25,23 @@
 
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-location-banner.h"
 #include "nautilus-enum-types.h"
+#include "nautilus-scheme.h"
+
+#define FILE_SHARING_SCHEMA_ID "org.gnome.desktop.file-sharing"
+
+typedef enum
+{
+    NAUTILUS_LOCATION_BANNER_NONE,
+    NAUTILUS_LOCATION_BANNER_SCRIPTS,
+    NAUTILUS_LOCATION_BANNER_SHARING,
+    NAUTILUS_LOCATION_BANNER_TEMPLATES,
+    NAUTILUS_LOCATION_BANNER_TRASH,
+    NAUTILUS_LOCATION_BANNER_TRASH_AUTO_EMPTIED,
+} NautilusLocationBannerMode;
 
 static void
 on_sharing_clicked (AdwBanner *banner)
@@ -101,9 +115,56 @@ set_auto_emptied_message (AdwBanner *banner)
     adw_banner_set_title (banner, message);
 }
 
+static gboolean
+is_scripts_location (GFile *location)
+{
+    g_autofree char *scripts_path = nautilus_get_scripts_directory_path ();
+    g_autoptr (GFile) scripts_file = g_file_new_for_path (scripts_path);
+
+    return g_file_equal (location, scripts_file);
+}
+
+static NautilusLocationBannerMode
+get_mode_for_location (GFile *location)
+{
+    g_autoptr (NautilusFile) file = NULL;
+
+    if (location == NULL)
+    {
+        return NAUTILUS_LOCATION_BANNER_NONE;
+    }
+
+    file = nautilus_file_get (location);
+
+    if (nautilus_should_use_templates_directory () &&
+        nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_TEMPLATES))
+    {
+        return NAUTILUS_LOCATION_BANNER_TEMPLATES;
+    }
+    else if (is_scripts_location (location))
+    {
+        return NAUTILUS_LOCATION_BANNER_SCRIPTS;
+    }
+    else if (check_schema_available (FILE_SHARING_SCHEMA_ID) && nautilus_file_is_public_share_folder (file))
+    {
+        return NAUTILUS_LOCATION_BANNER_SHARING;
+    }
+    else if (nautilus_file_is_in_trash (file))
+    {
+        gboolean auto_emptied = g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files");
+        return (auto_emptied ?
+                NAUTILUS_LOCATION_BANNER_TRASH_AUTO_EMPTIED :
+                NAUTILUS_LOCATION_BANNER_TRASH);
+    }
+    else
+    {
+        return NAUTILUS_LOCATION_BANNER_NONE;
+    }
+}
+
 void
-nautilus_location_banner_load (AdwBanner               *banner,
-                               NautilusSpecialLocation  location)
+nautilus_location_banner_load (AdwBanner *banner,
+                               GFile     *location)
 {
     const char *button_label = NULL;
     GCallback callback = NULL;
@@ -112,15 +173,22 @@ nautilus_location_banner_load (AdwBanner               *banner,
     g_signal_handlers_disconnect_by_data (banner, &nautilus_location_banner_load);
     g_signal_handlers_disconnect_by_data (gnome_privacy_preferences, banner);
 
-    switch (location)
+    switch (get_mode_for_location (location))
     {
-        case NAUTILUS_SPECIAL_LOCATION_SCRIPTS:
+        case NAUTILUS_LOCATION_BANNER_NONE:
+        {
+            adw_banner_set_revealed (banner, FALSE);
+            return;
+        }
+        break;
+
+        case NAUTILUS_LOCATION_BANNER_SCRIPTS:
         {
             adw_banner_set_title (banner, _("Executable files in this folder will appear in the Scripts menu"));
         }
         break;
 
-        case NAUTILUS_SPECIAL_LOCATION_SHARING:
+        case NAUTILUS_LOCATION_BANNER_SHARING:
         {
             adw_banner_set_title (banner, _("Turn on File Sharing to share the contents of this folder over the network"));
             button_label = _("Sharing Settings");
@@ -128,7 +196,7 @@ nautilus_location_banner_load (AdwBanner               *banner,
         }
         break;
 
-        case NAUTILUS_SPECIAL_LOCATION_TEMPLATES:
+        case NAUTILUS_LOCATION_BANNER_TEMPLATES:
         {
             adw_banner_set_title (banner, _("Put files in this folder to use them as templates for new documents"));
             button_label = _("_Learn More");
@@ -136,7 +204,7 @@ nautilus_location_banner_load (AdwBanner               *banner,
         }
         break;
 
-        case NAUTILUS_SPECIAL_LOCATION_TRASH:
+        case NAUTILUS_LOCATION_BANNER_TRASH:
         {
             adw_banner_set_title (banner, "");
             button_label = _("_Empty Trash…");
@@ -144,7 +212,7 @@ nautilus_location_banner_load (AdwBanner               *banner,
         }
         break;
 
-        case NAUTILUS_SPECIAL_LOCATION_TRASH_AUTO_EMPTIED:
+        case NAUTILUS_LOCATION_BANNER_TRASH_AUTO_EMPTIED:
         {
             set_auto_emptied_message (banner);
             button_label = _("_Trash Settings");

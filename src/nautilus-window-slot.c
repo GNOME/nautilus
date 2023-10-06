@@ -65,8 +65,6 @@ enum
     NUM_PROPERTIES
 };
 
-#define FILE_SHARING_SCHEMA_ID "org.gnome.desktop.file-sharing"
-
 struct _NautilusWindowSlot
 {
     GtkBox parent_instance;
@@ -168,7 +166,6 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
 static void update_search_information (NautilusWindowSlot *self);
-static void nautilus_window_slot_setup_banner (NautilusWindowSlot *self);
 
 void
 free_navigation_state (gpointer data)
@@ -1084,7 +1081,7 @@ remove_old_trash_files_preferences_changed (GSettings *settings,
 
     if (nautilus_directory_is_in_trash (directory))
     {
-        nautilus_window_slot_setup_banner (self);
+        nautilus_location_banner_load (self->banner, location);
     }
 }
 
@@ -2549,7 +2546,7 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
     /* Sync the actions for this new location. */
     nautilus_window_slot_sync_actions (self);
 
-    nautilus_window_slot_setup_banner (self);
+    nautilus_location_banner_load (self->banner, new_location);
 }
 
 static void
@@ -2613,55 +2610,6 @@ view_is_loading_changed_cb (GObject            *object,
     else
     {
         view_ended_loading (self, view);
-    }
-}
-
-static gboolean
-is_scripts_location (GFile *location)
-{
-    g_autofree char *scripts_path = nautilus_get_scripts_directory_path ();
-    g_autoptr (GFile) scripts_file = g_file_new_for_path (scripts_path);
-
-    return g_file_equal (location, scripts_file);
-}
-
-static void
-nautilus_window_slot_setup_banner (NautilusWindowSlot *self)
-{
-    GFile *location = nautilus_window_slot_get_current_location (self);
-    g_autoptr (NautilusFile) file = NULL;
-
-    if (location == NULL)
-    {
-        return;
-    }
-
-    file = nautilus_file_get (location);
-
-    if (nautilus_should_use_templates_directory () &&
-        nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_TEMPLATES))
-    {
-        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
-    }
-    else if (is_scripts_location (location))
-    {
-        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
-    }
-    else if (check_schema_available (FILE_SHARING_SCHEMA_ID) && nautilus_file_is_public_share_folder (file))
-    {
-        nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_SHARING);
-    }
-    else if (nautilus_file_is_in_trash (file))
-    {
-        gboolean auto_emptied = g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files");
-        nautilus_location_banner_load (self->banner,
-                                       (auto_emptied ?
-                                        NAUTILUS_SPECIAL_LOCATION_TRASH_AUTO_EMPTIED :
-                                        NAUTILUS_SPECIAL_LOCATION_TRASH));
-    }
-    else
-    {
-        adw_banner_set_revealed (self->banner, FALSE);
     }
 }
 
