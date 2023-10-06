@@ -2641,27 +2641,25 @@ nautilus_file_is_public_share_folder (NautilusFile *file)
     return FALSE;
 }
 
+static gboolean
+is_scripts_location (GFile *location)
+{
+    g_autofree char *scripts_path = nautilus_get_scripts_directory_path ();
+    g_autoptr (GFile) scripts_file = g_file_new_for_path (scripts_path);
+
+    return g_file_equal (location, scripts_file);
+}
+
 static void
 nautilus_window_slot_setup_banner (NautilusWindowSlot *self)
 {
-    GFile *location;
-    NautilusDirectory *directory;
-    NautilusFile *file;
-    GFile *scripts_file;
-    char *scripts_path;
-
-    scripts_path = nautilus_get_scripts_directory_path ();
-    location = nautilus_window_slot_get_current_location (self);
+    GFile *location = nautilus_window_slot_get_current_location (self);
+    g_autoptr (NautilusFile) file = NULL;
 
     if (location == NULL)
     {
         return;
     }
-
-    directory = nautilus_directory_get (location);
-
-    scripts_file = g_file_new_for_path (scripts_path);
-    g_free (scripts_path);
 
     file = nautilus_file_get (location);
 
@@ -2670,7 +2668,7 @@ nautilus_window_slot_setup_banner (NautilusWindowSlot *self)
     {
         nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_TEMPLATES);
     }
-    else if (g_file_equal (location, scripts_file))
+    else if (is_scripts_location (location))
     {
         nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_SCRIPTS);
     }
@@ -2678,7 +2676,7 @@ nautilus_window_slot_setup_banner (NautilusWindowSlot *self)
     {
         nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_SHARING);
     }
-    else if (nautilus_directory_is_in_trash (directory) &&
+    else if (nautilus_file_is_in_trash (file) &&
              g_settings_get_boolean (gnome_privacy_preferences, "remove-old-trash-files"))
     {
         nautilus_location_banner_load (self->banner, NAUTILUS_SPECIAL_LOCATION_TRASH);
@@ -2687,11 +2685,6 @@ nautilus_window_slot_setup_banner (NautilusWindowSlot *self)
     {
         adw_banner_set_revealed (self->banner, FALSE);
     }
-
-    g_object_unref (scripts_file);
-    nautilus_file_unref (file);
-
-    nautilus_directory_unref (directory);
 }
 
 static void
