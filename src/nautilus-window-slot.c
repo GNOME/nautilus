@@ -1065,27 +1065,6 @@ recursive_search_preferences_changed (GSettings *settings,
 }
 
 static void
-remove_old_trash_files_preferences_changed (GSettings *settings,
-                                            gchar     *key,
-                                            gpointer   callback_data)
-{
-    NautilusWindowSlot *self;
-    GFile *location;
-    g_autoptr (NautilusDirectory) directory = NULL;
-
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (callback_data));
-
-    self = NAUTILUS_WINDOW_SLOT (callback_data);
-    location = nautilus_window_slot_get_current_location (self);
-    directory = nautilus_directory_get (location);
-
-    if (nautilus_directory_is_in_trash (directory))
-    {
-        nautilus_location_banner_load (self->banner, location);
-    }
-}
-
-static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     GApplication *app;
@@ -1101,11 +1080,6 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect_object (nautilus_preferences,
                              "changed::recursive-search",
                              G_CALLBACK (recursive_search_preferences_changed),
-                             self, 0);
-
-    g_signal_connect_object (gnome_privacy_preferences,
-                             "changed::remove-old-trash-files",
-                             G_CALLBACK (remove_old_trash_files_preferences_changed),
                              self, 0);
 
     self->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());

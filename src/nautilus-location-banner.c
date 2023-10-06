@@ -43,6 +43,9 @@ typedef enum
     NAUTILUS_LOCATION_BANNER_TRASH_AUTO_EMPTIED,
 } NautilusLocationBannerMode;
 
+static void set_mode (AdwBanner                 *banner,
+                      NautilusLocationBannerMode mode);
+
 static void
 on_sharing_clicked (AdwBanner *banner)
 {
@@ -115,6 +118,18 @@ set_auto_emptied_message (AdwBanner *banner)
     adw_banner_set_title (banner, message);
 }
 
+static void
+on_remove_old_trash_files_changed (GSettings *settings,
+                                   gchar     *key,
+                                   gpointer   callback_data)
+{
+    AdwBanner *banner = ADW_BANNER (callback_data);
+    gboolean auto_emptied = g_settings_get_boolean (settings, key);
+
+    set_mode (banner, auto_emptied ? NAUTILUS_LOCATION_BANNER_TRASH_AUTO_EMPTIED :
+                                     NAUTILUS_LOCATION_BANNER_TRASH);
+}
+
 static gboolean
 is_scripts_location (GFile *location)
 {
@@ -162,9 +177,9 @@ get_mode_for_location (GFile *location)
     }
 }
 
-void
-nautilus_location_banner_load (AdwBanner *banner,
-                               GFile     *location)
+static void
+set_mode (AdwBanner                  *banner,
+          NautilusLocationBannerMode  mode)
 {
     const char *button_label = NULL;
     GCallback callback = NULL;
@@ -173,7 +188,7 @@ nautilus_location_banner_load (AdwBanner *banner,
     g_signal_handlers_disconnect_by_data (banner, &nautilus_location_banner_load);
     g_signal_handlers_disconnect_by_data (gnome_privacy_preferences, banner);
 
-    switch (get_mode_for_location (location))
+    switch (mode)
     {
         case NAUTILUS_LOCATION_BANNER_NONE:
         {
@@ -209,6 +224,11 @@ nautilus_location_banner_load (AdwBanner *banner,
             adw_banner_set_title (banner, "");
             button_label = _("_Empty Trash…");
             callback = G_CALLBACK (on_trash_clear_clicked);
+
+            g_signal_connect_object (gnome_privacy_preferences,
+                                     "changed::remove-old-trash-files",
+                                     G_CALLBACK (on_remove_old_trash_files_changed),
+                                     banner, 0);
         }
         break;
 
@@ -222,6 +242,10 @@ nautilus_location_banner_load (AdwBanner *banner,
                                      "changed::old-files-age",
                                      G_CALLBACK (set_auto_emptied_message),
                                      banner, G_CONNECT_SWAPPED);
+            g_signal_connect_object (gnome_privacy_preferences,
+                                     "changed::remove-old-trash-files",
+                                     G_CALLBACK (on_remove_old_trash_files_changed),
+                                     banner, 0);
         }
         break;
 
@@ -238,4 +262,11 @@ nautilus_location_banner_load (AdwBanner *banner,
     {
         g_signal_connect (banner, "button-clicked", callback, &nautilus_location_banner_load);
     }
+}
+
+void
+nautilus_location_banner_load (AdwBanner *banner,
+                               GFile     *location)
+{
+    set_mode (banner, get_mode_for_location (location));
 }
