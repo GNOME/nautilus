@@ -554,22 +554,6 @@ path_is_home_dir (const char *path)
 }
 
 static void
-open_home (NautilusGtkPlacesSidebar *sidebar)
-{
-  const char *home_path;
-  GFile       *home_dir;
-
-  home_path = g_get_home_dir ();
-  if (!home_path)
-    return;
-
-  home_dir = g_file_new_for_path (home_path);
-  emit_open_location (sidebar, home_dir, 0);
-
-  g_object_unref (home_dir);
-}
-
-static void
 add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
 {
   GList *dirs;
@@ -2626,88 +2610,6 @@ get_unmount_operation (NautilusGtkPlacesSidebar *sidebar)
   return mount_op;
 }
 
-/* Returns TRUE if file1 is prefix of file2 or if both files have the
- * same path
- */
-static gboolean
-file_prefix_or_same (GFile *file1,
-                     GFile *file2)
-{
-  return g_file_has_prefix (file1, file2) ||
-         g_file_equal (file1, file2);
-}
-
-static gboolean
-is_current_location_on_volume (NautilusGtkPlacesSidebar *sidebar,
-                               GMount           *mount,
-                               GVolume          *volume,
-                               GDrive           *drive)
-{
-  gboolean  current_location_on_volume;
-  GFile    *mount_default_location;
-  GMount   *mount_for_volume;
-  GList    *volumes_for_drive;
-  GList    *volume_for_drive;
-
-  current_location_on_volume = FALSE;
-
-  if (sidebar->current_location != NULL)
-    {
-      if (mount != NULL)
-        {
-          mount_default_location = g_mount_get_default_location (mount);
-          current_location_on_volume = file_prefix_or_same (sidebar->current_location,
-                                                            mount_default_location);
-
-          g_object_unref (mount_default_location);
-        }
-      /* This code path is probably never reached since mount always exists,
-       * and if it doesn't exists we don't offer a way to eject a volume or
-       * drive in the UI. Do it for defensive programming
-       */
-      else if (volume != NULL)
-        {
-          mount_for_volume = g_volume_get_mount (volume);
-          if (mount_for_volume != NULL)
-            {
-              mount_default_location = g_mount_get_default_location (mount_for_volume);
-              current_location_on_volume = file_prefix_or_same (sidebar->current_location,
-                                                                mount_default_location);
-
-              g_object_unref (mount_default_location);
-              g_object_unref (mount_for_volume);
-            }
-        }
-      /* This code path is probably never reached since mount always exists,
-       * and if it doesn't exists we don't offer a way to eject a volume or
-       * drive in the UI. Do it for defensive programming
-       */
-      else if (drive != NULL)
-        {
-          volumes_for_drive = g_drive_get_volumes (drive);
-          for (volume_for_drive = volumes_for_drive; volume_for_drive != NULL; volume_for_drive = volume_for_drive->next)
-            {
-              mount_for_volume = g_volume_get_mount (volume_for_drive->data);
-              if (mount_for_volume != NULL)
-                {
-                  mount_default_location = g_mount_get_default_location (mount_for_volume);
-                  current_location_on_volume = file_prefix_or_same (sidebar->current_location,
-                                                                    mount_default_location);
-
-                  g_object_unref (mount_default_location);
-                  g_object_unref (mount_for_volume);
-
-                  if (current_location_on_volume)
-                    break;
-                }
-            }
-          g_list_free_full (volumes_for_drive, g_object_unref);
-        }
-  }
-
-  return current_location_on_volume;
-}
-
 static void
 do_unmount (GMount           *mount,
             NautilusGtkPlacesSidebar *sidebar)
@@ -2716,9 +2618,6 @@ do_unmount (GMount           *mount,
     {
       GMountOperation *mount_op;
       GtkWindow *parent;
-
-      if (is_current_location_on_volume (sidebar, mount, NULL, NULL))
-        open_home (sidebar);
 
       mount_op = get_unmount_operation (sidebar);
       parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
@@ -2843,9 +2742,6 @@ do_eject (GMount           *mount,
   GtkWindow *parent;
 
   mount_op = get_unmount_operation (sidebar);
-
-  if (is_current_location_on_volume (sidebar, mount, volume, drive))
-    open_home (sidebar);
 
   if (mount != NULL)
     {
