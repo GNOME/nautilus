@@ -144,7 +144,12 @@ nautilus_monitor_directory (GFile *location)
     {
         ret->monitor = dir_monitor;
     }
-    else if (!g_file_is_native (location))
+
+    /* Currently, some GVfs backends which support monitoring never emit
+     * G_FILE_MONITOR_EVENT_UNMOUNTED, nor _DELETED events when the location
+     * is unmounted. Use GVolumeMonitor in addition to GFileMonitor.
+     */
+    if (!g_file_is_native (location))
     {
         ret->location = g_object_ref (location);
         ret->volume_monitor = g_volume_monitor_get ();
