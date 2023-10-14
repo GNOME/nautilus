@@ -29,9 +29,6 @@
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_PREVIEWER
-#include "nautilus-debug.h"
-
 #include <gio/gio.h>
 
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"

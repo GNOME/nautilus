@@ -24,9 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_ASYNC_JOBS
-
-#include "nautilus-debug.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-enums.h"

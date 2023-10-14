@@ -46,9 +46,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_FILE
-#include "nautilus-debug.h"
-
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-enums.h"

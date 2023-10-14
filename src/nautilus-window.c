@@ -42,9 +42,6 @@
 #include <gdk/x11/gdkx.h>
 #endif
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
-#include "nautilus-debug.h"
-
 #include "gtk/nautilusgtkplacessidebarprivate.h"
 
 #include "nautilus-application.h"

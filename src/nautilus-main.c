@@ -30,7 +30,6 @@
 #include "nautilus-application.h"
 #include "nautilus-resources.h"
 
-#include "nautilus-debug.h"
 #include <eel/eel-debug.h>
 
 #include <glib/gi18n.h>

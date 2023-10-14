@@ -31,9 +31,6 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file.h"
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
-#include "nautilus-debug.h"
-
 struct _NautilusDBusManager
 {
     GObject parent;

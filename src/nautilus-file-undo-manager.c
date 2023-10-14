@@ -32,9 +32,6 @@
 
 #include <glib/gi18n.h>
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_UNDO
-#include "nautilus-debug.h"
-
 enum
 {
     SIGNAL_UNDO_CHANGED,

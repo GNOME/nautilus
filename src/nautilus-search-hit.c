@@ -25,8 +25,6 @@
 
 #include "nautilus-search-hit.h"
 #include "nautilus-query.h"
-#define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH_HIT
-#include "nautilus-debug.h"
 
 struct _NautilusSearchHit
 {

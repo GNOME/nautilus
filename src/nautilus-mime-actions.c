@@ -28,9 +28,6 @@
 #include <glib/gstdio.h>
 #include <string.h>
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_MIME
-#include "nautilus-debug.h"
-
 #include "nautilus-application.h"
 #include "nautilus-enums.h"
 #include "nautilus-file.h"

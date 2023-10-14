@@ -28,8 +28,6 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
-#define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
-#include "nautilus-debug.h"
 
 #include <string.h>
 #include <glib.h>

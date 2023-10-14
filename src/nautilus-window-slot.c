@@ -1105,9 +1105,6 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
 }
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
-#include "nautilus-debug.h"
-
 static void begin_location_change (NautilusWindowSlot        *slot,
                                    GFile                     *location,
                                    GFile                     *previous_location,

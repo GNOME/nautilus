@@ -34,9 +34,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-icon-names.h"
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_BOOKMARKS
-#include "nautilus-debug.h"
-
 enum
 {
     CONTENTS_CHANGED,

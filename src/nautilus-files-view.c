@@ -45,9 +45,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
-#include "nautilus-debug.h"
-
 #include "nautilus-application.h"
 #include "nautilus-app-chooser.h"
 #include "nautilus-batch-rename-dialog.h"

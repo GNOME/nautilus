@@ -39,9 +39,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_APPLICATION
-#include "nautilus-debug.h"
-
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
 #include "nautilus-dbus-launcher.h"

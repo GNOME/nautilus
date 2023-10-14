@@ -21,10 +21,6 @@
 
 #include "nautilus-freedesktop-dbus.h"
 
-/* We share the same debug domain as nautilus-dbus-manager */
-#define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
-#include "nautilus-debug.h"
-
 #include "nautilus-application.h"
 #include "nautilus-file.h"
 #include "nautilus-freedesktop-generated.h"

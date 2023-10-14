@@ -32,9 +32,6 @@
 
 #include "nautilus-ui-utilities.h"
 
-#define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
-#include "nautilus-debug.h"
-
 #define NEW_NAME_TAG "Nautilus: new name"
 
 static void finish_rename (NautilusFile *file,

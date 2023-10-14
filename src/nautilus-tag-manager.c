@@ -23,8 +23,6 @@
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-tracker-utilities.h"
-#define DEBUG_FLAG NAUTILUS_DEBUG_TAG_MANAGER
-#include "nautilus-debug.h"
 
 #include <gio/gunixinputstream.h>
 #include <tracker-sparql.h>
