@@ -1,11 +1,11 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 #include "src/nautilus-directory.h"
+#include "src/nautilus-directory-private.h"
+#include "src/nautilus-file.h"
+#include "src/nautilus-file-private.h"
 #include "src/nautilus-file-utilities.h"
 #include "src/nautilus-search-directory.h"
-#include "src/nautilus-directory.h"
-#include "src/nautilus-file.h"
-#include "src/nautilus-file.c"
 #include <unistd.h>
 
 #define ROOT_DIR "file:///tmp"

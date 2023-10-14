@@ -597,7 +597,7 @@ nautilus_file_set_directory (NautilusFile      *file,
     g_free (parent_uri);
 }
 
-static NautilusFile *
+NautilusFile *
 nautilus_file_new_from_filename (NautilusDirectory *directory,
                                  const char        *filename,
                                  gboolean           self_owned)

@@ -220,6 +220,9 @@ typedef struct {
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
 							    GFileInfo              *info);
+NautilusFile *nautilus_file_new_from_filename              (NautilusDirectory *directory,
+                                                            const char        *filename,
+                                                            gboolean           self_owned);
 void          nautilus_file_emit_changed                   (NautilusFile           *file);
 void          nautilus_file_mark_gone                      (NautilusFile           *file);
 
