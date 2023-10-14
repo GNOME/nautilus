@@ -18,6 +18,7 @@
  *
  *  Author: Christian Neumair <cneumair@gnome.org>
  */
+#define G_LOG_DOMAIN "nautilus-window"
 
 #include "config.h"
 
@@ -2067,7 +2068,7 @@ end_location_change (NautilusWindowSlot *self)
     uri = nautilus_window_slot_get_location_uri (self);
     if (uri)
     {
-        DEBUG ("Finished loading window for uri %s", uri);
+        g_debug ("Finished loading window for uri %s", uri);
         g_free (uri);
     }
 
@@ -2125,7 +2126,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
     g_assert (self != NULL);
 
     uri = nautilus_window_slot_get_location_uri (self);
-    DEBUG ("Change view of window %s to %d", uri, id);
+    g_debug ("Change view of window %s to %d", uri, id);
     g_free (uri);
 
     selection = nautilus_view_get_selection (self->content_view);

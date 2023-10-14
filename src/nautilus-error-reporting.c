@@ -19,6 +19,7 @@
  *
  *  Authors: John Sullivan <sullivan@eazel.com>
  */
+#define G_LOG_DOMAIN "nautilus-error-reporting"
 
 #include <config.h>
 
@@ -453,7 +454,7 @@ nautilus_rename_file (NautilusFile                  *file,
                           NULL);     /* FIXME bugzilla.gnome.org 42395: Parent this? */
 
     uri = nautilus_file_get_uri (file);
-    DEBUG ("Renaming file %s to %s", uri, new_name);
+    g_debug ("Renaming file %s to %s", uri, new_name);
 
     /* Start the rename. */
     nautilus_file_rename (file, new_name,

@@ -18,6 +18,7 @@
  *
  *  Author: Darin Adler <darin@bentspoon.com>
  */
+#define G_LOG_DOMAIN "nautilus-file"
 
 #include "nautilus-file.h"
 
@@ -5014,8 +5015,8 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
         gtk_snapshot_pop (snapshot); /* End rounded clip */
 
-        DEBUG ("Returning thumbnailed image, at size %d %d",
-               (int) (width), (int) (height));
+        g_debug ("Returning thumbnailed image, at size %d %d",
+                 (int) (width), (int) (height));
         paintable = gtk_snapshot_to_paintable (snapshot, NULL);
     }
     else if (file->details->thumbnail_path == NULL &&
@@ -5065,7 +5066,7 @@ nautilus_file_get_icon (NautilusFile          *file,
         goto out;
     }
 
-    DEBUG ("Called file_get_icon(), at size %d", size);
+    g_debug ("Called file_get_icon(), at size %d", size);
 
     if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
         nautilus_file_should_show_thumbnail (file) &&

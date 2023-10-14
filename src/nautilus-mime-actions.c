@@ -18,6 +18,7 @@
  *
  *  Authors: Maciej Stachowiak <mjs@eazel.com>
  */
+#define G_LOG_DOMAIN "nautilus-mime"
 
 #include "nautilus-mime-actions.h"
 
@@ -1253,7 +1254,7 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
                        (GAsyncReadyCallback) search_for_application_dbus_call_notify_cb,
                        parameters_install);
 
-    DEBUG ("InstallMimeType method invoked for %s", mime_type);
+    g_debug ("InstallMimeType method invoked for %s", mime_type);
 }
 
 static void
@@ -1579,7 +1580,7 @@ activate_files_internal (ActivateParameters *parameters)
         executable_path = g_filename_from_uri (uri, NULL, NULL);
         quoted_path = g_shell_quote (executable_path);
 
-        DEBUG ("Launching file path %s", quoted_path);
+        g_debug ("Launching file path %s", quoted_path);
 
         nautilus_launch_application_from_command (display, quoted_path, FALSE, NULL);
     }
@@ -1596,7 +1597,7 @@ activate_files_internal (ActivateParameters *parameters)
         executable_path = g_filename_from_uri (uri, NULL, NULL);
         quoted_path = g_shell_quote (executable_path);
 
-        DEBUG ("Launching in terminal file quoted path %s", quoted_path);
+        g_debug ("Launching in terminal file quoted path %s", quoted_path);
 
         nautilus_launch_application_from_command (display, quoted_path, TRUE, NULL);
     }

@@ -20,6 +20,7 @@
  *          Cosimo Cecchi <cosimoc@redhat.com>
  *
  */
+#define G_LOG_DOMAIN "nautilus-undo"
 
 #include <config.h>
 
@@ -230,7 +231,7 @@ nautilus_file_undo_manager_undo (GtkWindow                      *parent_window,
 void
 nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info)
 {
-    DEBUG ("Setting undo information %p", info);
+    g_debug ("Setting undo information %p", info);
 
     file_undo_manager_clear (undo_singleton);
 

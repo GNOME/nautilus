@@ -18,6 +18,7 @@
  * Author: Jamie McCracken <jamiemcc@gnome.org>
  *
  */
+#define G_LOG_DOMAIN "nautilus-search"
 
 #include <config.h>
 #include "nautilus-search-engine-tracker.h"
@@ -109,7 +110,7 @@ check_pending_hits (NautilusSearchEngineTracker *tracker,
     GList *hits = NULL;
     NautilusSearchHit *hit;
 
-    DEBUG ("Tracker engine add hits");
+    g_debug ("Tracker engine add hits");
 
     if (!force_send &&
         g_queue_get_length (tracker->hits_pending) < BATCH_SIZE)
@@ -130,7 +131,7 @@ static void
 search_finished (NautilusSearchEngineTracker *tracker,
                  GError                      *error)
 {
-    DEBUG ("Tracker engine finished");
+    g_debug ("Tracker engine finished");
 
     if (error == NULL)
     {
@@ -148,7 +149,7 @@ search_finished (NautilusSearchEngineTracker *tracker,
 
     if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-        DEBUG ("Tracker engine error %s", error->message);
+        g_debug ("Tracker engine error %s", error->message);
         nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (tracker), error->message);
     }
     else
@@ -157,11 +158,11 @@ search_finished (NautilusSearchEngineTracker *tracker,
                                            NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
         if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         {
-            DEBUG ("Tracker engine finished and cancelled");
+            g_debug ("Tracker engine finished and cancelled");
         }
         else
         {
-            DEBUG ("Tracker engine finished correctly");
+            g_debug ("Tracker engine finished correctly");
         }
     }
 
@@ -320,7 +321,7 @@ search_finished_idle (gpointer user_data)
 {
     NautilusSearchEngineTracker *tracker = user_data;
 
-    DEBUG ("Tracker engine finished idle");
+    g_debug ("Tracker engine finished idle");
 
     search_finished (tracker, NULL);
 
@@ -491,7 +492,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         return;
     }
 
-    DEBUG ("Tracker engine start");
+    g_debug ("Tracker engine start");
     g_object_ref (tracker);
     tracker->query_pending = TRUE;
 
@@ -632,7 +633,7 @@ nautilus_search_engine_tracker_stop (NautilusSearchProvider *provider)
 
     if (tracker->query_pending)
     {
-        DEBUG ("Tracker engine stop");
+        g_debug ("Tracker engine stop");
         g_cancellable_cancel (tracker->cancellable);
         g_clear_object (&tracker->cancellable);
         tracker->query_pending = FALSE;

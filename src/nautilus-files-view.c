@@ -22,6 +22,7 @@
  *          Pavel Cisler <pavel@eazel.com>,
  *          David Emory Watson <dwatson@cs.ucr.edu>
  */
+#define G_LOG_DOMAIN "nautilus-view"
 
 #include "nautilus-files-view.h"
 
@@ -5604,8 +5605,7 @@ run_script (GSimpleAction *action,
 
     display = gtk_widget_get_display (GTK_WIDGET (launch_parameters->directory_view));
 
-    DEBUG ("run_script, script_path=“%s” (omitting script parameters)",
-           local_file_path);
+    g_debug ("run_script, script_path=“%s” (omitting script parameters)", local_file_path);
 
     nautilus_launch_application_from_command_array (display, quoted_path, FALSE,
                                                     (const char * const *) parameters);
@@ -5730,7 +5730,7 @@ nautilus_load_custom_accel_for_scripts (void)
     }
     else
     {
-        DEBUG ("Unable to open '%s', error message: %s", path, error->message);
+        g_debug ("Unable to open '%s', error message: %s", path, error->message);
         g_clear_error (&error);
     }
 
@@ -6896,7 +6896,7 @@ action_run_in_terminal (GSimpleAction *action,
     parent_window = nautilus_files_view_get_containing_window (view);
     display = gtk_widget_get_display (GTK_WIDGET (parent_window));
 
-    DEBUG ("Launching in terminal %s", quoted_path);
+    g_debug ("Launching in terminal %s", quoted_path);
 
     nautilus_launch_application_from_command (display, quoted_path, TRUE, NULL);
 

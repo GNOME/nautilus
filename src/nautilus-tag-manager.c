@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#define G_LOG_DOMAIN "nautilus-tag-manager"
 
 #include "nautilus-tag-manager.h"
 #include "nautilus-file.h"
@@ -253,7 +254,7 @@ on_get_starred_files_cursor_callback (GObject      *object,
     }
     else
     {
-        DEBUG ("File %s is starred but not found", url);
+        g_debug ("File %s is starred but not found", url);
     }
 
     tracker_sparql_cursor_next_async (cursor,
@@ -386,7 +387,7 @@ nautilus_tag_manager_star_files (NautilusTagManager  *self,
     GTask *task;
     UpdateData *update_data;
 
-    DEBUG ("Starring %i files", g_list_length (selection));
+    g_debug ("Starring %i files", g_list_length (selection));
 
     task = g_task_new (object, cancellable, callback, NULL);
 
@@ -419,7 +420,7 @@ nautilus_tag_manager_unstar_files (NautilusTagManager  *self,
     GTask *task;
     UpdateData *update_data;
 
-    DEBUG ("Unstarring %i files", g_list_length (selection));
+    g_debug ("Unstarring %i files", g_list_length (selection));
 
     task = g_task_new (object, cancellable, callback, NULL);
 
@@ -468,7 +469,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
         file_url = tracker_notifier_event_get_urn (event);
         changed_file = NULL;
 
-        DEBUG ("Got event for file %s", file_url);
+        g_debug ("Got event for file %s", file_url);
 
         tracker_sparql_statement_bind_string (self->query_file_is_starred, "file", file_url);
         cursor = tracker_sparql_statement_execute (self->query_file_is_starred,
@@ -494,7 +495,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
 
             if (inserted)
             {
-                DEBUG ("Added %s to starred files list", file_url);
+                g_debug ("Added %s to starred files list", file_url);
                 changed_file = nautilus_file_get_by_uri (file_url);
             }
         }
@@ -504,7 +505,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
 
             if (removed)
             {
-                DEBUG ("Removed %s from starred files list", file_url);
+                g_debug ("Removed %s from starred files list", file_url);
                 changed_file = nautilus_file_get_by_uri (file_url);
             }
         }
@@ -802,7 +803,7 @@ nautilus_tag_manager_update_moved_uris (NautilusTagManager *self,
         return;
     }
 
-    DEBUG ("Updating moved URI for %i starred files", new_uris->len);
+    g_debug ("Updating moved URI for %i starred files", new_uris->len);
 
     query = g_string_new ("DELETE DATA {");
 
@@ -848,7 +849,7 @@ process_tracker2_data_cb (GObject      *source_object,
 
     if (!error)
     {
-        DEBUG ("Data migration was successful. Creating stamp %s", path);
+        g_debug ("Data migration was successful. Creating stamp %s", path);
 
         g_file_set_contents (path, "", -1, &error);
         if (error)
@@ -893,12 +894,12 @@ process_tracker2_data (NautilusTagManager *self,
 
         if (file)
         {
-            DEBUG ("Tracker 2 migration: starring %s", *group);
+            g_debug ("Tracker 2 migration: starring %s", *group);
             selection = g_list_prepend (selection, file);
         }
         else
         {
-            DEBUG ("Tracker 2 migration: couldn't get NautilusFile for %s", *group);
+            g_debug ("Tracker 2 migration: couldn't get NautilusFile for %s", *group);
         }
     }
 
@@ -938,8 +939,8 @@ child_watch_cb (GPid     pid,
                 gint     status,
                 gpointer user_data)
 {
-    DEBUG ("Child %" G_PID_FORMAT " exited %s", pid,
-           g_spawn_check_wait_status (status, NULL) ? "normally" : "abnormally");
+    g_debug ("Child %" G_PID_FORMAT " exited %s", pid,
+             g_spawn_check_wait_status (status, NULL) ? "normally" : "abnormally");
     g_spawn_close_pid (pid);
 }
 
@@ -992,11 +993,11 @@ nautilus_tag_manager_maybe_migrate_tracker2_data (NautilusTagManager *self)
 
     if (g_file_test (path, G_FILE_TEST_EXISTS))
     {
-        DEBUG ("Tracker 2 migration: already completed.");
+        g_debug ("Tracker 2 migration: already completed.");
     }
     else
     {
-        DEBUG ("Tracker 2 migration: starting.");
+        g_debug ("Tracker 2 migration: starting.");
         export_tracker2_data (self);
     }
 }

@@ -18,6 +18,7 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  *
  */
+#define G_LOG_DOMAIN "nautilus-search"
 
 #include <config.h>
 #include "nautilus-search-hit.h"
@@ -94,7 +95,7 @@ search_finished (NautilusSearchEngineModel *model)
 
     if (model->hits != NULL)
     {
-        DEBUG ("Model engine hits added");
+        g_debug ("Model engine hits added");
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (model),
                                              model->hits);
         g_list_free_full (model->hits, g_object_unref);
@@ -105,7 +106,7 @@ search_finished (NautilusSearchEngineModel *model)
 
     g_object_notify (G_OBJECT (model), "running");
 
-    DEBUG ("Model engine finished");
+    g_debug ("Model engine finished");
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (model),
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
     g_object_unref (model);
@@ -259,7 +260,7 @@ nautilus_search_engine_model_start (NautilusSearchProvider *provider)
         return;
     }
 
-    DEBUG ("Model engine start");
+    g_debug ("Model engine start");
 
     g_object_ref (model);
     model->query_pending = TRUE;
@@ -286,7 +287,7 @@ nautilus_search_engine_model_stop (NautilusSearchProvider *provider)
 
     if (model->query_pending)
     {
-        DEBUG ("Model engine stop");
+        g_debug ("Model engine stop");
 
         nautilus_directory_cancel_callback (model->directory,
                                             model_directory_ready_cb, model);

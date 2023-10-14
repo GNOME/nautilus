@@ -19,6 +19,7 @@
  *
  *  Author: Andy Hertzfeld <andy@eazel.com>
  */
+#define G_LOG_DOMAIN "nautilus-thumbnails"
 
 #include <config.h>
 #include "nautilus-thumbnails.h"
@@ -343,8 +344,8 @@ nautilus_create_thumbnail (NautilusFile *file)
     if (existing == NULL && existing_info == NULL)
     {
         /* Add the thumbnail to the list. */
-        DEBUG ("(Main Thread) Adding thumbnail: %s\n",
-               info->image_uri);
+        g_debug ("(Main Thread) Adding thumbnail: %s",
+                 info->image_uri);
         g_queue_push_tail (&thumbnails_to_make, info);
         node = g_queue_peek_tail_link (&thumbnails_to_make);
         g_hash_table_insert (thumbnails_to_make_hash,
@@ -361,8 +362,8 @@ nautilus_create_thumbnail (NautilusFile *file)
     }
     else
     {
-        DEBUG ("(Main Thread) Updating non-current mtime: %s\n",
-               info->image_uri);
+        g_debug ("(Main Thread) Updating non-current mtime: %s",
+                 info->image_uri);
 
         /* The file in the queue might need a new original mtime */
         if (existing_info == NULL)
@@ -403,7 +404,7 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
 
     if (g_queue_is_empty (&thumbnails_to_make))
     {
-        DEBUG ("(Thumbnail Async Thread) Exiting\n");
+        g_debug ("(Thumbnail Async Thread) Exiting");
     }
     else if (thumbnail_thread_starter_id == 0)
     {
@@ -425,8 +426,8 @@ thumbnail_failed_cb (GObject      *source_object,
                                                                     &error);
     if (error != NULL)
     {
-        DEBUG ("(Thumbnail Async Thread) Could not create a failed thumbnail: %s (%s)\n",
-               info->image_uri, error->message);
+        g_debug ("(Thumbnail Async Thread) Could not create a failed thumbnail: %s (%s)",
+                 info->image_uri, error->message);
     }
 
     thumbnail_finalize (info);
@@ -446,8 +447,8 @@ thumbnail_saved_cb (GObject      *source_object,
                                                            &error);
     if (error != NULL)
     {
-        DEBUG ("(Thumbnail Async Thread) Saving thumbnail failed: %s (%s)\n",
-               info->image_uri, error->message);
+        g_debug ("(Thumbnail Async Thread) Saving thumbnail failed: %s (%s)",
+                 info->image_uri, error->message);
     }
 
     thumbnail_finalize (info);
@@ -470,8 +471,8 @@ thumbnail_generated_cb (GObject      *source_object,
 
     if (g_cancellable_is_cancelled (info->cancellable))
     {
-        DEBUG ("(Thumbnail Async Thread) Cancelled thumbnail: %s\n",
-               info->image_uri);
+        g_debug ("(Thumbnail Async Thread) Cancelled thumbnail: %s",
+                 info->image_uri);
 
         thumbnail_finalize (info);
         return;
@@ -484,8 +485,8 @@ thumbnail_generated_cb (GObject      *source_object,
         g_autofree gchar *mtime = g_strdup_printf ("%" G_GINT64_FORMAT,
                                                    (gint64) info->updated_file_mtime);
 
-        DEBUG ("(Thumbnail Async Thread) Saving thumbnail: %s\n",
-               info->image_uri);
+        g_debug ("(Thumbnail Async Thread) Saving thumbnail: %s",
+                 info->image_uri);
 
         /* This is needed since the attribute is not set on the pixbuf,
          *  only the written thumbnail file.
@@ -503,8 +504,8 @@ thumbnail_generated_cb (GObject      *source_object,
     }
     else
     {
-        DEBUG ("(Thumbnail Async Thread) Thumbnail failed: %s (%s)\n",
-               info->image_uri, error->message);
+        g_debug ("(Thumbnail Async Thread) Thumbnail failed: %s (%s)",
+                 info->image_uri, error->message);
 
         gnome_desktop_thumbnail_factory_create_failed_thumbnail_async (thumbnail_factory,
                                                                        info->image_uri,
@@ -534,7 +535,7 @@ thumbnail_starter_cb (gpointer data)
     guint backoff_time_min = THUMBNAIL_CREATION_DELAY_SECS + 1;
     GList *node;
 
-    DEBUG ("(Main Thread) Creating thumbnails thread\n");
+    g_debug ("(Main Thread) Creating thumbnails thread");
 
     thumbnail_factory = get_thumbnail_factory ();
     thumbnail_thread_starter_id = 0;
@@ -559,8 +560,8 @@ thumbnail_starter_cb (gpointer data)
         if (current_time < current_orig_mtime + THUMBNAIL_CREATION_DELAY_SECS &&
             current_time >= current_orig_mtime)
         {
-            DEBUG ("(Thumbnail Thread) Skipping: %s\n",
-                   info->image_uri);
+            g_debug ("(Thumbnail Thread) Skipping: %s",
+                     info->image_uri);
 
             /* Only retain the smallest backoff time */
             backoff_time = THUMBNAIL_CREATION_DELAY_SECS - (current_time - current_orig_mtime);
@@ -574,8 +575,8 @@ thumbnail_starter_cb (gpointer data)
         }
 
         /* Create the thumbnail. */
-        DEBUG ("(Thumbnail Thread) Creating thumbnail: %s\n",
-               info->image_uri);
+        g_debug ("(Thumbnail Thread) Creating thumbnail: %s",
+                 info->image_uri);
 
         running_threads += 1;
         g_hash_table_insert (currently_thumbnailing_hash, info->image_uri, info);

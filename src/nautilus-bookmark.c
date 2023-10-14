@@ -20,6 +20,7 @@
  * Authors: John Sullivan <sullivan@eazel.com>
  *          Cosimo Cecchi <cosimoc@redhat.com>
  */
+#define G_LOG_DOMAIN "nautilus-bookmarks"
 
 #include <config.h>
 
@@ -114,7 +115,7 @@ bookmark_set_name_from_ready_file (NautilusBookmark *self,
     else if (g_strcmp0 (self->name, display_name) != 0)
     {
         nautilus_bookmark_set_name_internal (self, display_name);
-        DEBUG ("%s: name changed to %s", nautilus_bookmark_get_name (self), display_name);
+        g_debug ("%s: name changed to %s", nautilus_bookmark_get_name (self), display_name);
     }
 }
 
@@ -126,14 +127,14 @@ bookmark_file_changed_callback (NautilusFile     *file,
 
     g_assert (file == bookmark->file);
 
-    DEBUG ("%s: file changed", nautilus_bookmark_get_name (bookmark));
+    g_debug ("%s: file changed", nautilus_bookmark_get_name (bookmark));
 
     location = nautilus_file_get_location (file);
 
     if (!g_file_equal (bookmark->location, location) &&
         !nautilus_file_is_in_trash (file))
     {
-        DEBUG ("%s: file got moved", nautilus_bookmark_get_name (bookmark));
+        g_debug ("%s: file got moved", nautilus_bookmark_get_name (bookmark));
 
         g_object_unref (bookmark->location);
         bookmark->location = g_object_ref (location);
@@ -158,7 +159,7 @@ bookmark_file_changed_callback (NautilusFile     *file,
          * we don't want to change the icon or anything about the
          * bookmark just because its not there anymore.
          */
-        DEBUG ("%s: trashed", nautilus_bookmark_get_name (bookmark));
+        g_debug ("%s: trashed", nautilus_bookmark_get_name (bookmark));
         nautilus_bookmark_disconnect_file (bookmark);
     }
     else
@@ -274,7 +275,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 
     if (!bookmark->exists)
     {
-        DEBUG ("%s: file does not exist, set warning icon", nautilus_bookmark_get_name (bookmark));
+        g_debug ("%s: file does not exist, set warning icon", nautilus_bookmark_get_name (bookmark));
         symbolic_icon = g_themed_icon_new ("dialog-warning-symbolic");
         icon = g_themed_icon_new ("dialog-warning");
     }
@@ -289,7 +290,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
         icon = g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER_REMOTE);
     }
 
-    DEBUG ("%s: setting icon to default", nautilus_bookmark_get_name (bookmark));
+    g_debug ("%s: setting icon to default", nautilus_bookmark_get_name (bookmark));
 
     g_object_set (bookmark,
                   "icon", icon,
@@ -302,8 +303,8 @@ nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 {
     if (bookmark->file != NULL)
     {
-        DEBUG ("%s: disconnecting file",
-               nautilus_bookmark_get_name (bookmark));
+        g_debug ("%s: disconnecting file",
+                 nautilus_bookmark_get_name (bookmark));
 
         g_signal_handlers_disconnect_by_func (bookmark->file,
                                               G_CALLBACK (bookmark_file_changed_callback),
@@ -329,14 +330,14 @@ nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 {
     if (bookmark->file != NULL)
     {
-        DEBUG ("%s: file already connected, returning",
-               nautilus_bookmark_get_name (bookmark));
+        g_debug ("%s: file already connected, returning",
+                 nautilus_bookmark_get_name (bookmark));
         return;
     }
 
     if (bookmark->exists)
     {
-        DEBUG ("%s: creating file", nautilus_bookmark_get_name (bookmark));
+        g_debug ("%s: creating file", nautilus_bookmark_get_name (bookmark));
 
         bookmark->file = nautilus_file_get (bookmark->location);
         g_assert (!nautilus_file_is_gone (bookmark->file));
@@ -373,8 +374,8 @@ nautilus_bookmark_set_exists (NautilusBookmark *bookmark,
     }
 
     bookmark->exists = exists;
-    DEBUG ("%s: setting bookmark to exist: %d\n",
-           nautilus_bookmark_get_name (bookmark), exists);
+    g_debug ("%s: setting bookmark to exist: %d",
+             nautilus_bookmark_get_name (bookmark), exists);
 
     /* refresh icon */
     nautilus_bookmark_set_icon_to_default (bookmark);

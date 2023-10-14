@@ -19,6 +19,7 @@
  * Author: Cosimo Cecchi <cosimoc@redhat.com>
  *
  */
+#define G_LOG_DOMAIN "nautilus-dbus-manager"
 
 #include <config.h>
 

@@ -18,6 +18,7 @@
  *
  *  Author: Darin Adler <darin@bentspoon.com>
  */
+#define G_LOG_DOMAIN "nautilus-async-jobs"
 
 #include <libxml/parser.h>
 #include <stdio.h>
@@ -346,7 +347,7 @@ async_job_start (NautilusDirectory *directory,
     char *key;
 #endif
 
-    DEBUG ("starting %s in %p", job, directory->details->location);
+    g_debug ("starting %s in %p", job, directory->details->location);
 
     g_assert (async_job_count >= 0);
     g_assert (async_job_count <= MAX_ASYNC_JOBS);
@@ -398,7 +399,7 @@ async_job_end (NautilusDirectory *directory,
     gpointer table_key, value;
 #endif
 
-    DEBUG ("stopping %s in %p", job, directory->details->location);
+    g_debug ("stopping %s in %p", job, directory->details->location);
 
     g_assert (async_job_count > 0);
 
@@ -2301,7 +2302,7 @@ start_monitoring_file_list (NautilusDirectory *directory)
     state->load_directory_file->details->loading_directory = TRUE;
 
 
-    DEBUG ("load_directory called to monitor file list of %p", directory->details->location);
+    g_debug ("load_directory called to monitor file list of %p", directory->details->location);
 
     directory->details->directory_load_in_progress = state;
 
@@ -2768,7 +2769,7 @@ directory_count_start (NautilusDirectory *directory,
     {
         g_autofree char *uri = NULL;
         uri = g_file_get_uri (location);
-        DEBUG ("load_directory called to get shallow file count for %s", uri);
+        g_debug ("load_directory called to get shallow file count for %s", uri);
     }
 
     g_file_enumerate_children_async (location,
@@ -3041,7 +3042,7 @@ deep_count_load (DeepCountState *state,
 {
     state->deep_count_location = g_object_ref (location);
 
-    DEBUG ("load_directory called to get deep file count for %p", location);
+    g_debug ("load_directory called to get deep file count for %p", location);
     g_file_enumerate_children_async (state->deep_count_location,
                                      G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                      G_FILE_ATTRIBUTE_STANDARD_TYPE ","
@@ -3439,7 +3440,7 @@ mime_list_start (NautilusDirectory *directory,
     {
         g_autofree char *uri = NULL;
         uri = g_file_get_uri (location);
-        DEBUG ("load_directory called to get MIME list of %s", uri);
+        g_debug ("load_directory called to get MIME list of %s", uri);
     }
 
     g_file_enumerate_children_async (location,

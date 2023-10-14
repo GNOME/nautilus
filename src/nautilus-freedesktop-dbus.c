@@ -17,6 +17,7 @@
  * Authors: Akshay Gupta <kitallis@gmail.com>
  *          Federico Mena Quintero <federico@gnome.org>
  */
+#define G_LOG_DOMAIN "nautilus-dbus"
 
 #include "nautilus-freedesktop-dbus.h"
 
@@ -143,7 +144,7 @@ name_acquired_cb (GDBusConnection *connection,
                   const gchar     *name,
                   gpointer         user_data)
 {
-    DEBUG ("Acquired the name %s on the session message bus\n", name);
+    g_debug ("Acquired the name %s on the session message bus", name);
 }
 
 static void
@@ -151,7 +152,7 @@ name_lost_cb (GDBusConnection *connection,
               const gchar     *name,
               gpointer         user_data)
 {
-    DEBUG ("Lost (or failed to acquire) the name %s on the session message bus\n", name);
+    g_debug ("Lost (or failed to acquire) the name %s on the session message bus", name);
 }
 
 static void

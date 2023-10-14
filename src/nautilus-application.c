@@ -23,6 +23,7 @@
  *          Cosimo Cecchi <cosimoc@gnome.org>
  *
  */
+#define G_LOG_DOMAIN "nautilus-application"
 
 #include "nautilus-application.h"
 
@@ -272,7 +273,7 @@ nautilus_application_create_window (NautilusApplication *self)
         gtk_widget_add_css_class (GTK_WIDGET (window), "devel");
     }
 
-    DEBUG ("Creating a new navigation window");
+    g_debug ("Creating a new navigation window");
 
     return window;
 }
@@ -380,7 +381,7 @@ real_open_location_full (NautilusApplication *self,
 
     new_uri = g_file_get_uri (location);
 
-    DEBUG ("Application opening location, old: %s, new: %s", old_uri, new_uri);
+    g_debug ("Application opening location, old: %s, new: %s", old_uri, new_uri);
 
     g_free (old_uri);
     g_free (new_uri);
@@ -512,7 +513,7 @@ nautilus_application_open (GApplication  *app,
     GFile *file;
     gint idx;
 
-    DEBUG ("Open called on the GApplication instance; %d files", n_files);
+    g_debug ("Open called on the GApplication instance; %d files", n_files);
 
     /* Open windows at each requested location. */
     for (idx = 0; idx < n_files; idx++)
@@ -785,7 +786,7 @@ nautilus_application_activate (GApplication *app)
 {
     GFile **files;
 
-    DEBUG ("Calling activate");
+    g_debug ("Calling activate");
 
     files = g_malloc0 (2 * sizeof (GFile *));
     files[0] = g_file_new_for_path (g_get_home_dir ());
@@ -901,7 +902,7 @@ nautilus_application_command_line (GApplication            *application,
 
     if (g_variant_dict_contains (options, "quit"))
     {
-        DEBUG ("Killing app, as requested");
+        g_debug ("Killing app, as requested");
         g_action_group_activate_action (G_ACTION_GROUP (application),
                                         "kill", NULL);
         goto out;

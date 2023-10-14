@@ -19,6 +19,7 @@
  * Author: Cosimo Cecchi <cosimoc@redhat.com>
  *
  */
+#define G_LOG_DOMAIN "nautilus-previewer"
 
 #include "config.h"
 
@@ -91,7 +92,7 @@ on_ping_finished (GObject      *object,
     else
     {
         fetching_bus = FALSE;
-        DEBUG ("Unable to create NautilusPreviewer2 proxy: %s", error->message);
+        g_debug ("Unable to create NautilusPreviewer2 proxy: %s", error->message);
     }
 }
 
@@ -121,7 +122,7 @@ on_bus_ready (GObject      *object,
     else
     {
         fetching_bus = FALSE;
-        DEBUG ("Unable to create NautilusPreviewer2 proxy: %s", error->message);
+        g_debug ("Unable to create NautilusPreviewer2 proxy: %s", error->message);
     }
 }
 
@@ -169,7 +170,7 @@ previewer2_method_ready_cb (GObject      *source,
 
     if (error != NULL)
     {
-        DEBUG ("Unable to call method on NautilusPreviewer: %s", error->message);
+        g_debug ("Unable to call method on NautilusPreviewer: %s", error->message);
     }
 }
 

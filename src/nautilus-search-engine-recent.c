@@ -17,6 +17,7 @@
  *
  * Author: Marco Trevisan <marco.trevisan@canonical.com>
  */
+#define G_LOG_DOMAIN "nautilus-search"
 
 #include <config.h>
 #include "nautilus-search-hit.h"
@@ -103,7 +104,7 @@ search_thread_add_hits_idle (gpointer user_data)
     if (!g_cancellable_is_cancelled (self->cancellable))
     {
         nautilus_search_provider_hits_added (provider, search_hits->hits);
-        DEBUG ("Recent engine add hits");
+        g_debug ("Recent engine add hits");
     }
 
     self->running = FALSE;
@@ -111,7 +112,7 @@ search_thread_add_hits_idle (gpointer user_data)
     g_clear_object (&self->cancellable);
     g_free (search_hits);
 
-    DEBUG ("Recent engine finished");
+    g_debug ("Recent engine finished");
     nautilus_search_provider_finished (provider,
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
     g_object_notify (G_OBJECT (provider), "running");
@@ -367,7 +368,7 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
     g_return_if_fail (self->query);
     g_return_if_fail (self->cancellable == NULL);
 
-    DEBUG ("Recent engine start");
+    g_debug ("Recent engine start");
 
     self->running = TRUE;
     self->cancellable = g_cancellable_new ();
@@ -384,7 +385,7 @@ nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
 
     if (self->cancellable != NULL)
     {
-        DEBUG ("Recent engine stop");
+        g_debug ("Recent engine stop");
         g_cancellable_cancel (self->cancellable);
     }
 

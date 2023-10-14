@@ -23,6 +23,7 @@
  */
 
 /* nautilus-window.c: Implementation of the main window object */
+#define G_LOG_DOMAIN "nautilus-window"
 
 #include "nautilus-window.h"
 
@@ -741,7 +742,7 @@ remove_slot_from_window (NautilusWindowSlot *slot,
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
     g_return_if_fail (NAUTILUS_WINDOW (window));
 
-    DEBUG ("Removing slot %p", slot);
+    g_debug ("Removing slot %p", slot);
 
     disconnect_slot (window, slot);
     window->slots = g_list_remove (window->slots, slot);
@@ -1064,7 +1065,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
     NautilusNavigationState *data;
     AdwTabPage *page;
 
-    DEBUG ("Requesting to remove slot %p from window %p", slot, window);
+    g_debug ("Requesting to remove slot %p from window %p", slot, window);
     if (window == NULL || slot == NULL)
     {
         return;
@@ -1085,7 +1086,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
     /* If that was the last slot in the window, close the window. */
     if (window->slots == NULL)
     {
-        DEBUG ("Last slot removed, closing the window");
+        g_debug ("Last slot removed, closing the window");
         nautilus_window_close (window);
     }
 }
@@ -1728,7 +1729,7 @@ nautilus_window_dispose (GObject *object)
     window = NAUTILUS_WINDOW (object);
     application = gtk_window_get_application (GTK_WINDOW (window));
 
-    DEBUG ("Destroying window");
+    g_debug ("Destroying window");
 
     /* close all slots safely */
     slots_copy = g_list_copy (window->slots);
@@ -1838,7 +1839,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
         return;
     }
 
-    DEBUG ("Setting new slot %p as active, old slot inactive %p", new_slot, old_slot);
+    g_debug ("Setting new slot %p as active, old slot inactive %p", new_slot, old_slot);
 
     /* make old slot inactive if it exists (may be NULL after init, for example) */
     if (old_slot != NULL)

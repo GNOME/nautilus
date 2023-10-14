@@ -18,6 +18,7 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  *
  */
+#define G_LOG_DOMAIN "nautilus-search"
 
 #include <config.h>
 #include "nautilus-search-engine-simple.h"
@@ -149,11 +150,11 @@ search_thread_done (SearchThreadData *data)
 
     if (g_cancellable_is_cancelled (data->cancellable))
     {
-        DEBUG ("Simple engine finished and cancelled");
+        g_debug ("Simple engine finished and cancelled");
     }
     else
     {
-        DEBUG ("Simple engine finished");
+        g_debug ("Simple engine finished");
     }
     engine->active_search = NULL;
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine),
@@ -172,7 +173,7 @@ search_thread_process_hits_idle (SearchThreadData *data,
 {
     if (!g_cancellable_is_cancelled (data->cancellable))
     {
-        DEBUG ("Simple engine add hits");
+        g_debug ("Simple engine add hits");
         nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
                                              hits);
     }
@@ -544,7 +545,7 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
         return;
     }
 
-    DEBUG ("Simple engine start");
+    g_debug ("Simple engine start");
 
     data = search_thread_data_new (simple, simple->query);
 
@@ -573,7 +574,7 @@ nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
 
     if (simple->active_search != NULL)
     {
-        DEBUG ("Simple engine stop");
+        g_debug ("Simple engine stop");
         g_cancellable_cancel (simple->active_search->cancellable);
 
         if (simple->create_thread_timeout_id != 0)
