@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2023-09-25 14:03+0000\n"
-"PO-Revision-Date: 2023-09-28 01:06+0300\n"
+"POT-Creation-Date: 2023-10-09 16:09+0000\n"
+"PO-Revision-Date: 2023-10-14 10:15+0300\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
@@ -32,7 +32,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4\n"
 "X-POOTLE-MTIME: 1433334275.000000\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
@@ -470,8 +470,8 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "İptal düğmesine tıklayarak bu işlemi durdurabilirsiniz."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-operations.c:273 src/nautilus-files-view.c:6139
-#: src/nautilus-files-view.c:6547 src/nautilus-mime-actions.c:596
+#: src/nautilus-file-operations.c:273 src/nautilus-files-view.c:6158
+#: src/nautilus-files-view.c:6566 src/nautilus-mime-actions.c:596
 #: src/nautilus-mime-actions.c:1007 src/nautilus-mime-actions.c:1325
 #: src/nautilus-properties-window.c:4218 src/nautilus-search-popover.c:650
 #: src/resources/ui/nautilus-app-chooser.ui:103
@@ -481,7 +481,7 @@ msgstr "İptal düğmesine tıklayarak bu işlemi durdurabilirsiniz."
 #: src/resources/ui/nautilus-files-view-select-items.ui:10
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:35
 msgid "_Cancel"
-msgstr "_İptal Et"
+msgstr "İ_ptal"
 
 #: extensions/audio-video-properties/totem-properties-view.c:84
 #, c-format
@@ -2068,11 +2068,11 @@ msgid "Do _not Empty Trash"
 msgstr "Çöpü _Boşaltma"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3187 src/nautilus-files-view.c:6918
+#: src/nautilus-file-operations.c:3187 src/nautilus-files-view.c:6937
 #: src/gtk/nautilusgtkplacessidebar.c:2064
 #, c-format
 msgid "Unable to access “%s”"
-msgstr "“%s” ögesine erişilemiyor"
+msgstr "“%s” ögesine erişilemedi"
 
 #: src/nautilus-file-operations.c:3272
 #, c-format
@@ -2684,142 +2684,142 @@ msgstr "(%s)"
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3794 src/resources/ui/nautilus-files-view.ui:43
+#: src/nautilus-files-view.c:3813 src/resources/ui/nautilus-files-view.ui:43
 msgid "Search _Everywhere"
 msgstr "_Her Yerde Ara"
 
-#: src/nautilus-files-view.c:3835 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3854 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "Sonuç Bulunamadı"
 
-#: src/nautilus-files-view.c:3838
+#: src/nautilus-files-view.c:3857
 msgid "No matches found in indexed locations"
 msgstr "Dizinlenmiş konumlarda eşleşme bulunamadı"
 
-#: src/nautilus-files-view.c:3843
+#: src/nautilus-files-view.c:3862
 msgid "Trash is Empty"
 msgstr "Çöp Boş"
 
-#: src/nautilus-files-view.c:3849
+#: src/nautilus-files-view.c:3868
 msgid "No Starred Files"
 msgstr "Yıldızlı Dosya Yok"
 
-#: src/nautilus-files-view.c:3855
+#: src/nautilus-files-view.c:3874
 msgid "No Recent Files"
 msgstr "Son Kullanılan Dosya Yok"
 
-#: src/nautilus-files-view.c:3861
+#: src/nautilus-files-view.c:3880
 msgid "Folder is Empty"
 msgstr "Klasör Boş"
 
-#: src/nautilus-files-view.c:6127
+#: src/nautilus-files-view.c:6146
 msgid "Select Move Destination"
 msgstr "Taşımak İçin Hedef Seç"
 
-#: src/nautilus-files-view.c:6131
+#: src/nautilus-files-view.c:6150
 msgid "Select Copy Destination"
 msgstr "Kopyalamak İçin Hedef Seç"
 
-#: src/nautilus-files-view.c:6140 src/nautilus-files-view.c:6548
+#: src/nautilus-files-view.c:6159 src/nautilus-files-view.c:6567
 #: src/resources/ui/nautilus-files-view-select-items.ui:16
 msgid "_Select"
 msgstr "_Seç"
 
-#: src/nautilus-files-view.c:6544
+#: src/nautilus-files-view.c:6563
 msgid "Select Extract Destination"
 msgstr "Çıkarılacak Hedefi Seç"
 
-#: src/nautilus-files-view.c:6643
+#: src/nautilus-files-view.c:6662
 msgid "Error sending email."
 msgstr "E-posta gönderiminde hata."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6948
+#: src/nautilus-files-view.c:6967
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "“%s” kaldırılamadı"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6978 src/gtk/nautilusgtkplacessidebar.c:2794
+#: src/nautilus-files-view.c:6997 src/gtk/nautilusgtkplacessidebar.c:2794
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "“%s” çıkartılamadı"
 
-#: src/nautilus-files-view.c:7003
+#: src/nautilus-files-view.c:7022
 msgid "Unable to stop drive"
 msgstr "Sürücü durdurulamıyor"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7116 src/gtk/nautilusgtkplacessidebar.c:2026
+#: src/nautilus-files-view.c:7135 src/gtk/nautilusgtkplacessidebar.c:2026
 #: src/gtk/nautilusgtkplacessidebar.c:3023
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "“%s” başlatılamadı"
 
-#: src/nautilus-files-view.c:8119
+#: src/nautilus-files-view.c:8138
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Seçim ile Yeni Klasör (%'d Öge)"
 
-#: src/nautilus-files-view.c:8175
+#: src/nautilus-files-view.c:8194
 #, c-format
 msgid "Open With %s"
 msgstr "%s ile Aç"
 
-#: src/nautilus-files-view.c:8186
+#: src/nautilus-files-view.c:8205
 msgid "Run"
 msgstr "Çalıştır"
 
-#: src/nautilus-files-view.c:8191
+#: src/nautilus-files-view.c:8210
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:41
 msgid "Extract"
 msgstr "Çıkar"
 
-#: src/nautilus-files-view.c:8192
+#: src/nautilus-files-view.c:8211
 msgid "Extract to…"
 msgstr "Şuraya Çıkar…"
 
-#: src/nautilus-files-view.c:8196
+#: src/nautilus-files-view.c:8215
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "Aç"
 
-#: src/nautilus-files-view.c:8274
+#: src/nautilus-files-view.c:8293
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3453
 msgid "_Start"
 msgstr "_Başlat"
 
-#: src/nautilus-files-view.c:8280 src/gtk/nautilusgtkplacesview.c:1725
+#: src/nautilus-files-view.c:8299 src/gtk/nautilusgtkplacesview.c:1725
 msgid "_Connect"
 msgstr "_Bağlan"
 
-#: src/nautilus-files-view.c:8286
+#: src/nautilus-files-view.c:8305
 msgid "_Start Multi-disk Drive"
 msgstr "Çoklu Disk Sürücü _Başlat"
 
-#: src/nautilus-files-view.c:8292
+#: src/nautilus-files-view.c:8311
 msgid "U_nlock Drive"
 msgstr "_Sürücü Kilidini Kaldır"
 
-#: src/nautilus-files-view.c:8310
+#: src/nautilus-files-view.c:8329
 msgid "Stop Drive"
 msgstr "Sürücüyü Durdur"
 
-#: src/nautilus-files-view.c:8316 src/gtk/nautilusgtkplacessidebar.c:3470
+#: src/nautilus-files-view.c:8335 src/gtk/nautilusgtkplacessidebar.c:3470
 msgid "_Safely Remove Drive"
 msgstr "_Sürücüyü Güvenle Kaldır"
 
-#: src/nautilus-files-view.c:8322 src/gtk/nautilusgtkplacesview.c:1714
+#: src/nautilus-files-view.c:8341 src/gtk/nautilusgtkplacesview.c:1714
 msgid "_Disconnect"
 msgstr "_Bağlantıyı Kes"
 
-#: src/nautilus-files-view.c:8328
+#: src/nautilus-files-view.c:8347
 msgid "_Stop Multi-disk Drive"
 msgstr "Çoklu Disk _Sürücüyü Durdur"
 
-#: src/nautilus-files-view.c:8334
+#: src/nautilus-files-view.c:8353
 msgid "_Lock Drive"
 msgstr "_Sürücüyü Kilitle"
 
@@ -3478,7 +3478,7 @@ msgstr "Konuma erişilemedi"
 
 #: src/nautilus-mime-actions.c:2114
 msgid "Unable to start location"
-msgstr "Konum başlatılamıyor"
+msgstr "Konum başlatılamadı"
 
 #: src/nautilus-mime-actions.c:2207
 #, c-format
@@ -5342,7 +5342,7 @@ msgstr "Birim ayrılamadı"
 #. Allow to cancel the operation
 #: src/gtk/nautilusgtkplacesview.c:1462
 msgid "Cance_l"
-msgstr "_Vazgeç"
+msgstr "İ_ptal"
 
 #: src/gtk/nautilusgtkplacesview.c:1643
 msgid "AppleTalk"
