@@ -4917,8 +4917,10 @@ files_added_callback (NautilusDirectory *directory,
 
     window = nautilus_files_view_get_containing_window (view);
     uri = nautilus_files_view_get_uri (view);
-    DEBUG_FILES (files, "Files added in window %p: %s",
-                 window, uri ? uri : "(no directory)");
+
+    g_debug ("Files added in window %p: %s", window, uri ? uri : "(no directory)");
+    nautilus_file_list_debug (files);
+
     g_free (uri);
 
     schedule_changes (view);
@@ -4944,8 +4946,9 @@ files_changed_callback (NautilusDirectory *directory,
 
     window = nautilus_files_view_get_containing_window (view);
     uri = nautilus_files_view_get_uri (view);
-    DEBUG_FILES (files, "Files changed in window %p: %s",
-                 window, uri ? uri : "(no directory)");
+    g_debug ("Files changed in window (%p) %s", window, uri ? uri : "(no directory)");
+    nautilus_file_list_debug (files);
+
     g_free (uri);
 
     schedule_changes (view);
@@ -8795,7 +8798,8 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     window = nautilus_files_view_get_containing_window (view);
-    DEBUG_FILES (selection, "Selection changed in window %p", window);
+    g_debug ("Selection changed in window %p", window);
+    nautilus_file_list_debug (selection);
 
     priv->selection_was_removed = FALSE;
 

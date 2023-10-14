@@ -469,7 +469,9 @@ GList *                 nautilus_file_list_filter                       (GList  
 gboolean                nautilus_file_list_are_all_folders              (const GList                    *files);
 
 /* Debugging */
+
 void                    nautilus_file_dump                              (NautilusFile                   *file);
+void                    nautilus_file_list_debug                        (GList                          *files);
 
 typedef struct NautilusFilePrivate NautilusFilePrivate;
 

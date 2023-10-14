@@ -2176,7 +2176,8 @@ nautilus_mime_activate_files (GtkWindow          *parent_window,
         return;
     }
 
-    DEBUG_FILES (files, "Calling activate_files() with files:");
+    g_debug ("Calling activate_files() with files:");
+    nautilus_file_list_debug (files);
 
     parameters = g_new0 (ActivateParameters, 1);
     parameters->slot = slot;

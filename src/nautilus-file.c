@@ -8545,6 +8545,23 @@ nautilus_file_dump (NautilusFile *file)
     g_free (uri);
 }
 
+void
+nautilus_file_list_debug (GList *files)
+{
+    if (g_getenv ("G_MESSAGES_DEBUG") == NULL)
+    {
+        return;
+    }
+
+    for (GList *l = files; l != NULL; l = l->next)
+    {
+        NautilusFile *file = l->data;
+        g_autofree gchar *uri = nautilus_file_get_uri (file);
+
+        g_debug ("%s%s", uri, nautilus_file_is_gone (file) ? " (gone)" : "");
+    }
+}
+
 /**
  * nautilus_file_list_ref
  *
