@@ -55,11 +55,6 @@ main (int   argc,
     gint retval;
     NautilusApplication *application;
 
-    if (g_getenv ("NAUTILUS_DEBUG") != NULL)
-    {
-        eel_make_warnings_and_criticals_stop_in_debugger ();
-    }
-
     /* Initialize gettext support */
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
