@@ -119,6 +119,14 @@
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <child type="start">
+                      <object class="GtkToggleButton">
+                        <property name="visible" bind-source="split_view" bind-property="collapsed" bind-flags="bidirectional|sync-create"/>
+                        <property name="active" bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
+                        <property name="tooltip-text" translatable="yes">Hide Sidebar</property>
+                        <property name="icon-name">sidebar-show-symbolic</property>
+                      </object>
+                    </child>
+                    <child type="start">
                       <object class="NautilusProgressIndicator"/>
                     </child>
                     <property name="title-widget">
