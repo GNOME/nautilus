@@ -10116,7 +10116,8 @@ nautilus_files_view_init (NautilusFilesView *view)
      */
     nautilus_application_set_accelerator (app, "view.paste_accel", "<control>v");
     nautilus_application_set_accelerator (app, "view.new-folder", "<control><shift>n");
-    nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
+    /* Only accesible by shorcuts */
+    nautilus_application_set_accelerator (app, "view.select-pattern", "<control>p");
     nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
 
     /* This one should have been a keybinding, because it should trigger only
