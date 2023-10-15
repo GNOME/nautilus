@@ -163,7 +163,6 @@ nautilus_app_chooser_constructed (GObject *object)
 {
     NautilusAppChooser *self = NAUTILUS_APP_CHOOSER (object);
     g_autoptr (GAppInfo) info = NULL;
-    g_autofree gchar *content_type_description = NULL;
     g_autofree gchar *description = NULL;
     gchar *title;
 
@@ -216,13 +215,8 @@ nautilus_app_chooser_constructed (GObject *object)
 
     if (self->single_content_type && !content_type_is_folder (self))
     {
-        content_type_description = g_content_type_get_description (self->content_type);
-        if (content_type_description != NULL)
-        {
-            g_autofree gchar *capitalized = NULL;
-            capitalized = eel_str_capitalize (content_type_description);
-            adw_action_row_set_subtitle (ADW_ACTION_ROW (self->set_default_row), capitalized);
-        }
+        g_autofree gchar *type_description = g_content_type_get_description (self->content_type);
+        adw_action_row_set_subtitle (ADW_ACTION_ROW (self->set_default_row), type_description);
     }
     else
     {

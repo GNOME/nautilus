@@ -1448,19 +1448,8 @@ value_field_update (GtkLabel                 *label,
                                                       attribute_name);
     if (g_str_equal (attribute_name, "detailed_type"))
     {
-        g_autofree char *mime_type = NULL;
-        gchar *cap_label;
-
-        mime_type = file_list_get_string_attribute (file_list, "mime_type");
+        g_autofree char *mime_type = file_list_get_string_attribute (file_list, "mime_type");
         gtk_widget_set_tooltip_text (GTK_WIDGET (label), mime_type);
-
-        cap_label = eel_str_capitalize (attribute_value);
-        if (cap_label != NULL)
-        {
-            g_free (attribute_value);
-
-            attribute_value = cap_label;
-        }
     }
     else if (g_str_equal (attribute_name, "size"))
     {
