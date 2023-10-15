@@ -60,6 +60,7 @@
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-tracker-utilities.h"
+#include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
@@ -555,6 +556,8 @@ nautilus_application_finalize (GObject *object)
     g_clear_object (&priv->tag_manager);
 
     g_clear_object (&priv->dbus_launcher);
+
+    nautilus_trash_monitor_clear ();
 
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }

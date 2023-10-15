@@ -21,8 +21,6 @@
 
 #include "nautilus-trash-monitor.h"
 
-#include <eel/eel-debug.h>
-
 #include "nautilus-scheme.h"
 
 #define UPDATE_RATE_SECONDS 1
@@ -44,7 +42,6 @@ enum
 };
 
 static guint signals[LAST_SIGNAL];
-static NautilusTrashMonitor *nautilus_trash_monitor = NULL;
 
 G_DEFINE_TYPE (NautilusTrashMonitor, nautilus_trash_monitor, G_TYPE_OBJECT)
 
@@ -216,22 +213,16 @@ nautilus_trash_monitor_init (NautilusTrashMonitor *trash_monitor)
     schedule_update_info (trash_monitor);
 }
 
-static void
-clear_trash_monitor_on_shutdown (void)
-{
-    g_clear_object (&nautilus_trash_monitor);
-}
-
 NautilusTrashMonitor *
 nautilus_trash_monitor_get (void)
 {
+    static NautilusTrashMonitor *nautilus_trash_monitor = NULL;
+
     if (nautilus_trash_monitor == NULL)
     {
         /* not running yet, start it up */
-
         nautilus_trash_monitor = NAUTILUS_TRASH_MONITOR
                                      (g_object_new (NAUTILUS_TYPE_TRASH_MONITOR, NULL));
-        eel_debug_call_at_shutdown (clear_trash_monitor_on_shutdown);
     }
 
     return nautilus_trash_monitor;
@@ -261,4 +252,11 @@ nautilus_trash_monitor_get_symbolic_icon (void)
     {
         return g_themed_icon_new ("user-trash-full-symbolic");
     }
+}
+
+void
+nautilus_trash_monitor_clear (void)
+{
+    NautilusTrashMonitor *monitor = nautilus_trash_monitor_get ();
+    g_clear_object (&monitor);
 }

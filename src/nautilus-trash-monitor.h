@@ -33,3 +33,4 @@ G_DECLARE_FINAL_TYPE (NautilusTrashMonitor, nautilus_trash_monitor,
 NautilusTrashMonitor   *nautilus_trash_monitor_get      (void);
 gboolean                nautilus_trash_monitor_is_empty (void);
 GIcon                  *nautilus_trash_monitor_get_symbolic_icon (void);
+void                    nautilus_trash_monitor_clear (void);
