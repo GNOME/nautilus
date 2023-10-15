@@ -947,9 +947,6 @@ char *
 get_message_for_content_type (const char *content_type)
 {
     char *message;
-    char *description;
-
-    description = g_content_type_get_description (content_type);
 
     /* Customize greeting for well-known content types */
     if (strcmp (content_type, "x-content/audio-cdda") == 0)
@@ -1000,10 +997,9 @@ get_message_for_content_type (const char *content_type)
     else
     {
         /* fallback to generic greeting */
+        g_autofree char *description = g_content_type_get_description (content_type);
         message = g_strdup_printf (_("Detected as “%s”"), description);
     }
-
-    g_free (description);
 
     return message;
 }
