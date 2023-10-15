@@ -551,6 +551,8 @@ nautilus_application_finalize (GObject *object)
 
     g_hash_table_destroy (priv->notifications);
 
+    nautilus_module_teardown ();
+
     g_clear_object (&priv->undo_manager);
 
     g_clear_object (&priv->tag_manager);

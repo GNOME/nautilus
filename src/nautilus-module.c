@@ -248,8 +248,8 @@ load_module_dir (const char *dirname)
     installed_module_names = g_strv_builder_end (installed_module_name_builder);
 }
 
-static void
-free_module_objects (void)
+void
+nautilus_module_teardown (void)
 {
     GList *l, *next;
 
@@ -281,8 +281,6 @@ nautilus_module_setup (void)
         initialized = TRUE;
 
         load_module_dir (NAUTILUS_EXTENSIONDIR);
-
-        eel_debug_call_at_shutdown (free_module_objects);
     }
 }
 

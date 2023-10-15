@@ -27,6 +27,7 @@
 G_BEGIN_DECLS
 
 void   nautilus_module_setup                   (void);
+void   nautilus_module_teardown                (void);
 GList *nautilus_module_get_extensions_for_type (GType  type);
 void   nautilus_module_extension_list_free     (GList *list);
 gchar *nautilus_module_get_installed_module_names (void);
