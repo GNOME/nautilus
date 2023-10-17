@@ -1385,21 +1385,16 @@ viewed_file_changed_callback (NautilusFile       *file,
         {
             GFile *go_to_file;
             GFile *location;
-            GMount *mount;
             gboolean find_existing = FALSE;
 
             location = nautilus_file_get_location (file);
 
             if (g_file_is_native (location))
             {
-                mount = nautilus_get_mounted_mount_for_root (location);
-
-                if (mount == NULL)
+                if (!nautilus_file_has_been_unmounted (file))
                 {
                     find_existing = TRUE;
                 }
-
-                g_clear_object (&mount);
             }
 
             if (find_existing)
