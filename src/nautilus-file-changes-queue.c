@@ -174,11 +174,6 @@ nautilus_file_changes_queue_get_change (NautilusFileChangesQueue *queue)
     return result;
 }
 
-enum
-{
-    CONSUME_CHANGES_MAX_CHUNK = 20
-};
-
 static void
 pairs_list_free (GList *pairs)
 {
@@ -203,12 +198,11 @@ pairs_list_free (GList *pairs)
  * in a list to the different nautilus_directory_notify calls
  */
 void
-nautilus_file_changes_consume_changes (gboolean consume_all)
+nautilus_file_changes_consume_changes (void)
 {
     NautilusFileChange *change;
     GList *additions, *changes, *deletions, *moves;
     GFilePair *pair;
-    guint chunk_count;
     NautilusFileChangesQueue *queue;
     gboolean flush_needed;
 
@@ -225,7 +219,7 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
      * This is to ensure that the changes get sent off in the same order that they
      * arrived.
      */
-    for (chunk_count = 0;; chunk_count++)
+    for (;;)
     {
         change = nautilus_file_changes_queue_get_change (queue);
 
@@ -249,9 +243,6 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 
             flush_needed |= deletions != NULL
                             && change->kind != CHANGE_FILE_REMOVED;
-
-            flush_needed |= !consume_all && chunk_count >= CONSUME_CHANGES_MAX_CHUNK;
-            /* we have reached the chunk maximum */
         }
 
         if (flush_needed)

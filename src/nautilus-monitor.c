@@ -42,7 +42,7 @@ static gboolean call_consume_changes_idle_id = 0;
 static gboolean
 call_consume_changes_idle_cb (gpointer not_used)
 {
-    nautilus_file_changes_consume_changes (TRUE);
+    nautilus_file_changes_consume_changes ();
     call_consume_changes_idle_id = 0;
     return FALSE;
 }

@@ -28,4 +28,4 @@ void nautilus_file_changes_queue_file_removed                    (GFile      *lo
 void nautilus_file_changes_queue_file_moved                      (GFile      *from,
 								  GFile      *to);
 
-void nautilus_file_changes_consume_changes                       (gboolean    consume_all);
+void nautilus_file_changes_consume_changes                       (void);
