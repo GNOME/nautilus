@@ -1360,14 +1360,10 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
                                              gchar          *main_label,
                                              GFile          *folder_to_open)
 {
-    gchar *button_label;
-    gchar *folder_name;
-    NautilusFile *folder;
-    GVariant *target;
     GFile *current_location;
     AdwToast *toast;
 
-    if (window->active_slot == NULL)
+    if (window->active_slot == NULL || !gtk_window_is_active (GTK_WINDOW (window)))
     {
         return;
     }
@@ -1377,24 +1373,23 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     adw_toast_set_use_markup (toast, FALSE);
 
     current_location = nautilus_window_slot_get_location (window->active_slot);
-    if (gtk_window_is_active (GTK_WINDOW (window)))
+    if (!g_file_equal (folder_to_open, current_location))
     {
-        if (!g_file_equal (folder_to_open, current_location))
-        {
-            target = g_variant_new_take_string (g_file_get_uri (folder_to_open));
-            folder = nautilus_file_get (folder_to_open);
-            folder_name = nautilus_file_get_display_name (folder);
-            button_label = g_strdup_printf (_("Open %s"), folder_name);
-            adw_toast_set_button_label (toast, button_label);
-            adw_toast_set_action_name (toast, "win.open-location");
-            adw_toast_set_action_target_value (toast, target);
-            nautilus_file_unref (folder);
-            g_free (folder_name);
-            g_free (button_label);
-        }
+        g_autoptr (NautilusFile) folder = NULL;
+        g_autofree gchar *folder_name = NULL;
+        g_autofree gchar *button_label = NULL;
+        GVariant *target;
 
-        adw_toast_overlay_add_toast (window->toast_overlay, toast);
+        target = g_variant_new_take_string (g_file_get_uri (folder_to_open));
+        folder = nautilus_file_get (folder_to_open);
+        folder_name = nautilus_file_get_display_name (folder);
+        button_label = g_strdup_printf (_("Open %s"), folder_name);
+        adw_toast_set_button_label (toast, button_label);
+        adw_toast_set_action_name (toast, "win.open-location");
+        adw_toast_set_action_target_value (toast, target);
     }
+
+    adw_toast_overlay_add_toast (window->toast_overlay, toast);
 }
 
 static void
