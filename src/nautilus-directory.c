@@ -1338,6 +1338,20 @@ nautilus_directory_notify_files_changed (GList *files)
 }
 
 void
+nautilus_directory_mark_files_unmounted (GList *files)
+{
+    for (GList *l = files; l != NULL; l = l->next)
+    {
+        GFile *location = l->data;
+        g_autoptr (NautilusFile) file = nautilus_file_get_existing (location);
+        if (file != NULL)
+        {
+            nautilus_file_mark_unmounted (file);
+        }
+    }
+}
+
+void
 nautilus_directory_notify_files_removed (GList *files)
 {
     GHashTable *changed_lists;

@@ -131,6 +131,7 @@ struct NautilusFilePrivate
            many NautilusFile objects. */
 
 	guint unconfirmed                   : 1;
+	guint has_been_unmounted            : 1;
 	guint is_gone                       : 1;
 	/* Set when emitting files_added on the directory to make sure we
 	   add a file, and only once */
@@ -224,6 +225,7 @@ NautilusFile *nautilus_file_new_from_filename              (NautilusDirectory *d
                                                             const char        *filename,
                                                             gboolean           self_owned);
 void          nautilus_file_emit_changed                   (NautilusFile           *file);
+void          nautilus_file_mark_unmounted                 (NautilusFile           *file);
 void          nautilus_file_mark_gone                      (NautilusFile           *file);
 
 gboolean      nautilus_file_get_date                       (NautilusFile           *file,

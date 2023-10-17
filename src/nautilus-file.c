@@ -7752,6 +7752,12 @@ nautilus_file_get_trash_original_file (NautilusFile *file)
 }
 
 void
+nautilus_file_mark_unmounted (NautilusFile *file)
+{
+    file->details->has_been_unmounted = TRUE;
+}
+
+void
 nautilus_file_mark_gone (NautilusFile *file)
 {
     NautilusDirectory *directory;
@@ -7890,6 +7896,12 @@ nautilus_file_emit_changed (NautilusFile *file)
         nautilus_file_changed (NAUTILUS_FILE (p->data));
     }
     nautilus_file_list_free (link_files);
+}
+
+gboolean
+nautilus_file_has_been_unmounted (NautilusFile *file)
+{
+    return file->details->has_been_unmounted;
 }
 
 /**

@@ -218,6 +218,7 @@ nautilus_file_changes_consume_changes (void)
 {
     NautilusFileChange *change;
     GList *additions, *changes, *deletions, *moves;
+    GList *unmounts = NULL;
     GFilePair *pair;
     NautilusFileChangesQueue *queue;
     gboolean flush_needed;
@@ -274,6 +275,11 @@ nautilus_file_changes_consume_changes (void)
 
             if (deletions != NULL)
             {
+                /* Mark unmounted files before notifying their removal, for
+                 * clients to know this is why the file is gone. */
+                nautilus_directory_mark_files_unmounted (unmounts);
+                g_clear_list (&unmounts, g_object_unref);
+
                 deletions = g_list_reverse (deletions);
                 nautilus_directory_notify_files_removed (deletions);
                 g_list_free_full (deletions, g_object_unref);
@@ -326,6 +332,7 @@ nautilus_file_changes_consume_changes (void)
             case CHANGE_FILE_UNMOUNTED:
             {
                 deletions = g_list_prepend (deletions, change->from);
+                unmounts = g_list_prepend (unmounts, g_object_ref (change->from));
             }
             break;
 

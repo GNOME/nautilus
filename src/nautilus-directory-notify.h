@@ -41,6 +41,12 @@ void nautilus_directory_notify_files_moved   (GList *file_pairs);
 void nautilus_directory_notify_files_changed (GList *files);
 void nautilus_directory_notify_files_removed (GList *files);
 
+/* Unmount state hack.
+ * This must be called right before nautilus_directory_notify_files_removed(),
+ * to ensure that, when the file is notified as gone, it already knows it was
+ * due to an unmount event. */
+void nautilus_directory_mark_files_unmounted (GList *files);
+
 void nautilus_directory_schedule_metadata_copy   (GList        *file_pairs);
 void nautilus_directory_schedule_metadata_move   (GList        *file_pairs);
 void nautilus_directory_schedule_metadata_remove (GList        *files);

@@ -327,6 +327,8 @@ void                    nautilus_file_cancel                            (Nautilu
  */
 gboolean                nautilus_file_is_gone                           (NautilusFile                   *file);
 
+gboolean                nautilus_file_has_been_unmounted                (NautilusFile                   *file);
+
 /* Used in subclasses that handles the rename of a file. This handles the case
  * when the file is gone. If this returns TRUE, simply do nothing
  */
