@@ -28,6 +28,7 @@ typedef enum
     CHANGE_FILE_INITIAL,
     CHANGE_FILE_ADDED,
     CHANGE_FILE_CHANGED,
+    CHANGE_FILE_UNMOUNTED,
     CHANGE_FILE_REMOVED,
     CHANGE_FILE_MOVED,
 } NautilusFileChangeKind;
@@ -110,6 +111,21 @@ nautilus_file_changes_queue_file_changed (GFile *location)
 
     new_item = g_new0 (NautilusFileChange, 1);
     new_item->kind = CHANGE_FILE_CHANGED;
+    new_item->from = g_object_ref (location);
+    nautilus_file_changes_queue_add_common (queue, new_item);
+}
+
+/* A specialized variant of nautilus_file_changes_queue_file_removed(). */
+void
+nautilus_file_changes_queue_file_unmounted (GFile *location)
+{
+    NautilusFileChange *new_item;
+    NautilusFileChangesQueue *queue;
+
+    queue = nautilus_file_changes_queue_get ();
+
+    new_item = g_new0 (NautilusFileChange, 1);
+    new_item->kind = CHANGE_FILE_UNMOUNTED;
     new_item->from = g_object_ref (location);
     nautilus_file_changes_queue_add_common (queue, new_item);
 }
@@ -241,7 +257,11 @@ nautilus_file_changes_consume_changes (void)
             flush_needed |= moves != NULL
                             && change->kind != CHANGE_FILE_MOVED;
 
+            /* In some cases, GFileMonitor sends both DELETE and UNMOUNT events
+             * for the same location, so we want to deal with both at the same
+             * time. And even by itself, UNMOUNTED implies REMOVED anyway. */
             flush_needed |= deletions != NULL
+                            && change->kind != CHANGE_FILE_UNMOUNTED
                             && change->kind != CHANGE_FILE_REMOVED;
         }
 
@@ -300,6 +320,12 @@ nautilus_file_changes_consume_changes (void)
             case CHANGE_FILE_CHANGED:
             {
                 changes = g_list_prepend (changes, change->from);
+            }
+            break;
+
+            case CHANGE_FILE_UNMOUNTED:
+            {
+                deletions = g_list_prepend (deletions, change->from);
             }
             break;
 

@@ -24,6 +24,7 @@
 
 void nautilus_file_changes_queue_file_added                      (GFile      *location);
 void nautilus_file_changes_queue_file_changed                    (GFile      *location);
+void nautilus_file_changes_queue_file_unmounted                  (GFile      *location);
 void nautilus_file_changes_queue_file_removed                    (GFile      *location);
 void nautilus_file_changes_queue_file_moved                      (GFile      *from,
 								  GFile      *to);

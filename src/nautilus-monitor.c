@@ -69,7 +69,7 @@ mount_removed (GVolumeMonitor *volume_monitor,
     if (g_file_equal (monitor->location, mount_location) ||
         g_file_has_prefix (monitor->location, mount_location))
     {
-        nautilus_file_changes_queue_file_removed (monitor->location);
+        nautilus_file_changes_queue_file_unmounted (monitor->location);
         schedule_call_consume_changes ();
     }
 
@@ -108,6 +108,11 @@ dir_changed (GFileMonitor      *monitor,
         break;
 
         case G_FILE_MONITOR_EVENT_UNMOUNTED:
+        {
+            nautilus_file_changes_queue_file_unmounted (child);
+        }
+        break;
+
         case G_FILE_MONITOR_EVENT_DELETED:
         {
             nautilus_file_changes_queue_file_removed (child);
