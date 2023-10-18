@@ -148,7 +148,7 @@ append_gexiv2_tag (NautilusImagesPropertiesModel  *self,
             }
 
             /* don't add empty tags - try next one */
-            if (strlen (tag_value) > 0)
+            if (tag_value != NULL && strlen (tag_value) > 0)
             {
                 append_item (self, description, tag_value);
                 break;
