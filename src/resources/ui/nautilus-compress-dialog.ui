@@ -76,6 +76,26 @@
             <property name="secondary-icon-name">view-conceal</property>
           </object>
         </child>
+        <child>
+          <object class="GtkLabel" id="passphrase_confirm_label">
+            <property name="visible">False</property>
+            <property name="label" translatable="yes">Confirm Password</property>
+            <property name="margin-top">6</property>
+            <property name="xalign">0</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkEntry" id="passphrase_confirm_entry">
+            <accessibility>
+              <relation name="labelled-by">passphrase_confirm_label</relation>
+            </accessibility>
+            <property name="visible">False</property>
+            <property name="placeholder-text" translatable="yes">Confirm Password</property>
+            <property name="input-purpose">password</property>
+            <property name="visibility">False</property>
+            <property name="secondary-icon-name">view-conceal</property>
+          </object>
+        </child>
       </object>
     </child>
     <child type="action">

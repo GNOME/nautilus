@@ -37,9 +37,12 @@ struct _NautilusCompressDialogController
     GtkSizeGroup *extension_sizegroup;
     GtkWidget *passphrase_label;
     GtkWidget *passphrase_entry;
+    GtkWidget *passphrase_confirm_label;
+    GtkWidget *passphrase_confirm_entry;
 
     const char *extension;
     gchar *passphrase;
+    gchar *passphrase_confirm;
 
     gulong response_handler_id;
 };
@@ -213,11 +216,19 @@ update_selected_format (NautilusCompressDialogController *self)
 
     gtk_widget_set_visible (self->passphrase_label, show_passphrase);
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
+    gtk_widget_set_visible (self->passphrase_confirm_label, show_passphrase);
+    gtk_widget_set_visible (self->passphrase_confirm_entry, show_passphrase);
     if (!show_passphrase)
     {
         gtk_editable_set_text (GTK_EDITABLE (self->passphrase_entry), "");
         gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_entry), FALSE);
         gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_entry),
+                                           GTK_ENTRY_ICON_SECONDARY,
+                                           "view-conceal");
+
+        gtk_editable_set_text (GTK_EDITABLE (self->passphrase_confirm_entry), "");
+        gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_confirm_entry), FALSE);
+        gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_confirm_entry),
                                            GTK_ENTRY_ICON_SECONDARY,
                                            "view-conceal");
     }
@@ -363,16 +374,14 @@ extension_dropdown_unbind (GtkSignalListItemFactory *factory,
 }
 
 static void
-passphrase_entry_on_changed (GtkEditable *editable,
-                             gpointer     user_data)
+update_passphrase (NautilusCompressDialogController *self,
+                   gchar                            *passphrase,
+                   GtkEditable                      *editable)
 {
-    NautilusCompressDialogController *self;
     const gchar *error_message;
 
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
-
-    g_free (self->passphrase);
-    self->passphrase = g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->passphrase_entry)));
+    g_free (passphrase);
+    passphrase = g_strdup (gtk_editable_get_text (editable));
 
     /* Simulate a change of the name_entry to ensure the correct sensitivity of
      * the activate_button, but only if the name_entry is valid in order to
@@ -387,6 +396,24 @@ passphrase_entry_on_changed (GtkEditable *editable,
 }
 
 static void
+passphrase_entry_on_changed (GtkEditable *editable,
+                             gpointer     user_data)
+{
+    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+
+    update_passphrase (self, self->passphrase, editable);
+}
+
+static void
+passphrase_confirm_entry_on_changed (GtkEditable *editable,
+                                     gpointer     user_data)
+{
+    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+
+    update_passphrase (self, self->passphrase_confirm, editable);
+}
+
+static void
 passphrase_entry_on_icon_press (GtkEntry             *entry,
                                 GtkEntryIconPosition  icon_pos,
                                 gpointer              user_data)
@@ -395,12 +422,12 @@ passphrase_entry_on_icon_press (GtkEntry             *entry,
     gboolean visibility;
 
     self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
-    visibility = gtk_entry_get_visibility (GTK_ENTRY (self->passphrase_entry));
+    visibility = gtk_entry_get_visibility (GTK_ENTRY (entry));
 
-    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_entry),
+    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
                                        GTK_ENTRY_ICON_SECONDARY,
                                        visibility ? "view-conceal" : "view-reveal");
-    gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_entry), !visibility);
+    gtk_entry_set_visibility (GTK_ENTRY (entry), !visibility);
 }
 
 static void
@@ -415,7 +442,7 @@ activate_button_on_sensitive_notify (GObject    *gobject,
     format = g_settings_get_enum (nautilus_compression_preferences,
                                   NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
     if (format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP &&
-        (self->passphrase == NULL || self->passphrase[0] == '\0'))
+        (self->passphrase == NULL || self->passphrase[0] == '\0' || g_strcmp0 (self->passphrase, self->passphrase_confirm) != 0))
     {
         /* Reset sensitivity of the activate_button if password is not set. */
         gtk_widget_set_sensitive (self->activate_button, FALSE);
@@ -510,6 +537,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     GtkSizeGroup *extension_sizegroup;
     GtkWidget *passphrase_label;
     GtkWidget *passphrase_entry;
+    GtkWidget *passphrase_confirm_label;
+    GtkWidget *passphrase_confirm_entry;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
     compress_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "compress_dialog"));
@@ -521,6 +550,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     extension_sizegroup = GTK_SIZE_GROUP (gtk_builder_get_object (builder, "extension_sizegroup"));
     passphrase_label = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_label"));
     passphrase_entry = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_entry"));
+    passphrase_confirm_label = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_confirm_label"));
+    passphrase_confirm_entry = GTK_WIDGET (gtk_builder_get_object (builder, "passphrase_confirm_entry"));
 
     gtk_window_set_transient_for (GTK_WINDOW (compress_dialog),
                                   parent_window);
@@ -540,6 +571,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     self->extension_sizegroup = extension_sizegroup;
     self->passphrase_label = passphrase_label;
     self->passphrase_entry = passphrase_entry;
+    self->passphrase_confirm_label = passphrase_confirm_label;
+    self->passphrase_confirm_entry = passphrase_confirm_entry;
 
     extension_dropdown_setup (self);
 
@@ -551,6 +584,10 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     g_signal_connect (self->passphrase_entry, "changed",
                       G_CALLBACK (passphrase_entry_on_changed), self);
     g_signal_connect (self->passphrase_entry, "icon-press",
+                      G_CALLBACK (passphrase_entry_on_icon_press), self);
+    g_signal_connect (self->passphrase_confirm_entry, "changed",
+                      G_CALLBACK (passphrase_confirm_entry_on_changed), self);
+    g_signal_connect (self->passphrase_confirm_entry, "icon-press",
                       G_CALLBACK (passphrase_entry_on_icon_press), self);
     g_signal_connect (self->activate_button, "notify::sensitive",
                       G_CALLBACK (activate_button_on_sensitive_notify), self);
