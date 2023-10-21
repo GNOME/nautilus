@@ -32,17 +32,17 @@ but you can easily open a directory file chooser by changing `false` to `true`.
 ##### Open a file or directory
 
 ```bash
-gdbus call --session --dest org.gnome.NautilusDevel --object-path /org/freedesktop/portal/desktop --method org.freedesktop.impl.portal.FileChooser.OpenFile '/org/gnome/NautilusDevel' 'org.gnome.NautilusDevel' '' 'Open a File' "{'filters': <[('All Files', [(uint32 0, '*')]), ('Images', [(uint32 0, '*.ico'), (uint32 1, 'image/png')]), ('Text', [(uint32 0, '*.txt')])]>, 'current_filter': <('All Files', [(uint32 0, '*')])>, 'choices': <[('encoding', 'Encoding', [('utf8', 'Unicode (UTF-8)'), ('latin15', 'Western')], 'latin15'), ('reencode', 'Reencode', [], 'false')]>, 'directory': <false>, 'multiple': <false>, 'modal': <true>, 'accept_label': <'Open'>, 'current_folder': <b'$HOME'>}"
+gdbus call --session --dest org.gnome.Nautilus.Devel --object-path /org/freedesktop/portal/desktop --method org.freedesktop.impl.portal.FileChooser.OpenFile '/org/gnome/Nautilus.Devel' 'org.gnome.Nautilus.Devel' '' 'Open a File' "{'filters': <[('All Files', [(uint32 0, '*')]), ('Images', [(uint32 0, '*.ico'), (uint32 1, 'image/png')]), ('Text', [(uint32 0, '*.txt')])]>, 'current_filter': <('All Files', [(uint32 0, '*')])>, 'choices': <[('encoding', 'Encoding', [('utf8', 'Unicode (UTF-8)'), ('latin15', 'Western')], 'latin15'), ('reencode', 'Reencode', [], 'false')]>, 'directory': <false>, 'multiple': <false>, 'modal': <true>, 'accept_label': <'Open'>, 'current_folder': <b'$HOME'>}"
 ```
 
 ##### Save a file
 
 ```bash
-gdbus call --session --dest org.gnome.NautilusDevel --object-path /org/freedesktop/portal/desktop --method org.freedesktop.impl.portal.FileChooser.SaveFile '/org/gnome/NautilusDevel' 'org.gnome.NautilusDevel' '' 'Save a File' "{'filters': <[('All Files', [(uint32 0, '*')]),('Images', [(uint32 0, '*.ico'), (uint32 1, 'image/png')]), ('Text', [(uint32 0, '*.txt')])]>, 'current_filter': <('All Files', [(uint32 0, '*')])>, 'choices': <[('encoding', 'Encoding', [('utf8', 'Unicode (UTF-8)'), ('latin15', 'Western')], 'latin15'), ('reencode', 'Reencode', [], 'false')]>,  'modal': <true>, 'accept_label': <'Save'>, 'current_file': <b'$HOME/test_file'>}"
+gdbus call --session --dest org.gnome.Nautilus.Devel --object-path /org/freedesktop/portal/desktop --method org.freedesktop.impl.portal.FileChooser.SaveFile '/org/gnome/Nautilus.Devel' 'org.gnome.Nautilus.Devel' '' 'Save a File' "{'filters': <[('All Files', [(uint32 0, '*')]),('Images', [(uint32 0, '*.ico'), (uint32 1, 'image/png')]), ('Text', [(uint32 0, '*.txt')])]>, 'current_filter': <('All Files', [(uint32 0, '*')])>, 'choices': <[('encoding', 'Encoding', [('utf8', 'Unicode (UTF-8)'), ('latin15', 'Western')], 'latin15'), ('reencode', 'Reencode', [], 'false')]>,  'modal': <true>, 'accept_label': <'Save'>, 'current_file': <b'$HOME/test_file'>}"
 ```
 
 ##### Save multiple files
 
 ```bash
-gdbus call --session --dest org.gnome.NautilusDevel --object-path /org/freedesktop/portal/desktop --method org.freedesktop.impl.portal.FileChooser.SaveFiles '/org/gnome/NautilusDevel' 'org.gnome.NautilusDevel' '' 'Save Files' "{'choices': <[('encoding', 'Encoding', [('utf8', 'Unicode (UTF-8)'), ('latin15', 'Western')], 'latin15'), ('reencode', 'Reencode', [], 'false')]>,  'modal': <true>, 'accept_label': <'Save'>, 'current_folder': <b'$HOME'>}"
+gdbus call --session --dest org.gnome.Nautilus.Devel --object-path /org/freedesktop/portal/desktop --method org.freedesktop.impl.portal.FileChooser.SaveFiles '/org/gnome/Nautilus.Devel' 'org.gnome.Nautilus.Devel' '' 'Save Files' "{'choices': <[('encoding', 'Encoding', [('utf8', 'Unicode (UTF-8)'), ('latin15', 'Western')], 'latin15'), ('reencode', 'Reencode', [], 'false')]>,  'modal': <true>, 'accept_label': <'Save'>, 'current_folder': <b'$HOME'>}"
 ```

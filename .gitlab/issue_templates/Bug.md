@@ -5,10 +5,10 @@ It can be installed alongside the regular version with these instructions:
 1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
 
 2. Copy and run the following command in the Terminal or Console app:
-   flatpak install --from https://nightly.gnome.org/repo/appstream/org.gnome.NautilusDevel.flatpakref
+   flatpak install --from https://nightly.gnome.org/repo/appstream/org.gnome.Nautilus.Devel.flatpakref
 
 3. Launch the development version (normal Files logo with yellow and black stripes), e.g. with:
-   flatpak run org.gnome.NautilusDevel
+   flatpak run org.gnome.Nautilus.Devel
 -->
 
 # Affected Version

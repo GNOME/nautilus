@@ -148,7 +148,7 @@ on_ping_finished (GObject      *object,
                                                               NULL,
                                                               NULL);
     }
-    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewerDevel") == 0)
+    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewer.Devel") == 0)
     {
         previewer_dbus_name = "org.gnome.NautilusPreviewer";
         previewer_dbus_path = "/org/gnome/NautilusPreviewer";
@@ -178,7 +178,7 @@ on_bus_ready (GObject      *object,
                            G_DBUS_CALL_FLAGS_NONE, G_MAXINT,
                            cancellable, on_ping_finished, NULL);
     }
-    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewerDevel") == 0)
+    else if (g_strcmp0 (previewer_dbus_name, "org.gnome.NautilusPreviewer.Devel") == 0)
     {
         previewer_dbus_name = "org.gnome.NautilusPreviewer";
         previewer_dbus_path = "/org/gnome/NautilusPreviewer";
