@@ -7,7 +7,6 @@
 #include "src/nautilus-file.h"
 #include "src/nautilus-file.c"
 #include <unistd.h>
-#include "eel/eel-string.h"
 
 #define ROOT_DIR "file:///tmp"
 

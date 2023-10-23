@@ -31,8 +31,6 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
-#include "eel-string.h"
-
 #include <stdlib.h>
 #include <string.h>
 
