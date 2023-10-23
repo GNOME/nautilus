@@ -67,6 +67,7 @@
                                         <property name="name">icon_button</property>
                                         <property name="child">
                                           <object class="GtkButton" id="icon_button">
+                                            <property name="tooltip-text" translatable="yes">Set Custom Icon</property>
                                             <property name="focusable">True</property>
                                             <property name="receives_default">True</property>
                                             <child>
@@ -343,6 +344,7 @@
                                     </child>
                                     <child type="suffix">
                                       <object class="GtkButton">
+                                        <property name="tooltip-text" translatable="yes">Open Link Target</property>
                                         <property name="icon-name">folder-open-symbolic</property>
                                         <property name="valign">center</property>
                                         <signal name="clicked" handler="open_link_target" swapped="yes"/>
@@ -388,6 +390,7 @@
                                     </child>
                                     <child type="suffix">
                                       <object class="GtkButton">
+                                        <property name="tooltip-text" translatable="yes">Open Parent Folder</property>
                                         <property name="icon-name">folder-open-symbolic</property>
                                         <property name="valign">center</property>
                                         <signal name="clicked" handler="open_parent_folder" swapped="yes"/>
