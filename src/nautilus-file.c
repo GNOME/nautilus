@@ -26,7 +26,6 @@
 #endif
 #include <libnautilus-extension/nautilus-extension-private.h>
 
-#include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdesktop-enums.h>
 #include <gio/gio.h>
@@ -5899,11 +5898,11 @@ get_real_name (const char *name,
     if (!g_utf8_validate (name, -1, NULL))
     {
         g_autofree gchar *login_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
-        capitalized_login_name = eel_str_capitalize (login_name);
+        capitalized_login_name = nautilus_capitalize_str (login_name);
     }
     else
     {
-        capitalized_login_name = eel_str_capitalize (name);
+        capitalized_login_name = nautilus_capitalize_str (name);
     }
 
     if (capitalized_login_name == NULL)

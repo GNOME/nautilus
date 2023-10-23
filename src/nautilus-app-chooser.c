@@ -9,10 +9,10 @@
 #include <adwaita.h>
 #include <glib/gi18n.h>
 
-#include <eel/eel-string.h>
-
 #include "nautilus-file.h"
 #include "nautilus-signaller.h"
+#include "nautilus-ui-utilities.h"
+
 
 struct _NautilusAppChooser
 {
