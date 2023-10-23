@@ -9,10 +9,10 @@
 #include <adwaita.h>
 #include <glib/gi18n.h>
 
-#include <eel/eel-string.h>
-
 #include "nautilus-file.h"
 #include "nautilus-signaller.h"
+#include "nautilus-ui-utilities.h"
+
 
 struct _NautilusAppChooser
 {
@@ -221,7 +221,7 @@ nautilus_app_chooser_constructed (GObject *object)
         if (content_type_description != NULL)
         {
             g_autofree gchar *capitalized = NULL;
-            capitalized = eel_str_capitalize (content_type_description);
+            capitalized = nautilus_capitalize_str (content_type_description);
             adw_action_row_set_subtitle (ADW_ACTION_ROW (self->set_default_row), capitalized);
         }
     }

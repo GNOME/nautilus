@@ -24,7 +24,6 @@
 #include <adwaita.h>
 #include <cairo.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
@@ -1455,7 +1454,7 @@ value_field_update (GtkLabel                 *label,
         mime_type = file_list_get_string_attribute (file_list, "mime_type");
         gtk_widget_set_tooltip_text (GTK_WIDGET (label), mime_type);
 
-        cap_label = eel_str_capitalize (attribute_value);
+        cap_label = nautilus_capitalize_str (attribute_value);
         if (cap_label != NULL)
         {
             g_free (attribute_value);
@@ -2485,7 +2484,7 @@ setup_volume_information (NautilusPropertiesWindow *self)
         {
             /* Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'. */
             g_autofree gchar *fs_label = g_strdup_printf (_("%s Filesystem"), fs_type);
-            gchar *cap_label = eel_str_capitalize (fs_label);
+            gchar *cap_label = nautilus_capitalize_str (fs_label);
             if (cap_label != NULL)
             {
                 g_free (fs_label);

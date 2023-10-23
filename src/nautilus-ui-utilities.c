@@ -30,6 +30,36 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
+
+char *
+nautilus_capitalize_str (const char *string)
+{
+    char *capitalized = NULL;
+
+    if (string == NULL)
+    {
+        return NULL;
+    }
+
+    if (g_utf8_validate (string, -1, NULL))
+    {
+        g_autofree gunichar *ucs4 = NULL;
+        ucs4 = g_utf8_to_ucs4 (string, -1, NULL, NULL, NULL);
+        if (ucs4 != NULL)
+        {
+            ucs4[0] = g_unichar_toupper (ucs4[0]);
+            capitalized = g_ucs4_to_utf8 (ucs4, -1, NULL, NULL, NULL);
+        }
+    }
+
+    if (capitalized == NULL)
+    {
+        return g_strdup (string);
+    }
+
+    return capitalized;
+}
+
 /**
  * nautilus_gmenu_set_from_model:
  * @target_menu: the #GMenu to be filled

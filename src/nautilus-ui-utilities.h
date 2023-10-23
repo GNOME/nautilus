@@ -25,6 +25,16 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
+
+/**
+ * nautilus_capitalize_str:
+ * @string: input string
+ *
+ * Returns: a newly allocated copy of @string, with the first letter capitalized.
+ * If @string is %NULL, returns %NULL.
+ */
+char      * nautilus_capitalize_str                 (const char    *string);
+
 void        nautilus_gmenu_set_from_model           (GMenu             *target_menu,
                                                      GMenuModel        *source_model);
 gint        nautilus_g_menu_model_find_by_string    (GMenuModel        *model,
