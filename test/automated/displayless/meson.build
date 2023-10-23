@@ -15,9 +15,6 @@ tests = [
   ['test-file-utilities-get-common-filename-prefix', [
     'test-file-utilities-get-common-filename-prefix.c'
   ]],
-  ['test-eel-string-get-common-prefix', [
-    'test-eel-string-get-common-prefix.c'
-  ]],
   ['test-file-utilities', [
     'test-file-utilities.c'
   ]],
@@ -26,6 +23,9 @@ tests = [
   ]],
   ['test-file-operations-move-files', [
     'test-file-operations-move-files.c'
+  ]],
+  ['test-filename-common-prefix', [
+    'test-filename-common-prefix.c'
   ]],
   ['test-filename-utilities', [
     'test-filename-utilities.c'
