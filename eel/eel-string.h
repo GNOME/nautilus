@@ -34,9 +34,6 @@
 
 /* NULL is allowed for all the str parameters to these functions. */
 
-/* Capitalize a string */
-char *   eel_str_capitalize                (const char    *str);
-
 /**
  * eel_str_get_common_prefix:
  * @str: set of strings
