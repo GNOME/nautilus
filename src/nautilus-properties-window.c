@@ -24,7 +24,6 @@
 #include <adwaita.h>
 #include <cairo.h>
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
@@ -2448,7 +2447,7 @@ setup_volume_information (NautilusPropertiesWindow *self)
         {
             /* Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'. */
             g_autofree gchar *fs_label = g_strdup_printf (_("%s Filesystem"), fs_type);
-            gchar *cap_label = eel_str_capitalize (fs_label);
+            gchar *cap_label = nautilus_capitalize_str (fs_label);
             if (cap_label != NULL)
             {
                 g_free (fs_label);

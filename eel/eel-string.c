@@ -33,43 +33,6 @@
 #endif
 
 /**
- * eel_str_capitalize:
- * @string: input string
- *
- * Returns: a newly allocated copy of @string,
- * with the first letter capitalized.
- * If @string is %NULL, returns %NULL.
- */
-char *
-eel_str_capitalize (const char *string)
-{
-    char *capitalized = NULL;
-
-    if (string == NULL)
-    {
-        return NULL;
-    }
-
-    if (g_utf8_validate (string, -1, NULL))
-    {
-        g_autofree gunichar *ucs4 = NULL;
-        ucs4 = g_utf8_to_ucs4 (string, -1, NULL, NULL, NULL);
-        if (ucs4 != NULL)
-        {
-            ucs4[0] = g_unichar_toupper (ucs4[0]);
-            capitalized = g_ucs4_to_utf8 (ucs4, -1, NULL, NULL, NULL);
-        }
-    }
-
-    if (capitalized == NULL)
-    {
-        return g_strdup (string);
-    }
-
-    return capitalized;
-}
-
-/**
  * get_common_prefix_length:
  * @str_a: first string
  * @str_b: second string
@@ -192,10 +155,6 @@ eel_str_get_common_prefix (GList *strs,
 void
 eel_self_check_string (void)
 {
-    EEL_CHECK_STRING_RESULT (eel_str_capitalize (NULL), NULL);
-    EEL_CHECK_STRING_RESULT (eel_str_capitalize (""), "");
-    EEL_CHECK_STRING_RESULT (eel_str_capitalize ("foo"), "Foo");
-    EEL_CHECK_STRING_RESULT (eel_str_capitalize ("Foo"), "Foo");
 }
 
 #endif /* !EEL_OMIT_SELF_CHECK */

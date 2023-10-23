@@ -44,7 +44,10 @@ tests = [
   ]],
   ['test-file-operations-trash-or-delete', [
     'test-file-operations-trash-or-delete.c'
-  ]]
+  ]],
+  ['test-ui-utilities', [
+    'test-ui-utilities.c'
+  ]],
 ]
 
 tracker_tests = [
