@@ -5,7 +5,6 @@ libeel_2_sources = [
   'eel-self-checks.c',
   'eel-stock-dialogs.h',
   'eel-stock-dialogs.c',
-  'eel-string.h',
   'eel-string.c',
   'eel-vfs-extensions.h',
   'eel-vfs-extensions.c',

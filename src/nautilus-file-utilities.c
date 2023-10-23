@@ -29,11 +29,11 @@
 #include "nautilus-metadata.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
 #include "nautilus-ui-utilities.h"
-#include <eel/eel-string.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-vfs-extensions.h>
 #include <glib.h>
@@ -1209,7 +1209,7 @@ nautilus_get_common_filename_prefix (GList *file_list,
         directory_names = g_list_prepend (directory_names, result_files);
     }
 
-    result = eel_str_get_common_prefix (directory_names, min_required_len);
+    result = nautilus_filename_get_common_prefix (directory_names, min_required_len);
 
     g_list_free_full (file_names, g_free);
     g_list_free_full (directory_names, g_free);
@@ -1247,7 +1247,7 @@ nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
         stripped_filenames = g_list_prepend (stripped_filenames, stripped_filename);
     }
 
-    common_prefix = eel_str_get_common_prefix (stripped_filenames, min_required_len);
+    common_prefix = nautilus_filename_get_common_prefix (stripped_filenames, min_required_len);
     if (common_prefix == NULL)
     {
         return NULL;
