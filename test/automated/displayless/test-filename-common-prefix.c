@@ -1,7 +1,7 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 
-#include "eel/eel-string.h"
+#include "nautilus-filename-utilities.h"
 
 
 static void
@@ -21,7 +21,7 @@ test_has_large_enough_common_prefix (void)
     list = g_list_append (list, "foo-1.txt");
     list = g_list_append (list, "foo-1.tar");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("foo-1.t", ==, actual);
 
     free_list_and_result (list, actual);
@@ -36,7 +36,7 @@ test_has_common_prefix_that_equals_the_min_required_length (void)
     list = g_list_append (list, "food");
     list = g_list_append (list, "foody");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("food", ==, actual);
 
     free_list_and_result (list, actual);
@@ -51,7 +51,7 @@ test_has_common_prefix_that_equals_the_min_required_length2 (void)
     list = g_list_append (list, "foody");
     list = g_list_append (list, "food");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("food", ==, actual);
 
     free_list_and_result (list, actual);
@@ -70,7 +70,7 @@ test_many_strings_with_common_prefix (void)
     list = g_list_append (list, "some text that matches £$$");
     list = g_list_append (list, "some text that matches.txt");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("some text that ", ==, actual);
 
     free_list_and_result (list, actual);
@@ -85,7 +85,7 @@ test_strings_with_unicode_characters_that_have_common_prefix (void)
     list = g_list_append (list, "ƹƱƱƬ");
     list = g_list_append (list, "ƹƱƱƬƧƥƧ");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_cmpstr ("ƹƱƱƬ", ==, actual);
 
     free_list_and_result (list, actual);
@@ -100,7 +100,7 @@ test_no_common_prefix (void)
     list = g_list_append (list, "fyod");
     list = g_list_append (list, "completely different string");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
 
     free_list_and_result (list, actual);
@@ -115,7 +115,7 @@ test_has_common_prefix_but_smaller_than_min_required_length (void)
     list = g_list_append (list, "fyod");
     list = g_list_append (list, "fyoa");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
 
     free_list_and_result (list, actual);
@@ -130,7 +130,7 @@ test_first_character_differs (void)
     list = g_list_append (list, "tyodaa");
     list = g_list_append (list, "fyodaa");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
 
     free_list_and_result (list, actual);
@@ -145,7 +145,7 @@ test_strings_with_unicode_characters_that_dont_have_common_prefix (void)
     list = g_list_append (list, "ƹƱƱƬ");
     list = g_list_append (list, "ƹƱƢƱƬƧƥƧ");
 
-    actual = eel_str_get_common_prefix (list, 4);
+    actual = nautilus_filename_get_common_prefix (list, 4);
     g_assert_null (actual);
 
     free_list_and_result (list, actual);
