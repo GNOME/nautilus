@@ -6,7 +6,6 @@
 #include "src/nautilus-directory.h"
 #include "src/nautilus-file-operations.c"
 #include <unistd.h>
-#include "eel/eel-string.h"
 #include "test-utilities.h"
 
 /* Tests the function for a simple file */

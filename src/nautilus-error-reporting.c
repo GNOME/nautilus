@@ -27,7 +27,6 @@
 #include <string.h>
 #include <glib/gi18n.h>
 #include "nautilus-file.h"
-#include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
 
 #include "nautilus-ui-utilities.h"

@@ -22,7 +22,6 @@
 #include "nautilus-mime-actions.h"
 
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-string.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>

@@ -22,7 +22,6 @@
 #include <config.h>
 #include <math.h>
 #include <glib/gi18n.h>
-#include <eel/eel-string.h>
 #include "nautilus-progress-info.h"
 #include "nautilus-progress-info-manager.h"
 #include "nautilus-icon-info.h"
