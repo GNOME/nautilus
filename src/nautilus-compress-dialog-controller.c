@@ -185,16 +185,7 @@ update_selected_format (NautilusCompressDialogController *self)
     if (!show_passphrase)
     {
         gtk_editable_set_text (GTK_EDITABLE (self->passphrase_entry), "");
-        gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_entry), FALSE);
-        gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_entry),
-                                           GTK_ENTRY_ICON_SECONDARY,
-                                           "view-conceal");
-
         gtk_editable_set_text (GTK_EDITABLE (self->passphrase_confirm_entry), "");
-        gtk_entry_set_visibility (GTK_ENTRY (self->passphrase_confirm_entry), FALSE);
-        gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->passphrase_confirm_entry),
-                                           GTK_ENTRY_ICON_SECONDARY,
-                                           "view-conceal");
     }
 
     g_settings_set_enum (nautilus_compression_preferences,
@@ -378,19 +369,6 @@ passphrase_confirm_entry_on_changed (GtkEditable *editable,
 }
 
 static void
-passphrase_entry_on_icon_press (GtkEntry             *entry,
-                                GtkEntryIconPosition  icon_pos,
-                                gpointer              user_data)
-{
-    gboolean visibility = gtk_entry_get_visibility (GTK_ENTRY (entry));
-
-    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
-                                       GTK_ENTRY_ICON_SECONDARY,
-                                       visibility ? "view-conceal" : "view-reveal");
-    gtk_entry_set_visibility (GTK_ENTRY (entry), !visibility);
-}
-
-static void
 activate_button_on_sensitive_notify (GObject    *gobject,
                                      GParamSpec *pspec,
                                      gpointer    user_data)
@@ -545,12 +523,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
     g_signal_connect (self->passphrase_entry, "changed",
                       G_CALLBACK (passphrase_entry_on_changed), self);
-    g_signal_connect (self->passphrase_entry, "icon-press",
-                      G_CALLBACK (passphrase_entry_on_icon_press), self);
     g_signal_connect (self->passphrase_confirm_entry, "changed",
                       G_CALLBACK (passphrase_confirm_entry_on_changed), self);
-    g_signal_connect (self->passphrase_confirm_entry, "icon-press",
-                      G_CALLBACK (passphrase_entry_on_icon_press), self);
     g_signal_connect (self->activate_button, "notify::sensitive",
                       G_CALLBACK (activate_button_on_sensitive_notify), self);
     g_signal_connect_swapped (self->extension_dropdown, "notify::selected-item",

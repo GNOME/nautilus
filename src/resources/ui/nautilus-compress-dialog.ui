@@ -65,15 +65,13 @@
           </object>
         </child>
         <child>
-          <object class="GtkEntry" id="passphrase_entry">
+          <object class="GtkPasswordEntry" id="passphrase_entry">
             <accessibility>
               <relation name="labelled-by">passphrase_label</relation>
             </accessibility>
             <property name="visible">False</property>
             <property name="placeholder-text" translatable="yes">Enter a Password</property>
-            <property name="input-purpose">password</property>
-            <property name="visibility">False</property>
-            <property name="secondary-icon-name">view-conceal</property>
+            <property name="show-peek-icon">True</property>
           </object>
         </child>
         <child>
@@ -85,15 +83,13 @@
           </object>
         </child>
         <child>
-          <object class="GtkEntry" id="passphrase_confirm_entry">
+          <object class="GtkPasswordEntry" id="passphrase_confirm_entry">
             <accessibility>
               <relation name="labelled-by">passphrase_confirm_label</relation>
             </accessibility>
             <property name="visible">False</property>
             <property name="placeholder-text" translatable="yes">Confirm Password</property>
-            <property name="input-purpose">password</property>
-            <property name="visibility">False</property>
-            <property name="secondary-icon-name">view-conceal</property>
+            <property name="show-peek-icon">True</property>
           </object>
         </child>
       </object>
