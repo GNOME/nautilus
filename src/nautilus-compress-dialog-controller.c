@@ -418,11 +418,7 @@ passphrase_entry_on_icon_press (GtkEntry             *entry,
                                 GtkEntryIconPosition  icon_pos,
                                 gpointer              user_data)
 {
-    NautilusCompressDialogController *self;
-    gboolean visibility;
-
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
-    visibility = gtk_entry_get_visibility (GTK_ENTRY (entry));
+    gboolean visibility = gtk_entry_get_visibility (GTK_ENTRY (entry));
 
     gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
                                        GTK_ENTRY_ICON_SECONDARY,
