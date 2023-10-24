@@ -99,6 +99,7 @@
                 <property name="visible">False</property>
                 <property name="placeholder-text" translatable="yes">Enter a Password</property>
                 <property name="show-peek-icon">True</property>
+                <signal name="activate" handler="focus_confirm_entry" swapped="yes"/>
                 <signal name="changed" handler="on_passphrase_changed" swapped="yes"/>
               </object>
             </child>
@@ -118,6 +119,7 @@
                 <property name="visible">False</property>
                 <property name="placeholder-text" translatable="yes">Confirm Password</property>
                 <property name="show-peek-icon">True</property>
+                <signal name="activate" handler="try_accept_name" swapped="yes"/>
                 <signal name="changed" handler="on_passphrase_confirm_changed" swapped="yes"/>
               </object>
             </child>

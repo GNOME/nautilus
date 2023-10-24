@@ -374,6 +374,12 @@ extension_dropdown_unbind (GtkSignalListItemFactory *factory,
 }
 
 static void
+focus_confirm_entry (NautilusCompressDialogController *self)
+{
+    gtk_widget_grab_focus (self->passphrase_confirm_entry);
+}
+
+static void
 on_passphrase_changed (NautilusCompressDialogController *self,
                        GtkEditable                      *editable)
 {
@@ -542,6 +548,7 @@ nautilus_compress_dialog_controller_class_init (NautilusCompressDialogController
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialogController, passphrase_label);
 
     gtk_widget_class_bind_template_callback (widget_class, check_state);
+    gtk_widget_class_bind_template_callback (widget_class, focus_confirm_entry);
     gtk_widget_class_bind_template_callback (widget_class, on_name_activated);
     gtk_widget_class_bind_template_callback (widget_class, on_passphrase_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_passphrase_confirm_changed);
