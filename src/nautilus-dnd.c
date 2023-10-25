@@ -265,7 +265,7 @@ nautilus_dnd_perform_drop (NautilusFilesView *view,
         g_autofree char *dest_uri = g_file_get_uri (target_location);
         GdkTexture *texture = g_value_get_object (value);
 
-        nautilus_file_view_save_image_from_texture (view, texture, dest_uri, _("Dropped image"));
+        nautilus_file_view_save_image_from_texture (view, texture, dest_uri, _("Dropped Image"));
     }
     else if (G_VALUE_HOLDS (value, GDK_TYPE_FILE_LIST))
     {
