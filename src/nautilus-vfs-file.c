@@ -179,6 +179,8 @@ vfs_file_set_metadata (NautilusFile *file,
     }
     g_free (gio_key);
 
+    nautilus_file_update_metadata_from_info (file, info);
+
     location = nautilus_file_get_location (file);
     g_file_set_attributes_async (location,
                                  info,
@@ -212,6 +214,8 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
         g_file_info_set_attribute_stringv (info, gio_key, value);
     }
     g_free (gio_key);
+
+    nautilus_file_update_metadata_from_info (file, info);
 
     location = nautilus_file_get_location (file);
     g_file_set_attributes_async (location,
