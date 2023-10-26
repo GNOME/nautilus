@@ -10,6 +10,24 @@
 
 
 /**
+ * nautilus_filename_create_duplicate:
+ * @name: Name of the original file
+ * @count: Number of copies of @name already existing
+ * @max_length: Maximum length that resulting file name can have
+ * @ignore_extension: Whether to ignore file extensions (should be FALSE for directories)
+ *
+ * Creates a new name for a copy of @name, that is no longer than @max_length
+ * bytes long.
+ *
+ * Returns: (transfer full): A file name for a copy of @name.
+ */
+char *
+nautilus_filename_create_duplicate (const char *name,
+                                    int         count_increment,
+                                    int         max_length,
+                                    gboolean    ignore_extension);
+
+/**
  * nautilus_filename_for_link:
  * @name: Name of the original file
  * @count: Number of links to @name already existing
