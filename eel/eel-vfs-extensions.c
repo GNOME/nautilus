@@ -33,8 +33,9 @@
 
 #include "eel-string.h"
 
-#include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 /**
  * eel_filename_get_extension_offset:
@@ -63,6 +64,14 @@ eel_filename_get_extension_offset (const char *filename)
     if (end == NULL || end[1] == '\0')
     {
         return NULL;
+    }
+
+    for (size_t i = 1; end[i] != '\0'; i += 1)
+    {
+        if (isspace (end[i]))
+        {
+            return NULL;
+        }
     }
 
     if (end != start)

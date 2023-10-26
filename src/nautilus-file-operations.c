@@ -9346,7 +9346,6 @@ nautilus_self_check_file_operations (void)
 {
     setlocale (LC_MESSAGES, "C");
 
-
     /* test the next duplicate name generator */
     EEL_CHECK_STRING_RESULT (get_duplicate_name (" (copy)", 1, -1, FALSE), " (another copy)");
     EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo", 1, -1, FALSE), "foo (copy)");
