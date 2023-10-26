@@ -9,6 +9,132 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#include <stdio.h>
+
+#include <eel/eel-vfs-extensions.h>
+
+
+/* Translators: This is appended to a file name when a copy of a file is created. */
+#define COPY_APPENDIX_FIRST_COPY _("Copy")
+/* Translators: This is appended to a file name when a copy of an already copied file is created.
+ * `%ld` will be replaced with the how manyth copy number this is. */
+#define  COPY_APPENDIX_NTH_COPY _("Copy %ld")
+
+/**
+ * parse_previous_duplicate_name:
+ * @name: Name of the original file
+ * @extensionless_length: Length of @name when without an extension
+ * @base_length: (out): Length of the file name without any duplication suffixes.
+ *                      Only set when a duplicate is detected.
+ * @count: (out): The how manyth duplicate the parsed file name represents.
+ *                Only set when a duplicate is detected.
+ *
+ * Parses a file name to see if it was created as a duplicate of another file.
+ */
+static void
+parse_previous_duplicate_name (const char *name,
+                               size_t      extensionless_length,
+                               size_t     *base_length,
+                               size_t     *count)
+{
+    /* Set default values for early returns */
+    *base_length = extensionless_length;
+    *count = 0;
+
+    if (extensionless_length <= 4)
+    {
+        /* Any appendix added by us is at least 4 characters long, no need to check further */
+        return;
+    }
+
+    /* Duplication suffix ends with bracket, check for it */
+    size_t last_character_pos = extensionless_length - 1;
+    if (name[last_character_pos] != ')')
+    {
+        /* Appendix is the last thing before extension, no need to check further */
+        return;
+    }
+
+    /* Search for opening bracket */
+    char *start_bracket = g_utf8_strrchr (name, last_character_pos, '(');
+    if (start_bracket == NULL || start_bracket == name)
+    {
+        /* Appendix is surrounded by brackets and can't be the whole file name */
+        return;
+    }
+
+    /* Potential bracketed suffix detected, check if it's a known copy suffix */
+    size_t start_bracket_pos = start_bracket - name;
+    size_t str_in_bracket_length = last_character_pos - (start_bracket_pos + 1);
+
+    if (strncmp (start_bracket + 1, COPY_APPENDIX_FIRST_COPY, str_in_bracket_length) == 0)
+    {
+        /* File is a (first) copy */
+        *count = 1;
+        *base_length = start_bracket_pos - 1;
+    }
+    else if (sscanf (start_bracket + 1, COPY_APPENDIX_NTH_COPY, count))
+    {
+        /* File is an n-th copy, create n+1-th copy */
+        *base_length = start_bracket_pos - 1;
+    }
+    else
+    {
+        /* No copy detected */
+        *count = 0;
+    }
+}
+
+static char *
+get_formatted_copy_name (const char *base,
+                         size_t      count,
+                         const char *extension)
+{
+    if (count == 1)
+    {
+        return g_strdup_printf ("%s (%s)%s", base, COPY_APPENDIX_FIRST_COPY, extension);
+    }
+    else
+    {
+        g_autofree char *appendix = g_strdup_printf (COPY_APPENDIX_NTH_COPY, count);
+
+        return g_strdup_printf ("%s (%s)%s", base, appendix, extension);
+    }
+}
+
+/**
+ * nautilus_filename_create_duplicate:
+ * @name: Name of the original file
+ * @count: Number of copies of @name already existing
+ * @max_length: Maximum length that resulting file name can have
+ * @ignore_extension: Whether to ignore file extensions (should be FALSE for directories)
+ *
+ * Creates a new name for a copy of @name, that is no longer than @max_length
+ * bytes long.
+ *
+ * Returns: (transfer full): A file name for a copy of @name.
+ */
+char *
+nautilus_filename_create_duplicate (const char *name,
+                                    int         count_increment,
+                                    int         max_length,
+                                    gboolean    ignore_extension)
+{
+    g_assert (name[0] != '\0');
+    g_assert (count_increment > 0);
+
+    const char *extension = ignore_extension ? "" : nautilus_filename_get_extension (name);
+    size_t extensionless_length = ignore_extension ? strlen (name) : extension - name;
+    size_t base_length;
+    size_t count;
+    parse_previous_duplicate_name (name, extensionless_length, &base_length, &count);
+
+    g_autofree char *base = g_strndup (name, base_length);
+    char *result = get_formatted_copy_name (base, count + count_increment, extension);
+    nautilus_filename_shorten_base (&result, base, max_length);
+
+    return result;
+}
 
 /**
  * nautilus_filename_for_link:

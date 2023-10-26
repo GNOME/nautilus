@@ -10,6 +10,12 @@
 
 
 char *
+nautilus_filename_create_duplicate (const char *name,
+                                    int         count_increment,
+                                    int         max_length,
+                                    gboolean    ignore_extension);
+
+char *
 nautilus_filename_for_link (const char *name,
                             size_t      count,
                             int         max_length);
