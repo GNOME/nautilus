@@ -9359,6 +9359,7 @@ nautilus_self_check_file_operations (void)
     EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo.txt", 1, -1, FALSE), "foo (copy).txt");
     EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt", 1, -1, FALSE), "foo foo (copy).txt");
     EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt txt", 1, -1, FALSE), "foo foo.txt txt (copy)");
+    EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo foo.txt txt (copy)", 1, -1, FALSE), "foo foo.txt txt (another copy)");
     EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...txt", 1, -1, FALSE), "foo.. (copy).txt");
     EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo...", 1, -1, FALSE), "foo... (copy)");
     EEL_CHECK_STRING_RESULT (get_duplicate_name ("foo. (copy)", 1, -1, FALSE), "foo. (another copy)");
