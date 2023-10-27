@@ -1,5 +1,7 @@
 FROM fedora:latest
 
+ENV CFLAGS "-fno-omit-frame-pointer"
+
 RUN dnf install --nogpg -y dnf-plugins-core findutils git uncrustify \
  && dnf builddep --nogpg -y nautilus \
  && dnf clean all
@@ -38,7 +40,7 @@ RUN dnf builddep -y gtk4 \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/gtk.git \
  && cd gtk \
- && meson setup _build -Dbuild-tests=false -Dbuild-testsuite=false -Dbuild-demos=false --prefix /usr \
+ && meson setup _build -Dbuild-tests=false -Dbuild-testsuite=false -Ddemos=false -Dbuild-examples=false --prefix /usr \
  && ninja -C _build \
  && ninja install -C _build \
  && cd .. \
@@ -54,3 +56,6 @@ RUN dnf builddep -y gtk4 \
  && ninja install -C _build \
  && cd .. \
  && rm -rf libadwaita
+
+RUN dnf install -y libasan \
+&& dnf clean all \
