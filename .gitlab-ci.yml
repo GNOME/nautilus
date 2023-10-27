@@ -6,6 +6,7 @@ variables:
 stages:
     - image
     - test
+    - analyze
     - deploy
 
 .vars-devel:
@@ -76,6 +77,28 @@ update image:
           when: never
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         - if: $CI_PIPELINE_SOURCE == "web"
+
+asan:
+    variables:
+        CFLAGS: "-fno-omit-frame-pointer -fsanitize=address"
+        LSAN_OPTIONS: suppressions=data/leak-suppress.txt
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
+    stage: analyze
+    rules:
+        - when: manual
+          allow_failure: true
+    script:
+        - meson setup -Dextensions=false -Dintrospection=false -Dtests=all _build
+        - meson compile -C _build
+        - meson test -C _build
+    artifacts:
+        name: 'Address Sanitizer-built test results'
+        when: on_failure
+        paths:
+          - '_build/meson-logs/testlog.txt'
+        reports:
+            junit: '_build/meson-logs/testlog.junit.xml'
+        expire_in: 7 days
 
 pages:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest

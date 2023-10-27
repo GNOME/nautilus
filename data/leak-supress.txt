@@ -1,0 +1,8 @@
+# Use via environment variable LSAN_OPTIONS=suppressions=data/leak-suppress.txt
+# Ignore fontconfig reported leaks. It's caches cause false positives.
+leak:libfontconfig.so.1
+leak:libEGL_mesa.so.0
+leak:libtracker-sparql-3.0.so.0
+leak:gtk_init
+leak:xdg_mime_init
+leak:gtk_at_context_create

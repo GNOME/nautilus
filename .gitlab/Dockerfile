@@ -1,5 +1,7 @@
 FROM fedora:latest
 
+ENV CFLAGS "-fno-omit-frame-pointer"
+
 RUN dnf install --nogpg -y dnf-plugins-core findutils git uncrustify \
  && dnf builddep --nogpg -y nautilus \
  && dnf clean all
@@ -54,3 +56,6 @@ RUN dnf builddep -y gtk4 \
  && ninja install -C _build \
  && cd .. \
  && rm -rf libadwaita
+
+RUN dnf install -y libasan \
+&& dnf clean all \
