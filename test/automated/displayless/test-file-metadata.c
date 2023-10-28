@@ -74,9 +74,20 @@ int
 main (int   argc,
       char *argv[])
 {
+    g_autoptr (GDBusProxy) proxy = NULL;
+
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
     nautilus_ensure_extension_points ();
+
+    proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                           G_DBUS_PROXY_FLAGS_NONE,
+                                           NULL,
+                                           "org.gtk.vfs.Metadata",
+                                           "/org/gtk/vfs/metadata",
+                                           "org.gtk.vfs.Metadata",
+                                           NULL,
+                                           NULL);
 
     g_test_add_func ("/file-metadata-set-bool/true",
                      test_file_metadata_bool_set_true);
