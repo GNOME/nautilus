@@ -1018,46 +1018,6 @@ nautilus_file_get_parent_uri_for_display (NautilusFile *file)
 }
 
 /**
- * nautilus_file_get_parent_uri:
- *
- * Get the uri for the parent directory.
- *
- * @file: The file in question.
- *
- * Return value: A string for the parent's location, in "raw URI" form.
- * Use nautilus_file_get_parent_uri_for_display instead if the
- * result is to be displayed on-screen.
- * If the parent is NULL, returns the empty string.
- */
-char *
-nautilus_file_get_parent_uri (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_parent_uri (NAUTILUS_FILE_INFO (file));
-}
-
-GFile *
-nautilus_file_get_parent_location (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_parent_location (NAUTILUS_FILE_INFO (file));
-}
-
-NautilusFile *
-nautilus_file_get_parent (NautilusFile *file)
-{
-    NautilusFileInfo *file_info;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    file_info = NAUTILUS_FILE_INFO (file);
-
-    return NAUTILUS_FILE (nautilus_file_info_get_parent_info (file_info));
-}
-
-/**
  * nautilus_file_can_read:
  *
  * Check whether the user is allowed to read the contents of this file.
@@ -1075,26 +1035,6 @@ nautilus_file_can_read (NautilusFile *file)
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     return file->details->can_read;
-}
-
-/**
- * nautilus_file_can_write:
- *
- * Check whether the user is allowed to write to this file.
- *
- * @file: The file to check.
- *
- * Return value: FALSE if the user is definitely not allowed to write
- * to the file. If the user has write permission, or
- * the code can't tell whether the user has write permission,
- * returns TRUE (so failures must always be handled).
- */
-gboolean
-nautilus_file_can_write (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    return nautilus_file_info_can_write (NAUTILUS_FILE_INFO (file));
 }
 
 /**
@@ -1707,32 +1647,6 @@ nautilus_file_can_trash (NautilusFile *file)
 
     return file->details->can_trash;
 }
-
-GFile *
-nautilus_file_get_location (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_location (NAUTILUS_FILE_INFO (file));
-}
-
-/* Return the actual uri associated with the passed-in file. */
-char *
-nautilus_file_get_uri (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_uri (NAUTILUS_FILE_INFO (file));
-}
-
-char *
-nautilus_file_get_uri_scheme (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_uri_scheme (NAUTILUS_FILE_INFO (file));
-}
-
 
 gboolean
 nautilus_file_opens_in_view (NautilusFile *file)
@@ -4370,14 +4284,6 @@ nautilus_file_get_edit_name (NautilusFile *file)
     return g_strdup (res);
 }
 
-char *
-nautilus_file_get_name (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_name (NAUTILUS_FILE_INFO (file));
-}
-
 /**
  * nautilus_file_get_description:
  * @file: a #NautilusFile.
@@ -4419,19 +4325,6 @@ gboolean
 nautilus_file_has_activation_uri (NautilusFile *file)
 {
     return file->details->activation_uri != NULL;
-}
-
-
-/* Return the uri associated with the passed-in file, which may not be
- * the actual uri if the file is an desktop file or a nautilus
- * xml link file.
- */
-char *
-nautilus_file_get_activation_uri (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_activation_uri (NAUTILUS_FILE_INFO (file));
 }
 
 GFile *
@@ -7061,7 +6954,7 @@ nautilus_file_get_string_attribute (NautilusFile *file,
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return nautilus_file_info_get_string_attribute (NAUTILUS_FILE_INFO (file), attribute_name);
+    return nautilus_file_get_string_attribute_q (file, g_quark_from_string (attribute_name));
 }
 
 
@@ -7405,62 +7298,6 @@ nautilus_file_get_detailed_type_as_string (NautilusFile *file)
     return update_description_for_link (file, detailed_description);
 }
 
-/**
- * nautilus_file_get_file_type
- *
- * Return this file's type.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: The type.
- *
- **/
-GFileType
-nautilus_file_get_file_type (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), G_FILE_TYPE_UNKNOWN);
-
-    return nautilus_file_info_get_file_type (NAUTILUS_FILE_INFO (file));
-}
-
-/**
- * nautilus_file_get_mime_type
- *
- * Return this file's default mime type.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: The mime type.
- *
- **/
-char *
-nautilus_file_get_mime_type (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_mime_type (NAUTILUS_FILE_INFO (file));
-}
-
-/**
- * nautilus_file_is_mime_type
- *
- * Check whether a file is of a particular MIME type, or inherited
- * from it.
- * @file: NautilusFile representing the file in question.
- * @mime_type: The MIME-type string to test (e.g. "text/plain")
- *
- * Return value: TRUE if @mime_type exactly matches the
- * file's MIME type.
- *
- **/
-gboolean
-nautilus_file_is_mime_type (NautilusFile *file,
-                            const char   *mime_type)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-    g_return_val_if_fail (mime_type != NULL, FALSE);
-
-    return nautilus_file_info_is_mime_type (NAUTILUS_FILE_INFO (file), mime_type);
-}
-
 gboolean
 nautilus_file_is_launchable (NautilusFile *file)
 {
@@ -7493,14 +7330,6 @@ gboolean
 nautilus_file_is_symbolic_link (NautilusFile *file)
 {
     return file->details->is_symlink;
-}
-
-GMount *
-nautilus_file_get_mount (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    return nautilus_file_info_get_mount (NAUTILUS_FILE_INFO (file));
 }
 
 static void
@@ -7738,23 +7567,6 @@ gboolean
 nautilus_file_is_regular_file (NautilusFile *file)
 {
     return nautilus_file_get_file_type (file) == G_FILE_TYPE_REGULAR;
-}
-
-/**
- * nautilus_file_is_directory
- *
- * Check if this file is a directory.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: TRUE if @file is a directory.
- *
- **/
-gboolean
-nautilus_file_is_directory (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    return nautilus_file_info_is_directory (NAUTILUS_FILE_INFO (file));
 }
 
 gboolean
@@ -8175,22 +7987,6 @@ nautilus_file_emit_changed (NautilusFile *file)
         nautilus_file_changed (NAUTILUS_FILE (p->data));
     }
     nautilus_file_list_free (link_files);
-}
-
-/**
- * nautilus_file_is_gone
- *
- * Check if a file has already been deleted.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: TRUE if the file is already gone.
- **/
-gboolean
-nautilus_file_is_gone (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    return nautilus_file_info_is_gone (NAUTILUS_FILE_INFO (file));
 }
 
 /**
@@ -9128,6 +8924,22 @@ is_gone (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
+    return nautilus_file_is_gone (file);
+}
+
+/**
+ * nautilus_file_is_gone
+ *
+ * Check if a file has already been deleted.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if the file is already gone.
+ **/
+gboolean
+nautilus_file_is_gone (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
     return file->details->is_gone;
 }
 
@@ -9138,6 +8950,14 @@ get_name (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
+    return nautilus_file_get_name (file);
+}
+
+char *
+nautilus_file_get_name (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
     return g_strdup (file->details->name);
 }
 
@@ -9145,9 +8965,20 @@ static char *
 get_uri (NautilusFileInfo *file_info)
 {
     NautilusFile *file;
-    g_autoptr (GFile) location = NULL;
 
     file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_get_uri (file);
+}
+
+/* Return the actual uri associated with the passed-in file. */
+char *
+nautilus_file_get_uri (NautilusFile *file)
+{
+    g_autoptr (GFile) location = NULL;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
     location = nautilus_file_get_location (file);
 
     return g_file_get_uri (location);
@@ -9159,6 +8990,26 @@ get_parent_uri (NautilusFileInfo *file_info)
     NautilusFile *file;
 
     file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_get_parent_uri (file);
+}
+
+/**
+ * nautilus_file_get_parent_uri:
+ *
+ * Get the uri for the parent directory.
+ *
+ * @file: The file in question.
+ *
+ * Return value: A string for the parent's location, in "raw URI" form.
+ * Use nautilus_file_get_parent_uri_for_display instead if the
+ * result is to be displayed on-screen.
+ * If the parent is NULL, returns the empty string.
+ */
+char *
+nautilus_file_get_parent_uri (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     if (nautilus_file_is_self_owned (file))
     {
@@ -9173,9 +9024,18 @@ static char *
 get_uri_scheme (NautilusFileInfo *file_info)
 {
     NautilusFile *file;
-    g_autoptr (GFile) location = NULL;
 
     file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_get_uri_scheme (file);
+}
+
+char *
+nautilus_file_get_uri_scheme (NautilusFile *file)
+{
+    g_autoptr (GFile) location = NULL;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     if (file->details->directory == NULL)
     {
@@ -9198,6 +9058,23 @@ get_mime_type (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
+    return nautilus_file_get_mime_type (file);
+}
+
+/**
+ * nautilus_file_get_mime_type
+ *
+ * Return this file's default mime type.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: The mime type.
+ *
+ **/
+char *
+nautilus_file_get_mime_type (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
     if (file->details->mime_type != NULL)
     {
         return g_strdup (file->details->mime_type);
@@ -9214,6 +9091,28 @@ is_mime_type (NautilusFileInfo *file_info,
 
     file = NAUTILUS_FILE (file_info);
 
+    return nautilus_file_is_mime_type (file, mime_type);
+}
+
+/**
+ * nautilus_file_is_mime_type
+ *
+ * Check whether a file is of a particular MIME type, or inherited
+ * from it.
+ * @file: NautilusFile representing the file in question.
+ * @mime_type: The MIME-type string to test (e.g. "text/plain")
+ *
+ * Return value: TRUE if @mime_type exactly matches the
+ * file's MIME type.
+ *
+ **/
+gboolean
+nautilus_file_is_mime_type (NautilusFile *file,
+                            const char   *mime_type)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+    g_return_val_if_fail (mime_type != NULL, FALSE);
+
     if (file->details->mime_type == NULL)
     {
         return FALSE;
@@ -9228,6 +9127,23 @@ is_directory (NautilusFileInfo *file_info)
     NautilusFile *file;
 
     file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_is_directory (file);
+}
+
+/**
+ * nautilus_file_is_directory
+ *
+ * Check if this file is a directory.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if @file is a directory.
+ *
+ **/
+gboolean
+nautilus_file_is_directory (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     return nautilus_file_get_file_type (file) == G_FILE_TYPE_DIRECTORY;
 }
@@ -9262,7 +9178,7 @@ get_string_attribute (NautilusFileInfo *file_info,
 
     file = NAUTILUS_FILE (file_info);
 
-    return nautilus_file_get_string_attribute_q (file, g_quark_from_string (attribute_name));
+    return nautilus_file_get_string_attribute (file, attribute_name);
 }
 
 static void
@@ -9322,6 +9238,18 @@ get_activation_uri (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
+    return nautilus_file_get_activation_uri (file);
+}
+
+/* Return the uri associated with the passed-in file, which may not be
+ * the actual uri if the file is an desktop file or a nautilus
+ * xml link file.
+ */
+char *
+nautilus_file_get_activation_uri (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
     if (file->details->activation_uri != NULL)
     {
         return g_strdup (file->details->activation_uri);
@@ -9337,6 +9265,23 @@ get_file_type (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
+    return nautilus_file_get_file_type (file);
+}
+
+/**
+ * nautilus_file_get_file_type
+ *
+ * Return this file's type.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: The type.
+ *
+ **/
+GFileType
+nautilus_file_get_file_type (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), G_FILE_TYPE_UNKNOWN);
+
     return file->details->type;
 }
 
@@ -9344,9 +9289,19 @@ static GFile *
 get_location (NautilusFileInfo *file_info)
 {
     NautilusFile *file;
-    g_autoptr (GFile) location = NULL;
 
     file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_get_location (file);
+}
+
+GFile *
+nautilus_file_get_location (NautilusFile *file)
+{
+    g_autoptr (GFile) location = NULL;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
     location = nautilus_directory_get_location (file->details->directory);
 
     if (nautilus_file_is_self_owned (file))
@@ -9364,6 +9319,14 @@ get_parent_location (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
+    return nautilus_file_get_parent_location (file);
+}
+
+GFile *
+nautilus_file_get_parent_location (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
     if (nautilus_file_is_self_owned (file))
     {
         return NULL;
@@ -9376,9 +9339,18 @@ static NautilusFileInfo *
 get_parent_info (NautilusFileInfo *file_info)
 {
     NautilusFile *file;
-    NautilusFile *parent_file;
 
     file = NAUTILUS_FILE (file_info);
+
+    return NAUTILUS_FILE_INFO (nautilus_file_get_parent (file));
+}
+
+NautilusFile *
+nautilus_file_get_parent (NautilusFile *file)
+{
+    NautilusFile *parent_file;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     if (nautilus_file_is_self_owned (file))
     {
@@ -9387,7 +9359,7 @@ get_parent_info (NautilusFileInfo *file_info)
 
     parent_file = nautilus_directory_get_corresponding_file (file->details->directory);
 
-    return NAUTILUS_FILE_INFO (parent_file);
+    return parent_file;
 }
 
 static GMount *
@@ -9396,6 +9368,14 @@ get_mount (NautilusFileInfo *file_info)
     NautilusFile *file;
 
     file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_get_mount (file);
+}
+
+GMount *
+nautilus_file_get_mount (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     if (file->details->mount)
     {
@@ -9411,6 +9391,26 @@ can_write (NautilusFileInfo *file_info)
     NautilusFile *file;
 
     file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_can_write (file);
+}
+
+/**
+ * nautilus_file_can_write:
+ *
+ * Check whether the user is allowed to write to this file.
+ *
+ * @file: The file to check.
+ *
+ * Return value: FALSE if the user is definitely not allowed to write
+ * to the file. If the user has write permission, or
+ * the code can't tell whether the user has write permission,
+ * returns TRUE (so failures must always be handled).
+ */
+gboolean
+nautilus_file_can_write (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     return file->details->can_write;
 }
