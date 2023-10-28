@@ -61,7 +61,7 @@ add_file_to_recent (NautilusFile *file,
     recent_data.display_name = NULL;
     recent_data.description = NULL;
 
-    recent_data.mime_type = nautilus_file_get_mime_type (file);
+    recent_data.mime_type = g_strdup (nautilus_file_get_mime_type (file));
     recent_data.app_name = g_strdup (g_get_application_name ());
     recent_data.app_exec = g_strdup (g_app_info_get_commandline (application));
 

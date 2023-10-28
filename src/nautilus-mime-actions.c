@@ -423,7 +423,6 @@ GAppInfo *
 nautilus_mime_get_default_application_for_file (NautilusFile *file)
 {
     GAppInfo *app;
-    char *mime_type;
     char *uri_scheme;
 
     if (!nautilus_mime_actions_check_if_required_attributes_ready (file))
@@ -431,10 +430,8 @@ nautilus_mime_get_default_application_for_file (NautilusFile *file)
         return NULL;
     }
 
-    mime_type = nautilus_file_get_mime_type (file);
-    app = g_app_info_get_default_for_type (mime_type,
+    app = g_app_info_get_default_for_type (nautilus_file_get_mime_type (file),
                                            !nautilus_file_has_local_path (file));
-    g_free (mime_type);
 
     if (app == NULL)
     {
@@ -453,18 +450,8 @@ static int
 file_compare_by_mime_type (NautilusFile *file_a,
                            NautilusFile *file_b)
 {
-    char *mime_type_a, *mime_type_b;
-    int ret;
-
-    mime_type_a = nautilus_file_get_mime_type (file_a);
-    mime_type_b = nautilus_file_get_mime_type (file_b);
-
-    ret = strcmp (mime_type_a, mime_type_b);
-
-    g_free (mime_type_a);
-    g_free (mime_type_b);
-
-    return ret;
+    return strcmp (nautilus_file_get_mime_type (file_a),
+                   nautilus_file_get_mime_type (file_b));
 }
 
 static int
@@ -1179,7 +1166,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
     g_autofree char *body = NULL;
     g_autofree char *content_type_description = NULL;
 
-    char *mime_type = nautilus_file_get_mime_type (parameters->file);
+    const char *mime_type = nautilus_file_get_mime_type (parameters->file);
     char *error_message = get_application_no_mime_type_handler_message (parameters->file);
 
     if (g_content_type_is_unknown (mime_type))
@@ -1210,7 +1197,6 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
                       G_CALLBACK (choose_program), parameters);
 
     g_free (error_message);
-    g_free (mime_type);
 }
 
 static void
@@ -1287,15 +1273,13 @@ application_unhandled_file_install (GtkDialog                 *dialog,
                                     gchar                     *response,
                                     ActivateParametersInstall *parameters_install)
 {
-    char *mime_type;
-
     parameters_install->dialog = NULL;
 
     if (g_strcmp0 (response, "search-in-software") == 0)
     {
-        mime_type = nautilus_file_get_mime_type (parameters_install->file);
+        const char *mime_type = nautilus_file_get_mime_type (parameters_install->file);
+
         search_for_application_mime_type (parameters_install, mime_type);
-        g_free (mime_type);
     }
     else
     {
@@ -1310,7 +1294,8 @@ pk_proxy_appeared_cb (GObject      *source,
                       gpointer      user_data)
 {
     ActivateParametersInstall *parameters_install = user_data;
-    char *mime_type, *name_owner;
+    const char *mime_type;
+    g_autofree char *name_owner = NULL;
     char *error_message;
     GtkWidget *dialog;
     GDBusProxy *proxy;
@@ -1331,8 +1316,6 @@ pk_proxy_appeared_cb (GObject      *source,
 
         return;
     }
-
-    g_free (name_owner);
 
     mime_type = nautilus_file_get_mime_type (parameters_install->file);
     content_type_description = g_content_type_get_description (mime_type);
@@ -1357,7 +1340,6 @@ pk_proxy_appeared_cb (GObject      *source,
                       G_CALLBACK (application_unhandled_file_install),
                       parameters_install);
     gtk_window_present (GTK_WINDOW (dialog));
-    g_free (mime_type);
 }
 
 static void
@@ -1365,13 +1347,10 @@ application_unhandled_uri (ActivateParameters *parameters,
                            char               *uri)
 {
     gboolean show_install_mime;
-    char *mime_type;
     NautilusFile *file;
     ActivateParametersInstall *parameters_install;
 
     file = nautilus_file_get_by_uri (uri);
-
-    mime_type = nautilus_file_get_mime_type (file);
 
     /* copy the parts of parameters we are interested in as the orignal will be unref'd */
     parameters_install = g_new0 (ActivateParametersInstall, 1);
@@ -1396,12 +1375,10 @@ application_unhandled_uri (ActivateParameters *parameters,
     show_install_mime = FALSE;
 #endif
     /* There is no use trying to look for handlers of application/octet-stream */
-    if (g_content_type_is_unknown (mime_type))
+    if (g_content_type_is_unknown (nautilus_file_get_mime_type (file)))
     {
         show_install_mime = FALSE;
     }
-
-    g_free (mime_type);
 
     if (!show_install_mime)
     {

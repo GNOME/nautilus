@@ -287,18 +287,12 @@ nautilus_app_chooser_new (GList     *files,
                           GtkWindow *parent_window)
 {
     gboolean single_content_type = TRUE;
-    g_autofree gchar *content_type = NULL;
-    const char *file_name;
-
-    content_type = nautilus_file_get_mime_type (files->data);
-
-    file_name = files->next ? NULL : nautilus_file_get_display_name (files->data);
+    const char *content_type = nautilus_file_get_mime_type (files->data);
+    const char *file_name = files->next ? NULL : nautilus_file_get_display_name (files->data);
 
     for (GList *l = files; l != NULL; l = l->next)
     {
-        g_autofree gchar *temp_mime_type = NULL;
-        temp_mime_type = nautilus_file_get_mime_type (l->data);
-        if (g_strcmp0 (content_type, temp_mime_type) != 0)
+        if (g_strcmp0 (content_type, nautilus_file_get_mime_type (l->data)) != 0)
         {
             single_content_type = FALSE;
             break;

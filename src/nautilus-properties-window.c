@@ -1264,13 +1264,18 @@ update_permissions_navigation_row (NautilusPropertiesWindow *self,
 static void
 update_extension_list (NautilusPropertiesWindow *self)
 {
-    char *mime_type = is_multi_file_window (self) ?
-                      NULL : nautilus_file_get_mime_type (get_target_file (self));
+    if (is_multi_file_window (self))
+    {
+        g_free (self->mime_type);
+        return;
+    }
+
+    const char *mime_type = nautilus_file_get_mime_type (get_target_file (self));
 
     if (g_strcmp0 (self->mime_type, mime_type) != 0)
     {
         g_free (self->mime_type);
-        self->mime_type = mime_type;
+        self->mime_type = g_strdup (mime_type);
 
         refresh_extension_model_pages (self);
     }
@@ -2256,21 +2261,20 @@ is_single_file_type (NautilusPropertiesWindow *self)
 {
     if (is_multi_file_window (self))
     {
-        g_autofree gchar *mime_type = NULL;
         GList *l = self->original_files;
+        const char *mime_type = nautilus_file_get_mime_type (NAUTILUS_FILE (l->data));
 
-        mime_type = nautilus_file_get_mime_type (NAUTILUS_FILE (l->data));
         for (l = l->next; l != NULL; l = l->next)
         {
+            NautilusFile *file = NAUTILUS_FILE (l->data);
             g_autofree gchar *next_mime_type = NULL;
 
-            if (nautilus_file_is_gone (NAUTILUS_FILE (l->data)))
+            if (nautilus_file_is_gone (file))
             {
                 continue;
             }
 
-            next_mime_type = nautilus_file_get_mime_type (NAUTILUS_FILE (l->data));
-            if (g_strcmp0 (next_mime_type, mime_type) != 0)
+            if (g_strcmp0 (nautilus_file_get_mime_type (file), mime_type) != 0)
             {
                 return FALSE;
             }
@@ -2889,14 +2893,12 @@ execution_bit_changed (NautilusPropertiesWindow *self,
 static gboolean
 should_show_exectution_switch (NautilusPropertiesWindow *self)
 {
-    g_autofree gchar *mime_type = NULL;
-
     if (is_multi_file_window (self))
     {
         return FALSE;
     }
 
-    mime_type = nautilus_file_get_mime_type (get_target_file (self));
+    const char *mime_type = nautilus_file_get_mime_type (get_target_file (self));
     return g_content_type_can_be_executable (mime_type);
 }
 

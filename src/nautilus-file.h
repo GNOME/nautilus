@@ -174,7 +174,7 @@ time_t                  nautilus_file_get_btime                         (Nautilu
 time_t                  nautilus_file_get_recency                       (NautilusFile                   *file);
 time_t                  nautilus_file_get_trash_time                    (NautilusFile                   *file);
 GFileType               nautilus_file_get_file_type                     (NautilusFile                   *file);
-char *                  nautilus_file_get_mime_type                     (NautilusFile                   *file);
+const char *            nautilus_file_get_mime_type                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_mime_type                      (NautilusFile                   *file,
 									 const char                     *mime_type);
 gboolean                nautilus_file_is_launchable                     (NautilusFile                   *file);

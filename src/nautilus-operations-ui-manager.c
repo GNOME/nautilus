@@ -252,7 +252,6 @@ set_file_labels (FileConflictDialogData *data)
     gboolean source_is_directory;
     gboolean destination_is_directory;
     gboolean should_show_type;
-    g_autofree char *destination_mime_type = NULL;
     g_autofree char *destination_date = NULL;
     g_autofree char *destination_size = NULL;
     g_autofree char *destination_type = NULL;
@@ -263,9 +262,8 @@ set_file_labels (FileConflictDialogData *data)
     source_is_directory = nautilus_file_is_directory (data->source);
     destination_is_directory = nautilus_file_is_directory (data->destination);
 
-    destination_mime_type = nautilus_file_get_mime_type (data->destination);
     should_show_type = !nautilus_file_is_mime_type (data->source,
-                                                    destination_mime_type);
+                                                    nautilus_file_get_mime_type (data->destination));
 
     destination_date = nautilus_file_get_string_attribute_with_default (data->destination,
                                                                         "date_modified_with_time");
@@ -577,17 +575,15 @@ static gboolean
 open_file_in_application (gpointer user_data)
 {
     HandleUnsupportedFileData *data;
-    g_autofree gchar *mime_type = NULL;
     GtkWidget *dialog;
     const char *heading;
 
     data = user_data;
-    mime_type = nautilus_file_get_mime_type (data->file);
     dialog = gtk_app_chooser_dialog_new_for_content_type (data->parent_window,
                                                           GTK_DIALOG_MODAL |
                                                           GTK_DIALOG_DESTROY_WITH_PARENT |
                                                           GTK_DIALOG_USE_HEADER_BAR,
-                                                          mime_type);
+                                                          nautilus_file_get_mime_type (data->file));
     heading = _("Password-protected archives are not yet supported. "
                 "This list contains apps that can open the archive.");
 

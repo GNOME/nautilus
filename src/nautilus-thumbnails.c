@@ -278,10 +278,9 @@ nautilus_can_thumbnail (NautilusFile *file)
     gboolean res;
     char *uri;
     time_t mtime;
-    char *mime_type;
+    const char *mime_type = nautilus_file_get_mime_type (file);
 
     uri = nautilus_file_get_uri (file);
-    mime_type = nautilus_file_get_mime_type (file);
     mtime = nautilus_file_get_mtime (file);
 
     factory = get_thumbnail_factory ();
@@ -289,7 +288,6 @@ nautilus_can_thumbnail (NautilusFile *file)
                                                          uri,
                                                          mime_type,
                                                          mtime);
-    g_free (mime_type);
     g_free (uri);
 
     return res;
@@ -307,7 +305,7 @@ nautilus_create_thumbnail (NautilusFile *file)
 
     info = g_new0 (NautilusThumbnailInfo, 1);
     info->image_uri = nautilus_file_get_uri (file);
-    info->mime_type = nautilus_file_get_mime_type (file);
+    info->mime_type = g_strdup (nautilus_file_get_mime_type (file));
     info->cancellable = g_cancellable_new ();
 
     /* Hopefully the NautilusFile will already have the image file mtime,

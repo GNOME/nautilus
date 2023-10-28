@@ -6800,7 +6800,7 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
     }
     if (attribute_q == attribute_mime_type_q)
     {
-        return nautilus_file_get_mime_type (file);
+        return g_strdup (nautilus_file_get_mime_type (file));
     }
     if (attribute_q == attribute_size_q)
     {
@@ -7632,9 +7632,7 @@ nautilus_file_is_user_special_directory (NautilusFile   *file,
 gboolean
 nautilus_file_is_archive (NautilusFile *file)
 {
-    g_autofree char *mime_type = NULL;
-
-    mime_type = nautilus_file_get_mime_type (file);
+    const char *mime_type = nautilus_file_get_mime_type (file);
 
     return autoar_check_mime_type_supported (mime_type);
 }
@@ -9031,7 +9029,7 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 static char *
 get_mime_type (NautilusFileInfo *file_info)
 {
-    return nautilus_file_get_mime_type (NAUTILUS_FILE (file_info));
+    return g_strdup (nautilus_file_get_mime_type (NAUTILUS_FILE (file_info)));
 }
 
 /**
@@ -9040,20 +9038,17 @@ get_mime_type (NautilusFileInfo *file_info)
  * Return this file's default mime type.
  * @file: NautilusFile representing the file in question.
  *
- * Returns: The mime type.
+ * Returns: (transfer none): The mime type.
  *
  **/
-char *
+const char *
 nautilus_file_get_mime_type (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (file->details->mime_type != NULL)
-    {
-        return g_strdup (file->details->mime_type);
-    }
-
-    return g_strdup ("application/octet-stream");
+    return file->details->mime_type != NULL ?
+           file->details->mime_type :
+           "application/octet-stream";
 }
 
 static gboolean
