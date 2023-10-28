@@ -8963,11 +8963,9 @@ get_uri (NautilusFileInfo *file_info)
 char *
 nautilus_file_get_uri (NautilusFile *file)
 {
-    g_autoptr (GFile) location = NULL;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    location = nautilus_file_get_location (file);
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
 
     return g_file_get_uri (location);
 }
@@ -9013,8 +9011,6 @@ get_uri_scheme (NautilusFileInfo *file_info)
 char *
 nautilus_file_get_uri_scheme (NautilusFile *file)
 {
-    g_autoptr (GFile) location = NULL;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     if (file->details->directory == NULL)
@@ -9022,7 +9018,8 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
         return NULL;
     }
 
-    location = nautilus_directory_get_location (file->details->directory);
+    g_autoptr (GFile) location = nautilus_directory_get_location (file->details->directory);
+
     if (location == NULL)
     {
         return NULL;
@@ -9244,11 +9241,9 @@ get_location (NautilusFileInfo *file_info)
 GFile *
 nautilus_file_get_location (NautilusFile *file)
 {
-    g_autoptr (GFile) location = NULL;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    location = nautilus_directory_get_location (file->details->directory);
+    g_autoptr (GFile) location = nautilus_directory_get_location (file->details->directory);
 
     if (nautilus_file_is_self_owned (file))
     {
@@ -9286,8 +9281,6 @@ get_parent_info (NautilusFileInfo *file_info)
 NautilusFile *
 nautilus_file_get_parent (NautilusFile *file)
 {
-    NautilusFile *parent_file;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     if (nautilus_file_is_self_owned (file))
@@ -9295,9 +9288,7 @@ nautilus_file_get_parent (NautilusFile *file)
         return NULL;
     }
 
-    parent_file = nautilus_directory_get_corresponding_file (file->details->directory);
-
-    return parent_file;
+    return nautilus_directory_get_corresponding_file (file->details->directory);
 }
 
 static GMount *
@@ -9311,12 +9302,7 @@ nautilus_file_get_mount (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (file->details->mount)
-    {
-        return g_object_ref (file->details->mount);
-    }
-
-    return NULL;
+    return (file->details->mount != NULL) ? g_object_ref (file->details->mount) : NULL;
 }
 
 static gboolean
