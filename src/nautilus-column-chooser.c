@@ -524,7 +524,7 @@ static void
 nautilus_column_chooser_constructed (GObject *object)
 {
     NautilusColumnChooser *chooser;
-    g_autofree gchar *name = NULL;
+    const char *name = NULL;
     g_auto (GStrv) file_visible_columns = NULL;
     g_auto (GStrv) file_column_order = NULL;
     gboolean has_custom_columns;
