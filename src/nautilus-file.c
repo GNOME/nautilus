@@ -8920,11 +8920,7 @@ nautilus_file_info_providers_done (NautilusFile *file)
 static gboolean
 is_gone (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_is_gone (file);
+    return nautilus_file_is_gone (NAUTILUS_FILE (file_info));
 }
 
 /**
@@ -8946,11 +8942,7 @@ nautilus_file_is_gone (NautilusFile *file)
 static char *
 get_name (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_name (file);
+    return nautilus_file_get_name (NAUTILUS_FILE (file_info));
 }
 
 char *
@@ -8964,11 +8956,7 @@ nautilus_file_get_name (NautilusFile *file)
 static char *
 get_uri (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_uri (file);
+    return nautilus_file_get_uri (NAUTILUS_FILE (file_info));
 }
 
 /* Return the actual uri associated with the passed-in file. */
@@ -8987,11 +8975,7 @@ nautilus_file_get_uri (NautilusFile *file)
 static char *
 get_parent_uri (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_parent_uri (file);
+    return nautilus_file_get_parent_uri (NAUTILUS_FILE (file_info));
 }
 
 /**
@@ -9023,11 +9007,7 @@ nautilus_file_get_parent_uri (NautilusFile *file)
 static char *
 get_uri_scheme (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_uri_scheme (file);
+    return nautilus_file_get_uri_scheme (NAUTILUS_FILE (file_info));
 }
 
 char *
@@ -9054,11 +9034,7 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 static char *
 get_mime_type (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_mime_type (file);
+    return nautilus_file_get_mime_type (NAUTILUS_FILE (file_info));
 }
 
 /**
@@ -9087,11 +9063,7 @@ static gboolean
 is_mime_type (NautilusFileInfo *file_info,
               const char       *mime_type)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_is_mime_type (file, mime_type);
+    return nautilus_file_is_mime_type (NAUTILUS_FILE (file_info), mime_type);
 }
 
 /**
@@ -9124,11 +9096,7 @@ nautilus_file_is_mime_type (NautilusFile *file,
 static gboolean
 is_directory (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_is_directory (file);
+    return nautilus_file_is_directory (NAUTILUS_FILE (file_info));
 }
 
 /**
@@ -9152,9 +9120,7 @@ static void
 add_emblem (NautilusFileInfo *file_info,
             const char       *emblem_name)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
+    NautilusFile *file = NAUTILUS_FILE (file_info);
 
     if (file->details->pending_info_providers)
     {
@@ -9174,11 +9140,7 @@ static char *
 get_string_attribute (NautilusFileInfo *file_info,
                       const char       *attribute_name)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_string_attribute (file, attribute_name);
+    return nautilus_file_get_string_attribute (NAUTILUS_FILE (file_info), attribute_name);
 }
 
 static void
@@ -9186,9 +9148,7 @@ add_string_attribute (NautilusFileInfo *file_info,
                       const char       *attribute_name,
                       const char       *value)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
+    NautilusFile *file = NAUTILUS_FILE (file_info);
 
     if (file->details->pending_info_providers != NULL)
     {
@@ -9224,9 +9184,7 @@ add_string_attribute (NautilusFileInfo *file_info,
 static void
 invalidate_extension_info (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
+    NautilusFile *file = NAUTILUS_FILE (file_info);
 
     nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO);
 }
@@ -9234,11 +9192,7 @@ invalidate_extension_info (NautilusFileInfo *file_info)
 static char *
 get_activation_uri (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_activation_uri (file);
+    return nautilus_file_get_activation_uri (NAUTILUS_FILE (file_info));
 }
 
 /* Return the uri associated with the passed-in file, which may not be
@@ -9261,11 +9215,7 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 static GFileType
 get_file_type (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_file_type (file);
+    return nautilus_file_get_file_type (NAUTILUS_FILE (file_info));
 }
 
 /**
@@ -9288,11 +9238,7 @@ nautilus_file_get_file_type (NautilusFile *file)
 static GFile *
 get_location (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_location (file);
+    return nautilus_file_get_location (NAUTILUS_FILE (file_info));
 }
 
 GFile *
@@ -9315,11 +9261,7 @@ nautilus_file_get_location (NautilusFile *file)
 static GFile *
 get_parent_location (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_parent_location (file);
+    return nautilus_file_get_parent_location (NAUTILUS_FILE (file_info));
 }
 
 GFile *
@@ -9338,11 +9280,7 @@ nautilus_file_get_parent_location (NautilusFile *file)
 static NautilusFileInfo *
 get_parent_info (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return NAUTILUS_FILE_INFO (nautilus_file_get_parent (file));
+    return NAUTILUS_FILE_INFO (nautilus_file_get_parent (NAUTILUS_FILE (file_info)));
 }
 
 NautilusFile *
@@ -9365,11 +9303,7 @@ nautilus_file_get_parent (NautilusFile *file)
 static GMount *
 get_mount (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_get_mount (file);
+    return nautilus_file_get_mount (NAUTILUS_FILE (file_info));
 }
 
 GMount *
@@ -9388,11 +9322,7 @@ nautilus_file_get_mount (NautilusFile *file)
 static gboolean
 can_write (NautilusFileInfo *file_info)
 {
-    NautilusFile *file;
-
-    file = NAUTILUS_FILE (file_info);
-
-    return nautilus_file_can_write (file);
+    return nautilus_file_can_write (NAUTILUS_FILE (file_info));
 }
 
 /**
