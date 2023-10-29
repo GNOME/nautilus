@@ -8,6 +8,26 @@ RUN dnf builddep -y glib \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/glib.git \
  && cd glib \
+ && meson setup _build -Dintrospection=disabled --prefix /usr \
+ && ninja -C _build \
+ && ninja install -C _build \
+ && cd .. \
+ && rm -rf glib
+
+RUN dnf builddep -y gobject-introspection \
+ && dnf clean all \
+ && git clone --depth 1 https://gitlab.gnome.org/GNOME/gobject-introspection.git \
+ && cd glib \
+ && meson setup _build --prefix /usr \
+ && ninja -C _build \
+ && ninja install -C _build \
+ && cd .. \
+ && rm -rf gobject-introspection
+
+RUN dnf builddep -y glib \
+ && dnf clean all \
+ && git clone --depth 1 https://gitlab.gnome.org/GNOME/glib.git \
+ && cd glib \
  && meson setup _build --prefix /usr \
  && ninja -C _build \
  && ninja install -C _build \
