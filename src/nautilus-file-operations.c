@@ -1621,7 +1621,7 @@ report_trash_progress (CommonJob    *job,
     double elapsed, transfer_rate;
     int remaining_time;
     gint64 now;
-    char *details;
+    g_autofree gchar *details = NULL;
     char *status;
     DeleteJob *delete_job;
 

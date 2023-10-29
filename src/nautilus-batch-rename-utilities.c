@@ -1055,6 +1055,18 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     g_autofree gchar *parent_uri = NULL;
     gchar *file_name_escaped;
 
+    connection = nautilus_tracker_get_miner_fs_connection (&error);
+    if (!connection)
+    {
+        if (error)
+        {
+            g_warning ("Error on batch rename tracker connection: %s", error->message);
+            g_error_free (error);
+        }
+
+        return;
+    }
+
     error = NULL;
     selection_metadata = NULL;
 
@@ -1120,18 +1132,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     selection_metadata = g_list_reverse (selection_metadata);
 
     g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?content))");
-
-    connection = nautilus_tracker_get_miner_fs_connection (&error);
-    if (!connection)
-    {
-        if (error)
-        {
-            g_warning ("Error on batch rename tracker connection: %s", error->message);
-            g_error_free (error);
-        }
-
-        return;
-    }
 
     query_data = g_new (QueryData, 1);
     query_data->date_order_hash_table = g_hash_table_new_full (g_str_hash,

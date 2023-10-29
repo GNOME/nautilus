@@ -5789,8 +5789,9 @@ nautilus_file_set_permissions (NautilusFile                  *file,
     if (!nautilus_file_undo_manager_is_operating ())
     {
         NautilusFileUndoInfo *undo_info;
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
 
-        undo_info = nautilus_file_undo_info_permissions_new (nautilus_file_get_location (file),
+        undo_info = nautilus_file_undo_info_permissions_new (location,
                                                              file->details->permissions,
                                                              new_permissions);
         nautilus_file_undo_manager_set_action (undo_info);
@@ -6151,12 +6152,13 @@ nautilus_file_set_owner (NautilusFile                  *file,
     if (!nautilus_file_undo_manager_is_operating ())
     {
         NautilusFileUndoInfo *undo_info;
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
         char *current_owner;
 
         current_owner = nautilus_file_get_owner_as_string (file, FALSE);
 
         undo_info = nautilus_file_undo_info_ownership_new (NAUTILUS_FILE_UNDO_OP_CHANGE_OWNER,
-                                                           nautilus_file_get_location (file),
+                                                           location,
                                                            current_owner,
                                                            user_name_or_id);
         nautilus_file_undo_manager_set_action (undo_info);
@@ -6465,10 +6467,11 @@ nautilus_file_set_group (NautilusFile                  *file,
     if (!nautilus_file_undo_manager_is_operating ())
     {
         NautilusFileUndoInfo *undo_info;
+        g_autoptr (GFile) location = nautilus_file_get_location (file);
         const char *current_group = nautilus_file_get_group_name (file);
 
         undo_info = nautilus_file_undo_info_ownership_new (NAUTILUS_FILE_UNDO_OP_CHANGE_GROUP,
-                                                           nautilus_file_get_location (file),
+                                                           location,
                                                            current_group,
                                                            group_name_or_id);
         nautilus_file_undo_manager_set_action (undo_info);

@@ -2449,6 +2449,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
     g_autofree char *common_prefix = NULL;
+    g_autofree char *uri = NULL;
     CompressCallbackData *data;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -2458,7 +2459,8 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
         return;
     }
 
-    containing_directory = nautilus_directory_get_by_uri (nautilus_files_view_get_backing_uri (view));
+    uri = nautilus_files_view_get_backing_uri (view);
+    containing_directory = nautilus_directory_get_by_uri (uri);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
@@ -6495,12 +6497,13 @@ extract_done (GList    *outputs,
         for (l = outputs; l != NULL; l = l->next)
         {
             gboolean acknowledged;
+            g_autoptr (NautilusFile) file = nautilus_file_get (l->data);
 
             acknowledged = g_hash_table_contains (data->added_locations,
                                                   l->data);
 
             g_hash_table_insert (priv->pending_reveal,
-                                 nautilus_file_get (l->data),
+                                 file,
                                  GUINT_TO_POINTER (acknowledged));
         }
     }
@@ -8165,7 +8168,7 @@ update_selection_menu (NautilusFilesView *view,
     gboolean item_opens_in_view;
     gchar *item_label;
     GAppInfo *app;
-    GIcon *app_icon;
+    g_autoptr (GIcon) app_icon = NULL;
     GMenuItem *menu_item;
     GObject *object;
     gboolean show_mount;
@@ -8235,7 +8238,6 @@ update_selection_menu (NautilusFilesView *view,
 
     item_label = NULL;
     app = NULL;
-    app_icon = NULL;
     if (show_app)
     {
         app = nautilus_mime_get_default_application_for_files (selection);

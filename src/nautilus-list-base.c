@@ -667,10 +667,9 @@ on_item_drop (GtkDropTarget *target,
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
     GdkDragAction actions;
-    GFile *target_location;
+    g_autoptr (GFile) target_location = nautilus_file_get_location (nautilus_view_item_get_file (item));
 
     actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
-    target_location = nautilus_file_get_location (nautilus_view_item_get_file (item));
 
     #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self))))
@@ -756,7 +755,7 @@ on_view_drop (GtkDropTarget *target,
     NautilusListBase *self = user_data;
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GdkDragAction actions;
-    GFile *target_location;
+    g_autoptr (GFile) target_location = NULL;
 
     if (priv->drag_view_action == 0)
     {

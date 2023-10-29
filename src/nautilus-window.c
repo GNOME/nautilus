@@ -1171,12 +1171,11 @@ nautilus_window_ensure_location_entry (NautilusWindow *window)
 static gchar *
 toast_undo_deleted_get_label (NautilusFileUndoInfo *undo_info)
 {
-    GList *files;
+    g_autoptr (GList) files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
     gchar *file_label;
     gchar *label;
     gint length;
 
-    files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
     length = g_list_length (files);
     if (length == 1)
     {

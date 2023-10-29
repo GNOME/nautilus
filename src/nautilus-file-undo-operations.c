@@ -1329,7 +1329,7 @@ nautilus_file_undo_info_batch_rename_set_data_pre (NautilusFileUndoInfoBatchRena
     {
         file = l->data;
 
-        old_name = g_string_new (g_file_get_basename (file));
+        old_name = g_string_new_take (g_file_get_basename (file));
 
         self->old_display_names = g_list_prepend (self->old_display_names, old_name);
     }
@@ -1352,7 +1352,7 @@ nautilus_file_undo_info_batch_rename_set_data_post (NautilusFileUndoInfoBatchRen
     {
         file = l->data;
 
-        new_name = g_string_new (g_file_get_basename (file));
+        new_name = g_string_new_take (g_file_get_basename (file));
 
         self->new_display_names = g_list_prepend (self->new_display_names, new_name);
     }

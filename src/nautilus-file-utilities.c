@@ -789,10 +789,9 @@ ensure_dirs_task_thread_func (GTask        *task,
     RestoreFilesData *data = task_data;
     NautilusFile *original_dir;
     GFile *original_dir_location;
-    GList *original_dirs, *l;
+    g_autoptr (GList) original_dirs = g_hash_table_get_keys (data->original_dirs_hash);
 
-    original_dirs = g_hash_table_get_keys (data->original_dirs_hash);
-    for (l = original_dirs; l != NULL; l = l->next)
+    for (GList *l = original_dirs; l != NULL; l = l->next)
     {
         original_dir = NAUTILUS_FILE (l->data);
         original_dir_location = nautilus_file_get_location (original_dir);
