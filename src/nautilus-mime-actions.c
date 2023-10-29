@@ -450,7 +450,7 @@ nautilus_mime_get_default_application_for_files (GList *files)
 {
     GList *l, *sorted_files;
     NautilusFile *file;
-    GAppInfo *app, *one_app;
+    GAppInfo *app = NULL;
 
     g_assert (files != NULL);
 
@@ -464,7 +464,6 @@ nautilus_mime_get_default_application_for_files (GList *files)
 
     sorted_files = g_list_sort (g_list_copy (files), (GCompareFunc) file_compare_by_mime_type);
 
-    app = NULL;
     for (l = sorted_files; l != NULL; l = l->next)
     {
         file = l->data;
@@ -476,28 +475,17 @@ nautilus_mime_get_default_application_for_files (GList *files)
             continue;
         }
 
-        one_app = nautilus_mime_get_default_application_for_file (file);
+        g_autoptr (GAppInfo) one_app = nautilus_mime_get_default_application_for_file (file);
+
         if (one_app == NULL || (app != NULL && !g_app_info_equal (app, one_app)))
         {
-            if (app)
-            {
-                g_object_unref (app);
-            }
-            if (one_app)
-            {
-                g_object_unref (one_app);
-            }
-            app = NULL;
+            g_clear_object (&app);
             break;
         }
 
         if (app == NULL)
         {
-            app = one_app;
-        }
-        else
-        {
-            g_object_unref (one_app);
+            app = g_steal_pointer (&one_app);
         }
     }
 

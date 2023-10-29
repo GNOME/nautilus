@@ -1043,7 +1043,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                               GCancellable              *cancellable)
 {
     TrackerSparqlConnection *connection;
-    GString *query;
+    g_autoptr (GString) query = NULL;
     GList *l;
     NautilusFile *file;
     GError *error;
@@ -1152,8 +1152,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                                            cancellable,
                                            batch_rename_dialog_query_callback,
                                            query_data);
-
-    g_string_free (query, TRUE);
 }
 
 GList *
