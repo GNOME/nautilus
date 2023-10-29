@@ -160,7 +160,6 @@ conf.set_quoted('PROFILE', profile)
 conf.set_quoted('VERSION', version_string)
 
 conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
-conf.set('ENABLE_PROFILING', get_option('profiling'))
 conf.set('HAVE_SELINUX', get_option('selinux'))
 conf.set('HAVE_CLOUDPROVIDERS', get_option('cloudproviders'))
 
