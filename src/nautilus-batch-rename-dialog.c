@@ -112,7 +112,7 @@ typedef struct
 static void     update_display_text (NautilusBatchRenameDialog *dialog);
 static void     cancel_conflict_check (NautilusBatchRenameDialog *self);
 
-G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, ADW_TYPE_WINDOW);
 
 static void
 change_numbering_order (GSimpleAction *action,
@@ -603,23 +603,15 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 }
 
 static void
-batch_rename_dialog_on_response (NautilusBatchRenameDialog *dialog,
-                                 gint                       response_id,
-                                 gpointer                   user_data)
+batch_rename_dialog_on_cancel (NautilusBatchRenameDialog *dialog,
+                               gpointer                   user_data)
 {
-    if (response_id == GTK_RESPONSE_OK)
+    if (dialog->directories_pending_conflict_check != NULL)
     {
-        prepare_batch_rename (dialog);
+        cancel_conflict_check (dialog);
     }
-    else
-    {
-        if (dialog->directories_pending_conflict_check != NULL)
-        {
-            cancel_conflict_check (dialog);
-        }
 
-        gtk_window_destroy (GTK_WINDOW (dialog));
-    }
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -1815,7 +1807,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-batch-rename-dialog.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, grid);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, cancel_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, original_name_listbox);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, arrow_listbox);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, result_listbox);
@@ -1841,7 +1832,8 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_mode_changed);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_up);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_down);
-    gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_response);
+    gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_cancel);
+    gtk_widget_class_bind_template_callback (widget_class, prepare_batch_rename);
 }
 
 GtkWidget *
@@ -1855,7 +1847,7 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     gboolean all_targets_are_folders;
     gboolean all_targets_are_regular_files;
 
-    dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, "use-header-bar", TRUE, NULL);
+    dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, NULL);
 
     dialog->selection = nautilus_file_list_copy (selection);
     dialog->directory = nautilus_directory_ref (directory);
