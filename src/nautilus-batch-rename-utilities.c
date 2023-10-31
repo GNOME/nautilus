@@ -19,6 +19,7 @@
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
 #include "nautilus-file.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-tracker-utilities.h"
 
 #include <glib.h>
@@ -357,16 +358,10 @@ batch_rename_format (NautilusFile *file,
     gboolean added_tag;
     MetadataType metadata_type;
     const char *file_name;
-    g_autofree gchar *extension = NULL;
     gint i;
     gchar *metadata;
 
     file_name = nautilus_file_get_display_name (file);
-    if (!nautilus_file_is_directory (file))
-    {
-        extension = nautilus_file_get_extension (file);
-    }
-
     new_name = g_string_new ("");
 
     for (l = text_chunks; l != NULL; l = l->next)
@@ -483,10 +478,12 @@ batch_rename_format (NautilusFile *file,
     {
         new_name = g_string_append (new_name, file_name);
     }
-    else
+    else if (!nautilus_file_is_directory (file))
     {
-        if (extension != NULL)
+        g_autofree char *name = nautilus_file_get_name (file);
+        if (name != NULL)
         {
+            const char *extension = nautilus_filename_get_extension (name);
             new_name = g_string_append (new_name, extension);
         }
     }

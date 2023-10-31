@@ -9,6 +9,9 @@
 #include <glib.h>
 
 
+const char *
+nautilus_filename_get_extension (const char *filename);
+
 gboolean
 nautilus_filename_shorten_base (char       **filename,
                                 const char  *base,

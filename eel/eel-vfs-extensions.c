@@ -45,7 +45,7 @@
  *                                      the dot and extension, or %NULL if there
  *                                      is no extension.
  */
-char *
+static char *
 eel_filename_get_extension_offset (const char *filename)
 {
     char *end, *end2;

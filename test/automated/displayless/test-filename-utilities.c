@@ -3,6 +3,36 @@
 #include <nautilus-filename-utilities.h>
 
 
+static void
+test_filename_extension (void)
+{
+    g_assert_cmpstr (nautilus_filename_get_extension ("abc"), ==, "");
+    g_assert_cmpstr (nautilus_filename_get_extension ("abcdef"), ==, "");
+    g_assert_cmpstr (nautilus_filename_get_extension ("abc.def"), ==, ".def");
+    g_assert_cmpstr (nautilus_filename_get_extension ("abc.def ghi"), ==, "");
+    g_assert_cmpstr (nautilus_filename_get_extension ("abc.def.ghi"), ==, ".ghi");
+}
+
+static void
+test_filename_extension_end_position (void)
+{
+    const char *filename_with_ext = "abc.def.ghi";
+    const char *extension = nautilus_filename_get_extension (filename_with_ext);
+    g_assert_true (extension == filename_with_ext + strlen ("abc.def"));
+
+    const char *filename_without_ext = "abcdefghi";
+    const char *non_extension = nautilus_filename_get_extension (filename_without_ext);
+    g_assert_true (non_extension == filename_without_ext + strlen (filename_without_ext));
+}
+
+static void
+test_filename_extension_with_tar (void)
+{
+    g_assert_cmpstr (nautilus_filename_get_extension ("abc.gz"), ==, ".gz");
+    g_assert_cmpstr (nautilus_filename_get_extension ("abc.def.gz"), ==, ".gz");
+    g_assert_cmpstr (nautilus_filename_get_extension ("abc.tar.gz"), ==, ".tar.gz");
+}
+
 static const char *long_base = "great-text-but-sadly-too-long";
 static const char *short_base = "great-text";
 static const char *suffix = "-123456789";
@@ -50,6 +80,12 @@ main (int   argc,
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
 
+    g_test_add_func ("/filename-extension/default",
+                     test_filename_extension);
+    g_test_add_func ("/filename-extension/end-position",
+                     test_filename_extension_end_position);
+    g_test_add_func ("/filename-extension/tar",
+                     test_filename_extension_with_tar);
     g_test_add_func ("/file-name-shortening-with-base/needed",
                      test_filename_shortening_with_base);
     g_test_add_func ("/file-name-shortening-with-base/not-needed",

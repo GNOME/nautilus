@@ -11,6 +11,55 @@
 
 
 /**
+ * nautilus_filename_get_extension:
+ * @filename: a null-terminated file name.
+ *
+ * Returns: (transfer none): A pointer, to the dot of the extension substring, or
+ *                           the null-terminating position if there is no extension.
+ */
+const char *
+nautilus_filename_get_extension (const char *filename)
+{
+    g_assert (filename != NULL);
+
+    if (filename[0] == '\0')
+    {
+        return filename;
+    }
+
+    /* basename must have at least one char */
+    const char *start = g_utf8_next_char (filename);
+    size_t search_length = strlen (start);
+    gchar *extension = g_utf8_strrchr (start, search_length, '.');
+
+    if (extension == NULL || *g_utf8_next_char (extension) == '\0')
+    {
+        return start + search_length;
+    }
+
+    /** Make sure there are no whitespaces in found extension */
+    for (const char *c = extension; *c != '\0'; c = g_utf8_next_char (c))
+    {
+        if (g_unichar_isspace (g_utf8_get_char (c)))
+        {
+            return start + search_length;
+        }
+    }
+
+    /* Special case .tar extensions.
+     * This will also catch .tar.jpg, but such cases seem contrived and this
+     * is better than maintaing a list of all possible .tar extensions. */
+    size_t tar_extension_length = strlen (".tar");
+    if (extension - filename > tar_extension_length &&
+        strncmp (extension - tar_extension_length, ".tar", tar_extension_length) == 0)
+    {
+        return extension - tar_extension_length;
+    }
+
+    return extension;
+}
+
+/**
  * nautilus_filename_shorten_base:
  * @filename: (inout): Pointer to a filename that is to be shortened
  * @base: a base from which @filename was constructed

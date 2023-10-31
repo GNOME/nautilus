@@ -28,7 +28,6 @@
 
 #include <eel/eel-debug.h>
 #include <eel/eel-string.h>
-#include <eel/eel-vfs-extensions.h>
 #include <gdesktop-enums.h>
 #include <gio/gio.h>
 #include <glib.h>
@@ -59,6 +58,7 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -7463,22 +7463,6 @@ nautilus_file_is_mime_type (NautilusFile *file,
     g_return_val_if_fail (mime_type != NULL, FALSE);
 
     return nautilus_file_info_is_mime_type (NAUTILUS_FILE_INFO (file), mime_type);
-}
-
-char *
-nautilus_file_get_extension (NautilusFile *file)
-{
-    char *name;
-    char *extension = NULL;
-
-    name = nautilus_file_get_name (file);
-    if (name != NULL)
-    {
-        extension = g_strdup (eel_filename_get_extension_offset (name));
-        g_free (name);
-    }
-
-    return extension;
 }
 
 gboolean

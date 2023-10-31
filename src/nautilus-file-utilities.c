@@ -23,6 +23,7 @@
 #include "nautilus-file-utilities.h"
 
 #include "nautilus-application.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -529,7 +530,7 @@ nautilus_generate_unique_file_in_directory (GFile      *directory,
     g_return_val_if_fail (g_file_query_exists (directory, NULL), NULL);
 
     basename_without_extension = eel_filename_strip_extension (basename);
-    extension = eel_filename_get_extension_offset (basename);
+    extension = nautilus_filename_get_extension (basename);
 
     child = g_file_get_child (directory, basename);
 
@@ -543,7 +544,7 @@ nautilus_generate_unique_file_in_directory (GFile      *directory,
         filename = g_strdup_printf ("%s (%d)%s",
                                     basename_without_extension,
                                     copy,
-                                    extension ? extension : "");
+                                    extension);
         child = g_file_get_child (directory, filename);
 
         copy++;

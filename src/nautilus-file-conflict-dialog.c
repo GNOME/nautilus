@@ -30,6 +30,7 @@
 #include <eel/eel-vfs-extensions.h>
 
 #include "nautilus-file.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-operations-ui-manager.h"
 
@@ -173,17 +174,7 @@ entry_text_changed_cb (GtkEditable                *entry,
 static int
 get_character_position_after_basename (const gchar *filename)
 {
-    const gchar *extension;
-
-    extension = eel_filename_get_extension_offset (filename);
-
-    if (extension == NULL)
-    {
-        /* If the filename has got no extension, we want the position of the
-         * the terminating null. */
-        return (int) g_utf8_strlen (filename, -1);
-    }
-
+    const gchar *extension = nautilus_filename_get_extension (filename);
     return g_utf8_pointer_to_offset (filename, extension);
 }
 
