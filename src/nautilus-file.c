@@ -9183,7 +9183,7 @@ nautilus_file_get_location (NautilusFile *file)
 
     if (nautilus_file_is_self_owned (file))
     {
-        return g_object_ref (location);
+        return g_steal_pointer (&location);
     }
 
     return g_file_get_child (location, file->details->name);
