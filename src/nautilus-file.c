@@ -8940,15 +8940,15 @@ nautilus_file_is_gone (NautilusFile *file)
 static char *
 get_name (NautilusFileInfo *file_info)
 {
-    return nautilus_file_get_name (NAUTILUS_FILE (file_info));
+    return g_strdup (nautilus_file_get_name (NAUTILUS_FILE (file_info)));
 }
 
-char *
+const char *
 nautilus_file_get_name (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return g_strdup (file->details->name);
+    return file->details->name;
 }
 
 static char *

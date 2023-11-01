@@ -156,7 +156,7 @@ void                    nautilus_file_invalidate_all_attributes         (Nautilu
 gboolean                nautilus_file_contains_text                     (NautilusFile                   *file);
 const char *            nautilus_file_get_display_name                  (NautilusFile                   *file);
 char *                  nautilus_file_get_edit_name                     (NautilusFile                   *file);
-char *                  nautilus_file_get_name                          (NautilusFile                   *file);
+const char *            nautilus_file_get_name                          (NautilusFile                   *file);
 GFile *                 nautilus_file_get_location                      (NautilusFile                   *file);
 char *			 nautilus_file_get_description			 (NautilusFile			 *file);
 char *                  nautilus_file_get_uri                           (NautilusFile                   *file);

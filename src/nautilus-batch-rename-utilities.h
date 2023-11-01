@@ -57,7 +57,7 @@ gboolean file_name_conflicts_with_results       (GList        *selection,
                                                  GString      *old_name,
                                                  gchar        *parent_uri);
 
-GString* batch_rename_replace_label_text        (gchar             *label,
+GString* batch_rename_replace_label_text        (const char        *label,
                                                  const gchar       *substr);
 
 gchar*   batch_rename_get_tag_text_representation (TagConstants tag_constants);

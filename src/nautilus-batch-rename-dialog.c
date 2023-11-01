@@ -620,9 +620,6 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
     GtkWidget *row_child;
     GList *l1;
     GList *l2;
-    NautilusFile *file;
-    GString *new_name;
-    gchar *name;
     GtkTextDirection text_direction;
 
     gtk_size_group_add_widget (dialog->size_group, dialog->result_listbox);
@@ -632,10 +629,9 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
 
     for (l1 = dialog->new_names, l2 = dialog->selection; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
-        file = NAUTILUS_FILE (l2->data);
-        new_name = l1->data;
+        const char *name = nautilus_file_get_name (NAUTILUS_FILE (l2->data));
+        GString *new_name = l1->data;
 
-        name = nautilus_file_get_name (file);
         row_child = create_original_name_label (dialog, name);
         gtk_list_box_insert (GTK_LIST_BOX (dialog->original_name_listbox), row_child, -1);
 
@@ -644,8 +640,6 @@ fill_display_listbox (NautilusBatchRenameDialog *dialog)
 
         row_child = create_result_label (dialog, new_name->str);
         gtk_list_box_insert (GTK_LIST_BOX (dialog->result_listbox), row_child, -1);
-
-        g_free (name);
     }
 
     dialog->listbox_labels_old = g_list_reverse (dialog->listbox_labels_old);
@@ -813,15 +807,12 @@ update_listbox (NautilusBatchRenameDialog *dialog)
 {
     GList *l1;
     GList *l2;
-    NautilusFile *file;
-    gchar *old_name;
-    GtkLabel *label;
     GString *new_name;
     gboolean empty_name = FALSE;
 
     for (l1 = dialog->new_names, l2 = dialog->listbox_labels_new; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
-        label = GTK_LABEL (l2->data);
+        GtkLabel *label = GTK_LABEL (l2->data);
         new_name = l1->data;
 
         gtk_label_set_label (label, new_name->str);
@@ -835,10 +826,9 @@ update_listbox (NautilusBatchRenameDialog *dialog)
 
     for (l1 = dialog->selection, l2 = dialog->listbox_labels_old; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
-        label = GTK_LABEL (l2->data);
-        file = NAUTILUS_FILE (l1->data);
+        GtkLabel *label = GTK_LABEL (l2->data);
+        const char *old_name = nautilus_file_get_name (NAUTILUS_FILE (l1->data));
 
-        old_name = nautilus_file_get_name (file);
         gtk_widget_set_tooltip_text (GTK_WIDGET (label), old_name);
 
         if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
@@ -853,8 +843,6 @@ update_listbox (NautilusBatchRenameDialog *dialog)
 
             g_string_free (new_name, TRUE);
         }
-
-        g_free (old_name);
     }
 
     update_rows_height (dialog);
@@ -922,9 +910,6 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
 {
     gchar *current_directory;
     gchar *parent_uri;
-    gchar *name;
-    NautilusFile *file;
-    GString *new_name;
     GString *file_name;
     GList *l1, *l2;
     GHashTable *directory_files_table;
@@ -957,8 +942,8 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
          l1 != NULL && l2 != NULL;
          l1 = l1->next, l2 = l2->next)
     {
-        new_name = l1->data;
-        file = NAUTILUS_FILE (l2->data);
+        GString *new_name = l1->data;
+        NautilusFile *file = NAUTILUS_FILE (l2->data);
         parent_uri = nautilus_file_get_parent_uri (file);
 
         tag_present = g_hash_table_lookup (new_names_table, new_name->str) != NULL;
@@ -985,23 +970,20 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
 
     for (l1 = files; l1 != NULL; l1 = l1->next)
     {
-        file = NAUTILUS_FILE (l1->data);
+        NautilusFile *file = NAUTILUS_FILE (l1->data);
         g_hash_table_insert (directory_files_table,
-                             nautilus_file_get_name (file),
+                             g_strdup (nautilus_file_get_name (file)),
                              GINT_TO_POINTER (TRUE));
     }
 
     for (l1 = dialog->selection, l2 = dialog->new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
-        file = NAUTILUS_FILE (l1->data);
+        NautilusFile *file = NAUTILUS_FILE (l1->data);
+        GString *new_name = l2->data;
 
-        name = nautilus_file_get_name (file);
-        file_name = g_string_new (name);
-        g_free (name);
+        file_name = g_string_new (nautilus_file_get_name (file));
 
         parent_uri = nautilus_file_get_parent_uri (file);
-
-        new_name = l2->data;
 
         have_conflict = FALSE;
 

@@ -852,25 +852,22 @@ add_to_hash_table (NautilusDirectory *directory,
                    NautilusFile      *file,
                    GList             *node)
 {
-    gchar *name;
-
-    name = nautilus_file_get_name (file);
+    const char *name = nautilus_file_get_name (file);
 
     g_assert (name != NULL);
     g_assert (node != NULL);
     g_assert (g_hash_table_lookup (directory->details->file_hash,
                                    name) == NULL);
-    g_hash_table_insert (directory->details->file_hash, name, node);
+    g_hash_table_insert (directory->details->file_hash, g_strdup (name), node);
 }
 
 static GList *
 extract_from_hash_table (NautilusDirectory *directory,
                          NautilusFile      *file)
 {
-    g_autofree gchar *name = NULL;
+    const char *name = nautilus_file_get_name (file);
     GList *node;
 
-    name = nautilus_file_get_name (file);
     if (name == NULL)
     {
         return NULL;

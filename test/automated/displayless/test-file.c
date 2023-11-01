@@ -26,7 +26,7 @@ static void
 test_file_check_name_bland (void)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home");
-    g_autofree char *name = nautilus_file_get_name (file);
+    const char *name = nautilus_file_get_name (file);
     g_assert_cmpstr (name, ==, "home");
 }
 
@@ -34,7 +34,7 @@ static void
 test_file_check_name_trailing_slash (void)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get_by_uri ("file:///home/");
-    g_autofree char *name = nautilus_file_get_name (file);
+    const char *name = nautilus_file_get_name (file);
     g_assert_cmpstr (name, ==, "home");
 }
 
