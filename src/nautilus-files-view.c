@@ -1835,49 +1835,25 @@ action_popup_menu (GSimpleAction *action,
 }
 
 static void
-pattern_select_response_cb (GtkWidget *dialog,
-                            int        response,
-                            gpointer   user_data)
+pattern_select_response_select (AdwWindow *dialog,
+                                gpointer   user_data)
 {
     NautilusFilesView *view;
     NautilusDirectory *directory;
     GtkWidget *entry;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
 
-    view = NAUTILUS_FILES_VIEW (user_data);
+    view = g_object_get_data (G_OBJECT (dialog), "view");
+    entry = g_object_get_data (G_OBJECT (dialog), "entry");
 
-    switch (response)
-    {
-        case GTK_RESPONSE_OK:
-        {
-            entry = g_object_get_data (G_OBJECT (dialog), "entry");
-            directory = nautilus_files_view_get_directory (view);
-            selection = nautilus_directory_match_pattern (directory,
-                                                          gtk_editable_get_text (GTK_EDITABLE (entry)));
+    directory = nautilus_files_view_get_directory (view);
+    selection = nautilus_directory_match_pattern (directory,
+                                                  gtk_editable_get_text (GTK_EDITABLE (entry)));
 
-            nautilus_files_view_call_set_selection (view, selection);
-            nautilus_files_view_reveal_selection (view);
+    nautilus_files_view_call_set_selection (view, selection);
+    nautilus_files_view_reveal_selection (view);
 
-            if (selection)
-            {
-                nautilus_file_list_free (selection);
-            }
-            /* fall through */
-        }
-
-        case GTK_RESPONSE_NONE:
-        case GTK_RESPONSE_DELETE_EVENT:
-        case GTK_RESPONSE_CANCEL:
-        {
-            gtk_window_destroy (GTK_WINDOW (dialog));
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-    }
+    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -1887,7 +1863,7 @@ select_pattern (NautilusFilesView *view)
     GtkWidget *dialog;
     NautilusWindow *window;
     GtkWidget *example;
-    GtkWidget *entry;
+    GtkWidget *entry, *select_button;
     char *example_pattern;
 
     window = nautilus_files_view_get_window (view);
@@ -1903,11 +1879,14 @@ select_pattern (NautilusFilesView *view)
     gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
     entry = GTK_WIDGET (gtk_builder_get_object (builder, "pattern_entry"));
+    select_button = GTK_WIDGET (gtk_builder_get_object (builder, "select_button"));
 
     g_object_set_data (G_OBJECT (dialog), "entry", entry);
-    g_signal_connect (dialog, "response",
-                      G_CALLBACK (pattern_select_response_cb),
-                      view);
+    g_object_set_data (G_OBJECT (dialog), "view", view);
+    g_signal_connect_swapped (select_button, "clicked",
+                              G_CALLBACK (pattern_select_response_select),
+                              dialog);
+
     gtk_window_present (GTK_WINDOW (dialog));
 }
 
