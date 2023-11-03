@@ -2201,6 +2201,34 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
                            scroll_pos);
 }
 
+void
+nautilus_window_slot_try_navigate_down (NautilusWindowSlot *self)
+{
+    /* Can't move down without history */
+    if (self->back_list == NULL)
+    {
+        return;
+    }
+
+    NautilusBookmark *bookmark = self->back_list->data;
+    g_autoptr (GFile) back_location = nautilus_bookmark_get_location (bookmark);
+    GFile *current_location = nautilus_window_slot_get_location (self);
+
+    /* Can only navigate down if current location is parent of previous location */
+    if (!g_file_has_parent (back_location, current_location))
+    {
+        return;
+    }
+
+    g_autofree char *scroll_pos = nautilus_bookmark_get_scroll_pos (bookmark);
+    begin_location_change (self,
+                           back_location, current_location,
+                           NULL,
+                           NAUTILUS_LOCATION_CHANGE_BACK,
+                           0,
+                           scroll_pos);
+}
+
 /* reload the contents of the window */
 static void
 nautilus_window_slot_force_reload (NautilusWindowSlot *self)
