@@ -3245,29 +3245,30 @@ set_recursive_permissions_done (gboolean success,
 }
 
 static void
-on_change_permissions_response (GtkDialog                *dialog,
-                                int                       response,
-                                NautilusPropertiesWindow *self)
+on_change_permissions_response_cancel (AdwWindow *dialog,
+                                       gpointer   user_data)
 {
-    guint32 file_permission, file_permission_mask;
-    guint32 dir_permission, dir_permission_mask;
+    NautilusPropertiesWindow *self =
+        NAUTILUS_PROPERTIES_WINDOW (gtk_window_get_transient_for (GTK_WINDOW (dialog)));
+
+    g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
+    gtk_window_destroy (GTK_WINDOW (dialog));
+}
+
+static void
+on_change_permissions_response_change (AdwWindow *dialog,
+                                       gpointer   user_data)
+{
+    NautilusPropertiesWindow *self =
+        NAUTILUS_PROPERTIES_WINDOW (gtk_window_get_transient_for (GTK_WINDOW (dialog)));
+
+    guint32 file_permission = 0, file_permission_mask = 0;
+    guint32 dir_permission = 0, dir_permission_mask = 0;
     guint32 vfs_mask, vfs_new_perm;
     FilterType filter_type;
     GList *l;
     PermissionType type;
     int mask;
-
-    if (response != GTK_RESPONSE_OK)
-    {
-        g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
-        gtk_window_destroy (GTK_WINDOW (dialog));
-        return;
-    }
-
-    file_permission = 0;
-    file_permission_mask = 0;
-    dir_permission = 0;
-    dir_permission_mask = 0;
 
     /* Simple mode, minus exec checkbox */
     for (l = self->change_permission_drop_downs; l != NULL; l = l->next)
@@ -3440,12 +3441,25 @@ set_active_from_umask (GtkDropDown    *drop_down,
     }
 }
 
+static gboolean
+on_change_permissions_close (GtkWidget *widget,
+                             GVariant  *args,
+                             gpointer   user_data)
+{
+    on_change_permissions_response_cancel (ADW_WINDOW (user_data), widget);
+
+    return TRUE;
+}
+
 static void
 on_change_permissions_clicked (GtkWidget                *button,
                                NautilusPropertiesWindow *self)
 {
     GtkWidget *dialog;
     GtkDropDown *drop_down;
+    GtkButton *cancel_button, *change_button;
+    GtkShortcut *esc_shortcut;
+    GtkShortcutAction *cb_action;
     g_autoptr (GtkBuilder) change_permissions_builder = NULL;
 
     change_permissions_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-file-properties-change-permissions.ui");
@@ -3492,7 +3506,21 @@ on_change_permissions_clicked (GtkWidget                *button,
                                                          drop_down);
     set_active_from_umask (drop_down, PERMISSION_OTHER, FOLDERS_ONLY);
 
-    g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), self);
+    cancel_button = GTK_BUTTON (gtk_builder_get_object (change_permissions_builder, "cancel_button"));
+    change_button = GTK_BUTTON (gtk_builder_get_object (change_permissions_builder, "change_button"));
+
+    g_signal_connect_swapped (cancel_button, "clicked",
+                              G_CALLBACK (on_change_permissions_response_cancel),
+                              dialog);
+    g_signal_connect_swapped (change_button, "clicked",
+                              G_CALLBACK (on_change_permissions_response_change),
+                              dialog);
+
+    esc_shortcut = GTK_SHORTCUT (gtk_builder_get_object (change_permissions_builder, "esc_shortcut"));
+    cb_action = gtk_callback_action_new ((GtkShortcutFunc) on_change_permissions_close,
+                                         dialog, NULL);
+    gtk_shortcut_set_action (esc_shortcut, cb_action);
+
     gtk_window_present (GTK_WINDOW (dialog));
 }
 
