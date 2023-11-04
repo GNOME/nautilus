@@ -84,6 +84,47 @@ enum
 static GParamSpec *properties [LAST_PROP];
 
 static void
+dummy_callback (NautilusFile *file,
+                gpointer      callback_data)
+{
+  /* No-op. Just a tag for nautilus_file_cancel_call_when_ready() to match. */
+}
+
+static void
+on_file_changed (NautilusGtkSidebarRow *self)
+{
+  g_return_if_fail (NAUTILUS_IS_GTK_SIDEBAR_ROW (self));
+  g_return_if_fail (NAUTILUS_IS_FILE (self->file));
+  if (nautilus_file_is_gone (self->file))
+    {
+      nautilus_file_cancel_call_when_ready (self->file, dummy_callback, NULL);
+      g_clear_object (&self->file);
+    }
+}
+
+static void
+ensure_connected_file (NautilusGtkSidebarRow *self)
+{
+  if (self->file != NULL)
+    return;
+
+  if (self->uri != NULL)
+    {
+      g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (self->uri);
+
+      /* Self-owned file may be marked as gone, if we are rebuilding the sidebar
+       * in response to that file being unmounted. Don't keep it alive. */
+      if (file == NULL || nautilus_file_is_gone (file))
+        return;
+
+      self->file = g_steal_pointer (&file);
+      nautilus_file_call_when_ready (self->file, NAUTILUS_FILE_ATTRIBUTE_MOUNT, dummy_callback, NULL);
+      g_signal_connect_object (self->file, "changed",
+                               G_CALLBACK (on_file_changed), self, G_CONNECT_SWAPPED);
+    }
+}
+
+static void
 cloud_row_update (NautilusGtkSidebarRow *self)
 {
   CloudProvidersAccount *account;
@@ -179,6 +220,7 @@ nautilus_gtk_sidebar_row_get_property (GObject    *object,
       break;
 
     case PROP_NAUTILUS_FILE:
+      ensure_connected_file (self);
       g_value_set_object (value, self->file);
       break;
 
@@ -301,12 +343,7 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
     case PROP_URI:
       g_free (self->uri);
       self->uri = g_strdup (g_value_get_string (value));
-      if (self->uri != NULL)
-        {
-          self->file = nautilus_file_get_by_uri (self->uri);
-          if (self->file != NULL)
-            nautilus_file_call_when_ready (self->file, NAUTILUS_FILE_ATTRIBUTE_MOUNT, NULL, NULL);
-        }
+      ensure_connected_file (self);
       break;
 
     case PROP_DRIVE:
