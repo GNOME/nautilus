@@ -35,7 +35,6 @@ update_icon (NautilusGridCell *self)
     NautilusFile *file;
     guint icon_size;
     gint scale_factor;
-    g_autofree gchar *thumbnail_path = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
@@ -50,8 +49,7 @@ update_icon (NautilusGridCell *self)
     /* Set the same height and width for all icons regardless of aspect ratio.
      */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
-    thumbnail_path = nautilus_file_get_thumbnail_path (file);
-    if (thumbnail_path != NULL &&
+    if (nautilus_file_get_thumbnail_path (file) != NULL &&
         nautilus_file_should_show_thumbnail (file))
     {
         gtk_widget_add_css_class (self->icon, "thumbnail");

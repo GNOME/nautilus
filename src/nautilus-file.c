@@ -4848,10 +4848,10 @@ out:
     return icon;
 }
 
-char *
+const char *
 nautilus_file_get_thumbnail_path (NautilusFile *file)
 {
-    return g_strdup (file->details->thumbnail_path);
+    return file->details->thumbnail_path;
 }
 
 static NautilusIconInfo *

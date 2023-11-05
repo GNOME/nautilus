@@ -135,7 +135,6 @@ update_icon (NautilusNameCell *self)
     gint scale_factor;
     int icon_height;
     int extra_margin;
-    g_autofree gchar *thumbnail_path = NULL;
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
@@ -164,9 +163,8 @@ update_icon (NautilusNameCell *self)
     gtk_widget_set_margin_top (self->fixed_height_box, extra_margin);
     gtk_widget_set_margin_bottom (self->fixed_height_box, extra_margin);
 
-    thumbnail_path = nautilus_file_get_thumbnail_path (file);
     if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
-        thumbnail_path != NULL &&
+        nautilus_file_get_thumbnail_path (file) != NULL &&
         nautilus_file_should_show_thumbnail (file))
     {
         gtk_widget_add_css_class (self->icon, "thumbnail");

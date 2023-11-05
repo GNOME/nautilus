@@ -624,7 +624,6 @@ result_list_attributes_ready_cb (GList    *file_list,
     gchar *uri;
     const char *display_name;
     gchar *path, *description;
-    gchar *thumbnail_path;
     GIcon *gicon;
     GFile *location;
     GVariant *meta_variant;
@@ -655,14 +654,13 @@ result_list_attributes_ready_cb (GList    *file_list,
                                "description", g_variant_new_string (description ? description : uri));
 
         gicon = NULL;
-        thumbnail_path = nautilus_file_get_thumbnail_path (file);
 
+        const char *thumbnail_path = nautilus_file_get_thumbnail_path (file);
         if (thumbnail_path != NULL)
         {
             location = g_file_new_for_path (thumbnail_path);
             gicon = g_file_icon_new (location);
 
-            g_free (thumbnail_path);
             g_object_unref (location);
         }
         else
