@@ -15,26 +15,26 @@
 #include <eel/eel-vfs-extensions.h>
 
 
-/* Translators: This is appended to a file name when a copy of a file is created. */
-#define COPY_APPENDIX_FIRST_COPY _("Copy")
-/* Translators: This is appended to a file name when a copy of an already copied file is created.
- * `%ld` will be replaced with the how manyth copy number this is. */
-#define  COPY_APPENDIX_NTH_COPY _("Copy %ld")
+typedef gboolean (* AppendixParser) (const char *appendix,
+                                     size_t      appendix_len,
+                                     size_t     *count);
 
 /**
- * parse_previous_duplicate_name:
+ * parse_previous_name:
  * @name: Name of the original file
  * @extensionless_length: Length of @name when without an extension
+ * @parser_func: Function to parse a detected appendix with.
  * @base_length: (out): Length of the file name without any duplication appendices.
  * @count: (out): The how manyth duplicate the parsed file name represents.
  *
  * Parses a file name to see if it was created as a duplicate of another file.
  */
 static void
-parse_previous_duplicate_name (const char *name,
-                               size_t      extensionless_length,
-                               size_t     *base_length,
-                               size_t     *count)
+parse_previous_name (const char     *name,
+                     size_t          extensionless_length,
+                     AppendixParser  parser_func,
+                     size_t         *base_length,
+                     size_t         *count)
 {
     /* Set default values for early returns */
     *base_length = extensionless_length;
@@ -66,21 +66,40 @@ parse_previous_duplicate_name (const char *name,
     const char *appendix = base_end + strlen (" (");
     size_t appendix_length = last_character_pos - (appendix - name);
 
-    if (strncmp (appendix, COPY_APPENDIX_FIRST_COPY, appendix_length) == 0)
+    if (parser_func (appendix, appendix_length, count))
+    {
+        size_t overhead_length = strlen (" ()");
+        *base_length = extensionless_length - appendix_length - overhead_length;
+    }
+}
+
+/* Translators: This is appended to a file name when a copy of a file is created. */
+#define COPY_APPENDIX_FIRST_COPY _("Copy")
+/* Translators: This is appended to a file name when a copy of an already copied file is created.
+ * `%ld` will be replaced with the how manyth copy number this is. */
+#define  COPY_APPENDIX_NTH_COPY _("Copy %ld")
+
+static gboolean
+parse_previous_copy_name (const char *appendix,
+                          size_t      appendix_len,
+                          size_t     *count)
+{
+    if (strncmp (appendix, COPY_APPENDIX_FIRST_COPY, appendix_len) == 0)
     {
         /* File is a (first) copy */
         *count = 1;
-        *base_length = base_end - name;
+        return TRUE;
     }
     else if (sscanf (appendix, COPY_APPENDIX_NTH_COPY, count))
     {
         /* File is an n-th copy, create n+1-th copy */
-        *base_length = base_end - name;
+        return TRUE;
     }
     else
     {
         /* No copy detected */
         *count = 0;
+        return FALSE;
     }
 }
 
@@ -126,7 +145,7 @@ nautilus_filename_for_copy (const char *name,
     size_t extensionless_length = ignore_extension ? strlen (name) : extension - name;
     size_t base_length;
     size_t count;
-    parse_previous_duplicate_name (name, extensionless_length, &base_length, &count);
+    parse_previous_name (name, extensionless_length, parse_previous_copy_name, &base_length, &count);
 
     g_autofree char *base = g_strndup (name, base_length);
     char *result = get_formatted_copy_name (base, count + count_increment, extension);
