@@ -158,7 +158,6 @@ const char *            nautilus_file_get_display_name                  (Nautilu
 const char *            nautilus_file_get_edit_name                     (NautilusFile                   *file);
 const char *            nautilus_file_get_name                          (NautilusFile                   *file);
 GFile *                 nautilus_file_get_location                      (NautilusFile                   *file);
-char *			 nautilus_file_get_description			 (NautilusFile			 *file);
 char *                  nautilus_file_get_uri                           (NautilusFile                   *file);
 char *                  nautilus_file_get_uri_scheme                    (NautilusFile                   *file);
 NautilusFile *          nautilus_file_get_parent                        (NautilusFile                   *file);

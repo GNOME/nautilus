@@ -82,12 +82,7 @@ nautilus_compute_title_for_location (GFile *location)
         }
         else
         {
-            title = nautilus_file_get_description (file);
-
-            if (title == NULL)
-            {
-                title = g_strdup (nautilus_file_get_display_name (file));
-            }
+            title = g_strdup (nautilus_file_get_display_name (file));
         }
         nautilus_file_unref (file);
     }

@@ -73,7 +73,6 @@ struct NautilusFilePrivate
 	GRefString *mime_type;
 	
 	char *selinux_context;
-	char *description;
 	
 	GError *get_info_error;
 	
