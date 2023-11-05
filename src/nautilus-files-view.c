@@ -636,14 +636,11 @@ on_sort_action_state_changed (GActionGroup *action_group,
                                         reversed);
 }
 
-static char *
+static const char *
 get_directory_sort_by (NautilusFile *file,
                        gboolean     *reversed)
 {
-    NautilusFileSortType default_sort;
-    char *sort_by = NULL;
-
-    default_sort = nautilus_file_get_default_sort_type (file, reversed);
+    NautilusFileSortType default_sort = nautilus_file_get_default_sort_type (file, reversed);
 
     if (default_sort == NAUTILUS_FILE_SORT_BY_RECENCY ||
         default_sort == NAUTILUS_FILE_SORT_BY_TRASHED_TIME ||
@@ -653,25 +650,21 @@ get_directory_sort_by (NautilusFile *file,
         return g_strdup (nautilus_file_sort_type_get_attribute (default_sort));
     }
 
-    sort_by = nautilus_file_get_metadata (file,
-                                          NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-                                          nautilus_file_sort_type_get_attribute (default_sort));
-
     *reversed = nautilus_file_get_boolean_metadata (file,
                                                     NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
                                                     *reversed);
 
-    return sort_by;
+    return nautilus_file_get_metadata (file,
+                                       NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+                                       nautilus_file_sort_type_get_attribute (default_sort));
 }
 
 static void
 update_sort_order_from_metadata_and_preferences (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-    g_autofree char *sort_attribute = NULL;
     gboolean reversed;
-
-    sort_attribute = get_directory_sort_by (priv->directory_as_file, &reversed);
+    const char *sort_attribute = get_directory_sort_by (priv->directory_as_file, &reversed);
 
     g_signal_handlers_block_by_func (priv->view_action_group, on_sort_action_state_changed, self);
 

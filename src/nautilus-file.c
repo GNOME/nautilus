@@ -4037,33 +4037,25 @@ nautilus_file_list_are_all_folders (const GList *files)
     return TRUE;
 }
 
-char *
+const char *
 nautilus_file_get_metadata (NautilusFile *file,
                             const char   *key,
                             const char   *default_metadata)
 {
-    guint id;
-    char *value;
-
-    g_return_val_if_fail (key != NULL, g_strdup (default_metadata));
-    g_return_val_if_fail (key[0] != '\0', g_strdup (default_metadata));
+    g_return_val_if_fail (key != NULL, default_metadata);
+    g_return_val_if_fail (key[0] != '\0', default_metadata);
+    g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), default_metadata);
 
     if (file == NULL ||
         file->details->metadata == NULL)
     {
-        return g_strdup (default_metadata);
+        return default_metadata;
     }
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), g_strdup (default_metadata));
+    guint id = nautilus_metadata_get_id (key);
+    const char *value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
 
-    id = nautilus_metadata_get_id (key);
-    value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
-
-    if (value)
-    {
-        return g_strdup (value);
-    }
-    return g_strdup (default_metadata);
+    return (value != NULL) ? value : default_metadata;
 }
 
 /**
@@ -4147,39 +4139,32 @@ nautilus_file_get_boolean_metadata (NautilusFile *file,
                                     const char   *key,
                                     gboolean      default_metadata)
 {
-    char *result_as_string;
-    gboolean result;
-
     g_return_val_if_fail (key != NULL, default_metadata);
     g_return_val_if_fail (key[0] != '\0', default_metadata);
+    g_return_val_if_fail (file == NULL || NAUTILUS_IS_FILE (file), default_metadata);
 
     if (file == NULL)
     {
         return default_metadata;
     }
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), default_metadata);
+    const char *value = nautilus_file_get_metadata (file, key, default_metadata ? "true" : "false");
 
-    result_as_string = nautilus_file_get_metadata
-                           (file, key, default_metadata ? "true" : "false");
-    g_assert (result_as_string != NULL);
+    g_assert (value != NULL);
 
-    if (g_ascii_strcasecmp (result_as_string, "true") == 0)
+    if (g_ascii_strcasecmp (value, "true") == 0)
     {
-        result = TRUE;
+        return TRUE;
     }
-    else if (g_ascii_strcasecmp (result_as_string, "false") == 0)
+    else if (g_ascii_strcasecmp (value, "false") == 0)
     {
-        result = FALSE;
+        return FALSE;
     }
     else
     {
         g_error ("boolean metadata with value other than true or false");
-        result = default_metadata;
+        return default_metadata;
     }
-
-    g_free (result_as_string);
-    return result;
 }
 
 void
@@ -4348,36 +4333,25 @@ is_uri_relative (const char *uri)
 static char *
 get_custom_icon_metadata_uri (NautilusFile *file)
 {
-    char *custom_icon_uri;
-    char *uri;
-    char *dir_uri;
+    const char *uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 
-    uri = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
     if (uri != NULL &&
         nautilus_file_is_directory (file) &&
         is_uri_relative (uri))
     {
-        dir_uri = nautilus_file_get_uri (file);
-        custom_icon_uri = g_build_filename (dir_uri, uri, NULL);
-        g_free (dir_uri);
-        g_free (uri);
+        g_autofree char *dir_uri = nautilus_file_get_uri (file);
+        return g_build_filename (dir_uri, uri, NULL);
     }
     else
     {
-        custom_icon_uri = uri;
+        return g_strdup (uri);
     }
-    return custom_icon_uri;
 }
 
-static char *
+static const char *
 get_custom_icon_metadata_name (NautilusFile *file)
 {
-    char *icon_name;
-
-    icon_name = nautilus_file_get_metadata (file,
-                                            NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME, NULL);
-
-    return icon_name;
+    return nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME, NULL);
 }
 
 static GIcon *
@@ -4412,7 +4386,7 @@ get_mount_icon (NautilusFile *file)
 static GIcon *
 get_custom_icon (NautilusFile *file)
 {
-    char *custom_icon_uri, *custom_icon_name;
+    char *custom_icon_uri;
     GFile *icon_file;
     GIcon *icon;
 
@@ -4438,12 +4412,11 @@ get_custom_icon (NautilusFile *file)
 
     if (icon == NULL)
     {
-        custom_icon_name = get_custom_icon_metadata_name (file);
+        const char *custom_icon_name = get_custom_icon_metadata_name (file);
 
         if (custom_icon_name != NULL)
         {
             icon = g_themed_icon_new_with_default_fallbacks (custom_icon_name);
-            g_free (custom_icon_name);
         }
     }
 

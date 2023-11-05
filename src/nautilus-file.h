@@ -342,7 +342,7 @@ gboolean                nautilus_file_rename_handle_file_gone           (Nautilu
 gboolean                nautilus_file_is_not_yet_confirmed              (NautilusFile                   *file);
 
 /* Simple getting and setting top-level metadata. */
-char *                  nautilus_file_get_metadata                      (NautilusFile                   *file,
+const char *            nautilus_file_get_metadata                      (NautilusFile                   *file,
 									 const char                     *key,
 									 const char                     *default_metadata);
 gchar **                nautilus_file_get_metadata_list                 (NautilusFile                   *file,

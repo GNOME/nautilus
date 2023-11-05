@@ -37,14 +37,14 @@ test_file_metadata_str_set (void)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (TEST_FILE);
     nautilus_file_set_metadata (file, KEY_STR, "default", "value");
-    g_autofree char *metadata = nautilus_file_get_metadata (file, KEY_STR, "default");
+    const char *metadata = nautilus_file_get_metadata (file, KEY_STR, "default");
     g_assert_cmpstr (metadata, ==, "value");
 }
 
 static void
 test_file_metadata_str_get_null (void)
 {
-    g_autofree char *metadata = nautilus_file_get_metadata (NULL, KEY_STR, "default");
+    const char *metadata = nautilus_file_get_metadata (NULL, KEY_STR, "default");
     g_assert_cmpstr (metadata, ==, "default");
 }
 

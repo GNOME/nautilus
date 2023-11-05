@@ -4190,7 +4190,6 @@ select_image_button_callback (GtkWidget                *widget,
     GtkWidget *dialog;
     GtkFileFilter *filter;
     GList *l;
-    NautilusFile *file;
     gboolean revert_is_sensitive;
 
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
@@ -4226,7 +4225,7 @@ select_image_button_callback (GtkWidget                *widget,
     /* it's likely that the user wants to pick an icon that is inside a local directory */
     if (g_list_length (self->original_files) == 1)
     {
-        file = NAUTILUS_FILE (self->original_files->data);
+        NautilusFile *file = NAUTILUS_FILE (self->original_files->data);
 
         if (nautilus_file_is_directory (file))
         {
@@ -4246,14 +4245,12 @@ select_image_button_callback (GtkWidget                *widget,
     revert_is_sensitive = FALSE;
     for (l = self->original_files; l != NULL; l = l->next)
     {
-        g_autofree gchar *image_path = NULL;
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        const char *image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
 
-        file = NAUTILUS_FILE (l->data);
-        image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-        revert_is_sensitive = (image_path != NULL);
-
-        if (revert_is_sensitive)
+        if (image_path != NULL)
         {
+            revert_is_sensitive = TRUE;
             break;
         }
     }
