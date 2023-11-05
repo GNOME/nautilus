@@ -101,7 +101,8 @@ on_file_changed (NautilusGtkSidebarRow *self)
   g_return_if_fail (NAUTILUS_IS_FILE (self->file));
   if (nautilus_file_is_gone (self->file))
     {
-      nautilus_file_cancel_call_when_ready (self->file, dummy_callback, NULL);
+      g_signal_handlers_disconnect_by_func (self->file, on_file_changed, self);
+      nautilus_file_cancel_call_when_ready (self->file, dummy_callback, self);
       g_clear_object (&self->file);
     }
 }
@@ -122,7 +123,7 @@ ensure_connected_file (NautilusGtkSidebarRow *self)
         return;
 
       self->file = g_steal_pointer (&file);
-      nautilus_file_call_when_ready (self->file, NAUTILUS_FILE_ATTRIBUTE_MOUNT, dummy_callback, NULL);
+      nautilus_file_call_when_ready (self->file, NAUTILUS_FILE_ATTRIBUTE_MOUNT, dummy_callback, self);
       g_signal_connect_object (self->file, "changed",
                                G_CALLBACK (on_file_changed), self, G_CONNECT_SWAPPED);
     }
