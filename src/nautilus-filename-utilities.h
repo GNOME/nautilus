@@ -27,6 +27,9 @@ nautilus_filename_get_common_prefix (const char * const *strv,
 const char *
 nautilus_filename_get_extension (const char *filename);
 
+int
+nautilus_filename_get_extension_char_offset (const char *filename);
+
 gboolean
 nautilus_filename_shorten_base (char       **filename,
                                 const char  *base,

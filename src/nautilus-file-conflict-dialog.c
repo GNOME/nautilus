@@ -27,7 +27,6 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <pango/pango.h>
-#include <eel/eel-vfs-extensions.h>
 
 #include "nautilus-file.h"
 #include "nautilus-filename-utilities.h"
@@ -229,12 +228,10 @@ static void
 reset_button_clicked_cb (GtkButton                  *w,
                          NautilusFileConflictDialog *dialog)
 {
-    int start_pos, end_pos;
-
     gtk_editable_set_text (GTK_EDITABLE (dialog->entry), dialog->conflict_name);
     gtk_widget_grab_focus (dialog->entry);
-    eel_filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
-    gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
+    gtk_editable_select_region (GTK_EDITABLE (dialog->entry), 0,
+                                nautilus_filename_get_extension_char_offset (dialog->conflict_name));
 }
 
 static void

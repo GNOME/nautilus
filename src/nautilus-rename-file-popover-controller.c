@@ -19,12 +19,11 @@
 
 #include <glib/gi18n.h>
 
-#include <eel/eel-vfs-extensions.h>
-
 #include "nautilus-rename-file-popover-controller.h"
 
 #include "nautilus-directory.h"
 #include "nautilus-file-private.h"
+#include "nautilus-filename-utilities.h"
 
 
 #define RENAME_ENTRY_MIN_CHARS 30
@@ -198,14 +197,10 @@ name_entry_on_f2_pressed (GtkWidget                           *widget,
     }
     else
     {
-        gint start_offset;
-        gint end_offset;
-
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (gtk_editable_get_text (GTK_EDITABLE (widget)),
-                                        &start_offset, &end_offset);
-        gtk_editable_select_region (GTK_EDITABLE (widget),
-                                    start_offset, end_offset);
+        const char *text = gtk_editable_get_text (GTK_EDITABLE (widget));
+        gtk_editable_select_region (GTK_EDITABLE (widget), 0,
+                                    nautilus_filename_get_extension_char_offset (text));
     }
 
     return GDK_EVENT_STOP;
@@ -374,14 +369,9 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
 
     if (nautilus_file_is_regular_file (self->target_file))
     {
-        gint start_offset;
-        gint end_offset;
-
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (edit_name,
-                                        &start_offset, &end_offset);
-        gtk_editable_select_region (GTK_EDITABLE (self->name_entry),
-                                    start_offset, end_offset);
+        gtk_editable_select_region (GTK_EDITABLE (self->name_entry), 0,
+                                    nautilus_filename_get_extension_char_offset (edit_name));
     }
 
     n_chars = g_utf8_strlen (edit_name, -1);

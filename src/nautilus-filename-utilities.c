@@ -280,6 +280,21 @@ nautilus_filename_get_extension (const char *filename)
 }
 
 /**
+ * nautilus_filename_get_extension_char_offset:
+ * @filename: a null-terminated file name.
+ *
+ * Returns: The offset in charcters at which the extension of @filename starts,
+ *          or the offset to the end of the string if there is no extension.
+ */
+int
+nautilus_filename_get_extension_char_offset (const char *filename)
+{
+    const char *extension = nautilus_filename_get_extension (filename);
+
+    return g_utf8_strlen (filename, extension - filename);
+}
+
+/**
  * nautilus_filename_shorten_base:
  * @filename: (inout): Pointer to a filename that is to be shortened
  * @base: a base from which @filename was constructed

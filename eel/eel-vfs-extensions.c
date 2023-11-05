@@ -115,24 +115,3 @@ eel_filename_strip_extension (const char *filename_with_extension)
 
     return filename;
 }
-
-void
-eel_filename_get_rename_region (const char *filename,
-                                int        *start_offset,
-                                int        *end_offset)
-{
-    char *filename_without_extension;
-
-    g_return_if_fail (start_offset != NULL);
-    g_return_if_fail (end_offset != NULL);
-
-    *start_offset = 0;
-    *end_offset = 0;
-
-    g_return_if_fail (filename != NULL);
-
-    filename_without_extension = eel_filename_strip_extension (filename);
-    *end_offset = g_utf8_strlen (filename_without_extension, -1);
-
-    g_free (filename_without_extension);
-}
