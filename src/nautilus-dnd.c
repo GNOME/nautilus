@@ -22,26 +22,15 @@ static gboolean
 check_same_fs (NautilusFile *file1,
                NautilusFile *file2)
 {
-    char *id1, *id2;
-    gboolean result;
-
-    result = FALSE;
-
-    if (file1 != NULL && file2 != NULL)
+    if (file1 == NULL || file2 == NULL)
     {
-        id1 = nautilus_file_get_filesystem_id (file1);
-        id2 = nautilus_file_get_filesystem_id (file2);
-
-        if (id1 != NULL && id2 != NULL)
-        {
-            result = (strcmp (id1, id2) == 0);
-        }
-
-        g_free (id1);
-        g_free (id2);
+        return FALSE;
     }
 
-    return result;
+    const char *id1 = nautilus_file_get_filesystem_id (file1);
+    const char *id2 = nautilus_file_get_filesystem_id (file2);
+
+    return id1 != NULL && id2 != NULL && strcmp (id1, id2) == 0;
 }
 
 static gboolean

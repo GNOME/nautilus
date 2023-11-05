@@ -227,7 +227,7 @@ void                    nautilus_file_set_attributes                    (Nautilu
 									 gpointer                        callback_data);
 GFilesystemPreviewType  nautilus_file_get_filesystem_use_preview        (NautilusFile *file);
 
-char *                  nautilus_file_get_filesystem_id                 (NautilusFile                   *file);
+const char *            nautilus_file_get_filesystem_id                 (NautilusFile                   *file);
 
 char *                  nautilus_file_get_filesystem_type               (NautilusFile                   *file);
 

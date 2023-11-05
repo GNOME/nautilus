@@ -7816,10 +7816,10 @@ nautilus_file_is_executable (NautilusFile *file)
     return file->details->can_execute;
 }
 
-char *
+const char *
 nautilus_file_get_filesystem_id (NautilusFile *file)
 {
-    return g_strdup (file->details->filesystem_id);
+    return file->details->filesystem_id;
 }
 
 NautilusFile *
