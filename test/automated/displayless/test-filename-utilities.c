@@ -34,14 +34,13 @@ test_filename_extension_with_tar (void)
 }
 
 static void
-test_filename_create_duplicate (void)
+test_filename_create_file_copy (void)
 {
-    char *duplicated;
-
 #define ASSERT_DUPLICATION_NAME(ORIGINAL, DUPLICATE) \
-        duplicated = nautilus_filename_for_copy (ORIGINAL, 1, -1, FALSE); \
-        g_assert_cmpstr (duplicated, ==, DUPLICATE); \
-        g_free (duplicated);
+        { \
+            g_autofree char *duplicated = nautilus_filename_for_copy (ORIGINAL, 1, -1, FALSE); \
+            g_assert_cmpstr (duplicated, ==, DUPLICATE); \
+        }
 
     /* test the next duplicate name generator */
     ASSERT_DUPLICATION_NAME (" (Copy)", " (Copy 2)");
@@ -64,14 +63,21 @@ test_filename_create_duplicate (void)
     ASSERT_DUPLICATION_NAME ("foo foo (Copy 100000000000000).txt", "foo foo (Copy 100000000000001).txt");
 
 #undef ASSERT_DUPLICATION_NAME
+}
 
-    duplicated = nautilus_filename_for_copy ("dir.with.dots", 1, -1, TRUE);
-    g_assert_cmpstr (duplicated, ==, "dir.with.dots (Copy)");
-    g_free (duplicated);
+static void
+test_filename_create_dir_copy (void)
+{
+#define ASSERT_DUPLICATION_NAME(ORIGINAL, DUPLICATE) \
+        { \
+            g_autofree char *duplicated = nautilus_filename_for_copy (ORIGINAL, 1, -1, TRUE); \
+            g_assert_cmpstr (duplicated, ==, DUPLICATE); \
+        }
 
-    duplicated = nautilus_filename_for_copy ("dir (Copy).dir", 1, -1, TRUE);
-    g_assert_cmpstr (duplicated, ==, "dir (Copy).dir (Copy)");
-    g_free (duplicated);
+    ASSERT_DUPLICATION_NAME ("dir.with.dots", "dir.with.dots (Copy)");
+    ASSERT_DUPLICATION_NAME ("dir (Copy).dir", "dir (Copy).dir (Copy)");
+
+#undef ASSERT_DUPLICATION_NAME
 }
 
 static const char *long_base = "great-text-but-sadly-too-long";
@@ -127,8 +133,10 @@ main (int   argc,
                      test_filename_extension_end_position);
     g_test_add_func ("/filename-extension/tar",
                      test_filename_extension_with_tar);
-    g_test_add_func ("/file-copy-duplictation-name/1.0",
-                     test_filename_create_duplicate);
+    g_test_add_func ("/filename-create-copy/file",
+                     test_filename_create_file_copy);
+    g_test_add_func ("/filename-create-copy/dir",
+                     test_filename_create_dir_copy);
     g_test_add_func ("/file-name-shortening-with-base/needed",
                      test_filename_shortening_with_base);
     g_test_add_func ("/file-name-shortening-with-base/not-needed",
