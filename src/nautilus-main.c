@@ -30,8 +30,6 @@
 #include "nautilus-application.h"
 #include "nautilus-resources.h"
 
-#include <eel/eel-debug.h>
-
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gio/gdesktopappinfo.h>
@@ -76,8 +74,6 @@ main (int   argc,
                                 argc, argv);
 
     g_object_unref (application);
-
-    eel_debug_shut_down ();
 
     return retval;
 }

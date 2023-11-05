@@ -1,6 +1,4 @@
 libeel_2_sources = [
-  'eel-debug.h',
-  'eel-debug.c',
   'eel-stock-dialogs.h',
   'eel-stock-dialogs.c',
   'eel-vfs-extensions.h',

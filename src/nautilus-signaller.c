@@ -26,7 +26,6 @@
 #include <config.h>
 #include "nautilus-signaller.h"
 
-#include <eel/eel-debug.h>
 
 typedef GObject NautilusSignaller;
 typedef GObjectClass NautilusSignallerClass;

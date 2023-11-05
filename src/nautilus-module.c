@@ -23,7 +23,6 @@
 #include <config.h>
 #include "nautilus-module.h"
 
-#include <eel/eel-debug.h>
 #include <gmodule.h>
 
 #define NAUTILUS_TYPE_MODULE            (nautilus_module_get_type ())
