@@ -4079,7 +4079,6 @@ got_filesystem_info (FilesystemInfoState *state,
 {
     NautilusDirectory *directory;
     NautilusFile *file;
-    const char *filesystem_type;
 
     /* careful here, info may be NULL */
 
@@ -4097,13 +4096,7 @@ got_filesystem_info (FilesystemInfoState *state,
             g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_FILESYSTEM_USE_PREVIEW);
         file->details->filesystem_readonly =
             g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_READONLY);
-        filesystem_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
         file->details->filesystem_remote = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
-        if (g_strcmp0 (file->details->filesystem_type, filesystem_type) != 0)
-        {
-            g_clear_pointer (&file->details->filesystem_type, g_ref_string_release);
-            file->details->filesystem_type = g_ref_string_new_intern (filesystem_type);
-        }
     }
 
     nautilus_directory_async_state_changed (directory);
@@ -4181,7 +4174,6 @@ filesystem_info_start (NautilusDirectory *directory,
     g_file_query_filesystem_info_async (location,
                                         G_FILE_ATTRIBUTE_FILESYSTEM_READONLY ","
                                         G_FILE_ATTRIBUTE_FILESYSTEM_USE_PREVIEW ","
-                                        G_FILE_ATTRIBUTE_FILESYSTEM_TYPE ","
                                         G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE,
                                         G_PRIORITY_DEFAULT,
                                         state->cancellable,

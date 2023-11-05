@@ -229,8 +229,6 @@ GFilesystemPreviewType  nautilus_file_get_filesystem_use_preview        (Nautilu
 
 const char *            nautilus_file_get_filesystem_id                 (NautilusFile                   *file);
 
-char *                  nautilus_file_get_filesystem_type               (NautilusFile                   *file);
-
 gboolean                nautilus_file_get_filesystem_remote             (NautilusFile                   *file);
 
 NautilusFile *          nautilus_file_get_trash_original_file           (NautilusFile                   *file);

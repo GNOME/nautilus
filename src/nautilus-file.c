@@ -913,7 +913,6 @@ finalize (GObject *object)
     g_clear_object (&file->details->mount);
 
     g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
-    g_clear_pointer (&file->details->filesystem_type, g_ref_string_release);
     g_free (file->details->trash_orig_path);
 
     g_list_free_full (file->details->mime_list, g_free);
@@ -4481,31 +4480,6 @@ nautilus_file_get_filesystem_use_preview (NautilusFile *file)
     }
 
     return use_preview;
-}
-
-char *
-nautilus_file_get_filesystem_type (NautilusFile *file)
-{
-    char *filesystem_type = NULL;
-
-    g_assert (NAUTILUS_IS_FILE (file));
-
-    if (nautilus_file_is_directory (file))
-    {
-        filesystem_type = g_strdup (file->details->filesystem_type);
-    }
-    else
-    {
-        g_autoptr (NautilusFile) parent = NULL;
-
-        parent = nautilus_file_get_parent (file);
-        if (parent != NULL)
-        {
-            filesystem_type = g_strdup (parent->details->filesystem_type);
-        }
-    }
-
-    return filesystem_type;
 }
 
 gboolean

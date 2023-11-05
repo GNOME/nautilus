@@ -191,7 +191,6 @@ struct NautilusFilePrivate
 	guint filesystem_use_preview        : 2; /* GFilesystemPreviewType */
 	guint filesystem_info_is_up_to_date : 1;
 	guint filesystem_remote             : 1;
-	GRefString     *filesystem_type;
 
 	time_t trash_time; /* 0 is unknown */
 	time_t recency; /* 0 is unknown */
