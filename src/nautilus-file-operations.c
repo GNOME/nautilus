@@ -3838,7 +3838,7 @@ get_unique_target_file (GFile        *src,
 
         if (editname != NULL)
         {
-            new_name = nautilus_filename_create_duplicate (editname, count, max_length, ignore_extension);
+            new_name = nautilus_filename_for_copy (editname, count, max_length, ignore_extension);
             make_file_name_valid_for_dest_fs (new_name, dest_fs_type);
             dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
             g_free (new_name);
@@ -3854,7 +3854,7 @@ get_unique_target_file (GFile        *src,
 
         if (g_utf8_validate (basename, -1, NULL))
         {
-            new_name = nautilus_filename_create_duplicate (basename, count, max_length, ignore_extension);
+            new_name = nautilus_filename_for_copy (basename, count, max_length, ignore_extension);
             make_file_name_valid_for_dest_fs (new_name, dest_fs_type);
             dest = g_file_get_child_for_display_name (dest_dir, new_name, NULL);
             g_free (new_name);

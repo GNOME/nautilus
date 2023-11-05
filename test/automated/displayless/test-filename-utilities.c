@@ -39,7 +39,7 @@ test_filename_create_duplicate (void)
     char *duplicated;
 
 #define ASSERT_DUPLICATION_NAME(ORIGINAL, DUPLICATE) \
-        duplicated = nautilus_filename_create_duplicate (ORIGINAL, 1, -1, FALSE); \
+        duplicated = nautilus_filename_for_copy (ORIGINAL, 1, -1, FALSE); \
         g_assert_cmpstr (duplicated, ==, DUPLICATE); \
         g_free (duplicated);
 
@@ -65,11 +65,11 @@ test_filename_create_duplicate (void)
 
 #undef ASSERT_DUPLICATION_NAME
 
-    duplicated = nautilus_filename_create_duplicate ("dir.with.dots", 1, -1, TRUE);
+    duplicated = nautilus_filename_for_copy ("dir.with.dots", 1, -1, TRUE);
     g_assert_cmpstr (duplicated, ==, "dir.with.dots (Copy)");
     g_free (duplicated);
 
-    duplicated = nautilus_filename_create_duplicate ("dir (Copy).dir", 1, -1, TRUE);
+    duplicated = nautilus_filename_for_copy ("dir (Copy).dir", 1, -1, TRUE);
     g_assert_cmpstr (duplicated, ==, "dir (Copy).dir (Copy)");
     g_free (duplicated);
 }
