@@ -43,7 +43,7 @@ test_filename_create_file_copy (void)
         }
 
     /* test the next duplicate name generator */
-    ASSERT_DUPLICATION_NAME (" (Copy)", " (Copy 2)");
+    ASSERT_DUPLICATION_NAME ("(Copy)", "(Copy) (Copy)");
     ASSERT_DUPLICATION_NAME ("foo", "foo (Copy)");
     ASSERT_DUPLICATION_NAME (".bashrc", ".bashrc (Copy)");
     ASSERT_DUPLICATION_NAME (".foo.txt", ".foo (Copy).txt");

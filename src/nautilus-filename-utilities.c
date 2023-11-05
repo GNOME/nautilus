@@ -25,10 +25,8 @@
  * parse_previous_duplicate_name:
  * @name: Name of the original file
  * @extensionless_length: Length of @name when without an extension
- * @base_length: (out): Length of the file name without any duplication suffixes.
- *                      Only set when a duplicate is detected.
+ * @base_length: (out): Length of the file name without any duplication appendices.
  * @count: (out): The how manyth duplicate the parsed file name represents.
- *                Only set when a duplicate is detected.
  *
  * Parses a file name to see if it was created as a duplicate of another file.
  */
@@ -48,7 +46,7 @@ parse_previous_duplicate_name (const char *name,
         return;
     }
 
-    /* Duplication suffix ends with bracket, check for it */
+    /* Duplication appendix ends with bracket, check for it */
     size_t last_character_pos = extensionless_length - 1;
     if (name[last_character_pos] != ')')
     {
@@ -57,27 +55,27 @@ parse_previous_duplicate_name (const char *name,
     }
 
     /* Search for opening bracket */
-    char *start_bracket = g_utf8_strrchr (name, last_character_pos, '(');
-    if (start_bracket == NULL || start_bracket == name)
+    char *base_end = g_strrstr_len (name, last_character_pos, " (");
+    if (base_end == NULL || base_end == name)
     {
-        /* Appendix is surrounded by brackets and can't be the whole file name */
+        /* Appendix is prefixed with space and bracket and can't be the whole file name */
         return;
     }
 
-    /* Potential bracketed suffix detected, check if it's a known copy suffix */
-    size_t start_bracket_pos = start_bracket - name;
-    size_t str_in_bracket_length = last_character_pos - (start_bracket_pos + 1);
+    /* Potential bracketed appendix found, try to parse it */
+    const char *appendix = base_end + strlen (" (");
+    size_t appendix_length = last_character_pos - (appendix - name);
 
-    if (strncmp (start_bracket + 1, COPY_APPENDIX_FIRST_COPY, str_in_bracket_length) == 0)
+    if (strncmp (appendix, COPY_APPENDIX_FIRST_COPY, appendix_length) == 0)
     {
         /* File is a (first) copy */
         *count = 1;
-        *base_length = start_bracket_pos - 1;
+        *base_length = base_end - name;
     }
-    else if (sscanf (start_bracket + 1, COPY_APPENDIX_NTH_COPY, count))
+    else if (sscanf (appendix, COPY_APPENDIX_NTH_COPY, count))
     {
         /* File is an n-th copy, create n+1-th copy */
-        *base_length = start_bracket_pos - 1;
+        *base_length = base_end - name;
     }
     else
     {
