@@ -18,6 +18,7 @@
 typedef gboolean (* AppendixParser) (const char *appendix,
                                      size_t      appendix_len,
                                      size_t     *count);
+typedef char * (* AppendixCreator) (size_t count);
 
 /**
  * parse_previous_name:
@@ -73,6 +74,46 @@ parse_previous_name (const char     *name,
     }
 }
 
+/**
+ * create_appendix_name:
+ * @name: Name of the original file
+ * @count_increment: By how much to increase the detected copy number of @name
+ * @max_length: Maximum length that resulting file name can have
+ * @ignore_extension: Whether to ignore file extensions (should be FALSE for directories)
+ * @parser_func: Function to parse a detected appendix with.
+ * @appendix_func: Function to create a new appendix from a count.
+ *
+ * Creates a new name from @name with an appendix added according to @parser_func and
+ * @appendix_func, that is no longer than @max_length bytes long.
+ *
+ * Returns: (transfer full): A file name for a copy of @name.
+ */
+static char *
+create_appendix_name (const char      *name,
+                      int              count_increment,
+                      int              max_length,
+                      gboolean         ignore_extension,
+                      AppendixParser   parser_func,
+                      AppendixCreator  appendix_func)
+{
+    g_assert (name[0] != '\0');
+    g_assert (count_increment > 0);
+
+    const char *extension = ignore_extension ? "" : nautilus_filename_get_extension (name);
+    size_t extensionless_length = ignore_extension ? strlen (name) : extension - name;
+    size_t base_length;
+    size_t count;
+    parse_previous_name (name, extensionless_length, parser_func, &base_length, &count);
+
+    g_autofree char *base = g_strndup (name, base_length);
+    g_autofree char *appendix = appendix_func (count + count_increment);
+
+    char *result = g_strdup_printf ("%s (%s)%s", base, appendix, extension);
+    nautilus_filename_shorten_base (&result, base, max_length);
+
+    return result;
+}
+
 /* Translators: This is appended to a file name when a copy of a file is created. */
 #define COPY_APPENDIX_FIRST_COPY _("Copy")
 /* Translators: This is appended to a file name when a copy of an already copied file is created.
@@ -104,20 +145,11 @@ parse_previous_copy_name (const char *appendix,
 }
 
 static char *
-get_formatted_copy_name (const char *base,
-                         size_t      count,
-                         const char *extension)
+get_copy_appendix (size_t count)
 {
-    if (count == 1)
-    {
-        return g_strdup_printf ("%s (%s)%s", base, COPY_APPENDIX_FIRST_COPY, extension);
-    }
-    else
-    {
-        g_autofree char *appendix = g_strdup_printf (COPY_APPENDIX_NTH_COPY, count);
-
-        return g_strdup_printf ("%s (%s)%s", base, appendix, extension);
-    }
+    return (count == 1) ?
+           g_strdup (COPY_APPENDIX_FIRST_COPY) :
+           g_strdup_printf (COPY_APPENDIX_NTH_COPY, count);
 }
 
 /**
@@ -138,20 +170,8 @@ nautilus_filename_for_copy (const char *name,
                             int         max_length,
                             gboolean    ignore_extension)
 {
-    g_assert (name[0] != '\0');
-    g_assert (count_increment > 0);
-
-    const char *extension = ignore_extension ? "" : nautilus_filename_get_extension (name);
-    size_t extensionless_length = ignore_extension ? strlen (name) : extension - name;
-    size_t base_length;
-    size_t count;
-    parse_previous_name (name, extensionless_length, parse_previous_copy_name, &base_length, &count);
-
-    g_autofree char *base = g_strndup (name, base_length);
-    char *result = get_formatted_copy_name (base, count + count_increment, extension);
-    nautilus_filename_shorten_base (&result, base, max_length);
-
-    return result;
+    return create_appendix_name (name, count_increment, max_length, ignore_extension,
+                                 parse_previous_copy_name, get_copy_appendix);
 }
 
 /**
