@@ -338,9 +338,7 @@ set_file_labels (FileConflictDialogData *data)
 static void
 set_conflict_and_suggested_names (FileConflictDialogData *data)
 {
-    g_autofree gchar *conflict_name = NULL;
-
-    conflict_name = nautilus_file_get_edit_name (data->destination);
+    const char *conflict_name = nautilus_file_get_edit_name (data->destination);
 
     nautilus_file_conflict_dialog_set_conflict_name (data->dialog,
                                                      conflict_name);

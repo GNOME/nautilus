@@ -215,9 +215,7 @@ static gboolean
 name_entry_on_undo (GtkWidget                           *widget,
                     NautilusRenameFilePopoverController *self)
 {
-    g_autofree gchar *edit_name = NULL;
-
-    edit_name = nautilus_file_get_edit_name (self->target_file);
+    const char *edit_name = nautilus_file_get_edit_name (self->target_file);
 
     gtk_editable_set_text (GTK_EDITABLE (widget), edit_name);
 
@@ -320,7 +318,7 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
 {
     g_autoptr (NautilusDirectory) containing_directory = NULL;
     GtkEventController *controller;
-    g_autofree gchar *edit_name = NULL;
+    const char *edit_name;
     gint n_chars;
 
     g_assert (NAUTILUS_IS_RENAME_FILE_POPOVER_CONTROLLER (self));

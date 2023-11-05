@@ -90,7 +90,7 @@ nautilus_file_conflict_dialog_set_file_labels (NautilusFileConflictDialog *fcd,
 
 void
 nautilus_file_conflict_dialog_set_conflict_name (NautilusFileConflictDialog *fcd,
-                                                 gchar                      *conflict_name)
+                                                 const char                 *conflict_name)
 {
     fcd->conflict_name = g_strdup (conflict_name);
 }

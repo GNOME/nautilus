@@ -4270,18 +4270,12 @@ nautilus_file_get_display_name (NautilusFile *file)
     }
 }
 
-char *
+const char *
 nautilus_file_get_edit_name (NautilusFile *file)
 {
-    const char *res;
-
-    res = file->details->edit_name;
-    if (res == NULL)
-    {
-        res = "";
-    }
-
-    return g_strdup (res);
+    return file->details->edit_name != NULL ?
+           file->details->edit_name :
+           "";
 }
 
 /**

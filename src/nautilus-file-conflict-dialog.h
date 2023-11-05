@@ -53,7 +53,7 @@ void nautilus_file_conflict_dialog_set_file_labels (NautilusFileConflictDialog *
                                                     gchar *destination_label,
                                                     gchar *source_label);
 void nautilus_file_conflict_dialog_set_conflict_name (NautilusFileConflictDialog *fcd,
-                                                      gchar *conflict_name);
+                                                      const char *conflict_name);
 void nautilus_file_conflict_dialog_set_suggested_name (NautilusFileConflictDialog *fcd,
                                                        gchar *suggested_name);
 void nautilus_file_conflict_dialog_set_replace_button_label (NautilusFileConflictDialog *fcd,
