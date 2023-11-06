@@ -284,6 +284,12 @@ file_read_callback (GObject      *object,
     count_read = g_input_stream_read_finish (stream, res, &error);
     done_reading = FALSE;
 
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* The operation was cancelled and the model was already freed, bailout. */
+        return;
+    }
+
     if (count_read > 0)
     {
         g_assert (count_read <= sizeof (self->buffer));
@@ -379,6 +385,13 @@ file_open_callback (GObject      *object,
     file = G_FILE (object);
     uri = g_file_get_uri (file);
     stream = g_file_read_finish (file, res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* The operation was cancelled and the model was already freed, bailout. */
+        return;
+    }
+
     if (stream != NULL)
     {
         g_autofree char *mime_type = NULL;
