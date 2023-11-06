@@ -171,6 +171,8 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
 static gboolean nautilus_window_slot_get_search_visible (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
+static void nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
+                                                  NautilusFile       *file);
 static void update_search_information (NautilusWindowSlot *self);
 static void real_set_extensions_background_menu (NautilusWindowSlot *self,
                                                  GMenuModel         *menu);
@@ -1448,6 +1450,11 @@ viewed_file_changed_callback (NautilusFile       *file,
 
     if (nautilus_file_is_gone (file) || (is_in_trash && !was_in_trash))
     {
+        if (nautilus_file_is_gone (file))
+        {
+            nautilus_window_slot_set_viewed_file (self, NULL);
+        }
+
         if (self->viewed_file_seen)
         {
             GFile *go_to_file;
