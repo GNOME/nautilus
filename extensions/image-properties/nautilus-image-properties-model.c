@@ -53,6 +53,16 @@ nautilus_images_properties_model_free (NautilusImagesPropertiesModel *self)
         g_cancellable_cancel (self->cancellable);
         g_clear_object (&self->cancellable);
     }
+
+    if (self->loader != NULL)
+    {
+        gdk_pixbuf_loader_close (self->loader, NULL);
+        g_clear_object (&self->loader);
+    }
+
+    g_clear_object (&self->md);
+    g_clear_object (&self->group_model);
+
     g_free (self);
 }
 
@@ -249,7 +259,6 @@ load_finished (NautilusImagesPropertiesModel *self)
         self->loader = NULL;
     }
     self->md_ready = FALSE;
-    g_clear_object (&self->md);
 }
 
 static void
