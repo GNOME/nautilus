@@ -5952,19 +5952,21 @@ copy_data_free (CopyCallbackData *data)
 }
 
 static void
-on_destination_dialog_response (GtkDialog *dialog,
-                                gint       response_id,
-                                gpointer   user_data)
+on_destination_dialog_response (GtkFileDialog *dialog,
+                                GAsyncResult  *result,
+                                gpointer       user_data)
 {
     CopyCallbackData *copy_data = user_data;
+    g_autoptr (GFile) target_location = NULL;
+    g_autoptr (GError) error = NULL;
 
-    if (response_id == GTK_RESPONSE_OK)
+    target_location = gtk_file_dialog_select_folder_finish (dialog, result, &error);
+
+    if (target_location != NULL)
     {
-        g_autoptr (GFile) target_location = NULL;
         char *target_uri;
         GList *uris, *l;
 
-        target_location = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
         target_uri = g_file_get_uri (target_location);
         uris = NULL;
         for (l = copy_data->selection; l != NULL; l = l->next)
@@ -5980,9 +5982,13 @@ on_destination_dialog_response (GtkDialog *dialog,
         g_list_free_full (uris, g_free);
         g_free (target_uri);
     }
+    else if (error != NULL &&
+             !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
+    {
+        g_warning ("Error while choosing a destination folder: %s", error->message);
+    }
 
     copy_data_free (copy_data);
-    gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
@@ -5990,7 +5996,7 @@ copy_or_move_selection (NautilusFilesView *view,
                         gboolean           is_move)
 {
     NautilusFilesViewPrivate *priv;
-    GtkWidget *dialog;
+    g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
     g_autoptr (GFile) location = NULL;
     CopyCallbackData *copy_data;
     GList *selection;
@@ -6009,18 +6015,8 @@ copy_or_move_selection (NautilusFilesView *view,
 
     selection = nautilus_files_view_get_selection_for_file_transfer (view);
 
-    dialog = gtk_file_chooser_dialog_new (title,
-                                          GTK_WINDOW (nautilus_files_view_get_window (view)),
-                                          GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("_Select"), GTK_RESPONSE_OK,
-                                          NULL);
-
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-                                     GTK_RESPONSE_OK);
-
-    gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
-    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+    gtk_file_dialog_set_title (dialog, title);
+    gtk_file_dialog_set_accept_label (dialog, _("_Select"));
 
     copy_data = g_new0 (CopyCallbackData, 1);
     copy_data->view = view;
@@ -6041,12 +6037,13 @@ copy_or_move_selection (NautilusFilesView *view,
         location = nautilus_directory_get_location (priv->directory);
     }
 
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
-    g_signal_connect (dialog, "response",
-                      G_CALLBACK (on_destination_dialog_response),
-                      copy_data);
+    gtk_file_dialog_set_initial_folder (dialog, location);
 
-    gtk_window_present (GTK_WINDOW (dialog));
+    gtk_file_dialog_select_folder (dialog,
+                                   GTK_WINDOW (nautilus_files_view_get_window (view)),
+                                   NULL,
+                                   (GAsyncReadyCallback) on_destination_dialog_response,
+                                   copy_data);
 }
 
 static void
