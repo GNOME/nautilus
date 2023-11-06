@@ -6375,24 +6375,27 @@ typedef struct
 } ExtractToData;
 
 static void
-on_extract_destination_dialog_response (GtkDialog *dialog,
-                                        gint       response_id,
-                                        gpointer   user_data)
+on_extract_destination_dialog_response (GtkFileDialog *dialog,
+                                        GAsyncResult  *result,
+                                        gpointer       user_data)
 {
     ExtractToData *data;
+    g_autoptr (GFile) destination_directory = NULL;
+    g_autoptr (GError) error = NULL;
 
     data = user_data;
+    destination_directory = gtk_file_dialog_select_folder_finish (dialog, result, &error);
 
-    if (response_id == GTK_RESPONSE_OK)
+    if (destination_directory != NULL)
     {
-        g_autoptr (GFile) destination_directory = NULL;
-
-        destination_directory = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
-
         extract_files (data->view, data->files, destination_directory);
     }
+    else if (error != NULL &&
+             !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
+    {
+        g_warning ("Error while choosing a destination folder: %s", error->message);
+    }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
     nautilus_file_list_free (data->files);
     g_free (data);
 }
@@ -6403,7 +6406,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
 {
     NautilusFilesViewPrivate *priv;
     ExtractToData *data;
-    GtkWidget *dialog;
+    g_autoptr (GtkFileDialog) dialog = NULL;
     g_autoptr (GFile) location = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -6415,18 +6418,9 @@ extract_files_to_chosen_location (NautilusFilesView *view,
 
     data = g_new (ExtractToData, 1);
 
-    dialog = gtk_file_chooser_dialog_new (_("Select Extract Destination"),
-                                          GTK_WINDOW (nautilus_files_view_get_window (view)),
-                                          GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("_Select"), GTK_RESPONSE_OK,
-                                          NULL);
-
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-                                     GTK_RESPONSE_OK);
-
-    gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
-    gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+    dialog = gtk_file_dialog_new ();
+    gtk_file_dialog_set_title (dialog, _("Select Extract Destination"));
+    gtk_file_dialog_set_accept_label (dialog, _("_Select"));
 
     /* The file chooser will not be able to display the search directory,
      * so we need to get the base directory of the search if we are, in fact,
@@ -6443,16 +6437,16 @@ extract_files_to_chosen_location (NautilusFilesView *view,
         location = nautilus_directory_get_location (priv->directory);
     }
 
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), location, NULL);
+    gtk_file_dialog_set_initial_folder (dialog, location);
 
     data->view = view;
     data->files = nautilus_file_list_copy (files);
 
-    g_signal_connect (dialog, "response",
-                      G_CALLBACK (on_extract_destination_dialog_response),
-                      data);
-
-    gtk_window_present (GTK_WINDOW (dialog));
+    gtk_file_dialog_select_folder (dialog,
+                                   GTK_WINDOW (nautilus_files_view_get_window (view)),
+                                   NULL,
+                                   (GAsyncReadyCallback) on_extract_destination_dialog_response,
+                                   data);
 }
 
 static void
