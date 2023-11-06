@@ -8,6 +8,11 @@
 
 #include <glib.h>
 
+char *
+nautilus_filename_for_conflict (const char *name,
+                                int         count_increment,
+                                int         max_length,
+                                gboolean    ignore_extension);
 
 char *
 nautilus_filename_for_copy (const char *name,

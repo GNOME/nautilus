@@ -268,34 +268,18 @@ GFile *
 nautilus_generate_unique_file_in_directory (GFile      *directory,
                                             const char *basename)
 {
-    g_autofree char *basename_without_extension = NULL;
-    const char *extension;
-    GFile *child;
-    int copy;
-
     g_return_val_if_fail (directory != NULL, NULL);
     g_return_val_if_fail (basename != NULL, NULL);
     g_return_val_if_fail (g_file_query_exists (directory, NULL), NULL);
 
-    basename_without_extension = eel_filename_strip_extension (basename);
-    extension = nautilus_filename_get_extension (basename);
+    GFile *child = g_file_get_child (directory, basename);
 
-    child = g_file_get_child (directory, basename);
-
-    copy = 1;
-    while (g_file_query_exists (child, NULL))
+    for (size_t counter = 1; g_file_query_exists (child, NULL); counter += 1)
     {
-        g_autofree char *filename = NULL;
+        g_autofree char *filename = nautilus_filename_for_conflict (basename, counter, -1, FALSE);
 
         g_object_unref (child);
-
-        filename = g_strdup_printf ("%s (%d)%s",
-                                    basename_without_extension,
-                                    copy,
-                                    extension);
         child = g_file_get_child (directory, filename);
-
-        copy++;
     }
 
     return child;

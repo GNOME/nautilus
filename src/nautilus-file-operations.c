@@ -7070,7 +7070,6 @@ create_task_thread_func (GTask        *task,
     g_autoptr (GFile) dest = NULL;
     g_autofree gchar *dest_uri = NULL;
     g_autofree char *filename = NULL;
-    char *filename_base;
     g_autofree char *dest_fs_type = NULL;
     GError *error;
     gboolean res;
@@ -7081,7 +7080,7 @@ create_task_thread_func (GTask        *task,
     gsize length;
     GFileOutputStream *out;
     gboolean handled_invalid_filename;
-    int max_length, offset;
+    int max_length;
 
     job = task_data;
     common = &job->common;
@@ -7299,27 +7298,8 @@ retry:
             }
             else
             {
-                g_autofree char *suffix = NULL;
-
-                filename_base = filename;
-                if (job->src != NULL)
-                {
-                    GFileType file_type;
-                    file_type = g_file_query_file_type (job->src,
-                                                        G_FILE_QUERY_INFO_NONE,
-                                                        common->cancellable);
-                    if (file_type != G_FILE_TYPE_DIRECTORY)
-                    {
-                        filename_base = eel_filename_strip_extension (filename);
-                    }
-                }
-
-                offset = strlen (filename_base);
-                suffix = g_strdup (filename + offset);
-
-                new_filename = g_strdup_printf ("%s %d%s", filename_base, count, suffix);
-
-                nautilus_filename_shorten_base (&new_filename, filename_base, max_length);
+                gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
+                new_filename = nautilus_filename_for_conflict (filename, count, max_length, use_extension);
             }
 
             if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type))
@@ -7342,32 +7322,11 @@ retry:
 
         if (IS_IO_ERROR (error, EXISTS))
         {
-            g_autofree char *suffix = NULL;
-            g_autofree gchar *filename2 = NULL;
-
-            g_clear_object (&dest);
-
-            filename_base = filename;
-            if (job->src != NULL)
-            {
-                GFileType file_type;
-                file_type = g_file_query_file_type (job->src,
-                                                    G_FILE_QUERY_INFO_NONE,
-                                                    common->cancellable);
-                if (file_type != G_FILE_TYPE_DIRECTORY)
-                {
-                    filename_base = eel_filename_strip_extension (filename);
-                }
-            }
-
-
-            offset = strlen (filename_base);
-            suffix = g_strdup (filename + offset);
-
-            filename2 = g_strdup_printf ("%s %d%s", filename_base, ++count, suffix);
-            nautilus_filename_shorten_base (&filename2, filename_base, max_length);
+            gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
+            g_autofree gchar *filename2 = nautilus_filename_for_conflict (filename, count, max_length, use_extension);
 
             make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
+            g_clear_object (&dest);
             if (filename_is_utf8)
             {
                 dest = g_file_get_child_for_display_name (job->dest_dir, filename2, NULL);

@@ -88,6 +88,38 @@ test_filename_create_dir_copy (void)
 #undef ASSERT_DUPLICATION_NAME
 }
 
+static void
+test_filename_create_conflict_name (void)
+{
+#define ASSERT_DUPLICATION_NAME(ORIGINAL, DUPLICATE) \
+        { \
+            g_autofree char *duplicated = nautilus_filename_for_conflict (ORIGINAL, 1, -1, FALSE); \
+            g_assert_cmpstr (duplicated, ==, DUPLICATE); \
+        }
+
+    ASSERT_DUPLICATION_NAME ("foo", "foo (2)");
+    ASSERT_DUPLICATION_NAME (".bashrc", ".bashrc (2)");
+    ASSERT_DUPLICATION_NAME (".foo.txt", ".foo (2).txt");
+    ASSERT_DUPLICATION_NAME ("foo foo", "foo foo (2)");
+    ASSERT_DUPLICATION_NAME ("foo.txt", "foo (2).txt");
+    ASSERT_DUPLICATION_NAME ("foo foo.txt", "foo foo (2).txt");
+    ASSERT_DUPLICATION_NAME ("foo foo.txt txt", "foo foo.txt txt (2)");
+    ASSERT_DUPLICATION_NAME ("foo...txt", "foo.. (2).txt");
+    ASSERT_DUPLICATION_NAME ("foo...", "foo... (2)");
+    ASSERT_DUPLICATION_NAME ("foo. (2)", "foo. (3)");
+    ASSERT_DUPLICATION_NAME ("foo (2)", "foo (3)");
+    ASSERT_DUPLICATION_NAME ("foo (2a)", "foo (2a) (2)");
+    ASSERT_DUPLICATION_NAME ("foo (b2)", "foo (b2) (2)");
+    ASSERT_DUPLICATION_NAME ("foo (2).txt", "foo (3).txt");
+    ASSERT_DUPLICATION_NAME ("foo (2)", "foo (3)");
+    ASSERT_DUPLICATION_NAME ("foo (2).txt", "foo (3).txt");
+    ASSERT_DUPLICATION_NAME ("foo foo (2).txt", "foo foo (3).txt");
+    ASSERT_DUPLICATION_NAME ("foo (13)", "foo (14)");
+    ASSERT_DUPLICATION_NAME ("foo foo (123345678901).txt", "foo foo (123345678902).txt");
+
+#undef ASSERT_DUPLICATION_NAME
+}
+
 static const char *long_base = "great-text-but-sadly-too-long";
 static const char *short_base = "great-text";
 static const char *suffix = "-123456789";
@@ -149,6 +181,8 @@ main (int   argc,
                      test_filename_shortening_with_base);
     g_test_add_func ("/file-name-shortening-with-base/not-needed",
                      test_filename_shortening_with_base_not_needed);
+    g_test_add_func ("/filename-create-conflict/file",
+                     test_filename_create_conflict_name);
 
     return g_test_run ();
 }

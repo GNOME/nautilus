@@ -114,6 +114,55 @@ create_appendix_name (const char      *name,
     return result;
 }
 
+static gboolean
+parse_previous_conflict_name (const char *appendix,
+                              size_t      appendix_len,
+                              size_t     *count)
+{
+    if (sscanf (appendix, "%zu)", count) == 1)
+    {
+        g_autofree char *appendix_check = g_strdup_printf ("%zu", *count);
+
+        if (strlen (appendix_check) == appendix_len)
+        {
+            return TRUE;
+        }
+    }
+
+    *count = 0;
+    return FALSE;
+}
+
+static char *
+get_conflict_appendix (size_t count)
+{
+    /* First appendix should be (2), not (1) */
+    count = MAX (count, 2);
+    return g_strdup_printf ("%zu", count);
+}
+
+/**
+ * nautilus_filename_for_conflict:
+ * @name: Name of the original file
+ * @count_increment: By how much to increase the detected copy number of @name
+ * @max_length: Maximum length that resulting file name can have
+ * @ignore_extension: Whether to ignore file extensions (should be FALSE for directories)
+ *
+ * Creates a new name for a copy of @name, that is no longer than @max_length
+ * bytes long.
+ *
+ * Returns: (transfer full): A file name for a copy of @name.
+ */
+char *
+nautilus_filename_for_conflict (const char *name,
+                                int         count_increment,
+                                int         max_length,
+                                gboolean    ignore_extension)
+{
+    return create_appendix_name (name, count_increment, max_length, ignore_extension,
+                                 parse_previous_conflict_name, get_conflict_appendix);
+}
+
 /* Translators: This is appended to a file name when a copy of a file is created. */
 #define COPY_APPENDIX_FIRST_COPY _("Copy")
 /* Translators: This is appended to a file name when a copy of an already copied file is created.
