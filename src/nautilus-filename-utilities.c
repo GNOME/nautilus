@@ -12,8 +12,6 @@
 
 #include <stdio.h>
 
-#include <eel/eel-vfs-extensions.h>
-
 
 typedef gboolean (* AppendixParser) (const char *appendix,
                                      size_t      appendix_len,

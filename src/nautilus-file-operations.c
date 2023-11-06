@@ -37,8 +37,6 @@
 
 #include "nautilus-progress-info.h"
 
-#include <eel/eel-vfs-extensions.h>
-
 #include <adwaita.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>

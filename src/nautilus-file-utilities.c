@@ -34,7 +34,6 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
 #include "nautilus-ui-utilities.h"
-#include <eel/eel-vfs-extensions.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>

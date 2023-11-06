@@ -27,7 +27,6 @@
 #include "nautilus-files-view.h"
 
 #include <eel/eel-stock-dialogs.h>
-#include <eel/eel-vfs-extensions.h>
 #include <fcntl.h>
 #include <gdesktop-enums.h>
 #include <gdk/gdkkeysyms.h>

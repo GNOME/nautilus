@@ -1,8 +1,6 @@
 libeel_2_sources = [
   'eel-stock-dialogs.h',
   'eel-stock-dialogs.c',
-  'eel-vfs-extensions.h',
-  'eel-vfs-extensions.c',
 ]
 
 libeel_2_deps = [
