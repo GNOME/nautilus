@@ -262,22 +262,6 @@ load_finished (NautilusImagesPropertiesModel *self)
 }
 
 static void
-file_close_callback (GObject      *object,
-                     GAsyncResult *res,
-                     gpointer      data)
-{
-    NautilusImagesPropertiesModel *self;
-    GInputStream *stream;
-
-    self = data;
-    stream = G_INPUT_STREAM (object);
-
-    g_input_stream_close_finish (stream, res, NULL);
-
-    g_clear_object (&self->cancellable);
-}
-
-static void
 file_read_callback (GObject      *object,
                     GAsyncResult *res,
                     gpointer      data)
@@ -347,11 +331,6 @@ file_read_callback (GObject      *object,
     if (done_reading)
     {
         load_finished (self);
-        g_input_stream_close_async (stream,
-                                    G_PRIORITY_DEFAULT,
-                                    self->cancellable,
-                                    file_close_callback,
-                                    self);
     }
 }
 
