@@ -39,3 +39,6 @@ gboolean
 nautilus_filename_shorten_base (char       **filename,
                                 const char  *base,
                                 int          max_length);
+
+char *
+nautilus_filename_strip_extension (const char *filename);

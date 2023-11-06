@@ -442,3 +442,17 @@ nautilus_filename_shorten_base (char       **filename,
         return TRUE;
     }
 }
+
+/**
+ * nautilus_filename_strip_extension:
+ * @filename: a null-terminated file name.
+ *
+ * Returns: (transfer full): A copy of filename without an extension.
+ */
+char *
+nautilus_filename_strip_extension (const char *filename)
+{
+    const char *extension = nautilus_filename_get_extension (filename);
+
+    return g_strndup (filename, extension - filename);
+}

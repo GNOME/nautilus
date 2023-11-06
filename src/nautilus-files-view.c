@@ -63,6 +63,7 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-floating-bar.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
@@ -2446,7 +2447,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
         }
         else
         {
-            common_prefix = eel_filename_strip_extension (display_name);
+            common_prefix = nautilus_filename_strip_extension (display_name);
         }
     }
     else

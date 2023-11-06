@@ -968,7 +968,7 @@ nautilus_get_common_filename_prefix_from_filenames (const char * const *filename
     }
 
     stripped_filenames = g_ptr_array_new_from_null_terminated_array ((gpointer *) filenames,
-                                                                     (GCopyFunc) eel_filename_strip_extension,
+                                                                     (GCopyFunc) nautilus_filename_strip_extension,
                                                                      NULL,
                                                                      g_free);
 
