@@ -66,8 +66,8 @@ mount_removed (GVolumeMonitor *volume_monitor,
     GFile *mount_location;
 
     mount_location = g_mount_get_root (mount);
-
-    if (g_file_has_prefix (monitor->location, mount_location))
+    if (g_file_equal (monitor->location, mount_location) ||
+        g_file_has_prefix (monitor->location, mount_location))
     {
         nautilus_file_changes_queue_file_removed (monitor->location);
         schedule_call_consume_changes ();
