@@ -26,7 +26,6 @@
 #include <gtk/gtk.h>
 #include <string.h>
 #include <stdarg.h>
-#include <eel/eel-vfs-extensions.h>
 
 typedef struct
 {
@@ -441,9 +440,8 @@ batch_rename_format (NautilusFile *file,
                         }
                         else
                         {
-                            g_autofree gchar *base_name = NULL;
-                            base_name = eel_filename_strip_extension (file_name);
-                            new_name = g_string_append (new_name, base_name);
+                            const char *extension = nautilus_filename_get_extension (file_name);
+                            new_name = g_string_append_len (new_name, file_name, extension - file_name);
                         }
                     }
                     break;
