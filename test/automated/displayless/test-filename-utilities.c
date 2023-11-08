@@ -53,14 +53,22 @@ test_filename_create_file_copy (void)
     ASSERT_DUPLICATION_NAME ("foo foo.txt txt", "foo foo.txt txt (Copy)");
     ASSERT_DUPLICATION_NAME ("foo...txt", "foo.. (Copy).txt");
     ASSERT_DUPLICATION_NAME ("foo...", "foo... (Copy)");
-    ASSERT_DUPLICATION_NAME ("foo. (Copy)", "foo. (Copy 2)");
+
+    /* copy of a copy */
     ASSERT_DUPLICATION_NAME ("foo (Copy)", "foo (Copy 2)");
+    ASSERT_DUPLICATION_NAME ("foo (Copy bar)", "foo (Copy bar) (Copy)");
+    ASSERT_DUPLICATION_NAME ("foo. (Copy)", "foo. (Copy 2)");
     ASSERT_DUPLICATION_NAME ("foo (Copy).txt", "foo (Copy 2).txt");
+    ASSERT_DUPLICATION_NAME ("foo (Copy bar).txt", "foo (Copy bar) (Copy).txt");
+
+    /* higher order */
     ASSERT_DUPLICATION_NAME ("foo (Copy 2)", "foo (Copy 3)");
+    ASSERT_DUPLICATION_NAME ("foo (Copy bar 2)", "foo (Copy bar 2) (Copy)");
+    ASSERT_DUPLICATION_NAME ("foo (Copy 2 bar)", "foo (Copy 2 bar) (Copy)");
     ASSERT_DUPLICATION_NAME ("foo (Copy 2).txt", "foo (Copy 3).txt");
     ASSERT_DUPLICATION_NAME ("foo foo (Copy 2).txt", "foo foo (Copy 3).txt");
     ASSERT_DUPLICATION_NAME ("foo (Copy 13)", "foo (Copy 14)");
-    ASSERT_DUPLICATION_NAME ("foo foo (Copy 100000000000000).txt", "foo foo (Copy 100000000000001).txt");
+    ASSERT_DUPLICATION_NAME ("foo foo (Copy 123345678901).txt", "foo foo (Copy 123345678902).txt");
 
 #undef ASSERT_DUPLICATION_NAME
 }

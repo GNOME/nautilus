@@ -133,15 +133,18 @@ parse_previous_copy_name (const char *appendix,
     }
     else if (sscanf (appendix, COPY_APPENDIX_NTH_COPY, count))
     {
-        /* File is an n-th copy, create n+1-th copy */
-        return TRUE;
+        g_autofree char *appendix_check = g_strdup_printf (COPY_APPENDIX_NTH_COPY, *count);
+
+        if (strlen (appendix_check) == appendix_len)
+        {
+            /* File is an n-th copy, create n+1-th copy */
+            return TRUE;
+        }
     }
-    else
-    {
-        /* No copy detected */
-        *count = 0;
-        return FALSE;
-    }
+
+    /* No copy detected */
+    *count = 0;
+    return FALSE;
 }
 
 static char *
