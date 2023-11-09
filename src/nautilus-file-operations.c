@@ -7435,16 +7435,15 @@ save_image_thread_func (GTask        *task,
     g_autoptr (GBytes) bytes = NULL;
     g_autoptr (GError) output_error = NULL;
     g_autoptr (GFileOutputStream) stream = NULL;
-    int i = 0;
+    g_autofree gchar *basename = g_strconcat (job->base_name, ".png", NULL);
 
-    while (stream == NULL)
+    for (size_t i = 1; stream == NULL; i += 1)
     {
         g_autoptr (GError) stream_error = NULL;
-        g_autofree gchar *filename = NULL;
-        g_autofree gchar *suffix = NULL;
+        g_autofree gchar *filename = i == 1 ?
+                                     g_strdup (basename) :
+                                     nautilus_filename_for_conflict (basename, i, -1, FALSE);
 
-        suffix = i == 0 ? g_strdup (".png") : g_strdup_printf (" %d.png", i);
-        filename = g_strdup_printf ("%s%s", job->base_name, suffix);
         job->location = g_file_get_child (job->dest_dir, filename);
         stream = g_file_create (job->location, 0, job->common.cancellable, &stream_error);
         if (stream_error == NULL)
@@ -7454,7 +7453,6 @@ save_image_thread_func (GTask        *task,
         else if (IS_IO_ERROR (stream_error, EXISTS))
         {
             g_clear_object (&job->location);
-            i++;
         }
         else
         {
