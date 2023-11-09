@@ -164,10 +164,10 @@ nautilus_filename_for_conflict (const char *name,
 }
 
 /* Translators: This is appended to a file name when a copy of a file is created. */
-#define COPY_APPENDIX_FIRST_COPY _("Copy")
+#define COPY_APPENDIX_FIRST_COPY C_("Noun", "Copy")
 /* Translators: This is appended to a file name when a copy of an already copied file is created.
- * `%ld` will be replaced with the how manyth copy number this is. */
-#define  COPY_APPENDIX_NTH_COPY _("Copy %ld")
+ * `%zu` will be replaced with a number one higher than that of the previous copy. */
+#define  COPY_APPENDIX_NTH_COPY C_("Noun", "Copy %zu")
 
 static gboolean
 parse_previous_copy_name (const char *appendix,
@@ -257,8 +257,8 @@ nautilus_filename_for_link (const char *name,
     }
     else
     {
-        /* Translators: File name for new symlink. %s is target's name, %lu is number of symlink. */
-        result = g_strdup_printf (_("Link to %s (%lu)"), name, count);
+        /* Translators: File name for new symlink. %s is target's name, %zu is number of symlink. */
+        result = g_strdup_printf (_("Link to %s (%zu)"), name, count);
     }
 
     nautilus_filename_shorten_base (&result, name, max_length);
