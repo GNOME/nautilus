@@ -8,7 +8,7 @@ RUN dnf builddep -y glib \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/glib.git \
  && cd glib \
- && meson setup _build -Dintrospection=disabled --prefix /usr \
+ && meson setup _build -Dintrospection=disabled -Dtests=false --prefix /usr \
  && ninja -C _build \
  && ninja install -C _build \
  && cd .. \
@@ -28,7 +28,7 @@ RUN dnf builddep -y glib \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/glib.git \
  && cd glib \
- && meson setup _build --prefix /usr \
+ && meson setup _build -Dtests=false --prefix /usr \
  && ninja -C _build \
  && ninja install -C _build \
  && cd .. \
@@ -38,7 +38,7 @@ RUN dnf builddep -y gtk4 \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/gtk.git \
  && cd gtk \
- && meson setup _build --prefix /usr \
+ && meson setup _build -Dbuild-tests=false -Dbuild-testsuite=false -Dbuild-demos=false --prefix /usr \
  && ninja -C _build \
  && ninja install -C _build \
  && cd .. \
@@ -49,7 +49,7 @@ RUN dnf builddep -y gtk4 \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/libadwaita.git \
  && cd libadwaita \
- && meson setup _build --prefix /usr \
+ && meson setup _build -Dtests=false -Dexamples=false --prefix /usr \
  && ninja -C _build \
  && ninja install -C _build \
  && cd .. \
