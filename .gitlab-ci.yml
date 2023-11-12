@@ -81,7 +81,7 @@ update image:
 asan:
     variables:
         CFLAGS: "-fno-omit-frame-pointer -fsanitize=address"
-        LSAN_OPTIONS: suppressions=data/leak-suppress.txt
+        LSAN_OPTIONS: suppressions=$CI_PROJECT_DIR/data/leak-suppress.txt
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: analyze
     rules:
