@@ -579,7 +579,6 @@ void
 nautilus_restore_files_from_trash (GList     *files,
                                    GtkWindow *parent_window)
 {
-    NautilusFile *file;
     GHashTable *original_dirs_hash;
     g_autolist (NautilusFile) unhandled_files = NULL;
 
@@ -587,11 +586,9 @@ nautilus_restore_files_from_trash (GList     *files,
 
     for (GList *l = unhandled_files; l != NULL; l = l->next)
     {
-        g_autofree char *message;
-
-        file = NAUTILUS_FILE (l->data);
-        message = g_strdup_printf (_("Could not determine original location of “%s” "),
-                                   nautilus_file_get_display_name (file));
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        g_autofree char *message = g_strdup_printf (_("Could not determine original location of “%s” "),
+                                                    nautilus_file_get_display_name (file));
 
         show_dialog (message,
                      _("The item cannot be restored from trash"),

@@ -7391,8 +7391,6 @@ nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file)
 static char *
 nautilus_file_get_detailed_type_as_string (NautilusFile *file)
 {
-    g_autofree char *detailed_description;
-
     if (file == NULL)
     {
         return NULL;
@@ -7403,7 +7401,7 @@ nautilus_file_get_detailed_type_as_string (NautilusFile *file)
         return g_strdup (_("Link (broken)"));
     }
 
-    detailed_description = get_detailed_description (file);
+    g_autofree char *detailed_description = get_detailed_description (file);
     return update_description_for_link (file, detailed_description);
 }
 
