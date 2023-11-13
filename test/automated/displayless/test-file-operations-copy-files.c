@@ -341,6 +341,7 @@ test_copy_files_large (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+        g_free (file_name);
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -357,6 +358,7 @@ test_copy_files_large (void)
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+        g_free (file_name);
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
@@ -653,8 +655,8 @@ test_copy_directories_large_undo (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
-        g_assert_true (file != NULL);
         g_free (file_name);
+        g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
 
