@@ -145,12 +145,31 @@ test_copy_one_empty_directory_undo (void)
 }
 
 static void
+copy_multiple_files (const gchar *prefix,
+                     GFile       *src,
+                     GFile       *dest,
+                     guint        num)
+{
+    g_autolist (GFile) files = NULL;
+
+    for (guint i = 0; i < num; i++)
+    {
+        g_autofree gchar *file_name = g_strdup_printf ("%s_%i", prefix, i);
+        GFile *file = g_file_get_child (src, file_name);
+
+        g_assert_true (file != NULL);
+        files = g_list_prepend (files, file);
+    }
+
+    nautilus_file_operations_copy_sync (files, dest);
+}
+
+static void
 test_copy_files_small (void)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_files ("copy", 10);
@@ -158,20 +177,10 @@ test_copy_files_small (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10);
 
     for (int i = 0; i < 10; i++)
     {
@@ -194,7 +203,6 @@ test_copy_files_small_undo (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_files ("copy", 10);
@@ -202,20 +210,10 @@ test_copy_files_small_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10);
 
     test_operation_undo ();
 
@@ -240,7 +238,6 @@ test_copy_files_medium (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_files ("copy", 1000);
@@ -248,20 +245,10 @@ test_copy_files_medium (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 1000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 1000);
 
     for (int i = 0; i < 1000; i++)
     {
@@ -284,7 +271,6 @@ test_copy_files_medium_undo (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_files ("copy", 1000);
@@ -292,20 +278,11 @@ test_copy_files_medium_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 1000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 1000);
+
     test_operation_undo ();
 
     for (int i = 0; i < 1000; i++)
@@ -329,7 +306,6 @@ test_copy_files_large (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_files ("copy", 10000);
@@ -337,20 +313,10 @@ test_copy_files_large (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10000);
 
     for (int i = 0; i < 10000; i++)
     {
@@ -373,7 +339,6 @@ test_copy_files_large_undo (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_files ("copy", 10000);
@@ -381,20 +346,10 @@ test_copy_files_large_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10000);
 
     test_operation_undo ();
 
@@ -419,7 +374,6 @@ test_copy_directories_small (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_directories ("copy", 10);
@@ -427,20 +381,10 @@ test_copy_directories_small (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10);
 
     for (int i = 0; i < 10; i++)
     {
@@ -463,7 +407,6 @@ test_copy_directories_small_undo (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_directories ("copy", 10);
@@ -471,20 +414,10 @@ test_copy_directories_small_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10);
 
     test_operation_undo ();
 
@@ -509,7 +442,6 @@ test_copy_directories_medium (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_directories ("copy", 1000);
@@ -517,20 +449,10 @@ test_copy_directories_medium (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 1000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 1000);
 
     for (int i = 0; i < 1000; i++)
     {
@@ -553,7 +475,6 @@ test_copy_directories_medium_undo (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_directories ("copy", 1000);
@@ -561,20 +482,10 @@ test_copy_directories_medium_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 1000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 1000);
 
     test_operation_undo ();
 
@@ -599,7 +510,6 @@ test_copy_directories_large (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_directories ("copy", 10000);
@@ -607,20 +517,10 @@ test_copy_directories_large (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10000);
 
     for (int i = 0; i < 10000; i++)
     {
@@ -643,7 +543,6 @@ test_copy_directories_large_undo (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
     gchar *file_name;
 
     create_multiple_directories ("copy", 10000);
@@ -651,20 +550,10 @@ test_copy_directories_large_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 10000; i++)
-    {
-        file_name = g_strdup_printf ("copy_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
     dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
 
-    nautilus_file_operations_copy_sync (files,
-                                        dir);
+    copy_multiple_files ("copy_file", root, dir, 10000);
 
     test_operation_undo ();
 
