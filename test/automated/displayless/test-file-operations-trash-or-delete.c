@@ -29,29 +29,36 @@ test_trash_one_file (void)
 }
 
 static void
+trash_or_delete_multiple_files (const gchar *prefix,
+                                GFile       *src,
+                                guint        num)
+{
+    g_autolist (GFile) files = NULL;
+
+    for (guint i = 0; i < num; i++)
+    {
+        g_autofree gchar *file_name = g_strdup_printf ("%s_%i", prefix, i);
+        GFile *file = g_file_get_child (src, file_name);
+
+        g_assert_true (file != NULL);
+        files = g_list_prepend (files, file);
+    }
+
+    nautilus_file_operations_trash_or_delete_sync (files);
+}
+
+static void
 test_trash_more_files_func (gint files_to_trash)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
-    g_autolist (GFile) files = NULL;
 
     create_multiple_files ("trash_or_delete", files_to_trash);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < files_to_trash; i++)
-    {
-        gchar *file_name;
-
-        file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
-    nautilus_file_operations_trash_or_delete_sync (files);
+    trash_or_delete_multiple_files ("trash_or_delete_file", root, files_to_trash);
 
     for (int i = 0; i < files_to_trash; i++)
     {
@@ -176,26 +183,13 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) dir = NULL;
-    g_autolist (GFile) files = NULL;
 
     create_multiple_directories ("trash_or_delete", directories_to_trash);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < directories_to_trash; i++)
-    {
-        gchar *file_name;
-
-        file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (file != NULL);
-        files = g_list_prepend (files, g_object_ref (file));
-    }
-
-    nautilus_file_operations_trash_or_delete_sync (files);
+    trash_or_delete_multiple_files ("trash_or_delete_file", root, directories_to_trash);
 
     for (int i = 0; i < directories_to_trash; i++)
     {
@@ -373,25 +367,13 @@ test_trash_third_hierarchy (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) directory = NULL;
     g_autoptr (GFile) file = NULL;
-    g_autolist (GFile) files = NULL;
 
     create_multiple_full_directories ("trash_or_delete", 50);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    for (int i = 0; i < 50; i++)
-    {
-        gchar *file_name;
-
-        file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
-
-        directory = g_file_get_child (root, file_name);
-        g_free (file_name);
-        files = g_list_prepend (files, g_object_ref (directory));
-    }
-
-    nautilus_file_operations_trash_or_delete_sync (files);
+    trash_or_delete_multiple_files ("trash_or_delete_directory", root, 50);
 
     for (int i = 0; i < 50; i++)
     {
