@@ -381,14 +381,14 @@ test_copy_directories_small (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    dir = g_file_get_child (root, "copy_dir");
+    dir = g_file_get_child (root, "copy_destination_dir");
     g_assert_true (dir != NULL);
 
-    copy_multiple_files ("copy_file", root, dir, 10);
+    copy_multiple_files ("copy_dir", root, dir, 10);
 
     for (int i = 0; i < 10; i++)
     {
-        file_name = g_strdup_printf ("copy_file_%i", i);
+        file_name = g_strdup_printf ("copy_dir_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
@@ -414,16 +414,16 @@ test_copy_directories_small_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    dir = g_file_get_child (root, "copy_dir");
+    dir = g_file_get_child (root, "copy_destination_dir");
     g_assert_true (dir != NULL);
 
-    copy_multiple_files ("copy_file", root, dir, 10);
+    copy_multiple_files ("copy_dir", root, dir, 10);
 
     test_operation_undo ();
 
     for (int i = 0; i < 10; i++)
     {
-        file_name = g_strdup_printf ("copy_file_%i", i);
+        file_name = g_strdup_printf ("copy_dir_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
@@ -449,14 +449,14 @@ test_copy_directories_medium (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    dir = g_file_get_child (root, "copy_dir");
+    dir = g_file_get_child (root, "copy_destination_dir");
     g_assert_true (dir != NULL);
 
-    copy_multiple_files ("copy_file", root, dir, 1000);
+    copy_multiple_files ("copy_dir", root, dir, 1000);
 
     for (int i = 0; i < 1000; i++)
     {
-        file_name = g_strdup_printf ("copy_file_%i", i);
+        file_name = g_strdup_printf ("copy_dir_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
@@ -482,16 +482,16 @@ test_copy_directories_medium_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    dir = g_file_get_child (root, "copy_dir");
+    dir = g_file_get_child (root, "copy_destination_dir");
     g_assert_true (dir != NULL);
 
-    copy_multiple_files ("copy_file", root, dir, 1000);
+    copy_multiple_files ("copy_dir", root, dir, 1000);
 
     test_operation_undo ();
 
     for (int i = 0; i < 1000; i++)
     {
-        file_name = g_strdup_printf ("copy_file_%i", i);
+        file_name = g_strdup_printf ("copy_dir_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
@@ -517,14 +517,14 @@ test_copy_directories_large (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    dir = g_file_get_child (root, "copy_dir");
+    dir = g_file_get_child (root, "copy_destination_dir");
     g_assert_true (dir != NULL);
 
-    copy_multiple_files ("copy_file", root, dir, 10000);
+    copy_multiple_files ("copy_dir", root, dir, 10000);
 
     for (int i = 0; i < 10000; i++)
     {
-        file_name = g_strdup_printf ("copy_file_%i", i);
+        file_name = g_strdup_printf ("copy_dir_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
@@ -550,16 +550,16 @@ test_copy_directories_large_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    dir = g_file_get_child (root, "copy_dir");
+    dir = g_file_get_child (root, "copy_destination_dir");
     g_assert_true (dir != NULL);
 
-    copy_multiple_files ("copy_file", root, dir, 10000);
+    copy_multiple_files ("copy_dir", root, dir, 10000);
 
     test_operation_undo ();
 
     for (int i = 0; i < 10000; i++)
     {
-        file_name = g_strdup_printf ("copy_file_%i", i);
+        file_name = g_strdup_printf ("copy_dir_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);

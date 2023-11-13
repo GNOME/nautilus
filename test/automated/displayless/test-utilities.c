@@ -346,7 +346,7 @@ create_multiple_directories (gchar *prefix,
 
     for (int i = 0; i < number_of_directories; i++)
     {
-        file_name = g_strdup_printf ("%s_file_%i", prefix, i);
+        file_name = g_strdup_printf ("%s_dir_%i", prefix, i);
         file = g_file_get_child (root, file_name);
         g_free (file_name);
 
@@ -354,7 +354,7 @@ create_multiple_directories (gchar *prefix,
         g_file_make_directory (file, NULL, NULL);
     }
 
-    file_name = g_strdup_printf ("%s_dir", prefix);
+    file_name = g_strdup_printf ("%s_destination_dir", prefix);
     dir = g_file_get_child (root, file_name);
     g_free (file_name);
 

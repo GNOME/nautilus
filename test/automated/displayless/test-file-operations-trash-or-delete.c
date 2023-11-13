@@ -196,13 +196,13 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    trash_or_delete_multiple_files ("trash_or_delete_file", root, directories_to_trash);
+    trash_or_delete_multiple_files ("trash_or_delete_dir", root, directories_to_trash);
 
     for (int i = 0; i < directories_to_trash; i++)
     {
         gchar *file_name;
 
-        file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
+        file_name = g_strdup_printf ("trash_or_delete_dir_%i", i);
         file = g_file_get_child (root, file_name);
         g_free (file_name);
         g_assert_true (file != NULL);
@@ -256,14 +256,14 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
     root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
-    delete_multiple_files ("trash_or_delete_file", root, directories_to_delete);
+    delete_multiple_files ("trash_or_delete_dir", root, directories_to_delete);
 
 
     for (int i = 0; i < directories_to_delete; i++)
     {
         gchar *file_name;
 
-        file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
+        file_name = g_strdup_printf ("trash_or_delete_dir_%i", i);
         file = g_file_get_child (root, file_name);
         g_free (file_name);
         g_assert_true (file != NULL);
