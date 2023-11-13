@@ -39,9 +39,10 @@ empty_directory_by_prefix (GFile *parent,
     g_file_enumerator_iterate (enumerator, NULL, &child, NULL, NULL);
     while (child != NULL)
     {
+        g_autofree gchar *basename = g_file_get_basename (child);
         gboolean res;
 
-        if (g_str_has_prefix (g_file_get_basename (child), prefix))
+        if (g_str_has_prefix (basename, prefix))
         {
             res = g_file_delete (child, NULL, NULL);
             /* The directory is not empty */
