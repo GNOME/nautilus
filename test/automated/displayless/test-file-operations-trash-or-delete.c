@@ -378,11 +378,6 @@ test_trash_third_hierarchy (void)
         directory = g_file_get_child (root, file_name);
         g_free (file_name);
         g_assert_false (g_file_query_exists (directory, NULL));
-
-        file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
-        file = g_file_get_child (directory, file_name);
-        g_free (file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
     }
 
     empty_directory_by_prefix (root, "trash_or_delete");
@@ -487,11 +482,6 @@ test_delete_third_hierarchy (void)
         directory = g_file_get_child (root, file_name);
         g_free (file_name);
         g_assert_false (g_file_query_exists (directory, NULL));
-
-        file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
-        file = g_file_get_child (directory, file_name);
-        g_free (file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
     }
 
     empty_directory_by_prefix (root, "trash_or_delete");
