@@ -243,12 +243,36 @@ move_multiple_files (const gchar *prefix,
 }
 
 static void
+verify_multiple_files_moved (const gchar *prefix,
+                             GFile       *src,
+                             GFile       *dest,
+                             guint        num,
+                             gboolean     moved)
+{
+    for (guint i = 0; i < num; i++)
+    {
+        g_autofree gchar *file_name = g_strdup_printf ("%s_%i", prefix, i);
+        g_autoptr (GFile) file_in_source = g_file_get_child (src, file_name);
+        g_autoptr (GFile) file_in_destination = g_file_get_child (dest, file_name);
+
+        if (moved)
+        {
+            g_assert_false (g_file_query_exists (file_in_source, NULL));
+            g_assert_true (g_file_query_exists (file_in_destination, NULL));
+        }
+        else
+        {
+            g_assert_true (g_file_query_exists (file_in_source, NULL));
+            g_assert_false (g_file_query_exists (file_in_destination, NULL));
+        }
+    }
+}
+
+static void
 test_move_files_small (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 10);
 
@@ -260,13 +284,7 @@ test_move_files_small (void)
 
     move_multiple_files ("move_file", root, dir, 10);
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 10, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -277,9 +295,7 @@ static void
 test_move_files_small_undo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 10);
 
@@ -293,15 +309,7 @@ test_move_files_small_undo (void)
 
     test_operation_undo ();
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 10, FALSE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -312,9 +320,7 @@ static void
 test_move_files_small_undo_redo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 10);
 
@@ -328,13 +334,7 @@ test_move_files_small_undo_redo (void)
 
     test_operation_undo_redo ();
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 10, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -345,9 +345,7 @@ static void
 test_move_files_medium (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 50);
 
@@ -359,13 +357,7 @@ test_move_files_medium (void)
 
     move_multiple_files ("move_file", root, dir, 50);
 
-    for (int i = 0; i < 50; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 50, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -376,9 +368,7 @@ static void
 test_move_files_medium_undo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 50);
 
@@ -391,15 +381,7 @@ test_move_files_medium_undo (void)
 
     test_operation_undo ();
 
-    for (int i = 0; i < 50; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 50, FALSE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -410,9 +392,7 @@ static void
 test_move_files_medium_undo_redo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 50);
 
@@ -426,13 +406,7 @@ test_move_files_medium_undo_redo (void)
 
     test_operation_undo_redo ();
 
-    for (int i = 0; i < 50; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 50, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -443,9 +417,7 @@ static void
 test_move_files_large (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 500);
 
@@ -458,15 +430,7 @@ test_move_files_large (void)
 
     test_operation_undo ();
 
-    for (int i = 0; i < 500; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 500, FALSE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -477,9 +441,7 @@ static void
 test_move_files_large_undo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 500);
 
@@ -493,13 +455,7 @@ test_move_files_large_undo (void)
 
     test_operation_undo_redo ();
 
-    for (int i = 0; i < 500; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 500, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -510,9 +466,7 @@ static void
 test_move_files_large_undo_redo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_files ("move", 500);
 
@@ -526,13 +480,7 @@ test_move_files_large_undo_redo (void)
 
     test_operation_undo_redo ();
 
-    for (int i = 0; i < 500; i++)
-    {
-        file_name = g_strdup_printf ("move_file_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_file", root, dir, 500, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -543,9 +491,7 @@ static void
 test_move_directories_small (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 10);
 
@@ -557,13 +503,7 @@ test_move_directories_small (void)
 
     move_multiple_files ("move_dir", root, dir, 10);
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 10, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -574,9 +514,7 @@ static void
 test_move_directories_small_undo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 10);
 
@@ -589,15 +527,7 @@ test_move_directories_small_undo (void)
 
     test_operation_undo ();
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 10, FALSE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -608,9 +538,7 @@ static void
 test_move_directories_small_undo_redo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 10);
 
@@ -624,13 +552,7 @@ test_move_directories_small_undo_redo (void)
 
     test_operation_undo_redo ();
 
-    for (int i = 0; i < 10; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 10, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -641,9 +563,7 @@ static void
 test_move_directories_medium (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 50);
 
@@ -655,13 +575,7 @@ test_move_directories_medium (void)
 
     move_multiple_files ("move_dir", root, dir, 50);
 
-    for (int i = 0; i < 50; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 50, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -672,9 +586,7 @@ static void
 test_move_directories_medium_undo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 50);
 
@@ -687,15 +599,7 @@ test_move_directories_medium_undo (void)
 
     test_operation_undo ();
 
-    for (int i = 0; i < 50; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 50, FALSE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -706,9 +610,7 @@ static void
 test_move_directories_medium_undo_redo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 50);
 
@@ -722,13 +624,7 @@ test_move_directories_medium_undo_redo (void)
 
     test_operation_undo_redo ();
 
-    for (int i = 0; i < 50; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 50, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -739,9 +635,7 @@ static void
 test_move_directories_large (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 500);
 
@@ -753,13 +647,7 @@ test_move_directories_large (void)
 
     move_multiple_files ("move_dir", root, dir, 500);
 
-    for (int i = 0; i < 500; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 500, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -770,9 +658,7 @@ static void
 test_move_directories_large_undo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 500);
 
@@ -785,15 +671,7 @@ test_move_directories_large_undo (void)
 
     test_operation_undo ();
 
-    for (int i = 0; i < 500; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_assert_false (g_file_query_exists (file, NULL));
-        file = g_file_get_child (root, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 500, FALSE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
@@ -804,9 +682,7 @@ static void
 test_move_directories_large_undo_redo (void)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
-    gchar *file_name;
 
     create_multiple_directories ("move", 500);
 
@@ -820,13 +696,7 @@ test_move_directories_large_undo_redo (void)
 
     test_operation_undo_redo ();
 
-    for (int i = 0; i < 500; i++)
-    {
-        file_name = g_strdup_printf ("move_dir_%i", i);
-        file = g_file_get_child (dir, file_name);
-        g_free (file_name);
-        g_assert_true (g_file_query_exists (file, NULL));
-    }
+    verify_multiple_files_moved ("move_dir", root, dir, 500, TRUE);
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
