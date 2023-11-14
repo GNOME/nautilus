@@ -305,7 +305,6 @@ create_multiple_files (gchar *prefix,
                        gint   number_of_files)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     gchar *file_name;
 
@@ -315,6 +314,7 @@ create_multiple_files (gchar *prefix,
     for (int i = 0; i < number_of_files; i++)
     {
         GFileOutputStream *out;
+        g_autoptr (GFile) file = NULL;
 
         file_name = g_strdup_printf ("%s_file_%i", prefix, i);
         file = g_file_get_child (root, file_name);
@@ -338,7 +338,6 @@ create_multiple_directories (gchar *prefix,
                              gint   number_of_directories)
 {
     g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     gchar *file_name;
 
@@ -347,6 +346,8 @@ create_multiple_directories (gchar *prefix,
 
     for (int i = 0; i < number_of_directories; i++)
     {
+        g_autoptr (GFile) file = NULL;
+
         file_name = g_strdup_printf ("%s_dir_%i", prefix, i);
         file = g_file_get_child (root, file_name);
         g_free (file_name);

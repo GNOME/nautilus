@@ -12,12 +12,10 @@
 static void
 test_simple_file (void)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) file = NULL;
+    g_autoptr (GFile) root = g_file_new_for_path (test_get_tmp_dir ());
+    g_autoptr (GFile) file = g_file_get_child (root, "simple_file");
+    g_autoptr (GFileOutputStream) steam = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    file = g_file_get_child (root, "simple_file");
-    g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     g_assert_false (dir_has_files (file));
     g_assert_true (g_file_delete (file, NULL, NULL));
 }

@@ -118,12 +118,13 @@ test_multiple_files_different_medium (void)
     g_assert_true (NAUTILUS_IS_DIRECTORY (directory));
     for (gint index = 0; index < 50; index++)
     {
-        first_file_name = g_strdup_printf ("multiple_files_different_medium_%i", index);
-        first_file = nautilus_file_new_from_filename (directory, first_file_name, FALSE);
-        nautilus_directory_add_file (directory, first_file);
-        g_assert_true (NAUTILUS_IS_FILE (first_file));
-        first_selection = g_list_prepend (first_selection, g_object_ref (first_file));
-        second_selection = g_list_prepend (second_selection, g_object_ref (first_file));
+        g_autofree gchar *file_name = g_strdup_printf ("multiple_files_different_medium_%i", index);
+        NautilusFile *file = nautilus_file_new_from_filename (directory, file_name, FALSE);
+
+        nautilus_directory_add_file (directory, file);
+        g_assert_true (NAUTILUS_IS_FILE (file));
+        first_selection = g_list_prepend (first_selection, g_object_ref (file));
+        second_selection = g_list_prepend (second_selection, g_object_ref (file));
     }
 
     first_file_name = g_strdup_printf ("multiple_files_different_medium_lastElement");
@@ -181,12 +182,13 @@ test_multiple_files_different_large (void)
     g_assert_true (NAUTILUS_IS_DIRECTORY (directory));
     for (gint index = 0; index < 1000; index++)
     {
-        first_file_name = g_strdup_printf ("multiple_files_different_large_%i", index);
-        first_file = nautilus_file_new_from_filename (directory, first_file_name, FALSE);
-        nautilus_directory_add_file (directory, first_file);
-        g_assert_true (NAUTILUS_IS_FILE (first_file));
-        first_selection = g_list_prepend (first_selection, g_object_ref (first_file));
-        second_selection = g_list_prepend (second_selection, g_object_ref (first_file));
+        g_autofree gchar *file_name = g_strdup_printf ("multiple_files_different_large_%i", index);
+        NautilusFile *file = nautilus_file_new_from_filename (directory, file_name, FALSE);
+
+        nautilus_directory_add_file (directory, file);
+        g_assert_true (NAUTILUS_IS_FILE (file));
+        first_selection = g_list_prepend (first_selection, g_object_ref (file));
+        second_selection = g_list_prepend (second_selection, g_object_ref (file));
     }
 
     first_file_name = g_strdup_printf ("multiple_files_different_large_lastElement");
