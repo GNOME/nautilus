@@ -34,9 +34,6 @@ struct _NautilusFileNameWidgetControllerClass
 
         gchar *  (*get_new_name)         (NautilusFileNameWidgetController *controller);
 
-        gboolean (*ignore_existing_file) (NautilusFileNameWidgetController *controller,
-                                          NautilusFile                     *existing_file);
-
         void     (*name_accepted)        (NautilusFileNameWidgetController *controller);
 };
 
@@ -46,3 +43,5 @@ void    nautilus_file_name_widget_controller_set_containing_directory (NautilusF
                                                                        NautilusDirectory                *directory);
 void    nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileNameWidgetController *controller,
                                                                    gboolean                          is_folder);
+void    nautilus_file_name_widget_controller_set_original_name (NautilusFileNameWidgetController *controller,
+                                                                const char                       *original_name);

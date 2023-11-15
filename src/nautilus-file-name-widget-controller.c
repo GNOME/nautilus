@@ -32,6 +32,7 @@ typedef struct
     GtkWidget *activate_button;
     NautilusDirectory *containing_directory;
     gboolean target_is_folder;
+    char *original_name;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -73,6 +74,16 @@ nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileNameWidge
 }
 
 void
+nautilus_file_name_widget_controller_set_original_name (NautilusFileNameWidgetController *self,
+                                                        const char                       *original_name)
+{
+    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
+
+    g_free (priv->original_name);
+    priv->original_name = g_strdup (original_name);
+}
+
+void
 nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *self,
                                                                NautilusDirectory                *directory)
 {
@@ -110,8 +121,10 @@ static gboolean
 nautilus_file_name_widget_controller_ignore_existing_file (NautilusFileNameWidgetController *self,
                                                            NautilusFile                     *existing_file)
 {
-    return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->ignore_existing_file (self,
-                                                                                        existing_file);
+    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
+
+    return (priv->original_name != NULL &&
+            nautilus_file_compare_display_name (existing_file, priv->original_name) == 0);
 }
 
 static gchar *
@@ -171,13 +184,6 @@ nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetContro
     }
 
     return is_valid;
-}
-
-static gboolean
-real_ignore_existing_file (NautilusFileNameWidgetController *self,
-                           NautilusFile                     *existing_file)
-{
-    return FALSE;
 }
 
 static gboolean
@@ -454,6 +460,8 @@ nautilus_file_name_widget_controller_finalize (GObject *object)
         priv->duplicated_label_timeout_id = 0;
     }
 
+    g_free (priv->original_name);
+
     G_OBJECT_CLASS (nautilus_file_name_widget_controller_parent_class)->finalize (object);
 }
 
@@ -466,7 +474,6 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
     object_class->finalize = nautilus_file_name_widget_controller_finalize;
 
     klass->get_new_name = real_get_new_name;
-    klass->ignore_existing_file = real_ignore_existing_file;
 
     signals[NAME_ACCEPTED] =
         g_signal_new ("name-accepted",

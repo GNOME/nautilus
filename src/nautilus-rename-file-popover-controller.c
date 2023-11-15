@@ -83,16 +83,6 @@ rename_file_popover_controller_on_closed (GtkPopover *popover,
 }
 
 static gboolean
-nautilus_rename_file_popover_controller_ignore_existing_file (NautilusFileNameWidgetController *controller,
-                                                              NautilusFile                     *existing_file)
-{
-    NautilusRenameFilePopoverController *self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
-    const char *display_name = nautilus_file_get_display_name (existing_file);
-
-    return nautilus_file_compare_display_name (self->target_file, display_name) == 0;
-}
-
-static gboolean
 name_entry_on_f2_pressed (GtkWidget                           *widget,
                           NautilusRenameFilePopoverController *self)
 {
@@ -262,6 +252,8 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
 
     nautilus_file_name_widget_controller_set_target_is_folder (NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (self),
                                                                self->target_is_folder);
+    nautilus_file_name_widget_controller_set_original_name (NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (self),
+                                                            nautilus_file_get_display_name (self->target_file));
 
     self->closed_handler_id = g_signal_connect (self->rename_file_popover,
                                                 "closed",
@@ -337,9 +329,6 @@ static void
 nautilus_rename_file_popover_controller_class_init (NautilusRenameFilePopoverControllerClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    NautilusFileNameWidgetControllerClass *parent_class = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_CLASS (klass);
 
     object_class->finalize = nautilus_rename_file_popover_controller_finalize;
-
-    parent_class->ignore_existing_file = nautilus_rename_file_popover_controller_ignore_existing_file;
 }
