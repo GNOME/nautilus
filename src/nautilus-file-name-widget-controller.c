@@ -42,7 +42,6 @@ typedef struct
 enum
 {
     NAME_ACCEPTED,
-    CANCELLED,
     LAST_SIGNAL
 };
 
@@ -492,14 +491,6 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
                       G_TYPE_FROM_CLASS (klass),
                       G_SIGNAL_RUN_FIRST,
                       G_STRUCT_OFFSET (NautilusFileNameWidgetControllerClass, name_accepted),
-                      NULL, NULL,
-                      g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 0);
-    signals[CANCELLED] =
-        g_signal_new ("cancelled",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      0,
                       NULL, NULL,
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 0);

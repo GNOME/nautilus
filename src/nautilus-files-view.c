@@ -56,7 +56,6 @@
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-changes-queue.h"
-#include "nautilus-file-name-widget-controller.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-undo-manager.h"
@@ -2090,6 +2089,13 @@ create_new_folder_callback (const char *folder_name,
     view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
 
+    if (folder_name == NULL)
+    {
+        /* Cancelled */
+        g_clear_object (&priv->new_folder_controller);
+        return;
+    }
+
     data = new_folder_data_new (view, with_selection);
 
     g_signal_connect_data (view,
@@ -2115,19 +2121,6 @@ create_new_folder_callback (const char *folder_name,
     gtk_widget_grab_focus (GTK_WIDGET (view));
 
     g_object_unref (parent);
-}
-
-static void
-new_folder_dialog_controller_on_cancelled (NautilusNewFolderDialogController *controller,
-                                           gpointer                           user_data)
-{
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    g_clear_object (&priv->new_folder_controller);
 }
 
 static void
@@ -2163,11 +2156,6 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
                                                    common_prefix,
                                                    create_new_folder_callback,
                                                    view);
-
-    g_signal_connect (priv->new_folder_controller,
-                      "cancelled",
-                      (GCallback) new_folder_dialog_controller_on_cancelled,
-                      view);
 }
 
 typedef struct
@@ -2258,6 +2246,13 @@ create_archive_callback (const char *archive_name,
     view = NAUTILUS_FILES_VIEW (callback_data->view);
     priv = nautilus_files_view_get_instance_private (view);
 
+    if (archive_name == NULL)
+    {
+        /* Cancelled */
+        g_clear_object (&priv->compress_controller);
+        return;
+    }
+
     for (l = callback_data->selection; l != NULL; l = l->next)
     {
         source_files = g_list_prepend (source_files,
@@ -2339,19 +2334,6 @@ create_archive_callback (const char *archive_name,
 }
 
 static void
-compress_dialog_controller_on_cancelled (NautilusNewFolderDialogController *controller,
-                                         gpointer                           user_data)
-{
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    g_clear_object (&priv->compress_controller);
-}
-
-static void
 compress_callback_data_free (CompressCallbackData *data)
 {
     nautilus_file_list_free (data->selection);
@@ -2411,10 +2393,6 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     g_object_weak_ref (G_OBJECT (priv->compress_controller),
                        (GWeakNotify) compress_callback_data_free,
                        data);
-    g_signal_connect (priv->compress_controller,
-                      "cancelled",
-                      (GCallback) compress_dialog_controller_on_cancelled,
-                      view);
 }
 
 static void

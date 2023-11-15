@@ -108,13 +108,12 @@ compress_dialog_controller_on_response (GtkDialog *dialog,
                                         gint       response_id,
                                         gpointer   user_data)
 {
-    NautilusCompressDialogController *controller;
-
-    controller = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
 
     if (response_id != GTK_RESPONSE_OK)
     {
-        g_signal_emit_by_name (controller, "cancelled");
+        /* Pass NULL name meaning it's cancelled. */
+        self->callback (NULL, NULL, self->callback_data);
     }
 }
 

@@ -42,13 +42,12 @@ new_folder_dialog_controller_on_response (GtkDialog *dialog,
                                           gint       response_id,
                                           gpointer   user_data)
 {
-    NautilusNewFolderDialogController *controller;
-
-    controller = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (user_data);
+    NautilusNewFolderDialogController *self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (user_data);
 
     if (response_id != GTK_RESPONSE_OK)
     {
-        g_signal_emit_by_name (controller, "cancelled");
+        /* Pass NULL name meaning it's cancelled. */
+        self->callback (NULL, self->with_selection, self->callback_data);
     }
 }
 
