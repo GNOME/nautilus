@@ -57,105 +57,94 @@ empty_directory_by_prefix (GFile *parent,
     }
 }
 
+static void
+create_hierarchy_from_template (const GStrv  hier,
+                                const gchar *substitution)
+{
+    const gchar *root_path = test_get_tmp_dir ();
+
+    for (guint i = 0; hier[i] != NULL; i++)
+    {
+        g_autoptr (GFile) file = NULL;
+        g_autoptr (GString) file_path = g_string_new (hier[i]);
+        gboolean is_directory = g_str_has_suffix (file_path->str, G_DIR_SEPARATOR_S);
+
+        g_string_replace (file_path, "%s", substitution, 0);
+        g_string_prepend (file_path, G_DIR_SEPARATOR_S);
+        g_string_prepend (file_path, root_path);
+        file = g_file_new_for_path (file_path->str);
+
+        if (is_directory)
+        {
+            g_file_make_directory (file, NULL, NULL);
+        }
+        else
+        {
+            g_autoptr (GFileOutputStream) stream = g_file_create (file, G_FILE_CREATE_NONE,
+                                                                  NULL, NULL);
+        }
+    }
+}
+
+static void
+delete_hierarchy_from_template (const GStrv  hier,
+                                const gchar *substitution)
+{
+    const gchar *root_path = test_get_tmp_dir ();
+    guint len = g_strv_length (hier);
+
+    for (guint i = 1; i <= len; i++)
+    {
+        g_autoptr (GFile) file = NULL;
+        g_autoptr (GString) file_path = g_string_new (hier[len - i]);
+
+        g_string_replace (file_path, "%s", substitution, 0);
+        g_string_prepend (file_path, G_DIR_SEPARATOR_S);
+        g_string_prepend (file_path, root_path);
+        file = g_file_new_for_path (file_path->str);
+
+        g_file_delete (file, NULL, NULL);
+    }
+}
+
+const GStrv search_hierarchy = (char *[])
+{
+    "engine_%s",
+
+    "engine_%s_directory/",
+    "engine_%s_directory/%s_child",
+
+    "engine_%s_second_directory/",
+    "engine_%s_second_directory/engine_%s_child",
+
+    "%s_directory/",
+    "%s_directory/engine_%s_child",
+    NULL
+};
+
 void
 create_search_file_hierarchy (gchar *search_engine)
 {
-    g_autoptr (GFile) location = NULL;
-    g_autoptr (GFile) file = NULL;
-    GFileOutputStream *out;
-    gchar *file_name;
+    create_hierarchy_from_template (search_hierarchy, search_engine);
 
-    location = g_file_new_for_path (test_get_tmp_dir ());
 
-    file_name = g_strdup_printf ("engine_%s", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
-    g_object_unref (out);
 
-    file_name = g_strdup_printf ("engine_%s_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    g_file_make_directory (file, NULL, NULL);
 
-    file_name = g_strdup_printf ("%s_child", search_engine);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-    out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
-    g_object_unref (out);
 
-    file_name = g_strdup_printf ("engine_%s_second_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    g_file_make_directory (file, NULL, NULL);
 
-    file_name = g_strdup_printf ("engine_%s_child", search_engine);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-    out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
-    g_object_unref (out);
 
-    file_name = g_strdup_printf ("%s_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    g_file_make_directory (file, NULL, NULL);
 
-    file_name = g_strdup_printf ("engine_%s_child", search_engine);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-    out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
-    g_object_unref (out);
 }
 
 void
 delete_search_file_hierarchy (gchar *search_engine)
 {
-    g_autoptr (GFile) location = NULL;
-    g_autoptr (GFile) file = NULL;
-    gchar *file_name;
+    delete_hierarchy_from_template (search_hierarchy, search_engine);
 
-    location = g_file_new_for_path (test_get_tmp_dir ());
 
-    file_name = g_strdup_printf ("engine_%s", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    g_file_delete (file, NULL, NULL);
 
-    file_name = g_strdup_printf ("engine_%s_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    file_name = g_strdup_printf ("%s_child", search_engine);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-    g_file_delete (file, NULL, NULL);
-    file_name = g_strdup_printf ("engine_%s_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    g_file_delete (file, NULL, NULL);
 
-    file_name = g_strdup_printf ("engine_%s_second_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    file_name = g_strdup_printf ("engine_%s_child", search_engine);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-    g_file_delete (file, NULL, NULL);
-    file_name = g_strdup_printf ("engine_%s_second_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    g_file_delete (file, NULL, NULL);
 
-    file_name = g_strdup_printf ("%s_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    file_name = g_strdup_printf ("engine_%s_child", search_engine);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-    g_file_delete (file, NULL, NULL);
-    file_name = g_strdup_printf ("%s_directory", search_engine);
-    file = g_file_get_child (location, file_name);
-    g_free (file_name);
-    g_file_delete (file, NULL, NULL);
 }
 
 /* This callback function quits the mainloop inside which the
