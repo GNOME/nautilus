@@ -81,7 +81,7 @@ nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameW
     g_object_set (self, "containing-directory", directory, NULL);
 }
 
-gboolean
+static gboolean
 nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController *self,
                                                        gchar                            *name)
 {
@@ -107,16 +107,6 @@ nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetCon
 }
 
 static gboolean
-nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetController  *self,
-                                                    gchar                             *name,
-                                                    gchar                            **error_message)
-{
-    return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->name_is_valid (self,
-                                                                                 name,
-                                                                                 error_message);
-}
-
-static gboolean
 nautilus_file_name_widget_controller_ignore_existing_file (NautilusFileNameWidgetController *self,
                                                            NautilusFile                     *existing_file)
 {
@@ -135,10 +125,12 @@ real_get_new_name (NautilusFileNameWidgetController *self)
 }
 
 static gboolean
-real_name_is_valid (NautilusFileNameWidgetController  *self,
-                    gchar                             *name,
-                    gchar                            **error_message)
+nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetController  *self,
+                                                    gchar                             *name,
+                                                    gchar                            **error_message)
 {
+    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
+    gboolean is_folder = priv->target_is_folder;
     gboolean is_valid;
 
     is_valid = TRUE;
@@ -149,28 +141,33 @@ real_name_is_valid (NautilusFileNameWidgetController  *self,
     else if (strstr (name, "/") != NULL)
     {
         is_valid = FALSE;
-        *error_message = _("File names cannot contain “/”.");
+        *error_message = is_folder ? _("Folder names cannot contain “/”.") :
+                                     _("File names cannot contain “/”.");
     }
     else if (strcmp (name, ".") == 0)
     {
         is_valid = FALSE;
-        *error_message = _("A file cannot be called “.”.");
+        *error_message = is_folder ? _("A folder cannot be called “.”.") :
+                                     _("A file cannot be called “.”.");
     }
     else if (strcmp (name, "..") == 0)
     {
         is_valid = FALSE;
-        *error_message = _("A file cannot be called “..”.");
+        *error_message = is_folder ? _("A folder cannot be called “..”.") :
+                                     _("A file cannot be called “..”.");
     }
     else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
     {
         is_valid = FALSE;
-        *error_message = _("File name is too long.");
+        *error_message = is_folder ? _("Folder name is too long.") :
+                                     _("File name is too long.");
     }
 
     if (is_valid && g_str_has_prefix (name, "."))
     {
         /* We must warn about the side effect */
-        *error_message = _("Files with “.” at the beginning of their name are hidden.");
+        *error_message = is_folder ? _("Folders with “.” at the beginning of their name are hidden.") :
+                                     _("Files with “.” at the beginning of their name are hidden.");
     }
 
     return is_valid;
@@ -469,7 +466,6 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
     object_class->finalize = nautilus_file_name_widget_controller_finalize;
 
     klass->get_new_name = real_get_new_name;
-    klass->name_is_valid = real_name_is_valid;
     klass->ignore_existing_file = real_ignore_existing_file;
 
     signals[NAME_ACCEPTED] =

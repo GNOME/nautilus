@@ -35,49 +35,6 @@ struct _NautilusNewFolderDialogController
 
 G_DEFINE_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER)
 
-static gboolean
-nautilus_new_folder_dialog_controller_name_is_valid (NautilusFileNameWidgetController  *self,
-                                                     gchar                             *name,
-                                                     gchar                            **error_message)
-{
-    gboolean is_valid;
-
-    is_valid = TRUE;
-    if (strlen (name) == 0)
-    {
-        is_valid = FALSE;
-    }
-    else if (strstr (name, "/") != NULL)
-    {
-        is_valid = FALSE;
-        *error_message = _("Folder names cannot contain “/”.");
-    }
-    else if (strcmp (name, ".") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("A folder cannot be called “.”.");
-    }
-    else if (strcmp (name, "..") == 0)
-    {
-        is_valid = FALSE;
-        *error_message = _("A folder cannot be called “..”.");
-    }
-    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
-    {
-        is_valid = FALSE;
-        *error_message = _("Folder name is too long.");
-    }
-
-    if (is_valid && g_str_has_prefix (name, "."))
-    {
-        /* We must warn about the side effect */
-        *error_message = _("Folders with “.” at the beginning of their name are hidden.");
-        return TRUE;
-    }
-
-    return is_valid;
-}
-
 static void
 new_folder_dialog_controller_on_response (GtkDialog *dialog,
                                           gint       response_id,
@@ -183,9 +140,6 @@ static void
 nautilus_new_folder_dialog_controller_class_init (NautilusNewFolderDialogControllerClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    NautilusFileNameWidgetControllerClass *parent_class = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_CLASS (klass);
 
     object_class->finalize = nautilus_new_folder_dialog_controller_finalize;
-
-    parent_class->name_is_valid = nautilus_new_folder_dialog_controller_name_is_valid;
 }
