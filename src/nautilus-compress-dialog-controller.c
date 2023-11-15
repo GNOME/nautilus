@@ -100,25 +100,6 @@ nautilus_compress_item_new (NautilusCompressionFormat  format,
     return item;
 }
 
-static gchar *
-nautilus_compress_dialog_controller_get_new_name (NautilusFileNameWidgetController *controller)
-{
-    NautilusCompressDialogController *self;
-    g_autofree gchar *basename = NULL;
-
-    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
-
-    /* Chain up */
-    basename = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_CLASS (nautilus_compress_dialog_controller_parent_class)->get_new_name (controller);
-
-    if (g_str_has_suffix (basename, self->extension))
-    {
-        return g_steal_pointer (&basename);
-    }
-
-    return g_strconcat (basename, self->extension, NULL);
-}
-
 static void
 compress_dialog_controller_on_response (GtkDialog *dialog,
                                         gint       response_id,
@@ -137,6 +118,7 @@ compress_dialog_controller_on_response (GtkDialog *dialog,
 static void
 update_selected_format (NautilusCompressDialogController *self)
 {
+    NautilusFileNameWidgetController *controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (self);
     gboolean show_passphrase = FALSE;
     guint selected;
     GListModel *model;
@@ -161,6 +143,7 @@ update_selected_format (NautilusCompressDialogController *self)
     }
 
     self->extension = item->extension;
+    nautilus_file_name_widget_controller_set_extension (controller, self->extension);
 
     gtk_widget_set_visible (self->passphrase_label, show_passphrase);
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
@@ -575,11 +558,8 @@ static void
 nautilus_compress_dialog_controller_class_init (NautilusCompressDialogControllerClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    NautilusFileNameWidgetControllerClass *parent_class = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_CLASS (klass);
 
     object_class->finalize = nautilus_compress_dialog_controller_finalize;
-
-    parent_class->get_new_name = nautilus_compress_dialog_controller_get_new_name;
 }
 
 const gchar *

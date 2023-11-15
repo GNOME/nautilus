@@ -33,6 +33,7 @@ typedef struct
     NautilusDirectory *containing_directory;
     gboolean target_is_folder;
     char *original_name;
+    char *extension;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -60,12 +61,6 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusFileNameWidgetController, nautilus_file_name_widget_controller, G_TYPE_OBJECT)
 
-gchar *
-nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *self)
-{
-    return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->get_new_name (self);
-}
-
 void
 nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileNameWidgetController *self,
                                                            gboolean                          is_folder)
@@ -81,6 +76,16 @@ nautilus_file_name_widget_controller_set_original_name (NautilusFileNameWidgetCo
 
     g_free (priv->original_name);
     priv->original_name = g_strdup (original_name);
+}
+
+void
+nautilus_file_name_widget_controller_set_extension (NautilusFileNameWidgetController *self,
+                                                    const char                       *extension)
+{
+    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
+
+    g_free (priv->extension);
+    priv->extension = g_strdup (extension);
 }
 
 void
@@ -127,14 +132,22 @@ nautilus_file_name_widget_controller_ignore_existing_file (NautilusFileNameWidge
             nautilus_file_compare_display_name (existing_file, priv->original_name) == 0);
 }
 
-static gchar *
-real_get_new_name (NautilusFileNameWidgetController *self)
+gchar *
+nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *self)
 {
-    NautilusFileNameWidgetControllerPrivate *priv;
+    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
+    g_autofree char *basename = NULL;
 
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
+    basename = g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (priv->name_entry))));
 
-    return g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (priv->name_entry))));
+    if (priv->extension != NULL && !g_str_has_suffix (basename, priv->extension))
+    {
+        return g_strconcat (basename, priv->extension, NULL);
+    }
+    else
+    {
+        return g_steal_pointer (&basename);
+    }
 }
 
 static gboolean
@@ -461,6 +474,7 @@ nautilus_file_name_widget_controller_finalize (GObject *object)
     }
 
     g_free (priv->original_name);
+    g_free (priv->extension);
 
     G_OBJECT_CLASS (nautilus_file_name_widget_controller_parent_class)->finalize (object);
 }
@@ -472,8 +486,6 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
 
     object_class->set_property = nautilus_file_name_widget_controller_set_property;
     object_class->finalize = nautilus_file_name_widget_controller_finalize;
-
-    klass->get_new_name = real_get_new_name;
 
     signals[NAME_ACCEPTED] =
         g_signal_new ("name-accepted",

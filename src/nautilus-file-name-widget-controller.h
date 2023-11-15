@@ -32,8 +32,6 @@ struct _NautilusFileNameWidgetControllerClass
 {
         GObjectClass parent_class;
 
-        gchar *  (*get_new_name)         (NautilusFileNameWidgetController *controller);
-
         void     (*name_accepted)        (NautilusFileNameWidgetController *controller);
 };
 
@@ -45,3 +43,5 @@ void    nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileN
                                                                    gboolean                          is_folder);
 void    nautilus_file_name_widget_controller_set_original_name (NautilusFileNameWidgetController *controller,
                                                                 const char                       *original_name);
+void    nautilus_file_name_widget_controller_set_extension (NautilusFileNameWidgetController *controller,
+                                                            const char                       *extension);
