@@ -340,6 +340,9 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
 
     self->target_is_folder = nautilus_file_is_directory (self->target_file);
 
+    nautilus_file_name_widget_controller_set_target_is_folder (NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (self),
+                                                               self->target_is_folder);
+
     self->closed_handler_id = g_signal_connect (self->rename_file_popover,
                                                 "closed",
                                                 G_CALLBACK (rename_file_popover_controller_on_closed),

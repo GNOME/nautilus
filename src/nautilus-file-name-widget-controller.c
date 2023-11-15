@@ -31,6 +31,7 @@ typedef struct
     GtkWidget *name_entry;
     GtkWidget *activate_button;
     NautilusDirectory *containing_directory;
+    gboolean target_is_folder;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -50,6 +51,7 @@ enum
     PROP_NAME_ENTRY,
     PROP_ACTION_BUTTON,
     PROP_CONTAINING_DIRECTORY,
+    PROP_TARGET_IS_FOLDER,
     NUM_PROPERTIES
 };
 
@@ -61,6 +63,13 @@ gchar *
 nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *self)
 {
     return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->get_new_name (self);
+}
+
+void
+nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileNameWidgetController *self,
+                                                           gboolean                          is_folder)
+{
+    g_object_set (self, "target-is-folder", is_folder, NULL);
 }
 
 void
@@ -408,6 +417,12 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
         }
         break;
 
+        case PROP_TARGET_IS_FOLDER:
+        {
+            priv->target_is_folder = g_value_get_boolean (value);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -519,4 +534,10 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
                              "The directory used to check for duplicate names",
                              NAUTILUS_TYPE_DIRECTORY,
                              G_PARAM_WRITABLE));
+    g_object_class_install_property (
+        object_class,
+        PROP_TARGET_IS_FOLDER,
+        g_param_spec_boolean ("target-is-folder", NULL, NULL,
+                              FALSE,
+                              G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 }

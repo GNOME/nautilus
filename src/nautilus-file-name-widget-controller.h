@@ -48,5 +48,7 @@ gchar * nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidge
 
 void    nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *controller,
                                                                        NautilusDirectory                *directory);
+void    nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileNameWidgetController *controller,
+                                                                   gboolean                          is_folder);
 gboolean nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController  *self,
                                                                 gchar                             *name);

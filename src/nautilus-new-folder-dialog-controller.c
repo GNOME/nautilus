@@ -124,7 +124,9 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                          "error-label", error_label,
                          "name-entry", name_entry,
                          "activate-button", activate_button,
-                         "containing-directory", destination_directory, NULL);
+                         "containing-directory", destination_directory,
+                         "target-is-folder", TRUE,
+                         NULL);
 
     self->with_selection = with_selection;
 
