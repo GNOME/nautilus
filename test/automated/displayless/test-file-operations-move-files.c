@@ -14,17 +14,17 @@ test_move_one_file (void)
     create_one_file ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -50,17 +50,17 @@ test_move_one_file_undo (void)
     create_one_file ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -88,17 +88,17 @@ test_move_one_file_undo_redo (void)
     create_one_file ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -126,17 +126,17 @@ test_move_one_empty_directory (void)
     create_one_empty_directory ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -161,17 +161,17 @@ test_move_one_empty_directory_undo (void)
     create_one_empty_directory ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -198,17 +198,17 @@ test_move_one_empty_directory_undo_redo (void)
     create_one_empty_directory ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -235,7 +235,7 @@ move_multiple_files (const gchar *prefix,
         g_autofree gchar *file_name = g_strdup_printf ("%s_%i", prefix, i);
         GFile *file = g_file_get_child (src, file_name);
 
-        g_assert_true (file != NULL);
+        g_assert_true (g_file_query_exists (file, NULL));
         files = g_list_prepend (files, file);
     }
 
@@ -277,10 +277,10 @@ test_move_files_small (void)
     create_multiple_files ("move", 10);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 10);
 
@@ -300,10 +300,10 @@ test_move_files_small_undo (void)
     create_multiple_files ("move", 10);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 10);
 
@@ -325,10 +325,10 @@ test_move_files_small_undo_redo (void)
     create_multiple_files ("move", 10);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 10);
 
@@ -350,10 +350,10 @@ test_move_files_medium (void)
     create_multiple_files ("move", 50);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 50);
 
@@ -375,7 +375,7 @@ test_move_files_medium_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 50);
 
@@ -397,10 +397,10 @@ test_move_files_medium_undo_redo (void)
     create_multiple_files ("move", 50);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 50);
 
@@ -424,7 +424,7 @@ test_move_files_large (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 500);
 
@@ -446,10 +446,10 @@ test_move_files_large_undo (void)
     create_multiple_files ("move", 500);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 500);
 
@@ -471,10 +471,10 @@ test_move_files_large_undo_redo (void)
     create_multiple_files ("move", 500);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_file", root, dir, 500);
 
@@ -496,10 +496,10 @@ test_move_directories_small (void)
     create_multiple_directories ("move", 10);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 10);
 
@@ -521,7 +521,7 @@ test_move_directories_small_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 10);
 
@@ -543,10 +543,10 @@ test_move_directories_small_undo_redo (void)
     create_multiple_directories ("move", 10);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 10);
 
@@ -568,10 +568,10 @@ test_move_directories_medium (void)
     create_multiple_directories ("move", 50);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 50);
 
@@ -593,7 +593,7 @@ test_move_directories_medium_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 50);
 
@@ -615,10 +615,10 @@ test_move_directories_medium_undo_redo (void)
     create_multiple_directories ("move", 50);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 50);
 
@@ -640,10 +640,10 @@ test_move_directories_large (void)
     create_multiple_directories ("move", 500);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 500);
 
@@ -665,7 +665,7 @@ test_move_directories_large_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 500);
 
@@ -687,10 +687,10 @@ test_move_directories_large_undo_redo (void)
     create_multiple_directories ("move", 500);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     dir = g_file_get_child (root, "move_destination_dir");
-    g_assert_true (dir != NULL);
+    g_assert_true (g_file_query_exists (dir, NULL));
 
     move_multiple_files ("move_dir", root, dir, 500);
 
@@ -721,14 +721,14 @@ test_move_full_directory (void)
     create_one_file ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -758,14 +758,14 @@ test_move_full_directory_undo (void)
     create_one_file ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -796,14 +796,14 @@ test_move_full_directory_undo_redo (void)
     create_one_file ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -841,14 +841,14 @@ test_move_first_hierarchy (void)
     create_first_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -885,14 +885,14 @@ test_move_first_hierarchy_undo (void)
     create_first_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -931,14 +931,14 @@ test_move_first_hierarchy_undo_redo (void)
     create_first_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -982,14 +982,14 @@ test_move_second_hierarchy (void)
     create_second_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -1028,14 +1028,14 @@ test_move_second_hierarchy_undo (void)
     create_second_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -1075,15 +1075,15 @@ test_move_second_hierarchy_undo_redo (void)
     create_second_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
     g_file_make_directory (first_dir, NULL, NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
     g_file_make_directory (second_dir, NULL, NULL);
 
     nautilus_file_operations_move_sync (files,
@@ -1133,10 +1133,10 @@ test_move_third_hierarchy (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -1186,14 +1186,14 @@ test_move_third_hierarchy_undo (void)
     create_third_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -1243,14 +1243,14 @@ test_move_third_hierarchy_undo_redo (void)
     create_third_hierarchy ("move");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         second_dir);
@@ -1311,14 +1311,14 @@ test_move_fourth_hierarchy (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     third_dir = g_file_get_child (root, "move_third_dir");
-    g_assert_true (third_dir != NULL);
+    g_assert_true (g_file_query_exists (third_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         third_dir);
@@ -1360,14 +1360,14 @@ test_move_fourth_hierarchy_undo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     third_dir = g_file_get_child (root, "move_third_dir");
-    g_assert_true (third_dir != NULL);
+    g_assert_true (g_file_query_exists (third_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         third_dir);
@@ -1411,14 +1411,14 @@ test_move_fourth_hierarchy_undo_redo (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     second_dir = g_file_get_child (root, "move_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
-    g_assert_true (second_dir != NULL);
+    g_assert_true (g_file_query_exists (second_dir, NULL));
 
     third_dir = g_file_get_child (root, "move_third_dir");
-    g_assert_true (third_dir != NULL);
+    g_assert_true (g_file_query_exists (third_dir, NULL));
 
     nautilus_file_operations_move_sync (files,
                                         third_dir);

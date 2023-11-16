@@ -30,8 +30,6 @@ test_empty_directory (void)
     root = g_file_new_for_path (test_get_tmp_dir ());
     child = g_file_get_child (root, "empty_dir");
 
-    g_assert_true (child != NULL);
-
     g_file_make_directory (child, NULL, NULL);
 
     g_assert_false (dir_has_files (child));
@@ -48,11 +46,9 @@ test_directory_one_file (void)
 
     root = g_file_new_for_path (test_get_tmp_dir ());
     parent_dir = g_file_get_child (root, "parent_dir");
-    g_assert_true (parent_dir != NULL);
     g_file_make_directory (parent_dir, NULL, NULL);
 
     child_file = g_file_get_child (parent_dir, "child_file");
-    g_assert_true (child_file != NULL);
     g_file_make_directory (child_file, NULL, NULL);
 
     g_assert_true (dir_has_files (parent_dir));

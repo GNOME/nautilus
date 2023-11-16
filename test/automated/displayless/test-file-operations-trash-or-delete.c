@@ -12,13 +12,13 @@ test_trash_one_file (void)
     create_one_file ("trash_or_delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     nautilus_file_operations_trash_or_delete_sync (files);
@@ -40,7 +40,7 @@ trash_or_delete_multiple_files (const gchar *prefix,
         g_autofree gchar *file_name = g_strdup_printf ("%s_%i", prefix, i);
         GFile *file = g_file_get_child (src, file_name);
 
-        g_assert_true (file != NULL);
+        g_assert_true (g_file_query_exists (file, NULL));
         files = g_list_prepend (files, file);
     }
 
@@ -59,7 +59,7 @@ delete_multiple_files (const gchar *prefix,
         g_autofree gchar *file_name = g_strdup_printf ("%s_%i", prefix, i);
         GFile *file = g_file_get_child (src, file_name);
 
-        g_assert_true (file != NULL);
+        g_assert_true (g_file_query_exists (file, NULL));
         files = g_list_prepend (files, file);
     }
 
@@ -96,7 +96,7 @@ test_trash_more_files_func (gint files_to_trash)
     create_multiple_files ("trash_or_delete", files_to_trash);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     trash_or_delete_multiple_files ("trash_or_delete_file", root, files_to_trash);
 
@@ -122,13 +122,13 @@ test_delete_one_file (void)
     create_one_file ("delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "delete_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "delete_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
     files = g_list_prepend (files, g_object_ref (file));
 
     nautilus_file_operations_delete_sync (files);
@@ -146,7 +146,7 @@ test_delete_more_files_func (gint files_to_delete)
     create_multiple_files ("trash_or_delete", files_to_delete);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     delete_multiple_files ("trash_or_delete_file", root, files_to_delete);
 
@@ -172,13 +172,13 @@ test_trash_one_empty_directory (void)
     create_one_empty_directory ("trash_or_delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
 
     files = g_list_prepend (files, g_object_ref (file));
 
@@ -197,7 +197,7 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
     create_multiple_directories ("trash_or_delete", directories_to_trash);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     trash_or_delete_multiple_files ("trash_or_delete_dir", root, directories_to_trash);
 
@@ -223,12 +223,12 @@ test_delete_one_empty_directory (void)
     create_one_empty_directory ("delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "delete_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
     file = g_file_get_child (first_dir, "delete_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
 
     files = g_list_prepend (files, g_object_ref (file));
 
@@ -247,7 +247,7 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
     create_multiple_directories ("trash_or_delete", directories_to_delete);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     delete_multiple_files ("trash_or_delete_dir", root, directories_to_delete);
 
@@ -277,10 +277,10 @@ test_trash_full_directory (void)
     create_one_file ("trash_or_delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
 
@@ -310,11 +310,11 @@ test_trash_first_hierarchy (void)
     create_first_hierarchy ("trash_or_delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     nautilus_file_operations_trash_or_delete_sync (files);
 
@@ -340,7 +340,7 @@ test_trash_third_hierarchy (void)
     create_multiple_full_directories ("trash_or_delete", 50);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     trash_or_delete_multiple_files ("trash_or_delete_directory", root, 50);
 
@@ -364,13 +364,13 @@ test_delete_full_directory (void)
     create_one_file ("delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "delete_first_dir");
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     file = g_file_get_child (first_dir, "delete_first_dir_child");
-    g_assert_true (file != NULL);
+    g_assert_true (g_file_query_exists (file, NULL));
 
     files = g_list_prepend (files, g_object_ref (first_dir));
 
@@ -398,11 +398,11 @@ test_delete_first_hierarchy (void)
     create_first_hierarchy ("delete");
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     first_dir = g_file_get_child (root, "delete_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
-    g_assert_true (first_dir != NULL);
+    g_assert_true (g_file_query_exists (first_dir, NULL));
 
     nautilus_file_operations_delete_sync (files);
 
@@ -428,7 +428,7 @@ test_delete_third_hierarchy (void)
     create_multiple_full_directories ("trash_or_delete", 50);
 
     root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+    g_assert_true (g_file_query_exists (root, NULL));
 
     delete_multiple_files ("trash_or_delete_directory", root, 50);
 
