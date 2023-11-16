@@ -21,11 +21,13 @@
 
 #include "nautilus-new-folder-dialog-controller.h"
 
+#include "nautilus-file-name-widget-controller.h"
 
 struct _NautilusNewFolderDialogController
 {
-    NautilusFileNameWidgetController parent_instance;
+    GObject parent_instance;
 
+    NautilusFileNameWidgetController *validator;
     GtkWidget *new_folder_dialog;
 
     gboolean with_selection;
@@ -35,7 +37,7 @@ struct _NautilusNewFolderDialogController
     gulong response_handler_id;
 };
 
-G_DEFINE_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER)
+G_DEFINE_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, G_TYPE_OBJECT)
 
 static void
 new_folder_dialog_controller_on_response (GtkDialog *dialog,
@@ -52,10 +54,9 @@ new_folder_dialog_controller_on_response (GtkDialog *dialog,
 }
 
 static void
-on_name_accepted (NautilusFileNameWidgetController *controller)
+on_name_accepted (NautilusNewFolderDialogController *self)
 {
-    NautilusNewFolderDialogController *self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (controller);
-    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (controller);
+    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (self->validator);
 
     self->callback (name, self->with_selection, self->callback_data);
 }
@@ -89,17 +90,20 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                   parent_window);
 
     self = g_object_new (NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER,
-                         "error-revealer", error_revealer,
-                         "error-label", error_label,
-                         "name-entry", name_entry,
-                         "activate-button", activate_button,
-                         "containing-directory", destination_directory,
-                         "target-is-folder", TRUE,
                          NULL);
 
-    g_signal_connect (self, "name-accepted",
-                      G_CALLBACK (on_name_accepted),
-                      NULL);
+    self->validator = g_object_new (NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER,
+                                    "error-revealer", error_revealer,
+                                    "error-label", error_label,
+                                    "name-entry", name_entry,
+                                    "activate-button", activate_button,
+                                    "containing-directory", destination_directory,
+                                    "target-is-folder", TRUE,
+                                    NULL);
+
+    g_signal_connect_object (self->validator, "name-accepted",
+                             G_CALLBACK (on_name_accepted), self,
+                             G_CONNECT_SWAPPED);
 
     self->with_selection = with_selection;
 
@@ -137,6 +141,8 @@ nautilus_new_folder_dialog_controller_finalize (GObject *object)
     NautilusNewFolderDialogController *self;
 
     self = NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER (object);
+
+    g_clear_object (&self->validator);
 
     if (self->new_folder_dialog != NULL)
     {

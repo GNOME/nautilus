@@ -24,8 +24,10 @@
 
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
-typedef struct
+struct _NautilusFileNameWidgetController
 {
+    GObject parent_instance;
+
     GtkWidget *error_revealer;
     GtkWidget *error_label;
     GtkWidget *name_entry;
@@ -37,7 +39,7 @@ typedef struct
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
-} NautilusFileNameWidgetControllerPrivate;
+};
 
 enum
 {
@@ -58,7 +60,7 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusFileNameWidgetController, nautilus_file_name_widget_controller, G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusFileNameWidgetController, nautilus_file_name_widget_controller, G_TYPE_OBJECT)
 
 void
 nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileNameWidgetController *self,
@@ -71,20 +73,16 @@ void
 nautilus_file_name_widget_controller_set_original_name (NautilusFileNameWidgetController *self,
                                                         const char                       *original_name)
 {
-    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
-
-    g_free (priv->original_name);
-    priv->original_name = g_strdup (original_name);
+    g_free (self->original_name);
+    self->original_name = g_strdup (original_name);
 }
 
 void
 nautilus_file_name_widget_controller_set_extension (NautilusFileNameWidgetController *self,
                                                     const char                       *extension)
 {
-    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
-
-    g_free (priv->extension);
-    priv->extension = g_strdup (extension);
+    g_free (self->extension);
+    self->extension = g_strdup (extension);
 }
 
 void
@@ -100,14 +98,12 @@ static gboolean
 nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController *self,
                                                        gchar                            *name)
 {
-    NautilusFileNameWidgetControllerPrivate *priv;
     size_t name_length;
     g_autoptr (GFile) location = NULL;
     glong max_name_length;
 
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
     name_length = strlen (name);
-    location = nautilus_directory_get_location (priv->containing_directory);
+    location = nautilus_directory_get_location (self->containing_directory);
     max_name_length = nautilus_get_max_child_name_length_for_location (location);
 
     if (max_name_length == -1)
@@ -125,23 +121,20 @@ static gboolean
 nautilus_file_name_widget_controller_ignore_existing_file (NautilusFileNameWidgetController *self,
                                                            NautilusFile                     *existing_file)
 {
-    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
-
-    return (priv->original_name != NULL &&
-            nautilus_file_compare_display_name (existing_file, priv->original_name) == 0);
+    return (self->original_name != NULL &&
+            nautilus_file_compare_display_name (existing_file, self->original_name) == 0);
 }
 
 gchar *
 nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *self)
 {
-    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
     g_autofree char *basename = NULL;
 
-    basename = g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (priv->name_entry))));
+    basename = g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->name_entry))));
 
-    if (priv->extension != NULL && !g_str_has_suffix (basename, priv->extension))
+    if (self->extension != NULL && !g_str_has_suffix (basename, self->extension))
     {
-        return g_strconcat (basename, priv->extension, NULL);
+        return g_strconcat (basename, self->extension, NULL);
     }
     else
     {
@@ -154,8 +147,7 @@ nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetContro
                                                     gchar                             *name,
                                                     gchar                            **error_message)
 {
-    NautilusFileNameWidgetControllerPrivate *priv = nautilus_file_name_widget_controller_get_instance_private (self);
-    gboolean is_folder = priv->target_is_folder;
+    gboolean is_folder = self->target_is_folder;
     gboolean is_valid;
 
     is_valid = TRUE;
@@ -201,66 +193,61 @@ nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetContro
 static gboolean
 duplicated_file_label_show (NautilusFileNameWidgetController *self)
 {
-    NautilusFileNameWidgetControllerPrivate *priv;
-
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
-    if (priv->duplicated_is_folder)
+    if (self->duplicated_is_folder)
     {
-        gtk_label_set_label (GTK_LABEL (priv->error_label),
+        gtk_label_set_label (GTK_LABEL (self->error_label),
                              _("A folder with that name already exists."));
     }
     else
     {
-        gtk_label_set_label (GTK_LABEL (priv->error_label),
+        gtk_label_set_label (GTK_LABEL (self->error_label),
                              _("A file with that name already exists."));
     }
 
-    gtk_revealer_set_reveal_child (GTK_REVEALER (priv->error_revealer),
+    gtk_revealer_set_reveal_child (GTK_REVEALER (self->error_revealer),
                                    TRUE);
 
-    priv->duplicated_label_timeout_id = 0;
+    self->duplicated_label_timeout_id = 0;
 
     return G_SOURCE_REMOVE;
 }
 
 static void
-file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *controller,
+file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *self,
                                               gboolean                         *duplicated_name,
                                               gboolean                         *valid_name)
 {
-    NautilusFileNameWidgetControllerPrivate *priv;
     g_autofree gchar *name = NULL;
     gchar *error_message = NULL;
     NautilusFile *existing_file;
-    priv = nautilus_file_name_widget_controller_get_instance_private (controller);
 
-    g_return_if_fail (NAUTILUS_IS_DIRECTORY (priv->containing_directory));
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
 
-    name = nautilus_file_name_widget_controller_get_new_name (controller);
-    *valid_name = nautilus_file_name_widget_controller_name_is_valid (controller,
+    name = nautilus_file_name_widget_controller_get_new_name (self);
+    *valid_name = nautilus_file_name_widget_controller_name_is_valid (self,
                                                                       name,
                                                                       &error_message);
 
-    gtk_label_set_label (GTK_LABEL (priv->error_label), error_message);
-    gtk_revealer_set_reveal_child (GTK_REVEALER (priv->error_revealer),
+    gtk_label_set_label (GTK_LABEL (self->error_label), error_message);
+    gtk_revealer_set_reveal_child (GTK_REVEALER (self->error_revealer),
                                    error_message != NULL);
 
-    existing_file = nautilus_directory_get_file_by_name (priv->containing_directory, name);
+    existing_file = nautilus_directory_get_file_by_name (self->containing_directory, name);
     *duplicated_name = existing_file != NULL &&
-                       !nautilus_file_name_widget_controller_ignore_existing_file (controller,
+                       !nautilus_file_name_widget_controller_ignore_existing_file (self,
                                                                                    existing_file);
 
-    gtk_widget_set_sensitive (priv->activate_button, *valid_name && !*duplicated_name);
+    gtk_widget_set_sensitive (self->activate_button, *valid_name && !*duplicated_name);
 
-    if (priv->duplicated_label_timeout_id != 0)
+    if (self->duplicated_label_timeout_id != 0)
     {
-        g_source_remove (priv->duplicated_label_timeout_id);
-        priv->duplicated_label_timeout_id = 0;
+        g_source_remove (self->duplicated_label_timeout_id);
+        self->duplicated_label_timeout_id = 0;
     }
 
     if (*duplicated_name)
     {
-        priv->duplicated_is_folder = nautilus_file_is_directory (existing_file);
+        self->duplicated_is_folder = nautilus_file_is_directory (existing_file);
     }
 
     if (existing_file != NULL)
@@ -274,15 +261,11 @@ file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *
                                                              GList             *files,
                                                              gpointer           user_data)
 {
-    NautilusFileNameWidgetController *controller;
-    NautilusFileNameWidgetControllerPrivate *priv;
+    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
     gboolean duplicated_name;
     gboolean valid_name;
 
-    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
-    priv = nautilus_file_name_widget_controller_get_instance_private (controller);
-
-    file_name_widget_controller_process_new_name (controller,
+    file_name_widget_controller_process_new_name (self,
                                                   &duplicated_name,
                                                   &valid_name);
 
@@ -292,26 +275,22 @@ file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *
      * we are renaming also don't report as a duplicated */
     if (duplicated_name && valid_name)
     {
-        priv->duplicated_label_timeout_id = g_timeout_add (FILE_NAME_DUPLICATED_LABEL_TIMEOUT,
+        self->duplicated_label_timeout_id = g_timeout_add (FILE_NAME_DUPLICATED_LABEL_TIMEOUT,
                                                            (GSourceFunc) duplicated_file_label_show,
-                                                           controller);
+                                                           self);
     }
 }
 
 static void
 file_name_widget_controller_on_changed (gpointer user_data)
 {
-    NautilusFileNameWidgetController *controller;
-    NautilusFileNameWidgetControllerPrivate *priv;
+    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
 
-    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
-    priv = nautilus_file_name_widget_controller_get_instance_private (controller);
-
-    nautilus_directory_call_when_ready (priv->containing_directory,
+    nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE,
                                         file_name_widget_controller_on_changed_directory_info_ready,
-                                        controller);
+                                        self);
 }
 
 static void
@@ -349,27 +328,18 @@ file_name_widget_controller_on_activate_directory_info_ready (NautilusDirectory 
 static void
 file_name_widget_controller_on_activate (gpointer user_data)
 {
-    NautilusFileNameWidgetController *controller;
-    NautilusFileNameWidgetControllerPrivate *priv;
+    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
 
-    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
-    priv = nautilus_file_name_widget_controller_get_instance_private (controller);
-
-    nautilus_directory_call_when_ready (priv->containing_directory,
+    nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE,
                                         file_name_widget_controller_on_activate_directory_info_ready,
-                                        controller);
+                                        self);
 }
 
 static void
 nautilus_file_name_widget_controller_init (NautilusFileNameWidgetController *self)
 {
-    NautilusFileNameWidgetControllerPrivate *priv;
-
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
-
-    priv->containing_directory = NULL;
 }
 
 static void
@@ -378,63 +348,59 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
                                                    const GValue *value,
                                                    GParamSpec   *pspec)
 {
-    NautilusFileNameWidgetController *controller;
-    NautilusFileNameWidgetControllerPrivate *priv;
-
-    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (object);
-    priv = nautilus_file_name_widget_controller_get_instance_private (controller);
+    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (object);
 
     switch (prop_id)
     {
         case PROP_ERROR_REVEALER:
         {
-            priv->error_revealer = GTK_WIDGET (g_value_get_object (value));
+            self->error_revealer = GTK_WIDGET (g_value_get_object (value));
         }
         break;
 
         case PROP_ERROR_LABEL:
         {
-            priv->error_label = GTK_WIDGET (g_value_get_object (value));
+            self->error_label = GTK_WIDGET (g_value_get_object (value));
         }
         break;
 
         case PROP_NAME_ENTRY:
         {
-            priv->name_entry = GTK_WIDGET (g_value_get_object (value));
+            self->name_entry = GTK_WIDGET (g_value_get_object (value));
 
-            g_signal_connect_swapped (G_OBJECT (priv->name_entry),
+            g_signal_connect_swapped (G_OBJECT (self->name_entry),
                                       "activate",
                                       (GCallback) file_name_widget_controller_on_activate,
-                                      controller);
-            g_signal_connect_swapped (G_OBJECT (priv->name_entry),
+                                      self);
+            g_signal_connect_swapped (G_OBJECT (self->name_entry),
                                       "changed",
                                       (GCallback) file_name_widget_controller_on_changed,
-                                      controller);
+                                      self);
         }
         break;
 
         case PROP_ACTION_BUTTON:
         {
-            priv->activate_button = GTK_WIDGET (g_value_get_object (value));
+            self->activate_button = GTK_WIDGET (g_value_get_object (value));
 
-            g_signal_connect_swapped (G_OBJECT (priv->activate_button),
+            g_signal_connect_swapped (G_OBJECT (self->activate_button),
                                       "clicked",
                                       (GCallback) file_name_widget_controller_on_activate,
-                                      controller);
+                                      self);
         }
         break;
 
         case PROP_CONTAINING_DIRECTORY:
         {
-            g_clear_object (&priv->containing_directory);
+            g_clear_object (&self->containing_directory);
 
-            priv->containing_directory = NAUTILUS_DIRECTORY (g_value_dup_object (value));
+            self->containing_directory = NAUTILUS_DIRECTORY (g_value_dup_object (value));
         }
         break;
 
         case PROP_TARGET_IS_FOLDER:
         {
-            priv->target_is_folder = g_value_get_boolean (value);
+            self->target_is_folder = g_value_get_boolean (value);
         }
         break;
 
@@ -450,30 +416,28 @@ static void
 nautilus_file_name_widget_controller_finalize (GObject *object)
 {
     NautilusFileNameWidgetController *self;
-    NautilusFileNameWidgetControllerPrivate *priv;
 
     self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (object);
-    priv = nautilus_file_name_widget_controller_get_instance_private (self);
 
-    if (priv->containing_directory != NULL)
+    if (self->containing_directory != NULL)
     {
-        nautilus_directory_cancel_callback (priv->containing_directory,
+        nautilus_directory_cancel_callback (self->containing_directory,
                                             file_name_widget_controller_on_changed_directory_info_ready,
                                             self);
-        nautilus_directory_cancel_callback (priv->containing_directory,
+        nautilus_directory_cancel_callback (self->containing_directory,
                                             file_name_widget_controller_on_activate_directory_info_ready,
                                             self);
-        g_clear_object (&priv->containing_directory);
+        g_clear_object (&self->containing_directory);
     }
 
-    if (priv->duplicated_label_timeout_id > 0)
+    if (self->duplicated_label_timeout_id > 0)
     {
-        g_source_remove (priv->duplicated_label_timeout_id);
-        priv->duplicated_label_timeout_id = 0;
+        g_source_remove (self->duplicated_label_timeout_id);
+        self->duplicated_label_timeout_id = 0;
     }
 
-    g_free (priv->original_name);
-    g_free (priv->extension);
+    g_free (self->original_name);
+    g_free (self->extension);
 
     G_OBJECT_CLASS (nautilus_file_name_widget_controller_parent_class)->finalize (object);
 }
@@ -490,7 +454,7 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
         g_signal_new ("name-accepted",
                       G_TYPE_FROM_CLASS (klass),
                       G_SIGNAL_RUN_FIRST,
-                      G_STRUCT_OFFSET (NautilusFileNameWidgetControllerClass, name_accepted),
+                      0,
                       NULL, NULL,
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 0);

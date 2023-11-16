@@ -26,14 +26,7 @@
 #include "nautilus-directory.h"
 
 #define NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER nautilus_file_name_widget_controller_get_type ()
-G_DECLARE_DERIVABLE_TYPE (NautilusFileNameWidgetController, nautilus_file_name_widget_controller, NAUTILUS, FILE_NAME_WIDGET_CONTROLLER, GObject)
-
-struct _NautilusFileNameWidgetControllerClass
-{
-        GObjectClass parent_class;
-
-        void     (*name_accepted)        (NautilusFileNameWidgetController *controller);
-};
+G_DECLARE_FINAL_TYPE (NautilusFileNameWidgetController, nautilus_file_name_widget_controller, NAUTILUS, FILE_NAME_WIDGET_CONTROLLER, GObject)
 
 gchar * nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *controller);
 

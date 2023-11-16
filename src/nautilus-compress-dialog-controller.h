@@ -22,7 +22,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "nautilus-file-name-widget-controller.h"
 #include "nautilus-directory.h"
 
 typedef void (*CompressCallback) (const char *new_name,
@@ -30,7 +29,7 @@ typedef void (*CompressCallback) (const char *new_name,
                                   gpointer    user_data);
 
 #define NAUTILUS_TYPE_COMPRESS_DIALOG_CONTROLLER nautilus_compress_dialog_controller_get_type ()
-G_DECLARE_FINAL_TYPE (NautilusCompressDialogController, nautilus_compress_dialog_controller, NAUTILUS, COMPRESS_DIALOG_CONTROLLER, NautilusFileNameWidgetController)
+G_DECLARE_FINAL_TYPE (NautilusCompressDialogController, nautilus_compress_dialog_controller, NAUTILUS, COMPRESS_DIALOG_CONTROLLER, GObject)
 
 NautilusCompressDialogController * nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                                                             NautilusDirectory *destination_directory,
