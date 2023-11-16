@@ -283,7 +283,6 @@ test_trash_full_directory (void)
     g_assert_true (first_dir != NULL);
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
-    g_assert_true (file != NULL);
 
     files = g_list_prepend (files, g_object_ref (first_dir));
 
@@ -316,11 +315,6 @@ test_trash_first_hierarchy (void)
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "trash_or_delete_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (first_dir, "trash_or_delete_second_child");
-    g_assert_true (file != NULL);
 
     nautilus_file_operations_trash_or_delete_sync (files);
 
@@ -409,11 +403,6 @@ test_delete_first_hierarchy (void)
     first_dir = g_file_get_child (root, "delete_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "delete_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (first_dir, "delete_second_child");
-    g_assert_true (file != NULL);
 
     nautilus_file_operations_delete_sync (files);
 

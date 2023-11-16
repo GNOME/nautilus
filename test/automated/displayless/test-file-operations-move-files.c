@@ -727,9 +727,6 @@ test_move_full_directory (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
 
@@ -766,9 +763,6 @@ test_move_full_directory_undo (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -807,9 +801,6 @@ test_move_full_directory_undo_redo (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -856,11 +847,6 @@ test_move_first_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
 
@@ -904,11 +890,6 @@ test_move_first_hierarchy_undo (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -955,11 +936,6 @@ test_move_first_hierarchy_undo_redo (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -1012,11 +988,6 @@ test_move_second_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
 
@@ -1062,11 +1033,6 @@ test_move_second_hierarchy_undo (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -1115,13 +1081,6 @@ test_move_second_hierarchy_undo_redo (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
-
-    file = g_file_get_child (first_dir, "move_first_child");
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-    file = g_file_get_child (file, "move_second_child");
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -1175,18 +1134,6 @@ test_move_third_hierarchy (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "move_dir1_child");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -1245,18 +1192,6 @@ test_move_third_hierarchy_undo (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "move_dir1_child");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
 
@@ -1313,18 +1248,6 @@ test_move_third_hierarchy_undo_redo (void)
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir1");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "move_dir1_child");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (first_dir, "move_first_dir_dir2");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "move_dir2_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "move_second_dir");
     g_assert_true (second_dir != NULL);
@@ -1390,15 +1313,9 @@ test_move_fourth_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "move_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
     g_assert_true (second_dir != NULL);
-
-    file = g_file_get_child (second_dir, "move_second_dir_child");
-    g_assert_true (file != NULL);
 
     third_dir = g_file_get_child (root, "move_third_dir");
     g_assert_true (third_dir != NULL);
@@ -1445,15 +1362,9 @@ test_move_fourth_hierarchy_undo (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "move_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
     g_assert_true (second_dir != NULL);
-
-    file = g_file_get_child (second_dir, "move_second_dir_child");
-    g_assert_true (file != NULL);
 
     third_dir = g_file_get_child (root, "move_third_dir");
     g_assert_true (third_dir != NULL);
@@ -1502,15 +1413,9 @@ test_move_fourth_hierarchy_undo_redo (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "move_first_dir_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "move_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
     g_assert_true (second_dir != NULL);
-
-    file = g_file_get_child (second_dir, "move_second_dir_child");
-    g_assert_true (file != NULL);
 
     third_dir = g_file_get_child (root, "move_third_dir");
     g_assert_true (third_dir != NULL);

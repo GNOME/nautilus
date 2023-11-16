@@ -499,9 +499,6 @@ test_copy_full_directory (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "copy_first_dir_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
 
@@ -538,9 +535,6 @@ test_copy_full_directory_undo (void)
     first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "copy_first_dir_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
@@ -587,11 +581,6 @@ test_copy_first_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "copy_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (first_dir, "copy_second_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
 
@@ -635,11 +624,6 @@ test_copy_first_hierarchy_undo (void)
     first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "copy_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (first_dir, "copy_second_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
@@ -690,11 +674,6 @@ test_copy_second_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "copy_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (file, "copy_second_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
 
@@ -738,11 +717,6 @@ test_copy_second_hierarchy_undo (void)
     first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "copy_first_child");
-    g_assert_true (file != NULL);
-    file = g_file_get_child (file, "copy_second_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
@@ -795,18 +769,6 @@ test_copy_third_hierarchy (void)
     first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "copy_first_dir_dir1");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "copy_dir1_child");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (first_dir, "copy_first_dir_dir2");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "copy_dir2_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
@@ -865,18 +827,6 @@ test_copy_third_hierarchy_undo (void)
     first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
-
-    file = g_file_get_child (first_dir, "copy_first_dir_dir1");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "copy_dir1_child");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (first_dir, "copy_first_dir_dir2");
-    g_assert_true (file != NULL);
-
-    file = g_file_get_child (file, "copy_dir2_child");
-    g_assert_true (file != NULL);
 
     second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
@@ -943,15 +893,9 @@ test_copy_fourth_hierarchy (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "copy_first_dir_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "copy_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
     g_assert_true (second_dir != NULL);
-
-    file = g_file_get_child (second_dir, "copy_second_dir_child");
-    g_assert_true (file != NULL);
 
     third_dir = g_file_get_child (root, "copy_third_dir");
     g_assert_true (third_dir != NULL);
@@ -1000,15 +944,9 @@ test_copy_fourth_hierarchy_undo (void)
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
 
-    file = g_file_get_child (first_dir, "copy_first_dir_child");
-    g_assert_true (file != NULL);
-
     second_dir = g_file_get_child (root, "copy_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
     g_assert_true (second_dir != NULL);
-
-    file = g_file_get_child (second_dir, "copy_second_dir_child");
-    g_assert_true (file != NULL);
 
     third_dir = g_file_get_child (root, "copy_third_dir");
     g_assert_true (third_dir != NULL);
