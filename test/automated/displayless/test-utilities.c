@@ -134,17 +134,6 @@ delete_search_file_hierarchy (gchar *search_engine)
     delete_hierarchy_from_template (search_hierarchy, search_engine);
 }
 
-/* This callback function quits the mainloop inside which the
- * asynchronous undo/redo operation happens.
- */
-
-void
-quit_loop_callback (NautilusFileUndoManager *undo_manager,
-                    GMainLoop               *loop)
-{
-    g_main_loop_quit (loop);
-}
-
 /* This undoes the last operation blocking the current main thread. */
 void
 test_operation_undo (void)
@@ -157,10 +146,10 @@ test_operation_undo (void)
     g_main_context_push_thread_default (context);
     loop = g_main_loop_new (context, FALSE);
 
-    handler_id = g_signal_connect (nautilus_file_undo_manager_get (),
-                                   "undo-changed",
-                                   G_CALLBACK (quit_loop_callback),
-                                   loop);
+    handler_id = g_signal_connect_swapped (nautilus_file_undo_manager_get (),
+                                           "undo-changed",
+                                           G_CALLBACK (g_main_loop_quit),
+                                           loop);
 
     nautilus_file_undo_manager_undo (NULL, NULL);
 
@@ -186,10 +175,10 @@ test_operation_undo_redo (void)
     g_main_context_push_thread_default (context);
     loop = g_main_loop_new (context, FALSE);
 
-    handler_id = g_signal_connect (nautilus_file_undo_manager_get (),
-                                   "undo-changed",
-                                   G_CALLBACK (quit_loop_callback),
-                                   loop);
+    handler_id = g_signal_connect_swapped (nautilus_file_undo_manager_get (),
+                                           "undo-changed",
+                                           G_CALLBACK (g_main_loop_quit),
+                                           loop);
 
     nautilus_file_undo_manager_redo (NULL, NULL);
 
