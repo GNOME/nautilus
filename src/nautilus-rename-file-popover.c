@@ -35,6 +35,7 @@ struct _NautilusRenameFilePopover
     GtkWidget *name_entry;
     GtkWidget *title_label;
 
+    guint delayed_message_timer_id;
     gulong file_changed_handler_id;
 };
 
@@ -64,6 +65,12 @@ reset_state (NautilusRenameFilePopover *self)
 }
 
 static void
+reveal_message (gpointer user_data)
+{
+    gtk_revealer_set_reveal_child (NAUTILUS_RENAME_FILE_POPOVER (user_data)->error_revealer, TRUE);
+}
+
+static void
 update_state (NautilusDirectory *,
               GList *,
               gpointer user_data)
@@ -79,8 +86,18 @@ update_state (NautilusDirectory *,
                                 nautilus_filename_message_file_error (message);
 
     gtk_label_set_label (self->error_label, error_message);
-    gtk_revealer_set_reveal_child (self->error_revealer, error_message != NULL);
     gtk_widget_set_sensitive (self->activate_button, is_valid);
+
+    /* Delay showing error message if needed */
+    g_clear_handle_id (&self->delayed_message_timer_id, g_source_remove);
+    if (nautilus_filename_message_needs_delay (message))
+    {
+        self->delayed_message_timer_id = g_timeout_add_once (500, reveal_message, self);
+    }
+    else
+    {
+        gtk_revealer_set_reveal_child (self->error_revealer, error_message != NULL);
+    }
 
     if (self->should_rename && is_valid)
     {

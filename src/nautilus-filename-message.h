@@ -30,6 +30,8 @@ nautilus_filename_message_from_name (const char        *name,
 
 gboolean
 nautilus_filename_message_is_valid (NautilusFileNameMessage message);
+gboolean
+nautilus_filename_message_needs_delay (NautilusFileNameMessage message);
 
 const char *
 nautilus_filename_message_archive_error (NautilusFileNameMessage message);

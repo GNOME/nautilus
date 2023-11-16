@@ -22,6 +22,13 @@ nautilus_filename_message_is_valid (NautilusFileNameMessage message)
            message == NAUTILUS_FILENAME_MESSAGE_HIDDEN;
 }
 
+gboolean
+nautilus_filename_message_needs_delay (NautilusFileNameMessage message)
+{
+    return message == NAUTILUS_FILENAME_MESSAGE_DUPLICATE_FILE ||
+           message == NAUTILUS_FILENAME_MESSAGE_DUPLICATE_FOLDER;
+}
+
 static gboolean
 is_duplicate (const char        *name,
               NautilusDirectory *containing_directory,
