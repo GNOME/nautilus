@@ -21,13 +21,13 @@
 
 #include "nautilus-new-folder-dialog-controller.h"
 
-#include "nautilus-file-name-widget-controller.h"
+#include "nautilus-filename-validator.h"
 
 struct _NautilusNewFolderDialogController
 {
     GObject parent_instance;
 
-    NautilusFileNameWidgetController *validator;
+    NautilusFilenameValidator *validator;
     GtkWidget *new_folder_dialog;
 
     gboolean with_selection;
@@ -56,7 +56,7 @@ new_folder_dialog_controller_on_response (GtkDialog *dialog,
 static void
 on_name_accepted (NautilusNewFolderDialogController *self)
 {
-    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (self->validator);
+    g_autofree char *name = nautilus_filename_validator_get_new_name (self->validator);
 
     self->callback (name, self->with_selection, self->callback_data);
 }
@@ -92,7 +92,7 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     self = g_object_new (NAUTILUS_TYPE_NEW_FOLDER_DIALOG_CONTROLLER,
                          NULL);
 
-    self->validator = g_object_new (NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER,
+    self->validator = g_object_new (NAUTILUS_TYPE_FILENAME_VALIDATOR,
                                     "error-revealer", error_revealer,
                                     "error-label", error_label,
                                     "name-entry", name_entry,

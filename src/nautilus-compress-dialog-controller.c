@@ -23,14 +23,14 @@
 
 #include "nautilus-compress-dialog-controller.h"
 
-#include "nautilus-file-name-widget-controller.h"
+#include "nautilus-filename-validator.h"
 #include "nautilus-global-preferences.h"
 
 struct _NautilusCompressDialogController
 {
     GObject parent_instance;
 
-    NautilusFileNameWidgetController *validator;
+    NautilusFilenameValidator *validator;
 
     GtkWidget *compress_dialog;
     GtkWidget *activate_button;
@@ -147,7 +147,7 @@ update_selected_format (NautilusCompressDialogController *self)
     }
 
     self->extension = item->extension;
-    nautilus_file_name_widget_controller_set_extension (self->validator, self->extension);
+    nautilus_filename_validator_set_extension (self->validator, self->extension);
 
     gtk_widget_set_visible (self->passphrase_label, show_passphrase);
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
@@ -454,7 +454,7 @@ extension_dropdown_setup (NautilusCompressDialogController *self)
 static void
 on_name_accepted (NautilusCompressDialogController *self)
 {
-    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (self->validator);
+    g_autofree char *name = nautilus_filename_validator_get_new_name (self->validator);
 
     self->callback (name, self->passphrase, self->callback_data);
 }
@@ -498,7 +498,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
     self = g_object_new (NAUTILUS_TYPE_COMPRESS_DIALOG_CONTROLLER, NULL);
 
-    self->validator = g_object_new (NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER,
+    self->validator = g_object_new (NAUTILUS_TYPE_FILENAME_VALIDATOR,
                                     "error-revealer", error_revealer,
                                     "error-label", error_label,
                                     "name-entry", name_entry,

@@ -1,30 +1,17 @@
-/* nautilus-file-name-widget-controller.c
- *
+/*
  * Copyright (C) 2016 the Nautilus developers
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public
- * License along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 #include <glib/gi18n.h>
 
-#include "nautilus-file-name-widget-controller.h"
+#include "nautilus-filename-validator.h"
 #include "nautilus-file-utilities.h"
 
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
-struct _NautilusFileNameWidgetController
+struct _NautilusFilenameValidator
 {
     GObject parent_instance;
 
@@ -60,34 +47,34 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (NautilusFileNameWidgetController, nautilus_file_name_widget_controller, G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusFilenameValidator, nautilus_filename_validator, G_TYPE_OBJECT)
 
 void
-nautilus_file_name_widget_controller_set_target_is_folder (NautilusFileNameWidgetController *self,
-                                                           gboolean                          is_folder)
+nautilus_filename_validator_set_target_is_folder (NautilusFilenameValidator *self,
+                                                  gboolean                   is_folder)
 {
     g_object_set (self, "target-is-folder", is_folder, NULL);
 }
 
 void
-nautilus_file_name_widget_controller_set_original_name (NautilusFileNameWidgetController *self,
-                                                        const char                       *original_name)
+nautilus_filename_validator_set_original_name (NautilusFilenameValidator *self,
+                                               const char                *original_name)
 {
     g_free (self->original_name);
     self->original_name = g_strdup (original_name);
 }
 
 void
-nautilus_file_name_widget_controller_set_extension (NautilusFileNameWidgetController *self,
-                                                    const char                       *extension)
+nautilus_filename_validator_set_extension (NautilusFilenameValidator *self,
+                                           const char                *extension)
 {
     g_free (self->extension);
     self->extension = g_strdup (extension);
 }
 
 void
-nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *self,
-                                                               NautilusDirectory                *directory)
+nautilus_filename_validator_set_containing_directory (NautilusFilenameValidator *self,
+                                                      NautilusDirectory         *directory)
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
@@ -95,8 +82,8 @@ nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameW
 }
 
 static gboolean
-nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController *self,
-                                                       gchar                            *name)
+nautilus_filename_validator_is_name_too_long (NautilusFilenameValidator *self,
+                                              gchar                     *name)
 {
     size_t name_length;
     g_autoptr (GFile) location = NULL;
@@ -118,15 +105,15 @@ nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetCon
 }
 
 static gboolean
-nautilus_file_name_widget_controller_ignore_existing_file (NautilusFileNameWidgetController *self,
-                                                           NautilusFile                     *existing_file)
+nautilus_filename_validator_ignore_existing_file (NautilusFilenameValidator *self,
+                                                  NautilusFile              *existing_file)
 {
     return (self->original_name != NULL &&
             nautilus_file_compare_display_name (existing_file, self->original_name) == 0);
 }
 
 gchar *
-nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *self)
+nautilus_filename_validator_get_new_name (NautilusFilenameValidator *self)
 {
     g_autofree char *basename = NULL;
 
@@ -143,9 +130,9 @@ nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetControl
 }
 
 static gboolean
-nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetController  *self,
-                                                    gchar                             *name,
-                                                    gchar                            **error_message)
+nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
+                                           gchar                      *name,
+                                           gchar                     **error_message)
 {
     gboolean is_folder = self->target_is_folder;
     gboolean is_valid;
@@ -173,7 +160,7 @@ nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetContro
         *error_message = is_folder ? _("A folder cannot be called “..”.") :
                                      _("A file cannot be called “..”.");
     }
-    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
+    else if (nautilus_filename_validator_is_name_too_long (self, name))
     {
         is_valid = FALSE;
         *error_message = is_folder ? _("Folder name is too long.") :
@@ -191,7 +178,7 @@ nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetContro
 }
 
 static gboolean
-duplicated_file_label_show (NautilusFileNameWidgetController *self)
+duplicated_file_label_show (NautilusFilenameValidator *self)
 {
     if (self->duplicated_is_folder)
     {
@@ -213,9 +200,9 @@ duplicated_file_label_show (NautilusFileNameWidgetController *self)
 }
 
 static void
-file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *self,
-                                              gboolean                         *duplicated_name,
-                                              gboolean                         *valid_name)
+filename_validator_process_new_name (NautilusFilenameValidator *self,
+                                     gboolean                  *duplicated_name,
+                                     gboolean                  *valid_name)
 {
     g_autofree gchar *name = NULL;
     gchar *error_message = NULL;
@@ -223,10 +210,10 @@ file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *
 
     g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
 
-    name = nautilus_file_name_widget_controller_get_new_name (self);
-    *valid_name = nautilus_file_name_widget_controller_name_is_valid (self,
-                                                                      name,
-                                                                      &error_message);
+    name = nautilus_filename_validator_get_new_name (self);
+    *valid_name = nautilus_filename_validator_name_is_valid (self,
+                                                             name,
+                                                             &error_message);
 
     gtk_label_set_label (GTK_LABEL (self->error_label), error_message);
     gtk_revealer_set_reveal_child (GTK_REVEALER (self->error_revealer),
@@ -234,8 +221,8 @@ file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *
 
     existing_file = nautilus_directory_get_file_by_name (self->containing_directory, name);
     *duplicated_name = existing_file != NULL &&
-                       !nautilus_file_name_widget_controller_ignore_existing_file (self,
-                                                                                   existing_file);
+                       !nautilus_filename_validator_ignore_existing_file (self,
+                                                                          existing_file);
 
     gtk_widget_set_sensitive (self->activate_button, *valid_name && !*duplicated_name);
 
@@ -257,17 +244,17 @@ file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *
 }
 
 static void
-file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *directory,
-                                                             GList             *files,
-                                                             gpointer           user_data)
+filename_validator_on_changed_directory_info_ready (NautilusDirectory *directory,
+                                                    GList             *files,
+                                                    gpointer           user_data)
 {
-    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
+    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
     gboolean duplicated_name;
     gboolean valid_name;
 
-    file_name_widget_controller_process_new_name (self,
-                                                  &duplicated_name,
-                                                  &valid_name);
+    filename_validator_process_new_name (self,
+                                         &duplicated_name,
+                                         &valid_name);
 
     /* Report duplicated file only if not other message shown (for instance,
      * folders like "." or ".." will always exists, but we consider it as an
@@ -282,35 +269,33 @@ file_name_widget_controller_on_changed_directory_info_ready (NautilusDirectory *
 }
 
 static void
-file_name_widget_controller_on_changed (gpointer user_data)
+filename_validator_on_changed (gpointer user_data)
 {
-    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
+    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
 
     nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE,
-                                        file_name_widget_controller_on_changed_directory_info_ready,
+                                        filename_validator_on_changed_directory_info_ready,
                                         self);
 }
 
 static void
-file_name_widget_controller_on_activate_directory_info_ready (NautilusDirectory *directory,
-                                                              GList             *files,
-                                                              gpointer           user_data)
+filename_validator_on_activate_directory_info_ready (NautilusDirectory *directory,
+                                                     GList             *files,
+                                                     gpointer           user_data)
 {
-    NautilusFileNameWidgetController *controller;
+    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
     gboolean duplicated_name;
     gboolean valid_name;
 
-    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
-
-    file_name_widget_controller_process_new_name (controller,
-                                                  &duplicated_name,
-                                                  &valid_name);
+    filename_validator_process_new_name (self,
+                                         &duplicated_name,
+                                         &valid_name);
 
     if (valid_name && !duplicated_name)
     {
-        g_signal_emit (controller, signals[NAME_ACCEPTED], 0);
+        g_signal_emit (self, signals[NAME_ACCEPTED], 0);
     }
     else
     {
@@ -320,35 +305,35 @@ file_name_widget_controller_on_activate_directory_info_ready (NautilusDirectory 
         if (duplicated_name && valid_name)
         {
             /* Show it inmediatily since the user tried to trigger the action */
-            duplicated_file_label_show (controller);
+            duplicated_file_label_show (self);
         }
     }
 }
 
 static void
-file_name_widget_controller_on_activate (gpointer user_data)
+filename_validator_on_activate (gpointer user_data)
 {
-    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
+    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
 
     nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE,
-                                        file_name_widget_controller_on_activate_directory_info_ready,
+                                        filename_validator_on_activate_directory_info_ready,
                                         self);
 }
 
 static void
-nautilus_file_name_widget_controller_init (NautilusFileNameWidgetController *self)
+nautilus_filename_validator_init (NautilusFilenameValidator *self)
 {
 }
 
 static void
-nautilus_file_name_widget_controller_set_property (GObject      *object,
-                                                   guint         prop_id,
-                                                   const GValue *value,
-                                                   GParamSpec   *pspec)
+nautilus_filename_validator_set_property (GObject      *object,
+                                          guint         prop_id,
+                                          const GValue *value,
+                                          GParamSpec   *pspec)
 {
-    NautilusFileNameWidgetController *self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (object);
+    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (object);
 
     switch (prop_id)
     {
@@ -370,11 +355,11 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
 
             g_signal_connect_swapped (G_OBJECT (self->name_entry),
                                       "activate",
-                                      (GCallback) file_name_widget_controller_on_activate,
+                                      (GCallback) filename_validator_on_activate,
                                       self);
             g_signal_connect_swapped (G_OBJECT (self->name_entry),
                                       "changed",
-                                      (GCallback) file_name_widget_controller_on_changed,
+                                      (GCallback) filename_validator_on_changed,
                                       self);
         }
         break;
@@ -385,7 +370,7 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
 
             g_signal_connect_swapped (G_OBJECT (self->activate_button),
                                       "clicked",
-                                      (GCallback) file_name_widget_controller_on_activate,
+                                      (GCallback) filename_validator_on_activate,
                                       self);
         }
         break;
@@ -413,19 +398,19 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
 }
 
 static void
-nautilus_file_name_widget_controller_finalize (GObject *object)
+nautilus_filename_validator_finalize (GObject *object)
 {
-    NautilusFileNameWidgetController *self;
+    NautilusFilenameValidator *self;
 
-    self = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (object);
+    self = NAUTILUS_FILENAME_VALIDATOR (object);
 
     if (self->containing_directory != NULL)
     {
         nautilus_directory_cancel_callback (self->containing_directory,
-                                            file_name_widget_controller_on_changed_directory_info_ready,
+                                            filename_validator_on_changed_directory_info_ready,
                                             self);
         nautilus_directory_cancel_callback (self->containing_directory,
-                                            file_name_widget_controller_on_activate_directory_info_ready,
+                                            filename_validator_on_activate_directory_info_ready,
                                             self);
         g_clear_object (&self->containing_directory);
     }
@@ -439,16 +424,16 @@ nautilus_file_name_widget_controller_finalize (GObject *object)
     g_free (self->original_name);
     g_free (self->extension);
 
-    G_OBJECT_CLASS (nautilus_file_name_widget_controller_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_filename_validator_parent_class)->finalize (object);
 }
 
 static void
-nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControllerClass *klass)
+nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-    object_class->set_property = nautilus_file_name_widget_controller_set_property;
-    object_class->finalize = nautilus_file_name_widget_controller_finalize;
+    object_class->set_property = nautilus_filename_validator_set_property;
+    object_class->finalize = nautilus_filename_validator_finalize;
 
     signals[NAME_ACCEPTED] =
         g_signal_new ("name-accepted",

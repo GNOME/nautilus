@@ -22,7 +22,7 @@
 #include "nautilus-rename-file-popover-controller.h"
 
 #include "nautilus-directory.h"
-#include "nautilus-file-name-widget-controller.h"
+#include "nautilus-filename-validator.h"
 #include "nautilus-file-private.h"
 #include "nautilus-filename-utilities.h"
 
@@ -34,7 +34,7 @@ struct _NautilusRenameFilePopoverController
 {
     GObject parent_instance;
 
-    NautilusFileNameWidgetController *validator;
+    NautilusFilenameValidator *validator;
 
     NautilusFile *target_file;
     gboolean target_is_folder;
@@ -171,7 +171,7 @@ target_file_on_changed (NautilusFile *file,
 static void
 on_name_accepted (NautilusRenameFilePopoverController *self)
 {
-    g_autofree char *name = nautilus_file_name_widget_controller_get_new_name (self->validator);
+    g_autofree char *name = nautilus_filename_validator_get_new_name (self->validator);
 
     self->callback (self->target_file, name, self->callback_data);
 
@@ -201,7 +201,7 @@ nautilus_rename_file_popover_controller_new (GtkWidget *relative_to)
     self = g_object_new (NAUTILUS_TYPE_RENAME_FILE_POPOVER_CONTROLLER,
                          NULL);
 
-    self->validator = g_object_new (NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER,
+    self->validator = g_object_new (NAUTILUS_TYPE_FILENAME_VALIDATOR,
                                     "error-revealer", error_revealer,
                                     "error-label", error_label,
                                     "name-entry", name_entry,
@@ -256,15 +256,15 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
         containing_directory = nautilus_directory_get_for_file (self->target_file);
     }
 
-    nautilus_file_name_widget_controller_set_containing_directory (self->validator,
-                                                                   containing_directory);
+    nautilus_filename_validator_set_containing_directory (self->validator,
+                                                          containing_directory);
 
     self->target_is_folder = nautilus_file_is_directory (self->target_file);
 
-    nautilus_file_name_widget_controller_set_target_is_folder (self->validator,
-                                                               self->target_is_folder);
-    nautilus_file_name_widget_controller_set_original_name (self->validator,
-                                                            nautilus_file_get_display_name (self->target_file));
+    nautilus_filename_validator_set_target_is_folder (self->validator,
+                                                      self->target_is_folder);
+    nautilus_filename_validator_set_original_name (self->validator,
+                                                   nautilus_file_get_display_name (self->target_file));
 
     self->closed_handler_id = g_signal_connect (self->rename_file_popover,
                                                 "closed",
