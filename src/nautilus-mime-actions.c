@@ -234,6 +234,7 @@ struct
         N_("Text File"),
         {
             "text/plain",
+            "text/markdown",
             NULL
         }
     },
