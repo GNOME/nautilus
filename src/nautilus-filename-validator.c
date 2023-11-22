@@ -36,7 +36,8 @@ enum
 
 enum
 {
-    PROP_ERROR_REVEALER = 1,
+    PROP_0,
+    PROP_ERROR_REVEALER,
     PROP_ERROR_LABEL,
     PROP_NAME_ENTRY,
     PROP_ACTION_BUTTON,
@@ -46,6 +47,7 @@ enum
 };
 
 static guint signals[LAST_SIGNAL];
+static GParamSpec *properties[NUM_PROPERTIES];
 
 G_DEFINE_TYPE (NautilusFilenameValidator, nautilus_filename_validator, G_TYPE_OBJECT)
 
@@ -444,55 +446,30 @@ nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 0);
 
-    g_object_class_install_property (
-        object_class,
-        PROP_ERROR_REVEALER,
-        g_param_spec_object ("error-revealer",
-                             "Error Revealer",
-                             "The error label revealer",
+    properties[PROP_ERROR_REVEALER] =
+        g_param_spec_object ("error-revealer", NULL, NULL,
                              GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE |
-                             G_PARAM_CONSTRUCT_ONLY));
-
-    g_object_class_install_property (
-        object_class,
-        PROP_ERROR_LABEL,
-        g_param_spec_object ("error-label",
-                             "Error Label",
-                             "The label used for displaying errors",
+                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_ERROR_LABEL] =
+        g_param_spec_object ("error-label", NULL, NULL,
                              GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE |
-                             G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (
-        object_class,
-        PROP_NAME_ENTRY,
-        g_param_spec_object ("name-entry",
-                             "Name Entry",
-                             "The entry for the file name",
+                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_NAME_ENTRY] =
+        g_param_spec_object ("name-entry", NULL, NULL,
                              GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE |
-                             G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (
-        object_class,
-        PROP_ACTION_BUTTON,
-        g_param_spec_object ("activate-button",
-                             "Activate Button",
-                             "The activate button of the widget",
+                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_ACTION_BUTTON] =
+        g_param_spec_object ("activate-button", NULL, NULL,
                              GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE |
-                             G_PARAM_CONSTRUCT_ONLY));
-    g_object_class_install_property (
-        object_class,
-        PROP_CONTAINING_DIRECTORY,
-        g_param_spec_object ("containing-directory",
-                             "Containing Directory",
-                             "The directory used to check for duplicate names",
+                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_CONTAINING_DIRECTORY] =
+        g_param_spec_object ("containing-directory", NULL, NULL,
                              NAUTILUS_TYPE_DIRECTORY,
-                             G_PARAM_WRITABLE));
-    g_object_class_install_property (
-        object_class,
-        PROP_TARGET_IS_FOLDER,
+                             G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_TARGET_IS_FOLDER] =
         g_param_spec_boolean ("target-is-folder", NULL, NULL,
                               FALSE,
-                              G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+                              G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
 }
