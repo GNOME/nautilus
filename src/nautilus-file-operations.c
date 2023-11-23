@@ -1227,6 +1227,7 @@ report_delete_progress (CommonJob    *job,
     int remaining_time;
     gint64 now;
     char *details;
+    gboolean is_clear_action;
     char *status;
     DeleteJob *delete_job;
 
@@ -1252,17 +1253,37 @@ report_delete_progress (CommonJob    *job,
 
     transfer_info->last_report_time = now;
 
+    /* Files from "Recent" are not deleted, only cleared from the File History.
+     * This assumes recent files are not mixed with other files. */
+    is_clear_action = g_file_has_uri_scheme (delete_job->files->data, SCHEME_RECENT);
+
     if (source_info->num_files == 1)
     {
         g_autofree gchar *basename = NULL;
 
         if (files_left == 0)
         {
-            status = _("Deleted “%s”");
+            if (is_clear_action)
+            {
+                /* Translators: This action removes a file from Recent */
+                status = _("Cleared “%s”");
+            }
+            else
+            {
+                status = _("Deleted “%s”");
+            }
         }
         else
         {
-            status = _("Deleting “%s”");
+            if (is_clear_action)
+            {
+                /* Translators: This action removes a file from Recent */
+                status = _("Clearing “%s”");
+            }
+            else
+            {
+                status = _("Deleting “%s”");
+            }
         }
 
         basename = get_basename (G_FILE (delete_job->files->data));
@@ -1273,15 +1294,35 @@ report_delete_progress (CommonJob    *job,
     {
         if (files_left == 0)
         {
-            status = ngettext ("Deleted %'d file",
-                               "Deleted %'d files",
-                               source_info->num_files);
+            if (is_clear_action)
+            {
+                /* Translators: This action removes file(s) from Recent */
+                status = ngettext ("Cleared %'d file",
+                                   "Cleared %'d files",
+                                   source_info->num_files);
+            }
+            else
+            {
+                status = ngettext ("Deleted %'d file",
+                                   "Deleted %'d files",
+                                   source_info->num_files);
+            }
         }
         else
         {
-            status = ngettext ("Deleting %'d file",
-                               "Deleting %'d files",
-                               source_info->num_files);
+            if (is_clear_action)
+            {
+                /* Translators: This action removes file(s) from Recent */
+                status = ngettext ("Clearing %'d file",
+                                   "Clearing %'d files",
+                                   source_info->num_files);
+            }
+            else
+            {
+                status = ngettext ("Deleting %'d file",
+                                   "Deleting %'d files",
+                                   source_info->num_files);
+            }
         }
         nautilus_progress_info_take_status (job->progress,
                                             g_strdup_printf (status,

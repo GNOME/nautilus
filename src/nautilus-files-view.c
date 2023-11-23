@@ -1671,9 +1671,8 @@ action_remove_from_recent (GSimpleAction *action,
                            GVariant      *state,
                            gpointer       user_data)
 {
-    /* TODO:implement a set of functions for this, is very confusing to
-     * call trash_or_delete_file to remove from recent, even if it does like
-     * that not deleting/moving the files to trash */
+    /* gvfs handles this with normal delete operations if the path starts
+     * with "recent://" */
     trash_or_delete_selected_files (NAUTILUS_FILES_VIEW (user_data));
 }
 
