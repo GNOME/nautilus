@@ -70,9 +70,11 @@
               </object>
             </child>
             <child>
-              <object class="GtkRevealer" id="error_revealer">
+              <object class="GtkRevealer">
+                <property name="reveal-child" bind-source="validator" bind-property="has-feedback"/>
                 <property name="child">
                   <object class="GtkLabel" id="error_label">
+                    <property name="label" bind-source="validator" bind-property="feedback-text"/>
                     <property name="margin_top">4</property>
                     <property name="margin_bottom">4</property>
                     <property name="xalign">0</property>
@@ -137,8 +139,6 @@
   <object class="GtkSizeGroup" id="extension_sizegroup"/>
   <object class="NautilusFilenameValidator" id="validator">
     <property name="activate-button">activate_button</property>
-    <property name="error-revealer">error_revealer</property>
-    <property name="error-label">error_label</property>
     <property name="name-entry">name_entry</property>
     <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
   </object>

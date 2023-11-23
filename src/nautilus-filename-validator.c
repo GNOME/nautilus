@@ -15,14 +15,14 @@ struct _NautilusFilenameValidator
 {
     GObject parent_instance;
 
-    GtkWidget *error_revealer;
-    GtkWidget *error_label;
     GtkWidget *name_entry;
     GtkWidget *activate_button;
     NautilusDirectory *containing_directory;
     gboolean target_is_folder;
     char *original_name;
     char *extension;
+
+    const char *feedback_text;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -37,8 +37,8 @@ enum
 enum
 {
     PROP_0,
-    PROP_ERROR_REVEALER,
-    PROP_ERROR_LABEL,
+    PROP_FEEDBACK_TEXT,
+    PROP_HAS_FEEDBACK,
     PROP_NAME_ENTRY,
     PROP_ACTION_BUTTON,
     PROP_CONTAINING_DIRECTORY,
@@ -182,19 +182,15 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
 static gboolean
 duplicated_file_label_show (NautilusFilenameValidator *self)
 {
-    if (self->duplicated_is_folder)
-    {
-        gtk_label_set_label (GTK_LABEL (self->error_label),
-                             _("A folder with that name already exists."));
-    }
-    else
-    {
-        gtk_label_set_label (GTK_LABEL (self->error_label),
-                             _("A file with that name already exists."));
-    }
+    const char *text = self->duplicated_is_folder ? _("A folder with that name already exists.") :
+                                                    _("A file with that name already exists.");
 
-    gtk_revealer_set_reveal_child (GTK_REVEALER (self->error_revealer),
-                                   TRUE);
+    if (self->feedback_text != text)
+    {
+        self->feedback_text = text;
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FEEDBACK_TEXT]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_HAS_FEEDBACK]);
+    }
 
     self->duplicated_label_timeout_id = 0;
 
@@ -217,9 +213,12 @@ filename_validator_process_new_name (NautilusFilenameValidator *self,
                                                              name,
                                                              &error_message);
 
-    gtk_label_set_label (GTK_LABEL (self->error_label), error_message);
-    gtk_revealer_set_reveal_child (GTK_REVEALER (self->error_revealer),
-                                   error_message != NULL);
+    if (self->feedback_text != error_message)
+    {
+        self->feedback_text = error_message;
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FEEDBACK_TEXT]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_HAS_FEEDBACK]);
+    }
 
     existing_file = nautilus_directory_get_file_by_name (self->containing_directory, name);
     *duplicated_name = existing_file != NULL &&
@@ -330,6 +329,36 @@ nautilus_filename_validator_init (NautilusFilenameValidator *self)
 }
 
 static void
+nautilus_filename_validator_get_property (GObject    *object,
+                                          guint       prop_id,
+                                          GValue     *value,
+                                          GParamSpec *pspec)
+{
+    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (object);
+
+    switch (prop_id)
+    {
+        case PROP_FEEDBACK_TEXT:
+        {
+            g_value_set_string (value, self->feedback_text);
+        }
+        break;
+
+        case PROP_HAS_FEEDBACK:
+        {
+            g_value_set_boolean (value, (self->feedback_text != NULL));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+        break;
+    }
+}
+
+static void
 nautilus_filename_validator_set_property (GObject      *object,
                                           guint         prop_id,
                                           const GValue *value,
@@ -339,18 +368,6 @@ nautilus_filename_validator_set_property (GObject      *object,
 
     switch (prop_id)
     {
-        case PROP_ERROR_REVEALER:
-        {
-            self->error_revealer = GTK_WIDGET (g_value_get_object (value));
-        }
-        break;
-
-        case PROP_ERROR_LABEL:
-        {
-            self->error_label = GTK_WIDGET (g_value_get_object (value));
-        }
-        break;
-
         case PROP_NAME_ENTRY:
         {
             self->name_entry = GTK_WIDGET (g_value_get_object (value));
@@ -434,6 +451,7 @@ nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+    object_class->get_property = nautilus_filename_validator_get_property;
     object_class->set_property = nautilus_filename_validator_set_property;
     object_class->finalize = nautilus_filename_validator_finalize;
 
@@ -446,14 +464,14 @@ nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 0);
 
-    properties[PROP_ERROR_REVEALER] =
-        g_param_spec_object ("error-revealer", NULL, NULL,
-                             GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-    properties[PROP_ERROR_LABEL] =
-        g_param_spec_object ("error-label", NULL, NULL,
-                             GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_FEEDBACK_TEXT] =
+        g_param_spec_string ("feedback-text", NULL, NULL,
+                             NULL,
+                             G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_HAS_FEEDBACK] =
+        g_param_spec_boolean ("has-feedback", NULL, NULL,
+                              FALSE,
+                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     properties[PROP_NAME_ENTRY] =
         g_param_spec_object ("name-entry", NULL, NULL,
                              GTK_TYPE_WIDGET,
