@@ -32,7 +32,6 @@ struct _NautilusCompressDialog
     CompressCallback callback;
     gpointer callback_data;
 
-    const char *extension;
     gchar *passphrase;
     gchar *passphrase_confirm;
 };
@@ -115,9 +114,6 @@ update_selected_format (NautilusCompressDialog *self)
     {
         show_passphrase = TRUE;
     }
-
-    self->extension = item->extension;
-    nautilus_filename_validator_set_extension (self->validator, self->extension);
 
     gtk_widget_set_visible (self->passphrase_label, show_passphrase);
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
@@ -410,6 +406,31 @@ on_name_accepted (NautilusCompressDialog *self)
     gtk_window_close (GTK_WINDOW (self));
 }
 
+static char *
+maybe_append_extension (NautilusCompressDialog *self,
+                        gchar                  *text,
+                        NautilusCompressItem   *selected_item)
+{
+    g_autofree char *basename = g_strdup (text);
+
+    if (basename == NULL)
+    {
+        return NULL;
+    }
+
+    g_strstrip (basename);
+
+    if (selected_item != NULL && selected_item->extension != NULL &&
+        !g_str_has_suffix (basename, selected_item->extension))
+    {
+        return g_strconcat (basename, selected_item->extension, NULL);
+    }
+    else
+    {
+        return g_steal_pointer (&basename);
+    }
+}
+
 NautilusCompressDialog *
 nautilus_compress_dialog_new (GtkWindow         *parent_window,
                               NautilusDirectory *destination_directory,
@@ -496,4 +517,5 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
+    gtk_widget_class_bind_template_callback (widget_class, maybe_append_extension);
 }

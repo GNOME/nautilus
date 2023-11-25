@@ -59,7 +59,7 @@
   </template>
   <object class="NautilusFilenameValidator" id="validator">
     <property name="activate-button">activate_button</property>
-    <property name="name-entry">name_entry</property>
+    <property name="new-name" bind-source="name_entry" bind-property="text"/>
     <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
   </object>
 </interface>

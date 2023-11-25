@@ -142,7 +142,12 @@
   <object class="GtkSizeGroup" id="extension_sizegroup"/>
   <object class="NautilusFilenameValidator" id="validator">
     <property name="activate-button">activate_button</property>
-    <property name="name-entry">name_entry</property>
+    <binding name="new-name">
+      <closure type="gchararray" function="maybe_append_extension">
+        <lookup name="text">name_entry</lookup>
+        <lookup name="selected-item">extension_dropdown</lookup>
+      </closure>
+    </binding>
     <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
   </object>
 </interface>

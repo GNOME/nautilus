@@ -23,7 +23,5 @@ void    nautilus_filename_validator_set_target_is_folder     (NautilusFilenameVa
                                                               gboolean                   is_folder);
 void    nautilus_filename_validator_set_original_name        (NautilusFilenameValidator *self,
                                                               const char                *original_name);
-void    nautilus_filename_validator_set_extension            (NautilusFilenameValidator *self,
-                                                              const char                *extension);
 void    nautilus_filename_validator_validate                 (NautilusFilenameValidator *self);
 void    nautilus_filename_validator_try_accept               (NautilusFilenameValidator *self);

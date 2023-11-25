@@ -15,14 +15,13 @@ struct _NautilusFilenameValidator
 {
     GObject parent_instance;
 
-    GtkWidget *name_entry;
     GtkWidget *activate_button;
     NautilusDirectory *containing_directory;
     gboolean target_is_folder;
     char *original_name;
-    char *extension;
 
     const char *feedback_text;
+    char *new_name;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -39,7 +38,7 @@ enum
     PROP_0,
     PROP_FEEDBACK_TEXT,
     PROP_HAS_FEEDBACK,
-    PROP_NAME_ENTRY,
+    PROP_NEW_NAME,
     PROP_ACTION_BUTTON,
     PROP_CONTAINING_DIRECTORY,
     PROP_TARGET_IS_FOLDER,
@@ -64,14 +63,6 @@ nautilus_filename_validator_set_original_name (NautilusFilenameValidator *self,
 {
     g_free (self->original_name);
     self->original_name = g_strdup (original_name);
-}
-
-void
-nautilus_filename_validator_set_extension (NautilusFilenameValidator *self,
-                                           const char                *extension)
-{
-    g_free (self->extension);
-    self->extension = g_strdup (extension);
 }
 
 void
@@ -117,18 +108,7 @@ nautilus_filename_validator_ignore_existing_file (NautilusFilenameValidator *sel
 gchar *
 nautilus_filename_validator_get_new_name (NautilusFilenameValidator *self)
 {
-    g_autofree char *basename = NULL;
-
-    basename = g_strstrip (g_strdup (gtk_editable_get_text (GTK_EDITABLE (self->name_entry))));
-
-    if (self->extension != NULL && !g_str_has_suffix (basename, self->extension))
-    {
-        return g_strconcat (basename, self->extension, NULL);
-    }
-    else
-    {
-        return g_steal_pointer (&basename);
-    }
+    return g_strdup (self->new_name);
 }
 
 static gboolean
@@ -369,6 +349,13 @@ nautilus_filename_validator_get_property (GObject    *object,
         }
         break;
 
+        case PROP_NEW_NAME:
+        {
+            g_value_take_string (value,
+                                 nautilus_filename_validator_get_new_name (self));
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -387,9 +374,9 @@ nautilus_filename_validator_set_property (GObject      *object,
 
     switch (prop_id)
     {
-        case PROP_NAME_ENTRY:
+        case PROP_NEW_NAME:
         {
-            self->name_entry = GTK_WIDGET (g_value_get_object (value));
+            g_set_str (&self->new_name, g_value_get_string (value));
         }
         break;
 
@@ -446,7 +433,7 @@ nautilus_filename_validator_finalize (GObject *object)
     }
 
     g_free (self->original_name);
-    g_free (self->extension);
+    g_free (self->new_name);
 
     G_OBJECT_CLASS (nautilus_filename_validator_parent_class)->finalize (object);
 }
@@ -477,10 +464,10 @@ nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
         g_param_spec_boolean ("has-feedback", NULL, NULL,
                               FALSE,
                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-    properties[PROP_NAME_ENTRY] =
-        g_param_spec_object ("name-entry", NULL, NULL,
-                             GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_NEW_NAME] =
+        g_param_spec_string ("new-name", NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_ACTION_BUTTON] =
         g_param_spec_object ("activate-button", NULL, NULL,
                              GTK_TYPE_WIDGET,
