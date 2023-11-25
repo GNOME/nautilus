@@ -21,9 +21,16 @@
               </object>
             </child>
             <child type="end">
-              <object class="GtkButton" id="activate_button">
+              <object class="GtkButton">
                 <property name="label" translatable="yes">Create</property>
-                <property name="sensitive">False</property>
+                <binding name="sensitive">
+                  <closure type="gboolean" function="are_name_and_passphrase_ready">
+                    <lookup name="passed">validator</lookup>
+                    <lookup name="selected-item">extension_dropdown</lookup>
+                    <lookup name="text">passphrase_entry</lookup>
+                    <lookup name="text">passphrase_confirm_entry</lookup>
+                  </closure>
+                </binding>
                 <signal name="clicked" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>
                 <style>
                   <class name="suggested-action"/>
@@ -76,7 +83,7 @@
               <object class="GtkRevealer">
                 <property name="reveal-child" bind-source="validator" bind-property="has-feedback"/>
                 <property name="child">
-                  <object class="GtkLabel" id="error_label">
+                  <object class="GtkLabel">
                     <property name="label" bind-source="validator" bind-property="feedback-text"/>
                     <property name="margin_top">4</property>
                     <property name="margin_bottom">4</property>
@@ -141,7 +148,6 @@
   </template>
   <object class="GtkSizeGroup" id="extension_sizegroup"/>
   <object class="NautilusFilenameValidator" id="validator">
-    <property name="activate-button">activate_button</property>
     <binding name="new-name">
       <closure type="gchararray" function="maybe_append_extension">
         <lookup name="text">name_entry</lookup>

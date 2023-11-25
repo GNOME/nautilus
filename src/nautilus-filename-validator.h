@@ -7,7 +7,6 @@
 #pragma once
 
 #include <glib.h>
-#include <gtk/gtk.h>
 
 #include "nautilus-file.h"
 #include "nautilus-directory.h"

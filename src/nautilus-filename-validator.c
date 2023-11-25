@@ -15,13 +15,13 @@ struct _NautilusFilenameValidator
 {
     GObject parent_instance;
 
-    GtkWidget *activate_button;
     NautilusDirectory *containing_directory;
     gboolean target_is_folder;
     char *original_name;
 
     const char *feedback_text;
     char *new_name;
+    gboolean passed;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -39,8 +39,8 @@ enum
     PROP_FEEDBACK_TEXT,
     PROP_HAS_FEEDBACK,
     PROP_NEW_NAME,
-    PROP_ACTION_BUTTON,
     PROP_CONTAINING_DIRECTORY,
+    PROP_PASSED,
     PROP_TARGET_IS_FOLDER,
     NUM_PROPERTIES
 };
@@ -205,7 +205,11 @@ filename_validator_process_new_name (NautilusFilenameValidator *self,
                        !nautilus_filename_validator_ignore_existing_file (self,
                                                                           existing_file);
 
-    gtk_widget_set_sensitive (self->activate_button, *valid_name && !*duplicated_name);
+    if (self->passed != (*valid_name && !*duplicated_name))
+    {
+        self->passed = (*valid_name && !*duplicated_name);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PASSED]);
+    }
 
     if (self->duplicated_label_timeout_id != 0)
     {
@@ -356,6 +360,12 @@ nautilus_filename_validator_get_property (GObject    *object,
         }
         break;
 
+        case PROP_PASSED:
+        {
+            g_value_set_boolean (value, self->passed);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -377,12 +387,6 @@ nautilus_filename_validator_set_property (GObject      *object,
         case PROP_NEW_NAME:
         {
             g_set_str (&self->new_name, g_value_get_string (value));
-        }
-        break;
-
-        case PROP_ACTION_BUTTON:
-        {
-            self->activate_button = GTK_WIDGET (g_value_get_object (value));
         }
         break;
 
@@ -468,10 +472,10 @@ nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
         g_param_spec_string ("new-name", NULL, NULL,
                              NULL,
                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-    properties[PROP_ACTION_BUTTON] =
-        g_param_spec_object ("activate-button", NULL, NULL,
-                             GTK_TYPE_WIDGET,
-                             G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+    properties[PROP_PASSED] =
+        g_param_spec_boolean ("passed", NULL, NULL,
+                              FALSE,
+                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     properties[PROP_CONTAINING_DIRECTORY] =
         g_param_spec_object ("containing-directory", NULL, NULL,
                              NAUTILUS_TYPE_DIRECTORY,

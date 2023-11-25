@@ -19,8 +19,6 @@ struct _NautilusCompressDialog
 
     NautilusFilenameValidator *validator;
 
-    GtkWidget *activate_button;
-    GtkWidget *error_label;
     GtkWidget *name_entry;
     GtkWidget *extension_dropdown;
     GtkSizeGroup *extension_sizegroup;
@@ -272,21 +270,8 @@ update_passphrase (NautilusCompressDialog  *self,
                    gchar                  **passphrase,
                    GtkEditable             *editable)
 {
-    const gchar *error_message;
-
     g_free (*passphrase);
     *passphrase = g_strdup (gtk_editable_get_text (editable));
-
-    /* Simulate a change of the name_entry to ensure the correct sensitivity of
-     * the activate_button, but only if the name_entry is valid in order to
-     * avoid changes of the error_revealer.
-     */
-    error_message = gtk_label_get_text (GTK_LABEL (self->error_label));
-    if (error_message[0] == '\0')
-    {
-        gtk_widget_set_sensitive (self->activate_button, FALSE);
-        g_signal_emit_by_name (self->name_entry, "changed");
-    }
 }
 
 static void
@@ -307,21 +292,22 @@ passphrase_confirm_entry_on_changed (GtkEditable *editable,
     update_passphrase (self, &self->passphrase_confirm, editable);
 }
 
-static void
-activate_button_on_sensitive_notify (GObject    *gobject,
-                                     GParamSpec *pspec,
-                                     gpointer    user_data)
-{
-    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
-    NautilusCompressionFormat format;
 
-    format = g_settings_get_enum (nautilus_compression_preferences,
-                                  NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT);
-    if (format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP &&
-        (self->passphrase == NULL || self->passphrase[0] == '\0' || g_strcmp0 (self->passphrase, self->passphrase_confirm) != 0))
+static gboolean
+are_name_and_passphrase_ready (NautilusCompressDialog *self,
+                               gboolean                filename_passed,
+                               NautilusCompressItem   *selected_item,
+                               const char             *passphrase,
+                               const char             *passphrase_confirm)
+{
+    if (selected_item != NULL && selected_item->format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP &&
+        (passphrase == NULL || passphrase[0] == '\0' || g_strcmp0 (passphrase, passphrase_confirm) != 0))
     {
-        /* Reset sensitivity of the activate_button if password is not set. */
-        gtk_widget_set_sensitive (self->activate_button, FALSE);
+        return FALSE;
+    }
+    else
+    {
+        return filename_passed;
     }
 }
 
@@ -466,8 +452,6 @@ nautilus_compress_dialog_init (NautilusCompressDialog *self)
     gtk_widget_init_template (GTK_WIDGET (self));
 
     extension_dropdown_setup (self);
-    g_signal_connect (self->activate_button, "notify::sensitive",
-                      G_CALLBACK (activate_button_on_sensitive_notify), self);
 }
 
 static void
@@ -500,8 +484,6 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, activate_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, error_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, extension_dropdown);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, extension_sizegroup);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, name_entry);
@@ -518,4 +500,5 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
     gtk_widget_class_bind_template_callback (widget_class, maybe_append_extension);
+    gtk_widget_class_bind_template_callback (widget_class, are_name_and_passphrase_ready);
 }

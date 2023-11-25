@@ -43,9 +43,9 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="activate_button">
+          <object class="GtkButton">
             <property name="label" translatable="yes">_Rename</property>
-            <property name="sensitive">False</property>
+            <property name="sensitive" bind-source="validator" bind-property="passed" bind-flags="sync-create"/>
             <property name="halign">end</property>
             <property name="use-underline">True</property>
             <signal name="clicked" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>"
@@ -58,7 +58,6 @@
     </property>
   </template>
   <object class="NautilusFilenameValidator" id="validator">
-    <property name="activate-button">activate_button</property>
     <property name="new-name" bind-source="name_entry" bind-property="text"/>
     <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
   </object>
