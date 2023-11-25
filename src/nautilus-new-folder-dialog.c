@@ -103,4 +103,6 @@ nautilus_new_folder_dialog_class_init (NautilusNewFolderDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, validator);
 
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
 }

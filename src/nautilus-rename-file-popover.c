@@ -289,4 +289,6 @@ nautilus_rename_file_popover_class_init (NautilusRenameFilePopoverClass *klass)
 
     gtk_widget_class_bind_template_callback (widget_class, on_closed);
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
 }

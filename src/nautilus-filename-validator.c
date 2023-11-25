@@ -245,9 +245,9 @@ filename_validator_process_new_name (NautilusFilenameValidator *self,
 }
 
 static void
-filename_validator_on_changed_directory_info_ready (NautilusDirectory *directory,
-                                                    GList             *files,
-                                                    gpointer           user_data)
+on_directory_info_ready_to_validate (NautilusDirectory *directory,
+                                     GList             *files,
+                                     gpointer           user_data)
 {
     NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
     gboolean duplicated_name;
@@ -269,22 +269,31 @@ filename_validator_on_changed_directory_info_ready (NautilusDirectory *directory
     }
 }
 
-static void
-filename_validator_on_changed (gpointer user_data)
+/**
+ * nautilus_filename_validator_validate:
+ *
+ * @self: The validator instance.
+ *
+ * Requests processing of the :new-name to check the filename is valid for the
+ * :containing-directory, possibly updating :feedback-text and :has-feedback.
+ */
+void
+nautilus_filename_validator_validate (NautilusFilenameValidator *self)
 {
-    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
+    g_return_if_fail (NAUTILUS_IS_FILENAME_VALIDATOR (self));
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
 
     nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE,
-                                        filename_validator_on_changed_directory_info_ready,
+                                        on_directory_info_ready_to_validate,
                                         self);
 }
 
 static void
-filename_validator_on_activate_directory_info_ready (NautilusDirectory *directory,
-                                                     GList             *files,
-                                                     gpointer           user_data)
+on_directory_info_ready_to_try_accept (NautilusDirectory *directory,
+                                       GList             *files,
+                                       gpointer           user_data)
 {
     NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
     gboolean duplicated_name;
@@ -311,15 +320,25 @@ filename_validator_on_activate_directory_info_ready (NautilusDirectory *director
     }
 }
 
-static void
-filename_validator_on_activate (gpointer user_data)
+
+/**
+ * nautilus_filename_validator_try_accept:
+ *
+ * @self: The validator instance.
+ *
+ * Identical to nautilus_filename_validator_validate, but, additionally, the
+ * "name-accepted" sigal may get emitted if the :new-name passes the validation.
+ */
+void
+nautilus_filename_validator_try_accept (NautilusFilenameValidator *self)
 {
-    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
+    g_return_if_fail (NAUTILUS_IS_FILENAME_VALIDATOR (self));
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
 
     nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
                                         TRUE,
-                                        filename_validator_on_activate_directory_info_ready,
+                                        on_directory_info_ready_to_try_accept,
                                         self);
 }
 
@@ -371,26 +390,12 @@ nautilus_filename_validator_set_property (GObject      *object,
         case PROP_NAME_ENTRY:
         {
             self->name_entry = GTK_WIDGET (g_value_get_object (value));
-
-            g_signal_connect_swapped (G_OBJECT (self->name_entry),
-                                      "activate",
-                                      (GCallback) filename_validator_on_activate,
-                                      self);
-            g_signal_connect_swapped (G_OBJECT (self->name_entry),
-                                      "changed",
-                                      (GCallback) filename_validator_on_changed,
-                                      self);
         }
         break;
 
         case PROP_ACTION_BUTTON:
         {
             self->activate_button = GTK_WIDGET (g_value_get_object (value));
-
-            g_signal_connect_swapped (G_OBJECT (self->activate_button),
-                                      "clicked",
-                                      (GCallback) filename_validator_on_activate,
-                                      self);
         }
         break;
 
@@ -426,10 +431,10 @@ nautilus_filename_validator_finalize (GObject *object)
     if (self->containing_directory != NULL)
     {
         nautilus_directory_cancel_callback (self->containing_directory,
-                                            filename_validator_on_changed_directory_info_ready,
+                                            on_directory_info_ready_to_validate,
                                             self);
         nautilus_directory_cancel_callback (self->containing_directory,
-                                            filename_validator_on_activate_directory_info_ready,
+                                            on_directory_info_ready_to_try_accept,
                                             self);
         g_clear_object (&self->containing_directory);
     }

@@ -24,6 +24,8 @@
               <property name="label" translatable="yes">New Filename</property>
             </accessibility>
             <property name="margin-bottom">12</property>
+            <signal name="changed" handler="nautilus_filename_validator_validate" object="validator" swapped="yes"/>
+            <signal name="activate" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>
           </object>
         </child>
         <child>
@@ -46,6 +48,7 @@
             <property name="sensitive">False</property>
             <property name="halign">end</property>
             <property name="use-underline">True</property>
+            <signal name="clicked" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>"
             <style>
               <class name="suggested-action"/>
             </style>

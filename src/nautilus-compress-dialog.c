@@ -134,10 +134,9 @@ update_selected_format (NautilusCompressDialog *self)
                          item->format);
 
     /* Since the extension changes when the button is toggled, force a
-     * verification of the new file name by simulating an entry change
+     * verification of the new file name.
      */
-    gtk_widget_set_sensitive (self->activate_button, FALSE);
-    g_signal_emit_by_name (self->name_entry, "changed");
+    nautilus_filename_validator_validate (self->validator);
 }
 
 static void
@@ -495,4 +494,6 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, passphrase_confirm_entry_on_changed);
     gtk_widget_class_bind_template_callback (widget_class, update_selected_format);
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
 }

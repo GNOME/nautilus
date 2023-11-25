@@ -24,6 +24,7 @@
               <object class="GtkButton" id="activate_button">
                 <property name="label" translatable="yes">Create</property>
                 <property name="sensitive">False</property>
+                <signal name="clicked" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>
                 <style>
                   <class name="suggested-action"/>
                 </style>
@@ -60,6 +61,8 @@
                     </accessibility>
                     <property name="hexpand">True</property>
                     <property name="width-chars">30</property>
+                    <signal name="changed" handler="nautilus_filename_validator_validate" object="validator" swapped="yes"/>
+                    <signal name="activate" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>
                   </object>
                 </child>
                 <child>
