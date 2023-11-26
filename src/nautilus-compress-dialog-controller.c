@@ -374,14 +374,14 @@ extension_dropdown_unbind (GtkSignalListItemFactory *factory,
 }
 
 static void
-update_passphrase (NautilusCompressDialogController *self,
-                   gchar                            *passphrase,
-                   GtkEditable                      *editable)
+update_passphrase (NautilusCompressDialogController  *self,
+                   gchar                            **passphrase,
+                   GtkEditable                       *editable)
 {
     const gchar *error_message;
 
-    g_free (passphrase);
-    passphrase = g_strdup (gtk_editable_get_text (editable));
+    g_free (*passphrase);
+    *passphrase = g_strdup (gtk_editable_get_text (editable));
 
     /* Simulate a change of the name_entry to ensure the correct sensitivity of
      * the activate_button, but only if the name_entry is valid in order to
@@ -401,7 +401,7 @@ passphrase_entry_on_changed (GtkEditable *editable,
 {
     NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
 
-    update_passphrase (self, self->passphrase, editable);
+    update_passphrase (self, &self->passphrase, editable);
 }
 
 static void
@@ -410,7 +410,7 @@ passphrase_confirm_entry_on_changed (GtkEditable *editable,
 {
     NautilusCompressDialogController *self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
 
-    update_passphrase (self, self->passphrase_confirm, editable);
+    update_passphrase (self, &self->passphrase_confirm, editable);
 }
 
 static void
