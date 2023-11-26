@@ -45,6 +45,7 @@
 #include <gio/gio.h>
 #include <glib.h>
 
+#include "nautilus-dialog-utilities.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-fd-holder.h"
 #include "nautilus-file-changes-queue.h"
@@ -270,27 +271,6 @@ G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
 #define MAXIMUM_FAT_FILE_SIZE G_MAXUINT32
 
 #define IS_IO_ERROR(__error, KIND) (((__error)->domain == G_IO_ERROR && (__error)->code == G_IO_ERROR_ ## KIND))
-
-#define CANCEL _("_Cancel")
-#define SKIP _("_Skip")
-#define SKIP_ALL _("S_kip All")
-#define RETRY _("_Retry")
-#define DELETE _("_Delete")
-#define DELETE_ALL _("Delete _All")
-#define REPLACE _("_Replace")
-#define MERGE _("_Merge")
-#define COPY_FORCE _("Copy _Anyway")
-#define FORCE_OPERATION _("Proceed _Anyway")
-#define EMPTY_TRASH _("Empty _Trash")
-
-static gboolean
-is_all_button_text (const char *button_text)
-{
-    g_assert (button_text != NULL);
-
-    return !strcmp (button_text, SKIP_ALL) ||
-           !strcmp (button_text, DELETE_ALL);
-}
 
 static void scan_sources (GList      *files,
                           SourceInfo *source_info,
@@ -689,10 +669,9 @@ typedef struct
     const char *primary_text;
     const char *secondary_text;
     const char *details_text;
-    const char **button_titles;
-    gboolean show_all;
+    NautilusDialogResponse responses;
     gboolean should_start_inactive;
-    int result;
+    NautilusDialogResponse result;
     /* Dialogs are ran from operation threads, which need to be blocked until
      * the user gives a valid response
      */
@@ -766,23 +745,14 @@ is_long_job (CommonJob *job)
     return elapsed > LONG_JOB_THRESHOLD_IN_SECONDS ? TRUE : FALSE;
 }
 
-static gboolean
-simple_dialog_button_activate (GtkWidget *button)
-{
-    gtk_widget_set_sensitive (button, TRUE);
-    return G_SOURCE_REMOVE;
-}
-
 static void
-simple_dialog_cb (GtkDialog *dialog,
-                  gint       response_id,
-                  gpointer   user_data)
+simple_dialog_cb (AdwAlertDialog      *dialog,
+                  GAsyncResult        *result,
+                  RunSimpleDialogData *data)
 {
-    RunSimpleDialogData *data = user_data;
+    const char *response = adw_alert_dialog_choose_finish (dialog, result);
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
-
-    data->result = response_id;
+    data->result = nautilus_dialog_response_from_string (response);
     data->completed = TRUE;
 
     g_cond_signal (&data->cond);
@@ -793,74 +763,15 @@ static gboolean
 do_run_simple_dialog (gpointer _data)
 {
     RunSimpleDialogData *data = _data;
-    const char *button_title;
-    GtkWidget *dialog;
-    GtkWidget *button;
-    int response_id;
 
     g_mutex_lock (&data->mutex);
 
     /* Create the dialog. */
-    dialog = gtk_message_dialog_new (data->parent_window,
-                                     GTK_DIALOG_MODAL,
-                                     GTK_MESSAGE_INFO,
-                                     GTK_BUTTONS_NONE,
-                                     NULL);
-
-    g_object_set (dialog,
-                  "text", data->primary_text,
-                  "secondary-text", data->secondary_text,
-                  NULL);
-
-    for (response_id = 0;
-         data->button_titles[response_id] != NULL;
-         response_id++)
-    {
-        button_title = data->button_titles[response_id];
-        if (!data->show_all && is_all_button_text (button_title))
-        {
-            continue;
-        }
-
-        button = gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
-
-        if (g_strcmp0 (button_title, DELETE) == 0 ||
-            g_strcmp0 (button_title, EMPTY_TRASH) == 0 ||
-            g_strcmp0 (button_title, DELETE_ALL) == 0)
-        {
-            gtk_widget_add_css_class (button, "destructive-action");
-        }
-
-        if (data->should_start_inactive)
-        {
-            gtk_widget_set_sensitive (button, FALSE);
-            g_timeout_add_seconds (BUTTON_ACTIVATION_DELAY_IN_SECONDS,
-                                   G_SOURCE_FUNC (simple_dialog_button_activate),
-                                   button);
-        }
-    }
-
-    if (data->details_text)
-    {
-        GtkWidget *content_area, *label;
-        content_area = gtk_message_dialog_get_message_area (GTK_MESSAGE_DIALOG (dialog));
-
-        label = gtk_label_new (data->details_text);
-        gtk_label_set_wrap (GTK_LABEL (label), TRUE);
-        gtk_label_set_selectable (GTK_LABEL (label), TRUE);
-        gtk_label_set_xalign (GTK_LABEL (label), 0);
-        /* Ideally, we shouldn’t do this.
-         *
-         * Refer to https://gitlab.gnome.org/GNOME/nautilus/merge_requests/94
-         * and https://gitlab.gnome.org/GNOME/nautilus/issues/270.
-         */
-        gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_MIDDLE);
-        gtk_label_set_max_width_chars (GTK_LABEL (label),
-                                       MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
-
-        gtk_box_append (GTK_BOX (content_area), label);
-    }
+    AdwAlertDialog *dialog = nautilus_dialog_with_responses (data->primary_text,
+                                                             data->secondary_text,
+                                                             data->details_text,
+                                                             data->should_start_inactive,
+                                                             data->responses);
 
     if (data->dbus_data != NULL)
     {
@@ -870,9 +781,11 @@ do_run_simple_dialog (gpointer _data)
         }
     }
 
-    /* Run it. */
-    g_signal_connect (dialog, "response", G_CALLBACK (simple_dialog_cb), data);
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_alert_dialog_choose (dialog,
+                             GTK_WIDGET (data->parent_window),
+                             NULL,
+                             (GAsyncReadyCallback) simple_dialog_cb,
+                             data);
 
     return FALSE;
 }
@@ -880,18 +793,14 @@ do_run_simple_dialog (gpointer _data)
 /* NOTE: This frees the primary / secondary strings, in order to
  *  avoid doing that everywhere. So, make sure they are strduped */
 
-static int
-run_dialog (CommonJob  *job,
-            char       *primary_text,
-            char       *secondary_text,
-            const char *details_text,
-            gboolean    show_all,
-            ...)
+static NautilusDialogResponse
+run_dialog (CommonJob              *job,
+            char                   *primary_text,
+            char                   *secondary_text,
+            const char             *details_text,
+            NautilusDialogResponse  responses)
 {
     RunSimpleDialogData *data;
-    int res;
-    const char *button_title;
-    GPtrArray *ptr_array;
 
     g_timer_stop (job->time);
 
@@ -901,22 +810,10 @@ run_dialog (CommonJob  *job,
     data->primary_text = primary_text;
     data->secondary_text = secondary_text;
     data->details_text = details_text;
-    data->show_all = show_all;
+    data->responses = responses;
     data->completed = FALSE;
     g_mutex_init (&data->mutex);
     g_cond_init (&data->cond);
-
-    ptr_array = g_ptr_array_new ();
-
-    va_list varargs;
-    va_start (varargs, show_all);
-    while ((button_title = va_arg (varargs, const char *)) != NULL)
-    {
-        g_ptr_array_add (ptr_array, (char *) button_title);
-    }
-    g_ptr_array_add (ptr_array, NULL);
-    data->button_titles = (const char **) g_ptr_array_free (ptr_array, FALSE);
-    va_end (varargs);
 
     nautilus_progress_info_pause (job->progress);
 
@@ -934,13 +831,13 @@ run_dialog (CommonJob  *job,
     }
 
     nautilus_progress_info_resume (job->progress);
-    res = data->result;
+
+    NautilusDialogResponse res = data->result;
 
     g_mutex_unlock (&data->mutex);
     g_mutex_clear (&data->mutex);
     g_cond_clear (&data->cond);
 
-    g_free (data->button_titles);
     g_free (data);
 
     g_timer_continue (job->time);
@@ -960,40 +857,32 @@ show_skip_dialog (CommonJob  *job,
                   int         total_operations,
                   gboolean    show_all)
 {
-    int response;
+    NautilusDialogResponse responses = RESPONSE_CANCEL;
 
-    if (total_operations == 1)
+    if (total_operations > 1)
     {
-        response = run_dialog (job,
-                               primary_text,
-                               secondary_text,
-                               details_text,
-                               FALSE,
-                               CANCEL,
-                               NULL);
-    }
-    else
-    {
-        response = run_dialog (job,
-                               primary_text,
-                               secondary_text,
-                               details_text,
-                               show_all,
-                               CANCEL, SKIP_ALL, SKIP,
-                               NULL);
+        responses |= (show_all
+                      ? (RESPONSE_SKIP | RESPONSE_SKIP_ALL)
+                      : RESPONSE_SKIP);
     }
 
-    if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+    NautilusDialogResponse response = run_dialog (job,
+                                                  primary_text,
+                                                  secondary_text,
+                                                  details_text,
+                                                  responses);
+
+    if (response == RESPONSE_CANCEL)
     {
         abort_job (job);
         return FALSE;
     }
-    else if (show_all && response == 1) /* skip all */
+    else if (response == RESPONSE_SKIP_ALL)
     {
         job->skip_all_error = TRUE;
         return TRUE;
     }
-    else if (response == 1 || (show_all && response == 2)) /* skip */
+    else if (response == RESPONSE_SKIP)
     {
         return TRUE;
     }
@@ -1071,11 +960,9 @@ confirm_delete_from_trash (CommonJob *job,
                            prompt,
                            g_strdup (_("Permanently deleted items can not be restored")),
                            NULL,
-                           FALSE,
-                           CANCEL, DELETE,
-                           NULL);
+                           RESPONSE_DELETE);
 
-    return (response == 1);
+    return response == RESPONSE_DELETE;
 }
 
 static gboolean
@@ -1090,11 +977,9 @@ confirm_empty_trash (CommonJob *job)
                            prompt,
                            g_strdup (_("All items in the Trash will be permanently deleted")),
                            NULL,
-                           FALSE,
-                           CANCEL, EMPTY_TRASH,
-                           NULL);
+                           RESPONSE_EMPTY_TRASH);
 
-    return (response == 1);
+    return response == RESPONSE_EMPTY_TRASH;
 }
 
 static gboolean
@@ -1133,11 +1018,9 @@ confirm_delete_directly (CommonJob *job,
                            prompt,
                            g_strdup (_("Permanently deleted items can not be restored")),
                            NULL,
-                           FALSE,
-                           CANCEL, DELETE,
-                           NULL);
+                           RESPONSE_DELETE);
 
-    return response == 1;
+    return response == RESPONSE_DELETE;
 }
 
 #pragma GCC diagnostic push
@@ -1792,34 +1675,39 @@ trash_file (CommonJob     *job,
         secondary = g_strdup (_("This remote location does not support sending items to the trash."));
     }
 
+    NautilusDialogResponse responses = RESPONSE_SKIP | RESPONSE_DELETE;
+
+    if ((source_info->num_files - transfer_info->num_files) > 1)
+    {
+        responses |= RESPONSE_SKIP_ALL | RESPONSE_DELETE_ALL;
+    }
+
     response = run_dialog (job,
                            primary,
                            secondary,
                            details,
-                           (source_info->num_files - transfer_info->num_files) > 1,
-                           CANCEL, SKIP_ALL, SKIP, DELETE_ALL, DELETE,
-                           NULL);
+                           responses);
 
-    if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+    if (response == RESPONSE_CANCEL)
     {
         ((DeleteJob *) job)->user_cancel = TRUE;
         abort_job (job);
     }
-    else if (response == 1)         /* skip all */
+    else if (response == RESPONSE_SKIP_ALL)
     {
         *skipped_file = TRUE;
         job->skip_all_error = TRUE;
     }
-    else if (response == 2)         /* skip */
+    else if (response == RESPONSE_SKIP)
     {
         *skipped_file = TRUE;
     }
-    else if (response == 3)         /* delete all */
+    else if (response == RESPONSE_DELETE_ALL)
     {
         *to_delete = g_list_prepend (*to_delete, file);
         job->delete_all = TRUE;
     }
-    else if (response == 4)         /* delete */
+    else if (response == RESPONSE_DELETE)
     {
         *to_delete = g_list_prepend (*to_delete, file);
     }
@@ -2857,24 +2745,22 @@ retry:
                                    primary,
                                    secondary,
                                    details,
-                                   FALSE,
-                                   CANCEL, SKIP, RETRY,
-                                   NULL);
+                                   RESPONSE_SKIP | RESPONSE_RETRY);
 
             g_error_free (error);
 
-            if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+            if (response == RESPONSE_CANCEL)
             {
                 abort_job (job);
                 skip_subdirs = TRUE;
             }
-            else if (response == 1)
+            else if (response == RESPONSE_RETRY)
             {
                 g_clear_list (&subdirs, g_object_unref);
                 *source_info = saved_info;
                 goto retry;
             }
-            else if (response == 2)
+            else if (response == RESPONSE_SKIP)
             {
                 skip_readdir_error (job, dir);
             }
@@ -2920,27 +2806,25 @@ retry:
                                primary,
                                secondary,
                                details,
-                               TRUE,
-                               CANCEL, SKIP_ALL, SKIP, RETRY,
-                               NULL);
+                               RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
 
         g_error_free (error);
 
-        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+        if (response == RESPONSE_CANCEL)
         {
             abort_job (job);
             skip_subdirs = TRUE;
         }
-        else if (response == 1 || response == 2)
+        else if (response == RESPONSE_SKIP || response == RESPONSE_SKIP_ALL)
         {
-            if (response == 1)
+            if (response == RESPONSE_SKIP_ALL)
             {
                 job->skip_all_error = TRUE;
             }
             skip_file (job, dir);
             skip_subdirs = TRUE;
         }
-        else if (response == 3)
+        else if (response == RESPONSE_RETRY)
         {
             goto retry;
         }
@@ -3035,25 +2919,23 @@ retry:
                                primary,
                                secondary,
                                details,
-                               TRUE,
-                               CANCEL, SKIP_ALL, SKIP, RETRY,
-                               NULL);
+                               RESPONSE_SKIP | RESPONSE_SKIP_ALL | RESPONSE_RETRY);
 
         g_error_free (error);
 
-        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+        if (response == RESPONSE_CANCEL)
         {
             abort_job (job);
         }
-        else if (response == 1 || response == 2)
+        else if (response == RESPONSE_SKIP || response == RESPONSE_SKIP_ALL)
         {
-            if (response == 1)
+            if (response == RESPONSE_SKIP_ALL)
             {
                 job->skip_all_error = TRUE;
             }
             skip_file (job, file);
         }
-        else if (response == 3)
+        else if (response == RESPONSE_RETRY)
         {
             goto retry;
         }
@@ -3165,17 +3047,15 @@ retry:
                                primary,
                                secondary,
                                details,
-                               FALSE,
-                               CANCEL, RETRY,
-                               NULL);
+                               RESPONSE_RETRY);
 
         g_error_free (error);
 
-        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+        if (response == RESPONSE_CANCEL)
         {
             abort_job (job);
         }
-        else if (response == 1)
+        else if (response == RESPONSE_RETRY)
         {
             goto retry;
         }
@@ -3269,21 +3149,17 @@ retry:
                                    primary,
                                    secondary,
                                    details,
-                                   FALSE,
-                                   CANCEL,
-                                   COPY_FORCE,
-                                   RETRY,
-                                   NULL);
+                                   RESPONSE_COPY_FORCE | RESPONSE_RETRY);
 
-            if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+            if (response == RESPONSE_CANCEL)
             {
                 abort_job (job);
             }
-            else if (response == 2)
+            else if (response == RESPONSE_RETRY)
             {
                 goto retry;
             }
-            else if (response == 1)
+            else if (response == RESPONSE_COPY_FORCE)
             {
                 /* We are forced to copy - just fall through ... */
             }
@@ -3303,10 +3179,9 @@ retry:
         details = NULL;
         response = run_dialog (job,
                                primary, secondary, details,
-                               FALSE,
-                               CANCEL, FORCE_OPERATION, NULL);
+                               RESPONSE_PROCEED);
 
-        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+        if (response == RESPONSE_CANCEL)
         {
             abort_job (job);
         }
@@ -4216,21 +4091,19 @@ retry:
                                primary,
                                secondary,
                                details,
-                               FALSE,
-                               CANCEL, SKIP, RETRY,
-                               NULL);
+                               RESPONSE_SKIP | RESPONSE_RETRY);
 
         g_error_free (error);
 
-        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+        if (response == RESPONSE_CANCEL)
         {
             abort_job (job);
         }
-        else if (response == 1)
+        else if (response == RESPONSE_SKIP)
         {
             /* Skip: Do Nothing  */
         }
-        else if (response == 2)
+        else if (response == RESPONSE_RETRY)
         {
             goto retry;
         }
@@ -4409,17 +4282,15 @@ retry:
                                    primary,
                                    secondary,
                                    details,
-                                   FALSE,
-                                   CANCEL, _("_Skip files"),
-                                   NULL);
+                                   RESPONSE_SKIP_FILES);
 
             g_error_free (error);
 
-            if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+            if (response == RESPONSE_CANCEL)
             {
                 abort_job (job);
             }
-            else if (response == 1)
+            else if (response == RESPONSE_SKIP_FILES)
             {
                 /* Skip: Do Nothing */
                 local_skipped_file = TRUE;
@@ -4491,22 +4362,20 @@ retry:
                                primary,
                                secondary,
                                details,
-                               FALSE,
-                               CANCEL, SKIP, RETRY,
-                               NULL);
+                               RESPONSE_SKIP | RESPONSE_RETRY);
 
         g_error_free (error);
 
-        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
+        if (response == RESPONSE_CANCEL)
         {
             abort_job (job);
         }
-        else if (response == 1)
+        else if (response == RESPONSE_SKIP)
         {
             /* Skip: Do Nothing  */
             *skipped_file = TRUE;
         }
-        else if (response == 2)
+        else if (response == RESPONSE_RETRY)
         {
             goto retry;
         }

@@ -89,6 +89,8 @@ libnautilus_sources = [
   'nautilus-dbus-launcher.h',
   'nautilus-dbus-manager.c',
   'nautilus-dbus-manager.h',
+  'nautilus-dialog-utilities.c',
+  'nautilus-dialog-utilities.h',
   'nautilus-directory.c',
   'nautilus-directory.h',
   'nautilus-directory-async.c',
