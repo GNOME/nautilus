@@ -269,6 +269,7 @@ placesview list {
   opacity: 0.55;
 }
 
+/* Starring */
 button.star:hover {
   opacity: 1;
 }
@@ -277,9 +278,16 @@ button.star:hover {
   from { -gtk-icon-transform: rotate(-72deg); }
   to {}
 }
+@keyframes rotate_unstar {
+  from { -gtk-icon-transform: rotate(72deg); }
+  to {}
+}
 
 button.star.added image {
   animation: rotate_star 0.4s ease;
+}
+button.star:not(.added) image {
+  animation: rotate_unstar 0.4s ease;
 }
 
 #NautilusAppChooser treeview {
