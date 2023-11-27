@@ -666,11 +666,13 @@ typedef struct
 {
     GtkWindow *parent_window;
     NautilusFileOperationsDBusData *dbus_data;
-    const char *primary_text;
-    const char *secondary_text;
-    const char *details_text;
+
+    const char *heading;
+    const char *body;
+    const char *details;
     NautilusDialogResponse responses;
-    gboolean should_start_inactive;
+    gboolean delay_interactivity;
+
     NautilusDialogResponse result;
     /* Dialogs are ran from operation threads, which need to be blocked until
      * the user gives a valid response
@@ -678,7 +680,7 @@ typedef struct
     gboolean completed;
     GMutex mutex;
     GCond cond;
-} RunSimpleDialogData;
+} DialogWithResponsesData;
 
 static void
 set_transient_for (GdkSurface *child_surface,
@@ -746,9 +748,9 @@ is_long_job (CommonJob *job)
 }
 
 static void
-simple_dialog_cb (AdwAlertDialog      *dialog,
-                  GAsyncResult        *result,
-                  RunSimpleDialogData *data)
+simple_dialog_cb (AdwAlertDialog          *dialog,
+                  GAsyncResult            *result,
+                  DialogWithResponsesData *data)
 {
     const char *response = adw_alert_dialog_choose_finish (dialog, result);
 
@@ -762,15 +764,15 @@ simple_dialog_cb (AdwAlertDialog      *dialog,
 static gboolean
 do_run_simple_dialog (gpointer _data)
 {
-    RunSimpleDialogData *data = _data;
+    DialogWithResponsesData *data = _data;
 
     g_mutex_lock (&data->mutex);
 
     /* Create the dialog. */
-    AdwAlertDialog *dialog = nautilus_dialog_with_responses (data->primary_text,
-                                                             data->secondary_text,
-                                                             data->details_text,
-                                                             data->should_start_inactive,
+    AdwAlertDialog *dialog = nautilus_dialog_with_responses (data->heading,
+                                                             data->body,
+                                                             data->details,
+                                                             data->delay_interactivity,
                                                              data->responses);
 
     if (data->dbus_data != NULL)
@@ -800,24 +802,23 @@ run_dialog (CommonJob              *job,
             const char             *details_text,
             NautilusDialogResponse  responses)
 {
-    RunSimpleDialogData *data;
-
     g_timer_stop (job->time);
 
-    data = g_new0 (RunSimpleDialogData, 1);
-    data->parent_window = job->parent_window;
-    data->dbus_data = job->dbus_data;
-    data->primary_text = primary_text;
-    data->secondary_text = secondary_text;
-    data->details_text = details_text;
-    data->responses = responses;
-    data->completed = FALSE;
+    DialogWithResponsesData *data = &(DialogWithResponsesData)
+    {
+        .parent_window = job->parent_window,
+        .dbus_data = job->dbus_data,
+        .heading = primary_text,
+        .body = secondary_text,
+        .details = details_text,
+        .responses = responses,
+        .delay_interactivity = is_long_job (job),
+        .completed = FALSE
+    };
     g_mutex_init (&data->mutex);
     g_cond_init (&data->cond);
 
     nautilus_progress_info_pause (job->progress);
-
-    data->should_start_inactive = is_long_job (job);
 
     g_mutex_lock (&data->mutex);
 
@@ -832,20 +833,16 @@ run_dialog (CommonJob              *job,
 
     nautilus_progress_info_resume (job->progress);
 
-    NautilusDialogResponse res = data->result;
-
     g_mutex_unlock (&data->mutex);
     g_mutex_clear (&data->mutex);
     g_cond_clear (&data->cond);
-
-    g_free (data);
 
     g_timer_continue (job->time);
 
     g_free (primary_text);
     g_free (secondary_text);
 
-    return res;
+    return data->result;
 }
 
 /** Returns: Whether skip was chosen. */
