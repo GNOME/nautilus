@@ -684,7 +684,7 @@ can_delete_files_without_confirm (GList *files)
 
 typedef struct
 {
-    GtkWindow **parent_window;
+    GtkWindow *parent_window;
     NautilusFileOperationsDBusData *dbus_data;
     const char *primary_text;
     const char *secondary_text;
@@ -801,7 +801,7 @@ do_run_simple_dialog (gpointer _data)
     g_mutex_lock (&data->mutex);
 
     /* Create the dialog. */
-    dialog = gtk_message_dialog_new (*data->parent_window,
+    dialog = gtk_message_dialog_new (data->parent_window,
                                      GTK_DIALOG_MODAL,
                                      GTK_MESSAGE_INFO,
                                      GTK_BUTTONS_NONE,
@@ -896,7 +896,7 @@ run_dialog (CommonJob  *job,
     g_timer_stop (job->time);
 
     data = g_new0 (RunSimpleDialogData, 1);
-    data->parent_window = &job->parent_window;
+    data->parent_window = job->parent_window;
     data->dbus_data = job->dbus_data;
     data->primary_text = primary_text;
     data->secondary_text = secondary_text;
