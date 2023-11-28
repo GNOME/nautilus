@@ -78,13 +78,9 @@ static gboolean
 nautilus_filename_validator_is_name_too_long (NautilusFilenameValidator *self,
                                               gchar                     *name)
 {
-    size_t name_length;
-    g_autoptr (GFile) location = NULL;
-    glong max_name_length;
-
-    name_length = strlen (name);
-    location = nautilus_directory_get_location (self->containing_directory);
-    max_name_length = nautilus_get_max_child_name_length_for_location (location);
+    size_t name_length = strlen (name);
+    g_autoptr (GFile) location = nautilus_directory_get_location (self->containing_directory);
+    glong max_name_length = nautilus_get_max_child_name_length_for_location (location);
 
     if (max_name_length == -1)
     {
@@ -182,13 +178,12 @@ filename_validator_process_new_name (NautilusFilenameValidator *self,
                                      gboolean                  *duplicated_name,
                                      gboolean                  *valid_name)
 {
-    g_autofree gchar *name = NULL;
-    gchar *error_message = NULL;
-    NautilusFile *existing_file;
-
     g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
 
-    name = nautilus_filename_validator_get_new_name (self);
+    g_autofree gchar *name = nautilus_filename_validator_get_new_name (self);
+    gchar *error_message = NULL;
+    g_autoptr (NautilusFile) existing_file = NULL;
+
     *valid_name = nautilus_filename_validator_name_is_valid (self,
                                                              name,
                                                              &error_message);
@@ -211,20 +206,11 @@ filename_validator_process_new_name (NautilusFilenameValidator *self,
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PASSED]);
     }
 
-    if (self->duplicated_label_timeout_id != 0)
-    {
-        g_source_remove (self->duplicated_label_timeout_id);
-        self->duplicated_label_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->duplicated_label_timeout_id, g_source_remove);
 
     if (*duplicated_name)
     {
         self->duplicated_is_folder = nautilus_file_is_directory (existing_file);
-    }
-
-    if (existing_file != NULL)
-    {
-        nautilus_file_unref (existing_file);
     }
 }
 
@@ -415,9 +401,7 @@ nautilus_filename_validator_set_property (GObject      *object,
 static void
 nautilus_filename_validator_finalize (GObject *object)
 {
-    NautilusFilenameValidator *self;
-
-    self = NAUTILUS_FILENAME_VALIDATOR (object);
+    NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (object);
 
     if (self->containing_directory != NULL)
     {
@@ -430,12 +414,7 @@ nautilus_filename_validator_finalize (GObject *object)
         g_clear_object (&self->containing_directory);
     }
 
-    if (self->duplicated_label_timeout_id > 0)
-    {
-        g_source_remove (self->duplicated_label_timeout_id);
-        self->duplicated_label_timeout_id = 0;
-    }
-
+    g_clear_handle_id (&self->duplicated_label_timeout_id, g_source_remove);
     g_free (self->original_name);
     g_free (self->new_name);
 
