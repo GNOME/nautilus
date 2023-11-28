@@ -1,7 +1,7 @@
 # nautilus
 [![Pipeline status](https://gitlab.gnome.org/GNOME/nautilus/badges/main/pipeline.svg)](https://gitlab.gnome.org/GNOME/nautilus/commits/main)
 
-This is the project of the [Files](https://wiki.gnome.org/Apps/Files) app, a file browser for
+This is the project of the [Files](https://apps.gnome.org/Nautilus/) app, a file browser for
 GNOME, internally known by its historical name `nautilus`.
 
 ## Supported version
