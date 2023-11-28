@@ -137,12 +137,28 @@ extension_dropdown_setup_item (GtkSignalListItemFactory *factory,
     gtk_list_item_set_child (item, title);
 }
 
+static gboolean
+make_opaque_iff_selected (GBinding     *binding,
+                          const GValue *from_value,
+                          GValue       *to_value,
+                          gpointer      user_data)
+{
+    GtkListItem *listitem = GTK_LIST_ITEM (user_data);
+    NautilusCompressItem *selected_item = NAUTILUS_COMPRESS_ITEM (g_value_get_object (from_value));
+    gboolean is_selected = (selected_item != NULL &&
+                            selected_item == gtk_list_item_get_item (listitem));
+    gdouble opacity = (is_selected) ? 1.0 : 0.0;
+
+    g_value_set_double (to_value, opacity);
+    return TRUE;
+}
 
 static void
 extension_dropdown_setup_item_full (GtkSignalListItemFactory *factory,
                                     GtkListItem              *item,
                                     gpointer                  user_data)
 {
+    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
     GtkWidget *hbox, *vbox, *title, *subtitle, *checkmark;
 
     title = gtk_label_new ("");
@@ -155,6 +171,11 @@ extension_dropdown_setup_item_full (GtkSignalListItemFactory *factory,
     gtk_widget_add_css_class (subtitle, "caption");
 
     checkmark = gtk_image_new_from_icon_name ("object-select-symbolic");
+    g_object_bind_property_full (self->extension_dropdown, "selected-item",
+                                 checkmark, "opacity",
+                                 G_BINDING_SYNC_CREATE,
+                                 make_opaque_iff_selected, NULL,
+                                 item, NULL);
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
@@ -167,28 +188,8 @@ extension_dropdown_setup_item_full (GtkSignalListItemFactory *factory,
 
     g_object_set_data (G_OBJECT (item), "title", title);
     g_object_set_data (G_OBJECT (item), "subtitle", subtitle);
-    g_object_set_data (G_OBJECT (item), "checkmark", checkmark);
 
     gtk_list_item_set_child (item, hbox);
-}
-
-static void
-extension_dropdown_on_selected_item_notify (GtkDropDown *dropdown,
-                                            GParamSpec  *pspec,
-                                            GtkListItem *item)
-{
-    GtkWidget *checkmark;
-
-    checkmark = g_object_get_data (G_OBJECT (item), "checkmark");
-
-    if (gtk_drop_down_get_selected_item (dropdown) == gtk_list_item_get_item (item))
-    {
-        gtk_widget_set_opacity (checkmark, 1.0);
-    }
-    else
-    {
-        gtk_widget_set_opacity (checkmark, 0.0);
-    }
 }
 
 static void
@@ -197,14 +198,13 @@ extension_dropdown_bind (GtkSignalListItemFactory *factory,
                          gpointer                  user_data)
 {
     NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
-    GtkWidget *title, *subtitle, *checkmark;
+    GtkWidget *title, *subtitle;
     NautilusCompressItem *item;
 
     item = gtk_list_item_get_item (list_item);
 
     title = g_object_get_data (G_OBJECT (list_item), "title");
     subtitle = g_object_get_data (G_OBJECT (list_item), "subtitle");
-    checkmark = g_object_get_data (G_OBJECT (list_item), "checkmark");
 
     gtk_label_set_label (GTK_LABEL (title), item->extension);
     gtk_size_group_add_widget (self->extension_sizegroup, title);
@@ -217,17 +217,6 @@ extension_dropdown_bind (GtkSignalListItemFactory *factory,
     if (subtitle)
     {
         gtk_label_set_label (GTK_LABEL (subtitle), item->description);
-    }
-
-    if (checkmark)
-    {
-        g_signal_connect (self->extension_dropdown,
-                          "notify::selected-item",
-                          G_CALLBACK (extension_dropdown_on_selected_item_notify),
-                          list_item);
-        extension_dropdown_on_selected_item_notify (GTK_DROP_DOWN (self->extension_dropdown),
-                                                    NULL,
-                                                    list_item);
     }
 }
 
@@ -243,10 +232,6 @@ extension_dropdown_unbind (GtkSignalListItemFactory *factory,
     {
         return;
     }
-
-    g_signal_handlers_disconnect_by_func (self->extension_dropdown,
-                                          extension_dropdown_on_selected_item_notify,
-                                          item);
 
     title = g_object_get_data (G_OBJECT (item), "title");
     if (title)
