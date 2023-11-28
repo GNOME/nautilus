@@ -69,7 +69,7 @@
                     <property name="hexpand">True</property>
                     <property name="width-chars">30</property>
                     <signal name="changed" handler="nautilus_filename_validator_validate" object="validator" swapped="yes"/>
-                    <signal name="activate" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>
+                    <signal name="activate" handler="on_name_entry_activated" swapped="yes"/>
                   </object>
                 </child>
                 <child>

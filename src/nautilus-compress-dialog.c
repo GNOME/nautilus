@@ -337,6 +337,19 @@ on_name_accepted (NautilusCompressDialog *self)
     gtk_window_close (GTK_WINDOW (self));
 }
 
+static void
+on_name_entry_activated (NautilusCompressDialog *self)
+{
+    if (gtk_widget_is_visible (self->passphrase_entry))
+    {
+        gtk_widget_grab_focus (self->passphrase_entry);
+    }
+    else
+    {
+        nautilus_filename_validator_validate (self->validator);
+    }
+}
+
 static char *
 maybe_append_extension (NautilusCompressDialog *self,
                         gchar                  *text,
@@ -438,6 +451,7 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
 
     gtk_widget_class_bind_template_callback (widget_class, update_selected_format);
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
+    gtk_widget_class_bind_template_callback (widget_class, on_name_entry_activated);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
     gtk_widget_class_bind_template_callback (widget_class, maybe_append_extension);
