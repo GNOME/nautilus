@@ -29,9 +29,6 @@ struct _NautilusCompressDialog
 
     CompressCallback callback;
     gpointer callback_data;
-
-    gchar *passphrase;
-    gchar *passphrase_confirm;
 };
 
 G_DEFINE_TYPE (NautilusCompressDialog, nautilus_compress_dialog, ADW_TYPE_WINDOW);
@@ -240,34 +237,6 @@ extension_dropdown_unbind (GtkSignalListItemFactory *factory,
     }
 }
 
-static void
-update_passphrase (NautilusCompressDialog  *self,
-                   gchar                  **passphrase,
-                   GtkEditable             *editable)
-{
-    g_free (*passphrase);
-    *passphrase = g_strdup (gtk_editable_get_text (editable));
-}
-
-static void
-passphrase_entry_on_changed (GtkEditable *editable,
-                             gpointer     user_data)
-{
-    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
-
-    update_passphrase (self, &self->passphrase, editable);
-}
-
-static void
-passphrase_confirm_entry_on_changed (GtkEditable *editable,
-                                     gpointer     user_data)
-{
-    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
-
-    update_passphrase (self, &self->passphrase_confirm, editable);
-}
-
-
 static gboolean
 are_name_and_passphrase_ready (NautilusCompressDialog *self,
                                gboolean                filename_passed,
@@ -361,8 +330,9 @@ static void
 on_name_accepted (NautilusCompressDialog *self)
 {
     g_autofree char *name = nautilus_filename_validator_get_new_name (self->validator);
+    const char *passphrase = gtk_editable_get_text (GTK_EDITABLE (self->passphrase_entry));
 
-    self->callback (name, self->passphrase, self->callback_data);
+    self->callback (name, passphrase, self->callback_data);
 
     gtk_window_close (GTK_WINDOW (self));
 }
@@ -442,10 +412,6 @@ nautilus_compress_dialog_dispose (GObject *object)
 static void
 nautilus_compress_dialog_finalize (GObject *object)
 {
-    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (object);
-
-    g_free (self->passphrase);
-
     G_OBJECT_CLASS (nautilus_compress_dialog_parent_class)->finalize (object);
 }
 
@@ -470,8 +436,6 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, validator);
 
-    gtk_widget_class_bind_template_callback (widget_class, passphrase_entry_on_changed);
-    gtk_widget_class_bind_template_callback (widget_class, passphrase_confirm_entry_on_changed);
     gtk_widget_class_bind_template_callback (widget_class, update_selected_format);
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
