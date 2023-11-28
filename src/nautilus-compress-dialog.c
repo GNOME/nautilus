@@ -88,31 +88,9 @@ nautilus_compress_item_new (NautilusCompressionFormat  format,
 }
 
 static void
-update_selected_format (NautilusCompressDialog *self)
+set_show_passphrase (NautilusCompressDialog *self,
+                     gboolean                show_passphrase)
 {
-    gboolean show_passphrase = FALSE;
-    guint selected;
-    GListModel *model;
-    NautilusCompressItem *item;
-
-    selected = gtk_drop_down_get_selected (GTK_DROP_DOWN (self->extension_dropdown));
-    if (selected == GTK_INVALID_LIST_POSITION)
-    {
-        return;
-    }
-
-    model = gtk_drop_down_get_model (GTK_DROP_DOWN (self->extension_dropdown));
-    item = g_list_model_get_item (model, selected);
-    if (item == NULL)
-    {
-        return;
-    }
-
-    if (item->format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP)
-    {
-        show_passphrase = TRUE;
-    }
-
     gtk_widget_set_visible (self->passphrase_label, show_passphrase);
     gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
     gtk_widget_set_visible (self->passphrase_confirm_label, show_passphrase);
@@ -122,6 +100,18 @@ update_selected_format (NautilusCompressDialog *self)
         gtk_editable_set_text (GTK_EDITABLE (self->passphrase_entry), "");
         gtk_editable_set_text (GTK_EDITABLE (self->passphrase_confirm_entry), "");
     }
+}
+
+static void
+update_selected_format (NautilusCompressDialog *self)
+{
+    NautilusCompressItem *item = gtk_drop_down_get_selected_item (GTK_DROP_DOWN (self->extension_dropdown));
+    if (item == NULL)
+    {
+        return;
+    }
+
+    set_show_passphrase (self, item->format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP);
 
     g_settings_set_enum (nautilus_compression_preferences,
                          NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT,
@@ -369,7 +359,7 @@ extension_dropdown_setup (NautilusCompressDialog *self)
         if (item->format == format)
         {
             gtk_drop_down_set_selected (GTK_DROP_DOWN (self->extension_dropdown), i);
-            update_selected_format (self);
+            set_show_passphrase (self, item->format == NAUTILUS_COMPRESSION_ENCRYPTED_ZIP);
             g_object_unref (item);
             break;
         }
@@ -451,7 +441,9 @@ nautilus_compress_dialog_init (NautilusCompressDialog *self)
     g_type_ensure (NAUTILUS_TYPE_FILENAME_VALIDATOR);
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    g_signal_handlers_block_by_func (self->extension_dropdown, update_selected_format, self);
     extension_dropdown_setup (self);
+    g_signal_handlers_unblock_by_func (self->extension_dropdown, update_selected_format, self);
 }
 
 static void
