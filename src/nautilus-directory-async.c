@@ -2826,11 +2826,6 @@ deep_count_one (DeepCountState *state,
     gboolean is_seen_inode;
     const char *fs_id;
 
-    if (should_skip_file (NULL, info))
-    {
-        return;
-    }
-
     is_seen_inode = seen_inode (state, info);
     if (!is_seen_inode)
     {
