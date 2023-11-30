@@ -43,6 +43,7 @@ typedef enum {
 	REQUEST_DIRECTORY_COUNT,
 	REQUEST_FILE_INFO,
 	REQUEST_FILE_LIST, /* always FALSE if file != NULL */
+	REQUEST_MIME_LIST,
 	REQUEST_EXTENSION_INFO,
 	REQUEST_THUMBNAIL,
 	REQUEST_MOUNT,
@@ -160,7 +161,7 @@ void               nautilus_directory_monitor_remove_internal         (NautilusD
 void               nautilus_directory_get_info_for_new_files          (NautilusDirectory         *directory,
 								       GList                     *vfs_uris);
 NautilusFile *     nautilus_directory_get_existing_corresponding_file (NautilusDirectory         *directory);
-void               nautilus_directory_invalidate_count                (NautilusDirectory         *directory);
+void               nautilus_directory_invalidate_count_and_mime_list  (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_file_list_monitored          (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_anyone_monitoring_file_list  (NautilusDirectory         *directory);
 gboolean           nautilus_directory_has_active_request_for_file     (NautilusDirectory         *directory,

@@ -911,6 +911,7 @@ finalize (GObject *object)
     g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
     g_free (file->details->trash_orig_path);
 
+    g_list_free_full (file->details->mime_list, g_free);
     g_list_free_full (file->details->pending_extension_emblems, g_free);
     g_list_free_full (file->details->extension_emblems, g_free);
     g_list_free_full (file->details->pending_info_providers, g_object_unref);
@@ -7988,6 +7989,12 @@ invalidate_deep_counts (NautilusFile *file)
 }
 
 static void
+invalidate_mime_list (NautilusFile *file)
+{
+    file->details->mime_list_is_up_to_date = FALSE;
+}
+
+static void
 invalidate_file_info (NautilusFile *file)
 {
     file->details->file_info_is_up_to_date = FALSE;
@@ -8037,6 +8044,10 @@ nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
     if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
     {
         invalidate_deep_counts (file);
+    }
+    if (REQUEST_WANTS_TYPE (request, REQUEST_MIME_LIST))
+    {
+        invalidate_mime_list (file);
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
     {
@@ -8143,6 +8154,7 @@ nautilus_file_get_all_attributes (void)
     return NAUTILUS_FILE_ATTRIBUTE_INFO |
            NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
+           NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES |
            NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO |
            NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL |
            NAUTILUS_FILE_ATTRIBUTE_MOUNT;
