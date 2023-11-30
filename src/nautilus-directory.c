@@ -405,7 +405,7 @@ filtering_changed_callback (gpointer callback_data)
 
         directory = NAUTILUS_DIRECTORY (l->data);
 
-        nautilus_directory_invalidate_count_and_mime_list (directory);
+        nautilus_directory_invalidate_count (directory);
     }
 }
 
@@ -1177,7 +1177,7 @@ invalidate_count_and_unref (gpointer key,
     g_assert (value == key);
     g_assert (user_data == NULL);
 
-    nautilus_directory_invalidate_count_and_mime_list (key);
+    nautilus_directory_invalidate_count (key);
     nautilus_directory_unref (key);
 }
 
@@ -1235,7 +1235,7 @@ nautilus_directory_notify_files_added (GList *files)
 
             if (file != NULL)
             {
-                nautilus_file_invalidate_count_and_mime_list (file);
+                nautilus_file_invalidate_count (file);
                 nautilus_file_unref (file);
             }
 

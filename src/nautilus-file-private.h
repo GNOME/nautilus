@@ -91,8 +91,6 @@ struct NautilusFilePrivate
 	GdkPixbuf *thumbnail;
 	time_t thumbnail_mtime;
 
-	GList *mime_list; /* If this is a directory, the list of MIME types in it. */
-
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
 	GIcon *custom_icon;
 	char *activation_uri;
@@ -152,10 +150,6 @@ struct NautilusFilePrivate
 	/* no deep_counts_are_up_to_date field; since we expose
            intermediate values for this attribute, we do actually
            forget it rather than invalidating. */
-
-	guint got_mime_list                 : 1;
-	guint mime_list_failed              : 1;
-	guint mime_list_is_up_to_date       : 1;
 
 	guint mount_is_up_to_date           : 1;
 	
@@ -267,7 +261,7 @@ void                   nautilus_file_invalidate_attributes_internal     (Nautilu
 									 NautilusFileAttributes  file_attributes);
 NautilusFileAttributes nautilus_file_get_all_attributes                 (void);
 gboolean               nautilus_file_is_self_owned                      (NautilusFile           *file);
-void                   nautilus_file_invalidate_count_and_mime_list     (NautilusFile           *file);
+void                   nautilus_file_invalidate_count                   (NautilusFile           *file);
 gboolean               nautilus_file_rename_in_progress                 (NautilusFile           *file);
 void                   nautilus_file_invalidate_extension_info_internal (NautilusFile           *file);
 void                   nautilus_file_info_providers_done                (NautilusFile           *file);
