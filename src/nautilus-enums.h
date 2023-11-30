@@ -65,7 +65,6 @@ typedef enum
     NAUTILUS_FILE_ATTRIBUTE_INFO                      = 1 << 0, /* All standard info */
     NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS               = 1 << 1,
     NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT      = 1 << 2,
-    NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES = 1 << 3,
     NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO            = 1 << 4,
     NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL                 = 1 << 5,
     NAUTILUS_FILE_ATTRIBUTE_MOUNT                     = 1 << 6,
