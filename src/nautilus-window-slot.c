@@ -27,6 +27,7 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
+#include "nautilus-fd-holder.h"
 #include "nautilus-files-view.h"
 #include "nautilus-location-banner.h"
 #include "nautilus-mime-actions.h"
@@ -87,8 +88,7 @@ struct _NautilusWindowSlot
     /* Current location. */
     GFile *location;
     gchar *title;
-    GFileEnumerator *fd_holder;
-    GCancellable *fd_holder_cancellable;
+    NautilusFdHolder *fd_holder;
 
     /* Viewed file */
     NautilusView *content_view;
@@ -1108,6 +1108,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                           "<control>2");
     nautilus_application_set_accelerators (app, "slot.focus-search", search_visible_accels);
 
+    self->fd_holder = nautilus_fd_holder_new ();
     self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
 }
 
@@ -1312,54 +1313,6 @@ begin_location_change (NautilusWindowSlot         *self,
 }
 
 static void
-got_fd_holder (GObject      *source_object,
-               GAsyncResult *res,
-               gpointer      data)
-{
-    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (data);
-    GFile *location = G_FILE (source_object);
-    g_autoptr (GError) error = NULL;
-    g_autoptr (GFileEnumerator) enumerator = g_file_enumerate_children_finish (location, res, &error);
-
-    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-    {
-        return;
-    }
-
-    g_return_if_fail (g_file_equal (location, self->location));
-    g_warn_if_fail (self->fd_holder == NULL);
-
-    g_set_object (&self->fd_holder, enumerator);
-}
-
-/* In order to prevent autofs locations getting unmounted on a timeout while we
- * are displaying them, we need to hold an open file descriptor.
- *
- * For convenience, we use GFileEnumerator as the file descriptor holder. This
- * relies on the assumption that its implementation for local files calls
- * `opendir()` on creation and `closedir()` on destruction.
- */
-static void
-update_fd_holder (NautilusWindowSlot *self)
-{
-    g_cancellable_cancel (self->fd_holder_cancellable);
-    g_clear_object (&self->fd_holder_cancellable);
-    g_clear_object (&self->fd_holder);
-
-    if (self->location != NULL && g_file_is_native (self->location))
-    {
-        self->fd_holder_cancellable = g_cancellable_new ();
-        g_file_enumerate_children_async (self->location,
-                                         G_FILE_ATTRIBUTE_STANDARD_NAME,
-                                         G_FILE_QUERY_INFO_NONE,
-                                         G_PRIORITY_LOW,
-                                         self->fd_holder_cancellable,
-                                         got_fd_holder,
-                                         self);
-    }
-}
-
-static void
 nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                    GFile              *location)
 {
@@ -1390,7 +1343,7 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
         g_object_unref (old_location);
     }
 
-    update_fd_holder (self);
+    nautilus_fd_holder_set_location (self->fd_holder, self->location);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOCATION]);
 }
@@ -2819,8 +2772,6 @@ nautilus_window_slot_dispose (GObject *object)
 
     nautilus_window_slot_set_viewed_file (self, NULL);
 
-    g_cancellable_cancel (self->fd_holder_cancellable);
-    g_clear_object (&self->fd_holder_cancellable);
     g_clear_object (&self->fd_holder);
 
     g_clear_object (&self->location);

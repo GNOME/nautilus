@@ -237,6 +237,8 @@ libnautilus_sources = [
   'nautilus-vfs-directory.h',
   'nautilus-vfs-file.c',
   'nautilus-vfs-file.h',
+  'nautilus-fd-holder.c',
+  'nautilus-fd-holder.h',
   'nautilus-file-undo-operations.c',
   'nautilus-file-undo-operations.h',
   'nautilus-file-undo-manager.c',
