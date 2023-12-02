@@ -18,5 +18,6 @@ G_DECLARE_FINAL_TYPE (NautilusFdHolder, nautilus_fd_holder, NAUTILUS, FD_HOLDER,
 NautilusFdHolder *nautilus_fd_holder_new                (void);
 void              nautilus_fd_holder_set_location       (NautilusFdHolder *self,
                                                          GFile            *location);
+void              nautilus_fd_holders_release_for_mount (GMount           *mount);
 
 G_END_DECLS

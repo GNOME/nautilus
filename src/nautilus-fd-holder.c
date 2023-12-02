@@ -241,3 +241,42 @@ nautilus_fd_holder_set_location (NautilusFdHolder *self,
 
     g_object_set (self, "location", location, NULL);
 }
+
+static gboolean
+close_if_within_mount (GFile           *mount_root,
+                       GFile           *location,
+                       GFileEnumerator *enumerator)
+{
+    g_return_val_if_fail (G_IS_FILE (location), FALSE);
+
+    if (g_file_equal (location, mount_root) || g_file_has_prefix (location, mount_root))
+    {
+        g_return_val_if_fail (G_IS_FILE_ENUMERATOR (enumerator), TRUE);
+        g_file_enumerator_close (enumerator, NULL, NULL);
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+void
+nautilus_fd_holders_release_for_mount (GMount *mount)
+{
+    g_return_if_fail (G_IS_MOUNT (mount));
+
+    g_autoptr (GFile) mount_root = g_mount_get_root (mount);
+    GHashTableIter iter;
+    GFile *location;
+    GFileEnumerator *enumerator;
+
+    g_hash_table_iter_init (&iter, location_enumerator_map);
+    while (g_hash_table_iter_next (&iter, (gpointer *) &location, (gpointer *) &enumerator))
+    {
+        if (close_if_within_mount (mount_root, location, enumerator))
+        {
+            g_hash_table_iter_remove (&iter);
+        }
+    }
+}

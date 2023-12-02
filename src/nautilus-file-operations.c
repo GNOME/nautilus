@@ -46,6 +46,7 @@
 #include <glib.h>
 
 #include "nautilus-error-reporting.h"
+#include "nautilus-fd-holder.h"
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-conflict-dialog.h"
@@ -2364,6 +2365,8 @@ static void
 do_unmount (UnmountData *data)
 {
     GMountOperation *mount_op;
+
+    nautilus_fd_holders_release_for_mount (data->mount);
 
     if (data->mount_operation)
     {
