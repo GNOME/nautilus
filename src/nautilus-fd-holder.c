@@ -42,6 +42,31 @@ enum
 
 static GParamSpec *properties[N_PROPS];
 
+static GHashTable *location_enumerator_map = NULL;
+
+static inline void
+ensure_location_enumerator_map (void)
+{
+    if (G_UNLIKELY (location_enumerator_map == NULL))
+    {
+        location_enumerator_map = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
+                                                         g_object_unref, NULL);
+    }
+}
+
+static void
+on_enumerator_destroyed (gpointer  data,
+                         GObject  *where_the_object_was)
+{
+    GFile *location = G_FILE (data);
+
+    if (location_enumerator_map != NULL &&
+        where_the_object_was == g_hash_table_lookup (location_enumerator_map, location))
+    {
+        g_hash_table_remove (location_enumerator_map, location);
+    }
+}
+
 static void
 on_enumerator_ready (GObject      *source_object,
                      GAsyncResult *res,
@@ -60,6 +85,21 @@ on_enumerator_ready (GObject      *source_object,
     g_return_if_fail (g_file_equal (location, self->location));
     g_warn_if_fail (self->enumerator == NULL);
 
+    ensure_location_enumerator_map ();
+    GFileEnumerator *existing = g_hash_table_lookup (location_enumerator_map, location);
+    if (G_LIKELY (existing == NULL))
+    {
+        g_hash_table_insert (location_enumerator_map, g_object_ref (location), enumerator);
+        g_object_weak_ref (G_OBJECT (enumerator), on_enumerator_destroyed, location);
+    }
+    else
+    {
+        /* Cope with the rare case of `g_file_enumerate_children_async() being
+         * called twice for the same location before the first callback by using
+         * the first one instead. */
+        g_set_object (&enumerator, existing);
+    }
+
     g_set_object (&self->enumerator, enumerator);
 }
 
@@ -73,6 +113,17 @@ update_fd_holder (NautilusFdHolder *self)
     if (self->location == NULL || !g_file_is_native (self->location))
     {
         return;
+    }
+
+    if (G_LIKELY (location_enumerator_map != NULL))
+    {
+        GFileEnumerator *existing = g_hash_table_lookup (location_enumerator_map,
+                                                         self->location);
+        if (existing != NULL)
+        {
+            self->enumerator = g_object_ref (existing);
+            return;
+        }
     }
 
     self->enumerator_cancellable = g_cancellable_new ();
@@ -99,6 +150,11 @@ nautilus_fd_holder_finalize (GObject *object)
     g_cancellable_cancel (self->enumerator_cancellable);
     g_clear_object (&self->enumerator_cancellable);
     g_clear_object (&self->enumerator);
+
+    if (location_enumerator_map != NULL && g_hash_table_size (location_enumerator_map) == 0)
+    {
+        g_clear_pointer (&location_enumerator_map, g_hash_table_destroy);
+    }
 
     g_clear_object (&self->location);
 
