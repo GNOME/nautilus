@@ -359,6 +359,8 @@ nautilus_preferences_window_show (GtkWindow *parent_window)
 {
     static GtkWindow *preferences_window = NULL;
     g_autoptr (GtkBuilder) builder = NULL;
+    g_autoptr (GSimpleActionGroup) action_group = g_simple_action_group_new ();
+    g_autoptr (GAction) date_time_action = NULL;
 
     if (preferences_window != NULL)
     {
@@ -372,6 +374,13 @@ nautilus_preferences_window_show (GtkWindow *parent_window)
 
     preferences_window = GTK_WINDOW (gtk_builder_get_object (builder, "preferences_window"));
     g_object_add_weak_pointer (G_OBJECT (preferences_window), (gpointer *) &preferences_window);
+
+    date_time_action = g_settings_create_action (nautilus_preferences,
+                                                 NAUTILUS_PREFERENCES_DATE_TIME_FORMAT);
+    g_action_map_add_action (G_ACTION_MAP (action_group), date_time_action);
+    gtk_widget_insert_action_group (GTK_WIDGET (preferences_window),
+                                    "preferences",
+                                    G_ACTION_GROUP (action_group));
 
     gtk_window_set_icon_name (preferences_window, APPLICATION_ID);
     gtk_window_set_transient_for (preferences_window, parent_window);

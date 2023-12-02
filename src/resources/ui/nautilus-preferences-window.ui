@@ -100,6 +100,41 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Date and Time Format</property>
+            <property name="description" translatable="yes">Choose how dates and times are displayed in list and grid views.</property>
+            <child>
+              <object class="AdwActionRow" id="date_format_simple_row">
+                <property name="title" translatable="yes">_Simple</property>
+                <property name="use_underline">True</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="date_format_simple_button">
+                    <property name="valign">center</property>
+                    <property name="action-name">preferences.date-time-format</property>
+                    <property name="action-target">'simple'</property>
+                  </object>
+                </child>
+                <property name="activatable-widget">date_format_simple_button</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow" id="date_format_detailed_row">
+                <property name="title" translatable="yes">_Detailed</property>
+                <property name="use_underline">True</property>
+                <child type="prefix">
+                  <object class="GtkCheckButton" id="date_format_detailed_button">
+                    <property name="group">date_format_simple_button</property>
+                    <property name="valign">center</property>
+                    <property name="action-name">preferences.date-time-format</property>
+                    <property name="action-target">'detailed'</property>
+                  </object>
+                </child>
+                <property name="activatable-widget">date_format_detailed_button</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="description" translatable="yes">Add information to be displayed beneath file and folder names. More information will appear when zooming closer.</property>
             <property name="title" translatable="yes">Grid View Captions</property>
             <property name="visible">True</property>
