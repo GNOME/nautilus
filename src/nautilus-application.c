@@ -41,6 +41,7 @@
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
+#include "nautilus-date-utilities.h"
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-dbus-manager.h"
 #include "nautilus-directory-private.h"
@@ -1111,6 +1112,9 @@ nautilus_application_startup (GApplication *app)
 
     /* initialize preferences and create the global GSettings objects */
     nautilus_global_preferences_init ();
+
+    /* initialize data preference watchers */
+    nautilus_date_setup_preferences ();
 
     /* initialize nautilus modules */
     nautilus_module_setup ();

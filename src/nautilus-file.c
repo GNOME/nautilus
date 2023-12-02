@@ -27,7 +27,6 @@
 #endif
 #include <libnautilus-extension/nautilus-extension-private.h>
 
-#include <gdesktop-enums.h>
 #include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -37,7 +36,6 @@
 #include <gtk/gtk.h>
 #include <sys/types.h>
 #include <limits.h>
-#include <locale.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -45,6 +43,7 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "nautilus-date-utilities.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-enums.h"
@@ -123,7 +122,6 @@ static GHashTable *symbolic_links;
 
 static guint64 cached_thumbnail_limit;
 static NautilusSpeedTradeoffValue show_file_thumbs;
-static gboolean use_24_hour;
 
 static NautilusSpeedTradeoffValue show_directory_item_count;
 
@@ -4977,8 +4975,6 @@ nautilus_file_get_trash_original_file_parent_as_string (NautilusFile *file)
     return filename;
 }
 
-G_DEFINE_AUTO_CLEANUP_FREE_FUNC (locale_t, freelocale, (locale_t) 0)
-
 /**
  * nautilus_file_get_date_as_string:
  *
@@ -4994,150 +4990,15 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                                   NautilusDateType    date_type,
                                   NautilusDateFormat  date_format)
 {
-    const char *time_locale;
-    locale_t current_locale;
-    g_auto (locale_t) forced_locale = (locale_t) 0;
-    GDateTime *file_date_time, *now;
-    GDateTime *today_midnight;
-    gint days_ago;
-    const gchar *format;
-    gchar *result;
-    GString *time_label;
-
-    file_date_time = nautilus_file_get_date (file, date_type);
+    g_autoptr (GDateTime) file_date_time = nautilus_file_get_date (file, date_type);
 
     if (file_date_time == NULL)
     {
         return NULL;
     }
 
-    /* We are going to pick a translatable string which defines a time format,
-     * which is then used to obtain a final string for the current time.
-     *
-     * The time locale might be different from the language we pick translations
-     * from; so, in order to avoid chimeric results (with some particles in one
-     * language and other particles in another language), we need to temporarily
-     * force translations to be obtained from the language corresponding to the
-     * time locale. The current locale settings are saved to be restored later.
-     */
-    time_locale = setlocale (LC_TIME, NULL);
-    current_locale = uselocale ((locale_t) 0);
-    forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
-    uselocale (forced_locale);
-
-    if (date_format != NAUTILUS_DATE_FORMAT_FULL)
-    {
-        GTimeZone *local_tz;
-        GDateTime *file_date;
-
-        /* Re-use local time zone, because every time a new local time zone is
-         * created, glib needs to check if the time zone file has changed */
-        local_tz = g_date_time_get_timezone (file_date_time);
-
-        now = g_date_time_new_now (local_tz);
-        today_midnight = g_date_time_new (local_tz,
-                                          g_date_time_get_year (now),
-                                          g_date_time_get_month (now),
-                                          g_date_time_get_day_of_month (now),
-                                          0, 0, 0);
-
-        file_date = g_date_time_new (local_tz,
-                                     g_date_time_get_year (file_date_time),
-                                     g_date_time_get_month (file_date_time),
-                                     g_date_time_get_day_of_month (file_date_time),
-                                     0, 0, 0);
-
-        days_ago = g_date_time_difference (today_midnight, file_date) / G_TIME_SPAN_DAY;
-
-        /* Show the word "Today" and time if date is on today */
-        if (days_ago == 0)
-        {
-            if (use_24_hour)
-            {
-                /* Translators: this is the word "Today" followed by
-                 * a time in 24h format. i.e. "Today 23:04" */
-                /* xgettext:no-c-format */
-                format = _("Today %-H:%M");
-            }
-            else
-            {
-                /* Translators: this is the word Today followed by
-                 * a time in 12h format. i.e. "Today 9:04 PM" */
-                /* xgettext:no-c-format */
-                format = _("Today %-I:%M %p");
-            }
-        }
-        /* Show the word "Yesterday" and time if date is on yesterday */
-        else if (days_ago == 1)
-        {
-            if (use_24_hour)
-            {
-                /* Translators: this is the word Yesterday followed by
-                 * a time in 24h format. i.e. "Yesterday 23:04" */
-                /* xgettext:no-c-format */
-                format = _("Yesterday %-H:%M");
-            }
-            else
-            {
-                /* Translators: this is the word Yesterday followed by
-                 * a time in 12h format. i.e. "Yesterday 9:04 PM" */
-                /* xgettext:no-c-format */
-                format = _("Yesterday %-I:%M %p");
-            }
-        }
-        else
-        {
-            /* Translators: this is the day of the month followed by the abbreviated
-             * month name followed by the year i.e. "3 Feb 2015" */
-            /* xgettext:no-c-format */
-            format = _("%-e %b %Y");
-        }
-
-        g_date_time_unref (file_date);
-        g_date_time_unref (now);
-        g_date_time_unref (today_midnight);
-    }
-    else
-    {
-        if (use_24_hour)
-        {
-            /* Translators: this is the day number followed by the full month
-             * name followed by the year followed by a time in 24h format
-             * with seconds i.e. "3 February 2015 23:04:00" */
-            /* xgettext:no-c-format */
-            format = _("%-e %B %Y %H:%M:%S");
-        }
-        else
-        {
-            /* Translators: this is the day number followed by the full month
-             * name followed by the year followed by a time in 12h format
-             * with seconds i.e. "3 February 2015 09:04:00 PM" */
-            /* xgettext:no-c-format */
-            format = _("%-e %B %Y %I:%M:%S %p");
-        }
-    }
-
-    /* Restore locale settings */
-    uselocale (current_locale);
-
-    result = g_date_time_format (file_date_time, format);
-    g_date_time_unref (file_date_time);
-
-    /* Replace ":" with ratio. Replacement is done afterward because g_date_time_format
-     * may fail with utf8 chars in some locales */
-    time_label = g_string_new_take (g_steal_pointer (&result));
-    g_string_replace (time_label, ":", "∶", 0);
-
-    return g_string_free_and_steal (time_label);
-}
-
-static void
-clock_format_changed_callback (gpointer data)
-{
-    gint clock_format;
-
-    clock_format = g_settings_get_enum (gnome_interface_preferences, "clock-format");
-    use_24_hour = (clock_format == G_DESKTOP_CLOCK_FORMAT_24H);
+    return nautilus_date_to_str (file_date_time,
+                                 date_format == NAUTILUS_DATE_FORMAT_REGULAR);
 }
 
 static void
@@ -8741,11 +8602,6 @@ nautilus_file_class_init (NautilusFileClass *class)
                       "mime-data-changed",
                       G_CALLBACK (mime_type_data_changed_callback),
                       NULL);
-    clock_format_changed_callback (NULL);
-    g_signal_connect_swapped (gnome_interface_preferences,
-                              "changed::clock-format",
-                              G_CALLBACK (clock_format_changed_callback),
-                              NULL);
 }
 
 void
