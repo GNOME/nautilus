@@ -2177,7 +2177,8 @@ open_row (NautilusGtkSidebarRow      *row,
                 "volume", &volume,
                 NULL);
 
-  old_uri = g_file_get_uri (sidebar->current_location);
+  if (sidebar->current_location != NULL)
+    old_uri = g_file_get_uri (sidebar->current_location);
 
   if ((g_strcmp0 (old_uri, uri) == 0) && !open_new_slot)
     {
