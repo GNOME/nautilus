@@ -1,3 +1,21 @@
+Major changes in 44.3
+=====================
+
+* Bugfixes:
+  - Don't crash on properties when parent window is gone (António Fernandes)
+  - Fix sushi integration bugs (Corey Berla)
+  - Fix bugs when reloading on autofs timeouts (Ondrej Holy)
+  - Prevent (very buggy) tree expanding in search results (Peter Eisenmann)
+  - Stop jumping to top when using the Menu key (António Fernandes)
+  - Properly reorder bookmarks by drag and drop (Khalid Abu Shawarib)
+  - Don't crash on unmount (Corey Berla)
+  - Don't crash when reconnecting to remove server (António Fernandes)
+  - Actually detect unmount on some non-native mounts (António Fernandes)
+  - Don't crash on image properties (Khalid Abu Shawarib)
+  - Allow types and sizes in Properties to expand (Peter Eisenmann)
+  - Don't corrupt toast messages (velsinki)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 44.2.1
 =====================
 * Hotfix for grid view bug introduced in 44.2, while gtk 4.10.4 is not released (António Fernandes)
