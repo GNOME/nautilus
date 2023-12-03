@@ -266,7 +266,7 @@ set_file_labels (FileConflictDialogData *data)
                                                     nautilus_file_get_mime_type (data->destination));
 
     destination_date = nautilus_file_get_string_attribute_with_default (data->destination,
-                                                                        "date_modified_with_time");
+                                                                        "date_modified_full");
     destination_size = nautilus_file_get_string_attribute_with_default (data->destination,
                                                                         "size");
 
@@ -296,7 +296,7 @@ set_file_labels (FileConflictDialogData *data)
     g_string_append_printf (destination_label, "%s %s", _("Last modified:"), destination_date);
 
     source_date = nautilus_file_get_string_attribute_with_default (data->source,
-                                                                   "date_modified_with_time");
+                                                                   "date_modified_full");
     source_size = nautilus_file_get_string_attribute_with_default (data->source,
                                                                    "size");
 

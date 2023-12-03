@@ -104,8 +104,7 @@ typedef enum
 typedef enum
 {
     NAUTILUS_DATE_FORMAT_REGULAR = 0,
-    NAUTILUS_DATE_FORMAT_REGULAR_WITH_TIME = 1,
-    NAUTILUS_DATE_FORMAT_FULL = 2,
+    NAUTILUS_DATE_FORMAT_FULL = 1,
 } NautilusDateFormat;
 
 typedef void (*ModifyListFunction) (GList       **list,
@@ -135,7 +134,6 @@ static GQuark attribute_name_q,
               attribute_modification_date_q,
               attribute_date_modified_q,
               attribute_date_modified_full_q,
-              attribute_date_modified_with_time_q,
               attribute_accessed_date_q,
               attribute_date_accessed_q,
               attribute_date_accessed_full_q,
@@ -3780,7 +3778,7 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
                                                directories_first,
                                                reversed);
     }
-    else if (attribute == attribute_modification_date_q || attribute == attribute_date_modified_q || attribute == attribute_date_modified_with_time_q || attribute == attribute_date_modified_full_q)
+    else if (attribute == attribute_modification_date_q || attribute == attribute_date_modified_q || attribute == attribute_date_modified_full_q)
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
                                                NAUTILUS_FILE_SORT_BY_MTIME,
@@ -5095,32 +5093,10 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
         }
         else
         {
-            if (date_format == NAUTILUS_DATE_FORMAT_REGULAR)
-            {
-                /* Translators: this is the day of the month followed by the abbreviated
-                 * month name followed by the year i.e. "3 Feb 2015" */
-                /* xgettext:no-c-format */
-                format = _("%-e %b %Y");
-            }
-            else
-            {
-                if (use_24_hour)
-                {
-                    /* Translators: this is the day number followed
-                     * by the abbreviated month name followed by the year followed
-                     * by a time in 24h format i.e. "3 Feb 2015 23:04" */
-                    /* xgettext:no-c-format */
-                    format = _("%-e %b %Y %-H:%M");
-                }
-                else
-                {
-                    /* Translators: this is the day number followed
-                     * by the abbreviated month name followed by the year followed
-                     * by a time in 12h format i.e. "3 Feb 2015 9:04 PM" */
-                    /* xgettext:no-c-format */
-                    format = _("%-e %b %Y %-I:%M %p");
-                }
-            }
+            /* Translators: this is the day of the month followed by the abbreviated
+             * month name followed by the year i.e. "3 Feb 2015" */
+            /* xgettext:no-c-format */
+            format = _("%-e %b %Y");
         }
 
         g_date_time_unref (file_date);
@@ -6745,12 +6721,6 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
                                                  NAUTILUS_DATE_TYPE_MODIFIED,
                                                  NAUTILUS_DATE_FORMAT_FULL);
     }
-    if (attribute_q == attribute_date_modified_with_time_q)
-    {
-        return nautilus_file_get_date_as_string (file,
-                                                 NAUTILUS_DATE_TYPE_MODIFIED,
-                                                 NAUTILUS_DATE_FORMAT_REGULAR_WITH_TIME);
-    }
     if (attribute_q == attribute_date_accessed_q)
     {
         return nautilus_file_get_date_as_string (file,
@@ -6984,7 +6954,6 @@ nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
     if (attribute_q == attribute_modification_date_q ||
         attribute_q == attribute_date_modified_q ||
         attribute_q == attribute_date_modified_full_q ||
-        attribute_q == attribute_date_modified_with_time_q ||
         attribute_q == attribute_accessed_date_q ||
         attribute_q == attribute_date_accessed_q ||
         attribute_q == attribute_date_accessed_full_q ||
@@ -8709,7 +8678,6 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_modification_date_q = g_quark_from_static_string ("modification_date");
     attribute_date_modified_q = g_quark_from_static_string ("date_modified");
     attribute_date_modified_full_q = g_quark_from_static_string ("date_modified_full");
-    attribute_date_modified_with_time_q = g_quark_from_static_string ("date_modified_with_time");
     attribute_recency_q = g_quark_from_static_string ("recency");
     attribute_accessed_date_q = g_quark_from_static_string ("accessed_date");
     attribute_date_accessed_q = g_quark_from_static_string ("date_accessed");
