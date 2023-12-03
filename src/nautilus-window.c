@@ -1365,8 +1365,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
 
     toast = adw_toast_new (main_label);
     adw_toast_set_priority (toast, ADW_TOAST_PRIORITY_HIGH);
-    adw_toast_set_use_markup (toast, FALSE);
-
+    
     current_location = nautilus_window_slot_get_location (window->active_slot);
     if (!g_file_equal (folder_to_open, current_location))
     {
