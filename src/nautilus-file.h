@@ -488,10 +488,6 @@ typedef enum {
 	NAUTILUS_DATE_TYPE_RECENCY
 } NautilusDateType;
 
-gboolean                nautilus_file_get_date                          (NautilusFile                   *file,
-                                                                         NautilusDateType                date_type,
-                                                                         time_t                         *date);
-
 typedef struct {
 	GObjectClass parent_slot;
 
@@ -530,9 +526,8 @@ typedef struct {
 							  guint                  *file_count,
 							  guint                  *unreadable_directory_count,
 							  goffset       *total_size);
-	gboolean              (* get_date)               (NautilusFile           *file,
-							  NautilusDateType        type,
-							  time_t                 *date);
+	GDateTime *           (* get_date)               (NautilusFile           *file,
+							  NautilusDateType        type);
 	char *                (* get_where_string)       (NautilusFile           *file);
 
 	void                  (* set_metadata)           (NautilusFile           *file,

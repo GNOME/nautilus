@@ -223,96 +223,54 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
                                  nautilus_file_ref (file));
 }
 
-static gboolean
+static GDateTime *
 vfs_file_get_date (NautilusFile     *file,
-                   NautilusDateType  date_type,
-                   time_t           *date)
+                   NautilusDateType  date_type)
 {
-    time_t atime;
-    time_t mtime;
-    time_t btime;
-    time_t recency;
-    time_t trash_time;
-
-    atime = nautilus_file_get_atime (file);
-    mtime = nautilus_file_get_mtime (file);
-    btime = nautilus_file_get_btime (file);
-    recency = nautilus_file_get_recency (file);
-    trash_time = nautilus_file_get_trash_time (file);
+    time_t file_time_raw = 0;
 
     switch (date_type)
     {
         case NAUTILUS_DATE_TYPE_ACCESSED:
         {
-            /* Before we have info on a file, the date is unknown. */
-            if (atime == 0)
-            {
-                return FALSE;
-            }
-            if (date != NULL)
-            {
-                *date = atime;
-            }
-            return TRUE;
+            file_time_raw = nautilus_file_get_atime (file);
         }
+        break;
 
         case NAUTILUS_DATE_TYPE_MODIFIED:
         {
-            /* Before we have info on a file, the date is unknown. */
-            if (mtime == 0)
-            {
-                return FALSE;
-            }
-            if (date != NULL)
-            {
-                *date = mtime;
-            }
-            return TRUE;
+            file_time_raw = nautilus_file_get_mtime (file);
         }
+        break;
 
         case NAUTILUS_DATE_TYPE_CREATED:
         {
-            /* Before we have info on a file, the date is unknown. */
-            if (btime == 0)
-            {
-                return FALSE;
-            }
-            if (date != NULL)
-            {
-                *date = btime;
-            }
-            return TRUE;
+            file_time_raw = nautilus_file_get_btime (file);
         }
+        break;
 
         case NAUTILUS_DATE_TYPE_TRASHED:
         {
-            /* Before we have info on a file, the date is unknown. */
-            if (trash_time == 0)
-            {
-                return FALSE;
-            }
-            if (date != NULL)
-            {
-                *date = trash_time;
-            }
-            return TRUE;
+            file_time_raw = nautilus_file_get_trash_time (file);
         }
+        break;
 
         case NAUTILUS_DATE_TYPE_RECENCY:
         {
-            /* Before we have info on a file, the date is unknown. */
-            if (recency == 0)
-            {
-                return FALSE;
-            }
-            if (date != NULL)
-            {
-                *date = recency;
-            }
-            return TRUE;
+            file_time_raw = nautilus_file_get_recency (file);
         }
+        break;
     }
-    return FALSE;
+
+    /* Before we have info on a file, the date is unknown. */
+    if (file_time_raw == 0)
+    {
+        return NULL;
+    }
+    else
+    {
+        return g_date_time_new_from_unix_local (file_time_raw);
+    }
 }
 
 static char *

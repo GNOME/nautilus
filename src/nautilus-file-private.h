@@ -222,9 +222,8 @@ void          nautilus_file_emit_changed                   (NautilusFile        
 void          nautilus_file_mark_unmounted                 (NautilusFile           *file);
 void          nautilus_file_mark_gone                      (NautilusFile           *file);
 
-gboolean      nautilus_file_get_date                       (NautilusFile           *file,
-							    NautilusDateType        date_type,
-							    time_t                 *date);
+GDateTime *   nautilus_file_get_date                       (NautilusFile           *file,
+							    NautilusDateType        date_type);
 void          nautilus_file_updated_deep_count_in_progress (NautilusFile           *file);
 
 

@@ -4925,16 +4925,10 @@ nautilus_file_get_icon_paintable (NautilusFile          *file,
     return nautilus_icon_info_get_paintable (info);
 }
 
-gboolean
+GDateTime *
 nautilus_file_get_date (NautilusFile     *file,
-                        NautilusDateType  date_type,
-                        time_t           *date)
+                        NautilusDateType  date_type)
 {
-    if (date != NULL)
-    {
-        *date = 0;
-    }
-
     g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_ACCESSED
                           || date_type == NAUTILUS_DATE_TYPE_MODIFIED
                           || date_type == NAUTILUS_DATE_TYPE_CREATED
@@ -4944,12 +4938,12 @@ nautilus_file_get_date (NautilusFile     *file,
 
     if (file == NULL)
     {
-        return FALSE;
+        return NULL;
     }
 
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_date (file, date_type, date);
+    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_date (file, date_type);
 }
 
 static char *
@@ -5003,7 +4997,6 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     const char *time_locale;
     locale_t current_locale;
     g_auto (locale_t) forced_locale = (locale_t) 0;
-    time_t file_time_raw;
     GDateTime *file_date_time, *now;
     GDateTime *today_midnight;
     gint days_ago;
@@ -5011,7 +5004,9 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     gchar *result;
     GString *time_label;
 
-    if (!nautilus_file_get_date (file, date_type, &file_time_raw))
+    file_date_time = nautilus_file_get_date (file, date_type);
+
+    if (file_date_time == NULL)
     {
         return NULL;
     }
@@ -5030,7 +5025,6 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     forced_locale = newlocale (LC_MESSAGES_MASK, time_locale, duplocale (current_locale));
     uselocale (forced_locale);
 
-    file_date_time = g_date_time_new_from_unix_local (file_time_raw);
     if (date_format != NAUTILUS_DATE_FORMAT_FULL)
     {
         GTimeZone *local_tz;
