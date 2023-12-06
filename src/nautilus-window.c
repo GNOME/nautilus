@@ -263,24 +263,11 @@ action_up (GSimpleAction *action,
            GVariant      *state,
            gpointer       user_data)
 {
-    NautilusWindowSlot *slot;
-    GFile *parent, *location;
+    NautilusWindowSlot *slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
 
-    slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
-    location = nautilus_window_slot_get_location (slot);
-
-    if (location != NULL)
+    if (slot != NULL)
     {
-        parent = g_file_get_parent (location);
-        if (parent != NULL)
-        {
-            nautilus_window_open_location_full (NAUTILUS_WINDOW (user_data),
-                                                parent,
-                                                0,
-                                                NULL, NULL);
-        }
-
-        g_clear_object (&parent);
+        nautilus_window_slot_go_up (slot);
     }
 }
 

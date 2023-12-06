@@ -3291,3 +3291,19 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
 
     return self->query_editor;
 }
+
+void
+nautilus_window_slot_go_up (NautilusWindowSlot *self)
+{
+    GFile *location = nautilus_window_slot_get_location (self);
+    if (location == NULL)
+    {
+        return;
+    }
+
+    g_autoptr (GFile) parent = g_file_get_parent (location);
+    if (parent != NULL)
+    {
+        nautilus_window_slot_open_location_full (self, parent, 0, NULL);
+    }
+}
