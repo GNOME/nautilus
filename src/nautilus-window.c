@@ -1659,12 +1659,50 @@ nautilus_window_initialize_actions (NautilusWindow *window)
                             action, "enabled", G_BINDING_SYNC_CREATE);
 }
 
+static gboolean
+is_layout_reversed (void)
+{
+    GtkSettings *settings = gtk_settings_get_default ();
+    g_autofree char *layout = NULL;
+    g_auto (GStrv) parts = NULL;
+
+    if (settings != NULL)
+    {
+        g_object_get (settings, "gtk-decoration-layout", &layout, NULL);
+    }
+
+    if (layout != NULL)
+    {
+        parts = g_strsplit (layout, ":", 2);
+    }
+
+    /* Invalid layout, don't even try */
+    if (parts == NULL || g_strv_length (parts) < 2)
+    {
+        return FALSE;
+    }
+
+    g_return_val_if_fail (parts[0] != NULL, FALSE);
+    return (g_strrstr (parts[0], "close") != NULL);
+}
+
+static void
+notify_decoration_layout_cb (NautilusWindow *self)
+{
+    gboolean inverted = is_layout_reversed ();
+
+    if (ADW_IS_TAB_BAR (self->tab_bar))
+    {
+        adw_tab_bar_set_inverted (self->tab_bar, inverted);
+    }
+}
 
 static void
 nautilus_window_constructed (GObject *self)
 {
     NautilusWindow *window;
     NautilusApplication *application;
+    GtkSettings *settings;
 
     window = NAUTILUS_WINDOW (self);
 
@@ -1697,6 +1735,12 @@ nautilus_window_constructed (GObject *self)
         g_signal_connect (window->tab_bar, "extra-drag-drop", G_CALLBACK (extra_drag_drop_cb), NULL);
     }
 #endif
+
+    settings = gtk_settings_get_default ();
+    g_signal_connect_object (settings, "notify::gtk-decoration-layout",
+                             G_CALLBACK (notify_decoration_layout_cb), window,
+                             G_CONNECT_SWAPPED);
+    notify_decoration_layout_cb (window);
 
     nautilus_window_set_up_sidebar (window);
 
