@@ -85,8 +85,6 @@ enum
 
 static GParamSpec *properties [LAST_PROP];
 
-#ifdef HAVE_CLOUDPROVIDERS
-
 static void
 dummy_callback (NautilusFile *file,
                 gpointer      callback_data)
@@ -128,6 +126,8 @@ ensure_connected_file (NautilusGtkSidebarRow *self)
                                G_CALLBACK (on_file_changed), self, G_CONNECT_SWAPPED);
     }
 }
+
+#ifdef HAVE_CLOUDPROVIDERS
 
 static void
 cloud_row_update (NautilusGtkSidebarRow *self)
