@@ -103,6 +103,9 @@ struct _NautilusWindowSlot
     GList *back_list;
     GList *forward_list;
 
+    /* Alt+Up reverse stack for Alt+Down. */
+    GList /*<owned GFile*>*/ *down_list;
+
     /* Query editor */
     NautilusQueryEditor *query_editor;
     NautilusQuery *pending_search_query;
@@ -1294,6 +1297,8 @@ begin_location_change (NautilusWindowSlot         *self,
         check_select_old_location_containing_folder (nautilus_file_list_copy (new_selection),
                                                      location,
                                                      previous_location);
+    /* Flush down list. Up/down actions should fetch the list beforehand. */
+    g_clear_list (&self->down_list, g_object_unref);
 
     self->pending_scroll_to = g_strdup (scroll_pos);
 
@@ -2747,6 +2752,7 @@ nautilus_window_slot_dispose (GObject *object)
 
     nautilus_window_slot_clear_forward_list (self);
     nautilus_window_slot_clear_back_list (self);
+    g_clear_list (&self->down_list, g_object_unref);
 
     nautilus_window_slot_remove_extra_location_widgets (self);
 
@@ -3304,6 +3310,12 @@ nautilus_window_slot_go_up (NautilusWindowSlot *self)
     g_autoptr (GFile) parent = g_file_get_parent (location);
     if (parent != NULL)
     {
+        /* Save the down list from getting flushed by begin_location_change ()*/
+        g_autolist (GFile) down_list = g_steal_pointer (&self->down_list);
+
         nautilus_window_slot_open_location_full (self, parent, 0, NULL);
+
+        down_list = g_list_prepend (down_list, g_object_ref (location));
+        self->down_list = g_steal_pointer (&down_list);
     }
 }
