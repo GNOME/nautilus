@@ -103,6 +103,7 @@ struct _NautilusPropertiesWindow
     GtkWidget *free_space_value_label;
 
     GtkWidget *disk_list_box;
+    GtkWidget *volume_usage_row;
     GtkLevelBar *disk_space_level_bar;
     GtkWidget *disk_space_used_value;
     GtkWidget *disk_space_free_value;
@@ -2420,25 +2421,14 @@ static void
 setup_volume_information (NautilusPropertiesWindow *self)
 {
     NautilusFile *file;
-    g_autofree gchar *capacity = NULL;
-    g_autofree gchar *used = NULL;
-    g_autofree gchar *free = NULL;
     const char *fs_type;
     g_autofree gchar *uri = NULL;
     g_autoptr (GFile) location = NULL;
     g_autoptr (GFileInfo) info = NULL;
 
-    capacity = g_format_size (self->volume_capacity);
-    free = g_format_size (self->volume_free);
-    used = g_format_size (self->volume_used);
-
     file = get_original_file (self);
 
     uri = nautilus_file_get_activation_uri (file);
-
-    gtk_label_set_text (GTK_LABEL (self->disk_space_used_value), used);
-    gtk_label_set_text (GTK_LABEL (self->disk_space_free_value), free);
-    gtk_label_set_text (GTK_LABEL (self->disk_space_capacity_value), capacity);
 
     location = g_file_new_for_uri (uri);
     info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
@@ -2471,10 +2461,6 @@ setup_volume_information (NautilusPropertiesWindow *self)
             gtk_widget_set_visible (GTK_WIDGET (self->type_file_system_label), TRUE);
         }
     }
-
-    gtk_level_bar_set_value (self->disk_space_level_bar, (double) self->volume_used / (double) self->volume_capacity);
-    /* display color changing based on filled level */
-    gtk_level_bar_add_offset_value (self->disk_space_level_bar, GTK_LEVEL_BAR_OFFSET_FULL, 0.0);
 }
 
 static void
@@ -2512,9 +2498,19 @@ setup_volume_usage_widget (NautilusPropertiesWindow *self)
         self->volume_used = 0;
     }
 
+    gtk_widget_set_visible (self->volume_usage_row, (self->volume_capacity > 0));
     if (self->volume_capacity > 0)
     {
-        setup_volume_information (self);
+        g_autofree gchar *capacity = g_format_size (self->volume_capacity);
+        g_autofree gchar *used = g_format_size (self->volume_used);
+        g_autofree gchar *free = g_format_size (self->volume_free);
+
+        gtk_label_set_text (GTK_LABEL (self->disk_space_used_value), used);
+        gtk_label_set_text (GTK_LABEL (self->disk_space_free_value), free);
+        gtk_label_set_text (GTK_LABEL (self->disk_space_capacity_value), capacity);
+        gtk_level_bar_set_value (self->disk_space_level_bar, (double) self->volume_used / (double) self->volume_capacity);
+        /* display color changing based on filled level */
+        gtk_level_bar_add_offset_value (self->disk_space_level_bar, GTK_LEVEL_BAR_OFFSET_FULL, 0.0);
     }
 }
 
@@ -2636,6 +2632,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
     if (should_show_volume_usage (self))
     {
         gtk_widget_set_visible (self->disk_list_box, TRUE);
+        setup_volume_information (self);
         setup_volume_usage_widget (self);
     }
 
@@ -4302,6 +4299,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_spinner);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_list_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_usage_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_level_bar);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_used_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_free_value);

@@ -165,7 +165,7 @@
                                 <property name="visible">False</property>
                                 <signal name="row-activated" handler="open_in_disks" object="NautilusPropertiesWindow" swapped="yes"/>
                                 <child>
-                                  <object class="GtkListBoxRow">
+                                  <object class="GtkListBoxRow" id="volume_usage_row">
                                     <property name="activatable">False</property>
                                     <property name="selectable">False</property>
                                     <child>
