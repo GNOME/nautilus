@@ -2184,6 +2184,14 @@ setup_contents_field (NautilusPropertiesWindow *self)
 }
 
 static gboolean
+has_no_parent (NautilusFile *file)
+{
+    g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
+
+    return (parent == NULL);
+}
+
+static gboolean
 is_root_directory (NautilusFile *file)
 {
     g_autoptr (GFile) location = NULL;
@@ -2313,14 +2321,10 @@ should_show_file_type (NautilusPropertiesWindow *self)
 static gboolean
 should_show_location_info (NautilusPropertiesWindow *self)
 {
-    GList *l;
-
-    for (l = self->original_files; l != NULL; l = l->next)
+    for (GList *l = self->original_files; l != NULL; l = l->next)
     {
-        if (nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)) ||
-            is_root_directory (NAUTILUS_FILE (l->data)) ||
-            is_network_directory (NAUTILUS_FILE (l->data)) ||
-            is_burn_directory (NAUTILUS_FILE (l->data)))
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        if (nautilus_file_is_in_trash (file) || has_no_parent (file))
         {
             return FALSE;
         }
