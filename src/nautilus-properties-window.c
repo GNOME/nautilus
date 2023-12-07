@@ -188,10 +188,6 @@ struct _NautilusPropertiesWindow
     guint long_operation_underway;
 
     GList *changed_files;
-
-    guint64 volume_capacity;
-    guint64 volume_free;
-    guint64 volume_used;
 };
 
 typedef enum
@@ -2466,49 +2462,40 @@ setup_volume_information (NautilusPropertiesWindow *self)
 static void
 setup_volume_usage_widget (NautilusPropertiesWindow *self)
 {
-    NautilusFile *file;
-    g_autofree gchar *uri = NULL;
-    g_autoptr (GFile) location = NULL;
+    NautilusFile *file = get_original_file (self);
+    g_autofree gchar *uri = nautilus_file_get_activation_uri (file);
+    g_autoptr (GFile) location = g_file_new_for_uri (uri);
     g_autoptr (GFileInfo) info = NULL;
+    guint64 volume_capacity = 0;
+    guint64 volume_free = 0;
+    guint64 volume_used = 0;
 
-    file = get_original_file (self);
-
-    uri = nautilus_file_get_activation_uri (file);
-
-    location = g_file_new_for_uri (uri);
     info = g_file_query_filesystem_info (location, "filesystem::*", NULL, NULL);
-
-    if (info)
+    if (info != NULL)
     {
-        self->volume_capacity = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
-        self->volume_free = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
+        volume_capacity = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+        volume_free = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
         if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_FILESYSTEM_USED))
         {
-            self->volume_used = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
+            volume_used = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_FILESYSTEM_USED);
         }
         else
         {
-            self->volume_used = self->volume_capacity - self->volume_free;
+            volume_used = volume_capacity - volume_free;
         }
     }
-    else
-    {
-        self->volume_capacity = 0;
-        self->volume_free = 0;
-        self->volume_used = 0;
-    }
 
-    gtk_widget_set_visible (self->volume_usage_row, (self->volume_capacity > 0));
-    if (self->volume_capacity > 0)
+    gtk_widget_set_visible (self->volume_usage_row, (volume_capacity > 0));
+    if (volume_capacity > 0)
     {
-        g_autofree gchar *capacity = g_format_size (self->volume_capacity);
-        g_autofree gchar *used = g_format_size (self->volume_used);
-        g_autofree gchar *free = g_format_size (self->volume_free);
+        g_autofree gchar *capacity = g_format_size (volume_capacity);
+        g_autofree gchar *used = g_format_size (volume_used);
+        g_autofree gchar *free = g_format_size (volume_free);
 
         gtk_label_set_text (GTK_LABEL (self->disk_space_used_value), used);
         gtk_label_set_text (GTK_LABEL (self->disk_space_free_value), free);
         gtk_label_set_text (GTK_LABEL (self->disk_space_capacity_value), capacity);
-        gtk_level_bar_set_value (self->disk_space_level_bar, (double) self->volume_used / (double) self->volume_capacity);
+        gtk_level_bar_set_value (self->disk_space_level_bar, (double) volume_used / (double) volume_capacity);
         /* display color changing based on filled level */
         gtk_level_bar_add_offset_value (self->disk_space_level_bar, GTK_LEVEL_BAR_OFFSET_FULL, 0.0);
     }
