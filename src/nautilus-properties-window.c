@@ -108,6 +108,8 @@ struct _NautilusPropertiesWindow
     GtkWidget *disk_space_used_value;
     GtkWidget *disk_space_free_value;
     GtkWidget *disk_space_capacity_value;
+    GtkWidget *open_in_disks_row;
+    gchar *device_identifier;
 
     GtkWidget *locations_list_box;
     GtkWidget *link_target_row;
@@ -2539,21 +2541,18 @@ open_link_target (NautilusPropertiesWindow *self)
 }
 
 static void
-open_in_disks (NautilusPropertiesWindow *self)
+setup_open_in_disks (NautilusPropertiesWindow *self)
 {
-    NautilusDBusLauncher *launcher = nautilus_dbus_launcher_get ();
     g_autoptr (GMount) mount = NULL;
     g_autoptr (GVolume) volume = NULL;
-    g_autofree gchar *device_identifier = NULL;
-    GVariant *parameters;
 
     mount = nautilus_file_get_mount (get_original_file (self));
     volume = (mount != NULL) ? g_mount_get_volume (mount) : NULL;
 
     if (volume != NULL)
     {
-        device_identifier = g_volume_get_identifier (volume,
-                                                     G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
+        self->device_identifier = g_volume_get_identifier (volume,
+                                                           G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
     }
     else
     {
@@ -2566,20 +2565,24 @@ open_in_disks (NautilusPropertiesWindow *self)
         mount_entry = (path != NULL) ? g_unix_mount_at (path, NULL) : NULL;
         if (mount_entry != NULL)
         {
-            device_identifier = g_strdup (g_unix_mount_get_device_path (mount_entry));
+            self->device_identifier = g_strdup (g_unix_mount_get_device_path (mount_entry));
         }
     }
 
-    if (device_identifier != NULL)
-    {
-        parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', "
-                                           "@aay [], {'options': <{'block-device': <%s>}> })",
-                                           device_identifier);
-    }
-    else
-    {
-        parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', @aay [], @a{sv} {})");
-    }
+    gtk_widget_set_visible (self->open_in_disks_row, (self->device_identifier != NULL));
+}
+
+static void
+open_in_disks (NautilusPropertiesWindow *self)
+{
+    NautilusDBusLauncher *launcher = nautilus_dbus_launcher_get ();
+    GVariant *parameters;
+
+    g_return_if_fail (self->device_identifier != NULL);
+
+    parameters = g_variant_new_parsed ("(objectpath '/org/gnome/DiskUtility', "
+                                       "@aay [], {'options': <{'block-device': <%s>}> })",
+                                       self->device_identifier);
 
     nautilus_dbus_launcher_call (launcher,
                                  NAUTILUS_DBUS_LAUNCHER_DISKS,
@@ -2618,9 +2621,13 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     if (should_show_volume_usage (self))
     {
-        gtk_widget_set_visible (self->disk_list_box, TRUE);
+        setup_open_in_disks (self);
         setup_volume_information (self);
         setup_volume_usage_widget (self);
+
+        gtk_widget_set_visible (self->disk_list_box,
+                                (gtk_widget_get_visible (self->volume_usage_row) ||
+                                 gtk_widget_get_visible (self->open_in_disks_row)));
     }
 
     if (should_show_file_type (self))
@@ -4089,6 +4096,7 @@ real_finalize (GObject *object)
     self = NAUTILUS_PROPERTIES_WINDOW (object);
 
     g_free (self->mime_type);
+    g_free (self->device_identifier);
 
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
@@ -4291,6 +4299,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_used_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_free_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_capacity_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, locations_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_value_label);
