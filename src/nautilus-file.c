@@ -5514,25 +5514,19 @@ nautilus_file_can_get_permissions (NautilusFile *file)
 gboolean
 nautilus_file_can_set_permissions (NautilusFile *file)
 {
-    g_autoptr (GFile) location = NULL;
-    uid_t user_id;
-
-    location = nautilus_file_get_location (file);
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
 
     if (file->details->has_uid &&
         g_file_is_native (location))
     {
-        /* Check the user. */
-        user_id = geteuid ();
-
         /* Owner is allowed to set permissions. */
-        if (user_id == file->details->uid)
+        if (geteuid () == file->details->uid)
         {
             return TRUE;
         }
 
-        /* Root is also allowed to set permissions. */
-        if (user_id == 0)
+        /* Administrators are also allowed to set permissions. */
+        if (nautilus_file_is_in_admin (file))
         {
             return TRUE;
         }
@@ -5888,8 +5882,8 @@ nautilus_file_can_set_owner (NautilusFile *file)
         return FALSE;
     }
 
-    /* Owner can be changed only in admin backend or by root */
-    return nautilus_file_is_in_admin (file) || geteuid () == 0;
+    /* Owner can be changed by administrators, thanks to PolKit integration. */
+    return nautilus_file_is_in_admin (file);
 }
 
 /**
@@ -6085,8 +6079,6 @@ nautilus_file_get_group_name (NautilusFile *file)
 gboolean
 nautilus_file_can_set_group (NautilusFile *file)
 {
-    uid_t user_id;
-
     /* Not allowed to set the permissions if we can't
      * even read them. This can happen on non-UNIX file
      * systems.
@@ -6096,17 +6088,14 @@ nautilus_file_can_set_group (NautilusFile *file)
         return FALSE;
     }
 
-    /* Check the user. */
-    user_id = geteuid ();
-
     /* Owner is allowed to set group (with restrictions). */
-    if (file->details->has_uid && user_id == file->details->uid)
+    if (file->details->has_uid && geteuid () == file->details->uid)
     {
         return TRUE;
     }
 
-    /* Root is also allowed to set group. */
-    if (user_id == 0)
+    /* Groups can be changed by administrators, thanks to PolKit integration. */
+    if (nautilus_file_is_in_admin (file))
     {
         return TRUE;
     }
@@ -6181,23 +6170,19 @@ nautilus_get_all_group_names (void)
 GList *
 nautilus_file_get_settable_group_names (NautilusFile *file)
 {
-    uid_t user_id;
-    GList *result;
+    GList *result = NULL;
 
     if (!nautilus_file_can_set_group (file))
     {
         return NULL;
     }
 
-    /* Check the user. */
-    user_id = geteuid ();
-
-    if (user_id == 0)
+    if (nautilus_file_is_in_admin (file))
     {
-        /* Root is allowed to set group to anything. */
+        /* Administrators are allowed to set group to anything. */
         result = nautilus_get_all_group_names ();
     }
-    else if (file->details->has_uid && user_id == file->details->uid)
+    else if (file->details->has_uid && geteuid () == file->details->uid)
     {
         /* Owner is allowed to set group to any that owner is member of. */
         result = nautilus_get_group_names_for_user ();
@@ -6205,7 +6190,6 @@ nautilus_file_get_settable_group_names (NautilusFile *file)
     else
     {
         g_warning ("unhandled case in nautilus_get_settable_group_names");
-        result = NULL;
     }
 
     return result;
