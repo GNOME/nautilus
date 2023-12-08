@@ -1479,14 +1479,16 @@ update_combo_row_dropdown (AdwComboRow *row,
     {
         /* Recreate the drop down. */
         g_autoptr (GtkStringList) new_model = gtk_string_list_new (NULL);
+        guint n_items = 0;
 
-        for (GList *node = entries; node != NULL; node = node->next)
+        for (GList *node = entries; node != NULL; node = node->next, n_items++)
         {
             const char *entry = (const char *) node->data;
             gtk_string_list_append (new_model, entry);
         }
 
         adw_combo_row_set_model (row, G_LIST_MODEL (new_model));
+        adw_combo_row_set_enable_search (row, n_items >= 7);
 
         g_object_set_data (G_OBJECT (row), "dropdown-hash", GUINT_TO_POINTER (current_hash));
     }

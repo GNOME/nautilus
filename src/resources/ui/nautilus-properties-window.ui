@@ -736,6 +736,9 @@
                                             <property name="activatable">False</property>
                                             <property name="title" translatable="yes">_Owner</property>
                                             <property name="use-underline">True</property>
+                                            <property name="expression">
+                                              <lookup type="GtkStringObject" name="string"/>
+                                            </property>
                                           </object>
                                         </child>
                                         <child>
@@ -773,6 +776,9 @@
                                             <property name="activatable">False</property>
                                             <property name="title" translatable="yes">_Group</property>
                                             <property name="use-underline">True</property>
+                                            <property name="expression">
+                                              <lookup type="GtkStringObject" name="string"/>
+                                            </property>
                                           </object>
                                         </child>
                                         <child>
