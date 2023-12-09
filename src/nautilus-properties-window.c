@@ -920,10 +920,10 @@ create_extension_group_row (NautilusPropertiesItem   *item,
 }
 
 static void
-navigate_extension_model_page (AdwPreferencesRow        *row,
-                               GParamSpec               *params,
-                               NautilusPropertiesWindow *self)
+navigate_extension_model_page (AdwPreferencesRow *row,
+                               gpointer           user_data)
 {
+    NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
     GListModel *list_model = g_object_get_data (G_OBJECT (row), "nautilus-extension-properties-model");
     AdwNavigationPage *page;
 
