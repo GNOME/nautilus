@@ -395,12 +395,13 @@ nautilus_icon_info_lookup (GIcon *icon,
         return g_object_ref (icon_info);
     }
 
-    icon_paintable = gtk_icon_theme_lookup_by_gicon (gtk_icon_theme_get_for_display (gdk_display_get_default ()),
-                                                     icon, size, scale, GTK_TEXT_DIR_NONE, 0);
-    if (icon_paintable == NULL)
+    GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
+    if (!gtk_icon_theme_has_gicon (theme, icon))
     {
         return nautilus_icon_info_new_for_paintable (NULL, scale);
     }
+
+    icon_paintable = gtk_icon_theme_lookup_by_gicon (theme, icon, size, scale, GTK_TEXT_DIR_NONE, 0);
 
     if (G_IS_THEMED_ICON (icon))
     {
