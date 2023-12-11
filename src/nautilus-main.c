@@ -34,9 +34,7 @@
 #include <gtk/gtk.h>
 #include <gio/gdesktopappinfo.h>
 
-#ifdef HAVE_LOCALE_H
 #include <locale.h>
-#endif
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif
@@ -50,13 +48,22 @@ main (int   argc,
 {
     gint retval;
     NautilusApplication *application;
-
     /* Initialize gettext support */
+    setlocale (LC_ALL, "");
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
 
     g_set_prgname (APPLICATION_ID);
+
+    if (getuid () == 0)
+    {
+        g_warning (_("\n========================================================"
+                     "\nThis app cannot work correctly if run as root (not even"
+                     "\nwith sudo). Consider running `nautilus admin:/` instead."
+                     "\n========================================================"));
+        sleep (7);
+    }
 
     nautilus_register_resource ();
     /* Run the nautilus application. */
