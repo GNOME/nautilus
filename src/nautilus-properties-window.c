@@ -4135,8 +4135,8 @@ set_icon (const char               *icon_uri,
             icon_location = g_file_new_for_uri (icon_uri);
 
             /* ’Tis a little bit of a misnomer. Actually a path. */
-            real_icon_uri = g_file_get_relative_path (icon_location,
-                                                      file_location);
+            real_icon_uri = g_file_get_relative_path (file_location,
+                                                      icon_location);
 
             if (real_icon_uri == NULL)
             {
