@@ -39,7 +39,6 @@ static const char *default_column_order[] =
     "group",
     "permissions",
     "detailed_type",
-    "where",
     "date_modified",
     "date_accessed",
     "date_created",
@@ -141,14 +140,6 @@ get_builtin_columns (void)
                                            "attribute", "permissions",
                                            "label", _("Permissions"),
                                            "description", _("The permissions of the file."),
-                                           NULL));
-
-    columns = g_list_append (columns,
-                             g_object_new (NAUTILUS_TYPE_COLUMN,
-                                           "name", "where",
-                                           "attribute", "where",
-                                           "label", _("Location"),
-                                           "description", _("The location of the file."),
                                            NULL));
 
     columns = g_list_append (columns,
