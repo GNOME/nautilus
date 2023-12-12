@@ -85,6 +85,9 @@ asan:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: analyze
     rules:
+        # https://docs.gitlab.com/ee/ci/jobs/job_control.html#avoid-duplicate-pipelines
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          when: never
         - when: manual
           allow_failure: true
     script:
