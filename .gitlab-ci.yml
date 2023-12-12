@@ -17,15 +17,25 @@ stages:
         APP_ID: "org.gnome.NautilusDevel"
         BUNDLE: "nautilus-dev.flatpak"
 
+workflow:
+  rules:
+    # run merge request pipelines
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # do not run branch pipelines if corresponding merge requests exist...
+    # (this avoids duplicate pipelines)
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # ...but otherwise run branch pipelines
+    - if: $CI_COMMIT_BRANCH
+    # run tag pipelines
+    - if: $CI_COMMIT_TAG
+
 flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
 
 flatpak@aarch64:
     rules:
-        # https://docs.gitlab.com/ee/ci/jobs/job_control.html#avoid-duplicate-pipelines
-        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-          when: never
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "GNOME"
+        - if: $CI_PROJECT_NAMESPACE == "GNOME"
         - when: manual
           allow_failure: true
     extends: ['.flatpak@aarch64', '.vars-devel']
@@ -52,9 +62,6 @@ style check:
         - LANG=C.utf8 data/run-uncrustify.sh
         - git diff --exit-code | tee uncrustify.diff
     rules:
-        # https://docs.gitlab.com/ee/ci/jobs/job_control.html#avoid-duplicate-pipelines
-        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-          when: never
         - if: $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
 update image:
@@ -85,9 +92,6 @@ asan:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: analyze
     rules:
-        # https://docs.gitlab.com/ee/ci/jobs/job_control.html#avoid-duplicate-pipelines
-        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-          when: never
         - when: manual
           allow_failure: true
     script:
