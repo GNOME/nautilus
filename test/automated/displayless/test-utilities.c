@@ -126,25 +126,12 @@ void
 create_search_file_hierarchy (gchar *search_engine)
 {
     create_hierarchy_from_template (search_hierarchy, search_engine);
-
-
-
-
-
-
-
-
 }
 
 void
 delete_search_file_hierarchy (gchar *search_engine)
 {
     delete_hierarchy_from_template (search_hierarchy, search_engine);
-
-
-
-
-
 }
 
 /* This callback function quits the mainloop inside which the
@@ -360,7 +347,6 @@ create_first_hierarchy (gchar *prefix)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) second_dir = NULL;
     g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
     root = g_file_new_for_path (test_get_tmp_dir ());
@@ -401,7 +387,6 @@ create_second_hierarchy (gchar *prefix)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) second_dir = NULL;
     g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
     root = g_file_new_for_path (test_get_tmp_dir ());
@@ -442,7 +427,6 @@ create_third_hierarchy (gchar *prefix)
     g_autoptr (GFile) first_dir = NULL;
     g_autoptr (GFile) second_dir = NULL;
     g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
     root = g_file_new_for_path (test_get_tmp_dir ());
@@ -499,7 +483,6 @@ create_fourth_hierarchy (gchar *prefix)
     g_autoptr (GFile) second_dir = NULL;
     g_autoptr (GFile) third_dir = NULL;
     g_autoptr (GFile) file = NULL;
-    g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
     root = g_file_new_for_path (test_get_tmp_dir ());
