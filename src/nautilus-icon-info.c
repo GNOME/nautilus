@@ -333,6 +333,7 @@ nautilus_icon_info_lookup (GIcon *icon,
 {
     NautilusIconInfo *icon_info;
     g_autoptr (GtkIconPaintable) icon_paintable = NULL;
+    GtkIconTheme *theme;
 
     if (G_IS_LOADABLE_ICON (icon))
     {
@@ -395,7 +396,7 @@ nautilus_icon_info_lookup (GIcon *icon,
         return g_object_ref (icon_info);
     }
 
-    GtkIconTheme *theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
+    theme = gtk_icon_theme_get_for_display (gdk_display_get_default ());
     if (!gtk_icon_theme_has_gicon (theme, icon))
     {
         return nautilus_icon_info_new_for_paintable (NULL, scale);
