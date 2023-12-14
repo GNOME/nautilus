@@ -332,185 +332,70 @@ create_multiple_directories (gchar *prefix,
 void
 create_first_hierarchy (gchar *prefix)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    gchar *file_name;
+    const GStrv first_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_child/",
+        "%s_first_dir/%s_second_child/",
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+        "%s_second_dir/",
+        NULL
+    };
 
-    file_name = g_strdup_printf ("%s_first_dir", prefix);
-    first_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_assert_true (first_dir != NULL);
-    g_file_make_directory (first_dir, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_first_child", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-    file_name = g_strdup_printf ("%s_second_child", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_second_dir", prefix);
-    second_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_assert_true (second_dir != NULL);
-    g_file_make_directory (second_dir, NULL, NULL);
+    create_hierarchy_from_template (first_hierarchy, prefix);
 }
 
 void
 create_second_hierarchy (gchar *prefix)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    gchar *file_name;
+    const GStrv second_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_child/",
+        "%s_first_dir/%s_first_child/%s_second_child/",
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+        "%s_second_dir/",
+        NULL
+    };
 
-    file_name = g_strdup_printf ("%s_first_dir", prefix);
-    first_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_assert_true (first_dir != NULL);
-    g_file_make_directory (first_dir, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_first_child", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-    file_name = g_strdup_printf ("%s_second_child", prefix);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_second_dir", prefix);
-    second_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_assert_true (second_dir != NULL);
-    g_file_make_directory (second_dir, NULL, NULL);
+    create_hierarchy_from_template (second_hierarchy, prefix);
 }
 
 void
 create_third_hierarchy (gchar *prefix)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    gchar *file_name;
+    const GStrv third_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_dir_dir1/",
+        "%s_first_dir/%s_first_dir_dir1/%s_dir1_child/",
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+        "%s_first_dir/%s_first_dir_dir2/",
+        "%s_first_dir/%s_first_dir_dir2/%s_dir2_child",
 
-    file_name = g_strdup_printf ("%s_first_dir", prefix);
-    first_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
+        "%s_second_dir/",
+        NULL
+    };
 
-    g_assert_true (first_dir != NULL);
-    g_file_make_directory (first_dir, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_first_dir_dir1", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_dir1_child", prefix);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_first_dir_dir2", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_dir2_child", prefix);
-    file = g_file_get_child (file, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_second_dir", prefix);
-    second_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_assert_true (second_dir != NULL);
-    g_file_make_directory (second_dir, NULL, NULL);
+    create_hierarchy_from_template (third_hierarchy, prefix);
 }
 
 void
 create_fourth_hierarchy (gchar *prefix)
 {
-    g_autoptr (GFile) root = NULL;
-    g_autoptr (GFile) first_dir = NULL;
-    g_autoptr (GFile) second_dir = NULL;
-    g_autoptr (GFile) third_dir = NULL;
-    g_autoptr (GFile) file = NULL;
-    gchar *file_name;
+    const GStrv fourth_hierarchy = (char *[])
+    {
+        "%s_first_dir/",
+        "%s_first_dir/%s_first_dir_child/",
 
-    root = g_file_new_for_path (test_get_tmp_dir ());
-    g_assert_true (root != NULL);
+        "%s_second_dir/",
+        "%s_second_dir/%s_second_dir_child/",
 
-    file_name = g_strdup_printf ("%s_first_dir", prefix);
-    first_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
+        "%s_third_dir/",
+        NULL
+    };
 
-    g_assert_true (first_dir != NULL);
-    g_file_make_directory (first_dir, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_first_dir_child", prefix);
-    file = g_file_get_child (first_dir, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_second_dir", prefix);
-    second_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_assert_true (second_dir != NULL);
-    g_file_make_directory (second_dir, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_second_dir_child", prefix);
-    file = g_file_get_child (second_dir, file_name);
-    g_free (file_name);
-
-    g_assert_true (file != NULL);
-    g_file_make_directory (file, NULL, NULL);
-
-    file_name = g_strdup_printf ("%s_third_dir", prefix);
-    third_dir = g_file_get_child (root, file_name);
-    g_free (file_name);
-
-    g_assert_true (third_dir != NULL);
-    g_file_make_directory (third_dir, NULL, NULL);
+    create_hierarchy_from_template (fourth_hierarchy, prefix);
 }
 
 void
