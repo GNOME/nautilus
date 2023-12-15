@@ -191,3 +191,10 @@ nautilus_date_to_str (GDateTime *timestamp,
 {
     return date_to_str (timestamp, use_short_format, use_detailed_date_format);
 }
+
+char *
+nautilus_date_preview_detailed_format (GDateTime *timestamp,
+                                       gboolean   use_detailed)
+{
+    return date_to_str (timestamp, TRUE, use_detailed);
+}

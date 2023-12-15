@@ -30,6 +30,7 @@
 #include <nautilus-extension.h>
 
 #include "nautilus-column-utilities.h"
+#include "nautilus-date-utilities.h"
 #include "nautilus-global-preferences.h"
 
 /* bool preferences */
@@ -247,6 +248,33 @@ bind_builder_bool (GtkBuilder *builder,
                      "active", G_SETTINGS_BIND_DEFAULT);
 }
 
+/* Translators: Both %s will be replaced with formatted timestamps. */
+#define DATE_FORMAT_ROW_SUBTITLE _("Examples: “%s”, “%s”")
+
+static void
+setup_detailed_date (GtkBuilder *builder)
+{
+    AdwActionRow *simple_row = ADW_ACTION_ROW (gtk_builder_get_object (builder, "date_format_simple_row"));
+    AdwActionRow *detailed_row = ADW_ACTION_ROW (gtk_builder_get_object (builder, "date_format_detailed_row"));
+
+    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
+    g_autoptr (GDateTime) earlier = g_date_time_add_days (now, -3);
+
+    g_autofree gchar *simple_date_now = nautilus_date_preview_detailed_format (now, FALSE);
+    g_autofree gchar *simple_date_earlier = nautilus_date_preview_detailed_format (earlier, FALSE);
+    g_autofree gchar *simple_row_subtitle = g_strdup_printf (DATE_FORMAT_ROW_SUBTITLE,
+                                                             simple_date_now,
+                                                             simple_date_earlier);
+    adw_action_row_set_subtitle (simple_row, simple_row_subtitle);
+
+    g_autofree gchar *detailed_date_now = nautilus_date_preview_detailed_format (now, TRUE);
+    g_autofree gchar *detailed_date_earlier = nautilus_date_preview_detailed_format (earlier, TRUE);
+    g_autofree gchar *detailed_row_subtitle = g_strdup_printf (DATE_FORMAT_ROW_SUBTITLE,
+                                                               detailed_date_now,
+                                                               detailed_date_earlier);
+    adw_action_row_set_subtitle (detailed_row, detailed_row_subtitle);
+}
+
 static GVariant *
 combo_row_mapping_set (const GValue       *gvalue,
                        const GVariantType *expected_type,
@@ -333,6 +361,8 @@ nautilus_preferences_window_setup (GtkBuilder *builder)
     bind_builder_bool (builder, nautilus_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET,
                        NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
+
+    setup_detailed_date (builder);
 
     bind_builder_combo_row (builder, nautilus_preferences,
                             NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO,
