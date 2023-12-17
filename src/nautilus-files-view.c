@@ -205,8 +205,6 @@ typedef struct
     /* Containers with FileAndDirectory* elements */
     GList *new_added_files;
     GList *new_changed_files;
-    GList *old_added_files;
-    GList *old_changed_files;
 
     GList *pending_selection;
     GHashTable *pending_reveal;
@@ -4260,62 +4258,6 @@ still_should_show_file (NautilusFilesView *view,
            view_file_still_belongs (view, fad);
 }
 
-/* Go through all the new added and changed files.
- * Add all the rest to the old_added_files and old_changed_files lists.
- * Sort the old_*_files lists if anything was added to them.
- */
-static void
-process_new_files (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-    g_autolist (FileAndDirectory) new_added_files = NULL;
-    g_autolist (FileAndDirectory) new_changed_files = NULL;
-    GList *old_added_files;
-    GList *old_changed_files;
-    GList *node, *next;
-    FileAndDirectory *pending;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    new_added_files = g_steal_pointer (&priv->new_added_files);
-    new_changed_files = g_steal_pointer (&priv->new_changed_files);
-
-    old_added_files = priv->old_added_files;
-    old_changed_files = priv->old_changed_files;
-
-    /* Newly added files go into the old_added_files list if they should be shown */
-    for (node = new_added_files; node != NULL; node = next)
-    {
-        next = node->next;
-        pending = (FileAndDirectory *) node->data;
-        if (nautilus_files_view_should_show_file (view, pending->file))
-        {
-            new_added_files = g_list_delete_link (new_added_files, node);
-            old_added_files = g_list_prepend (old_added_files, pending);
-        }
-    }
-
-    /* Newly changed files go into the old_changed_files list */
-    for (node = new_changed_files; node != NULL; node = next)
-    {
-        next = node->next;
-        pending = (FileAndDirectory *) node->data;
-
-        new_changed_files = g_list_delete_link (new_changed_files, node);
-        old_changed_files = g_list_prepend (old_changed_files, pending);
-    }
-
-    if (old_added_files != priv->old_added_files)
-    {
-        priv->old_added_files = old_added_files;
-    }
-
-    if (old_changed_files != priv->old_changed_files)
-    {
-        priv->old_changed_files = old_changed_files;
-    }
-}
-
 static void
 real_end_file_changes (NautilusFilesView *view)
 {
@@ -4476,7 +4418,7 @@ real_file_changed (NautilusFilesView *self,
 }
 
 static void
-process_old_files (NautilusFilesView *view)
+process_pending_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
     g_autolist (FileAndDirectory) files_added = NULL;
@@ -4486,8 +4428,8 @@ process_old_files (NautilusFilesView *view)
     g_autoptr (GList) pending_additions = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
-    files_added = g_steal_pointer (&priv->old_added_files);
-    files_changed = g_steal_pointer (&priv->old_changed_files);
+    files_added = g_steal_pointer (&priv->new_added_files);
+    files_changed = g_steal_pointer (&priv->new_changed_files);
 
 
     if (files_added != NULL || files_changed != NULL)
@@ -4503,6 +4445,10 @@ process_old_files (NautilusFilesView *view)
             if (nautilus_file_is_gone (pending->file))
             {
                 g_warning ("Attempted to add a non-existent file to the view.");
+                continue;
+            }
+            if (!nautilus_files_view_should_show_file (view, pending->file))
+            {
                 continue;
             }
             pending_additions = g_list_prepend (pending_additions, pending->file);
@@ -4600,8 +4546,7 @@ display_pending_files (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
 
-    process_new_files (view);
-    process_old_files (view);
+    process_pending_files (view);
 
     priv = nautilus_files_view_get_instance_private (view);
     selection = nautilus_files_view_get_selection (NAUTILUS_VIEW (view));
@@ -9183,12 +9128,6 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
 
     g_list_free_full (priv->new_changed_files, file_and_directory_free);
     priv->new_changed_files = NULL;
-
-    g_list_free_full (priv->old_added_files, file_and_directory_free);
-    priv->old_added_files = NULL;
-
-    g_list_free_full (priv->old_changed_files, file_and_directory_free);
-    priv->old_changed_files = NULL;
 
     g_list_free_full (priv->pending_selection, g_object_unref);
     priv->pending_selection = NULL;
