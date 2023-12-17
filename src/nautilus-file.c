@@ -4840,7 +4840,8 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     {
         icon = nautilus_icon_info_new_for_paintable (paintable, scale);
     }
-    else if (file->details->is_thumbnailing)
+    else if (file->details->is_thumbnailing ||
+             !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL))
     {
         g_autoptr (GIcon) gicon = g_themed_icon_new (ICON_NAME_THUMBNAIL_LOADING);
         icon = nautilus_icon_info_lookup (gicon, size, scale);
