@@ -5,6 +5,8 @@
  */
 
 #include "nautilus-grid-cell.h"
+
+#include "nautilus-global-preferences.h"
 #include "nautilus-tag-manager.h"
 
 struct _NautilusGridCell
@@ -284,6 +286,10 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 
     g_signal_connect_object (nautilus_tag_manager_get (), "starred-changed",
                              G_CALLBACK (on_starred_changed), self, G_CONNECT_DEFAULT);
+
+    g_signal_connect_object (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
+                             G_CALLBACK (update_captions), self,
+                             G_CONNECT_SWAPPED);
 
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);

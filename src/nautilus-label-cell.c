@@ -9,6 +9,8 @@
 
 #include "nautilus-label-cell.h"
 
+#include "nautilus-global-preferences.h"
+
 struct _NautilusLabelCell
 {
     NautilusViewCell parent_instance;
@@ -35,7 +37,7 @@ enum
 static GParamSpec *properties[N_PROPS] = { NULL, };
 
 static void
-on_file_changed (NautilusLabelCell *self)
+update_label (NautilusLabelCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
     NautilusFile *file;
@@ -86,9 +88,9 @@ nautilus_label_cell_init (NautilusLabelCell *self)
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
-                                    (GCallback) on_file_changed, self);
+                                    G_CALLBACK (update_label), self);
     g_signal_connect_object (self->item_signal_group, "bind",
-                             (GCallback) on_file_changed, self,
+                             G_CALLBACK (update_label), self,
                              G_CONNECT_SWAPPED);
     g_object_bind_property (self, "item",
                             self->item_signal_group, "target",
@@ -110,6 +112,13 @@ nautilus_label_cell_constructed (GObject *object)
                   "xalign", &xalign,
                   NULL);
     gtk_label_set_xalign (self->label, xalign);
+
+    if (nautilus_file_is_date_sort_attribute_q (self->attribute_q))
+    {
+        g_signal_connect_object (nautilus_preferences, "changed::" NAUTILUS_PREFERENCES_DATE_TIME_FORMAT,
+                                 G_CALLBACK (update_label), self,
+                                 G_CONNECT_SWAPPED);
+    }
 
     if (g_strcmp0 (column_name, "permissions") == 0)
     {
