@@ -124,7 +124,7 @@ select_single_item_if_not_selected (NautilusListBase *self,
     guint position;
 
     model = nautilus_list_base_get_model (self);
-    position = nautilus_view_model_get_index (model, item);
+    position = nautilus_view_model_find (model, item);
     if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), position))
     {
         nautilus_list_base_set_cursor (self, position, TRUE, FALSE);
@@ -269,7 +269,7 @@ on_item_click_released (GtkGestureClick *gesture,
         model = nautilus_list_base_get_model (self);
         item = nautilus_view_cell_get_item (cell);
         g_return_if_fail (item != NULL);
-        i = nautilus_view_model_get_index (model, item);
+        i = nautilus_view_model_find (model, item);
 
         /* Anticipate selection, enforcing single selection of target item. */
         gtk_selection_model_select_item (GTK_SELECTION_MODEL (model), i, TRUE);
@@ -919,7 +919,7 @@ get_first_selected_item (NautilusListBase *self)
     file = NAUTILUS_FILE (selection->data);
     item = nautilus_view_model_find_item_for_file (priv->model, file);
 
-    return nautilus_view_model_get_index (priv->model, item);
+    return nautilus_view_model_find (priv->model, item);
 }
 
 static void
@@ -1149,7 +1149,7 @@ real_scroll_to_file (NautilusFilesView *files_view,
     item = nautilus_view_model_find_item_for_file (priv->model, file);
     g_return_if_fail (item != NULL);
 
-    i = nautilus_view_model_get_index (priv->model, item);
+    i = nautilus_view_model_find (priv->model, item);
     nautilus_list_base_scroll_to_item (self, i);
 }
 

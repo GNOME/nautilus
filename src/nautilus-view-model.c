@@ -552,38 +552,49 @@ nautilus_view_model_add_items (NautilusViewModel *self,
 }
 
 /**
- * nautilus_view_model_get_index:
+ * nautilus_view_model_find:
  *
  * @item: The item to find.
  *
- * Iterate the model linearly to find the index of @item. Avoid using in a loop.
+ * Perform binary search to find the index of @item. A sorter must be set.
  *
  * Returns: The position of the item in the list, or G_MAXUINT if not found.
  */
 guint
-nautilus_view_model_get_index (NautilusViewModel *self,
-                               NautilusViewItem  *item)
+nautilus_view_model_find (NautilusViewModel *self,
+                          NautilusViewItem  *item)
 {
-    guint n_items;
-    guint i = 0;
+    guint n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
+    guint lower = 0;
+    guint upper = n_items - 1;
+    GtkSorter *sorter = nautilus_view_model_get_sorter (self);
 
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
-    while (i < n_items)
+    g_assert (sorter != NULL);
+
+    while (lower <= upper)
     {
-        g_autoptr (GtkTreeListRow) row = NULL;
-        g_autoptr (NautilusViewItem) item_i = NULL;
+        guint middle = (lower + upper) / 2;
+        g_autoptr (GtkTreeListRow) middle_row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), middle);
+        g_autoptr (NautilusViewItem) middle_item = gtk_tree_list_row_get_item (middle_row);
 
-        row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), i);
-        g_warn_if_fail (GTK_IS_TREE_LIST_ROW (row));
+        g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (middle_item), G_MAXUINT);
 
-        item_i = gtk_tree_list_row_get_item (row);
-        g_warn_if_fail (NAUTILUS_IS_VIEW_ITEM (item_i));
+        GtkOrdering ordering = gtk_sorter_compare (sorter, middle_item, item);
 
-        if (item_i == item)
+        if (ordering == GTK_ORDERING_EQUAL)
         {
-            return i;
+            return middle;
         }
-        i++;
+
+        if (ordering == GTK_ORDERING_SMALLER)
+        {
+            lower = middle + 1;
+        }
+        else
+        {
+            g_assert (ordering == GTK_ORDERING_LARGER);
+            upper = middle - 1;
+        }
     }
 
     return G_MAXUINT;
