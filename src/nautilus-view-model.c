@@ -389,8 +389,8 @@ nautilus_view_model_sort (NautilusViewModel *self)
 }
 
 GList *
-nautilus_view_model_find_items_for_files (NautilusViewModel *self,
-                                          GList             *files)
+nautilus_view_model_get_sorted_items_for_files (NautilusViewModel *self,
+                                                GList             *files)
 {
     GList *items = NULL;
 
@@ -398,19 +398,19 @@ nautilus_view_model_find_items_for_files (NautilusViewModel *self,
     {
         NautilusViewItem *item;
 
-        item = nautilus_view_model_find_item_for_file (self, l->data);
+        item = nautilus_view_model_get_item_for_file (self, l->data);
         if (item != NULL)
         {
             items = g_list_prepend (items, item);
         }
     }
 
-    return g_list_reverse (items);
+    return g_list_sort_with_data (g_list_copy (items), compare_data_func, self);
 }
 
 NautilusViewItem *
-nautilus_view_model_find_item_for_file (NautilusViewModel *self,
-                                        NautilusFile      *file)
+nautilus_view_model_get_item_for_file (NautilusViewModel *self,
+                                       NautilusFile      *file)
 {
     return g_hash_table_lookup (self->map_files_to_model, file);
 }

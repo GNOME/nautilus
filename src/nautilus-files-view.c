@@ -4252,7 +4252,7 @@ real_remove_files (NautilusFilesView *self,
     {
         NautilusViewItem *item;
 
-        item = nautilus_view_model_find_item_for_file (priv->model, l->data);
+        item = nautilus_view_model_get_item_for_file (priv->model, l->data);
         if (item != NULL)
         {
             items = g_list_prepend (items, item);
@@ -4282,7 +4282,7 @@ real_file_changed (NautilusFilesView *self,
         return;
     }
 
-    item = nautilus_view_model_find_item_for_file (priv->model, file);
+    item = nautilus_view_model_get_item_for_file (priv->model, file);
     if (item != NULL)
     {
         nautilus_view_item_file_changed (item);

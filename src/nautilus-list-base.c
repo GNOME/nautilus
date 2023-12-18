@@ -917,7 +917,7 @@ get_first_selected_item (NautilusListBase *self)
     }
 
     file = NAUTILUS_FILE (selection->data);
-    item = nautilus_view_model_find_item_for_file (priv->model, file);
+    item = nautilus_view_model_get_item_for_file (priv->model, file);
 
     return nautilus_view_model_find (priv->model, item);
 }
@@ -955,7 +955,7 @@ on_clipboard_contents_received (GObject      *source_object,
 
     for (GList *l = priv->cut_files; l != NULL; l = l->next)
     {
-        item = nautilus_view_model_find_item_for_file (priv->model, l->data);
+        item = nautilus_view_model_get_item_for_file (priv->model, l->data);
         if (item != NULL)
         {
             nautilus_view_item_set_cut (item, FALSE);
@@ -981,7 +981,7 @@ on_clipboard_contents_received (GObject      *source_object,
 
     for (GList *l = priv->cut_files; l != NULL; l = l->next)
     {
-        item = nautilus_view_model_find_item_for_file (priv->model, l->data);
+        item = nautilus_view_model_get_item_for_file (priv->model, l->data);
         if (item != NULL)
         {
             nautilus_view_item_set_cut (item, TRUE);
@@ -1146,7 +1146,7 @@ real_scroll_to_file (NautilusFilesView *files_view,
     NautilusViewItem *item;
     guint i;
 
-    item = nautilus_view_model_find_item_for_file (priv->model, file);
+    item = nautilus_view_model_get_item_for_file (priv->model, file);
     g_return_if_fail (item != NULL);
 
     i = nautilus_view_model_find (priv->model, item);
