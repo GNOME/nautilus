@@ -747,40 +747,29 @@ nautilus_files_view_call_set_selection (NautilusFilesView *self,
                                         GList             *selection)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-    g_autoptr (GList) files_to_find = g_list_copy (selection);
+    g_autoptr (GList) selection_items = NULL;
     g_autoptr (GtkBitset) update_set = NULL;
     g_autoptr (GtkBitset) new_selection_set = NULL;
     g_autoptr (GtkBitset) old_selection_set = NULL;
-    guint n_items;
+    guint n_items = g_list_model_get_n_items (G_LIST_MODEL (priv->model));
+    guint lower = 0;
+    guint upper = n_items - 1;
 
     old_selection_set = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
     /* We aren't allowed to modify the actual selection bitset */
     update_set = gtk_bitset_copy (old_selection_set);
     new_selection_set = gtk_bitset_new_empty ();
 
-    /* Convert file list into set of model indices */
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (priv->model));
-    for (guint position = 0; position < n_items; position++)
+    /* Convert file list into items, already sorted by the model sorter */
+    selection_items = nautilus_view_model_get_sorted_items_for_files (priv->model, selection);
+
+    /* Convert selection list into set of model indices */
+    for (GList *l = selection_items; l != NULL; l = l->next)
     {
-        g_autoptr (NautilusViewItem) item = get_view_item (G_LIST_MODEL (priv->model), position);
-
-        GList *link = g_list_find (files_to_find, nautilus_view_item_get_file (item));
-        if (link != NULL)
-        {
-            /* Found item to select */
-            gtk_bitset_add (new_selection_set, position);
-
-            /* Remove found file from the list of files yet to find. */
-            files_to_find = g_list_delete_link (files_to_find, link);
-            if (files_to_find == NULL)
-            {
-                /* We've matched everything... */
-                break;
-            }
-        }
+        guint i = nautilus_view_model_find_ranged (priv->model, l->data, lower, upper);
+        gtk_bitset_add (new_selection_set, i);
+        lower = i + 1;
     }
-    /* ...have we not? */
-    g_warn_if_fail (files_to_find == NULL);
 
     /* Set focus on the first selected row. */
     if (!gtk_bitset_is_empty (new_selection_set))

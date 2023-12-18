@@ -551,22 +551,17 @@ nautilus_view_model_add_items (NautilusViewModel *self,
     }
 }
 
-/**
- * nautilus_view_model_find:
- *
- * @item: The item to find.
- *
- * Perform binary search to find the index of @item. A sorter must be set.
- *
- * Returns: The position of the item in the list, or G_MAXUINT if not found.
- */
 guint
-nautilus_view_model_find (NautilusViewModel *self,
-                          NautilusViewItem  *item)
+nautilus_view_model_find_ranged (NautilusViewModel *self,
+                                 NautilusViewItem  *item,
+                                 guint              start,
+                                 guint              end)
 {
-    guint n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
-    guint lower = 0;
-    guint upper = n_items - 1;
+    g_return_val_if_fail (start <= end, G_MAXUINT);
+    g_return_val_if_fail (end < g_list_model_get_n_items (G_LIST_MODEL (self->sort_model)), G_MAXUINT);
+
+    guint lower = start;
+    guint upper = end;
     GtkSorter *sorter = nautilus_view_model_get_sorter (self);
 
     g_assert (sorter != NULL);
@@ -598,6 +593,25 @@ nautilus_view_model_find (NautilusViewModel *self,
     }
 
     return G_MAXUINT;
+}
+
+
+/**
+ * nautilus_view_model_find:
+ *
+ * @item: The item to find.
+ *
+ * Perform binary search on the sorted model to find the index of @item.
+ *
+ * Returns: The position of the item in the list, or G_MAXUINT if not found.
+ */
+guint
+nautilus_view_model_find (NautilusViewModel *self,
+                          NautilusViewItem  *item)
+{
+    guint n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
+
+    return nautilus_view_model_find_ranged (self, item, 0, n_items - 1);
 }
 
 void
