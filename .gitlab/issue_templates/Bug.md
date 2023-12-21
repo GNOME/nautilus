@@ -1,6 +1,6 @@
 <!--
-Please test if the issue has already been fixed by installing the latest testing version.
-It can be installed alongside the regular version with these instructions:
+Please test if the bug also happens in the latest development version.
+The simplest way to do it is installing it alongside the regular version with these instructions:
 
 1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
 
