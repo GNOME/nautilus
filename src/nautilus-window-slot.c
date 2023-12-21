@@ -1143,19 +1143,15 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
                                          NautilusOpenFlags   flags,
                                          GList              *new_selection)
 {
-    GFile *old_location;
-    g_autolist (NautilusFile) old_selection = NULL;
+    GFile *old_location = nautilus_window_slot_get_location (self);
 
-    old_selection = NULL;
-    old_location = nautilus_window_slot_get_location (self);
+    if (old_location != NULL && g_file_equal (old_location, location))
+    {
+        if (self->content_view != NULL && new_selection != NULL)
+        {
+            nautilus_view_set_selection (self->content_view, new_selection);
+        }
 
-    if (self->content_view)
-    {
-        old_selection = nautilus_view_get_selection (self->content_view);
-    }
-    if (old_location && g_file_equal (old_location, location) &&
-        nautilus_file_selection_equal (old_selection, new_selection))
-    {
         return;
     }
 
