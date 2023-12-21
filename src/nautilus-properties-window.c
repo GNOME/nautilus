@@ -4127,12 +4127,10 @@ set_icon (const char               *icon_uri,
 
         if (file != NULL && !nautilus_file_is_gone (file))
         {
-            g_autofree gchar *file_uri = NULL;
             g_autoptr (GFile) file_location = NULL;
             g_autoptr (GFile) icon_location = NULL;
             g_autofree gchar *real_icon_uri = NULL;
 
-            file_uri = nautilus_file_get_uri (file);
             file_location = nautilus_file_get_location (file);
             icon_location = g_file_new_for_uri (icon_uri);
 
