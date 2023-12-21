@@ -90,7 +90,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *icon_image;
     GtkWidget *icon_overlay;
     GtkWidget *reset_icon_button;
-    GtkWidget *icon_chooser;
 
     GtkWidget *star_button;
 
@@ -2603,8 +2602,6 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     setup_image_widget (self);
 
-    self->icon_chooser = NULL;
-
     if (!is_multi_file_window (self))
     {
         setup_star_button (self);
@@ -4154,77 +4151,38 @@ set_icon (const char               *icon_uri,
 }
 
 static void
-custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
-                                      gint                      response,
+custom_icon_file_chooser_response_cb (GtkFileDialog            *dialog,
+                                      GAsyncResult             *result,
                                       NautilusPropertiesWindow *self)
 {
-    switch (response)
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFile) location = gtk_file_dialog_open_finish (dialog, result, &error);
+
+    if (location != NULL)
     {
-        case GTK_RESPONSE_OK:
-        {
-            g_autoptr (GFile) location = NULL;
-            g_autofree gchar *uri = NULL;
-
-            location = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
-            if (location != NULL)
-            {
-                uri = g_file_get_uri (location);
-                set_icon (uri, self);
-            }
-            else
-            {
-                reset_icon (self);
-            }
-        }
-        break;
-
-        default:
-        {
-        }
-        break;
+        g_autofree gchar *uri = g_file_get_uri (location);
+        set_icon (uri, self);
     }
-
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    else if (error != NULL &&
+             !g_error_matches (error, GTK_DIALOG_ERROR, GTK_DIALOG_ERROR_DISMISSED))
+    {
+        g_warning ("Error while choosing an icon: %s", error->message);
+    }
 }
 
 static void
 select_image_button_callback (GtkWidget                *widget,
                               NautilusPropertiesWindow *self)
 {
-    GtkWidget *dialog;
-    GtkFileFilter *filter;
-    NautilusFile *file;
+    g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
+    g_autoptr (GtkFileFilter) filter = gtk_file_filter_new ();
+    NautilusFile *file = get_original_file (self);
 
-    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
+    gtk_file_dialog_set_title (dialog, _("Select Custom Icon"));
+    gtk_file_dialog_set_accept_label (dialog, _("_Select"));
 
-    dialog = self->icon_chooser;
-
-    if (dialog == NULL)
-    {
-        g_autoptr (GFile) pictures_location = NULL;
-        dialog = gtk_file_chooser_dialog_new (_("Select Custom Icon"), GTK_WINDOW (self),
-                                              GTK_FILE_CHOOSER_ACTION_OPEN,
-                                              _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                              _("_Open"), GTK_RESPONSE_OK,
-                                              NULL);
-        pictures_location = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
-        gtk_file_chooser_add_shortcut_folder (GTK_FILE_CHOOSER (dialog),
-                                              pictures_location,
-                                              NULL);
-        gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
-        gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-
-        filter = gtk_file_filter_new ();
-        gtk_file_filter_add_pixbuf_formats (filter);
-        gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
-
-        self->icon_chooser = dialog;
-
-        g_object_add_weak_pointer (G_OBJECT (dialog),
-                                   (gpointer *) &self->icon_chooser);
-    }
-
-    file = get_original_file (self);
+    gtk_file_filter_add_pixbuf_formats (filter);
+    gtk_file_dialog_set_default_filter (dialog, filter);
 
     /* it's likely that the user wants to pick an icon that is inside a local directory */
     if (nautilus_file_is_directory (file))
@@ -4235,15 +4193,15 @@ select_image_button_callback (GtkWidget                *widget,
 
         if (image_location != NULL)
         {
-            gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),
-                                                 image_location,
-                                                 NULL);
+            gtk_file_dialog_set_initial_folder (dialog, image_location);
         }
     }
 
-    g_signal_connect (dialog, "response",
-                      G_CALLBACK (custom_icon_file_chooser_response_cb), self);
-    gtk_window_present (GTK_WINDOW (dialog));
+    gtk_file_dialog_open (dialog,
+                          GTK_WINDOW (self),
+                          NULL,
+                          (GAsyncReadyCallback) custom_icon_file_chooser_response_cb,
+                          self);
 }
 
 static void
