@@ -633,14 +633,10 @@ uri_is_local_image (const char *uri)
 static void
 reset_icon (NautilusPropertiesWindow *self)
 {
-    GList *l;
+    NautilusFile *file = get_original_file (self);
 
-    for (l = self->original_files; l != NULL; l = l->next)
+    if (file != NULL && !nautilus_file_is_gone (file))
     {
-        NautilusFile *file;
-
-        file = NAUTILUS_FILE (l->data);
-
         nautilus_file_set_metadata (file,
                                     NAUTILUS_METADATA_KEY_CUSTOM_ICON,
                                     NULL, NULL);
@@ -4109,7 +4105,6 @@ static void
 set_icon (const char               *icon_uri,
           NautilusPropertiesWindow *self)
 {
-    NautilusFile *file;
     g_autofree gchar *icon_path = NULL;
 
     g_assert (icon_uri != NULL);
@@ -4119,16 +4114,15 @@ set_icon (const char               *icon_uri,
     /* we don't allow remote URIs */
     if (icon_path != NULL)
     {
-        GList *l;
+        NautilusFile *file = get_original_file (self);
 
-        for (l = self->original_files; l != NULL; l = l->next)
+        if (file != NULL && !nautilus_file_is_gone (file))
         {
             g_autofree gchar *file_uri = NULL;
             g_autoptr (GFile) file_location = NULL;
             g_autoptr (GFile) icon_location = NULL;
             g_autofree gchar *real_icon_uri = NULL;
 
-            file = NAUTILUS_FILE (l->data);
             file_uri = nautilus_file_get_uri (file);
             file_location = nautilus_file_get_location (file);
             icon_location = g_file_new_for_uri (icon_uri);
@@ -4193,8 +4187,8 @@ select_image_button_callback (GtkWidget                *widget,
 {
     GtkWidget *dialog;
     GtkFileFilter *filter;
-    GList *l;
-    gboolean revert_is_sensitive;
+    NautilusFile *file;
+    const char *image_path;
 
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
 
@@ -4226,39 +4220,25 @@ select_image_button_callback (GtkWidget                *widget,
                                    (gpointer *) &self->icon_chooser);
     }
 
+    file = get_original_file (self);
+
     /* it's likely that the user wants to pick an icon that is inside a local directory */
-    if (g_list_length (self->original_files) == 1)
+    if (nautilus_file_is_directory (file))
     {
-        NautilusFile *file = NAUTILUS_FILE (self->original_files->data);
+        g_autoptr (GFile) image_location = NULL;
 
-        if (nautilus_file_is_directory (file))
+        image_location = nautilus_file_get_location (file);
+
+        if (image_location != NULL)
         {
-            g_autoptr (GFile) image_location = NULL;
-
-            image_location = nautilus_file_get_location (file);
-
-            if (image_location != NULL)
-            {
-                gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),
-                                                     image_location,
-                                                     NULL);
-            }
+            gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog),
+                                                 image_location,
+                                                 NULL);
         }
     }
 
-    revert_is_sensitive = FALSE;
-    for (l = self->original_files; l != NULL; l = l->next)
-    {
-        NautilusFile *file = NAUTILUS_FILE (l->data);
-        const char *image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-
-        if (image_path != NULL)
-        {
-            revert_is_sensitive = TRUE;
-            break;
-        }
-    }
-    gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_NO, revert_is_sensitive);
+    image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
+    gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_NO, image_path != NULL);
 
     g_signal_connect (dialog, "response",
                       G_CALLBACK (custom_icon_file_chooser_response_cb), self);
