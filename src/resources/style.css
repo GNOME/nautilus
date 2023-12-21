@@ -283,10 +283,10 @@ button.star:hover {
   to {}
 }
 
-button.star.added image {
+button.star.interacted.starred image {
   animation: rotate_star 0.4s ease;
 }
-button.star:not(.added) image {
+button.star.interacted:not(.starred) image {
   animation: rotate_unstar 0.4s ease;
 }
 

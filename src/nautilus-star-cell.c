@@ -38,7 +38,7 @@ toggle_star (NautilusStarCell *self)
                                            &(GList){ .data = file },
                                            NULL,
                                            NULL);
-        gtk_widget_remove_css_class (GTK_WIDGET (self->star), "added");
+        gtk_widget_remove_css_class (GTK_WIDGET (self->star), "starred");
     }
     else
     {
@@ -47,8 +47,9 @@ toggle_star (NautilusStarCell *self)
                                          &(GList){ .data = file },
                                          NULL,
                                          NULL);
-        gtk_widget_add_css_class (GTK_WIDGET (self->star), "added");
+        gtk_widget_add_css_class (GTK_WIDGET (self->star), "starred");
     }
+    gtk_widget_add_css_class (GTK_WIDGET (self->star), "interacted");
 }
 
 static void
