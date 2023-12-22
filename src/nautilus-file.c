@@ -2365,8 +2365,6 @@ update_info_internal (NautilusFile *file,
     const char *symlink_name, *mime_type, *selinux_context, *name, *thumbnail_path;
     GFileType file_type;
     GIcon *icon;
-    char *old_activation_uri;
-    const char *activation_uri;
     const char *filesystem_id;
     const char *trash_orig_path;
     const char *group, *owner, *owner_real;
@@ -2418,34 +2416,10 @@ update_info_internal (NautilusFile *file,
         file_type == G_FILE_TYPE_SHORTCUT ||
         nautilus_file_is_in_recent (file))
     {
-        activation_uri = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
-        if (activation_uri == NULL)
+        if (g_set_str (&file->details->activation_uri,
+                       g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI)))
         {
-            if (file->details->activation_uri)
-            {
-                g_free (file->details->activation_uri);
-                file->details->activation_uri = NULL;
-                changed = TRUE;
-            }
-        }
-        else
-        {
-            old_activation_uri = file->details->activation_uri;
-            file->details->activation_uri = g_strdup (activation_uri);
-
-            if (old_activation_uri)
-            {
-                if (strcmp (old_activation_uri,
-                            file->details->activation_uri) != 0)
-                {
-                    changed = TRUE;
-                }
-                g_free (old_activation_uri);
-            }
-            else
-            {
-                changed = TRUE;
-            }
+            changed = TRUE;
         }
     }
 
