@@ -89,6 +89,7 @@ struct _NautilusPropertiesWindow
     GtkStack *icon_stack;
     GtkWidget *icon_image;
     GtkWidget *icon_overlay;
+    GtkWidget *select_icon_button;
     GtkWidget *reset_icon_button;
 
     GtkWidget *star_button;
@@ -450,7 +451,6 @@ static void update_owner_row (AdwComboRow       *row,
                               TargetPermissions *target_perm);
 static void update_group_row (AdwComboRow       *row,
                               TargetPermissions *target_perm);
-static void update_reset_icon_button (NautilusPropertiesWindow *self);
 static void select_image_button_callback (GtkWidget                *widget,
                                           NautilusPropertiesWindow *self);
 static void set_icon (const char               *icon_path,
@@ -778,10 +778,26 @@ setup_star_button (NautilusPropertiesWindow *self)
 static void
 update_image_widget (NautilusPropertiesWindow *self)
 {
+    gboolean show_select = FALSE;
+    gboolean show_reset = FALSE;
+
     update_properties_window_icon (self);
 
-    if (is_multi_file_window (self) || is_volume_properties (self) ||
-        is_root_directory (get_original_file (self)))
+    if (!is_multi_file_window (self) && !is_volume_properties (self))
+    {
+        NautilusFile *file = get_original_file (self);
+        if (file != NULL && !nautilus_file_is_gone (file) && !is_root_directory (file))
+        {
+            const gchar *image_path = nautilus_file_get_metadata (file,
+                                                                  NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+                                                                  NULL);
+
+            show_select = nautilus_file_is_directory (file);
+            show_reset = (image_path != NULL);
+        }
+    }
+
+    if (!show_select && !show_reset)
     {
         gtk_stack_set_visible_child (self->icon_stack, self->icon_image);
     }
@@ -789,7 +805,8 @@ update_image_widget (NautilusPropertiesWindow *self)
     {
         gtk_stack_set_visible_child (self->icon_stack, self->icon_overlay);
 
-        update_reset_icon_button (self);
+        gtk_widget_set_visible (self->select_icon_button, show_select);
+        gtk_widget_set_visible (self->reset_icon_button, show_reset);
     }
 }
 
@@ -2702,24 +2719,6 @@ setup_basic_page (NautilusPropertiesWindow *self)
     }
 }
 
-static void
-update_reset_icon_button (NautilusPropertiesWindow *self)
-{
-    NautilusFile *file = get_target_file (self);
-    gboolean revert_is_visible = FALSE;
-
-    if (file != NULL && !nautilus_file_is_gone (file))
-    {
-        const gchar *image_path = nautilus_file_get_metadata (file,
-                                                              NAUTILUS_METADATA_KEY_CUSTOM_ICON,
-                                                              NULL);
-
-        revert_is_visible = (image_path != NULL);
-    }
-
-    gtk_widget_set_visible (self->reset_icon_button, revert_is_visible);
-}
-
 static FilterType
 files_get_filter_type (NautilusPropertiesWindow *self)
 {
@@ -4223,6 +4222,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_overlay);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, select_icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, reset_icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, star_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_value_label);
