@@ -82,6 +82,7 @@ struct _NautilusPropertiesWindow
 
     AdwWindowTitle *window_title;
 
+    AdwToastOverlay *toast_overlay;
     AdwNavigationView *nav_view;
 
     /* Basic page */
@@ -91,6 +92,7 @@ struct _NautilusPropertiesWindow
     GtkWidget *icon_overlay;
     GtkWidget *select_icon_button;
     GtkWidget *reset_icon_button;
+    char *custom_icon_for_undo;
 
     GtkWidget *star_button;
 
@@ -630,18 +632,40 @@ uri_is_local_image (const char *uri)
 }
 
 static void
+on_undo_icon_reset (NautilusPropertiesWindow *self)
+{
+    NautilusFile *file = get_original_file (self);
+
+    if (file != NULL && !nautilus_file_is_gone (file))
+    {
+        nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+                                    NULL, self->custom_icon_for_undo);
+    }
+
+    g_clear_pointer (&self->custom_icon_for_undo, g_free);
+}
+
+static void
 reset_icon (NautilusPropertiesWindow *self)
 {
     NautilusFile *file = get_original_file (self);
 
     if (file != NULL && !nautilus_file_is_gone (file))
     {
+        g_set_str (&self->custom_icon_for_undo,
+                   nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL));
+
         nautilus_file_set_metadata (file,
                                     NAUTILUS_METADATA_KEY_CUSTOM_ICON,
                                     NULL, NULL);
     }
 
     gtk_widget_set_visible (self->reset_icon_button, FALSE);
+
+    g_autoptr (AdwToast) toast = adw_toast_new (_("Custom icon removed"));
+    adw_toast_set_button_label (toast, _("_Undo"));
+    g_signal_connect_swapped (toast, "button-clicked", G_CALLBACK (on_undo_icon_reset), self);
+    adw_toast_overlay_add_toast (self->toast_overlay, g_steal_pointer (&toast));
 }
 
 static void
@@ -4060,6 +4084,8 @@ real_dispose (GObject *object)
     unschedule_or_cancel_group_change (self);
     unschedule_or_cancel_owner_change (self);
 
+    g_clear_pointer (&self->custom_icon_for_undo, g_free);
+
     g_list_foreach (self->original_files,
                     (GFunc) nautilus_file_monitor_remove,
                     &self->original_files);
@@ -4213,6 +4239,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, toast_overlay);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, nav_view);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);

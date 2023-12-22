@@ -9,307 +9,311 @@
     <property name="height-request">294</property>
     <property name="default-width">480</property>
     <child>
-      <object class="AdwNavigationView" id="nav_view">
-        <child>
-          <object class="AdwNavigationPage">
-            <property name="title" translatable="yes">Properties</property>
-            <property name="tag">main</property>
-            <property name="child">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="AdwHeaderBar">
-                    <property name="show-title">False</property>
-                    <child type="start">
-                      <object class="GtkButton" id="star_button">
-                        <property name="visible">false</property>
-                        <property name="valign">start</property>
-                        <signal name="clicked" handler="star_clicked" swapped="yes"/>
-                        <style>
-                          <class name="star"/>
-                        </style>
+      <object class="AdwToastOverlay" id="toast_overlay">
+        <property name="child">
+          <object class="AdwNavigationView" id="nav_view">
+            <child>
+              <object class="AdwNavigationPage">
+                <property name="title" translatable="yes">Properties</property>
+                <property name="tag">main</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar">
+                        <property name="show-title">False</property>
+                        <child type="start">
+                          <object class="GtkButton" id="star_button">
+                            <property name="visible">false</property>
+                            <property name="valign">start</property>
+                            <signal name="clicked" handler="star_clicked" swapped="yes"/>
+                            <style>
+                              <class name="star"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
-                  </object>
-                </child>
-                <property name="content">
-                  <object class="GtkScrolledWindow">
-                    <property name="hscrollbar-policy">never</property>
-                    <property name="vexpand">true</property>
-                    <property name="min-content-height">480</property>
-                    <property name="propagate-natural-height">true</property>
-                    <property name="child">
-                      <object class="AdwClamp">
-                        <property name="margin-bottom">18</property>
-                        <property name="margin-start">18</property>
-                        <property name="margin-end">18</property>
+                    <property name="content">
+                      <object class="GtkScrolledWindow">
+                        <property name="hscrollbar-policy">never</property>
+                        <property name="vexpand">true</property>
+                        <property name="min-content-height">480</property>
+                        <property name="propagate-natural-height">true</property>
                         <property name="child">
-                          <object class="GtkBox" id="basic_box">
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">12</property>
-                            <child>
-                              <object class="GtkCenterBox">
-                                <child type="center">
-                                  <object class="GtkStack" id="icon_stack">
-                                    <property name="halign">center</property>
-                                    <property name="valign">start</property>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="child">
-                                          <object class="GtkImage" id="icon_image">
-                                            <property name="icon-name">image-missing</property>
+                          <object class="AdwClamp">
+                            <property name="margin-bottom">18</property>
+                            <property name="margin-start">18</property>
+                            <property name="margin-end">18</property>
+                            <property name="child">
+                              <object class="GtkBox" id="basic_box">
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkCenterBox">
+                                    <child type="center">
+                                      <object class="GtkStack" id="icon_stack">
+                                        <property name="halign">center</property>
+                                        <property name="valign">start</property>
+                                        <child>
+                                          <object class="GtkStackPage">
+                                            <property name="child">
+                                              <object class="GtkImage" id="icon_image">
+                                                <property name="icon-name">image-missing</property>
+                                              </object>
+                                            </property>
                                           </object>
-                                        </property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkStackPage">
-                                        <property name="child">
-                                          <object class="GtkOverlay" id="icon_overlay">
-                                            <child>
-                                              <object class="GtkFrame">
-                                                <style>
-                                                  <class name="image-frame"/>
-                                                </style>
+                                        </child>
+                                        <child>
+                                          <object class="GtkStackPage">
+                                            <property name="child">
+                                              <object class="GtkOverlay" id="icon_overlay">
                                                 <child>
-                                                  <object class="GtkImage">
-                                                    <binding name="paintable">
-                                                      <lookup name="paintable">icon_image</lookup>
-                                                    </binding>
-                                                    <binding name="pixel-size">
-                                                      <lookup name="pixel-size">icon_image</lookup>
-                                                    </binding>
+                                                  <object class="GtkFrame">
+                                                    <style>
+                                                      <class name="image-frame"/>
+                                                    </style>
+                                                    <child>
+                                                      <object class="GtkImage">
+                                                        <binding name="paintable">
+                                                          <lookup name="paintable">icon_image</lookup>
+                                                        </binding>
+                                                        <binding name="pixel-size">
+                                                          <lookup name="pixel-size">icon_image</lookup>
+                                                        </binding>
+                                                      </object>
+                                                    </child>
+                                                  </object>
+                                                </child>
+                                                <child type="overlay">
+                                                  <object class="AdwBin">
+                                                    <property name="halign">end</property>
+                                                    <property name="valign">end</property>
+                                                    <style>
+                                                      <class name="cutout"/>
+                                                      <class name="background"/>
+                                                    </style>
+                                                    <property name="child">
+                                                      <object class="GtkButton" id="select_icon_button">
+                                                        <property name="tooltip-text" translatable="yes">Set Custom Icon</property>
+                                                        <property name="focusable">True</property>
+                                                        <property name="icon-name">document-edit-symbolic</property>
+                                                        <signal name="clicked" handler="select_image_button_callback"/>
+                                                        <style>
+                                                          <class name="circular"/>
+                                                        </style>
+                                                      </object>
+                                                    </property>
+                                                  </object>
+                                                </child>
+                                                <child type="overlay">
+                                                  <object class="AdwBin">
+                                                    <property name="halign">end</property>
+                                                    <property name="valign">start</property>
+                                                    <style>
+                                                      <class name="cutout"/>
+                                                      <class name="background"/>
+                                                    </style>
+                                                    <property name="child">
+                                                      <object class="GtkButton" id="reset_icon_button">
+                                                        <property name="tooltip-text" translatable="yes">Remove Custom Icon</property>
+                                                        <property name="focusable">True</property>
+                                                        <property name="icon-name">eraser3-symbolic</property>
+                                                        <signal name="clicked" handler="reset_icon" swapped="yes"/>
+                                                        <style>
+                                                          <class name="circular"/>
+                                                        </style>
+                                                      </object>
+                                                    </property>
                                                   </object>
                                                 </child>
                                               </object>
-                                            </child>
-                                            <child type="overlay">
-                                              <object class="AdwBin">
-                                                <property name="halign">end</property>
-                                                <property name="valign">end</property>
-                                                <style>
-                                                  <class name="cutout"/>
-                                                  <class name="background"/>
-                                                </style>
-                                                <property name="child">
-                                                  <object class="GtkButton" id="select_icon_button">
-                                                    <property name="tooltip-text" translatable="yes">Set Custom Icon</property>
-                                                    <property name="focusable">True</property>
-                                                    <property name="icon-name">document-edit-symbolic</property>
-                                                    <signal name="clicked" handler="select_image_button_callback"/>
-                                                    <style>
-                                                      <class name="circular"/>
-                                                    </style>
-                                                  </object>
-                                                </property>
-                                              </object>
-                                            </child>
-                                            <child type="overlay">
-                                              <object class="AdwBin">
-                                                <property name="halign">end</property>
-                                                <property name="valign">start</property>
-                                                <style>
-                                                  <class name="cutout"/>
-                                                  <class name="background"/>
-                                                </style>
-                                                <property name="child">
-                                                  <object class="GtkButton" id="reset_icon_button">
-                                                    <property name="tooltip-text" translatable="yes">Remove Custom Icon</property>
-                                                    <property name="focusable">True</property>
-                                                    <property name="icon-name">eraser3-symbolic</property>
-                                                    <signal name="clicked" handler="reset_icon" swapped="yes"/>
-                                                    <style>
-                                                      <class name="circular"/>
-                                                    </style>
-                                                  </object>
-                                                </property>
-                                              </object>
-                                            </child>
+                                            </property>
                                           </object>
-                                        </property>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
                                 </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkBox">
-                                <property name="orientation">vertical</property>
-                                <property name="spacing">6</property>
                                 <child>
-                                  <object class="GtkLabel" id="name_value_label">
-                                    <property name="selectable">True</property>
-                                    <property name="ellipsize">end</property>
-                                    <property name="max-width-chars">24</property>
-                                    <property name="wrap">true</property>
-                                    <property name="wrap-mode">PANGO_WRAP_WORD_CHAR</property>
-                                    <property name="lines">3</property>
-                                    <property name="justify">center</property>
-                                    <style>
-                                      <class name="title-3"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="type_value_label">
-                                    <property name="ellipsize">end</property>
-                                    <property name="selectable">True</property>
-                                    <property name="visible">False</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="type_file_system_label">
-                                    <property name="ellipsize">end</property>
-                                    <property name="label" translatable="yes">Unknown Filesystem</property>
-                                    <property name="selectable">True</property>
-                                    <property name="visible">False</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="size_value_label">
-                                    <property name="visible">False</property>
-                                    <property name="selectable">True</property>
-                                    <property name="ellipsize">end</property>
-                                    <style>
-                                      <class name="caption"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkBox" id="contents_box">
-                                    <property name="halign">center</property>
-                                    <property name="visible">False</property>
-                                    <property name="spacing">12</property>
+                                  <object class="GtkBox">
+                                    <property name="orientation">vertical</property>
+                                    <property name="spacing">6</property>
                                     <child>
-                                      <object class="GtkLabel" id="contents_value_label">
+                                      <object class="GtkLabel" id="name_value_label">
                                         <property name="selectable">True</property>
                                         <property name="ellipsize">end</property>
+                                        <property name="max-width-chars">24</property>
+                                        <property name="wrap">true</property>
+                                        <property name="wrap-mode">PANGO_WRAP_WORD_CHAR</property>
+                                        <property name="lines">3</property>
                                         <property name="justify">center</property>
-                                        <property name="max-width-chars">40</property>
+                                        <style>
+                                          <class name="title-3"/>
+                                        </style>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkSpinner" id="contents_spinner">
+                                      <object class="GtkLabel" id="type_value_label">
+                                        <property name="ellipsize">end</property>
+                                        <property name="selectable">True</property>
                                         <property name="visible">False</property>
                                       </object>
                                     </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="free_space_value_label">
-                                    <property name="visible">False</property>
-                                    <property name="selectable">True</property>
-                                    <property name="ellipsize">end</property>
-                                    <property name="max-width-chars">24</property>
-                                    <style>
-                                      <class name="caption"/>
-                                    </style>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="disk_list_box">
-                                <property name="selection-mode">none</property>
-                                <property name="visible">False</property>
-                                <signal name="row-activated" handler="open_in_disks" object="NautilusPropertiesWindow" swapped="yes"/>
-                                <child>
-                                  <object class="GtkListBoxRow" id="volume_usage_row">
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="margin-bottom">12</property>
-                                        <property name="margin-end">12</property>
-                                        <property name="margin-start">12</property>
-                                        <property name="margin-top">18</property>
+                                      <object class="GtkLabel" id="type_file_system_label">
+                                        <property name="ellipsize">end</property>
+                                        <property name="label" translatable="yes">Unknown Filesystem</property>
+                                        <property name="selectable">True</property>
+                                        <property name="visible">False</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="size_value_label">
+                                        <property name="visible">False</property>
+                                        <property name="selectable">True</property>
+                                        <property name="ellipsize">end</property>
+                                        <style>
+                                          <class name="caption"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkBox" id="contents_box">
+                                        <property name="halign">center</property>
+                                        <property name="visible">False</property>
                                         <property name="spacing">12</property>
-                                        <property name="orientation">vertical</property>
                                         <child>
-                                          <object class="GtkLevelBar" id="disk_space_level_bar">
-                                            <property name="hexpand">True</property>
+                                          <object class="GtkLabel" id="contents_value_label">
+                                            <property name="selectable">True</property>
+                                            <property name="ellipsize">end</property>
+                                            <property name="justify">center</property>
+                                            <property name="max-width-chars">40</property>
                                           </object>
                                         </child>
                                         <child>
+                                          <object class="GtkSpinner" id="contents_spinner">
+                                            <property name="visible">False</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkLabel" id="free_space_value_label">
+                                        <property name="visible">False</property>
+                                        <property name="selectable">True</property>
+                                        <property name="ellipsize">end</property>
+                                        <property name="max-width-chars">24</property>
+                                        <style>
+                                          <class name="caption"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkListBox" id="disk_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <property name="visible">False</property>
+                                    <signal name="row-activated" handler="open_in_disks" object="NautilusPropertiesWindow" swapped="yes"/>
+                                    <child>
+                                      <object class="GtkListBoxRow" id="volume_usage_row">
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child>
                                           <object class="GtkBox">
+                                            <property name="margin-bottom">12</property>
+                                            <property name="margin-end">12</property>
+                                            <property name="margin-start">12</property>
+                                            <property name="margin-top">18</property>
                                             <property name="spacing">12</property>
-                                            <property name="halign">center</property>
+                                            <property name="orientation">vertical</property>
                                             <child>
-                                              <object class="GtkBox">
-                                                <property name="spacing">3</property>
-                                                <child>
-                                                  <object class="GtkLabel" id="disk_space_capacity_value">
-                                                    <style>
-                                                      <class name="dim-label"/>
-                                                    </style>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes">total</property>
-                                                    <style>
-                                                      <class name="dim-label"/>
-                                                    </style>
-                                                  </object>
-                                                </child>
+                                              <object class="GtkLevelBar" id="disk_space_level_bar">
+                                                <property name="hexpand">True</property>
                                               </object>
                                             </child>
                                             <child>
                                               <object class="GtkBox">
-                                                <property name="spacing">3</property>
+                                                <property name="spacing">12</property>
+                                                <property name="halign">center</property>
                                                 <child>
-                                                  <object class="GtkLabel">
-                                                    <property name="label">●</property>
-                                                    <style>
-                                                      <class name="disk-space-used"/>
-                                                    </style>
+                                                  <object class="GtkBox">
+                                                    <property name="spacing">3</property>
+                                                    <child>
+                                                      <object class="GtkLabel" id="disk_space_capacity_value">
+                                                        <style>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="label" translatable="yes">total</property>
+                                                        <style>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
                                                   </object>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkLabel" id="disk_space_used_value">
-                                                    <style>
-                                                      <class name="caption-style"/>
-                                                      <class name="dim-label"/>
-                                                    </style>
+                                                  <object class="GtkBox">
+                                                    <property name="spacing">3</property>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="label">●</property>
+                                                        <style>
+                                                          <class name="disk-space-used"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="disk_space_used_value">
+                                                        <style>
+                                                          <class name="caption-style"/>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">used</property>
+                                                        <style>
+                                                          <class name="caption-style"/>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
                                                   </object>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">used</property>
-                                                    <style>
-                                                      <class name="caption-style"/>
-                                                      <class name="dim-label"/>
-                                                    </style>
-                                                  </object>
-                                                </child>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkBox">
-                                                <property name="spacing">3</property>
-                                                <child>
-                                                  <object class="GtkLabel">
-                                                    <property name="label">●</property>
-                                                    <style>
-                                                      <class name="disk-space-free"/>
-                                                    </style>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkLabel" id="disk_space_free_value">
-                                                    <style>
-                                                      <class name="caption-style"/>
-                                                      <class name="dim-label"/>
-                                                    </style>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">free</property>
-                                                    <style>
-                                                      <class name="caption-style"/>
-                                                      <class name="dim-label"/>
-                                                    </style>
+                                                  <object class="GtkBox">
+                                                    <property name="spacing">3</property>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="label">●</property>
+                                                        <style>
+                                                          <class name="disk-space-free"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="disk_space_free_value">
+                                                        <style>
+                                                          <class name="caption-style"/>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">free</property>
+                                                        <style>
+                                                          <class name="caption-style"/>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
                                                   </object>
                                                 </child>
                                               </object>
@@ -318,389 +322,389 @@
                                         </child>
                                       </object>
                                     </child>
+                                    <child>
+                                      <object class="GtkListBoxRow" id="open_in_disks_row">
+                                        <property name="activatable">True</property>
+                                        <property name="selectable">False</property>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="margin-bottom">12</property>
+                                            <property name="margin-end">12</property>
+                                            <property name="margin-start">12</property>
+                                            <property name="margin-top">12</property>
+                                            <property name="halign">center</property>
+                                            <property name="spacing">12</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes" comments="Disks refers to GNOME Disks.">Open in Disks</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkImage">
+                                                <property name="icon-name">external-link-symbolic</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <style>
+                                      <class name="boxed-list"/>
+                                    </style>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkListBoxRow" id="open_in_disks_row">
-                                    <property name="activatable">True</property>
-                                    <property name="selectable">False</property>
+                                  <object class="GtkListBox" id="locations_list_box">
+                                    <property name="visible">False</property>
+                                    <property name="selection-mode">none</property>
                                     <child>
-                                      <object class="GtkBox">
-                                        <property name="margin-bottom">12</property>
-                                        <property name="margin-end">12</property>
-                                        <property name="margin-start">12</property>
-                                        <property name="margin-top">12</property>
-                                        <property name="halign">center</property>
-                                        <property name="spacing">12</property>
+                                      <object class="AdwActionRow" id="link_target_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child type="prefix">
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Link Target</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="link_target_value_label">
+                                                <property name="hexpand">True</property>
+                                                <property name="selectable">True</property>
+                                                <property name="ellipsize">start</property>
+                                                <property name="halign">start</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="suffix">
+                                          <object class="GtkButton">
+                                            <property name="tooltip-text" translatable="yes">Open Link Target</property>
+                                            <property name="icon-name">folder-open-symbolic</property>
+                                            <property name="valign">center</property>
+                                            <signal name="clicked" handler="open_link_target" swapped="yes"/>
+                                            <style>
+                                              <class name="flat"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwActionRow" id="parent_folder_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child type="prefix">
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Parent Folder</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="parent_folder_value_label">
+                                                <property name="hexpand">True</property>
+                                                <property name="selectable">True</property>
+                                                <property name="ellipsize">start</property>
+                                                <property name="halign">start</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="suffix">
+                                          <object class="GtkButton">
+                                            <property name="tooltip-text" translatable="yes">Open Parent Folder</property>
+                                            <property name="icon-name">folder-open-symbolic</property>
+                                            <property name="valign">center</property>
+                                            <signal name="clicked" handler="open_parent_folder" swapped="yes"/>
+                                            <style>
+                                              <class name="flat"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <style>
+                                      <class name="boxed-list"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkListBox" id="trashed_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <property name="visible">False</property>
+                                    <child>
+                                      <object class="AdwActionRow">
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child type="prefix">
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Original Folder</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="original_folder_value_label">
+                                                <property name="hexpand">True</property>
+                                                <property name="selectable">True</property>
+                                                <property name="ellipsize">start</property>
+                                                <property name="halign">start</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwActionRow">
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child type="prefix">
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Trashed on</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="trashed_on_value_label">
+                                                <property name="hexpand">True</property>
+                                                <property name="selectable">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="numeric"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <style>
+                                      <class name="boxed-list"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkListBox" id="times_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <property name="visible">False</property>
+                                    <child>
+                                      <object class="AdwActionRow" id="accessed_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child type="prefix">
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Accessed</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="accessed_value_label">
+                                                <property name="hexpand">True</property>
+                                                <property name="selectable">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="numeric"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwActionRow" id="modified_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child type="prefix">
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Modified</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="modified_value_label">
+                                                <property name="hexpand">True</property>
+                                                <property name="selectable">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="numeric"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwActionRow" id="created_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">False</property>
+                                        <property name="selectable">False</property>
+                                        <child type="prefix">
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <property name="spacing">3</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">center</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="yes">Created</property>
+                                                <property name="hexpand">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel" id="created_value_label">
+                                                <property name="hexpand">True</property>
+                                                <property name="selectable">True</property>
+                                                <property name="ellipsize">end</property>
+                                                <property name="halign">start</property>
+                                                <style>
+                                                  <class name="numeric"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <style>
+                                      <class name="boxed-list"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkListBox" id="permissions_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <child>
+                                      <object class="AdwActionRow" id="permissions_navigation_row">
+                                        <property name="activatable">True</property>
+                                        <property name="selectable">False</property>
+                                        <property name="title" translatable="yes">_Permissions</property>
+                                        <property name="use-underline">True</property>
+                                        <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWindow" swapped="yes"/>
                                         <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes" comments="Disks refers to GNOME Disks.">Open in Disks</property>
+                                          <object class="GtkLabel" id="permissions_value_label">
+                                            <property name="ellipsize">end</property>
+                                            <style>
+                                              <class name="dim-label"/>
+                                            </style>
                                           </object>
                                         </child>
                                         <child>
                                           <object class="GtkImage">
-                                            <property name="icon-name">external-link-symbolic</property>
+                                            <property name="icon-name">go-next-symbolic</property>
                                           </object>
                                         </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="boxed-list"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="locations_list_box">
-                                <property name="visible">False</property>
-                                <property name="selection-mode">none</property>
-                                <child>
-                                  <object class="AdwActionRow" id="link_target_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child type="prefix">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">3</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Link Target</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="caption"/>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="link_target_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">start</property>
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <child type="suffix">
-                                      <object class="GtkButton">
-                                        <property name="tooltip-text" translatable="yes">Open Link Target</property>
-                                        <property name="icon-name">folder-open-symbolic</property>
-                                        <property name="valign">center</property>
-                                        <signal name="clicked" handler="open_link_target" swapped="yes"/>
-                                        <style>
-                                          <class name="flat"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwActionRow" id="parent_folder_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child type="prefix">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">3</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Parent Folder</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="caption"/>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="parent_folder_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">start</property>
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <child type="suffix">
-                                      <object class="GtkButton">
-                                        <property name="tooltip-text" translatable="yes">Open Parent Folder</property>
-                                        <property name="icon-name">folder-open-symbolic</property>
-                                        <property name="valign">center</property>
-                                        <signal name="clicked" handler="open_parent_folder" swapped="yes"/>
-                                        <style>
-                                          <class name="flat"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="boxed-list"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="trashed_list_box">
-                                <property name="selection-mode">none</property>
-                                <property name="visible">False</property>
-                                <child>
-                                  <object class="AdwActionRow">
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child type="prefix">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">3</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Original Folder</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="caption"/>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="original_folder_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">start</property>
-                                            <property name="halign">start</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwActionRow">
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child type="prefix">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">3</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Trashed on</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="caption"/>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="trashed_on_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="numeric"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="boxed-list"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="times_list_box">
-                                <property name="selection-mode">none</property>
-                                <property name="visible">False</property>
-                                <child>
-                                  <object class="AdwActionRow" id="accessed_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child type="prefix">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">3</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Accessed</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="caption"/>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="accessed_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="numeric"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwActionRow" id="modified_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child type="prefix">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">3</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Modified</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="caption"/>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="modified_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="numeric"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="AdwActionRow" id="created_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">False</property>
-                                    <property name="selectable">False</property>
-                                    <child type="prefix">
-                                      <object class="GtkBox">
-                                        <property name="orientation">vertical</property>
-                                        <property name="spacing">3</property>
-                                        <property name="halign">start</property>
-                                        <property name="valign">center</property>
-                                        <child>
-                                          <object class="GtkLabel">
-                                            <property name="label" translatable="yes">Created</property>
-                                            <property name="hexpand">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="caption"/>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkLabel" id="created_value_label">
-                                            <property name="hexpand">True</property>
-                                            <property name="selectable">True</property>
-                                            <property name="ellipsize">end</property>
-                                            <property name="halign">start</property>
-                                            <style>
-                                              <class name="numeric"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="boxed-list"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="permissions_list_box">
-                                <property name="selection-mode">none</property>
-                                <child>
-                                  <object class="AdwActionRow" id="permissions_navigation_row">
-                                    <property name="activatable">True</property>
-                                    <property name="selectable">False</property>
-                                    <property name="title" translatable="yes">_Permissions</property>
-                                    <property name="use-underline">True</property>
-                                    <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWindow" swapped="yes"/>
-                                    <child>
-                                      <object class="GtkLabel" id="permissions_value_label">
-                                        <property name="ellipsize">end</property>
-                                        <style>
-                                          <class name="dim-label"/>
-                                        </style>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkImage">
-                                        <property name="icon-name">go-next-symbolic</property>
+                                      <object class="AdwSwitchRow" id="execution_row">
+                                        <property name="visible">False</property>
+                                        <property name="activatable">True</property>
+                                        <property name="title" translatable="yes">_Executable as Program</property>
+                                        <property name="use-underline">True</property>
                                       </object>
                                     </child>
+                                    <style>
+                                      <class name="boxed-list"/>
+                                    </style>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="AdwSwitchRow" id="execution_row">
-                                    <property name="visible">False</property>
-                                    <property name="activatable">True</property>
-                                    <property name="title" translatable="yes">_Executable as Program</property>
-                                    <property name="use-underline">True</property>
+                                  <object class="GtkListBox" id="extension_models_list_box">
+                                    <property name="selection-mode">none</property>
+                                    <style>
+                                      <class name="boxed-list"/>
+                                    </style>
                                   </object>
                                 </child>
-                                <style>
-                                  <class name="boxed-list"/>
-                                </style>
                               </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="extension_models_list_box">
-                                <property name="selection-mode">none</property>
-                                <style>
-                                  <class name="boxed-list"/>
-                                </style>
-                              </object>
-                            </child>
+                            </property>
                           </object>
                         </property>
                       </object>
@@ -708,248 +712,248 @@
                   </object>
                 </property>
               </object>
-            </property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwNavigationPage">
-            <property name="tag">permissions</property>
-            <property name="title" translatable="yes">Set Custom Permissions</property>
-            <property name="child">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="AdwHeaderBar"/>
-                </child>
-                <property name="content">
-                  <object class="GtkScrolledWindow">
-                    <property name="hscrollbar-policy">never</property>
-                    <property name="vexpand">true</property>
-                    <property name="child">
-                      <object class="AdwClamp">
-                        <property name="margin-top">18</property>
-                        <property name="margin-bottom">18</property>
-                        <property name="margin-start">18</property>
-                        <property name="margin-end">18</property>
+            </child>
+            <child>
+              <object class="AdwNavigationPage">
+                <property name="tag">permissions</property>
+                <property name="title" translatable="yes">Set Custom Permissions</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar"/>
+                    </child>
+                    <property name="content">
+                      <object class="GtkScrolledWindow">
+                        <property name="hscrollbar-policy">never</property>
+                        <property name="vexpand">true</property>
                         <property name="child">
-                          <object class="GtkStack" id="permissions_stack">
-                            <child>
-                              <object class="GtkStackPage">
-                                <property name="name">permission-indeterminable</property>
-                                <property name="child">
-                                  <object class="AdwStatusPage" id="unknown_permissions_page">
-                                    <property name="icon-name">dialog-error-symbolic</property>
-                                    <property name="title" translatable="yes">Unknown Permissions</property>
-                                    <property name="description" translatable="yes">The permissions of the selected files could not be determined.</property>
+                          <object class="AdwClamp">
+                            <property name="margin-top">18</property>
+                            <property name="margin-bottom">18</property>
+                            <property name="margin-start">18</property>
+                            <property name="margin-end">18</property>
+                            <property name="child">
+                              <object class="GtkStack" id="permissions_stack">
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">permission-indeterminable</property>
+                                    <property name="child">
+                                      <object class="AdwStatusPage" id="unknown_permissions_page">
+                                        <property name="icon-name">dialog-error-symbolic</property>
+                                        <property name="title" translatable="yes">Unknown Permissions</property>
+                                        <property name="description" translatable="yes">The permissions of the selected files could not be determined.</property>
+                                      </object>
+                                    </property>
                                   </object>
-                                </property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkStackPage">
-                                <property name="name">permissions-box</property>
-                                <property name="child">
-                                  <object class="GtkBox" id="permissions_box">
-                                    <property name="orientation">vertical</property>
-                                    <property name="spacing">12</property>
-                                    <child>
-                                      <object class="GtkLabel" id="not_the_owner_label">
-                                        <property name="visible">False</property>
-                                        <property name="label" translatable="yes">You are not the owner, so you cannot change these permissions.</property>
-                                        <property name="justify">center</property>
-                                        <property name="wrap">1</property>
-                                        <property name="max_width_chars">40</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkSeparator" id="bottom_prompt_seperator">
-                                        <property name="visible">False</property>
-                                        <property name="margin-top">12</property>
-                                        <property name="margin-bottom">12</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkLabel" id="permission_indeterminable_label">
-                                        <property name="visible">False</property>
-                                        <property name="label" translatable="yes">The permissions of the selected file could not be determined.</property>
-                                        <property name="justify">center</property>
-                                        <property name="wrap">1</property>
-                                        <property name="max_width_chars">40</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkListBox" id="owner_list_box">
-                                        <property name="selection-mode">none</property>
+                                </child>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">permissions-box</property>
+                                    <property name="child">
+                                      <object class="GtkBox" id="permissions_box">
+                                        <property name="orientation">vertical</property>
+                                        <property name="spacing">12</property>
                                         <child>
-                                          <object class="AdwComboRow" id="owner_row">
-                                            <property name="sensitive">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">_Owner</property>
-                                            <property name="use-underline">True</property>
-                                            <property name="expression">
-                                              <lookup type="GtkStringObject" name="string"/>
-                                            </property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="AdwComboRow" id="owner_access_row">
+                                          <object class="GtkLabel" id="not_the_owner_label">
                                             <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">Access</property>
+                                            <property name="label" translatable="yes">You are not the owner, so you cannot change these permissions.</property>
+                                            <property name="justify">center</property>
+                                            <property name="wrap">1</property>
+                                            <property name="max_width_chars">40</property>
                                           </object>
                                         </child>
                                         <child>
-                                          <object class="AdwComboRow" id="owner_folder_access_row">
+                                          <object class="GtkSeparator" id="bottom_prompt_seperator">
                                             <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">Folder Access</property>
+                                            <property name="margin-top">12</property>
+                                            <property name="margin-bottom">12</property>
                                           </object>
                                         </child>
                                         <child>
-                                          <object class="AdwComboRow" id="owner_file_access_row">
+                                          <object class="GtkLabel" id="permission_indeterminable_label">
                                             <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">File Access</property>
-                                          </object>
-                                        </child>
-                                        <style>
-                                          <class name="boxed-list"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkListBox" id="group_list_box">
-                                        <property name="selection-mode">none</property>
-                                        <child>
-                                          <object class="AdwComboRow" id="group_row">
-                                            <property name="sensitive">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">_Group</property>
-                                            <property name="use-underline">True</property>
-                                            <property name="expression">
-                                              <lookup type="GtkStringObject" name="string"/>
-                                            </property>
+                                            <property name="label" translatable="yes">The permissions of the selected file could not be determined.</property>
+                                            <property name="justify">center</property>
+                                            <property name="wrap">1</property>
+                                            <property name="max_width_chars">40</property>
                                           </object>
                                         </child>
                                         <child>
-                                          <object class="AdwComboRow" id="group_access_row">
+                                          <object class="GtkListBox" id="owner_list_box">
+                                            <property name="selection-mode">none</property>
+                                            <child>
+                                              <object class="AdwComboRow" id="owner_row">
+                                                <property name="sensitive">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">_Owner</property>
+                                                <property name="use-underline">True</property>
+                                                <property name="expression">
+                                                  <lookup type="GtkStringObject" name="string"/>
+                                                </property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="owner_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">Access</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="owner_folder_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">Folder Access</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="owner_file_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">File Access</property>
+                                              </object>
+                                            </child>
+                                            <style>
+                                              <class name="boxed-list"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkListBox" id="group_list_box">
+                                            <property name="selection-mode">none</property>
+                                            <child>
+                                              <object class="AdwComboRow" id="group_row">
+                                                <property name="sensitive">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">_Group</property>
+                                                <property name="use-underline">True</property>
+                                                <property name="expression">
+                                                  <lookup type="GtkStringObject" name="string"/>
+                                                </property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="group_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">Access</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="group_folder_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">Folder Access</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="group_file_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">File Access</property>
+                                              </object>
+                                            </child>
+                                            <style>
+                                              <class name="boxed-list"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkListBox" id="others_list_box">
+                                            <property name="selection-mode">none</property>
+                                            <child>
+                                              <object class="AdwComboRow" id="others_row">
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">Others</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="others_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">Access</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="others_folder_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">Folder Access</property>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="AdwComboRow" id="others_file_access_row">
+                                                <property name="visible">False</property>
+                                                <property name="activatable">False</property>
+                                                <property name="title" translatable="yes">File Access</property>
+                                              </object>
+                                            </child>
+                                            <style>
+                                              <class name="boxed-list"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkListBox" id="security_context_list_box">
                                             <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">Access</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="AdwComboRow" id="group_folder_access_row">
-                                            <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">Folder Access</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="AdwComboRow" id="group_file_access_row">
-                                            <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">File Access</property>
-                                          </object>
-                                        </child>
-                                        <style>
-                                          <class name="boxed-list"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkListBox" id="others_list_box">
-                                        <property name="selection-mode">none</property>
-                                        <child>
-                                          <object class="AdwComboRow" id="others_row">
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">Others</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="AdwComboRow" id="others_access_row">
-                                            <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">Access</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="AdwComboRow" id="others_folder_access_row">
-                                            <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">Folder Access</property>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="AdwComboRow" id="others_file_access_row">
-                                            <property name="visible">False</property>
-                                            <property name="activatable">False</property>
-                                            <property name="title" translatable="yes">File Access</property>
-                                          </object>
-                                        </child>
-                                        <style>
-                                          <class name="boxed-list"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkListBox" id="security_context_list_box">
-                                        <property name="visible">False</property>
-                                        <child>
-                                          <object class="AdwActionRow">
-                                            <property name="selectable">False</property>
-                                            <child type="prefix">
-                                              <object class="GtkBox">
-                                                <property name="orientation">vertical</property>
-                                                <property name="spacing">3</property>
-                                                <property name="halign">start</property>
-                                                <property name="valign">center</property>
-                                                <child>
-                                                  <object class="GtkLabel">
-                                                    <property name="label" translatable="yes">Security Context</property>
-                                                    <property name="hexpand">True</property>
-                                                    <property name="ellipsize">end</property>
+                                            <child>
+                                              <object class="AdwActionRow">
+                                                <property name="selectable">False</property>
+                                                <child type="prefix">
+                                                  <object class="GtkBox">
+                                                    <property name="orientation">vertical</property>
+                                                    <property name="spacing">3</property>
                                                     <property name="halign">start</property>
-                                                    <style>
-                                                      <class name="caption"/>
-                                                      <class name="dim-label"/>
-                                                    </style>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="GtkLabel" id="security_context_value_label">
-                                                    <property name="hexpand">True</property>
-                                                    <property name="selectable">True</property>
-                                                    <property name="ellipsize">end</property>
-                                                    <property name="halign">start</property>
+                                                    <property name="valign">center</property>
+                                                    <child>
+                                                      <object class="GtkLabel">
+                                                        <property name="label" translatable="yes">Security Context</property>
+                                                        <property name="hexpand">True</property>
+                                                        <property name="ellipsize">end</property>
+                                                        <property name="halign">start</property>
+                                                        <style>
+                                                          <class name="caption"/>
+                                                          <class name="dim-label"/>
+                                                        </style>
+                                                      </object>
+                                                    </child>
+                                                    <child>
+                                                      <object class="GtkLabel" id="security_context_value_label">
+                                                        <property name="hexpand">True</property>
+                                                        <property name="selectable">True</property>
+                                                        <property name="ellipsize">end</property>
+                                                        <property name="halign">start</property>
+                                                      </object>
+                                                    </child>
                                                   </object>
                                                 </child>
                                               </object>
                                             </child>
+                                            <style>
+                                              <class name="boxed-list"/>
+                                            </style>
                                           </object>
                                         </child>
-                                        <style>
-                                          <class name="boxed-list"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkBox" id="change_permissions_button_box">
-                                        <property name="visible">False</property>
-                                        <property name="margin_top">12</property>
                                         <child>
-                                          <object class="GtkButton" id="change_permissions_button">
-                                            <property name="label" translatable="yes">Change Permissions for _Enclosed Files…</property>
-                                            <property name="focusable">True</property>
-                                            <property name="receives_default">True</property>
-                                            <property name="use-underline">True</property>
+                                          <object class="GtkBox" id="change_permissions_button_box">
+                                            <property name="visible">False</property>
+                                            <property name="margin_top">12</property>
+                                            <child>
+                                              <object class="GtkButton" id="change_permissions_button">
+                                                <property name="label" translatable="yes">Change Permissions for _Enclosed Files…</property>
+                                                <property name="focusable">True</property>
+                                                <property name="receives_default">True</property>
+                                                <property name="use-underline">True</property>
+                                              </object>
+                                            </child>
                                           </object>
                                         </child>
                                       </object>
-                                    </child>
+                                    </property>
                                   </object>
-                                </property>
+                                </child>
                               </object>
-                            </child>
+                            </property>
                           </object>
                         </property>
                       </object>
@@ -957,34 +961,34 @@
                   </object>
                 </property>
               </object>
-            </property>
-          </object>
-        </child>
-        <child>
-          <object class="AdwNavigationPage">
-            <property name="tag">extension</property>
-            <property name="child">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="AdwHeaderBar"/>
-                </child>
-                <property name="content">
-                  <object class="GtkScrolledWindow">
-                    <property name="hscrollbar-policy">never</property>
-                    <property name="vexpand">true</property>
-                    <property name="child">
-                      <object class="AdwClamp">
-                        <property name="margin-top">18</property>
-                        <property name="margin-bottom">18</property>
-                        <property name="margin-start">18</property>
-                        <property name="margin-end">18</property>
+            </child>
+            <child>
+              <object class="AdwNavigationPage">
+                <property name="tag">extension</property>
+                <property name="child">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar"/>
+                    </child>
+                    <property name="content">
+                      <object class="GtkScrolledWindow">
+                        <property name="hscrollbar-policy">never</property>
+                        <property name="vexpand">true</property>
                         <property name="child">
-                          <object class="GtkListBox" id="extension_list_box">
-                            <property name="selection-mode">none</property>
-                            <property name="valign">start</property>
-                            <style>
-                              <class name="boxed-list"/>
-                            </style>
+                          <object class="AdwClamp">
+                            <property name="margin-top">18</property>
+                            <property name="margin-bottom">18</property>
+                            <property name="margin-start">18</property>
+                            <property name="margin-end">18</property>
+                            <property name="child">
+                              <object class="GtkListBox" id="extension_list_box">
+                                <property name="selection-mode">none</property>
+                                <property name="valign">start</property>
+                                <style>
+                                  <class name="boxed-list"/>
+                                </style>
+                              </object>
+                            </property>
                           </object>
                         </property>
                       </object>
@@ -992,9 +996,9 @@
                   </object>
                 </property>
               </object>
-            </property>
+            </child>
           </object>
-        </child>
+        </property>
       </object>
     </child>
   </template>
