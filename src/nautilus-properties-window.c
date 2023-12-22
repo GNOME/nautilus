@@ -251,7 +251,7 @@ typedef struct
     gboolean can_set_all_file_permission;
     gboolean can_set_any_file_permission;
     gboolean is_multi_file_window;
-} TargetPermissions;
+} PermissionsInfo;
 
 /* NautilusPermissionEntry - helper struct for permission AdwComboRow */
 
@@ -435,10 +435,10 @@ static void schedule_directory_contents_update (NautilusPropertiesWindow *self);
 static void directory_contents_value_field_update (NautilusPropertiesWindow *self);
 static void file_changed_callback (NautilusFile *file,
                                    gpointer      user_data);
-static void update_execution_row (GtkWidget         *row,
-                                  TargetPermissions *target_perm);
-static void update_permission_row (AdwComboRow       *row,
-                                   TargetPermissions *target_perm);
+static void update_execution_row (GtkWidget       *row,
+                                  PermissionsInfo *permissions_info);
+static void update_permission_row (AdwComboRow     *row,
+                                   PermissionsInfo *permissions_info);
 static void value_field_update (GtkLabel                 *field,
                                 NautilusPropertiesWindow *self);
 static void properties_window_update (NautilusPropertiesWindow *self,
@@ -447,10 +447,10 @@ static void is_directory_ready_callback (NautilusFile *file,
                                          gpointer      data);
 static void cancel_group_change_callback (GroupChange *change);
 static void cancel_owner_change_callback (OwnerChange *change);
-static void update_owner_row (AdwComboRow       *row,
-                              TargetPermissions *target_perm);
-static void update_group_row (AdwComboRow       *row,
-                              TargetPermissions *target_perm);
+static void update_owner_row (AdwComboRow     *row,
+                              PermissionsInfo *permissions_info);
+static void update_group_row (AdwComboRow     *row,
+                              PermissionsInfo *permissions_info);
 static void select_image_button_callback (GtkWidget                *widget,
                                           NautilusPropertiesWindow *self);
 static void set_icon (const char               *icon_path,
@@ -1138,10 +1138,10 @@ exec_permission_from_vfs (guint32 vfs_perm)
     }
 }
 
-static TargetPermissions *
-get_target_permissions (NautilusPropertiesWindow *self)
+static PermissionsInfo *
+get_permissions_info (NautilusPropertiesWindow *self)
 {
-    TargetPermissions *p = g_new0 (TargetPermissions, 1);
+    PermissionsInfo *p = g_new0 (PermissionsInfo, 1);
     p->window = self;
     p->can_set_all_folder_permission = TRUE;
     p->can_set_all_file_permission = TRUE;
@@ -1222,9 +1222,9 @@ get_target_permissions (NautilusPropertiesWindow *self)
 
 static void
 update_permissions_navigation_row (NautilusPropertiesWindow *self,
-                                   TargetPermissions        *target_perm)
+                                   PermissionsInfo          *permissions_info)
 {
-    if (!target_perm->is_multi_file_window)
+    if (!permissions_info->is_multi_file_window)
     {
         uid_t user_id = geteuid ();
         gid_t group_id = getegid ();
@@ -1242,11 +1242,11 @@ update_permissions_navigation_row (NautilusPropertiesWindow *self,
 
         if (nautilus_file_is_directory (get_file (self)))
         {
-            text = permission_value_to_string (target_perm->folder_permissions[permission_type], TRUE);
+            text = permission_value_to_string (permissions_info->folder_permissions[permission_type], TRUE);
         }
         else
         {
-            text = permission_value_to_string (target_perm->file_permissions[permission_type], FALSE);
+            text = permission_value_to_string (permissions_info->file_permissions[permission_type], FALSE);
         }
 
         gtk_label_set_text (GTK_LABEL (self->permissions_value_label), text);
@@ -1309,17 +1309,17 @@ properties_window_update (NautilusPropertiesWindow *self,
 
     if (dirty)
     {
-        g_autofree TargetPermissions *target_perm = get_target_permissions (self);
+        g_autofree PermissionsInfo *permissions_info = get_permissions_info (self);
 
         update_image_widget (self);
         update_name_field (self);
-        update_permissions_navigation_row (self, target_perm);
-        update_owner_row (self->owner_row, target_perm);
-        update_group_row (self->group_row, target_perm);
-        update_execution_row (GTK_WIDGET (self->execution_row), target_perm);
+        update_permissions_navigation_row (self, permissions_info);
+        update_owner_row (self->owner_row, permissions_info);
+        update_group_row (self->group_row, permissions_info);
+        update_execution_row (GTK_WIDGET (self->execution_row), permissions_info);
         g_list_foreach (self->permission_rows,
                         (GFunc) update_permission_row,
-                        target_perm);
+                        permissions_info);
         g_list_foreach (self->value_fields,
                         (GFunc) value_field_update,
                         self);
@@ -1843,11 +1843,11 @@ string_list_item_equals_string (GListModel *list,
 
 /* Select correct owner if file permissions have changed. */
 static void
-update_owner_row (AdwComboRow       *row,
-                  TargetPermissions *target_perm)
+update_owner_row (AdwComboRow     *row,
+                  PermissionsInfo *permissions_info)
 {
-    NautilusPropertiesWindow *self = target_perm->window;
-    gboolean provide_dropdown = (!target_perm->is_multi_file_window
+    NautilusPropertiesWindow *self = permissions_info->window;
+    gboolean provide_dropdown = (!permissions_info->is_multi_file_window
                                  && nautilus_file_can_set_owner (get_file (self)));
     gboolean had_dropdown = gtk_widget_is_sensitive (GTK_WIDGET (row));
 
@@ -1891,11 +1891,11 @@ update_owner_row (AdwComboRow       *row,
 
 /* Select correct group if file permissions have changed. */
 static void
-update_group_row (AdwComboRow       *row,
-                  TargetPermissions *target_perm)
+update_group_row (AdwComboRow     *row,
+                  PermissionsInfo *permissions_info)
 {
-    NautilusPropertiesWindow *self = target_perm->window;
-    gboolean provide_dropdown = (!target_perm->is_multi_file_window
+    NautilusPropertiesWindow *self = permissions_info->window;
+    gboolean provide_dropdown = (!permissions_info->is_multi_file_window
                                  && nautilus_file_can_set_group (get_file (self)));
     gboolean had_dropdown = gtk_widget_is_sensitive (GTK_WIDGET (row));
 
@@ -2847,10 +2847,10 @@ should_show_exectution_switch (NautilusPropertiesWindow *self)
 }
 
 static void
-update_execution_row (GtkWidget         *row,
-                      TargetPermissions *target_perm)
+update_execution_row (GtkWidget       *row,
+                      PermissionsInfo *permissions_info)
 {
-    NautilusPropertiesWindow *self = target_perm->window;
+    NautilusPropertiesWindow *self = permissions_info->window;
 
     if (!should_show_exectution_switch (self))
     {
@@ -2863,14 +2863,14 @@ update_execution_row (GtkWidget         *row,
                                          self);
 
         adw_switch_row_set_active (self->execution_row,
-                                   target_perm->file_exec_permissions == PERMISSION_EXEC);
+                                   permissions_info->file_exec_permissions == PERMISSION_EXEC);
 
         g_signal_handlers_unblock_by_func (self->execution_row,
                                            G_CALLBACK (execution_bit_changed),
                                            self);
 
         gtk_widget_set_sensitive (row,
-                                  target_perm->can_set_any_file_permission);
+                                  permissions_info->can_set_any_file_permission);
 
         gtk_widget_set_visible (GTK_WIDGET (self->execution_row), TRUE);
     }
@@ -2943,10 +2943,10 @@ get_permission_value_list_position (GListModel      *list,
 }
 
 static void
-update_permission_row (AdwComboRow       *row,
-                       TargetPermissions *target_perm)
+update_permission_row (AdwComboRow     *row,
+                       PermissionsInfo *permissions_info)
 {
-    NautilusPropertiesWindow *self = target_perm->window;
+    NautilusPropertiesWindow *self = permissions_info->window;
     PermissionType type;
     PermissionValue permissions_to_show;
     FilterType filter_type;
@@ -2960,8 +2960,8 @@ update_permission_row (AdwComboRow       *row,
     is_folder = (FOLDERS_ONLY == filter_type);
     type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "permission-type"));
 
-    permissions_to_show = is_folder ? target_perm->folder_permissions[type] :
-                                      target_perm->file_permissions[type] & ~PERMISSION_EXEC;
+    permissions_to_show = is_folder ? permissions_info->folder_permissions[type] :
+                                      permissions_info->file_permissions[type] & ~PERMISSION_EXEC;
 
     g_signal_handlers_block_by_func (G_OBJECT (row),
                                      G_CALLBACK (on_permission_row_change),
@@ -2981,8 +2981,8 @@ update_permission_row (AdwComboRow       *row,
     /* Also enable if no files found (for recursive
      *  file changes when only selecting folders) */
     gtk_widget_set_sensitive (GTK_WIDGET (row), is_folder ?
-                              target_perm->can_set_all_folder_permission :
-                              target_perm->can_set_all_file_permission);
+                              permissions_info->can_set_all_folder_permission :
+                              permissions_info->can_set_all_file_permission);
 
     g_signal_handlers_unblock_by_func (G_OBJECT (row),
                                        G_CALLBACK (on_permission_row_change),
