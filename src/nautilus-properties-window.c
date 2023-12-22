@@ -460,6 +460,7 @@ static void remove_pending (StartupData *data,
                             gboolean     cancel_timed_wait);
 static void refresh_extension_model_pages (NautilusPropertiesWindow *self);
 static gboolean is_root_directory (NautilusFile *file);
+static gboolean is_volume_properties (NautilusPropertiesWindow *self);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
 
@@ -775,12 +776,16 @@ setup_star_button (NautilusPropertiesWindow *self)
 }
 
 static void
-setup_image_widget (NautilusPropertiesWindow *self,
-                    gboolean                  is_customizable)
+setup_image_widget (NautilusPropertiesWindow *self)
 {
     update_properties_window_icon (self);
 
-    if (is_customizable)
+    if (is_multi_file_window (self) || is_volume_properties (self) ||
+        is_root_directory (get_original_file (self)))
+    {
+        gtk_stack_set_visible_child (self->icon_stack, self->icon_image);
+    }
+    else
     {
         GtkDropTarget *target;
 
@@ -793,10 +798,6 @@ setup_image_widget (NautilusPropertiesWindow *self,
         g_signal_connect (self->icon_button, "clicked",
                           G_CALLBACK (select_image_button_callback), self);
         gtk_stack_set_visible_child (self->icon_stack, self->icon_button);
-    }
-    else
-    {
-        gtk_stack_set_visible_child (self->icon_stack, self->icon_image);
     }
 }
 
@@ -2256,18 +2257,6 @@ is_volume_properties (NautilusPropertiesWindow *self)
 }
 
 static gboolean
-should_show_custom_icon_buttons (NautilusPropertiesWindow *self)
-{
-    if (is_multi_file_window (self) || is_volume_properties (self) ||
-        is_root_directory (get_original_file (self)))
-    {
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
-static gboolean
 is_single_file_type (NautilusPropertiesWindow *self)
 {
     if (is_multi_file_window (self))
@@ -2607,7 +2596,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
     /* Icon pixmap */
 
-    setup_image_widget (self, should_show_custom_icon_buttons (self));
+    setup_image_widget (self);
 
     self->icon_chooser = NULL;
 
