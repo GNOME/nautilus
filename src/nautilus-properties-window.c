@@ -776,7 +776,7 @@ setup_star_button (NautilusPropertiesWindow *self)
 }
 
 static void
-setup_image_widget (NautilusPropertiesWindow *self)
+update_image_widget (NautilusPropertiesWindow *self)
 {
     update_properties_window_icon (self);
 
@@ -787,18 +787,24 @@ setup_image_widget (NautilusPropertiesWindow *self)
     }
     else
     {
-        GtkDropTarget *target;
 
-        /* prepare the image to receive dropped objects to assign custom images */
-        target = gtk_drop_target_new (GDK_TYPE_FILE_LIST, GDK_ACTION_COPY);
-        gtk_widget_add_controller (self->icon_button, GTK_EVENT_CONTROLLER (target));
-        g_signal_connect (target, "drop",
-                          G_CALLBACK (nautilus_properties_window_drag_drop_cb), self->icon_button_image);
-
-        g_signal_connect (self->icon_button, "clicked",
-                          G_CALLBACK (select_image_button_callback), self);
         gtk_stack_set_visible_child (self->icon_stack, self->icon_button);
     }
+}
+
+static void
+setup_image_widget (NautilusPropertiesWindow *self)
+{
+    /* prepare the image to receive dropped objects to assign custom images */
+    GtkDropTarget *target = gtk_drop_target_new (GDK_TYPE_FILE_LIST, GDK_ACTION_COPY);
+    gtk_widget_add_controller (self->icon_button, GTK_EVENT_CONTROLLER (target));
+    g_signal_connect (target, "drop",
+                      G_CALLBACK (nautilus_properties_window_drag_drop_cb), self->icon_button_image);
+
+    g_signal_connect (self->icon_button, "clicked",
+                      G_CALLBACK (select_image_button_callback), self);
+
+    update_image_widget (self);
 }
 
 static void
@@ -1321,7 +1327,7 @@ properties_window_update (NautilusPropertiesWindow *self,
 
     if (dirty_original)
     {
-        update_properties_window_icon (self);
+        update_image_widget (self);
         update_name_field (self);
 
         /* If any of the value fields start to depend on the original
