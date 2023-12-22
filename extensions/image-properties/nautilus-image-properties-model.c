@@ -45,6 +45,25 @@ typedef struct
     gboolean md_ready;
 } NautilusImagesPropertiesModel;
 
+/* tags and their alternatives */
+const char *title[] = { "Xmp.dc.title", NULL };
+const char *camera_brand[] = { "Exif.Image.Make", NULL };
+const char *camera_model[] = { "Exif.Image.Model", "Exif.Image.UniqueCameraModel", NULL };
+const char *created_on[] = { "Exif.Photo.DateTimeOriginal", "Xmp.xmp.CreateDate", "Exif.Image.DateTime", NULL };
+const char *exposure_time[] = { "Exif.Photo.ExposureTime", NULL };
+const char *aperture_value[] = { "Exif.Photo.ApertureValue", NULL };
+const char *iso_speed_ratings[] = { "Exif.Photo.ISOSpeedRatings", "Xmp.exifEX.ISOSpeed", NULL };
+const char *flash[] = { "Exif.Photo.Flash", NULL };
+const char *metering_mode[] = { "Exif.Photo.MeteringMode", NULL };
+const char *exposure_mode[] = { "Exif.Photo.ExposureMode", NULL };
+const char *focal_length[] = { "Exif.Photo.FocalLength", NULL };
+const char *software[] = { "Exif.Image.Software", NULL };
+const char *description[] = { "Xmp.dc.description", "Exif.Photo.UserComment", NULL };
+const char *subject[] = { "Xmp.dc.subject", NULL };
+const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
+const char *rights[] = { "Xmp.dc.rights", NULL };
+const char *rating[] = { "Xmp.xmp.Rating", NULL };
+
 static void
 nautilus_images_properties_model_free (NautilusImagesPropertiesModel *self)
 {
@@ -140,7 +159,7 @@ append_basic_info (NautilusImagesPropertiesModel *self)
 static void
 append_gexiv2_tag (NautilusImagesPropertiesModel  *self,
                    const char                    **tag_names,
-                   const char                     *description)
+                   const char                     *tag_description)
 {
     g_assert (tag_names != NULL);
 
@@ -152,15 +171,15 @@ append_gexiv2_tag (NautilusImagesPropertiesModel  *self,
 
             tag_value = gexiv2_metadata_try_get_tag_interpreted_string (self->md, *i, NULL);
 
-            if (description == NULL)
+            if (tag_description == NULL)
             {
-                description = gexiv2_metadata_try_get_tag_description (*i, NULL);
+                tag_description = gexiv2_metadata_try_get_tag_description (*i, NULL);
             }
 
             /* don't add empty tags - try next one */
             if (tag_value != NULL && strlen (tag_value) > 0)
             {
-                append_item (self, description, tag_value);
+                append_item (self, tag_description, tag_value);
                 break;
             }
         }
@@ -173,25 +192,6 @@ append_gexiv2_info (NautilusImagesPropertiesModel *self)
     double longitude;
     double latitude;
     double altitude;
-
-    /* define tags and its alternatives */
-    const char *title[] = { "Xmp.dc.title", NULL };
-    const char *camera_brand[] = { "Exif.Image.Make", NULL };
-    const char *camera_model[] = { "Exif.Image.Model", "Exif.Image.UniqueCameraModel", NULL };
-    const char *created_on[] = { "Exif.Photo.DateTimeOriginal", "Xmp.xmp.CreateDate", "Exif.Image.DateTime", NULL };
-    const char *exposure_time[] = { "Exif.Photo.ExposureTime", NULL };
-    const char *aperture_value[] = { "Exif.Photo.ApertureValue", NULL };
-    const char *iso_speed_ratings[] = { "Exif.Photo.ISOSpeedRatings", "Xmp.exifEX.ISOSpeed", NULL };
-    const char *flash[] = { "Exif.Photo.Flash", NULL };
-    const char *metering_mode[] = { "Exif.Photo.MeteringMode", NULL };
-    const char *exposure_mode[] = { "Exif.Photo.ExposureMode", NULL };
-    const char *focal_length[] = { "Exif.Photo.FocalLength", NULL };
-    const char *software[] = { "Exif.Image.Software", NULL };
-    const char *description[] = { "Xmp.dc.description", "Exif.Photo.UserComment", NULL };
-    const char *subject[] = { "Xmp.dc.subject", NULL };
-    const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
-    const char *rights[] = { "Xmp.dc.rights", NULL };
-    const char *rating[] = { "Xmp.xmp.Rating", NULL };
 
     if (!self->md_ready)
     {
