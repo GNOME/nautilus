@@ -34,10 +34,10 @@ flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
 
 flatpak@aarch64:
+    when: manual
     rules:
         - if: $CI_PROJECT_NAMESPACE == "GNOME"
-        - when: manual
-          allow_failure: true
+        - allow_failure: true
     extends: ['.flatpak@aarch64', '.vars-devel']
 
 nightly@x86_64:
