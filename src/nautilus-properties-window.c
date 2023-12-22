@@ -88,8 +88,8 @@ struct _NautilusPropertiesWindow
 
     GtkStack *icon_stack;
     GtkWidget *icon_image;
-    GtkWidget *icon_button;
-    GtkWidget *icon_button_image;
+    GtkWidget *icon_overlay;
+    GtkWidget *reset_icon_button;
     GtkWidget *icon_chooser;
 
     GtkWidget *star_button;
@@ -451,6 +451,7 @@ static void update_owner_row (AdwComboRow       *row,
                               TargetPermissions *target_perm);
 static void update_group_row (AdwComboRow       *row,
                               TargetPermissions *target_perm);
+static void update_reset_icon_button (NautilusPropertiesWindow *self);
 static void select_image_button_callback (GtkWidget                *widget,
                                           NautilusPropertiesWindow *self);
 static void set_icon (const char               *icon_path,
@@ -603,9 +604,7 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
                       gdk_paintable_get_intrinsic_width (paintable));
 
     gtk_image_set_from_paintable (GTK_IMAGE (self->icon_image), paintable);
-    gtk_image_set_from_paintable (GTK_IMAGE (self->icon_button_image), paintable);
     gtk_image_set_pixel_size (GTK_IMAGE (self->icon_image), pixel_size);
-    gtk_image_set_pixel_size (GTK_IMAGE (self->icon_button_image), pixel_size);
 }
 
 /* utility to test if a uri refers to a local image */
@@ -642,6 +641,8 @@ reset_icon (NautilusPropertiesWindow *self)
                                     NAUTILUS_METADATA_KEY_CUSTOM_ICON,
                                     NULL, NULL);
     }
+
+    gtk_widget_set_visible (self->reset_icon_button, FALSE);
 }
 
 static void
@@ -787,8 +788,9 @@ update_image_widget (NautilusPropertiesWindow *self)
     }
     else
     {
+        gtk_stack_set_visible_child (self->icon_stack, self->icon_overlay);
 
-        gtk_stack_set_visible_child (self->icon_stack, self->icon_button);
+        update_reset_icon_button (self);
     }
 }
 
@@ -797,12 +799,9 @@ setup_image_widget (NautilusPropertiesWindow *self)
 {
     /* prepare the image to receive dropped objects to assign custom images */
     GtkDropTarget *target = gtk_drop_target_new (GDK_TYPE_FILE_LIST, GDK_ACTION_COPY);
-    gtk_widget_add_controller (self->icon_button, GTK_EVENT_CONTROLLER (target));
+    gtk_widget_add_controller (self->icon_overlay, GTK_EVENT_CONTROLLER (target));
     g_signal_connect (target, "drop",
-                      G_CALLBACK (nautilus_properties_window_drag_drop_cb), self->icon_button_image);
-
-    g_signal_connect (self->icon_button, "clicked",
-                      G_CALLBACK (select_image_button_callback), self);
+                      G_CALLBACK (nautilus_properties_window_drag_drop_cb), self->icon_image);
 
     update_image_widget (self);
 }
@@ -2706,6 +2705,24 @@ setup_basic_page (NautilusPropertiesWindow *self)
     }
 }
 
+static void
+update_reset_icon_button (NautilusPropertiesWindow *self)
+{
+    NautilusFile *file = get_target_file (self);
+    gboolean revert_is_visible = FALSE;
+
+    if (file != NULL && !nautilus_file_is_gone (file))
+    {
+        const gchar *image_path = nautilus_file_get_metadata (file,
+                                                              NAUTILUS_METADATA_KEY_CUSTOM_ICON,
+                                                              NULL);
+
+        revert_is_visible = (image_path != NULL);
+    }
+
+    gtk_widget_set_visible (self->reset_icon_button, revert_is_visible);
+}
+
 static FilterType
 files_get_filter_type (NautilusPropertiesWindow *self)
 {
@@ -4143,12 +4160,6 @@ custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
 {
     switch (response)
     {
-        case GTK_RESPONSE_NO:
-        {
-            reset_icon (self);
-        }
-        break;
-
         case GTK_RESPONSE_OK:
         {
             g_autoptr (GFile) location = NULL;
@@ -4183,7 +4194,6 @@ select_image_button_callback (GtkWidget                *widget,
     GtkWidget *dialog;
     GtkFileFilter *filter;
     NautilusFile *file;
-    const char *image_path;
 
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
 
@@ -4194,7 +4204,6 @@ select_image_button_callback (GtkWidget                *widget,
         g_autoptr (GFile) pictures_location = NULL;
         dialog = gtk_file_chooser_dialog_new (_("Select Custom Icon"), GTK_WINDOW (self),
                                               GTK_FILE_CHOOSER_ACTION_OPEN,
-                                              _("_Revert"), GTK_RESPONSE_NO,
                                               _("_Cancel"), GTK_RESPONSE_CANCEL,
                                               _("_Open"), GTK_RESPONSE_OK,
                                               NULL);
@@ -4232,9 +4241,6 @@ select_image_button_callback (GtkWidget                *widget,
         }
     }
 
-    image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
-    gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_NO, image_path != NULL);
-
     g_signal_connect (dialog, "response",
                       G_CALLBACK (custom_icon_file_chooser_response_cb), self);
     gtk_window_present (GTK_WINDOW (dialog));
@@ -4260,8 +4266,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, nav_view);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button_image);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_overlay);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, reset_icon_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, star_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_value_label);
@@ -4323,6 +4329,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, open_parent_folder);
     gtk_widget_class_bind_template_callback (widget_class, open_link_target);
     gtk_widget_class_bind_template_callback (widget_class, navigate_permissions_page);
+    gtk_widget_class_bind_template_callback (widget_class, reset_icon);
+    gtk_widget_class_bind_template_callback (widget_class, select_image_button_callback);
 }
 
 static void

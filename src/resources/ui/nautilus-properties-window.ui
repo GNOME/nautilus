@@ -54,7 +54,6 @@
                                     <property name="valign">start</property>
                                     <child>
                                       <object class="GtkStackPage">
-                                        <property name="name">icon_image</property>
                                         <property name="child">
                                           <object class="GtkImage" id="icon_image">
                                             <property name="icon-name">image-missing</property>
@@ -64,15 +63,65 @@
                                     </child>
                                     <child>
                                       <object class="GtkStackPage">
-                                        <property name="name">icon_button</property>
                                         <property name="child">
-                                          <object class="GtkButton" id="icon_button">
-                                            <property name="tooltip-text" translatable="yes">Set Custom Icon</property>
-                                            <property name="focusable">True</property>
-                                            <property name="receives_default">True</property>
+                                          <object class="GtkOverlay" id="icon_overlay">
                                             <child>
-                                              <object class="GtkImage" id="icon_button_image">
-                                                <property name="icon-name">image-missing</property>
+                                              <object class="GtkFrame">
+                                                <style>
+                                                  <class name="image-frame"/>
+                                                </style>
+                                                <child>
+                                                  <object class="GtkImage">
+                                                    <binding name="paintable">
+                                                      <lookup name="paintable">icon_image</lookup>
+                                                    </binding>
+                                                    <binding name="pixel-size">
+                                                      <lookup name="pixel-size">icon_image</lookup>
+                                                    </binding>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child type="overlay">
+                                              <object class="AdwBin">
+                                                <property name="halign">end</property>
+                                                <property name="valign">end</property>
+                                                <style>
+                                                  <class name="cutout"/>
+                                                  <class name="background"/>
+                                                </style>
+                                                <property name="child">
+                                                  <object class="GtkButton">
+                                                    <property name="tooltip-text" translatable="yes">Set Custom Icon</property>
+                                                    <property name="focusable">True</property>
+                                                    <property name="icon-name">document-edit-symbolic</property>
+                                                    <signal name="clicked" handler="select_image_button_callback"/>
+                                                    <style>
+                                                      <class name="circular"/>
+                                                    </style>
+                                                  </object>
+                                                </property>
+                                              </object>
+                                            </child>
+                                            <child type="overlay">
+                                              <object class="AdwBin">
+                                                <property name="halign">end</property>
+                                                <property name="valign">start</property>
+                                                <style>
+                                                  <class name="cutout"/>
+                                                  <class name="background"/>
+                                                </style>
+                                                <property name="child">
+                                                  <object class="GtkButton" id="reset_icon_button">
+                                                    <property name="tooltip-text" translatable="yes">Remove Custom Icon</property>
+                                                    <property name="focusable">True</property>
+                                                    <property name="icon-name">eraser3-symbolic</property>
+                                                    <signal name="clicked" handler="reset_icon" swapped="yes"/>
+                                                    <style>
+                                                      <class name="circular"/>
+                                                    </style>
+                                                  </object>
+                                                </property>
                                               </object>
                                             </child>
                                           </object>
