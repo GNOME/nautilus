@@ -109,10 +109,6 @@ struct _NautilusWindowSlot
     /* Query editor */
     NautilusQueryEditor *query_editor;
     NautilusQuery *pending_search_query;
-    gulong qe_changed_id;
-    gulong qe_cancel_id;
-    gulong qe_activated_id;
-    gulong qe_focus_view_id;
 
     /* Banner */
     AdwBanner *banner;
@@ -442,10 +438,7 @@ hide_query_editor (NautilusWindowSlot *self)
 
     view = nautilus_window_slot_get_current_view (self);
 
-    g_clear_signal_handler (&self->qe_changed_id, self->query_editor);
-    g_clear_signal_handler (&self->qe_cancel_id, self->query_editor);
-    g_clear_signal_handler (&self->qe_activated_id, self->query_editor);
-    g_clear_signal_handler (&self->qe_focus_view_id, self->query_editor);
+    g_signal_handlers_disconnect_by_data (self->query_editor, self);
 
     nautilus_query_editor_set_query (self->query_editor, NULL);
 
@@ -506,30 +499,14 @@ show_query_editor (NautilusWindowSlot *self)
 
     gtk_widget_grab_focus (GTK_WIDGET (self->query_editor));
 
-    if (self->qe_changed_id == 0)
-    {
-        self->qe_changed_id =
-            g_signal_connect (self->query_editor, "changed",
-                              G_CALLBACK (query_editor_changed_callback), self);
-    }
-    if (self->qe_cancel_id == 0)
-    {
-        self->qe_cancel_id =
-            g_signal_connect (self->query_editor, "cancel",
-                              G_CALLBACK (query_editor_cancel_callback), self);
-    }
-    if (self->qe_activated_id == 0)
-    {
-        self->qe_activated_id =
-            g_signal_connect (self->query_editor, "activated",
-                              G_CALLBACK (query_editor_activated_callback), self);
-    }
-    if (self->qe_focus_view_id == 0)
-    {
-        self->qe_focus_view_id =
-            g_signal_connect (self->query_editor, "focus-view",
-                              G_CALLBACK (query_editor_focus_view_callback), self);
-    }
+    g_signal_connect (self->query_editor, "changed",
+                      G_CALLBACK (query_editor_changed_callback), self);
+    g_signal_connect (self->query_editor, "cancel",
+                      G_CALLBACK (query_editor_cancel_callback), self);
+    g_signal_connect (self->query_editor, "activated",
+                      G_CALLBACK (query_editor_activated_callback), self);
+    g_signal_connect (self->query_editor, "focus-view",
+                      G_CALLBACK (query_editor_focus_view_callback), self);
 }
 
 static void
