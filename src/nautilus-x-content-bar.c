@@ -207,11 +207,7 @@ static void
 nautilus_x_content_bar_set_mount (NautilusXContentBar *bar,
                                   GMount              *mount)
 {
-    if (bar->mount != NULL)
-    {
-        g_object_unref (bar->mount);
-    }
-    bar->mount = mount != NULL ? g_object_ref (mount) : NULL;
+    g_set_object (&bar->mount, mount);
 }
 
 
