@@ -2458,9 +2458,7 @@ show_rename_popover (NautilusGtkSidebarRow *row)
 
   create_rename_popover (sidebar);
 
-  if (sidebar->rename_uri)
-    g_free (sidebar->rename_uri);
-  sidebar->rename_uri = g_strdup (uri);
+  g_set_str (&sidebar->rename_uri, uri);
 
   gtk_editable_set_text (GTK_EDITABLE (sidebar->rename_entry), name);
 
@@ -3710,10 +3708,8 @@ update_hostname (NautilusGtkPlacesSidebar *sidebar)
 
   hostname = g_variant_get_string (variant, &len);
   if (len > 0 &&
-      g_strcmp0 (sidebar->hostname, hostname) != 0)
+      g_set_str (&sidebar->hostname, hostname))
     {
-      g_free (sidebar->hostname);
-      sidebar->hostname = g_strdup (hostname);
       update_places (sidebar);
     }
 

@@ -2720,11 +2720,9 @@ update_info_internal (NautilusFile *file,
     }
 
     thumbnail_path = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
-    if (g_strcmp0 (file->details->thumbnail_path, thumbnail_path) != 0)
+    if (g_set_str (&file->details->thumbnail_path, thumbnail_path))
     {
         changed = TRUE;
-        g_free (file->details->thumbnail_path);
-        file->details->thumbnail_path = g_strdup (thumbnail_path);
     }
 
     thumbnailing_failed = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_THUMBNAILING_FAILED);
@@ -2736,11 +2734,9 @@ update_info_internal (NautilusFile *file,
 
     symlink_name = g_file_info_get_attribute_byte_string (info,
                                                           G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET);
-    if (g_strcmp0 (file->details->symlink_name, symlink_name) != 0)
+    if (g_set_str (&file->details->symlink_name, symlink_name))
     {
         changed = TRUE;
-        g_free (file->details->symlink_name);
-        file->details->symlink_name = g_strdup (symlink_name);
     }
 
     mime_type = g_file_info_get_attribute_string (info,
@@ -2757,11 +2753,9 @@ update_info_internal (NautilusFile *file,
     }
 
     selinux_context = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_SELINUX_CONTEXT);
-    if (g_strcmp0 (file->details->selinux_context, selinux_context) != 0)
+    if (g_set_str (&file->details->selinux_context, selinux_context))
     {
         changed = TRUE;
-        g_free (file->details->selinux_context);
-        file->details->selinux_context = g_strdup (selinux_context);
     }
 
     filesystem_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
@@ -2795,11 +2789,9 @@ update_info_internal (NautilusFile *file,
     }
 
     trash_orig_path = g_file_info_get_attribute_byte_string (info, "trash::orig-path");
-    if (g_strcmp0 (file->details->trash_orig_path, trash_orig_path) != 0)
+    if (g_set_str (&file->details->trash_orig_path, trash_orig_path))
     {
         changed = TRUE;
-        g_free (file->details->trash_orig_path);
-        file->details->trash_orig_path = g_strdup (trash_orig_path);
     }
 
     if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_PREVIEW_ICON))

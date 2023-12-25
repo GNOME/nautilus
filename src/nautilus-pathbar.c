@@ -1117,12 +1117,7 @@ button_data_file_changed (NautilusFile *file,
     /* MOUNTs use the GMount as the name, so don't update for those */
     if (button_data->type != MOUNT_BUTTON)
     {
-        const char *display_name = nautilus_file_get_display_name (file);
-        if (g_strcmp0 (display_name, button_data->dir_name) != 0)
-        {
-            g_free (button_data->dir_name);
-            button_data->dir_name = g_strdup (display_name);
-        }
+        g_set_str (&button_data->dir_name, nautilus_file_get_display_name (file));
     }
     current_dir = g_file_equal (self->current_path, button_data->path);
     nautilus_path_bar_update_button_appearance (button_data, current_dir);
@@ -1341,11 +1336,6 @@ nautilus_path_bar_set_path (NautilusPathBar *self,
     nautilus_path_bar_update_path (self, file_path);
     button_data = g_list_nth_data (self->button_list, 0);
 
-    if (self->current_path != NULL)
-    {
-        g_object_unref (self->current_path);
-    }
-
-    self->current_path = g_object_ref (file_path);
+    g_set_object (&self->current_path, file_path);
     self->current_button_data = button_data;
 }

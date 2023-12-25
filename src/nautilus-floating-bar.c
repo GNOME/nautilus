@@ -448,11 +448,8 @@ void
 nautilus_floating_bar_set_primary_label (NautilusFloatingBar *self,
                                          const gchar         *label)
 {
-    if (g_strcmp0 (self->primary_label, label) != 0)
+    if (g_set_str (&self->primary_label, label))
     {
-        g_free (self->primary_label);
-        self->primary_label = g_strdup (label);
-
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PRIMARY_LABEL]);
 
         update_labels (self);
@@ -463,11 +460,8 @@ void
 nautilus_floating_bar_set_details_label (NautilusFloatingBar *self,
                                          const gchar         *label)
 {
-    if (g_strcmp0 (self->details_label, label) != 0)
+    if (g_set_str (&self->details_label, label))
     {
-        g_free (self->details_label);
-        self->details_label = g_strdup (label);
-
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_DETAILS_LABEL]);
 
         update_labels (self);

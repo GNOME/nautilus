@@ -162,11 +162,7 @@ nautilus_freedesktop_dbus_dispose (GObject *object)
         fdb->owner_id = 0;
     }
 
-    if (fdb->skeleton != NULL)
-    {
-        g_object_unref (fdb->skeleton);
-        fdb->skeleton = NULL;
-    }
+    g_clear_object (&fdb->skeleton);
 
     G_OBJECT_CLASS (nautilus_freedesktop_dbus_parent_class)->dispose (object);
 }

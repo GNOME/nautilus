@@ -1252,11 +1252,8 @@ update_extension_list (NautilusPropertiesWindow *self)
 
     const char *mime_type = nautilus_file_get_mime_type (get_file (self));
 
-    if (g_strcmp0 (self->mime_type, mime_type) != 0)
+    if (g_set_str (&self->mime_type, mime_type))
     {
-        g_free (self->mime_type);
-        self->mime_type = g_strdup (mime_type);
-
         refresh_extension_model_pages (self);
     }
 }
