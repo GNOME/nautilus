@@ -232,19 +232,6 @@ on_progress_info_finished (NautilusProgressIndicator *self,
 }
 
 static void
-disconnect_progress_infos (NautilusProgressIndicator *self)
-{
-    GList *progress_infos;
-    GList *l;
-
-    progress_infos = nautilus_progress_info_manager_get_all_infos (self->progress_manager);
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        g_signal_handlers_disconnect_by_data (l->data, self);
-    }
-}
-
-static void
 update_operations (NautilusProgressIndicator *self)
 {
     GList *progress_infos;
@@ -484,10 +471,12 @@ nautilus_progress_indicator_constructed (GObject *object)
     NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (object);
 
     self->progress_manager = nautilus_progress_info_manager_dup_singleton ();
-    g_signal_connect (self->progress_manager, "new-progress-info",
-                      G_CALLBACK (on_new_progress_info), self);
-    g_signal_connect (self->progress_manager, "has-viewers-changed",
-                      G_CALLBACK (on_progress_has_viewers_changed), self);
+    g_signal_connect_object (self->progress_manager, "new-progress-info",
+                             G_CALLBACK (on_new_progress_info), self,
+                             G_CONNECT_DEFAULT);
+    g_signal_connect_object (self->progress_manager, "has-viewers-changed",
+                             G_CALLBACK (on_progress_has_viewers_changed), self,
+                             G_CONNECT_DEFAULT);
 
     self->progress_infos_model = g_list_store_new (NAUTILUS_TYPE_PROGRESS_INFO);
     gtk_list_box_bind_model (GTK_LIST_BOX (self->operations_list),
@@ -519,13 +508,11 @@ nautilus_progress_indicator_finalize (GObject *obj)
 {
     NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (obj);
 
-    disconnect_progress_infos (self);
     unschedule_remove_finished_operations (self);
     unschedule_operations_start (self);
     unschedule_operations_button_attention_style (self);
 
     g_clear_object (&self->progress_infos_model);
-    g_signal_handlers_disconnect_by_data (self->progress_manager, self);
     g_clear_object (&self->progress_manager);
 
     G_OBJECT_CLASS (nautilus_progress_indicator_parent_class)->finalize (obj);
