@@ -214,11 +214,17 @@ on_progress_info_finished (NautilusProgressIndicator *self,
     if (!gtk_widget_is_visible (self->operations_popover) &&
         folder_to_open != NULL)
     {
-        add_operations_button_attention_style (self);
+        gboolean was_quick = nautilus_progress_info_get_total_elapsed_time (info) <= OPERATION_MINIMUM_TIME;
+        if (!was_quick)
+        {
+            add_operations_button_attention_style (self);
+        }
+
         main_label = nautilus_progress_info_get_status (info);
         nautilus_window_show_operation_notification (window,
                                                      main_label,
-                                                     folder_to_open);
+                                                     folder_to_open,
+                                                     was_quick);
         g_free (main_label);
     }
 
@@ -245,7 +251,6 @@ update_operations (NautilusProgressIndicator *self)
     GList *l;
     gboolean should_show_progress_button = FALSE;
 
-    disconnect_progress_infos (self);
     g_list_store_remove_all (self->progress_infos_model);
 
     progress_infos = get_filtered_progress_infos (self);
@@ -253,13 +258,6 @@ update_operations (NautilusProgressIndicator *self)
     {
         should_show_progress_button = should_show_progress_button ||
                                       should_show_progress_info (l->data);
-
-        g_signal_connect_object (l->data, "finished",
-                                 G_CALLBACK (on_progress_info_finished), self, G_CONNECT_SWAPPED);
-        g_signal_connect_object (l->data, "cancelled",
-                                 G_CALLBACK (on_progress_info_cancelled), self, G_CONNECT_SWAPPED);
-        g_signal_connect_object (l->data, "progress-changed",
-                                 G_CALLBACK (on_progress_info_progress_changed), self, G_CONNECT_SWAPPED);
         g_list_store_append (self->progress_infos_model, l->data);
     }
 
@@ -334,10 +332,8 @@ unschedule_operations_start (NautilusProgressIndicator *self)
 }
 
 static void
-on_progress_info_started (NautilusProgressInfo      *info,
-                          NautilusProgressIndicator *self)
+on_progress_info_started (NautilusProgressIndicator *self)
 {
-    g_signal_handlers_disconnect_by_data (info, self);
     schedule_operations_start (self);
 }
 
@@ -346,8 +342,18 @@ on_new_progress_info (NautilusProgressInfoManager *manager,
                       NautilusProgressInfo        *info,
                       NautilusProgressIndicator   *self)
 {
-    g_signal_connect (info, "started",
-                      G_CALLBACK (on_progress_info_started), self);
+    g_signal_connect_object (info, "started",
+                             G_CALLBACK (on_progress_info_started), self,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (info, "finished",
+                             G_CALLBACK (on_progress_info_finished), self,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (info, "cancelled",
+                             G_CALLBACK (on_progress_info_cancelled), self,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (info, "progress-changed",
+                             G_CALLBACK (on_progress_info_progress_changed), self,
+                             G_CONNECT_SWAPPED);
 }
 
 static void

@@ -1360,12 +1360,21 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 void
 nautilus_window_show_operation_notification (NautilusWindow *window,
                                              gchar          *main_label,
-                                             GFile          *folder_to_open)
+                                             GFile          *folder_to_open,
+                                             gboolean        was_quick)
 {
-    GFile *current_location;
+    gboolean is_current_location;
     AdwToast *toast;
 
     if (window->active_slot == NULL || !gtk_window_is_active (GTK_WINDOW (window)))
+    {
+        return;
+    }
+
+    is_current_location = g_file_equal (folder_to_open,
+                                        nautilus_window_slot_get_location (window->active_slot));
+
+    if (is_current_location && was_quick)
     {
         return;
     }
@@ -1374,8 +1383,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     adw_toast_set_priority (toast, ADW_TOAST_PRIORITY_HIGH);
     adw_toast_set_use_markup (toast, FALSE);
 
-    current_location = nautilus_window_slot_get_location (window->active_slot);
-    if (!g_file_equal (folder_to_open, current_location))
+    if (!is_current_location)
     {
         g_autoptr (NautilusFile) folder = NULL;
         g_autofree gchar *button_label = NULL;

@@ -101,7 +101,8 @@ void nautilus_window_sync_title            (NautilusWindow *window,
 
 void nautilus_window_show_operation_notification (NautilusWindow *window,
                                                   gchar          *main_label,
-                                                  GFile          *folder_to_open);
+                                                  GFile          *folder_to_open,
+                                                  gboolean        was_quick);
 
 void nautilus_window_search (NautilusWindow *window,
                              NautilusQuery  *query);
