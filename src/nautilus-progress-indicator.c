@@ -38,7 +38,7 @@ G_DEFINE_FINAL_TYPE (NautilusProgressIndicator, nautilus_progress_indicator, ADW
 
 static void update_operations (NautilusProgressIndicator *self);
 
-static gboolean
+static inline gboolean
 should_show_progress_info (NautilusProgressInfo *info)
 {
     return nautilus_progress_info_get_total_elapsed_time (info) +
@@ -69,23 +69,16 @@ get_filtered_progress_infos (NautilusProgressIndicator *self)
 static gboolean
 should_hide_operations_button (NautilusProgressIndicator *self)
 {
-    GList *progress_infos;
-    GList *l;
+    g_autoptr (GList) progress_infos = get_filtered_progress_infos (self);
 
-    progress_infos = get_filtered_progress_infos (self);
-
-    for (l = progress_infos; l != NULL; l = l->next)
+    for (GList *l = progress_infos; l != NULL; l = l->next)
     {
-        if (nautilus_progress_info_get_total_elapsed_time (l->data) +
-            nautilus_progress_info_get_remaining_time (l->data) > OPERATION_MINIMUM_TIME &&
-            !nautilus_progress_info_get_is_cancelled (l->data) &&
+        if (!nautilus_progress_info_get_is_cancelled (l->data) &&
             !nautilus_progress_info_get_is_finished (l->data))
         {
             return FALSE;
         }
     }
-
-    g_list_free (progress_infos);
 
     return TRUE;
 }
@@ -234,21 +227,15 @@ on_progress_info_finished (NautilusProgressIndicator *self,
 static void
 update_operations (NautilusProgressIndicator *self)
 {
-    GList *progress_infos;
-    GList *l;
-    gboolean should_show_progress_button = FALSE;
+    g_autoptr (GList) progress_infos = get_filtered_progress_infos (self);
+    gboolean should_show_progress_button = (progress_infos != NULL);
 
     g_list_store_remove_all (self->progress_infos_model);
 
-    progress_infos = get_filtered_progress_infos (self);
-    for (l = progress_infos; l != NULL; l = l->next)
+    for (GList *l = progress_infos; l != NULL; l = l->next)
     {
-        should_show_progress_button = should_show_progress_button ||
-                                      should_show_progress_info (l->data);
         g_list_store_append (self->progress_infos_model, l->data);
     }
-
-    g_list_free (progress_infos);
 
     if (should_show_progress_button &&
         !gtk_revealer_get_reveal_child (GTK_REVEALER (self->operations_revealer)))
