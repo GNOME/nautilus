@@ -3986,7 +3986,7 @@ nautilus_file_list_filter (GList                   *files,
     GList *reversed;
 
     *failed = NULL;
-    /* Avoid using g_list_append since it's O(n) */
+
     reversed = g_list_copy (files);
     reversed = g_list_reverse (reversed);
     for (l = reversed; l != NULL; l = l->next)

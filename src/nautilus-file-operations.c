@@ -2155,7 +2155,6 @@ setup_delete_job (GList                          *files,
 {
     DeleteJob *job;
 
-    /* TODO: special case desktop icon link files ... */
     job = op_job_new (DeleteJob, parent_window, dbus_data);
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
     job->try_trash = try_trash;
