@@ -60,7 +60,6 @@ enum
     PROP_LOADING,
     PROP_SEARCH_VISIBLE,
     PROP_SEARCH_GLOBAL,
-    PROP_SELECTION,
     PROP_LOCATION,
     PROP_TOOLTIP,
     PROP_ALLOW_STOP,
@@ -145,7 +144,6 @@ struct _NautilusWindowSlot
     GBinding *selection_binding;
     GBinding *extensions_background_menu_binding;
     GBinding *templates_menu_binding;
-    GList *selection;
 };
 
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
@@ -639,16 +637,6 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
 }
 
 static void
-nautilus_window_slot_set_selection (NautilusWindowSlot *self,
-                                    GList              *selection)
-{
-    nautilus_file_list_free (self->selection);
-
-    self->selection = selection;
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SELECTION]);
-}
-
-static void
 real_set_extensions_background_menu (NautilusWindowSlot *self,
                                      GMenuModel         *menu)
 {
@@ -705,12 +693,6 @@ nautilus_window_slot_set_property (GObject      *object,
         case PROP_TEMPLATES_MENU:
         {
             real_set_templates_menu (self, g_value_get_object (value));
-        }
-        break;
-
-        case PROP_SELECTION:
-        {
-            nautilus_window_slot_set_selection (self, g_value_get_pointer (value));
         }
         break;
 
@@ -847,12 +829,6 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
     }
-}
-
-GList *
-nautilus_window_slot_get_selection (NautilusWindowSlot *self)
-{
-    return self->selection;
 }
 
 static void
@@ -2672,9 +2648,6 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         self->searching_binding = g_object_bind_property (self->content_view, "searching",
                                                           self, "search-visible",
                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        self->selection_binding = g_object_bind_property (self->content_view, "selection",
-                                                          self, "selection",
-                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         self->extensions_background_menu_binding = g_object_bind_property (self->content_view, "extensions-background-menu",
                                                                            self, "extensions-background-menu",
                                                                            G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
@@ -2733,7 +2706,6 @@ nautilus_window_slot_dispose (GObject *object)
     nautilus_window_slot_remove_extra_location_widgets (self);
 
     g_clear_pointer (&self->searching_binding, g_binding_unbind);
-    g_clear_pointer (&self->selection_binding, g_binding_unbind);
     g_clear_pointer (&self->extensions_background_menu_binding, g_binding_unbind);
     g_clear_pointer (&self->templates_menu_binding, g_binding_unbind);
 
@@ -2759,7 +2731,6 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_object (&self->location);
     g_clear_object (&self->pending_file_to_activate);
     g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
-    g_clear_pointer (&self->selection, nautilus_file_list_free);
 
     g_clear_object (&self->current_location_bookmark);
     g_clear_object (&self->last_location_bookmark);
@@ -2853,12 +2824,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
         g_param_spec_boolean ("search-global", NULL, NULL,
                               FALSE,
                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-
-    properties[PROP_SELECTION] =
-        g_param_spec_pointer ("selection",
-                              "Selection of the current view of the slot",
-                              "The selection of the current view of the slot. Proxy property from the view",
-                              G_PARAM_READWRITE);
 
     properties[PROP_WINDOW] =
         g_param_spec_object ("window",
