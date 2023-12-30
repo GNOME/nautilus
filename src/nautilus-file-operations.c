@@ -6392,7 +6392,7 @@ get_abs_path_for_symlink (GFile *file,
 
     relative = g_file_get_relative_path (root, file);
     g_object_unref (root);
-    abs = g_strconcat ("/", relative, NULL);
+    abs = g_strconcat (G_DIR_SEPARATOR_S, relative, NULL);
     g_free (relative);
     return abs;
 }
