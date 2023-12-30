@@ -1875,7 +1875,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
 
     /* Return an error for incoming names containing path separators.
      * But not for .desktop files as '/' are allowed for them */
-    if (strstr (new_name, "/") != NULL)
+    if (strstr (new_name, G_DIR_SEPARATOR_S) != NULL)
     {
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
                              _("Slashes are not allowed in filenames"));
