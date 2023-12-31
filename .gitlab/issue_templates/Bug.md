@@ -1,6 +1,6 @@
 <!--
-Please test if the bug also happens in the latest development version.
-The simplest way to do it is installing it alongside the regular version with these instructions:
+It's very important to know if the bug also happens in the latest development version.
+It can be installed alongside the regular version with these instructions:
 
 1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
 
@@ -14,7 +14,7 @@ The simplest way to do it is installing it alongside the regular version with th
 # Affected Version
 - Version: <!-- Note: Versions older than a year are not supported. -->
 - Distribution: <!-- Example: Ubuntu 23.10 -->
-- Happens with development Flatpak: Yes / No
+- Also happens with development version: Yes / No
 
 # Steps to reproduce <!-- Explain in detail how the issue can be reproduced. -->
 1.
