@@ -1914,17 +1914,21 @@ static void
 pattern_select_response_select (AdwWindow *dialog,
                                 gpointer   user_data)
 {
-    NautilusFilesView *view;
+    NautilusFilesView *view = g_object_get_data (G_OBJECT (dialog), "view");
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusDirectory *directory;
-    GtkWidget *entry;
+    GtkWidget *entry = g_object_get_data (G_OBJECT (dialog), "entry");
+    const char *text = gtk_editable_get_text (GTK_EDITABLE (entry));
     g_autolist (NautilusFile) selection = NULL;
 
-    view = g_object_get_data (G_OBJECT (dialog), "view");
-    entry = g_object_get_data (G_OBJECT (dialog), "entry");
-
     directory = nautilus_files_view_get_directory (view);
-    selection = nautilus_directory_match_pattern (directory,
-                                                  gtk_editable_get_text (GTK_EDITABLE (entry)));
+    selection = nautilus_directory_match_pattern (directory, text);
+
+    for (GList *l = priv->subdirectory_list; l != NULL; l = l->next)
+    {
+        directory = l->data;
+        selection = g_list_concat (selection, nautilus_directory_match_pattern (directory, text));
+    }
 
     nautilus_files_view_call_set_selection (view, selection);
     nautilus_files_view_reveal_selection (view);
