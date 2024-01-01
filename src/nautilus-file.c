@@ -2088,18 +2088,22 @@ real_batch_rename (GList                         *files,
                    NautilusFileOperationCallback  callback,
                    gpointer                       callback_data)
 {
-    GList *l1, *l2, *old_files, *new_files;
+    GList *l1, *l2;
+    g_autolist (GFile) old_files = NULL, new_files = NULL;
     NautilusFileOperation *op;
-    GFile *location;
-    GString *new_name;
-    NautilusFile *file;
-    GError *error;
-    GFile *new_file;
+    gsize len = 0;
+    g_autoptr (GHashTable) staged_names = g_hash_table_new_full (NULL, NULL, NULL, g_free);
+    g_autoptr (GHashTable) staged_files = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                                 g_free, NULL);
+    g_autoptr (GHashTable) stub_files = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                               g_free, g_object_unref);
+    g_autoptr (GHashTable) unchained_files = g_hash_table_new_full (NULL, NULL,
+                                                                    NULL, g_object_unref);
+    GHashTableIter hash_iter;
+    GFile *key;
+    gchar *value;
     BatchRenameData *data;
-
-    error = NULL;
-    old_files = NULL;
-    new_files = NULL;
+    GFile *fallback;
 
     /* Set up a batch renaming operation. */
     op = nautilus_file_operation_new (files->data, callback, callback_data);
@@ -2107,86 +2111,231 @@ real_batch_rename (GList                         *files,
     op->renamed_files = 0;
     op->skipped_files = 0;
 
-    for (l1 = files; l1 != NULL; l1 = l1->next)
-    {
-        file = NAUTILUS_FILE (l1->data);
-
-        file->details->operations_in_progress = g_list_prepend (file->details->operations_in_progress,
-                                                                op);
-    }
-
     for (l1 = files, l2 = new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
-        const char *new_file_name;
-        file = NAUTILUS_FILE (l1->data);
-        new_name = l2->data;
+        NautilusFile *file = NAUTILUS_FILE (l1->data);
+        GString *new_name = l2->data;
+        GFile *location = nautilus_file_get_location (file);
+        const char *new_file_name = nautilus_file_can_rename_file (file,
+                                                                   new_name->str,
+                                                                   NULL, NULL);
 
-        location = nautilus_file_get_location (file);
-
-        new_file_name = nautilus_file_can_rename_file (file,
-                                                       new_name->str,
-                                                       NULL, NULL);
+        len++;
+        file->details->operations_in_progress = g_list_prepend (file->details->operations_in_progress,
+                                                                op);
 
         if (new_file_name == NULL)
         {
-            op->skipped_files++;
+            name_is (file, new_name->str) ? op->renamed_files++ : op->skipped_files++;
+
+            g_hash_table_insert (stub_files, g_strdup (file->details->name), location);
 
             continue;
         }
 
-        g_assert (G_IS_FILE (location));
+        g_assert (g_hash_table_insert (staged_names, location, g_strdup (new_file_name)));
+        g_assert (g_hash_table_insert (staged_files, g_strdup (file->details->name), location));
+    }
 
-        /* Do the renaming. */
-        new_file = g_file_set_display_name (location,
-                                            new_file_name,
-                                            op->cancellable,
-                                            &error);
+    g_hash_table_iter_init (&hash_iter, staged_names);
+    g_hash_table_iter_next (&hash_iter, (gpointer *) &key, (gpointer *) &value);
+    while (g_hash_table_size (staged_names) > 0)
+    {
+        GFile *chain_file = key;
+        GFile *conflicting_staged_file = g_hash_table_lookup (staged_files, value);
+        gboolean is_chain_start = TRUE;
 
-        data = g_new0 (BatchRenameData, 1);
-        data->op = op;
-        data->file = file;
-
-        g_file_query_info_async (new_file,
-                                 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
-                                 G_PRIORITY_DEFAULT,
-                                 op->cancellable,
-                                 batch_rename_get_info_callback,
-                                 data);
-
-        if (error != NULL)
+        if (conflicting_staged_file != NULL)
         {
-            g_warning ("Batch rename for file \"%s\" failed", nautilus_file_get_name (file));
-            g_error_free (error);
-            error = NULL;
+            g_autoptr (GFile) conflicting_staged_file_parent = g_file_get_parent (conflicting_staged_file);
 
-            op->skipped_files++;
+            is_chain_start = !g_file_has_parent (chain_file, conflicting_staged_file_parent);
+        }
+
+        if (is_chain_start)
+        {
+            /* Process the chain leading to this file */
+            gboolean skip_files = FALSE;
+
+            while (chain_file != NULL)
+            {
+                g_autofree gchar *chain_file_old_name = g_file_get_basename (chain_file);
+                gchar *chain_file_new_name = g_hash_table_lookup (staged_names, chain_file);
+                GFile *conflicting_stub_file = g_hash_table_lookup (stub_files,
+                                                                    chain_file_new_name);
+
+                if (!skip_files && conflicting_stub_file != NULL)
+                {
+                    g_autoptr (GFile) conflicting_stub_file_parent = g_file_get_parent (conflicting_stub_file);
+
+                    skip_files = g_file_has_parent (chain_file, conflicting_stub_file_parent);
+                }
+
+                /* Rename and skip the chain on error */
+                if (!skip_files)
+                {
+                    g_autoptr (GError) error = NULL;
+
+                    /* Do the renaming. */
+                    g_autoptr (GFile) renamed_file = g_file_set_display_name (chain_file,
+                                                                              chain_file_new_name,
+                                                                              op->cancellable,
+                                                                              &error);
+
+                    data = g_new0 (BatchRenameData, 1);
+                    data->op = op;
+                    data->file = nautilus_file_get (chain_file);
+
+                    g_file_query_info_async (renamed_file,
+                                             NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                             0,
+                                             G_PRIORITY_DEFAULT,
+                                             op->cancellable,
+                                             batch_rename_get_info_callback,
+                                             data);
+
+                    if (error != NULL)
+                    {
+                        g_warning ("Batch rename for file \"%s\" failed: %s",
+                                   chain_file_old_name, error->message);
+
+                        /* We need to skip the rest of the files in the chain. */
+                        skip_files = TRUE;
+                    }
+                    else
+                    {
+                        if (g_hash_table_steal_extended (unchained_files, chain_file,
+                                                         NULL, (gpointer *) &fallback))
+                        {
+                            old_files = g_list_append (old_files, fallback);
+                        }
+                        else
+                        {
+                            old_files = g_list_append (old_files, g_object_ref (chain_file));
+                        }
+
+                        new_files = g_list_append (new_files, g_steal_pointer (&renamed_file));
+                    }
+                }
+
+                g_hash_table_remove (staged_names, chain_file);
+                g_hash_table_remove (staged_files, chain_file_old_name);
+
+                if (skip_files)
+                {
+                    op->skipped_files++;
+
+                    g_hash_table_insert (stub_files, g_strdup (chain_file_old_name),
+                                         g_steal_pointer (&chain_file));
+                }
+
+                g_set_object (&chain_file, g_hash_table_lookup (staged_files, chain_file_old_name));
+            }
+
+            g_hash_table_iter_init (&hash_iter, staged_names);
+            g_hash_table_iter_next (&hash_iter, (gpointer *) &key, (gpointer *) &value);
         }
         else
         {
-            old_files = g_list_append (old_files, location);
-            new_files = g_list_append (new_files, new_file);
+            /* Iterate to find out if it's a chain or a cycle. */
+            GFile *iter_start_file = NULL;
+
+            while (chain_file != NULL)
+            {
+                gchar *chain_file_new_name = g_hash_table_lookup (staged_names, chain_file);
+                GFile *prev_chain_file = g_hash_table_lookup (staged_files, chain_file_new_name);
+                gboolean reached_chain_start = TRUE;
+
+                if (prev_chain_file != NULL)
+                {
+                    g_autoptr (GFile) prev_chain_file_parent = g_file_get_parent (prev_chain_file);
+
+                    reached_chain_start = !g_file_has_parent (chain_file, prev_chain_file_parent);
+                }
+
+                if (reached_chain_start)
+                {
+                    key = chain_file;
+                    value = chain_file_new_name;
+                    break;
+                }
+
+                if (iter_start_file == chain_file)
+                {
+                    /* We found a cycle, break it with a temporary name. */
+                    g_autofree gchar *random_string = g_uuid_string_random ();
+                    gchar *prev_chain_file_old_name = chain_file_new_name;
+                    g_autofree gchar *prev_chain_file_new_name = NULL;
+                    GFile *renamed_file = g_file_set_display_name (prev_chain_file,
+                                                                   random_string,
+                                                                   op->cancellable,
+                                                                   NULL);
+
+                    g_hash_table_remove (staged_files, prev_chain_file_old_name);
+                    g_hash_table_steal_extended (staged_names, prev_chain_file,
+                                                 NULL, (gpointer *) &prev_chain_file_new_name);
+
+                    if (renamed_file != NULL)
+                    {
+                        g_hash_table_insert (staged_files, g_strdup (random_string), renamed_file);
+                        g_hash_table_insert (staged_names,
+                                             renamed_file,
+                                             g_steal_pointer (&prev_chain_file_new_name));
+
+                        g_hash_table_insert (unchained_files, renamed_file, prev_chain_file);
+                    }
+                    else
+                    {
+                        /* Unlikely to be a name conflict, stub the file. */
+                        op->skipped_files++;
+
+                        g_hash_table_insert (stub_files,
+                                             g_strdup (prev_chain_file_old_name), prev_chain_file);
+                    }
+
+                    key = chain_file;
+                    value = chain_file_new_name;
+                    break;
+                }
+
+                if (iter_start_file == NULL)
+                {
+                    iter_start_file = chain_file;
+                }
+
+                chain_file = prev_chain_file;
+            }
         }
+    }
+
+    /* Attempt to rename back the files that were renamed to temporary names
+     * but weren't restored. Don't handle any errors though, it's likely
+     * futile.
+     */
+    g_hash_table_iter_init (&hash_iter, unchained_files);
+    while (g_hash_table_iter_next (&hash_iter, (gpointer *) &key, (gpointer *) &fallback))
+    {
+        g_file_move (key, fallback, G_FILE_COPY_NONE, NULL, NULL, NULL, NULL);
     }
 
     /* Tell the undo manager a batch rename is taking place if at least
      * a file has been renamed*/
-    if (!nautilus_file_undo_manager_is_operating () && op->skipped_files != g_list_length (files))
+    if (!nautilus_file_undo_manager_is_operating () && op->skipped_files != len)
     {
         op->undo_info = nautilus_file_undo_info_batch_rename_new (g_list_length (new_files));
 
         nautilus_file_undo_info_batch_rename_set_data_pre (NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (op->undo_info),
-                                                           old_files);
+                                                           g_steal_pointer (&old_files));
 
         nautilus_file_undo_info_batch_rename_set_data_post (NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (op->undo_info),
-                                                            new_files);
+                                                            g_steal_pointer (&new_files));
 
         nautilus_file_undo_manager_set_action (op->undo_info);
     }
 
-    if (op->skipped_files == g_list_length (files))
+    if (op->skipped_files == len)
     {
-        nautilus_file_operation_complete (op, NULL, error);
+        nautilus_file_operation_complete (op, NULL, NULL);
     }
 }
 
