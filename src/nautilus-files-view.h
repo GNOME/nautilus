@@ -142,8 +142,6 @@ struct _NautilusFilesViewClass {
 
         void    (* update_actions_state)     (NautilusFilesView *view);
 
-        void        (* sort_directories_first_changed) (NautilusFilesView *view);
-
         /* Get the id for this view. Its a guint*/
         guint        (* get_view_id)       (NautilusFilesView *view);
 
@@ -193,7 +191,6 @@ void                nautilus_files_view_pop_up_background_context_menu   (Nautil
 void                nautilus_files_view_pop_up_selection_context_menu    (NautilusFilesView *view,
                                                                           gdouble            x,
                                                                           gdouble            y);
-gboolean            nautilus_files_view_should_sort_directories_first    (NautilusFilesView *view);
 
 gboolean            nautilus_files_view_has_subdirectory                (NautilusFilesView *view,
                                                                          NautilusDirectory *directory);

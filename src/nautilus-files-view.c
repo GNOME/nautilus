@@ -216,8 +216,6 @@ typedef struct
 
     gboolean in_destruction;
 
-    gboolean sort_directories_first;
-
     gboolean show_hidden_files;
 
     gboolean selection_was_removed;
@@ -3001,38 +2999,6 @@ action_create_links (GSimpleAction *action,
     paste_files (view, NULL, TRUE);
 }
 
-gboolean
-nautilus_files_view_should_sort_directories_first (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-    gboolean is_search;
-
-    priv = nautilus_files_view_get_instance_private (view);
-    is_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
-
-    return priv->sort_directories_first && !is_search;
-}
-
-static void
-sort_directories_first_changed_callback (gpointer callback_data)
-{
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-    gboolean preference_value;
-
-    view = NAUTILUS_FILES_VIEW (callback_data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    preference_value =
-        g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
-
-    if (preference_value != priv->sort_directories_first)
-    {
-        priv->sort_directories_first = preference_value;
-        NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->sort_directories_first_changed (view);
-    }
-}
-
 static void
 show_hidden_files_changed_callback (gpointer callback_data)
 {
@@ -3389,8 +3355,6 @@ nautilus_files_view_dispose (GObject *object)
 
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           schedule_update_context_menus, view);
-    g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
-                                          sort_directories_first_changed_callback, view);
     g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
                                           show_hidden_files_changed_callback, view);
     g_signal_handlers_disconnect_by_func (nautilus_window_state,
@@ -9800,8 +9764,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     }
     update_templates_directory (view);
 
-    priv->sort_directories_first =
-        g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
     priv->show_hidden_files =
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
@@ -9827,9 +9789,6 @@ nautilus_files_view_init (NautilusFilesView *view)
                              G_CALLBACK (update_sort_order_from_metadata_and_preferences),
                              view,
                              G_CONNECT_SWAPPED);
-    g_signal_connect_swapped (gtk_filechooser_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-                              G_CALLBACK (sort_directories_first_changed_callback), view);
     g_signal_connect_swapped (gtk_filechooser_preferences,
                               "changed::" NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
                               G_CALLBACK (show_hidden_files_changed_callback), view);

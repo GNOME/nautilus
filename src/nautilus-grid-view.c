@@ -53,6 +53,24 @@ nautilus_grid_view_sort (gconstpointer a,
 }
 
 static void
+update_sort_directories_first (NautilusGridView *self)
+{
+    NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
+
+    if (nautilus_file_is_in_search (directory_as_file))
+    {
+        self->directories_first = FALSE;
+    }
+    else
+    {
+        self->directories_first = g_settings_get_boolean (gtk_filechooser_preferences,
+                                                          NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+    }
+
+    nautilus_view_model_sort (nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self)));
+}
+
+static void
 nautilus_grid_view_setup_directory (NautilusListBase  *list_base,
                                     NautilusDirectory *new_directory)
 {
@@ -60,7 +78,7 @@ nautilus_grid_view_setup_directory (NautilusListBase  *list_base,
 
     NAUTILUS_LIST_BASE_CLASS (nautilus_grid_view_parent_class)->setup_directory (list_base, new_directory);
 
-    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
+    update_sort_directories_first (self);
 }
 
 static void
@@ -354,21 +372,6 @@ real_scroll_to (NautilusListBase   *list_base_view,
 }
 
 static void
-real_sort_directories_first_changed (NautilusFilesView *files_view)
-{
-    NautilusGridView *self;
-    NautilusViewModel *model;
-    g_autoptr (GtkCustomSorter) sorter = NULL;
-
-    self = NAUTILUS_GRID_VIEW (files_view);
-    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
-
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-    sorter = gtk_custom_sorter_new (nautilus_grid_view_sort, self, NULL);
-    nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
-}
-
-static void
 action_sort_order_changed (GSimpleAction *action,
                            GVariant      *value,
                            gpointer       user_data)
@@ -565,7 +568,6 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     files_view_class->bump_zoom_level = real_bump_zoom_level;
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
-    files_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
     files_view_class->get_view_id = real_get_view_id;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
@@ -605,7 +607,11 @@ nautilus_grid_view_init (NautilusGridView *self)
                                      G_N_ELEMENTS (view_icon_actions),
                                      self);
 
-    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
+    g_signal_connect_object (gtk_filechooser_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+                             G_CALLBACK (update_sort_directories_first),
+                             self,
+                             G_CONNECT_SWAPPED);
 
     self->zoom_level = get_default_zoom_level ();
     /* Keep the action synced with the actual value, so the toolbar can poll it */

@@ -509,6 +509,24 @@ const GActionEntry list_view_entries[] =
 };
 
 static void
+update_sort_directories_first (NautilusListView *self)
+{
+    NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
+
+    if (nautilus_file_is_in_search (directory_as_file))
+    {
+        self->directories_first = FALSE;
+    }
+    else
+    {
+        self->directories_first = g_settings_get_boolean (gtk_filechooser_preferences,
+                                                          NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+    }
+
+    nautilus_view_model_sort (nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self)));
+}
+
+static void
 nautilus_list_view_setup_directory (NautilusListBase  *list_base,
                                     NautilusDirectory *new_directory)
 {
@@ -556,7 +574,7 @@ nautilus_list_view_setup_directory (NautilusListBase  *list_base,
         self->expand_as_a_tree = FALSE;
     }
 
-    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
+    update_sort_directories_first (self);
 
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
@@ -631,16 +649,6 @@ real_is_zoom_level_default (NautilusFilesView *files_view)
     icon_size = get_icon_size_for_zoom_level (self->zoom_level);
 
     return icon_size == NAUTILUS_LIST_ICON_SIZE_MEDIUM;
-}
-
-static void
-real_sort_directories_first_changed (NautilusFilesView *files_view)
-{
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_view);
-
-    self->directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
-
-    nautilus_view_model_sort (nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self)));
 }
 
 static char *
@@ -1222,6 +1230,12 @@ nautilus_list_view_init (NautilusListView *self)
                                      G_N_ELEMENTS (list_view_entries),
                                      self);
 
+    g_signal_connect_object (gtk_filechooser_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
+                             G_CALLBACK (update_sort_directories_first),
+                             self,
+                             G_CONNECT_SWAPPED);
+
     self->zoom_level = get_default_zoom_level ();
     g_action_group_change_action_state (nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self)),
                                         "zoom-to-level", g_variant_new_int32 (self->zoom_level));
@@ -1284,7 +1298,6 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     files_view_class->bump_zoom_level = real_bump_zoom_level;
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
-    files_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
     files_view_class->get_backing_uri = real_get_backing_uri;
     files_view_class->get_view_id = real_get_view_id;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
