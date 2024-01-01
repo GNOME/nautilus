@@ -37,6 +37,8 @@ struct _NautilusListView
 
     GtkColumnView *view_ui;
 
+    NautilusSearchDirectory *search_directory;
+
     GActionGroup *action_group;
     gint zoom_level;
 
@@ -104,8 +106,7 @@ apply_columns_settings (NautilusListView  *self,
                         char             **visible_columns)
 {
     g_autolist (NautilusColumn) all_columns = NULL;
-    NautilusFile *file;
-    NautilusDirectory *directory;
+    NautilusFile *file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
     g_autoptr (GFile) location = NULL;
     g_autoptr (GList) view_columns = NULL;
     GListModel *old_view_columns;
@@ -113,13 +114,9 @@ apply_columns_settings (NautilusListView  *self,
     g_autoptr (GHashTable) old_view_columns_hash = NULL;
     int column_i = 0;
 
-    file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
-    directory = nautilus_files_view_get_directory (NAUTILUS_FILES_VIEW (self));
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
+    if (self->search_directory != NULL)
     {
-        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
-
-        location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
+        location = nautilus_query_get_location (nautilus_search_directory_get_query (self->search_directory));
     }
 
     if (location == NULL)
@@ -279,7 +276,7 @@ sort_directories_func (gconstpointer a,
 static void
 update_columns_settings_from_metadata_and_preferences (NautilusListView *self)
 {
-    NautilusFile *file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
+    NautilusFile *file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
     g_auto (GStrv) column_order = nautilus_column_get_column_order (file);
     g_auto (GStrv) visible_columns = nautilus_column_get_visible_columns (file);
 
@@ -289,16 +286,13 @@ update_columns_settings_from_metadata_and_preferences (NautilusListView *self)
 static GFile *
 get_base_location (NautilusListView *self)
 {
-    NautilusDirectory *directory;
     GFile *base_location = NULL;
 
-    directory = nautilus_files_view_get_directory (NAUTILUS_FILES_VIEW (self));
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
+    if (self->search_directory != NULL)
     {
-        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (directory);
         g_autoptr (GFile) location = NULL;
 
-        location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
+        location = nautilus_query_get_location (nautilus_search_directory_get_query (self->search_directory));
 
         if (location != NULL &&
             !g_file_has_uri_scheme (location, SCHEME_RECENT) &&
@@ -358,7 +352,7 @@ create_column_editor (NautilusListView *view)
     GtkWidget *column_chooser;
     NautilusFile *file;
 
-    file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
+    file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (view));
     column_chooser = nautilus_column_chooser_new (file);
     gtk_window_set_transient_for (GTK_WINDOW (column_chooser),
                                   GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))));
@@ -524,6 +518,12 @@ nautilus_list_view_setup_directory (NautilusListBase  *list_base,
 
     NAUTILUS_LIST_BASE_CLASS (nautilus_list_view_parent_class)->setup_directory (list_base, new_directory);
 
+    g_clear_object (&self->search_directory);
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (new_directory))
+    {
+        self->search_directory = g_object_ref (NAUTILUS_SEARCH_DIRECTORY (new_directory));
+    }
+
     update_columns_settings_from_metadata_and_preferences (self);
 
     self->expand_as_a_tree = g_settings_get_boolean (nautilus_list_view_preferences,
@@ -531,7 +531,7 @@ nautilus_list_view_setup_directory (NautilusListBase  *list_base,
 
     self->path_attribute_q = 0;
     g_clear_object (&self->file_path_base_location);
-    file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
+    file = nautilus_list_base_get_directory_as_file (list_base);
     if (nautilus_file_is_in_trash (file))
     {
         self->path_attribute_q = g_quark_from_string ("trash_orig_path");
@@ -935,7 +935,7 @@ setup_name_cell (GtkSignalListItemFactory *factory,
     nautilus_name_cell_set_path (NAUTILUS_NAME_CELL (cell),
                                  self->path_attribute_q,
                                  self->file_path_base_location);
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (nautilus_files_view_get_directory (NAUTILUS_FILES_VIEW (self))))
+    if (self->search_directory != NULL)
     {
         nautilus_name_cell_show_snippet (NAUTILUS_NAME_CELL (cell));
     }
@@ -1247,6 +1247,8 @@ nautilus_list_view_dispose (GObject *object)
 
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_set_sorter (model, NULL);
+
+    g_clear_object (&self->search_directory);
 
     g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
                                           update_columns_settings_from_metadata_and_preferences,

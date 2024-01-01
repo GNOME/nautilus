@@ -39,6 +39,7 @@ typedef struct _NautilusListBasePrivate NautilusListBasePrivate;
 struct _NautilusListBasePrivate
 {
     NautilusViewModel *model;
+    NautilusFile *directory_as_file;
 
     guint prioritize_thumbnailing_handle_id;
     GtkAdjustment *vadjustment;
@@ -680,10 +681,9 @@ on_view_drag_enter (GtkDropTarget *target,
 {
     NautilusListBase *self = user_data;
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    NautilusFile *dest_file;
+    NautilusFile *dest_file = nautilus_list_base_get_directory_as_file (self);
     const GValue *value;
 
-    dest_file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
     value = gtk_drop_target_get_value (target);
     priv->drag_view_action = get_preferred_action (dest_file, value);
     if (priv->drag_view_action == 0)
@@ -705,7 +705,7 @@ on_view_drag_value_notify (GObject    *object,
     NautilusListBase *self = user_data;
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     const GValue *value;
-    NautilusFile *dest_file;
+    NautilusFile *dest_file = nautilus_list_base_get_directory_as_file (self);
 
     value = gtk_drop_target_get_value (target);
     if (value == NULL)
@@ -713,7 +713,6 @@ on_view_drag_value_notify (GObject    *object,
         return;
     }
 
-    dest_file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
     priv->drag_view_action = get_preferred_action (dest_file, value);
 }
 
@@ -860,6 +859,9 @@ base_setup_directory (NautilusListBase  *self,
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
+    g_clear_object (&priv->directory_as_file);
+    priv->directory_as_file = nautilus_directory_get_corresponding_file (directory);
+
     /* Temporary workaround */
     rubberband_set_state (self, TRUE);
 
@@ -871,7 +873,7 @@ base_setup_directory (NautilusListBase  *self,
      * are ignored. Update DnD variables here upon navigating to a directory*/
     if (gtk_drop_target_get_current_drop (priv->view_drop_target) != NULL)
     {
-        priv->drag_view_action = get_preferred_action (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
+        priv->drag_view_action = get_preferred_action (nautilus_list_base_get_directory_as_file (self),
                                                        gtk_drop_target_get_value (priv->view_drop_target));
         priv->drag_item_action = 0;
     }
@@ -1160,6 +1162,7 @@ nautilus_list_base_dispose (GObject *object)
     NautilusListBase *self = NAUTILUS_LIST_BASE (object);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
+    g_clear_object (&priv->directory_as_file);
     g_clear_handle_id (&priv->prioritize_thumbnailing_handle_id, g_source_remove);
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
@@ -1364,6 +1367,14 @@ nautilus_list_base_init (NautilusListBase *self)
                              G_CALLBACK (set_click_mode_from_settings), self,
                              G_CONNECT_SWAPPED);
     set_click_mode_from_settings (self);
+}
+
+NautilusFile *
+nautilus_list_base_get_directory_as_file (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    return priv->directory_as_file;
 }
 
 NautilusViewModel *

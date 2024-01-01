@@ -17,6 +17,7 @@
 G_BEGIN_DECLS
 
 /* Methods */
+NautilusFile      *nautilus_list_base_get_directory_as_file (NautilusListBase *self);
 NautilusViewModel *nautilus_list_base_get_model     (NautilusListBase *self);
 void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 
