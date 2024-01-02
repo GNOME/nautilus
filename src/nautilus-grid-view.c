@@ -29,7 +29,8 @@ struct _NautilusGridView
 
 G_DEFINE_TYPE (NautilusGridView, nautilus_grid_view, NAUTILUS_TYPE_LIST_BASE)
 
-static guint get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level);
+static void set_zoom_level (NautilusGridView *self,
+                            int               new_level);
 
 #define get_view_item(li) \
         (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (li)))))
@@ -93,9 +94,7 @@ real_bump_zoom_level (NautilusFilesView *files_view,
     if (new_level >= NAUTILUS_GRID_ZOOM_LEVEL_SMALL &&
         new_level <= NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE)
     {
-        g_action_group_change_action_state (self->action_group,
-                                            "zoom-to-level",
-                                            g_variant_new_int32 (new_level));
+        set_zoom_level (self, new_level);
     }
 }
 
@@ -140,10 +139,8 @@ get_icon_size_for_zoom_level (NautilusGridZoomLevel zoom_level)
 static gint
 get_default_zoom_level (void)
 {
-    NautilusGridZoomLevel default_zoom_level;
-
-    default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
-                                              NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
+    int default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
+                                                  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
 
     /* Sanitize preference value */
     return CLAMP (default_zoom_level,
@@ -184,9 +181,17 @@ set_captions_from_preferences (NautilusGridView *self)
 
 static void
 set_zoom_level (NautilusGridView *self,
-                guint             new_level)
+                int               new_level)
 {
     self->zoom_level = new_level;
+
+    if (g_settings_get_enum (nautilus_icon_view_preferences,
+                             NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL) != new_level)
+    {
+        g_settings_set_enum (nautilus_icon_view_preferences,
+                             NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
+                             new_level);
+    }
 
     /* The zoom level may change how many captions are allowed. Update it before
      * notifying the icon size change, under the assumption that NautilusGridCell
@@ -204,9 +209,8 @@ real_restore_standard_zoom_level (NautilusFilesView *files_view)
     NautilusGridView *self;
 
     self = NAUTILUS_GRID_VIEW (files_view);
-    g_action_group_change_action_state (self->action_group,
-                                        "zoom-to-level",
-                                        g_variant_new_int32 (NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM));
+
+    set_zoom_level (self, NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM);
 }
 
 static gboolean
@@ -405,27 +409,6 @@ real_get_view_id (NautilusFilesView *files_view)
 }
 
 static void
-action_zoom_to_level (GSimpleAction *action,
-                      GVariant      *state,
-                      gpointer       user_data)
-{
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (user_data);
-    int zoom_level;
-
-    zoom_level = g_variant_get_int32 (state);
-    set_zoom_level (self, zoom_level);
-    g_simple_action_set_state (G_SIMPLE_ACTION (action), state);
-
-    if (g_settings_get_enum (nautilus_icon_view_preferences,
-                             NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL) != zoom_level)
-    {
-        g_settings_set_enum (nautilus_icon_view_preferences,
-                             NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
-                             zoom_level);
-    }
-}
-
-static void
 on_captions_preferences_changed (NautilusGridView *self)
 {
     set_captions_from_preferences (self);
@@ -552,7 +535,6 @@ create_view_ui (NautilusGridView *self)
 const GActionEntry view_icon_actions[] =
 {
     { .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)", .change_state = action_sort_order_changed },
-    { .name = "zoom-to-level", .state = "100", .change_state = action_zoom_to_level }
 };
 
 static void
@@ -613,10 +595,7 @@ nautilus_grid_view_init (NautilusGridView *self)
                              self,
                              G_CONNECT_SWAPPED);
 
-    self->zoom_level = get_default_zoom_level ();
-    /* Keep the action synced with the actual value, so the toolbar can poll it */
-    g_action_group_change_action_state (nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self)),
-                                        "zoom-to-level", g_variant_new_int32 (self->zoom_level));
+    set_zoom_level (self, get_default_zoom_level ());
 }
 
 NautilusGridView *

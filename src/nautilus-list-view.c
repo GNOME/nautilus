@@ -459,9 +459,17 @@ action_sort_order_changed (GSimpleAction *action,
 
 static void
 set_zoom_level (NautilusListView *self,
-                guint             new_level)
+                int               new_level)
 {
     self->zoom_level = new_level;
+
+    if (g_settings_get_enum (nautilus_list_view_preferences,
+                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL) != new_level)
+    {
+        g_settings_set_enum (nautilus_list_view_preferences,
+                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
+                             new_level);
+    }
 
     g_object_notify (G_OBJECT (self), "icon-size");
 
@@ -477,27 +485,6 @@ set_zoom_level (NautilusListView *self,
     nautilus_files_view_update_toolbar_menus (NAUTILUS_FILES_VIEW (self));
 }
 
-static void
-action_zoom_to_level (GSimpleAction *action,
-                      GVariant      *state,
-                      gpointer       user_data)
-{
-    NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    int zoom_level;
-
-    zoom_level = g_variant_get_int32 (state);
-    set_zoom_level (self, zoom_level);
-    g_simple_action_set_state (G_SIMPLE_ACTION (action), state);
-
-    if (g_settings_get_enum (nautilus_list_view_preferences,
-                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL) != zoom_level)
-    {
-        g_settings_set_enum (nautilus_list_view_preferences,
-                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
-                             zoom_level);
-    }
-}
-
 const GActionEntry list_view_entries[] =
 {
     { .name = "visible-columns", .activate = action_visible_columns },
@@ -505,7 +492,6 @@ const GActionEntry list_view_entries[] =
         .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)",
         .change_state = action_sort_order_changed
     },
-    { .name = "zoom-to-level", .state = "1", .change_state = action_zoom_to_level }
 };
 
 static void
@@ -592,19 +578,15 @@ real_bump_zoom_level (NautilusFilesView *files_view,
     if (new_level >= NAUTILUS_LIST_ZOOM_LEVEL_SMALL &&
         new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE)
     {
-        g_action_group_change_action_state (self->action_group,
-                                            "zoom-to-level",
-                                            g_variant_new_int32 (new_level));
+        set_zoom_level (self, new_level);
     }
 }
 
 static gint
 get_default_zoom_level (void)
 {
-    NautilusListZoomLevel default_zoom_level;
-
-    default_zoom_level = g_settings_get_enum (nautilus_list_view_preferences,
-                                              NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL);
+    gint default_zoom_level = g_settings_get_enum (nautilus_list_view_preferences,
+                                                   NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL);
 
     /* Sanitize preference value. */
     return CLAMP (default_zoom_level,
@@ -618,9 +600,8 @@ real_restore_standard_zoom_level (NautilusFilesView *files_view)
     NautilusListView *self;
 
     self = NAUTILUS_LIST_VIEW (files_view);
-    g_action_group_change_action_state (self->action_group,
-                                        "zoom-to-level",
-                                        g_variant_new_int32 (NAUTILUS_LIST_ZOOM_LEVEL_MEDIUM));
+
+    set_zoom_level (self, NAUTILUS_LIST_ZOOM_LEVEL_MEDIUM);
 }
 
 static gboolean
@@ -1236,9 +1217,7 @@ nautilus_list_view_init (NautilusListView *self)
                              self,
                              G_CONNECT_SWAPPED);
 
-    self->zoom_level = get_default_zoom_level ();
-    g_action_group_change_action_state (nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self)),
-                                        "zoom-to-level", g_variant_new_int32 (self->zoom_level));
+    set_zoom_level (self, get_default_zoom_level ());
 
     /* Set up tree expand/collapse shortcuts in capture phase otherwise they
      * would be handled by GtkListBase's cursor movement shortcuts. */

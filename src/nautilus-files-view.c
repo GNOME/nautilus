@@ -7845,10 +7845,6 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "zoom-standard");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !zoom_level_is_default);
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "zoom-to-level");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !nautilus_files_view_is_empty (view));
 
     current_location = nautilus_file_get_location (priv->directory_as_file);
     current_uri = g_file_get_uri (current_location);
