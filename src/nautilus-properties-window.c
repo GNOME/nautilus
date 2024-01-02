@@ -1947,24 +1947,15 @@ setup_ownership_row (NautilusPropertiesWindow *self,
 
 static gboolean
 file_has_prefix (NautilusFile *file,
-                 GList        *prefix_candidates)
+                 GHashTable   *prefix_candidates)
 {
-    GList *p;
-    g_autoptr (GFile) location = NULL;
-
-    location = nautilus_file_get_location (file);
-
-    for (p = prefix_candidates; p != NULL; p = p->next)
+    for (g_autoptr (GFile) parent = nautilus_file_get_parent_location (file);
+         parent != NULL;
+         g_set_object (&parent, g_file_get_parent (parent)))
     {
-        g_autoptr (GFile) candidate_location = NULL;
+        g_autofree gchar *parent_uri = g_file_get_uri (parent);
 
-        if (file == p->data)
-        {
-            continue;
-        }
-
-        candidate_location = nautilus_file_get_location (NAUTILUS_FILE (p->data));
-        if (g_file_has_prefix (location, candidate_location))
+        if (g_hash_table_lookup (prefix_candidates, parent_uri))
         {
             return TRUE;
         }
@@ -1977,6 +1968,7 @@ static void
 directory_contents_value_field_update (NautilusPropertiesWindow *self)
 {
     NautilusRequestStatus file_status;
+    g_autoptr (GHashTable) prefix_hashes = g_hash_table_new (g_str_hash, g_str_equal);
     g_autofree char *text = NULL;
     g_autofree char *bytes_str = NULL;
     g_autofree char *tooltip = NULL;
@@ -1999,9 +1991,20 @@ directory_contents_value_field_update (NautilusPropertiesWindow *self)
 
     for (l = self->files; l; l = l->next)
     {
+        GFile *location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
+        GFileType type = nautilus_file_get_file_type (NAUTILUS_FILE (l->data));
+
+        if (type & ~(G_FILE_TYPE_REGULAR | G_FILE_TYPE_SPECIAL | G_FILE_TYPE_SHORTCUT))
+        {
+            g_hash_table_add (prefix_hashes, g_file_get_uri (location));
+        }
+    }
+
+    for (l = self->files; l; l = l->next)
+    {
         file = NAUTILUS_FILE (l->data);
 
-        if (file_has_prefix (file, self->files))
+        if (file_has_prefix (file, prefix_hashes))
         {
             /* don't count nested files twice */
             continue;
