@@ -106,16 +106,6 @@ struct _NautilusFilesViewClass {
 
         char *        (* get_backing_uri)    (NautilusFilesView *view);
 
-        /* bump_zoom_level is a function pointer that subclasses must override
-         * to change the zoom level of an object. */
-        void    (* bump_zoom_level)          (NautilusFilesView *view,
-                                              int                zoom_increment);
-
-        /*
-         * restore_default_zoom_level: restores the zoom level to 100% (or to
-         * whatever is considered the 'standard' zoom level for the view). */
-        void    (* restore_standard_zoom_level) (NautilusFilesView *view);
-
         /* reveal_selection is a function pointer that subclasses may
          * override to make sure the selected items are sufficiently
          * apparent to the user (e.g., scrolled into view). By default,

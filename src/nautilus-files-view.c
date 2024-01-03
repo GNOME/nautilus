@@ -1113,21 +1113,6 @@ nautilus_files_view_is_empty (NautilusFilesView *self)
 }
 
 /**
- * nautilus_files_view_bump_zoom_level:
- *
- * bump the current zoom level by invoking the relevant subclass
- *
- **/
-static void
-nautilus_files_view_bump_zoom_level (NautilusFilesView *view,
-                                     int                zoom_increment)
-{
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->bump_zoom_level (view, zoom_increment);
-}
-
-/**
  * nautilus_files_view_can_zoom_in:
  *
  * Determine whether the view can be zoomed any closer.
@@ -1161,17 +1146,6 @@ nautilus_files_view_can_zoom_out (NautilusFilesView *view)
     NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view));
 
     return zoom_level > view_info.zoom_level_min;
-}
-
-/**
- * nautilus_files_view_restore_standard_zoom_level:
- *
- * Restore the zoom level to 100%
- */
-static void
-nautilus_files_view_restore_standard_zoom_level (NautilusFilesView *view)
-{
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_standard_zoom_level (view);
 }
 
 static gboolean
@@ -2761,13 +2735,10 @@ action_zoom_in (GSimpleAction *action,
                 GVariant      *state,
                 gpointer       user_data)
 {
-    NautilusFilesView *view;
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
 
-    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-
-    nautilus_files_view_bump_zoom_level (view, 1);
+    nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), zoom_level + 1);
 }
 
 static void
@@ -2775,13 +2746,10 @@ action_zoom_out (GSimpleAction *action,
                  GVariant      *state,
                  gpointer       user_data)
 {
-    NautilusFilesView *view;
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
 
-    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-
-    nautilus_files_view_bump_zoom_level (view, -1);
+    nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), zoom_level - 1);
 }
 
 static void
@@ -2789,7 +2757,10 @@ action_zoom_standard (GSimpleAction *action,
                       GVariant      *state,
                       gpointer       user_data)
 {
-    nautilus_files_view_restore_standard_zoom_level (user_data);
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (self));
+
+    nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), view_info.zoom_level_standard);
 }
 
 static void
@@ -9252,24 +9223,21 @@ on_scroll (GtkEventControllerScroll *scroll,
            gdouble                   dy,
            gpointer                  user_data)
 {
-    NautilusFilesView *directory_view;
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     GdkModifierType state;
-
-    directory_view = NAUTILUS_FILES_VIEW (user_data);
 
     state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
     if (state & GDK_CONTROL_MASK)
     {
         if (dy <= -1)
         {
-            /* Zoom In */
-            nautilus_files_view_bump_zoom_level (directory_view, 1);
+            g_action_group_activate_action (priv->view_action_group, "zoom-in", NULL);
             return GDK_EVENT_STOP;
         }
         else if (dy >= 1)
         {
-            /* Zoom Out */
-            nautilus_files_view_bump_zoom_level (directory_view, -1);
+            g_action_group_activate_action (priv->view_action_group, "zoom-out", NULL);
             return GDK_EVENT_STOP;
         }
     }

@@ -1436,6 +1436,13 @@ nautilus_list_base_preview_selection_event (NautilusListBase *self,
     NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->preview_selection_event (self, direction);
 }
 
+void
+nautilus_list_base_set_zoom_level (NautilusListBase *self,
+                                   int               new_zoom_level)
+{
+    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->set_zoom_level (self, new_zoom_level);
+}
+
 /* This should be called when changing view directory, but only once information
  * on the new directory file is ready, becase we need it to define sorting,
  * drop action. etc. We defer on NautilusFilesView the responsibility of calling

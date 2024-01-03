@@ -37,6 +37,8 @@ struct _NautilusListBaseClass
                                       guint               position,
                                       GtkListScrollFlags  flags,
                                       GtkScrollInfo      *scroll);
+        void       (*set_zoom_level)          (NautilusListBase *self,
+                                               int               new_zoom_level);
 
         /* Subclass override must chain-up to base implementation. */
         void       (*setup_directory) (NautilusListBase  *self,
@@ -51,6 +53,8 @@ void nautilus_list_base_set_cursor (NautilusListBase *self,
                                     guint             position,
                                     gboolean          select,
                                     gboolean          scroll_to);
+void    nautilus_list_base_set_zoom_level          (NautilusListBase  *self,
+                                                    int                new_zoom_level);
 void    nautilus_list_base_setup_directory         (NautilusListBase  *self,
                                                     NautilusDirectory *directory);
 

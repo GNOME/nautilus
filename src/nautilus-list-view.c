@@ -480,9 +480,14 @@ action_sort_order_changed (GSimpleAction *action,
 }
 
 static void
-set_zoom_level (NautilusListView *self,
-                int               new_level)
+real_set_zoom_level (NautilusListBase *list_base,
+                     int               new_level)
 {
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
+
+    g_return_if_fail (new_level >= list_view_info.zoom_level_min &&
+                      new_level <= list_view_info.zoom_level_max);
+
     self->zoom_level = new_level;
 
     if (g_settings_get_enum (nautilus_list_view_preferences,
@@ -588,22 +593,6 @@ nautilus_list_view_setup_directory (NautilusListBase  *list_base,
     nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
 }
 
-static void
-real_bump_zoom_level (NautilusFilesView *files_view,
-                      int                zoom_increment)
-{
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_view);
-    NautilusListZoomLevel new_level;
-
-    new_level = self->zoom_level + zoom_increment;
-
-    if (new_level >= NAUTILUS_LIST_ZOOM_LEVEL_SMALL &&
-        new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE)
-    {
-        set_zoom_level (self, new_level);
-    }
-}
-
 static gint
 get_default_zoom_level (void)
 {
@@ -614,16 +603,6 @@ get_default_zoom_level (void)
     return CLAMP (default_zoom_level,
                   list_view_info.zoom_level_min,
                   list_view_info.zoom_level_max);
-}
-
-static void
-real_restore_standard_zoom_level (NautilusFilesView *files_view)
-{
-    NautilusListView *self;
-
-    self = NAUTILUS_LIST_VIEW (files_view);
-
-    set_zoom_level (self, NAUTILUS_LIST_ZOOM_LEVEL_MEDIUM);
 }
 
 static char *
@@ -1205,7 +1184,7 @@ nautilus_list_view_init (NautilusListView *self)
                              self,
                              G_CONNECT_SWAPPED);
 
-    set_zoom_level (self, get_default_zoom_level ());
+    nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), get_default_zoom_level ());
 
     /* Set up tree expand/collapse shortcuts in capture phase otherwise they
      * would be handled by GtkListBase's cursor movement shortcuts. */
@@ -1262,15 +1241,14 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     object_class->dispose = nautilus_list_view_dispose;
     object_class->finalize = nautilus_list_view_finalize;
 
-    files_view_class->bump_zoom_level = real_bump_zoom_level;
     files_view_class->get_backing_uri = real_get_backing_uri;
-    files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_info = real_get_view_info;
     list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->scroll_to = real_scroll_to;
+    list_base_view_class->set_zoom_level = real_set_zoom_level;
     list_base_view_class->setup_directory = nautilus_list_view_setup_directory;
 }
 
