@@ -1112,51 +1112,6 @@ nautilus_files_view_is_empty (NautilusFilesView *self)
     return g_list_model_get_n_items (G_LIST_MODEL (priv->model)) == 0;
 }
 
-/**
- * nautilus_files_view_can_zoom_in:
- *
- * Determine whether the view can be zoomed any closer.
- * @view: The zoomable NautilusFilesView.
- *
- * Return value: TRUE if @view can be zoomed any closer, FALSE otherwise.
- *
- **/
-static gboolean
-nautilus_files_view_can_zoom_in (NautilusFilesView *view)
-{
-    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (view));
-    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view));
-
-    return zoom_level < view_info.zoom_level_max;
-}
-
-/**
- * nautilus_files_view_can_zoom_out:
- *
- * Determine whether the view can be zoomed any further away.
- * @view: The zoomable NautilusFilesView.
- *
- * Return value: TRUE if @view can be zoomed any further away, FALSE otherwise.
- *
- **/
-static gboolean
-nautilus_files_view_can_zoom_out (NautilusFilesView *view)
-{
-    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (view));
-    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view));
-
-    return zoom_level > view_info.zoom_level_min;
-}
-
-static gboolean
-nautilus_files_view_is_zoom_level_default (NautilusFilesView *view)
-{
-    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (view));
-    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view));
-
-    return zoom_level == view_info.zoom_level_standard;
-}
-
 gboolean
 nautilus_files_view_is_searching (NautilusView *view)
 {
@@ -2731,6 +2686,30 @@ action_show_hidden_files (GSimpleAction *action,
 }
 
 static void
+update_zoom_actions_state (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (self));
+    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
+    GAction *action;
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                         "zoom-in");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 zoom_level < view_info.zoom_level_max);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                         "zoom-out");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 zoom_level > view_info.zoom_level_min);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                         "zoom-standard");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 zoom_level != view_info.zoom_level_standard);
+}
+
+static void
 action_zoom_in (GSimpleAction *action,
                 GVariant      *state,
                 gpointer       user_data)
@@ -2739,6 +2718,7 @@ action_zoom_in (GSimpleAction *action,
     gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
 
     nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), zoom_level + 1);
+    update_zoom_actions_state (self);
 }
 
 static void
@@ -2750,6 +2730,7 @@ action_zoom_out (GSimpleAction *action,
     gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
 
     nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), zoom_level - 1);
+    update_zoom_actions_state (self);
 }
 
 static void
@@ -2761,6 +2742,7 @@ action_zoom_standard (GSimpleAction *action,
     NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (self));
 
     nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), view_info.zoom_level_standard);
+    update_zoom_actions_state (self);
 }
 
 static void
@@ -7425,7 +7407,6 @@ real_update_actions_state (NautilusFilesView *view)
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
     gint selection_count;
-    gboolean zoom_level_is_default;
     gboolean selection_contains_home_dir;
     gboolean selection_contains_recent;
     gboolean selection_contains_search;
@@ -7472,7 +7453,6 @@ real_update_actions_state (NautilusFilesView *view)
     selection_contains_starred = showing_starred_directory (view);
     selection_contains_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
     selection_all_in_trash = all_in_trash (selection);
-    zoom_level_is_default = nautilus_files_view_is_zoom_level_default (view);
 
     is_read_only = nautilus_files_view_is_read_only (view);
     is_in_trash = showing_trash_directory (view);
@@ -7807,18 +7787,7 @@ real_update_actions_state (NautilusFilesView *view)
                                         "show-hidden-files",
                                         g_variant_new_boolean (priv->show_hidden_files));
 
-    /* Zoom */
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "zoom-in");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 nautilus_files_view_can_zoom_in (view));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "zoom-out");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 nautilus_files_view_can_zoom_out (view));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "zoom-standard");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !zoom_level_is_default);
+    update_zoom_actions_state (view);
 
     current_location = nautilus_file_get_location (priv->directory_as_file);
     current_uri = g_file_get_uri (current_location);

@@ -199,8 +199,6 @@ real_set_zoom_level (NautilusListBase *list_base,
     set_captions_from_preferences (self);
 
     g_object_notify (G_OBJECT (self), "icon-size");
-
-    nautilus_files_view_update_toolbar_menus (NAUTILUS_FILES_VIEW (self));
 }
 
 /* The generic implementation in src/nautilus-list-base.c doesn't allow the

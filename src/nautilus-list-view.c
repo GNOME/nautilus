@@ -508,8 +508,6 @@ real_set_zoom_level (NautilusListBase *list_base,
     {
         gtk_widget_remove_css_class (GTK_WIDGET (self), "compact");
     }
-
-    nautilus_files_view_update_toolbar_menus (NAUTILUS_FILES_VIEW (self));
 }
 
 const GActionEntry list_view_entries[] =
