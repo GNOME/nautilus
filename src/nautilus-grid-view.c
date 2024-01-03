@@ -35,6 +35,17 @@ static void set_zoom_level (NautilusGridView *self,
 #define get_view_item(li) \
         (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_list_item_get_item (li)))))
 
+static const NautilusViewInfo grid_view_info =
+{
+    .view_id = NAUTILUS_VIEW_GRID_ID,
+};
+
+static NautilusViewInfo
+real_get_view_info (NautilusListBase *list_base)
+{
+    return grid_view_info;
+}
+
 static gint
 nautilus_grid_view_sort (gconstpointer a,
                          gconstpointer b,
@@ -402,12 +413,6 @@ action_sort_order_changed (GSimpleAction *action,
     g_simple_action_set_state (action, value);
 }
 
-static guint
-real_get_view_id (NautilusFilesView *files_view)
-{
-    return NAUTILUS_VIEW_GRID_ID;
-}
-
 static void
 on_captions_preferences_changed (NautilusGridView *self)
 {
@@ -550,11 +555,11 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     files_view_class->bump_zoom_level = real_bump_zoom_level;
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
-    files_view_class->get_view_id = real_get_view_id;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
+    list_base_view_class->get_view_info = real_get_view_info;
     list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->preview_selection_event = real_preview_selection_event;
     list_base_view_class->scroll_to = real_scroll_to;

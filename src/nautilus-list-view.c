@@ -58,6 +58,17 @@ G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
 #define get_view_item(cell) \
         (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (cell)))))
 
+static const NautilusViewInfo list_view_info =
+{
+    .view_id = NAUTILUS_VIEW_LIST_ID,
+};
+
+static NautilusViewInfo
+real_get_view_info (NautilusListBase *list_base)
+{
+    return list_view_info;
+}
+
 static guint
 get_icon_size_for_zoom_level (NautilusListZoomLevel zoom_level)
 {
@@ -686,12 +697,6 @@ real_get_backing_uri (NautilusFilesView *view)
     return NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->get_backing_uri (view);
 }
 
-static guint
-real_get_view_id (NautilusFilesView *files_view)
-{
-    return NAUTILUS_VIEW_LIST_ID;
-}
-
 typedef struct
 {
     NautilusListView *self;
@@ -1278,11 +1283,11 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     files_view_class->can_zoom_in = real_can_zoom_in;
     files_view_class->can_zoom_out = real_can_zoom_out;
     files_view_class->get_backing_uri = real_get_backing_uri;
-    files_view_class->get_view_id = real_get_view_id;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
+    list_base_view_class->get_view_info = real_get_view_info;
     list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->scroll_to = real_scroll_to;
     list_base_view_class->setup_directory = nautilus_list_view_setup_directory;

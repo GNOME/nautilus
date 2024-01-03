@@ -11,6 +11,11 @@
 
 G_BEGIN_DECLS
 
+typedef struct
+{
+    guint view_id;
+} NautilusViewInfo;
+
 #define NAUTILUS_TYPE_LIST_BASE (nautilus_list_base_get_type())
 
 G_DECLARE_DERIVABLE_TYPE (NautilusListBase, nautilus_list_base, NAUTILUS, LIST_BASE, NautilusFilesView)
@@ -19,6 +24,7 @@ struct _NautilusListBaseClass
 {
         NautilusFilesViewClass parent_class;
 
+        NautilusViewInfo (*get_view_info)     (NautilusListBase *self);
         guint      (*get_icon_size)  (NautilusListBase *self);
         GtkWidget *(*get_view_ui)    (NautilusListBase *self);
         void       (*preview_selection_event) (NautilusListBase *self,
@@ -33,6 +39,7 @@ struct _NautilusListBaseClass
                                        NautilusDirectory *directory);
 };
 
+NautilusViewInfo nautilus_list_base_get_view_info  (NautilusListBase  *self) G_GNUC_PURE;
 void nautilus_list_base_preview_selection_event (NautilusListBase *self,
                                                  GtkDirectionType  direction);
 void nautilus_list_base_set_cursor (NautilusListBase *self,

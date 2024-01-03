@@ -1417,6 +1417,12 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     priv->view_drop_target = drop_target;
 }
 
+NautilusViewInfo
+nautilus_list_base_get_view_info (NautilusListBase *self)
+{
+    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_info (self);
+}
+
 void
 nautilus_list_base_preview_selection_event (NautilusListBase *self,
                                             GtkDirectionType  direction)

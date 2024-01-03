@@ -142,9 +142,6 @@ struct _NautilusFilesViewClass {
 
         void    (* update_actions_state)     (NautilusFilesView *view);
 
-        /* Get the id for this view. Its a guint*/
-        guint        (* get_view_id)       (NautilusFilesView *view);
-
         /* Return the uri of the first visible file */
         char *         (* get_first_visible_file) (NautilusFilesView          *view);
         /* Return the uri of the last visible file */
