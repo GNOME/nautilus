@@ -38,6 +38,9 @@ static void set_zoom_level (NautilusGridView *self,
 static const NautilusViewInfo grid_view_info =
 {
     .view_id = NAUTILUS_VIEW_GRID_ID,
+    .zoom_level_min = NAUTILUS_GRID_ZOOM_LEVEL_SMALL,
+    .zoom_level_max = NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE,
+    .zoom_level_standard = NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM,
 };
 
 static NautilusViewInfo
@@ -155,8 +158,8 @@ get_default_zoom_level (void)
 
     /* Sanitize preference value */
     return CLAMP (default_zoom_level,
-                  NAUTILUS_GRID_ZOOM_LEVEL_SMALL,
-                  NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE);
+                  grid_view_info.zoom_level_min,
+                  grid_view_info.zoom_level_max);
 }
 
 static void
@@ -222,34 +225,6 @@ real_restore_standard_zoom_level (NautilusFilesView *files_view)
     self = NAUTILUS_GRID_VIEW (files_view);
 
     set_zoom_level (self, NAUTILUS_GRID_ZOOM_LEVEL_MEDIUM);
-}
-
-static gboolean
-real_is_zoom_level_default (NautilusFilesView *files_view)
-{
-    NautilusGridView *self;
-    guint icon_size;
-
-    self = NAUTILUS_GRID_VIEW (files_view);
-    icon_size = get_icon_size_for_zoom_level (self->zoom_level);
-
-    return icon_size == NAUTILUS_GRID_ICON_SIZE_MEDIUM;
-}
-
-static gboolean
-real_can_zoom_in (NautilusFilesView *files_view)
-{
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_view);
-
-    return self->zoom_level < NAUTILUS_GRID_ZOOM_LEVEL_EXTRA_LARGE;
-}
-
-static gboolean
-real_can_zoom_out (NautilusFilesView *files_view)
-{
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (files_view);
-
-    return self->zoom_level > NAUTILUS_GRID_ZOOM_LEVEL_SMALL;
 }
 
 /* The generic implementation in src/nautilus-list-base.c doesn't allow the
@@ -373,6 +348,14 @@ real_get_view_ui (NautilusListBase *list_base_view)
     NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base_view);
 
     return GTK_WIDGET (self->view_ui);
+}
+
+static int
+real_get_zoom_level (NautilusListBase *list_base_view)
+{
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base_view);
+
+    return self->zoom_level;
 }
 
 static void
@@ -553,14 +536,12 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     object_class->finalize = finalize;
 
     files_view_class->bump_zoom_level = real_bump_zoom_level;
-    files_view_class->can_zoom_in = real_can_zoom_in;
-    files_view_class->can_zoom_out = real_can_zoom_out;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
-    files_view_class->is_zoom_level_default = real_is_zoom_level_default;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_info = real_get_view_info;
     list_base_view_class->get_view_ui = real_get_view_ui;
+    list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->preview_selection_event = real_preview_selection_event;
     list_base_view_class->scroll_to = real_scroll_to;
     list_base_view_class->setup_directory = nautilus_grid_view_setup_directory;

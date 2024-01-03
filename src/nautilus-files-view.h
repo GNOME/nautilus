@@ -116,16 +116,6 @@ struct _NautilusFilesViewClass {
          * whatever is considered the 'standard' zoom level for the view). */
         void    (* restore_standard_zoom_level) (NautilusFilesView *view);
 
-        /* can_zoom_in is a function pointer that subclasses must override to
-         * return whether the view is at maximum size (furthest-in zoom level) */
-        gboolean (* can_zoom_in)             (NautilusFilesView *view);
-
-        /* can_zoom_out is a function pointer that subclasses must override to
-         * return whether the view is at minimum size (furthest-out zoom level) */
-        gboolean (* can_zoom_out)            (NautilusFilesView *view);
-
-        gboolean (*is_zoom_level_default)      (NautilusFilesView *view);
-
         /* reveal_selection is a function pointer that subclasses may
          * override to make sure the selected items are sufficiently
          * apparent to the user (e.g., scrolled into view). By default,

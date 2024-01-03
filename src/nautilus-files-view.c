@@ -1139,9 +1139,10 @@ nautilus_files_view_bump_zoom_level (NautilusFilesView *view,
 static gboolean
 nautilus_files_view_can_zoom_in (NautilusFilesView *view)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
+    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (view));
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view));
 
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_zoom_in (view);
+    return zoom_level < view_info.zoom_level_max;
 }
 
 /**
@@ -1156,9 +1157,10 @@ nautilus_files_view_can_zoom_in (NautilusFilesView *view)
 static gboolean
 nautilus_files_view_can_zoom_out (NautilusFilesView *view)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
+    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (view));
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view));
 
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_zoom_out (view);
+    return zoom_level > view_info.zoom_level_min;
 }
 
 /**
@@ -1175,9 +1177,10 @@ nautilus_files_view_restore_standard_zoom_level (NautilusFilesView *view)
 static gboolean
 nautilus_files_view_is_zoom_level_default (NautilusFilesView *view)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
+    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (view));
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view));
 
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_zoom_level_default (view);
+    return zoom_level == view_info.zoom_level_standard;
 }
 
 gboolean

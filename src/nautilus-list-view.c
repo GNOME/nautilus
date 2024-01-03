@@ -61,6 +61,9 @@ G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
 static const NautilusViewInfo list_view_info =
 {
     .view_id = NAUTILUS_VIEW_LIST_ID,
+    .zoom_level_min = NAUTILUS_LIST_ZOOM_LEVEL_SMALL,
+    .zoom_level_max = NAUTILUS_LIST_ZOOM_LEVEL_LARGE,
+    .zoom_level_standard = NAUTILUS_LIST_ZOOM_LEVEL_MEDIUM,
 };
 
 static NautilusViewInfo
@@ -109,6 +112,14 @@ real_get_view_ui (NautilusListBase *list_base_view)
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
 
     return GTK_WIDGET (self->view_ui);
+}
+
+static int
+real_get_zoom_level (NautilusListBase *list_base_view)
+{
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
+
+    return self->zoom_level;
 }
 
 static void
@@ -601,8 +612,8 @@ get_default_zoom_level (void)
 
     /* Sanitize preference value. */
     return CLAMP (default_zoom_level,
-                  NAUTILUS_LIST_ZOOM_LEVEL_SMALL,
-                  NAUTILUS_LIST_ZOOM_LEVEL_LARGE);
+                  list_view_info.zoom_level_min,
+                  list_view_info.zoom_level_max);
 }
 
 static void
@@ -613,34 +624,6 @@ real_restore_standard_zoom_level (NautilusFilesView *files_view)
     self = NAUTILUS_LIST_VIEW (files_view);
 
     set_zoom_level (self, NAUTILUS_LIST_ZOOM_LEVEL_MEDIUM);
-}
-
-static gboolean
-real_can_zoom_in (NautilusFilesView *files_view)
-{
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_view);
-
-    return self->zoom_level < NAUTILUS_LIST_ZOOM_LEVEL_LARGE;
-}
-
-static gboolean
-real_can_zoom_out (NautilusFilesView *files_view)
-{
-    NautilusListView *self = NAUTILUS_LIST_VIEW (files_view);
-
-    return self->zoom_level > NAUTILUS_LIST_ZOOM_LEVEL_SMALL;
-}
-
-static gboolean
-real_is_zoom_level_default (NautilusFilesView *files_view)
-{
-    NautilusListView *self;
-    guint icon_size;
-
-    self = NAUTILUS_LIST_VIEW (files_view);
-    icon_size = get_icon_size_for_zoom_level (self->zoom_level);
-
-    return icon_size == NAUTILUS_LIST_ICON_SIZE_MEDIUM;
 }
 
 static char *
@@ -1280,15 +1263,13 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     object_class->finalize = nautilus_list_view_finalize;
 
     files_view_class->bump_zoom_level = real_bump_zoom_level;
-    files_view_class->can_zoom_in = real_can_zoom_in;
-    files_view_class->can_zoom_out = real_can_zoom_out;
     files_view_class->get_backing_uri = real_get_backing_uri;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
-    files_view_class->is_zoom_level_default = real_is_zoom_level_default;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_view_info = real_get_view_info;
     list_base_view_class->get_view_ui = real_get_view_ui;
+    list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->scroll_to = real_scroll_to;
     list_base_view_class->setup_directory = nautilus_list_view_setup_directory;
 }

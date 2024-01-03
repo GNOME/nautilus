@@ -1423,6 +1423,12 @@ nautilus_list_base_get_view_info (NautilusListBase *self)
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_info (self);
 }
 
+int
+nautilus_list_base_get_zoom_level (NautilusListBase *self)
+{
+    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_zoom_level (self);
+}
+
 void
 nautilus_list_base_preview_selection_event (NautilusListBase *self,
                                             GtkDirectionType  direction)

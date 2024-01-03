@@ -14,6 +14,9 @@ G_BEGIN_DECLS
 typedef struct
 {
     guint view_id;
+    int zoom_level_min;
+    int zoom_level_max;
+    int zoom_level_standard;
 } NautilusViewInfo;
 
 #define NAUTILUS_TYPE_LIST_BASE (nautilus_list_base_get_type())
@@ -27,6 +30,7 @@ struct _NautilusListBaseClass
         NautilusViewInfo (*get_view_info)     (NautilusListBase *self);
         guint      (*get_icon_size)  (NautilusListBase *self);
         GtkWidget *(*get_view_ui)    (NautilusListBase *self);
+        int        (*get_zoom_level)          (NautilusListBase *self);
         void       (*preview_selection_event) (NautilusListBase *self,
                                                GtkDirectionType  direction);
         void       (*scroll_to)      (NautilusListBase   *self,
@@ -40,6 +44,7 @@ struct _NautilusListBaseClass
 };
 
 NautilusViewInfo nautilus_list_base_get_view_info  (NautilusListBase  *self) G_GNUC_PURE;
+int     nautilus_list_base_get_zoom_level          (NautilusListBase  *self);
 void nautilus_list_base_preview_selection_event (NautilusListBase *self,
                                                  GtkDirectionType  direction);
 void nautilus_list_base_set_cursor (NautilusListBase *self,
