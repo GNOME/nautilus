@@ -1222,28 +1222,22 @@ ready_callback_key_compare (gconstpointer a,
     }
     if (callback_a->file == NULL)
     {
-        /* ANSI C doesn't allow ordered compares of function pointers, so we cast them to
-         * normal pointers to make some overly pedantic compilers (*cough* HP-UX *cough*)
-         * compile this. Of course, on any compiler where ordered function pointers actually
-         * break this probably won't work, but at least it will compile on platforms where it
-         * works, but stupid compilers won't let you use it.
-         */
-        if ((void *) callback_a->callback.directory < (void *) callback_b->callback.directory)
+        if (callback_a->callback.directory < callback_b->callback.directory)
         {
             return -1;
         }
-        if ((void *) callback_a->callback.directory > (void *) callback_b->callback.directory)
+        if (callback_a->callback.directory > callback_b->callback.directory)
         {
             return 1;
         }
     }
     else
     {
-        if ((void *) callback_a->callback.file < (void *) callback_b->callback.file)
+        if (callback_a->callback.file < callback_b->callback.file)
         {
             return -1;
         }
-        if ((void *) callback_a->callback.file > (void *) callback_b->callback.file)
+        if (callback_a->callback.file > callback_b->callback.file)
         {
             return 1;
         }
