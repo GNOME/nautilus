@@ -61,6 +61,7 @@ enum
 {
     PROP_0,
     PROP_ICON_SIZE,
+    PROP_SORT_STATE,
     N_PROPS
 };
 
@@ -89,6 +90,21 @@ static guint
 nautilus_list_base_get_icon_size (NautilusListBase *self)
 {
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_icon_size (self);
+}
+
+GVariant *
+nautilus_list_base_get_sort_state (NautilusListBase *self)
+{
+    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_sort_state (self);
+}
+
+void
+nautilus_list_base_set_sort_state (NautilusListBase *self,
+                                   GVariant         *sort_state)
+{
+    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->set_sort_state (self, sort_state);
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORT_STATE]);
 }
 
 void
@@ -1307,6 +1323,35 @@ nautilus_list_base_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SORT_STATE:
+        {
+            g_value_take_variant (value, nautilus_list_base_get_sort_state (self));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
+nautilus_list_base_set_property (GObject      *object,
+                                 guint         prop_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
+{
+    NautilusListBase *self = NAUTILUS_LIST_BASE (object);
+
+    switch (prop_id)
+    {
+        case PROP_SORT_STATE:
+        {
+            nautilus_list_base_set_sort_state (self, g_value_get_variant (value));
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1324,6 +1369,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     object_class->dispose = nautilus_list_base_dispose;
     object_class->finalize = nautilus_list_base_finalize;
     object_class->get_property = nautilus_list_base_get_property;
+    object_class->set_property = nautilus_list_base_set_property;
 
     widget_class->focus = nautilus_list_base_focus;
 
@@ -1343,6 +1389,10 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                                     NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
                                                     NAUTILUS_GRID_ICON_SIZE_LARGE,
                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_SORT_STATE] = g_param_spec_variant ("sort-state", NULL, NULL,
+                                                        G_VARIANT_TYPE ("(sb)"),
+                                                        NULL,
+                                                        G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 

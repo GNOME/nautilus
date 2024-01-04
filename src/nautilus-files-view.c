@@ -2686,6 +2686,23 @@ action_show_hidden_files (GSimpleAction *action,
 }
 
 static void
+action_sort_order_changed (GSimpleAction *action,
+                           GVariant      *value,
+                           gpointer       user_data)
+{
+    g_autoptr (GVariant) old_value = g_action_get_state (G_ACTION (action));
+
+    /* Don't resort if the action is in the same state as before */
+    if (g_variant_equal (value, old_value))
+    {
+        return;
+    }
+
+    /* Actual changes happen through binding to NautilusListBase:sort-state. */
+    g_simple_action_set_state (action, value);
+}
+
+static void
 action_visible_columns (GSimpleAction *action,
                         GVariant      *state,
                         gpointer       user_data)
@@ -3248,6 +3265,24 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
 
         priv->pending_selection = pending_selection;
     }
+}
+
+static void
+nautilus_files_view_constructed (GObject *object)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    G_OBJECT_CLASS (nautilus_files_view_parent_class)->constructed (object);
+
+    /* Create the binding at .constructed() to be sure that the subclasses are
+     * fully initialized. Once NautilusListBase becomes independent from this
+     * class, this can be moved elsewhere. */
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                                  "sort");
+    g_object_bind_property (G_SIMPLE_ACTION (action), "state",
+                            NAUTILUS_LIST_BASE (self), "sort-state",
+                            G_BINDING_BIDIRECTIONAL);
 }
 
 static void
@@ -6996,6 +7031,7 @@ const GActionEntry view_entries[] =
     { .name = "zoom-in", .activate = action_zoom_in },
     { .name = "zoom-out", .activate = action_zoom_out },
     { .name = "zoom-standard", .activate = action_zoom_standard },
+    { .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)", .change_state = action_sort_order_changed },
     { .name = "show-hidden-files", .state = "true", .change_state = action_show_hidden_files },
     { .name = "visible-columns", .activate = action_visible_columns },
     /* Background menu */
@@ -7399,18 +7435,6 @@ nautilus_handles_all_files_to_extract (GList *files)
         }
     }
     return TRUE;
-}
-
-GActionGroup *
-nautilus_files_view_get_action_group (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    return priv->view_action_group;
 }
 
 static void
@@ -9447,6 +9471,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
 
+    oclass->constructed = nautilus_files_view_constructed;
     oclass->dispose = nautilus_files_view_dispose;
     oclass->finalize = nautilus_files_view_finalize;
     oclass->get_property = nautilus_files_view_get_property;

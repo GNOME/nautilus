@@ -16,7 +16,6 @@ struct _NautilusGridView
 
     GtkGridView *view_ui;
 
-    GActionGroup *action_group;
     gint zoom_level;
 
     gboolean directories_first;
@@ -343,22 +342,24 @@ real_scroll_to (NautilusListBase   *list_base_view,
     gtk_grid_view_scroll_to (self->view_ui, position, flags, scroll);
 }
 
-static void
-action_sort_order_changed (GSimpleAction *action,
-                           GVariant      *value,
-                           gpointer       user_data)
+static GVariant *
+real_get_sort_state (NautilusListBase *list_base)
 {
-    g_autoptr (GVariant) old_value = g_action_get_state (G_ACTION (action));
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
+
+    return g_variant_take_ref (g_variant_new ("(sb)",
+                                              g_quark_to_string (self->sort_attribute),
+                                              self->reversed));
+}
+
+static void
+real_set_sort_state (NautilusListBase *list_base,
+                     GVariant         *value)
+{
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
     const gchar *target_name;
-    NautilusGridView *self = NAUTILUS_GRID_VIEW (user_data);
     NautilusViewModel *model;
     g_autoptr (GtkCustomSorter) sorter = NULL;
-
-    /* Don't resort if the action is in the same state as before */
-    if (g_variant_equal (value, old_value))
-    {
-        return;
-    }
 
     g_variant_get (value, "(&sb)", &target_name, &self->reversed);
     self->sort_attribute = g_quark_from_string (target_name);
@@ -366,8 +367,6 @@ action_sort_order_changed (GSimpleAction *action,
     sorter = gtk_custom_sorter_new (nautilus_grid_view_sort, self, NULL);
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
-
-    g_simple_action_set_state (action, value);
 }
 
 static void
@@ -494,11 +493,6 @@ create_view_ui (NautilusGridView *self)
     return GTK_GRID_VIEW (widget);
 }
 
-const GActionEntry view_icon_actions[] =
-{
-    { .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)", .change_state = action_sort_order_changed },
-};
-
 static void
 nautilus_grid_view_class_init (NautilusGridViewClass *klass)
 {
@@ -509,11 +503,13 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     object_class->finalize = finalize;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
+    list_base_view_class->get_sort_state = real_get_sort_state;
     list_base_view_class->get_view_info = real_get_view_info;
     list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->preview_selection_event = real_preview_selection_event;
     list_base_view_class->scroll_to = real_scroll_to;
+    list_base_view_class->set_sort_state = real_set_sort_state;
     list_base_view_class->set_zoom_level = real_set_zoom_level;
     list_base_view_class->setup_directory = nautilus_grid_view_setup_directory;
 }
@@ -539,12 +535,6 @@ nautilus_grid_view_init (NautilusGridView *self)
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
                                    GTK_WIDGET (self->view_ui));
-
-    self->action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
-    g_action_map_add_action_entries (G_ACTION_MAP (self->action_group),
-                                     view_icon_actions,
-                                     G_N_ELEMENTS (view_icon_actions),
-                                     self);
 
     g_signal_connect_object (gtk_filechooser_preferences,
                              "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,

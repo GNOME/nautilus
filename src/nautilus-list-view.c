@@ -39,7 +39,6 @@ struct _NautilusListView
 
     NautilusSearchDirectory *search_directory;
 
-    GActionGroup *action_group;
     gint zoom_level;
 
     gboolean directories_first;
@@ -405,8 +404,19 @@ on_sorter_changed (GtkSorter       *sorter,
                    gpointer         user_data)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    GtkColumnViewSorter *column_view_sorter = GTK_COLUMN_VIEW_SORTER (sorter);
-    GAction *action;
+
+    /* Notify about changes not effected by nautilus_list_base_set_sort_state(),
+     * such as when the user clicks the column headers. This is important to
+     * update the selected item in the sort menu, assuming this property is
+     * bound to the state of the "view.sort" action. */
+    g_object_notify (G_OBJECT (self), "sort-state");
+}
+
+static GVariant *
+real_get_sort_state (NautilusListBase *list_base)
+{
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
+    GtkColumnViewSorter *column_view_sorter = GTK_COLUMN_VIEW_SORTER (gtk_column_view_get_sorter (self->view_ui));
     GtkColumnViewColumn *primary;
     const char *sort_text;
     gboolean reversed;
@@ -415,38 +425,26 @@ on_sorter_changed (GtkSorter       *sorter,
 
     if (primary == NULL)
     {
-        return;
+        return NULL;
     }
 
     sort_text = gtk_column_view_column_get_id (primary);
     reversed = gtk_column_view_sorter_get_primary_sort_order (column_view_sorter);
 
-    /* Update the state of the view.sort action, even if this change was not
-     * triggered by the action, to update the selected item in the sort menu. */
-    action = g_action_map_lookup_action (G_ACTION_MAP (self->action_group), "sort");
-    g_simple_action_set_state (G_SIMPLE_ACTION (action),
-                               g_variant_new ("(sb)", sort_text, reversed));
+    return g_variant_take_ref (g_variant_new ("(sb)", sort_text, reversed));
 }
 
 static void
-action_sort_order_changed (GSimpleAction *action,
-                           GVariant      *value,
-                           gpointer       user_data)
+real_set_sort_state (NautilusListBase *list_base,
+                     GVariant         *value)
 {
-    g_autoptr (GVariant) old_value = g_action_get_state (G_ACTION (action));
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
+    GtkSorter *column_view_sorter = gtk_column_view_get_sorter (self->view_ui);
     const gchar *target_name;
     gboolean reversed;
-    NautilusListView *self;
     GListModel *view_columns;
     g_autoptr (GtkColumnViewColumn) sort_column = NULL;
 
-    /* Don't resort if the action is in the same state as before */
-    if (g_variant_equal (value, old_value))
-    {
-        return;
-    }
-
-    self = NAUTILUS_LIST_VIEW (user_data);
     g_variant_get (value, "(&sb)", &target_name, &reversed);
 
     view_columns = gtk_column_view_get_columns (self->view_ui);
@@ -464,15 +462,14 @@ action_sort_order_changed (GSimpleAction *action,
         }
     }
 
+    g_signal_handlers_block_by_func (column_view_sorter, on_sorter_changed, self);
     /* Clear sorting before setting new sort column, to avoid double triangle,
      * as per https://gitlab.gnome.org/GNOME/gtk/-/issues/4696#note_1578945 */
     gtk_column_view_sort_by_column (self->view_ui, NULL, FALSE);
 
     gtk_column_view_sort_by_column (self->view_ui, sort_column, reversed);
 
-    /* Usually, one calls g_simple_action_set_state() here. However, at this
-     * point, it has already been called by on_sorter_changed(), as a side
-     * effect of calling gtk_column_view_sort_by_column(). */
+    g_signal_handlers_unblock_by_func (column_view_sorter, on_sorter_changed, self);
 }
 
 static void
@@ -505,14 +502,6 @@ real_set_zoom_level (NautilusListBase *list_base,
         gtk_widget_remove_css_class (GTK_WIDGET (self), "compact");
     }
 }
-
-const GActionEntry list_view_entries[] =
-{
-    {
-        .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)",
-        .change_state = action_sort_order_changed
-    },
-};
 
 static void
 update_sort_directories_first (NautilusListView *self)
@@ -1165,12 +1154,6 @@ nautilus_list_view_init (NautilusListView *self)
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
                                    GTK_WIDGET (self->view_ui));
 
-    self->action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
-    g_action_map_add_action_entries (G_ACTION_MAP (self->action_group),
-                                     list_view_entries,
-                                     G_N_ELEMENTS (list_view_entries),
-                                     self);
-
     g_signal_connect_object (gtk_filechooser_preferences,
                              "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
                              G_CALLBACK (update_sort_directories_first),
@@ -1237,10 +1220,12 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     files_view_class->get_backing_uri = real_get_backing_uri;
 
     list_base_view_class->get_icon_size = real_get_icon_size;
+    list_base_view_class->get_sort_state = real_get_sort_state;
     list_base_view_class->get_view_info = real_get_view_info;
     list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->scroll_to = real_scroll_to;
+    list_base_view_class->set_sort_state = real_set_sort_state;
     list_base_view_class->set_zoom_level = real_set_zoom_level;
     list_base_view_class->setup_directory = nautilus_list_view_setup_directory;
 }

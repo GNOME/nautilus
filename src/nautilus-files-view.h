@@ -207,7 +207,6 @@ void              nautilus_files_view_update_context_menus       (NautilusFilesV
 void              nautilus_files_view_update_toolbar_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_actions_state       (NautilusFilesView      *view);
 
-GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesView      *view);
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);
 
 G_END_DECLS
