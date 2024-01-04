@@ -3847,9 +3847,9 @@ start_or_stop_io (NautilusDirectory *directory)
 
     doing_io = FALSE;
     /* Take files that are all done off the queue. */
-    while (!nautilus_file_queue_is_empty (directory->details->high_priority_queue))
+    while (!g_queue_is_empty ((GQueue *) directory->details->high_priority_queue))
     {
-        file = nautilus_file_queue_head (directory->details->high_priority_queue);
+        file = g_queue_peek_head ((GQueue *) directory->details->high_priority_queue);
 
         /* Start getting attributes if possible */
         file_info_start (directory, file, &doing_io);
@@ -3863,9 +3863,9 @@ start_or_stop_io (NautilusDirectory *directory)
     }
 
     /* High priority queue must be empty */
-    while (!nautilus_file_queue_is_empty (directory->details->low_priority_queue))
+    while (!g_queue_is_empty ((GQueue *) directory->details->low_priority_queue))
     {
-        file = nautilus_file_queue_head (directory->details->low_priority_queue);
+        file = g_queue_peek_head ((GQueue *) directory->details->low_priority_queue);
 
         /* Start getting attributes if possible */
         mount_start (directory, file, &doing_io);
@@ -3883,9 +3883,9 @@ start_or_stop_io (NautilusDirectory *directory)
     }
 
     /* Low priority queue must be empty */
-    while (!nautilus_file_queue_is_empty (directory->details->extension_queue))
+    while (!g_queue_is_empty ((GQueue *) directory->details->extension_queue))
     {
-        file = nautilus_file_queue_head (directory->details->extension_queue);
+        file = g_queue_peek_head ((GQueue *) directory->details->extension_queue);
 
         /* Start getting attributes if possible */
         extension_info_start (directory, file, &doing_io);
