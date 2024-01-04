@@ -409,7 +409,7 @@ query_editor_activated_callback (NautilusQueryEditor *editor,
     {
         if (NAUTILUS_IS_FILES_VIEW (self->content_view))
         {
-            nautilus_files_view_activate_selection (NAUTILUS_FILES_VIEW (self->content_view));
+            nautilus_files_view_activate_selection (NAUTILUS_FILES_VIEW (self->content_view), 0);
         }
     }
 }

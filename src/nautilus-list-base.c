@@ -10,6 +10,7 @@
 #include "nautilus-view-cell.h"
 #include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
+#include "nautilus-enum-types.h"
 #include "nautilus-files-view.h"
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-file.h"
@@ -56,6 +57,14 @@ struct _NautilusListBasePrivate
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
+
+enum
+{
+    ACTIVATE_SELECTION,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
 
 enum
 {
@@ -143,21 +152,19 @@ select_single_item_if_not_selected (NautilusListBase *self,
     }
 }
 
-static void
-activate_selection_on_click (NautilusListBase *self,
-                             gboolean          open_in_new_tab)
+void
+nautilus_list_base_activate_selection (NautilusListBase *self,
+                                       gboolean          open_in_new_tab)
 {
-    g_autolist (NautilusFile) selection = NULL;
     NautilusOpenFlags flags = 0;
-    NautilusFilesView *files_view = NAUTILUS_FILES_VIEW (self);
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     if (open_in_new_tab)
     {
         flags |= NAUTILUS_OPEN_FLAG_NEW_TAB;
         flags |= NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
     }
-    nautilus_files_view_activate_files (files_view, selection, flags, TRUE);
+
+    g_signal_emit (self, signals[ACTIVATE_SELECTION], 0, flags);
 }
 
 static void
@@ -240,7 +247,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
          * gesture is going to trigger activation. */
         if (!selection_mode)
         {
-            activate_selection_on_click (self, FALSE);
+            nautilus_list_base_activate_selection (self, FALSE);
         }
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
@@ -251,7 +258,7 @@ on_item_click_pressed (GtkGestureClick *gesture,
 
         /* Anticipate selection, if necessary, to activate it. */
         select_single_item_if_not_selected (self, item);
-        activate_selection_on_click (self, TRUE);
+        nautilus_list_base_activate_selection (self, TRUE);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
     else if (button == GDK_BUTTON_SECONDARY && n_press == 1)
@@ -286,7 +293,7 @@ on_item_click_released (GtkGestureClick *gesture,
         /* Anticipate selection, enforcing single selection of target item. */
         gtk_selection_model_select_item (GTK_SELECTION_MODEL (model), i, TRUE);
 
-        activate_selection_on_click (self, FALSE);
+        nautilus_list_base_activate_selection (self, FALSE);
     }
 
     rubberband_set_state (self, TRUE);
@@ -1394,6 +1401,15 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                                         NULL,
                                                         G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (object_class, N_PROPS, properties);
+
+    signals[ACTIVATE_SELECTION] = g_signal_new ("activate-selection",
+                                                G_TYPE_FROM_CLASS (klass),
+                                                G_SIGNAL_RUN_LAST,
+                                                0,
+                                                NULL, NULL,
+                                                g_cclosure_marshal_VOID__ENUM,
+                                                G_TYPE_NONE, 1,
+                                                NAUTILUS_TYPE_OPEN_FLAGS);
 }
 
 static void

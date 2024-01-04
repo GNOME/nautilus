@@ -154,10 +154,6 @@ gboolean            nautilus_files_view_get_loading                      (Nautil
 /* Hooks for subclasses to call. These are normally called only by
  * NautilusFilesView and its subclasses
  */
-void                nautilus_files_view_activate_files                   (NautilusFilesView *view,
-                                                                          GList             *files,
-                                                                          NautilusOpenFlags  flags,
-                                                                          gboolean           confirm_multiple);
 void                nautilus_files_view_activate_file                    (NautilusFilesView *view,
                                                                           NautilusFile      *file,
                                                                           NautilusOpenFlags  flags);
@@ -193,7 +189,8 @@ void              nautilus_files_view_new_file_with_initial_contents (NautilusFi
                                                                       const char         *initial_contents,
                                                                       gsize               length);
 /* selection handling */
-void              nautilus_files_view_activate_selection         (NautilusFilesView      *view);
+void              nautilus_files_view_activate_selection         (NautilusFilesView      *view,
+                                                                  NautilusOpenFlags       flags);
 void              nautilus_files_view_preview_selection_event    (NautilusFilesView      *view,
                                                                   GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);

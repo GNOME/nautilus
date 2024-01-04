@@ -334,7 +334,7 @@ on_column_view_item_activated (GtkGridView *grid_view,
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
 
-    nautilus_files_view_activate_selection (NAUTILUS_FILES_VIEW (self));
+    nautilus_list_base_activate_selection (NAUTILUS_LIST_BASE (self), FALSE);
 }
 
 static GtkColumnView *

@@ -1390,19 +1390,7 @@ nautilus_files_view_preview_selection_event (NautilusFilesView *view,
     nautilus_list_base_preview_selection_event (NAUTILUS_LIST_BASE (view), direction);
 }
 
-void
-nautilus_files_view_activate_selection (NautilusFilesView *view)
-{
-    g_autolist (NautilusFile) selection = NULL;
-
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    nautilus_files_view_activate_files (view,
-                                        selection,
-                                        0,
-                                        TRUE);
-}
-
-void
+static void
 nautilus_files_view_activate_files (NautilusFilesView *view,
                                     GList             *files,
                                     NautilusOpenFlags  flags,
@@ -1457,6 +1445,15 @@ nautilus_files_view_activate_files (NautilusFilesView *view,
 }
 
 void
+nautilus_files_view_activate_selection (NautilusFilesView *self,
+                                        NautilusOpenFlags  flags)
+{
+    g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+
+    nautilus_files_view_activate_files (self, selection, flags, TRUE);
+}
+
+void
 nautilus_files_view_activate_file (NautilusFilesView *view,
                                    NautilusFile      *file,
                                    NautilusOpenFlags  flags)
@@ -1475,7 +1472,7 @@ action_open_with_default_application (GSimpleAction *action,
     NautilusFilesView *view;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    nautilus_files_view_activate_selection (view);
+    nautilus_files_view_activate_selection (view, 0);
 }
 
 static void
@@ -3283,6 +3280,10 @@ nautilus_files_view_constructed (GObject *object)
     g_object_bind_property (G_SIMPLE_ACTION (action), "state",
                             NAUTILUS_LIST_BASE (self), "sort-state",
                             G_BINDING_BIDIRECTIONAL);
+
+    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "activate-selection",
+                             G_CALLBACK (nautilus_files_view_activate_selection), self,
+                             G_CONNECT_SWAPPED);
 }
 
 static void
