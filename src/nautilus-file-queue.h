@@ -35,6 +35,6 @@ void               nautilus_file_queue_remove   (NautilusFileQueue *queue,
 						 NautilusFile      *file);
 
 /* Get the file at the head of the queue without removing or unrefing it. */
-NautilusFile *     nautilus_file_queue_head     (NautilusFileQueue *queue);
+#define nautilus_file_queue_head(queue) (g_queue_peek_head ((GQueue *) (queue)))
 
-gboolean           nautilus_file_queue_is_empty (NautilusFileQueue *queue);
+#define nautilus_file_queue_is_empty(queue) (g_queue_is_empty ((GQueue *) (queue)))
