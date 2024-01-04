@@ -386,13 +386,9 @@ create_column_editor (NautilusListView *view)
     return column_chooser;
 }
 
-static void
-action_visible_columns (GSimpleAction *action,
-                        GVariant      *state,
-                        gpointer       user_data)
+void
+nautilus_list_view_present_column_editor (NautilusListView *self)
 {
-    NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-
     if (self->column_editor == NULL)
     {
         self->column_editor = create_column_editor (self);
@@ -512,7 +508,6 @@ real_set_zoom_level (NautilusListBase *list_base,
 
 const GActionEntry list_view_entries[] =
 {
-    { .name = "visible-columns", .activate = action_visible_columns },
     {
         .name = "sort", .parameter_type = "(sb)", .state = "('invalid',false)",
         .change_state = action_sort_order_changed

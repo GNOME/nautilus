@@ -19,4 +19,6 @@ G_DECLARE_FINAL_TYPE (NautilusListView, nautilus_list_view, NAUTILUS, LIST_VIEW,
 
 NautilusListView *nautilus_list_view_new (NautilusWindowSlot *slot);
 
+void nautilus_list_view_present_column_editor (NautilusListView *self);
+
 G_END_DECLS

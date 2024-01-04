@@ -2686,6 +2686,18 @@ action_show_hidden_files (GSimpleAction *action,
 }
 
 static void
+action_visible_columns (GSimpleAction *action,
+                        GVariant      *state,
+                        gpointer       user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+
+    g_return_if_fail (NAUTILUS_IS_LIST_VIEW (self));
+
+    nautilus_list_view_present_column_editor (NAUTILUS_LIST_VIEW (self));
+}
+
+static void
 update_zoom_actions_state (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
@@ -6985,6 +6997,7 @@ const GActionEntry view_entries[] =
     { .name = "zoom-out", .activate = action_zoom_out },
     { .name = "zoom-standard", .activate = action_zoom_standard },
     { .name = "show-hidden-files", .state = "true", .change_state = action_show_hidden_files },
+    { .name = "visible-columns", .activate = action_visible_columns },
     /* Background menu */
     { .name = "empty-trash", .activate = action_empty_trash },
     { .name = "new-folder", .activate = action_new_folder },
@@ -7786,6 +7799,11 @@ real_update_actions_state (NautilusFilesView *view)
     g_action_group_change_action_state (view_action_group,
                                         "show-hidden-files",
                                         g_variant_new_boolean (priv->show_hidden_files));
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "visible-columns");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 NAUTILUS_IS_LIST_VIEW (view));
 
     update_zoom_actions_state (view);
 

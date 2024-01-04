@@ -1,23 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <menu id="view_menu">
-    <section>
-      <attribute name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</attribute>
-      <!--
-           Sort section.
-
-           The toolbar code assumes this is the second item of this menu model.
-           Its contents is provided by the view.
-      -->
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">_Visible Columns…</attribute>
-        <attribute name="action">view.visible-columns</attribute>
-        <attribute name="hidden-when">action-missing</attribute>
-      </item>
-    </section>
-  </menu>
   <object class="GtkPopover" id="operations_popover">
     <property name="child">
       <object class="GtkScrolledWindow">
