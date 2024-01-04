@@ -22,10 +22,14 @@
 
 #include <glib.h>
 
+/**
+ * `NautilusFileQueue` is a `GQueue` with 2 special features:
+ * 1) It can find and remove items in constant time
+ * 2) It doesn't allow duplicates.
+ */
 struct NautilusFileQueue
 {
-    GList *head;
-    GList *tail;
+    GQueue parent;
     GHashTable *item_to_link_map;
 };
 
@@ -35,6 +39,7 @@ nautilus_file_queue_new (void)
     NautilusFileQueue *queue;
 
     queue = g_new0 (NautilusFileQueue, 1);
+    g_queue_init ((GQueue *) queue);
     queue->item_to_link_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 
     return queue;
@@ -44,7 +49,7 @@ void
 nautilus_file_queue_destroy (NautilusFileQueue *queue)
 {
     g_hash_table_destroy (queue->item_to_link_map);
-    nautilus_file_list_free (queue->head);
+    g_queue_clear_full ((GQueue *) queue, g_object_unref);
     g_free (queue);
 }
 
@@ -58,27 +63,15 @@ nautilus_file_queue_enqueue (NautilusFileQueue *queue,
         return;
     }
 
-    if (queue->tail == NULL)
-    {
-        queue->head = g_list_append (NULL, file);
-        queue->tail = queue->head;
-    }
-    else
-    {
-        queue->tail = g_list_append (queue->tail, file);
-        queue->tail = queue->tail->next;
-    }
-
-    nautilus_file_ref (file);
-    g_hash_table_insert (queue->item_to_link_map, file, queue->tail);
+    g_queue_push_tail ((GQueue *) queue, file);
+    g_hash_table_insert (queue->item_to_link_map, g_object_ref (file), queue->parent.tail);
 }
 
 NautilusFile *
 nautilus_file_queue_dequeue (NautilusFileQueue *queue)
 {
-    NautilusFile *file;
+    NautilusFile *file = g_queue_peek_head ((GQueue *) queue);
 
-    file = nautilus_file_queue_head (queue);
     nautilus_file_queue_remove (queue, file);
 
     return file;
@@ -99,32 +92,8 @@ nautilus_file_queue_remove (NautilusFileQueue *queue,
         return;
     }
 
-    if (link == queue->tail)
-    {
-        /* Need to special-case removing the tail. */
-        queue->tail = queue->tail->prev;
-    }
-
-    queue->head = g_list_remove_link (queue->head, link);
-    g_list_free (link);
+    g_queue_delete_link ((GQueue *) queue, link);
     g_hash_table_remove (queue->item_to_link_map, file);
 
     nautilus_file_unref (file);
-}
-
-NautilusFile *
-nautilus_file_queue_head (NautilusFileQueue *queue)
-{
-    if (queue->head == NULL)
-    {
-        return NULL;
-    }
-
-    return NAUTILUS_FILE (queue->head->data);
-}
-
-gboolean
-nautilus_file_queue_is_empty (NautilusFileQueue *queue)
-{
-    return (queue->head == NULL);
 }

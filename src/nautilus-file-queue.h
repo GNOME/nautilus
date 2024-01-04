@@ -39,8 +39,3 @@ NautilusFile *     nautilus_file_queue_dequeue  (NautilusFileQueue *queue);
 /* Remove a file from an arbitrary point in the queue in constant time. */
 void               nautilus_file_queue_remove   (NautilusFileQueue *queue,
 						 NautilusFile      *file);
-
-/* Get the file at the head of the queue without removing or unrefing it. */
-NautilusFile *     nautilus_file_queue_head     (NautilusFileQueue *queue);
-
-gboolean           nautilus_file_queue_is_empty (NautilusFileQueue *queue);
