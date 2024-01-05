@@ -1,5 +1,5 @@
 <!--
-It's very important to know if the bug also happens in the latest development version.
+It's very helpful to know if the bug also happens in the latest development version.
 It can be installed alongside the regular version with these instructions:
 
 1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
