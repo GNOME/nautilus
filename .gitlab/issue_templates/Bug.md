@@ -1,5 +1,5 @@
 <!--
-Please test if the issue has already been fixed by installing the latest testing version.
+It's very helpful to know if the bug also happens in the latest development version.
 It can be installed alongside the regular version with these instructions:
 
 1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
@@ -14,7 +14,7 @@ It can be installed alongside the regular version with these instructions:
 # Affected Version
 - Version: <!-- Note: Versions older than a year are not supported. -->
 - Distribution: <!-- Example: Ubuntu 23.10 -->
-- Happens with development Flatpak: Yes / No
+- Also happens with development version: Yes / No
 
 # Steps to reproduce <!-- Explain in detail how the issue can be reproduced. -->
 1.
