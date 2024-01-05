@@ -4415,21 +4415,21 @@ get_default_file_icon (void)
 GFilesystemPreviewType
 nautilus_file_get_filesystem_use_preview (NautilusFile *file)
 {
-    GFilesystemPreviewType use_preview;
-    NautilusFile *parent;
-
-    parent = nautilus_file_get_parent (file);
-    if (parent != NULL)
+    if (file->details->filesystem_info_is_up_to_date)
     {
-        use_preview = parent->details->filesystem_use_preview;
-        g_object_unref (parent);
+        return file->details->filesystem_use_preview;
     }
     else
     {
-        use_preview = 0;
+        g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
+
+        if (parent != NULL && file->details->filesystem_info_is_up_to_date)
+        {
+            return parent->details->filesystem_use_preview;
+        }
     }
 
-    return use_preview;
+    return G_FILESYSTEM_PREVIEW_TYPE_IF_ALWAYS;
 }
 
 gboolean
@@ -4437,7 +4437,7 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
 {
     g_assert (NAUTILUS_IS_FILE (file));
 
-    if (nautilus_file_is_directory (file) && file->details->filesystem_info_is_up_to_date)
+    if (file->details->filesystem_info_is_up_to_date)
     {
         return file->details->filesystem_remote;
     }
@@ -4446,7 +4446,7 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
         g_autoptr (NautilusFile) parent = NULL;
 
         parent = nautilus_file_get_parent (file);
-        if (parent != NULL)
+        if (parent != NULL && file->details->filesystem_info_is_up_to_date)
         {
             return parent->details->filesystem_remote;
         }
