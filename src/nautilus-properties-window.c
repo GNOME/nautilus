@@ -53,6 +53,12 @@
 #include "nautilus-tag-manager.h"
 #include "nautilus-ui-utilities.h"
 
+/* Put an upper limit on the number of names added to the properties window.
+ * This improves performance when selecting a large number files. Moreover, it
+ * is unlikely for many names to fit in the allocated text area.
+ */
+#define PROPERTIES_MAX_NAMES 50
+
 static GHashTable *pending_lists;
 
 typedef struct
@@ -825,7 +831,7 @@ update_name_field (NautilusPropertiesWindow *self)
     gchar *name_value;
     guint file_counter = 0;
 
-    for (GList *l = self->files; l != NULL; l = l->next)
+    for (GList *l = self->files; l != NULL && file_counter <= PROPERTIES_MAX_NAMES; l = l->next)
     {
         NautilusFile *file = NAUTILUS_FILE (l->data);
 
