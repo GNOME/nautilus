@@ -1397,30 +1397,18 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory      *directory,
 }
 
 static void
-remove_callback_link_keep_data (NautilusDirectory *directory,
-                                GList             *link)
+remove_callback_link (NautilusDirectory *directory,
+                      GList             *link)
 {
-    ReadyCallback *callback;
-
-    callback = link->data;
+    ReadyCallback *callback = link->data;
 
     directory->details->call_when_ready_list = g_list_remove_link
                                                    (directory->details->call_when_ready_list, link);
 
     request_counter_remove_request (directory->details->call_when_ready_counters,
                                     callback->request);
-    g_list_free_1 (link);
-}
-
-static void
-remove_callback_link (NautilusDirectory *directory,
-                      GList             *link)
-{
-    ReadyCallback *callback;
-
-    callback = link->data;
-    remove_callback_link_keep_data (directory, link);
     g_free (callback);
+    g_list_free_1 (link);
 }
 
 void
@@ -1814,22 +1802,20 @@ call_ready_callbacks_at_idle (gpointer callback_data)
 {
     NautilusDirectory *directory;
     GList *node;
-    ReadyCallback *callback;
 
     directory = NAUTILUS_DIRECTORY (callback_data);
     directory->details->call_ready_idle_id = 0;
 
     nautilus_directory_ref (directory);
 
-    callback = NULL;
     while (1)
     {
         /* Check if any callbacks are non-active and call them if they are. */
         for (node = directory->details->call_when_ready_list;
              node != NULL; node = node->next)
         {
-            callback = node->data;
-            if (!callback->active)
+            ReadyCallback *node_callback = node->data;
+            if (!node_callback->active)
             {
                 /* Non-active, remove and call */
                 break;
@@ -1840,12 +1826,13 @@ call_ready_callbacks_at_idle (gpointer callback_data)
             break;
         }
 
+        g_autofree ReadyCallback *callback = g_steal_pointer (&node->data);
+
         /* Callbacks are one-shots, so remove it now. */
-        remove_callback_link_keep_data (directory, node);
+        remove_callback_link (directory, node);
 
         /* Call the callback. */
         ready_callback_call (directory, callback);
-        g_free (callback);
     }
 
     nautilus_directory_async_state_changed (directory);
