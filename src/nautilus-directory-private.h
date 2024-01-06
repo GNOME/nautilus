@@ -71,10 +71,15 @@ struct NautilusDirectoryPrivate
 	NautilusFileQueue *low_priority_queue;
 	NautilusFileQueue *extension_queue;
 
-	/* These lists are going to be pretty short.  If we think they
-	 * are going to get big, we can use hash tables instead.
-	 */
-	GList *call_when_ready_list;
+    /* Set to ready when the callback is triggered and scheduled to be
+     * called at idle, its still kept in the hash so we can kill it when the
+     * file goes away.
+     */
+    struct
+    {
+        GHashTable *unsatisfied;
+        GHashTable *ready;
+    } call_when_ready_hash;
 	RequestCounter call_when_ready_counters;
 	GHashTable *monitor_table;
 	RequestCounter monitor_counters;
