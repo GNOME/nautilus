@@ -1212,45 +1212,11 @@ ready_callback_key_compare (gconstpointer a,
     callback_a = a;
     callback_b = b;
 
-    if (callback_a->file < callback_b->file)
-    {
-        return -1;
-    }
-    if (callback_a->file > callback_b->file)
-    {
-        return 1;
-    }
-    if (callback_a->file == NULL)
-    {
-        if (callback_a->callback.directory < callback_b->callback.directory)
-        {
-            return -1;
-        }
-        if (callback_a->callback.directory > callback_b->callback.directory)
-        {
-            return 1;
-        }
-    }
-    else
-    {
-        if (callback_a->callback.file < callback_b->callback.file)
-        {
-            return -1;
-        }
-        if (callback_a->callback.file > callback_b->callback.file)
-        {
-            return 1;
-        }
-    }
-    if (callback_a->callback_data < callback_b->callback_data)
-    {
-        return -1;
-    }
-    if (callback_a->callback_data > callback_b->callback_data)
-    {
-        return 1;
-    }
-    return 0;
+    return !(callback_a->file == callback_b->file &&
+             (callback_a->file != NULL ?
+              callback_a->callback.file == callback_b->callback.file :
+              callback_a->callback.directory == callback_b->callback.directory) &&
+             callback_a->callback_data == callback_b->callback_data);
 }
 
 static int
