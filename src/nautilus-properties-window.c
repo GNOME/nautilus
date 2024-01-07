@@ -2453,14 +2453,25 @@ static void
 open_parent_folder (NautilusPropertiesWindow *self)
 {
     g_autoptr (GFile) parent_location = NULL;
+    NautilusFile *file = get_file (self);
 
-    parent_location = nautilus_file_get_parent_location (get_file (self));
+    if (nautilus_file_is_in_recent (file))
+    {
+        /* Use activation location to open parent folder
+         * since parent location points to recent:// */
+        parent_location = nautilus_file_get_activation_location (file);
+    }
+    else
+    {
+        parent_location = nautilus_file_get_parent_location (file);
+    }
+
     g_return_if_fail (parent_location != NULL);
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                              parent_location,
                                              NAUTILUS_OPEN_FLAG_NEW_WINDOW,
-                                             &(GList){ .data = get_file (self) },
+                                             &(GList){ .data = file },
                                              NULL, NULL);
 }
 
