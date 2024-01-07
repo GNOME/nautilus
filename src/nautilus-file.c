@@ -3267,6 +3267,14 @@ compare_by_display_name (NautilusFile *file_1,
     return compare;
 }
 
+static inline int
+compare_by_name (NautilusFile *file_1,
+                 NautilusFile *file_2)
+{
+    return g_strcmp0 (file_1->details->name,
+                      file_2->details->name);
+}
+
 static int
 compare_by_directory_name (NautilusFile *file_1,
                            NautilusFile *file_2)
@@ -3506,7 +3514,12 @@ compare_by_full_path (NautilusFile *file_1,
     {
         return compare;
     }
-    return compare_by_display_name (file_1, file_2);
+    compare = compare_by_display_name (file_1, file_2);
+    if (compare != 0)
+    {
+        return compare;
+    }
+    return compare_by_name (file_1, file_2);
 }
 
 static int
@@ -3586,6 +3599,12 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
                 if (result == 0)
                 {
                     result = compare_by_directory_name (file_1, file_2);
+                }
+                /* Some GVfs backends like google-drive allow multiple files
+                 * with the same display name. */
+                if (result == 0)
+                {
+                    result = compare_by_name (file_1, file_2);
                 }
             }
             break;
