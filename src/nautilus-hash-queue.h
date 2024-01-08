@@ -36,8 +36,16 @@ void               nautilus_hash_queue_enqueue  (NautilusHashQueue *queue,
                                                  gpointer           item);
 void               nautilus_hash_queue_remove   (NautilusHashQueue *queue,
                                                  gconstpointer      key);
+gpointer           nautilus_hash_queue_find_item             (NautilusHashQueue *queue,
+                                                              gconstpointer      key);
+void               nautilus_hash_queue_move_existing_to_head (NautilusHashQueue *queue,
+                                                              gconstpointer      key);
+void               nautilus_hash_queue_move_existing_to_tail (NautilusHashQueue *queue,
+                                                              gconstpointer      key);
 
 /* Get the file at the head of the queue without removing or unrefing it. */
 #define nautilus_hash_queue_peek_head(queue) (g_queue_peek_head ((GQueue *) (queue)))
 
 #define nautilus_hash_queue_is_empty(queue) (g_queue_is_empty ((GQueue *) (queue)))
+
+#define nautilus_hash_queue_get_length(queue) (g_queue_get_length ((GQueue *) (queue)))
