@@ -1,3 +1,42 @@
+Major changes in 46.alpha.0
+=======================
+* Enhancements
+  - Confirm password when creating protected ZIP archives (Eric Daigle)
+  - Make custom folder icon feature discoverable (Khalid Abu Shawarib)
+  - Make URI entry discoverable (Alynx Zhou, Barnabás Pőcze)
+  - Allow changing owner/group and any permissions under admin:/// (António Fernandes)
+  - Add detailed date and time format option (Ondrej Holy, Peter Eisenmann)
+  - Detect copy/move over 4GiB file limit on FAT (Corey Berla)
+  - Give feedback on completion of quick operations (António Fernandes)
+  - New-style banners, unstar animation, and other visual refinements (Peter Eisenmann, Automeris naranja)
+  - Allow Alt+Down to revert more than one Alt+Up (vmkul)
+  - Close overlaid sidebar on location change (Khalid Abu Shawarib)
+* Bugfixes:
+  - Don't skip files in deep count/size (António Fernandes)
+  - Don't move files around as thumbnails load (Corey Berla)
+  - Reveal highlighted file without delay  (Corey Berla)
+  - Stop crashing in various situations (Sebastian Keller, António Fernandes, Corey Berla, Khalid Abu Shawarib)
+  - Resolve UI text inconsistencies (Automeris naranja, getsnoopy, kramo, Khalid Abu Shawarib, Ondrej Holy, Matthijs Velsink)
+  - Fix memory leaks, template disposal, and warnings (Khalid Abu Shawarib)
+  - Fix interface problems in Properties (Peter Eisenmann, António Fernandes, Khalid Abu Shawarib)
+  - Don't keep viewing unmounted locations (Ondrej Holy, António Fernandes, Khalid Abu Shawarib)
+  - Refined appdata (Sabri Ünal, António Fernandes)
+  - Resolve wrong scroll positioning bugs (Gary Li, António Fernandes)
+  - Fix automatic file duplicate naming (Peter Eisenmann)
+  - Properly reorder bookmarks by drag and drop (Khalid Abu Shawarib)
+  - Set current modification time on file created from templates (Khalid Abu Shawarib)
+  - Fix missing/wrong mime type icons (António Fernandes)
+  - Don't reload on autofs timeout (António Fernandes)
+* Cleanups
+  - Remove obsolete profiling, custom debug logging, and self-checking (Peter Eisenmann, Khalid Abu Shawarib)
+  - Streamline and expand tests (Khalid Abu Shawarib, Peter Eisenmann)
+  - Reduce usage of GtkDialog and other deprecated API (Khalid Abu Shawarib, Peter Eisenmann)
+  - Replace custom switch row with AdwSwitchRow (Óscar Fernández Díaz)
+  - Drop obsolete code (Peter Eisenmann, António Fernandes, Corey Berla)
+  - Reduce unnecessary string copies (Peter Eisenmann)
+  - Unify numbered filename apendix handling (Peter Eisenmann, Khalid Abu Shawarib)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 45.rc
 =====================
 
