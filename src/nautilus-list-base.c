@@ -139,13 +139,12 @@ nautilus_list_base_set_cursor (NautilusListBase *self,
  * it's desirable to act on a multi-item selection, because it preserves it. */
 static void
 select_single_item_if_not_selected (NautilusListBase *self,
-                                    NautilusViewItem *item)
+                                    NautilusViewCell *cell)
 {
     NautilusViewModel *model;
-    guint position;
+    guint position = nautilus_view_cell_get_position (cell);
 
     model = nautilus_list_base_get_model (self);
-    position = nautilus_view_model_find (model, item);
     if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), position))
     {
         nautilus_list_base_set_cursor (self, position, TRUE, FALSE);
@@ -173,14 +172,10 @@ open_context_menu_on_press (NautilusListBase *self,
                             gdouble           x,
                             gdouble           y)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
     gdouble view_x, view_y;
 
-    item = nautilus_view_cell_get_item (cell);
-    g_return_if_fail (item != NULL);
-
     /* Antecipate selection, if necessary. */
-    select_single_item_if_not_selected (self, item);
+    select_single_item_if_not_selected (self, cell);
 
     gtk_widget_translate_coordinates (GTK_WIDGET (cell), GTK_WIDGET (self),
                                       x, y,
@@ -253,11 +248,8 @@ on_item_click_pressed (GtkGestureClick *gesture,
     }
     else if (button == GDK_BUTTON_MIDDLE && n_press == 1)
     {
-        g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
-        g_return_if_fail (item != NULL);
-
         /* Anticipate selection, if necessary, to activate it. */
-        select_single_item_if_not_selected (self, item);
+        select_single_item_if_not_selected (self, cell);
         nautilus_list_base_activate_selection (self, TRUE);
         gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
     }
@@ -282,13 +274,9 @@ on_item_click_released (GtkGestureClick *gesture,
     if (priv->activate_on_release)
     {
         NautilusViewModel *model;
-        g_autoptr (NautilusViewItem) item = NULL;
-        guint i;
+        guint i = nautilus_view_cell_get_position (cell);
 
         model = nautilus_list_base_get_model (self);
-        item = nautilus_view_cell_get_item (cell);
-        g_return_if_fail (item != NULL);
-        i = nautilus_view_model_find (model, item);
 
         /* Anticipate selection, enforcing single selection of target item. */
         gtk_selection_model_select_item (GTK_SELECTION_MODEL (model), i, TRUE);
@@ -416,12 +404,11 @@ on_item_drag_prepare (GtkDragSource *source,
     g_autolist (NautilusFile) selection = NULL;
     g_autoslist (GFile) file_list = NULL;
     g_autoptr (GdkPaintable) paintable = NULL;
-    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
     GdkDragAction actions;
     gint scale_factor;
 
     /* Anticipate selection, if necessary, for dragging the clicked item. */
-    select_single_item_if_not_selected (self, item);
+    select_single_item_if_not_selected (self, cell);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     g_return_val_if_fail (selection != NULL, NULL);
@@ -796,6 +783,7 @@ setup_cell_common (GObject          *listitem,
     expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
     expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
     gtk_expression_bind (expression, cell, "item", listitem);
+    g_object_bind_property (listitem, "position", cell, "position", G_BINDING_SYNC_CREATE);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
     gtk_widget_add_controller (GTK_WIDGET (cell), controller);
