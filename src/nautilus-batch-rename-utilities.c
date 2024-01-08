@@ -93,18 +93,39 @@ batch_rename_get_tag_text_representation (TagConstants tag_constants)
 }
 
 static GString *
-batch_rename_replace (gchar *string,
-                      gchar *substring,
-                      gchar *replacement)
+batch_rename_replace (gchar    *string,
+                      gchar    *substring,
+                      gchar    *replacement,
+                      gboolean  use_regex)
 {
-    GString *new_string = g_string_new (string);
+    GString *new_string;
+    g_autoptr (GRegex) regex = NULL;
 
-    if (substring != NULL && replacement != NULL)
+    if (substring == NULL || replacement == NULL)
     {
-        g_string_replace (new_string, substring, replacement, 0);
+        return g_string_new (string);
     }
 
-    return new_string;
+    if (!use_regex)
+    {
+        new_string = g_string_new (string);
+        g_string_replace (new_string, substring, replacement, 0);
+
+        return new_string;
+    }
+
+    regex = g_regex_new (substring, G_REGEX_RAW, G_REGEX_MATCH_DEFAULT, NULL);
+
+    if (regex != NULL && g_regex_match (regex, string, 0, NULL))
+    {
+        g_autofree char *regex_string = NULL;
+
+        regex_string = g_regex_replace (regex, string, -1, 0, replacement, 0, NULL);
+
+        return g_string_new (regex_string);
+    }
+
+    return g_string_new (string);
 }
 
 void
@@ -225,14 +246,27 @@ batch_rename_sort_lists_for_rename (GList    **selection,
     }
 }
 
+static void
+highlight_text (GString    *string,
+                const char *to_highlight)
+{
+    g_autofree char *formatted = NULL;
+    g_autofree char *escaped_sub = g_markup_escape_text (to_highlight, -1);
+
+    formatted = g_strdup_printf ("<span background=\'#f57900\' color='white'>%s</span>",
+                                 escaped_sub);
+    g_string_replace (string, to_highlight, formatted, 0);
+}
+
 /* This function changes the background color of the replaced part of the name */
 GString *
 batch_rename_replace_label_text (const char  *label,
-                                 const gchar *substring)
+                                 const gchar *substring,
+                                 gboolean     use_regex)
 {
     GString *new_label;
-    g_autofree char *escaped_sub = g_markup_escape_text (substring, -1);
-    g_autofree char *formatted = NULL;
+    g_autoptr (GRegex) regex = NULL;
+    g_autoptr (GMatchInfo) match_info = NULL;
 
     if (substring == NULL || g_strcmp0 (substring, "") == 0)
     {
@@ -243,9 +277,27 @@ batch_rename_replace_label_text (const char  *label,
 
     new_label = g_string_new (label);
 
-    formatted = g_strdup_printf ("<span background=\'#f57900\' color='white'>%s</span>",
-                                 escaped_sub);
-    g_string_replace (new_label, substring, formatted, 0);
+    if (use_regex)
+    {
+        regex = g_regex_new (substring, G_REGEX_RAW, G_REGEX_MATCH_DEFAULT, NULL);
+
+        if (regex != NULL)
+        {
+            g_regex_match (regex, label, 0, &match_info);
+
+            while (match_info != NULL && g_match_info_matches (match_info))
+            {
+                g_autofree char *match = g_match_info_fetch (match_info, 0);
+
+                highlight_text (new_label, match);
+                g_match_info_next (match_info, NULL);
+            }
+        }
+    }
+    else
+    {
+        highlight_text (new_label, substring);
+    }
 
     return new_label;
 }
@@ -426,7 +478,8 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
                                         GList                         *text_chunks,
                                         GList                         *selection_metadata,
                                         gchar                         *entry_text,
-                                        gchar                         *replace_text)
+                                        gchar                         *replace_text,
+                                        gboolean                       use_regex)
 {
     GList *l;
     GList *result;
@@ -458,7 +511,8 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
         {
             new_name = batch_rename_replace (file_name->str,
                                              entry_text,
-                                             replace_text);
+                                             replace_text,
+                                             use_regex);
             result = g_list_prepend (result, new_name);
         }
 
@@ -705,7 +759,7 @@ format_date_time (GDateTime *date_time)
     date = g_date_time_format (date_time, "%x");
     if (strstr (date, "/") != NULL)
     {
-        formated_date = batch_rename_replace (date, "/", "-");
+        formated_date = batch_rename_replace (date, "/", "-", FALSE);
     }
     else
     {

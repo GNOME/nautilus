@@ -49,6 +49,7 @@ struct _NautilusBatchRenameDialog
     GtkWidget *replace_entry;
     GtkWidget *format_mode_button;
     GtkWidget *replace_mode_button;
+    GtkWidget *use_regex_button;
     GtkWidget *numbering_order_button;
     GtkWidget *numbering_label;
     GtkWidget *scrolled_window;
@@ -376,6 +377,7 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
     GList *text_chunks;
     g_autofree gchar *entry_text = NULL;
     g_autofree gchar *replace_text = NULL;
+    gboolean use_regex;
 
     selection = dialog->selection;
     text_chunks = NULL;
@@ -393,12 +395,14 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
+        use_regex = gtk_check_button_get_active (GTK_CHECK_BUTTON (dialog->use_regex_button));
         result = batch_rename_dialog_get_new_names_list (dialog->mode,
                                                          selection,
                                                          NULL,
                                                          NULL,
                                                          entry_text,
-                                                         replace_text);
+                                                         replace_text,
+                                                         use_regex);
     }
     else
     {
@@ -409,7 +413,8 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
                                                          text_chunks,
                                                          dialog->selection_metadata,
                                                          entry_text,
-                                                         replace_text);
+                                                         replace_text,
+                                                         FALSE);
         g_list_free_full (text_chunks, string_free);
     }
 
@@ -841,7 +846,8 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         else
         {
             new_name = batch_rename_replace_label_text (old_name,
-                                                        gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry)));
+                                                        gtk_editable_get_text (GTK_EDITABLE (dialog->find_entry)),
+                                                        gtk_check_button_get_active (GTK_CHECK_BUTTON (dialog->use_regex_button)));
             gtk_label_set_markup (GTK_LABEL (label), new_name->str);
 
             g_string_free (new_name, TRUE);
@@ -1283,6 +1289,7 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
     if (gtk_check_button_get_active (GTK_CHECK_BUTTON (dialog->format_mode_button)))
     {
         gtk_stack_set_visible_child_name (GTK_STACK (dialog->mode_stack), "format");
+        gtk_widget_set_visible (dialog->use_regex_button, FALSE);
 
         dialog->mode = NAUTILUS_BATCH_RENAME_DIALOG_FORMAT;
 
@@ -1291,6 +1298,7 @@ batch_rename_dialog_mode_changed (NautilusBatchRenameDialog *dialog)
     else
     {
         gtk_stack_set_visible_child_name (GTK_STACK (dialog->mode_stack), "replace");
+        gtk_widget_set_visible (dialog->use_regex_button, TRUE);
 
         dialog->mode = NAUTILUS_BATCH_RENAME_DIALOG_REPLACE;
 
@@ -1802,6 +1810,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, mode_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, replace_mode_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, format_mode_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, use_regex_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, scrolled_window);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);

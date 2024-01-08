@@ -133,7 +133,6 @@
                     <property name="hexpand">True</property>
                     <property name="halign">center</property>
                     <property name="margin-top">20</property>
-                    <property name="margin-bottom">20</property>
                     <property name="margin-start">20</property>
                     <property name="margin-end">20</property>
                     <child>
@@ -159,7 +158,22 @@
                   </object>
                 </child>
                 <child>
+                  <object class="GtkCheckButton" id="use_regex_button">
+                    <property name="label" translatable="yes">Use Rege_x</property>
+                    <property name="use_underline">true</property>
+                    <property name="halign">center</property>
+                    <property name="visible">false</property>
+                    <signal name="toggled" handler="batch_rename_dialog_mode_changed" swapped="yes"/>
+                    <layout>
+                      <property name="column">1</property>
+                      <property name="row">1</property>
+                      <property name="column-span">8</property>
+                    </layout>
+                  </object>
+                </child>
+                <child>
                   <object class="GtkStack" id="mode_stack">
+                    <property name="margin-top">20</property>
                     <property name="vhomogeneous">False</property>
                     <property name="hhomogeneous">True</property>
                     <property name="transition_type">crossfade</property>
@@ -301,7 +315,7 @@
                     </child>
                     <layout>
                       <property name="column">0</property>
-                      <property name="row">1</property>
+                      <property name="row">2</property>
                       <property name="column-span">8</property>
                     </layout>
                   </object>
@@ -344,7 +358,7 @@
                     </property>
                     <layout>
                       <property name="column">0</property>
-                      <property name="row">2</property>
+                      <property name="row">3</property>
                       <property name="column-span">8</property>
                     </layout>
                   </object>
@@ -384,7 +398,7 @@
                     </child>
                     <layout>
                       <property name="column">0</property>
-                      <property name="row">3</property>
+                      <property name="row">4</property>
                       <property name="column-span">8</property>
                     </layout>
                   </object>
