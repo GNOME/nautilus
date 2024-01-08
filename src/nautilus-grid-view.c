@@ -415,10 +415,6 @@ bind_cell (GtkSignalListItemFactory *factory,
         parent = gtk_widget_get_parent (cell);
         gtk_widget_set_halign (parent, GTK_ALIGN_CENTER);
         gtk_widget_set_valign (parent, GTK_ALIGN_START);
-
-        gtk_accessible_update_relation (GTK_ACCESSIBLE (parent),
-                                        GTK_ACCESSIBLE_RELATION_LABELLED_BY, cell, NULL,
-                                        -1);
     }
 }
 
@@ -454,6 +450,18 @@ setup_cell (GtkSignalListItemFactory *factory,
     g_object_bind_property (self, "icon-size",
                             cell, "icon-size",
                             G_BINDING_SYNC_CREATE);
+
+    /* Emulate GtkBuilder XML expression binding syntax. */
+#define BINDING(obj, prop, expr, this) (gtk_expression_bind ((expr), (obj), (prop), (this)))
+#define LOOKUP(type, prop, this) (gtk_property_expression_new ((type), (this), (prop)))
+    BINDING (listitem, "accessible-label",
+             LOOKUP (NAUTILUS_TYPE_FILE, "display-name",
+                     LOOKUP (NAUTILUS_TYPE_VIEW_ITEM, "file",
+                             LOOKUP (GTK_TYPE_TREE_LIST_ROW, "item",
+                                     LOOKUP (GTK_TYPE_LIST_ITEM, "item",
+                                             NULL)))), listitem);
+#undef BINDING
+#undef LOOKUP
 
     nautilus_grid_cell_set_caption_attributes (cell, self->caption_attributes);
 }
