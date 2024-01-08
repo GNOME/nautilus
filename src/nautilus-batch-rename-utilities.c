@@ -97,47 +97,12 @@ batch_rename_replace (gchar *string,
                       gchar *substring,
                       gchar *replacement)
 {
-    GString *new_string;
-    gchar **splitted_string;
-    gint i, n_splits;
+    GString *new_string = g_string_new (string);
 
-    new_string = g_string_new ("");
-
-    if (substring == NULL || replacement == NULL)
+    if (substring != NULL && replacement != NULL)
     {
-        g_string_append (new_string, string);
-
-        return new_string;
+        g_string_replace (new_string, substring, replacement, 0);
     }
-
-    if (g_utf8_strlen (substring, -1) == 0)
-    {
-        g_string_append (new_string, string);
-
-        return new_string;
-    }
-
-    splitted_string = g_strsplit (string, substring, -1);
-    if (splitted_string == NULL)
-    {
-        g_string_append (new_string, string);
-
-        return new_string;
-    }
-
-    n_splits = g_strv_length (splitted_string);
-
-    for (i = 0; i < n_splits; i++)
-    {
-        g_string_append (new_string, splitted_string[i]);
-
-        if (i != n_splits - 1)
-        {
-            g_string_append (new_string, replacement);
-        }
-    }
-
-    g_strfreev (splitted_string);
 
     return new_string;
 }
@@ -266,52 +231,21 @@ batch_rename_replace_label_text (const char  *label,
                                  const gchar *substring)
 {
     GString *new_label;
-    gchar **splitted_string;
-    gchar *token;
-    gint i, n_splits;
-
-    new_label = g_string_new ("");
+    g_autofree char *escaped_sub = g_markup_escape_text (substring, -1);
+    g_autofree char *formatted = NULL;
 
     if (substring == NULL || g_strcmp0 (substring, "") == 0)
     {
-        token = g_markup_escape_text (label, -1);
-        new_label = g_string_append (new_label, token);
-        g_free (token);
+        g_autofree char *escaped = g_markup_escape_text (label, -1);
 
-        return new_label;
+        return g_string_new (escaped);
     }
 
-    splitted_string = g_strsplit (label, substring, -1);
-    if (splitted_string == NULL)
-    {
-        token = g_markup_escape_text (label, -1);
-        new_label = g_string_append (new_label, token);
-        g_free (token);
+    new_label = g_string_new (label);
 
-        return new_label;
-    }
-
-    n_splits = g_strv_length (splitted_string);
-
-    for (i = 0; i < n_splits; i++)
-    {
-        token = g_markup_escape_text (splitted_string[i], -1);
-        new_label = g_string_append (new_label, token);
-
-        g_free (token);
-
-        if (i != n_splits - 1)
-        {
-            token = g_markup_escape_text (substring, -1);
-            g_string_append_printf (new_label,
-                                    "<span background=\'#f57900\' color='white'>%s</span>",
-                                    token);
-
-            g_free (token);
-        }
-    }
-
-    g_strfreev (splitted_string);
+    formatted = g_strdup_printf ("<span background=\'#f57900\' color='white'>%s</span>",
+                                 escaped_sub);
+    g_string_replace (new_label, substring, formatted, 0);
 
     return new_label;
 }
