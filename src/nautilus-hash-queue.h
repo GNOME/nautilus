@@ -37,3 +37,11 @@ gboolean           nautilus_hash_queue_enqueue  (NautilusHashQueue *queue,
 gpointer           nautilus_hash_queue_dequeue  (NautilusHashQueue *queue);
 void               nautilus_hash_queue_remove   (NautilusHashQueue *queue,
                                                  gconstpointer      key);
+
+gpointer           nautilus_hash_queue_find_item             (NautilusHashQueue *queue,
+                                                              gconstpointer      key);
+
+void               nautilus_hash_queue_move_existing_to_head (NautilusHashQueue *queue,
+                                                              gconstpointer      key);
+void               nautilus_hash_queue_move_existing_to_tail (NautilusHashQueue *queue,
+                                                              gconstpointer      key);
