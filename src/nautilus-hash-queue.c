@@ -127,3 +127,47 @@ nautilus_hash_queue_remove (NautilusHashQueue *queue,
     g_queue_delete_link ((GQueue *) queue, link);
     g_hash_table_remove (queue->item_to_link_map, key);
 }
+
+gpointer
+nautilus_hash_queue_find_item (NautilusHashQueue *queue,
+                               gconstpointer      key)
+{
+    GList *link = g_hash_table_lookup (queue->item_to_link_map, key);
+
+    if (link == NULL)
+    {
+        return NULL;
+    }
+
+    return link->data;
+}
+
+void
+nautilus_hash_queue_move_existing_to_head (NautilusHashQueue *queue,
+                                           gconstpointer      key)
+{
+    GList *link = g_hash_table_lookup (queue->item_to_link_map, key);
+
+    if (link == NULL)
+    {
+        return;
+    }
+
+    g_queue_unlink ((GQueue *) queue, link);
+    g_queue_push_head_link ((GQueue *) queue, link);
+}
+
+void
+nautilus_hash_queue_move_existing_to_tail (NautilusHashQueue *queue,
+                                           gconstpointer      key)
+{
+    GList *link = g_hash_table_lookup (queue->item_to_link_map, key);
+
+    if (link == NULL)
+    {
+        return;
+    }
+
+    g_queue_unlink ((GQueue *) queue, link);
+    g_queue_push_tail_link ((GQueue *) queue, link);
+}
