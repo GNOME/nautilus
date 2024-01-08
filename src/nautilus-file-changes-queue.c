@@ -44,10 +44,12 @@ static GAsyncQueue *
 nautilus_file_changes_queue_get (void)
 {
     static GAsyncQueue *file_changes_queue;
+    static gsize init_value = 0;
 
-    if (file_changes_queue == NULL)
+    if (g_once_init_enter (&init_value))
     {
         file_changes_queue = g_async_queue_new ();
+        g_once_init_leave (&init_value, 1);
     }
 
     return file_changes_queue;
