@@ -2,7 +2,7 @@ project('nautilus', 'c',
   default_options: ['c_std=c11'],
 
   # Do not forget when releasing:
-  #  * Update version in data/org.gnome.Nautilus.appdata.xml.in.in
+  #  * Set release date in data/org.gnome.Nautilus.appdata.xml.in.in
   version: '46.alpha.0',
 
   meson_version: '>= 0.59.0',
