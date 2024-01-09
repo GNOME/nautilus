@@ -28,8 +28,18 @@
   <url type="contact">https://discourse.gnome.org/tag/nautilus</url>
   <url type="vcs-browser">https://gitlab.gnome.org/GNOME/nautilus</url>
   <launchable type="desktop-id">@appid@.desktop</launchable>
+  <!-- Copy-pastable release tag templates.
+  # For stable releases:
+    <release version="@release-version@" type="stable" date="YYYY-MM-DD"/>
+
+  # For Unstable (alpha, beta, rc) releases:
+    <release version="@release-version@" type="development" date="YYYY-MM-DD"/>
+
+  # Between releases (at post-release version bump):
+    <release version="@release-version@" date="@build-date@"/>
+  -->
   <releases>
-    <release version="@release-version@" date="" />
+    <release version="@release-version@" date="@build-date@"/>
   </releases>
   <project_group>GNOME</project_group>
   <project_license>GPL-3.0-or-later</project_license>

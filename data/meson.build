@@ -41,9 +41,20 @@ desktop_autorun_software = i18n.merge_file(
   type: 'desktop'
 )
 
+# get current date, used as build date for snapshots between releases
+today = 'unknown'
+date = find_program('date', required: false)
+if date.found()
+  r = run_command(date, '-I')
+  if r.returncode() == 0
+    today = r.stdout().strip()
+  endif
+endif
+
 appdata_conf = configuration_data()
 
 appdata_conf.set('appid', application_id)
+appdata_conf.set('build-date', today)
 appdata_conf.set('release-version', meson.project_version())
 
 appdata = i18n.merge_file(
