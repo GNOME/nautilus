@@ -59,11 +59,11 @@ appdata_conf.set('release-version', meson.project_version())
 
 appdata = i18n.merge_file(
   input: configure_file(
-    input: files('org.gnome.Nautilus.appdata.xml.in.in'),
-    output: 'org.gnome.Nautilus.appdata.xml.in',
+    input: files('org.gnome.Nautilus.metainfo.xml.in.in'),
+    output: 'org.gnome.Nautilus.metainfo.xml.in',
     configuration: appdata_conf
   ),
-  output: '@0@.appdata.xml'.format(application_id),
+  output: '@0@.metainfo.xml'.format(application_id),
   install: true,
   install_dir: join_paths(datadir, 'metainfo'),
   po_dir: po_dir
