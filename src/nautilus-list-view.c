@@ -789,7 +789,7 @@ tree_expander_shortcut_cb (GtkWidget *widget,
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (widget);
     GtkWidget *child;
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     GtkTreeExpander *expander;
     GtkTreeListRow *row;
     GtkTextDirection direction = gtk_widget_get_direction (widget);
@@ -815,7 +815,6 @@ tree_expander_shortcut_cb (GtkWidget *widget,
 
     /* The name cell might not be the first column (the user may have changed
      * column order), but the expander is always on the name cell. */
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (child));
     expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (nautilus_view_item_get_item_ui (item)));
     row = gtk_tree_expander_get_list_row (expander);
     /* End of hack. */

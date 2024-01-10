@@ -22,11 +22,10 @@ static void
 toggle_star (NautilusStarCell *self)
 {
     NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
     g_autofree gchar *uri = NULL;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
     uri = nautilus_file_get_uri (file);
@@ -71,10 +70,9 @@ update_star (GtkButton    *star,
 static void
 on_file_changed (NautilusStarCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
 
@@ -87,10 +85,9 @@ on_starred_changed (NautilusTagManager *tag_manager,
                     gpointer            user_data)
 {
     NautilusStarCell *self = user_data;
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     if (item == NULL)
     {
         return;

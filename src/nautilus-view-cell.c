@@ -202,11 +202,9 @@ nautilus_view_cell_set_item (NautilusViewCell *self,
 NautilusViewItem *
 nautilus_view_cell_get_item (NautilusViewCell *self)
 {
-    NautilusViewItem *item;
-
     g_return_val_if_fail (NAUTILUS_IS_VIEW_CELL (self), NULL);
 
-    g_object_get (self, "item", &item, NULL);
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
 
-    return item;
+    return priv->item;
 }

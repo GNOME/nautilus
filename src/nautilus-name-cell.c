@@ -98,12 +98,11 @@ get_path_text (NautilusFile *file,
 static void
 update_labels (NautilusNameCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
     g_autofree gchar *path_text = NULL;
     const gchar *fts_snippet = NULL;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
 
@@ -129,14 +128,13 @@ update_icon (NautilusNameCell *self)
 {
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
     guint icon_size;
     gint scale_factor;
     int icon_height;
     int extra_margin;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
 
     file = nautilus_view_item_get_file (item);
@@ -179,13 +177,12 @@ update_icon (NautilusNameCell *self)
 static void
 update_emblems (NautilusNameCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
     GtkWidget *child;
     GtkIconTheme *theme;
     g_autolist (GIcon) emblems = NULL;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
 
@@ -223,7 +220,7 @@ on_file_changed (NautilusNameCell *self)
 static void
 on_icon_size_changed (NautilusNameCell *self)
 {
-    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
 
     if (item == NULL)
     {
@@ -238,10 +235,9 @@ static void
 on_item_drag_accept_changed (NautilusNameCell *self)
 {
     gboolean drag_accept;
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     GtkWidget *list_row = gtk_widget_get_parent (gtk_widget_get_parent (GTK_WIDGET (self)));
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_object_get (item, "drag-accept", &drag_accept, NULL);
     if (drag_accept)
     {
@@ -257,9 +253,8 @@ static void
 on_item_is_cut_changed (NautilusNameCell *self)
 {
     gboolean is_cut;
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_object_get (item,
                   "is-cut", &is_cut,
                   NULL);
@@ -277,11 +272,12 @@ static gboolean
 on_loading_timeout (gpointer user_data)
 {
     NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     gboolean is_loading;
 
     self->loading_timeout_id = 0;
 
-    g_object_get (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self)),
+    g_object_get (item,
                   "is-loading", &is_loading,
                   NULL);
     if (is_loading)

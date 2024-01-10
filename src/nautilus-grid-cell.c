@@ -31,14 +31,13 @@ G_DEFINE_TYPE (NautilusGridCell, nautilus_grid_cell, NAUTILUS_TYPE_VIEW_CELL)
 static void
 update_icon (NautilusGridCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
     NautilusFile *file;
     guint icon_size;
     gint scale_factor;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
     g_object_get (self, "icon-size", &icon_size, NULL);
@@ -66,7 +65,7 @@ update_icon (NautilusGridCell *self)
 static void
 update_captions (NautilusGridCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
     GtkWidget * const caption_labels[] =
     {
@@ -76,7 +75,6 @@ update_captions (NautilusGridCell *self)
     };
     G_STATIC_ASSERT (G_N_ELEMENTS (caption_labels) == NAUTILUS_GRID_CELL_N_CAPTIONS);
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
     for (guint i = 0; i < NAUTILUS_GRID_CELL_N_CAPTIONS; i++)
@@ -98,14 +96,13 @@ update_captions (NautilusGridCell *self)
 static void
 update_emblems (NautilusGridCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
     GtkWidget *child;
     GtkIconTheme *theme;
     g_autolist (GIcon) emblems = NULL;
     g_autofree gchar *file_uri = NULL;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
     file_uri = nautilus_file_get_uri (file);
@@ -142,10 +139,9 @@ update_emblems (NautilusGridCell *self)
 static void
 on_file_changed (NautilusGridCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
 
@@ -160,7 +156,7 @@ on_file_changed (NautilusGridCell *self)
 static void
 on_icon_size_changed (NautilusGridCell *self)
 {
-    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
 
     if (item == NULL)
     {
@@ -176,9 +172,8 @@ static void
 on_item_is_cut_changed (NautilusGridCell *self)
 {
     gboolean is_cut;
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_object_get (item,
                   "is-cut", &is_cut,
                   NULL);
@@ -217,10 +212,9 @@ on_starred_changed (NautilusTagManager *tag_manager,
                     gpointer            user_data)
 {
     NautilusGridCell *self = NAUTILUS_GRID_CELL (user_data);
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     if (item == NULL)
     {
         return;

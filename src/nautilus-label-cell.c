@@ -39,11 +39,10 @@ static GParamSpec *properties[N_PROPS] = { NULL, };
 static void
 update_label (NautilusLabelCell *self)
 {
-    g_autoptr (NautilusViewItem) item = NULL;
+    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     NautilusFile *file;
     g_autofree gchar *string = NULL;
 
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
     file = nautilus_view_item_get_file (item);
 
