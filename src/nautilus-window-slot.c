@@ -1927,31 +1927,9 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
             end_location_change (self);
             slot_location = nautilus_window_slot_get_location (self);
 
-            /* XXX FIXME VOODOO TODO:
-             * Context: https://gitlab.gnome.org/GNOME/nautilus/issues/562
-             * (and the associated MR)
-             *
-             * This used to just close the slot, which, in combination with
-             * the transient error dialog, caused Mutter to have a heart attack
-             * and die when the slot happened to be the only one remaining.
-             * The following condition can hold true in (at least) two cases:
-             *
-             * 1. We are inside the “Other Locations” view and are opening
-             *    a broken bookmark, which causes the window slot to get replaced
-             *    with one that handles the location, and is, understandably,
-             *    empty.
-             * 2. We open a broken bookmark in a new window, which works almost
-             *    the same, in that it has no open location.
-             *
-             * Ernestas: I’m leaning towards having an in-view message about the
-             *           failure, which avoids dialogs and magically disappearing
-             *           slots/tabs/windows (also allowing to go back to the
-             *           previous location), but a dialog is quicker to inform
-             *           about the failure.
-             * XXX
-             */
             if (slot_location == NULL)
             {
+                /* Location is NULL if we open a broken bookmark in a new window */
                 nautilus_window_slot_go_home (self, 0);
             }
             else
