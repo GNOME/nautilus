@@ -277,11 +277,12 @@ static gboolean
 on_loading_timeout (gpointer user_data)
 {
     NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     gboolean is_loading;
 
     self->loading_timeout_id = 0;
 
-    g_object_get (nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self)),
+    g_object_get (item,
                   "is-loading", &is_loading,
                   NULL);
     if (is_loading)
@@ -297,8 +298,7 @@ static void
 on_item_is_loading_changed (NautilusNameCell *self)
 {
     gboolean is_loading;
-    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
-
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
 
     g_clear_handle_id (&self->loading_timeout_id, g_source_remove);
     g_object_get (item, "is-loading", &is_loading, NULL);

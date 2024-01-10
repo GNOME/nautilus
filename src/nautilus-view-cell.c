@@ -206,7 +206,9 @@ nautilus_view_cell_get_item (NautilusViewCell *self)
 
     g_return_val_if_fail (NAUTILUS_IS_VIEW_CELL (self), NULL);
 
+    /* This gets a full reference. */
     g_object_get (self, "item", &item, NULL);
 
+    /* Return full reference for consistency with gtk_tree_list_row_get_item() */
     return item;
 }
