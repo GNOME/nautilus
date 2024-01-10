@@ -32,10 +32,6 @@ void nautilus_view_model_add_items (NautilusViewModel *self,
                                     GList             *items);
 guint nautilus_view_model_find (NautilusViewModel *self,
                                 NautilusViewItem  *item);
-guint nautilus_view_model_find_ranged (NautilusViewModel *self,
-                                       NautilusViewItem  *item,
-                                       guint              start,
-                                       guint              end);
 void nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
                                              NautilusViewItem  *item);
 void nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
