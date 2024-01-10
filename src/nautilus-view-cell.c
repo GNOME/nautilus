@@ -180,13 +180,11 @@ nautilus_view_cell_once (NautilusViewCell *self)
 NautilusListBase *
 nautilus_view_cell_get_view (NautilusViewCell *self)
 {
-    NautilusListBase *view;
-
     g_return_val_if_fail (NAUTILUS_IS_VIEW_CELL (self), NULL);
 
-    g_object_get (self, "view", &view, NULL);
+    NautilusViewCellPrivate *priv = nautilus_view_cell_get_instance_private (self);
 
-    return view;
+    return priv->view;
 }
 
 void
