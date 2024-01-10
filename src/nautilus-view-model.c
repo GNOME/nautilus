@@ -556,7 +556,7 @@ nautilus_view_model_add_items (NautilusViewModel *self,
  *
  * @item: The item to find.
  *
- * Perform binary search to find the index of @item. A sorter must be set.
+ * Iterate the model linearly to find the index of @item. Avoid using in a loop.
  *
  * Returns: The position of the item in the list, or G_MAXUINT if not found.
  */
@@ -564,37 +564,26 @@ guint
 nautilus_view_model_find (NautilusViewModel *self,
                           NautilusViewItem  *item)
 {
-    guint n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
-    guint lower = 0;
-    guint upper = n_items - 1;
-    GtkSorter *sorter = nautilus_view_model_get_sorter (self);
+    guint n_items;
+    guint i = 0;
 
-    g_assert (sorter != NULL);
-
-    while (lower <= upper)
+    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
+    while (i < n_items)
     {
-        guint middle = (lower + upper) / 2;
-        g_autoptr (GtkTreeListRow) middle_row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), middle);
-        g_autoptr (NautilusViewItem) middle_item = gtk_tree_list_row_get_item (middle_row);
+        g_autoptr (GtkTreeListRow) row = NULL;
+        g_autoptr (NautilusViewItem) item_i = NULL;
 
-        g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (middle_item), G_MAXUINT);
+        row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), i);
+        g_warn_if_fail (GTK_IS_TREE_LIST_ROW (row));
 
-        GtkOrdering ordering = gtk_sorter_compare (sorter, middle_item, item);
+        item_i = gtk_tree_list_row_get_item (row);
+        g_warn_if_fail (NAUTILUS_IS_VIEW_ITEM (item_i));
 
-        if (ordering == GTK_ORDERING_EQUAL)
+        if (item_i == item)
         {
-            return middle;
+            return i;
         }
-
-        if (ordering == GTK_ORDERING_SMALLER)
-        {
-            lower = middle + 1;
-        }
-        else
-        {
-            g_assert (ordering == GTK_ORDERING_LARGER);
-            upper = middle - 1;
-        }
+        i++;
     }
 
     return G_MAXUINT;
