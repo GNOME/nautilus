@@ -1826,7 +1826,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
     GError *error = NULL;
     NautilusWindow *window;
     NautilusWindowSlot *self;
-    NautilusFile *viewed_file;
     NautilusView *view;
     GFile *location;
     NautilusApplication *app;
@@ -1934,15 +1933,15 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
             }
             else
             {
-                /* We disconnected this, so we need to re-connect it */
-                viewed_file = nautilus_file_get (slot_location);
-                nautilus_window_slot_set_viewed_file (self, viewed_file);
-                nautilus_file_unref (viewed_file);
+                /* We disconnected this, so we need to re-connect it.
+                 * Although not conceptually correct, a force reload is a simple
+                 * way to do that. In the future we may want to have an error
+                 * status page instead and only reload on explicit request. */
+                nautilus_window_slot_force_reload (self);
 
                 /* Leave the location bar showing the bad location that the user
                  * typed (or maybe achieved by dragging or something). Many times
-                 * the mistake will just be an easily-correctable typo. The user
-                 * can choose "Refresh" to get the original URI back in the location bar.
+                 * the mistake will just be an easily-correctable typo.
                  */
             }
         }
