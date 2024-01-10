@@ -255,7 +255,13 @@ update_audio (TotemPropertiesView    *props,
 	samplerate = gst_discoverer_audio_info_get_sample_rate (info);
 	if (samplerate) {
 		char *string;
-		string = g_strdup_printf (_("%d Hz"), samplerate);
+		if(samplerate > 999){
+			double samplerate_khz = (double)samplerate / 1000.0;
+			string = g_strdup_printf("%'.2f kHz", samplerate_khz);
+		}
+		else{
+			string = g_strdup_printf("%d Hz", samplerate);
+		}
 		append_item (props, _("Sample Rate"), string);
 		g_free (string);
 	}
