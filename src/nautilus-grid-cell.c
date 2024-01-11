@@ -20,7 +20,6 @@ struct _NautilusGridCell
     GtkWidget *fixed_height_box;
     GtkWidget *icon;
     GtkWidget *emblems_box;
-    GtkWidget *label;
     GtkWidget *first_caption;
     GtkWidget *second_caption;
     GtkWidget *third_caption;
@@ -251,10 +250,11 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, fixed_height_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, emblems_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, label);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, second_caption);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, third_caption);
+
+    gtk_widget_class_bind_template_callback (widget_class, on_label_query_tooltip);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_GRID_CELL);
 }
@@ -266,8 +266,6 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 
     g_signal_connect (self, "notify::icon-size",
                       G_CALLBACK (on_icon_size_changed), NULL);
-    g_signal_connect (self->label, "query-tooltip",
-                      G_CALLBACK (on_label_query_tooltip), NULL);
 
     g_signal_connect_object (nautilus_tag_manager_get (), "starred-changed",
                              G_CALLBACK (on_starred_changed), self, G_CONNECT_DEFAULT);
@@ -289,19 +287,6 @@ nautilus_grid_cell_init (NautilusGridCell *self)
     g_object_bind_property (self, "item",
                             self->item_signal_group, "target",
                             G_BINDING_SYNC_CREATE);
-
-#if PANGO_VERSION_CHECK (1, 44, 4)
-    {
-        PangoAttrList *attr_list;
-
-        /* GTK4 TODO: This attribute is set in the UI file but GTK 3 ignores it.
-         * Remove this block after the switch to GTK 4. */
-        attr_list = pango_attr_list_new ();
-        pango_attr_list_insert (attr_list, pango_attr_insert_hyphens_new (FALSE));
-        gtk_label_set_attributes (GTK_LABEL (self->label), attr_list);
-        pango_attr_list_unref (attr_list);
-    }
-#endif
 }
 
 NautilusGridCell *
