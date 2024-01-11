@@ -106,13 +106,6 @@ struct _NautilusFilesViewClass {
 
         char *        (* get_backing_uri)    (NautilusFilesView *view);
 
-        /* reveal_selection is a function pointer that subclasses may
-         * override to make sure the selected items are sufficiently
-         * apparent to the user (e.g., scrolled into view). By default,
-         * this does nothing.
-         */
-        void     (* reveal_selection)        (NautilusFilesView *view);
-
         /* update_menus is a function pointer that subclasses can override to
          * update the sensitivity or wording of menu items in the menu bar.
          * It is called (at least) whenever the selection changes. If overridden,
