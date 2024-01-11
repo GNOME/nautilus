@@ -317,9 +317,6 @@ static void     metadata_for_files_in_directory_ready_callback (NautilusDirector
 static void     nautilus_files_view_trash_state_changed_callback (NautilusTrashMonitor *trash,
                                                                   gboolean              state,
                                                                   gpointer              callback_data);
-static void     nautilus_files_view_select_file (NautilusFilesView *view,
-                                                 NautilusFile      *file);
-
 static void     update_templates_directory (NautilusFilesView *view);
 
 static void     extract_files (NautilusFilesView *view,
@@ -2050,7 +2047,7 @@ new_folder_done (GFile    *new_folder,
     if (g_hash_table_contains (data->added_locations, new_folder))
     {
         /* The file was already added */
-        nautilus_files_view_select_file (directory_view, file);
+        nautilus_files_view_call_set_selection (directory_view, &(GList){ .data = file });
         nautilus_files_view_reveal_selection (directory_view);
     }
     else
@@ -2249,7 +2246,7 @@ compress_done (GFile    *new_file,
     if (g_hash_table_contains (data->added_locations, new_file))
     {
         /* The file was already added */
-        nautilus_files_view_select_file (view, file);
+        nautilus_files_view_call_set_selection (view, &(GList){ .data = file });
         nautilus_files_view_reveal_selection (view);
     }
     else
@@ -8899,18 +8896,6 @@ disconnect_directory_handlers (NautilusFilesView *view)
                                             &priv->directory);
     nautilus_file_monitor_remove (priv->directory_as_file,
                                   &priv->directory_as_file);
-}
-
-static void
-nautilus_files_view_select_file (NautilusFilesView *view,
-                                 NautilusFile      *file)
-{
-    GList file_list;
-
-    file_list.data = file;
-    file_list.next = NULL;
-    file_list.prev = NULL;
-    nautilus_files_view_call_set_selection (view, &file_list);
 }
 
 /**
