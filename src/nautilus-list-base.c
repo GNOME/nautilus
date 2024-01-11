@@ -909,14 +909,6 @@ get_first_selected_item (NautilusListBase *self)
     return gtk_bitset_get_minimum (selection);
 }
 
-static void
-real_reveal_selection (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-
-    nautilus_list_base_scroll_to_item (self, get_first_selected_item (self));
-}
-
 static guint
 get_first_visible_item (NautilusListBase *self)
 {
@@ -1058,6 +1050,11 @@ real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (NautilusViewItem) item = NULL;
     GtkWidget *item_ui;
+
+    /* Make sure the whole item is visible. The selection is a single item, the
+     * one to rename with the popover, so we can use scroll_to_item() for this.
+     */
+    nautilus_list_base_scroll_to_item (self, get_first_selected_item (self));
 
     /* We only allow one item to be renamed with a popover */
     item = get_view_item (G_LIST_MODEL (priv->model), get_first_selected_item (self));
@@ -1335,7 +1332,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->get_last_visible_file = real_get_last_visible_file;
-    files_view_class->reveal_selection = real_reveal_selection;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
 

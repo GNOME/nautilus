@@ -780,9 +780,7 @@ nautilus_files_view_select_all (NautilusFilesView *self)
 static void
 nautilus_files_view_select_first (NautilusFilesView *self)
 {
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-
-    gtk_selection_model_select_item (GTK_SELECTION_MODEL (priv->model), 0, TRUE);
+    nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), 0, TRUE, TRUE);
 }
 
 static void
@@ -832,8 +830,10 @@ nautilus_files_view_call_set_selection (NautilusFilesView *self,
 
         /* Make the view also select the first one, to fix the bug reported in
          * https://gitlab.gnome.org/GNOME/nautilus/-/issues/2294 . See also
-         * GTK ticket: https://gitlab.gnome.org/GNOME/gtk/-/issues/5485 */
-        nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), first_position, TRUE, FALSE);
+         * GTK ticket: https://gitlab.gnome.org/GNOME/gtk/-/issues/5485
+         * Furthermore, this "reveals" (i.e. scrolls into view) the selection.
+         */
+        nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), first_position, TRUE, TRUE);
     }
 
     gtk_bitset_union (update_set, new_selection_set);
@@ -933,19 +933,6 @@ nautilus_files_view_invert_selection (NautilusFilesView *self)
     gtk_bitset_subtract (new_selected, selected);
 
     gtk_selection_model_set_selection (selection_model, new_selected, all);
-}
-
-/**
- * nautilus_files_view_reveal_selection:
- *
- * Scroll as necessary to reveal the selected items.
- **/
-static void
-nautilus_files_view_reveal_selection (NautilusFilesView *view)
-{
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_selection (view);
 }
 
 /**
@@ -1904,7 +1891,6 @@ pattern_select_response_select (AdwWindow *dialog,
     }
 
     nautilus_files_view_call_set_selection (view, selection);
-    nautilus_files_view_reveal_selection (view);
 
     gtk_window_destroy (GTK_WINDOW (dialog));
 }
@@ -2046,7 +2032,6 @@ new_folder_done (GFile    *new_folder,
     {
         /* The file was already added */
         nautilus_files_view_call_set_selection (directory_view, &(GList){ .data = file });
-        nautilus_files_view_reveal_selection (directory_view);
     }
     else
     {
@@ -2125,11 +2110,6 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
-
-    /* Make sure the whole item is visible. The selection is a single item, the
-     * one to rename with the popover, so we can use reveal_selection() for this.
-     */
-    nautilus_files_view_reveal_selection (view);
 
     pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
 
@@ -2245,7 +2225,6 @@ compress_done (GFile    *new_file,
     {
         /* The file was already added */
         nautilus_files_view_call_set_selection (view, &(GList){ .data = file });
-        nautilus_files_view_reveal_selection (view);
     }
     else
     {
@@ -3253,7 +3232,6 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
          * and reveal the new selection.
          */
         nautilus_files_view_call_set_selection (view, selection);
-        nautilus_files_view_reveal_selection (view);
     }
     else
     {
@@ -3831,7 +3809,6 @@ done_loading (NautilusFilesView *view,
               gboolean           all_files_seen)
 {
     NautilusFilesViewPrivate *priv;
-    gboolean do_reveal = FALSE;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -3855,7 +3832,6 @@ done_loading (NautilusFilesView *view,
             all_files_seen && no_selection && priv->pending_selection == NULL)
         {
             nautilus_files_view_select_first (view);
-            do_reveal = TRUE;
         }
         else if (priv->pending_selection != NULL && all_files_seen)
         {
@@ -3863,15 +3839,10 @@ done_loading (NautilusFilesView *view,
             pending_selection = g_steal_pointer (&priv->pending_selection);
 
             nautilus_files_view_call_set_selection (view, pending_selection);
-            do_reveal = TRUE;
         }
 
         g_clear_pointer (&priv->pending_selection, nautilus_file_list_free);
 
-        if (do_reveal)
-        {
-            nautilus_files_view_reveal_selection (view);
-        }
         nautilus_files_view_display_selection_info (view);
     }
 
@@ -3929,7 +3900,6 @@ debuting_files_add_files_callback (NautilusFilesView *view,
     if (g_hash_table_size (data->debuting_files) == 0)
     {
         nautilus_files_view_call_set_selection (view, data->added_files);
-        nautilus_files_view_reveal_selection (view);
         g_signal_handlers_disconnect_by_func (view,
                                               G_CALLBACK (debuting_files_add_files_callback),
                                               data);
@@ -4086,7 +4056,6 @@ copy_move_done_callback (GHashTable *debuting_files,
             {
                 nautilus_files_view_call_set_selection (directory_view,
                                                         debuting_files_data->added_files);
-                nautilus_files_view_reveal_selection (directory_view);
             }
             debuting_files_data_free (debuting_files_data);
         }
@@ -4169,7 +4138,6 @@ real_end_file_changes (NautilusFilesView *view)
         if (all_files_acknowledged)
         {
             nautilus_files_view_set_selection (NAUTILUS_VIEW (view), keys);
-            nautilus_files_view_reveal_selection (view);
             g_hash_table_remove_all (priv->pending_reveal);
         }
 
@@ -6246,7 +6214,6 @@ extract_done (GList    *outputs,
 
         nautilus_files_view_set_selection (NAUTILUS_VIEW (data->view),
                                            selection);
-        nautilus_files_view_reveal_selection (data->view);
 
         nautilus_file_list_free (selection);
     }
