@@ -344,6 +344,10 @@ static void     nautilus_files_view_display_selection_info (NautilusFilesView *v
 static char *   nautilus_files_view_get_uri (NautilusFilesView *view);
 static gboolean nautilus_files_view_should_show_file (NautilusFilesView *view,
                                                       NautilusFile      *file);
+static void nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView *view,
+                                                               graphene_point_t  *point);
+static void nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
+                                                                graphene_point_t  *point);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
@@ -1837,11 +1841,11 @@ action_popup_menu (GSimpleAction *action,
 
     if (no_selection)
     {
-        nautilus_files_view_pop_up_background_context_menu (view, 0, 0);
+        nautilus_files_view_pop_up_background_context_menu (view, &GRAPHENE_POINT_INIT (0, 0));
         return;
     }
 
-    nautilus_files_view_pop_up_selection_context_menu (view, -1, -1);
+    nautilus_files_view_pop_up_selection_context_menu (view, NULL);
 }
 
 static void
@@ -3240,6 +3244,45 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
 }
 
 static void
+on_popup_background_context_menu (NautilusListBase *list_base,
+                                  double            x,
+                                  double            y,
+                                  gpointer          user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    graphene_point_t view_point;
+
+    if (!gtk_widget_compute_point (GTK_WIDGET (list_base), GTK_WIDGET (self),
+                                   &GRAPHENE_POINT_INIT (x, y),
+                                   &view_point))
+    {
+        g_return_if_reached ();
+    }
+
+    nautilus_files_view_pop_up_background_context_menu (self, &view_point);
+}
+
+static void
+on_popup_selection_context_menu (NautilusListBase *list_base,
+                                 double            x,
+                                 double            y,
+                                 GtkWidget        *target,
+                                 gpointer          user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    graphene_point_t view_point;
+
+    if (!gtk_widget_compute_point (GTK_WIDGET (target), GTK_WIDGET (self),
+                                   &GRAPHENE_POINT_INIT (x, y),
+                                   &view_point))
+    {
+        g_return_if_reached ();
+    }
+
+    nautilus_files_view_pop_up_selection_context_menu (self, &view_point);
+}
+
+static void
 nautilus_files_view_constructed (GObject *object)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
@@ -3259,6 +3302,13 @@ nautilus_files_view_constructed (GObject *object)
     g_signal_connect_object (NAUTILUS_LIST_BASE (self), "activate-selection",
                              G_CALLBACK (nautilus_files_view_activate_selection), self,
                              G_CONNECT_SWAPPED);
+
+    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "popup-background-context-menu",
+                             G_CALLBACK (on_popup_background_context_menu), self,
+                             G_CONNECT_DEFAULT);
+    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "popup-selection-context-menu",
+                             G_CALLBACK (on_popup_selection_context_menu), self,
+                             G_CONNECT_DEFAULT);
 }
 
 static void
@@ -8274,18 +8324,9 @@ nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
     nautilus_files_view_reset_view_menu (view);
 }
 
-/**
- * nautilus_files_view_pop_up_selection_context_menu
- *
- * Pop up a context menu appropriate to the selected items.
- * @view: NautilusFilesView of interest.
- * @event: The event that triggered this context menu.
- *
- **/
-void
-nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
-                                                    gdouble            x,
-                                                    gdouble            y)
+static void
+nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView *view,
+                                                   graphene_point_t  *point)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -8315,7 +8356,8 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
 
     gtk_popover_menu_set_menu_model (GTK_POPOVER_MENU (priv->selection_menu),
                                      G_MENU_MODEL (priv->selection_menu_model));
-    if (x == -1 && y == -1)
+
+    if (point == NULL)
     {
         /* If triggered from the keyboard, popup at selection, not pointer */
         GdkRectangle rectangle;
@@ -8330,22 +8372,14 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
     else
     {
         gtk_popover_set_pointing_to (GTK_POPOVER (priv->selection_menu),
-                                     &(GdkRectangle){x, y, 0, 0});
+                                     &(GdkRectangle){ point->x, point->y, 0, 0 });
     }
     gtk_popover_popup (GTK_POPOVER (priv->selection_menu));
 }
 
-/**
- * nautilus_files_view_pop_up_background_context_menu
- *
- * Pop up a context menu appropriate to the location in view.
- * @view: NautilusFilesView of interest.
- *
- **/
-void
+static void
 nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
-                                                    gdouble            x,
-                                                    gdouble            y)
+                                                    graphene_point_t  *point)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -8377,7 +8411,7 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                      G_MENU_MODEL (priv->background_menu_model));
 
     gtk_popover_set_pointing_to (GTK_POPOVER (priv->background_menu),
-                                 &(GdkRectangle){x, y, 0, 0});
+                                 &(GdkRectangle){ point->x, point->y, 0, 0 });
     gtk_popover_popup (GTK_POPOVER (priv->background_menu));
 }
 

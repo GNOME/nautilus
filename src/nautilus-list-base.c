@@ -58,6 +58,8 @@ G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTI
 enum
 {
     ACTIVATE_SELECTION,
+    POPUP_BACKGROUND_CONTEXT_MENU,
+    POPUP_SELECTION_CONTEXT_MENU,
     LAST_SIGNAL
 };
 
@@ -175,16 +177,10 @@ open_context_menu_on_press (NautilusListBase *self,
                             gdouble           x,
                             gdouble           y)
 {
-    gdouble view_x, view_y;
-
     /* Antecipate selection, if necessary. */
     select_single_item_if_not_selected (self, cell);
 
-    gtk_widget_translate_coordinates (GTK_WIDGET (cell), GTK_WIDGET (self),
-                                      x, y,
-                                      &view_x, &view_y);
-    nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                       view_x, view_y);
+    g_signal_emit (self, signals[POPUP_SELECTION_CONTEXT_MENU], 0, x, y, GTK_WIDGET (cell));
 }
 
 static void
@@ -347,16 +343,7 @@ on_view_click_pressed (GtkGestureClick *gesture,
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     if (button == GDK_BUTTON_SECONDARY)
     {
-        GtkWidget *event_widget;
-        gdouble view_x;
-        gdouble view_y;
-
-        event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
-        gtk_widget_translate_coordinates (event_widget, GTK_WIDGET (self),
-                                          x, y,
-                                          &view_x, &view_y);
-        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                            view_x, view_y);
+        g_signal_emit (self, signals[POPUP_BACKGROUND_CONTEXT_MENU], 0, x, y);
     }
 }
 
@@ -380,19 +367,10 @@ on_view_longpress_pressed (GtkGestureLongPress *gesture,
                            gpointer             user_data)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
-    GtkWidget *event_widget;
-    gdouble view_x;
-    gdouble view_y;
-
-    event_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
-
-    gtk_widget_translate_coordinates (event_widget,
-                                      GTK_WIDGET (self),
-                                      x, y, &view_x, &view_y);
 
     nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
-    nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                        view_x, view_y);
+
+    g_signal_emit (self, signals[POPUP_BACKGROUND_CONTEXT_MENU], 0, x, y);
 }
 
 static GdkContentProvider *
@@ -1102,6 +1080,23 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                                 g_cclosure_marshal_VOID__FLAGS,
                                                 G_TYPE_NONE, 1,
                                                 NAUTILUS_TYPE_OPEN_FLAGS);
+    signals[POPUP_BACKGROUND_CONTEXT_MENU] = g_signal_new ("popup-background-context-menu",
+                                                           G_TYPE_FROM_CLASS (klass),
+                                                           G_SIGNAL_RUN_LAST,
+                                                           0,
+                                                           NULL, NULL,
+                                                           NULL,
+                                                           G_TYPE_NONE, 2,
+                                                           G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+    signals[POPUP_SELECTION_CONTEXT_MENU] = g_signal_new ("popup-selection-context-menu",
+                                                          G_TYPE_FROM_CLASS (klass),
+                                                          G_SIGNAL_RUN_LAST,
+                                                          0,
+                                                          NULL, NULL,
+                                                          NULL,
+                                                          G_TYPE_NONE, 3,
+                                                          G_TYPE_DOUBLE, G_TYPE_DOUBLE,
+                                                          GTK_TYPE_WIDGET);
 }
 
 static void

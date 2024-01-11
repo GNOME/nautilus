@@ -138,12 +138,6 @@ gboolean            nautilus_files_view_get_loading                      (Nautil
 void                nautilus_files_view_activate_file                    (NautilusFilesView *view,
                                                                           NautilusFile      *file,
                                                                           NautilusOpenFlags  flags);
-void                nautilus_files_view_pop_up_background_context_menu   (NautilusFilesView *view,
-                                                                          gdouble            x,
-                                                                          gdouble            y);
-void                nautilus_files_view_pop_up_selection_context_menu    (NautilusFilesView *view,
-                                                                          gdouble            x,
-                                                                          gdouble            y);
 
 gboolean            nautilus_files_view_has_subdirectory                (NautilusFilesView *view,
                                                                          NautilusDirectory *directory);
