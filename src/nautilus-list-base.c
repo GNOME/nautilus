@@ -6,13 +6,13 @@
 
 #include "nautilus-list-base-private.h"
 
+#include "nautilus-application.h"
 #include "nautilus-dnd.h"
 #include "nautilus-view-cell.h"
 #include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-files-view.h"
-#include "nautilus-files-view-dnd.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-metadata.h"
@@ -452,7 +452,7 @@ hover_timer (gpointer user_data)
     NautilusListBase *self = nautilus_view_cell_get_view (cell);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
-    g_autofree gchar *uri = NULL;
+    g_autoptr (GFile) location = NULL;
 
     priv->hover_timer_id = 0;
 
@@ -463,8 +463,20 @@ hover_timer (gpointer user_data)
         return G_SOURCE_REMOVE;
     }
 
-    uri = nautilus_file_get_uri (nautilus_view_item_get_file (item));
-    nautilus_files_view_handle_hover (NAUTILUS_FILES_VIEW (self), uri);
+    NautilusFile *file = nautilus_view_item_get_file (item);
+
+    if (file == priv->directory_as_file ||
+        !nautilus_file_is_directory (file) ||
+        !g_settings_get_boolean (nautilus_preferences,
+                                 NAUTILUS_PREFERENCES_OPEN_FOLDER_ON_DND_HOVER))
+    {
+        return G_SOURCE_REMOVE;
+    }
+
+    location = nautilus_file_get_location (file);
+    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                             location, NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
+                                             NULL, NULL, NULL);
 
     return G_SOURCE_REMOVE;
 }

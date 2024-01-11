@@ -28,13 +28,11 @@
 #include "nautilus-files-view-dnd.h"
 
 #include "nautilus-files-view.h"
-#include "nautilus-application.h"
 
 #include <glib/gi18n.h>
 
 #include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-ui-utilities.h"
 
 #define GET_ANCESTOR(obj) \
@@ -195,35 +193,4 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
     nautilus_files_view_move_copy_items (view, source_uri_list,
                                          target_uri != NULL ? target_uri : container_uri,
                                          action);
-}
-
-void
-nautilus_files_view_handle_hover (NautilusFilesView *view,
-                                  const char        *target_uri)
-{
-    NautilusWindowSlot *slot;
-    GFile *location;
-    GFile *current_location;
-    NautilusFile *target_file;
-    gboolean target_is_dir;
-    gboolean open_folder_on_hover;
-
-    slot = nautilus_files_view_get_nautilus_window_slot (view);
-
-    location = g_file_new_for_uri (target_uri);
-    target_file = nautilus_file_get_existing (location);
-    target_is_dir = nautilus_file_get_file_type (target_file) == G_FILE_TYPE_DIRECTORY;
-    current_location = nautilus_window_slot_get_location (slot);
-    open_folder_on_hover = g_settings_get_boolean (nautilus_preferences,
-                                                   NAUTILUS_PREFERENCES_OPEN_FOLDER_ON_DND_HOVER);
-
-    if (target_is_dir && open_folder_on_hover &&
-        !(current_location != NULL && g_file_equal (location, current_location)))
-    {
-        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                 location, NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
-                                                 NULL, NULL, slot);
-    }
-    g_object_unref (location);
-    nautilus_file_unref (target_file);
 }
