@@ -2382,7 +2382,8 @@ static void
 nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 {
     NautilusDirectory *containing_directory;
-    g_autolist (NautilusFile) selection = NULL;
+    g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    gboolean is_single_selection = selection != NULL && selection->next == NULL;
     g_autofree char *common_prefix = NULL;
     g_autofree char *uri = NULL;
     CompressCallbackData *data;
@@ -2391,9 +2392,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     uri = nautilus_files_view_get_backing_uri (view);
     containing_directory = nautilus_directory_get_by_uri (uri);
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-
-    if (g_list_length (selection) == 1)
+    if (is_single_selection)
     {
         const char *display_name = nautilus_file_get_display_name (selection->data);
 
@@ -2567,10 +2566,10 @@ action_open_console (GSimpleAction *action,
                      GVariant      *state,
                      gpointer       user_data)
 {
-    g_autolist (NautilusFile) selection = NULL;
+    g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (user_data));
+    gboolean is_single_selection = selection != NULL && selection->next == NULL;
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (user_data));
-    g_return_if_fail (selection != NULL && g_list_length (selection) == 1);
+    g_return_if_fail (is_single_selection);
 
     real_open_console (NAUTILUS_FILE (selection->data), NAUTILUS_FILES_VIEW (user_data));
 }
@@ -2605,7 +2604,7 @@ action_properties (GSimpleAction *action,
     view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    if (g_list_length (selection) == 0)
+    if (selection == NULL)
     {
         if (priv->directory_as_file != NULL)
         {
@@ -3835,7 +3834,6 @@ done_loading (NautilusFilesView *view,
               gboolean           all_files_seen)
 {
     NautilusFilesViewPrivate *priv;
-    g_autolist (NautilusFile) selection = NULL;
     gboolean do_reveal = FALSE;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -3847,16 +3845,17 @@ done_loading (NautilusFilesView *view,
 
     if (!priv->in_destruction)
     {
+        g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+        gboolean no_selection = gtk_bitset_is_empty (selection);
+
         remove_loading_floating_bar (view);
         schedule_update_context_menus (view);
         schedule_update_status (view);
         nautilus_files_view_update_toolbar_menus (view);
         reset_update_interval (view);
 
-        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-
         if (nautilus_view_is_searching (NAUTILUS_VIEW (view)) &&
-            all_files_seen && selection == NULL && priv->pending_selection == NULL)
+            all_files_seen && no_selection && priv->pending_selection == NULL)
         {
             nautilus_files_view_select_first (view);
             do_reveal = TRUE;
@@ -8513,29 +8512,24 @@ schedule_update_status (NautilusFilesView *view)
     }
 }
 
-/**
- * nautilus_files_view_notify_selection_changed:
- *
- * Notify this view that the selection has changed. This is normally
- * called only by subclasses.
- * @view: NautilusFilesView whose selection has changed.
- *
- **/
-void
+static void
 nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
     GtkWindow *window;
-    g_autolist (NautilusFile) selection = NULL;
 
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     window = nautilus_files_view_get_containing_window (view);
     g_debug ("Selection changed in window %p", window);
-    nautilus_file_list_debug (selection);
+
+    if (g_getenv ("G_MESSAGES_DEBUG") != NULL)
+    {
+        g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+        nautilus_file_list_debug (selection);
+    }
 
     priv->selection_was_removed = FALSE;
 

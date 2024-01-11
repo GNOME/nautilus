@@ -2089,7 +2089,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
 
     nautilus_window_slot_set_allow_stop (self, TRUE);
 
-    if (g_list_length (selection) == 0 && NAUTILUS_IS_FILES_VIEW (self->content_view))
+    if (selection == NULL && NAUTILUS_IS_FILES_VIEW (self->content_view))
     {
         /* If there is no selection, queue a scroll to the same icon that
          * is currently visible */

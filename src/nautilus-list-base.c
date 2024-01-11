@@ -1241,12 +1241,10 @@ nautilus_list_base_focus (GtkWidget        *widget,
                           GtkDirectionType  direction)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (widget);
-    g_autolist (NautilusFile) selection = NULL;
-    gboolean no_selection;
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+    gboolean no_selection = gtk_bitset_is_empty (selection);
     gboolean handled;
-
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    no_selection = (selection == NULL);
 
     handled = GTK_WIDGET_CLASS (nautilus_list_base_parent_class)->focus (widget, direction);
 
