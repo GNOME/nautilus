@@ -2128,7 +2128,7 @@ real_batch_rename (GList                         *files,
     op->renamed_files = 0;
     op->skipped_files = 0;
 
-    for (l1 = files->next; l1 != NULL; l1 = l1->next)
+    for (l1 = files; l1 != NULL; l1 = l1->next)
     {
         file = NAUTILUS_FILE (l1->data);
 
