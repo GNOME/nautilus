@@ -16,7 +16,7 @@ fi
 
 for DIR in "$DATA/../"{src,test,libnautilus-extension,eel,extensions}
 do
-    for FILE in $(find "$DIR" -name "*.c" -not -path "*/gtk/*" -not -path "*/animation/*" -not -path "*/audio-video-properties/*")
+    for FILE in $(find "$DIR" -name "*.c" -not -path "*/gtk/*" -not -path "*/animation/*")
     do
         # Aligning prototypes is not working yet, so avoid headers
         "$UNCRUSTIFY" -c "$DATA/uncrustify.cfg" --no-backup "$FILE"
