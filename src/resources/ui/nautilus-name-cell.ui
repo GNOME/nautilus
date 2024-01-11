@@ -66,6 +66,13 @@
                         <property name="wrap">False</property>
                         <property name="wrap-mode">word-char</property>
                         <property name="halign">start</property>
+                        <binding name="label">
+                          <lookup name="display-name">
+                            <lookup name="file">
+                              <lookup name="item">NautilusNameCell</lookup>
+                            </lookup>
+                          </lookup>
+                        </binding>
                         <attributes>
                           <attribute name="insert-hyphens" value="false"></attribute>
                         </attributes>
