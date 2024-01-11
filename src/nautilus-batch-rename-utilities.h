@@ -63,10 +63,3 @@ GString* markup_hightlight_text                 (const char  *label,
                                                  const gchar *background_color);
 
 const gchar* batch_rename_get_tag_text_representation (TagConstants tag_constants);
-
-void batch_rename_sort_lists_for_rename (GList    **selection,
-                                         GList    **new_names,
-                                         GList    **old_names,
-                                         GList    **new_files,
-                                         GList    **old_files,
-                                         gboolean   is_undo_redo);
