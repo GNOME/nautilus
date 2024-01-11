@@ -189,6 +189,15 @@ G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
                                                 nautilus_file_info_iface_init)
                          G_ADD_PRIVATE (NautilusFile));
 
+enum
+{
+    PROP_0,
+    PROP_DISPLAY_NAME,
+    N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
+
 static void
 nautilus_file_init (NautilusFile *file)
 {
@@ -278,6 +287,8 @@ nautilus_file_set_display_name (NautilusFile *file,
 
         g_free (file->details->display_name_collation_key);
         file->details->display_name_collation_key = g_utf8_collate_key_for_filename (display_name, -1);
+
+        g_object_notify_by_pspec (G_OBJECT (file), properties[PROP_DISPLAY_NAME]);
     }
 
     if (g_strcmp0 (file->details->edit_name, edit_name) != 0)
@@ -9058,6 +9069,29 @@ real_set_metadata_as_list (NautilusFile  *file,
 }
 
 static void
+nautilus_file_get_property (GObject    *object,
+                            guint       prop_id,
+                            GValue     *value,
+                            GParamSpec *pspec)
+{
+    NautilusFile *file = NAUTILUS_FILE (object);
+
+    switch (prop_id)
+    {
+        case PROP_DISPLAY_NAME:
+        {
+            g_value_set_string (value, nautilus_file_get_display_name (file));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
     nautilus_file_info_getter = nautilus_file_get_internal;
@@ -9100,6 +9134,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 
     G_OBJECT_CLASS (class)->finalize = finalize;
     G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;
+    G_OBJECT_CLASS (class)->get_property = nautilus_file_get_property;
 
     class->get_item_count = real_get_item_count;
     class->get_deep_counts = real_get_deep_counts;
@@ -9144,6 +9179,11 @@ nautilus_file_class_init (NautilusFileClass *class)
                               "changed::clock-format",
                               G_CALLBACK (clock_format_changed_callback),
                               NULL);
+
+    properties[PROP_DISPLAY_NAME] = g_param_spec_string ("display-name", NULL, NULL,
+                                                         "",
+                                                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_properties (G_OBJECT_CLASS (class), N_PROPS, properties);
 }
 
 void
