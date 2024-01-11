@@ -64,7 +64,7 @@ struct _NautilusBookmark
     GIcon *symbolic_icon;
     NautilusFile *file;
 
-    char *scroll_file;
+    GStrv selected_uris;
 
     gboolean exists;
     guint exists_id;
@@ -568,7 +568,7 @@ nautilus_bookmark_finalize (GObject *object)
     g_clear_object (&bookmark->symbolic_icon);
 
     g_free (bookmark->name);
-    g_free (bookmark->scroll_file);
+    g_strfreev (bookmark->selected_uris);
 
     G_OBJECT_CLASS (nautilus_bookmark_parent_class)->finalize (object);
 }
@@ -771,15 +771,15 @@ nautilus_bookmark_new (GFile       *location,
 }
 
 void
-nautilus_bookmark_set_scroll_pos (NautilusBookmark *bookmark,
-                                  const char       *uri)
+nautilus_bookmark_take_selected_uris (NautilusBookmark *bookmark,
+                                      GStrv             selected_uris)
 {
-    g_free (bookmark->scroll_file);
-    bookmark->scroll_file = g_strdup (uri);
+    g_strfreev (bookmark->selected_uris);
+    bookmark->selected_uris = g_steal_pointer (&selected_uris);
 }
 
-char *
-nautilus_bookmark_get_scroll_pos (NautilusBookmark *bookmark)
+GStrv
+nautilus_bookmark_get_selected_uris (NautilusBookmark *bookmark)
 {
-    return g_strdup (bookmark->scroll_file);
+    return bookmark->selected_uris;
 }
