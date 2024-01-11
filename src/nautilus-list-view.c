@@ -337,17 +337,35 @@ on_column_view_item_activated (GtkGridView *grid_view,
     nautilus_list_base_activate_selection (NAUTILUS_LIST_BASE (self), FALSE);
 }
 
+static void
+setup_row (GtkSignalListItemFactory *factory,
+           GtkColumnViewRow         *columnviewrow,
+           gpointer                  user_data)
+{
+    GtkExpression *expression;
+
+    /* Use file display name as accessible label. Explaining in pseudo-code:
+     * columnviewrow:accessible-name :- columnviewrow:item:item:file:display-name */
+    expression = gtk_property_expression_new (GTK_TYPE_LIST_ITEM, NULL, "item");
+    expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
+    expression = gtk_property_expression_new (NAUTILUS_TYPE_VIEW_ITEM, expression, "file");
+    expression = gtk_property_expression_new (NAUTILUS_TYPE_FILE, expression, "display-name");
+    gtk_expression_bind (expression, columnviewrow, "accessible-label", columnviewrow);
+}
+
 static GtkColumnView *
 create_view_ui (NautilusListView *self)
 {
     NautilusViewModel *model;
     GtkWidget *widget;
+    g_autoptr (GtkListItemFactory) row_factory = gtk_signal_list_item_factory_new ();
 
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     widget = gtk_column_view_new (GTK_SELECTION_MODEL (model));
 
     gtk_widget_set_hexpand (widget, TRUE);
 
+    g_signal_connect (row_factory, "setup", G_CALLBACK (setup_row), self);
 
     /* We don't use the built-in child activation feature for click because it
      * doesn't fill all our needs nor does it match our expected behavior.
@@ -358,6 +376,7 @@ create_view_ui (NautilusListView *self)
     gtk_column_view_set_single_click_activate (GTK_COLUMN_VIEW (widget), FALSE);
     gtk_column_view_set_enable_rubberband (GTK_COLUMN_VIEW (widget), TRUE);
     gtk_column_view_set_tab_behavior (GTK_COLUMN_VIEW (widget), GTK_LIST_TAB_ITEM);
+    gtk_column_view_set_row_factory (GTK_COLUMN_VIEW (widget), row_factory);
 
     /* While we don't want to use GTK's click activation, we'll let it handle
      * the key activation part (with Enter).
@@ -933,20 +952,6 @@ bind_name_cell (GtkSignalListItemFactory *factory,
     item = get_view_item (listitem);
 
     nautilus_view_item_set_item_ui (item, gtk_column_view_cell_get_child (listitem));
-
-    if (nautilus_view_cell_once (NAUTILUS_VIEW_CELL (cell)))
-    {
-        GtkWidget *row_widget;
-
-        /* At the time of ::setup emission, the item ui has got no parent yet,
-         * that's why we need to complete the widget setup process here, on the
-         * first time ::bind is emitted. */
-        row_widget = gtk_widget_get_parent (gtk_widget_get_parent (cell));
-
-        gtk_accessible_update_relation (GTK_ACCESSIBLE (row_widget),
-                                        GTK_ACCESSIBLE_RELATION_LABELLED_BY, cell, NULL,
-                                        -1);
-    }
 
     if (self->expand_as_a_tree)
     {
