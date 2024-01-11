@@ -906,20 +906,9 @@ static guint
 get_first_selected_item (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autolist (NautilusFile) selection = NULL;
-    NautilusFile *file;
-    NautilusViewItem *item;
+    g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    if (selection == NULL)
-    {
-        return G_MAXUINT;
-    }
-
-    file = NAUTILUS_FILE (selection->data);
-    item = nautilus_view_model_get_item_for_file (priv->model, file);
-
-    return nautilus_view_model_find (priv->model, item);
+    return gtk_bitset_get_minimum (selection);
 }
 
 static void
@@ -1092,13 +1081,9 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (GtkBitset) selection = NULL;
     guint i;
     g_autoptr (NautilusViewItem) item = NULL;
     GtkWidget *item_ui;
-
-    selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
-    g_return_val_if_fail (!gtk_bitset_is_empty (selection), NULL);
 
     /* If multiple items are selected, we need to pick one. The ideal choice is
      * the currently focused item, if it is part of the selection.
@@ -1107,7 +1092,8 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
      * the focus position: https://gitlab.gnome.org/GNOME/gtk/-/issues/2891 )
      *
      * Otherwise, get the selected item_ui which is sorted the lowest.*/
-    i = gtk_bitset_get_minimum (selection);
+    i = get_first_selected_item (self);
+    g_return_val_if_fail (i != G_MAXUINT, NULL);
 
     nautilus_list_base_scroll_to_item (self, i);
 
