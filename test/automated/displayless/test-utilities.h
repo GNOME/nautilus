@@ -16,6 +16,9 @@ void test_clear_tmp_dir (void);
 void empty_directory_by_prefix (GFile *parent,
                                 gchar *prefix);
 
+void create_hierarchy_from_template (const GStrv  hier,
+                                     const gchar *substitution);
+
 void create_search_file_hierarchy (gchar *search_engine);
 void delete_search_file_hierarchy (gchar *search_engine);
 
