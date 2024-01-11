@@ -23,7 +23,6 @@ struct _NautilusNameCell
     GtkWidget *fixed_height_box;
     GtkWidget *spinner;
     GtkWidget *icon;
-    GtkWidget *label;
     GtkWidget *emblems_box;
     GtkWidget *snippet_button;
     GtkWidget *snippet;
@@ -114,8 +113,6 @@ update_labels (NautilusNameCell *self)
         fts_snippet = nautilus_file_get_search_fts_snippet (file);
     }
 
-    gtk_label_set_text (GTK_LABEL (self->label),
-                        nautilus_file_get_display_name (file));
     gtk_label_set_text (GTK_LABEL (self->path), path_text);
     gtk_label_set_markup (GTK_LABEL (self->snippet), fts_snippet);
 
@@ -375,7 +372,6 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, fixed_height_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, spinner);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, icon);
-    gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, label);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, emblems_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, snippet_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, snippet);

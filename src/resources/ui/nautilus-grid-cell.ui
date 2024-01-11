@@ -58,6 +58,13 @@
                     <property name="lines">3</property>
                     <property name="wrap">True</property>
                     <property name="wrap-mode">word-char</property>
+                    <binding name="label">
+                      <lookup name="display-name">
+                        <lookup name="file">
+                          <lookup name="item">NautilusGridCell</lookup>
+                        </lookup>
+                      </lookup>
+                    </binding>
                     <attributes>
                       <attribute name="insert-hyphens" value="false"></attribute>
                     </attributes>

@@ -139,17 +139,8 @@ update_emblems (NautilusGridCell *self)
 static void
 on_file_changed (NautilusGridCell *self)
 {
-    NautilusViewItem *item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
-    NautilusFile *file;
-
-    g_return_if_fail (item != NULL);
-    file = nautilus_view_item_get_file (item);
-
     update_icon (self);
     update_emblems (self);
-
-    gtk_label_set_text (GTK_LABEL (self->label),
-                        nautilus_file_get_display_name (file));
     update_captions (self);
 }
 
