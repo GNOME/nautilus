@@ -1116,12 +1116,6 @@ nautilus_files_view_get_view_id (NautilusView *view)
     return nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view)).view_id;
 }
 
-char *
-nautilus_files_view_get_last_visible_file (NautilusFilesView *view)
-{
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_last_visible_file (view);
-}
-
 void
 nautilus_files_view_scroll_to_file (NautilusFilesView *self,
                                     const char        *uri)

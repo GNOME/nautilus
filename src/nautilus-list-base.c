@@ -908,63 +908,6 @@ get_first_selected_item (NautilusListBase *self)
     return gtk_bitset_get_minimum (selection);
 }
 
-static guint
-get_last_visible_item (NautilusListBase *self)
-{
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    guint n_items;
-    GtkWidget *view_ui;
-    GtkBorder border = {0};
-    gdouble scroll_h;
-
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (priv->model));
-    view_ui = nautilus_list_base_get_view_ui (self);
-    gtk_scrollable_get_border (GTK_SCROLLABLE (view_ui), &border);
-    scroll_h = gtk_widget_get_allocated_height (GTK_WIDGET (self)) - border.bottom;
-
-    for (guint i = (n_items - 1); (i + 1) > 0; i--)
-    {
-        g_autoptr (NautilusViewItem) item = NULL;
-        GtkWidget *item_ui;
-
-        item = get_view_item (G_LIST_MODEL (priv->model), i);
-        item_ui = nautilus_view_item_get_item_ui (item);
-        if (item_ui != NULL && gtk_widget_get_mapped (item_ui))
-        {
-            GtkWidget *list_item_widget = gtk_widget_get_parent (item_ui);
-            gdouble h = gtk_widget_get_allocated_height (list_item_widget);
-            gdouble y;
-
-            gtk_widget_translate_coordinates (list_item_widget, GTK_WIDGET (self),
-                                              0, h, NULL, &y);
-            if (y <= scroll_h)
-            {
-                return i;
-            }
-        }
-    }
-
-    return G_MAXUINT;
-}
-
-static char *
-real_get_last_visible_file (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    guint i;
-    g_autoptr (NautilusViewItem) item = NULL;
-    gchar *uri = NULL;
-
-    i = get_last_visible_item (self);
-    if (i < G_MAXUINT)
-    {
-        item = get_view_item (G_LIST_MODEL (priv->model), i);
-        uri = nautilus_file_get_uri (nautilus_view_item_get_file (item));
-    }
-    return uri;
-}
-
 static GdkRectangle *
 get_rectangle_for_item_ui (NautilusListBase *self,
                            GtkWidget        *item_ui)
@@ -1190,7 +1133,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     widget_class->focus = nautilus_list_base_focus;
 
-    files_view_class->get_last_visible_file = real_get_last_visible_file;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
 

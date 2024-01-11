@@ -1120,8 +1120,7 @@ static void begin_location_change (NautilusWindowSlot        *slot,
                                    GFile                     *previous_location,
                                    GList                     *new_selection,
                                    NautilusLocationChangeType type,
-                                   guint                      distance,
-                                   const char                *scroll_pos);
+                                   guint                      distance);
 static void free_location_change (NautilusWindowSlot *self);
 static void end_location_change (NautilusWindowSlot *self);
 static void got_file_info_for_view_selection_callback (NautilusFile *file,
@@ -1158,7 +1157,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
     }
 
     begin_location_change (self, location, old_location, new_selection,
-                           NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
+                           NAUTILUS_LOCATION_CHANGE_STANDARD, 0);
 }
 
 static GList *
@@ -1279,8 +1278,7 @@ begin_location_change (NautilusWindowSlot         *self,
                        GFile                      *previous_location,
                        GList                      *new_selection,
                        NautilusLocationChangeType  type,
-                       guint                       distance,
-                       const char                 *scroll_pos)
+                       guint                       distance)
 {
     g_assert (self != NULL);
     g_assert (location != NULL);
@@ -1309,8 +1307,6 @@ begin_location_change (NautilusWindowSlot         *self,
                                                      previous_location);
     /* Flush down list. Up/down actions should fetch the list beforehand. */
     g_clear_list (&self->down_list, g_object_unref);
-
-    self->pending_scroll_to = g_strdup (scroll_pos);
 
     check_force_reload (location, type);
 
@@ -2163,8 +2159,7 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
                            location, old_location,
                            selection,
                            back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
-                           distance,
-                           NULL);
+                           distance);
 }
 
 /* reload the contents of the window */
@@ -2172,7 +2167,6 @@ static void
 nautilus_window_slot_force_reload (NautilusWindowSlot *self)
 {
     GFile *location;
-    char *current_pos;
     g_autolist (NautilusFile) selection = NULL;
 
     g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
@@ -2187,21 +2181,12 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
      * of begin_location_change, so make a copy
      */
     g_object_ref (location);
-    current_pos = NULL;
 
     if (self->content_view)
     {
         selection = nautilus_view_get_selection (self->content_view);
-
-        if (NAUTILUS_IS_FILES_VIEW (self->content_view))
-        {
-            current_pos = nautilus_files_view_get_last_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
-        }
     }
-    begin_location_change
-        (self, location, location, selection,
-        NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos);
-    g_free (current_pos);
+    begin_location_change (self, location, location, selection, NAUTILUS_LOCATION_CHANGE_RELOAD, 0);
     g_object_unref (location);
 }
 
