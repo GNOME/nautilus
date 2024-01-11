@@ -58,6 +58,7 @@
                     <property name="lines">3</property>
                     <property name="wrap">True</property>
                     <property name="wrap-mode">word-char</property>
+                    <signal name="query-tooltip" handler="on_label_query_tooltip"/>
                     <binding name="label">
                       <lookup name="display-name">
                         <lookup name="file">
