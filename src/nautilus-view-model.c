@@ -554,44 +554,6 @@ nautilus_view_model_add_items (NautilusViewModel *self,
     }
 }
 
-/**
- * nautilus_view_model_find:
- *
- * @item: The item to find.
- *
- * Iterate the model linearly to find the index of @item. Avoid using in a loop.
- *
- * Returns: The position of the item in the list, or G_MAXUINT if not found.
- */
-guint
-nautilus_view_model_find (NautilusViewModel *self,
-                          NautilusViewItem  *item)
-{
-    guint n_items;
-    guint i = 0;
-
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (self->sort_model));
-    while (i < n_items)
-    {
-        g_autoptr (GtkTreeListRow) row = NULL;
-        g_autoptr (NautilusViewItem) item_i = NULL;
-
-        row = g_list_model_get_item (G_LIST_MODEL (self->sort_model), i);
-        g_warn_if_fail (GTK_IS_TREE_LIST_ROW (row));
-
-        item_i = gtk_tree_list_row_get_item (row);
-        g_warn_if_fail (NAUTILUS_IS_VIEW_ITEM (item_i));
-
-        if (item_i == item)
-        {
-            return i;
-        }
-        i++;
-    }
-
-    return G_MAXUINT;
-}
-
 void
 nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
                                         NautilusViewItem  *item)

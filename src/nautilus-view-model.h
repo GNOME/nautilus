@@ -30,8 +30,6 @@ void nautilus_view_model_add_item (NautilusViewModel     *self,
                                    NautilusViewItem *item);
 void nautilus_view_model_add_items (NautilusViewModel *self,
                                     GList             *items);
-guint nautilus_view_model_find (NautilusViewModel *self,
-                                NautilusViewItem  *item);
 void nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
                                              NautilusViewItem  *item);
 void nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
