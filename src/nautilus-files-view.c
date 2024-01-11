@@ -8274,12 +8274,6 @@ nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
     nautilus_files_view_reset_view_menu (view);
 }
 
-static GdkRectangle *
-nautilus_files_view_reveal_for_selection_context_menu (NautilusFilesView *view)
-{
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_for_selection_context_menu (view);
-}
-
 /**
  * nautilus_files_view_pop_up_selection_context_menu
  *
@@ -8324,12 +8318,14 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
     if (x == -1 && y == -1)
     {
         /* If triggered from the keyboard, popup at selection, not pointer */
-        g_autofree GdkRectangle *rectangle = NULL;
+        GdkRectangle rectangle;
 
-        rectangle = nautilus_files_view_reveal_for_selection_context_menu (view);
-        g_return_if_fail (rectangle != NULL);
+        if (!get_selected_rectangle (view, &rectangle))
+        {
+            g_return_if_reached ();
+        }
         gtk_popover_set_pointing_to (GTK_POPOVER (priv->selection_menu),
-                                     rectangle);
+                                     &rectangle);
     }
     else
     {

@@ -908,28 +908,15 @@ get_first_selected_item (NautilusListBase *self)
     return gtk_bitset_get_minimum (selection);
 }
 
-static GdkRectangle *
-get_rectangle_for_item_ui (NautilusListBase *self,
-                           GtkWidget        *item_ui)
-{
-    GdkRectangle *rectangle;
-    GtkWidget *content_widget;
-    gdouble view_x;
-    gdouble view_y;
-
-    rectangle = g_new0 (GdkRectangle, 1);
-    gtk_widget_get_allocation (item_ui, rectangle);
-
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    gtk_widget_translate_coordinates (item_ui, content_widget,
-                                      rectangle->x, rectangle->y,
-                                      &view_x, &view_y);
-    rectangle->x = view_x;
-    rectangle->y = view_y;
-
-    return rectangle;
-}
-
+/**
+ * Gets widget to point a popover to. E.g. rename popover, selection menu.
+ *
+ * If multiple items are selected, we pick the first one.
+ *
+ * (Ideally it would have been the currently focused item, if it is part of the
+ * selection. Sadly, that's not currently possible, because GTK doesn't let us
+ * know the focus position: https://gitlab.gnome.org/GNOME/gtk/-/issues/2891 )
+ **/
 GtkWidget *
 nautilus_list_base_get_selected_item_ui (NautilusListBase *self)
 {
@@ -939,49 +926,11 @@ nautilus_list_base_get_selected_item_ui (NautilusListBase *self)
 
     g_return_val_if_fail (i != G_MAXUINT, NULL);
 
-    /* Make sure the whole item is visible. The selection is a single item, the
-     * one to rename with the popover, so we can use scroll_to_item() for this.
-     */
+    /* Make sure the whole item is visible for the popover to point to. */
     nautilus_list_base_scroll_to_item (self, i);
 
-    /* We only allow one item to be renamed with a popover */
     item = get_view_item (G_LIST_MODEL (priv->model), i);
     return nautilus_view_item_get_item_ui (item);
-}
-
-/**
- * Gets area to popup the context menu from, ensuring it is currently visible.
- *
- * Don't use this if context menu is triggered by a pointing device (in which
- * case it should popup from the position of the pointer). Instead, this is
- * meant for non-pointer case, such as using the Menu key from the keyboard.
- **/
-static GdkRectangle *
-real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    guint i;
-    g_autoptr (NautilusViewItem) item = NULL;
-    GtkWidget *item_ui;
-
-    /* If multiple items are selected, we need to pick one. The ideal choice is
-     * the currently focused item, if it is part of the selection.
-     *
-     * (Sadly, that's not currently possible, because GTK doesn't let us know
-     * the focus position: https://gitlab.gnome.org/GNOME/gtk/-/issues/2891 )
-     *
-     * Otherwise, get the selected item_ui which is sorted the lowest.*/
-    i = get_first_selected_item (self);
-    g_return_val_if_fail (i != G_MAXUINT, NULL);
-
-    nautilus_list_base_scroll_to_item (self, i);
-
-    item = get_view_item (G_LIST_MODEL (priv->model), i);
-    item_ui = nautilus_view_item_get_item_ui (item);
-    g_return_val_if_fail (item_ui != NULL, NULL);
-
-    return get_rectangle_for_item_ui (self, item_ui);
 }
 
 static void
@@ -1122,7 +1071,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-    NautilusFilesViewClass *files_view_class = NAUTILUS_FILES_VIEW_CLASS (klass);
 
     object_class->dispose = nautilus_list_base_dispose;
     object_class->finalize = nautilus_list_base_finalize;
@@ -1130,8 +1078,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     object_class->set_property = nautilus_list_base_set_property;
 
     widget_class->focus = nautilus_list_base_focus;
-
-    files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
 
     klass->preview_selection_event = default_preview_selection_event;
     klass->setup_directory = base_setup_directory;
