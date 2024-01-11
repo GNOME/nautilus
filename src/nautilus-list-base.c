@@ -1040,23 +1040,6 @@ real_get_last_visible_file (NautilusFilesView *files_view)
     return uri;
 }
 
-static void
-real_scroll_to_file (NautilusFilesView *files_view,
-                     const char        *uri)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    g_autoptr (NautilusFile) file = nautilus_file_get_existing_by_uri (uri);
-    NautilusViewItem *item;
-    guint i;
-
-    item = nautilus_view_model_get_item_for_file (priv->model, file);
-    g_return_if_fail (item != NULL);
-
-    i = nautilus_view_model_find (priv->model, item);
-    nautilus_list_base_scroll_to_item (self, i);
-}
-
 static GdkRectangle *
 get_rectangle_for_item_ui (NautilusListBase *self,
                            GtkWidget        *item_ui)
@@ -1369,7 +1352,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->get_last_visible_file = real_get_last_visible_file;
     files_view_class->reveal_selection = real_reveal_selection;
-    files_view_class->scroll_to_file = real_scroll_to_file;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
 

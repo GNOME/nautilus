@@ -1148,10 +1148,18 @@ nautilus_files_view_get_last_visible_file (NautilusFilesView *view)
 }
 
 void
-nautilus_files_view_scroll_to_file (NautilusFilesView *view,
+nautilus_files_view_scroll_to_file (NautilusFilesView *self,
                                     const char        *uri)
 {
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->scroll_to_file (view, uri);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    g_autoptr (NautilusFile) file = nautilus_file_get_existing_by_uri (uri);
+    NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
+
+    g_return_if_fail (item != NULL);
+
+    guint i = nautilus_view_model_find (priv->model, item);
+
+    nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), i, FALSE, TRUE);
 }
 
 static GList *

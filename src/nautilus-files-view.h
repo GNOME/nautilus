@@ -126,9 +126,6 @@ struct _NautilusFilesViewClass {
         char *         (* get_first_visible_file) (NautilusFilesView          *view);
         /* Return the uri of the last visible file */
         char *         (* get_last_visible_file) (NautilusFilesView          *view);
-        /* Scroll the view so the file specified by the uri is visible with least scrolling */
-        void           (* scroll_to_file)    (NautilusFilesView *view,
-                                              const char        *uri);
 
         GdkRectangle * (* compute_rename_popover_pointing_to) (NautilusFilesView *view);
 
