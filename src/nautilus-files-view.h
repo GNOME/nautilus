@@ -115,9 +115,6 @@ struct _NautilusFilesViewClass {
 
         void    (* update_actions_state)     (NautilusFilesView *view);
 
-        /* Return the uri of the last visible file */
-        char *         (* get_last_visible_file) (NautilusFilesView          *view);
-
         GdkRectangle * (* compute_rename_popover_pointing_to) (NautilusFilesView *view);
 
         GdkRectangle * (* reveal_for_selection_context_menu) (NautilusFilesView *view);
@@ -182,7 +179,6 @@ void              nautilus_files_view_preview_selection_event    (NautilusFilesV
                                                                   GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
 
-char *            nautilus_files_view_get_last_visible_file     (NautilusFilesView      *view);
 void              nautilus_files_view_scroll_to_file             (NautilusFilesView      *view,
                                                                   const char             *uri);
 
