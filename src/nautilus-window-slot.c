@@ -2074,7 +2074,6 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
                                        guint               id)
 {
     NautilusFilesView *view;
-    g_autolist (NautilusFile) selection = NULL;
     char *uri;
     g_assert (self != NULL);
 
@@ -2082,19 +2081,11 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
     g_debug ("Change view of window %s to %d", uri, id);
     g_free (uri);
 
-    selection = nautilus_view_get_selection (self->content_view);
     view = nautilus_files_view_new (id, self);
 
     nautilus_window_slot_stop_loading (self);
 
     nautilus_window_slot_set_allow_stop (self, TRUE);
-
-    if (selection == NULL && NAUTILUS_IS_FILES_VIEW (self->content_view))
-    {
-        /* If there is no selection, queue a scroll to the same icon that
-         * is currently visible */
-        self->pending_scroll_to = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
-    }
 
     self->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 

@@ -115,8 +115,6 @@ struct _NautilusFilesViewClass {
 
         void    (* update_actions_state)     (NautilusFilesView *view);
 
-        /* Return the uri of the first visible file */
-        char *         (* get_first_visible_file) (NautilusFilesView          *view);
         /* Return the uri of the last visible file */
         char *         (* get_last_visible_file) (NautilusFilesView          *view);
 
@@ -184,7 +182,6 @@ void              nautilus_files_view_preview_selection_event    (NautilusFilesV
                                                                   GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
 
-char *            nautilus_files_view_get_first_visible_file     (NautilusFilesView      *view);
 char *            nautilus_files_view_get_last_visible_file     (NautilusFilesView      *view);
 void              nautilus_files_view_scroll_to_file             (NautilusFilesView      *view,
                                                                   const char             *uri);
