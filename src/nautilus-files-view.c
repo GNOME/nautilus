@@ -815,13 +815,11 @@ nautilus_files_view_call_set_selection (NautilusFilesView *self,
             files_to_find = g_list_delete_link (files_to_find, link);
             if (files_to_find == NULL)
             {
-                /* We've matched everything... */
+                /* We've matched everything. */
                 break;
             }
         }
     }
-    /* ...have we not? */
-    g_warn_if_fail (files_to_find == NULL);
 
     /* Set focus on the first selected row. */
     if (!gtk_bitset_is_empty (new_selection_set))

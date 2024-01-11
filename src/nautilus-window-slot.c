@@ -1233,18 +1233,17 @@ check_force_reload (GFile                      *location,
 }
 
 static void
-save_scroll_position_for_history (NautilusWindowSlot *self)
+save_selection_for_history (NautilusWindowSlot *self)
 {
     /* Set current_bookmark scroll pos */
     if (self->current_location_bookmark != NULL &&
         self->content_view != NULL &&
         NAUTILUS_IS_FILES_VIEW (self->content_view))
     {
-        char *current_pos;
+        g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (self->content_view));
 
-        current_pos = nautilus_files_view_get_last_visible_file (NAUTILUS_FILES_VIEW (self->content_view));
-        nautilus_bookmark_set_scroll_pos (self->current_location_bookmark, current_pos);
-        g_free (current_pos);
+        nautilus_bookmark_take_selection (self->current_location_bookmark,
+                                          g_steal_pointer (&selection));
     }
 }
 
@@ -1304,7 +1303,7 @@ begin_location_change (NautilusWindowSlot         *self,
 
     check_force_reload (location, type);
 
-    save_scroll_position_for_history (self);
+    save_selection_for_history (self);
 
     /* Get the info needed to make decisions about how to open the new location */
     self->determine_view_file = nautilus_file_get (location);
@@ -2106,7 +2105,6 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     NautilusBookmark *bookmark;
     g_autoptr (GFile) location = NULL;
     GFile *old_location;
-    g_autofree char *scroll_pos = NULL;
 
     if (back)
     {
@@ -2138,14 +2136,13 @@ nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
     bookmark = g_list_nth_data (list, distance);
     location = nautilus_bookmark_get_location (bookmark);
     old_location = nautilus_window_slot_get_location (self);
-    scroll_pos = nautilus_bookmark_get_scroll_pos (bookmark);
 
     begin_location_change (self,
                            location, old_location,
-                           NULL,
+                           nautilus_bookmark_get_selection (bookmark),
                            back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD,
                            distance,
-                           scroll_pos);
+                           NULL);
 }
 
 /* reload the contents of the window */
