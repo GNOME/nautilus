@@ -986,24 +986,6 @@ get_last_visible_item (NautilusListBase *self)
 }
 
 static char *
-real_get_first_visible_file (NautilusFilesView *files_view)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    guint i;
-    g_autoptr (NautilusViewItem) item = NULL;
-    gchar *uri = NULL;
-
-    i = get_first_visible_item (self);
-    if (i < G_MAXUINT)
-    {
-        item = get_view_item (G_LIST_MODEL (priv->model), i);
-        uri = nautilus_file_get_uri (nautilus_view_item_get_file (item));
-    }
-    return uri;
-}
-
-static char *
 real_get_last_visible_file (NautilusFilesView *files_view)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (files_view);
@@ -1330,7 +1312,6 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     widget_class->focus = nautilus_list_base_focus;
 
-    files_view_class->get_first_visible_file = real_get_first_visible_file;
     files_view_class->get_last_visible_file = real_get_last_visible_file;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;

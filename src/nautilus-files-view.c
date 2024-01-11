@@ -1120,12 +1120,6 @@ nautilus_files_view_get_view_id (NautilusView *view)
 }
 
 char *
-nautilus_files_view_get_first_visible_file (NautilusFilesView *view)
-{
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_first_visible_file (view);
-}
-
-char *
 nautilus_files_view_get_last_visible_file (NautilusFilesView *view)
 {
     return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_last_visible_file (view);
