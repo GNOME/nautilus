@@ -4323,7 +4323,16 @@ process_pending_files (NautilusFilesView *view)
             pending = node->data;
             if (nautilus_file_is_gone (pending->file))
             {
-                g_warning ("Attempted to add a non-existent file to the view.");
+                if (g_getenv ("G_MESSAGES_DEBUG") == NULL)
+                {
+                    g_warning ("Attempted to add a non-existent file to the view.");
+                }
+                else
+                {
+                    g_autofree char *uri = nautilus_file_get_uri (pending->file);
+                    g_warning ("Attempted to add non-existent file \"%s\" to the view.", uri);
+                }
+
                 continue;
             }
             if (!nautilus_files_view_should_show_file (view, pending->file))
