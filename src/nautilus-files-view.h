@@ -154,7 +154,6 @@ gboolean            nautilus_files_view_get_loading                      (Nautil
 void                nautilus_files_view_activate_file                    (NautilusFilesView *view,
                                                                           NautilusFile      *file,
                                                                           NautilusOpenFlags  flags);
-void                nautilus_files_view_notify_selection_changed         (NautilusFilesView *view);
 void                nautilus_files_view_pop_up_background_context_menu   (NautilusFilesView *view,
                                                                           gdouble            x,
                                                                           gdouble            y);
