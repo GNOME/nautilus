@@ -2052,12 +2052,6 @@ new_folder_data_new (NautilusFilesView *directory_view,
     return data;
 }
 
-static GdkRectangle *
-nautilus_files_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
-{
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->compute_rename_popover_pointing_to (view);
-}
-
 static void
 rename_file_popover_callback (NautilusFile *target_file,
                               const char   *new_name,
@@ -2074,20 +2068,47 @@ rename_file_popover_callback (NautilusFile *target_file,
     nautilus_rename_file (target_file, new_name, NULL, NULL);
 }
 
+static gboolean
+get_selected_rectangle (NautilusFilesView *self,
+                        GdkRectangle      *rectangle)
+{
+    GtkWidget *item_ui = nautilus_list_base_get_selected_item_ui (NAUTILUS_LIST_BASE (self));
+    graphene_point_t view_point;
+
+    if (item_ui == NULL)
+    {
+        return FALSE;
+    }
+
+    gtk_widget_get_allocation (item_ui, rectangle);
+    if (!gtk_widget_compute_point (item_ui, GTK_WIDGET (self),
+                                   &GRAPHENE_POINT_INIT (rectangle->x,
+                                                         rectangle->y),
+                                   &view_point))
+    {
+        return FALSE;
+    }
+
+    rectangle->x = view_point.x;
+    rectangle->y = view_point.y;
+    return TRUE;
+}
+
 static void
 nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
                                              NautilusFile      *target_file)
 {
-    g_autofree GdkRectangle *pointing_to = NULL;
-    NautilusFilesViewPrivate *priv;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    GdkRectangle pointing_to;
 
-    priv = nautilus_files_view_get_instance_private (view);
-
-    pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
+    if (!get_selected_rectangle (view, &pointing_to))
+    {
+        g_return_if_reached ();
+    }
 
     nautilus_rename_file_popover_show_for_file (NAUTILUS_RENAME_FILE_POPOVER (priv->rename_file_popover),
                                                 target_file,
-                                                pointing_to,
+                                                &pointing_to,
                                                 rename_file_popover_callback,
                                                 view);
 }
