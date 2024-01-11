@@ -57,7 +57,7 @@ empty_directory_by_prefix (GFile *parent,
     }
 }
 
-static void
+void
 create_hierarchy_from_template (const GStrv  hier,
                                 const gchar *substitution)
 {
