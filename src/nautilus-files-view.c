@@ -1117,21 +1117,6 @@ nautilus_files_view_get_view_id (NautilusView *view)
     return nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view)).view_id;
 }
 
-void
-nautilus_files_view_scroll_to_file (NautilusFilesView *self,
-                                    const char        *uri)
-{
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-    g_autoptr (NautilusFile) file = nautilus_file_get_existing_by_uri (uri);
-    NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
-
-    g_return_if_fail (item != NULL);
-
-    guint i = nautilus_view_model_find (priv->model, item);
-
-    nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), i, FALSE, TRUE);
-}
-
 static GList *
 nautilus_files_view_get_selection (NautilusView *view)
 {
