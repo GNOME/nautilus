@@ -131,7 +131,6 @@ struct _NautilusWindowSlot
     GFile *pending_location;
     NautilusLocationChangeType location_change_type;
     guint location_change_distance;
-    char *pending_scroll_to;
     GList *pending_selection;
     NautilusFile *pending_file_to_activate;
     NautilusFile *determine_view_file;
@@ -1727,19 +1726,15 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
         g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
         g_clear_object (&self->pending_location);
         g_clear_object (&self->pending_file_to_activate);
-        g_free (self->pending_scroll_to);
 
         self->pending_location = nautilus_file_get_parent_location (file);
         if (nautilus_mime_file_extracts (file))
         {
             self->pending_file_to_activate = nautilus_file_ref (file);
         }
-        else
-        {
-            self->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
-        }
+
+        self->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
         self->determine_view_file = nautilus_file_ref (parent_file);
-        self->pending_scroll_to = nautilus_file_get_uri (file);
 
         nautilus_file_invalidate_all_attributes (self->determine_view_file);
         nautilus_file_call_when_ready (self->determine_view_file,
@@ -2033,12 +2028,6 @@ end_location_change (NautilusWindowSlot *self)
 
     nautilus_window_slot_set_allow_stop (self, FALSE);
 
-    /* Now we can free details->pending_scroll_to, since the load_complete
-     * callback already has been emitted.
-     */
-    g_free (self->pending_scroll_to);
-    self->pending_scroll_to = NULL;
-
     free_location_change (self);
 }
 
@@ -2049,10 +2038,6 @@ free_location_change (NautilusWindowSlot *self)
     g_clear_object (&self->pending_file_to_activate);
     nautilus_file_list_free (self->pending_selection);
     self->pending_selection = NULL;
-
-    /* Don't free details->pending_scroll_to, since thats needed until
-     * the load_complete callback.
-     */
 
     if (self->mount_cancellable != NULL)
     {
@@ -2547,11 +2532,6 @@ view_ended_loading (NautilusWindowSlot *self,
 {
     if (view == self->content_view)
     {
-        if (NAUTILUS_IS_FILES_VIEW (view) && self->pending_scroll_to != NULL)
-        {
-            nautilus_files_view_scroll_to_file (NAUTILUS_FILES_VIEW (self->content_view), self->pending_scroll_to);
-        }
-
         end_location_change (self);
     }
 

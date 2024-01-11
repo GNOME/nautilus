@@ -179,9 +179,6 @@ void              nautilus_files_view_preview_selection_event    (NautilusFilesV
                                                                   GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
 
-void              nautilus_files_view_scroll_to_file             (NautilusFilesView      *view,
-                                                                  const char             *uri);
-
 void              nautilus_files_view_update_context_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_toolbar_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_actions_state       (NautilusFilesView      *view);
