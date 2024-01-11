@@ -3302,7 +3302,9 @@ nautilus_files_view_constructed (GObject *object)
     g_signal_connect_object (NAUTILUS_LIST_BASE (self), "activate-selection",
                              G_CALLBACK (nautilus_files_view_activate_selection), self,
                              G_CONNECT_SWAPPED);
-
+    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "perform-drop",
+                             G_CALLBACK (nautilus_dnd_perform_drop), self,
+                             G_CONNECT_SWAPPED);
     g_signal_connect_object (NAUTILUS_LIST_BASE (self), "popup-background-context-menu",
                              G_CALLBACK (on_popup_background_context_menu), self,
                              G_CONNECT_DEFAULT);

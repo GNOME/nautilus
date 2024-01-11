@@ -58,6 +58,7 @@ G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTI
 enum
 {
     ACTIVATE_SELECTION,
+    PERFORM_DROP,
     POPUP_BACKGROUND_CONTEXT_MENU,
     POPUP_SELECTION_CONTEXT_MENU,
     LAST_SIGNAL
@@ -669,6 +670,7 @@ on_item_drop (GtkDropTarget *target,
     g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
     GdkDragAction actions;
     g_autoptr (GFile) target_location = nautilus_file_get_location (nautilus_view_item_get_file (item));
+    gboolean accepted = FALSE;
 
     actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
 
@@ -686,7 +688,10 @@ on_item_drop (GtkDropTarget *target,
     /* In x11 the leave signal isn't emitted on a drop so we need to clear the timeout */
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
-    return nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
+    g_signal_emit (self, signals[PERFORM_DROP], 0,
+                   value, actions, target_location,
+                   &accepted);
+    return accepted;
 }
 
 static GdkDragAction
@@ -755,6 +760,7 @@ on_view_drop (GtkDropTarget *target,
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GdkDragAction actions;
     g_autoptr (GFile) target_location = NULL;
+    gboolean accepted = FALSE;
 
     if (priv->drag_view_action == 0)
     {
@@ -777,7 +783,10 @@ on_view_drop (GtkDropTarget *target,
     }
     #endif
 
-    return nautilus_dnd_perform_drop (NAUTILUS_FILES_VIEW (self), value, actions, target_location);
+    g_signal_emit (self, signals[PERFORM_DROP], 0,
+                   value, actions, target_location,
+                   &accepted);
+    return accepted;
 }
 
 void
@@ -1105,6 +1114,14 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                                 g_cclosure_marshal_VOID__FLAGS,
                                                 G_TYPE_NONE, 1,
                                                 NAUTILUS_TYPE_OPEN_FLAGS);
+    signals[PERFORM_DROP] = g_signal_new ("perform-drop",
+                                          G_TYPE_FROM_CLASS (klass),
+                                          G_SIGNAL_RUN_LAST,
+                                          0,
+                                          NULL, NULL,
+                                          NULL,
+                                          G_TYPE_BOOLEAN, 3,
+                                          G_TYPE_VALUE, GDK_TYPE_DRAG_ACTION, G_TYPE_FILE);
     signals[POPUP_BACKGROUND_CONTEXT_MENU] = g_signal_new ("popup-background-context-menu",
                                                            G_TYPE_FROM_CLASS (klass),
                                                            G_SIGNAL_RUN_LAST,
