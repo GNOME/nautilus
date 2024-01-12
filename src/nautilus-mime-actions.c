@@ -102,6 +102,7 @@ struct
         {
             "application/octet-stream",
             "text/plain",
+            "text/markdown",
             NULL
         }
     },
@@ -130,6 +131,7 @@ struct
             "application/x-kword-crypt",
             "application/x-lyx",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "text/markdown",
             NULL
         }
     },
