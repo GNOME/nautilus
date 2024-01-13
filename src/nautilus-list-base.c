@@ -770,7 +770,7 @@ on_view_drop (GtkDropTarget *target,
     }
 
     actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
-    target_location = nautilus_view_get_location (NAUTILUS_VIEW (self));
+    target_location = nautilus_file_get_location (priv->directory_as_file);
 
     #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self))))
