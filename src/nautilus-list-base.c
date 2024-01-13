@@ -337,7 +337,7 @@ on_view_click_pressed (GtkGestureClick *gesture,
     selection_mode = (modifiers & (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
     if (!selection_mode)
     {
-        nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
+        gtk_selection_model_unselect_all (GTK_SELECTION_MODEL (priv->model));
     }
 
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
@@ -367,8 +367,9 @@ on_view_longpress_pressed (GtkGestureLongPress *gesture,
                            gpointer             user_data)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
-    nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
+    gtk_selection_model_unselect_all (GTK_SELECTION_MODEL (priv->model));
 
     g_signal_emit (self, signals[POPUP_BACKGROUND_CONTEXT_MENU], 0, x, y);
 }
