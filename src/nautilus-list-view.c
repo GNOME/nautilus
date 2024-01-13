@@ -1101,10 +1101,7 @@ setup_view_columns (NautilusListView *self)
 static void
 nautilus_list_view_reload (NautilusListView *self)
 {
-    NautilusWindowSlot *slot;
-
-    slot = nautilus_files_view_get_nautilus_window_slot (NAUTILUS_FILES_VIEW (self));
-    nautilus_window_slot_queue_reload (slot);
+    gtk_widget_activate_action (GTK_WIDGET (self), "win.reload", NULL);
 }
 
 static void

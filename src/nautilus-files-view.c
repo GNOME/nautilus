@@ -1220,18 +1220,6 @@ nautilus_files_view_get_window (NautilusFilesView *view)
     return nautilus_window_slot_get_window (priv->slot);
 }
 
-NautilusWindowSlot *
-nautilus_files_view_get_nautilus_window_slot (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    g_assert (priv->slot != NULL);
-
-    return priv->slot;
-}
-
 /* Returns the GtkWindow that this directory view occupies, or NULL
  * if at the moment this directory view is not in a GtkWindow or the
  * GtkWindow cannot be determined. Primarily used for parenting dialogs.
@@ -1441,7 +1429,8 @@ action_open_item_location (GSimpleAction *action,
                            GVariant      *state,
                            gpointer       user_data)
 {
-    NautilusFilesView *view;
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     g_autolist (NautilusFile) selection = NULL;
     NautilusFile *item;
     GFile *activation_location;
@@ -1449,7 +1438,6 @@ action_open_item_location (GSimpleAction *action,
     NautilusFile *parent;
     g_autoptr (GFile) parent_location = NULL;
 
-    view = NAUTILUS_FILES_VIEW (user_data);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
     if (!selection)
@@ -1474,7 +1462,7 @@ action_open_item_location (GSimpleAction *action,
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                              parent_location, 0, selection, NULL,
-                                             nautilus_files_view_get_nautilus_window_slot (view));
+                                             priv->slot);
 
     nautilus_file_unref (parent);
     nautilus_file_unref (activation_file);

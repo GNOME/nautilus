@@ -115,9 +115,6 @@ struct _NautilusFilesViewClass {
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
                                                                           NautilusWindowSlot *slot);
 
-/* Functions callable from the user interface and elsewhere. */
-NautilusWindowSlot *nautilus_files_view_get_nautilus_window_slot         (NautilusFilesView *view);
-
 /* Wrappers for signal emitters. These are normally called
  * only by NautilusFilesView itself. They have corresponding signals
  * that observers might want to connect with.
