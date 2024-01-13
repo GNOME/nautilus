@@ -491,6 +491,15 @@ unbind_cell (GtkSignalListItemFactory *factory,
 }
 
 static void
+on_cell_destroyed (gpointer  data,
+                   GObject  *where_the_object_was)
+{
+    GtkExpressionWatch *watch = data;
+    gtk_expression_watch_unwatch (watch);
+    gtk_expression_watch_unref (watch);
+}
+
+static void
 setup_cell (GtkSignalListItemFactory *factory,
             GtkListItem              *listitem,
             gpointer                  user_data)
@@ -498,6 +507,7 @@ setup_cell (GtkSignalListItemFactory *factory,
     NautilusGridView *self = NAUTILUS_GRID_VIEW (user_data);
     NautilusGridCell *cell;
     GtkExpression *expression;
+    GtkExpressionWatch *watch;
 
     cell = nautilus_grid_cell_new (NAUTILUS_LIST_BASE (self));
     gtk_list_item_set_child (listitem, GTK_WIDGET (cell));
@@ -516,7 +526,12 @@ setup_cell (GtkSignalListItemFactory *factory,
     expression = gtk_property_expression_new (GTK_TYPE_TREE_LIST_ROW, expression, "item");
     expression = gtk_property_expression_new (NAUTILUS_TYPE_VIEW_ITEM, expression, "file");
     expression = gtk_property_expression_new (NAUTILUS_TYPE_FILE, expression, "display-name");
-    gtk_expression_bind (expression, listitem, "accessible-label", listitem);
+    watch = gtk_expression_bind (expression, listitem, "accessible-label", listitem);
+
+    /* Workaround to avoid removing the same weak ref twice, as per
+     * https://gitlab.gnome.org/GNOME/glib/-/issues/1002#note_1969545
+     * This unwatches the listitem before the watched listitem is destroyed. */
+    g_object_weak_ref (G_OBJECT (cell), on_cell_destroyed, gtk_expression_watch_ref (watch));
 }
 
 static GtkGridView *
