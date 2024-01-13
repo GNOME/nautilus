@@ -382,39 +382,51 @@ on_item_drag_prepare (GtkDragSource *source,
 {
     NautilusViewCell *cell = user_data;
     NautilusListBase *self = nautilus_view_cell_get_view (cell);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkWidget *view_ui;
-    g_autolist (NautilusFile) selection = NULL;
+    g_autoptr (GtkBitset) selection = NULL;
+    g_autolist (NautilusFile) selected_files = NULL;
     g_autoslist (GFile) file_list = NULL;
     g_autoptr (GdkPaintable) paintable = NULL;
     GdkDragAction actions;
     gint scale_factor;
+    GtkBitsetIter iter;
+    guint i;
 
     /* Anticipate selection, if necessary, for dragging the clicked item. */
     select_single_item_if_not_selected (self, cell);
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    g_return_val_if_fail (selection != NULL, NULL);
+    selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+    g_return_val_if_fail (!gtk_bitset_is_empty (selection), NULL);
 
     gtk_gesture_set_state (GTK_GESTURE (source), GTK_EVENT_SEQUENCE_CLAIMED);
 
     actions = GDK_ACTION_ALL | GDK_ACTION_ASK;
 
-    for (GList *l = selection; l != NULL; l = l->next)
+    for (gtk_bitset_iter_init_last (&iter, selection, &i);
+         gtk_bitset_iter_is_valid (&iter);
+         gtk_bitset_iter_previous (&iter, &i))
     {
-        /* Convert to GTK_TYPE_FILE_LIST, which is assumed to be a GSList<GFile>. */
-        file_list = g_slist_prepend (file_list, nautilus_file_get_activation_location (l->data));
+        g_autoptr (NautilusViewItem) item = get_view_item (G_LIST_MODEL (priv->model), i);
+        NautilusFile *file = nautilus_view_item_get_file (item);
 
-        if (!nautilus_file_can_delete (l->data))
+        selected_files = g_list_prepend (selected_files, g_object_ref (file));
+
+        /* Convert to GTK_TYPE_FILE_LIST, which is assumed to be a GSList<GFile>. */
+        file_list = g_slist_prepend (file_list, nautilus_file_get_activation_location (file));
+
+        if (!nautilus_file_can_delete (file))
         {
             actions &= ~GDK_ACTION_MOVE;
         }
     }
+    selected_files = g_list_reverse (selected_files);
     file_list = g_slist_reverse (file_list);
 
     gtk_drag_source_set_actions (source, actions);
 
     scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    paintable = get_paintable_for_drag_selection (selection, scale_factor);
+    paintable = get_paintable_for_drag_selection (selected_files, scale_factor);
 
     view_ui = nautilus_list_base_get_view_ui (self);
     if (GTK_IS_GRID_VIEW (view_ui))
