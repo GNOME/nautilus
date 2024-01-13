@@ -606,16 +606,16 @@ get_default_zoom_level (void)
                   list_view_info.zoom_level_max);
 }
 
-static char *
-real_get_backing_uri (NautilusFilesView *view)
+static NautilusViewItem *
+real_get_backing_item (NautilusListBase *list_base)
 {
-    NautilusListView *self = NAUTILUS_LIST_VIEW (view);
-    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-    g_autoptr (NautilusFile) common_parent = NULL;
+    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
+    NautilusViewModel *model = nautilus_list_base_get_model (list_base);
+    g_autoptr (GtkTreeListRow) common_parent = NULL;
 
     if (!self->expand_as_a_tree)
     {
-        return NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->get_backing_uri (view);
+        return NULL;
     }
 
     /* If we are using tree expanders use the items parent, unless it
@@ -626,38 +626,37 @@ real_get_backing_uri (NautilusFilesView *view)
     for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (model)); i++)
     {
         g_autoptr (GtkTreeListRow) row = g_list_model_get_item (G_LIST_MODEL (model), i);
-        g_autoptr (NautilusViewItem) item = NULL;
-        g_autoptr (NautilusFile) parent_file = NULL;
-        NautilusFile *file;
-        NautilusFile *current_parent;
+        g_autoptr (GtkTreeListRow) parent = gtk_tree_list_row_get_parent (row);
+        GtkTreeListRow *current_parent;
 
         if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), i))
         {
             continue;
         }
 
-        item = gtk_tree_list_row_get_item (row);
-        file = nautilus_view_item_get_file (item);
-        parent_file = nautilus_file_get_parent (file);
-        current_parent = gtk_tree_list_row_get_expanded (row) ? file : parent_file;
+        current_parent = gtk_tree_list_row_get_expanded (row) ? row : parent;
+        if (current_parent == NULL)
+        {
+            return NULL;
+        }
 
         if (common_parent == NULL)
         {
-            common_parent = nautilus_file_ref (current_parent);
+            common_parent = g_object_ref (current_parent);
         }
         else if (current_parent != common_parent)
         {
-            g_clear_pointer (&common_parent, nautilus_file_unref);
+            g_clear_object (&common_parent);
             break;
         }
     }
 
     if (common_parent != NULL)
     {
-        return nautilus_file_get_uri (common_parent);
+        return gtk_tree_list_row_get_item (common_parent);
     }
 
-    return NAUTILUS_FILES_VIEW_CLASS (nautilus_list_view_parent_class)->get_backing_uri (view);
+    return NULL;
 }
 
 typedef struct
@@ -1216,14 +1215,12 @@ static void
 nautilus_list_view_class_init (NautilusListViewClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-    NautilusFilesViewClass *files_view_class = NAUTILUS_FILES_VIEW_CLASS (klass);
     NautilusListBaseClass *list_base_view_class = NAUTILUS_LIST_BASE_CLASS (klass);
 
     object_class->dispose = nautilus_list_view_dispose;
     object_class->finalize = nautilus_list_view_finalize;
 
-    files_view_class->get_backing_uri = real_get_backing_uri;
-
+    list_base_view_class->get_backing_item = real_get_backing_item;
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_sort_state = real_get_sort_state;
     list_base_view_class->get_view_info = real_get_view_info;

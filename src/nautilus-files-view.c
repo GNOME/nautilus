@@ -734,23 +734,6 @@ real_end_loading (NautilusFilesView *self,
     update_cut_status (self);
 }
 
-static char *
-real_get_backing_uri (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->directory == NULL)
-    {
-        return NULL;
-    }
-
-    return nautilus_directory_get_uri (priv->directory);
-}
-
 /**
  *
  * nautilus_files_view_get_backing_uri:
@@ -764,7 +747,19 @@ nautilus_files_view_get_backing_uri (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_backing_uri (view);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    g_autoptr (NautilusViewItem) item = nautilus_list_base_get_backing_item (NAUTILUS_LIST_BASE (view));
+
+    if (item != NULL)
+    {
+        return nautilus_file_get_uri (nautilus_view_item_get_file (item));
+    }
+    else if (priv->directory != NULL)
+    {
+        return nautilus_directory_get_uri (priv->directory);
+    }
+
+    return NULL;
 }
 
 /**
@@ -9538,7 +9533,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     klass->end_file_changes = real_end_file_changes;
     klass->begin_loading = real_begin_loading;
     klass->end_loading = real_end_loading;
-    klass->get_backing_uri = real_get_backing_uri;
     klass->update_context_menus = real_update_context_menus;
     klass->update_actions_state = real_update_actions_state;
     klass->check_empty_states = real_check_empty_states;

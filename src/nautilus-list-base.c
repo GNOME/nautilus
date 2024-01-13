@@ -945,6 +945,12 @@ nautilus_list_base_get_selected_item_ui (NautilusListBase *self)
     return nautilus_view_item_get_item_ui (item);
 }
 
+static NautilusViewItem *
+default_get_backing_item (NautilusListBase *self)
+{
+    return NULL;
+}
+
 static void
 default_preview_selection_event (NautilusListBase *self,
                                  GtkDirectionType  direction)
@@ -1091,6 +1097,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
 
     widget_class->focus = nautilus_list_base_focus;
 
+    klass->get_backing_item = default_get_backing_item;
     klass->preview_selection_event = default_preview_selection_event;
     klass->setup_directory = base_setup_directory;
 
@@ -1201,6 +1208,23 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_view_drop), self);
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (drop_target));
     priv->view_drop_target = drop_target;
+}
+
+/**
+ * nautilus_list_base_get_backing_item:
+ *
+ * Get a view item representing the subdirectory which, based on user action,
+ * should be used in place the view directory when performing file operations
+ * such as create new folders, paste from the clipboard, etc.
+ *
+ * If the view directory should be used, NULL is returned instead.
+ *
+ * Returns: (transfer full) (nullable): The subdirectory backing file operations.
+ */
+NautilusViewItem *
+nautilus_list_base_get_backing_item (NautilusListBase *self)
+{
+    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_backing_item (self);
 }
 
 NautilusViewInfo

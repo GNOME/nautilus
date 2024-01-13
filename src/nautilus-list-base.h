@@ -27,13 +27,12 @@ struct _NautilusListBaseClass
 {
         NautilusFilesViewClass parent_class;
 
+        /* Subclasses must provide implementation. */
         NautilusViewInfo (*get_view_info)     (NautilusListBase *self);
         guint      (*get_icon_size)  (NautilusListBase *self);
         GVariant  *(*get_sort_state)          (NautilusListBase *self);
         GtkWidget *(*get_view_ui)    (NautilusListBase *self);
         int        (*get_zoom_level)          (NautilusListBase *self);
-        void       (*preview_selection_event) (NautilusListBase *self,
-                                               GtkDirectionType  direction);
         void       (*scroll_to)      (NautilusListBase   *self,
                                       guint               position,
                                       GtkListScrollFlags  flags,
@@ -43,11 +42,17 @@ struct _NautilusListBaseClass
         void       (*set_zoom_level)          (NautilusListBase *self,
                                                int               new_zoom_level);
 
+        /* Subclasses may override base implementation. */
+        NautilusViewItem *(*get_backing_item) (NautilusListBase *self);
+        void       (*preview_selection_event) (NautilusListBase *self,
+                                               GtkDirectionType  direction);
+
         /* Subclass override must chain-up to base implementation. */
         void       (*setup_directory) (NautilusListBase  *self,
                                        NautilusDirectory *directory);
 };
 
+NautilusViewItem *nautilus_list_base_get_backing_item (NautilusListBase *self);
 GtkWidget *nautilus_list_base_get_selected_item_ui (NautilusListBase  *self);
 GVariant *nautilus_list_base_get_sort_state        (NautilusListBase  *self);
 NautilusViewInfo nautilus_list_base_get_view_info  (NautilusListBase  *self) G_GNUC_PURE;

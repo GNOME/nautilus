@@ -98,14 +98,6 @@ struct _NautilusFilesViewClass {
 
         /* Function pointers that don't have corresponding signals */
 
-        /* get_backing uri is a function pointer for subclasses to
-         * override. Subclasses may replace it with a function that
-         * returns the URI for the location where to create new folders,
-         * files, links and paste the clipboard to.
-         */
-
-        char *        (* get_backing_uri)    (NautilusFilesView *view);
-
         /* update_menus is a function pointer that subclasses can override to
          * update the sensitivity or wording of menu items in the menu bar.
          * It is called (at least) whenever the selection changes. If overridden,
