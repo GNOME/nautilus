@@ -1099,7 +1099,7 @@ nautilus_list_view_init (NautilusListView *self)
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
 
-    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (adw_bin_get_child (ADW_BIN (content_widget))),
                                    GTK_WIDGET (self->view_ui));
 
     g_signal_connect_object (gtk_filechooser_preferences,
