@@ -11,7 +11,7 @@ struct _NautilusViewItem
     GObject parent_instance;
     gboolean is_cut;
     gboolean drag_accept;
-    gboolean is_loading;
+    gboolean loading;
     NautilusFile *file;
     GtkWidget *item_ui;
 };
@@ -24,7 +24,7 @@ enum
     PROP_FILE,
     PROP_IS_CUT,
     PROP_DRAG_ACCEPT,
-    PROP_IS_LOADING,
+    PROP_LOADING,
     N_PROPS
 };
 
@@ -86,9 +86,9 @@ nautilus_view_item_get_property (GObject    *object,
         }
         break;
 
-        case PROP_IS_LOADING:
+        case PROP_LOADING:
         {
-            g_value_set_boolean (value, self->is_loading);
+            g_value_set_boolean (value, self->loading);
         }
         break;
 
@@ -127,9 +127,9 @@ nautilus_view_item_set_property (GObject      *object,
         }
         break;
 
-        case PROP_IS_LOADING:
+        case PROP_LOADING:
         {
-            self->is_loading = g_value_get_boolean (value);
+            nautilus_view_item_set_loading (self, g_value_get_boolean (value));
         }
         break;
 
@@ -167,10 +167,9 @@ nautilus_view_item_class_init (NautilusViewItemClass *klass)
                                                  "", "",
                                                  NAUTILUS_TYPE_FILE,
                                                  G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-    properties[PROP_IS_LOADING] = g_param_spec_boolean ("is-loading",
-                                                        "", "",
-                                                        FALSE,
-                                                        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_LOADING] = g_param_spec_boolean ("loading", NULL, NULL,
+                                                     FALSE,
+                                                     G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (object_class, N_PROPS, properties);
 
     signals[FILE_CHANGED] = g_signal_new ("file-changed",
@@ -208,13 +207,25 @@ nautilus_view_item_set_drag_accept (NautilusViewItem *self,
     g_object_set (self, "drag-accept", drag_accept, NULL);
 }
 
+gboolean
+nautilus_view_item_get_loading (NautilusViewItem *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM (self), FALSE);
+
+    return self->loading;
+}
+
 void
 nautilus_view_item_set_loading (NautilusViewItem *self,
                                 gboolean          loading)
 {
     g_return_if_fail (NAUTILUS_IS_VIEW_ITEM (self));
 
-    g_object_set (self, "is-loading", loading, NULL);
+    if (self->loading != loading)
+    {
+        self->loading = loading;
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOADING]);
+    }
 }
 
 NautilusFile *

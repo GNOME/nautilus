@@ -277,13 +277,10 @@ on_loading_timeout (gpointer user_data)
 {
     NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
     g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
-    gboolean is_loading;
+    gboolean is_loading = nautilus_view_item_get_loading (item);
 
     self->loading_timeout_id = 0;
 
-    g_object_get (item,
-                  "is-loading", &is_loading,
-                  NULL);
     if (is_loading)
     {
         gtk_widget_set_visible (self->spinner, TRUE);
@@ -296,11 +293,11 @@ on_loading_timeout (gpointer user_data)
 static void
 on_item_is_loading_changed (NautilusNameCell *self)
 {
-    gboolean is_loading;
     g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    gboolean is_loading = nautilus_view_item_get_loading (item);
 
     g_clear_handle_id (&self->loading_timeout_id, g_source_remove);
-    g_object_get (item, "is-loading", &is_loading, NULL);
+
     if (is_loading)
     {
         self->loading_timeout_id = g_timeout_add_seconds (LOADING_TIMEOUT_SECONDS,
@@ -356,7 +353,7 @@ nautilus_name_cell_init (NautilusNameCell *self)
                                     (GCallback) on_item_drag_accept_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
                                     (GCallback) on_item_is_cut_changed, self);
-    g_signal_group_connect_swapped (self->item_signal_group, "notify::is-loading",
+    g_signal_group_connect_swapped (self->item_signal_group, "notify::loading",
                                     (GCallback) on_item_is_loading_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
