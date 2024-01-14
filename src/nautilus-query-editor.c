@@ -367,7 +367,7 @@ static gboolean
 entry_changed_internal (NautilusQueryEditor *editor)
 {
     const gchar *text = gtk_editable_get_text (GTK_EDITABLE (editor->text));
-    gboolean is_empty = (text == NULL && *text == '\0');
+    gboolean is_empty = (text == NULL || *text == '\0');
 
     editor->search_changed_idle_id = 0;
 
