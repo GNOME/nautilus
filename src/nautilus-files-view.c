@@ -235,7 +235,7 @@ typedef struct
 
     GtkWidget *stack;
 
-    GtkWidget *scrolled_window;
+    GtkWidget *content_widget;
 
     GtkWidget *extend_search_revealer;
 
@@ -3178,14 +3178,14 @@ slot_active_changed (NautilusWindowSlot *slot,
 static gboolean
 nautilus_files_view_grab_focus (GtkWidget *widget)
 {
-    /* focus the child of the scrolled window if it exists */
+    /* focus the child view if it exists */
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
     GtkWidget *child;
 
     view = NAUTILUS_FILES_VIEW (widget);
     priv = nautilus_files_view_get_instance_private (view);
-    child = gtk_scrolled_window_get_child (GTK_SCROLLED_WINDOW (priv->scrolled_window));
+    child = adw_bin_get_child (ADW_BIN (priv->content_widget));
 
     if (child != NULL)
     {
@@ -3315,7 +3315,7 @@ update_extend_search_revealer (NautilusFilesView *self)
 
     if (showing_search_results && !search_is_global)
     {
-        GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window));
+        GtkAdjustment *adjustment = nautilus_list_base_get_vadjustment (NAUTILUS_LIST_BASE (self));
         gdouble value = gtk_adjustment_get_value (adjustment);
         gdouble page_size = gtk_adjustment_get_page_size (adjustment);
         gdouble upper = gtk_adjustment_get_upper (adjustment);
@@ -3367,6 +3367,13 @@ nautilus_files_view_constructed (GObject *object)
     g_signal_connect_object (NAUTILUS_LIST_BASE (self), "popup-selection-context-menu",
                              G_CALLBACK (on_popup_selection_context_menu), self,
                              G_CONNECT_DEFAULT);
+
+    g_signal_connect_object (nautilus_list_base_get_vadjustment (NAUTILUS_LIST_BASE (self)),
+                             "changed",
+                             G_CALLBACK (update_extend_search_revealer), self, G_CONNECT_SWAPPED);
+    g_signal_connect_object (nautilus_list_base_get_vadjustment (NAUTILUS_LIST_BASE (self)),
+                             "value-changed",
+                             G_CALLBACK (update_extend_search_revealer), self, G_CONNECT_SWAPPED);
 
     if (NAUTILUS_IS_LIST_VIEW (NAUTILUS_LIST_BASE (self)))
     {
@@ -3867,7 +3874,7 @@ real_check_empty_states (NautilusFilesView *view)
     }
     else
     {
-        gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->scrolled_window);
+        gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->content_widget);
     }
 }
 
@@ -4966,7 +4973,7 @@ nautilus_files_view_get_content_widget (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    return priv->scrolled_window;
+    return priv->content_widget;
 }
 
 /* home_dir_in_selection()
@@ -9536,7 +9543,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, overlay);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, empty_view_page);
-    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, scrolled_window);
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, content_widget);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, floating_bar);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, extend_search_revealer);
     gtk_widget_class_bind_template_callback (widget_class, globalize_search);
@@ -9653,12 +9660,6 @@ nautilus_files_view_init (NautilusFilesView *view)
                       "stop",
                       G_CALLBACK (floating_bar_stop_cb),
                       view);
-    g_signal_connect_object (gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window)),
-                             "changed",
-                             G_CALLBACK (update_extend_search_revealer), view, G_CONNECT_SWAPPED);
-    g_signal_connect_object (gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window)),
-                             "value-changed",
-                             G_CALLBACK (update_extend_search_revealer), view, G_CONNECT_SWAPPED);
 
     priv->pending_reveal = g_hash_table_new (NULL, NULL);
 
