@@ -3354,7 +3354,7 @@ connect_inner_view (NautilusFilesView *self)
                                                   "sort");
     g_object_bind_property (G_SIMPLE_ACTION (action), "state",
                             priv->list_base, "sort-state",
-                            G_BINDING_BIDIRECTIONAL);
+                            G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
     g_signal_connect_object (priv->list_base, "activate-selection",
                              G_CALLBACK (nautilus_files_view_activate_selection), self,
@@ -9792,6 +9792,38 @@ create_inner_view (NautilusFilesView *self,
     }
 
     gtk_stack_add_child (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
+}
+
+void
+nautilus_files_view_change (NautilusFilesView *self,
+                            guint              id)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    /* Destroy existing inner view (which is owned by the stack) */
+    gtk_stack_remove (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
+
+    /* Avoid subfolder items showing up in grid view. */
+    nautilus_view_model_expand_as_a_tree (priv->model, FALSE);
+    g_clear_pointer (&priv->subdirectories_loading, g_list_free);
+    while (priv->subdirectory_list != NULL)
+    {
+        nautilus_files_view_remove_subdirectory (self,
+                                                 priv->subdirectory_list->data);
+    }
+
+    /* Create a new one */
+    create_inner_view (self, id);
+
+    /* Prepare directory settings before connecting the model. */
+    nautilus_list_base_setup_directory (priv->list_base, priv->directory);
+
+    connect_inner_view (self);
+
+    /* Update actions, because some of them may depend on the view (e.g. zoom
+     * actions and visible-columns). At the time of writing, there is no reason
+     * to also update context menus. */
+    nautilus_files_view_update_actions_state (self);
 }
 
 NautilusFilesView *
