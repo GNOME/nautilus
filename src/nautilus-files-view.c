@@ -212,7 +212,6 @@ typedef struct
      * after it finishes loading the directory and its view.
      */
     gboolean loading;
-    gboolean subdirectory_loading;
 
     gboolean in_destruction;
 
@@ -224,6 +223,7 @@ typedef struct
     gboolean metadata_for_files_in_directory_pending;
 
     GList *subdirectory_list;
+    GList *subdirectories_loading;
 
     GMenu *selection_menu_model;
     GMenu *background_menu_model;
@@ -3332,6 +3332,7 @@ nautilus_files_view_dispose (GObject *object)
         remove_directory_from_templates_directory_list (view, node->data);
     }
 
+    g_clear_pointer (&priv->subdirectories_loading, g_list_free);
     while (priv->subdirectory_list != NULL)
     {
         nautilus_files_view_remove_subdirectory (view,
@@ -4595,7 +4596,7 @@ queue_pending_files (NautilusFilesView  *view,
      * search it can be a long wait, and we actually want to show files as
      * they are getting found. So for search is fine if not all files are
      * seen */
-    if ((!priv->loading && !priv->subdirectory_loading) ||
+    if ((!priv->loading && priv->subdirectories_loading == NULL) ||
         (nautilus_directory_are_all_files_seen (directory) ||
          nautilus_view_is_searching (NAUTILUS_VIEW (view))))
     {
@@ -4807,7 +4808,7 @@ subdirectory_done_loading (NautilusDirectory *directory,
     NautilusFilesView *view = user_data;
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
-    priv->subdirectory_loading = FALSE;
+    priv->subdirectories_loading = g_list_remove (priv->subdirectories_loading, directory);
 }
 
 void
@@ -4815,11 +4816,7 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
                                       NautilusDirectory *directory)
 {
     NautilusFileAttributes attributes;
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    priv->subdirectory_loading = TRUE;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
     g_return_if_fail (!g_list_find (priv->subdirectory_list, directory));
 
@@ -4848,23 +4845,20 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
                              G_CALLBACK (subdirectory_done_loading),
                              view, 0);
 
-    priv->subdirectory_list = g_list_prepend (
-        priv->subdirectory_list, directory);
+    priv->subdirectory_list = g_list_prepend (priv->subdirectory_list, directory);
+    priv->subdirectories_loading = g_list_prepend (priv->subdirectories_loading, directory);
 }
 
 void
 nautilus_files_view_remove_subdirectory (NautilusFilesView *view,
                                          NautilusDirectory *directory)
 {
-    NautilusFilesViewPrivate *priv;
-    priv = nautilus_files_view_get_instance_private (view);
-
-    priv->subdirectory_loading = FALSE;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
     g_return_if_fail (g_list_find (priv->subdirectory_list, directory));
 
-    priv->subdirectory_list = g_list_remove (
-        priv->subdirectory_list, directory);
+    priv->subdirectory_list = g_list_remove (priv->subdirectory_list, directory);
+    priv->subdirectories_loading = g_list_remove (priv->subdirectories_loading, directory);
 
     g_signal_handlers_disconnect_by_func (directory,
                                           G_CALLBACK (files_added_callback),
@@ -8671,6 +8665,7 @@ load_directory (NautilusFilesView *view,
      */
     schedule_update_context_menus (view);
 
+    g_clear_pointer (&priv->subdirectories_loading, g_list_free);
     while (priv->subdirectory_list != NULL)
     {
         nautilus_files_view_remove_subdirectory (view,
