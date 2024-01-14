@@ -9793,6 +9793,33 @@ create_inner_view (NautilusFilesView *self,
     gtk_stack_add_child (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
 }
 
+void
+nautilus_files_view_change (NautilusFilesView *self,
+                            guint              id)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    /* Destroy existing inner view (which is owned by the stack) */
+    gtk_stack_remove (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
+
+    /* Avoid subfolder items showing up in grid view. */
+    nautilus_view_model_expand_as_a_tree (priv->model, FALSE);
+    g_clear_pointer (&priv->subdirectories_loading, g_list_free);
+    while (priv->subdirectory_list != NULL)
+    {
+        nautilus_files_view_remove_subdirectory (self,
+                                                 priv->subdirectory_list->data);
+    }
+
+    /* Create a new one */
+    create_inner_view (self, id);
+
+    /* Prepare directory settings before connecting the model. */
+    nautilus_list_base_setup_directory (priv->list_base, priv->directory);
+
+    connect_inner_view (self);
+}
+
 NautilusFilesView *
 nautilus_files_view_new (guint               id,
                          NautilusWindowSlot *slot)
