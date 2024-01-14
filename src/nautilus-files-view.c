@@ -4880,6 +4880,9 @@ nautilus_files_view_remove_subdirectory (NautilusFilesView *view,
     if (item != NULL)
     {
         nautilus_view_item_set_loading (item, FALSE);
+
+        /* The model holds a GListStore for every subdirectory. Empty it. */
+        nautilus_view_model_clear_subdirectory (priv->model, item);
     }
 
     g_signal_handlers_disconnect_by_func (directory,

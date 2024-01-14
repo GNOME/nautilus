@@ -727,9 +727,6 @@ unload_file_timeout (gpointer data)
                                                  unload_data->directory);
     }
 
-    /* The model holds a GListStore for every subdirectory. Empty it. */
-    nautilus_view_model_clear_subdirectory (model, unload_data->item);
-
     return G_SOURCE_REMOVE;
 }
 
