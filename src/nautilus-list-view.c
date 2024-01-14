@@ -54,6 +54,15 @@ struct _NautilusListView
 
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
 
+enum
+{
+    LOAD_SUBDIRECTORY,
+    UNLOAD_SUBDIRECTORY,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 #define get_view_item(cell) \
         (NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (GTK_TREE_LIST_ROW (gtk_column_view_cell_get_item (cell)))))
 
@@ -662,7 +671,6 @@ typedef struct
 {
     NautilusListView *self;
     GtkTreeListRow *row;
-    NautilusDirectory *directory;
 } UnloadDelayData;
 
 static void
@@ -670,7 +678,6 @@ unload_delay_data_free (UnloadDelayData *unload_data)
 {
     g_clear_weak_pointer (&unload_data->self);
     g_clear_object (&unload_data->row);
-    g_clear_object (&unload_data->directory);
 
     g_free (unload_data);
 }
@@ -678,21 +685,19 @@ unload_delay_data_free (UnloadDelayData *unload_data)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (UnloadDelayData, unload_delay_data_free)
 
 static UnloadDelayData *
-unload_delay_data_new (NautilusListView  *self,
-                       GtkTreeListRow    *row,
-                       NautilusDirectory *directory)
+unload_delay_data_new (NautilusListView *self,
+                       GtkTreeListRow   *row)
 {
     UnloadDelayData *unload_data;
 
     unload_data = g_new0 (UnloadDelayData, 1);
     g_set_weak_pointer (&unload_data->self, self);
     g_set_object (&unload_data->row, row);
-    g_set_object (&unload_data->directory, directory);
 
     return unload_data;
 }
 
-static gboolean
+static void
 unload_file_timeout (gpointer data)
 {
     g_autoptr (UnloadDelayData) unload_data = data;
@@ -700,23 +705,18 @@ unload_file_timeout (gpointer data)
 
     if (unload_data->self == NULL)
     {
-        return G_SOURCE_REMOVE;
+        return;
     }
 
     if (gtk_tree_list_row_get_expanded (unload_data->row))
     {
         /* It has been expanded again before the timeout. Do nothing. */
-        return G_SOURCE_REMOVE;
+        return;
     }
 
-    if (nautilus_files_view_has_subdirectory (NAUTILUS_FILES_VIEW (self),
-                                              unload_data->directory))
-    {
-        nautilus_files_view_remove_subdirectory (NAUTILUS_FILES_VIEW (self),
-                                                 unload_data->directory);
-    }
+    g_autoptr (NautilusViewItem) item = gtk_tree_list_row_get_item (unload_data->row);
 
-    return G_SOURCE_REMOVE;
+    g_signal_emit (self, signals[UNLOAD_SUBDIRECTORY], 0, item);
 }
 
 static void
@@ -726,26 +726,18 @@ on_row_expanded_changed (GObject    *gobject,
 {
     GtkTreeListRow *row = GTK_TREE_LIST_ROW (gobject);
     NautilusListView *self = NAUTILUS_LIST_VIEW (user_data);
-    g_autoptr (NautilusViewItem) item = NULL;
-    g_autoptr (NautilusDirectory) directory = NULL;
-    gboolean expanded;
+    g_autoptr (NautilusViewItem) item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
 
-    item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
-    directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
-    expanded = gtk_tree_list_row_get_expanded (row);
-    if (expanded)
+    if (gtk_tree_list_row_get_expanded (row))
     {
-        if (!nautilus_files_view_has_subdirectory (NAUTILUS_FILES_VIEW (self), directory))
-        {
-            nautilus_files_view_add_subdirectory (NAUTILUS_FILES_VIEW (self), directory);
-        }
+        g_signal_emit (self, signals[LOAD_SUBDIRECTORY], 0, item);
     }
     else
     {
         nautilus_view_item_set_loading (item, FALSE);
-        g_timeout_add_seconds (COLLAPSE_TO_UNLOAD_DELAY,
-                               unload_file_timeout,
-                               unload_delay_data_new (self, row, directory));
+        g_timeout_add_seconds_once (COLLAPSE_TO_UNLOAD_DELAY,
+                                    unload_file_timeout,
+                                    unload_delay_data_new (self, row));
     }
 }
 
@@ -1176,6 +1168,21 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     list_base_view_class->set_sort_state = real_set_sort_state;
     list_base_view_class->set_zoom_level = real_set_zoom_level;
     list_base_view_class->setup_directory = nautilus_list_view_setup_directory;
+
+    signals[LOAD_SUBDIRECTORY] = g_signal_new ("load-subdirectory",
+                                               G_TYPE_FROM_CLASS (klass),
+                                               G_SIGNAL_RUN_LAST,
+                                               0, NULL, NULL,
+                                               g_cclosure_marshal_VOID__OBJECT,
+                                               G_TYPE_NONE,
+                                               1, NAUTILUS_TYPE_VIEW_ITEM);
+    signals[UNLOAD_SUBDIRECTORY] = g_signal_new ("unload-subdirectory",
+                                                 G_TYPE_FROM_CLASS (klass),
+                                                 G_SIGNAL_RUN_LAST,
+                                                 0, NULL, NULL,
+                                                 g_cclosure_marshal_VOID__OBJECT,
+                                                 G_TYPE_NONE,
+                                                 1, NAUTILUS_TYPE_VIEW_ITEM);
 }
 
 NautilusListView *

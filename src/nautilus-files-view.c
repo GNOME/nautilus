@@ -3266,6 +3266,34 @@ on_popup_selection_context_menu (NautilusListBase *list_base,
 }
 
 static void
+on_load_subdirectory (NautilusListBase *list_base,
+                      NautilusViewItem *item,
+                      gpointer          user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
+
+    if (!nautilus_files_view_has_subdirectory (self, directory))
+    {
+        nautilus_files_view_add_subdirectory (self, directory);
+    }
+}
+
+static void
+on_unload_subdirectory (NautilusListBase *list_base,
+                        NautilusViewItem *item,
+                        gpointer          user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
+
+    if (nautilus_files_view_has_subdirectory (self, directory))
+    {
+        nautilus_files_view_remove_subdirectory (self, directory);
+    }
+}
+
+static void
 nautilus_files_view_constructed (GObject *object)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
@@ -3294,6 +3322,16 @@ nautilus_files_view_constructed (GObject *object)
     g_signal_connect_object (NAUTILUS_LIST_BASE (self), "popup-selection-context-menu",
                              G_CALLBACK (on_popup_selection_context_menu), self,
                              G_CONNECT_DEFAULT);
+
+    if (NAUTILUS_IS_LIST_VIEW (NAUTILUS_LIST_BASE (self)))
+    {
+        g_signal_connect_object (NAUTILUS_LIST_BASE (self), "load-subdirectory",
+                                 G_CALLBACK (on_load_subdirectory), self,
+                                 G_CONNECT_DEFAULT);
+        g_signal_connect_object (NAUTILUS_LIST_BASE (self), "unload-subdirectory",
+                                 G_CALLBACK (on_unload_subdirectory), self,
+                                 G_CONNECT_DEFAULT);
+    }
 }
 
 static void
