@@ -4460,10 +4460,21 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
                                         NautilusSpeedTradeoffValue  value)
 {
     GFilesystemPreviewType use_preview;
+    g_autoptr (NautilusFile) parent = NULL;
+    NautilusFile *preffered_file = file;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    use_preview = nautilus_file_get_filesystem_use_preview (file);
+    /* If the info is not already available, it's better to share the parent
+     * between the filesystem info check functions then to let both parse it
+     * twice. */
+    if (!file->details->filesystem_info_is_up_to_date)
+    {
+        parent = nautilus_file_get_parent (file);
+        preffered_file = parent != NULL ? parent : file;
+    }
+
+    use_preview = nautilus_file_get_filesystem_use_preview (preffered_file);
 
     if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
     {
@@ -4495,7 +4506,7 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
         else
         {
             /* only local files */
-            return !nautilus_file_is_remote (file);
+            return !nautilus_file_is_remote (preffered_file);
         }
     }
 
