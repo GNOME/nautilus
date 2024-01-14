@@ -20,14 +20,6 @@
             <property name="halign">fill</property>
             <property name="valign">center</property>
             <child>
-              <object class="GtkSpinner" id="spinner">
-                <property name="visible">False</property>
-                <property name="spinning">False</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-              </object>
-            </child>
-            <child>
               <object class="GtkBox" id="fixed_height_box">
                 <property name="orientation">vertical</property>
                 <property name="halign">center</property>
@@ -83,6 +75,14 @@
                         <property name="orientation">horizontal</property>
                         <property name="halign">start</property>
                         <property name="spacing">6</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSpinner" id="spinner">
+                        <property name="visible">False</property>
+                        <property name="spinning">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
                       </object>
                     </child>
                   </object>

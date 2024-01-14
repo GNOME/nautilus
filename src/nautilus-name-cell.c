@@ -10,7 +10,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-thumbnails.h"
 
-#define LOADING_TIMEOUT_SECONDS 1
+#define SPINNER_DELAY_MS 200
 
 struct _NautilusNameCell
 {
@@ -273,7 +273,7 @@ on_item_is_cut_changed (NautilusNameCell *self)
     }
 }
 
-static gboolean
+static void
 on_loading_timeout (gpointer user_data)
 {
     NautilusNameCell *self = NAUTILUS_NAME_CELL (user_data);
@@ -287,8 +287,6 @@ on_loading_timeout (gpointer user_data)
         gtk_widget_set_visible (self->spinner, TRUE);
         gtk_spinner_start (GTK_SPINNER (self->spinner));
     }
-
-    return G_SOURCE_REMOVE;
 }
 
 static void
@@ -301,9 +299,9 @@ on_item_is_loading_changed (NautilusNameCell *self)
 
     if (is_loading)
     {
-        self->loading_timeout_id = g_timeout_add_seconds (LOADING_TIMEOUT_SECONDS,
-                                                          G_SOURCE_FUNC (on_loading_timeout),
-                                                          self);
+        self->loading_timeout_id = g_timeout_add_once (SPINNER_DELAY_MS,
+                                                       on_loading_timeout,
+                                                       self);
     }
     else
     {
