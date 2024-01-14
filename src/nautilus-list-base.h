@@ -55,6 +55,7 @@ struct _NautilusListBaseClass
 NautilusViewItem *nautilus_list_base_get_backing_item (NautilusListBase *self);
 GtkWidget *nautilus_list_base_get_selected_item_ui (NautilusListBase  *self);
 GVariant *nautilus_list_base_get_sort_state        (NautilusListBase  *self);
+GtkAdjustment *nautilus_list_base_get_vadjustment  (NautilusListBase  *self);
 NautilusViewInfo nautilus_list_base_get_view_info  (NautilusListBase  *self) G_GNUC_PURE;
 int     nautilus_list_base_get_zoom_level          (NautilusListBase  *self);
 void nautilus_list_base_preview_selection_event (NautilusListBase *self,

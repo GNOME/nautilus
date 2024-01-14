@@ -42,6 +42,8 @@ struct _NautilusListBasePrivate
     NautilusViewModel *model;
     NautilusFile *directory_as_file;
 
+    GtkWidget *scrolled_window;
+
     gboolean single_click_mode;
     gboolean activate_on_release;
     gboolean deny_background_click;
@@ -900,7 +902,7 @@ base_setup_directory (NautilusListBase  *self,
 
     /* HACK: Fix for https://gitlab.gnome.org/GNOME/nautilus/-/issues/1452 */
     {
-        GtkScrolledWindow *content = GTK_SCROLLED_WINDOW (nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self)));
+        GtkScrolledWindow *content = GTK_SCROLLED_WINDOW (priv->scrolled_window);
 
         /* If we load a new location while the view is still scrolling due to
          * kinetic deceleration, we get a sudden jump to the same scrolling
@@ -1102,6 +1104,22 @@ nautilus_list_base_focus (GtkWidget        *widget,
     return handled;
 }
 
+static gboolean
+nautilus_list_base_grab_focus (GtkWidget *widget)
+{
+    /* focus the child of the scrolled window if it exists */
+    NautilusListBase *self = NAUTILUS_LIST_BASE (widget);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    GtkWidget *child = gtk_scrolled_window_get_child (GTK_SCROLLED_WINDOW (priv->scrolled_window));
+
+    if (child != NULL)
+    {
+        return gtk_widget_grab_focus (child);
+    }
+
+    return GTK_WIDGET_CLASS (nautilus_list_base_parent_class)->grab_focus (widget);
+}
+
 static void
 nautilus_list_base_get_property (GObject    *object,
                                  guint       prop_id,
@@ -1166,6 +1184,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     object_class->set_property = nautilus_list_base_set_property;
 
     widget_class->focus = nautilus_list_base_focus;
+    widget_class->grab_focus = nautilus_list_base_grab_focus;
 
     klass->get_backing_item = default_get_backing_item;
     klass->preview_selection_event = default_preview_selection_event;
@@ -1228,9 +1247,11 @@ nautilus_list_base_init (NautilusListBase *self)
     priv->model = NAUTILUS_VIEW_MODEL (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self)));
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
+    priv->scrolled_window = gtk_scrolled_window_new ();
+    adw_bin_set_child (ADW_BIN (content_widget), priv->scrolled_window);
 
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
-    gtk_widget_add_controller (content_widget, controller);
+    gtk_widget_add_controller (priv->scrolled_window, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), self);
     g_signal_connect (controller, "scroll-begin", G_CALLBACK (on_scroll_begin), self);
@@ -1306,6 +1327,14 @@ NautilusViewItem *
 nautilus_list_base_get_backing_item (NautilusListBase *self)
 {
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_backing_item (self);
+}
+
+GtkAdjustment *
+nautilus_list_base_get_vadjustment (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    return gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window));
 }
 
 NautilusViewInfo

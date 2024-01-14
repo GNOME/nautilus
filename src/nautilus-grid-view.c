@@ -553,7 +553,7 @@ nautilus_grid_view_init (NautilusGridView *self)
     self->view_ui = create_view_ui (self);
     nautilus_list_base_setup_gestures (NAUTILUS_LIST_BASE (self));
 
-    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (content_widget),
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (adw_bin_get_child (ADW_BIN (content_widget))),
                                    GTK_WIDGET (self->view_ui));
 
     g_signal_connect_object (gtk_filechooser_preferences,
