@@ -21,6 +21,7 @@ void               nautilus_list_base_activate_selection (NautilusListBase *self
                                                           gboolean          open_in_new_tab);
 NautilusFile      *nautilus_list_base_get_directory_as_file (NautilusListBase *self);
 NautilusViewModel *nautilus_list_base_get_model     (NautilusListBase *self);
+GtkWidget         *nautilus_list_base_get_scrolled_window (NautilusListBase *self);
 void               nautilus_list_base_setup_gestures (NautilusListBase *self);
 
 /* Shareable helpers */
