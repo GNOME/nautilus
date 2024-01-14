@@ -1001,6 +1001,56 @@ nautilus_list_base_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->finalize (object);
 }
 
+/* handle Ctrl+Scroll, which will cause a zoom-in/out */
+static gboolean
+on_scroll (GtkEventControllerScroll *scroll,
+           gdouble                   dx,
+           gdouble                   dy,
+           gpointer                  user_data)
+{
+    NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
+    GdkModifierType state;
+
+    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
+    if (state & GDK_CONTROL_MASK)
+    {
+        if (dy <= -1)
+        {
+            gtk_widget_activate_action (GTK_WIDGET (self), "view.zoom-in", NULL);
+            return GDK_EVENT_STOP;
+        }
+        else if (dy >= 1)
+        {
+            gtk_widget_activate_action (GTK_WIDGET (self), "view.zoom-out", NULL);
+            return GDK_EVENT_STOP;
+        }
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static void
+on_scroll_begin (GtkEventControllerScroll *scroll,
+                 gpointer                  user_data)
+{
+    GdkModifierType state;
+
+    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
+    if (state & GDK_CONTROL_MASK)
+    {
+        gtk_event_controller_scroll_set_flags (scroll,
+                                               GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
+                                               GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
+    }
+}
+
+static void
+on_scroll_end (GtkEventControllerScroll *scroll,
+               gpointer                  user_data)
+{
+    gtk_event_controller_scroll_set_flags (scroll, GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+}
+
 static gboolean
 nautilus_list_base_focus (GtkWidget        *widget,
                           GtkDirectionType  direction)
@@ -1152,8 +1202,19 @@ static void
 nautilus_list_base_init (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    GtkWidget *content_widget;
+    GtkEventController *controller;
 
     priv->model = NAUTILUS_VIEW_MODEL (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self)));
+
+    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
+
+    controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+    gtk_widget_add_controller (content_widget, controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), self);
+    g_signal_connect (controller, "scroll-begin", G_CALLBACK (on_scroll_begin), self);
+    g_signal_connect (controller, "scroll-end", G_CALLBACK (on_scroll_end), self);
 
     g_signal_connect_object (nautilus_preferences,
                              "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
