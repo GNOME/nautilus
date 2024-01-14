@@ -1082,7 +1082,7 @@ on_model_changed (NautilusListView *self)
 static void
 nautilus_list_view_init (NautilusListView *self)
 {
-    GtkWidget *content_widget;
+    GtkWidget *scrolled_window = nautilus_list_base_get_scrolled_window (NAUTILUS_LIST_BASE (self));
     GtkSorter *column_view_sorter;
     GtkEventController *controller;
     GtkShortcut *shortcut;
@@ -1105,8 +1105,6 @@ nautilus_list_view_init (NautilusListView *self)
                              self,
                              G_CONNECT_SWAPPED);
 
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-
     self->view_ui = create_view_ui (self);
     nautilus_list_base_setup_gestures (NAUTILUS_LIST_BASE (self));
 
@@ -1117,7 +1115,7 @@ nautilus_list_view_init (NautilusListView *self)
 
     g_signal_connect_swapped (self, "notify::model", G_CALLBACK (on_model_changed), self);
 
-    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (adw_bin_get_child (ADW_BIN (content_widget))),
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window),
                                    GTK_WIDGET (self->view_ui));
 
     g_signal_connect_object (gtk_filechooser_preferences,
@@ -1213,9 +1211,7 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
 }
 
 NautilusListView *
-nautilus_list_view_new (NautilusWindowSlot *slot)
+nautilus_list_view_new (void)
 {
-    return g_object_new (NAUTILUS_TYPE_LIST_VIEW,
-                         "window-slot", slot,
-                         NULL);
+    return g_object_new (NAUTILUS_TYPE_LIST_VIEW, NULL);
 }

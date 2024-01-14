@@ -6,7 +6,8 @@
 
 #pragma once
 
-#include "nautilus-files-view.h"
+#include <adwaita.h>
+
 #include "nautilus-view-info.h"
 #include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
@@ -15,11 +16,11 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_LIST_BASE (nautilus_list_base_get_type())
 
-G_DECLARE_DERIVABLE_TYPE (NautilusListBase, nautilus_list_base, NAUTILUS, LIST_BASE, NautilusFilesView)
+G_DECLARE_DERIVABLE_TYPE (NautilusListBase, nautilus_list_base, NAUTILUS, LIST_BASE, AdwBin)
 
 struct _NautilusListBaseClass
 {
-        NautilusFilesViewClass parent_class;
+        AdwBinClass parent_class;
 
         /* Subclasses must provide implementation. */
         NautilusViewInfo (*get_view_info)     (NautilusListBase *self);

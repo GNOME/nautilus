@@ -7,7 +7,6 @@
 #pragma once
 
 #include "nautilus-list-base.h"
-#include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS
 
@@ -15,6 +14,6 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusGridView, nautilus_grid_view, NAUTILUS, GRID_VIEW, NautilusListBase)
 
-NautilusGridView *nautilus_grid_view_new (NautilusWindowSlot *slot);
+NautilusGridView *nautilus_grid_view_new (void);
 
 G_END_DECLS

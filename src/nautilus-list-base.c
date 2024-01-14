@@ -12,7 +12,6 @@
 #include "nautilus-view-item.h"
 #include "nautilus-view-model.h"
 #include "nautilus-enum-types.h"
-#include "nautilus-files-view.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-metadata.h"
@@ -55,7 +54,7 @@ struct _NautilusListBasePrivate
     GtkDropTarget *view_drop_target;
 };
 
-G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, NAUTILUS_TYPE_FILES_VIEW)
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, ADW_TYPE_BIN)
 
 enum
 {
@@ -1266,12 +1265,10 @@ static void
 nautilus_list_base_init (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    GtkWidget *content_widget;
     GtkEventController *controller;
 
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     priv->scrolled_window = gtk_scrolled_window_new ();
-    adw_bin_set_child (ADW_BIN (content_widget), priv->scrolled_window);
+    adw_bin_set_child (ADW_BIN (self), priv->scrolled_window);
 
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
     gtk_widget_add_controller (priv->scrolled_window, controller);
@@ -1301,6 +1298,14 @@ nautilus_list_base_get_model (NautilusListBase *self)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     return priv->model;
+}
+
+GtkWidget *
+nautilus_list_base_get_scrolled_window (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    return priv->scrolled_window;
 }
 
 void

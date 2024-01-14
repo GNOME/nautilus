@@ -236,8 +236,6 @@ typedef struct
 
     GtkWidget *stack;
 
-    GtkWidget *content_widget;
-
     GtkWidget *extend_search_revealer;
 
     /* Empty states */
@@ -3189,7 +3187,7 @@ slot_active_changed (NautilusWindowSlot *slot,
 static gboolean
 nautilus_files_view_grab_focus (GtkWidget *widget)
 {
-    /* focus the child view if it exists */
+    /* focus the inner view if it exists */
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (widget);
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
@@ -3345,14 +3343,9 @@ update_extend_search_revealer (NautilusFilesView *self)
 }
 
 static void
-nautilus_files_view_constructed (GObject *object)
+connect_inner_view (NautilusFilesView *self)
 {
-    NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-
-    G_OBJECT_CLASS (nautilus_files_view_parent_class)->constructed (object);
-
-    priv->list_base = NAUTILUS_LIST_BASE (self);
 
     /* Model must be set before the sort-state is bound, for a new sorter to be
      * set on the model. */
@@ -3882,7 +3875,7 @@ real_check_empty_states (NautilusFilesView *view)
     }
     else
     {
-        gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->content_widget);
+        gtk_stack_set_visible_child (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
     }
 }
 
@@ -4970,18 +4963,6 @@ nautilus_files_view_get_loading (NautilusFilesView *view)
     priv = nautilus_files_view_get_instance_private (view);
 
     return priv->loading;
-}
-
-GtkWidget *
-nautilus_files_view_get_content_widget (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    return priv->content_widget;
 }
 
 /* home_dir_in_selection()
@@ -9434,7 +9415,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
 
-    oclass->constructed = nautilus_files_view_constructed;
     oclass->dispose = nautilus_files_view_dispose;
     oclass->finalize = nautilus_files_view_finalize;
     oclass->get_property = nautilus_files_view_get_property;
@@ -9551,7 +9531,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, overlay);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, empty_view_page);
-    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, content_widget);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, floating_bar);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, extend_search_revealer);
     gtk_widget_class_bind_template_callback (widget_class, globalize_search);
@@ -9786,32 +9765,44 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_widget_set_parent (priv->rename_file_popover, GTK_WIDGET (view));
 }
 
-NautilusFilesView *
-nautilus_files_view_new (guint               id,
-                         NautilusWindowSlot *slot)
+static void
+create_inner_view (NautilusFilesView *self,
+                   guint              id)
 {
-    NautilusFilesView *view = NULL;
-
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     switch (id)
     {
         case NAUTILUS_VIEW_GRID_ID:
         {
-            view = NAUTILUS_FILES_VIEW (nautilus_grid_view_new (slot));
+            priv->list_base = NAUTILUS_LIST_BASE (nautilus_grid_view_new ());
         }
         break;
 
         case NAUTILUS_VIEW_LIST_ID:
         {
-            view = NAUTILUS_FILES_VIEW (nautilus_list_view_new (slot));
+            priv->list_base = NAUTILUS_LIST_BASE (nautilus_list_view_new ());
         }
         break;
 
         default:
         {
             g_critical ("Unknown view type ID: %d. Falling back to list.", id);
-            view = NAUTILUS_FILES_VIEW (nautilus_list_view_new (slot));
+            priv->list_base = NAUTILUS_LIST_BASE (nautilus_list_view_new ());
         }
     }
+
+    gtk_stack_add_child (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
+}
+
+NautilusFilesView *
+nautilus_files_view_new (guint               id,
+                         NautilusWindowSlot *slot)
+{
+    NautilusFilesView *view = NULL;
+
+    view = NAUTILUS_FILES_VIEW (g_object_new (NAUTILUS_TYPE_FILES_VIEW,
+                                              "window-slot", slot,
+                                              NULL));
 
     if (view == NULL)
     {
@@ -9821,6 +9812,9 @@ nautilus_files_view_new (guint               id,
     {
         g_object_ref_sink (view);
     }
+
+    create_inner_view (view, id);
+    connect_inner_view (view);
 
     return view;
 }
