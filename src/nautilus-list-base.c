@@ -897,6 +897,26 @@ base_setup_directory (NautilusListBase  *self,
                                                        gtk_drop_target_get_value (priv->view_drop_target));
         priv->drag_item_action = 0;
     }
+
+    /* HACK: Fix for https://gitlab.gnome.org/GNOME/nautilus/-/issues/1452 */
+    {
+        GtkScrolledWindow *content = GTK_SCROLLED_WINDOW (nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self)));
+
+        /* If we load a new location while the view is still scrolling due to
+         * kinetic deceleration, we get a sudden jump to the same scrolling
+         * position as the previous location, as well as residual scrolling
+         * movement in the new location.
+         *
+         * This is both undesirable and unexpected from a user POV, so we want
+         * to abort deceleration when switching locations.
+         *
+         * However, gtk_scrolled_window_cancel_deceleration() is private. So,
+         * we make use of an undocumented behavior of ::set_kinetic_scrolling(),
+         * which calls ::cancel_deceleration() when set to FALSE.
+         */
+        gtk_scrolled_window_set_kinetic_scrolling (content, FALSE);
+        gtk_scrolled_window_set_kinetic_scrolling (content, TRUE);
+    }
 }
 
 static void
