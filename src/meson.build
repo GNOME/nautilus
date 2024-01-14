@@ -136,6 +136,7 @@ libnautilus_sources = [
   'nautilus-view-cell.h',
   'nautilus-view-controls.c',
   'nautilus-view-controls.h',
+  'nautilus-view-info.h',
   'nautilus-view-item.c',
   'nautilus-view-item.h',
   'nautilus-view-model.c',
