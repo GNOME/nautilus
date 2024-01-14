@@ -541,7 +541,7 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
 static void
 nautilus_grid_view_init (NautilusGridView *self)
 {
-    GtkWidget *content_widget;
+    GtkWidget *scrolled_window = nautilus_list_base_get_scrolled_window (NAUTILUS_LIST_BASE (self));
 
     gtk_widget_add_css_class (GTK_WIDGET (self), "nautilus-grid-view");
 
@@ -552,12 +552,11 @@ nautilus_grid_view_init (NautilusGridView *self)
                              self,
                              G_CONNECT_SWAPPED);
 
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
 
     self->view_ui = create_view_ui (self);
     nautilus_list_base_setup_gestures (NAUTILUS_LIST_BASE (self));
 
-    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (adw_bin_get_child (ADW_BIN (content_widget))),
+    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window),
                                    GTK_WIDGET (self->view_ui));
 
     g_signal_connect_object (gtk_filechooser_preferences,
@@ -570,9 +569,7 @@ nautilus_grid_view_init (NautilusGridView *self)
 }
 
 NautilusGridView *
-nautilus_grid_view_new (NautilusWindowSlot *slot)
+nautilus_grid_view_new (void)
 {
-    return g_object_new (NAUTILUS_TYPE_GRID_VIEW,
-                         "window-slot", slot,
-                         NULL);
+    return g_object_new (NAUTILUS_TYPE_GRID_VIEW, NULL);
 }

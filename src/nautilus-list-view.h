@@ -9,7 +9,6 @@
 #pragma once
 
 #include "nautilus-list-base.h"
-#include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS
 
@@ -17,7 +16,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusListView, nautilus_list_view, NAUTILUS, LIST_VIEW, NautilusListBase)
 
-NautilusListView *nautilus_list_view_new (NautilusWindowSlot *slot);
+NautilusListView *nautilus_list_view_new (void);
 
 void nautilus_list_view_present_column_editor (NautilusListView *self);
 
