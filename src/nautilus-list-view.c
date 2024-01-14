@@ -709,7 +709,7 @@ unload_file_timeout (gpointer data)
     {
         g_autoptr (GtkTreeListRow) row = g_list_model_get_item (G_LIST_MODEL (model), i);
         g_autoptr (NautilusViewItem) item = gtk_tree_list_row_get_item (row);
-        if (item != NULL && item == unload_data->item)
+        if (item == unload_data->item)
         {
             if (gtk_tree_list_row_get_expanded (row))
             {
@@ -765,12 +765,6 @@ on_row_expanded_changed (GObject    *gobject,
     gboolean expanded;
 
     item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
-    if (item == NULL)
-    {
-        /* Row has been destroyed. */
-        return;
-    }
-
     directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
     expanded = gtk_tree_list_row_get_expanded (row);
     if (expanded)
