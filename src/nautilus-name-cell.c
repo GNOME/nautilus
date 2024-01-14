@@ -6,6 +6,7 @@
 
 #include "nautilus-name-cell.h"
 
+#include "nautilus-directory.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-thumbnails.h"
 
@@ -306,6 +307,11 @@ on_item_is_loading_changed (NautilusNameCell *self)
     }
     else
     {
+        g_autoptr (NautilusDirectory) directory = nautilus_directory_get_for_file (nautilus_view_item_get_file (item));
+
+        gtk_tree_expander_set_hide_expander (GTK_TREE_EXPANDER (self->expander),
+                                             !nautilus_directory_is_not_empty (directory));
+
         gtk_widget_set_visible (self->spinner, FALSE);
         gtk_spinner_stop (GTK_SPINNER (self->spinner));
     }

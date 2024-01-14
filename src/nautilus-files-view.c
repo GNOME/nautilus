@@ -4807,8 +4807,15 @@ subdirectory_done_loading (NautilusDirectory *directory,
 {
     NautilusFilesView *view = user_data;
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    g_autoptr (NautilusFile) file = nautilus_directory_get_corresponding_file (directory);
+    NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
 
     priv->subdirectories_loading = g_list_remove (priv->subdirectories_loading, directory);
+
+    if (item != NULL)
+    {
+        nautilus_view_item_set_loading (item, FALSE);
+    }
 }
 
 void
@@ -4817,6 +4824,8 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
 {
     NautilusFileAttributes attributes;
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    g_autoptr (NautilusFile) file = nautilus_directory_get_corresponding_file (directory);
+    NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
 
     g_return_if_fail (!g_list_find (priv->subdirectory_list, directory));
 
@@ -4847,6 +4856,12 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
 
     priv->subdirectory_list = g_list_prepend (priv->subdirectory_list, directory);
     priv->subdirectories_loading = g_list_prepend (priv->subdirectories_loading, directory);
+
+    if (item != NULL &&
+        !nautilus_directory_are_all_files_seen (directory))
+    {
+        nautilus_view_item_set_loading (item, TRUE);
+    }
 }
 
 void
@@ -4854,11 +4869,18 @@ nautilus_files_view_remove_subdirectory (NautilusFilesView *view,
                                          NautilusDirectory *directory)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    g_autoptr (NautilusFile) file = nautilus_directory_get_corresponding_file (directory);
+    NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
 
     g_return_if_fail (g_list_find (priv->subdirectory_list, directory));
 
     priv->subdirectory_list = g_list_remove (priv->subdirectory_list, directory);
     priv->subdirectories_loading = g_list_remove (priv->subdirectories_loading, directory);
+
+    if (item != NULL)
+    {
+        nautilus_view_item_set_loading (item, FALSE);
+    }
 
     g_signal_handlers_disconnect_by_func (directory,
                                           G_CALLBACK (files_added_callback),

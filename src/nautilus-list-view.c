@@ -734,26 +734,6 @@ unload_file_timeout (gpointer data)
 }
 
 static void
-on_subdirectory_done_loading (NautilusDirectory *directory,
-                              GtkTreeListRow    *row)
-{
-    g_autoptr (NautilusViewItem) item = NULL;
-
-    g_signal_handlers_disconnect_by_func (directory, on_subdirectory_done_loading, row);
-
-    item = NAUTILUS_VIEW_ITEM (gtk_tree_list_row_get_item (row));
-    nautilus_view_item_set_loading (item, FALSE);
-
-    if (!nautilus_directory_is_not_empty (directory))
-    {
-        GtkWidget *name_cell = nautilus_view_item_get_item_ui (item);
-        GtkTreeExpander *expander = nautilus_name_cell_get_expander (NAUTILUS_NAME_CELL (name_cell));
-
-        gtk_tree_expander_set_hide_expander (expander, TRUE);
-    }
-}
-
-static void
 on_row_expanded_changed (GObject    *gobject,
                          GParamSpec *pspec,
                          gpointer    user_data)
@@ -772,16 +752,6 @@ on_row_expanded_changed (GObject    *gobject,
         if (!nautilus_files_view_has_subdirectory (NAUTILUS_FILES_VIEW (self), directory))
         {
             nautilus_files_view_add_subdirectory (NAUTILUS_FILES_VIEW (self), directory);
-        }
-        if (!nautilus_directory_are_all_files_seen (directory))
-        {
-            nautilus_view_item_set_loading (item, TRUE);
-
-            g_signal_connect_object (directory,
-                                     "done-loading",
-                                     G_CALLBACK (on_subdirectory_done_loading),
-                                     row,
-                                     0);
         }
     }
     else
