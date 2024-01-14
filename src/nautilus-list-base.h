@@ -7,17 +7,10 @@
 #pragma once
 
 #include "nautilus-files-view.h"
+#include "nautilus-view-info.h"
 #include "nautilus-view-item.h"
 
 G_BEGIN_DECLS
-
-typedef struct
-{
-    guint view_id;
-    int zoom_level_min;
-    int zoom_level_max;
-    int zoom_level_standard;
-} NautilusViewInfo;
 
 #define NAUTILUS_TYPE_LIST_BASE (nautilus_list_base_get_type())
 
