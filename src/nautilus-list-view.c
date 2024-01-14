@@ -661,7 +661,7 @@ real_get_backing_item (NautilusListBase *list_base)
 typedef struct
 {
     NautilusListView *self;
-    NautilusViewItem *item;
+    GtkTreeListRow *row;
     NautilusDirectory *directory;
 } UnloadDelayData;
 
@@ -669,7 +669,7 @@ static void
 unload_delay_data_free (UnloadDelayData *unload_data)
 {
     g_clear_weak_pointer (&unload_data->self);
-    g_clear_object (&unload_data->item);
+    g_clear_object (&unload_data->row);
     g_clear_object (&unload_data->directory);
 
     g_free (unload_data);
@@ -679,14 +679,14 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (UnloadDelayData, unload_delay_data_free)
 
 static UnloadDelayData *
 unload_delay_data_new (NautilusListView  *self,
-                       NautilusViewItem  *item,
+                       GtkTreeListRow    *row,
                        NautilusDirectory *directory)
 {
     UnloadDelayData *unload_data;
 
     unload_data = g_new0 (UnloadDelayData, 1);
     g_set_weak_pointer (&unload_data->self, self);
-    g_set_object (&unload_data->item, item);
+    g_set_object (&unload_data->row, row);
     g_set_object (&unload_data->directory, directory);
 
     return unload_data;
@@ -697,27 +697,16 @@ unload_file_timeout (gpointer data)
 {
     g_autoptr (UnloadDelayData) unload_data = data;
     NautilusListView *self = unload_data->self;
-    NautilusViewModel *model;
 
     if (unload_data->self == NULL)
     {
         return G_SOURCE_REMOVE;
     }
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
-    for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (model)); i++)
+    if (gtk_tree_list_row_get_expanded (unload_data->row))
     {
-        g_autoptr (GtkTreeListRow) row = g_list_model_get_item (G_LIST_MODEL (model), i);
-        g_autoptr (NautilusViewItem) item = gtk_tree_list_row_get_item (row);
-        if (item == unload_data->item)
-        {
-            if (gtk_tree_list_row_get_expanded (row))
-            {
-                /* It has been expanded again before the timeout. Do nothing. */
-                return G_SOURCE_REMOVE;
-            }
-            break;
-        }
+        /* It has been expanded again before the timeout. Do nothing. */
+        return G_SOURCE_REMOVE;
     }
 
     if (nautilus_files_view_has_subdirectory (NAUTILUS_FILES_VIEW (self),
@@ -756,7 +745,7 @@ on_row_expanded_changed (GObject    *gobject,
         nautilus_view_item_set_loading (item, FALSE);
         g_timeout_add_seconds (COLLAPSE_TO_UNLOAD_DELAY,
                                unload_file_timeout,
-                               unload_delay_data_new (self, item, directory));
+                               unload_delay_data_new (self, row, directory));
     }
 }
 
