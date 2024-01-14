@@ -2064,27 +2064,19 @@ static void
 nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
                                        guint               id)
 {
-    NautilusFilesView *view;
+    NautilusView *view = nautilus_window_slot_get_current_view (self);
     char *uri;
     g_assert (self != NULL);
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
     uri = nautilus_window_slot_get_location_uri (self);
     g_debug ("Change view of window %s to %d", uri, id);
     g_free (uri);
 
-    view = nautilus_files_view_new (id, self);
+    nautilus_files_view_change (NAUTILUS_FILES_VIEW (view), id);
 
-    nautilus_window_slot_stop_loading (self);
-
-    nautilus_window_slot_set_allow_stop (self, TRUE);
-
-    self->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
-
-    if (!setup_view (self, NAUTILUS_VIEW (view)))
-    {
-        /* Just load the homedir. */
-        nautilus_window_slot_go_home (self, FALSE);
-    }
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
 }
 
 void

@@ -264,11 +264,6 @@ create_model_func (GObject           *item,
     NautilusFile *file;
     GListStore *store;
 
-    if (!self->expand_as_a_tree)
-    {
-        return NULL;
-    }
-
     file = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM (item));
     if (!nautilus_file_is_directory (file))
     {
@@ -581,10 +576,28 @@ nautilus_view_model_clear_subdirectory (NautilusViewModel *self,
     g_hash_table_remove (self->directory_reverse_map, file);
 }
 
+static inline void
+collapse_all_rows (NautilusViewModel *self)
+{
+    guint n_root_items = g_list_model_get_n_items (gtk_tree_list_model_get_model (self->tree_model));
+
+    for (guint i = 0; i < n_root_items; i++)
+    {
+        g_autoptr (GtkTreeListRow) root_level_row = gtk_tree_list_model_get_child_row (self->tree_model, i);
+
+        gtk_tree_list_row_set_expanded (root_level_row, FALSE);
+    }
+}
+
 void
 nautilus_view_model_expand_as_a_tree (NautilusViewModel *self,
                                       gboolean           expand_as_a_tree)
 {
+    if (self->expand_as_a_tree && !expand_as_a_tree)
+    {
+        collapse_all_rows (self);
+    }
+
     self->expand_as_a_tree = expand_as_a_tree;
 }
 

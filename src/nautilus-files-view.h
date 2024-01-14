@@ -114,7 +114,8 @@ struct _NautilusFilesViewClass {
 
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
                                                                           NautilusWindowSlot *slot);
-
+void                nautilus_files_view_change                           (NautilusFilesView  *self,
+                                                                          guint               id);
 /* Wrappers for signal emitters. These are normally called
  * only by NautilusFilesView itself. They have corresponding signals
  * that observers might want to connect with.
