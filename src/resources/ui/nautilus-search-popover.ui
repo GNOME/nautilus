@@ -41,7 +41,8 @@
                         </accessibility>
                         <child>
                           <object class="GtkLabel" id="select_date_button_label">
-                            <property name="label" translatable="yes">Select Dates…</property>
+                            <property name="label" translatable="yes">Select _Dates…</property>
+                            <property name="use-underline">True</property>
                             <property name="xalign">0</property>
                           </object>
                         </child>
@@ -175,7 +176,7 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="created_button">
-                    <property name="label" translatable="yes">Created</property>
+                    <property name="label" translatable="yes">_Created</property>
                     <property name="use-underline">True</property>
                     <property name="group">last_modified_button</property>
                     <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
@@ -228,7 +229,8 @@
                         <child>
                           <object class="GtkLabel" id="type_label">
                             <property name="hexpand">True</property>
-                            <property name="label" translatable="yes">Anything</property>
+                            <property name="label" translatable="yes">_Anything</property>
+                            <property name="use-underline">True</property>
                             <property name="width_chars">30</property>
                             <property name="xalign">0</property>
                           </object>
@@ -290,7 +292,8 @@
             <property name="hexpand">True</property>
             <child>
               <object class="GtkToggleButton" id="full_text_search_button">
-                <property name="label" translatable="yes">Full Text</property>
+                <property name="label" translatable="yes">Full _Text</property>
+                <property name="use-underline">True</property>
                 <property name="tooltip_text" translatable="yes">Search Inside Files</property>
                 <property name="hexpand">True</property>
                 <property name="active">True</property>
@@ -299,7 +302,8 @@
             </child>
             <child>
               <object class="GtkToggleButton" id="filename_search_button">
-                <property name="label" translatable="yes">File Name</property>
+                <property name="label" translatable="yes">File _Name</property>
+                <property name="use-underline">True</property>
                 <property name="tooltip_text" translatable="yes">Don't Search Inside Files</property>
                 <property name="hexpand">True</property>
                 <property name="group">full_text_search_button</property>
