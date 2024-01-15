@@ -33,3 +33,4 @@ gboolean   nautilus_thumbnail_is_mimetype_limited_by_size
 /* Queue handling: */
 void       nautilus_thumbnail_remove_from_queue     (const char   *file_uri);
 void       nautilus_thumbnail_prioritize            (const char   *file_uri);
+void       nautilus_thumbnail_deprioritize          (const char   *file_uri);

@@ -5,7 +5,9 @@
  */
 
 #include "nautilus-name-cell.h"
+
 #include "nautilus-file-utilities.h"
+#include "nautilus-thumbnails.h"
 
 #define LOADING_TIMEOUT_SECONDS 1
 
@@ -313,10 +315,38 @@ on_item_is_loading_changed (NautilusNameCell *self)
 }
 
 static void
+on_map_changed (GtkWidget *widget,
+                gpointer   user_data)
+{
+    NautilusViewCell *cell = NAUTILUS_VIEW_CELL (widget);
+    gboolean is_mapped = GPOINTER_TO_INT (user_data);
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
+
+    g_return_if_fail (item != NULL);
+
+    NautilusFile *file = nautilus_view_item_get_file (item);
+
+    if (nautilus_file_is_thumbnailing (file))
+    {
+        g_autofree char *uri = nautilus_file_get_uri (file);
+        if (is_mapped)
+        {
+            nautilus_thumbnail_prioritize (uri);
+        }
+        else
+        {
+            nautilus_thumbnail_deprioritize (uri);
+        }
+    }
+}
+
+static void
 nautilus_name_cell_init (NautilusNameCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    g_signal_connect (self, "map", G_CALLBACK (on_map_changed), GINT_TO_POINTER (TRUE));
+    g_signal_connect (self, "unmap", G_CALLBACK (on_map_changed), GINT_TO_POINTER (FALSE));
     g_signal_connect (self, "notify::icon-size",
                       G_CALLBACK (on_icon_size_changed), NULL);
 

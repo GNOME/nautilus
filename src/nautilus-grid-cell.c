@@ -8,6 +8,7 @@
 
 #include "nautilus-global-preferences.h"
 #include "nautilus-tag-manager.h"
+#include "nautilus-thumbnails.h"
 
 struct _NautilusGridCell
 {
@@ -223,6 +224,32 @@ on_starred_changed (NautilusTagManager *tag_manager,
 }
 
 static void
+on_map_changed (GtkWidget *widget,
+                gpointer   user_data)
+{
+    NautilusViewCell *cell = NAUTILUS_VIEW_CELL (widget);
+    gboolean is_mapped = GPOINTER_TO_INT (user_data);
+    g_autoptr (NautilusViewItem) item = nautilus_view_cell_get_item (cell);
+
+    g_return_if_fail (item != NULL);
+
+    NautilusFile *file = nautilus_view_item_get_file (item);
+
+    if (nautilus_file_is_thumbnailing (file))
+    {
+        g_autofree char *uri = nautilus_file_get_uri (file);
+        if (is_mapped)
+        {
+            nautilus_thumbnail_prioritize (uri);
+        }
+        else
+        {
+            nautilus_thumbnail_deprioritize (uri);
+        }
+    }
+}
+
+static void
 nautilus_grid_cell_dispose (GObject *object)
 {
     NautilusGridCell *self = (NautilusGridCell *) object;
@@ -269,6 +296,8 @@ nautilus_grid_cell_init (NautilusGridCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    g_signal_connect (self, "map", G_CALLBACK (on_map_changed), GINT_TO_POINTER (TRUE));
+    g_signal_connect (self, "unmap", G_CALLBACK (on_map_changed), GINT_TO_POINTER (FALSE));
     g_signal_connect (self, "notify::icon-size",
                       G_CALLBACK (on_icon_size_changed), NULL);
 

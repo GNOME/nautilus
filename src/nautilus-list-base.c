@@ -42,9 +42,6 @@ struct _NautilusListBasePrivate
     NautilusViewModel *model;
     NautilusFile *directory_as_file;
 
-    guint prioritize_thumbnailing_handle_id;
-    GtkAdjustment *vadjustment;
-
     gboolean single_click_mode;
     gboolean activate_on_release;
     gboolean deny_background_click;
@@ -912,43 +909,6 @@ get_first_selected_item (NautilusListBase *self)
 }
 
 static guint
-get_first_visible_item (NautilusListBase *self)
-{
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    guint n_items;
-    GtkWidget *view_ui;
-    GtkBorder border = {0};
-
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (priv->model));
-    view_ui = nautilus_list_base_get_view_ui (self);
-    gtk_scrollable_get_border (GTK_SCROLLABLE (view_ui), &border);
-
-    for (guint i = 0; i < n_items; i++)
-    {
-        g_autoptr (NautilusViewItem) item = NULL;
-        GtkWidget *item_ui;
-
-        item = get_view_item (G_LIST_MODEL (priv->model), i);
-        item_ui = nautilus_view_item_get_item_ui (item);
-        if (item_ui != NULL && gtk_widget_get_mapped (item_ui))
-        {
-            GtkWidget *list_item_widget = gtk_widget_get_parent (item_ui);
-            gdouble h = gtk_widget_get_height (list_item_widget);
-            gdouble y;
-
-            gtk_widget_translate_coordinates (list_item_widget, GTK_WIDGET (self),
-                                              0, h, NULL, &y);
-            if (y >= border.top)
-            {
-                return i;
-            }
-        }
-    }
-
-    return G_MAXUINT;
-}
-
-static guint
 get_last_visible_item (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
@@ -1122,7 +1082,6 @@ nautilus_list_base_dispose (GObject *object)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     g_clear_object (&priv->directory_as_file);
-    g_clear_handle_id (&priv->prioritize_thumbnailing_handle_id, g_source_remove);
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->dispose (object);
@@ -1132,89 +1091,6 @@ static void
 nautilus_list_base_finalize (GObject *object)
 {
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->finalize (object);
-}
-
-static gboolean
-prioritize_thumbnailing_on_idle (NautilusListBase *self)
-{
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    gdouble page_size;
-    GtkWidget *first_visible_child;
-    GtkWidget *next_child;
-    guint first_index;
-    guint next_index;
-    gdouble y;
-    guint last_index;
-    g_autoptr (NautilusViewItem) first_item = NULL;
-    NautilusFile *file;
-
-    priv->prioritize_thumbnailing_handle_id = 0;
-
-    page_size = gtk_adjustment_get_page_size (priv->vadjustment);
-    first_index = get_first_visible_item (self);
-    if (first_index == G_MAXUINT)
-    {
-        return G_SOURCE_REMOVE;
-    }
-
-    first_item = get_view_item (G_LIST_MODEL (priv->model), first_index);
-
-    first_visible_child = nautilus_view_item_get_item_ui (first_item);
-
-    for (next_index = first_index + 1; next_index < g_list_model_get_n_items (G_LIST_MODEL (priv->model)); next_index++)
-    {
-        g_autoptr (NautilusViewItem) next_item = NULL;
-
-        next_item = get_view_item (G_LIST_MODEL (priv->model), next_index);
-        next_child = nautilus_view_item_get_item_ui (next_item);
-        if (next_child == NULL)
-        {
-            break;
-        }
-        if (gtk_widget_translate_coordinates (next_child, first_visible_child,
-                                              0, 0, NULL, &y))
-        {
-            if (y > page_size)
-            {
-                break;
-            }
-        }
-    }
-    last_index = next_index - 1;
-
-    /* Do the iteration in reverse to give higher priority to the top */
-    for (guint i = 0; i <= last_index - first_index; i++)
-    {
-        g_autoptr (NautilusViewItem) item = NULL;
-
-        item = get_view_item (G_LIST_MODEL (priv->model), last_index - i);
-        g_return_val_if_fail (item != NULL, G_SOURCE_REMOVE);
-
-        file = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM (item));
-        if (file != NULL && nautilus_file_is_thumbnailing (file))
-        {
-            g_autofree gchar *uri = nautilus_file_get_uri (file);
-            nautilus_thumbnail_prioritize (uri);
-        }
-    }
-
-    return G_SOURCE_REMOVE;
-}
-
-static void
-on_vadjustment_changed (GtkAdjustment *adjustment,
-                        gpointer       user_data)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    guint handle_id;
-
-    /* Schedule on idle to rate limit and to avoid delaying scrolling. */
-    if (priv->prioritize_thumbnailing_handle_id == 0)
-    {
-        handle_id = g_idle_add ((GSourceFunc) prioritize_thumbnailing_on_idle, self);
-        priv->prioritize_thumbnailing_handle_id = handle_id;
-    }
 }
 
 static gboolean
@@ -1347,15 +1223,6 @@ static void
 nautilus_list_base_init (NautilusListBase *self)
 {
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    GtkWidget *content_widget;
-    GtkAdjustment *vadjustment;
-
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
-
-    priv->vadjustment = vadjustment;
-    g_signal_connect (vadjustment, "changed", (GCallback) on_vadjustment_changed, self);
-    g_signal_connect (vadjustment, "value-changed", (GCallback) on_vadjustment_changed, self);
 
     priv->model = NAUTILUS_VIEW_MODEL (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self)));
 

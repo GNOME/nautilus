@@ -211,6 +211,24 @@ nautilus_thumbnail_prioritize (const char *file_uri)
     }
 }
 
+void
+nautilus_thumbnail_deprioritize (const char *file_uri)
+{
+    GList *node;
+
+    if (G_UNLIKELY (thumbnails_to_make_hash == NULL))
+    {
+        return;
+    }
+
+    node = g_hash_table_lookup (thumbnails_to_make_hash, file_uri);
+
+    if (node != NULL)
+    {
+        g_queue_unlink (&thumbnails_to_make, node);
+        g_queue_push_tail_link (&thumbnails_to_make, node);
+    }
+}
 
 /***************************************************************************
  * Thumbnail Thread Functions.
