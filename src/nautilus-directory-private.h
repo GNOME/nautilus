@@ -160,7 +160,7 @@ NautilusFile *     nautilus_directory_get_existing_corresponding_file (NautilusD
 void               nautilus_directory_invalidate_count                (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_file_list_monitored          (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_anyone_monitoring_file_list  (NautilusDirectory         *directory);
-gboolean           nautilus_directory_has_active_request_for_file     (NautilusDirectory         *directory,
+gboolean           nautilus_directory_has_request_for_file            (NautilusDirectory         *directory,
 								       NautilusFile              *file);
 void               nautilus_directory_schedule_dequeue_pending        (NautilusDirectory         *directory);
 void               nautilus_directory_stop_monitoring_file_list       (NautilusDirectory         *directory);
