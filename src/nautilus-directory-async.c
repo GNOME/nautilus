@@ -1882,8 +1882,8 @@ lookup_all_files_monitors (GHashTable *monitor_table)
 }
 
 gboolean
-nautilus_directory_has_active_request_for_file (NautilusDirectory *directory,
-                                                NautilusFile      *file)
+nautilus_directory_has_request_for_file (NautilusDirectory *directory,
+                                         NautilusFile      *file)
 {
     GList *node;
     ReadyCallback *callback;
