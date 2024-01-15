@@ -906,7 +906,7 @@ nautilus_directory_add_file (NautilusDirectory *directory,
         nautilus_file_ref (file);
         add_to_work_queue = TRUE;
     }
-    else if (nautilus_directory_has_active_request_for_file (directory, file))
+    else if (nautilus_directory_has_request_for_file (directory, file))
     {
         /* We're waiting for the file in a call_when_ready. Make sure
          *  we add the file to the work queue so that said waiter won't
