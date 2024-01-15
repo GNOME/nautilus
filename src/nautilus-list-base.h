@@ -9,6 +9,7 @@
 #include "nautilus-files-view.h"
 #include "nautilus-view-info.h"
 #include "nautilus-view-item.h"
+#include "nautilus-view-model.h"
 
 G_BEGIN_DECLS
 
@@ -57,6 +58,8 @@ void nautilus_list_base_set_cursor (NautilusListBase *self,
                                     guint             position,
                                     gboolean          select,
                                     gboolean          scroll_to);
+void    nautilus_list_base_set_model               (NautilusListBase  *self,
+                                                    NautilusViewModel *model);
 void    nautilus_list_base_set_sort_state          (NautilusListBase  *self,
                                                     GVariant          *sort_state);
 void    nautilus_list_base_set_zoom_level          (NautilusListBase  *self,

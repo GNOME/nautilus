@@ -365,12 +365,10 @@ setup_row (GtkSignalListItemFactory *factory,
 static GtkColumnView *
 create_view_ui (NautilusListView *self)
 {
-    NautilusViewModel *model;
     GtkWidget *widget;
     g_autoptr (GtkListItemFactory) row_factory = gtk_signal_list_item_factory_new ();
 
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-    widget = gtk_column_view_new (GTK_SELECTION_MODEL (model));
+    widget = gtk_column_view_new (NULL);
 
     gtk_widget_set_hexpand (widget, TRUE);
 
@@ -535,6 +533,7 @@ static void
 update_sort_directories_first (NautilusListView *self)
 {
     NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
+    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
     if (nautilus_file_is_in_search (directory_as_file))
     {
@@ -546,7 +545,10 @@ update_sort_directories_first (NautilusListView *self)
                                                           NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
     }
 
-    nautilus_view_model_sort (nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self)));
+    if (model != NULL)
+    {
+        nautilus_view_model_sort (model);
+    }
 }
 
 static void
@@ -600,7 +602,10 @@ nautilus_list_view_setup_directory (NautilusListBase  *list_base,
     update_sort_directories_first (self);
 
     model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-    nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
+    if (model != NULL)
+    {
+        nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
+    }
 }
 
 static gint
@@ -619,8 +624,9 @@ static NautilusViewItem *
 real_get_backing_item (NautilusListBase *list_base)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
+    NautilusViewModel *model = nautilus_list_base_get_model (list_base);
 
-    if (!self->expand_as_a_tree)
+    if (model == NULL || !self->expand_as_a_tree)
     {
         return NULL;
     }
@@ -629,7 +635,6 @@ real_get_backing_item (NautilusListBase *list_base)
      * is an expanded folder, in which case we should use that folder directly.
      * When dealing with multiple selections, use the same rules, but only
      * if a common parent exists. */
-    NautilusViewModel *model = nautilus_list_base_get_model (list_base);
     g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (model));
     g_autoptr (GtkTreeListRow) common_parent = NULL;
     GtkBitsetIter iter;
@@ -1053,13 +1058,32 @@ nautilus_list_view_reload (NautilusListView *self)
 }
 
 static void
+on_model_changed (NautilusListView *self)
+{
+    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+
+    if (model != NULL)
+    {
+        g_autoptr (GtkMultiSorter) sorter = gtk_multi_sorter_new ();
+        GtkSorter *column_view_sorter = gtk_column_view_get_sorter (self->view_ui);
+        g_autoptr (GtkCustomSorter) directories_sorter = NULL;
+
+        directories_sorter = gtk_custom_sorter_new (sort_directories_func, &self->directories_first, NULL);
+        gtk_multi_sorter_append (sorter, g_object_ref (GTK_SORTER (directories_sorter)));
+        gtk_multi_sorter_append (sorter, g_object_ref (column_view_sorter));
+        nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
+
+        nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
+    }
+
+    gtk_column_view_set_model (self->view_ui, GTK_SELECTION_MODEL (model));
+}
+
+static void
 nautilus_list_view_init (NautilusListView *self)
 {
-    NautilusViewModel *model;
     GtkWidget *content_widget;
     GtkSorter *column_view_sorter;
-    g_autoptr (GtkCustomSorter) directories_sorter = NULL;
-    g_autoptr (GtkMultiSorter) sorter = NULL;
     GtkEventController *controller;
     GtkShortcut *shortcut;
 
@@ -1088,16 +1112,10 @@ nautilus_list_view_init (NautilusListView *self)
 
     setup_view_columns (self);
 
-    directories_sorter = gtk_custom_sorter_new (sort_directories_func, &self->directories_first, NULL);
-
-    sorter = gtk_multi_sorter_new ();
     column_view_sorter = gtk_column_view_get_sorter (self->view_ui);
-    gtk_multi_sorter_append (sorter, g_object_ref (GTK_SORTER (directories_sorter)));
-    gtk_multi_sorter_append (sorter, g_object_ref (column_view_sorter));
-
     g_signal_connect (column_view_sorter, "changed", G_CALLBACK (on_sorter_changed), self);
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-    nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
+
+    g_signal_connect_swapped (self, "notify::model", G_CALLBACK (on_model_changed), self);
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (adw_bin_get_child (ADW_BIN (content_widget))),
                                    GTK_WIDGET (self->view_ui));
@@ -1127,10 +1145,13 @@ static void
 nautilus_list_view_dispose (GObject *object)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (object);
-    NautilusViewModel *model;
+    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
-    nautilus_view_model_set_sorter (model, NULL);
+    if (model != NULL)
+    {
+        /* We should unset the sorter because it may reference the view. */
+        nautilus_view_model_set_sorter (model, NULL);
+    }
 
     g_clear_object (&self->search_directory);
 
