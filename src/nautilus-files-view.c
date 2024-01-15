@@ -157,6 +157,7 @@ typedef struct
 {
     /* Main components */
     GtkWidget *overlay;
+    NautilusListBase *list_base;
 
     NautilusWindowSlot *slot;
     NautilusDirectory *directory;
@@ -679,7 +680,7 @@ real_begin_loading (NautilusFilesView *self)
     nautilus_files_view_update_context_menus (self);
     nautilus_files_view_update_toolbar_menus (self);
 
-    nautilus_list_base_setup_directory (NAUTILUS_LIST_BASE (self), priv->directory);
+    nautilus_list_base_setup_directory (priv->list_base, priv->directory);
 }
 
 static void
@@ -748,7 +749,7 @@ nautilus_files_view_get_backing_uri (NautilusFilesView *view)
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
-    g_autoptr (NautilusViewItem) item = nautilus_list_base_get_backing_item (NAUTILUS_LIST_BASE (view));
+    g_autoptr (NautilusViewItem) item = nautilus_list_base_get_backing_item (priv->list_base);
 
     if (item != NULL)
     {
@@ -779,7 +780,8 @@ nautilus_files_view_select_all (NautilusFilesView *self)
 static void
 nautilus_files_view_select_first (NautilusFilesView *self)
 {
-    nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), 0, TRUE, TRUE);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    nautilus_list_base_set_cursor (priv->list_base, 0, TRUE, TRUE);
 }
 
 static void
@@ -829,7 +831,7 @@ nautilus_files_view_call_set_selection (NautilusFilesView *self,
          * to be redundact, but is necessary in order to fix the bug reported in
          * https://gitlab.gnome.org/GNOME/nautilus/-/issues/2294 . See also
          * GTK ticket: https://gitlab.gnome.org/GNOME/gtk/-/issues/5485 */
-        nautilus_list_base_set_cursor (NAUTILUS_LIST_BASE (self), first_position, TRUE, TRUE);
+        nautilus_list_base_set_cursor (priv->list_base, first_position, TRUE, TRUE);
     }
 
     gtk_bitset_union (update_set, new_selection_set);
@@ -1112,7 +1114,10 @@ nautilus_files_view_is_searching (NautilusView *view)
 static guint
 nautilus_files_view_get_view_id (NautilusView *view)
 {
-    return nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (view)).view_id;
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (view);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    return nautilus_list_base_get_view_info (priv->list_base).view_id;
 }
 
 static GList *
@@ -1333,10 +1338,11 @@ nautilus_files_view_preview_update (NautilusFilesView *view)
 }
 
 void
-nautilus_files_view_preview_selection_event (NautilusFilesView *view,
+nautilus_files_view_preview_selection_event (NautilusFilesView *self,
                                              GtkDirectionType   direction)
 {
-    nautilus_list_base_preview_selection_event (NAUTILUS_LIST_BASE (view), direction);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    nautilus_list_base_preview_selection_event (priv->list_base, direction);
 }
 
 static void
@@ -2059,7 +2065,8 @@ static gboolean
 get_selected_rectangle (NautilusFilesView *self,
                         GdkRectangle      *rectangle)
 {
-    GtkWidget *item_ui = nautilus_list_base_get_selected_item_ui (NAUTILUS_LIST_BASE (self));
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    GtkWidget *item_ui = nautilus_list_base_get_selected_item_ui (priv->list_base);
     graphene_point_t view_point;
 
     if (item_ui == NULL)
@@ -2668,8 +2675,9 @@ action_visible_columns (GSimpleAction *action,
                         gpointer       user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
 
-    g_return_if_fail (NAUTILUS_IS_LIST_VIEW (self));
+    g_return_if_fail (NAUTILUS_IS_LIST_VIEW (priv->list_base));
 
     nautilus_list_view_present_column_editor (NAUTILUS_LIST_VIEW (self));
 }
@@ -2678,8 +2686,8 @@ static void
 update_zoom_actions_state (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (self));
-    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (priv->list_base);
+    gint zoom_level = nautilus_list_base_get_zoom_level (priv->list_base);
     GAction *action;
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
@@ -2704,9 +2712,10 @@ action_zoom_in (GSimpleAction *action,
                 gpointer       user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    gint zoom_level = nautilus_list_base_get_zoom_level (priv->list_base);
 
-    nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), zoom_level + 1);
+    nautilus_list_base_set_zoom_level (priv->list_base, zoom_level + 1);
     update_zoom_actions_state (self);
 }
 
@@ -2716,9 +2725,10 @@ action_zoom_out (GSimpleAction *action,
                  gpointer       user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    gint zoom_level = nautilus_list_base_get_zoom_level (NAUTILUS_LIST_BASE (self));
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    gint zoom_level = nautilus_list_base_get_zoom_level (priv->list_base);
 
-    nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), zoom_level - 1);
+    nautilus_list_base_set_zoom_level (priv->list_base, zoom_level - 1);
     update_zoom_actions_state (self);
 }
 
@@ -2728,9 +2738,10 @@ action_zoom_standard (GSimpleAction *action,
                       gpointer       user_data)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    NautilusViewInfo view_info = nautilus_list_base_get_view_info (NAUTILUS_LIST_BASE (self));
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    NautilusViewInfo view_info = nautilus_list_base_get_view_info (priv->list_base);
 
-    nautilus_list_base_set_zoom_level (NAUTILUS_LIST_BASE (self), view_info.zoom_level_standard);
+    nautilus_list_base_set_zoom_level (priv->list_base, view_info.zoom_level_standard);
     update_zoom_actions_state (self);
 }
 
@@ -3179,17 +3190,12 @@ static gboolean
 nautilus_files_view_grab_focus (GtkWidget *widget)
 {
     /* focus the child view if it exists */
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-    GtkWidget *child;
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (widget);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
-    view = NAUTILUS_FILES_VIEW (widget);
-    priv = nautilus_files_view_get_instance_private (view);
-    child = adw_bin_get_child (ADW_BIN (priv->content_widget));
-
-    if (child != NULL)
+    if (priv->list_base != NULL)
     {
-        return gtk_widget_grab_focus (GTK_WIDGET (child));
+        return gtk_widget_grab_focus (GTK_WIDGET (priv->list_base));
     }
 
     return GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->grab_focus (widget);
@@ -3315,7 +3321,7 @@ update_extend_search_revealer (NautilusFilesView *self)
 
     if (showing_search_results && !search_is_global)
     {
-        GtkAdjustment *adjustment = nautilus_list_base_get_vadjustment (NAUTILUS_LIST_BASE (self));
+        GtkAdjustment *adjustment = nautilus_list_base_get_vadjustment (priv->list_base);
         gdouble value = gtk_adjustment_get_value (adjustment);
         gdouble page_size = gtk_adjustment_get_page_size (adjustment);
         gdouble upper = gtk_adjustment_get_upper (adjustment);
@@ -3346,41 +3352,43 @@ nautilus_files_view_constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->constructed (object);
 
+    priv->list_base = NAUTILUS_LIST_BASE (self);
+
     /* Model must be set before the sort-state is bound, for a new sorter to be
      * set on the model. */
-    nautilus_list_base_set_model (NAUTILUS_LIST_BASE (self), priv->model);
+    nautilus_list_base_set_model (priv->list_base, priv->model);
     GAction *action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                                   "sort");
     g_object_bind_property (G_SIMPLE_ACTION (action), "state",
-                            NAUTILUS_LIST_BASE (self), "sort-state",
+                            priv->list_base, "sort-state",
                             G_BINDING_BIDIRECTIONAL);
 
-    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "activate-selection",
+    g_signal_connect_object (priv->list_base, "activate-selection",
                              G_CALLBACK (nautilus_files_view_activate_selection), self,
                              G_CONNECT_SWAPPED);
-    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "perform-drop",
+    g_signal_connect_object (priv->list_base, "perform-drop",
                              G_CALLBACK (nautilus_dnd_perform_drop), self,
                              G_CONNECT_SWAPPED);
-    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "popup-background-context-menu",
+    g_signal_connect_object (priv->list_base, "popup-background-context-menu",
                              G_CALLBACK (on_popup_background_context_menu), self,
                              G_CONNECT_DEFAULT);
-    g_signal_connect_object (NAUTILUS_LIST_BASE (self), "popup-selection-context-menu",
+    g_signal_connect_object (priv->list_base, "popup-selection-context-menu",
                              G_CALLBACK (on_popup_selection_context_menu), self,
                              G_CONNECT_DEFAULT);
 
-    g_signal_connect_object (nautilus_list_base_get_vadjustment (NAUTILUS_LIST_BASE (self)),
+    g_signal_connect_object (nautilus_list_base_get_vadjustment (priv->list_base),
                              "changed",
                              G_CALLBACK (update_extend_search_revealer), self, G_CONNECT_SWAPPED);
-    g_signal_connect_object (nautilus_list_base_get_vadjustment (NAUTILUS_LIST_BASE (self)),
+    g_signal_connect_object (nautilus_list_base_get_vadjustment (priv->list_base),
                              "value-changed",
                              G_CALLBACK (update_extend_search_revealer), self, G_CONNECT_SWAPPED);
 
-    if (NAUTILUS_IS_LIST_VIEW (NAUTILUS_LIST_BASE (self)))
+    if (NAUTILUS_IS_LIST_VIEW (priv->list_base))
     {
-        g_signal_connect_object (NAUTILUS_LIST_BASE (self), "load-subdirectory",
+        g_signal_connect_object (priv->list_base, "load-subdirectory",
                                  G_CALLBACK (on_load_subdirectory), self,
                                  G_CONNECT_DEFAULT);
-        g_signal_connect_object (NAUTILUS_LIST_BASE (self), "unload-subdirectory",
+        g_signal_connect_object (priv->list_base, "unload-subdirectory",
                                  G_CALLBACK (on_unload_subdirectory), self,
                                  G_CONNECT_DEFAULT);
     }
@@ -7889,7 +7897,7 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "visible-columns");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 NAUTILUS_IS_LIST_VIEW (view));
+                                 NAUTILUS_IS_LIST_VIEW (priv->list_base));
 
     update_zoom_actions_state (view);
 
