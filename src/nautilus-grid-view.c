@@ -67,6 +67,7 @@ static void
 update_sort_directories_first (NautilusGridView *self)
 {
     NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
+    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
     if (nautilus_file_is_in_search (directory_as_file))
     {
@@ -78,7 +79,10 @@ update_sort_directories_first (NautilusGridView *self)
                                                           NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
     }
 
-    nautilus_view_model_sort (nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self)));
+    if (model != NULL)
+    {
+        nautilus_view_model_sort (model);
+    }
 }
 
 static void
@@ -358,14 +362,16 @@ real_set_sort_state (NautilusListBase *list_base,
 {
     NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
     const gchar *target_name;
-    NautilusViewModel *model;
+    NautilusViewModel *model = nautilus_list_base_get_model (list_base);
     g_autoptr (GtkCustomSorter) sorter = NULL;
+
+    /* Sort state binding should be set after the model is set.*/
+    g_return_if_fail (model != NULL);
 
     g_variant_get (value, "(&sb)", &target_name, &self->reversed);
     self->sort_attribute = g_quark_from_string (target_name);
 
     sorter = gtk_custom_sorter_new (nautilus_grid_view_sort, self, NULL);
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
     nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
 }
 
@@ -481,18 +487,16 @@ setup_cell (GtkSignalListItemFactory *factory,
 static GtkGridView *
 create_view_ui (NautilusGridView *self)
 {
-    NautilusViewModel *model;
     GtkListItemFactory *factory;
     GtkWidget *widget;
-
-    model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
     factory = gtk_signal_list_item_factory_new ();
     g_signal_connect (factory, "setup", G_CALLBACK (setup_cell), self);
     g_signal_connect (factory, "bind", G_CALLBACK (bind_cell), self);
     g_signal_connect (factory, "unbind", G_CALLBACK (unbind_cell), self);
 
-    widget = gtk_grid_view_new (GTK_SELECTION_MODEL (model), factory);
+    widget = gtk_grid_view_new (NULL, factory);
+    g_object_bind_property (self, "model", widget, "model", G_BINDING_SYNC_CREATE);
 
     /* We don't use the built-in child activation feature for clicks because it
      * doesn't fill all our needs nor does it match our expected behavior.

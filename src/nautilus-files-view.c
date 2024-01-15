@@ -3346,9 +3346,9 @@ nautilus_files_view_constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->constructed (object);
 
-    /* Create the binding at .constructed() to be sure that the subclasses are
-     * fully initialized. Once NautilusListBase becomes independent from this
-     * class, this can be moved elsewhere. */
+    /* Model must be set before the sort-state is bound, for a new sorter to be
+     * set on the model. */
+    nautilus_list_base_set_model (NAUTILUS_LIST_BASE (self), priv->model);
     GAction *action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                                   "sort");
     g_object_bind_property (G_SIMPLE_ACTION (action), "state",
@@ -9815,14 +9815,4 @@ nautilus_files_view_new (guint               id,
     }
 
     return view;
-}
-
-/* Temporary helper to be removed in upcoming Merge Requests. Generic pointer to
- * avoid including nautilus-view-model.h in the header */
-gpointer
-nautilus_files_view_get_model (NautilusFilesView *self)
-{
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-
-    return (gpointer) g_object_ref (priv->model);
 }

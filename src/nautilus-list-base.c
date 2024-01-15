@@ -72,6 +72,7 @@ enum
 {
     PROP_0,
     PROP_ICON_SIZE,
+    PROP_MODEL,
     PROP_SORT_STATE,
     N_PROPS
 };
@@ -113,6 +114,13 @@ static GtkWidget *
 nautilus_list_base_get_view_ui (NautilusListBase *self)
 {
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
+}
+
+void
+nautilus_list_base_set_model (NautilusListBase  *self,
+                              NautilusViewModel *model)
+{
+    g_object_set (self, "model", model, NULL);
 }
 
 void
@@ -1012,6 +1020,7 @@ nautilus_list_base_dispose (GObject *object)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     g_clear_object (&priv->directory_as_file);
+    g_clear_object (&priv->model);
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->dispose (object);
@@ -1136,6 +1145,12 @@ nautilus_list_base_get_property (GObject    *object,
         }
         break;
 
+        case PROP_MODEL:
+        {
+            g_value_set_object (value, nautilus_list_base_get_model (self));
+        }
+        break;
+
         case PROP_SORT_STATE:
         {
             g_value_take_variant (value, nautilus_list_base_get_sort_state (self));
@@ -1156,9 +1171,16 @@ nautilus_list_base_set_property (GObject      *object,
                                  GParamSpec   *pspec)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (object);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
     switch (prop_id)
     {
+        case PROP_MODEL:
+        {
+            g_set_object (&priv->model, g_value_get_object (value));
+        }
+        break;
+
         case PROP_SORT_STATE:
         {
             nautilus_list_base_set_sort_state (self, g_value_get_variant (value));
@@ -1196,6 +1218,9 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                                     NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE,
                                                     NAUTILUS_GRID_ICON_SIZE_LARGE,
                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_MODEL] = g_param_spec_object ("model", NULL, NULL,
+                                                  NAUTILUS_TYPE_VIEW_MODEL,
+                                                  G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_SORT_STATE] = g_param_spec_variant ("sort-state", NULL, NULL,
                                                         G_VARIANT_TYPE ("(sb)"),
                                                         NULL,
@@ -1243,8 +1268,6 @@ nautilus_list_base_init (NautilusListBase *self)
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GtkWidget *content_widget;
     GtkEventController *controller;
-
-    priv->model = NAUTILUS_VIEW_MODEL (nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (self)));
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     priv->scrolled_window = gtk_scrolled_window_new ();
