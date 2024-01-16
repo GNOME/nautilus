@@ -574,6 +574,7 @@ location_to_tooltip (GBinding           *binding,
                      NautilusWindowSlot *slot)
 {
     GFile *location = g_value_get_object (input);
+    g_autofree char *escaped_name = NULL;
 
     if (location == NULL)
     {
@@ -586,13 +587,15 @@ location_to_tooltip (GBinding           *binding,
 
     if (g_file_has_uri_scheme (location, SCHEME_SEARCH))
     {
-        g_value_set_string (output, nautilus_window_slot_get_title (slot));
+        escaped_name = g_markup_escape_text (nautilus_window_slot_get_title (slot), -1);
     }
     else
     {
         g_autofree gchar *location_name = g_file_get_parse_name (location);
-        g_value_set_string (output, location_name);
+        escaped_name = g_markup_escape_text (location_name, -1);
     }
+
+    g_value_set_string (output, escaped_name);
 
     return TRUE;
 }
