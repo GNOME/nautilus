@@ -104,6 +104,12 @@ nautilus_list_base_get_sort_state (NautilusListBase *self)
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_sort_state (self);
 }
 
+static GtkWidget *
+nautilus_list_base_get_view_ui (NautilusListBase *self)
+{
+    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
+}
+
 void
 nautilus_list_base_set_sort_state (NautilusListBase *self,
                                    GVariant         *sort_state)
@@ -192,7 +198,7 @@ rubberband_set_state (NautilusListBase *self,
 
     GtkWidget *view;
 
-    view = NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
+    view = nautilus_list_base_get_view_ui (self);
     if (GTK_IS_GRID_VIEW (view))
     {
         gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (view), enabled);
@@ -431,7 +437,7 @@ on_item_drag_prepare (GtkDragSource *source,
     scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
     paintable = get_paintable_for_drag_selection (selection, scale_factor);
 
-    view_ui = NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
+    view_ui = nautilus_list_base_get_view_ui (self);
     if (GTK_IS_GRID_VIEW (view_ui))
     {
         x = x * NAUTILUS_DRAG_SURFACE_ICON_SIZE / nautilus_list_base_get_icon_size (self);
@@ -847,12 +853,6 @@ nautilus_list_base_scroll_to_item (NautilusListBase *self,
                                    guint             position)
 {
     internal_scroll_to (self, position, GTK_LIST_SCROLL_NONE, NULL);
-}
-
-static GtkWidget *
-nautilus_list_base_get_view_ui (NautilusListBase *self)
-{
-    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
 }
 
 typedef struct
