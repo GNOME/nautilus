@@ -19,14 +19,10 @@ stages:
 
 workflow:
   rules:
-    # run merge request pipelines
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    # do not run branch pipelines if corresponding merge requests exist...
-    # (this avoids duplicate pipelines)
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
-      when: never
-    # ...but otherwise run branch pipelines
-    - if: $CI_COMMIT_BRANCH
+    # run merge request pipelines and for main or release branches
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || 
+          $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH ||
+          $CI_COMMIT_BRANCH !~ /^gnome-.*$/
 
 flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
