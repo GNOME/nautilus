@@ -1162,16 +1162,18 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
 }
 
 static GList *
-check_select_old_location_containing_folder (GList *new_selection,
-                                             GFile *location,
-                                             GFile *previous_location)
+check_select_old_location_containing_folder (GList                      *new_selection,
+                                             NautilusLocationChangeType  type,
+                                             GFile                      *location,
+                                             GFile                      *previous_location)
 {
     GFile *from_folder, *parent;
 
-    /* If there is no new selection and the new location is
-     * a (grand)parent of the old location then we automatically
+    /* If there is no new selection or if we are going back and the new location
+     * is a (grand)parent of the old location then we automatically
      * select the folder the previous location was in */
-    if (new_selection == NULL && previous_location != NULL &&
+    if ((new_selection == NULL || type == NAUTILUS_LOCATION_CHANGE_BACK) &&
+        previous_location != NULL &&
         g_file_has_prefix (previous_location, location))
     {
         from_folder = g_object_ref (previous_location);
@@ -1185,6 +1187,7 @@ check_select_old_location_containing_folder (GList *new_selection,
 
         if (parent != NULL)
         {
+            g_clear_list (&new_selection, g_object_unref);
             new_selection = g_list_prepend (NULL, nautilus_file_get (from_folder));
             g_object_unref (parent);
         }
@@ -1301,6 +1304,7 @@ begin_location_change (NautilusWindowSlot         *self,
     self->tried_mount = FALSE;
     self->pending_selection =
         check_select_old_location_containing_folder (nautilus_file_list_copy (new_selection),
+                                                     type,
                                                      location,
                                                      previous_location);
     /* Flush down list. Up/down actions should fetch the list beforehand. */
