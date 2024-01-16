@@ -567,18 +567,17 @@ nautilus_window_create_and_init_slot (NautilusWindow    *window,
     return slot;
 }
 
-static gboolean
-location_to_tooltip (GBinding           *binding,
-                     const GValue       *input,
-                     GValue             *output,
-                     NautilusWindowSlot *slot)
+static void
+on_update_page_tooltip (NautilusWindowSlot *slot,
+                        GParamSpec         *pspec,
+                        AdwTabPage         *page)
 {
-    GFile *location = g_value_get_object (input);
+    GFile *location = nautilus_window_slot_get_location (slot);
     g_autofree char *escaped_name = NULL;
 
     if (location == NULL)
     {
-        return TRUE;
+        return;
     }
 
     /* Set the tooltip on the label's parent (the tab label hbox),
@@ -595,9 +594,7 @@ location_to_tooltip (GBinding           *binding,
         escaped_name = g_markup_escape_text (location_name, -1);
     }
 
-    g_value_set_string (output, escaped_name);
-
-    return TRUE;
+    adw_tab_page_set_tooltip (page, escaped_name);
 }
 
 void
@@ -621,11 +618,7 @@ nautilus_window_initialize_slot (NautilusWindow     *window,
     g_object_bind_property (slot, "title",
                             page, "title",
                             G_BINDING_SYNC_CREATE);
-    g_object_bind_property_full (slot, "location",
-                                 page, "tooltip",
-                                 G_BINDING_SYNC_CREATE,
-                                 (GBindingTransformFunc) location_to_tooltip,
-                                 NULL, slot, NULL);
+    g_signal_connect (slot, "notify::title", G_CALLBACK (on_update_page_tooltip), page);
 }
 
 void
