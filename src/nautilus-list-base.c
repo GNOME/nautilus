@@ -1407,7 +1407,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                                 G_SIGNAL_RUN_LAST,
                                                 0,
                                                 NULL, NULL,
-                                                g_cclosure_marshal_VOID__ENUM,
+                                                g_cclosure_marshal_VOID__FLAGS,
                                                 G_TYPE_NONE, 1,
                                                 NAUTILUS_TYPE_OPEN_FLAGS);
 }
