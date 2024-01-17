@@ -23,13 +23,13 @@
 #include "nautilus-file-utilities.h"
 
 #include "nautilus-application.h"
+#include "nautilus-file.h"
+#include "nautilus-file-operations.h"
 #include "nautilus-filename-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-names.h"
 #include "nautilus-metadata.h"
-#include "nautilus-file.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-filename-utilities.h"
+#include "nautilus-network-directory.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
@@ -1047,6 +1047,7 @@ nautilus_ensure_extension_builtins (void)
      * that they will be registered by the time the extension point
      * is iterating over its extensions.
      */
+    g_type_ensure (NAUTILUS_TYPE_NETWORK_DIRECTORY);
     g_type_ensure (NAUTILUS_TYPE_SEARCH_DIRECTORY);
     g_type_ensure (NAUTILUS_TYPE_STARRED_DIRECTORY);
 }
