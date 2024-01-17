@@ -15,13 +15,15 @@
             <property name="show-title-buttons">False</property>
             <child type="start">
               <object class="GtkButton">
-                <property name="label" translatable="yes">Cancel</property>
+                <property name="label" translatable="yes">C_ancel</property>
+                <property name="use-underline">True</property>
                 <signal name="clicked" handler="gtk_window_close" swapped="yes"/>
               </object>
             </child>
             <child type="end">
               <object class="GtkButton">
-                <property name="label" translatable="yes">Create</property>
+                <property name="label" translatable="yes">_Create</property>
+                <property name="use-underline">True</property>
                 <property name="sensitive" bind-source="validator" bind-property="passed" bind-flags="sync-create"/>
                 <signal name="clicked" handler="nautilus_filename_validator_try_accept" object="validator" swapped="yes"/>
                 <style>
@@ -41,7 +43,7 @@
             <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="name_label">
-                <property name="label" translatable="yes">Folder name</property>
+                <property name="label" translatable="yes">Folder Name</property>
                 <property name="xalign">0</property>
               </object>
             </child>
