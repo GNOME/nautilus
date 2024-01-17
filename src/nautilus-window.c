@@ -1665,6 +1665,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
         nautilus_application_set_accelerator (app, detailed_action, accel);
     }
 
+    nautilus_window_on_undo_changed (nautilus_file_undo_manager_get (), window);
+
 #undef ACCELS
 
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "toggle-sidebar");
