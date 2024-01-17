@@ -12,6 +12,7 @@
 
 #include "nautilus-file-private.h"
 #include "nautilus-scheme.h"
+#include "nautilus-network-directory.h"
 #include "nautilus-starred-directory.h"
 
 struct _NautilusInternalPlaceFile
@@ -79,7 +80,11 @@ nautilus_internal_place_file_constructed (GObject *object)
     file->details->mime_type = g_ref_string_new_intern ("inode/directory");
     file->details->size = 0;
 
-    if (NAUTILUS_IS_STARRED_DIRECTORY (file->details->directory))
+    if (NAUTILUS_IS_NETWORK_DIRECTORY (file->details->directory))
+    {
+        nautilus_file_set_display_name (file, _("Network"), NULL, TRUE);
+    }
+    else if (NAUTILUS_IS_STARRED_DIRECTORY (file->details->directory))
     {
         nautilus_file_set_display_name (file, _("Starred"), NULL, TRUE);
     }
