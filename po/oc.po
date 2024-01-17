@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2024-01-15 11:05+0000\n"
-"PO-Revision-Date: 2024-01-17 20:02+0100\n"
+"PO-Revision-Date: 2024-01-17 20:29+0100\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -1849,9 +1849,7 @@ msgstr "Supression de « %s »"
 
 #. Translators: This action removes file(s) from Recent
 #: src/nautilus-file-operations.c:1301
-#, fuzzy, c-format
-#| msgid "Deleted %'d file"
-#| msgid_plural "Deleted %'d files"
+#, c-format
 msgid "Cleared %'d file"
 msgid_plural "Cleared %'d files"
 msgstr[0] "Supression de %'d fichièr"
@@ -1866,9 +1864,7 @@ msgstr[1] "Supression de %'d fichièrs"
 
 #. Translators: This action removes file(s) from Recent
 #: src/nautilus-file-operations.c:1317
-#, fuzzy, c-format
-#| msgid "Deleting %'d file"
-#| msgid_plural "Deleting %'d files"
+#, c-format
 msgid "Clearing %'d file"
 msgid_plural "Clearing %'d files"
 msgstr[0] "Supression de %'d fichièr"
@@ -3366,10 +3362,9 @@ msgstr "Copiar « %zu »"
 
 #. Translators: File name for new symlink. %s is target's name, %zu is number of symlink.
 #: src/nautilus-filename-utilities.c:259
-#, fuzzy, c-format
-#| msgid "Link to %s"
+#, c-format
 msgid "Link to %s (%zu)"
-msgstr "Ligam cap a %s"
+msgstr "Ligam cap a %s (%zu)"
 
 #: src/nautilus-location-banner.c:100
 #, fuzzy
@@ -3777,10 +3772,9 @@ msgstr "Pas cap"
 
 #. Translators: Both %s will be replaced with formatted timestamps.
 #: src/nautilus-preferences-window.c:252
-#, fuzzy, c-format
-#| msgid "Rename “%s” as “%s”"
+#, c-format
 msgid "Examples: “%s”, “%s”"
-msgstr "Renomenar « %s » en « %s »"
+msgstr "Exemple : « %s », « %s »"
 
 #: src/nautilus-preferences-window.c:343
 msgid "Single click"
@@ -3913,7 +3907,7 @@ msgstr "Accès solament"
 
 #: src/nautilus-properties-window.c:636
 msgid "Custom icon removed"
-msgstr ""
+msgstr "Icòna personalizada suprimida"
 
 #: src/nautilus-properties-window.c:637 src/nautilus-window.c:1268
 #: src/resources/ui/nautilus-window.ui:32
@@ -5149,16 +5143,12 @@ msgid "Properties"
 msgstr "Proprietats"
 
 #: src/resources/ui/nautilus-properties-window.ui:97
-#, fuzzy
-#| msgid "Select Custom Icon"
 msgid "Set Custom Icon"
-msgstr "Seleccionatz una icòna personalizada"
+msgstr "Seleccionar una icòna personalizada"
 
 #: src/resources/ui/nautilus-properties-window.ui:118
-#, fuzzy
-#| msgid "Select Custom Icon"
 msgid "Remove Custom Icon"
-msgstr "Seleccionatz una icòna personalizada"
+msgstr "Suprimir l'icòna personalizada"
 
 #: src/resources/ui/nautilus-properties-window.ui:165
 msgid "Unknown Filesystem"
@@ -5280,10 +5270,8 @@ msgid "When"
 msgstr "Quand"
 
 #: src/resources/ui/nautilus-search-popover.ui:44
-#, fuzzy
-#| msgid "Select Dates…"
 msgid "Select _Dates…"
-msgstr "Seleccionatz las datas…"
+msgstr "Seleccionar las _datas…"
 
 #: src/resources/ui/nautilus-search-popover.ui:55
 msgid "Clear Date Filter"
