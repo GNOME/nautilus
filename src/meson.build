@@ -172,6 +172,8 @@ libnautilus_sources = [
   'nautilus-filename-validator.h',
   'nautilus-rename-file-popover.c',
   'nautilus-rename-file-popover.h',
+  'nautilus-network-directory.c',
+  'nautilus-network-directory.h',
   'nautilus-new-folder-dialog.c',
   'nautilus-new-folder-dialog.h',
   'nautilus-compress-dialog.c',

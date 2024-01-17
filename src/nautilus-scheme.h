@@ -11,6 +11,7 @@
 #define SCHEME_SEARCH "x-nautilus-search"
 #define SCHEME_OTHER_LOCATIONS "other-locations"
 #define SCHEME_NETWORK "network"
+#define SCHEME_NETWORK_VIEW "x-network-view"
 #define SCHEME_RECENT "recent"
 #define SCHEME_STARRED "starred"
 #define SCHEME_TRASH "trash"
