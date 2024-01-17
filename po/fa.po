@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-01-11 10:44+0000\n"
-"PO-Revision-Date: 2024-01-12 15:19+0330\n"
+"POT-Creation-Date: 2024-01-17 16:57+0000\n"
+"PO-Revision-Date: 2024-01-18 02:35+0330\n"
 "Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
 "Language-Team: Persian <>\n"
 "Language: fa\n"
@@ -33,7 +33,7 @@ msgstr "اجرای نرم‌افزار"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:101
-#: src/nautilus-window.c:2496
+#: src/nautilus-window.c:2492
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:49
 #: src/resources/ui/nautilus-window.ui:126
 msgid "Files"
@@ -80,13 +80,13 @@ msgstr "نمای سیاهه‌ای"
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-query.c:542
 #: src/nautilus-search-directory-file.c:177 src/nautilus-search-directory-file.c:231
 #: src/nautilus-search-directory-file.c:271
-#: src/resources/ui/nautilus-search-popover.ui:276
+#: src/resources/ui/nautilus-search-popover.ui:278
 #: src/resources/ui/nautilus-toolbar.ui:51
 msgid "Search"
 msgstr "جست‌وجو"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-bookmark.c:106
-#: src/nautilus-file.c:4227 src/nautilus-file-utilities.c:75
+#: src/nautilus-file.c:4238 src/nautilus-file-utilities.c:75
 #: src/nautilus-pathbar.c:386 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1435
 msgid "Other Locations"
@@ -370,6 +370,20 @@ msgstr ""
 "داد. این کار، وضعیت فعّال بودن پیش‌گزیده را تغییر داده که باز هم می‌تواند در بازشدنیِ "
 "جست‌وجو پایمال شود"
 
+#: data/org.gnome.nautilus.gschema.xml:193
+msgid "How to display file timestamps in the views"
+msgstr "چگونگی نمایش برچسب‌های زمانی در نماها"
+
+#: data/org.gnome.nautilus.gschema.xml:194
+msgid ""
+"If set to 'simple', Files will show Today and Yesterday with time, otherwise the "
+"exact date without time. If set to 'detailed', it will always show the exact date "
+"and time."
+msgstr ""
+"اگر روی simple تنظیم شده باشد پرونده‌ها امروز و دیروز را با زمان و در غیر این صورت "
+"با تاریخ دقیق بدون زمان نشان خواهد داد. اگر روی detailed تنظیم شده باشد، همواره "
+"زمان و تاریخ دقیق را نشان خواهد داد."
+
 #: data/org.gnome.nautilus.gschema.xml:201
 msgid "Default format for compressing files"
 msgstr "قالب پیش‌گزیده برای فشرده کردن پرونده‌ها"
@@ -439,8 +453,8 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "می‌توانید با کلیک کردن روی انصراف، این عملیات را متوقّف کنید."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-operations.c:273 src/nautilus-mime-actions.c:607
-#: src/nautilus-mime-actions.c:1016 src/nautilus-mime-actions.c:1327
+#: src/nautilus-file-operations.c:273 src/nautilus-mime-actions.c:609
+#: src/nautilus-mime-actions.c:1018 src/nautilus-mime-actions.c:1329
 #: src/nautilus-search-popover.c:648 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
@@ -450,21 +464,21 @@ msgstr "می‌توانید با کلیک کردن روی انصراف، این 
 msgid "_Cancel"
 msgstr "_لغو"
 
-#: extensions/audio-video-properties/totem-properties-view.c:84
+#: extensions/audio-video-properties/totem-properties-view.c:85
 #, c-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%Id ساعت"
 msgstr[1] "%Id ساعت"
 
-#: extensions/audio-video-properties/totem-properties-view.c:86
+#: extensions/audio-video-properties/totem-properties-view.c:87
 #, c-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%Id دقیقه"
 msgstr[1] "%Id دقیقه"
 
-#: extensions/audio-video-properties/totem-properties-view.c:89
+#: extensions/audio-video-properties/totem-properties-view.c:90
 #, c-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -472,137 +486,137 @@ msgstr[0] "%Id ثانیه"
 msgstr[1] "%Id ثانیه"
 
 #. 5 hours 2 minutes 12 seconds
-#: extensions/audio-video-properties/totem-properties-view.c:95
+#: extensions/audio-video-properties/totem-properties-view.c:96
 #, c-format
 msgctxt "time"
 msgid "%s %s %s"
 msgstr "%s و %s و %s"
 
 #. 2 minutes 12 seconds
-#: extensions/audio-video-properties/totem-properties-view.c:98
+#: extensions/audio-video-properties/totem-properties-view.c:101
 #, c-format
 msgctxt "time"
 msgid "%s %s"
 msgstr "%s و %s"
 
 #. 0 seconds
-#: extensions/audio-video-properties/totem-properties-view.c:104
+#: extensions/audio-video-properties/totem-properties-view.c:111
 msgid "0 seconds"
 msgstr "۰ ثانیه"
 
-#: extensions/audio-video-properties/totem-properties-view.c:122
+#: extensions/audio-video-properties/totem-properties-view.c:131
 #: extensions/image-properties/nautilus-image-properties-model.c:238
 #: src/nautilus-batch-rename-dialog.h:163
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:53
 msgid "Title"
 msgstr "عنوان"
 
-#: extensions/audio-video-properties/totem-properties-view.c:123
+#: extensions/audio-video-properties/totem-properties-view.c:132
 msgid "Artist"
 msgstr "هنرمند"
 
-#: extensions/audio-video-properties/totem-properties-view.c:124
+#: extensions/audio-video-properties/totem-properties-view.c:133
 msgid "Album"
 msgstr "آلبوم"
 
-#: extensions/audio-video-properties/totem-properties-view.c:145
+#: extensions/audio-video-properties/totem-properties-view.c:156
 msgid "Comment"
 msgstr "نظر"
 
-#: extensions/audio-video-properties/totem-properties-view.c:155
-#: extensions/audio-video-properties/totem-properties-view.c:162
+#: extensions/audio-video-properties/totem-properties-view.c:167
+#: extensions/audio-video-properties/totem-properties-view.c:176
 msgid "Year"
 msgstr "سال"
 
-#: extensions/audio-video-properties/totem-properties-view.c:204
+#: extensions/audio-video-properties/totem-properties-view.c:223
 #, c-format
 msgid "%d kbps"
 msgstr "%Id کیلوبیت بر ثانیه"
 
-#: extensions/audio-video-properties/totem-properties-view.c:220
+#: extensions/audio-video-properties/totem-properties-view.c:239
 #, c-format
 msgid "%d × %d"
 msgstr "%Id × %Id"
 
-#: extensions/audio-video-properties/totem-properties-view.c:221
+#: extensions/audio-video-properties/totem-properties-view.c:240
 msgid "Dimensions"
 msgstr "ابعاد"
 
-#: extensions/audio-video-properties/totem-properties-view.c:224
+#: extensions/audio-video-properties/totem-properties-view.c:243
 msgid "Video Codec"
 msgstr "رمزینهٔ ویدیویی"
 
-#: extensions/audio-video-properties/totem-properties-view.c:225
+#: extensions/audio-video-properties/totem-properties-view.c:244
 msgid "Video Bit Rate"
 msgstr "نرخ بیت ویدیو"
 
-#: extensions/audio-video-properties/totem-properties-view.c:236
+#: extensions/audio-video-properties/totem-properties-view.c:257
 #, c-format
 msgid "%0.2f frame per second"
 msgid_plural "%0.2f frames per second"
 msgstr[0] "%I0.2f قاب در ثانیه"
 msgstr[1] "%I0.2f قاب در ثانیه"
 
-#: extensions/audio-video-properties/totem-properties-view.c:240
+#: extensions/audio-video-properties/totem-properties-view.c:261
 msgid "Frame Rate"
 msgstr "نرخ قاب"
 
-#: extensions/audio-video-properties/totem-properties-view.c:251
+#: extensions/audio-video-properties/totem-properties-view.c:272
 msgid "Audio Codec"
 msgstr "رمزینهٔ صوتی"
 
-#: extensions/audio-video-properties/totem-properties-view.c:253
+#: extensions/audio-video-properties/totem-properties-view.c:274
 msgid "Audio Bit Rate"
 msgstr "نرخ بیت صدا"
 
-#: extensions/audio-video-properties/totem-properties-view.c:265
+#: extensions/audio-video-properties/totem-properties-view.c:289
 msgid "Sample Rate"
 msgstr "نرخ نمونه‌"
 
-#: extensions/audio-video-properties/totem-properties-view.c:274
+#: extensions/audio-video-properties/totem-properties-view.c:300
 msgid "Surround"
 msgstr "فراگیر"
 
-#: extensions/audio-video-properties/totem-properties-view.c:276
+#: extensions/audio-video-properties/totem-properties-view.c:304
 msgid "Mono"
 msgstr "واحد"
 
-#: extensions/audio-video-properties/totem-properties-view.c:278
+#: extensions/audio-video-properties/totem-properties-view.c:308
 msgid "Stereo"
 msgstr "استریو"
 
-#: extensions/audio-video-properties/totem-properties-view.c:282
+#: extensions/audio-video-properties/totem-properties-view.c:314
 msgid "Channels"
 msgstr "کانال‌ها"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: extensions/audio-video-properties/totem-properties-view.c:305
+#: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1542
+#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1547
 msgid "Oops! Something went wrong."
 msgstr "اوه! یک جایی یک اشتباهی پیش آمد."
 
-#: extensions/audio-video-properties/totem-properties-view.c:315
+#: extensions/audio-video-properties/totem-properties-view.c:349
 msgid "Audio and Video Properties"
 msgstr "ویژگی‌های صوت و تصویر"
 
-#: extensions/audio-video-properties/totem-properties-view.c:317
+#: extensions/audio-video-properties/totem-properties-view.c:353
 msgid "Audio Properties"
 msgstr "ویژگی‌های صدا"
 
-#: extensions/audio-video-properties/totem-properties-view.c:319
+#: extensions/audio-video-properties/totem-properties-view.c:357
 msgid "Video Properties"
 msgstr "ویژگی‌های ویدیو"
 
-#: extensions/audio-video-properties/totem-properties-view.c:326
+#: extensions/audio-video-properties/totem-properties-view.c:365
 msgid "Duration"
 msgstr "طول"
 
-#: extensions/audio-video-properties/totem-properties-view.c:330
+#: extensions/audio-video-properties/totem-properties-view.c:370
 msgid "Container"
 msgstr "بارگنج"
 
-#: extensions/audio-video-properties/totem-properties-view.c:356
+#: extensions/audio-video-properties/totem-properties-view.c:400
 msgid "Audio/Video Properties"
 msgstr "ویژگی‌های صوت و تصویر"
 
@@ -764,7 +778,7 @@ msgstr ""
 "%s"
 
 #: src/nautilus-application.c:719 src/nautilus-autorun-software.c:162
-#: src/nautilus-mime-actions.c:1186 src/nautilus-ui-utilities.c:360
+#: src/nautilus-mime-actions.c:1188 src/nautilus-ui-utilities.c:360
 msgid "_OK"
 msgstr "_تأیید"
 
@@ -1059,7 +1073,6 @@ msgstr "تاریخی که از پرونده استفاده شده است."
 
 #: src/nautilus-column-utilities.c:115
 #: src/resources/ui/nautilus-properties-window.ui:630
-#: src/resources/ui/nautilus-search-popover.ui:178
 msgid "Created"
 msgstr "ایجاد شده"
 
@@ -1256,7 +1269,7 @@ msgid "_Link Here"
 msgstr "_پیوند به این‌جا"
 
 #: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2517
-#: src/nautilus-mime-actions.c:618 src/nautilus-toolbar.c:155
+#: src/nautilus-mime-actions.c:620 src/nautilus-toolbar.c:155
 #: src/resources/ui/nautilus-compress-dialog.ui:20
 #: src/resources/ui/nautilus-new-folder-dialog.ui:18
 msgid "Cancel"
@@ -1389,99 +1402,99 @@ msgstr "تغییر نام مورد ممکن نیست."
 msgid "Renaming “%s” to “%s”."
 msgstr "در حال تغییر نام «⁨%s⁩»‌ به «⁨%s⁩»."
 
-#: src/nautilus-file.c:1272 src/nautilus-vfs-file.c:345
+#: src/nautilus-file.c:1283 src/nautilus-vfs-file.c:345
 msgid "This file cannot be mounted"
 msgstr "این پرونده سوار نمی‌شود"
 
-#: src/nautilus-file.c:1326
+#: src/nautilus-file.c:1337
 msgid "This file cannot be unmounted"
 msgstr "این پرونده پیاده نمی‌شود"
 
-#: src/nautilus-file.c:1373
+#: src/nautilus-file.c:1384
 msgid "This file cannot be ejected"
 msgstr "پرونده بیرون داده نمی‌شود"
 
-#: src/nautilus-file.c:1418 src/nautilus-vfs-file.c:536
+#: src/nautilus-file.c:1429 src/nautilus-vfs-file.c:536
 msgid "This file cannot be started"
 msgstr "پرونده آغاز نمی‌شود"
 
-#: src/nautilus-file.c:1477 src/nautilus-file.c:1517
+#: src/nautilus-file.c:1488 src/nautilus-file.c:1528
 msgid "This file cannot be stopped"
 msgstr "پرونده متوقّف نمی‌شود"
 
-#: src/nautilus-file.c:1870
+#: src/nautilus-file.c:1881
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "استفاده از ممیز در نام پرونده‌ها مجاز نیست"
 
-#: src/nautilus-file.c:1913
+#: src/nautilus-file.c:1924
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "نام پرونده‌های سطح بالا را نمی‌توان تغییر داد"
 
-#: src/nautilus-file.c:1993
+#: src/nautilus-file.c:2004
 #, c-format
 msgid "File not found"
 msgstr "پرونده پیدا نشد"
 
-#: src/nautilus-file.c:4231 src/nautilus-file-utilities.c:79
+#: src/nautilus-file.c:4242 src/nautilus-file-utilities.c:79
 #: src/nautilus-pathbar.c:391 src/gtk/nautilusgtkplacessidebar.c:995
 msgid "Starred"
 msgstr "ستاره‌دار"
 
-#: src/nautilus-file.c:5403
+#: src/nautilus-file.c:5414
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "اجازهٔ تنظیم اجازه‌ها را ندارید"
 
-#: src/nautilus-file.c:5747
+#: src/nautilus-file.c:5758
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "اجازهٔ تنظیم مالک را ندارید"
 
-#: src/nautilus-file.c:5766
+#: src/nautilus-file.c:5777
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "مالک تعیین شده «%s» وجود ندارد"
 
-#: src/nautilus-file.c:6056
+#: src/nautilus-file.c:6067
 #, c-format
 msgid "Not allowed to set group"
 msgstr "اجازه تنظیم کردن گروه را ندارید"
 
-#: src/nautilus-file.c:6075
+#: src/nautilus-file.c:6086
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "گروه تعیین شده «%s» وجود ندارد"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6215
+#: src/nautilus-file.c:6226
 #, c-format
 msgid "%s (You)"
 msgstr "%s (شما)"
 
-#: src/nautilus-file.c:6247
+#: src/nautilus-file.c:6258
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%I'u مورد"
 msgstr[1] "%I'u مورد"
 
-#: src/nautilus-file.c:6248
+#: src/nautilus-file.c:6259
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%I'u شاخه"
 msgstr[1] "%I'u شاخه"
 
-#: src/nautilus-file.c:6249
+#: src/nautilus-file.c:6260
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%I'u پرونده"
 msgstr[1] "%I'u پرونده"
 
-#: src/nautilus-file.c:6333 src/nautilus-properties-window.c:2089
+#: src/nautilus-file.c:6344 src/nautilus-properties-window.c:2089
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1489,93 +1502,93 @@ msgstr[0] "%s بایت"
 msgstr[1] "%s بایت"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6737
+#: src/nautilus-file.c:6748
 msgid "? bytes"
 msgstr "؟ بایت"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6749
+#: src/nautilus-file.c:6760
 msgid "? items"
 msgstr "؟ مورد"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6758
+#: src/nautilus-file.c:6769
 msgid "Unknown type"
 msgstr "گونهٔ ناشناخته"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6789
+#: src/nautilus-file.c:6800
 msgid "Unknown"
 msgstr "نامعلوم"
 
-#: src/nautilus-file.c:6826 src/nautilus-file.c:6834 src/nautilus-file.c:6893
+#: src/nautilus-file.c:6837 src/nautilus-file.c:6845 src/nautilus-file.c:6904
 msgid "Program"
 msgstr "برنامه"
 
-#: src/nautilus-file.c:6827
+#: src/nautilus-file.c:6838
 msgid "Audio"
 msgstr "صوتی"
 
-#: src/nautilus-file.c:6828
+#: src/nautilus-file.c:6839
 msgid "Font"
 msgstr "قلم"
 
-#: src/nautilus-file.c:6829
+#: src/nautilus-file.c:6840
 msgid "Image"
 msgstr "تصویر"
 
-#: src/nautilus-file.c:6830
+#: src/nautilus-file.c:6841
 msgid "Archive"
 msgstr "بایگانی"
 
-#: src/nautilus-file.c:6831
+#: src/nautilus-file.c:6842
 msgid "Markup"
 msgstr "نشانه‌گذاری"
 
-#: src/nautilus-file.c:6832 src/nautilus-file.c:6833
+#: src/nautilus-file.c:6843 src/nautilus-file.c:6844
 msgid "Text"
 msgstr "متن"
 
-#: src/nautilus-file.c:6835 src/nautilus-mime-actions.c:242
+#: src/nautilus-file.c:6846 src/nautilus-mime-actions.c:244
 msgid "Video"
 msgstr "ویدیو"
 
-#: src/nautilus-file.c:6836
+#: src/nautilus-file.c:6847
 msgid "Contacts"
 msgstr "آشنایان"
 
-#: src/nautilus-file.c:6837
+#: src/nautilus-file.c:6848
 msgid "Calendar"
 msgstr "تقویم"
 
-#: src/nautilus-file.c:6838
+#: src/nautilus-file.c:6849
 msgid "Document"
 msgstr "سند"
 
-#: src/nautilus-file.c:6839 src/nautilus-mime-actions.c:203
+#: src/nautilus-file.c:6850 src/nautilus-mime-actions.c:205
 msgid "Presentation"
 msgstr "ارائه‌"
 
-#: src/nautilus-file.c:6840 src/nautilus-mime-actions.c:215
+#: src/nautilus-file.c:6851 src/nautilus-mime-actions.c:217
 msgid "Spreadsheet"
 msgstr "صفحهٔ گسترده"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6873
+#: src/nautilus-file.c:6884
 msgid "Other"
 msgstr "دیگر"
 
-#: src/nautilus-file.c:6895
+#: src/nautilus-file.c:6906
 msgid "Binary"
 msgstr "دودویی"
 
-#: src/nautilus-file.c:6900
+#: src/nautilus-file.c:6911
 msgid "Folder"
 msgstr "شاخه‌"
 
-#: src/nautilus-file.c:6958
+#: src/nautilus-file.c:6969
 msgid "Link"
 msgstr "پیوند"
 
@@ -1584,17 +1597,17 @@ msgstr "پیوند"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:6964 src/nautilus-filename-utilities.c:254
+#: src/nautilus-file.c:6975 src/nautilus-filename-utilities.c:254
 #, c-format
 msgid "Link to %s"
 msgstr "پیوند به %s"
 
-#: src/nautilus-file.c:6980 src/nautilus-file.c:6996 src/nautilus-file.c:7012
+#: src/nautilus-file.c:6991 src/nautilus-file.c:7007 src/nautilus-file.c:7023
 msgid "Link (broken)"
 msgstr "پیوند (خراب)"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7173
+#: src/nautilus-file.c:7184
 #, c-format
 msgid "%s Free"
 msgstr "%s آزاد"
@@ -1959,7 +1972,7 @@ msgstr "زباله‌دان را خالی _نکن"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2659 src/nautilus-files-view.c:6750
+#: src/nautilus-file-operations.c:2659 src/nautilus-files-view.c:6695
 #: src/gtk/nautilusgtkplacessidebar.c:2048
 #, c-format
 msgid "Unable to access “%s”"
@@ -2552,40 +2565,40 @@ msgstr[1] "فشرده‌سازی %'Id پرونده در «⁨%s⁩» انجام 
 msgid "Compressing Files"
 msgstr "فشرده کردن پرونده‌ها"
 
-#: src/nautilus-files-view.c:395
+#: src/nautilus-files-view.c:392
 msgid "Searching…"
 msgstr "در حال جست‌وجو…"
 
-#: src/nautilus-files-view.c:395 src/nautilus-window-slot.c:904
+#: src/nautilus-files-view.c:392 src/nautilus-window-slot.c:903
 msgid "Loading…"
 msgstr "بار کردن…"
 
-#: src/nautilus-files-view.c:1994
+#: src/nautilus-files-view.c:1886
 msgid "Examples: "
 msgstr "مثال‌ها: "
 
-#: src/nautilus-files-view.c:2980
+#: src/nautilus-files-view.c:2917
 msgid "Could not paste files"
 msgstr "نمی‌توان پرونده‌ها را جای‌گذاری کرد"
 
-#: src/nautilus-files-view.c:2981
+#: src/nautilus-files-view.c:2918
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "دسترسی‌ها اجازهٔ جای‌گذاری در این شاخه را نمی‌دهند"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-files-view.c:3500 src/nautilus-files-view.c:3547
+#: src/nautilus-files-view.c:3458 src/nautilus-files-view.c:3505
 #, c-format
 msgid "“%s” selected"
 msgstr "مورد «⁨%s⁩» گزیده شد"
 
-#: src/nautilus-files-view.c:3504
+#: src/nautilus-files-view.c:3462
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'Id شاخه گزیده شد"
 msgstr[1] "%'Id شاخه گزیده شد"
 
-#: src/nautilus-files-view.c:3518
+#: src/nautilus-files-view.c:3476
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2593,14 +2606,14 @@ msgstr[0] "(شامل %'Id مورد)"
 msgstr[1] "(شامل %'Id مورد)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3533
+#: src/nautilus-files-view.c:3491
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(شامل مجموعاً %'Id مورد)"
 msgstr[1] "(شامل مجموعاً %'Id مورد)"
 
-#: src/nautilus-files-view.c:3552
+#: src/nautilus-files-view.c:3510
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2608,7 +2621,7 @@ msgstr[0] "%'Id مورد گزیده شد"
 msgstr[1] "%'Id مورد گزیده شد"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3561
+#: src/nautilus-files-view.c:3519
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2619,7 +2632,7 @@ msgstr[1] "%'Id مورد دیگر گزیده شد"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3576
+#: src/nautilus-files-view.c:3534
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2631,88 +2644,88 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3626
+#: src/nautilus-files-view.c:3584
 #, c-format
 msgid "%s, %s"
 msgstr "%s، %s"
 
-#: src/nautilus-files-view.c:3741 src/resources/ui/nautilus-files-view.ui:43
+#: src/nautilus-files-view.c:3699 src/resources/ui/nautilus-files-view.ui:43
 msgid "Search _Everywhere"
 msgstr "جست‌وجو در _هرجا"
 
-#: src/nautilus-files-view.c:3782 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3740 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "هیچ نتیجه‌ای پیدا نشد"
 
-#: src/nautilus-files-view.c:3785
+#: src/nautilus-files-view.c:3743
 msgid "No matches found in indexed locations"
 msgstr "هیچ تطبیقی در مکان‌های شاخص گذاری شده پیدا نشد"
 
-#: src/nautilus-files-view.c:3790
+#: src/nautilus-files-view.c:3748
 msgid "Trash is Empty"
 msgstr "زباله‌دان خالی است"
 
-#: src/nautilus-files-view.c:3796
+#: src/nautilus-files-view.c:3754
 msgid "No Starred Files"
 msgstr "بدون پرونده‌ٔ ستاره‌دار"
 
-#: src/nautilus-files-view.c:3802
+#: src/nautilus-files-view.c:3760
 msgid "No Recent Files"
 msgstr "بدون پروندهٔ اخیر"
 
-#: src/nautilus-files-view.c:3808
+#: src/nautilus-files-view.c:3766
 msgid "Folder is Empty"
 msgstr "شاخه‌ خالی است"
 
-#: src/nautilus-files-view.c:5975
+#: src/nautilus-files-view.c:5921
 msgid "Select Move Destination"
 msgstr "مقصد جابه‌جایی را برگزینید"
 
-#: src/nautilus-files-view.c:5979
+#: src/nautilus-files-view.c:5925
 msgid "Select Copy Destination"
 msgstr "مقصد رونوشت را برگزینید"
 
-#: src/nautilus-files-view.c:5985 src/nautilus-files-view.c:6390
+#: src/nautilus-files-view.c:5931 src/nautilus-files-view.c:6335
 #: src/nautilus-properties-window.c:4063
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "_گزینش"
 
-#: src/nautilus-files-view.c:6389
+#: src/nautilus-files-view.c:6334
 msgid "Select Extract Destination"
 msgstr "مقصد استخراج را برگزینید"
 
-#: src/nautilus-files-view.c:6478
+#: src/nautilus-files-view.c:6423
 msgid "Error sending email."
 msgstr "خطا در فرستادن رایانامه."
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6776
+#: src/nautilus-files-view.c:6721
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "ناتوان در برداشتن «⁨%s⁩»"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6802 src/gtk/nautilusgtkplacessidebar.c:2695
+#: src/nautilus-files-view.c:6747 src/gtk/nautilusgtkplacessidebar.c:2695
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "ناتوان در بیرون دادن «⁨%s⁩»"
 
-#: src/nautilus-files-view.c:6826
+#: src/nautilus-files-view.c:6771
 msgid "Unable to stop drive"
 msgstr "ناتوان در متوقّف کردن گرداننده"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6937 src/gtk/nautilusgtkplacessidebar.c:2010
+#: src/nautilus-files-view.c:6882 src/gtk/nautilusgtkplacessidebar.c:2010
 #: src/gtk/nautilusgtkplacessidebar.c:2921
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "ناتوان در آغاز «⁨%s⁩»"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:7866
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2720,64 +2733,64 @@ msgstr[0] "شاخهٔ جدید با گزیده‌ها (%'Id مورد)"
 msgstr[1] "شاخهٔ جدید با گزیده‌ها (%'Id مورد)"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-files-view.c:7998
+#: src/nautilus-files-view.c:7921
 #, c-format
 msgid "Open With %s"
 msgstr "گشودن با ⁨%s⁩"
 
-#: src/nautilus-files-view.c:8009
+#: src/nautilus-files-view.c:7932
 msgid "Run"
 msgstr "اجرا"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:7937
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "استخراج"
 
-#: src/nautilus-files-view.c:8015
+#: src/nautilus-files-view.c:7938
 msgid "Extract to…"
 msgstr "استخراج به…"
 
-#: src/nautilus-files-view.c:8019
+#: src/nautilus-files-view.c:7942
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "گشودن"
 
-#: src/nautilus-files-view.c:8097
+#: src/nautilus-files-view.c:8020
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3351
 msgid "_Start"
 msgstr "_آغاز"
 
-#: src/nautilus-files-view.c:8103 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8026 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "_اتّصال"
 
-#: src/nautilus-files-view.c:8109
+#: src/nautilus-files-view.c:8032
 msgid "_Start Multi-disk Drive"
 msgstr "_آغاز گردانندهٔ چند دیسکی"
 
-#: src/nautilus-files-view.c:8115
+#: src/nautilus-files-view.c:8038
 msgid "U_nlock Drive"
 msgstr "_قفل‌گشایی گرداننده"
 
-#: src/nautilus-files-view.c:8133
+#: src/nautilus-files-view.c:8056
 msgid "Stop Drive"
 msgstr "متوقّف کردن گرداننده"
 
-#: src/nautilus-files-view.c:8139 src/gtk/nautilusgtkplacessidebar.c:3368
+#: src/nautilus-files-view.c:8062 src/gtk/nautilusgtkplacessidebar.c:3368
 msgid "_Safely Remove Drive"
 msgstr "برداشتن _امن گرداننده"
 
-#: src/nautilus-files-view.c:8145 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8068 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "_قطع ارتباط"
 
-#: src/nautilus-files-view.c:8151
+#: src/nautilus-files-view.c:8074
 msgid "_Stop Multi-disk Drive"
 msgstr "_متوقّف کردن گردانندهٔ چند دیسکی"
 
-#: src/nautilus-files-view.c:8157
+#: src/nautilus-files-view.c:8080
 msgid "_Lock Drive"
 msgstr "_قفل کردن گرداننده"
 
@@ -2794,7 +2807,7 @@ msgstr "کشیدن و رها کردن پشتیبانی نمی‌شود."
 msgid "An invalid drag type was used."
 msgstr "یک نوع کشیدن نادرست استفاده شده بود."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1351
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1347
 msgid "Undo"
 msgstr "برگردان"
 
@@ -3421,129 +3434,129 @@ msgstr ""
 "به جایش می‌توانید از ‪nautilus admin:/‬ استفاده کنید.\n"
 "‫========================================================"
 
-#: src/nautilus-mime-actions.c:97 src/resources/ui/nautilus-search-popover.ui:231
+#: src/nautilus-mime-actions.c:97
 msgid "Anything"
 msgstr "هر چیزی"
 
-#: src/nautilus-mime-actions.c:109
+#: src/nautilus-mime-actions.c:110
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:61
 msgid "Folders"
 msgstr "شاخه‌‌ها"
 
-#: src/nautilus-mime-actions.c:116
+#: src/nautilus-mime-actions.c:117
 msgid "Documents"
 msgstr "سندها"
 
-#: src/nautilus-mime-actions.c:137
+#: src/nautilus-mime-actions.c:139
 msgid "Illustration"
 msgstr "نگاره"
 
-#: src/nautilus-mime-actions.c:153
+#: src/nautilus-mime-actions.c:155
 msgid "Music"
 msgstr "آهنگ"
 
-#: src/nautilus-mime-actions.c:170
+#: src/nautilus-mime-actions.c:172
 msgid "PDF / PostScript"
 msgstr "پی‌دی‌اف / پست‌اسکریپت"
 
-#: src/nautilus-mime-actions.c:181
+#: src/nautilus-mime-actions.c:183
 msgid "Picture"
 msgstr "عکس‌"
 
-#: src/nautilus-mime-actions.c:234
+#: src/nautilus-mime-actions.c:236
 msgid "Text File"
 msgstr "پرونده متنی"
 
-#: src/nautilus-mime-actions.c:592
+#: src/nautilus-mime-actions.c:594
 msgid "This link cannot be used because it has no target."
 msgstr "این پیوند قابل استفاده نیست، چون به هدفی اشاره نمی‌کند."
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-mime-actions.c:596
+#: src/nautilus-mime-actions.c:598
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr "این پیوند قابل استفاده نیست،‌ چون هدف آن «⁨%s⁩» وجود ندارد."
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-mime-actions.c:604
+#: src/nautilus-mime-actions.c:606
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "پیوند «⁨%s⁩» خراب است. به زباله‌دان منتقل شود؟"
 
-#: src/nautilus-mime-actions.c:608
+#: src/nautilus-mime-actions.c:610
 #: src/resources/ui/nautilus-files-view-context-menus.ui:217
 msgid "Mo_ve to Trash"
 msgstr "ا_نداختن در زباله‌دان"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-mime-actions.c:615
+#: src/nautilus-mime-actions.c:617
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "پیوند «⁨%s⁩» خراب است."
 
-#: src/nautilus-mime-actions.c:996
+#: src/nautilus-mime-actions.c:998
 msgid "Are you sure you want to open all files?"
 msgstr "مطمئنید می‌خواهید همهٔ پرونده‌ها را بگشایید؟"
 
-#: src/nautilus-mime-actions.c:1000
+#: src/nautilus-mime-actions.c:1002
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
 msgstr[0] "این کار %Id زبانه و پنجرهٔ جدا خواهد گشود."
 msgstr[1] "این کار %Id زبانه و پنجرهٔ جدا خواهد گشود."
 
-#: src/nautilus-mime-actions.c:1005
+#: src/nautilus-mime-actions.c:1007
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "به این ترتیب %Id زبانهٔ جدا باز خواهد شد."
 msgstr[1] "به این ترتیب %Id پنجرهٔ جدا باز خواهد شد."
 
-#: src/nautilus-mime-actions.c:1010
+#: src/nautilus-mime-actions.c:1012
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "به این ترتیب %Id پنجرهٔ جدا باز خواهد شد."
 msgstr[1] "به این ترتیب %Id پنجرهٔ جدا باز خواهد شد."
 
-#: src/nautilus-mime-actions.c:1017
+#: src/nautilus-mime-actions.c:1019
 msgid "_Open All"
 msgstr "_گشودن همه"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-mime-actions.c:1077
+#: src/nautilus-mime-actions.c:1079
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr "نمی‌توان «⁨%s⁩» را نمایش داد."
 
-#: src/nautilus-mime-actions.c:1175
+#: src/nautilus-mime-actions.c:1177
 msgid "The file is of an unknown type"
 msgstr "گونهٔ پرونده ناشناخته است"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-mime-actions.c:1180
+#: src/nautilus-mime-actions.c:1182
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "هیچ کاره‌ای برای پرونده‌های «⁨%s⁩» نصب نشده است"
 
-#: src/nautilus-mime-actions.c:1185
+#: src/nautilus-mime-actions.c:1187
 msgid "_Select App"
 msgstr "_گزینش کاره"
 
-#: src/nautilus-mime-actions.c:1221
+#: src/nautilus-mime-actions.c:1223
 msgid "There was an internal error trying to search for apps:"
 msgstr "خطایی داخلی هنگام تلاش برای جست‌وجوی کاره‌ها رخ داد:"
 
-#: src/nautilus-mime-actions.c:1223
+#: src/nautilus-mime-actions.c:1225
 msgid "Unable to search for app"
 msgstr "ناتوان در جست‌وجو برای کاره"
 
-#: src/nautilus-mime-actions.c:1328
+#: src/nautilus-mime-actions.c:1330
 msgid "_Search in Software"
 msgstr "جست‌وجو در نرم‌افزارها"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-mime-actions.c:1331
+#: src/nautilus-mime-actions.c:1333
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app to open "
@@ -3553,22 +3566,22 @@ msgstr ""
 "بگشاید بگردید؟"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1720 src/nautilus-mime-actions.c:2019
+#: src/nautilus-mime-actions.c:1722 src/nautilus-mime-actions.c:2021
 #: src/gtk/nautilusgtkplacesview.c:1215 src/gtk/nautilusgtkplacesview.c:1312
 msgid "Unable to access location"
 msgstr "ناتوان در دسترسی به مکان"
 
-#: src/nautilus-mime-actions.c:2110
+#: src/nautilus-mime-actions.c:2112
 msgid "Unable to start location"
 msgstr "ناتوان در آغاز مکان"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-mime-actions.c:2203
+#: src/nautilus-mime-actions.c:2205
 #, c-format
 msgid "Opening “%s”."
 msgstr "در حال گشودن «⁨%s⁩»."
 
-#: src/nautilus-mime-actions.c:2207
+#: src/nautilus-mime-actions.c:2209
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3894,7 +3907,7 @@ msgstr "فقط دسترسی"
 msgid "Custom icon removed"
 msgstr "نقشک سفارشی برداشته شد"
 
-#: src/nautilus-properties-window.c:637 src/nautilus-window.c:1268
+#: src/nautilus-properties-window.c:637 src/nautilus-window.c:1264
 #: src/resources/ui/nautilus-window.ui:32
 msgid "_Undo"
 msgstr "_برگردان"
@@ -4007,7 +4020,7 @@ msgstr "ناتوان در تکمیل جست‌وجوی درخواست شده"
 msgid "Show Time Ranges"
 msgstr "نمایش بازه‌های زمانی"
 
-#: src/nautilus-search-popover.c:299 src/resources/ui/nautilus-search-popover.ui:72
+#: src/nautilus-search-popover.c:299 src/resources/ui/nautilus-search-popover.ui:73
 msgid "Use Calendar"
 msgstr "استفاده از تقویم"
 
@@ -4029,7 +4042,7 @@ msgstr "گزینش گونه"
 msgid "Select"
 msgstr "گزینش"
 
-#: src/nautilus-search-popover.c:726 src/resources/ui/nautilus-search-popover.ui:44
+#: src/nautilus-search-popover.c:726
 msgid "Select Dates…"
 msgstr "گزینش تاریخ‌ها…"
 
@@ -4116,14 +4129,14 @@ msgstr "جلو"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:1191
+#: src/nautilus-window.c:1187
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "«⁨%s⁩» به زباله‌دان جابه‌جا شد"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:1198
+#: src/nautilus-window.c:1194
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4132,44 +4145,44 @@ msgstr[1] "%Id پرونده به زباله‌دان انداخته شدند"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1217
+#: src/nautilus-window.c:1213
 #, c-format
 msgid "“%s” unstarred"
 msgstr "«⁨%s⁩» بی‌ستاره شد"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1223
+#: src/nautilus-window.c:1219
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
 msgstr[0] "تعداد %Id پرونده بی‌ستاره شد"
 msgstr[1] "تعداد %Id پرونده بی‌ستاره شد"
 
-#: src/nautilus-window.c:1278 src/resources/ui/nautilus-window.ui:36
+#: src/nautilus-window.c:1274 src/resources/ui/nautilus-window.ui:36
 msgid "_Redo"
 msgstr "انجام _دوباره"
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1394 src/gtk/nautilusgtkplacessidebar.c:894
+#: src/nautilus-window.c:1390 src/gtk/nautilusgtkplacessidebar.c:894
 #, c-format
 msgid "Open %s"
 msgstr "گشودن ⁨%s⁩"
 
-#: src/nautilus-window.c:2485
+#: src/nautilus-window.c:2481
 msgid "No plugins currently installed."
 msgstr "هیچ افزایه‌ای نصب نشده."
 
-#: src/nautilus-window.c:2489
+#: src/nautilus-window.c:2485
 msgid "Currently installed plugins:"
 msgstr "افزایه‌های نصب شده:"
 
-#: src/nautilus-window.c:2491
+#: src/nautilus-window.c:2487
 msgid "For bug testing only, the following command can be used:"
 msgstr "دستور زیر می‌تواند فقط برای آزمون اشکال استفاده شود:"
 
-#: src/nautilus-window.c:2498
+#: src/nautilus-window.c:2494
 msgid "The GNOME Project"
 msgstr "پروژهٔ گنوم"
 
@@ -4177,7 +4190,7 @@ msgstr "پروژهٔ گنوم"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2513
+#: src/nautilus-window.c:2509
 msgid "translator-credits"
 msgstr ""
 "آرش موسوی <mousavi.arash@gmail.com>\n"
@@ -4191,55 +4204,55 @@ msgstr ""
 "سید اسحاق مقیم شهیدانی <eshagh094@gmail.com>\n"
 "بهزاد اصبحی <behzadasbahi@protonmail.com>"
 
-#: src/nautilus-window-slot.c:1045
+#: src/nautilus-window-slot.c:1044
 msgid "Searching locations only"
 msgstr "فقط جست‌وجوی مکان‌ها"
 
-#: src/nautilus-window-slot.c:1049
+#: src/nautilus-window-slot.c:1048
 msgid "Searching network locations only"
 msgstr "فقط جست‌وجوی مکان‌های شبکه"
 
-#: src/nautilus-window-slot.c:1054
+#: src/nautilus-window-slot.c:1053
 msgid "Remote location — only searching the current folder"
 msgstr "مکان دوردست — تنها شاخهٔ کنونی جست‌وجو می‌شود"
 
-#: src/nautilus-window-slot.c:1058
+#: src/nautilus-window-slot.c:1057
 msgid "Only searching the current folder"
 msgstr "تنها شاخهٔ کنونی جست‌وجو می‌شود"
 
-#: src/nautilus-window-slot.c:1548
+#: src/nautilus-window-slot.c:1553
 msgid "Unable to display the contents of this folder."
 msgstr "نمایش محتویات این شاخه امکان‌پذیر نیست."
 
-#: src/nautilus-window-slot.c:1552
+#: src/nautilus-window-slot.c:1557
 msgid "This location doesn’t appear to be a folder."
 msgstr "به نظر نمی‌آید این مکان یک شاخه باشد."
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-window-slot.c:1564
+#: src/nautilus-window-slot.c:1569
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "ناتوان در یافتن «⁨%s⁩». لطفاً نوشتار را بررسی کرده و دوباره تلاش کنید."
 
-#: src/nautilus-window-slot.c:1569
+#: src/nautilus-window-slot.c:1574
 msgid "Unable to find the requested file. Please check the spelling and try again."
 msgstr "پروندهٔ درخواست شده پیدا نشد. لطفاً صحت املا را بررسی و دوباره تلاش کنید."
 
 # در این رشته از نویسهٔ ایزوله اولین نویسهٔ قوی استفاده شده است
-#: src/nautilus-window-slot.c:1580
+#: src/nautilus-window-slot.c:1585
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "مکان‌های «⁨%s⁩» پشتیبانی نمی‌شوند."
 
-#: src/nautilus-window-slot.c:1585
+#: src/nautilus-window-slot.c:1590
 msgid "Unable to handle this kind of location."
 msgstr "نمی‌توان این نوع مکان‌ها را اداره کرد."
 
-#: src/nautilus-window-slot.c:1593
+#: src/nautilus-window-slot.c:1598
 msgid "Unable to access the requested location."
 msgstr "نمی‌توان به مکان درخواست شده دسترسی پیدا کرد."
 
-#: src/nautilus-window-slot.c:1599
+#: src/nautilus-window-slot.c:1604
 msgid "Don’t have permission to access the requested location."
 msgstr "اجازهٔ دسترسی به مکان درخواست شده وجود ندارد."
 
@@ -4248,7 +4261,7 @@ msgstr "اجازهٔ دسترسی به مکان درخواست شده وجود �
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1610
+#: src/nautilus-window-slot.c:1615
 msgid ""
 "Unable to find the requested location. Please check the spelling or the network "
 "settings."
@@ -4258,7 +4271,7 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1619
+#: src/nautilus-window-slot.c:1624
 msgid ""
 "The server has refused the connection. Typically this means that the firewall is "
 "blocking access or that the remote service is not running."
@@ -4266,12 +4279,12 @@ msgstr ""
 "کارساز از اتّصال سر باز زد. عموماً یعنی دیوارهٔ آتش، دسترسی را مسدود کرده یا خدمت "
 "دوردست در حال اجرا نیست."
 
-#: src/nautilus-window-slot.c:1638
+#: src/nautilus-window-slot.c:1643
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "خطای غیرقابل اداره: %s"
 
-#: src/nautilus-window-slot.c:1804
+#: src/nautilus-window-slot.c:1805
 #, c-format
 msgid "Unable to load location"
 msgstr "ناتوان در بار کردن مکان"
@@ -4696,14 +4709,14 @@ msgid "_Revert"
 msgstr "_بازگردانی"
 
 #: src/resources/ui/nautilus-column-chooser.ui:58
-msgid "Only Apply to Current Folder"
-msgstr "فقط اعمال به شاخهٔ کنونی"
+msgid "_Only Apply to Current Folder"
+msgstr "_فقط اعمال به شاخهٔ کنونی"
 
-#: src/resources/ui/nautilus-column-chooser.ui:72
+#: src/resources/ui/nautilus-column-chooser.ui:73
 msgid "Move _Up"
 msgstr "جابه‌جایی به _بالا"
 
-#: src/resources/ui/nautilus-column-chooser.ui:76
+#: src/resources/ui/nautilus-column-chooser.ui:77
 msgid "Move _Down"
 msgstr "جابه‌جایی به _پایین"
 
@@ -4956,7 +4969,7 @@ msgstr "نمای محتویات"
 msgid "View of the current folder"
 msgstr "نمای شاخهٔ کنونی"
 
-#: src/resources/ui/nautilus-name-cell.ui:103
+#: src/resources/ui/nautilus-name-cell.ui:110
 msgid "Full Text Match"
 msgstr "تطابق متن کامل"
 
@@ -5020,8 +5033,8 @@ msgid "_Expandable Folders in List View"
 msgstr "شاخه‌های _گستردنی در نمای سیاهه‌ای"
 
 #: src/resources/ui/nautilus-preferences-window.ui:34
-msgid "Action to Open Items"
-msgstr "کنش گشودن موارد"
+msgid "_Action to Open Items"
+msgstr "_کنش گشودن موارد"
 
 #: src/resources/ui/nautilus-preferences-window.ui:44
 msgid "Optional Context Menu Actions"
@@ -5052,16 +5065,16 @@ msgstr ""
 "خارج از این رایانه، مثل پرونده‌های روی یک کارساز دوردست."
 
 #: src/resources/ui/nautilus-preferences-window.ui:75
-msgid "Search in Subfolders"
-msgstr "جست‌وجو در زیرشاخه‌ها"
+msgid "Search in Su_bfolders"
+msgstr "جست‌وجو در _زیرشاخه‌ها"
 
 #: src/resources/ui/nautilus-preferences-window.ui:84
-msgid "Show Thumbnails"
-msgstr "نمایش بندانگشتی‌ها"
+msgid "Show _Thumbnails"
+msgstr "نمایش _بندانگشتی‌ها"
 
 #: src/resources/ui/nautilus-preferences-window.ui:93
-msgid "Count Number of Files in Folders"
-msgstr "شمارش تعداد پرونده‌ها در شاخه‌ها"
+msgid "_Count Number of Files in Folders"
+msgstr "_شمارش تعداد پرونده‌ها در شاخه‌ها"
 
 #: src/resources/ui/nautilus-preferences-window.ui:103
 msgid "Date and Time Format"
@@ -5069,14 +5082,14 @@ msgstr "قالب تاریخ و زمان"
 
 #: src/resources/ui/nautilus-preferences-window.ui:104
 msgid "Choose how dates and times are displayed in list and grid views."
-msgstr "گزینش چگونگی نمایش تاریخ و زمان در نماهای سیاهه‌ای و شبکه‌ای"
+msgstr "گزینش چگونگی نمایش تاریخ و زمان در نماهای سیاهه‌ای و شبکه‌ای."
 
 #: src/resources/ui/nautilus-preferences-window.ui:107
 msgid "_Simple"
 msgstr "_ساده"
 
 #: src/resources/ui/nautilus-preferences-window.ui:121
-msgid "_Detailed"
+msgid "Deta_iled"
 msgstr "_باجزییات"
 
 #: src/resources/ui/nautilus-preferences-window.ui:138
@@ -5094,34 +5107,22 @@ msgstr "نوشته‌های نمای شبکه‌ای"
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:144
 msgctxt "the n-th position of an icon caption"
-msgid "First"
-msgstr "نخست"
+msgid "Fi_rst"
+msgstr "_نخست"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:153
 msgctxt "the n-th position of an icon caption"
-msgid "Second"
-msgstr "دوم"
+msgid "Seco_nd"
+msgstr "_دوم"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:162
 msgctxt "the n-th position of an icon caption"
-msgid "Third"
-msgstr "سوم"
+msgid "T_hird"
+msgstr "_سوم"
 
-#. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
-#: src/resources/ui/nautilus-progress-indicator.ui:5
-#: src/resources/ui/nautilus-view-controls.ui:5
-msgctxt "menu item"
-msgid "Sort"
-msgstr "ترتیب"
-
-#: src/resources/ui/nautilus-progress-indicator.ui:15
-#: src/resources/ui/nautilus-view-controls.ui:15
-msgid "_Visible Columns…"
-msgstr "_ستون‌های نمایان…"
-
-#: src/resources/ui/nautilus-progress-indicator.ui:52
+#: src/resources/ui/nautilus-progress-indicator.ui:34
 msgid "Show File Operations"
 msgstr "نمایش عملیات پرونده"
 
@@ -5260,39 +5261,51 @@ msgstr "نام پروندهٔ جدید"
 msgid "When"
 msgstr "چه زمانی"
 
-#: src/resources/ui/nautilus-search-popover.ui:54
+#: src/resources/ui/nautilus-search-popover.ui:44
+msgid "Select _Dates…"
+msgstr "گزینش _تاریخ‌ها…"
+
+#: src/resources/ui/nautilus-search-popover.ui:55
 msgid "Clear Date Filter"
 msgstr "پاک سازی پالایهٔ تاریخ"
 
-#: src/resources/ui/nautilus-search-popover.ui:95
+#: src/resources/ui/nautilus-search-popover.ui:96
 msgid "Since…"
 msgstr "از…"
 
-#: src/resources/ui/nautilus-search-popover.ui:154
+#: src/resources/ui/nautilus-search-popover.ui:155
 msgid "Last _modified"
 msgstr "آخرین _تغییر"
 
-#: src/resources/ui/nautilus-search-popover.ui:166
+#: src/resources/ui/nautilus-search-popover.ui:167
 msgid "Last _used"
 msgstr "آخرین _استفاده"
 
-#: src/resources/ui/nautilus-search-popover.ui:200
+#: src/resources/ui/nautilus-search-popover.ui:179
+msgid "_Created"
+msgstr "_ایجاد شده"
+
+#: src/resources/ui/nautilus-search-popover.ui:201
 msgid "What"
 msgstr "چه چیزی"
 
-#: src/resources/ui/nautilus-search-popover.ui:293
-msgid "Full Text"
-msgstr "متن کامل"
+#: src/resources/ui/nautilus-search-popover.ui:232
+msgid "_Anything"
+msgstr "_هر چیزی"
 
-#: src/resources/ui/nautilus-search-popover.ui:294
+#: src/resources/ui/nautilus-search-popover.ui:295
+msgid "Full _Text"
+msgstr "_متن کامل"
+
+#: src/resources/ui/nautilus-search-popover.ui:297
 msgid "Search Inside Files"
 msgstr "جست‌وجو درون پرونده‌ها"
 
-#: src/resources/ui/nautilus-search-popover.ui:302
-msgid "File Name"
-msgstr "نام پرونده"
+#: src/resources/ui/nautilus-search-popover.ui:305
+msgid "File _Name"
+msgstr "_نام پرونده"
 
-#: src/resources/ui/nautilus-search-popover.ui:303
+#: src/resources/ui/nautilus-search-popover.ui:307
 msgid "Don't Search Inside Files"
 msgstr "جست‌وجو نکردن درون پرونده‌ها"
 
@@ -5331,6 +5344,16 @@ msgstr "_گونه"
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:44
 msgid "Last _Trashed"
 msgstr "آخرین _دور انداختن"
+
+#. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
+#: src/resources/ui/nautilus-view-controls.ui:5
+msgctxt "menu item"
+msgid "Sort"
+msgstr "ترتیب"
+
+#: src/resources/ui/nautilus-view-controls.ui:15
+msgid "_Visible Columns…"
+msgstr "_ستون‌های نمایان…"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
 #: src/resources/ui/nautilus-view-controls.ui:26
@@ -5693,6 +5716,10 @@ msgstr "نوار جانبی"
 #: src/gtk/nautilusgtkplacessidebar.c:3930
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "سیاههٔ میان‌برها، نقطه‌های وصل شدن و نشانک‌های معمول."
+
+#~ msgctxt "the n-th position of an icon caption"
+#~ msgid "First"
+#~ msgstr "نخست"
 
 #, c-format
 #~ msgid "%d Hz"
