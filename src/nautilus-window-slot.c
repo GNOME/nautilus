@@ -161,8 +161,6 @@ static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *s
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self);
 static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
                                                            guint               id);
-static void nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
-                                                   guint               id);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
@@ -953,7 +951,13 @@ change_files_view_mode (NautilusWindowSlot *self,
 {
     if (!nautilus_window_slot_content_view_matches (self, view_id))
     {
-        nautilus_window_slot_set_content_view (self, view_id);
+        NautilusView *view = nautilus_window_slot_get_current_view (self);
+
+        g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+        nautilus_files_view_change (NAUTILUS_FILES_VIEW (view), view_id);
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
     }
 
     g_settings_set_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, view_id);
@@ -2052,31 +2056,6 @@ free_location_change (NautilusWindowSlot *self)
             got_file_info_for_view_selection_callback, self);
         self->determine_view_file = NULL;
     }
-}
-
-/* This sets up a new view, for the current location, with the provided id. Used
- * whenever the user changes the type of view to use.
- *
- * Note that the current view will be thrown away, even if it has the same id.
- * Callers may first check if !nautilus_window_slot_content_view_matches().
- */
-static void
-nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
-                                       guint               id)
-{
-    NautilusView *view = nautilus_window_slot_get_current_view (self);
-    char *uri;
-    g_assert (self != NULL);
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-
-    uri = nautilus_window_slot_get_location_uri (self);
-    g_debug ("Change view of window %s to %d", uri, id);
-    g_free (uri);
-
-    nautilus_files_view_change (NAUTILUS_FILES_VIEW (view), id);
-
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
-    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
 }
 
 void
