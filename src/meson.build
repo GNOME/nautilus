@@ -165,6 +165,8 @@ libnautilus_sources = [
   'nautilus-filename-validator.h',
   'nautilus-rename-file-popover.c',
   'nautilus-rename-file-popover.h',
+  'nautilus-network-address-bar.c',
+  'nautilus-network-address-bar.h',
   'nautilus-network-directory.c',
   'nautilus-network-directory.h',
   'nautilus-new-folder-dialog.c',
