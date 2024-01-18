@@ -34,6 +34,8 @@
  * @title: Extension entry points
  */
 
+G_BEGIN_DECLS
+
 /**
  * nautilus_module_initialize: (skip)
  * @module: a #GTypeModule used in type registration
@@ -58,4 +60,6 @@ void nautilus_module_shutdown   (void);
  */
 void nautilus_module_list_types (const GType **types,
                                  int          *num_types);
+
+G_END_DECLS
 
