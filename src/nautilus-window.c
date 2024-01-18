@@ -55,6 +55,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-metadata.h"
+#include "nautilus-network-address-bar.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
 #include "nautilus-pathbar.h"
@@ -117,6 +118,8 @@ struct _NautilusWindow
     /* Toolbar */
     GtkWidget *toolbar;
     gboolean temporary_navigation_bar;
+
+    GtkWidget *network_address_bar;
 
     /* focus widget before the location bar has been shown temporarily */
     GtkWidget *last_focus_widget;
@@ -1126,6 +1129,9 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
 
         path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->toolbar));
         nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (path_bar), location);
+
+        gtk_widget_set_visible (window->network_address_bar,
+                                g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW));
     }
 
     enabled = nautilus_window_slot_get_back_history (slot) != NULL;
@@ -2250,6 +2256,7 @@ nautilus_window_init (NautilusWindow *window)
     GtkEventController *controller;
     GtkPadController *pad_controller;
 
+    g_type_ensure (NAUTILUS_TYPE_NETWORK_ADDRESS_BAR);
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
     g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
@@ -2391,6 +2398,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, network_address_bar);
 
     gtk_widget_class_bind_template_callback (wclass, window_set_back_forward_accelerators);
 

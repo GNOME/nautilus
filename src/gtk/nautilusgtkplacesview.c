@@ -79,8 +79,6 @@ struct _NautilusGtkPlacesView
   char                          *search_query;
 
   GtkWidget                     *actionbar;
-  GtkWidget                     *address_entry;
-  GtkWidget                     *connect_button;
   GtkWidget                     *listbox;
   GtkWidget                     *popup_menu;
   GtkWidget                     *recent_servers_listbox;
@@ -88,7 +86,6 @@ struct _NautilusGtkPlacesView
   GtkWidget                     *recent_servers_stack;
   GtkWidget                     *stack;
   GtkWidget                     *server_adresses_popover;
-  GtkWidget                     *available_protocols_grid;
   GtkWidget                     *network_placeholder;
   GtkWidget                     *network_placeholder_label;
 
@@ -102,10 +99,6 @@ struct _NautilusGtkPlacesView
 
   NautilusGtkPlacesViewRow              *row_for_action;
 
-  guint                          should_open_location : 1;
-  guint                          should_pulse_entry : 1;
-  guint                          entry_pulse_timeout_id;
-  guint                          connecting_to_server : 1;
   guint                          mounting_volume : 1;
   guint                          unmounting_mount : 1;
   guint                          fetching_networks : 1;
@@ -158,14 +151,6 @@ enum {
   LAST_SIGNAL
 };
 
-const char *unsupported_protocols [] =
-{
-  "file", "afc", "obex", "http",
-  "trash", "burn", "computer",
-  "archive", "recent", "localtest",
-  NULL
-};
-
 static guint places_view_signals [LAST_SIGNAL] = { 0 };
 static GParamSpec *properties [LAST_PROP];
 
@@ -178,15 +163,6 @@ emit_open_location (NautilusGtkPlacesView      *view,
     open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
 
   g_signal_emit (view, places_view_signals[OPEN_LOCATION], 0, location, open_flags);
-}
-
-static void
-emit_show_error_message (NautilusGtkPlacesView *view,
-                         char          *primary_message,
-                         char          *secondary_message)
-{
-  g_signal_emit (view, places_view_signals[SHOW_ERROR_MESSAGE],
-                         0, primary_message, secondary_message);
 }
 
 static void
@@ -400,9 +376,6 @@ static void
 nautilus_gtk_places_view_finalize (GObject *object)
 {
   NautilusGtkPlacesView *view = (NautilusGtkPlacesView *)object;
-
-  if (view->entry_pulse_timeout_id > 0)
-    g_source_remove (view->entry_pulse_timeout_id);
 
   g_clear_pointer (&view->search_query, g_free);
   g_clear_object (&view->server_list_file);
@@ -1181,102 +1154,6 @@ update_places (NautilusGtkPlacesView *view)
 }
 
 static void
-server_mount_ready_cb (GObject      *source_file,
-                       GAsyncResult *res,
-                       gpointer      user_data)
-{
-  NautilusGtkPlacesView *view = NAUTILUS_GTK_PLACES_VIEW (user_data);
-  gboolean should_show;
-  GError *error;
-  GFile *location;
-
-  location = G_FILE (source_file);
-  should_show = TRUE;
-  error = NULL;
-
-  g_file_mount_enclosing_volume_finish (location, res, &error);
-  if (error)
-    {
-      should_show = FALSE;
-
-      if (error->code == G_IO_ERROR_ALREADY_MOUNTED)
-        {
-          /*
-           * Already mounted volume is not a critical error
-           * and we can still continue with the operation.
-           */
-          should_show = TRUE;
-        }
-      else if (error->domain != G_IO_ERROR ||
-               (error->code != G_IO_ERROR_CANCELLED &&
-                error->code != G_IO_ERROR_FAILED_HANDLED))
-        {
-          /* if it wasn't cancelled show a dialog */
-          emit_show_error_message (view, _("Unable to access location"), error->message);
-        }
-
-      /* The operation got cancelled by the user and or the error
-         has been handled already. */
-      g_clear_error (&error);
-    }
-
-  if (view->destroyed)
-    {
-      g_object_unref (view);
-      return;
-    }
-
-  view->should_pulse_entry = FALSE;
-  gtk_entry_set_progress_fraction (GTK_ENTRY (view->address_entry), 0);
-
-  /* Restore from Cancel to Connect */
-  gtk_button_set_label (GTK_BUTTON (view->connect_button), _("Con_nect"));
-  gtk_widget_set_sensitive (view->address_entry, TRUE);
-  view->connecting_to_server = FALSE;
-
-  if (should_show)
-    {
-      server_list_add_server (view, location);
-
-      /*
-       * Only clear the entry if it successfully connects to the server.
-       * Otherwise, the user would lost the typed address even if it fails
-       * to connect.
-       */
-      gtk_editable_set_text (GTK_EDITABLE (view->address_entry), "");
-
-      if (view->should_open_location)
-        {
-          GMount *mount;
-          GFile *root;
-
-          /*
-           * If the mount is not found at this point, it is probably user-
-           * invisible, which happens e.g for smb-browse, but the location
-           * should be opened anyway...
-           */
-          mount = g_file_find_enclosing_mount (location, view->cancellable, NULL);
-          if (mount)
-            {
-              root = g_mount_get_default_location (mount);
-
-              emit_open_location (view, root, view->open_flags);
-
-              g_object_unref (root);
-              g_object_unref (mount);
-            }
-          else
-            {
-              emit_open_location (view, location, view->open_flags);
-            }
-        }
-    }
-
-  update_places (view);
-  g_object_unref (view);
-}
-
-static void
 volume_mount_ready_cb (GObject      *source_volume,
                        GAsyncResult *res,
                        gpointer      user_data)
@@ -1385,32 +1262,6 @@ unmount_ready_cb (GObject      *source_mount,
   g_object_unref (view);
 }
 
-static gboolean
-pulse_entry_cb (gpointer user_data)
-{
-  NautilusGtkPlacesView *view = NAUTILUS_GTK_PLACES_VIEW (user_data);
-
-  if (view->destroyed)
-    {
-      view->entry_pulse_timeout_id = 0;
-
-      return G_SOURCE_REMOVE;
-    }
-  else if (view->should_pulse_entry)
-    {
-      gtk_entry_progress_pulse (GTK_ENTRY (view->address_entry));
-
-      return G_SOURCE_CONTINUE;
-    }
-  else
-    {
-      gtk_entry_set_progress_fraction (GTK_ENTRY (view->address_entry), 0);
-      view->entry_pulse_timeout_id = 0;
-
-      return G_SOURCE_REMOVE;
-    }
-}
-
 static void
 unmount_mount (NautilusGtkPlacesView *view,
                GMount        *mount)
@@ -1436,51 +1287,6 @@ unmount_mount (NautilusGtkPlacesView *view,
                                   view->cancellable,
                                   unmount_ready_cb,
                                   view);
-  g_object_unref (operation);
-}
-
-static void
-mount_server (NautilusGtkPlacesView *view,
-              GFile         *location)
-{
-  GMountOperation *operation;
-  GtkWidget *toplevel;
-
-  g_cancellable_cancel (view->cancellable);
-  g_clear_object (&view->cancellable);
-  /* User cliked when the operation was ongoing, so wanted to cancel it */
-  if (view->connecting_to_server)
-    return;
-
-  view->cancellable = g_cancellable_new ();
-  toplevel = GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (view)));
-  operation = gtk_mount_operation_new (GTK_WINDOW (toplevel));
-
-  view->should_pulse_entry = TRUE;
-  gtk_entry_set_progress_pulse_step (GTK_ENTRY (view->address_entry), 0.1);
-  gtk_entry_set_progress_fraction (GTK_ENTRY (view->address_entry), 0.1);
-  /* Allow to cancel the operation */
-  gtk_button_set_label (GTK_BUTTON (view->connect_button), _("Cance_l"));
-  gtk_widget_set_sensitive (view->address_entry, FALSE);
-  view->connecting_to_server = TRUE;
-  update_loading (view);
-
-  if (view->entry_pulse_timeout_id == 0)
-    view->entry_pulse_timeout_id = g_timeout_add (100, (GSourceFunc) pulse_entry_cb, view);
-
-  g_mount_operation_set_password_save (operation, G_PASSWORD_SAVE_FOR_SESSION);
-
-  /* make sure we keep the view around for as long as we are running */
-  g_object_ref (view);
-
-  g_file_mount_enclosing_volume (location,
-                                 0,
-                                 operation,
-                                 view->cancellable,
-                                 server_mount_ready_cb,
-                                 view);
-
-  /* unref operation here - g_file_mount_enclosing_volume() does ref for itself */
   g_object_unref (operation);
 }
 
@@ -1610,77 +1416,6 @@ unmount_cb (GtkWidget  *widget,
   nautilus_gtk_places_view_row_set_busy (view->row_for_action, TRUE);
 
   unmount_mount (view, mount);
-}
-
-static void
-attach_protocol_row_to_grid (GtkGrid     *grid,
-                             const char *protocol_name,
-                             const char *protocol_prefix)
-{
-  GtkWidget *name_label;
-  GtkWidget *prefix_label;
-
-  name_label = gtk_label_new (protocol_name);
-  gtk_widget_set_halign (name_label, GTK_ALIGN_START);
-  gtk_grid_attach_next_to (grid, name_label, NULL, GTK_POS_BOTTOM, 1, 1);
-
-  prefix_label = gtk_label_new (protocol_prefix);
-  gtk_widget_set_halign (prefix_label, GTK_ALIGN_START);
-  gtk_grid_attach_next_to (grid, prefix_label, name_label, GTK_POS_RIGHT, 1, 1);
-}
-
-static void
-populate_available_protocols_grid (GtkGrid *grid)
-{
-  const char * const *supported_protocols;
-  gboolean has_any = FALSE;
-
-  supported_protocols = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
-
-  if (g_strv_contains (supported_protocols, "afp"))
-    {
-      attach_protocol_row_to_grid (grid, _("AppleTalk"), "afp://");
-      has_any = TRUE;
-    }
-
-  if (g_strv_contains (supported_protocols, "ftp"))
-    {
-      attach_protocol_row_to_grid (grid, _("File Transfer Protocol"),
-                                   /* Translators: do not translate ftp:// and ftps:// */
-                                   _("ftp:// or ftps://"));
-      has_any = TRUE;
-    }
-
-  if (g_strv_contains (supported_protocols, "nfs"))
-    {
-      attach_protocol_row_to_grid (grid, _("Network File System"), "nfs://");
-      has_any = TRUE;
-    }
-
-  if (g_strv_contains (supported_protocols, "smb"))
-    {
-      attach_protocol_row_to_grid (grid, _("Samba"), "smb://");
-      has_any = TRUE;
-    }
-
-  if (g_strv_contains (supported_protocols, "ssh"))
-    {
-      attach_protocol_row_to_grid (grid, _("SSH File Transfer Protocol"),
-                                   /* Translators: do not translate sftp:// and ssh:// */
-                                   _("sftp:// or ssh://"));
-      has_any = TRUE;
-    }
-
-  if (g_strv_contains (supported_protocols, "dav"))
-    {
-      attach_protocol_row_to_grid (grid, _("WebDAV"),
-                                   /* Translators: do not translate dav:// and davs:// */
-                                   _("dav:// or davs://"));
-      has_any = TRUE;
-    }
-
-  if (!has_any)
-    gtk_widget_set_visible (GTK_WIDGET (grid), FALSE);
 }
 
 static GMenuModel *
@@ -1915,71 +1650,6 @@ on_eject_button_clicked (GtkWidget        *widget,
 
       unmount_mount (NAUTILUS_GTK_PLACES_VIEW (view), nautilus_gtk_places_view_row_get_mount (row));
     }
-}
-
-static void
-on_connect_button_clicked (NautilusGtkPlacesView *view)
-{
-  const char *uri;
-  GFile *file;
-
-  file = NULL;
-
-  /*
-   * Since the 'Connect' button is updated whenever the typed
-   * address changes, it is sufficient to check if it's sensitive
-   * or not, in order to determine if the given address is valid.
-   */
-  if (!gtk_widget_get_sensitive (view->connect_button))
-    return;
-
-  uri = gtk_editable_get_text (GTK_EDITABLE (view->address_entry));
-
-  if (uri != NULL && uri[0] != '\0')
-    file = g_file_new_for_commandline_arg (uri);
-
-  if (file)
-    {
-      view->should_open_location = TRUE;
-
-      mount_server (view, file);
-    }
-  else
-    {
-      emit_show_error_message (view, _("Unable to get remote server location"), NULL);
-    }
-}
-
-static void
-on_address_entry_text_changed (NautilusGtkPlacesView *view)
-{
-  const char * const *supported_protocols;
-  char *address, *scheme;
-  gboolean supported;
-
-  supported = FALSE;
-  supported_protocols = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
-  address = g_strdup (gtk_editable_get_text (GTK_EDITABLE (view->address_entry)));
-  scheme = g_uri_parse_scheme (address);
-
-  if (!supported_protocols)
-    goto out;
-
-  if (!scheme)
-    goto out;
-
-  supported = g_strv_contains (supported_protocols, scheme) &&
-              !g_strv_contains (unsupported_protocols, scheme);
-
-out:
-  gtk_widget_set_sensitive (view->connect_button, supported);
-  if (scheme && !supported)
-    gtk_widget_add_css_class (view->address_entry, "error");
-  else
-    gtk_widget_remove_css_class (view->address_entry, "error");
-
-  g_free (address);
-  g_free (scheme);
 }
 
 static void
@@ -2250,16 +1920,6 @@ nautilus_gtk_places_view_constructed (GObject *object)
 }
 
 static void
-nautilus_gtk_places_view_map (GtkWidget *widget)
-{
-  NautilusGtkPlacesView *view = NAUTILUS_GTK_PLACES_VIEW (widget);
-
-  gtk_editable_set_text (GTK_EDITABLE (view->address_entry), "");
-
-  GTK_WIDGET_CLASS (nautilus_gtk_places_view_parent_class)->map (widget);
-}
-
-static void
 nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -2270,8 +1930,6 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
   object_class->constructed = nautilus_gtk_places_view_constructed;
   object_class->get_property = nautilus_gtk_places_view_get_property;
   object_class->set_property = nautilus_gtk_places_view_set_property;
-
-  widget_class->map = nautilus_gtk_places_view_map;
 
   /*
    * NautilusGtkPlacesView::open-location:
@@ -2346,21 +2004,15 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/gtk/ui/nautilusgtkplacesview.ui");
 
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, actionbar);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, address_entry);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, address_entry_completion);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, completion_store);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, connect_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, listbox);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, recent_servers_listbox);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, recent_servers_popover);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, recent_servers_stack);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, stack);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, server_adresses_popover);
-  gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesView, available_protocols_grid);
 
-  gtk_widget_class_bind_template_callback (widget_class, on_address_entry_text_changed);
-  gtk_widget_class_bind_template_callback (widget_class, on_address_entry_show_help_pressed);
-  gtk_widget_class_bind_template_callback (widget_class, on_connect_button_clicked);
   gtk_widget_class_bind_template_callback (widget_class, on_listbox_row_activated);
   gtk_widget_class_bind_template_callback (widget_class, on_recent_servers_listbox_row_activated);
 
@@ -2453,8 +2105,6 @@ nautilus_gtk_places_view_init (NautilusGtkPlacesView *self)
   g_signal_connect (controller, "released",
                     G_CALLBACK (on_middle_click_row_event), self);
   gtk_widget_add_controller (self->listbox, controller);
-
-  populate_available_protocols_grid (GTK_GRID (self->available_protocols_grid));
 }
 
 /*
