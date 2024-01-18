@@ -62,17 +62,6 @@ static GType nautilus_module_get_type (void);
 G_DEFINE_TYPE (NautilusModule, nautilus_module, G_TYPE_TYPE_MODULE);
 
 static gboolean
-module_pulls_in_orbit (GModule *module)
-{
-    gpointer symbol;
-    gboolean res;
-
-    res = g_module_symbol (module, "ORBit_realloc_tcval", &symbol);
-
-    return res;
-}
-
-static gboolean
 nautilus_module_load (GTypeModule *gmodule)
 {
     NautilusModule *module;
@@ -85,17 +74,6 @@ nautilus_module_load (GTypeModule *gmodule)
     {
         g_warning ("%s", g_module_error ());
         return FALSE;
-    }
-
-    /* ORBit installs atexit() handlers, which would get unloaded together
-     * with the module now that the main process doesn't depend on GConf anymore,
-     * causing nautilus to sefgault at exit.
-     * If we detect that an extension would pull in ORBit, we make the
-     * module resident to prevent that.
-     */
-    if (module_pulls_in_orbit (module->library))
-    {
-        g_module_make_resident (module->library);
     }
 
     if (!g_module_symbol (module->library,
@@ -114,25 +92,10 @@ nautilus_module_load (GTypeModule *gmodule)
         return FALSE;
     }
 
+    g_module_make_resident (module->library);
     module->initialize (gmodule);
 
     return TRUE;
-}
-
-static void
-nautilus_module_unload (GTypeModule *gmodule)
-{
-    NautilusModule *module;
-
-    module = NAUTILUS_MODULE (gmodule);
-
-    module->shutdown ();
-
-    g_module_close (module->library);
-
-    module->initialize = NULL;
-    module->shutdown = NULL;
-    module->list_types = NULL;
 }
 
 static void
@@ -157,7 +120,6 @@ nautilus_module_class_init (NautilusModuleClass *class)
 {
     G_OBJECT_CLASS (class)->finalize = nautilus_module_finalize;
     G_TYPE_MODULE_CLASS (class)->load = nautilus_module_load;
-    G_TYPE_MODULE_CLASS (class)->unload = nautilus_module_unload;
 }
 
 static void
@@ -198,7 +160,6 @@ nautilus_module_load_file (const char   *filename,
     if (g_type_module_use (G_TYPE_MODULE (module)))
     {
         add_module_objects (module);
-        g_type_module_unuse (G_TYPE_MODULE (module));
         g_strv_builder_add (installed_module_name_builder, filename);
         return module;
     }
