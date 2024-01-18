@@ -1212,10 +1212,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     {
       start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_OTHER_LOCATIONS);
 
-      add_place (sidebar, NAUTILUS_GTK_PLACES_OTHER_LOCATIONS,
-                 NAUTILUS_GTK_PLACES_SECTION_OTHER_LOCATIONS,
-                 _("Other Locations"), start_icon, NULL, SCHEME_OTHER_LOCATIONS ":///",
-                 NULL, NULL, NULL, NULL, 0, _("Show Other Locations"));
 
       g_object_unref (start_icon);
     }

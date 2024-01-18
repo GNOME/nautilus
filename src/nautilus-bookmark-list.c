@@ -786,8 +786,7 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
     if (g_file_has_uri_scheme (location, SCHEME_RECENT) ||
         g_file_has_uri_scheme (location, SCHEME_STARRED) ||
         nautilus_is_home_directory (location) ||
-        g_file_has_uri_scheme (location, SCHEME_TRASH) ||
-        g_file_has_uri_scheme (location, SCHEME_OTHER_LOCATIONS))
+        g_file_has_uri_scheme (location, SCHEME_TRASH))
     {
         /* Already in the sidebar */
         return FALSE;

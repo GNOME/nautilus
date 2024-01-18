@@ -12,7 +12,6 @@ gboolean
 nautilus_scheme_is_internal (const char *scheme)
 {
     return g_str_equal (scheme, SCHEME_BURN) ||
-           g_str_equal (scheme, SCHEME_OTHER_LOCATIONS) ||
            g_str_equal (scheme, SCHEME_NETWORK) ||
            g_str_equal (scheme, SCHEME_NETWORK_VIEW) ||
            g_str_equal (scheme, SCHEME_RECENT) ||

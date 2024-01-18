@@ -106,8 +106,6 @@ libnautilus_sources = [
   'nautilus-name-cell.h',
   'nautilus-pathbar.c',
   'nautilus-pathbar.h',
-  'nautilus-places-view.c',
-  'nautilus-places-view.h',
   'nautilus-previewer.c',
   'nautilus-previewer.h',
   'nautilus-progress-indicator.c',

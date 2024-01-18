@@ -922,19 +922,6 @@ places_sidebar_show_error_message_cb (NautilusGtkPlacesSidebar *sidebar,
 }
 
 static void
-places_sidebar_show_other_locations_with_flags (NautilusWindow             *window,
-                                                NautilusGtkPlacesOpenFlags  open_flags)
-{
-    GFile *location;
-
-    location = g_file_new_for_uri (SCHEME_OTHER_LOCATIONS ":///");
-
-    open_location_cb (window, location, open_flags);
-
-    g_object_unref (location);
-}
-
-static void
 places_sidebar_show_starred_location (NautilusWindow             *window,
                                       NautilusGtkPlacesOpenFlags  open_flags)
 {
@@ -2298,11 +2285,6 @@ nautilus_window_init (NautilusWindow *window)
     g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
     gtk_widget_init_template (GTK_WIDGET (window));
 
-    g_signal_connect_object (window->places_sidebar,
-                             "show-other-locations-with-flags",
-                             G_CALLBACK (places_sidebar_show_other_locations_with_flags),
-                             window,
-                             G_CONNECT_SWAPPED);
     g_signal_connect_object (window->places_sidebar,
                              "show-starred-location",
                              G_CALLBACK (places_sidebar_show_starred_location),

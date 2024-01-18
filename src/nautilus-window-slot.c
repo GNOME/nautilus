@@ -31,7 +31,6 @@
 #include "nautilus-files-view.h"
 #include "nautilus-location-banner.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-places-view.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-scheme.h"
 #include "nautilus-toolbar.h"
@@ -243,33 +242,10 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
     view = NULL;
     view_id = NAUTILUS_VIEW_INVALID_ID;
 
-    if (nautilus_file_is_other_locations (file))
-    {
-        view = NAUTILUS_VIEW (nautilus_places_view_new ());
-
-        /* Save the current view, so we can go back after places view */
-        if (NAUTILUS_IS_FILES_VIEW (self->content_view))
-        {
-            self->view_mode_before_places = nautilus_view_get_view_id (self->content_view);
-        }
-
-        return view;
-    }
-
     if (self->content_view != NULL)
     {
-        /* If there is already a view, just use the view mode that it's currently using, or
-         * if we were on "Other Locations" before, use what we were using before entering
-         * it. */
-        if (NAUTILUS_IS_PLACES_VIEW (self->content_view))
-        {
-            view_id = self->view_mode_before_places;
-            self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
-        }
-        else
-        {
-            view_id = nautilus_view_get_view_id (self->content_view);
-        }
+        /* If there is already a view, just use the view mode that it's currently using */
+        view_id = nautilus_view_get_view_id (self->content_view);
     }
 
     /* If there is not previous view in this slot, use the default view mode
@@ -1109,11 +1085,7 @@ update_search_information (NautilusWindowSlot *self)
         file = nautilus_file_get (location);
         label = NULL;
 
-        if (nautilus_file_is_other_locations (file))
-        {
-            label = _("Searching locations only");
-        }
-        else if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK))
+        if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK))
         {
             label = _("Searching network locations only");
         }
@@ -3137,12 +3109,6 @@ nautilus_window_slot_get_icon_name (NautilusWindowSlot *self)
         }
         break;
 
-        case NAUTILUS_VIEW_OTHER_LOCATIONS_ID:
-        {
-            return nautilus_view_get_icon_name (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
-        }
-        break;
-
         default:
         {
             return NULL;
@@ -3173,12 +3139,6 @@ nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
         case NAUTILUS_VIEW_GRID_ID:
         {
             return nautilus_view_get_tooltip (NAUTILUS_VIEW_LIST_ID);
-        }
-        break;
-
-        case NAUTILUS_VIEW_OTHER_LOCATIONS_ID:
-        {
-            return nautilus_view_get_tooltip (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
         }
         break;
 
