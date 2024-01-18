@@ -18,6 +18,8 @@
 
 #pragma once
 
+#define NAUTILUS_EXTENSION_H
+
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-extension/nautilus-column.h>
 #include <libnautilus-extension/nautilus-extension-enum-types.h>
