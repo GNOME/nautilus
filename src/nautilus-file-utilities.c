@@ -70,11 +70,7 @@ nautilus_compute_title_for_location (GFile *location)
     {
         file = nautilus_file_get (location);
 
-        if (nautilus_file_is_other_locations (file))
-        {
-            title = g_strdup (_("Other Locations"));
-        }
-        else if (nautilus_file_is_starred_location (file))
+        if (nautilus_file_is_starred_location (file))
         {
             title = g_strdup (_("Starred"));
         }

@@ -4233,11 +4233,7 @@ nautilus_file_peek_display_name (NautilusFile *file)
 const char *
 nautilus_file_get_display_name (NautilusFile *file)
 {
-    if (nautilus_file_is_other_locations (file))
-    {
-        return _("Other Locations");
-    }
-    else if (nautilus_file_is_starred_location (file))
+    if (nautilus_file_is_starred_location (file))
     {
         return _("Starred");
     }
@@ -7420,27 +7416,6 @@ nautilus_file_is_remote (NautilusFile *file)
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     return nautilus_file_get_filesystem_remote (file);
-}
-
-/**
- * nautilus_file_is_other_locations
- *
- * Check if this file is Other Locations.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: TRUE if @file is Other Locations.
- *
- **/
-gboolean
-nautilus_file_is_other_locations (NautilusFile *file)
-{
-    g_autoptr (GFile) location = NULL;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    location = nautilus_file_get_location (file);
-
-    return nautilus_is_root_for_scheme (location, SCHEME_OTHER_LOCATIONS);
 }
 
 /**
