@@ -51,7 +51,6 @@ enum
 typedef enum
 {
     NORMAL_BUTTON,
-    OTHER_LOCATIONS_BUTTON,
     ROOT_BUTTON,
     ADMIN_ROOT_BUTTON,
     HOME_BUTTON,
@@ -379,11 +378,6 @@ get_dir_name (ButtonData *button_data)
         case HOME_BUTTON:
         {
             return _("Home");
-        }
-
-        case OTHER_LOCATIONS_BUTTON:
-        {
-            return _("Other Locations");
         }
 
         case STARRED_BUTTON:
@@ -881,11 +875,6 @@ get_gicon (ButtonData *button_data)
             return g_themed_icon_new ("document-open-recent-symbolic");
         }
 
-        case OTHER_LOCATIONS_BUTTON:
-        {
-            return g_themed_icon_new ("list-add-symbolic");
-        }
-
         case TRASH_BUTTON:
         {
             return nautilus_trash_monitor_get_symbolic_icon ();
@@ -999,11 +988,6 @@ setup_button_type (ButtonData      *button_data,
     {
         button_data->dir_name = g_mount_get_name (mount);
         button_data->type = MOUNT_BUTTON;
-        button_data->is_root = TRUE;
-    }
-    else if (g_file_has_uri_scheme (location, SCHEME_OTHER_LOCATIONS))
-    {
-        button_data->type = OTHER_LOCATIONS_BUTTON;
         button_data->is_root = TRUE;
     }
     else if (nautilus_is_root_for_scheme (location, SCHEME_ADMIN))
@@ -1158,7 +1142,6 @@ make_button_data (NautilusPathBar *self,
         case TRASH_BUTTON:
         case RECENT_BUTTON:
         case STARRED_BUTTON:
-        case OTHER_LOCATIONS_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
