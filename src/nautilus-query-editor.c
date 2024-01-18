@@ -90,8 +90,7 @@ update_fts_sensitivity (NautilusQueryEditor *editor)
     {
         g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
 
-        fts_sensitive = !nautilus_file_is_other_locations (file) &&
-                        !g_file_has_uri_scheme (editor->location, SCHEME_NETWORK) &&
+        fts_sensitive = !g_file_has_uri_scheme (editor->location, SCHEME_NETWORK) &&
                         !(nautilus_file_is_remote (file) &&
                           location_settings_search_get_recursive_for_location (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
         nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),

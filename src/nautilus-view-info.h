@@ -11,7 +11,6 @@
 #define NAUTILUS_VIEW_GRID_ID            2
 /* Special ids, not used by GSettings schemas: */
 #define NAUTILUS_VIEW_INVALID_ID         0
-#define NAUTILUS_VIEW_OTHER_LOCATIONS_ID 3
 
 typedef struct
 {
@@ -20,3 +19,4 @@ typedef struct
     int zoom_level_max;
     int zoom_level_standard;
 } NautilusViewInfo;
+
