@@ -101,11 +101,7 @@ bookmark_set_name_from_ready_file (NautilusBookmark *self,
 
     display_name = nautilus_file_get_display_name (self->file);
 
-    if (nautilus_file_is_other_locations (self->file))
-    {
-        nautilus_bookmark_set_name_internal (self, _("Other Locations"));
-    }
-    else if (nautilus_file_is_home (self->file))
+    if (nautilus_file_is_home (self->file))
     {
         nautilus_bookmark_set_name_internal (self, _("Home"));
     }

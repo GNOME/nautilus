@@ -288,7 +288,6 @@ get_window_slot_for_location (NautilusApplication *self,
 
     if (file != NULL &&
         !nautilus_file_is_directory (file) &&
-        !nautilus_file_is_other_locations (file) &&
         g_file_has_parent (location, NULL))
     {
         searched_location = g_file_get_parent (location);
