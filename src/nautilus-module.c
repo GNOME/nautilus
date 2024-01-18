@@ -55,7 +55,7 @@ struct _NautilusModuleClass
 };
 
 static GList *module_objects = NULL;
-static GStrv installed_module_names = NULL;
+static GList *installed_modules = NULL;
 
 static GType nautilus_module_get_type (void);
 
@@ -148,9 +148,8 @@ add_module_objects (NautilusModule *module)
     }
 }
 
-static NautilusModule *
-nautilus_module_load_file (const char   *filename,
-                           GStrvBuilder *installed_module_name_builder)
+static void
+nautilus_module_load_file (const char *filename)
 {
     NautilusModule *module;
 
@@ -160,20 +159,30 @@ nautilus_module_load_file (const char   *filename,
     if (g_type_module_use (G_TYPE_MODULE (module)))
     {
         add_module_objects (module);
-        g_strv_builder_add (installed_module_name_builder, filename);
-        return module;
+        installed_modules = g_list_prepend (installed_modules, module);
+        return;
     }
     else
     {
         g_object_unref (module);
-        return NULL;
     }
 }
 
 char *
 nautilus_module_get_installed_module_names (void)
 {
-    return g_strjoinv ("\n", installed_module_names);
+    g_autoptr (GStrvBuilder) builder = g_strv_builder_new ();
+    g_auto (GStrv) names = NULL;
+
+    for (GList *l = installed_modules; l != NULL; l = l->next)
+    {
+        NautilusModule *module = l->data;
+        g_strv_builder_add (builder, module->path);
+    }
+
+    names = g_strv_builder_end (builder);
+
+    return g_strjoinv ("\n", names);
 }
 
 static void
@@ -181,7 +190,6 @@ load_module_dir (const char *dirname)
 {
     GDir *dir;
 
-    g_autoptr (GStrvBuilder) installed_module_name_builder = g_strv_builder_new ();
     dir = g_dir_open (dirname, 0, NULL);
 
     if (dir)
@@ -197,15 +205,13 @@ load_module_dir (const char *dirname)
                 filename = g_build_filename (dirname,
                                              name,
                                              NULL);
-                nautilus_module_load_file (filename, installed_module_name_builder);
+                nautilus_module_load_file (filename);
                 g_free (filename);
             }
         }
 
         g_dir_close (dir);
     }
-
-    installed_module_names = g_strv_builder_end (installed_module_name_builder);
 }
 
 void
@@ -220,7 +226,9 @@ nautilus_module_teardown (void)
     }
 
     g_list_free (module_objects);
-    g_strfreev (installed_module_names);
+
+    /* We can't actually free the modules themselves. */
+    g_clear_pointer (&installed_modules, g_list_free);
 }
 
 void
