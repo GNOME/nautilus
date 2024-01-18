@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="GtkPopover" id="server_adresses_popover">
+    <property name="position">top</property>
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <property name="margin-start">18</property>
+        <property name="margin-end">18</property>
+        <property name="margin-top">18</property>
+        <property name="margin-bottom">18</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">true</property>
+            <property name="label" translatable="yes">Server Addresses</property>
+            <attributes>
+              <attribute name="weight" value="bold"></attribute>
+            </attributes>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">true</property>
+            <property name="label" translatable="yes">Server addresses are made up of a protocol prefix and an address. Examples:</property>
+            <property name="wrap">true</property>
+            <property name="width-chars">40</property>
+            <property name="max-width-chars">40</property>
+            <property name="xalign">0</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">true</property>
+            <property name="label">smb://gnome.org, ssh://192.168.0.1, ftp://[2001:db8::1]</property>
+            <property name="wrap">true</property>
+            <property name="width-chars">40</property>
+            <property name="max-width-chars">40</property>
+            <property name="xalign">0</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkGrid" id="available_protocols_grid">
+            <property name="margin-top">12</property>
+            <property name="hexpand">true</property>
+            <property name="row-spacing">6</property>
+            <property name="column-spacing">12</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="hexpand">true</property>
+                <property name="label" translatable="yes">Available Protocols</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="weight" value="bold"></attribute>
+                </attributes>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="label" translatable="yes">Prefix</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="weight" value="bold"></attribute>
+                </attributes>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <template class="NautilusNetworkAddressBar" parent="GtkBox">
+    <property name="hexpand">true</property>
+    <style>
+      <class name="toolbar"/>
+    </style>
+    <child>
+      <object class="GtkEntry" id="address_entry">
+        <property name="width-chars">10</property>
+        <property name="max-width-chars">34</property>
+        <property name="placeholder-text" translatable="yes">Network address…</property>
+        <signal name="notify::text" handler="on_address_entry_text_changed" object="NautilusNetworkAddressBar" swapped="yes"/>
+        <signal name="activate" handler="on_connect_button_clicked" object="NautilusNetworkAddressBar" swapped="yes"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton" id="connect_button">
+        <property name="label" translatable="yes">Con_nect</property>
+        <property name="use-underline">true</property>
+        <property name="can-shrink">true</property>
+        <property name="sensitive">false</property>
+        <property name="valign">center</property>
+        <signal name="clicked" handler="on_connect_button_clicked" object="NautilusNetworkAddressBar" swapped="yes"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuButton">
+        <property name="popover">server_adresses_popover</property>
+        <property name="icon-name">help-about-symbolic</property>
+        <style>
+          <class name="flat"/>
+          <class name="circular"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>
