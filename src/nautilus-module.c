@@ -227,6 +227,12 @@ nautilus_module_teardown (void)
 
     g_list_free (module_objects);
 
+    for (l = installed_modules; l != NULL; l = l->next)
+    {
+        NautilusModule *module = l->data;
+        module->shutdown ();
+    }
+
     /* We can't actually free the modules themselves. */
     g_clear_pointer (&installed_modules, g_list_free);
 }
