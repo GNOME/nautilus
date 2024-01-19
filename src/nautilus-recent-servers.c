@@ -16,6 +16,8 @@ struct _NautilusRecentServers
 {
     GObject parent_instance;
 
+    GHashTable *server_infos;
+
     GFile *server_list_file;
     GFileMonitor *server_list_monitor;
 
@@ -36,7 +38,16 @@ enum
     LAST_PROP
 };
 
+enum
+{
+    ADDED,
+    CHANGED,
+    REMOVED,
+    LAST_SIGNAL
+};
+
 static GParamSpec *properties[LAST_PROP];
+static guint signals[LAST_SIGNAL];
 
 static void
 server_file_changed_cb (NautilusRecentServers *self)
@@ -185,6 +196,7 @@ nautilus_recent_servers_finalize (GObject *object)
 
     g_clear_object (&self->server_list_file);
     g_clear_object (&self->server_list_monitor);
+    g_clear_pointer (&self->server_infos, g_hash_table_destroy);
 
     G_OBJECT_CLASS (nautilus_recent_servers_parent_class)->finalize (object);
 }
@@ -225,6 +237,40 @@ nautilus_recent_servers_get_property (GObject    *object,
     }
 }
 
+static GFileInfo *
+server_file_info_new (const char *uri)
+{
+    GFileInfo *info = g_file_info_new ();
+    g_autofree char *random_name = g_dbus_generate_guid ();
+    g_autoptr (GIcon) icon = g_themed_icon_new ("folder-remote");
+    g_autoptr (GIcon) symbolic_icon = g_themed_icon_new ("folder-remote-symbolic");
+
+    g_file_info_set_name (info, random_name);
+    g_file_info_set_icon (info, icon);
+    g_file_info_set_symbolic_icon (info, symbolic_icon);
+    g_file_info_set_content_type (info, "inode/directory");
+    g_file_info_set_file_type (info, G_FILE_TYPE_SHORTCUT);
+    g_file_info_set_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL, TRUE);
+    g_file_info_set_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE, FALSE);
+    g_file_info_set_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_RENAME, FALSE);
+    g_file_info_set_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE, FALSE);
+    g_file_info_set_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH, FALSE);
+
+    g_file_info_set_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI, uri);
+
+    return info;
+}
+
+static int
+_date_time_equal_steal_1st (GDateTime *date_time1__to_be_stolen,
+                            GDateTime *date_time2)
+{
+    g_autoptr (GDateTime) date_time1 = date_time1__to_be_stolen;
+
+    return ((date_time1 == NULL && date_time2 == NULL) ||
+            g_date_time_equal (date_time1, date_time2));
+}
+
 static void
 populate_servers (NautilusRecentServers *self)
 {
@@ -239,6 +285,8 @@ populate_servers (NautilusRecentServers *self)
         return;
     }
 
+    nautilus_recent_servers_set_loading (self, TRUE);
+
     uris = g_bookmark_file_get_uris (server_list, &num_uris);
 
     if (!uris)
@@ -248,18 +296,69 @@ populate_servers (NautilusRecentServers *self)
         return;
     }
 
-    /* clear previous items */
+    g_autoptr (GList) old_infos = g_hash_table_get_values (self->server_infos);
+    g_autoptr (GList) new_infos = NULL;
+    g_autoptr (GList) changed_infos = NULL;
 
     for (gsize i = 0; i < num_uris; i++)
     {
-        char *name;
-        char *dup_uri;
+        const gchar *uri = uris[i];
+        GFileInfo *info = g_hash_table_lookup (self->server_infos, uri);
+        gboolean new = FALSE;
 
-        name = g_bookmark_file_get_title (server_list, uris[i], NULL);
-        dup_uri = g_strdup (uris[i]);
+        if (info != NULL)
+        {
+            old_infos = g_list_remove (old_infos, info);
+        }
+        else
+        {
+            new = TRUE;
+            info = server_file_info_new (uri);
+            g_hash_table_insert (self->server_infos, g_strdup (uri), info);
+            new_infos = g_list_prepend (new_infos, info);
+        }
 
+        g_autofree char *name = g_bookmark_file_get_title (server_list, uri, NULL);
+        GDateTime *added = g_bookmark_file_get_added_date_time (server_list, uri, NULL);
+        GDateTime *visited = g_bookmark_file_get_visited_date_time (server_list, uri, NULL);
+        GDateTime *modified = g_bookmark_file_get_modified_date_time (server_list, uri, NULL);
 
-        g_free (name);
+        if (new ||
+            g_strcmp0 (g_file_info_get_display_name (info), name) != 0 ||
+            !_date_time_equal_steal_1st (g_file_info_get_creation_date_time (info), added) ||
+            !_date_time_equal_steal_1st (g_file_info_get_access_date_time (info), visited) ||
+            !_date_time_equal_steal_1st (g_file_info_get_modification_date_time (info), modified))
+        {
+            g_file_info_set_display_name (info, name);
+            g_file_info_set_creation_date_time (info, added);
+            g_file_info_set_access_date_time (info, visited);
+            g_file_info_set_modification_date_time (info, modified);
+
+            if (!new)
+            {
+                changed_infos = g_list_prepend (changed_infos, info);
+            }
+        }
+    }
+
+    if (old_infos != NULL)
+    {
+        g_signal_emit (self, signals[REMOVED], 0, old_infos);
+    }
+    if (changed_infos != NULL)
+    {
+        g_signal_emit (self, signals[CHANGED], 0, changed_infos);
+    }
+    if (new_infos != NULL)
+    {
+        g_signal_emit (self, signals[ADDED], 0, new_infos);
+    }
+
+    for (GList *l = old_infos; l != NULL; l = l->next)
+    {
+        const char *old_uri = g_file_info_get_attribute_string (l->data, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
+
+        g_hash_table_remove (self->server_infos, old_uri);
     }
 
     nautilus_recent_servers_set_loading (self, FALSE);
@@ -285,17 +384,52 @@ nautilus_recent_servers_class_init (NautilusRecentServersClass *klass)
                               G_PARAM_READABLE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
 
     g_object_class_install_properties (object_class, LAST_PROP, properties);
+
+    signals[ADDED] = g_signal_new ("added",
+                                   G_TYPE_FROM_CLASS (object_class),
+                                   G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                   g_cclosure_marshal_VOID__POINTER,
+                                   G_TYPE_NONE, 1, G_TYPE_POINTER);
+    signals[CHANGED] = g_signal_new ("changed",
+                                     G_TYPE_FROM_CLASS (object_class),
+                                     G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                     g_cclosure_marshal_VOID__POINTER,
+                                     G_TYPE_NONE, 1, G_TYPE_POINTER);
+    signals[REMOVED] = g_signal_new ("removed",
+                                     G_TYPE_FROM_CLASS (object_class),
+                                     G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                     g_cclosure_marshal_VOID__POINTER,
+                                     G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
 static void
 nautilus_recent_servers_init (NautilusRecentServers *self)
 {
+    self->server_infos = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 }
 
 NautilusRecentServers *
 nautilus_recent_servers_new (void)
 {
     return g_object_new (NAUTILUS_TYPE_RECENT_SERVERS, NULL);
+}
+
+void
+nautilus_recent_servers_force_reload (NautilusRecentServers *self)
+{
+    populate_servers (self);
+}
+
+/* (transfer full) */
+GList *
+nautilus_recent_servers_get_infos (NautilusRecentServers *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_RECENT_SERVERS (self), FALSE);
+
+    GList *server_infos = g_hash_table_get_values (self->server_infos);
+
+    g_list_foreach (server_infos, (GFunc) g_object_ref, NULL);
+    return server_infos;
 }
 
 gboolean

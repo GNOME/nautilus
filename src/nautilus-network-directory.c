@@ -10,6 +10,8 @@
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-file-private.h"
+#include "nautilus-recent-servers.h"
 #include "nautilus-scheme.h"
 
 
@@ -22,6 +24,10 @@ struct _NautilusNetworkDirectory
 
     NautilusDirectory *network_backend_directory;
     gboolean network_backend_done_loading;
+
+    NautilusRecentServers *recent_servers;
+    GList *recent_server_files;
+    gboolean recent_servers_done_loading;
 
     GList /*<owned NetworkCallback>*/ *callback_list;
 };
@@ -90,7 +96,8 @@ real_are_all_files_seen (NautilusDirectory *directory)
     NautilusNetworkDirectory *self = NAUTILUS_NETWORK_DIRECTORY (directory);
 
     return (nautilus_directory_are_all_files_seen (self->computer_backend_directory) &&
-            nautilus_directory_are_all_files_seen (self->network_backend_directory));
+            nautilus_directory_are_all_files_seen (self->network_backend_directory) &&
+            self->recent_servers_done_loading);
 }
 
 static gboolean
@@ -99,6 +106,11 @@ real_contains_file (NautilusDirectory *directory,
 {
     NautilusNetworkDirectory *self = NAUTILUS_NETWORK_DIRECTORY (directory);
 
+    if (nautilus_file_get_directory (file) == directory)
+    {
+        /* Recent server files are directly owned by NautilusNetworkDirectory. */
+        return TRUE;
+    }
     if (nautilus_directory_contains_file (self->network_backend_directory, file))
     {
         return TRUE;
@@ -127,11 +139,14 @@ on_backend_directory_done_loading (NautilusDirectory *backend_directory,
     }
     else
     {
-        g_assert_not_reached ();
+        /* Called from on_recent_servers_loading_changed () */
+        g_assert (backend_directory == (NautilusDirectory *) self &&
+                  self->recent_servers_done_loading);
     }
 
     if (self->computer_backend_done_loading &&
-        self->network_backend_done_loading)
+        self->network_backend_done_loading &&
+        self->recent_servers_done_loading)
     {
         nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
     }
@@ -147,6 +162,9 @@ real_force_reload (NautilusDirectory *directory)
 
     self->network_backend_done_loading = FALSE;
     nautilus_directory_force_reload (self->network_backend_directory);
+
+    self->recent_servers_done_loading = FALSE;
+    nautilus_recent_servers_force_reload (self->recent_servers);
 }
 
 static void
@@ -167,11 +185,13 @@ on_backend_directory_ready (NautilusDirectory *backend_directory,
     }
     else
     {
-        g_assert_not_reached ();
+        g_assert (backend_directory == (NautilusDirectory *) self &&
+                  network_callback->self->recent_servers_done_loading);
     }
 
     if (network_callback->computer_backend_ready &&
-        network_callback->network_backend_ready)
+        network_callback->network_backend_ready &&
+        network_callback->self->recent_servers_done_loading)
     {
         g_autolist (NautilusFile) files = nautilus_directory_get_file_list (NAUTILUS_DIRECTORY (self));
 
@@ -181,6 +201,29 @@ on_backend_directory_ready (NautilusDirectory *backend_directory,
         /* Remove it from pending callbacks list and free it */
         self->callback_list = g_list_remove (self->callback_list, network_callback);
         g_free (network_callback);
+    }
+}
+
+static void
+on_recent_servers_loading_changed (GObject    *object,
+                                   GParamSpec *pspec,
+                                   gpointer    user_data)
+{
+    NautilusNetworkDirectory *self = NAUTILUS_NETWORK_DIRECTORY (user_data);
+    NautilusRecentServers *recent_servers = NAUTILUS_RECENT_SERVERS (object);
+    gboolean is_loading = nautilus_recent_servers_get_loading (recent_servers);
+
+    self->recent_servers_done_loading = !is_loading;
+    if (self->recent_servers_done_loading)
+    {
+        NautilusDirectory *self_as_directory = NAUTILUS_DIRECTORY (self);
+
+        on_backend_directory_done_loading (self_as_directory, self);
+
+        for (GList *l = self->callback_list; l != NULL; l = l->next)
+        {
+            on_backend_directory_ready (self_as_directory, NULL, l->data);
+        }
     }
 }
 
@@ -207,6 +250,94 @@ on_computer_backend_directory_files_changed (NautilusNetworkDirectory *self,
     g_autolist (NautilusFile) computer_files = filter_local (nautilus_file_list_copy (changed_files));
 
     nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (self), computer_files);
+}
+
+static NautilusFile *
+get_recent_server_file (NautilusDirectory *directory,
+                        GFileInfo         *server_info)
+{
+    g_autofree char *uri = g_strconcat (SCHEME_NETWORK_VIEW ":///",
+                                        g_file_info_get_name (server_info),
+                                        NULL);
+    g_autoptr (NautilusFile) file = nautilus_file_get_by_uri (uri);
+
+    nautilus_file_update_info (file, server_info);
+
+    return g_steal_pointer (&file);
+}
+
+static void
+on_recent_servers_added (NautilusNetworkDirectory *self,
+                         GList                    *servers)
+{
+    NautilusDirectory *dir = NAUTILUS_DIRECTORY (self);
+    g_autolist (NautilusFile) added_files = NULL;
+
+    for (GList *l = servers; l != NULL; l = l->next)
+    {
+        GFileInfo *server_info = l->data;
+        g_autoptr (NautilusFile) file = get_recent_server_file (dir, server_info);
+
+        self->recent_server_files = g_list_prepend (self->recent_server_files,
+                                                    g_object_ref (file));
+
+        added_files = g_list_prepend (added_files, g_steal_pointer (&file));
+    }
+
+    nautilus_directory_emit_files_added (dir, added_files);
+}
+
+static void
+on_recent_servers_changed (NautilusNetworkDirectory *self,
+                           GList                    *servers)
+{
+    g_autolist (NautilusFile) changed_files = NULL;
+
+    for (GList *l = servers; l != NULL; l = l->next)
+    {
+        GFileInfo *server_info = l->data;
+        NautilusFile *file = nautilus_directory_find_file_by_name (NAUTILUS_DIRECTORY (self),
+                                                                   g_file_info_get_name (server_info));
+        if (file == NULL)
+        {
+            g_critical ("Notified change on recent server whose random GUID name was not known yet");
+            continue;
+        }
+
+        nautilus_file_update_info (file, server_info);
+
+        changed_files = g_list_prepend (changed_files, g_object_ref (file));
+    }
+
+    nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (self), changed_files);
+}
+
+static void
+on_recent_servers_removed (NautilusNetworkDirectory *self,
+                           GList                    *servers)
+{
+    g_autolist (NautilusFile) removed_files = NULL;
+
+    for (GList *l = servers; l != NULL; l = l->next)
+    {
+        GFileInfo *server_info = l->data;
+        NautilusFile *file = nautilus_directory_find_file_by_name (NAUTILUS_DIRECTORY (self),
+                                                                   g_file_info_get_name (server_info));
+        if (file == NULL)
+        {
+            g_critical ("Notified removal of recent server whose random GUID name was not known yet");
+            continue;
+        }
+
+        nautilus_file_mark_gone (file);
+
+        /* Steal file from self->recent_server_files */
+        GList *link = g_list_find (self->recent_server_files, file);
+        self->recent_server_files = g_list_remove_link (self->recent_server_files, link);
+        removed_files = g_list_concat (link, removed_files);
+    }
+
+    nautilus_directory_emit_files_changed (NAUTILUS_DIRECTORY (self), removed_files);
 }
 
 static NetworkCallback *
@@ -311,6 +442,7 @@ real_file_monitor_add (NautilusDirectory         *directory,
                                          monitor_hidden_files,
                                          file_attributes,
                                          NULL, NULL);
+
     if (callback != NULL)
     {
         g_autolist (NautilusFile) files = nautilus_directory_get_file_list (directory);
@@ -335,9 +467,12 @@ real_get_file_list (NautilusDirectory *directory)
     NautilusNetworkDirectory *self = NAUTILUS_NETWORK_DIRECTORY (directory);
     g_autolist (NautilusFile) computer_list = filter_local (nautilus_directory_get_file_list (self->computer_backend_directory));
     g_autolist (NautilusFile) network_list = nautilus_directory_get_file_list (self->network_backend_directory);
+    g_autolist (NautilusFile) recent_servers = nautilus_file_list_copy (self->recent_server_files);
+
 
     return g_list_concat (g_steal_pointer (&computer_list),
-                          g_steal_pointer (&network_list));
+                          g_list_concat (g_steal_pointer (&recent_servers),
+                                         g_steal_pointer (&network_list)));
 }
 
 static gboolean
@@ -346,7 +481,8 @@ real_is_not_empty (NautilusDirectory *directory)
     NautilusNetworkDirectory *self = NAUTILUS_NETWORK_DIRECTORY (directory);
 
     return (nautilus_directory_is_not_empty (self->computer_backend_directory) &&
-            nautilus_directory_is_not_empty (self->network_backend_directory));
+            nautilus_directory_is_not_empty (self->network_backend_directory) &&
+            self->recent_server_files != NULL);
 }
 
 static gboolean
@@ -368,6 +504,8 @@ nautilus_network_directory_dispose (GObject *object)
 
     g_clear_object (&self->computer_backend_directory);
     g_clear_object (&self->network_backend_directory);
+    g_clear_list (&self->recent_server_files, g_object_unref);
+
     g_clear_list (&self->callback_list, g_free);
 
     G_OBJECT_CLASS (nautilus_network_directory_parent_class)->dispose (object);
@@ -401,6 +539,16 @@ nautilus_network_directory_init (NautilusNetworkDirectory *self)
                              G_CALLBACK (on_backend_directory_done_loading), self, G_CONNECT_DEFAULT);
     g_signal_connect_object (self->network_backend_directory, "load-error",
                              G_CALLBACK (nautilus_directory_emit_load_error), self, G_CONNECT_SWAPPED);
+
+    self->recent_servers = nautilus_recent_servers_new ();
+    g_signal_connect_object (self->recent_servers, "notify::loading",
+                             G_CALLBACK (on_recent_servers_loading_changed), self, G_CONNECT_DEFAULT);
+    g_signal_connect_object (self->recent_servers, "added",
+                             G_CALLBACK (on_recent_servers_added), self, G_CONNECT_SWAPPED);
+    g_signal_connect_object (self->recent_servers, "changed",
+                             G_CALLBACK (on_recent_servers_changed), self, G_CONNECT_SWAPPED);
+    g_signal_connect_object (self->recent_servers, "removed",
+                             G_CALLBACK (on_recent_servers_removed), self, G_CONNECT_SWAPPED);
 }
 
 static void
@@ -428,5 +576,9 @@ nautilus_network_directory_class_init (NautilusNetworkDirectoryClass *klass)
 NautilusNetworkDirectory *
 nautilus_network_directory_new (void)
 {
-    return g_object_new (NAUTILUS_TYPE_NETWORK_DIRECTORY, NULL);
+    g_autoptr (GFile) location = g_file_new_for_uri (SCHEME_NETWORK_VIEW ":///");
+
+    return g_object_new (NAUTILUS_TYPE_NETWORK_DIRECTORY,
+                         "location", location,
+                         NULL);
 }
