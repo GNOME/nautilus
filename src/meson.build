@@ -208,6 +208,8 @@ libnautilus_sources = [
   'nautilus-progress-info-manager.h',
   'nautilus-program-choosing.c',
   'nautilus-program-choosing.h',
+  'nautilus-recent-servers.c',
+  'nautilus-recent-servers.h',
   'nautilus-search-directory.c',
   'nautilus-search-directory.h',
   'nautilus-search-directory-file.c',
