@@ -10,11 +10,11 @@
 
 #include <gio/gio.h>
 
-#include "nautilusgtkplacesviewprivate.h"
+#include "nautilus-recent-servers.h"
 
-struct _NautilusGtkPlacesView
+struct _NautilusRecentServers
 {
-    GtkBox parent_instance;
+    GObject parent_instance;
 
     GFile *server_list_file;
     GFileMonitor *server_list_monitor;
@@ -22,12 +22,12 @@ struct _NautilusGtkPlacesView
     guint loading : 1;
 };
 
-static void        populate_servers (NautilusGtkPlacesView *view);
+static void        populate_servers (NautilusRecentServers *self);
 
-static void        nautilus_gtk_places_view_set_loading (NautilusGtkPlacesView *view,
-                                                         gboolean               loading);
+static void        nautilus_recent_servers_set_loading (NautilusRecentServers *self,
+                                                        gboolean               loading);
 
-G_DEFINE_TYPE (NautilusGtkPlacesView, nautilus_gtk_places_view, GTK_TYPE_BOX)
+G_DEFINE_TYPE (NautilusRecentServers, nautilus_recent_servers, G_TYPE_OBJECT)
 
 enum
 {
@@ -39,13 +39,13 @@ enum
 static GParamSpec *properties[LAST_PROP];
 
 static void
-server_file_changed_cb (NautilusGtkPlacesView *view)
+server_file_changed_cb (NautilusRecentServers *self)
 {
-    populate_servers (view);
+    populate_servers (self);
 }
 
 static GBookmarkFile *
-server_list_load (NautilusGtkPlacesView *view)
+server_list_load (NautilusRecentServers *self)
 {
     GBookmarkFile *bookmarks;
     GError *error = NULL;
@@ -72,13 +72,13 @@ server_list_load (NautilusGtkPlacesView *view)
     }
 
     /* Monitor the file in case it's modified outside this code */
-    if (!view->server_list_monitor)
+    if (!self->server_list_monitor)
     {
-        view->server_list_file = g_file_new_for_path (filename);
+        self->server_list_file = g_file_new_for_path (filename);
 
-        if (view->server_list_file)
+        if (self->server_list_file)
         {
-            view->server_list_monitor = g_file_monitor_file (view->server_list_file,
+            self->server_list_monitor = g_file_monitor_file (self->server_list_file,
                                                              G_FILE_MONITOR_NONE,
                                                              NULL,
                                                              &error);
@@ -90,14 +90,14 @@ server_list_load (NautilusGtkPlacesView *view)
             }
             else
             {
-                g_signal_connect_swapped (view->server_list_monitor,
+                g_signal_connect_swapped (self->server_list_monitor,
                                           "changed",
                                           G_CALLBACK (server_file_changed_cb),
-                                          view);
+                                          self);
             }
         }
 
-        g_clear_object (&view->server_list_file);
+        g_clear_object (&self->server_list_file);
     }
 
     g_free (datadir);
@@ -116,8 +116,8 @@ server_list_save (GBookmarkFile *bookmarks)
     g_free (filename);
 }
 
-static void
-server_list_add_server (NautilusGtkPlacesView *view,
+G_GNUC_UNUSED static void
+server_list_add_server (NautilusRecentServers *self,
                         GFile                 *file)
 {
     GBookmarkFile *bookmarks;
@@ -125,10 +125,11 @@ server_list_add_server (NautilusGtkPlacesView *view,
     GError *error;
     char *title;
     char *uri;
+
     GDateTime *now;
 
     error = NULL;
-    bookmarks = server_list_load (view);
+    bookmarks = server_list_load (self);
 
     if (!bookmarks)
     {
@@ -158,13 +159,13 @@ server_list_add_server (NautilusGtkPlacesView *view,
     g_free (uri);
 }
 
-static void
-server_list_remove_server (NautilusGtkPlacesView *view,
+G_GNUC_UNUSED static void
+server_list_remove_server (NautilusRecentServers *self,
                            const char            *uri)
 {
     GBookmarkFile *bookmarks;
 
-    bookmarks = server_list_load (view);
+    bookmarks = server_list_load (self);
 
     if (!bookmarks)
     {
@@ -178,42 +179,42 @@ server_list_remove_server (NautilusGtkPlacesView *view,
 }
 
 static void
-nautilus_gtk_places_view_finalize (GObject *object)
+nautilus_recent_servers_finalize (GObject *object)
 {
-    NautilusGtkPlacesView *view = (NautilusGtkPlacesView *) object;
+    NautilusRecentServers *self = (NautilusRecentServers *) object;
 
-    g_clear_object (&view->server_list_file);
-    g_clear_object (&view->server_list_monitor);
+    g_clear_object (&self->server_list_file);
+    g_clear_object (&self->server_list_monitor);
 
-    G_OBJECT_CLASS (nautilus_gtk_places_view_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_recent_servers_parent_class)->finalize (object);
 }
 
 static void
-nautilus_gtk_places_view_dispose (GObject *object)
+nautilus_recent_servers_dispose (GObject *object)
 {
-    NautilusGtkPlacesView *view = (NautilusGtkPlacesView *) object;
+    NautilusRecentServers *self = (NautilusRecentServers *) object;
 
-    if (view->server_list_monitor)
+    if (self->server_list_monitor)
     {
-        g_signal_handlers_disconnect_by_func (view->server_list_monitor, server_file_changed_cb, object);
+        g_signal_handlers_disconnect_by_func (self->server_list_monitor, server_file_changed_cb, object);
     }
 
-    G_OBJECT_CLASS (nautilus_gtk_places_view_parent_class)->dispose (object);
+    G_OBJECT_CLASS (nautilus_recent_servers_parent_class)->dispose (object);
 }
 
 static void
-nautilus_gtk_places_view_get_property (GObject    *object,
-                                       guint       prop_id,
-                                       GValue     *value,
-                                       GParamSpec *pspec)
+nautilus_recent_servers_get_property (GObject    *object,
+                                      guint       prop_id,
+                                      GValue     *value,
+                                      GParamSpec *pspec)
 {
-    NautilusGtkPlacesView *self = NAUTILUS_GTK_PLACES_VIEW (object);
+    NautilusRecentServers *self = NAUTILUS_RECENT_SERVERS (object);
 
     switch (prop_id)
     {
         case PROP_LOADING:
         {
-            g_value_set_boolean (value, nautilus_gtk_places_view_get_loading (self));
+            g_value_set_boolean (value, nautilus_recent_servers_get_loading (self));
             break;
         }
 
@@ -225,13 +226,13 @@ nautilus_gtk_places_view_get_property (GObject    *object,
 }
 
 static void
-populate_servers (NautilusGtkPlacesView *view)
+populate_servers (NautilusRecentServers *self)
 {
     GBookmarkFile *server_list;
     char **uris;
     gsize num_uris;
 
-    server_list = server_list_load (view);
+    server_list = server_list_load (self);
 
     if (!server_list)
     {
@@ -243,6 +244,7 @@ populate_servers (NautilusGtkPlacesView *view)
     if (!uris)
     {
         g_bookmark_file_free (server_list);
+        nautilus_recent_servers_set_loading (self, FALSE);
         return;
     }
 
@@ -256,21 +258,24 @@ populate_servers (NautilusGtkPlacesView *view)
         name = g_bookmark_file_get_title (server_list, uris[i], NULL);
         dup_uri = g_strdup (uris[i]);
 
+
         g_free (name);
     }
+
+    nautilus_recent_servers_set_loading (self, FALSE);
 
     g_strfreev (uris);
     g_bookmark_file_free (server_list);
 }
 
 static void
-nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
+nautilus_recent_servers_class_init (NautilusRecentServersClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-    object_class->finalize = nautilus_gtk_places_view_finalize;
-    object_class->dispose = nautilus_gtk_places_view_dispose;
-    object_class->get_property = nautilus_gtk_places_view_get_property;
+    object_class->finalize = nautilus_recent_servers_finalize;
+    object_class->dispose = nautilus_recent_servers_dispose;
+    object_class->get_property = nautilus_recent_servers_get_property;
 
     properties[PROP_LOADING] =
         g_param_spec_boolean ("loading",
@@ -283,33 +288,33 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
 }
 
 static void
-nautilus_gtk_places_view_init (NautilusGtkPlacesView *self)
+nautilus_recent_servers_init (NautilusRecentServers *self)
 {
 }
 
-GtkWidget *
-nautilus_gtk_places_view_new (void)
+NautilusRecentServers *
+nautilus_recent_servers_new (void)
 {
-    return g_object_new (NAUTILUS_TYPE_GTK_PLACES_VIEW, NULL);
+    return g_object_new (NAUTILUS_TYPE_RECENT_SERVERS, NULL);
 }
 
 gboolean
-nautilus_gtk_places_view_get_loading (NautilusGtkPlacesView *view)
+nautilus_recent_servers_get_loading (NautilusRecentServers *self)
 {
-    g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_VIEW (view), FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_RECENT_SERVERS (self), FALSE);
 
-    return view->loading;
+    return self->loading;
 }
 
 static void
-nautilus_gtk_places_view_set_loading (NautilusGtkPlacesView *view,
-                                      gboolean               loading)
+nautilus_recent_servers_set_loading (NautilusRecentServers *self,
+                                     gboolean               loading)
 {
-    g_return_if_fail (NAUTILUS_IS_GTK_PLACES_VIEW (view));
+    g_return_if_fail (NAUTILUS_IS_RECENT_SERVERS (self));
 
-    if (view->loading != loading)
+    if (self->loading != loading)
     {
-        view->loading = loading;
-        g_object_notify_by_pspec (G_OBJECT (view), properties [PROP_LOADING]);
+        self->loading = loading;
+        g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_LOADING]);
     }
 }
