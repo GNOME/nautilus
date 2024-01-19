@@ -7,6 +7,8 @@
 #include "nautilus-star-cell.h"
 #include "nautilus-tag-manager.h"
 
+#include <glib/gi18n.h>
+
 struct _NautilusStarCell
 {
     NautilusViewCell parent_instance;
@@ -66,8 +68,10 @@ update_star (GtkButton    *star,
                                                        file_uri);
 
     gtk_button_set_icon_name (star, is_starred ? "starred-symbolic" : "non-starred-symbolic");
-}
 
+    gtk_widget_set_tooltip_text (GTK_WIDGET (star),
+                                 is_starred ? _("Unstar") : _("Star"));
+}
 static void
 on_file_changed (NautilusStarCell *self)
 {
