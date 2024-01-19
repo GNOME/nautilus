@@ -16,6 +16,8 @@ G_DECLARE_FINAL_TYPE (NautilusRecentServers, nautilus_recent_servers, NAUTILUS, 
 
 NautilusRecentServers* nautilus_recent_servers_new (void);
 
+void                    nautilus_recent_servers_force_reload   (NautilusRecentServers *self);
+GList *                 nautilus_recent_servers_get_infos      (NautilusRecentServers *self);
 gboolean                nautilus_recent_servers_get_loading    (NautilusRecentServers *self);
 
 G_END_DECLS
