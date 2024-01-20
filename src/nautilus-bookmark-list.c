@@ -87,18 +87,6 @@ new_bookmark_from_uri (const char *uri,
 }
 
 static GFile *
-nautilus_bookmark_list_get_legacy_file (void)
-{
-    g_autofree char *filename = NULL;
-
-    filename = g_build_filename (g_get_home_dir (),
-                                 ".gtk-bookmarks",
-                                 NULL);
-
-    return g_file_new_for_path (filename);
-}
-
-static GFile *
 nautilus_bookmark_list_get_file (void)
 {
     g_autofree char *filename = NULL;
@@ -558,11 +546,6 @@ load_io_thread (GTask        *task,
     GError *error = NULL;
 
     file = nautilus_bookmark_list_get_file ();
-    if (!g_file_query_exists (file, NULL))
-    {
-        g_object_unref (file);
-        file = nautilus_bookmark_list_get_legacy_file ();
-    }
 
     g_file_load_contents (file, NULL, &contents, NULL, NULL, &error);
     g_object_unref (file);
