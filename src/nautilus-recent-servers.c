@@ -20,6 +20,8 @@ struct _NautilusRecentServers
 
     GFileMonitor *server_list_monitor;
 
+    guint idle_reload_id;
+
     guint loading : 1;
 };
 
@@ -192,7 +194,9 @@ nautilus_recent_servers_finalize (GObject *object)
 static void
 nautilus_recent_servers_dispose (GObject *object)
 {
-    /* Not removing this function because it's going to be used again next commit. */
+    NautilusRecentServers *self = (NautilusRecentServers *) object;
+
+    g_clear_handle_id (&self->idle_reload_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_recent_servers_parent_class)->dispose (object);
 }
@@ -255,11 +259,14 @@ _date_time_equal_steal_1st (GDateTime *date_time1__to_be_stolen,
 }
 
 static void
-populate_servers (NautilusRecentServers *self)
+populate_servers_on_idle (gpointer user_data)
 {
+    NautilusRecentServers *self = NAUTILUS_RECENT_SERVERS (user_data);
     GBookmarkFile *server_list;
     char **uris;
     gsize num_uris;
+
+    self->idle_reload_id = 0;
 
     server_list = server_list_load ();
 
@@ -270,8 +277,6 @@ populate_servers (NautilusRecentServers *self)
 
     /* Monitor the file in case it's modified outside this code */
     ensure_monitor (self);
-
-    nautilus_recent_servers_set_loading (self, TRUE);
 
     uris = g_bookmark_file_get_uris (server_list, &num_uris);
 
@@ -403,7 +408,11 @@ nautilus_recent_servers_new (void)
 void
 nautilus_recent_servers_force_reload (NautilusRecentServers *self)
 {
-    populate_servers (self);
+    if (self->idle_reload_id == 0)
+    {
+        self->idle_reload_id = g_idle_add_once (populate_servers_on_idle, self);
+        nautilus_recent_servers_set_loading (self, TRUE);
+    }
 }
 
 /* Returns: (transfer full): List of server infos. */
