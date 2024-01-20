@@ -76,8 +76,6 @@ void nautilus_application_withdraw_notification (NautilusApplication *self,
 
 NautilusBookmarkList *
      nautilus_application_get_bookmarks  (NautilusApplication *application);
-void nautilus_application_edit_bookmarks (NautilusApplication *application,
-					  NautilusWindow      *window);
 
 GtkWidget * nautilus_application_connect_server (NautilusApplication *application,
 						 NautilusWindow      *window);
