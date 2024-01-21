@@ -716,6 +716,12 @@ unload_file_timeout (gpointer data)
 
     g_autoptr (NautilusViewItem) item = gtk_tree_list_row_get_item (unload_data->row);
 
+    if (nautilus_file_is_gone (nautilus_view_item_get_file (item)))
+    {
+        /* It's been removed in the meantime. */
+        return;
+    }
+
     g_signal_emit (self, signals[UNLOAD_SUBDIRECTORY], 0, item);
 }
 
