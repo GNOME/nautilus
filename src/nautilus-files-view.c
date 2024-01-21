@@ -6804,8 +6804,11 @@ file_mount_callback (NautilusFile *file,
                      gpointer      callback_data)
 {
     g_autoptr (NautilusFilesView) self = NAUTILUS_FILES_VIEW (callback_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
 
     nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_MOUNT);
+    nautilus_view_item_set_loading (item, FALSE);
 
     if (error != NULL &&
         (error->domain != G_IO_ERROR ||
@@ -6830,6 +6833,10 @@ file_unmount_callback (NautilusFile *file,
                        gpointer      callback_data)
 {
     g_autoptr (NautilusFilesView) self = NAUTILUS_FILES_VIEW (callback_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
+
+    nautilus_view_item_set_loading (item, FALSE);
 
     if (error != NULL &&
         (error->domain != G_IO_ERROR ||
@@ -6894,12 +6901,11 @@ action_mount_volume (GSimpleAction *action,
                      GVariant      *state,
                      gpointer       user_data)
 {
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
     GList *selection, *l;
-    NautilusFilesView *view;
     GMountOperation *mount_op;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     for (l = selection; l != NULL; l = l->next)
@@ -6908,6 +6914,9 @@ action_mount_volume (GSimpleAction *action,
 
         if (nautilus_file_can_mount (file))
         {
+            NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
+
+            nautilus_view_item_set_loading (item, TRUE);
             mount_op = gtk_mount_operation_new (nautilus_files_view_get_containing_window (view));
             g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
             nautilus_file_mount (file, mount_op, NULL,
@@ -6924,12 +6933,11 @@ action_unmount_volume (GSimpleAction *action,
                        GVariant      *state,
                        gpointer       user_data)
 {
+    NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
@@ -6939,6 +6947,9 @@ action_unmount_volume (GSimpleAction *action,
         if (nautilus_file_can_unmount (file))
         {
             GMountOperation *mount_op;
+            NautilusViewItem *item = nautilus_view_model_get_item_for_file (priv->model, file);
+
+            nautilus_view_item_set_loading (item, TRUE);
             mount_op = gtk_mount_operation_new (nautilus_files_view_get_containing_window (view));
             nautilus_file_unmount (file, mount_op, NULL,
                                    file_unmount_callback, g_object_ref (view));
