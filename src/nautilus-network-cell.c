@@ -86,6 +86,8 @@ nautilus_network_cell_init (NautilusNetworkCell *self)
 
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
+    g_signal_group_connect_swapped (self->item_signal_group, "notify::loading",
+                                    (GCallback) on_file_changed, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
     g_signal_connect_object (self->item_signal_group, "bind",
