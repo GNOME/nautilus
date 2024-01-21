@@ -610,8 +610,6 @@ static NautilusViewItem *
 real_get_backing_item (NautilusListBase *list_base)
 {
     NautilusListView *self = NAUTILUS_LIST_VIEW (list_base);
-    NautilusViewModel *model = nautilus_list_base_get_model (list_base);
-    g_autoptr (GtkTreeListRow) common_parent = NULL;
 
     if (!self->expand_as_a_tree)
     {
@@ -622,19 +620,20 @@ real_get_backing_item (NautilusListBase *list_base)
      * is an expanded folder, in which case we should use that folder directly.
      * When dealing with multiple selections, use the same rules, but only
      * if a common parent exists. */
+    NautilusViewModel *model = nautilus_list_base_get_model (list_base);
+    g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (model));
+    g_autoptr (GtkTreeListRow) common_parent = NULL;
+    GtkBitsetIter iter;
+    guint i;
 
-    for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (model)); i++)
+    for (gtk_bitset_iter_init_first (&iter, selection, &i);
+         gtk_bitset_iter_is_valid (&iter);
+         gtk_bitset_iter_next (&iter, &i))
     {
         g_autoptr (GtkTreeListRow) row = g_list_model_get_item (G_LIST_MODEL (model), i);
         g_autoptr (GtkTreeListRow) parent = gtk_tree_list_row_get_parent (row);
-        GtkTreeListRow *current_parent;
+        GtkTreeListRow *current_parent = gtk_tree_list_row_get_expanded (row) ? row : parent;
 
-        if (!gtk_selection_model_is_selected (GTK_SELECTION_MODEL (model), i))
-        {
-            continue;
-        }
-
-        current_parent = gtk_tree_list_row_get_expanded (row) ? row : parent;
         if (current_parent == NULL)
         {
             return NULL;
