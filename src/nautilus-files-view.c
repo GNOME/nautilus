@@ -6802,9 +6802,7 @@ file_mount_callback (NautilusFile *file,
                      GError       *error,
                      gpointer      callback_data)
 {
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (callback_data);
+    g_autoptr (NautilusFilesView) self = NAUTILUS_FILES_VIEW (callback_data);
 
     nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_MOUNT);
 
@@ -6819,7 +6817,7 @@ file_mount_callback (NautilusFile *file,
                                                  nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_WINDOW (nautilus_files_view_get_window (self)),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6830,10 +6828,7 @@ file_unmount_callback (NautilusFile *file,
                        GError       *error,
                        gpointer      callback_data)
 {
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (callback_data);
-    g_object_unref (view);
+    g_autoptr (NautilusFilesView) self = NAUTILUS_FILES_VIEW (callback_data);
 
     if (error != NULL &&
         (error->domain != G_IO_ERROR ||
@@ -6845,7 +6840,7 @@ file_unmount_callback (NautilusFile *file,
                                                  nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_WINDOW (nautilus_files_view_get_window (self)),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6856,10 +6851,7 @@ file_eject_callback (NautilusFile *file,
                      GError       *error,
                      gpointer      callback_data)
 {
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (callback_data);
-    g_object_unref (view);
+    g_autoptr (NautilusFilesView) self = NAUTILUS_FILES_VIEW (callback_data);
 
     if (error != NULL &&
         (error->domain != G_IO_ERROR ||
@@ -6871,7 +6863,7 @@ file_eject_callback (NautilusFile *file,
                                                  nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_WINDOW (nautilus_files_view_get_window (self)),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6882,9 +6874,7 @@ file_stop_callback (NautilusFile *file,
                     GError       *error,
                     gpointer      callback_data)
 {
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (callback_data);
+    g_autoptr (NautilusFilesView) self = NAUTILUS_FILES_VIEW (callback_data);
 
     if (error != NULL &&
         (error->domain != G_IO_ERROR ||
@@ -6893,7 +6883,7 @@ file_stop_callback (NautilusFile *file,
     {
         show_dialog (_("Unable to stop drive"),
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_WINDOW (nautilus_files_view_get_window (self)),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6921,7 +6911,7 @@ action_mount_volume (GSimpleAction *action,
             g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
             nautilus_file_mount (file, mount_op, NULL,
                                  file_mount_callback,
-                                 view);
+                                 g_object_ref (view));
             g_object_unref (mount_op);
         }
     }
@@ -7060,7 +7050,7 @@ action_stop_volume (GSimpleAction *action,
             GMountOperation *mount_op;
             mount_op = gtk_mount_operation_new (nautilus_files_view_get_containing_window (view));
             nautilus_file_stop (file, mount_op, NULL,
-                                file_stop_callback, view);
+                                file_stop_callback, g_object_ref (view));
             g_object_unref (mount_op);
         }
     }
