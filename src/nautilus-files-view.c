@@ -3294,6 +3294,51 @@ on_unload_subdirectory (NautilusListBase *list_base,
 }
 
 static void
+update_extend_search_revealer (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    gboolean is_empty = nautilus_files_view_is_empty (self);
+    gboolean showing_search_results = FALSE;
+    gboolean search_is_global = FALSE;
+    gboolean can_show_search_everywhere = FALSE;
+
+    if (!is_empty && NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
+    {
+        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
+        g_autoptr (GFile) queried_location = NULL;
+
+        queried_location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
+
+        showing_search_results = TRUE;
+        search_is_global = (queried_location == NULL);
+    }
+
+    if (showing_search_results && !search_is_global)
+    {
+        GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window));
+        gdouble value = gtk_adjustment_get_value (adjustment);
+        gdouble page_size = gtk_adjustment_get_page_size (adjustment);
+        gdouble upper = gtk_adjustment_get_upper (adjustment);
+
+        if (value + page_size >= upper)
+        {
+            /* Search results are scrolled to the bottom (or not scrolling). */
+            can_show_search_everywhere = TRUE;
+        }
+
+        /* Reserve space for the button even if not scrolled to the bottom. */
+        gtk_widget_add_css_class (GTK_WIDGET (self), "extra-bottom-padding");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (GTK_WIDGET (self), "extra-bottom-padding");
+    }
+
+    gtk_revealer_set_reveal_child (GTK_REVEALER (priv->extend_search_revealer),
+                                   !priv->loading && can_show_search_everywhere);
+}
+
+static void
 nautilus_files_view_constructed (GObject *object)
 {
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
@@ -3741,51 +3786,6 @@ globalize_search (NautilusFilesView *self)
 
     nautilus_query_set_location (priv->search_query, NULL);
     load_directory (self, priv->directory);
-}
-
-static void
-update_extend_search_revealer (NautilusFilesView *self)
-{
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-    gboolean is_empty = nautilus_files_view_is_empty (self);
-    gboolean showing_search_results = FALSE;
-    gboolean search_is_global = FALSE;
-    gboolean can_show_search_everywhere = FALSE;
-
-    if (!is_empty && NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
-    {
-        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
-        g_autoptr (GFile) queried_location = NULL;
-
-        queried_location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
-
-        showing_search_results = TRUE;
-        search_is_global = (queried_location == NULL);
-    }
-
-    if (showing_search_results && !search_is_global)
-    {
-        GtkAdjustment *adjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window));
-        gdouble value = gtk_adjustment_get_value (adjustment);
-        gdouble page_size = gtk_adjustment_get_page_size (adjustment);
-        gdouble upper = gtk_adjustment_get_upper (adjustment);
-
-        if (value + page_size >= upper)
-        {
-            /* Search results are scrolled to the bottom (or not scrolling). */
-            can_show_search_everywhere = TRUE;
-        }
-
-        /* Reserve space for the button even if not scrolled to the bottom. */
-        gtk_widget_add_css_class (GTK_WIDGET (self), "extra-bottom-padding");
-    }
-    else
-    {
-        gtk_widget_remove_css_class (GTK_WIDGET (self), "extra-bottom-padding");
-    }
-
-    gtk_revealer_set_reveal_child (GTK_REVEALER (priv->extend_search_revealer),
-                                   !priv->loading && can_show_search_everywhere);
 }
 
 static GtkWidget *
