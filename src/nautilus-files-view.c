@@ -6806,6 +6806,8 @@ file_mount_callback (NautilusFile *file,
 
     view = NAUTILUS_FILES_VIEW (callback_data);
 
+    nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_MOUNT);
+
     if (error != NULL &&
         (error->domain != G_IO_ERROR ||
          (error->code != G_IO_ERROR_CANCELLED &&
