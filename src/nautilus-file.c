@@ -1601,8 +1601,6 @@ nautilus_file_poll_for_media (NautilusFile *file)
 gboolean
 nautilus_file_can_rename (NautilusFile *file)
 {
-    gboolean can_rename;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     /* Nonexistent files can't be renamed. */
@@ -1618,13 +1616,6 @@ nautilus_file_can_rename (NautilusFile *file)
     }
 
     if (nautilus_file_is_home (file))
-    {
-        return FALSE;
-    }
-
-    can_rename = TRUE;
-
-    if (!can_rename)
     {
         return FALSE;
     }
