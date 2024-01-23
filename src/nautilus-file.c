@@ -2146,8 +2146,7 @@ real_batch_rename (GList                         *files,
 
         new_file_name = nautilus_file_can_rename_file (file,
                                                        new_name->str,
-                                                       callback,
-                                                       callback_data);
+                                                       NULL, NULL);
 
         if (new_file_name == NULL)
         {
