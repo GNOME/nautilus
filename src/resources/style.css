@@ -157,10 +157,12 @@
 
 /* Setup padding on the list. Horizontal padding must be set on the columnview
  * for it to calculate column widths correctly. */
+.nautilus-network-view listview,
 .nautilus-list-view columnview {
   padding-left: 24px;
   padding-right: 24px;
 }
+.nautilus-network-view listview,
 .nautilus-list-view columnview > listview {
   padding-top: 16px;
   padding-bottom: 24px;
@@ -182,6 +184,7 @@
   margin-right: 24px;
 }
 
+.nautilus-network-view listview > row,
 .nautilus-list-view columnview > listview > row {
   border-radius: 6px;
 }
@@ -193,6 +196,8 @@
   padding: 0px;
 }
 
+
+.nautilus-network-view #NautilusViewCell,
 .nautilus-list-view #NautilusViewCell {
   padding: 6px;
 }
@@ -229,6 +234,7 @@
 }
 
 /* Both views */
+.nautilus-network-view:drop(active),
 .nautilus-list-view:drop(active),
 .nautilus-grid-view:drop(active) {
   box-shadow: none;
@@ -237,6 +243,7 @@
 /* Remove the default background of the various view widgets
  * since we already apply a background to the entire content
  * pane with the .view class. Doing this will avoid overdraw. */
+.nautilus-network-view listview,
 .nautilus-grid-view gridview,
 .nautilus-list-view columnview,
 placesview list {
@@ -244,6 +251,7 @@ placesview list {
 }
 
 /* Reserve empty space for the "Search Everywhere" overlaid button */
+.nautilus-network-view.extra-bottom-padding listview,
 .nautilus-list-view.extra-bottom-padding listview,
 .nautilus-grid-view.extra-bottom-padding gridview {
   padding-bottom: 66px;
@@ -269,6 +277,15 @@ placesview list {
 
 .view picture {
   filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.3));
+}
+
+.nautilus-network-view {
+  -gtk-icon-style: symbolic;
+}
+.nautilus-network-view image.network-icon {
+  padding: 8px;
+  border-radius: 999999px;
+  background-color: alpha(currentColor, 0.1);
 }
 
 .view statuspage {
