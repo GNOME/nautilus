@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="NautilusNetworkCell" parent="NautilusViewCell">
+    <accessibility>
+      <relation name="labelled-by">label</relation>
+    </accessibility>
+    <child>
+      <object class="GtkBox">
+        <property name="spacing">6</property>
+        <property name="orientation">horizontal</property>
+        <child>
+          <object class="GtkImage" id="icon">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <style>
+              <class name="network-icon"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="halign">fill</property>
+            <property name="hexpand">true</property>
+            <property name="valign">center</property>
+            <child>
+              <object class="GtkLabel" id="label">
+                <property name="ellipsize">middle</property>
+                <property name="lines">1</property>
+                <property name="max-width-chars">-1</property>
+                <property name="wrap">False</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="halign">start</property>
+                <binding name="label">
+                  <lookup name="display-name">
+                    <lookup name="file">
+                      <lookup name="item">NautilusNetworkCell</lookup>
+                    </lookup>
+                  </lookup>
+                </binding>
+                <attributes>
+                  <attribute name="insert-hyphens" value="false"></attribute>
+                </attributes>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="target_uri">
+                <property name="ellipsize">middle</property>
+                <property name="justify">left</property>
+                <property name="halign">fill</property>
+                <property name="xalign">0.0</property>
+                <attributes>
+                  <attribute name="insert-hyphens" value="false"></attribute>
+                </attributes>
+                <style>
+                  <class name="caption"/>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="unmount_button">
+            <property name="tooltip-text" translatable="yes">Disconnect</property>
+            <property name="visible">False</property>
+            <property name="icon-name">media-eject-symbolic</property>
+            <property name="valign">center</property>
+            <signal name="clicked" object="NautilusNetworkCell" handler="on_unmount_clicked" swapped="yes"/>
+            <style>
+              <class name="flat"/>
+              <class name="circular"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
