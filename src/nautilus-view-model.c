@@ -375,6 +375,19 @@ nautilus_view_model_set_sorter (NautilusViewModel *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SORTER]);
 }
 
+/**
+ * Set the section sorter, effectively enabling sections.
+ *
+ * Unlike the regular sorter, which compares NautilusViewItem objects, this one
+ * compares the GtkTreeListRows objects which wrap the NautilusViewItem objects.
+ */
+void
+nautilus_view_model_set_section_sorter (NautilusViewModel *self,
+                                        GtkSorter         *section_sorter)
+{
+    gtk_sort_list_model_set_section_sorter (self->sort_model, GTK_SORTER (section_sorter));
+}
+
 void
 nautilus_view_model_sort (NautilusViewModel *self)
 {
