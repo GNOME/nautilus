@@ -133,7 +133,7 @@ struct _NautilusWindowSlot
     GCancellable *mount_cancellable;
     GError *mount_error;
     gboolean tried_mount;
-    gint view_mode_before_places;
+    gint view_mode_before_network;
 
     /* Menus */
     GMenuModel *extensions_background_menu;
@@ -234,18 +234,24 @@ static NautilusView *
 nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
                                             GFile              *location)
 {
-    g_autoptr (NautilusFile) file = NULL;
-    NautilusView *view;
-    guint view_id;
-
-    file = nautilus_file_get (location);
-    view = NULL;
-    view_id = NAUTILUS_VIEW_INVALID_ID;
+    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    NautilusView *view = NULL;
+    guint view_id = NAUTILUS_VIEW_INVALID_ID;
 
     if (self->content_view != NULL)
     {
         /* If there is already a view, just use the view mode that it's currently using */
         view_id = nautilus_view_get_view_id (self->content_view);
+        if (view_id == NAUTILUS_VIEW_NETWORK_ID)
+        {
+            view_id = self->view_mode_before_network;
+        }
+    }
+
+    if (nautilus_file_is_network_view (file))
+    {
+        self->view_mode_before_network = view_id;
+        view_id = NAUTILUS_VIEW_NETWORK_ID;
     }
 
     /* If there is not previous view in this slot, use the default view mode
@@ -319,6 +325,7 @@ static void
 nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
 {
     NautilusView *view;
+    gboolean is_network_view;
     GAction *action;
     GVariant *variant;
 
@@ -339,15 +346,16 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
 
     /* Files view mode */
     view = nautilus_window_slot_get_current_view (self);
+    is_network_view = nautilus_view_get_view_id (view) == NAUTILUS_VIEW_NETWORK_ID;
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "files-view-mode");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), NAUTILUS_IS_FILES_VIEW (view));
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !is_network_view);
     if (g_action_get_enabled (action))
     {
         variant = g_variant_new_uint32 (nautilus_view_get_view_id (view));
         g_action_change_state (action, variant);
     }
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "files-view-mode-toggle");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), NAUTILUS_IS_FILES_VIEW (view));
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !is_network_view);
 }
 
 static void
@@ -1085,7 +1093,8 @@ update_search_information (NautilusWindowSlot *self)
         file = nautilus_file_get (location);
         label = NULL;
 
-        if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK))
+        if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW) ||
+            nautilus_is_root_for_scheme (location, SCHEME_NETWORK))
         {
             label = _("Searching network locations only");
         }
@@ -1154,7 +1163,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     nautilus_application_set_accelerator (app, "slot.search-global", "<control><shift>f");
 
     self->fd_holder = nautilus_fd_holder_new ();
-    self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
+    self->view_mode_before_network = NAUTILUS_VIEW_INVALID_ID;
 }
 
 static void begin_location_change (NautilusWindowSlot        *slot,
@@ -2640,6 +2649,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         widget = GTK_WIDGET (self->content_view);
         gtk_box_append (GTK_BOX (self->vbox), widget);
         gtk_widget_set_vexpand (widget, TRUE);
+
         /* Note that this is not bidirectional and that we may also change
          * :search-visible alone, e.g. when clicking the search button. */
         self->searching_binding = g_object_bind_property (self->content_view, "searching",
@@ -3109,6 +3119,12 @@ nautilus_window_slot_get_icon_name (NautilusWindowSlot *self)
         }
         break;
 
+        case NAUTILUS_VIEW_NETWORK_ID:
+        {
+            return nautilus_view_get_icon_name (NAUTILUS_VIEW_NETWORK_ID);
+        }
+        break;
+
         default:
         {
             return NULL;
@@ -3139,6 +3155,12 @@ nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
         case NAUTILUS_VIEW_GRID_ID:
         {
             return nautilus_view_get_tooltip (NAUTILUS_VIEW_LIST_ID);
+        }
+        break;
+
+        case NAUTILUS_VIEW_NETWORK_ID:
+        {
+            return nautilus_view_get_tooltip (NAUTILUS_VIEW_NETWORK_ID);
         }
         break;
 

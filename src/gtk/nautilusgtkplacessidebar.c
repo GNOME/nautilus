@@ -215,6 +215,7 @@ enum {
 #define ICON_NAME_DESKTOP  "user-desktop-symbolic"
 #define ICON_NAME_EJECT    "media-eject-symbolic"
 #define ICON_NAME_NETWORK  "network-workgroup-symbolic"
+#define ICON_NAME_NETWORK_VIEW  "network-computer-symbolic"
 #define ICON_NAME_FOLDER_NETWORK "folder-remote-symbolic"
 #define ICON_NAME_OTHER_LOCATIONS "list-add-symbolic"
 
@@ -842,6 +843,15 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   /* XDG directories */
   add_special_dirs (sidebar);
+
+  /* Network view */
+  start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_NETWORK_VIEW);
+  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
+             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             _("Network"), start_icon, NULL, SCHEME_NETWORK_VIEW ":///",
+             NULL, NULL, NULL, NULL, 0,
+             _("Open Network Locations"));
+  g_object_unref (start_icon);
 
   /* Trash */
   start_icon = nautilus_trash_monitor_get_symbolic_icon ();
