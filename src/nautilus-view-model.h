@@ -15,6 +15,8 @@ NautilusViewModel * nautilus_view_model_new (void);
 GtkSorter *nautilus_view_model_get_sorter (NautilusViewModel *self);
 void nautilus_view_model_set_sorter (NautilusViewModel *self,
                                      GtkSorter         *sorter);
+void nautilus_view_model_set_section_sorter (NautilusViewModel *self,
+                                             GtkSorter         *section_sorter);
 void nautilus_view_model_sort (NautilusViewModel *self);
 NautilusViewItem * nautilus_view_model_get_item_for_file (NautilusViewModel *self,
                                                           NautilusFile      *file);
