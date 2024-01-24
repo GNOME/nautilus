@@ -1652,7 +1652,10 @@ nautilus_file_can_trash (NautilusFile *file)
 gboolean
 nautilus_file_opens_in_view (NautilusFile *file)
 {
-    return nautilus_file_is_directory (file);
+    return (nautilus_file_is_directory (file) ||
+            nautilus_file_get_file_type (file) == G_FILE_TYPE_MOUNTABLE ||
+            (nautilus_file_get_file_type (file) == G_FILE_TYPE_SHORTCUT &&
+             g_strcmp0 (nautilus_file_get_mime_type (file), "inode/directory") == 0));
 }
 
 NautilusFileOperation *
@@ -2425,6 +2428,7 @@ update_info_internal (NautilusFile *file,
 
     if (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL) ||
         file_type == G_FILE_TYPE_SHORTCUT ||
+        file_type == G_FILE_TYPE_MOUNTABLE ||
         nautilus_file_is_in_recent (file))
     {
         if (g_set_str (&file->details->activation_uri,
