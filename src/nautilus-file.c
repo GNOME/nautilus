@@ -7448,6 +7448,16 @@ nautilus_file_is_starred_location (NautilusFile *file)
     return g_file_has_uri_scheme (location, SCHEME_STARRED);
 }
 
+gboolean
+nautilus_file_is_network_view (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    return nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW);
+}
+
 /**
  * nautilus_file_is_in_admin
  *
