@@ -124,7 +124,7 @@ nautilus_view_get_icon_name (guint view_id)
     {
         return "view-grid-symbolic";
     }
-    else if (view_id == NAUTILUS_VIEW_LIST_ID)
+    else if (view_id == NAUTILUS_VIEW_LIST_ID || view_id == NAUTILUS_VIEW_NETWORK_ID)
     {
         return "view-list-symbolic";
     }
@@ -149,7 +149,7 @@ nautilus_view_get_tooltip (guint view_id)
     {
         return _("Grid View");
     }
-    else if (view_id == NAUTILUS_VIEW_LIST_ID)
+    else if (view_id == NAUTILUS_VIEW_LIST_ID || view_id == NAUTILUS_VIEW_NETWORK_ID)
     {
         return _("List View");
     }

@@ -897,6 +897,15 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   /* XDG directories */
   add_special_dirs (sidebar);
 
+  /* Network view */
+  start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_FOLDER_NETWORK);
+  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
+             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             _("Network"), start_icon, NULL, SCHEME_NETWORK_VIEW ":///",
+             NULL, NULL, NULL, NULL, 0,
+             _("Open Network Locations"));
+  g_object_unref (start_icon);
+
   /* Trash */
   start_icon = nautilus_trash_monitor_get_symbolic_icon ();
   sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
