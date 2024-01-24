@@ -68,6 +68,7 @@
 #include "nautilus-list-view.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-network-view.h"
 #include "nautilus-module.h"
 #include "nautilus-new-folder-dialog.h"
 #include "nautilus-previewer.h"
@@ -944,11 +945,14 @@ nautilus_files_view_invert_selection (NautilusFilesView *self)
 static NautilusToolbarMenuSections *
 nautilus_files_view_get_toolbar_menu_sections (NautilusView *view)
 {
-    NautilusFilesViewPrivate *priv;
-
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
+
+    if (NAUTILUS_IS_NETWORK_VIEW (priv->list_base))
+    {
+        return NULL;
+    }
 
     return priv->toolbar_menu_sections;
 }
@@ -3548,6 +3552,15 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
     NautilusFile *file;
 
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    if (priv->list_base != NULL && NAUTILUS_IS_NETWORK_VIEW (priv->list_base))
+    {
+        /* Selection info is not relevant on this view and visually clashes with
+         * the action bar. */
+        return;
+    }
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
@@ -9781,6 +9794,12 @@ create_inner_view (NautilusFilesView *self,
         case NAUTILUS_VIEW_LIST_ID:
         {
             priv->list_base = NAUTILUS_LIST_BASE (nautilus_list_view_new ());
+        }
+        break;
+
+        case NAUTILUS_VIEW_NETWORK_ID:
+        {
+            priv->list_base = NAUTILUS_LIST_BASE (nautilus_network_view_new ());
         }
         break;
 
