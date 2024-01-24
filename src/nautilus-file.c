@@ -4237,7 +4237,12 @@ nautilus_file_peek_display_name (NautilusFile *file)
 const char *
 nautilus_file_get_display_name (NautilusFile *file)
 {
-    if (nautilus_file_is_starred_location (file))
+    if (nautilus_file_is_network_view (file))
+    {
+        /* Translators: This is the title for the Network place. */
+        return _("Network");
+    }
+    else if (nautilus_file_is_starred_location (file))
     {
         return _("Starred");
     }
@@ -7441,6 +7446,16 @@ nautilus_file_is_starred_location (NautilusFile *file)
     location = nautilus_file_get_location (file);
 
     return g_file_has_uri_scheme (location, SCHEME_STARRED);
+}
+
+gboolean
+nautilus_file_is_network_view (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    return nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW);
 }
 
 /**

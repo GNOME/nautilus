@@ -58,6 +58,7 @@ typedef enum
     RECENT_BUTTON,
     MOUNT_BUTTON,
     TRASH_BUTTON,
+    NETWORK_BUTTON,
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
@@ -880,6 +881,11 @@ get_gicon (ButtonData *button_data)
             return nautilus_trash_monitor_get_symbolic_icon ();
         }
 
+        case NETWORK_BUTTON:
+        {
+            return g_themed_icon_new ("folder-remote-symbolic");
+        }
+
         default:
         {
             return NULL;
@@ -998,6 +1004,11 @@ setup_button_type (ButtonData      *button_data,
     else if (nautilus_is_root_for_scheme (location, SCHEME_TRASH))
     {
         button_data->type = TRASH_BUTTON;
+        button_data->is_root = TRUE;
+    }
+    else if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW))
+    {
+        button_data->type = NETWORK_BUTTON;
         button_data->is_root = TRUE;
     }
     else
@@ -1142,6 +1153,7 @@ make_button_data (NautilusPathBar *self,
         case TRASH_BUTTON:
         case RECENT_BUTTON:
         case STARRED_BUTTON:
+        case NETWORK_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
