@@ -36,7 +36,6 @@ struct _NautilusProgressIndicator
     GtkWidget *operations_popover;
     GtkWidget *operations_list;
     GListStore *progress_infos_model;
-    GtkWidget *operations_icon;
 
     gboolean reveal;
 
@@ -184,20 +183,10 @@ add_operations_button_attention_style (NautilusProgressIndicator *self)
 static void
 on_progress_info_cancelled (NautilusProgressIndicator *self)
 {
-    /* Update the pie chart progress */
-    gtk_widget_queue_draw (self->operations_icon);
-
     if (!nautilus_progress_manager_has_viewers (self->progress_manager))
     {
         schedule_remove_finished_operations (self);
     }
-}
-
-static void
-on_progress_info_progress_changed (NautilusProgressIndicator *self)
-{
-    /* Update the pie chart progress */
-    gtk_widget_queue_draw (self->operations_icon);
 }
 
 static void
@@ -209,9 +198,6 @@ on_progress_info_finished (NautilusProgressIndicator *self,
     GFile *folder_to_open;
 
     window = NAUTILUS_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
-
-    /* Update the pie chart progress */
-    gtk_widget_queue_draw (self->operations_icon);
 
     if (!nautilus_progress_manager_has_viewers (self->progress_manager))
     {
@@ -259,7 +245,6 @@ update_operations (NautilusProgressIndicator *self)
     {
         add_operations_button_attention_style (self);
         nautilus_progress_indicator_set_reveal (self, TRUE);
-        gtk_widget_queue_draw (self->operations_icon);
     }
 
     /* Since we removed the info widgets, we need to restore the focus */
@@ -341,83 +326,6 @@ on_new_progress_info (NautilusProgressInfoManager *manager,
     g_signal_connect_object (info, "cancelled",
                              G_CALLBACK (on_progress_info_cancelled), self,
                              G_CONNECT_SWAPPED);
-    g_signal_connect_object (info, "progress-changed",
-                             G_CALLBACK (on_progress_info_progress_changed), self,
-                             G_CONNECT_SWAPPED);
-}
-
-static void
-on_operations_icon_draw (GtkDrawingArea            *drawing_area,
-                         cairo_t                   *cr,
-                         int                        width,
-                         int                        height,
-                         NautilusProgressIndicator *self)
-{
-    GtkWidget *widget = GTK_WIDGET (drawing_area);
-    gfloat elapsed_progress = 0;
-    gint remaining_progress = 0;
-    gint total_progress;
-    gdouble ratio;
-    GList *progress_infos;
-    GList *l;
-    gboolean all_cancelled;
-    GdkRGBA background;
-    GdkRGBA foreground;
-
-    gtk_widget_get_color (widget, &foreground);
-    background = foreground;
-    background.alpha *= 0.3;
-
-    all_cancelled = TRUE;
-    progress_infos = get_filtered_progress_infos (self);
-    for (l = progress_infos; l != NULL; l = l->next)
-    {
-        if (!nautilus_progress_info_get_is_cancelled (l->data))
-        {
-            all_cancelled = FALSE;
-            remaining_progress += nautilus_progress_info_get_remaining_time (l->data);
-            elapsed_progress += nautilus_progress_info_get_elapsed_time (l->data);
-        }
-    }
-
-    g_list_free (progress_infos);
-
-    total_progress = remaining_progress + elapsed_progress;
-
-    if (all_cancelled)
-    {
-        ratio = 1.0;
-    }
-    else
-    {
-        if (total_progress > 0)
-        {
-            ratio = MAX (0.05, elapsed_progress / total_progress);
-        }
-        else
-        {
-            ratio = 0.05;
-        }
-    }
-
-
-    width = gtk_widget_get_width (widget);
-    height = gtk_widget_get_height (widget);
-
-    gdk_cairo_set_source_rgba (cr, &background);
-    cairo_arc (cr,
-               width / 2.0, height / 2.0,
-               MIN (width, height) / 2.0,
-               0, 2 * G_PI);
-    cairo_fill (cr);
-    cairo_move_to (cr, width / 2.0, height / 2.0);
-    gdk_cairo_set_source_rgba (cr, &foreground);
-    cairo_arc (cr,
-               width / 2.0, height / 2.0,
-               MIN (width, height) / 2.0,
-               -G_PI / 2.0, ratio * 2 * G_PI - G_PI / 2.0);
-
-    cairo_fill (cr);
 }
 
 static void
@@ -558,7 +466,6 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-progress-indicator.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_list);
 
@@ -573,11 +480,6 @@ static void
 nautilus_progress_indicator_init (NautilusProgressIndicator *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
-
-    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->operations_icon),
-                                    (GtkDrawingAreaDrawFunc) on_operations_icon_draw,
-                                    self,
-                                    NULL);
 
     if (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL)
     {
