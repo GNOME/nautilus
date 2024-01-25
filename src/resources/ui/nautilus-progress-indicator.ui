@@ -24,29 +24,5 @@
     <signal name="notify::visible" handler="on_operations_popover_notify_visible" object="NautilusProgressIndicator" swapped="yes"/>
   </object>
   <template class="NautilusProgressIndicator" parent="AdwBin">
-    <property name="child">
-      <object class="GtkRevealer" id="operations_revealer">
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="transition_type">crossfade</property>
-        <property name="child">
-          <object class="GtkMenuButton" id="operations_button">
-            <property name="tooltip_text" translatable="yes">Show File Operations</property>
-            <property name="popover">operations_popover</property>
-            <child>
-              <object class="GtkDrawingArea" id="operations_icon">
-                <property name="width_request">16</property>
-                <property name="height_request">16</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
-          </object>
-        </property>
-      </object>
-    </property>
   </template>
 </interface>
