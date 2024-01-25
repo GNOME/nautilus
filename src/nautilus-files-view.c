@@ -3871,6 +3871,12 @@ real_check_empty_states (NautilusFilesView *view)
             adw_status_page_set_title (status_page, _("No Recent Files"));
             adw_status_page_set_description (status_page, NULL);
         }
+        else if (g_file_has_uri_scheme (priv->location, SCHEME_NETWORK_VIEW))
+        {
+            adw_status_page_set_icon_name (status_page, "network-computer-symbolic");
+            adw_status_page_set_title (status_page, _("No Known Connections"));
+            adw_status_page_set_description (status_page, _("Enter an address to connect to a network location."));
+        }
         else
         {
             adw_status_page_set_icon_name (status_page, "folder-symbolic");
