@@ -21,8 +21,8 @@ struct _NautilusProgressPaintable
     GtkWidget *widget;
 
     double progress;
+    char *icon_name;
 
-    GtkIconPaintable *arrow_paintable;
     GtkIconPaintable *check_paintable;
 
     double check_progress;
@@ -42,6 +42,7 @@ G_DEFINE_FINAL_TYPE_WITH_CODE (NautilusProgressPaintable, nautilus_progress_pain
 enum
 {
     PROP_0,
+    PROP_ICON_NAME,
     PROP_WIDGET,
     PROP_PROGRESS,
     LAST_PROP
@@ -52,17 +53,18 @@ static GParamSpec *properties[LAST_PROP];
 static void
 cache_icons (NautilusProgressPaintable *self)
 {
+    if (self->icon_name == NULL)
+    {
+        return;
+    }
+
     GdkDisplay *display = gtk_widget_get_display (self->widget);
     GtkIconTheme *theme = gtk_icon_theme_get_for_display (display);
     int scale = gtk_widget_get_scale_factor (self->widget);
     GtkTextDirection direction = gtk_widget_get_direction (self->widget);
 
-    g_set_object (&self->arrow_paintable,
-                  gtk_icon_theme_lookup_icon (theme, "ephy-download-symbolic",
-                                              NULL, SIZE, scale, direction,
-                                              GTK_ICON_LOOKUP_FORCE_SYMBOLIC));
     g_set_object (&self->check_paintable,
-                  gtk_icon_theme_lookup_icon (theme, "ephy-download-done-symbolic",
+                  gtk_icon_theme_lookup_icon (theme, self->icon_name,
                                               NULL, SIZE, scale, direction,
                                               GTK_ICON_LOOKUP_FORCE_SYMBOLIC));
 }
@@ -97,6 +99,12 @@ nautilus_progress_paintable_get_property (GObject    *object,
 
     switch (prop_id)
     {
+        case PROP_ICON_NAME:
+        {
+            g_value_set_string (value, self->icon_name);
+            break;
+        }
+
         case PROP_WIDGET:
         {
             g_value_set_object (value, self->widget);
@@ -126,18 +134,27 @@ nautilus_progress_paintable_set_property (GObject      *object,
 
     switch (prop_id)
     {
+        case PROP_ICON_NAME:
+        {
+            if (g_set_str (&self->icon_name, g_value_get_string (value)))
+            {
+                cache_icons (self);
+            }
+        }
+        break;
+
         case PROP_WIDGET:
         {
             g_set_object (&self->widget, g_value_get_object (value));
-            break;
         }
+        break;
 
         case PROP_PROGRESS:
         {
             self->progress = g_value_get_double (value);
             gdk_paintable_invalidate_contents (GDK_PAINTABLE (self));
-            break;
         }
+        break;
 
         default:
         {
@@ -152,7 +169,6 @@ nautilus_progress_paintable_dispose (GObject *object)
     NautilusProgressPaintable *self = NAUTILUS_PROGRESS_PAINTABLE (object);
 
     g_clear_object (&self->widget);
-    g_clear_object (&self->arrow_paintable);
     g_clear_object (&self->check_paintable);
     g_clear_object (&self->done_animation);
     g_clear_handle_id (&self->timeout_id, g_source_remove);
@@ -169,6 +185,12 @@ nautilus_progress_paintable_class_init (NautilusProgressPaintableClass *klass)
     object_class->get_property = nautilus_progress_paintable_get_property;
     object_class->set_property = nautilus_progress_paintable_set_property;
     object_class->dispose = nautilus_progress_paintable_dispose;
+
+    properties[PROP_ICON_NAME] =
+        g_param_spec_string ("icon-name",
+                             NULL, NULL,
+                             NULL,
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_WIDGET] =
         g_param_spec_object ("widget",
@@ -236,8 +258,6 @@ nautilus_progress_paintable_snapshot_symbolic (GtkSymbolicPaintable *paintable,
         gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (width / 2.0f, height / 2.0f));
         gtk_snapshot_scale (snapshot, 1.0f - self->check_progress, 1.0f - self->check_progress);
         gtk_snapshot_translate (snapshot, &GRAPHENE_POINT_INIT (-width / 2.0f, -height / 2.0f));
-        gtk_symbolic_paintable_snapshot_symbolic (GTK_SYMBOLIC_PAINTABLE (self->arrow_paintable),
-                                                  gdk_snapshot, width, height, colors, n_colors);
         gtk_snapshot_restore (snapshot);
     }
 
