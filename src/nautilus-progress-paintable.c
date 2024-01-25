@@ -27,7 +27,6 @@ struct _NautilusProgressPaintable
 
     double check_progress;
     AdwAnimation *done_animation;
-    guint timeout_id;
 };
 
 static void nautilus_progress_paintable_paintable_init (GdkPaintableInterface *iface);
@@ -171,7 +170,6 @@ nautilus_progress_paintable_dispose (GObject *object)
     g_clear_object (&self->widget);
     g_clear_object (&self->check_paintable);
     g_clear_object (&self->done_animation);
-    g_clear_handle_id (&self->timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_progress_paintable_parent_class)->dispose (object);
 }
@@ -210,9 +208,6 @@ nautilus_progress_paintable_class_init (NautilusProgressPaintableClass *klass)
 static void
 nautilus_progress_paintable_init (NautilusProgressPaintable *self)
 {
-    self->progress = 0;
-    self->check_progress = 0;
-    self->timeout_id = -1;
 }
 
 static int
@@ -313,23 +308,12 @@ animate_done_cb (double                     value,
 }
 
 static void
-animation_timeout_cb (NautilusProgressPaintable *self)
-{
-    adw_animation_play (self->done_animation);
-    self->timeout_id = -1;
-}
-
-static void
 animation_done_done_cb (NautilusProgressPaintable *self)
 {
     if (self->check_progress > 0.5)
     {
-        int delay = adw_get_enable_animations (self->widget) ? 500 : 1000;
-
         adw_timed_animation_set_value_from (ADW_TIMED_ANIMATION (self->done_animation), 1);
         adw_timed_animation_set_value_to (ADW_TIMED_ANIMATION (self->done_animation), 0);
-
-        self->timeout_id = g_timeout_add_once (delay, (GSourceOnceFunc) animation_timeout_cb, self);
     }
     else
     {
