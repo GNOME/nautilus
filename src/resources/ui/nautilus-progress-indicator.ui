@@ -30,6 +30,48 @@
         <property name="tooltip_text" translatable="yes">Show File Operations</property>
         <property name="direction">right</property>
         <property name="popover">operations_popover</property>
+        <property name="child">
+          <object class="GtkListView" id="sidebar_list">
+            <property name="factory">
+              <object class="GtkBuilderListItemFactory">
+                <property name="bytes"><![CDATA[
+<interface>
+  <template class="GtkListItem">
+    <property name="activatable">false</property>
+    <property name="focusable">false</property>
+    <property name="selectable">false</property>
+    <property name="child">
+      <object class="GtkBox">
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkImage" id="progress_icon">
+            <property name="pixel-size">13</property>
+            <binding name="paintable">
+              <closure type="GdkPaintable" function="get_paintable">
+                <lookup name="item">GtkListItem</lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="ellipsize">end</property>
+            <binding name="label">
+              <lookup name="status" type="NautilusProgressInfo">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
+            ]]></property>
+              </object>
+            </property>
+          </object>
+        </property>
       </object>
     </property>
   </template>

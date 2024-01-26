@@ -15,6 +15,12 @@
 #NautilusProgressIndicator menubutton > button:not(:hover) {
   background: none;
 }
+#NautilusProgressIndicator menubutton > button listview {
+  background: none;
+  margin: 6px;
+  border-spacing: 9px;
+  font-weight: normal;
+}
 
 /* Remove white background and highlight on hover which GTK adds by default
  * to GtkListBox. TODO: Switch to GtkListView and drop this CSS hack. */
