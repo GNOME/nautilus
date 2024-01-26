@@ -9,6 +9,12 @@
 #NautilusProgressIndicator.needs-attention > menubutton > button {
   animation: needs_attention_keyframes 2s ease-in-out;
 }
+#NautilusProgressIndicator menubutton > button {
+  border-radius: 0px;
+}
+#NautilusProgressIndicator menubutton > button:not(:hover) {
+  background: none;
+}
 
 /* Remove white background and highlight on hover which GTK adds by default
  * to GtkListBox. TODO: Switch to GtkListView and drop this CSS hack. */
