@@ -38,6 +38,7 @@ G_DECLARE_FINAL_TYPE (NautilusProgressInfo, nautilus_progress_info, NAUTILUS, PR
    All methods are threadsafe.
  */
 
+/* Always create progress info's on the main thread, this function is not thread safe */
 NautilusProgressInfo *nautilus_progress_info_new (void);
 
 GList *       nautilus_get_all_progress_info (void);
