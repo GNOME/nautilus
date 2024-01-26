@@ -2,16 +2,12 @@
 
 @keyframes needs_attention_keyframes {
   0% { }
-  10% { background-color: @accent_bg_color; border-radius: 999999px; }
+  10% { background-color: @accent_bg_color; }
   100% { }
 }
 
-.nautilus-operations-button-needs-attention {
+#NautilusProgressIndicator.needs-attention > menubutton > button {
   animation: needs_attention_keyframes 2s ease-in-out;
-}
-.nautilus-operations-button-needs-attention-multiple {
-  animation: needs_attention_keyframes 3s ease-in-out;
-  animation-iteration-count: 3;
 }
 
 /* Remove white background and highlight on hover which GTK adds by default

@@ -24,6 +24,7 @@
     <signal name="notify::visible" handler="on_operations_popover_notify_visible" object="NautilusProgressIndicator" swapped="yes"/>
   </object>
   <template class="NautilusProgressIndicator" parent="AdwBin">
+    <property name="name">NautilusProgressIndicator</property>
     <property name="child">
       <object class="GtkRevealer" id="operations_revealer">
         <property name="halign">center</property>
