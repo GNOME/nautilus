@@ -116,11 +116,10 @@
             <property name="sidebar-width-fraction">0.2</property>
             <property name="sidebar">
               <object class="AdwToolbarView">
+                <property name="bottom-bar-style">raised</property>
+                <property name="reveal-bottom-bars">false</property>
                 <child type="top">
                   <object class="AdwHeaderBar">
-                    <child type="start">
-                      <object class="NautilusProgressIndicator"/>
-                    </child>
                     <property name="title-widget">
                       <object class="AdwWindowTitle">
                         <property name="title" translatable="yes">Files</property>
@@ -160,6 +159,9 @@
                       </object>
                     </child>
                   </object>
+                </child>
+                <child type="bottom">
+                  <object class="NautilusProgressIndicator" id="progress_indicator" />
                 </child>
                 <property name="content">
                   <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
