@@ -6,12 +6,16 @@
 
 #include "nautilus-progress-indicator.h"
 
+#include <glib/gi18n.h>
+
 #include "nautilus-file-operations.h"
 #include "nautilus-progress-info-manager.h"
+#include "nautilus-progress-paintable.h"
 #include "nautilus-progress-info-widget.h"
 #include "nautilus-window.h"
 
-#define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 /*s */
+#define REMOVE_FINISHED_OPERATIONS_TIMEOUT 3 /*s */
+#define MAX_ITEMS_IN_SIDEBAR 3
 
 enum
 {
@@ -33,6 +37,7 @@ struct _NautilusProgressIndicator
     GtkWidget *operations_popover;
     GtkWidget *operations_list;
     GListStore *progress_infos_model;
+    GtkWidget *sidebar_list;
 
     gboolean reveal;
 
@@ -97,7 +102,7 @@ schedule_remove_finished_operations (NautilusProgressIndicator *self)
     if (self->remove_finished_operations_timeout_id == 0)
     {
         self->remove_finished_operations_timeout_id =
-            g_timeout_add_seconds (REMOVE_FINISHED_OPERATIONS_TIEMOUT,
+            g_timeout_add_seconds (REMOVE_FINISHED_OPERATIONS_TIMEOUT,
                                    (GSourceFunc) on_remove_finished_operations_timeout,
                                    self);
     }
@@ -145,6 +150,29 @@ on_progress_info_finished (NautilusProgressIndicator *self,
     }
 
     g_clear_object (&folder_to_open);
+}
+
+static GdkPaintable *
+get_paintable (GtkListItem          *listitem,
+               NautilusProgressInfo *info)
+{
+    if (info == NULL)
+    {
+        return NULL;
+    }
+
+    GtkWidget *box = gtk_list_item_get_child (listitem);
+    GtkWidget *image = gtk_widget_get_first_child (box);
+
+    GdkPaintable *paintable = nautilus_progress_paintable_new (image);
+
+    g_object_bind_property (info, "icon-name", paintable, "icon-name", G_BINDING_SYNC_CREATE);
+    g_signal_connect_object (info, "finished", G_CALLBACK (nautilus_progress_paintable_animate_done),
+                             paintable, G_CONNECT_SWAPPED);
+
+    g_object_bind_property (info, "progress", paintable, "progress", G_BINDING_SYNC_CREATE);
+
+    return paintable;
 }
 
 static void
@@ -249,6 +277,29 @@ on_operations_popover_notify_visible (NautilusProgressIndicator *self,
 }
 
 static void
+on_sidebar_list_activate (GtkListView *view,
+                          guint        pos,
+                          gpointer     user_data)
+{
+    NautilusProgressIndicator *self = user_data;
+    graphene_point_t p;
+    GtkWidget *window = GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (self)));
+    int height = gtk_widget_get_height (self->sidebar_list) / 2;
+    int width = gtk_widget_get_width (self->sidebar_list);
+
+    gboolean success = gtk_widget_compute_point (self->sidebar_list, window,
+                                                 &GRAPHENE_POINT_INIT (width, height), &p);
+
+    if (success)
+    {
+        gtk_popover_set_pointing_to (GTK_POPOVER (self->operations_popover),
+                                     &(GdkRectangle) {p.x, p.y, 0, 0});
+    }
+
+    gtk_popover_popup (GTK_POPOVER (self->operations_popover));
+}
+
+static void
 on_list_model_n_items_changed (GListModel *model,
                                GParamSpec *pspec,
                                gpointer    user_data)
@@ -261,6 +312,17 @@ on_list_model_n_items_changed (GListModel *model,
     {
         self->reveal = reveal;
         g_object_notify (G_OBJECT (self), "reveal");
+    }
+
+    if (n_items > MAX_ITEMS_IN_SIDEBAR)
+    {
+        gtk_widget_set_tooltip_text (self->sidebar_list, ngettext ("Show %d File Operations",
+                                                                   "Show %d File Operations",
+                                                                   n_items));
+    }
+    else
+    {
+        gtk_widget_set_tooltip_text (self->sidebar_list, _("Show File Operations"));
     }
 }
 
@@ -346,7 +408,19 @@ nautilus_progress_indicator_constructed (GObject *object)
                              (GtkListBoxCreateWidgetFunc) operations_list_create_widget,
                              NULL,
                              NULL);
+
     update_operations (self);
+
+    GtkSliceListModel *slice_model = gtk_slice_list_model_new (G_LIST_MODEL (self->progress_infos_model), 0,
+                                                               MAX_ITEMS_IN_SIDEBAR);
+    g_autoptr (GtkNoSelection) selection_model = gtk_no_selection_new (G_LIST_MODEL (slice_model));
+    gtk_list_view_set_model (GTK_LIST_VIEW (self->sidebar_list), GTK_SELECTION_MODEL (selection_model));
+
+    GList *all_infos = nautilus_progress_info_manager_get_all_infos (self->progress_manager);
+    for (GList *l = all_infos; l != NULL; l = l->next)
+    {
+        on_new_progress_info (self->progress_manager, l->data, self);
+    }
 
     g_signal_connect (self->operations_popover, "show",
                       (GCallback) gtk_widget_grab_focus, NULL);
@@ -393,8 +467,11 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
                                                  "/org/gnome/nautilus/ui/nautilus-progress-indicator.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_list);
+    gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, sidebar_list);
 
+    gtk_widget_class_bind_template_callback (widget_class, get_paintable);
     gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
+    gtk_widget_class_bind_template_callback (widget_class, on_sidebar_list_activate);
 
     properties[PROP_REVEAL] = g_param_spec_boolean ("reveal", NULL, NULL, FALSE,
                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
