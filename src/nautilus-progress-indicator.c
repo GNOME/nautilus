@@ -15,6 +15,15 @@
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
 #define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 /*s */
 
+enum
+{
+    PROP_0,
+    PROP_REVEAL,
+    N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
+
 struct _NautilusProgressIndicator
 {
     AdwBin parent_instance;
@@ -27,8 +36,9 @@ struct _NautilusProgressIndicator
     GtkWidget *operations_popover;
     GtkWidget *operations_list;
     GListStore *progress_infos_model;
-    GtkWidget *operations_revealer;
     GtkWidget *operations_icon;
+
+    gboolean reveal;
 
     NautilusProgressInfoManager *progress_manager;
 };
@@ -83,14 +93,24 @@ should_hide_operations_button (NautilusProgressIndicator *self)
     return TRUE;
 }
 
+static void
+nautilus_progress_indicator_set_reveal (NautilusProgressIndicator *self,
+                                        gboolean                   reveal)
+{
+    if (reveal != self->reveal)
+    {
+        self->reveal = reveal;
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_REVEAL]);
+    }
+}
+
 static gboolean
 on_remove_finished_operations_timeout (NautilusProgressIndicator *self)
 {
     nautilus_progress_info_manager_remove_finished_or_cancelled_infos (self->progress_manager);
     if (should_hide_operations_button (self))
     {
-        gtk_revealer_set_reveal_child (GTK_REVEALER (self->operations_revealer),
-                                       FALSE);
+        nautilus_progress_indicator_set_reveal (self, FALSE);
     }
     else
     {
@@ -235,12 +255,10 @@ update_operations (NautilusProgressIndicator *self)
         g_list_store_append (self->progress_infos_model, l->data);
     }
 
-    if (should_show_progress_button &&
-        !gtk_revealer_get_reveal_child (GTK_REVEALER (self->operations_revealer)))
+    if (should_show_progress_button && !self->reveal)
     {
         add_operations_button_attention_style (self);
-        gtk_revealer_set_reveal_child (GTK_REVEALER (self->operations_revealer),
-                                       TRUE);
+        nautilus_progress_indicator_set_reveal (self, TRUE);
         gtk_widget_queue_draw (self->operations_icon);
     }
 
@@ -451,6 +469,29 @@ operations_list_create_widget (GObject  *item,
 }
 
 static void
+nautilus_progress_indicator_get_property (GObject    *object,
+                                          guint       property_id,
+                                          GValue     *value,
+                                          GParamSpec *pspec)
+{
+    NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (object);
+
+    switch (property_id)
+    {
+        case (PROP_REVEAL):
+        {
+            g_value_set_boolean (value, self->reveal);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_progress_indicator_constructed (GObject *object)
 {
     NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (object);
@@ -512,6 +553,7 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     object_class->constructed = nautilus_progress_indicator_constructed;
     object_class->dispose = nautilus_progress_indicator_dispose;
     object_class->finalize = nautilus_progress_indicator_finalize;
+    object_class->get_property = nautilus_progress_indicator_get_property;
 
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-progress-indicator.ui");
@@ -519,9 +561,12 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_list);
-    gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_revealer);
 
     gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
+
+    properties[PROP_REVEAL] = g_param_spec_boolean ("reveal", NULL, NULL, FALSE,
+                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
