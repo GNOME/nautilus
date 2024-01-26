@@ -40,12 +40,25 @@ enum
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
+enum
+{
+    PROP_0,
+    PROP_ICON_NAME,
+    PROP_LONG_RUNNING,
+    PROP_PROGRESS,
+    PROP_STATUS,
+    N_PROPS
+};
+
+GParamSpec *properties[N_PROPS] = { NULL, };
+
 struct _NautilusProgressInfo
 {
     GObject parent_instance;
 
     GCancellable *cancellable;
     guint cancellable_id;
+    guint long_running_handle_id;
 
     GTimer *progress_timer;
 
@@ -58,6 +71,7 @@ struct _NautilusProgressInfo
     gboolean started;
     gboolean finished;
     gboolean paused;
+    gboolean long_running;
 
     GSource *idle_source;
     gboolean source_is_now;
@@ -79,6 +93,7 @@ static void set_details (NautilusProgressInfo *info,
                          const char           *details);
 static void set_status (NautilusProgressInfo *info,
                         const char           *status);
+static const char * get_icon_name (NautilusProgressInfo *info);
 
 static void
 nautilus_progress_info_finalize (GObject *object)
@@ -122,12 +137,63 @@ nautilus_progress_info_dispose (GObject *object)
 }
 
 static void
+nautilus_progress_info_get_property (GObject    *object,
+                                     guint       property_id,
+                                     GValue     *value,
+                                     GParamSpec *pspec)
+{
+    NautilusProgressInfo *self = NAUTILUS_PROGRESS_INFO (object);
+
+    switch (property_id)
+    {
+        case (PROP_ICON_NAME):
+        {
+            g_value_set_string (value, get_icon_name (self));
+        }
+        break;
+
+        case (PROP_LONG_RUNNING):
+        {
+            /* Once an info is long_running it always is, so don't need to take a lock */
+            g_value_set_boolean (value, self->long_running);
+        }
+        break;
+
+        case (PROP_PROGRESS):
+        {
+            G_LOCK (progress_info);
+            /* This is a little different than nautilus_progress_info_get_progress ()
+             * in that we don't want to ever return -1, which would be the case when
+             * activity mode is true
+             */
+            g_value_set_double (value, self->progress);
+            G_UNLOCK (progress_info);
+        }
+        break;
+
+        case (PROP_STATUS):
+        {
+            g_autofree char *status = nautilus_progress_info_get_status (self);
+            g_value_set_string (value, status);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        }
+    }
+}
+
+
+static void
 nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     gobject_class->finalize = nautilus_progress_info_finalize;
     gobject_class->dispose = nautilus_progress_info_dispose;
+    gobject_class->get_property = nautilus_progress_info_get_property;
 
     signals[CHANGED] =
         g_signal_new ("changed",
@@ -173,6 +239,34 @@ nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
+
+    properties[PROP_ICON_NAME] = g_param_spec_string ("icon-name",
+                                                      NULL, NULL,
+                                                      NULL,
+                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_LONG_RUNNING] = g_param_spec_boolean ("long-running",
+                                                          NULL, NULL,
+                                                          FALSE,
+                                                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_PROGRESS] = g_param_spec_double ("progress", NULL, NULL,
+                                                     0, G_MAXDOUBLE, 0,
+                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_STATUS] = g_param_spec_string ("status",
+                                                   NULL, NULL,
+                                                   "",
+                                                   G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_properties (gobject_class, N_PROPS, properties);
+}
+
+static void
+on_long_running_timeout (gpointer user_data)
+{
+    NautilusProgressInfo *info = user_data;
+
+    info->long_running_handle_id = 0;
+    info->long_running = TRUE;
+
+    g_object_notify (G_OBJECT (info), "long-running");
 }
 
 static gboolean
@@ -226,15 +320,30 @@ idle_callback (gpointer data)
 
     G_UNLOCK (progress_info);
 
+    if (!info->long_running &&
+        info->remaining_time + g_timer_elapsed (info->progress_timer, NULL) > OPERATION_MINIMUM_TIME)
+    {
+        info->long_running = TRUE;
+
+        g_object_notify (G_OBJECT (info), "long-running");
+        g_clear_handle_id (&info->long_running_handle_id, g_source_remove);
+    }
+
     if (start_at_idle)
     {
         g_signal_emit (info,
                        signals[STARTED],
                        0);
+        if (!info->long_running && !info->paused)
+        {
+            info->long_running_handle_id =
+                g_timeout_add_seconds_once (OPERATION_MINIMUM_TIME, on_long_running_timeout, info);
+        }
     }
 
     if (changed_at_idle)
     {
+        g_object_notify (G_OBJECT (info), "status");
         g_signal_emit (info,
                        signals[CHANGED],
                        0);
@@ -245,10 +354,12 @@ idle_callback (gpointer data)
         g_signal_emit (info,
                        signals[PROGRESS_CHANGED],
                        0);
+        g_object_notify (G_OBJECT (info), "progress");
     }
 
     if (finish_at_idle)
     {
+        g_object_notify (G_OBJECT (info), "icon-name");
         g_signal_emit (info,
                        signals[FINISHED],
                        0);
@@ -256,6 +367,7 @@ idle_callback (gpointer data)
 
     if (cancelled_at_idle)
     {
+        g_object_notify (G_OBJECT (info), "icon-name");
         g_signal_emit (info,
                        signals[CANCELLED],
                        0);
@@ -406,6 +518,8 @@ nautilus_progress_info_cancel (NautilusProgressInfo *info)
     cancellable = nautilus_progress_info_get_cancellable (info);
     g_cancellable_cancel (cancellable);
     g_object_unref (cancellable);
+
+    g_clear_handle_id (&info->long_running_handle_id, g_source_remove);
 }
 
 GCancellable *
@@ -462,6 +576,21 @@ nautilus_progress_info_get_is_finished (NautilusProgressInfo *info)
     return res;
 }
 
+static const char *
+get_icon_name (NautilusProgressInfo *info)
+{
+    if (nautilus_progress_info_get_is_cancelled (info))
+    {
+        return "dialog-error-symbolic";
+    }
+    else if (nautilus_progress_info_get_is_finished (info))
+    {
+        return "object-select-symbolic";
+    }
+
+    return NULL;
+}
+
 gboolean
 nautilus_progress_info_get_is_paused (NautilusProgressInfo *info)
 {
@@ -485,6 +614,7 @@ nautilus_progress_info_pause (NautilusProgressInfo *info)
     {
         info->paused = TRUE;
         g_timer_stop (info->progress_timer);
+        g_clear_handle_id (&info->long_running_handle_id, g_source_remove);
     }
 
     G_UNLOCK (progress_info);
@@ -499,6 +629,10 @@ nautilus_progress_info_resume (NautilusProgressInfo *info)
     {
         info->paused = FALSE;
         g_timer_continue (info->progress_timer);
+
+        guint time_remaining = (OPERATION_MINIMUM_TIME - g_timer_elapsed (info->progress_timer, NULL));
+        info->long_running_handle_id =
+            g_timeout_add_once (time_remaining, on_long_running_timeout, info);
     }
 
     G_UNLOCK (progress_info);
@@ -525,6 +659,8 @@ void
 nautilus_progress_info_finish (NautilusProgressInfo *info)
 {
     G_LOCK (progress_info);
+
+    g_clear_handle_id (&info->long_running_handle_id, g_source_remove);
 
     if (!info->finished)
     {
@@ -684,6 +820,7 @@ nautilus_progress_info_set_remaining_time (NautilusProgressInfo *info,
 {
     G_LOCK (progress_info);
     info->remaining_time = time;
+    queue_idle (info, TRUE);
     G_UNLOCK (progress_info);
 }
 
@@ -726,7 +863,14 @@ nautilus_progress_info_get_total_elapsed_time (NautilusProgressInfo *info)
     gdouble elapsed_time;
 
     G_LOCK (progress_info);
-    elapsed_time = g_timer_elapsed (info->progress_timer, NULL);
+    if (info->progress_timer == NULL)
+    {
+        elapsed_time = 0;
+    }
+    else
+    {
+        elapsed_time = g_timer_elapsed (info->progress_timer, NULL);
+    }
     G_UNLOCK (progress_info);
 
     return elapsed_time;
