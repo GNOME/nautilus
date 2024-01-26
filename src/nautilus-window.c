@@ -110,6 +110,9 @@ struct _NautilusWindow
     GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
     GFile *selected_file;     /* the selected file in the sidebar popup callback */
 
+    GtkWidget *progress_indicator;
+    GtkWidget *operations_popover;
+
     /* Notifications */
     AdwToastOverlay *toast_overlay;
     AdwToast *last_undo_toast;
@@ -1757,6 +1760,8 @@ nautilus_window_constructed (GObject *self)
 
     nautilus_window_set_up_sidebar (window);
 
+    window->operations_popover = nautilus_progress_indicator_get_operations_popover (NAUTILUS_PROGRESS_INDICATOR (window->progress_indicator));
+    gtk_widget_set_parent (window->operations_popover, GTK_WIDGET (self));
 
     g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
                              G_CALLBACK (nautilus_window_on_undo_changed), self,
@@ -2257,6 +2262,19 @@ use_extra_mouse_buttons_changed (gpointer callback_data)
 }
 
 static void
+nautilus_window_size_allocate  (GtkWidget *widget,
+                                int        width,
+                                int        height,
+                                int        baseline)
+{
+    NautilusWindow *self = NAUTILUS_WINDOW (widget);
+
+    gtk_popover_present (GTK_POPOVER (self->operations_popover));
+
+    GTK_WIDGET_CLASS (nautilus_window_parent_class)->size_allocate (widget, width, height, baseline);
+}
+
+static void
 nautilus_window_init (NautilusWindow *window)
 {
     GtkWindowGroup *window_group;
@@ -2388,6 +2406,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
     wclass->grab_focus = nautilus_window_grab_focus;
+    wclass->size_allocate = nautilus_window_size_allocate;
 
     winclass->close_request = nautilus_window_close_request;
 
@@ -2406,6 +2425,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, split_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, progress_indicator);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_bar);

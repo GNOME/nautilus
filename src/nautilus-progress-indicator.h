@@ -17,4 +17,6 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusProgressIndicator, nautilus_progress_indicator, NAUTILUS, PROGRESS_INDICATOR, AdwBin)
 
+GtkWidget * nautilus_progress_indicator_get_operations_popover (NautilusProgressIndicator *self);
+
 G_END_DECLS

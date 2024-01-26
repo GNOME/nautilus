@@ -254,6 +254,14 @@ on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
     }
 }
 
+GtkWidget *
+nautilus_progress_indicator_get_operations_popover (NautilusProgressIndicator *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_PROGRESS_INDICATOR (self), NULL);
+
+    return self->operations_popover;
+}
+
 static GtkWidget *
 operations_list_create_widget (GObject  *item,
                                gpointer  user_data)
