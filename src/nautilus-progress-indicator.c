@@ -13,6 +13,15 @@
 
 #define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 /*s */
 
+enum
+{
+    PROP_0,
+    PROP_REVEAL,
+    N_PROPS
+};
+
+static GParamSpec *properties[N_PROPS] = { NULL, };
+
 struct _NautilusProgressIndicator
 {
     AdwBin parent_instance;
@@ -24,6 +33,8 @@ struct _NautilusProgressIndicator
     GtkWidget *operations_popover;
     GtkWidget *operations_list;
     GListStore *progress_infos_model;
+
+    gboolean reveal;
 
     NautilusProgressInfoManager *progress_manager;
 };
@@ -238,6 +249,22 @@ on_operations_popover_notify_visible (NautilusProgressIndicator *self,
 }
 
 static void
+on_list_model_n_items_changed (GListModel *model,
+                               GParamSpec *pspec,
+                               gpointer    user_data)
+{
+    NautilusProgressIndicator *self = user_data;
+    guint n_items = g_list_model_get_n_items (model);
+    gboolean reveal = n_items > 0;
+
+    if (reveal != self->reveal)
+    {
+        self->reveal = reveal;
+        g_object_notify (G_OBJECT (self), "reveal");
+    }
+}
+
+static void
 on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
                                  NautilusProgressIndicator   *self)
 {
@@ -276,6 +303,29 @@ operations_list_create_widget (GObject  *item,
 }
 
 static void
+nautilus_progress_indicator_get_property (GObject    *object,
+                                          guint       property_id,
+                                          GValue     *value,
+                                          GParamSpec *pspec)
+{
+    NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (object);
+
+    switch (property_id)
+    {
+        case (PROP_REVEAL):
+        {
+            g_value_set_boolean (value, self->reveal);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_progress_indicator_constructed (GObject *object)
 {
     NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (object);
@@ -289,6 +339,8 @@ nautilus_progress_indicator_constructed (GObject *object)
                              G_CONNECT_DEFAULT);
 
     self->progress_infos_model = g_list_store_new (NAUTILUS_TYPE_PROGRESS_INFO);
+    g_signal_connect (self->progress_infos_model, "notify::n-items",
+                      G_CALLBACK (on_list_model_n_items_changed), self);
     gtk_list_box_bind_model (GTK_LIST_BOX (self->operations_list),
                              G_LIST_MODEL (self->progress_infos_model),
                              (GtkListBoxCreateWidgetFunc) operations_list_create_widget,
@@ -335,6 +387,7 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     object_class->constructed = nautilus_progress_indicator_constructed;
     object_class->dispose = nautilus_progress_indicator_dispose;
     object_class->finalize = nautilus_progress_indicator_finalize;
+    object_class->get_property = nautilus_progress_indicator_get_property;
 
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-progress-indicator.ui");
@@ -342,6 +395,10 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, operations_list);
 
     gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
+
+    properties[PROP_REVEAL] = g_param_spec_boolean ("reveal", NULL, NULL, FALSE,
+                                                    G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void

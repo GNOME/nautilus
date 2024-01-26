@@ -2280,6 +2280,7 @@ nautilus_window_init (NautilusWindow *window)
     GtkWindowGroup *window_group;
     GtkEventController *controller;
     GtkPadController *pad_controller;
+    GtkWidget *toolbar_view;
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
@@ -2308,6 +2309,9 @@ nautilus_window_init (NautilusWindow *window)
     window_group = gtk_window_group_new ();
     gtk_window_group_add_window (window_group, GTK_WINDOW (window));
     g_object_unref (window_group);
+
+    toolbar_view = adw_overlay_split_view_get_sidebar (ADW_OVERLAY_SPLIT_VIEW (window->split_view));
+    g_object_bind_property (window->progress_indicator, "reveal", toolbar_view, "reveal-bottom-bars", G_BINDING_SYNC_CREATE);
 
     window->tab_data_queue = g_queue_new ();
 
