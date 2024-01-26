@@ -127,8 +127,7 @@ schedule_remove_finished_operations (NautilusProgressIndicator *self)
 static void
 remove_operations_button_attention_style (NautilusProgressIndicator *self)
 {
-    gtk_widget_remove_css_class (self->operations_button,
-                                 "nautilus-operations-button-needs-attention");
+    gtk_widget_remove_css_class (GTK_WIDGET (self), "needs-attention");
 }
 
 static gboolean
@@ -156,8 +155,7 @@ add_operations_button_attention_style (NautilusProgressIndicator *self)
     unschedule_operations_button_attention_style (self);
     remove_operations_button_attention_style (self);
 
-    gtk_widget_add_css_class (self->operations_button,
-                              "nautilus-operations-button-needs-attention");
+    gtk_widget_add_css_class (GTK_WIDGET (self), "needs-attention");
     self->operations_button_attention_timeout_id = g_timeout_add (NEEDS_ATTENTION_ANIMATION_TIMEOUT,
                                                                   (GSourceFunc) on_remove_operations_button_attention_style_timeout,
                                                                   self);
