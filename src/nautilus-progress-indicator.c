@@ -180,23 +180,6 @@ on_new_progress_info (NautilusProgressInfoManager *manager,
 }
 
 static void
-on_operations_popover_notify_visible (NautilusProgressIndicator *self,
-                                      GParamSpec                *pspec,
-                                      GObject                   *popover)
-{
-    if (gtk_widget_get_visible (GTK_WIDGET (popover)))
-    {
-        nautilus_progress_manager_add_viewer (self->progress_manager,
-                                              G_OBJECT (self));
-    }
-    else
-    {
-        nautilus_progress_manager_remove_viewer (self->progress_manager,
-                                                 G_OBJECT (self));
-    }
-}
-
-static void
 on_sidebar_list_activate (GtkListView *view,
                           guint        pos,
                           gpointer     user_data)
@@ -243,16 +226,6 @@ on_filter_model_n_items_changed (GListModel *model,
     else
     {
         gtk_widget_set_tooltip_text (self->sidebar_list, _("Show File Operations"));
-    }
-}
-
-static void
-on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
-                                 NautilusProgressIndicator   *self)
-{
-    if (nautilus_progress_manager_has_viewers (manager))
-    {
-        return;
     }
 }
 
@@ -308,9 +281,6 @@ nautilus_progress_indicator_constructed (GObject *object)
     self->progress_manager = nautilus_progress_info_manager_dup_singleton ();
     g_signal_connect_object (self->progress_manager, "new-progress-info",
                              G_CALLBACK (on_new_progress_info), self,
-                             G_CONNECT_DEFAULT);
-    g_signal_connect_object (self->progress_manager, "has-viewers-changed",
-                             G_CALLBACK (on_progress_has_viewers_changed), self,
                              G_CONNECT_DEFAULT);
 
     self->progress_infos_model = g_list_store_new (NAUTILUS_TYPE_PROGRESS_INFO);
@@ -389,7 +359,6 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusProgressIndicator, sidebar_list);
 
     gtk_widget_class_bind_template_callback (widget_class, get_paintable);
-    gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
     gtk_widget_class_bind_template_callback (widget_class, on_sidebar_list_activate);
 
     properties[PROP_REVEAL] = g_param_spec_boolean ("reveal", NULL, NULL, FALSE,

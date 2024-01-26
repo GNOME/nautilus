@@ -37,8 +37,4 @@ void nautilus_progress_info_manager_add_new_info (NautilusProgressInfoManager *s
                                                   NautilusProgressInfo *info);
 GList *nautilus_progress_info_manager_get_all_infos (NautilusProgressInfoManager *self);
 
-void nautilus_progress_manager_add_viewer (NautilusProgressInfoManager *self, GObject *viewer);
-void nautilus_progress_manager_remove_viewer (NautilusProgressInfoManager *self, GObject *viewer);
-gboolean nautilus_progress_manager_has_viewers (NautilusProgressInfoManager *self);
-
 G_END_DECLS
