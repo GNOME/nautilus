@@ -11,8 +11,6 @@
 #include "nautilus-progress-info-widget.h"
 #include "nautilus-window.h"
 
-#define OPERATION_MINIMUM_TIME 2 /*s */
-#define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
 #define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 /*s */
 
 struct _NautilusProgressIndicator
