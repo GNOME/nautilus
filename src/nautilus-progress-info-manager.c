@@ -146,48 +146,10 @@ nautilus_progress_info_manager_add_new_info (NautilusProgressInfoManager *self,
     g_signal_emit (self, signals[NEW_PROGRESS_INFO], 0, info);
 }
 
-void
-nautilus_progress_info_manager_remove_finished_or_cancelled_infos (NautilusProgressInfoManager *self)
-{
-    GList *l;
-    GList *next;
-
-    l = self->progress_infos;
-    while (l != NULL)
-    {
-        next = l->next;
-        if (nautilus_progress_info_get_is_finished (l->data) ||
-            nautilus_progress_info_get_is_cancelled (l->data))
-        {
-            g_object_unref (l->data);
-            self->progress_infos = g_list_remove (self->progress_infos,
-                                                  l->data);
-        }
-        l = next;
-    }
-}
-
 GList *
 nautilus_progress_info_manager_get_all_infos (NautilusProgressInfoManager *self)
 {
     return self->progress_infos;
-}
-
-gboolean
-nautilus_progress_manager_are_all_infos_finished_or_cancelled (NautilusProgressInfoManager *self)
-{
-    GList *l;
-
-    for (l = self->progress_infos; l != NULL; l = l->next)
-    {
-        if (!(nautilus_progress_info_get_is_finished (l->data) ||
-              nautilus_progress_info_get_is_cancelled (l->data)))
-        {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
 }
 
 static void
