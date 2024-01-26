@@ -40,6 +40,17 @@ enum
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
+enum
+{
+    PROP_0,
+    PROP_ICON_NAME,
+    PROP_PROGRESS,
+    PROP_STATUS,
+    N_PROPS
+};
+
+GParamSpec *properties[N_PROPS] = { NULL, };
+
 struct _NautilusProgressInfo
 {
     GObject parent_instance;
@@ -79,6 +90,7 @@ static void set_details (NautilusProgressInfo *info,
                          const char           *details);
 static void set_status (NautilusProgressInfo *info,
                         const char           *status);
+static const char * get_icon_name (NautilusProgressInfo *info);
 
 static void
 nautilus_progress_info_finalize (GObject *object)
@@ -122,12 +134,54 @@ nautilus_progress_info_dispose (GObject *object)
 }
 
 static void
+nautilus_progress_info_get_property (GObject    *object,
+                                     guint       property_id,
+                                     GValue     *value,
+                                     GParamSpec *pspec)
+{
+    NautilusProgressInfo *self = NAUTILUS_PROGRESS_INFO (object);
+
+    switch (property_id)
+    {
+        case (PROP_ICON_NAME):
+        {
+            g_value_set_string (value, get_icon_name (self));
+        }
+        break;
+
+        case (PROP_PROGRESS):
+        {
+            G_LOCK (progress_info);
+            /* This is a little different than nautilus_progress_info_get_progress ()
+             * in that we don't want to ever return -1, which would be the case when
+             * activity mode is true
+             */
+            g_value_set_double (value, self->progress);
+            G_UNLOCK (progress_info);
+        }
+        break;
+
+        case (PROP_STATUS):
+        {
+            g_value_take_string (value, nautilus_progress_info_get_status (self));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 
     gobject_class->finalize = nautilus_progress_info_finalize;
     gobject_class->dispose = nautilus_progress_info_dispose;
+    gobject_class->get_property = nautilus_progress_info_get_property;
 
     signals[CHANGED] =
         g_signal_new ("changed",
@@ -173,6 +227,19 @@ nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
+
+    properties[PROP_ICON_NAME] = g_param_spec_string ("icon-name",
+                                                      NULL, NULL,
+                                                      NULL,
+                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_PROGRESS] = g_param_spec_double ("progress", NULL, NULL,
+                                                     0, G_MAXDOUBLE, 0,
+                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_STATUS] = g_param_spec_string ("status",
+                                                   NULL, NULL,
+                                                   "",
+                                                   G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    g_object_class_install_properties (gobject_class, N_PROPS, properties);
 }
 
 static gboolean
@@ -235,6 +302,7 @@ idle_callback (gpointer data)
 
     if (changed_at_idle)
     {
+        g_object_notify (G_OBJECT (info), "status");
         g_signal_emit (info,
                        signals[CHANGED],
                        0);
@@ -245,10 +313,12 @@ idle_callback (gpointer data)
         g_signal_emit (info,
                        signals[PROGRESS_CHANGED],
                        0);
+        g_object_notify (G_OBJECT (info), "progress");
     }
 
     if (finish_at_idle)
     {
+        g_object_notify (G_OBJECT (info), "icon-name");
         g_signal_emit (info,
                        signals[FINISHED],
                        0);
@@ -256,6 +326,7 @@ idle_callback (gpointer data)
 
     if (cancelled_at_idle)
     {
+        g_object_notify (G_OBJECT (info), "icon-name");
         g_signal_emit (info,
                        signals[CANCELLED],
                        0);
@@ -460,6 +531,21 @@ nautilus_progress_info_get_is_finished (NautilusProgressInfo *info)
     G_UNLOCK (progress_info);
 
     return res;
+}
+
+static const char *
+get_icon_name (NautilusProgressInfo *info)
+{
+    if (nautilus_progress_info_get_is_cancelled (info))
+    {
+        return "process-stop-symbolic";
+    }
+    else if (nautilus_progress_info_get_is_finished (info))
+    {
+        return "object-select-symbolic";
+    }
+
+    return NULL;
 }
 
 gboolean
@@ -723,10 +809,13 @@ nautilus_progress_info_get_elapsed_time (NautilusProgressInfo *info)
 gdouble
 nautilus_progress_info_get_total_elapsed_time (NautilusProgressInfo *info)
 {
-    gdouble elapsed_time;
+    gdouble elapsed_time = 0;
 
     G_LOCK (progress_info);
-    elapsed_time = g_timer_elapsed (info->progress_timer, NULL);
+    if (info->progress_timer != NULL)
+    {
+        elapsed_time = g_timer_elapsed (info->progress_timer, NULL);
+    }
     G_UNLOCK (progress_info);
 
     return elapsed_time;
