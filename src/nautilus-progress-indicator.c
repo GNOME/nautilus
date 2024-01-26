@@ -533,4 +533,9 @@ nautilus_progress_indicator_init (NautilusProgressIndicator *self)
                                     (GtkDrawingAreaDrawFunc) on_operations_icon_draw,
                                     self,
                                     NULL);
+
+    if (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL)
+    {
+        gtk_menu_button_set_direction (GTK_MENU_BUTTON (self->operations_button), GTK_ARROW_LEFT);
+    }
 }

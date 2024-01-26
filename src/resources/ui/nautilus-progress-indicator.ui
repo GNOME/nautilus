@@ -33,6 +33,7 @@
         <property name="child">
           <object class="GtkMenuButton" id="operations_button">
             <property name="tooltip_text" translatable="yes">Show File Operations</property>
+            <property name="direction">right</property>
             <property name="popover">operations_popover</property>
             <child>
               <object class="GtkDrawingArea" id="operations_icon">
