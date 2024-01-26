@@ -116,6 +116,9 @@
             <property name="sidebar-width-fraction">0.2</property>
             <property name="sidebar">
               <object class="AdwToolbarView">
+                <property name="reveal-bottom-bars"
+                          bind-source="progress_indicator" bind-property="reveal"
+                          bind-flags="sync-create"/>
                 <child type="top">
                   <object class="AdwHeaderBar">
                     <property name="title-widget">
