@@ -73,6 +73,7 @@
 #include "nautilus-previewer.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-properties-window.h"
+#include "nautilus-recent-servers.h"
 #include "nautilus-rename-file-popover.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory.h"
@@ -7123,6 +7124,37 @@ action_detect_media (GSimpleAction *action,
     }
 }
 
+static void
+action_copy_network_address (GSimpleAction *action,
+                             GVariant      *state,
+                             gpointer       user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+
+    g_return_if_fail (selection != NULL && selection->next == NULL);
+
+    g_autofree char *address = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
+
+    gdk_clipboard_set_text (gtk_widget_get_clipboard (GTK_WIDGET (self)), address);
+}
+
+static void
+action_remove_recent_server (GSimpleAction *action,
+                             GVariant      *state,
+                             gpointer       user_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    g_autolist (NautilusFile) selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+
+    for (GList *l = selection; l != NULL; l = l->next)
+    {
+        g_autofree char *address = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
+
+        nautilus_remove_recent_server (address);
+    }
+}
+
 const GActionEntry view_entries[] =
 {
     /* Toolbar menu */
@@ -7195,6 +7227,9 @@ const GActionEntry view_entries[] =
     { .name = "start-volume", .activate = action_start_volume },
     { .name = "stop-volume", .activate = action_stop_volume },
     { .name = "detect-media", .activate = action_detect_media },
+    /* Only in Network View */
+    { .name = "copy-network-address", .activate = action_copy_network_address },
+    { .name = "remove-recent-server", .activate = action_remove_recent_server },
     /* Only accesible by shorcuts */
     { .name = "select-pattern", .activate = action_select_pattern },
     { .name = "invert-selection", .activate = action_invert_selection },
@@ -7972,6 +8007,33 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "unstar");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), show_unstar && selection_contains_starred);
+
+    /* Network view actions */
+    gboolean is_network_view = NAUTILUS_IS_NETWORK_VIEW (priv->list_base);
+    gboolean can_remove_recent_server = is_network_view;
+
+    for (l = selection; l != NULL && can_remove_recent_server; l = l->next)
+    {
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+        g_autoptr (GFile) location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
+
+        /* Only recent servers have x-network-view: scheme */
+        if (!g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW) || nautilus_file_can_unmount (file))
+        {
+            can_remove_recent_server = FALSE;
+        }
+    }
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "copy-network-address");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 (is_network_view &&
+                                  selection_count == 1 &&
+                                  nautilus_file_has_activation_uri (selection->data)));
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "remove-recent-server");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_remove_recent_server);
 }
 
 /* Convenience function to be called when updating menus,
@@ -8276,6 +8338,11 @@ update_selection_menu (NautilusFilesView *view,
         g_menu_remove_all (G_MENU (object));
 
         object = gtk_builder_get_object (builder, "file-actions-section");
+        g_menu_remove_all (G_MENU (object));
+    }
+    else
+    {
+        object = gtk_builder_get_object (builder, "network-view-section");
         g_menu_remove_all (G_MENU (object));
     }
 }
