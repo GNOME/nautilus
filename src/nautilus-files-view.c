@@ -8696,6 +8696,7 @@ nautilus_files_view_notify_selection_changed (NautilusFilesView *view)
                           view);
     }
 
+    nautilus_files_view_update_actions_state (view);
     schedule_update_context_menus (view);
 }
 
