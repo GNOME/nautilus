@@ -120,6 +120,14 @@ on_list_view_item_activated (GtkListView *list_view,
     nautilus_list_base_activate_selection (NAUTILUS_LIST_BASE (self), FALSE);
 }
 
+static void
+real_popup_background_context_menu (NautilusListBase *self,
+                                    double            x,
+                                    double            y)
+{
+    g_signal_stop_emission_by_name (G_OBJECT (self), "popup-background-context-menu");
+}
+
 static guint
 real_get_icon_size (NautilusListBase *list_base_view)
 {
@@ -366,6 +374,7 @@ nautilus_network_view_class_init (NautilusNetworkViewClass *klass)
     object_class->dispose = nautilus_network_view_dispose;
     object_class->finalize = nautilus_network_view_finalize;
 
+    list_base_view_class->popup_background_context_menu = real_popup_background_context_menu;
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_sort_state = real_get_sort_state;
     list_base_view_class->get_view_info = real_get_view_info;
