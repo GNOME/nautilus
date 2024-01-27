@@ -20,4 +20,8 @@ void                    nautilus_recent_servers_force_reload   (NautilusRecentSe
 GList *                 nautilus_recent_servers_get_infos      (NautilusRecentServers *self);
 gboolean                nautilus_recent_servers_get_loading    (NautilusRecentServers *self);
 
+void                    nautilus_add_recent_server             (GFile                 *file);
+
+void                    nautilus_remove_recent_server          (const char            *uri);
+
 G_END_DECLS
