@@ -3838,7 +3838,6 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   sidebar->swin = gtk_scrolled_window_new ();
   gtk_widget_set_parent (sidebar->swin, GTK_WIDGET (sidebar));
-  gtk_widget_set_size_request (sidebar->swin, 140, 280);
 
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sidebar->swin),
                                   GTK_POLICY_NEVER,
