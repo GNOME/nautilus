@@ -11,6 +11,7 @@
 #include <adwaita.h>
 
 #include "nautilus-application.h"
+#include "nautilus-recent-servers.h"
 
 struct _NautilusNetworkAddressBar
 {
@@ -88,9 +89,7 @@ server_mount_ready_cb (GObject      *source_file,
 
     if (should_show)
     {
-#if 0
-        server_list_add_server (self, location);
-#endif
+        nautilus_add_recent_server (location);
 
         /*
          * Only clear the entry if it successfully connects to the server.
