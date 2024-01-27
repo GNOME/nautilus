@@ -672,36 +672,26 @@ char *
 get_message_for_content_type (const char *content_type)
 {
     char *message;
+    const GStrv known_types = (char *[])
+    {
+        "x-content/audio-cdda",
+        "x-content/audio-dvd",
+        "x-content/video-vcd",
+        "x-content/video-dvd",
+        "x-content/video-svcd",
+        "x-content/image-picturecd",
+        NULL,
+    };
 
     /* Customize greeting for well-known content types */
-    if (strcmp (content_type, "x-content/audio-cdda") == 0)
+    if (g_strv_contains ((const gchar **) known_types, content_type))
     {
-        /* translators: these describe the contents of removable media */
-        message = g_strdup (_("Audio CD"));
-    }
-    else if (strcmp (content_type, "x-content/audio-dvd") == 0)
-    {
-        message = g_strdup (_("Audio DVD"));
-    }
-    else if (strcmp (content_type, "x-content/video-dvd") == 0)
-    {
-        message = g_strdup (_("Video DVD"));
-    }
-    else if (strcmp (content_type, "x-content/video-vcd") == 0)
-    {
-        message = g_strdup (_("Video CD"));
-    }
-    else if (strcmp (content_type, "x-content/video-svcd") == 0)
-    {
-        message = g_strdup (_("Super Video CD"));
+        message = g_content_type_get_description (content_type);
     }
     else if (strcmp (content_type, "x-content/image-photocd") == 0)
     {
+        /* translators: these describe the contents of removable media */
         message = g_strdup (_("Photo CD"));
-    }
-    else if (strcmp (content_type, "x-content/image-picturecd") == 0)
-    {
-        message = g_strdup (_("Picture CD"));
     }
     else if (strcmp (content_type, "x-content/image-dcf") == 0)
     {
