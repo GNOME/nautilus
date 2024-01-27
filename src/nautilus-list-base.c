@@ -1244,8 +1244,8 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
                                           G_TYPE_VALUE, GDK_TYPE_DRAG_ACTION, G_TYPE_FILE);
     signals[POPUP_BACKGROUND_CONTEXT_MENU] = g_signal_new ("popup-background-context-menu",
                                                            G_TYPE_FROM_CLASS (klass),
-                                                           G_SIGNAL_RUN_LAST,
-                                                           0,
+                                                           G_SIGNAL_RUN_FIRST,
+                                                           G_STRUCT_OFFSET (NautilusListBaseClass, popup_background_context_menu),
                                                            NULL, NULL,
                                                            NULL,
                                                            G_TYPE_NONE, 2,
