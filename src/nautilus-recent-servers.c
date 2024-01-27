@@ -18,7 +18,6 @@ struct _NautilusRecentServers
 
     GHashTable *server_infos;
 
-    GFile *server_list_file;
     GFileMonitor *server_list_monitor;
 
     guint loading : 1;
@@ -55,8 +54,38 @@ server_file_changed_cb (NautilusRecentServers *self)
     populate_servers (self);
 }
 
+static void
+ensure_monitor (NautilusRecentServers *self)
+{
+    if (self->server_list_monitor != NULL)
+    {
+        return;
+    }
+
+    g_autofree char *filename = g_build_filename (g_get_user_config_dir (), "gtk-4.0", "servers", NULL);
+    g_autoptr (GFile) server_list_file = g_file_new_for_path (filename);
+    g_autoptr (GError) error = NULL;
+
+    self->server_list_monitor = g_file_monitor_file (server_list_file,
+                                                     G_FILE_MONITOR_NONE,
+                                                     NULL,
+                                                     &error);
+
+    if (error != NULL)
+    {
+        g_warning ("Cannot monitor server file: %s", error->message);
+    }
+    else
+    {
+        g_signal_connect_swapped (self->server_list_monitor,
+                                  "changed",
+                                  G_CALLBACK (server_file_changed_cb),
+                                  self);
+    }
+}
+
 static GBookmarkFile *
-server_list_load (NautilusRecentServers *self)
+server_list_load (void)
 {
     GBookmarkFile *bookmarks;
     GError *error = NULL;
@@ -82,35 +111,6 @@ server_list_load (NautilusRecentServers *self)
         g_clear_error (&error);
     }
 
-    /* Monitor the file in case it's modified outside this code */
-    if (!self->server_list_monitor)
-    {
-        self->server_list_file = g_file_new_for_path (filename);
-
-        if (self->server_list_file)
-        {
-            self->server_list_monitor = g_file_monitor_file (self->server_list_file,
-                                                             G_FILE_MONITOR_NONE,
-                                                             NULL,
-                                                             &error);
-
-            if (error)
-            {
-                g_warning ("Cannot monitor server file: %s", error->message);
-                g_clear_error (&error);
-            }
-            else
-            {
-                g_signal_connect_swapped (self->server_list_monitor,
-                                          "changed",
-                                          G_CALLBACK (server_file_changed_cb),
-                                          self);
-            }
-        }
-
-        g_clear_object (&self->server_list_file);
-    }
-
     g_free (datadir);
     g_free (filename);
 
@@ -127,9 +127,8 @@ server_list_save (GBookmarkFile *bookmarks)
     g_free (filename);
 }
 
-G_GNUC_UNUSED static void
-server_list_add_server (NautilusRecentServers *self,
-                        GFile                 *file)
+void
+nautilus_add_recent_server (GFile *file)
 {
     GBookmarkFile *bookmarks;
     GFileInfo *info;
@@ -140,7 +139,7 @@ server_list_add_server (NautilusRecentServers *self,
     GDateTime *now;
 
     error = NULL;
-    bookmarks = server_list_load (self);
+    bookmarks = server_list_load ();
 
     if (!bookmarks)
     {
@@ -170,13 +169,12 @@ server_list_add_server (NautilusRecentServers *self,
     g_free (uri);
 }
 
-G_GNUC_UNUSED static void
-server_list_remove_server (NautilusRecentServers *self,
-                           const char            *uri)
+void
+nautilus_remove_recent_server (const char *uri)
 {
     GBookmarkFile *bookmarks;
 
-    bookmarks = server_list_load (self);
+    bookmarks = server_list_load ();
 
     if (!bookmarks)
     {
@@ -194,7 +192,6 @@ nautilus_recent_servers_finalize (GObject *object)
 {
     NautilusRecentServers *self = (NautilusRecentServers *) object;
 
-    g_clear_object (&self->server_list_file);
     g_clear_object (&self->server_list_monitor);
     g_clear_pointer (&self->server_infos, g_hash_table_destroy);
 
@@ -278,12 +275,15 @@ populate_servers (NautilusRecentServers *self)
     char **uris;
     gsize num_uris;
 
-    server_list = server_list_load (self);
+    server_list = server_list_load ();
 
     if (!server_list)
     {
         return;
     }
+
+    /* Monitor the file in case it's modified outside this code */
+    ensure_monitor (self);
 
     nautilus_recent_servers_set_loading (self, TRUE);
 
