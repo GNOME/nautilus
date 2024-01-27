@@ -37,6 +37,9 @@ struct _NautilusListBaseClass
                                                int               new_zoom_level);
 
         /* Subclasses may override base implementation. */
+        void (*popup_background_context_menu) (NautilusListBase *self,
+                                               double            x,
+                                               double            y);
         NautilusViewItem *(*get_backing_item) (NautilusListBase *self);
         void       (*preview_selection_event) (NautilusListBase *self,
                                                GtkDirectionType  direction);
