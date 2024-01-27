@@ -8239,6 +8239,15 @@ update_selection_menu (NautilusFilesView *view,
     nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
                                             "hidden-when",
                                             (!show_scripts) ? "action-missing" : NULL);
+
+    if (NAUTILUS_IS_NETWORK_VIEW (priv->list_base))
+    {
+        object = gtk_builder_get_object (builder, "move-copy-section");
+        g_menu_remove_all (G_MENU (object));
+
+        object = gtk_builder_get_object (builder, "file-actions-section");
+        g_menu_remove_all (G_MENU (object));
+    }
 }
 
 static void
