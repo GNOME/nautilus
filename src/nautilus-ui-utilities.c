@@ -339,6 +339,15 @@ nautilus_date_time_is_between_dates (GDateTime *date,
     return in_between;
 }
 
+static void
+show_ok_dialog_idle (gpointer user_data)
+{
+    AdwDialog *dialog = user_data;
+    GtkWidget *parent = g_object_get_data (G_OBJECT (dialog), "parent-widget");
+
+    adw_dialog_present (dialog, parent);
+}
+
 void
 nautilus_show_ok_dialog (const char *heading,
                          const char *body,
@@ -356,7 +365,16 @@ nautilus_show_ok_dialog (const char *heading,
         parent = GTK_WIDGET (gtk_application_get_active_window (app));
     }
 
-    adw_dialog_present (ADW_DIALOG (dialog), parent);
+    if (g_main_context_is_owner (g_main_context_default ()))
+    {
+        adw_dialog_present (ADW_DIALOG (dialog), parent);
+    }
+    else
+    {
+        g_object_set_data (G_OBJECT (dialog), "parent-widget", parent);
+
+        g_idle_add_once (show_ok_dialog_idle, dialog);
+    }
 }
 
 static void
