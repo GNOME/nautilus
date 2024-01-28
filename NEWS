@@ -1,6 +1,46 @@
 Major changes in 46.alpha.0
 =======================
 * Enhancements
+  - Views can be switched without a folder reload (António Fernandes)
+  - Replace Other Locations with a new Network view (António Fernandes, Allan Day)
+  - Display ongoing operations in the bottom of the sidebar (Corey Berla, António Fernandes, Allan Day)
+  - Store selection with navigation history (António Fernandes)
+  - Correctly prioritize thumbnails for non-alphabetical sort order (Corey Berla)
+  - Various view performance improvements (António Fernandes)
+  - Show spinner while (un/)mounting in network view (António Fernandes)
+  - Use epiphany's progress indicator for operations (Corey Berla)
+  - Display mounted drives in the sidebar (António Fernandes)
+  - Improve performance of multi-file properties dialog (Khalid Abu Shawarib)
+* Bugfixes:
+  - Fix opening parent folder for documents in Recent (Anton Snigirev)
+  - Pattern match all shown files, incuding expanded list view directories (António Fernandes)
+  - Item fade remains after canceling or skipping a cut operation (António Fernandes)
+  - Sampling frequency without thousand separators (Hariharan D)
+  - Fix memory leaks in views and warnings upon their destruction (António Fernandes)
+  - Accessible name-changed events missing when files are renamed (Corey Berla, António Fernandes)
+  - Treat markdown files as documents (Hariharan D)
+  - Improve UI text capitalization and mnemonics (Automeris naranja)
+  - Focus file when scrolling to it (António Fernandes)
+  - Fix tab tooltip texts for markup and search (Corey Berla)
+  - Fix extension linkage with C++ (Khalid Abu Shawarib)
+  - Add a tooltip to the star button (Lukáš Tyrychtr)
+  - Improve subfolder loading indication (António Fernandes)
+  - Hamburger menu shows Undo and Redo shortcuts to be Ctrl+Z (Divyansh Jain)
+  - Prevent use-after-free with mount and stop (António Fernandes)
+* Cleanups
+  - Significant restructuring of view architecture (António Fernandes)
+  - Bundle lots of view functionality in list-base (António Fernandes)
+  - Drop unused view zoom-to-level action (António Fernandes)
+  - Don't update every menu upon zooming (António Fernandes)
+  - Remove dead code for pango3 and in progress indicator (António Fernandes)
+  - Add a one-to-onea view-cell and listitem relationship (Corey Berla)
+  - Update man page, remove documentation for removed self-check functionality (Corey Berla)
+  - Add mountable and shortcut support to NautilusFie (António Fernandes)
+* Translation updates (GNOME Translation Project contributors)
+
+Major changes in 46.alpha.0
+=======================
+* Enhancements
   - Confirm password when creating protected ZIP archives (Eric Daigle)
   - Make custom folder icon feature discoverable (Khalid Abu Shawarib)
   - Make URI entry discoverable (Alynx Zhou, Barnabás Pőcze)
