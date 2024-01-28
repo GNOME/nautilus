@@ -50,7 +50,7 @@ on_nautilus_dbus_launcher_call_finished   (GObject      *source_object,
         message = g_strdup_printf (_("Details: %s"), error->message);
         nautilus_show_ok_dialog (_("There was an error launching the app."),
                                  message,
-                                 window);
+                                 GTK_WIDGET (window));
     }
 }
 
@@ -78,7 +78,7 @@ nautilus_dbus_launcher_call (NautilusDBusLauncher    *self,
     {
         nautilus_show_ok_dialog (_("There was an error launching the app."),
                                  _("Details: The proxy has not been created."),
-                                 window);
+                                 GTK_WIDGET (window));
     }
 }
 

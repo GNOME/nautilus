@@ -71,9 +71,9 @@ gboolean    nautilus_date_time_is_between_dates     (GDateTime         *date,
                                                      GDateTime         *end_date);
 
 void
-nautilus_show_ok_dialog (const char *primary_text,
-                         const char *secondary_text,
-                         GtkWindow  *parent);
+nautilus_show_ok_dialog (const char *heading,
+                         const char *body,
+                         GtkWidget  *parent);
 
 void        show_unmount_progress_cb                (GMountOperation   *op,
                                                      const gchar       *message,

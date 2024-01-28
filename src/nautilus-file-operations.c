@@ -2314,7 +2314,7 @@ unmount_mount_callback (GObject      *source_object,
             }
             nautilus_show_ok_dialog (primary,
                                      error->message,
-                                     data->parent_window);
+                                     GTK_WIDGET (data->parent_window));
             g_free (primary);
         }
     }
@@ -2630,7 +2630,7 @@ volume_mount_cb (GObject      *source_object,
             success = FALSE;
             nautilus_show_ok_dialog (primary,
                                      error->message,
-                                     parent);
+                                     GTK_WIDGET (parent));
             g_free (primary);
         }
     }

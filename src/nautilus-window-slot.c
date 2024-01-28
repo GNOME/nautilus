@@ -1917,7 +1917,7 @@ nautilus_window_slot_display_view_selection_failure (GtkWindow    *window,
         detail_message = g_strdup_printf (_("Unhandled error message: %s"), error->message);
     }
 
-    nautilus_show_ok_dialog (error_message, detail_message, window);
+    nautilus_show_ok_dialog (error_message, detail_message, GTK_WIDGET (window));
 
 done:
     g_free (error_message);
