@@ -36,4 +36,3 @@ void nautilus_dbus_launcher_call (NautilusDBusLauncher    *self,
                                   const gchar             *method_name,
                                   GVariant                *parameters,
                                   GtkWindow               *window);
-

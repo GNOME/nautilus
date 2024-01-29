@@ -48,4 +48,3 @@ void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
 void nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
                                        NautilusWindowSlot *window_slot);
 G_END_DECLS
-

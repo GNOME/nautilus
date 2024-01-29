@@ -64,4 +64,3 @@ void nautilus_module_list_types (const GType **types,
                                  int          *num_types);
 
 G_END_DECLS
-
