@@ -94,7 +94,7 @@ create_test_data (TrackerSparqlConnection *connection,
 
     g_main_loop_run (main_loop);
 
-    g_assert (await_data->created);
+    g_assert_true (await_data->created);
     g_source_remove (timeout_id);
     g_clear_signal_handler (&signal_id, notifier);
 

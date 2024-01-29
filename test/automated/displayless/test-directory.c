@@ -59,7 +59,7 @@ got_files_callback (NautilusDirectory *directory,
 {
     g_assert_true (NAUTILUS_IS_DIRECTORY (directory));
     g_assert_cmpint (g_list_length (files), >, 10);
-    g_assert (callback_data == &data_dummy);
+    g_assert_true (callback_data == &data_dummy);
 
     got_files_flag = TRUE;
 }
