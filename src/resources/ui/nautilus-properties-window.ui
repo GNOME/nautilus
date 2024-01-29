@@ -59,6 +59,9 @@
                                             <property name="child">
                                               <object class="GtkImage" id="icon_image">
                                                 <property name="icon-name">image-missing</property>
+                                                <style>
+                                                  <class name="icon-dropshadow"/>
+                                                </style>
                                               </object>
                                             </property>
                                           </object>
@@ -80,6 +83,9 @@
                                                         <binding name="pixel-size">
                                                           <lookup name="pixel-size">icon_image</lookup>
                                                         </binding>
+                                                        <style>
+                                                          <class name="icon-dropshadow"/>
+                                                        </style>
                                                       </object>
                                                     </child>
                                                   </object>
