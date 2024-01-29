@@ -347,30 +347,30 @@ permission_value_to_string (PermissionValue permission_value,
         {
             if (!describes_folder)
             {
-                return _("Read and write");
+                return _("Read and Write");
             }
             else if (permission_value & PERMISSION_EXEC)
             {
-                return _("Create and delete files");
+                return _("Create and Delete Files");
             }
             else
             {
-                return _("Read/write, no access");
+                return _("Read and Write, No Access");
             }
         }
         else
         {
             if (!describes_folder)
             {
-                return _("Read-only");
+                return _("Read-Only");
             }
             else if (permission_value & PERMISSION_EXEC)
             {
-                return _("Access files");
+                return _("Access Files");
             }
             else
             {
-                return _("List files only");
+                return _("List Files Only");
             }
         }
     }
@@ -380,18 +380,18 @@ permission_value_to_string (PermissionValue permission_value,
         {
             if (!describes_folder || permission_value & PERMISSION_EXEC)
             {
-                return _("Write-only");
+                return _("Write-Only");
             }
             else
             {
-                return _("Write-only, no access");
+                return _("Write-Only, No Access");
             }
         }
         else
         {
             if (describes_folder && permission_value & PERMISSION_EXEC)
             {
-                return _("Access-only");
+                return _("Access-Only");
             }
             else
             {
