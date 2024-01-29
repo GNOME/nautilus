@@ -1200,7 +1200,8 @@ batch_rename_redo_func (NautilusFileUndoInfo           *info,
 {
     NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
 
-    GList *l, *files;
+    GList *l;
+    g_autolist (NautilusFile) files = NULL;
     NautilusFile *file;
     GFile *old_file;
 
@@ -1226,7 +1227,8 @@ batch_rename_undo_func (NautilusFileUndoInfo           *info,
 {
     NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
 
-    GList *l, *files;
+    GList *l;
+    g_autolist (NautilusFile) files = NULL;
     NautilusFile *file;
     GFile *new_file;
 
