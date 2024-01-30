@@ -47,17 +47,26 @@
               </object>
             </child>
             <child>
-              <object class="GtkToggleButton" id="search_button">
-                <property name="tooltip_text" translatable="yes">Search Current Folder</property>
-                <property name="halign">center</property>
-                <property name="valign">center</property>
-                <property name="action_name">slot.search-visible</property>
-                <property name="icon_name">nautilus-folder-search-symbolic</property>
-                <binding name="active">
-                  <lookup name="search-visible">
-                    <lookup name="window-slot">NautilusToolbar</lookup>
-                  </lookup>
-                </binding>
+              <object class="GtkStack" id="search_button_stack">
+                <property name="hhomogeneous">true</property>
+                <property name="transition-type">crossfade</property>
+                <child>
+                  <object class="GtkToggleButton" id="search_button">
+                    <property name="tooltip_text" translatable="yes">Search Current Folder</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="action_name">slot.search-visible</property>
+                    <property name="icon_name">nautilus-folder-search-symbolic</property>
+                    <binding name="active">
+                      <lookup name="search-visible">
+                        <lookup name="window-slot">NautilusToolbar</lookup>
+                      </lookup>
+                    </binding>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwBin" id="search_button_placeholder"/>
+                </child>
               </object>
             </child>
           </object>
@@ -75,8 +84,17 @@
             <property name="visible" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
             <property name="spacing">6</property>
             <child>
-              <object class="NautilusHistoryControls" id="history_controls">
-                <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+              <object class="GtkStack" id="history_controls_stack">
+                <property name="hhomogeneous">true</property>
+                <property name="transition-type">crossfade</property>
+                <child>
+                  <object class="NautilusHistoryControls" id="history_controls">
+                    <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwBin" id="history_controls_placeholder"/>
+                </child>
               </object>
             </child>
             <child>
