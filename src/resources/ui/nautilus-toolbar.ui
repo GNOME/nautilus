@@ -48,11 +48,11 @@
             </child>
             <child>
               <object class="GtkToggleButton" id="search_button">
-                <property name="tooltip_text" translatable="yes">Search</property>
+                <property name="tooltip_text" translatable="yes">Search Folder</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="action_name">slot.search-visible</property>
-                <property name="icon_name">edit-find-symbolic</property>
+                <property name="icon_name">nautilus-folder-search-symbolic</property>
                 <binding name="active">
                   <lookup name="search-visible">
                     <lookup name="window-slot">NautilusToolbar</lookup>
