@@ -47,7 +47,9 @@ struct _NautilusToolbar
     GtkWidget *toolbar_switcher;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
+    GtkWidget *search_button_stack;
     GtkWidget *search_button;
+    GtkWidget *search_button_shadow;
 
     gboolean show_location_entry;
 
@@ -365,7 +367,9 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_shadow);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
 }
@@ -406,7 +410,8 @@ void
 nautilus_toolbar_set_show_search_button (NautilusToolbar *self,
                                          gboolean         show_search_button)
 {
-    gtk_widget_set_visible (self->search_button, show_search_button);
+    gtk_stack_set_visible_child (GTK_STACK (self->search_button_stack),
+                                 show_search_button ? self->search_button : self->search_button_shadow);
 }
 
 static void
