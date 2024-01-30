@@ -41,6 +41,7 @@ struct _NautilusQueryEditor
 {
     GtkWidget parent_instance;
 
+    GtkWidget *prefix_icon;
     GtkWidget *tags_box;
     GtkWidget *text;
     GtkWidget *clear_icon;
@@ -583,7 +584,6 @@ static void
 nautilus_query_editor_init (NautilusQueryEditor *editor)
 {
     gboolean rtl = (gtk_widget_get_direction (GTK_WIDGET (editor)) == GTK_TEXT_DIR_RTL);
-    GtkWidget *image;
     GtkEventController *controller;
 
     gtk_widget_set_name (GTK_WIDGET (editor), "NautilusQueryEditor");
@@ -595,11 +595,11 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
                       editor);
 
     /* create the search entry */
-    image = gtk_image_new_from_icon_name ("system-search-symbolic");
-    g_object_set (image, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
-    gtk_widget_set_margin_start (image, 4);
-    gtk_widget_set_margin_end (image, 6);
-    gtk_widget_set_parent (image, GTK_WIDGET (editor));
+    editor->prefix_icon = gtk_image_new ();
+    g_object_set (editor->prefix_icon, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
+    gtk_widget_set_margin_start (editor->prefix_icon, 4);
+    gtk_widget_set_margin_end (editor->prefix_icon, 6);
+    gtk_widget_set_parent (editor->prefix_icon, GTK_WIDGET (editor));
 
     editor->tags_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_widget_set_visible (editor->tags_box, FALSE);
@@ -636,7 +636,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 
     /* setup the filter menu button */
     editor->dropdown_button = gtk_menu_button_new ();
-    gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->dropdown_button), "funnel-symbolic");
+    gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->dropdown_button), "permissions-generic-symbolic");
     gtk_widget_set_tooltip_text (GTK_WIDGET (editor->dropdown_button), _("Filter Search Results"));
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
     gtk_widget_set_parent (editor->dropdown_button, GTK_WIDGET (editor));
@@ -708,6 +708,11 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
     nautilus_query_set_location (editor->query, editor->location);
 
     update_fts_sensitivity (editor);
+
+    gtk_image_set_from_icon_name (GTK_IMAGE (editor->prefix_icon),
+                                  (editor->location != NULL ?
+                                   "nautilus-folder-search-symbolic" :
+                                   "edit-find-symbolic"));
 
     if (should_notify)
     {
