@@ -109,6 +109,8 @@ NautilusNavigationState* nautilus_window_slot_get_navigation_state (NautilusWind
 
 NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *self);
 
+gboolean nautilus_window_slot_is_in_search_everywhere      (NautilusWindowSlot *self);
+
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
 

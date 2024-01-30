@@ -95,6 +95,7 @@ struct _NautilusWindowSlot
     NautilusFile *viewed_file;
     gboolean viewed_file_seen;
     gboolean viewed_file_in_trash;
+    gboolean in_search_everywhere;
 
     /* Information about bookmarks and history list */
     NautilusBookmark *current_location_bookmark;
@@ -318,6 +319,8 @@ update_search_visible (NautilusWindowSlot *self)
         return;
     }
 
+    nautilus_window_slot_set_search_visible (self, self->in_search_everywhere);
+
     if (self->pending_search_query)
     {
         nautilus_window_slot_search (self, g_object_ref (self->pending_search_query));
@@ -346,6 +349,11 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
      * Needs to be done after the change has been done, if not, a loop happens,
      * because setting the search enabled or not actually opens a location */
     update_search_visible (self);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
+                                         "search-visible");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !self->in_search_everywhere);
 
     /* Files view mode */
     view = nautilus_window_slot_get_current_view (self);
@@ -507,6 +515,8 @@ nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
                                          gboolean            visible)
 {
     GAction *action;
+
+    visible |= self->in_search_everywhere;
 
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
                                          "search-visible");
@@ -2436,6 +2446,9 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
     self->viewed_file_in_trash = nautilus_file_is_in_trash (file);
     nautilus_file_unref (file);
 
+    self->in_search_everywhere = (new_location != NULL &&
+                                  nautilus_is_search_everywhere_location (new_location));
+
     nautilus_window_slot_set_location (self, new_location);
 
     /* Sync the actions for this new location. */
@@ -3238,4 +3251,12 @@ nautilus_window_slot_go_down (NautilusWindowSlot *self)
     g_object_unref (child);
     down_list = g_list_delete_link (down_list, down_list);
     self->down_list = g_steal_pointer (&down_list);
+}
+
+gboolean
+nautilus_window_slot_is_in_search_everywhere (NautilusWindowSlot *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), FALSE);
+
+    return self->in_search_everywhere;
 }

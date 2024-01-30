@@ -465,6 +465,11 @@ nautilus_query_set_location (NautilusQuery *query,
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
+    if (location != NULL && nautilus_is_search_everywhere_location (location))
+    {
+        location = NULL;
+    }
+
     if (g_set_object (&query->location, location))
     {
         g_object_notify (G_OBJECT (query), "location");

@@ -42,6 +42,9 @@ GtkWidget *nautilus_toolbar_get_location_entry (NautilusToolbar *self);
 void       nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
                                                      gboolean show_location_entry);
 
+void       nautilus_toolbar_set_show_search_button (NautilusToolbar *self,
+                                                    gboolean         show_search_button);
+
 void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
                                                 NautilusWindowSlot *slot);
 

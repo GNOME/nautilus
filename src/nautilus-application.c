@@ -1430,6 +1430,11 @@ nautilus_application_search (NautilusApplication *self,
     NautilusWindow *window;
 
     location = nautilus_query_get_location (query);
+    if (location == NULL)
+    {
+        location = g_file_new_for_uri (NAUTILUS_SEARCH_EVERYWHERE_URI);
+    }
+
     window = open_window (self, location);
     nautilus_window_search (window, query);
 }

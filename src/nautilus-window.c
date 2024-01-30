@@ -94,6 +94,7 @@ struct _NautilusWindow
 {
     AdwApplicationWindow parent_instance;
 
+    GtkWidget *search_button;
     GtkWidget *app_button;
     GMenuModel *undo_redo_section;
 
@@ -204,6 +205,17 @@ action_close_other_tabs (GSimpleAction *action,
     AdwTabPage *page = get_current_page (window);
 
     adw_tab_view_close_other_pages (window->tab_view, page);
+}
+
+static void
+action_go_search_everywhere (GSimpleAction *action,
+                             GVariant      *state,
+                             gpointer       user_data)
+{
+    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+    g_autoptr (GFile) search_everywhere = g_file_new_for_uri (NAUTILUS_SEARCH_EVERYWHERE_URI);
+
+    nautilus_window_open_location_full (window, search_everywhere, 0, NULL, NULL);
 }
 
 static void
@@ -1121,6 +1133,7 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
     /* Change the location bar and path bar to match the current location. */
     if (location != NULL)
     {
+        gboolean in_search_everywhere = nautilus_window_slot_is_in_search_everywhere (slot);
         GtkWidget *location_entry;
         GtkWidget *path_bar;
 
@@ -1132,6 +1145,11 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
 
         gtk_widget_set_visible (window->network_address_bar,
                                 g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW));
+
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (window->search_button),
+                                      in_search_everywhere);
+        nautilus_toolbar_set_show_search_button (NAUTILUS_TOOLBAR (window->toolbar),
+                                                 !in_search_everywhere);
     }
 
     enabled = nautilus_window_slot_get_back_history (slot) != NULL;
@@ -1586,6 +1604,7 @@ const GActionEntry win_entries[] =
     /* Only accesible by shorcuts */
     { .name = "close-current-view", .activate = action_close_current_view },
     { .name = "close-other-tabs", .activate = action_close_other_tabs },
+    { .name = "go-search-everywhere", .activate = action_go_search_everywhere},
     { .name = "go-home", .activate = action_go_home },
     { .name = "go-starred", .activate = action_go_starred },
     { .name = "tab-move-left", .activate = action_tab_move_left },
@@ -2392,6 +2411,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, search_button);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, app_button);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, undo_redo_section);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
