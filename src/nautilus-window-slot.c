@@ -1866,11 +1866,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
     }
     else
     {
-        if (error == NULL)
-        {
-            error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-                                 _("Unable to load location"));
-        }
         nautilus_window_slot_display_view_selection_failure (window,
                                                              file,
                                                              location,
