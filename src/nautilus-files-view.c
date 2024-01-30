@@ -2677,7 +2677,7 @@ action_visible_columns (GSimpleAction *action,
 
     g_return_if_fail (NAUTILUS_IS_LIST_VIEW (priv->list_base));
 
-    nautilus_list_view_present_column_editor (NAUTILUS_LIST_VIEW (self));
+    nautilus_list_view_present_column_editor (NAUTILUS_LIST_VIEW (priv->list_base));
 }
 
 static void
