@@ -328,19 +328,12 @@ static void
 create_query (NautilusQueryEditor *editor)
 {
     NautilusQuery *query;
-    g_autoptr (NautilusFile) file = NULL;
     gboolean fts_enabled;
 
     g_return_if_fail (editor->query == NULL);
 
     fts_enabled = nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (editor->popover));
 
-    if (editor->location == NULL)
-    {
-        return;
-    }
-
-    file = nautilus_file_get (editor->location);
     query = nautilus_query_new ();
 
     nautilus_query_set_search_content (query, fts_enabled);
