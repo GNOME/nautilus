@@ -199,6 +199,7 @@ gboolean                nautilus_file_is_in_admin                       (Nautilu
 gboolean                nautilus_file_is_remote                         (NautilusFile                   *file);
 gboolean                nautilus_file_is_starred_location              (NautilusFile                   *file);
 gboolean                nautilus_file_is_network_view                   (NautilusFile                   *file);
+gboolean                nautilus_file_is_search_everywhere              (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);
 GError *                nautilus_file_get_file_info_error               (NautilusFile                   *file);
 gboolean                nautilus_file_get_directory_item_count          (NautilusFile                   *file,

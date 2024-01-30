@@ -171,6 +171,19 @@ nautilus_get_templates_directory_uri (void)
 }
 
 gboolean
+nautilus_is_search_everywhere_location (GFile *dir)
+{
+    static GFile *search_everywhere = NULL;
+
+    if (search_everywhere == NULL)
+    {
+        search_everywhere = g_file_new_for_uri (NAUTILUS_SEARCH_EVERYWHERE_URI);
+    }
+
+    return g_file_equal (dir, search_everywhere);
+}
+
+gboolean
 nautilus_is_home_directory_file (GFile      *dir,
                                  const char *filename)
 {

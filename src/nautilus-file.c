@@ -4246,6 +4246,10 @@ nautilus_file_get_display_name (NautilusFile *file)
     {
         return _("Starred");
     }
+    else if (nautilus_file_is_search_everywhere (file))
+    {
+        return _("Search Everywhere");
+    }
     else
     {
         return nautilus_file_peek_display_name (file);
@@ -7456,6 +7460,16 @@ nautilus_file_is_network_view (NautilusFile *file)
     g_autoptr (GFile) location = nautilus_file_get_location (file);
 
     return nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW);
+}
+
+gboolean
+nautilus_file_is_search_everywhere (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    return nautilus_is_search_everywhere_location (location);
 }
 
 /**

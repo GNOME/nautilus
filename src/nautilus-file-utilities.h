@@ -52,6 +52,10 @@ char *	 nautilus_compute_title_for_location	     (GFile *file);
 
 gboolean nautilus_is_file_roller_installed           (void);
 
+#define NAUTILUS_SEARCH_EVERYWHERE_URI \
+    SCHEME_BLANK "://search-everywhere/"
+gboolean nautilus_is_search_everywhere_location      (GFile *dir);
+
 GIcon *  nautilus_special_directory_get_icon         (GUserDirectory directory);
 GIcon *  nautilus_special_directory_get_symbolic_icon (GUserDirectory directory);
 

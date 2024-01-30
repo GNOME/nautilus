@@ -3859,6 +3859,12 @@ real_check_empty_states (NautilusFilesView *view)
                                              (global_search ?
                                               _("No matches found in indexed locations") : NULL));
         }
+        else if (nautilus_is_search_everywhere_location (priv->location))
+        {
+            adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
+            adw_status_page_set_title (status_page, _("Type to Search Everywhere"));
+            adw_status_page_set_description (status_page, NULL);
+        }
         else if (nautilus_is_root_for_scheme (priv->location, SCHEME_TRASH))
         {
             adw_status_page_set_icon_name (status_page, "user-trash-symbolic");
