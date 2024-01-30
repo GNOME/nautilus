@@ -360,6 +360,7 @@ add_list_box_row (GObject  *item,
     /* Add move up/down operation menu */
     menu_button = gtk_menu_button_new ();
     gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (menu_button), "view-more-symbolic");
+    gtk_widget_set_tooltip_text (GTK_WIDGET (menu_button), _("View More"));
     gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (menu_button), chooser->row_button_menu);
     gtk_menu_button_set_create_popup_func (GTK_MENU_BUTTON (menu_button),
                                            (GtkMenuButtonCreatePopupFunc) on_create_row_menu_cb, row, NULL);
