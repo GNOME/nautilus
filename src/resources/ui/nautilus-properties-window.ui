@@ -370,10 +370,12 @@
                                             <property name="valign">center</property>
                                             <child>
                                               <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Link Target</property>
+                                                <property name="label" translatable="yes">_Link Target</property>
                                                 <property name="hexpand">True</property>
                                                 <property name="ellipsize">end</property>
                                                 <property name="halign">start</property>
+                                                <property name="use-underline">True</property>
+                                                <property name="mnemonic-widget">open_link_target_button</property>
                                                 <style>
                                                   <class name="caption"/>
                                                   <class name="dim-label"/>
@@ -391,7 +393,7 @@
                                           </object>
                                         </child>
                                         <child type="suffix">
-                                          <object class="GtkButton">
+                                          <object class="GtkButton" id="open_link_target_button">
                                             <property name="tooltip-text" translatable="yes">Open Link Target</property>
                                             <property name="icon-name">folder-open-symbolic</property>
                                             <property name="valign">center</property>
@@ -416,10 +418,12 @@
                                             <property name="valign">center</property>
                                             <child>
                                               <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Parent Folder</property>
+                                                <property name="label" translatable="yes">Parent _Folder</property>
                                                 <property name="hexpand">True</property>
                                                 <property name="ellipsize">end</property>
                                                 <property name="halign">start</property>
+                                                <property name="use-underline">True</property>
+                                                <property name="mnemonic-widget">open_parent_folder_button</property>
                                                 <style>
                                                   <class name="caption"/>
                                                   <class name="dim-label"/>
@@ -437,7 +441,7 @@
                                           </object>
                                         </child>
                                         <child type="suffix">
-                                          <object class="GtkButton">
+                                          <object class="GtkButton" id="open_parent_folder_button">
                                             <property name="tooltip-text" translatable="yes">Open Parent Folder</property>
                                             <property name="icon-name">folder-open-symbolic</property>
                                             <property name="valign">center</property>
