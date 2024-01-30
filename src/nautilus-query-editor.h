@@ -32,14 +32,6 @@ G_DECLARE_FINAL_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUER
 GtkWidget     *nautilus_query_editor_new          (void);
 
 /**
- * nautilus_query_editor_get_query:
- *
- * @editor: A #NautilusQueryEditor instance.
- *
- * Returns: (nullable) (transfer full): The #NautilusQuery for the editor.
- */
-NautilusQuery *nautilus_query_editor_get_query    (NautilusQueryEditor *editor);
-/**
  * nautilus_query_editor_set_query:
  *
  * @editor: A #NautilusQueryEditor instance.

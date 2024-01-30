@@ -320,10 +320,8 @@ nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
 static void
 update_search_visible (NautilusWindowSlot *self)
 {
-    NautilusQuery *query;
-    NautilusView *view;
+    NautilusView *view = nautilus_window_slot_get_current_view (self);
 
-    view = nautilus_window_slot_get_current_view (self);
     /* If we changed location just to another search location, for example,
      * when changing the query, just keep the search visible.
      * Make sure the search is visible though, since we could be returning
@@ -332,18 +330,6 @@ update_search_visible (NautilusWindowSlot *self)
     {
         nautilus_window_slot_set_search_visible (self, TRUE);
         return;
-    }
-
-    query = nautilus_query_editor_get_query (self->query_editor);
-    if (query)
-    {
-        /* If the view is not searching, but search is visible, and the
-         * query is empty, we don't hide it. Some users enable the search
-         * and then change locations, then they search. */
-        if (!nautilus_query_is_empty (query))
-        {
-            nautilus_window_slot_set_search_visible (self, FALSE);
-        }
     }
 
     if (self->pending_search_query)

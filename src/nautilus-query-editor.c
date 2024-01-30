@@ -667,19 +667,6 @@ nautilus_query_editor_changed (NautilusQueryEditor *editor)
     g_signal_emit (editor, signals[CHANGED], 0, editor->query, TRUE);
 }
 
-NautilusQuery *
-nautilus_query_editor_get_query (NautilusQueryEditor *editor)
-{
-    g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (editor), NULL);
-
-    if (editor->text == NULL)
-    {
-        return NULL;
-    }
-
-    return editor->query;
-}
-
 GtkWidget *
 nautilus_query_editor_new (void)
 {
