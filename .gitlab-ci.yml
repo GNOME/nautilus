@@ -5,6 +5,7 @@ variables:
 
 stages:
     - image
+    - review
     - test
     - analyze
     - deploy
@@ -42,6 +43,12 @@ nightly@x86_64:
 nightly@aarch64:
     extends: '.publish_nightly'
     needs: ['flatpak@aarch64']
+
+potfile:
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
+    stage: review
+    script:
+        - data/check-potfiles.sh
 
 style check:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
