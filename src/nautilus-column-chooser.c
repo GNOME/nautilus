@@ -120,7 +120,7 @@ move_row (NautilusColumnChooser *chooser,
     }
 
     g_list_store_remove (G_LIST_STORE (chooser->model), i);
-    g_list_store_insert (G_LIST_STORE (chooser->model), i + up ? -1 : 1, column);
+    g_list_store_insert (G_LIST_STORE (chooser->model), i + (up ? -1 : 1), column);
 
     list_changed (chooser);
 }
