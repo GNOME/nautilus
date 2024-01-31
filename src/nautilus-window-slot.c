@@ -2284,6 +2284,13 @@ handle_go_elsewhere (NautilusWindowSlot *self,
     /* Clobber the entire forward list, and move displayed location to back list */
     nautilus_window_slot_clear_forward_list (self);
 
+    /* If we haven't updated the current bookmark, don't update history*/
+    if (self->back_list != NULL &&
+        self->back_list->data == self->last_location_bookmark)
+    {
+        return;
+    }
+
     slot_location = nautilus_window_slot_get_location (self);
 
     if (slot_location != NULL)
