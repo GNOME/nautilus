@@ -148,7 +148,6 @@ struct _NautilusGtkPlacesSidebar {
 
   GtkWidget *popover;
   NautilusGtkSidebarRow *context_row;
-  GListStore *shortcuts;
 
   GDBusProxy *hostnamed_proxy;
   GCancellable *hostnamed_cancellable;
@@ -157,13 +156,8 @@ struct _NautilusGtkPlacesSidebar {
   NautilusGtkPlacesOpenFlags open_flags;
 
   guint mounting               : 1;
-  guint show_recent_set        : 1;
-  guint show_recent            : 1;
-  guint show_desktop_set       : 1;
   guint show_desktop           : 1;
   guint show_other_locations   : 1;
-  guint show_trash             : 1;
-  guint show_starred_location  : 1;
 };
 
 struct _NautilusGtkPlacesSidebarClass {
@@ -212,10 +206,6 @@ enum {
 enum {
   PROP_LOCATION = 1,
   PROP_OPEN_FLAGS,
-  PROP_SHOW_RECENT,
-  PROP_SHOW_DESKTOP,
-  PROP_SHOW_TRASH,
-  PROP_SHOW_STARRED_LOCATION,
   PROP_SHOW_OTHER_LOCATIONS,
   NUM_PROPERTIES
 };
@@ -223,10 +213,8 @@ enum {
 /* Names for themed icons */
 #define ICON_NAME_HOME     "user-home-symbolic"
 #define ICON_NAME_DESKTOP  "user-desktop-symbolic"
-#define ICON_NAME_FILESYSTEM     "drive-harddisk-symbolic"
 #define ICON_NAME_EJECT    "media-eject-symbolic"
 #define ICON_NAME_NETWORK  "network-workgroup-symbolic"
-#define ICON_NAME_NETWORK_SERVER "network-server-symbolic"
 #define ICON_NAME_FOLDER_NETWORK "folder-remote-symbolic"
 #define ICON_NAME_OTHER_LOCATIONS "list-add-symbolic"
 
@@ -517,9 +505,7 @@ recent_scheme_is_supported (void)
 static gboolean
 should_show_recent (NautilusGtkPlacesSidebar *sidebar)
 {
-  return recent_files_setting_is_enabled (sidebar) &&
-         ((sidebar->show_recent_set && sidebar->show_recent) ||
-          (!sidebar->show_recent_set && recent_scheme_is_supported ()));
+  return recent_files_setting_is_enabled (sidebar) && recent_scheme_is_supported ();
 }
 
 static gboolean
@@ -633,111 +619,6 @@ get_desktop_directory_uri (void)
     return NULL;
 
   return g_filename_to_uri (name, NULL, NULL);
-}
-
-static gboolean
-file_is_shown (NautilusGtkPlacesSidebar *sidebar,
-               GFile            *file)
-{
-  char *uri;
-  GtkWidget *row;
-  gboolean found = FALSE;
-
-  for (row = gtk_widget_get_first_child (GTK_WIDGET (sidebar->list_box));
-       row != NULL && !found;
-       row = gtk_widget_get_next_sibling (row))
-    {
-      if (!GTK_IS_LIST_BOX_ROW (row))
-        continue;
-
-      g_object_get (row, "uri", &uri, NULL);
-      if (uri)
-        {
-          GFile *other;
-          other = g_file_new_for_uri (uri);
-          found = g_file_equal (file, other);
-          g_object_unref (other);
-          g_free (uri);
-        }
-    }
-
-  return found;
-}
-
-typedef struct
-{
-  NautilusGtkPlacesSidebar *sidebar;
-  guint position;
-} ShortcutData;
-
-static void
-on_app_shortcuts_query_complete (GObject      *source,
-                                 GAsyncResult *result,
-                                 gpointer      data)
-{
-  ShortcutData *sdata = data;
-  NautilusGtkPlacesSidebar *sidebar = sdata->sidebar;
-  guint pos = sdata->position;
-  GFile *file = G_FILE (source);
-  GFileInfo *info;
-
-  g_free (sdata);
-
-  info = g_file_query_info_finish (file, result, NULL);
-
-  if (info)
-    {
-      char *uri;
-      char *tooltip;
-      const char *name;
-      GIcon *start_icon;
-
-      name = g_file_info_get_display_name (info);
-      start_icon = g_file_info_get_symbolic_icon (info);
-      uri = g_file_get_uri (file);
-      tooltip = g_file_get_parse_name (file);
-
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                 name, start_icon, NULL, uri,
-                 NULL, NULL, NULL, NULL,
-                 pos,
-                 tooltip);
-
-      g_free (uri);
-      g_free (tooltip);
-
-      g_object_unref (info);
-    }
-}
-
-static void
-add_application_shortcuts (NautilusGtkPlacesSidebar *sidebar)
-{
-  guint i, n;
-
-  n = g_list_model_get_n_items (G_LIST_MODEL (sidebar->shortcuts));
-  for (i = 0; i < n; i++)
-    {
-      GFile *file = g_list_model_get_item (G_LIST_MODEL (sidebar->shortcuts), i);
-      ShortcutData *data;
-
-      g_object_unref (file);
-
-      if (file_is_shown (sidebar, file))
-        continue;
-
-      data = g_new (ShortcutData, 1);
-      data->sidebar = sidebar;
-      data->position = i;
-      g_file_query_info_async (file,
-                               "standard::display-name,standard::symbolic-icon",
-                               G_FILE_QUERY_INFO_NONE,
-                               G_PRIORITY_DEFAULT,
-                               sidebar->cancellable,
-                               on_app_shortcuts_query_complete,
-                               data);
-    }
 }
 
 typedef struct {
@@ -923,16 +804,13 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       g_object_unref (start_icon);
     }
 
-  if (sidebar->show_starred_location)
-    {
-      start_icon = g_themed_icon_new_with_default_fallbacks ("starred-symbolic");
-      add_place (sidebar, NAUTILUS_GTK_PLACES_STARRED_LOCATION,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                 _("Starred"), start_icon, NULL, SCHEME_STARRED ":///",
-                 NULL, NULL, NULL, NULL, 0,
-                 _("Starred Files"));
-      g_object_unref (start_icon);
-    }
+  start_icon = g_themed_icon_new_with_default_fallbacks ("starred-symbolic");
+  add_place (sidebar, NAUTILUS_GTK_PLACES_STARRED_LOCATION,
+             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             _("Starred"), start_icon, NULL, SCHEME_STARRED ":///",
+             NULL, NULL, NULL, NULL, 0,
+             _("Starred Files"));
+  g_object_unref (start_icon);
 
   /* home folder */
   home_uri = get_home_directory_uri ();
@@ -966,21 +844,15 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   add_special_dirs (sidebar);
 
   /* Trash */
-  if (sidebar->show_trash)
-    {
-      start_icon = nautilus_trash_monitor_get_symbolic_icon ();
-      sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                                      NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                                      _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
-                                      NULL, NULL, NULL, NULL, 0,
-                                      _("Open Trash"));
-      g_object_add_weak_pointer (G_OBJECT (sidebar->trash_row),
-                                 (gpointer *) &sidebar->trash_row);
-      g_object_unref (start_icon);
-    }
-
-  /* Application-side shortcuts */
-  add_application_shortcuts (sidebar);
+  start_icon = nautilus_trash_monitor_get_symbolic_icon ();
+  sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
+                                  NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+                                  _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
+                                  NULL, NULL, NULL, NULL, 0,
+                                  _("Open Trash"));
+  g_object_add_weak_pointer (G_OBJECT (sidebar->trash_row),
+                             (gpointer *) &sidebar->trash_row);
+  g_object_unref (start_icon);
 
   /* Cloud providers */
 #ifdef HAVE_CLOUDPROVIDERS
@@ -1198,18 +1070,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       g_object_unref (volume);
     }
   g_list_free (volumes);
-
-  /* file system root */
-  if (!sidebar->show_other_locations)
-    {
-      start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_FILESYSTEM);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
-                 sidebar->hostname, start_icon, NULL, "file:///",
-                 NULL, NULL, NULL, NULL, 0,
-                 _("Open the contents of the file system"));
-      g_object_unref (start_icon);
-    }
 
   /* add mounts that has no volume (/etc/mtab mounts, ftp, sftp,...) */
   mounts = g_volume_monitor_get_mounts (sidebar->volume_monitor);
@@ -3711,17 +3571,12 @@ shell_shows_desktop_changed (GtkSettings *settings,
 
   g_assert (settings == sidebar->gtk_settings);
 
-  /* Check if the user explicitly set this and, if so, don't change it. */
-  if (sidebar->show_desktop_set)
-    return;
-
   g_object_get (settings, "gtk-shell-shows-desktop", &show_desktop, NULL);
 
   if (show_desktop != sidebar->show_desktop)
     {
       sidebar->show_desktop = show_desktop;
       update_places (sidebar);
-      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_DESKTOP]);
     }
 }
 
@@ -3735,12 +3590,7 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   sidebar->cancellable = g_cancellable_new ();
 
-  sidebar->show_trash = TRUE;
   sidebar->show_other_locations = TRUE;
-  sidebar->show_recent = TRUE;
-  sidebar->show_desktop = TRUE;
-
-  sidebar->shortcuts = g_list_store_new (G_TYPE_FILE);
 
   create_volume_monitor (sidebar);
 
@@ -3865,24 +3715,8 @@ nautilus_gtk_places_sidebar_set_property (GObject      *obj,
       nautilus_gtk_places_sidebar_set_open_flags (sidebar, g_value_get_flags (value));
       break;
 
-    case PROP_SHOW_RECENT:
-      nautilus_gtk_places_sidebar_set_show_recent (sidebar, g_value_get_boolean (value));
-      break;
-
-    case PROP_SHOW_DESKTOP:
-      nautilus_gtk_places_sidebar_set_show_desktop (sidebar, g_value_get_boolean (value));
-      break;
-
     case PROP_SHOW_OTHER_LOCATIONS:
       nautilus_gtk_places_sidebar_set_show_other_locations (sidebar, g_value_get_boolean (value));
-      break;
-
-    case PROP_SHOW_TRASH:
-      nautilus_gtk_places_sidebar_set_show_trash (sidebar, g_value_get_boolean (value));
-      break;
-
-    case PROP_SHOW_STARRED_LOCATION:
-      nautilus_gtk_places_sidebar_set_show_starred_location (sidebar, g_value_get_boolean (value));
       break;
 
     default:
@@ -3909,24 +3743,8 @@ nautilus_gtk_places_sidebar_get_property (GObject    *obj,
       g_value_set_flags (value, nautilus_gtk_places_sidebar_get_open_flags (sidebar));
       break;
 
-    case PROP_SHOW_RECENT:
-      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_recent (sidebar));
-      break;
-
-    case PROP_SHOW_DESKTOP:
-      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_desktop (sidebar));
-      break;
-
     case PROP_SHOW_OTHER_LOCATIONS:
       g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_other_locations (sidebar));
-      break;
-
-    case PROP_SHOW_TRASH:
-      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_trash (sidebar));
-      break;
-
-    case PROP_SHOW_STARRED_LOCATION:
-      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_starred_location (sidebar));
       break;
 
     default:
@@ -3995,7 +3813,6 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
 
   g_clear_object (&sidebar->current_location);
   g_clear_pointer (&sidebar->rename_uri, g_free);
-  g_clear_object (&sidebar->shortcuts);
 
   g_clear_handle_id (&sidebar->hover_timer_id, g_source_remove);
 
@@ -4305,35 +4122,11 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                               NAUTILUS_TYPE_OPEN_FLAGS,
                               NAUTILUS_GTK_PLACES_OPEN_NORMAL,
                               G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
-  properties[PROP_SHOW_RECENT] =
-          g_param_spec_boolean ("show-recent",
-                                "Show recent files",
-                                "Whether the sidebar includes a builtin shortcut for recent files",
-                                TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
-  properties[PROP_SHOW_DESKTOP] =
-          g_param_spec_boolean ("show-desktop",
-                                "Show “Desktop”",
-                                "Whether the sidebar includes a builtin shortcut to the Desktop folder",
-                                TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
-  properties[PROP_SHOW_TRASH] =
-          g_param_spec_boolean ("show-trash",
-                                "Show “Trash”",
-                                "Whether the sidebar includes a builtin shortcut to the Trash location",
-                                TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
   properties[PROP_SHOW_OTHER_LOCATIONS] =
           g_param_spec_boolean ("show-other-locations",
                                 "Show “Other locations”",
                                 "Whether the sidebar includes an item to show external locations",
                                 TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
-  properties[PROP_SHOW_STARRED_LOCATION] =
-          g_param_spec_boolean ("show-starred-location",
-                                "Show “Starred Location”",
-                                "Whether the sidebar includes an item to show starred files",
-                                FALSE,
                                 G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
 
   g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
@@ -4519,96 +4312,6 @@ nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sideba
 }
 
 /*
- * nautilus_gtk_places_sidebar_set_show_recent:
- * @sidebar: a places sidebar
- * @show_recent: whether to show an item for recent files
- *
- * Sets whether the @sidebar should show an item for recent files.
- * The default value for this option is determined by the desktop
- * environment, but this function can be used to override it on a
- * per-application basis.
- */
-void
-nautilus_gtk_places_sidebar_set_show_recent (NautilusGtkPlacesSidebar *sidebar,
-                                    gboolean          show_recent)
-{
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-
-  sidebar->show_recent_set = TRUE;
-
-  show_recent = !!show_recent;
-  if (sidebar->show_recent != show_recent)
-    {
-      sidebar->show_recent = show_recent;
-      update_places (sidebar);
-      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_RECENT]);
-    }
-}
-
-/*
- * nautilus_gtk_places_sidebar_get_show_recent:
- * @sidebar: a places sidebar
- *
- * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_recent()
- *
- * Returns: %TRUE if the sidebar will display a builtin shortcut for recent files
- */
-gboolean
-nautilus_gtk_places_sidebar_get_show_recent (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
-
-  return sidebar->show_recent;
-}
-
-/*
- * nautilus_gtk_places_sidebar_set_show_desktop:
- * @sidebar: a places sidebar
- * @show_desktop: whether to show an item for the Desktop folder
- *
- * Sets whether the @sidebar should show an item for the Desktop folder.
- * The default value for this option is determined by the desktop
- * environment and the user’s configuration, but this function can be
- * used to override it on a per-application basis.
- */
-void
-nautilus_gtk_places_sidebar_set_show_desktop (NautilusGtkPlacesSidebar *sidebar,
-                                     gboolean          show_desktop)
-{
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-
-  /* Don't bother disconnecting from the GtkSettings -- it will just
-   * complicate things.  Besides, it's highly unlikely that this will
-   * change while we're running, but we can ignore it if it does.
-   */
-  sidebar->show_desktop_set = TRUE;
-
-  show_desktop = !!show_desktop;
-  if (sidebar->show_desktop != show_desktop)
-    {
-      sidebar->show_desktop = show_desktop;
-      update_places (sidebar);
-      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_DESKTOP]);
-    }
-}
-
-/*
- * nautilus_gtk_places_sidebar_get_show_desktop:
- * @sidebar: a places sidebar
- *
- * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_desktop()
- *
- * Returns: %TRUE if the sidebar will display a builtin shortcut to the desktop folder.
- */
-gboolean
-nautilus_gtk_places_sidebar_get_show_desktop (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
-
-  return sidebar->show_desktop;
-}
-
-/*
  * nautilus_gtk_places_sidebar_set_show_other_locations:
  * @sidebar: a places sidebar
  * @show_other_locations: whether to show an item for the Other Locations view
@@ -4651,127 +4354,6 @@ nautilus_gtk_places_sidebar_get_show_other_locations (NautilusGtkPlacesSidebar *
   g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
 
   return sidebar->show_other_locations;
-}
-
-/*
- * nautilus_gtk_places_sidebar_set_show_trash:
- * @sidebar: a places sidebar
- * @show_trash: whether to show an item for the Trash location
- *
- * Sets whether the @sidebar should show an item for the Trash location.
- */
-void
-nautilus_gtk_places_sidebar_set_show_trash (NautilusGtkPlacesSidebar *sidebar,
-                                   gboolean          show_trash)
-{
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-
-  show_trash = !!show_trash;
-  if (sidebar->show_trash != show_trash)
-    {
-      sidebar->show_trash = show_trash;
-      update_places (sidebar);
-      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_TRASH]);
-    }
-}
-
-/*
- * nautilus_gtk_places_sidebar_get_show_trash:
- * @sidebar: a places sidebar
- *
- * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_trash()
- *
- * Returns: %TRUE if the sidebar will display a “Trash” item.
- */
-gboolean
-nautilus_gtk_places_sidebar_get_show_trash (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), TRUE);
-
-  return sidebar->show_trash;
-}
-
-/*
- * nautilus_gtk_places_sidebar_add_shortcut:
- * @sidebar: a places sidebar
- * @location: location to add as an application-specific shortcut
- *
- * Applications may want to present some folders in the places sidebar if
- * they could be immediately useful to users.  For example, a drawing
- * program could add a “/usr/share/clipart” location when the sidebar is
- * being used in an “Insert Clipart” dialog box.
- *
- * This function adds the specified @location to a special place for immutable
- * shortcuts.  The shortcuts are application-specific; they are not shared
- * across applications, and they are not persistent.  If this function
- * is called multiple times with different locations, then they are added
- * to the sidebar’s list in the same order as the function is called.
- */
-void
-nautilus_gtk_places_sidebar_add_shortcut (NautilusGtkPlacesSidebar *sidebar,
-                                 GFile            *location)
-{
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-  g_return_if_fail (G_IS_FILE (location));
-
-  g_list_store_append (sidebar->shortcuts, location);
-
-  update_places (sidebar);
-}
-
-/*
- * nautilus_gtk_places_sidebar_remove_shortcut:
- * @sidebar: a places sidebar
- * @location: location to remove
- *
- * Removes an application-specific shortcut that has been previously been
- * inserted with nautilus_gtk_places_sidebar_add_shortcut().  If the @location is not a
- * shortcut in the sidebar, then nothing is done.
- */
-void
-nautilus_gtk_places_sidebar_remove_shortcut (NautilusGtkPlacesSidebar *sidebar,
-                                    GFile            *location)
-{
-  guint i, n;
-
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-  g_return_if_fail (G_IS_FILE (location));
-
-  n = g_list_model_get_n_items (G_LIST_MODEL (sidebar->shortcuts));
-  for (i = 0; i < n; i++)
-    {
-      GFile *shortcut = g_list_model_get_item (G_LIST_MODEL (sidebar->shortcuts), i);
-
-      if (shortcut == location)
-        {
-          g_list_store_remove (sidebar->shortcuts, i);
-          g_object_unref (shortcut);
-          update_places (sidebar);
-          return;
-        }
-
-      g_object_unref (shortcut);
-    }
-}
-
-/*
- * nautilus_gtk_places_sidebar_list_shortcuts:
- * @sidebar: a places sidebar
- *
- * Gets the list of shortcuts, as a list model containing GFile objects.
- *
- * You should not modify the returned list model. Future changes to
- * @sidebar may or may not affect the returned model.
- *
- * Returns: (transfer full): a list model of GFiles that have been added as
- *   application-specific shortcuts with nautilus_gtk_places_sidebar_add_shortcut()
- */
-GListModel *
-nautilus_gtk_places_sidebar_get_shortcuts (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), NULL);
-
-  return G_LIST_MODEL (g_object_ref (sidebar->shortcuts));
 }
 
 /*
@@ -4875,43 +4457,4 @@ nautilus_gtk_places_sidebar_set_drop_targets_visible (NautilusGtkPlacesSidebar *
             }
         }
     }
-}
-
-/*
- * nautilus_gtk_places_sidebar_set_show_starred_location:
- * @sidebar: a places sidebar
- * @show_starred_location: whether to show an item for Starred files
- *
- * If you enable this, you should connect to the
- * NautilusGtkPlacesSidebar::show-starred-location signal.
- */
-void
-nautilus_gtk_places_sidebar_set_show_starred_location (NautilusGtkPlacesSidebar *sidebar,
-                                              gboolean          show_starred_location)
-{
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-
-  show_starred_location = !!show_starred_location;
-  if (sidebar->show_starred_location != show_starred_location)
-    {
-      sidebar->show_starred_location = show_starred_location;
-      update_places (sidebar);
-      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_STARRED_LOCATION]);
-    }
-}
-
-/*
- * nautilus_gtk_places_sidebar_get_show_starred_location:
- * @sidebar: a places sidebar
- *
- * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_starred_location()
- *
- * Returns: %TRUE if the sidebar will display a Starred item.
- */
-gboolean
-nautilus_gtk_places_sidebar_get_show_starred_location (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
-
-  return sidebar->show_starred_location;
 }
