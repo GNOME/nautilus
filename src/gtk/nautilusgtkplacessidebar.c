@@ -846,6 +846,18 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   network_mounts = network_volumes = NULL;
 
   /* add built-in places */
+
+  /* home folder */
+  home_uri = get_home_directory_uri ();
+  start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_HOME);
+  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
+             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             _("Home"), start_icon, NULL, home_uri,
+             NULL, NULL, NULL, NULL, 0,
+             _("Open Personal Folder"));
+  g_object_unref (start_icon);
+  g_free (home_uri);
+
   if (should_show_recent (sidebar))
     {
       start_icon = g_themed_icon_new_with_default_fallbacks ("document-open-recent-symbolic");
@@ -864,17 +876,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
              NULL, NULL, NULL, NULL, 0,
              _("Starred Files"));
   g_object_unref (start_icon);
-
-  /* home folder */
-  home_uri = get_home_directory_uri ();
-  start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_HOME);
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-             _("Home"), start_icon, NULL, home_uri,
-             NULL, NULL, NULL, NULL, 0,
-             _("Open Personal Folder"));
-  g_object_unref (start_icon);
-  g_free (home_uri);
 
   /* desktop */
   if (sidebar->show_desktop)
