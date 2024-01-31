@@ -327,35 +327,30 @@ add_list_box_row (GObject  *item,
     g_autofree char *label = NULL;
     g_autofree char *name = NULL;
     GtkWidget *row;
-    GtkWidget *row_switch;
     GtkWidget *menu_button;
     GtkWidget *drag_image;
     GtkEventController *controller;
 
     g_object_get (column, "label", &label, "name", &name, NULL);
 
-    row = adw_action_row_new ();
-    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), label);
-
     if (g_strcmp0 (name, "name") == 0)
     {
+        row = adw_action_row_new ();
         adw_action_row_add_prefix (ADW_ACTION_ROW (row), gtk_image_new ());
+        adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), label);
         return row;
     }
 
+    row = adw_switch_row_new ();
+    adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), label);
+
     /* Column can be en/disabled, add switch */
     gtk_list_box_row_set_activatable (GTK_LIST_BOX_ROW (row), TRUE);
-    row_switch = gtk_switch_new ();
-    g_object_bind_property (column, "visible", row_switch, "active",
+    g_object_bind_property (column, "visible", row, "active",
                             G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
-    g_signal_connect (row_switch, "notify::active",
+    g_signal_connect (row, "notify::active",
                       G_CALLBACK (notify_row_switch_cb),
                       chooser);
-
-    gtk_widget_set_halign (row_switch, GTK_ALIGN_END);
-    gtk_widget_set_valign (row_switch, GTK_ALIGN_CENTER);
-    adw_action_row_add_suffix (ADW_ACTION_ROW (row), row_switch);
-    adw_action_row_set_activatable_widget (ADW_ACTION_ROW (row), row_switch);
 
     /* Add move up/down operation menu */
     menu_button = gtk_menu_button_new ();
