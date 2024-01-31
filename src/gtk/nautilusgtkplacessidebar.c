@@ -479,69 +479,6 @@ path_is_home_dir (const char *path)
   return res;
 }
 
-static void
-add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
-{
-  GList *dirs;
-  int index;
-
-  dirs = NULL;
-  for (index = 0; index < G_USER_N_DIRECTORIES; index++)
-    {
-      const char *path;
-      GFile *root;
-      GIcon *start_icon;
-      char *name;
-      char *mount_uri;
-      char *tooltip;
-      NautilusBookmark *bookmark;
-
-      if (index == G_USER_DIRECTORY_DESKTOP ||
-          index == G_USER_DIRECTORY_TEMPLATES ||
-          index == G_USER_DIRECTORY_PUBLIC_SHARE)
-        continue;
-
-      path = g_get_user_special_dir (index);
-
-      /* XDG resets special dirs to the home directory in case
-       * it's not finiding what it expects. We don't want the home
-       * to be added multiple times in that weird configuration.
-       */
-      if (path == NULL ||
-          path_is_home_dir (path) ||
-          g_list_find_custom (dirs, path, (GCompareFunc) g_strcmp0) != NULL)
-        continue;
-
-      root = g_file_new_for_path (path);
-
-      bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, root, NULL);
-
-      if (bookmark)
-        name = g_strdup (nautilus_bookmark_get_name (bookmark));
-      else
-        name = g_file_get_basename (root);
-
-      start_icon = nautilus_special_directory_get_symbolic_icon (index);
-      mount_uri = g_file_get_uri (root);
-      tooltip = g_file_get_parse_name (root);
-
-      add_place (sidebar, NAUTILUS_GTK_PLACES_XDG_DIR,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                 name, start_icon, NULL, mount_uri,
-                 NULL, NULL, NULL, NULL, 0,
-                 tooltip);
-      g_free (name);
-      g_object_unref (root);
-      g_object_unref (start_icon);
-      g_free (mount_uri);
-      g_free (tooltip);
-
-      dirs = g_list_prepend (dirs, (char *)path);
-    }
-
-  g_list_free (dirs);
-}
-
 static char *
 get_home_directory_uri (void)
 {
@@ -742,6 +679,18 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   network_mounts = network_volumes = NULL;
 
   /* add built-in places */
+
+  /* home folder */
+  home_uri = get_home_directory_uri ();
+  start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_HOME);
+  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
+             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             _("Home"), start_icon, NULL, home_uri,
+             NULL, NULL, NULL, NULL, 0,
+             _("Open Personal Folder"));
+  g_object_unref (start_icon);
+  g_free (home_uri);
+
   if (should_show_recent (sidebar))
     {
       start_icon = g_themed_icon_new_with_default_fallbacks ("document-open-recent-symbolic");
@@ -761,17 +710,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
              _("Starred Files"));
   g_object_unref (start_icon);
 
-  /* home folder */
-  home_uri = get_home_directory_uri ();
-  start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_HOME);
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-             _("Home"), start_icon, NULL, home_uri,
-             NULL, NULL, NULL, NULL, 0,
-             _("Open Personal Folder"));
-  g_object_unref (start_icon);
-  g_free (home_uri);
-
   /* desktop */
   if (sidebar->show_desktop)
     {
@@ -788,9 +726,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           g_free (mount_uri);
         }
     }
-
-  /* XDG directories */
-  add_special_dirs (sidebar);
 
   /* Network view */
   start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_NETWORK_VIEW);
@@ -1073,9 +1008,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   for (GList *l = bookmarks; l != NULL; l = l->next)
     {
       GtkWidget *row;
-
-      if (nautilus_bookmark_get_is_builtin (l->data))
-        continue;
 
       g_autoptr (GFile) location = nautilus_bookmark_get_location (l->data);
       g_autofree char *mount_uri = nautilus_bookmark_get_uri (l->data);

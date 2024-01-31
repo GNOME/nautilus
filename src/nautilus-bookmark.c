@@ -165,24 +165,7 @@ bookmark_file_changed_callback (NautilusFile     *file,
     }
 }
 
-gboolean
-nautilus_bookmark_get_is_builtin (NautilusBookmark *bookmark)
-{
-    GUserDirectory xdg_type;
-
-    /* if this is not an XDG dir, it's never builtin */
-    if (!nautilus_bookmark_get_xdg_type (bookmark, &xdg_type))
-    {
-        return FALSE;
-    }
-
-    /* exclude XDG locations which are not in our builtin list */
-    return (xdg_type != G_USER_DIRECTORY_DESKTOP) &&
-           (xdg_type != G_USER_DIRECTORY_TEMPLATES) &&
-           (xdg_type != G_USER_DIRECTORY_PUBLIC_SHARE);
-}
-
-gboolean
+static gboolean
 nautilus_bookmark_get_xdg_type (NautilusBookmark *bookmark,
                                 GUserDirectory   *directory)
 {

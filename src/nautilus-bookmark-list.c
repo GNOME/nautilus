@@ -770,8 +770,6 @@ gboolean
 nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
                                               GFile                *location)
 {
-    g_autoptr (NautilusBookmark) bookmark = NULL;
-
     if (nautilus_bookmark_list_item_with_location (list, location, NULL))
     {
         /* Already bookmarked */
@@ -792,8 +790,7 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
         return FALSE;
     }
 
-    bookmark = nautilus_bookmark_new (location, NULL);
-    return !nautilus_bookmark_get_is_builtin (bookmark);
+    return TRUE;
 }
 
 /**
