@@ -2292,7 +2292,7 @@ handle_go_elsewhere (NautilusWindowSlot *self,
          * This also avoids a problem where set_displayed_location
          * didn't update last_location_bookmark since the uri didn't change.
          */
-        if (!g_file_equal (slot_location, location))
+        if (!g_file_equal (slot_location, location) && self->last_location_bookmark != NULL)
         {
             /* Store bookmark for current location in back list, unless there is no current location */
             check_last_bookmark_location_matches_slot (self);
