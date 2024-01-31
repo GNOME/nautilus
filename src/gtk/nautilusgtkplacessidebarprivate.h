@@ -80,39 +80,14 @@ GFile *            nautilus_gtk_places_sidebar_get_location               (Nauti
 void               nautilus_gtk_places_sidebar_set_location               (NautilusGtkPlacesSidebar   *sidebar,
                                                                   GFile              *location);
 
-gboolean           nautilus_gtk_places_sidebar_get_show_recent            (NautilusGtkPlacesSidebar   *sidebar);
-void               nautilus_gtk_places_sidebar_set_show_recent            (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  gboolean            show_recent);
-
-gboolean           nautilus_gtk_places_sidebar_get_show_desktop           (NautilusGtkPlacesSidebar   *sidebar);
-void               nautilus_gtk_places_sidebar_set_show_desktop           (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  gboolean            show_desktop);
-
-gboolean           nautilus_gtk_places_sidebar_get_show_enter_location    (NautilusGtkPlacesSidebar   *sidebar);
-void               nautilus_gtk_places_sidebar_set_show_enter_location    (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  gboolean            show_enter_location);
-
-void               nautilus_gtk_places_sidebar_add_shortcut               (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  GFile              *location);
-void               nautilus_gtk_places_sidebar_remove_shortcut            (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  GFile              *location);
-GListModel *       nautilus_gtk_places_sidebar_get_shortcuts              (NautilusGtkPlacesSidebar   *sidebar);
-
 GFile *            nautilus_gtk_places_sidebar_get_nth_bookmark           (NautilusGtkPlacesSidebar   *sidebar,
                                                                   int                 n);
 void               nautilus_gtk_places_sidebar_set_drop_targets_visible   (NautilusGtkPlacesSidebar   *sidebar,
                                                                   gboolean            visible);
-gboolean           nautilus_gtk_places_sidebar_get_show_trash             (NautilusGtkPlacesSidebar   *sidebar);
-void               nautilus_gtk_places_sidebar_set_show_trash             (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  gboolean            show_trash);
 
 void                 nautilus_gtk_places_sidebar_set_show_other_locations (NautilusGtkPlacesSidebar   *sidebar,
                                                                   gboolean            show_other_locations);
 gboolean             nautilus_gtk_places_sidebar_get_show_other_locations (NautilusGtkPlacesSidebar   *sidebar);
-
-void                 nautilus_gtk_places_sidebar_set_show_starred_location (NautilusGtkPlacesSidebar   *sidebar,
-                                                                   gboolean            show_starred_location);
-gboolean             nautilus_gtk_places_sidebar_get_show_starred_location (NautilusGtkPlacesSidebar   *sidebar);
 
 /* Keep order, since it's used for the sort functions */
 typedef enum {
@@ -133,7 +108,6 @@ typedef enum {
   NAUTILUS_GTK_PLACES_BOOKMARK,
   NAUTILUS_GTK_PLACES_HEADING,
   NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER,
-  NAUTILUS_GTK_PLACES_ENTER_LOCATION,
   NAUTILUS_GTK_PLACES_DROP_FEEDBACK,
   NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER,
   NAUTILUS_GTK_PLACES_OTHER_LOCATIONS,
