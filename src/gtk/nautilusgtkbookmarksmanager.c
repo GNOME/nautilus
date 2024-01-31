@@ -640,7 +640,5 @@ _nautilus_gtk_bookmarks_manager_get_is_builtin (NautilusGtkBookmarksManager *man
 gboolean
 _nautilus_gtk_bookmarks_manager_get_is_xdg_dir_builtin (GUserDirectory xdg_type)
 {
-  return (xdg_type != G_USER_DIRECTORY_DESKTOP) &&
-    (xdg_type != G_USER_DIRECTORY_TEMPLATES) &&
-    (xdg_type != G_USER_DIRECTORY_PUBLIC_SHARE);
+  return xdg_type == G_USER_DIRECTORY_DOWNLOAD;
 }
