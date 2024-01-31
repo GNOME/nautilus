@@ -37,6 +37,7 @@ RUN dnf builddep -y glib \
  && rm -rf glib
 
 RUN dnf builddep -y gtk4 \
+ && dnf install -y glslc \
  && dnf clean all \
  && git clone --depth 1 https://gitlab.gnome.org/GNOME/gtk.git \
  && cd gtk \
