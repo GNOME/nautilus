@@ -7363,7 +7363,7 @@ retry:
         if (IS_IO_ERROR (error, EXISTS))
         {
             gboolean use_extension = job->src != NULL && !is_dir (job->src, common->cancellable);
-            g_autofree gchar *filename2 = nautilus_filename_for_conflict (filename, count, max_length, use_extension);
+            g_autofree gchar *filename2 = nautilus_filename_for_conflict (filename, ++count, max_length, use_extension);
 
             make_file_name_valid_for_dest_fs (filename2, dest_fs_type);
             g_clear_object (&dest);
