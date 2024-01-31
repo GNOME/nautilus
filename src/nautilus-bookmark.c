@@ -603,7 +603,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
                              "Bookmark's name",
                              "The name of this bookmark",
                              NULL,
-                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT);
+                             G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT | G_PARAM_EXPLICIT_NOTIFY);
 
     properties[PROP_CUSTOM_NAME] =
         g_param_spec_boolean ("custom-name",
