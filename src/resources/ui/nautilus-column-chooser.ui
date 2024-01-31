@@ -19,28 +19,33 @@
             </property>
           </object>
         </child>
-        <child type="top">
-          <object class="AdwBanner" id="banner">
-            <property name="title" translatable="yes">This folder uses custom settings</property>
-            <property name="button-label" translatable="yes">_Revert</property>
-            <signal name="button-clicked" handler="use_default_clicked_callback"/>
-          </object>
-        </child>
         <property name="content">
-          <object class="AdwPreferencesPage">
-          <child>
-            <object class="AdwPreferencesGroup">
-              <child>
-                <object class="GtkListBox" id="list_box">
-                  <property name="selection-mode">none</property>
-                  <style>
-                    <class name="boxed-list"/>
-                  </style>
-                </object>
-              </child>
-            </object>
-          </child>
-        </object>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="AdwBanner" id="banner">
+                <property name="title" translatable="yes">This folder uses custom settings</property>
+                <property name="button-label" translatable="yes">_Revert</property>
+                <signal name="button-clicked" handler="use_default_clicked_callback"/>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesPage">
+                <child>
+                  <object class="AdwPreferencesGroup">
+                    <child>
+                      <object class="GtkListBox" id="list_box">
+                        <property name="selection-mode">none</property>
+                        <style>
+                          <class name="boxed-list"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
         </property>
         <child type="bottom">
           <object class="GtkListBox" id="use_custom_box">
