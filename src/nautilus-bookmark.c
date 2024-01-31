@@ -79,11 +79,8 @@ static void
 nautilus_bookmark_set_name_internal (NautilusBookmark *bookmark,
                                      const char       *new_name)
 {
-    if (g_strcmp0 (bookmark->name, new_name) != 0)
+    if (g_set_str (&bookmark->name, new_name))
     {
-        g_free (bookmark->name);
-        bookmark->name = g_strdup (new_name);
-
         if ((new_name == NULL && bookmark->has_custom_name) ||
             (new_name != NULL && !bookmark->has_custom_name))
         {
