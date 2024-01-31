@@ -30,5 +30,5 @@ It can be installed alongside the regular version with these instructions:
 # Additional Information
 <!--
 If the issue is a crash, please provide a stack trace by following the steps in:
-https://wiki.gnome.org/Community/GettingInTouch/Bugzilla/GettingTraces
+https://handbook.gnome.org/issues/stack-traces.html
 -->

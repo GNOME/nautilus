@@ -2495,7 +2495,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                            "application-icon", APPLICATION_ID,
                            "developer-name", _("The GNOME Project"),
                            "version", VERSION,
-                           "website", "https://wiki.gnome.org/action/show/Apps/Files",
+                           "website", "https://apps.gnome.org/Nautilus/",
                            "issue-url", "https://gitlab.gnome.org/GNOME/nautilus/-/issues",
                            "support-url", "https://discourse.gnome.org/tag/nautilus",
                            "debug-info", debug_info,
