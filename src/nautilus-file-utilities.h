@@ -83,8 +83,6 @@ char * get_message_for_two_content_types (const char * const *content_types);
 gboolean should_handle_content_type (const char *content_type);
 gboolean should_handle_content_types (const char * const *content_type);
 
-gboolean nautilus_file_selection_equal (GList *selection_a, GList *selection_b);
-
 /**
  * nautilus_get_common_filename_prefix:
  * @file_list: set of files (NautilusFile *)
