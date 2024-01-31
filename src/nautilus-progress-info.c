@@ -538,11 +538,11 @@ get_icon_name (NautilusProgressInfo *info)
 {
     if (nautilus_progress_info_get_is_cancelled (info))
     {
-        return "process-stop-symbolic";
+        return "file-operation-cancelled-symbolic";
     }
     else if (nautilus_progress_info_get_is_finished (info))
     {
-        return "object-select-symbolic";
+        return "file-operation-finished-symbolic";
     }
 
     return NULL;
