@@ -75,9 +75,9 @@ static void nautilus_bookmark_disconnect_file (NautilusBookmark *file);
 
 G_DEFINE_TYPE (NautilusBookmark, nautilus_bookmark, G_TYPE_OBJECT);
 
-static void
-nautilus_bookmark_set_name_internal (NautilusBookmark *bookmark,
-                                     const char       *new_name)
+void
+nautilus_bookmark_set_name (NautilusBookmark *bookmark,
+                            const char       *new_name)
 {
     if (g_set_str (&bookmark->name, new_name))
     {
@@ -107,15 +107,15 @@ bookmark_set_name_from_ready_file (NautilusBookmark *self,
 
     if (nautilus_file_is_other_locations (self->file))
     {
-        nautilus_bookmark_set_name_internal (self, _("Other Locations"));
+        nautilus_bookmark_set_name (self, _("Other Locations"));
     }
     else if (nautilus_file_is_home (self->file))
     {
-        nautilus_bookmark_set_name_internal (self, _("Home"));
+        nautilus_bookmark_set_name (self, _("Home"));
     }
     else if (g_strcmp0 (self->name, display_name) != 0)
     {
-        nautilus_bookmark_set_name_internal (self, display_name);
+        nautilus_bookmark_set_name (self, display_name);
         g_debug ("%s: name changed to %s", nautilus_bookmark_get_name (self), display_name);
     }
 }
@@ -496,7 +496,7 @@ nautilus_bookmark_set_property (GObject      *object,
 
         case PROP_NAME:
         {
-            nautilus_bookmark_set_name_internal (self, g_value_get_string (value));
+            nautilus_bookmark_set_name (self, g_value_get_string (value));
         }
         break;
 
