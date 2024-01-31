@@ -113,11 +113,16 @@ bookmark_in_list_changed_callback (NautilusBookmark     *bookmark,
 }
 
 static void
-bookmark_in_list_notify (GObject              *object,
-                         GParamSpec           *pspec,
-                         NautilusBookmarkList *bookmarks)
+bookmark_in_list_icon_changed (NautilusBookmarkList *bookmarks)
 {
     /* emit the changed signal without saving, as only appearance properties changed */
+    g_signal_emit (bookmarks, signals[CHANGED], 0);
+}
+
+static void
+bookmark_in_list_name_changed (NautilusBookmarkList *bookmarks)
+{
+    nautilus_bookmark_list_save_file (bookmarks);
     g_signal_emit (bookmarks, signals[CHANGED], 0);
 }
 
@@ -226,9 +231,9 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
     g_signal_connect_object (bookmark, "contents-changed",
                              G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
     g_signal_connect_object (bookmark, "notify::icon",
-                             G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
+                             G_CALLBACK (bookmark_in_list_icon_changed), bookmarks, G_CONNECT_SWAPPED);
     g_signal_connect_object (bookmark, "notify::name",
-                             G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
+                             G_CALLBACK (bookmark_in_list_name_changed), bookmarks, G_CONNECT_SWAPPED);
 }
 
 /**
