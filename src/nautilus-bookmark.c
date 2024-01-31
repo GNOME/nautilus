@@ -84,6 +84,13 @@ nautilus_bookmark_set_name_internal (NautilusBookmark *bookmark,
         g_free (bookmark->name);
         bookmark->name = g_strdup (new_name);
 
+        if ((new_name == NULL && bookmark->has_custom_name) ||
+            (new_name != NULL && !bookmark->has_custom_name))
+        {
+            bookmark->has_custom_name = !bookmark->has_custom_name;
+            g_object_notify_by_pspec (G_OBJECT (bookmark), properties[PROP_CUSTOM_NAME]);
+        }
+
         g_object_notify_by_pspec (G_OBJECT (bookmark), properties[PROP_NAME]);
     }
 }
