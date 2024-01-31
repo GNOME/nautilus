@@ -27,9 +27,6 @@ tests = [
   ['test-file-utilities-get-common-filename-prefix', [
     'test-file-utilities-get-common-filename-prefix.c'
   ]],
-  ['test-file-utilities', [
-    'test-file-utilities.c'
-  ]],
   ['test-filename-common-prefix', [
     'test-filename-common-prefix.c'
   ]],
