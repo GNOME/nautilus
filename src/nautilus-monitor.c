@@ -116,6 +116,38 @@ dir_changed (GFileMonitor      *monitor,
             nautilus_file_changes_queue_file_added (child);
         }
         break;
+
+        case G_FILE_MONITOR_EVENT_MOVED_IN:
+        {
+            if (other_file != NULL)
+            {
+                nautilus_file_changes_queue_file_moved (other_file, child);
+            }
+            else
+            {
+                nautilus_file_changes_queue_file_added (child);
+            }
+        }
+        break;
+
+        case G_FILE_MONITOR_EVENT_MOVED_OUT:
+        {
+            if (other_file != NULL)
+            {
+                nautilus_file_changes_queue_file_moved (child, other_file);
+            }
+            else
+            {
+                nautilus_file_changes_queue_file_removed (child);
+            }
+        }
+        break;
+
+        case G_FILE_MONITOR_EVENT_RENAMED:
+        {
+            nautilus_file_changes_queue_file_moved (child, other_file);
+        }
+        break;
     }
 
     schedule_call_consume_changes ();
@@ -128,7 +160,9 @@ nautilus_monitor_directory (GFile *location)
     NautilusMonitor *ret;
 
     ret = g_slice_new0 (NautilusMonitor);
-    dir_monitor = g_file_monitor_directory (location, G_FILE_MONITOR_WATCH_MOUNTS, NULL, NULL);
+    dir_monitor = g_file_monitor_directory (location,
+                                            G_FILE_MONITOR_WATCH_MOUNTS | G_FILE_MONITOR_WATCH_MOVES,
+                                            NULL, NULL);
 
     if (dir_monitor != NULL)
     {
