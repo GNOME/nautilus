@@ -161,7 +161,6 @@ struct _NautilusGtkPlacesSidebar {
   guint show_recent            : 1;
   guint show_desktop_set       : 1;
   guint show_desktop           : 1;
-  guint show_enter_location    : 1;
   guint show_other_locations   : 1;
   guint show_trash             : 1;
   guint show_starred_location  : 1;
@@ -185,7 +184,6 @@ struct _NautilusGtkPlacesSidebarClass {
                                       GFile              *dest_file,
                                       GList              *source_file_list,
                                       GdkDragAction       action);
-  void    (* show_enter_location)    (NautilusGtkPlacesSidebar   *sidebar);
 
   void    (* show_other_locations_with_flags)   (NautilusGtkPlacesSidebar   *sidebar,
                                                  NautilusGtkPlacesOpenFlags  open_flags);
@@ -201,7 +199,6 @@ struct _NautilusGtkPlacesSidebarClass {
 enum {
   OPEN_LOCATION,
   SHOW_ERROR_MESSAGE,
-  SHOW_ENTER_LOCATION,
   DRAG_ACTION_REQUESTED,
   DRAG_ACTION_ASK,
   DRAG_PERFORM_DROP,
@@ -217,7 +214,6 @@ enum {
   PROP_OPEN_FLAGS,
   PROP_SHOW_RECENT,
   PROP_SHOW_DESKTOP,
-  PROP_SHOW_ENTER_LOCATION,
   PROP_SHOW_TRASH,
   PROP_SHOW_STARRED_LOCATION,
   PROP_SHOW_OTHER_LOCATIONS,
@@ -301,12 +297,6 @@ emit_show_error_message (NautilusGtkPlacesSidebar *sidebar,
 {
   g_signal_emit (sidebar, places_sidebar_signals[SHOW_ERROR_MESSAGE], 0,
                  primary, secondary);
-}
-
-static void
-emit_show_enter_location (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_signal_emit (sidebar, places_sidebar_signals[SHOW_ENTER_LOCATION], 0);
 }
 
 static void
@@ -974,17 +964,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   /* XDG directories */
   add_special_dirs (sidebar);
-
-  if (sidebar->show_enter_location)
-    {
-      start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_NETWORK_SERVER);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_ENTER_LOCATION,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
-                 _("Enter Location"), start_icon, NULL, NULL,
-                 NULL, NULL, NULL, NULL, 0,
-                 _("Manually enter a location"));
-      g_object_unref (start_icon);
-    }
 
   /* Trash */
   if (sidebar->show_trash)
@@ -2118,10 +2097,6 @@ open_row (NautilusGtkSidebarRow      *row,
   else if (uri != NULL)
     {
       open_uri (sidebar, uri, open_flags);
-    }
-  else if (place_type == NAUTILUS_GTK_PLACES_ENTER_LOCATION)
-    {
-      emit_show_enter_location (sidebar);
     }
   else if (volume != NULL)
     {
@@ -3898,10 +3873,6 @@ nautilus_gtk_places_sidebar_set_property (GObject      *obj,
       nautilus_gtk_places_sidebar_set_show_desktop (sidebar, g_value_get_boolean (value));
       break;
 
-    case PROP_SHOW_ENTER_LOCATION:
-      nautilus_gtk_places_sidebar_set_show_enter_location (sidebar, g_value_get_boolean (value));
-      break;
-
     case PROP_SHOW_OTHER_LOCATIONS:
       nautilus_gtk_places_sidebar_set_show_other_locations (sidebar, g_value_get_boolean (value));
       break;
@@ -3944,10 +3915,6 @@ nautilus_gtk_places_sidebar_get_property (GObject    *obj,
 
     case PROP_SHOW_DESKTOP:
       g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_desktop (sidebar));
-      break;
-
-    case PROP_SHOW_ENTER_LOCATION:
-      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_enter_location (sidebar));
       break;
 
     case PROP_SHOW_OTHER_LOCATIONS:
@@ -4164,24 +4131,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         G_TYPE_STRING);
 
   /*
-   * NautilusGtkPlacesSidebar::show-enter-location:
-   * @sidebar: the object which received the signal.
-   *
-   * The places sidebar emits this signal when it needs the calling
-   * application to present a way to directly enter a location.
-   * For example, the application may bring up a dialog box asking for
-   * a URL like "http://http.example.com".
-   */
-  places_sidebar_signals [SHOW_ENTER_LOCATION] =
-          g_signal_new ("show-enter-location",
-                        G_OBJECT_CLASS_TYPE (gobject_class),
-                        G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, show_enter_location),
-                        NULL, NULL,
-                        NULL,
-                        G_TYPE_NONE, 0);
-
-  /*
    * NautilusGtkPlacesSidebar::drag-action-requested:
    * @sidebar: the object which received the signal.
    * @drop: (type Gdk.Drop): GdkDrop with information about the drag operation
@@ -4367,12 +4316,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                                 "Show “Desktop”",
                                 "Whether the sidebar includes a builtin shortcut to the Desktop folder",
                                 TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
-  properties[PROP_SHOW_ENTER_LOCATION] =
-          g_param_spec_boolean ("show-enter-location",
-                                "Show “Enter Location”",
-                                "Whether the sidebar includes a builtin shortcut to manually enter a location",
-                                FALSE,
                                 G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
   properties[PROP_SHOW_TRASH] =
           g_param_spec_boolean ("show-trash",
@@ -4663,49 +4606,6 @@ nautilus_gtk_places_sidebar_get_show_desktop (NautilusGtkPlacesSidebar *sidebar)
   g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
 
   return sidebar->show_desktop;
-}
-
-/*
- * nautilus_gtk_places_sidebar_set_show_enter_location:
- * @sidebar: a places sidebar
- * @show_enter_location: whether to show an item to enter a location
- *
- * Sets whether the @sidebar should show an item for entering a location;
- * this is off by default. An application may want to turn this on if manually
- * entering URLs is an expected user action.
- *
- * If you enable this, you should connect to the
- * NautilusGtkPlacesSidebar::show-enter-location signal.
- */
-void
-nautilus_gtk_places_sidebar_set_show_enter_location (NautilusGtkPlacesSidebar *sidebar,
-                                            gboolean          show_enter_location)
-{
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-
-  show_enter_location = !!show_enter_location;
-  if (sidebar->show_enter_location != show_enter_location)
-    {
-      sidebar->show_enter_location = show_enter_location;
-      update_places (sidebar);
-      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_ENTER_LOCATION]);
-    }
-}
-
-/*
- * nautilus_gtk_places_sidebar_get_show_enter_location:
- * @sidebar: a places sidebar
- *
- * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_enter_location()
- *
- * Returns: %TRUE if the sidebar will display an “Enter Location” item.
- */
-gboolean
-nautilus_gtk_places_sidebar_get_show_enter_location (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
-
-  return sidebar->show_enter_location;
 }
 
 /*
