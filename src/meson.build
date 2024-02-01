@@ -55,8 +55,6 @@ libnautilus_sources = [
     interface_prefix: 'org.gnome',
     namespace: 'Nautilus'
   ),
-  'gtk/nautilusgtkbookmarksmanager.c',
-  'gtk/nautilusgtkbookmarksmanagerprivate.h',
   'gtk/nautilusgtkplacessidebar.c',
   'gtk/nautilusgtkplacessidebarprivate.h',
   'gtk/nautilusgtksidebarrow.c',
