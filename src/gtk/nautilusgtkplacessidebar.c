@@ -34,7 +34,8 @@
 #include "nautilusgtkplacessidebarprivate.h"
 #include "nautilusgtksidebarrowprivate.h"
 #include "gdk/gdkkeysyms.h"
-#include "nautilusgtkbookmarksmanagerprivate.h"
+#include "nautilus-application.h"
+#include "nautilus-bookmark-list.h"
 #include "nautilus-dnd.h"
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-file.h"
@@ -108,7 +109,7 @@ struct _NautilusGtkPlacesSidebar {
   GtkWidget *list_box;
   GtkWidget *new_bookmark_row;
 
-  NautilusGtkBookmarksManager     *bookmarks_manager;
+  NautilusBookmarkList *bookmark_list;
 
   GActionGroup *row_actions;
 
@@ -568,8 +569,11 @@ add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
       char *name;
       char *mount_uri;
       char *tooltip;
+      NautilusBookmark *bookmark;
 
-      if (!_nautilus_gtk_bookmarks_manager_get_is_xdg_dir_builtin (index))
+      if (index == G_USER_DIRECTORY_DESKTOP ||
+          index == G_USER_DIRECTORY_TEMPLATES ||
+          index == G_USER_DIRECTORY_PUBLIC_SHARE)
         continue;
 
       path = g_get_user_special_dir (index);
@@ -585,8 +589,11 @@ add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
 
       root = g_file_new_for_path (path);
 
-      name = _nautilus_gtk_bookmarks_manager_get_bookmark_label (sidebar->bookmarks_manager, root);
-      if (!name)
+      bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, root, NULL);
+
+      if (bookmark)
+        name = g_strdup (nautilus_bookmark_get_name (bookmark));
+      else
         name = g_file_get_basename (root);
 
       start_icon = special_directory_get_gicon (index);
@@ -749,67 +756,6 @@ typedef struct {
   gboolean is_native;
 } BookmarkQueryClosure;
 
-static void
-on_bookmark_query_info_complete (GObject      *source,
-                                 GAsyncResult *result,
-                                 gpointer      data)
-{
-  BookmarkQueryClosure *clos = data;
-  NautilusGtkPlacesSidebar *sidebar = clos->sidebar;
-  GFile *root = G_FILE (source);
-  GError *error = NULL;
-  GFileInfo *info;
-  char *bookmark_name;
-  char *mount_uri;
-  char *tooltip;
-  GIcon *start_icon;
-
-  info = g_file_query_info_finish (root, result, &error);
-  if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-    goto out;
-
-  bookmark_name = _nautilus_gtk_bookmarks_manager_get_bookmark_label (sidebar->bookmarks_manager, root);
-  if (bookmark_name == NULL && info != NULL)
-    bookmark_name = g_strdup (g_file_info_get_display_name (info));
-  else if (bookmark_name == NULL)
-    {
-      /* Don't add non-UTF-8 bookmarks */
-      bookmark_name = g_file_get_basename (root);
-      if (bookmark_name == NULL)
-        goto out;
-
-      if (!g_utf8_validate (bookmark_name, -1, NULL))
-        {
-          g_free (bookmark_name);
-          goto out;
-        }
-    }
-
-  if (info)
-    start_icon = g_object_ref (g_file_info_get_symbolic_icon (info));
-  else
-    start_icon = g_themed_icon_new_with_default_fallbacks (clos->is_native ? ICON_NAME_FOLDER : ICON_NAME_FOLDER_NETWORK);
-
-  mount_uri = g_file_get_uri (root);
-  tooltip = clos->is_native ? g_file_get_path (root) : g_uri_unescape_string (mount_uri, NULL);
-
-  add_place (sidebar, NAUTILUS_GTK_PLACES_BOOKMARK,
-             NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
-             bookmark_name, start_icon, NULL, mount_uri,
-             NULL, NULL, NULL, NULL, clos->index,
-             tooltip);
-
-  g_free (mount_uri);
-  g_free (tooltip);
-  g_free (bookmark_name);
-  g_object_unref (start_icon);
-
-out:
-  g_clear_object (&info);
-  g_clear_error (&error);
-  g_slice_free (BookmarkQueryClosure, clos);
-}
-
 static gboolean
 is_external_volume (GVolume *volume)
 {
@@ -937,7 +883,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   GDrive *drive;
   GList *volumes;
   GVolume *volume;
-  GSList *bookmarks, *sl;
+  GList *bookmarks;
   int index;
   char *original_uri, *name, *identifier;
   GtkListBoxRow *selected;
@@ -1333,33 +1279,30 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   g_list_free (mounts);
 
   /* add bookmarks */
-  bookmarks = _nautilus_gtk_bookmarks_manager_list_bookmarks (sidebar->bookmarks_manager);
+  bookmarks = nautilus_bookmark_list_get_all (sidebar->bookmark_list);
+  index = 0;
 
-  for (sl = bookmarks, index = 0; sl; sl = sl->next, index++)
+  for (GList *l = bookmarks; l != NULL; l = l->next)
     {
-      gboolean is_native;
-      BookmarkQueryClosure *clos;
+      GtkWidget *row;
 
-      root = sl->data;
-      is_native = g_file_is_native (root);
-
-      if (_nautilus_gtk_bookmarks_manager_get_is_builtin (sidebar->bookmarks_manager, root))
+      if (nautilus_bookmark_get_is_builtin (l->data))
         continue;
 
-      clos = g_slice_new (BookmarkQueryClosure);
-      clos->sidebar = sidebar;
-      clos->index = index;
-      clos->is_native = is_native;
-      g_file_query_info_async (root,
-                               "standard::display-name,standard::symbolic-icon",
-                               G_FILE_QUERY_INFO_NONE,
-                               G_PRIORITY_DEFAULT,
-                               sidebar->cancellable,
-                               on_bookmark_query_info_complete,
-                               clos);
-    }
+      g_autoptr (GFile) location = nautilus_bookmark_get_location (l->data);
+      g_autofree char *mount_uri = nautilus_bookmark_get_uri (l->data);
 
-  g_slist_free_full (bookmarks, g_object_unref);
+      gboolean is_native = g_file_is_native (location);
+      tooltip = is_native ? g_file_get_path (location) : g_uri_unescape_string (mount_uri, NULL);
+
+      row = add_place (sidebar, NAUTILUS_GTK_PLACES_BOOKMARK,
+                       NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
+                       nautilus_bookmark_get_name (l->data),
+                       nautilus_bookmark_get_symbolic_icon (l->data),
+                       NULL, mount_uri, NULL, NULL, NULL, NULL, index, tooltip);
+      g_object_bind_property (l->data, "symbolic-icon", row, "start-icon", G_BINDING_SYNC_CREATE);
+      index++;
+    }
 
   /* Add new bookmark row */
   new_bookmark_icon = g_themed_icon_new ("bookmark-new-symbolic");
@@ -1787,10 +1730,12 @@ reorder_bookmarks (NautilusGtkPlacesSidebar *sidebar,
 {
   char *uri;
   GFile *file;
+  guint old_position;
 
   g_object_get (row, "uri", &uri, NULL);
   file = g_file_new_for_uri (uri);
-  _nautilus_gtk_bookmarks_manager_reorder_bookmark (sidebar->bookmarks_manager, file, new_position, NULL);
+  nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, file, &old_position);
+  nautilus_bookmark_list_move_item (sidebar->bookmark_list, old_position, new_position);
 
   g_object_unref (file);
   g_free (uri);
@@ -1819,7 +1764,10 @@ drop_files_as_bookmarks (NautilusGtkPlacesSidebar *sidebar,
                g_file_info_get_file_type (info) == G_FILE_TYPE_MOUNTABLE ||
                g_file_info_get_file_type (info) == G_FILE_TYPE_SHORTCUT ||
                g_file_info_get_file_type (info) == G_FILE_TYPE_SYMBOLIC_LINK))
-            _nautilus_gtk_bookmarks_manager_insert_bookmark (sidebar->bookmarks_manager, f, position++, NULL);
+            {
+              g_autoptr (NautilusBookmark) bookmark = nautilus_bookmark_new (f, NULL);
+              nautilus_bookmark_list_insert_item (sidebar->bookmark_list, bookmark, position++);
+            }
 
           g_object_unref (info);
         }
@@ -2224,8 +2172,8 @@ add_shortcut_cb (GSimpleAction *action,
   if (uri != NULL)
     {
       location = g_file_new_for_uri (uri);
-      if (_nautilus_gtk_bookmarks_manager_insert_bookmark (sidebar->bookmarks_manager, location, -1, NULL))
-        _nautilus_gtk_bookmarks_manager_set_bookmark_label (sidebar->bookmarks_manager, location, name, NULL);
+      g_autoptr (NautilusBookmark) bookmark = nautilus_bookmark_new (location, name);
+      nautilus_bookmark_list_append (sidebar->bookmark_list, bookmark);
       g_object_unref (location);
     }
 
@@ -2286,19 +2234,24 @@ do_rename (GtkButton        *button,
 {
   char *new_text;
   GFile *file;
+  g_autoptr (NautilusBookmark) bookmark = NULL;
 
   new_text = g_strdup (gtk_editable_get_text (GTK_EDITABLE (sidebar->rename_entry)));
 
   file = g_file_new_for_uri (sidebar->rename_uri);
-  if (!_nautilus_gtk_bookmarks_manager_has_bookmark (sidebar->bookmarks_manager, file))
-    _nautilus_gtk_bookmarks_manager_insert_bookmark (sidebar->bookmarks_manager, file, -1, NULL);
+  bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, file, NULL);
+  if (!bookmark)
+    {
+      bookmark = nautilus_bookmark_new (file, new_text);
+      nautilus_bookmark_list_append (sidebar->bookmark_list, bookmark);
+    }
+  else
+    nautilus_bookmark_set_name (g_steal_pointer (&bookmark), new_text);
 
   if (sidebar->rename_popover)
     {
       gtk_popover_popdown (GTK_POPOVER (sidebar->rename_popover));
     }
-
-  _nautilus_gtk_bookmarks_manager_set_bookmark_label (sidebar->bookmarks_manager, file, new_text, NULL);
 
   g_object_unref (file);
   g_free (new_text);
@@ -2530,7 +2483,6 @@ remove_bookmark (NautilusGtkSidebarRow *row)
 {
   NautilusGtkPlacesPlaceType type;
   char *uri;
-  GFile *file;
   NautilusGtkPlacesSidebar *sidebar;
 
   g_object_get (row,
@@ -2541,9 +2493,7 @@ remove_bookmark (NautilusGtkSidebarRow *row)
 
   if (type == NAUTILUS_GTK_PLACES_BOOKMARK)
     {
-      file = g_file_new_for_uri (uri);
-      _nautilus_gtk_bookmarks_manager_remove_bookmark (sidebar->bookmarks_manager, file, NULL);
-      g_object_unref (file);
+      nautilus_bookmark_list_delete_items_with_uri (sidebar->bookmark_list, uri);
     }
 
   g_free (uri);
@@ -3821,7 +3771,9 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   sidebar->open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
 
-  sidebar->bookmarks_manager = _nautilus_gtk_bookmarks_manager_new ((GtkBookmarksChangedFunc)update_places, sidebar);
+  NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
+  sidebar->bookmark_list = nautilus_application_get_bookmarks (app);
+  g_signal_connect_swapped (sidebar->bookmark_list, "changed", G_CALLBACK (update_places), sidebar);
 
   g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
                            G_CALLBACK (update_trash_icon), sidebar,
@@ -4031,12 +3983,6 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
       g_cancellable_cancel (sidebar->cancellable);
       g_object_unref (sidebar->cancellable);
       sidebar->cancellable = NULL;
-    }
-
-  if (sidebar->bookmarks_manager != NULL)
-    {
-      _nautilus_gtk_bookmarks_manager_free (sidebar->bookmarks_manager);
-      sidebar->bookmarks_manager = NULL;
     }
 
   g_clear_pointer (&sidebar->popover, gtk_widget_unparent);
