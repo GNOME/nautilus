@@ -169,7 +169,14 @@
                   </object>
                 </child>
                 <child type="bottom">
-                  <object class="NautilusProgressIndicator" id="progress_indicator" />
+                  <object class="GtkBox">
+                    <style>
+                      <class name="toolbar"/>
+                    </style>
+                    <child>
+                      <object class="NautilusProgressIndicator" id="progress_indicator" />
+                    </child>
+                  </object>
                 </child>
                 <property name="content">
                   <object class="NautilusGtkPlacesSidebar" id="places_sidebar">

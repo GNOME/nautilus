@@ -36,6 +36,9 @@
         <property name="tooltip_text" translatable="yes">Show File Operations</property>
         <property name="direction">right</property>
         <property name="popover">operations_popover</property>
+        <style>
+          <class name="flat"/>
+        </style>
         <property name="child">
           <object class="GtkListView" id="sidebar_list">
             <property name="factory">
@@ -48,10 +51,11 @@
     <property name="selectable">false</property>
     <property name="child">
       <object class="GtkBox">
-        <property name="spacing">6</property>
+        <property name="spacing">9</property>
         <child>
           <object class="GtkImage" id="progress_icon">
-            <property name="pixel-size">13</property>
+            <property name="pixel-size">14</property>
+            <property name="margin-start">3</property>
             <binding name="paintable">
               <closure type="GdkPaintable" function="get_paintable">
                 <lookup name="item">GtkListItem</lookup>

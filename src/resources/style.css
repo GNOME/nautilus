@@ -9,17 +9,22 @@
 #NautilusProgressIndicator.needs-attention > menubutton > button {
   animation: needs_attention_keyframes 2s ease-in-out;
 }
-#NautilusProgressIndicator menubutton > button {
-  border-radius: 0px;
-}
-#NautilusProgressIndicator menubutton > button:not(:hover) {
-  background: none;
-}
+
 #NautilusProgressIndicator menubutton > button listview {
   background: none;
-  margin: 6px;
   border-spacing: 9px;
   font-weight: normal;
+}
+
+/* Give the button same colors as the rows */
+#NautilusProgressIndicator menubutton > button:hover {
+  background-color: alpha(@sidebar_fg_color, .07);
+}
+#NautilusProgressIndicator menubutton > button:checked {
+  background-color: alpha(@sidebar_fg_color, .10);
+}
+#NautilusProgressIndicator menubutton > button:checked:hover {
+  background-color: alpha(@sidebar_fg_color, .13);
 }
 
 /* Remove white background and highlight on hover which GTK adds by default
