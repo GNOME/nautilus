@@ -606,7 +606,6 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     gtk_widget_set_parent (editor->tags_box, GTK_WIDGET (editor));
 
     editor->text = gtk_text_new ();
-    gtk_text_set_placeholder_text (GTK_TEXT (editor->text), _("Search files and folders"));
     gtk_widget_set_hexpand (editor->text, TRUE);
     gtk_widget_set_parent (editor->text, GTK_WIDGET (editor));
 
@@ -713,6 +712,10 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                                   (editor->location != NULL ?
                                    "nautilus-folder-search-symbolic" :
                                    "edit-find-symbolic"));
+    gtk_text_set_placeholder_text (GTK_TEXT (editor->text),
+                                   (editor->location != NULL ?
+                                    _("Search current folder") :
+                                    _("Search everywhere")));
 
     if (should_notify)
     {

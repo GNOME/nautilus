@@ -75,7 +75,7 @@
             <property name="visible" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
             <property name="spacing">6</property>
             <child>
-              <object class="NautilusHistoryControls">
+              <object class="NautilusHistoryControls" id="history_controls">
                 <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
               </object>
             </child>

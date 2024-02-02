@@ -98,6 +98,8 @@ gboolean nautilus_window_slot_get_loading                  (NautilusWindowSlot *
 
 gboolean nautilus_window_slot_get_search_visible           (NautilusWindowSlot *slot);
 
+gboolean nautilus_window_slot_get_search_global            (NautilusWindowSlot *self);
+
 GList* nautilus_window_slot_get_selection                  (NautilusWindowSlot *slot);
 
 void     nautilus_window_slot_search                       (NautilusWindowSlot *slot,

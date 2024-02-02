@@ -121,6 +121,13 @@
                           bind-flags="sync-create"/>
                 <child type="top">
                   <object class="AdwHeaderBar">
+                    <child type="start">
+                      <object class="GtkToggleButton">
+                        <property name="tooltip_text" translatable="yes">Search Everywhere</property>
+                        <property name="action_name">slot.search-global</property>
+                        <property name="icon_name">edit-find-symbolic</property>
+                      </object>
+                    </child>
                     <property name="title-widget">
                       <object class="AdwWindowTitle">
                         <property name="title" translatable="yes">Files</property>

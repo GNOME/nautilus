@@ -41,12 +41,14 @@ struct _NautilusToolbar
 
     NautilusWindow *window;
 
+    GtkWidget *history_controls;
     GtkWidget *path_bar_container;
     GtkWidget *location_entry_container;
     GtkWidget *search_container;
     GtkWidget *toolbar_switcher;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
+    GtkWidget *search_button;
 
     gboolean show_location_entry;
 
@@ -101,6 +103,12 @@ toolbar_update_appearance (NautilusToolbar *self)
     {
         gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "pathbar");
     }
+
+    /* Adjust to global search mode. */
+    gboolean search_global = (self->window_slot != NULL &&
+                              nautilus_window_slot_get_search_global (self->window_slot));
+    gtk_widget_set_visible (self->search_button, !search_global);
+    gtk_widget_set_visible (self->history_controls, !search_global);
 }
 
 static void
@@ -360,10 +368,12 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, history_controls);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
 }
@@ -456,6 +466,8 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
         g_signal_connect_swapped (self->window_slot, "notify::templates-menu",
                                   G_CALLBACK (slot_on_templates_menu_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::search-visible",
+                                  G_CALLBACK (toolbar_update_appearance), self);
+        g_signal_connect_swapped (self->window_slot, "notify::search-global",
                                   G_CALLBACK (toolbar_update_appearance), self);
     }
 

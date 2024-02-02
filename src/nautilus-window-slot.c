@@ -59,6 +59,7 @@ enum
     PROP_TEMPLATES_MENU,
     PROP_LOADING,
     PROP_SEARCH_VISIBLE,
+    PROP_SEARCH_GLOBAL,
     PROP_SELECTION,
     PROP_LOCATION,
     PROP_TOOLTIP,
@@ -78,6 +79,8 @@ struct _NautilusWindowSlot
 
     GtkWidget *stack;
     GtkWidget *vbox;
+    AdwStatusPage *global_search_page;
+
     GtkWidget *extra_location_widgets;
 
     /* Slot actions */
@@ -521,6 +524,25 @@ nautilus_window_slot_get_search_visible (NautilusWindowSlot *self)
     return search_visible;
 }
 
+static void
+nautilus_window_slot_set_search_global (NautilusWindowSlot *self,
+                                        gboolean            visible)
+{
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
+                                                  "search-global");
+    g_action_change_state (action, g_variant_new_boolean (visible));
+}
+
+gboolean
+nautilus_window_slot_get_search_global (NautilusWindowSlot *self)
+{
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
+                                                  "search-global");
+    g_autoptr (GVariant) state = g_action_get_state (action);
+
+    return g_variant_get_boolean (state);
+}
+
 void
 nautilus_window_slot_search (NautilusWindowSlot *self,
                              NautilusQuery      *query)
@@ -789,6 +811,12 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SEARCH_GLOBAL:
+        {
+            g_value_set_boolean (value, nautilus_window_slot_get_search_global (self));
+        }
+        break;
+
         case PROP_TOOLTIP:
         {
             g_value_set_static_string (value, nautilus_window_slot_get_tooltip (self));
@@ -858,6 +886,18 @@ nautilus_window_slot_constructed (GObject *object)
 
     gtk_widget_add_css_class (GTK_WIDGET (self->search_info_label), "search-information");
 
+    self->global_search_page = ADW_STATUS_PAGE (adw_status_page_new ());
+    adw_status_page_set_icon_name (self->global_search_page, "edit-find-symbolic");
+    adw_status_page_set_title (self->global_search_page, _("Search Everywhere"));
+    adw_status_page_set_description (self->global_search_page, _("Find files and folders in all search locations"));
+    gtk_stack_add_child (GTK_STACK (self->stack), GTK_WIDGET (self->global_search_page));
+
+    GtkWidget *button = gtk_button_new_with_label (_("Search Settings"));
+    gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "app.search-settings");
+    gtk_widget_set_halign (button, GTK_ALIGN_CENTER);
+    gtk_widget_add_css_class (button, "pill");
+    adw_status_page_set_child (self->global_search_page, button);
+
     g_object_bind_property (self, "location",
                             self->query_editor, "location",
                             G_BINDING_DEFAULT);
@@ -883,16 +923,15 @@ action_search_visible (GSimpleAction *action,
                        GVariant      *state,
                        gpointer       user_data)
 {
-    NautilusWindowSlot *self;
-    GVariant *current_state;
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+    g_autoptr (GVariant) current_state = g_action_get_state (G_ACTION (action));
+    gboolean search_visible = g_variant_get_boolean (state);
 
-    self = NAUTILUS_WINDOW_SLOT (user_data);
-    current_state = g_action_get_state (G_ACTION (action));
-    if (g_variant_get_boolean (current_state) != g_variant_get_boolean (state))
+    if (g_variant_get_boolean (current_state) != search_visible)
     {
         g_simple_action_set_state (action, state);
 
-        if (g_variant_get_boolean (state))
+        if (search_visible)
         {
             show_query_editor (self);
         }
@@ -906,7 +945,55 @@ action_search_visible (GSimpleAction *action,
         update_search_information (self);
     }
 
-    g_variant_unref (current_state);
+    /* Update global_search_page visibility even if the state of search-visible
+     * hasn't changed. This is because we may have just been notified through
+     * property binding that the view has started showing search results. */
+    if (nautilus_window_slot_get_search_global (self))
+    {
+        if (search_visible)
+        {
+            NautilusView *view = nautilus_window_slot_get_current_view (self);
+            if (view != NULL && nautilus_view_is_searching (view))
+            {
+                gtk_stack_set_visible_child (GTK_STACK (self->stack), self->vbox);
+            }
+        }
+        else
+        {
+            /* The Escape key has been used. */
+            nautilus_window_slot_set_search_global (self, FALSE);
+        }
+    }
+}
+
+static void
+action_search_global (GSimpleAction *action,
+                      GVariant      *state,
+                      gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+    g_autoptr (GVariant) current_state = g_action_get_state (G_ACTION (action));
+    gboolean search_global = g_variant_get_boolean (state);
+
+    if (g_variant_get_boolean (current_state) != search_global)
+    {
+        g_simple_action_set_state (action, state);
+
+        if (search_global)
+        {
+            nautilus_query_editor_set_location (self->query_editor, NULL);
+            gtk_stack_set_visible_child (GTK_STACK (self->stack), GTK_WIDGET (self->global_search_page));
+        }
+        else
+        {
+            nautilus_query_editor_set_location (self->query_editor, nautilus_window_slot_get_current_location (self));
+            gtk_stack_set_visible_child (GTK_STACK (self->stack), self->vbox);
+        }
+
+        nautilus_window_slot_set_search_visible (self, search_global);
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCH_GLOBAL]);
+    }
 }
 
 static void
@@ -982,6 +1069,7 @@ const GActionEntry slot_entries[] =
     },
     { .name = "files-view-mode-toggle", .activate = action_files_view_mode_toggle },
     { .name = "search-visible", .state = "false", .change_state = action_search_visible },
+    { .name = "search-global", .state = "false", .change_state = action_search_global },
     { .name = "focus-search", .activate = action_focus_search },
 };
 
@@ -1077,6 +1165,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                           "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_GRID_ID) ")",
                                           "<control>2");
     nautilus_application_set_accelerators (app, "slot.focus-search", search_visible_accels);
+    nautilus_application_set_accelerator (app, "slot.search-global", "<control><shift>f");
 
     self->fd_holder = nautilus_fd_holder_new ();
     self->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
@@ -2772,6 +2861,11 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
         g_param_spec_boolean ("search-visible", "", "",
                               FALSE,
                               G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+    properties[PROP_SEARCH_GLOBAL] =
+        g_param_spec_boolean ("search-global", NULL, NULL,
+                              FALSE,
+                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_SELECTION] =
         g_param_spec_pointer ("selection",
