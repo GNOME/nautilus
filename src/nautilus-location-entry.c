@@ -212,6 +212,7 @@ void
 nautilus_location_entry_set_location (NautilusLocationEntry *entry,
                                       GFile                 *location)
 {
+    g_autofree char *scheme = g_file_get_uri_scheme (location);
     NautilusLocationEntryPrivate *priv;
     gchar *formatted_uri;
 
@@ -223,7 +224,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
      * thus should not emit the LOCATION_CHANGED signal. */
     formatted_uri = g_file_get_parse_name (location);
 
-    if (g_file_has_uri_scheme (location, SCHEME_SEARCH))
+    if (nautilus_scheme_is_internal (scheme))
     {
         nautilus_location_entry_set_special_text (entry, "");
     }
