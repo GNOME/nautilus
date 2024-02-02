@@ -31,3 +31,7 @@ typedef struct NautilusMonitor NautilusMonitor;
 
 NautilusMonitor *nautilus_monitor_directory (GFile *location);
 void             nautilus_monitor_cancel    (NautilusMonitor *monitor);
+void             nautilus_monitor_add_moved_hint    (GFile *src,
+                                                     GFile *dest);
+void             nautilus_monitor_remove_moved_hint (GFile *src,
+                                                     GFile *dest);
