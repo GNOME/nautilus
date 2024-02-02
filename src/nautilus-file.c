@@ -1784,7 +1784,7 @@ rename_get_info_callback (GObject      *source_object,
 {
     NautilusFileOperation *op;
     NautilusDirectory *directory;
-    NautilusFile *existing_file;
+    g_autoptr (NautilusFile) existing_file = NULL;
     char *old_uri;
     char *new_uri;
     const char *new_name;
@@ -1808,7 +1808,7 @@ rename_get_info_callback (GObject      *source_object,
          * directory and it is not the same file that we are
          * renaming, mark it gone.
          */
-        existing_file = nautilus_directory_find_file_by_name (directory, new_name);
+        existing_file = g_object_ref (nautilus_directory_find_file_by_name (directory, new_name));
         if (existing_file != NULL && existing_file != op->file)
         {
             nautilus_file_mark_gone (existing_file);
