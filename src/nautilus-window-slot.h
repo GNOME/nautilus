@@ -24,6 +24,7 @@
 #include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <adwaita.h>
 
 #include "nautilus-types.h"
 
@@ -35,7 +36,7 @@ typedef enum {
 } NautilusLocationChangeType;
 
 #define NAUTILUS_TYPE_WINDOW_SLOT (nautilus_window_slot_get_type ())
-G_DECLARE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, GtkBox)
+G_DECLARE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, AdwBin)
 
 typedef struct
 {

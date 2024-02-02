@@ -69,17 +69,15 @@ enum
 
 struct _NautilusWindowSlot
 {
-    GtkBox parent_instance;
+    AdwBin parent_instance;
 
     NautilusWindow *window;
 
     gboolean active : 1;
     guint loading : 1;
 
-    /* slot contains
-     *  1) an vbox containing extra_location_widgets
-     *  2) the view
-     */
+    GtkWidget *stack;
+    GtkWidget *vbox;
     GtkWidget *extra_location_widgets;
 
     /* Slot actions */
@@ -147,7 +145,7 @@ struct _NautilusWindowSlot
     GList *selection;
 };
 
-G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
+G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
@@ -831,12 +829,15 @@ nautilus_window_slot_constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_window_slot_parent_class)->constructed (object);
 
-    gtk_orientable_set_orientation (GTK_ORIENTABLE (self),
-                                    GTK_ORIENTATION_VERTICAL);
+    self->stack = gtk_stack_new ();
+    adw_bin_set_child (ADW_BIN (self), self->stack);
+
+    self->vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_stack_add_child (GTK_STACK (self->stack), self->vbox);
 
     extras_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     self->extra_location_widgets = extras_vbox;
-    gtk_box_append (GTK_BOX (self), extras_vbox);
+    gtk_box_append (GTK_BOX (self->vbox), extras_vbox);
 
     self->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
     /* We want to keep alive the query editor betwen additions and removals on the
@@ -844,7 +845,7 @@ nautilus_window_slot_constructed (GObject *object)
     g_object_ref_sink (self->query_editor);
 
     self->banner = ADW_BANNER (adw_banner_new (""));
-    gtk_box_append (GTK_BOX (self),
+    gtk_box_append (GTK_BOX (self->vbox),
                     GTK_WIDGET (self->banner));
 
     self->search_info_label = GTK_LABEL (gtk_label_new (NULL));
@@ -852,7 +853,7 @@ nautilus_window_slot_constructed (GObject *object)
 
     gtk_revealer_set_child (GTK_REVEALER (self->search_info_label_revealer),
                             GTK_WIDGET (self->search_info_label));
-    gtk_box_append (GTK_BOX (self),
+    gtk_box_append (GTK_BOX (self->vbox),
                     GTK_WIDGET (self->search_info_label_revealer));
 
     gtk_widget_add_css_class (GTK_WIDGET (self->search_info_label), "search-information");
@@ -2578,7 +2579,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         g_binding_unbind (self->extensions_background_menu_binding);
         g_binding_unbind (self->templates_menu_binding);
         widget = GTK_WIDGET (self->content_view);
-        gtk_box_remove (GTK_BOX (self), widget);
+        gtk_box_remove (GTK_BOX (self->vbox), widget);
         g_clear_object (&self->content_view);
     }
 
@@ -2588,7 +2589,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         self->new_content_view = NULL;
 
         widget = GTK_WIDGET (self->content_view);
-        gtk_box_append (GTK_BOX (self), widget);
+        gtk_box_append (GTK_BOX (self->vbox), widget);
         gtk_widget_set_vexpand (widget, TRUE);
         /* Note that this is not bidirectional and that we may also change
          * :search-visible alone, e.g. when clicking the search button. */
@@ -2665,13 +2666,13 @@ nautilus_window_slot_dispose (GObject *object)
 
     if (self->content_view)
     {
-        gtk_box_remove (GTK_BOX (self), GTK_WIDGET (self->content_view));
+        gtk_box_remove (GTK_BOX (self->vbox), GTK_WIDGET (self->content_view));
         g_clear_object (&self->content_view);
     }
 
     if (self->new_content_view)
     {
-        gtk_box_remove (GTK_BOX (self), GTK_WIDGET (self->new_content_view));
+        gtk_box_remove (GTK_BOX (self->vbox), GTK_WIDGET (self->new_content_view));
         g_clear_object (&self->new_content_view);
     }
 
