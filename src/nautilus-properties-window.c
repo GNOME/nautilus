@@ -2141,14 +2141,6 @@ setup_contents_field (NautilusPropertiesWindow *self)
 }
 
 static gboolean
-has_no_parent (NautilusFile *file)
-{
-    g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
-
-    return (parent == NULL);
-}
-
-static gboolean
 is_root_directory (NautilusFile *file)
 {
     g_autoptr (GFile) location = NULL;
@@ -2263,15 +2255,39 @@ should_show_file_type (NautilusPropertiesWindow *self)
     return TRUE;
 }
 
+static GFile *
+get_parent_location (NautilusFile *file)
+{
+    if (nautilus_file_is_in_recent (file))
+    {
+        /* Use activation location since parent location points to recent:// */
+        return g_file_get_parent (nautilus_file_get_activation_location (file));
+    }
+    else
+    {
+        return nautilus_file_get_parent_location (file);
+    }
+}
+
 static gboolean
 should_show_location_info (NautilusPropertiesWindow *self)
 {
-    for (GList *l = self->files; l != NULL; l = l->next)
+    g_autoptr (GFile) first_parent = get_parent_location (get_file (self));
+
+    if (first_parent == NULL || nautilus_file_is_in_trash (get_file (self)))
     {
-        NautilusFile *file = NAUTILUS_FILE (l->data);
-        if (nautilus_file_is_in_trash (file) || has_no_parent (file))
+        return FALSE;
+    }
+
+    if (is_multi_file_window (self))
+    {
+        for (GList *l = self->files->next; l != NULL; l = l->next)
         {
-            return FALSE;
+            g_autoptr (GFile) parent = get_parent_location (NAUTILUS_FILE (l->data));
+            if (!g_file_equal (first_parent, parent))
+            {
+                return FALSE;
+            }
         }
     }
 
@@ -2452,19 +2468,8 @@ setup_volume_usage_widget (NautilusPropertiesWindow *self)
 static void
 open_parent_folder (NautilusPropertiesWindow *self)
 {
-    g_autoptr (GFile) parent_location = NULL;
     NautilusFile *file = get_file (self);
-
-    if (nautilus_file_is_in_recent (file))
-    {
-        /* Use activation location to open parent folder
-         * since parent location points to recent:// */
-        parent_location = nautilus_file_get_activation_location (file);
-    }
-    else
-    {
-        parent_location = nautilus_file_get_parent_location (file);
-    }
+    g_autoptr (GFile) parent_location = get_parent_location (file);
 
     g_return_if_fail (parent_location != NULL);
 
