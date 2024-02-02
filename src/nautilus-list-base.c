@@ -1357,14 +1357,6 @@ nautilus_list_base_get_backing_item (NautilusListBase *self)
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_backing_item (self);
 }
 
-GtkAdjustment *
-nautilus_list_base_get_vadjustment (NautilusListBase *self)
-{
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    return gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (priv->scrolled_window));
-}
-
 NautilusViewInfo
 nautilus_list_base_get_view_info (NautilusListBase *self)
 {

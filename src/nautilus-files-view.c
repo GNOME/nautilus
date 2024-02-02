@@ -235,8 +235,6 @@ typedef struct
 
     GtkWidget *stack;
 
-    GtkWidget *extend_search_revealer;
-
     /* Empty states */
     GtkWidget *empty_view_page;
 
@@ -3321,48 +3319,6 @@ on_unload_subdirectory (NautilusListBase *list_base,
 }
 
 static void
-update_extend_search_revealer (NautilusFilesView *self)
-{
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-    gboolean is_empty = nautilus_files_view_is_empty (self);
-    gboolean showing_search_results = FALSE;
-    gboolean search_is_global = FALSE;
-    gboolean can_show_search_everywhere = FALSE;
-
-    if (!is_empty && NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
-    {
-        NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
-
-        search_is_global = nautilus_query_is_global (nautilus_search_directory_get_query (search));
-        showing_search_results = TRUE;
-    }
-
-    if (showing_search_results && !search_is_global)
-    {
-        GtkAdjustment *adjustment = nautilus_list_base_get_vadjustment (priv->list_base);
-        gdouble value = gtk_adjustment_get_value (adjustment);
-        gdouble page_size = gtk_adjustment_get_page_size (adjustment);
-        gdouble upper = gtk_adjustment_get_upper (adjustment);
-
-        if (value + page_size >= upper)
-        {
-            /* Search results are scrolled to the bottom (or not scrolling). */
-            can_show_search_everywhere = TRUE;
-        }
-
-        /* Reserve space for the button even if not scrolled to the bottom. */
-        gtk_widget_add_css_class (GTK_WIDGET (self), "extra-bottom-padding");
-    }
-    else
-    {
-        gtk_widget_remove_css_class (GTK_WIDGET (self), "extra-bottom-padding");
-    }
-
-    gtk_revealer_set_reveal_child (GTK_REVEALER (priv->extend_search_revealer),
-                                   !priv->loading && can_show_search_everywhere);
-}
-
-static void
 connect_inner_view (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
@@ -3388,13 +3344,6 @@ connect_inner_view (NautilusFilesView *self)
     g_signal_connect_object (priv->list_base, "popup-selection-context-menu",
                              G_CALLBACK (on_popup_selection_context_menu), self,
                              G_CONNECT_DEFAULT);
-
-    g_signal_connect_object (nautilus_list_base_get_vadjustment (priv->list_base),
-                             "changed",
-                             G_CALLBACK (update_extend_search_revealer), self, G_CONNECT_SWAPPED);
-    g_signal_connect_object (nautilus_list_base_get_vadjustment (priv->list_base),
-                             "value-changed",
-                             G_CALLBACK (update_extend_search_revealer), self, G_CONNECT_SWAPPED);
 
     if (NAUTILUS_IS_LIST_VIEW (priv->list_base))
     {
@@ -3804,18 +3753,6 @@ nautilus_files_view_set_location (NautilusView *view,
     }
 }
 
-static void
-globalize_search (NautilusFilesView *self)
-{
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-
-    g_return_if_fail (NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory));
-    g_return_if_fail (priv->search_query != NULL);
-
-    nautilus_query_set_location (priv->search_query, NULL);
-    load_directory (self, priv->directory);
-}
-
 static GtkWidget *
 build_search_settings_button (NautilusFilesView *self)
 {
@@ -3836,7 +3773,7 @@ build_search_everywhere_button (NautilusFilesView *self)
     gtk_widget_set_halign (button, GTK_ALIGN_CENTER);
     gtk_widget_add_css_class (button, "pill");
     gtk_widget_add_css_class (button, "suggested-action");
-    g_signal_connect_swapped (button, "clicked", G_CALLBACK (globalize_search), self);
+    gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "slot.search-global");
 
     return button;
 }
@@ -3957,7 +3894,6 @@ done_loading (NautilusFilesView *view,
     if (!priv->in_destruction)
     {
         nautilus_files_view_check_empty_states (view);
-        update_extend_search_revealer (view);
     }
 }
 
@@ -4218,7 +4154,6 @@ real_end_file_changes (NautilusFilesView *view)
 
     /* Addition and removal of files modify the empty state */
     nautilus_files_view_check_empty_states (view);
-    update_extend_search_revealer (view);
     /* If the view is empty, zoom slider and sort menu are insensitive */
     nautilus_files_view_update_toolbar_menus (view);
 
@@ -8802,7 +8737,6 @@ finish_loading (NautilusFilesView *view)
     emit_begin_loading (view);
 
     nautilus_files_view_check_empty_states (view);
-    update_extend_search_revealer (view);
 
     if (nautilus_directory_are_all_files_seen (priv->directory))
     {
@@ -9560,8 +9494,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, empty_view_page);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, floating_bar);
-    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, extend_search_revealer);
-    gtk_widget_class_bind_template_callback (widget_class, globalize_search);
 
     /* See also the global accelerators in init() in addition to all the local
      * ones defined below.

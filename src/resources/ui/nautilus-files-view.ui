@@ -23,28 +23,6 @@
           </object>
         </child>
         <child type="overlay">
-          <object class="GtkRevealer" id="extend_search_revealer">
-            <property name="transition-type">swing-up</property>
-            <property name="halign">start</property>
-            <property name="valign">end</property>
-            <property name="margin-top">12</property>
-            <property name="margin-start">18</property>
-            <property name="margin-end">18</property>
-            <property name="margin-bottom">18</property>
-            <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Search _Everywhere</property>
-                <property name="use-underline">true</property>
-                <signal name="clicked" swapped="yes"
-                        handler="globalize_search" object="NautilusFilesView"/>
-                <style>
-                  <class name="pill"/>
-                </style>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child type="overlay">
           <object class="NautilusFloatingBar" id="floating_bar">
             <property name="halign">end</property>
             <property name="valign">end</property>

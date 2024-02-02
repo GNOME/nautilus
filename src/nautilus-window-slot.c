@@ -981,6 +981,13 @@ action_search_global (GSimpleAction *action,
 
         if (search_global)
         {
+            NautilusQuery *query = nautilus_view_get_search_query (self->content_view);
+            if (query != NULL)
+            {
+                nautilus_query_set_location (query, NULL);
+                nautilus_view_set_search_query (self->content_view, query);
+            }
+
             nautilus_query_editor_set_location (self->query_editor, NULL);
             gtk_stack_set_visible_child (GTK_STACK (self->stack), GTK_WIDGET (self->global_search_page));
         }
