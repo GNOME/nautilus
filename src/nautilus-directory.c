@@ -1576,7 +1576,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
         NautilusFile *to_file = nautilus_file_get_existing (to_location);
 
         /* Handle overwriting a file. */
-        if (to_file != NULL)
+        if (to_file != NULL && from_file != NULL)
         {
             NautilusDirectory *directory;
 
