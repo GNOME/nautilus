@@ -1,0 +1,150 @@
+name: nautilus # you probably want to 'snapcraft register <name>'
+base: core22
+version: '45.2.1'
+# adopt-info: nautilus
+summary: Files
+description: Files for GNOME
+
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: strict # use 'strict' once you have the right plugs and slots
+
+slots:
+  file-ops2:
+    interface: dbus
+    bus: session
+    name: org.gnome.Nautilus.FileOperations2
+  file-manager1:
+    interface: dbus
+    bus: session
+    name: org.freedesktop.FileManager1
+
+plugs:
+  ### This are required but dbus interface doesn't allow external dbus services
+  # gvfsd:
+  #   bus: session
+  #   interface: dbus
+  #   name: org.gtk.vfs.Daemon
+  disks:
+    bus: session
+    interface: dbus
+    name: org.gnome.DiskUtility
+  settings:
+    bus: session
+    interface: dbus
+    name: org.gnome.Settings
+  polkit:
+    # Connect nautilus:polkit to core:polkit (cannot obtain polkit specification for snap "nautilus": cannot find any policy files for plug "polkit")
+    action-prefix: org.freedesktop.Tracker3.Miner.Files
+  # home-access:
+  #   interface: personal-files
+  #   read: [$HOME/]
+  #   write: [$HOME/]
+
+apps:
+  nautilus:
+    command: usr/bin/nautilus
+    extensions: [gnome]
+    slots:
+      - file-ops2
+      - file-manager1
+    plugs:
+      - desktop
+      - desktop-launch
+      - gsettings
+      - udisks2
+      # error: snap "core" has no "thumbnailer-service" interface slots
+      # - thumbnailer-service
+      # - gvfsd
+      - polkit
+      - network
+      - home
+      # - home-access
+      - personal-files
+      - mount-observe
+      - cifs-mount
+      - fuse-support
+      - removable-media
+      - optical-drive
+      - dm-crypt
+      - wayland
+      - x11
+      - disks
+      - settings
+    # desktop: usr/share/applications/org.gnome.Nautilus.desktop
+    common-id: org.gnome.Nautilus
+
+parts:
+  exiv2:
+    plugin: cmake
+    source: https://github.com/Exiv2/exiv2.git
+    source-branch: 0.27-maintenance
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+  gexiv2:
+    plugin: meson
+    source: https://gitlab.gnome.org/GNOME/gexiv2.git
+    source-tag: gexiv2-0.14.2
+    after:
+      - exiv2
+    meson-parameters:
+      - --prefix=/usr
+      - -Dintrospection=false
+      - -Dvapi=false
+      - -Dpython3=false
+  gnome-autoar:
+    plugin: meson
+    source: https://gitlab.gnome.org/GNOME/gnome-autoar.git
+    source-tag: 0.4.4
+    meson-parameters:
+      - --prefix=/usr
+    override-pull: |
+      snapcraftctl pull
+      sed -ri '/format\=2/d' meson.build
+    build-packages:
+      - libarchive-dev
+  gnome-desktop:
+    plugin: meson
+    source: https://gitlab.gnome.org/GNOME/gnome-desktop.git
+    meson-parameters:
+      - --prefix=/usr
+      - -Ddebug_tools=false
+      - -Ddesktop_docs=false
+      - -Dudev=disabled
+
+  nautilus:
+    plugin: meson
+    source: http://gitlab.gnome.org/GNOME/nautilus.git
+    source-branch: gnome-45
+    after:
+      - exiv2
+      - gexiv2
+      - gnome-autoar
+      - gnome-desktop
+    meson-parameters:
+      - --prefix=/usr
+      - -Dintrospection=false
+      - -Dtests=none
+    build-environment:
+      - PKG_CONFIG_PATH: /root/parts/nautilus/install/usr/share/pkgconfig:/root/stage/usr/lib/pkgconfig:/root/stage/usr/lib/x86_64-linux-gnu/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/x86_64-linux-gnu/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/share/pkgconfig
+    build-packages:
+      - gettext
+      - appstream-util
+      - intltool
+      - libxml2-dev
+      - libgstreamer-plugins-base1.0-dev
+      - libtracker-sparql-3.0-dev
+      - libcloudproviders-dev
+      - libportal-dev
+      - libportal-gtk4-dev
+    stage-packages:
+      - dbus
+      - tracker
+      - tracker-miner-fs
+      - libarchive13
+      - libcloudproviders0
+      - libxkbregistry0
+    stage:
+      - -usr/lib/x86_64-linux-gnu/libexiv2.so.*
+      - -usr/lib/x86_64-linux-gnu/libgexiv2.so.*
+    # Most of the metadata should be pulled from here, but it isn't working.
+    # parse-info: [/usr/share/metainfo/org.gnome.Nautilus.appdata.xml]
