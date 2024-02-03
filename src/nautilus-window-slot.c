@@ -1205,6 +1205,8 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
 {
     GFile *old_location = nautilus_window_slot_get_location (self);
 
+    nautilus_window_slot_set_search_global (self, FALSE);
+
     if (old_location != NULL && g_file_equal (old_location, location))
     {
         if (self->content_view != NULL && new_selection != NULL)
