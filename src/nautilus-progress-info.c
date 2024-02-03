@@ -61,6 +61,7 @@ struct _NautilusProgressInfo
     GTimer *progress_timer;
 
     char *status;
+    char *short_status;
     char *details;
     double progress;
     gdouble remaining_time;
@@ -413,6 +414,21 @@ nautilus_progress_info_new (void)
 }
 
 char *
+nautilus_progress_info_get_short_status (NautilusProgressInfo *info)
+{
+    char *res;
+
+    G_LOCK (progress_info);
+
+    res = info->status != NULL ? info->short_status : _("Preparing");
+    res = g_strdup (res);
+
+    G_UNLOCK (progress_info);
+
+    return res;
+}
+
+char *
 nautilus_progress_info_get_status (NautilusProgressInfo *info)
 {
     char *res;
@@ -632,14 +648,18 @@ nautilus_progress_info_finish (NautilusProgressInfo *info)
 
 static void
 set_status (NautilusProgressInfo *info,
-            const char           *status)
+            const char           *status,
+            const char           *short_status)
 {
     if (g_cancellable_is_cancelled (info->cancellable))
     {
         return;
     }
 
-    if (g_set_str (&info->status, status))
+    const char *real_short_status = short_status == NULL ? status : short_status;
+
+    if (g_set_str (&info->short_status, real_short_status) |
+        g_set_str (&info->status, status))
     {
         info->status_at_idle = TRUE;
         queue_idle (info, FALSE);
@@ -648,24 +668,27 @@ set_status (NautilusProgressInfo *info,
 
 void
 nautilus_progress_info_take_status (NautilusProgressInfo *info,
-                                    char                 *status)
+                                    char                 *status,
+                                    char                 *short_status)
 {
     G_LOCK (progress_info);
 
-    set_status (info, status);
+    set_status (info, status, short_status);
 
     G_UNLOCK (progress_info);
 
     g_free (status);
+    g_free (short_status);
 }
 
 void
 nautilus_progress_info_set_status (NautilusProgressInfo *info,
-                                   const char           *status)
+                                   const char           *status,
+                                   const char           *short_status)
 {
     G_LOCK (progress_info);
 
-    set_status (info, status);
+    set_status (info, status, short_status);
 
     G_UNLOCK (progress_info);
 }
