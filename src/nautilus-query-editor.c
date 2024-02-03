@@ -367,11 +367,8 @@ static gboolean
 entry_changed_internal (NautilusQueryEditor *editor)
 {
     const gchar *text = gtk_editable_get_text (GTK_EDITABLE (editor->text));
-    gboolean is_empty = (text == NULL || *text == '\0');
 
     editor->search_changed_idle_id = 0;
-
-    gtk_widget_set_child_visible (editor->clear_icon, !is_empty);
 
     if (editor->query == NULL)
     {
@@ -392,6 +389,11 @@ static void
 entry_changed_cb (GtkWidget           *entry,
                   NautilusQueryEditor *editor)
 {
+    const gchar *text = gtk_editable_get_text (GTK_EDITABLE (editor->text));
+
+    gboolean is_empty = (text == NULL || *text == '\0');
+    gtk_widget_set_child_visible (editor->clear_icon, !is_empty);
+
     g_clear_handle_id (&editor->search_changed_idle_id, g_source_remove);
 
     if (editor->change_frozen)
