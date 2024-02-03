@@ -1653,6 +1653,7 @@ drag_motion_callback (GtkDropTarget    *target,
   int row_placeholder_index;
   const GValue *value;
   graphene_point_t start;
+  graphene_point_t point_in_row;
 
   sidebar->dragging_over = TRUE;
   action = 0;
@@ -1714,11 +1715,11 @@ drag_motion_callback (GtkDropTarget    *target,
            * of the row, we need to increase the order-index.
            */
           row_placeholder_index = row_index;
-          gtk_widget_translate_coordinates (sidebar->list_box, GTK_WIDGET (row),
-		                            x, y,
-		                            &x, &y);
 
-          if (y > sidebar->drag_row_height / 2 && row_index > 0)
+
+          if (gtk_widget_compute_point (sidebar->list_box, GTK_WIDGET (row),
+                                        &GRAPHENE_POINT_INIT (x, y), &point_in_row) &&
+              point_in_row.y > sidebar->drag_row_height / 2 && row_index > 0)
             row_placeholder_index++;
         }
       else
@@ -2436,17 +2437,20 @@ _popover_set_pointing_to_widget (GtkPopover *popover,
                                  GtkWidget  *target)
 {
   GtkWidget *parent;
-  double x, y, w, h;
+  double w, h;
+  graphene_point_t target_origin;
 
   parent = gtk_widget_get_parent (GTK_WIDGET (popover));
 
-  if (!gtk_widget_translate_coordinates (target, parent, 0, 0, &x, &y))
-    return;
+  if (!gtk_widget_compute_point (target, parent,
+                                 &GRAPHENE_POINT_INIT (0, 0),
+                                 &target_origin))
+  	return;
 
   w = gtk_widget_get_width (GTK_WIDGET (target));
   h = gtk_widget_get_height (GTK_WIDGET (target));
 
-  gtk_popover_set_pointing_to (popover, &(GdkRectangle){x, y, w, h});
+  gtk_popover_set_pointing_to (popover, &(GdkRectangle){target_origin.x, target_origin.y, w, h});
 }
 
 static void
@@ -3411,7 +3415,7 @@ show_row_popover (NautilusGtkSidebarRow *row,
                   double y)
 {
   NautilusGtkPlacesSidebar *sidebar;
-  double x_in_sidebar, y_in_sidebar;
+  graphene_point_t p_in_sidebar;
 
   g_object_get (row, "sidebar", &sidebar, NULL);
 
@@ -3419,14 +3423,15 @@ show_row_popover (NautilusGtkSidebarRow *row,
 
   create_row_popover (sidebar, row);
 
-  if (x == -1 && y == -1)
+  if ((x == -1 && y == -1) ||
+      !gtk_widget_compute_point (GTK_WIDGET (row), GTK_WIDGET (sidebar),
+                                 &GRAPHENE_POINT_INIT (x, y),
+                                 &p_in_sidebar))
     _popover_set_pointing_to_widget (GTK_POPOVER (sidebar->popover), GTK_WIDGET (row));
   else
     {
-      gtk_widget_translate_coordinates (GTK_WIDGET (row), GTK_WIDGET (sidebar),
-                                        x, y, &x_in_sidebar, &y_in_sidebar);
       gtk_popover_set_pointing_to (GTK_POPOVER (sidebar->popover),
-                                   &(GdkRectangle){x_in_sidebar, y_in_sidebar, 0, 0});
+                                   &(GdkRectangle){p_in_sidebar.x, p_in_sidebar.y, 0, 0});
     }
 
   sidebar->context_row = row;
@@ -3542,19 +3547,19 @@ on_row_dragged (GtkGestureDrag *gesture,
   if (gtk_drag_check_threshold (GTK_WIDGET (row), 0, 0, x, y))
     {
       double start_x, start_y;
-      double drag_x, drag_y;
       GdkContentProvider *content;
       GdkSurface *surface;
       GdkDevice *device;
       GtkAllocation allocation;
       GtkWidget *drag_widget;
       GdkDrag *drag;
+      graphene_point_t drag_point;
 
       gtk_gesture_drag_get_start_point (gesture, &start_x, &start_y);
-      gtk_widget_translate_coordinates (GTK_WIDGET (row),
-                                        GTK_WIDGET (sidebar),
-                                        start_x, start_y,
-                                        &drag_x, &drag_y);
+      if (!gtk_widget_compute_point (GTK_WIDGET (row), GTK_WIDGET (sidebar),
+                                     &GRAPHENE_POINT_INIT (start_x, start_y),
+                                     &drag_point))
+        g_return_if_reached ();
 
       sidebar->dragging_over = TRUE;
 
@@ -3563,7 +3568,7 @@ on_row_dragged (GtkGestureDrag *gesture,
       surface = gtk_native_get_surface (gtk_widget_get_native (GTK_WIDGET (sidebar)));
       device = gtk_gesture_get_device (GTK_GESTURE (gesture));
 
-      drag = gdk_drag_begin (surface, device, content, GDK_ACTION_MOVE, drag_x, drag_y);
+      drag = gdk_drag_begin (surface, device, content, GDK_ACTION_MOVE, drag_point.x, drag_point.y);
 
       g_object_unref (content);
 

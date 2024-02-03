@@ -613,7 +613,7 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     NautilusPathBar *self;
     guint current_button;
     GdkModifierType state;
-    double x_in_pathbar, y_in_pathbar;
+    graphene_point_t pathbar_point;
 
     if (n_press != 1)
     {
@@ -625,10 +625,6 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     current_button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
 
-    gtk_widget_translate_coordinates (GTK_WIDGET (button_data->button),
-                                      GTK_WIDGET (self),
-                                      x, y,
-                                      &x_in_pathbar, &y_in_pathbar);
 
     switch (current_button)
     {
@@ -651,8 +647,16 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
             }
             else
             {
+                if (!gtk_widget_compute_point (GTK_WIDGET (button_data->button),
+                                               GTK_WIDGET (self),
+                                               &GRAPHENE_POINT_INIT (x, y),
+                                               &pathbar_point))
+                {
+                    g_return_if_reached ();
+                }
+
                 gtk_popover_set_pointing_to (GTK_POPOVER (self->button_menu_popover),
-                                             &(GdkRectangle){x_in_pathbar, y_in_pathbar, 0, 0});
+                                             &(GdkRectangle){pathbar_point.x, pathbar_point.y, 0, 0});
                 pop_up_pathbar_context_menu (self, button_data->file);
             }
         }

@@ -1747,17 +1747,21 @@ _popover_set_pointing_to_widget (GtkPopover *popover,
                                  GtkWidget  *target)
 {
   GtkWidget *parent;
-  double x, y, w, h;
+  double w, h;
+  graphene_point_t computed_point;
 
   parent = gtk_widget_get_parent (GTK_WIDGET (popover));
 
-  if (!gtk_widget_translate_coordinates (target, parent, 0, 0, &x, &y))
-    return;
+
+  if (!gtk_widget_compute_point (target, parent,
+                                 &GRAPHENE_POINT_INIT (0,0),
+                                 &computed_point))
+    g_return_if_reached ();
 
   w = gtk_widget_get_width (GTK_WIDGET (target));
   h = gtk_widget_get_height (GTK_WIDGET (target));
 
-  gtk_popover_set_pointing_to (popover, &(GdkRectangle){x, y, w, h});
+  gtk_popover_set_pointing_to (popover, &(GdkRectangle){computed_point.x, computed_point.y, w, h});
 }
 
 static gboolean
@@ -1770,7 +1774,7 @@ real_popup_menu (GtkWidget *widget,
   GMount *mount;
   GFile *file;
   gboolean is_root, is_network;
-  double x_in_view, y_in_view;
+  graphene_point_t point_in_view;
 
   view = NAUTILUS_GTK_PLACES_VIEW (gtk_widget_get_ancestor (GTK_WIDGET (row), NAUTILUS_TYPE_GTK_PLACES_VIEW));
 
@@ -1807,15 +1811,14 @@ real_popup_menu (GtkWidget *widget,
   if (view->row_for_action)
     g_object_set_data (G_OBJECT (view->row_for_action), "menu", NULL);
 
-  if (x == -1 && y == -1)
+  if ((x == -1 && y == -1) ||
+      !gtk_widget_compute_point (widget, GTK_WIDGET (view),
+                                 &GRAPHENE_POINT_INIT (x,y),
+                                 &point_in_view))
     _popover_set_pointing_to_widget (GTK_POPOVER (view->popup_menu), widget);
   else
-    {
-      gtk_widget_translate_coordinates (widget, GTK_WIDGET (view),
-                                        x, y, &x_in_view, &y_in_view);
-      gtk_popover_set_pointing_to (GTK_POPOVER (view->popup_menu),
-                                   &(GdkRectangle){x_in_view, y_in_view, 0, 0});
-    }
+    gtk_popover_set_pointing_to (GTK_POPOVER (view->popup_menu),
+                                 &(GdkRectangle){point_in_view.x, point_in_view.y, 0, 0});
 
   g_set_weak_pointer (&view->row_for_action, row);
   if (view->row_for_action)
@@ -1988,17 +1991,19 @@ on_address_entry_show_help_pressed (NautilusGtkPlacesView        *view,
                                     GtkEntry             *entry)
 {
   GdkRectangle rect;
-  double x, y;
+  graphene_point_t computed_point;
 
   /* Setup the auxiliary popover's rectangle */
   gtk_entry_get_icon_area (GTK_ENTRY (view->address_entry),
                            GTK_ENTRY_ICON_SECONDARY,
                            &rect);
-  gtk_widget_translate_coordinates (view->address_entry, GTK_WIDGET (view),
-                                    rect.x, rect.y, &x, &y);
+  if (!gtk_widget_compute_point (view->address_entry, GTK_WIDGET (view),
+                                 &GRAPHENE_POINT_INIT (rect.x, rect.y),
+                                 &computed_point))
+    g_return_if_reached ();
 
-  rect.x = x;
-  rect.y = y;
+  rect.x = computed_point.x;
+  rect.y = computed_point.y;
   gtk_popover_set_pointing_to (GTK_POPOVER (view->server_adresses_popover), &rect);
   gtk_widget_set_visible (view->server_adresses_popover, TRUE);
 }
