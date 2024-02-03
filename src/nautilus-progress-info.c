@@ -89,8 +89,6 @@ G_DEFINE_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
 
 static void set_details (NautilusProgressInfo *info,
                          const char           *details);
-static void set_status (NautilusProgressInfo *info,
-                        const char           *status);
 static const char * get_icon_name (NautilusProgressInfo *info);
 
 static void
@@ -636,11 +634,16 @@ static void
 set_status (NautilusProgressInfo *info,
             const char           *status)
 {
-    g_free (info->status);
-    info->status = g_strdup (status);
+    if (g_cancellable_is_cancelled (info->cancellable))
+    {
+        return;
+    }
 
-    queue_idle (info, FALSE);
-    info->status_at_idle = TRUE;
+    if (g_set_str (&info->status, status))
+    {
+        info->status_at_idle = TRUE;
+        queue_idle (info, FALSE);
+    }
 }
 
 void
@@ -649,11 +652,7 @@ nautilus_progress_info_take_status (NautilusProgressInfo *info,
 {
     G_LOCK (progress_info);
 
-    if (g_strcmp0 (info->status, status) != 0 &&
-        !g_cancellable_is_cancelled (info->cancellable))
-    {
-        set_status (info, status);
-    }
+    set_status (info, status);
 
     G_UNLOCK (progress_info);
 
@@ -666,11 +665,7 @@ nautilus_progress_info_set_status (NautilusProgressInfo *info,
 {
     G_LOCK (progress_info);
 
-    if (g_strcmp0 (info->status, status) != 0 &&
-        !g_cancellable_is_cancelled (info->cancellable))
-    {
-        set_status (info, status);
-    }
+    set_status (info, status);
 
     G_UNLOCK (progress_info);
 }
