@@ -45,7 +45,7 @@ enum
     PROP_0,
     PROP_ICON_NAME,
     PROP_PROGRESS,
-    PROP_STATUS,
+    PROP_SHORT_STATUS,
     N_PROPS
 };
 
@@ -161,9 +161,9 @@ nautilus_progress_info_get_property (GObject    *object,
         }
         break;
 
-        case (PROP_STATUS):
+        case (PROP_SHORT_STATUS):
         {
-            g_value_take_string (value, nautilus_progress_info_get_status (self));
+            g_value_take_string (value, nautilus_progress_info_get_short_status (self));
         }
         break;
 
@@ -235,10 +235,10 @@ nautilus_progress_info_class_init (NautilusProgressInfoClass *klass)
     properties[PROP_PROGRESS] = g_param_spec_double ("progress", NULL, NULL,
                                                      0, G_MAXDOUBLE, 0,
                                                      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
-    properties[PROP_STATUS] = g_param_spec_string ("status",
-                                                   NULL, NULL,
-                                                   "",
-                                                   G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_SHORT_STATUS] = g_param_spec_string ("short-status",
+                                                         NULL, NULL,
+                                                         "",
+                                                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
     g_object_class_install_properties (gobject_class, N_PROPS, properties);
 }
 
@@ -320,7 +320,7 @@ idle_callback (gpointer data)
 
     if (status_at_idle)
     {
-        g_object_notify_by_pspec (G_OBJECT (info), properties[PROP_STATUS]);
+        g_object_notify_by_pspec (G_OBJECT (info), properties[PROP_SHORT_STATUS]);
     }
 
     if (finish_at_idle)
