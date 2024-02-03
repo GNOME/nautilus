@@ -78,6 +78,7 @@ struct _NautilusProgressInfo
     gboolean cancel_at_idle;
     gboolean changed_at_idle;
     gboolean progress_at_idle;
+    gboolean status_at_idle;
 
     GFile *destination;
 };
@@ -250,6 +251,7 @@ idle_callback (gpointer data)
     gboolean finish_at_idle;
     gboolean changed_at_idle;
     gboolean progress_at_idle;
+    gboolean status_at_idle;
     gboolean cancelled_at_idle;
     GSource *source;
 
@@ -283,12 +285,14 @@ idle_callback (gpointer data)
     finish_at_idle = info->finish_at_idle;
     changed_at_idle = info->changed_at_idle;
     progress_at_idle = info->progress_at_idle;
+    status_at_idle = info->status_at_idle;
     cancelled_at_idle = info->cancel_at_idle;
 
     info->start_at_idle = FALSE;
     info->finish_at_idle = FALSE;
     info->changed_at_idle = FALSE;
     info->progress_at_idle = FALSE;
+    info->status_at_idle = FALSE;
     info->cancel_at_idle = FALSE;
 
     G_UNLOCK (progress_info);
@@ -300,9 +304,8 @@ idle_callback (gpointer data)
                        0);
     }
 
-    if (changed_at_idle)
+    if (changed_at_idle || status_at_idle)
     {
-        g_object_notify (G_OBJECT (info), "status");
         g_signal_emit (info,
                        signals[CHANGED],
                        0);
@@ -314,6 +317,11 @@ idle_callback (gpointer data)
                        signals[PROGRESS_CHANGED],
                        0);
         g_object_notify (G_OBJECT (info), "progress");
+    }
+
+    if (status_at_idle)
+    {
+        g_object_notify_by_pspec (G_OBJECT (info), properties[PROP_STATUS]);
     }
 
     if (finish_at_idle)
@@ -631,8 +639,8 @@ set_status (NautilusProgressInfo *info,
     g_free (info->status);
     info->status = g_strdup (status);
 
-    info->changed_at_idle = TRUE;
     queue_idle (info, FALSE);
+    info->status_at_idle = TRUE;
 }
 
 void
