@@ -692,3 +692,11 @@ nautilus_query_is_empty (NautilusQuery *query)
 
     return FALSE;
 }
+
+gboolean
+nautilus_query_is_global (NautilusQuery *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (self), FALSE);
+
+    return (self->location == NULL);
+}

@@ -3332,12 +3332,9 @@ update_extend_search_revealer (NautilusFilesView *self)
     if (!is_empty && NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
     {
         NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
-        g_autoptr (GFile) queried_location = NULL;
 
-        queried_location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
-
+        search_is_global = nautilus_query_is_global (nautilus_search_directory_get_query (search));
         showing_search_results = TRUE;
-        search_is_global = (queried_location == NULL);
     }
 
     if (showing_search_results && !search_is_global)
@@ -3852,11 +3849,8 @@ real_check_empty_states (NautilusFilesView *view)
         if (NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
         {
             NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
-            g_autoptr (GFile) queried_location = NULL;
-            gboolean global_search;
+            gboolean global_search = nautilus_query_is_global (nautilus_search_directory_get_query (search));
 
-            queried_location = nautilus_query_get_location (nautilus_search_directory_get_query (search));
-            global_search = (queried_location == NULL);
             if (!global_search)
             {
                 adw_status_page_set_child (status_page, build_search_everywhere_button (view));
