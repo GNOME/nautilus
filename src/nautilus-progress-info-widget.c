@@ -22,6 +22,7 @@
  */
 
 #include <config.h>
+#include <glib/gi18n.h>
 
 #include "nautilus-progress-info-widget.h"
 struct _NautilusProgressInfoWidgetPrivate
@@ -48,14 +49,20 @@ G_DEFINE_TYPE_WITH_PRIVATE (NautilusProgressInfoWidget, nautilus_progress_info_w
 static void
 info_finished (NautilusProgressInfoWidget *self)
 {
-    gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "object-select-symbolic");
     gtk_widget_set_sensitive (self->priv->button, FALSE);
+    if (!nautilus_progress_info_get_is_cancelled (self->priv->info))
+    {
+        gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "emblem-ok-symbolic");
+        gtk_widget_set_tooltip_text (GTK_WIDGET (self->priv->button), _("Completed"));
+    }
 }
 
 static void
 info_cancelled (NautilusProgressInfoWidget *self)
 {
     gtk_widget_set_sensitive (self->priv->button, FALSE);
+    gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "cross-filled-symbolic");
+    gtk_widget_set_has_tooltip (GTK_WIDGET (self->priv->button), FALSE);
 }
 
 static void
@@ -124,10 +131,14 @@ nautilus_progress_info_widget_constructed (GObject *obj)
 
     G_OBJECT_CLASS (nautilus_progress_info_widget_parent_class)->constructed (obj);
 
-    if (nautilus_progress_info_get_is_finished (self->priv->info))
+    if (nautilus_progress_info_get_is_finished (self->priv->info) &&
+        !nautilus_progress_info_get_is_cancelled (self->priv->info))
     {
-        gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "object-select-symbolic");
-        gtk_widget_set_tooltip_text (GTK_WIDGET (self->priv->button), "Operation Finished");
+        info_finished (self);
+    }
+    else if (nautilus_progress_info_get_is_cancelled (self->priv->info))
+    {
+        info_cancelled (self);
     }
 
     gtk_widget_set_sensitive (self->priv->button,
