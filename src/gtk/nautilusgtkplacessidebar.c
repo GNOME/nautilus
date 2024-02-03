@@ -2150,9 +2150,6 @@ open_row (NautilusGtkSidebarRow      *row,
   GVolume *volume;
   NautilusGtkPlacesPlaceType place_type;
   NautilusGtkPlacesSidebar *sidebar;
-  g_autofree gchar *old_uri = NULL;
-  gboolean open_new_slot = open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB
-                           || open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW;
 
   g_object_get (row,
                 "sidebar", &sidebar,
@@ -2162,14 +2159,7 @@ open_row (NautilusGtkSidebarRow      *row,
                 "volume", &volume,
                 NULL);
 
-  if (sidebar->current_location != NULL)
-    old_uri = g_file_get_uri (sidebar->current_location);
-
-  if ((g_strcmp0 (old_uri, uri) == 0) && !open_new_slot)
-    {
-      /* Location already open. Do nothing. */
-    }
-  else if (place_type == NAUTILUS_GTK_PLACES_OTHER_LOCATIONS)
+  if (place_type == NAUTILUS_GTK_PLACES_OTHER_LOCATIONS)
     {
       emit_show_other_locations_with_flags (sidebar, open_flags);
     }
