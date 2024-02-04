@@ -3230,15 +3230,14 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
 }
 
 static void
-on_popup_background_context_menu (NautilusListBase *list_base,
-                                  double            x,
-                                  double            y,
-                                  gpointer          user_data)
+real_popup_background_context_menu (NautilusFilesView *self,
+                                    GtkWidget         *widget,
+                                    double             x,
+                                    double             y)
 {
-    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
     graphene_point_t view_point;
 
-    if (!gtk_widget_compute_point (GTK_WIDGET (list_base), GTK_WIDGET (self),
+    if (!gtk_widget_compute_point (GTK_WIDGET (widget), GTK_WIDGET (self),
                                    &GRAPHENE_POINT_INIT (x, y),
                                    &view_point))
     {
@@ -3246,6 +3245,31 @@ on_popup_background_context_menu (NautilusListBase *list_base,
     }
 
     nautilus_files_view_pop_up_background_context_menu (self, &view_point);
+}
+
+static void
+on_popup_background_context_menu (NautilusListBase *list_base,
+                                  double            x,
+                                  double            y,
+                                  gpointer          user_data)
+{
+    NautilusFilesView *self = user_data;
+
+    real_popup_background_context_menu (self, GTK_WIDGET (list_base), x, y);
+}
+
+static void
+on_empty_view_pressed (GtkGesture *gesture,
+                       gint        n_press,
+                       double      x,
+                       double      y,
+                       gpointer    user_data)
+{
+    NautilusFilesView *self = user_data;
+    GtkWidget *widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+
+    real_popup_background_context_menu (self, widget, x, y);
+    gtk_gesture_set_state (gesture, GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static void
@@ -9756,6 +9780,17 @@ nautilus_files_view_init (NautilusFilesView *view)
     /* By default, :scope is GTK_SHORTCUT_SCOPE_LOCAL, so no need to set it. */
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     gtk_shortcut_controller_add_shortcut (GTK_SHORTCUT_CONTROLLER (controller), shortcut);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), GDK_BUTTON_SECONDARY);
+    gtk_widget_add_controller (GTK_WIDGET (priv->empty_view_page), controller);
+    g_signal_connect (controller, "pressed", G_CALLBACK (on_empty_view_pressed), view);
+
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
+    gtk_widget_add_controller (GTK_WIDGET (priv->empty_view_page), controller);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
+    g_signal_connect (controller, "pressed",
+                      G_CALLBACK (on_empty_view_pressed), view);
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->clipboard_cancellable = g_cancellable_new ();
