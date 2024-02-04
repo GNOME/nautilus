@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <object class="GtkPopover" id="operations_popover">
+    <property name="halign">start</property>
+    <property name="valign">end</property>
     <property name="position"
               bind-source="NautilusProgressIndicator"
               bind-property="popover-position"
