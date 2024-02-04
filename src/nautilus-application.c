@@ -687,6 +687,21 @@ action_preferences (GSimpleAction *action,
 }
 
 static void
+action_search_settings (GSimpleAction *action,
+                        GVariant      *parameter,
+                        gpointer       user_data)
+{
+    GtkApplication *self = user_data;
+    const char *parameters = "('launch-panel', [<('search', @av [])>], @a{sv} {})";
+
+    nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
+                                 NAUTILUS_DBUS_LAUNCHER_SETTINGS,
+                                 "Activate",
+                                 g_variant_new_parsed (parameters),
+                                 gtk_application_get_active_window (self));
+}
+
+static void
 action_about (GSimpleAction *action,
               GVariant      *parameter,
               gpointer       user_data)
@@ -760,6 +775,7 @@ static const GActionEntry app_entries[] =
     { .name = "new-window", .activate = action_new_window },
     { .name = "clone-window", .activate = action_clone_window },
     { .name = "preferences", .activate = action_preferences },
+    { .name = "search-settings", .activate = action_search_settings },
     { .name = "about", .activate = action_about },
     { .name = "help", .activate = action_help },
     { .name = "quit", .activate = action_quit },

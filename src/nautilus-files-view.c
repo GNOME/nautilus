@@ -3817,6 +3817,18 @@ globalize_search (NautilusFilesView *self)
 }
 
 static GtkWidget *
+build_search_settings_button (NautilusFilesView *self)
+{
+    GtkWidget *button = gtk_button_new_with_mnemonic (_("Search _Settings"));
+
+    gtk_widget_set_halign (button, GTK_ALIGN_CENTER);
+    gtk_widget_add_css_class (button, "pill");
+    gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "app.search-settings");
+
+    return button;
+}
+
+static GtkWidget *
 build_search_everywhere_button (NautilusFilesView *self)
 {
     GtkWidget *button = gtk_button_new_with_mnemonic (_("Search _Everywhere"));
@@ -3851,10 +3863,9 @@ real_check_empty_states (NautilusFilesView *view)
             NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
             gboolean global_search = nautilus_query_is_global (nautilus_search_directory_get_query (search));
 
-            if (!global_search)
-            {
-                adw_status_page_set_child (status_page, build_search_everywhere_button (view));
-            }
+            adw_status_page_set_child (status_page, (global_search ?
+                                                     build_search_settings_button (view) :
+                                                     build_search_everywhere_button (view)));
 
             adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
             adw_status_page_set_title (status_page, _("No Results Found"));
