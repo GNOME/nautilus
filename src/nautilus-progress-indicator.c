@@ -20,6 +20,7 @@
 enum
 {
     PROP_0,
+    PROP_POPOVER_POSITION,
     PROP_REVEAL,
     N_PROPS
 };
@@ -41,6 +42,7 @@ struct _NautilusProgressIndicator
     GtkWidget *sidebar_list;
 
     gboolean reveal;
+    GtkPositionType popover_position;
 
     NautilusProgressInfoManager *progress_manager;
 };
@@ -403,6 +405,14 @@ operations_list_create_widget (GObject  *item,
 }
 
 static void
+direction_changed (GtkWidget        *self,
+                   GtkTextDirection  previous_direction,
+                   gpointer          user_data)
+{
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_POPOVER_POSITION]);
+}
+
+static void
 nautilus_progress_indicator_get_property (GObject    *object,
                                           guint       property_id,
                                           GValue     *value,
@@ -412,9 +422,49 @@ nautilus_progress_indicator_get_property (GObject    *object,
 
     switch (property_id)
     {
+        case (PROP_POPOVER_POSITION):
+        {
+            /* Handles the default value of zero coming from the breakpoint */
+            if (self->popover_position <= GTK_POS_RIGHT)
+            {
+                guint popover_position = (gtk_widget_get_direction (GTK_WIDGET (self)) != GTK_TEXT_DIR_RTL) ?
+                                         GTK_POS_RIGHT : GTK_POS_LEFT;
+
+                g_value_set_enum (value, popover_position);
+            }
+            else
+            {
+                g_value_set_enum (value, self->popover_position);
+            }
+        }
+        break;
+
         case (PROP_REVEAL):
         {
             g_value_set_boolean (value, self->reveal);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        }
+    }
+}
+
+static void
+nautilus_progress_indicator_set_property (GObject      *object,
+                                          guint         property_id,
+                                          const GValue *value,
+                                          GParamSpec   *pspec)
+{
+    NautilusProgressIndicator *self = NAUTILUS_PROGRESS_INDICATOR (object);
+
+    switch (property_id)
+    {
+        case (PROP_POPOVER_POSITION):
+        {
+            self->popover_position = g_value_get_enum (value);
         }
         break;
 
@@ -495,6 +545,7 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     object_class->dispose = nautilus_progress_indicator_dispose;
     object_class->finalize = nautilus_progress_indicator_finalize;
     object_class->get_property = nautilus_progress_indicator_get_property;
+    object_class->set_property = nautilus_progress_indicator_set_property;
 
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-progress-indicator.ui");
@@ -506,8 +557,12 @@ nautilus_progress_indicator_class_init (NautilusProgressIndicatorClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, get_paintable);
     gtk_widget_class_bind_template_callback (widget_class, on_operations_popover_notify_visible);
 
+    properties[PROP_POPOVER_POSITION] = g_param_spec_enum ("popover-position", NULL, NULL,
+                                                           GTK_TYPE_POSITION_TYPE, 0,
+                                                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_REVEAL] = g_param_spec_boolean ("reveal", NULL, NULL, FALSE,
                                                     G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
     g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
@@ -516,8 +571,5 @@ nautilus_progress_indicator_init (NautilusProgressIndicator *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
 
-    if (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_RTL)
-    {
-        gtk_menu_button_set_direction (GTK_MENU_BUTTON (self->operations_button), GTK_ARROW_LEFT);
-    }
+    g_signal_connect (self, "direction-changed", G_CALLBACK (direction_changed), NULL);
 }
