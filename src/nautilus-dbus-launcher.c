@@ -62,11 +62,13 @@ nautilus_dbus_launcher_call (NautilusDBusLauncher    *self,
                              GVariant                *parameters,
                              GtkWindow               *window)
 {
+    g_autoptr (GVariant) sunk_parameters = g_variant_ref_sink (parameters);
+
     if (self->data[app]->proxy != NULL)
     {
         g_dbus_proxy_call (self->data[app]->proxy,
                            method_name,
-                           parameters,
+                           sunk_parameters,
                            G_DBUS_CALL_FLAGS_NONE,
                            G_MAXINT,
                            self->cancellable,
