@@ -3237,7 +3237,7 @@ real_popup_background_context_menu (NautilusFilesView *self,
 {
     graphene_point_t view_point;
 
-    if (!gtk_widget_compute_point (GTK_WIDGET (widget), GTK_WIDGET (self),
+    if (!gtk_widget_compute_point (widget, GTK_WIDGET (self),
                                    &GRAPHENE_POINT_INIT (x, y),
                                    &view_point))
     {
@@ -9787,10 +9787,9 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_signal_connect (controller, "pressed", G_CALLBACK (on_empty_view_pressed), view);
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
-    gtk_widget_add_controller (GTK_WIDGET (priv->empty_view_page), controller);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
-    g_signal_connect (controller, "pressed",
-                      G_CALLBACK (on_empty_view_pressed), view);
+    gtk_widget_add_controller (GTK_WIDGET (priv->empty_view_page), controller);
+    g_signal_connect (controller, "pressed", G_CALLBACK (on_empty_view_pressed), view);
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->clipboard_cancellable = g_cancellable_new ();
