@@ -116,7 +116,7 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
     gboolean is_valid;
 
     is_valid = TRUE;
-    if (strlen (name) == 0)
+    if (name == NULL || strlen (name) == 0)
     {
         is_valid = FALSE;
     }
