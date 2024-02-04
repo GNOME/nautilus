@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <object class="GtkPopover" id="operations_popover">
+    <property name="position"
+              bind-source="NautilusProgressIndicator"
+              bind-property="popover-position"
+              bind-flags="sync-create" />
     <property name="child">
       <object class="GtkScrolledWindow">
         <property name="hscrollbar_policy">never</property>
