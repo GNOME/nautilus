@@ -414,6 +414,7 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
 
     view = nautilus_window_slot_get_current_view (self);
 
+    /* Setting search query may cause the view to load a new location. */
     nautilus_view_set_search_query (view, query);
     nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
 }
@@ -439,7 +440,12 @@ hide_query_editor (NautilusWindowSlot *self)
          * revealed in the unfiltered folder view. */
         selection = nautilus_view_get_selection (view);
 
+        /* Now that we have saved the search, clear the view's query. The view
+         * will immediately clear its model model and load the previous location
+         */
         nautilus_view_set_search_query (view, NULL);
+
+        /* The view location has changed, update the slot location. */
         nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
         nautilus_view_set_selection (view, selection);
     }

@@ -3750,6 +3750,11 @@ nautilus_files_view_set_location (NautilusView *view,
     {
         /* Regular case */
         load_directory (NAUTILUS_FILES_VIEW (view), directory);
+
+        /* Ensure we don't keep carrying old queries on. This must be called
+         * after load_directory() is called for the new directory, otherwise it
+         * could try to load the existing search query's base directory. */
+        nautilus_view_set_search_query (view, NULL);
     }
 }
 
@@ -9252,8 +9257,10 @@ nautilus_files_view_set_search_query (NautilusView  *view,
 
     priv = nautilus_files_view_get_instance_private (files_view);
 
-    g_set_object (&priv->search_query, query);
-    g_object_notify (G_OBJECT (view), "search-query");
+    if (g_set_object (&priv->search_query, query))
+    {
+        g_object_notify (G_OBJECT (view), "search-query");
+    }
 
     if (!nautilus_query_is_empty (query))
     {
