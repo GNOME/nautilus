@@ -1300,6 +1300,27 @@ begin_location_change (NautilusWindowSlot         *self,
 }
 
 static void
+nautilus_window_slot_update_banner (NautilusWindowSlot *self)
+{
+
+    NautilusView *view = nautilus_window_slot_get_current_view (self);
+
+    if (nautilus_view_is_searching (view))
+    {
+        NautilusQuery *query = nautilus_view_get_search_query (view);
+        g_return_if_fail (query != NULL);
+
+        g_autoptr (GFile) queried_location = nautilus_query_get_location (query);
+
+        nautilus_location_banner_load (self->banner, queried_location);
+    }
+    else
+    {
+        nautilus_location_banner_load (self->banner, self->location);
+    }
+}
+
+static void
 nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                    GFile              *location)
 {
@@ -1324,6 +1345,7 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
     }
 
     nautilus_window_slot_update_title (self);
+    nautilus_window_slot_update_banner (self);
 
     if (old_location)
     {
@@ -2453,8 +2475,6 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
 
     /* Sync the actions for this new location. */
     nautilus_window_slot_sync_actions (self);
-
-    nautilus_location_banner_load (self->banner, new_location);
 }
 
 static void
