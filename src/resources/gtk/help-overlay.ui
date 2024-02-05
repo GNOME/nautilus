@@ -29,7 +29,13 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes" context="shortcut window">Search</property>
+                <property name="title" translatable="yes" context="shortcut window">Search Everywhere</property>
+                <property name="action-name">slot.search-global</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes" context="shortcut window">Search Current Folder</property>
                 <property name="accelerator">&lt;Primary&gt;F</property>
               </object>
             </child>
