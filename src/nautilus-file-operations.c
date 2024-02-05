@@ -1129,22 +1129,19 @@ confirm_delete_from_trash (CommonJob *job,
         g_autofree gchar *basename = NULL;
 
         basename = get_basename (files->data);
-        prompt = g_strdup_printf (_("Are you sure you want to permanently delete “%s” "
-                                    "from the trash?"), basename);
+        prompt = g_strdup_printf (_("Permanently Delete “%s”?"), basename);
     }
     else
     {
-        prompt = g_strdup_printf (ngettext ("Are you sure you want to permanently delete "
-                                            "the %'d selected item from the trash?",
-                                            "Are you sure you want to permanently delete "
-                                            "the %'d selected items from the trash?",
+        prompt = g_strdup_printf (ngettext ("Permanently Delete %'d Selected Item?",
+                                            "Permanently Delete %'d Selected Items?",
                                             file_count),
                                   file_count);
     }
 
     response = run_warning (job,
                             prompt,
-                            g_strdup (_("If you delete an item, it will be permanently lost.")),
+                            g_strdup (_("Permanently deleted items can not be restored")),
                             NULL,
                             FALSE,
                             CANCEL, DELETE,
@@ -1159,11 +1156,11 @@ confirm_empty_trash (CommonJob *job)
     char *prompt;
     int response;
 
-    prompt = g_strdup (_("Empty all items from Trash?"));
+    prompt = g_strdup (_("Empty Trash?"));
 
     response = run_warning (job,
                             prompt,
-                            g_strdup (_("All items in the Trash will be permanently deleted.")),
+                            g_strdup (_("All items in the Trash will be permanently deleted")),
                             NULL,
                             FALSE,
                             CANCEL, EMPTY_TRASH,
@@ -1193,21 +1190,20 @@ confirm_delete_directly (CommonJob *job,
         g_autofree gchar *basename = NULL;
 
         basename = get_basename (files->data);
-        prompt = g_strdup_printf (_("Are you sure you want to permanently delete “%s”?"),
+        prompt = g_strdup_printf (_("Permanently Delete “%s”?"),
                                   basename);
     }
     else
     {
-        prompt = g_strdup_printf (ngettext ("Are you sure you want to permanently delete "
-                                            "the %'d selected item?",
-                                            "Are you sure you want to permanently delete "
-                                            "the %'d selected items?", file_count),
+        prompt = g_strdup_printf (ngettext ("Permanently Delete %'d Selected Item?",
+                                            "Permanently Delete %'d Selected Items?",
+                                            file_count),
                                   file_count);
     }
 
     response = run_warning (job,
                             prompt,
-                            g_strdup (_("If you delete an item, it will be permanently lost.")),
+                            g_strdup (_("Permanently deleted items can not be restored")),
                             NULL,
                             FALSE,
                             CANCEL, DELETE,
