@@ -4463,8 +4463,6 @@ process_old_files (NautilusFilesView *view)
 
         if (files_added != NULL)
         {
-            search_transition_emit_delayed_signals_if_pending (view);
-
             g_signal_emit (view,
                            signals[ADD_FILES], 0, pending_additions);
         }
@@ -4544,6 +4542,8 @@ display_pending_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
+
+    search_transition_emit_delayed_signals_if_pending (view);
 
     process_new_files (view);
     process_old_files (view);
