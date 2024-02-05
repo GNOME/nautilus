@@ -4352,8 +4352,6 @@ process_pending_files (NautilusFilesView *view)
 
         if (files_added != NULL)
         {
-            search_transition_emit_delayed_signals_if_pending (view);
-
             g_signal_emit (view,
                            signals[ADD_FILES], 0, pending_additions);
         }
@@ -4434,6 +4432,8 @@ display_pending_files (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
     gboolean no_selection = gtk_bitset_is_empty (selection);
+
+    search_transition_emit_delayed_signals_if_pending (view);
 
     process_pending_files (view);
 
