@@ -503,6 +503,8 @@ on_slot_search_global_changed (NautilusWindowSlot *slot,
     {
         nautilus_gtk_places_sidebar_set_location (sidebar, nautilus_window_slot_get_location (slot));
     }
+
+    nautilus_window_sync_location_widgets (self);
 }
 
 static void
@@ -1165,13 +1167,15 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
         nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (path_bar), location);
     }
 
-    enabled = nautilus_window_slot_get_back_history (slot) != NULL;
+    enabled = (nautilus_window_slot_get_back_history (slot) != NULL &&
+               !nautilus_window_slot_get_search_global (slot));
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "back");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "back-n");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
 
-    enabled = nautilus_window_slot_get_forward_history (slot) != NULL;
+    enabled = (nautilus_window_slot_get_forward_history (slot) != NULL &&
+               !nautilus_window_slot_get_search_global (slot));
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "forward");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "forward-n");
