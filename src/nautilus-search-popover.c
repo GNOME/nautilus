@@ -16,12 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <gtk/gtk.h>
+#include <adwaita.h>
+
 #include "nautilus-enum-types.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
 
 #include <glib/gi18n.h>
 #include "nautilus-file.h"
+#include "nautilus-icon-info.h"
+#include "nautilus-minimal-cell.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-global-preferences.h"
 
@@ -48,6 +53,9 @@ struct _NautilusSearchPopover
     GtkWidget *created_button;
     GtkWidget *full_text_search_button;
     GtkWidget *filename_search_button;
+
+    AdwDialog *type_dialog;
+    GtkStack *type_dialog_stack;
 
     NautilusQuery *query;
     GtkSingleSelection *other_types_model;
@@ -532,167 +540,144 @@ show_date_selection_widgets (NautilusSearchPopover *popover,
 }
 
 static void
-on_other_types_dialog_response (GtkDialog             *dialog,
-                                gint                   response_id,
-                                NautilusSearchPopover *popover)
+on_other_types_dialog_response (NautilusSearchPopover *popover)
 {
-    if (response_id == GTK_RESPONSE_OK)
-    {
-        GtkStringObject *item;
-        const char *mimetype;
-        g_autofree gchar *description = NULL;
+    NautilusMinimalCell *item = gtk_single_selection_get_selected_item (popover->other_types_model);
+    const gchar *description = nautilus_minimal_cell_get_title (item);
+    const gchar *mimetype = nautilus_minimal_cell_get_subtitle (item);
 
-        item = gtk_single_selection_get_selected_item (popover->other_types_model);
-        mimetype = gtk_string_object_get_string (item);
-        description = g_content_type_get_description (mimetype);
+    gtk_label_set_label (GTK_LABEL (popover->type_label), description);
 
-        gtk_label_set_label (GTK_LABEL (popover->type_label), description);
+    g_signal_emit_by_name (popover, "mime-type", -1, mimetype);
 
-        g_signal_emit_by_name (popover, "mime-type", -1, mimetype);
-
-        gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
-    }
+    gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
 
     g_clear_object (&popover->other_types_model);
-    gtk_window_destroy (GTK_WINDOW (dialog));
-}
 
-static void
-on_other_types_activate (GtkListView *self,
-                         guint        position,
-                         gpointer     user_data)
-{
-    GtkDialog *dialog = GTK_DIALOG (user_data);
-
-    gtk_dialog_response (dialog, GTK_RESPONSE_OK);
-}
-
-static void
-on_other_types_bind (GtkSignalListItemFactory *factory,
-                     GtkListItem              *listitem,
-                     gpointer                  user_data)
-{
-    GtkLabel *label;
-    GtkStringObject *item;
-    g_autofree gchar *description = NULL;
-
-    label = GTK_LABEL (gtk_list_item_get_child (listitem));
-    item = GTK_STRING_OBJECT (gtk_list_item_get_item (listitem));
-
-    description = g_content_type_get_description (gtk_string_object_get_string (item));
-    gtk_label_set_text (label, description);
-}
-
-static void
-on_other_types_setup (GtkSignalListItemFactory *factory,
-                      GtkListItem              *listitem,
-                      gpointer                  user_data)
-{
-    GtkWidget *label;
-
-    label = gtk_label_new (NULL);
-    gtk_widget_set_halign (label, GTK_ALIGN_START);
-    gtk_widget_set_margin_start (label, 12);
-    gtk_widget_set_margin_end (label, 12);
-    gtk_widget_set_margin_top (label, 6);
-    gtk_widget_set_margin_bottom (label, 6);
-    gtk_list_item_set_child (listitem, label);
+    adw_dialog_close (popover->type_dialog);
 }
 
 static gchar *
-join_type_and_description (GtkStringObject *object,
-                           gpointer         user_data)
+join_type_and_description (NautilusMinimalCell *cell)
 {
-    const gchar *content_type = gtk_string_object_get_string (object);
-    g_autofree gchar *description = g_content_type_get_description (content_type);
+    const gchar *description = nautilus_minimal_cell_get_title (cell);
+    const gchar *content_type = nautilus_minimal_cell_get_subtitle (cell);
 
     return g_strdup_printf ("%s %s", content_type, description);
 }
 
 static void
+file_type_search_changed (GtkEditable           *search_entry,
+                          GParamSpec            *pspec,
+                          NautilusSearchPopover *self)
+{
+    const gchar *string = gtk_editable_get_text (search_entry);
+
+    if (string == NULL || *string == '\0')
+    {
+        gtk_stack_set_visible_child_name (self->type_dialog_stack, "start");
+        gtk_widget_set_sensitive (GTK_WIDGET (adw_dialog_get_default_widget (self->type_dialog)),
+                                  FALSE);
+
+        return;
+    }
+
+    guint result_count = g_list_model_get_n_items (G_LIST_MODEL (self->other_types_model));
+
+    if (result_count == 0)
+    {
+        gtk_stack_set_visible_child_name (self->type_dialog_stack, "empty");
+        gtk_widget_set_sensitive (GTK_WIDGET (adw_dialog_get_default_widget (self->type_dialog)),
+                                  FALSE);
+    }
+    else
+    {
+        gtk_stack_set_visible_child_name (self->type_dialog_stack, "results");
+        gtk_widget_set_sensitive (GTK_WIDGET (adw_dialog_get_default_widget (self->type_dialog)),
+                                  TRUE);
+    }
+}
+
+static gboolean
+click_policy_mapping_get (GValue   *gvalue,
+                          GVariant *variant,
+                          gpointer  listview)
+{
+    int click_policy = g_settings_get_enum (nautilus_preferences,
+                                            NAUTILUS_PREFERENCES_CLICK_POLICY);
+
+    g_value_set_boolean (gvalue, click_policy == NAUTILUS_CLICK_POLICY_SINGLE);
+
+    return TRUE;
+}
+
+static void
 show_other_types_dialog (NautilusSearchPopover *popover)
 {
-    GtkStringList *string_model;
-    GtkStringSorter *sorter;
-    GtkSortListModel *sort_model;
     GtkStringFilter *filter;
     GtkFilterListModel *filter_model;
     g_autoptr (GList) mime_infos = NULL;
-    GtkWidget *dialog;
+    GListStore *file_type_list = g_list_store_new (NAUTILUS_TYPE_MINIMAL_CELL);
+    g_autoptr (GtkBuilder) builder = NULL;
+    AdwToolbarView *toolbar_view;
     GtkWidget *content_area;
     GtkWidget *search_entry;
-    GtkWidget *scrolled;
-    GtkListItemFactory *factory;
-    GtkWidget *listview;
-    GtkRoot *toplevel;
+    GtkListView *listview;
+    GtkRoot *toplevel = gtk_widget_get_root (GTK_WIDGET (popover));
 
     gtk_popover_popdown (GTK_POPOVER (popover));
 
-    string_model = gtk_string_list_new (NULL);
     mime_infos = g_content_types_get_registered ();
+    mime_infos = g_list_sort (mime_infos, (GCompareFunc) g_strcmp0);
+    gint scale = gtk_widget_get_scale_factor (GTK_WIDGET (toplevel));
     for (GList *l = mime_infos; l != NULL; l = l->next)
     {
-        gtk_string_list_take (string_model, l->data);
+        g_autofree gchar *content_type = l->data;
+        g_autofree gchar *description = g_content_type_get_description (content_type);
+        g_autoptr (GIcon) icon = g_content_type_get_icon (content_type);
+        g_autoptr (NautilusIconInfo) icon_info = nautilus_icon_info_lookup (icon, 32, scale);
+        GdkPaintable *paintable = nautilus_icon_info_get_paintable (icon_info);
+
+        g_list_store_append (file_type_list, nautilus_minimal_cell_new (description,
+                                                                        content_type,
+                                                                        GDK_PAINTABLE (paintable)));
     }
-    sorter = gtk_string_sorter_new (gtk_property_expression_new (GTK_TYPE_STRING_OBJECT, NULL, "string"));
-    sort_model = gtk_sort_list_model_new (G_LIST_MODEL (string_model), GTK_SORTER (sorter));
+
     filter = gtk_string_filter_new (gtk_cclosure_expression_new (G_TYPE_STRING,
                                                                  NULL, 0, NULL,
                                                                  G_CALLBACK (join_type_and_description),
                                                                  NULL, NULL));
-    filter_model = gtk_filter_list_model_new (G_LIST_MODEL (sort_model), GTK_FILTER (filter));
+    filter_model = gtk_filter_list_model_new (G_LIST_MODEL (file_type_list), GTK_FILTER (filter));
     popover->other_types_model = gtk_single_selection_new (G_LIST_MODEL (filter_model));
 
-    toplevel = gtk_widget_get_root (GTK_WIDGET (popover));
-    dialog = gtk_dialog_new_with_buttons (_("Select type"),
-                                          GTK_WINDOW (toplevel),
-                                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("Select"), GTK_RESPONSE_OK,
-                                          NULL);
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-    gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-search-types-dialog.ui");
 
-    /* If there are 0 results, make action insensitive */
-    g_object_bind_property (filter_model,
-                            "n-items",
-                            gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK),
-                            "sensitive",
-                            G_BINDING_DEFAULT);
+    popover->type_dialog = ADW_DIALOG (gtk_builder_get_object (builder, "file_types_dialog"));
+    search_entry = GTK_WIDGET (gtk_builder_get_object (builder, "search_entry"));
+    toolbar_view = ADW_TOOLBAR_VIEW (gtk_builder_get_object (builder, "toolbar_view"));
+    popover->type_dialog_stack = GTK_STACK (gtk_builder_get_object (builder, "search_stack"));
+    listview = GTK_LIST_VIEW (gtk_builder_get_object (builder, "listview"));
 
-    content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-
-    search_entry = gtk_search_entry_new ();
+    content_area = adw_toolbar_view_get_content (toolbar_view);
     gtk_search_entry_set_key_capture_widget (GTK_SEARCH_ENTRY (search_entry), content_area);
     g_object_bind_property (search_entry, "text", filter, "search", G_BINDING_SYNC_CREATE);
-    gtk_box_append (GTK_BOX (content_area), search_entry);
-    gtk_widget_set_margin_start (search_entry, 12);
-    gtk_widget_set_margin_end (search_entry, 12);
-    gtk_widget_set_margin_top (search_entry, 6);
-    gtk_widget_set_margin_bottom (search_entry, 6);
+    g_signal_connect_after (search_entry, "notify::text",
+                            G_CALLBACK (file_type_search_changed), popover);
 
-    gtk_box_append (GTK_BOX (content_area), gtk_separator_new (GTK_ORIENTATION_VERTICAL));
+    gtk_list_view_set_model (listview,
+                             GTK_SELECTION_MODEL (g_object_ref (popover->other_types_model)));
+    g_settings_bind_with_mapping (nautilus_preferences, NAUTILUS_PREFERENCES_CLICK_POLICY,
+                                  listview, "single-click-activate", G_SETTINGS_BIND_GET,
+                                  click_policy_mapping_get, NULL, listview, NULL);
 
-    scrolled = gtk_scrolled_window_new ();
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
-                                    GTK_POLICY_AUTOMATIC,
-                                    GTK_POLICY_AUTOMATIC);
+    g_signal_connect_swapped (adw_dialog_get_default_widget (popover->type_dialog), "clicked",
+                              G_CALLBACK (on_other_types_dialog_response), popover);
+    g_signal_connect_swapped (popover->type_dialog, "close-attempt",
+                              G_CALLBACK (on_other_types_dialog_response), popover);
+    g_signal_connect_swapped (listview, "activate",
+                              G_CALLBACK (on_other_types_dialog_response), popover);
 
-    gtk_widget_set_vexpand (scrolled, TRUE);
-    gtk_box_append (GTK_BOX (content_area), scrolled);
-
-    factory = gtk_signal_list_item_factory_new ();
-    g_signal_connect (factory, "setup", G_CALLBACK (on_other_types_setup), NULL);
-    g_signal_connect (factory, "bind", G_CALLBACK (on_other_types_bind), NULL);
-
-    listview = gtk_list_view_new (GTK_SELECTION_MODEL (g_object_ref (popover->other_types_model)),
-                                  factory);
-    g_signal_connect (listview, "activate", G_CALLBACK (on_other_types_activate), dialog);
-
-    gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled), listview);
-
-    g_signal_connect (dialog, "response", G_CALLBACK (on_other_types_dialog_response), popover);
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (popover->type_dialog, GTK_WIDGET (toplevel));
 }
 
 static void
