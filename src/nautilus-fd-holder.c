@@ -271,6 +271,7 @@ nautilus_fd_holders_release_for_mount (GMount *mount)
     GFile *location;
     GFileEnumerator *enumerator;
 
+    ensure_location_enumerator_map();
     g_hash_table_iter_init (&iter, location_enumerator_map);
     while (g_hash_table_iter_next (&iter, (gpointer *) &location, (gpointer *) &enumerator))
     {
