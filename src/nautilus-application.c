@@ -692,7 +692,7 @@ action_search_settings (GSimpleAction *action,
                         gpointer       user_data)
 {
     GtkApplication *self = user_data;
-    const char *parameters = "('launch-panel', [<('search', [<'search-locations'>])>], @a{sv} {})";
+    const char *parameters = "('launch-panel', [<('search', [<'locations'>])>], @a{sv} {})";
 
     nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
                                  NAUTILUS_DBUS_LAUNCHER_SETTINGS,
