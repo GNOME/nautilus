@@ -233,8 +233,6 @@ typedef struct
 
     GActionGroup *view_action_group;
 
-    GtkWidget *stack;
-
     /* Empty states */
     GtkWidget *empty_view_page;
 
@@ -9495,7 +9493,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                                                  "/org/gnome/nautilus/ui/nautilus-files-view.ui");
 
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, overlay);
-    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, floating_bar);
 
     /* See also the global accelerators in init() in addition to all the local
@@ -9760,7 +9757,7 @@ create_inner_view (NautilusFilesView *self,
         }
     }
 
-    gtk_stack_add_child (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
+    gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), GTK_WIDGET (priv->list_base));
 }
 
 void
@@ -9772,8 +9769,8 @@ nautilus_files_view_change (NautilusFilesView *self,
     /* Prepare empty page for reuse. It's not destroyed because we own it. */
     gtk_widget_unparent (priv->empty_view_page);
 
-    /* Destroy existing inner view (which is owned by the stack) */
-    gtk_stack_remove (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
+    /* Destroy existing inner view (which is owned by the overlay) */
+    gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), NULL);
 
     /* Avoid subfolder items showing up in grid view. */
     nautilus_view_model_expand_as_a_tree (priv->model, FALSE);
