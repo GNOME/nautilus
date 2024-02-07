@@ -61,7 +61,7 @@ static void
 info_cancelled (NautilusProgressInfoWidget *self)
 {
     gtk_widget_set_sensitive (self->priv->button, FALSE);
-    gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "cross-filled-symbolic");
+    gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "cancel-operation-symbolic");
     gtk_widget_set_has_tooltip (GTK_WIDGET (self->priv->button), FALSE);
 }
 
