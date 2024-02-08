@@ -6507,7 +6507,7 @@ retry:
             return;
         }
         basename = get_basename (src);
-        primary = g_strdup_printf (_("Error while creating link to %s."),
+        primary = g_strdup_printf (_("Error while creating link to “%s”."),
                                    basename);
         if (not_local)
         {
@@ -7387,12 +7387,12 @@ retry:
             basename = get_basename (dest);
             if (job->make_dir)
             {
-                primary = g_strdup_printf (_("Error while creating directory %s."),
+                primary = g_strdup_printf (_("Error while creating directory “%s”."),
                                            basename);
             }
             else
             {
-                primary = g_strdup_printf (_("Error while creating file %s."),
+                primary = g_strdup_printf (_("Error while creating file “%s”."),
                                            basename);
             }
             parse_name = get_truncated_parse_name (job->dest_dir);
@@ -8166,7 +8166,7 @@ extract_job_on_scanned (AutoarExtractor *extractor,
                                             g_strdup_printf (_("Error extracting “%s”"),
                                                              basename));
         run_error (&extract_job->common,
-                   g_strdup_printf (_("Not enough free space to extract %s"), basename),
+                   g_strdup_printf (_("Not enough free space to extract “%s”"), basename),
                    NULL,
                    NULL,
                    FALSE,
