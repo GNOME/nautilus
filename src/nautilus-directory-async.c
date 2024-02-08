@@ -691,21 +691,8 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
 {
     Monitor *monitor;
     GList *file_list;
-    char *file_uri = NULL;
-    char *dir_uri = NULL;
 
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-    if (file != NULL)
-    {
-        file_uri = nautilus_file_get_uri (file);
-    }
-    if (directory != NULL)
-    {
-        dir_uri = nautilus_directory_get_uri (directory);
-    }
-    g_free (dir_uri);
-    g_free (file_uri);
 
     /* Replace any current monitor for this client/file pair. */
     remove_monitor (directory, file, client);
