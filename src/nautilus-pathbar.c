@@ -887,7 +887,7 @@ get_gicon (ButtonData *button_data)
 
         case NETWORK_BUTTON:
         {
-            return g_themed_icon_new ("folder-remote-symbolic");
+            return g_themed_icon_new ("network-computer-symbolic");
         }
 
         default:

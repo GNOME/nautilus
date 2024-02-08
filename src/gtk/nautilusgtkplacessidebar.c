@@ -213,7 +213,7 @@ enum {
 #define ICON_NAME_DESKTOP  "user-desktop-symbolic"
 #define ICON_NAME_EJECT    "media-eject-symbolic"
 #define ICON_NAME_NETWORK  "network-workgroup-symbolic"
-#define ICON_NAME_FOLDER_NETWORK "folder-remote-symbolic"
+#define ICON_NAME_FOLDER_NETWORK "network-computer-symbolic"
 #define ICON_NAME_OTHER_LOCATIONS "list-add-symbolic"
 
 #define ICON_NAME_FOLDER                "folder-symbolic"
