@@ -634,7 +634,7 @@ get_directory_sort_by (NautilusFile *file,
         default_sort == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
     {
         /* These defaults are important. Ignore metadata. */
-        return g_strdup (nautilus_file_sort_type_get_attribute (default_sort));
+        return nautilus_file_sort_type_get_attribute (default_sort);
     }
 
     *reversed = nautilus_file_get_boolean_metadata (file,
