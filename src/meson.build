@@ -98,6 +98,8 @@ libnautilus_sources = [
   'nautilus-location-entry.h',
   'nautilus-mime-actions.c',
   'nautilus-mime-actions.h',
+  'nautilus-minimal-cell.c',
+  'nautilus-minimal-cell.h',
   'nautilus-name-cell.c',
   'nautilus-name-cell.h',
   'nautilus-pathbar.c',
