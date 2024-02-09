@@ -634,7 +634,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     mime_infos = g_content_types_get_registered ();
     for (GList *l = mime_infos; l != NULL; l = l->next)
     {
-        gtk_string_list_append (string_model, l->data);
+        gtk_string_list_take (string_model, l->data);
     }
     sorter = gtk_string_sorter_new (gtk_property_expression_new (GTK_TYPE_STRING_OBJECT, NULL, "string"));
     sort_model = gtk_sort_list_model_new (G_LIST_MODEL (string_model), GTK_SORTER (sorter));
