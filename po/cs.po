@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-06 00:03+0000\n"
-"PO-Revision-Date: 2024-02-07 01:34+0100\n"
+"POT-Creation-Date: 2024-02-09 10:50+0000\n"
+"PO-Revision-Date: 2024-02-09 23:32+0100\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -1949,15 +1949,18 @@ msgstr "Soubory se přesunují do koše"
 msgid "Deleting Files"
 msgstr "Soubory se odstraňují"
 
-#: src/nautilus-file-operations.c:2331 src/gtk/nautilusgtkplacessidebar.c:2718
+#. Translators: %s is a file name formatted for display
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/gtk/nautilusgtkplacessidebar.c:2689
+#: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
-msgid "Unable to eject %s"
-msgstr "Nelze vysunout %s"
+msgid "Unable to eject “%s”"
+msgstr "Nelze vysunout „%s“"
 
 #: src/nautilus-file-operations.c:2336
 #, c-format
-msgid "Unable to unmount %s"
-msgstr "Nelze odpojit %s"
+msgid "Unable to unmount “%s”"
+msgstr "Nelze odpojit „%s“"
 
 #: src/nautilus-file-operations.c:2507
 msgid "Do you want to empty the trash before you unmount?"
@@ -2382,8 +2385,8 @@ msgstr[2] "Vytváří se odkazy k %'d souborům"
 
 #: src/nautilus-file-operations.c:6510
 #, c-format
-msgid "Error while creating link to %s."
-msgstr "Chyba při vytváření odkazu na %s."
+msgid "Error while creating link to “%s”."
+msgstr "Chyba při vytváření odkazu na „%s“."
 
 #: src/nautilus-file-operations.c:6514
 msgid "Symbolic links only supported for local files"
@@ -2414,13 +2417,13 @@ msgstr "Nepojmenovaný dokument"
 
 #: src/nautilus-file-operations.c:7390
 #, c-format
-msgid "Error while creating directory %s."
-msgstr "Chyba při vytváření složky %s."
+msgid "Error while creating directory “%s”."
+msgstr "Chyba při vytváření složky „%s“."
 
 #: src/nautilus-file-operations.c:7395
 #, c-format
-msgid "Error while creating file %s."
-msgstr "Chyba při vytváření souboru %s."
+msgid "Error while creating file “%s”."
+msgstr "Chyba při vytváření souboru „%s“."
 
 #: src/nautilus-file-operations.c:7399
 #, c-format
@@ -2478,8 +2481,8 @@ msgstr "Při rozbalování archivu „%s“ došlo k chybě."
 
 #: src/nautilus-file-operations.c:8169
 #, c-format
-msgid "Not enough free space to extract %s"
-msgstr "K rozbalení %s není dostatek místa"
+msgid "Not enough free space to extract “%s”"
+msgstr "K rozbalení „%s“ není dostatek místa"
 
 #: src/nautilus-file-operations.c:8202
 #, c-format
@@ -2559,7 +2562,7 @@ msgstr "Načítá se…"
 
 #: src/nautilus-files-view.c:1874
 msgid "Examples: "
-msgstr "Příklady:"
+msgstr "Příklady: "
 
 #: src/nautilus-files-view.c:2931
 msgid "Could not paste files"
@@ -2696,12 +2699,6 @@ msgstr "Chyba při odesílání e-mailu."
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Nelze odstranit „%s“"
-
-#. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6824 src/gtk/nautilusgtkplacessidebar.c:2689
-#, c-format
-msgid "Unable to eject “%s”"
-msgstr "Nelze vysunout „%s“"
 
 #: src/nautilus-files-view.c:6848
 msgid "Unable to stop drive"
@@ -5747,6 +5744,10 @@ msgstr "Postranní panel"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Seznam častých zkratek, bodů připojení a záložek."
+
+#, c-format
+#~ msgid "Unable to eject %s"
+#~ msgstr "Nelze vysunout %s"
 
 #, c-format
 #~ msgid "Are you sure you want to permanently delete “%s” from the trash?"
