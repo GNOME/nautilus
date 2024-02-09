@@ -478,7 +478,6 @@ real_get_file_list (NautilusDirectory *directory)
     g_autolist (NautilusFile) network_list = nautilus_directory_get_file_list (self->network_backend_directory);
     g_autolist (NautilusFile) recent_servers = nautilus_file_list_copy (self->recent_server_files);
 
-
     return g_list_concat (get_remote_mountables (computer_list),
                           g_list_concat (g_steal_pointer (&recent_servers),
                                          g_steal_pointer (&network_list)));
