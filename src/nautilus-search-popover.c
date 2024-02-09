@@ -628,6 +628,8 @@ show_other_types_dialog (NautilusSearchPopover *popover)
     GtkWidget *listview;
     GtkRoot *toplevel;
 
+    gtk_popover_popdown (GTK_POPOVER (popover));
+
     string_model = gtk_string_list_new (NULL);
     mime_infos = g_content_types_get_registered ();
     for (GList *l = mime_infos; l != NULL; l = l->next)
