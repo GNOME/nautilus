@@ -2328,12 +2328,12 @@ unmount_mount_callback (GObject      *source_object,
             mount_name = g_mount_get_name (G_MOUNT (source_object));
             if (data->eject)
             {
-                primary = g_strdup_printf (_("Unable to eject %s"),
+                primary = g_strdup_printf (_("Unable to eject “%s”"),
                                            mount_name);
             }
             else
             {
-                primary = g_strdup_printf (_("Unable to unmount %s"),
+                primary = g_strdup_printf (_("Unable to unmount “%s”"),
                                            mount_name);
             }
             show_dialog (primary,

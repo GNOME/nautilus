@@ -2715,7 +2715,7 @@ volume_eject_cb (GObject      *source_object,
       if (error->code != G_IO_ERROR_FAILED_HANDLED)
         {
           name = g_volume_get_name (G_VOLUME (source_object));
-          primary = g_strdup_printf (_("Unable to eject %s"), name);
+          primary = g_strdup_printf (_("Unable to eject “%s”"), name);
           g_free (name);
           emit_show_error_message (sidebar, primary, error->message);
           g_free (primary);
