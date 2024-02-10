@@ -1,6 +1,6 @@
 # Turkish translation of Nautilus.
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# Copyright (C) 2019-2023 Nautilus's COPYRIGHT HOLDER
+# Copyright (C) 2019-2024 Nautilus's COPYRIGHT HOLDER
 # This file is distributed under the same license as the Nautilus package.
 #
 # Ömer Fadıl USTA <omer_fad@hotmail.com>, 2002.
@@ -23,9 +23,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-06 00:03+0000\n"
-"PO-Revision-Date: 2024-02-06 22:08+0300\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2024-02-09 10:50+0000\n"
+"PO-Revision-Date: 2024-02-09 16:57+0300\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -1907,15 +1907,18 @@ msgstr "Dosyalar Çöpe Atılıyor"
 msgid "Deleting Files"
 msgstr "Dosyalar Siliniyor"
 
-#: src/nautilus-file-operations.c:2331 src/gtk/nautilusgtkplacessidebar.c:2718
+#. Translators: %s is a file name formatted for display
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/gtk/nautilusgtkplacessidebar.c:2689
+#: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
-msgid "Unable to eject %s"
-msgstr "%s çıkartılamadı"
+msgid "Unable to eject “%s”"
+msgstr "“%s” çıkartılamadı"
 
 #: src/nautilus-file-operations.c:2336
 #, c-format
-msgid "Unable to unmount %s"
-msgstr "%s ayrılamadı"
+msgid "Unable to unmount “%s”"
+msgstr "“%s” ayrılamadı"
 
 #: src/nautilus-file-operations.c:2507
 msgid "Do you want to empty the trash before you unmount?"
@@ -2313,8 +2316,8 @@ msgstr[0] "%'d dosyaya bağ yapılıyor"
 
 #: src/nautilus-file-operations.c:6510
 #, c-format
-msgid "Error while creating link to %s."
-msgstr "%s bağı oluşturulurken hata."
+msgid "Error while creating link to “%s”."
+msgstr "“%s” bağı oluşturulurken hata."
 
 #: src/nautilus-file-operations.c:6514
 msgid "Symbolic links only supported for local files"
@@ -2345,13 +2348,13 @@ msgstr "Adsız Belge"
 
 #: src/nautilus-file-operations.c:7390
 #, c-format
-msgid "Error while creating directory %s."
-msgstr "%s dizini oluştururken hata."
+msgid "Error while creating directory “%s”."
+msgstr "“%s” dizini oluştururken hata."
 
 #: src/nautilus-file-operations.c:7395
 #, c-format
-msgid "Error while creating file %s."
-msgstr "%s dosyası oluştururken hata."
+msgid "Error while creating file “%s”."
+msgstr "“%s” dosyası oluştururken hata."
 
 #: src/nautilus-file-operations.c:7399
 #, c-format
@@ -2409,8 +2412,8 @@ msgstr "“%s” çıkarılırken hata oluştu."
 
 #: src/nautilus-file-operations.c:8169
 #, c-format
-msgid "Not enough free space to extract %s"
-msgstr "%s’i çıkarmak için yeterli boş alan yok"
+msgid "Not enough free space to extract “%s”"
+msgstr "“%s”i çıkarmak için yeterli boş alan yok"
 
 #: src/nautilus-file-operations.c:8202
 #, c-format
@@ -2609,12 +2612,6 @@ msgstr "E-posta gönderiminde hata."
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "“%s” kaldırılamadı"
-
-#. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6824 src/gtk/nautilusgtkplacessidebar.c:2689
-#, c-format
-msgid "Unable to eject “%s”"
-msgstr "“%s” çıkartılamadı"
 
 #: src/nautilus-files-view.c:6848
 msgid "Unable to stop drive"
@@ -5565,243 +5562,5 @@ msgstr "Kenar Çubuğu"
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Yaygın kısayolların, bağlantı noktalarının ve yer imlerinin listesi."
 
-#, c-format
-#~ msgid "Are you sure you want to permanently delete “%s” from the trash?"
-#~ msgstr ""
-#~ "“%s” dosyasını çöpten kalıcı olarak silmek istediğinize emin misiniz?"
-
-#, c-format
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %'d selected item from "
-#~ "the trash?"
-#~ msgid_plural ""
-#~ "Are you sure you want to permanently delete the %'d selected items from "
-#~ "the trash?"
-#~ msgstr[0] ""
-#~ "%'d seçili ögeyi kalıcı olarak çöpten silmek istediğinizden emin misiniz?"
-
-#~ msgid "If you delete an item, it will be permanently lost."
-#~ msgstr "Eğer öge silerseniz, o kalıcı olarak kaybolur."
-
-#~ msgid "Empty all items from Trash?"
-#~ msgstr "Çöpteki tüm ögeler boşaltılsın mı?"
-
-#, c-format
-#~ msgid "Are you sure you want to permanently delete “%s”?"
-#~ msgstr "“%s” ögesini kalıcı olarak silmek istediğinize emin misiniz?"
-
-#~ msgid "Search files and folders"
-#~ msgstr "Dosyaları ve klasörleri ara"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Search"
-#~ msgstr "Ara"
-
-#~ msgid "Stop Operation"
-#~ msgstr "İşlemi Durdur"
-
-#~ msgctxt "shortcut window"
-#~ msgid "New window"
-#~ msgstr "Yeni pencere"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Open in new tab"
-#~ msgstr "Yeni sekmede aç"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Open in new window"
-#~ msgstr "Yeni pencerede aç"
-
-#~ msgctxt "shortcut window"
-#~ msgid "New tab"
-#~ msgstr "Yeni sekme"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Move tab left"
-#~ msgstr "Sekmeyi sola taşı"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Move tab right"
-#~ msgstr "Sekmeyi sağa taşı"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Go back"
-#~ msgstr "Geri git"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Go up"
-#~ msgstr "Yukarı git"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Go down"
-#~ msgstr "Aşağı git"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Enter location"
-#~ msgstr "Konum gir"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Zoom in"
-#~ msgstr "Yakınlaştır"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Zoom out"
-#~ msgstr "Uzaklaştır"
-
-#~ msgctxt "shortcut window"
-#~ msgid "List view"
-#~ msgstr "Liste görünümü"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Grid view"
-#~ msgstr "Tablo görünümü"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Move to trash"
-#~ msgstr "Çöpe taşı"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Delete permanently"
-#~ msgstr "Kalıcı olarak sil"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Select all"
-#~ msgstr "Tümünü seç"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Select items matching"
-#~ msgstr "Eşleşen ögeleri seç"
-
-#~ msgid "Open In New _Tab"
-#~ msgstr "Yeni _Sekmede Aç"
-
-#~ msgid "Open In New _Window"
-#~ msgstr "Yeni _Pencerede Aç"
-
-#~ msgid "%d Hz"
-#~ msgstr "%d Hz"
-
-#~ msgctxt "the n-th position of an icon caption"
-#~ msgid "First"
-#~ msgstr "Birinci"
-
-#~ msgid "Location"
-#~ msgstr "Konum"
-
-#~ msgid "The location of the file."
-#~ msgstr "Dosyanın konumu."
-
-#~ msgid "Modified — Time"
-#~ msgstr "Değiştirilme — Saat"
-
-#~ msgid "Archive names cannot contain “/”."
-#~ msgstr "Arşiv adları “/” içeremez."
-
-#~ msgid "An archive cannot be called “.”."
-#~ msgstr "“.” adlı arşiv olamaz."
-
-#~ msgid "An archive cannot be called “..”."
-#~ msgstr "“..” adlı arşiv olamaz."
-
-#~ msgid "Archive name is too long."
-#~ msgstr "Arşiv adı çok uzun."
-
-#~ msgid "Archives with “.” at the beginning of their name are hidden."
-#~ msgstr "Adı “.” ile başlayan arşivler gizlidir."
-
-#~ msgid ""
-#~ "Nautilus 3.6 deprecated this directory and tried migrating this "
-#~ "configuration to ~/.local/share/nautilus"
-#~ msgstr ""
-#~ "Nautilus 3.6 ile bu dizin kullanımdan kaldırıldı ve bu yapılandırma "
-#~ "şuraya aktarılmaya çalışıldı: ~/.local/share/nautilus"
-
-#~ msgid "Clear entry"
-#~ msgstr "Girdiyi temizle"
-
-#~ msgid "--check cannot be used with other options."
-#~ msgstr "--check diğer seçeneklerle birlikte kullanılamaz."
-
-#~ msgid "Perform a quick set of self-check tests."
-#~ msgstr "Nautilus’un hızlı iç sınamalarını gerçekleştir."
-
-#~ msgid "Another link to %s"
-#~ msgstr "%s için başka bağ"
-
-#~ msgid "%'dst link to %s"
-#~ msgstr "%'d. %s bağlantısı"
-
-#~ msgid "%'dnd link to %s"
-#~ msgstr "%'d. %s bağlantısı"
-
-#~ msgid "%'drd link to %s"
-#~ msgstr "%'d. %s bağlantısı"
-
-#~ msgid "%'dth link to %s"
-#~ msgstr "%'d. %s bağlantısı"
-
-#~ msgid " (copy)"
-#~ msgstr " (kopya)"
-
-#~ msgid " (another copy)"
-#~ msgstr " (başka kopya)"
-
-#~ msgid "th copy)"
-#~ msgstr ". kopya)"
-
-#~ msgid "st copy)"
-#~ msgstr ". kopya)"
-
-#~ msgid "nd copy)"
-#~ msgstr ". kopya)"
-
-#~ msgid "rd copy)"
-#~ msgstr ". kopya)"
-
-#~ msgid "%s (copy)%s"
-#~ msgstr "%s (kopya)%s"
-
-#~ msgid "%s (another copy)%s"
-#~ msgstr "%s (başka kopya)%s"
-
-#~ msgid "%s (%'dth copy)%s"
-#~ msgstr "%s (%'d. kopya)%s"
-
-#~ msgid "%s (%'dst copy)%s"
-#~ msgstr "%s (%'d. kopya)%s"
-
-#~ msgid "%s (%'dnd copy)%s"
-#~ msgstr "%s (%'d. kopya)%s"
-
-#~ msgid "%s (%'drd copy)%s"
-#~ msgstr "%s (%'d. kopya)%s"
-
-#~ msgid " ("
-#~ msgstr " ("
-
-#~ msgid " (%'d"
-#~ msgstr " (%'d"
-
-#~ msgid "Items in Trash older than 1 hour are automatically deleted"
-#~ msgstr "Çöp’teki 1 saatten eski ögeler kendiliğinden silinir"
-
-#~ msgid "Items in Trash older than %d day are automatically deleted"
-#~ msgid_plural "Items in Trash older than %d days are automatically deleted"
-#~ msgstr[0] "Çöp’teki %d günden eski ögeler kendiliğinden silinir"
-
-#~ msgid ""
-#~ "<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
-#~ "templates\">Learn more…</a>"
-#~ msgstr ""
-#~ "<a href=\"help:gnome-help/files-templates\" title=\"Şablonlar için GNOME "
-#~ "yardım\">Daha çoğunu öğren…</a>"
-
-#~ msgid "Places"
-#~ msgstr "Yerler"
-
-#~ msgid "What viewer should be used when searching"
-#~ msgstr "Arama sırasında hangi görüntüleyici kullanılmalı"
-
-#~ msgid ""
-#~ "When searching Nautilus will switch to the type of view in this setting."
-#~ msgstr "Aranırken Nautilus bu ayardaki görünüm türüne geçecek."
+#~ msgid "Unable to eject %s"
+#~ msgstr "%s çıkartılamadı"
