@@ -1,3 +1,63 @@
+Major changes in 46.beta
+========================
+* Postponed
+  - The network view from alpha.1 was deemed to require more work
+* Enhancements
+  - Added a global search mode (António Fernandes)
+  - Use 'text entry' cursor on pathbar hover (Corey Berla)
+  - Added extra tentacles to confuse AI blogs (Via Matrix)
+* Bugfixes:
+  - Avoid crashes with column chooser (Peter Eisenmann)
+  - Avoid crash when navigating back to same folder (António Fernandes)
+  - Avoid infinite loop on file creation naming conflict (Corey Berla)
+  - Fix displaying parent folder of multi-files (Anton Snigirev)
+  - Clear location entry on editing of internal locations (Peter Eisenmann)
+  - Ensure search's clear button is hidden when empty (António Fernandes)
+  - Hide search popover after opening a dialog (Khalid Abu Shawarib)
+  - Correctly open empty folders from search (António Fernandes)
+* Cleanups
+  - Made various string HIG compatible (Bart Gravendeel, Automeris naranja)
+  - Modernize column chooser widgetry (Automeris naranja)
+  - Detect potfile errors via CI (Corey Berla)
+  - Don't reload view only to change selection (António Fernandes)
+  - Add drop shadow to file property dialog icons (kramo)
+  - Use smaller icons in progress indicator (António Fernandes)
+  - Replace deprecated GTK point computing functions (N.Pranav Krishna)
+  - Fix various leaks (Khalid Abu Shawarib, António Fernandes)
+  - Improve progress info icons and tooltips (Bharat Tyagi, Sam Hewitt)
+
+Major changes in 46.alpha.1
+=======================
+* Enhancements
+  - Views can be switched without a folder reload (António Fernandes)
+  - Operations are listed in the bottom of the sidebar (Corey Berla, António Fernandes, Allan Day)
+  - Network view replaces Other Locations (António Fernandes, Allan Day)
+  - Mounted drives are shown in the sidebar (António Fernandes)
+  - Selected files are recorded in back and forward history (António Fernandes)
+  - Subfolder loading indication (António Fernandes)
+  - Various view performance improvements (António Fernandes)
+  - Improved performance of multi-file properties dialog (Khalid Abu Shawarib)
+* Bugfixes:
+  - Correctly prioritize thumbnails for non-alphabetical sort order (Corey Berla)
+  - Notify view item name changes for accessibility (Corey Berla, António Fernandes)
+  - Open real folder for documents in Recent from Properties (Anton Snigirev)
+  - Pattern match (Ctrl+S) all expanded list view directories (António Fernandes)
+  - Display sampling frequency in kHz with thousand separators (Hariharan D)
+  - Treat markdown files as text documents in search (Hariharan D)
+  - Improve UI text capitalization and mnemonics (Automeris naranja)
+  - Fix tab tooltip texts for markup and search (Corey Berla)
+  - Fix extension linkage with C++ (Khalid Abu Shawarib)
+  - Add a tooltip to the star button (Lukáš Tyrychtr)
+  - Show correct shortcut for Redo on the menu (Divyansh Jain)
+  - Prevent use-after-free with mount and stop (António Fernandes)
+  - Improve virtual files handling  (António Fernandes)
+  - Fix various view-related bugs, leaks and warnings (António Fernandes)
+* Cleanups:
+  - Significant restructuring of view architecture (António Fernandes)
+  - Remove dead code in views and css styles (António Fernandes)
+  - Update man page, remove documentation for removed self-check functionality (Corey Berla)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 46.alpha.0
 =======================
 * Enhancements
