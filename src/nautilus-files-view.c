@@ -1833,7 +1833,7 @@ action_popup_menu (GSimpleAction *action,
 }
 
 static void
-pattern_select_response_select (AdwWindow *dialog,
+pattern_select_response_select (AdwDialog *dialog,
                                 gpointer   user_data)
 {
     NautilusFilesView *view = g_object_get_data (G_OBJECT (dialog), "view");
@@ -1852,7 +1852,7 @@ pattern_select_response_select (AdwWindow *dialog,
 
     nautilus_files_view_call_set_selection (view, selection);
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    adw_dialog_close (dialog);
 }
 
 static void
@@ -1875,7 +1875,6 @@ select_pattern (NautilusFilesView *view)
                                        "*.png, file\?\?.txt, pict*.\?\?\?");
     gtk_label_set_markup (GTK_LABEL (example), example_pattern);
     g_free (example_pattern);
-    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
     entry = GTK_WIDGET (gtk_builder_get_object (builder, "pattern_entry"));
     select_button = GTK_WIDGET (gtk_builder_get_object (builder, "select_button"));
@@ -1886,7 +1885,7 @@ select_pattern (NautilusFilesView *view)
                               G_CALLBACK (pattern_select_response_select),
                               dialog);
 
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
 }
 
 static void
