@@ -31,7 +31,7 @@ struct _NautilusCompressDialog
     gpointer callback_data;
 };
 
-G_DEFINE_TYPE (NautilusCompressDialog, nautilus_compress_dialog, ADW_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusCompressDialog, nautilus_compress_dialog, ADW_TYPE_DIALOG);
 
 #define NAUTILUS_TYPE_COMPRESS_ITEM (nautilus_compress_item_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusCompressItem, nautilus_compress_item, NAUTILUS, COMPRESS_ITEM, GObject)
@@ -334,7 +334,7 @@ on_name_accepted (NautilusCompressDialog *self)
 
     self->callback (name, passphrase, self->callback_data);
 
-    gtk_window_close (GTK_WINDOW (self));
+    adw_dialog_close (ADW_DIALOG (self));
 }
 
 static void
@@ -383,7 +383,6 @@ nautilus_compress_dialog_new (GtkWindow         *parent_window,
                               gpointer           callback_data)
 {
     NautilusCompressDialog *self = g_object_new (NAUTILUS_TYPE_COMPRESS_DIALOG,
-                                                 "transient-for", parent_window,
                                                  NULL);
 
     nautilus_filename_validator_set_containing_directory (self->validator,
@@ -396,9 +395,10 @@ nautilus_compress_dialog_new (GtkWindow         *parent_window,
     {
         gtk_editable_set_text (GTK_EDITABLE (self->name_entry), initial_name);
     }
-    gtk_widget_grab_focus (self->name_entry);
 
-    gtk_window_present (GTK_WINDOW (self));
+    adw_dialog_present (ADW_DIALOG (self), GTK_WIDGET (parent_window));
+
+    gtk_widget_grab_focus (self->name_entry);
 
     return self;
 }

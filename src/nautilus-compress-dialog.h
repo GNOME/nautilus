@@ -17,7 +17,7 @@ typedef void (*CompressCallback) (const char *new_name,
                                   gpointer    user_data);
 
 #define NAUTILUS_TYPE_COMPRESS_DIALOG nautilus_compress_dialog_get_type ()
-G_DECLARE_FINAL_TYPE (NautilusCompressDialog, nautilus_compress_dialog, NAUTILUS, COMPRESS_DIALOG, AdwWindow)
+G_DECLARE_FINAL_TYPE (NautilusCompressDialog, nautilus_compress_dialog, NAUTILUS, COMPRESS_DIALOG, AdwDialog)
 
 NautilusCompressDialog * nautilus_compress_dialog_new (GtkWindow         *parent_window,
                                                        NautilusDirectory *destination_directory,
