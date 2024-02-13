@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="AdwWindow" id="select_items_dialog">
+  <object class="AdwDialog" id="select_items_dialog">
     <property name="title" translatable="yes">Select Items Matching</property>
-    <property name="modal">True</property>
-    <property name="destroy-with-parent">True</property>
     <property name="default-widget">select_button</property>
-    <property name="content">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkHeaderBar">
-            <property name="show-title-buttons">False</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-start-title-buttons">False</property>
+            <property name="show-end-title-buttons">False</property>
             <child type="start">
               <object class="GtkButton" id="cancel_button">
                 <property name="label" translatable="yes">_Cancel</property>
                 <property name="use-underline">True</property>
-                <signal name="clicked" handler="gtk_window_destroy" object="select_items_dialog"/>
+                <property name="can-shrink">True</property>
+                <signal name="clicked" handler="adw_dialog_close" object="select_items_dialog"/>
               </object>
             </child>
             <child type="end">
               <object class="GtkButton" id="select_button">
                 <property name="label" translatable="yes">_Select</property>
+                <property name="can-shrink">True</property>
                 <property name="use-underline">True</property>
                 <style>
                   <class name="suggested-action"/>
@@ -30,7 +30,7 @@
             </child>
           </object>
         </child>
-        <child>
+        <property name="content">
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <property name="margin-top">18</property>
@@ -60,20 +60,9 @@
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </property>
     <property name="focus-widget">pattern_entry</property>
-    <child>
-      <object class="GtkShortcutController">
-        <property name="scope">managed</property>
-        <child>
-          <object class="GtkShortcut">
-            <property name="trigger">Escape</property>
-            <property name="action">action(window.close)</property>
-          </object>
-        </child>
-      </object>
-    </child>
   </object>
 </interface>
