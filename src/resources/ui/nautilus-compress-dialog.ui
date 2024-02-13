@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusCompressDialog" parent="AdwWindow">
+  <template class="NautilusCompressDialog" parent="AdwDialog">
     <property name="title" translatable="yes">Compress Files and Folders</property>
-    <property name="resizable">False</property>
-    <property name="modal">True</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="default-width">500</property>
+    <property name="content-width">500</property>
     <property name="default-widget">activation_button</property>
-    <child>
+    <property name="child">
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar">
@@ -18,7 +15,7 @@
               <object class="GtkButton">
                 <property name="label" translatable="yes">_Cancel</property>
                 <property name="use-underline">True</property>
-                <signal name="clicked" handler="gtk_window_close" swapped="yes"/>
+                <signal name="clicked" handler="adw_dialog_close" swapped="yes"/>
               </object>
             </child>
             <child type="end">
@@ -104,18 +101,7 @@
           </object>
         </property>
       </object>
-    </child>
-    <child>
-      <object class="GtkShortcutController">
-        <property name="scope">managed</property>
-        <child>
-          <object class="GtkShortcut">
-            <property name="trigger">Escape</property>
-            <property name="action">action(window.close)</property>
-          </object>
-        </child>
-      </object>
-    </child>
+    </property>
   </template>
   <object class="NautilusFilenameValidator" id="validator">
     <binding name="new-name">
