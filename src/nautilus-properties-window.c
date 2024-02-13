@@ -178,6 +178,7 @@ struct _NautilusPropertiesWindow
     GroupChange *group_change;
     OwnerChange *owner_change;
 
+    AdwDialog *permissions_dialog;
     GList *permission_rows;
     GList *change_permission_drop_downs;
     GHashTable *initial_permissions;
@@ -3216,23 +3217,16 @@ set_recursive_permissions_done (gboolean success,
 }
 
 static void
-on_change_permissions_response_cancel (AdwWindow *dialog,
-                                       gpointer   user_data)
+on_change_permissions_response_cancel (NautilusPropertiesWindow *self)
 {
-    NautilusPropertiesWindow *self =
-        NAUTILUS_PROPERTIES_WINDOW (gtk_window_get_transient_for (GTK_WINDOW (dialog)));
-
     g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
-    gtk_window_destroy (GTK_WINDOW (dialog));
+
+    adw_dialog_close (self->permissions_dialog);
 }
 
 static void
-on_change_permissions_response_change (AdwWindow *dialog,
-                                       gpointer   user_data)
+on_change_permissions_response_change (NautilusPropertiesWindow *self)
 {
-    NautilusPropertiesWindow *self =
-        NAUTILUS_PROPERTIES_WINDOW (gtk_window_get_transient_for (GTK_WINDOW (dialog)));
-
     guint32 file_permission = 0, file_permission_mask = 0;
     guint32 dir_permission = 0, dir_permission_mask = 0;
     guint32 vfs_mask, vfs_new_perm;
@@ -3300,7 +3294,7 @@ on_change_permissions_response_change (AdwWindow *dialog,
         }
     }
     g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    adw_dialog_close (ADW_DIALOG (self->permissions_dialog));
 }
 
 static void
@@ -3417,7 +3411,7 @@ on_change_permissions_close (GtkWidget *widget,
                              GVariant  *args,
                              gpointer   user_data)
 {
-    on_change_permissions_response_cancel (ADW_WINDOW (user_data), widget);
+    on_change_permissions_response_cancel (NAUTILUS_PROPERTIES_WINDOW (user_data));
 
     return TRUE;
 }
@@ -3426,7 +3420,6 @@ static void
 on_change_permissions_clicked (GtkWidget                *button,
                                NautilusPropertiesWindow *self)
 {
-    GtkWidget *dialog;
     GtkDropDown *drop_down;
     GtkButton *cancel_button, *change_button;
     GtkShortcut *esc_shortcut;
@@ -3435,8 +3428,7 @@ on_change_permissions_clicked (GtkWidget                *button,
 
     change_permissions_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-file-properties-change-permissions.ui");
 
-    dialog = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "change_permissions_dialog"));
-    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (self));
+    self->permissions_dialog = ADW_DIALOG (gtk_builder_get_object (change_permissions_builder, "change_permissions_dialog"));
 
     /* Owner Permissions */
     drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "file_owner_drop_down"));
@@ -3482,17 +3474,17 @@ on_change_permissions_clicked (GtkWidget                *button,
 
     g_signal_connect_swapped (cancel_button, "clicked",
                               G_CALLBACK (on_change_permissions_response_cancel),
-                              dialog);
+                              self);
     g_signal_connect_swapped (change_button, "clicked",
                               G_CALLBACK (on_change_permissions_response_change),
-                              dialog);
+                              self);
 
     esc_shortcut = GTK_SHORTCUT (gtk_builder_get_object (change_permissions_builder, "esc_shortcut"));
     cb_action = gtk_callback_action_new ((GtkShortcutFunc) on_change_permissions_close,
-                                         dialog, NULL);
+                                         self, NULL);
     gtk_shortcut_set_action (esc_shortcut, cb_action);
 
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (self->permissions_dialog, GTK_WIDGET (self));
 }
 
 static void
