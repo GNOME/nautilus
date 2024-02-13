@@ -6252,7 +6252,6 @@ real_action_rename (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     NautilusFile *file;
     g_autolist (NautilusFile) selection = NULL;
-    GtkWidget *dialog;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
@@ -6267,11 +6266,9 @@ real_action_rename (NautilusFilesView *view)
 
             gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
 
-            dialog = nautilus_batch_rename_dialog_new (selection,
-                                                       priv->directory,
-                                                       window);
-
-            gtk_window_present (GTK_WINDOW (dialog));
+            nautilus_batch_rename_dialog_new (selection,
+                                              priv->directory,
+                                              window);
         }
         else
         {
