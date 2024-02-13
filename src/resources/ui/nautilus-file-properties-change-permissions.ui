@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="AdwWindow" id="change_permissions_dialog">
+  <object class="AdwDialog" id="change_permissions_dialog">
     <property name="title" translatable="yes">Change Permissions for Enclosed Files</property>
-    <property name="modal">True</property>
-    <property name="destroy-with-parent">True</property>
-    <property name="width-request">360</property>
-    <property name="height-request">294</property>
-    <property name="default-width">480</property>
-    <property name="content">
-      <object class="AdwToolbarView">
+    <property name="child">
+      <object class="AdwToolbarView" id="toolbar_view">
         <child type="top">
           <object class="AdwHeaderBar">
             <property name="show-start-title-buttons">False</property>
@@ -18,12 +13,14 @@
               <object class="GtkButton" id="cancel_button">
                 <property name="label" translatable="yes">_Cancel</property>
                 <property name="use-underline">True</property>
+                <property name="can-shrink">True</property>
               </object>
             </child>
             <child type="end">
               <object class="GtkButton" id="change_button">
                 <property name="label" translatable="yes">C_hange</property>
                 <property name="use-underline">True</property>
+                <property name="can-shrink">True</property>
                 <style>
                   <class name="suggested-action"/>
                 </style>
