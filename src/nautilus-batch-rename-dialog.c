@@ -1905,6 +1905,8 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     g_string_free (dialog_title, TRUE);
 
+    gtk_window_present (GTK_WINDOW (dialog));
+
     return GTK_WIDGET (dialog);
 }
 
