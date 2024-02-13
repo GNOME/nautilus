@@ -112,7 +112,7 @@ typedef struct
 static void     update_display_text (NautilusBatchRenameDialog *dialog);
 static void     cancel_conflict_check (NautilusBatchRenameDialog *self);
 
-G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, ADW_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, ADW_TYPE_DIALOG);
 
 static void
 change_numbering_order (GSimpleAction *action,
@@ -602,7 +602,7 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 
     begin_batch_rename (dialog, dialog->new_names);
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    adw_dialog_close (ADW_DIALOG (dialog));
 }
 
 static void
@@ -614,7 +614,7 @@ batch_rename_dialog_on_cancel (NautilusBatchRenameDialog *dialog,
         cancel_conflict_check (dialog);
     }
 
-    gtk_window_destroy (GTK_WINDOW (dialog));
+    adw_dialog_close (ADW_DIALOG (dialog));
 }
 
 static void
@@ -1838,9 +1838,6 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     dialog->directory = nautilus_directory_ref (directory);
     dialog->window = window;
 
-    gtk_window_set_transient_for (GTK_WINDOW (dialog),
-                                  GTK_WINDOW (window));
-
     all_targets_are_folders = TRUE;
     for (l = selection; l != NULL; l = l->next)
     {
@@ -1889,11 +1886,9 @@ nautilus_batch_rename_dialog_new (GList             *selection,
                                 g_list_length (selection));
     }
 
-    gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);
+    adw_dialog_set_title (ADW_DIALOG (dialog), dialog_title->str);
 
     dialog->distinct_parent_directories = batch_rename_files_get_distinct_parents (selection);
-
-    add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
     nautilus_batch_rename_dialog_initialize_actions (dialog);
 
@@ -1905,7 +1900,9 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     g_string_free (dialog_title, TRUE);
 
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (window));
+
+    add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
     return GTK_WIDGET (dialog);
 }
