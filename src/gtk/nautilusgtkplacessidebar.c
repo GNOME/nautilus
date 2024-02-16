@@ -1320,7 +1320,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       name = g_mount_get_name (mount);
       tooltip = g_file_get_parse_name (root);
       add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+                 NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, mount, NULL, 0, tooltip);
       g_object_unref (root);
