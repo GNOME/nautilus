@@ -53,6 +53,7 @@ info_finished (NautilusProgressInfoWidget *self)
     if (!nautilus_progress_info_get_is_cancelled (self->priv->info))
     {
         gtk_button_set_icon_name (GTK_BUTTON (self->priv->button), "emblem-ok-symbolic");
+        /* Translators: This is an adjective describing an operation, such as copying files. */
         gtk_widget_set_tooltip_text (GTK_WIDGET (self->priv->button), _("Completed"));
     }
 }
