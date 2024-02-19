@@ -1343,3 +1343,10 @@ nautilus_application_is_sandboxed (void)
 
     return ret;
 }
+
+#define NAUTILUS_APP_ID APPLICATION_ID ".desktop"
+gboolean
+nautilus_application_is_app_id (const char *app_id)
+{
+    return g_strcmp0 (app_id, NAUTILUS_APP_ID) == 0;
+}

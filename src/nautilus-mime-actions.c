@@ -722,7 +722,7 @@ get_activation_action (NautilusFile *file)
         if (app_info != NULL)
         {
             const gchar *app_id = g_app_info_get_id (app_info);
-            gboolean handles_extract = g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0;
+            gboolean handles_extract = nautilus_application_is_app_id (app_id);
 
             if (handles_extract)
             {

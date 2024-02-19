@@ -64,4 +64,7 @@ NautilusBookmarkList *
 void nautilus_application_search (NautilusApplication *application,
                                   NautilusQuery       *query);
 gboolean nautilus_application_is_sandboxed (void);
+
+gboolean nautilus_application_is_app_id (const char *app_id);
+
 G_END_DECLS

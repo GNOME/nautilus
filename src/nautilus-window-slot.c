@@ -2021,12 +2021,11 @@ apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
 
     if (self->pending_file_to_activate != NULL)
     {
-        g_autoptr (GAppInfo) app_info = NULL;
-        const gchar *app_id;
+        g_autoptr (GAppInfo) app_info =
+            nautilus_mime_get_default_application_for_file (self->pending_file_to_activate);
+        const char *app_id = g_app_info_get_id (app_info);
 
-        app_info = nautilus_mime_get_default_application_for_file (self->pending_file_to_activate);
-        app_id = g_app_info_get_id (app_info);
-        if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
+        if (nautilus_application_is_app_id (app_id))
         {
             nautilus_files_view_activate_file (self->content_view,
                                                self->pending_file_to_activate, 0);
