@@ -7,6 +7,8 @@
  */
 #define G_LOG_DOMAIN "nautilus-file"
 
+#include <config.h>
+
 #include "nautilus-file.h"
 
 #ifndef NAUTILUS_COMPILATION
