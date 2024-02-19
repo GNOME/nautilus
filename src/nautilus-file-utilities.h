@@ -16,8 +16,6 @@
 
 #include <config.h>
 
-#define NAUTILUS_DESKTOP_ID APPLICATION_ID ".desktop"
-
 #define IS_ATTRIBUTE_SET(attribute,mask) (attribute & mask) == mask
 
 typedef void (* EmptyCheckCallback) (gpointer callback_data,

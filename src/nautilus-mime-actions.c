@@ -715,20 +715,9 @@ get_activation_action (NautilusFile *file)
     ActivationAction action;
     char *activation_uri;
 
-    if (nautilus_file_is_archive (file))
+    if (nautilus_file_is_archive (file) && nautilus_mime_file_defaults_to_nautilus (file))
     {
-        g_autoptr (GAppInfo) app_info = nautilus_mime_get_default_application_for_file (file);
-
-        if (app_info != NULL)
-        {
-            const gchar *app_id = g_app_info_get_id (app_info);
-            gboolean handles_extract = g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0;
-
-            if (handles_extract)
-            {
-                return ACTIVATION_ACTION_EXTRACT;
-            }
-        }
+        return ACTIVATION_ACTION_EXTRACT;
     }
 
     activation_uri = nautilus_file_get_activation_uri (file);
@@ -805,6 +794,17 @@ nautilus_mime_is_video (const char *content_type)
     ensure_video_types_hash ();
 
     return g_hash_table_contains (video_content_types_hash, content_type);
+}
+
+#define NAUTILUS_DESKTOP_ID APPLICATION_ID ".desktop"
+
+gboolean
+nautilus_mime_file_defaults_to_nautilus (NautilusFile *file)
+{
+    g_autoptr (GAppInfo) app_info = nautilus_mime_get_default_application_for_file (file);
+
+    return app_info != NULL &&
+           g_strcmp0 (g_app_info_get_id (app_info), NAUTILUS_DESKTOP_ID) == 0;
 }
 
 gboolean
