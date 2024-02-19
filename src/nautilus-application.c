@@ -14,6 +14,8 @@
  */
 #define G_LOG_DOMAIN "nautilus-application"
 
+#include <config.h>
+
 #include "nautilus-application.h"
 
 #include <adwaita.h>

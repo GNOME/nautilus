@@ -6,6 +6,8 @@
  * Authors: Darin Adler <darin@bentspoon.com>
  */
 
+#include <config.h>
+
 #include "nautilus-properties.h"
 
 #include <adwaita.h>
