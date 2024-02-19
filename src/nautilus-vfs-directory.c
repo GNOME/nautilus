@@ -9,7 +9,6 @@
  * Author: Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
 #include "nautilus-vfs-directory.h"
 
 #include "nautilus-directory-private.h"

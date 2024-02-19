@@ -7,7 +7,6 @@
  */
 
 
-#include "config.h"
 #include "nautilus-progress-paintable.h"
 
 #include <adwaita.h>

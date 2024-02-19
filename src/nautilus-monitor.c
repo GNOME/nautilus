@@ -12,7 +12,6 @@
  *          Carlos Soriano <csoriano@gnome.org>
  */
 
-#include <config.h>
 #include "nautilus-monitor.h"
 #include "nautilus-file-changes-queue.h"
 

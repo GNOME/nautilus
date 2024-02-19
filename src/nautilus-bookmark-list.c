@@ -9,7 +9,6 @@
 /* nautilus-bookmark-list.c - implementation of centralized list of bookmarks.
  */
 
-#include <config.h>
 #include "nautilus-bookmark-list.h"
 
 #include "nautilus-bookmark.h"

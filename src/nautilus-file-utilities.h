@@ -14,8 +14,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#include <config.h>
-
 #define IS_ATTRIBUTE_SET(attribute,mask) (attribute & mask) == mask
 
 typedef void (* EmptyCheckCallback) (gpointer callback_data,

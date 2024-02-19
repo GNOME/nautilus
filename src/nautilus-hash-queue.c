@@ -6,7 +6,6 @@
  * Author: Maciej Stachowiak <mjs@noisehavoc.org>
  */
 
-#include <config.h>
 #include "nautilus-hash-queue.h"
 
 #include <glib.h>

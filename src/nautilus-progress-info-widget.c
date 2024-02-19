@@ -9,7 +9,6 @@
  *          Cosimo Cecchi <cosimoc@redhat.com>
  */
 
-#include "config.h"
 #include "nautilus-progress-info-widget.h"
 
 #include "nautilus-progress-info.h"

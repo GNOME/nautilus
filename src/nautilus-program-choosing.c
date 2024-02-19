@@ -9,7 +9,6 @@
  * Author: John Sullivan <sullivan@eazel.com>
  */
 
-#include <config.h>
 #include "nautilus-program-choosing.h"
 
 #include "nautilus-file.h"

@@ -5,7 +5,6 @@
  */
 #include "nautilus-sidebar-row.h"
 
-#include "config.h"
 #include <gtk/gtk.h>
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"

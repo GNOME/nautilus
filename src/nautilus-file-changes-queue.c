@@ -6,7 +6,6 @@
  * Author: Pavel Cisler <pavel@eazel.com>
  */
 
-#include <config.h>
 #include "nautilus-file-changes-queue.h"
 
 #include "nautilus-directory-notify.h"

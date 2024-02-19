@@ -7,7 +7,6 @@
  *          Corey Berla <corey@berla.me>
  */
 
-#include <config.h>
 #include "nautilus-column-chooser.h"
 
 #include <adwaita.h>

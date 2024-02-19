@@ -6,7 +6,6 @@
  * Author: Dave Camp <dave@ximian.com>
  */
 
-#include <config.h>
 #include "nautilus-menu-provider.h"
 
 /**

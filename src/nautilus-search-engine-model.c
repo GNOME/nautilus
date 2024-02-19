@@ -7,7 +7,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-search"
 
-#include <config.h>
 #include "nautilus-search-engine-model.h"
 
 #include "nautilus-directory.h"

@@ -7,8 +7,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-window"
 
-#include "config.h"
-
 #include "nautilus-window-slot.h"
 
 #include "nautilus-application.h"

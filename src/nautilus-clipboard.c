@@ -9,7 +9,6 @@
  *          Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-file.h"
 

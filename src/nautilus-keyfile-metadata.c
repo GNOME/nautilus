@@ -6,8 +6,6 @@
  * Authors: Cosimo Cecchi <cosimoc@redhat.com>
  */
 
-#include <config.h>
-
 #include "nautilus-keyfile-metadata.h"
 
 #include "nautilus-directory-notify.h"

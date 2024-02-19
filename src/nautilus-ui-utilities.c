@@ -8,8 +8,6 @@
  *          Alexander Larsson <alexl@redhat.com>
  */
 
-#include <config.h>
-
 #include "nautilus-ui-utilities.h"
 #include "nautilus-application.h"
 

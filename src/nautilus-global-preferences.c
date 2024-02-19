@@ -6,7 +6,6 @@
  * Authors: Ramiro Estrugo <ramiro@eazel.com>
  */
 
-#include <config.h>
 #include "nautilus-global-preferences.h"
 
 #include "nautilus-file-utilities.h"
