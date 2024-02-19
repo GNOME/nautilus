@@ -5,8 +5,6 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#include <config.h>
-
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-item.h"
 #include "nautilus-directory.h"

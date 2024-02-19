@@ -9,7 +9,6 @@
  * Authors: Cosimo Cecchi <cosimoc@gnome.org>
  */
 
-#include <config.h>
 #include "nautilus-file-conflict-dialog.h"
 
 #include <string.h>

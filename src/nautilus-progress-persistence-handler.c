@@ -10,8 +10,6 @@
  *          Carlos Soriano <csoriano@gnome.com>
  */
 
-#include <config.h>
-
 #include "nautilus-progress-persistence-handler.h"
 
 #include "nautilus-application.h"

@@ -5,8 +5,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-search-hit"
 
-#include <config.h>
-
 #include <string.h>
 #include <gio/gio.h>
 

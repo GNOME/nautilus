@@ -9,7 +9,6 @@
  * Author: Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
 #include "nautilus-vfs-file.h"
 
 #include "nautilus-directory-notify.h"

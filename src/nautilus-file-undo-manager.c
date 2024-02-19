@@ -9,7 +9,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-undo"
 
-#include <config.h>
 
 #include "nautilus-file-undo-manager.h"
 
