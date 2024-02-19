@@ -71,16 +71,10 @@ struct NautilusDirectoryPrivate
 	NautilusFileQueue *low_priority_queue;
 	NautilusFileQueue *extension_queue;
 
-    /* Callbacks are inserted into ready when the callback is triggered and
-     * scheduled to be called at idle. It's still kept in the hash table so we
-     * can kill it when the file goes away before being called. The hash table
-     * uses the file pointer of the ReadyCallback as a key.
-     */
-    struct
-    {
-        GHashTable *unsatisfied;
-        GHashTable *ready;
-    } call_when_ready_hash;
+	/* These lists are going to be pretty short.  If we think they
+	 * are going to get big, we can use hash tables instead.
+	 */
+	GList *call_when_ready_list;
 	RequestCounter call_when_ready_counters;
 	GHashTable *monitor_table;
 	RequestCounter monitor_counters;
