@@ -7,8 +7,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-error-reporting"
 
-#include <config.h>
-
 #include "nautilus-error-reporting.h"
 
 #include "nautilus-file.h"

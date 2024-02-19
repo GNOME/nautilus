@@ -6,7 +6,6 @@
  * Author: Raffaele Sandrini <rasa@gmx.ch>
  */
 
-#include <config.h>
 #include "nautilus-menu.h"
 
 #include <glib.h>

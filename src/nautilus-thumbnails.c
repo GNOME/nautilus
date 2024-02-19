@@ -8,7 +8,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-thumbnails"
 
-#include <config.h>
 #include "nautilus-thumbnails.h"
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API

@@ -10,7 +10,6 @@
  * correspond to any particular object.
  */
 
-#include <config.h>
 #include "nautilus-signaller.h"
 
 

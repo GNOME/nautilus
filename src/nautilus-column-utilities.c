@@ -6,7 +6,6 @@
  * Authors: Dave Camp <dave@ximian.com>
  */
 
-#include <config.h>
 #include "nautilus-column-utilities.h"
 
 #include <string.h>

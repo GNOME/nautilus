@@ -9,8 +9,6 @@
  */
 #define G_LOG_DOMAIN "nautilus-bookmarks"
 
-#include <config.h>
-
 #include "nautilus-bookmark.h"
 
 #include <gio/gio.h>

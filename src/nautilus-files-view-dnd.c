@@ -12,8 +12,6 @@
  *          Pavel Cisler <pavel@eazel.com>
  */
 
-#include <config.h>
-
 #include "nautilus-files-view-dnd.h"
 
 #include "nautilus-files-view.h"

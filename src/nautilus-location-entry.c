@@ -12,7 +12,6 @@
 /* nautilus-location-bar.c - Location bar for Nautilus
  */
 
-#include <config.h>
 #include "nautilus-location-entry.h"
 
 #include "nautilus-scheme.h"
