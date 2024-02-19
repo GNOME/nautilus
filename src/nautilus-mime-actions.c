@@ -7,6 +7,8 @@
  */
 #define G_LOG_DOMAIN "nautilus-mime"
 
+#include <config.h>
+
 #include "nautilus-mime-actions.h"
 
 #include <glib.h>
