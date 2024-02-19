@@ -2019,18 +2019,11 @@ apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
     nautilus_file_list_free (self->pending_selection);
     self->pending_selection = NULL;
 
-    if (self->pending_file_to_activate != NULL)
+    if (self->pending_file_to_activate != NULL &&
+        nautilus_mime_file_defaults_to_nautilus (self->pending_file_to_activate))
     {
-        g_autoptr (GAppInfo) app_info = NULL;
-        const gchar *app_id;
-
-        app_info = nautilus_mime_get_default_application_for_file (self->pending_file_to_activate);
-        app_id = g_app_info_get_id (app_info);
-        if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
-        {
-            nautilus_files_view_activate_file (self->content_view,
-                                               self->pending_file_to_activate, 0);
-        }
+        nautilus_files_view_activate_file (self->content_view,
+                                           self->pending_file_to_activate, 0);
     }
 }
 
