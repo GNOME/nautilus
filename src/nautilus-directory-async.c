@@ -1336,9 +1336,9 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory      *directory,
 }
 
 static GList *
-remove_callback_link_keep_data (NautilusDirectory *directory,
-                                GList             *link,
-                                gboolean           ready)
+remove_callback_link (NautilusDirectory *directory,
+                      GList             *link,
+                      gboolean           ready)
 {
     ReadyCallback *callback = link->data;
     GList *list = g_list_first (link);
@@ -1364,21 +1364,9 @@ remove_callback_link_keep_data (NautilusDirectory *directory,
     request_counter_remove_request (directory->details->call_when_ready_counters,
                                     callback->request);
 
-    return list;
-}
-
-static GList *
-remove_callback_link (NautilusDirectory *directory,
-                      GList             *link,
-                      gboolean           ready)
-{
-    ReadyCallback *callback;
-
-    callback = link->data;
-    link = remove_callback_link_keep_data (directory, link, ready);
     g_free (callback);
 
-    return link;
+    return list;
 }
 
 static void
