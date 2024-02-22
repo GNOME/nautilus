@@ -53,7 +53,7 @@ potfile:
 
 style check:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
-    stage: test
+    stage: review
     artifacts:
         name: 'Style check artifacts'
         expose_as: 'Get style check diff here'
