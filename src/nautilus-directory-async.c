@@ -1520,31 +1520,30 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 void
 nautilus_async_destroying_file (NautilusFile *file)
 {
-    NautilusDirectory *directory;
-    gboolean changed;
-    GList *node, *next;
-    Monitor *monitor;
-
-    directory = file->details->directory;
-    changed = FALSE;
+    NautilusDirectory *directory = file->details->directory;
+    gboolean changed = FALSE;
+    GList *node;
 
     /* Check for callbacks. */
     node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, file);
 
-    /* Client should have cancelled callback. */
-    for (; node != NULL; node = next)
+    if (node != NULL)
     {
+        /* Client should have cancelled callback. */
         g_warning ("destroyed file has call_when_ready pending");
-
-        next = remove_callback_link (directory, node, FALSE);
         changed = TRUE;
+
+        while (node != NULL)
+        {
+            node = remove_callback_link (directory, node, FALSE);
+        }
     }
 
     node = g_hash_table_lookup (directory->details->call_when_ready_hash.ready, file);
 
-    for (; node != NULL; node = next)
+    while (node != NULL)
     {
-        next = remove_callback_link (directory, node, TRUE);
+        node = remove_callback_link (directory, node, TRUE);
         changed = TRUE;
     }
 
@@ -1554,14 +1553,13 @@ nautilus_async_destroying_file (NautilusFile *file)
     {
         /* Client should have removed monitor earlier. */
         g_warning ("destroyed file still being monitored");
-        for (; node; node = next)
-        {
-            next = node->next;
-            monitor = node->data;
+        changed = TRUE;
 
+        for (; node != NULL; node = node->next)
+        {
+            Monitor *monitor = node->data;
             remove_monitor (directory, monitor->file, monitor->client);
         }
-        changed = TRUE;
     }
 
     /* Check if it's a file that's currently being worked on.
