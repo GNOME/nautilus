@@ -1780,28 +1780,26 @@ request_is_satisfied (NautilusDirectory *directory,
     return TRUE;
 }
 
-static gboolean
+static void
 call_ready_callbacks_at_idle (gpointer callback_data)
 {
-    NautilusDirectory *directory;
+    g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (GPtrArray) values = NULL;
     g_autoptr (GHashTable) ready_callbacks = NULL;
 
-    directory = NAUTILUS_DIRECTORY (callback_data);
+    directory = nautilus_directory_ref (NAUTILUS_DIRECTORY (callback_data));
     directory->details->call_ready_idle_id = 0;
 
     /* Swap out hash table for empty new one */
     ready_callbacks = directory->details->call_when_ready_hash.ready;
     directory->details->call_when_ready_hash.ready = g_hash_table_new (NULL, NULL);
 
-    nautilus_directory_ref (directory);
-
     values = g_hash_table_get_values_as_ptr_array (ready_callbacks);
 
     if (values->len == 0)
     {
         /* Return early in case all ready callbacks were cancelled, don't emit state change */
-        return FALSE;
+        return;
     }
 
     for (guint i = 0; i < values->len; i++)
@@ -1824,10 +1822,6 @@ call_ready_callbacks_at_idle (gpointer callback_data)
     }
 
     nautilus_directory_async_state_changed (directory);
-
-    nautilus_directory_unref (directory);
-
-    return FALSE;
 }
 
 static void
@@ -1836,7 +1830,7 @@ schedule_call_ready_callbacks (NautilusDirectory *directory)
     if (directory->details->call_ready_idle_id == 0)
     {
         directory->details->call_ready_idle_id
-            = g_idle_add (call_ready_callbacks_at_idle, directory);
+            = g_idle_add_once (call_ready_callbacks_at_idle, directory);
     }
 }
 
