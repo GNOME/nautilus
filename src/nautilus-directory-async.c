@@ -1260,6 +1260,7 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
                                              gpointer                   callback_data)
 {
     ReadyCallback callback;
+    GList *node;
 
     g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
     g_assert (file == NULL || NAUTILUS_IS_FILE (file));
@@ -1290,9 +1291,9 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
     }
 
     /* Check if the callback is already there. */
-    GList *unsatisfied_list = directory->details->call_when_ready_lists.unsatisfied;
+    node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, callback.file);
 
-    if (g_list_find_custom (unsatisfied_list, &callback, ready_callback_key_compare) != NULL)
+    if (g_list_find_custom (node, &callback, ready_callback_key_compare) != NULL)
     {
         if (file_callback != NULL && directory_callback != NULL)
         {
@@ -1303,9 +1304,8 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
     }
 
     /* Add the new callback to the list. */
-    unsatisfied_list = g_list_prepend (unsatisfied_list, g_memdup2 (&callback, sizeof (callback)));
-    directory->details->call_when_ready_lists.unsatisfied = unsatisfied_list;
-
+    node = g_list_prepend (node, g_memdup2 (&callback, sizeof (callback)));
+    g_hash_table_replace (directory->details->call_when_ready_hash.unsatisfied, callback.file, node);
     request_counter_add_request (directory->details->call_when_ready_counters,
                                  callback.request);
 
@@ -1335,23 +1335,39 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory      *directory,
     return request_is_satisfied (directory, file, request);
 }
 
-static void
+static GList *
 remove_callback_link_keep_data (NautilusDirectory *directory,
                                 GList             *link,
                                 gboolean           ready)
 {
     ReadyCallback *callback = link->data;
-    GList **list = ready ? &directory->details->call_when_ready_lists.ready :
-                           &directory->details->call_when_ready_lists.unsatisfied;
+    GList *list = g_list_first (link);
+    gboolean is_first_link = (list == link);
 
-    *list = g_list_remove_link (*list, link);
+    list = g_list_delete_link (list, link);
+
+    if (is_first_link)
+    {
+        GHashTable *hash = ready ? directory->details->call_when_ready_hash.ready :
+                                   directory->details->call_when_ready_hash.unsatisfied;
+
+        if (list != NULL)
+        {
+            g_hash_table_replace (hash, callback->file, list);
+        }
+        else
+        {
+            g_hash_table_remove (hash, callback->file);
+        }
+    }
 
     request_counter_remove_request (directory->details->call_when_ready_counters,
                                     callback->request);
-    g_list_free_1 (link);
+
+    return list;
 }
 
-static void
+static GList *
 remove_callback_link (NautilusDirectory *directory,
                       GList             *link,
                       gboolean           ready)
@@ -1359,44 +1375,35 @@ remove_callback_link (NautilusDirectory *directory,
     ReadyCallback *callback;
 
     callback = link->data;
-    remove_callback_link_keep_data (directory, link, ready);
+    link = remove_callback_link_keep_data (directory, link, ready);
     g_free (callback);
+
+    return link;
 }
 
 static void
 remove_similar_callbacks (NautilusDirectory *directory,
                           ReadyCallback     *callback)
 {
-    GList *node;
+    GList *list, *node;
 
-    /* Remove all queued callback from the list (including ready). */
-    do
+    /* Remove all queued ready callbacks */
+    list = g_hash_table_lookup (directory->details->call_when_ready_hash.ready, callback->file);
+    node = g_list_find_custom (list, callback, ready_callback_key_compare);
+    while (node != NULL)
     {
-        node = g_list_find_custom (directory->details->call_when_ready_lists.ready,
-                                   &callback,
-                                   ready_callback_key_compare);
-        if (node != NULL)
-        {
-            remove_callback_link (directory, node, TRUE);
-
-            nautilus_directory_async_state_changed (directory);
-        }
+        node = remove_callback_link (directory, node, TRUE);
+        nautilus_directory_async_state_changed (directory);
     }
-    while (node != NULL);
 
-    do
+    /* Remove all queued unsatisfied callbacks */
+    list = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, callback->file);
+    node = g_list_find_custom (list, callback, ready_callback_key_compare);
+    while (node != NULL)
     {
-        node = g_list_find_custom (directory->details->call_when_ready_lists.unsatisfied,
-                                   &callback,
-                                   ready_callback_key_compare);
-        if (node != NULL)
-        {
-            remove_callback_link (directory, node, FALSE);
-
-            nautilus_directory_async_state_changed (directory);
-        }
+        node = remove_callback_link (directory, node, FALSE);
+        nautilus_directory_async_state_changed (directory);
     }
-    while (node != NULL);
 }
 
 void
@@ -1525,48 +1532,30 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 void
 nautilus_async_destroying_file (NautilusFile *file)
 {
-    NautilusDirectory *directory;
-    gboolean changed;
-    GList *node, *next;
-    ReadyCallback *callback;
-    Monitor *monitor;
-
-    directory = file->details->directory;
-    changed = FALSE;
+    NautilusDirectory *directory = file->details->directory;
+    gboolean changed = FALSE;
+    GList *node;
 
     /* Check for callbacks. */
-    node = directory->details->call_when_ready_lists.unsatisfied;
+    node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, file);
 
-    for (; node != NULL; node = next)
+    if (node != NULL)
     {
-        next = node->next;
-        callback = node->data;
-
-        if (callback->file != file)
-        {
-            continue;
-        }
-
         /* Client should have cancelled callback. */
         g_warning ("destroyed file has call_when_ready pending");
-
-        remove_callback_link (directory, node, FALSE);
         changed = TRUE;
+
+        while (node != NULL)
+        {
+            node = remove_callback_link (directory, node, FALSE);
+        }
     }
 
-    node = directory->details->call_when_ready_lists.unsatisfied;
+    node = g_hash_table_lookup (directory->details->call_when_ready_hash.ready, file);
 
-    for (; node != NULL; node = next)
+    while (node != NULL)
     {
-        next = node->next;
-        callback = node->data;
-
-        if (callback->file != file)
-        {
-            continue;
-        }
-
-        remove_callback_link (directory, node, TRUE);
+        node = remove_callback_link (directory, node, TRUE);
         changed = TRUE;
     }
 
@@ -1576,11 +1565,11 @@ nautilus_async_destroying_file (NautilusFile *file)
     {
         /* Client should have removed monitor earlier. */
         g_warning ("destroyed file still being monitored");
-        for (; node; node = next)
-        {
-            next = node->next;
-            monitor = node->data;
 
+        while (node != NULL)
+        {
+            Monitor *monitor = node->data;
+            node = node->next;
             remove_monitor (directory, monitor->file, monitor->client);
         }
         changed = TRUE;
@@ -1795,26 +1784,43 @@ static gboolean
 call_ready_callbacks_at_idle (gpointer callback_data)
 {
     NautilusDirectory *directory;
-    GList *node;
-    ReadyCallback *callback;
+    g_autoptr (GPtrArray) values = NULL;
+    g_autoptr (GHashTable) ready_callbacks = NULL;
 
     directory = NAUTILUS_DIRECTORY (callback_data);
     directory->details->call_ready_idle_id = 0;
 
+    /* Swap out hash table for empty new one */
+    ready_callbacks = directory->details->call_when_ready_hash.ready;
+    directory->details->call_when_ready_hash.ready = g_hash_table_new (NULL, NULL);
+
     nautilus_directory_ref (directory);
 
-    callback = NULL;
-    /* Check if any callbacks are ready and call them if they are. */
-    while ((node = directory->details->call_when_ready_lists.ready) != NULL)
+    values = g_hash_table_get_values_as_ptr_array (ready_callbacks);
+
+    if (values->len == 0)
     {
-        callback = node->data;
+        /* Return early in case all ready callbacks were cancelled, don't emit state change */
+        return FALSE;
+    }
 
-        /* Callbacks are one-shots, so remove it now. */
-        remove_callback_link_keep_data (directory, node, TRUE);
+    for (guint i = 0; i < values->len; i++)
+    {
+        for (GList *node = values->pdata[i]; node != NULL; node = node->next)
+        {
+            ReadyCallback *callback = node->data;
 
-        /* Call the callback. */
-        ready_callback_call (directory, callback);
-        g_free (callback);
+            request_counter_remove_request (directory->details->call_when_ready_counters,
+                                            callback->request);
+
+            ready_callback_call (directory, callback);
+        }
+    }
+
+    /* Cleanup */
+    for (guint i = 0; i < values->len; i++)
+    {
+        g_list_free_full (values->pdata[i], g_free);
     }
 
     nautilus_directory_async_state_changed (directory);
@@ -1834,30 +1840,61 @@ schedule_call_ready_callbacks (NautilusDirectory *directory)
     }
 }
 
-/* Moves all the callbacks that are ready and
- * calls them at idle time, unless they are removed
- * before then */
+/* Moves all the callbacks that are ready from the unsatisfied hash table
+ * to the ready hash table and schedules them to be called at idle, unless
+ * they are removed before then */
 static gboolean
 call_ready_callbacks (NautilusDirectory *directory)
 {
-    gboolean found_any;
-    GList *node, *next;
-    GList **unsatisfied_list, **ready_list;
+    GHashTable *ready_hash = directory->details->call_when_ready_hash.ready;
+    GHashTable *unsatisfied_hash = directory->details->call_when_ready_hash.unsatisfied;
+    g_autoptr (GPtrArray) unsatisfied_callbacks = g_hash_table_get_values_as_ptr_array (unsatisfied_hash);
+    gboolean found_any = FALSE;
 
-    unsatisfied_list = &directory->details->call_when_ready_lists.unsatisfied;
-    ready_list = &directory->details->call_when_ready_lists.ready;
-
-    found_any = FALSE;
-
-    /* Check if any callbacks are satisifed and mark them for call them if they are. */
-    for (node = *unsatisfied_list; node != NULL; node = next)
+    /* Check if any callbacks are satisfied and mark them for call them if they are. */
+    for (guint i = 0; i < unsatisfied_callbacks->len; i++)
     {
-        next = node->next;
-        ReadyCallback *callback = node->data;
-        if (request_is_satisfied (directory, callback->file, callback->request))
+        GList *unsatisfied_list = unsatisfied_callbacks->pdata[i];
+        GList *ready_list = NULL;
+        GList *next;
+        NautilusFile *callback_file = NULL;
+        gboolean satisfied_callbacks = FALSE;
+
+        for (GList *node = unsatisfied_list; node != NULL; node = next)
         {
-            *unsatisfied_list = g_list_delete_link (*unsatisfied_list, node);
-            *ready_list = g_list_prepend (*ready_list, callback);
+            next = node->next;
+            ReadyCallback *callback = node->data;
+
+            if (!request_is_satisfied (directory, callback->file, callback->request))
+            {
+                continue;
+            }
+
+            if (!satisfied_callbacks)
+            {
+                ready_list = g_hash_table_lookup (ready_hash, callback->file);
+                callback_file = callback->file;
+                satisfied_callbacks = TRUE;
+            }
+
+            /* Move callback from unready list to ready list */
+            unsatisfied_list = g_list_delete_link (unsatisfied_list, node);
+            ready_list = g_list_prepend (ready_list, callback);
+        }
+
+        if (satisfied_callbacks)
+        {
+            g_hash_table_replace (ready_hash, callback_file, ready_list);
+
+            if (unsatisfied_list != NULL)
+            {
+                g_hash_table_replace (unsatisfied_hash, callback_file, unsatisfied_list);
+            }
+            else
+            {
+                g_hash_table_remove (unsatisfied_hash, callback_file);
+            }
+
             found_any = TRUE;
         }
     }
@@ -1891,28 +1928,12 @@ gboolean
 nautilus_directory_has_request_for_file (NautilusDirectory *directory,
                                          NautilusFile      *file)
 {
-    GList *node;
-    ReadyCallback *callback;
-
-    for (node = directory->details->call_when_ready_lists.unsatisfied;
-         node != NULL; node = node->next)
+    if (g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, NULL) != NULL ||
+        g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, file) != NULL ||
+        g_hash_table_lookup (directory->details->call_when_ready_hash.ready, NULL) != NULL ||
+        g_hash_table_lookup (directory->details->call_when_ready_hash.ready, file) != NULL)
     {
-        callback = node->data;
-        if (callback->file == file ||
-            callback->file == NULL)
-        {
-            return TRUE;
-        }
-    }
-    for (node = directory->details->call_when_ready_lists.ready;
-         node != NULL; node = node->next)
-    {
-        callback = node->data;
-        if (callback->file == file ||
-            callback->file == NULL)
-        {
-            return TRUE;
-        }
+        return TRUE;
     }
 
     if (lookup_monitors (directory->details->monitor_table, file) != NULL)
@@ -2291,21 +2312,23 @@ is_needy (NautilusFile *file,
     directory = file->details->directory;
     if (directory->details->call_when_ready_counters[request_type_wanted] > 0)
     {
-        for (node = directory->details->call_when_ready_lists.unsatisfied;
-             node != NULL; node = node->next)
+        node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, file);
+        for (; node != NULL; node = node->next)
         {
             callback = node->data;
             if (REQUEST_WANTS_TYPE (callback->request, request_type_wanted))
             {
-                if (callback->file == file)
-                {
-                    return TRUE;
-                }
-                if (callback->file == NULL &&
-                    !nautilus_file_is_self_owned (file))
-                {
-                    return TRUE;
-                }
+                return TRUE;
+            }
+        }
+
+        node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, NULL);
+        if (node != NULL && !nautilus_file_is_self_owned (file))
+        {
+            callback = node->data;
+            if (REQUEST_WANTS_TYPE (callback->request, request_type_wanted))
+            {
+                return TRUE;
             }
         }
     }
