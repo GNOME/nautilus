@@ -3803,17 +3803,30 @@ real_check_empty_states (NautilusFilesView *view)
         if (NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
         {
             NautilusSearchDirectory *search = NAUTILUS_SEARCH_DIRECTORY (priv->directory);
-            gboolean global_search = nautilus_query_is_global (nautilus_search_directory_get_query (search));
+            NautilusQuery *query = nautilus_search_directory_get_query (search);
+            gboolean global_search = nautilus_query_is_global (query);
 
-            adw_status_page_set_child (status_page, (global_search ?
-                                                     build_search_settings_button (view) :
-                                                     build_search_everywhere_button (view)));
+            if (global_search)
+            {
+                adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
+                adw_status_page_set_description (status_page,
+                                                 _("More locations can be added to search in the settings"));
+                adw_status_page_set_child (status_page, build_search_settings_button (view));
+            }
+            else
+            {
+                g_autoptr (GFile) location = nautilus_query_get_location (query);
+                g_autoptr (NautilusFile) file = nautilus_file_get (location);
+                /* Translators: %s is the name of the search location formatted for display */
+                g_autofree gchar *local_description = g_strdup_printf (_("No matches in “%s”"),
+                                                                       nautilus_file_get_display_name (file));
 
-            adw_status_page_set_icon_name (status_page, "edit-find-symbolic");
+                adw_status_page_set_icon_name (status_page, "nautilus-folder-search-symbolic");
+                adw_status_page_set_description (status_page, local_description);
+                adw_status_page_set_child (status_page, (build_search_everywhere_button (view)));
+            }
+
             adw_status_page_set_title (status_page, _("No Results Found"));
-            adw_status_page_set_description (status_page,
-                                             (global_search ?
-                                              _("No matches found in indexed locations") : NULL));
         }
         else if (nautilus_is_root_for_scheme (priv->location, SCHEME_TRASH))
         {
