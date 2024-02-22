@@ -1373,6 +1373,7 @@ static void
 remove_similar_callbacks (NautilusDirectory *directory,
                           ReadyCallback     *callback)
 {
+    gboolean changed = FALSE;
     GList *list, *node;
 
     /* Remove all queued ready callbacks */
@@ -1381,7 +1382,7 @@ remove_similar_callbacks (NautilusDirectory *directory,
     while (node != NULL)
     {
         node = remove_callback_link (directory, node, TRUE);
-        nautilus_directory_async_state_changed (directory);
+        changed = TRUE;
     }
 
     /* Remove all queued unsatisfied callbacks */
@@ -1390,6 +1391,11 @@ remove_similar_callbacks (NautilusDirectory *directory,
     while (node != NULL)
     {
         node = remove_callback_link (directory, node, FALSE);
+        changed = TRUE;
+    }
+
+    if (changed)
+    {
         nautilus_directory_async_state_changed (directory);
     }
 }
