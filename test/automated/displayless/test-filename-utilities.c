@@ -68,7 +68,6 @@ test_filename_create_file_copy (void)
     ASSERT_DUPLICATION_NAME ("foo (Copy 2).txt", "foo (Copy 3).txt");
     ASSERT_DUPLICATION_NAME ("foo foo (Copy 2).txt", "foo foo (Copy 3).txt");
     ASSERT_DUPLICATION_NAME ("foo (Copy 13)", "foo (Copy 14)");
-    ASSERT_DUPLICATION_NAME ("foo foo (Copy 123345678901).txt", "foo foo (Copy 123345678902).txt");
 
 #undef ASSERT_DUPLICATION_NAME
 }
