@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-11 01:42+0000\n"
-"PO-Revision-Date: 2024-02-12 20:56+0200\n"
+"POT-Creation-Date: 2024-02-22 20:12+0000\n"
+"PO-Revision-Date: 2024-02-23 09:45+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -151,9 +151,8 @@ msgid ""
 "Whether to show context menu items to create links from copied or selected "
 "files"
 msgstr ""
-"Чи показувати пункт створення посилання зі скопійованих або вибраних файлів"
-" у "
-"контекстному меню"
+"Чи показувати пункт створення посилання зі скопійованих або вибраних файлів "
+"у контекстному меню"
 
 #: data/org.gnome.nautilus.gschema.xml:103
 msgid ""
@@ -1052,8 +1051,6 @@ msgid "Nautilus Clipboard must not have empty lines."
 msgstr "Вміст буфера обміну даними Nautilus не може містити порожніх рядків."
 
 #: src/nautilus-column-chooser.c:358
-#| msgctxt "shortcut window"
-#| msgid "View"
 msgid "View More"
 msgstr "Докладніше"
 
@@ -1281,7 +1278,7 @@ msgid "Details: The proxy has not been created."
 msgstr "Подробиці: проксі не було створено."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:670
+#: src/nautilus-directory.c:666
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -1772,15 +1769,11 @@ msgstr "невідомо"
 
 #: src/nautilus-file-operations.c:1132 src/nautilus-file-operations.c:1193
 #, c-format
-#| msgid "Delete “%s”"
 msgid "Permanently Delete “%s”?"
 msgstr "Вилучити «%s» остаточно?"
 
 #: src/nautilus-file-operations.c:1136 src/nautilus-file-operations.c:1198
 #, c-format
-#| msgid "Are you sure you want to permanently delete the %'d selected item?"
-#| msgid_plural ""
-#| "Are you sure you want to permanently delete the %'d selected items?"
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
 msgstr[0] "Остаточно вилучити %'d вибраний об'єкт?"
@@ -1789,17 +1782,14 @@ msgstr[2] "Остаточно вилучити %'d вибраних об'єкт�
 msgstr[3] "Остаточно вилучити %'d вибраний об'єкт?"
 
 #: src/nautilus-file-operations.c:1144 src/nautilus-file-operations.c:1206
-#| msgid "The item cannot be restored from trash"
 msgid "Permanently deleted items can not be restored"
 msgstr "Остаточно вилучені об'єкти не може бути відновлено"
 
 #: src/nautilus-file-operations.c:1159
-#| msgid "Empty Trash"
 msgid "Empty Trash?"
 msgstr "Спорожнити смітник?"
 
 #: src/nautilus-file-operations.c:1163
-#| msgid "All items in the Trash will be permanently deleted."
 msgid "All items in the Trash will be permanently deleted"
 msgstr "Усі об'єкти у смітнику буде вилучено остаточно"
 
@@ -1975,7 +1965,7 @@ msgid "Deleting Files"
 msgstr "Вилучення файлів"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6837
 #: src/gtk/nautilusgtkplacessidebar.c:2689
 #: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
@@ -2004,7 +1994,7 @@ msgid "Do _not Empty Trash"
 msgstr "_Не очищати смітник"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6772
+#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6785
 #: src/gtk/nautilusgtkplacessidebar.c:2049
 #, c-format
 msgid "Unable to access “%s”"
@@ -2429,7 +2419,6 @@ msgstr[3] "Створення посилання на %'d файл"
 
 #: src/nautilus-file-operations.c:6510
 #, c-format
-#| msgid "Error while creating link to %s."
 msgid "Error while creating link to “%s”."
 msgstr "Помилка при створенні посилання на «%s»."
 
@@ -2462,13 +2451,11 @@ msgstr "Неназваний документ"
 
 #: src/nautilus-file-operations.c:7390
 #, c-format
-#| msgid "Error while creating directory %s."
 msgid "Error while creating directory “%s”."
 msgstr "Помилка створення каталогу «%s»."
 
 #: src/nautilus-file-operations.c:7395
 #, c-format
-#| msgid "Error while creating file %s."
 msgid "Error while creating file “%s”."
 msgstr "Помилка створення файла «%s»."
 
@@ -2528,7 +2515,6 @@ msgstr "Помилка розпакування «%s»."
 
 #: src/nautilus-file-operations.c:8169
 #, c-format
-#| msgid "Not enough free space to extract %s"
 msgid "Not enough free space to extract “%s”"
 msgstr "Недостатньо вільного місця для видобування «%s»"
 
@@ -2698,7 +2684,6 @@ msgid "%s, %s"
 msgstr "%s, %s"
 
 #: src/nautilus-files-view.c:3764
-#| msgid "Sharing Settings"
 msgid "Search _Settings"
 msgstr "П_араметри пошуку"
 
@@ -2706,70 +2691,77 @@ msgstr "П_араметри пошуку"
 msgid "Search _Everywhere"
 msgstr "Шукати вс_юди"
 
-#: src/nautilus-files-view.c:3813 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3813
+msgid "More locations can be added to search in the settings"
+msgstr "Додаткові місця для пошуку можна додати у «Параметрах»"
+
+#. Translators: %s is the name of the search location formatted for display
+#: src/nautilus-files-view.c:3821
+#, c-format
+#| msgid "Trashing “%s”"
+msgid "No matches in “%s”"
+msgstr "Немає відповідників у «%s»"
+
+#: src/nautilus-files-view.c:3829 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "Не знайдено жодного результату"
 
-#: src/nautilus-files-view.c:3816
-msgid "No matches found in indexed locations"
-msgstr "В індексованих місцях нічого не знайдено"
-
-#: src/nautilus-files-view.c:3821
+#: src/nautilus-files-view.c:3834
 msgid "Trash is Empty"
 msgstr "Смітник порожній"
 
-#: src/nautilus-files-view.c:3827
+#: src/nautilus-files-view.c:3840
 msgid "No Starred Files"
 msgstr "Немає файлів із зірочками"
 
-#: src/nautilus-files-view.c:3833
+#: src/nautilus-files-view.c:3846
 msgid "No Recent Files"
 msgstr "Немає нещодавніх файлів"
 
-#: src/nautilus-files-view.c:3839
+#: src/nautilus-files-view.c:3852
 msgid "Folder is Empty"
 msgstr "Тека порожня"
 
-#: src/nautilus-files-view.c:5998
+#: src/nautilus-files-view.c:6011
 msgid "Select Move Destination"
 msgstr "Виберіть ціль для перенесення"
 
-#: src/nautilus-files-view.c:6002
+#: src/nautilus-files-view.c:6015
 msgid "Select Copy Destination"
 msgstr "Виберіть ціль для копіювання"
 
-#: src/nautilus-files-view.c:6008 src/nautilus-files-view.c:6412
+#: src/nautilus-files-view.c:6021 src/nautilus-files-view.c:6425
 #: src/nautilus-properties-window.c:4077
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "_Вибрати"
 
-#: src/nautilus-files-view.c:6411
+#: src/nautilus-files-view.c:6424
 msgid "Select Extract Destination"
 msgstr "Виберіть ціль для розпакування"
 
-#: src/nautilus-files-view.c:6500
+#: src/nautilus-files-view.c:6513
 msgid "Error sending email."
 msgstr "Помилка надсилання пошти."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6798
+#: src/nautilus-files-view.c:6811
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Не вдалося вилучити «%s»"
 
-#: src/nautilus-files-view.c:6848
+#: src/nautilus-files-view.c:6861
 msgid "Unable to stop drive"
 msgstr "Не вдалося зупинити пристрій"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6959 src/gtk/nautilusgtkplacessidebar.c:2011
+#: src/nautilus-files-view.c:6972 src/gtk/nautilusgtkplacessidebar.c:2011
 #: src/gtk/nautilusgtkplacessidebar.c:2915
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Не вдалося запустити «%s»"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:7956
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2778,64 +2770,64 @@ msgstr[1] "Створити теку з вибраним (%'d об'єкти)"
 msgstr[2] "Створити теку з вибраним (%'d об'єктів)"
 msgstr[3] "Створити теку з вибраним (%'d об'єкт)"
 
-#: src/nautilus-files-view.c:7998
+#: src/nautilus-files-view.c:8011
 #, c-format
 msgid "Open With %s"
 msgstr "Відкрити за допомогою %s"
 
-#: src/nautilus-files-view.c:8009
+#: src/nautilus-files-view.c:8022
 msgid "Run"
 msgstr "Запустити"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8027
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Видобути"
 
-#: src/nautilus-files-view.c:8015
+#: src/nautilus-files-view.c:8028
 msgid "Extract to…"
 msgstr "Розпакувати в…"
 
-#: src/nautilus-files-view.c:8019
+#: src/nautilus-files-view.c:8032
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "Відкрити"
 
-#: src/nautilus-files-view.c:8097
+#: src/nautilus-files-view.c:8110
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3345
 msgid "_Start"
 msgstr "З_апустити"
 
-#: src/nautilus-files-view.c:8103 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8116 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "_З'єднатися"
 
-#: src/nautilus-files-view.c:8109
+#: src/nautilus-files-view.c:8122
 msgid "_Start Multi-disk Drive"
 msgstr "З_апустити багатодисковий пристрій"
 
-#: src/nautilus-files-view.c:8115
+#: src/nautilus-files-view.c:8128
 msgid "U_nlock Drive"
 msgstr "_Розблокувати пристрій"
 
-#: src/nautilus-files-view.c:8133
+#: src/nautilus-files-view.c:8146
 msgid "Stop Drive"
 msgstr "Зупинити пристрій"
 
-#: src/nautilus-files-view.c:8139 src/gtk/nautilusgtkplacessidebar.c:3362
+#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Safely Remove Drive"
 msgstr "_Безпечне вилучення пристрою"
 
-#: src/nautilus-files-view.c:8145 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8158 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "_Від'єднатися"
 
-#: src/nautilus-files-view.c:8151
+#: src/nautilus-files-view.c:8164
 msgid "_Stop Multi-disk Drive"
 msgstr "З_упинити багатодисковий пристрій"
 
-#: src/nautilus-files-view.c:8157
+#: src/nautilus-files-view.c:8170
 msgid "_Lock Drive"
 msgstr "За_блокувати пристрій"
 
@@ -3852,23 +3844,19 @@ msgid "Examples: “%s”, “%s”"
 msgstr "Приклади: «%s», «%s»"
 
 #: src/nautilus-preferences-window.c:343
-#| msgid "Single click"
 msgid "Single-Click"
 msgstr "Одинарне клацання"
 
 #: src/nautilus-preferences-window.c:343
-#| msgid "Double click"
 msgid "Double-Click"
 msgstr "Подвійне клацання"
 
 #: src/nautilus-preferences-window.c:345 src/nautilus-preferences-window.c:347
 #: src/nautilus-preferences-window.c:349
-#| msgid "On this computer only"
 msgid "On This Computer Only"
 msgstr "Тільки на цьому комп'ютері"
 
 #: src/nautilus-preferences-window.c:345
-#| msgid "All locations"
 msgid "All Locations"
 msgstr "Усі місця"
 
@@ -3878,12 +3866,10 @@ msgid "Never"
 msgstr "Ніколи"
 
 #: src/nautilus-preferences-window.c:347
-#| msgid "All files"
 msgid "All Files"
 msgstr "Усі файли"
 
 #: src/nautilus-preferences-window.c:349
-#| msgid "All folders"
 msgid "All Folders"
 msgstr "Усі теки"
 
@@ -3928,10 +3914,11 @@ msgstr "Скасовано"
 msgid "Preparing"
 msgstr "Підготовлення"
 
-#: src/nautilus-progress-info-widget.c:56
-#| msgid "Computer"
-msgid "Completed"
-msgstr "Завершено"
+#. Translators: This describes an operation, such as copying or compressing files, as being completed.
+#: src/nautilus-progress-info-widget.c:57
+#| msgid "Completed"
+msgid "Operation Completed"
+msgstr "Дію завершено"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -3956,47 +3943,38 @@ msgid "All file operations have been completed"
 msgstr "Всі дії над файлами завершено"
 
 #: src/nautilus-properties-window.c:356
-#| msgid "Read and write"
 msgid "Read and Write"
 msgstr "Читання та запис"
 
 #: src/nautilus-properties-window.c:360
-#| msgid "Create and delete files"
 msgid "Create and Delete Files"
 msgstr "Створення та вилучення файлів"
 
 #: src/nautilus-properties-window.c:364
-#| msgid "Read/write, no access"
 msgid "Read and Write, No Access"
 msgstr "Читання і запис, немає доступу"
 
 #: src/nautilus-properties-window.c:371
-#| msgid "Read-only"
 msgid "Read-Only"
 msgstr "Лише читання"
 
 #: src/nautilus-properties-window.c:375
-#| msgid "Access files"
 msgid "Access Files"
 msgstr "Доступ до файлів"
 
 #: src/nautilus-properties-window.c:379
-#| msgid "List files only"
 msgid "List Files Only"
 msgstr "Лише список файлів"
 
 #: src/nautilus-properties-window.c:389
-#| msgid "Write-only"
 msgid "Write-Only"
 msgstr "Лише запис"
 
 #: src/nautilus-properties-window.c:393
-#| msgid "Write-only, no access"
 msgid "Write-Only, No Access"
 msgstr "Лише запис, немає доступу"
 
 #: src/nautilus-properties-window.c:400
-#| msgid "Access-only"
 msgid "Access-Only"
 msgstr "Лише доступ"
 
@@ -4098,12 +4076,10 @@ msgid "Filter Search Results"
 msgstr "Фільтрувати результати пошуку"
 
 #: src/nautilus-query-editor.c:717
-#| msgid "Only searching the current folder"
 msgid "Search current folder"
 msgstr "Шукати у поточній теці"
 
 #: src/nautilus-query-editor.c:718
-#| msgid "Search _Everywhere"
 msgid "Search everywhere"
 msgstr "Шукати всюди"
 
@@ -4320,7 +4296,6 @@ msgstr ""
 "Daniel Korostil <ted.korostiled@gmail.com>"
 
 #: src/nautilus-window-slot.c:897 src/resources/ui/nautilus-window.ui:126
-#| msgid "Search _Everywhere"
 msgid "Search Everywhere"
 msgstr "Шукати всюди"
 
@@ -4329,7 +4304,6 @@ msgid "Find files and folders in all search locations"
 msgstr "Знайти файли і теки в усіх місцях пошуку"
 
 #: src/nautilus-window-slot.c:901
-#| msgid "Sharing Settings"
 msgid "Search Settings"
 msgstr "Параметри пошуку"
 
@@ -4429,14 +4403,11 @@ msgid "General"
 msgstr "Загальне"
 
 #: src/resources/gtk/help-overlay.ui:14
-#| msgid "New Window"
 msgctxt "shortcut window"
 msgid "New Window"
 msgstr "Нове вікно"
 
 #: src/resources/gtk/help-overlay.ui:20
-#| msgctxt "shortcut window"
-#| msgid "Close window or tab"
 msgctxt "shortcut window"
 msgid "Close Window or Tab"
 msgstr "Закрити вікно або вкладку"
@@ -4447,34 +4418,26 @@ msgid "Quit"
 msgstr "Вийти"
 
 #: src/resources/gtk/help-overlay.ui:32
-#| msgid "Search _Everywhere"
 msgctxt "shortcut window"
 msgid "Search Everywhere"
 msgstr "Шукати всюди"
 
 #: src/resources/gtk/help-overlay.ui:38
-#| msgid "Parent Folder"
 msgctxt "shortcut window"
 msgid "Search Current Folder"
 msgstr "Шукати у поточній теці"
 
 #: src/resources/gtk/help-overlay.ui:44
-#| msgctxt "shortcut window"
-#| msgid "Bookmark current location"
 msgctxt "shortcut window"
 msgid "Bookmark Current Location"
 msgstr "Створити закладку для поточної адреси"
 
 #: src/resources/gtk/help-overlay.ui:50
-#| msgctxt "shortcut window"
-#| msgid "Show help"
 msgctxt "shortcut window"
 msgid "Show Help"
 msgstr "Показати довідку"
 
 #: src/resources/gtk/help-overlay.ui:56
-#| msgctxt "shortcut window"
-#| msgid "Show preferences"
 msgctxt "shortcut window"
 msgid "Show Preferences"
 msgstr "Показати налаштування"
@@ -4505,27 +4468,21 @@ msgid "Open"
 msgstr "Відкрити"
 
 #: src/resources/gtk/help-overlay.ui:91
-#| msgid "Open in New _Tab"
 msgctxt "shortcut window"
 msgid "Open in New Tab"
 msgstr "Відкрити у новій вкладці"
 
 #: src/resources/gtk/help-overlay.ui:97
-#| msgid "Open in New _Window"
 msgctxt "shortcut window"
 msgid "Open in New Window"
 msgstr "Відкрити у новому вікні"
 
 #: src/resources/gtk/help-overlay.ui:103
-#| msgctxt "shortcut window"
-#| msgid "Open item location (search and recent only)"
 msgctxt "shortcut window"
 msgid "Open Item Location (Search and Recent Only)"
 msgstr "Відкрити адресу (лише пошук і нещодавні)"
 
 #: src/resources/gtk/help-overlay.ui:109
-#| msgctxt "shortcut window"
-#| msgid "Open with default app"
 msgctxt "shortcut window"
 msgid "Open With Default App"
 msgstr "Відкрити у типовій програмі"
@@ -4536,47 +4493,36 @@ msgid "Tabs"
 msgstr "Вкладки"
 
 #: src/resources/gtk/help-overlay.ui:120
-#| msgid "_New Tab"
 msgctxt "shortcut window"
 msgid "New Tab"
 msgstr "Нова вкладка"
 
 #: src/resources/gtk/help-overlay.ui:126
-#| msgctxt "shortcut window"
-#| msgid "Go to previous tab"
 msgctxt "shortcut window"
 msgid "Go to Previous Tab"
 msgstr "Перейти до попередньої вкладки"
 
 #: src/resources/gtk/help-overlay.ui:132
-#| msgctxt "shortcut window"
-#| msgid "Go to next tab"
 msgctxt "shortcut window"
 msgid "Go to Next Tab"
 msgstr "Перейти до наступної вкладки"
 
 #: src/resources/gtk/help-overlay.ui:138
-#| msgctxt "shortcut window"
-#| msgid "Open tab"
 msgctxt "shortcut window"
 msgid "Open Tab"
 msgstr "Відкрити вкладку"
 
 #: src/resources/gtk/help-overlay.ui:144
-#| msgid "Move Tab _Left"
 msgctxt "shortcut window"
 msgid "Move Tab Left"
 msgstr "Перемістити вкладку ліворуч"
 
 #: src/resources/gtk/help-overlay.ui:150
-#| msgid "Move Tab _Right"
 msgctxt "shortcut window"
 msgid "Move Tab Right"
 msgstr "Перемістити вкладку праворуч"
 
 #: src/resources/gtk/help-overlay.ui:156
-#| msgctxt "shortcut window"
-#| msgid "Restore tab"
 msgctxt "shortcut window"
 msgid "Restore Tab"
 msgstr "Відновити вкладку"
@@ -4587,14 +4533,11 @@ msgid "Navigation"
 msgstr "Пересування"
 
 #: src/resources/gtk/help-overlay.ui:167 src/resources/gtk/help-overlay.ui:174
-#| msgid "Back"
 msgctxt "shortcut window"
 msgid "Go Back"
 msgstr "Назад"
 
 #: src/resources/gtk/help-overlay.ui:181 src/resources/gtk/help-overlay.ui:188
-#| msgctxt "shortcut window"
-#| msgid "Go forward"
 msgctxt "shortcut window"
 msgid "Go Forward"
 msgstr "Уперед"
@@ -4605,34 +4548,26 @@ msgid "Go Up"
 msgstr "Вище"
 
 #: src/resources/gtk/help-overlay.ui:201
-#| msgid "Move _Down"
 msgctxt "shortcut window"
 msgid "Go Down"
 msgstr "Нижче"
 
 #: src/resources/gtk/help-overlay.ui:207
-#| msgctxt "shortcut window"
-#| msgid "Go to home folder"
 msgctxt "shortcut window"
 msgid "Go to Home Folder"
 msgstr "Перейти до домівки"
 
 #: src/resources/gtk/help-overlay.ui:213
-#| msgid "Enter Location"
 msgctxt "shortcut window"
 msgid "Enter Location"
 msgstr "Увести адресу"
 
 #: src/resources/gtk/help-overlay.ui:219
-#| msgctxt "shortcut window"
-#| msgid "Location bar with root location"
 msgctxt "shortcut window"
 msgid "Location Bar With Root Location"
 msgstr "Смужка адреси з адресою кореня"
 
 #: src/resources/gtk/help-overlay.ui:225
-#| msgctxt "shortcut window"
-#| msgid "Location bar with home location"
 msgctxt "shortcut window"
 msgid "Location Bar With Home Location"
 msgstr "Смужка адреси з адресою домівки"
@@ -4643,74 +4578,56 @@ msgid "View"
 msgstr "Перегляд"
 
 #: src/resources/gtk/help-overlay.ui:236
-#| msgid "Zoom In"
 msgctxt "shortcut window"
 msgid "Zoom In"
 msgstr "Збільшити"
 
 #: src/resources/gtk/help-overlay.ui:242
-#| msgid "Zoom Out"
 msgctxt "shortcut window"
 msgid "Zoom Out"
 msgstr "Зменшити"
 
 #: src/resources/gtk/help-overlay.ui:248
-#| msgctxt "shortcut window"
-#| msgid "Reset zoom"
 msgctxt "shortcut window"
 msgid "Reset Zoom"
 msgstr "Відновити масштаб"
 
 #: src/resources/gtk/help-overlay.ui:254
-#| msgctxt "shortcut window"
-#| msgid "Refresh view"
 msgctxt "shortcut window"
 msgid "Refresh View"
 msgstr "Оновити перегляд"
 
 #: src/resources/gtk/help-overlay.ui:260
-#| msgctxt "shortcut window"
-#| msgid "Show/hide hidden files"
 msgctxt "shortcut window"
 msgid "Show/Hide Hidden Files"
 msgstr "Показувати/ховати приховані файли"
 
 #: src/resources/gtk/help-overlay.ui:266
-#| msgctxt "shortcut window"
-#| msgid "Show/hide sidebar"
 msgctxt "shortcut window"
 msgid "Show/Hide Sidebar"
 msgstr "Показати або приховати бічну панель"
 
 #: src/resources/gtk/help-overlay.ui:272
-#| msgctxt "shortcut window"
-#| msgid "Show/hide action menu"
 msgctxt "shortcut window"
 msgid "Show/Hide Action Menu"
 msgstr "Показати або приховати меню дій"
 
 #: src/resources/gtk/help-overlay.ui:278
-#| msgid "List View"
 msgctxt "shortcut window"
 msgid "List View"
 msgstr "Перегляд списком"
 
 #: src/resources/gtk/help-overlay.ui:284
-#| msgid "Grid View"
 msgctxt "shortcut window"
 msgid "Grid View"
 msgstr "Перегляд ґраткою"
 
 #: src/resources/gtk/help-overlay.ui:290 src/resources/gtk/help-overlay.ui:297
-#| msgctxt "shortcut window"
-#| msgid "Expand folder"
 msgctxt "shortcut window"
 msgid "Expand Folder"
 msgstr "Розгорнути теку"
 
 #: src/resources/gtk/help-overlay.ui:304 src/resources/gtk/help-overlay.ui:311
-#| msgctxt "shortcut window"
-#| msgid "Collapse folder"
 msgctxt "shortcut window"
 msgid "Collapse Folder"
 msgstr "Згорнути теку"
@@ -4721,8 +4638,6 @@ msgid "Editing"
 msgstr "Редагування"
 
 #: src/resources/gtk/help-overlay.ui:323
-#| msgctxt "shortcut window"
-#| msgid "Create folder"
 msgctxt "shortcut window"
 msgid "Create Folder"
 msgstr "Створити теку"
@@ -4733,27 +4648,21 @@ msgid "Rename"
 msgstr "Перейменувати"
 
 #: src/resources/gtk/help-overlay.ui:335
-#| msgid "Mo_ve to Trash"
 msgctxt "shortcut window"
 msgid "Move to Trash"
 msgstr "Пересунути до смітника"
 
 #: src/resources/gtk/help-overlay.ui:341
-#| msgid "_Delete Permanently"
 msgctxt "shortcut window"
 msgid "Delete Permanently"
 msgstr "Вилучити остаточно"
 
 #: src/resources/gtk/help-overlay.ui:347
-#| msgctxt "shortcut window"
-#| msgid "Create link to copied item"
 msgctxt "shortcut window"
 msgid "Create Link to Copied Item"
 msgstr "Створити посилання на скопійований об'єкт"
 
 #: src/resources/gtk/help-overlay.ui:353
-#| msgctxt "shortcut window"
-#| msgid "Create link to selected item"
 msgctxt "shortcut window"
 msgid "Create Link to Selected Item"
 msgstr "Створити посилання на позначений об'єкт"
@@ -4774,27 +4683,21 @@ msgid "Paste"
 msgstr "Вставити"
 
 #: src/resources/gtk/help-overlay.ui:377
-#| msgid "Select All"
 msgctxt "shortcut window"
 msgid "Select All"
 msgstr "Позначити все"
 
 #: src/resources/gtk/help-overlay.ui:383
-#| msgctxt "shortcut window"
-#| msgid "Invert selection"
 msgctxt "shortcut window"
 msgid "Invert Selection"
 msgstr "Інвертувати позначення"
 
 #: src/resources/gtk/help-overlay.ui:389
-#| msgid "Select Items Matching"
 msgctxt "shortcut window"
 msgid "Select Items Matching"
 msgstr "Позначити відповідні об'єкти"
 
 #: src/resources/gtk/help-overlay.ui:395
-#| msgctxt "shortcut window"
-#| msgid "Show item properties"
 msgctxt "shortcut window"
 msgid "Show Item Properties"
 msgstr "Показати властивості об'єкта"
@@ -5374,7 +5277,6 @@ msgid "Open in Disks"
 msgstr "Відкрити у «Дисках»"
 
 #: src/resources/ui/nautilus-properties-window.ui:379
-#| msgid "Link Target"
 msgid "_Link Target"
 msgstr "Пос_илання на ціль"
 
@@ -5383,7 +5285,6 @@ msgid "Open Link Target"
 msgstr "Відкрити призначення посилання"
 
 #: src/resources/ui/nautilus-properties-window.ui:427
-#| msgid "Parent Folder"
 msgid "Parent _Folder"
 msgstr "Ба_тьківська тека"
 
@@ -5518,7 +5419,6 @@ msgid "Don't Search Inside Files"
 msgstr "Не шукати у вмісті файлів"
 
 #: src/resources/ui/nautilus-toolbar.ui:55
-#| msgid "Parent Folder"
 msgid "Search Current Folder"
 msgstr "Шукати у поточній теці"
 
@@ -5929,6 +5829,9 @@ msgstr "Бічна панель"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Список типових скорочень, точок монтування та закладок."
+
+#~ msgid "No matches found in indexed locations"
+#~ msgstr "В індексованих місцях нічого не знайдено"
 
 #, c-format
 #~ msgid "Are you sure you want to permanently delete “%s” from the trash?"
