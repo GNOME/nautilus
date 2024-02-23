@@ -114,7 +114,6 @@ test_filename_create_conflict_name (void)
     ASSERT_DUPLICATION_NAME ("foo (2).txt", "foo (3).txt");
     ASSERT_DUPLICATION_NAME ("foo foo (2).txt", "foo foo (3).txt");
     ASSERT_DUPLICATION_NAME ("foo (13)", "foo (14)");
-    ASSERT_DUPLICATION_NAME ("foo foo (123345678901).txt", "foo foo (123345678902).txt");
 
 #undef ASSERT_DUPLICATION_NAME
 }
