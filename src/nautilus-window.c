@@ -2491,17 +2491,17 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
 
     const gchar *designers[] =
     {
-        "The GNOME Project",
+        _("The GNOME Project"),
         NULL
     };
     const gchar *developers[] =
     {
-        "The contributors to the Nautilus project",
+        _("The GNOME Project"),
         NULL
     };
     const gchar *documenters[] =
     {
-        "GNOME Documentation Team",
+        _("The GNOME Project"),
         "Sun Microsystems",
         NULL
     };
