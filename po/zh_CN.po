@@ -16,22 +16,22 @@
 # Mingcong Bai <jeffbai@aosc.xyz>, 2015, 2016, 2017, 2018.
 # Yuchen Guo <egyc@live.com>, 2020.
 # Dingzhong Chen <wsxy162@gmail.com>, 2016-2022.
-# lumingzh <lumingzh@qq.com>, 2020-2023.
+# lumingzh <lumingzh@qq.com>, 2020-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-11 01:42+0000\n"
-"PO-Revision-Date: 2024-02-20 16:21+0800\n"
-"Last-Translator: Eni <enigma@petalmail.com>\n"
+"POT-Creation-Date: 2024-02-22 20:12+0000\n"
+"PO-Revision-Date: 2024-02-24 18:12+0800\n"
+"Last-Translator: lumingzh <lumingzh@qq.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.4.2\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: Gtranslator 45.3\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -1221,7 +1221,7 @@ msgid "Details: The proxy has not been created."
 msgstr "详细信息：未创建代理。"
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:670
+#: src/nautilus-directory.c:666
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -1856,7 +1856,7 @@ msgid "Deleting Files"
 msgstr "正在删除文件"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6837
 #: src/gtk/nautilusgtkplacessidebar.c:2689
 #: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
@@ -1885,7 +1885,7 @@ msgid "Do _not Empty Trash"
 msgstr "不清空回收站(_N)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6772
+#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6785
 #: src/gtk/nautilusgtkplacessidebar.c:2049
 #, c-format
 msgid "Unable to access “%s”"
@@ -2501,133 +2501,139 @@ msgstr "搜索设置(_S)"
 msgid "Search _Everywhere"
 msgstr "搜索所有地方(_E)"
 
-#: src/nautilus-files-view.c:3813 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3813
+msgid "More locations can be added to search in the settings"
+msgstr "在设置中可以将更多位置添加到搜索"
+
+#. Translators: %s is the name of the search location formatted for display
+#: src/nautilus-files-view.c:3821
+#, c-format
+msgid "No matches in “%s”"
+msgstr "“%s”中无匹配项"
+
+#: src/nautilus-files-view.c:3829 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "未找到结果"
 
-#: src/nautilus-files-view.c:3816
-msgid "No matches found in indexed locations"
-msgstr "未在索引的位置找到匹配项"
-
-#: src/nautilus-files-view.c:3821
+#: src/nautilus-files-view.c:3834
 msgid "Trash is Empty"
 msgstr "回收站为空"
 
-#: src/nautilus-files-view.c:3827
+#: src/nautilus-files-view.c:3840
 msgid "No Starred Files"
 msgstr "无收藏文件"
 
-#: src/nautilus-files-view.c:3833
+#: src/nautilus-files-view.c:3846
 msgid "No Recent Files"
 msgstr "无最近文件"
 
-#: src/nautilus-files-view.c:3839
+#: src/nautilus-files-view.c:3852
 msgid "Folder is Empty"
 msgstr "文件夹为空"
 
-#: src/nautilus-files-view.c:5998
+#: src/nautilus-files-view.c:6011
 msgid "Select Move Destination"
 msgstr "选择移动的目标位置"
 
-#: src/nautilus-files-view.c:6002
+#: src/nautilus-files-view.c:6015
 msgid "Select Copy Destination"
 msgstr "选择复制的目标位置"
 
-#: src/nautilus-files-view.c:6008 src/nautilus-files-view.c:6412
+#: src/nautilus-files-view.c:6021 src/nautilus-files-view.c:6425
 #: src/nautilus-properties-window.c:4077
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "选择(_S)"
 
-#: src/nautilus-files-view.c:6411
+#: src/nautilus-files-view.c:6424
 msgid "Select Extract Destination"
 msgstr "选择提取的目标位置"
 
-#: src/nautilus-files-view.c:6500
+#: src/nautilus-files-view.c:6513
 msgid "Error sending email."
 msgstr "发送邮件时出错。"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6798
+#: src/nautilus-files-view.c:6811
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "无法移除“%s”"
 
-#: src/nautilus-files-view.c:6848
+#: src/nautilus-files-view.c:6861
 msgid "Unable to stop drive"
 msgstr "无法停止驱动器"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6959 src/gtk/nautilusgtkplacessidebar.c:2011
+#: src/nautilus-files-view.c:6972 src/gtk/nautilusgtkplacessidebar.c:2011
 #: src/gtk/nautilusgtkplacessidebar.c:2915
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "无法启动“%s”"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:7956
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "已选新建文件夹（%'d 项）"
 
-#: src/nautilus-files-view.c:7998
+#: src/nautilus-files-view.c:8011
 #, c-format
 msgid "Open With %s"
 msgstr "用 %s 打开"
 
-#: src/nautilus-files-view.c:8009
+#: src/nautilus-files-view.c:8022
 msgid "Run"
 msgstr "运行"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8027
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "提取"
 
-#: src/nautilus-files-view.c:8015
+#: src/nautilus-files-view.c:8028
 msgid "Extract to…"
 msgstr "提取到…"
 
-#: src/nautilus-files-view.c:8019
+#: src/nautilus-files-view.c:8032
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "打开"
 
-#: src/nautilus-files-view.c:8097
+#: src/nautilus-files-view.c:8110
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3345
 msgid "_Start"
 msgstr "启动(_S)"
 
-#: src/nautilus-files-view.c:8103 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8116 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "连接(_C)"
 
-#: src/nautilus-files-view.c:8109
+#: src/nautilus-files-view.c:8122
 msgid "_Start Multi-disk Drive"
 msgstr "启动多磁盘驱动器(_S)"
 
-#: src/nautilus-files-view.c:8115
+#: src/nautilus-files-view.c:8128
 msgid "U_nlock Drive"
 msgstr "解锁驱动器(_N)"
 
-#: src/nautilus-files-view.c:8133
+#: src/nautilus-files-view.c:8146
 msgid "Stop Drive"
 msgstr "停止驱动器"
 
-#: src/nautilus-files-view.c:8139 src/gtk/nautilusgtkplacessidebar.c:3362
+#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Safely Remove Drive"
 msgstr "安全移除驱动器(_S)"
 
-#: src/nautilus-files-view.c:8145 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8158 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "断开连接(_D)"
 
-#: src/nautilus-files-view.c:8151
+#: src/nautilus-files-view.c:8164
 msgid "_Stop Multi-disk Drive"
 msgstr "停止多磁盘驱动器(_S)"
 
-#: src/nautilus-files-view.c:8157
+#: src/nautilus-files-view.c:8170
 msgid "_Lock Drive"
 msgstr "锁定驱动器(_L)"
 
@@ -3620,9 +3626,10 @@ msgstr "已取消"
 msgid "Preparing"
 msgstr "准备中"
 
-#: src/nautilus-progress-info-widget.c:56
-msgid "Completed"
-msgstr "已完成"
+#. Translators: This describes an operation, such as copying or compressing files, as being completed.
+#: src/nautilus-progress-info-widget.c:57
+msgid "Operation Completed"
+msgstr "操作已完成"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -5504,6 +5511,9 @@ msgstr "侧边栏"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "通用的快捷键、挂载点和书签列表。"
+
+#~ msgid "No matches found in indexed locations"
+#~ msgstr "未在索引的位置找到匹配项"
 
 #, c-format
 #~ msgid "%d Hz"
