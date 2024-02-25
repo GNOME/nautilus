@@ -746,10 +746,6 @@ get_message_for_two_content_types (const char * const *content_types)
             /* translators: these describe the contents of removable media */
             message = g_strdup (_("Contains music and photos"));
         }
-        else if (strcmp (content_types[1], "x-content/audio-player") == 0)
-        {
-            message = g_strdup (_("Contains photos and music"));
-        }
         else
         {
             message = g_strdup (_("Contains digital photos"));
