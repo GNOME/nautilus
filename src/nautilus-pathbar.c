@@ -1198,8 +1198,6 @@ make_button_data (NautilusPathBar *self,
         gtk_widget_add_css_class (button_data->button, "current-dir");
         gtk_widget_set_hexpand (button_data->button, TRUE);
         gtk_widget_set_halign (button_data->label, GTK_ALIGN_START);
-
-        gtk_widget_set_cursor_from_name (button_data->button, "text");
         gtk_actionable_set_action_name (GTK_ACTIONABLE (button_data->button), "win.enter-location");
     }
 
