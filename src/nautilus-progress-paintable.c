@@ -167,6 +167,7 @@ nautilus_progress_paintable_dispose (GObject *object)
 {
     NautilusProgressPaintable *self = NAUTILUS_PROGRESS_PAINTABLE (object);
 
+    g_clear_pointer (&self->icon_name, g_free);
     g_clear_object (&self->widget);
     g_clear_object (&self->check_paintable);
     g_clear_object (&self->done_animation);
