@@ -1956,14 +1956,18 @@ file_has_prefix (NautilusFile *file,
                  GHashTable   *prefix_candidates)
 {
     for (g_autoptr (GFile) parent = nautilus_file_get_parent_location (file);
-         parent != NULL;
-         g_set_object (&parent, g_file_get_parent (parent)))
+         parent != NULL;)
     {
         g_autofree gchar *parent_uri = g_file_get_uri (parent);
 
         if (g_hash_table_lookup (prefix_candidates, parent_uri))
         {
             return TRUE;
+        }
+        else
+        {
+            g_autoptr (GFile) child = parent;
+            parent = g_file_get_parent (parent);
         }
     }
 
@@ -1974,7 +1978,8 @@ static void
 directory_contents_value_field_update (NautilusPropertiesWindow *self)
 {
     NautilusRequestStatus file_status;
-    g_autoptr (GHashTable) prefix_hashes = g_hash_table_new (g_str_hash, g_str_equal);
+    g_autoptr (GHashTable) prefix_hashes = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                                  NULL, g_free);
     g_autofree char *text = NULL;
     g_autofree char *bytes_str = NULL;
     g_autofree char *tooltip = NULL;
@@ -1997,7 +2002,7 @@ directory_contents_value_field_update (NautilusPropertiesWindow *self)
 
     for (l = self->files; l; l = l->next)
     {
-        GFile *location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
+        g_autoptr (GFile) location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
         GFileType type = nautilus_file_get_file_type (NAUTILUS_FILE (l->data));
 
         if (type & ~(G_FILE_TYPE_REGULAR | G_FILE_TYPE_SPECIAL | G_FILE_TYPE_SHORTCUT))
@@ -2270,7 +2275,9 @@ get_parent_location (NautilusFile *file)
     if (nautilus_file_is_in_recent (file))
     {
         /* Use activation location since parent location points to recent:// */
-        return g_file_get_parent (nautilus_file_get_activation_location (file));
+        g_autoptr (GFile) location = nautilus_file_get_activation_location (file);
+
+        return g_file_get_parent (location);
     }
     else
     {
