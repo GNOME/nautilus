@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus gnome-2-32\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-17 15:53+0000\n"
-"PO-Revision-Date: 2024-02-18 13:18+0200\n"
+"POT-Creation-Date: 2024-02-22 20:12+0000\n"
+"PO-Revision-Date: 2024-02-26 22:53+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -1273,7 +1273,7 @@ msgid "Details: The proxy has not been created."
 msgstr "Detalės: tarpininkas nebuvo sukurtas."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:670
+#: src/nautilus-directory.c:666
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -1952,7 +1952,7 @@ msgid "Deleting Files"
 msgstr "Trinami failai"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6837
 #: src/gtk/nautilusgtkplacessidebar.c:2689
 #: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
@@ -1981,7 +1981,7 @@ msgid "Do _not Empty Trash"
 msgstr "_Neišvalyti šiukšlinės"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6772
+#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6785
 #: src/gtk/nautilusgtkplacessidebar.c:2049
 #, c-format
 msgid "Unable to access “%s”"
@@ -2666,70 +2666,76 @@ msgstr "Paieškos _nuostatos"
 msgid "Search _Everywhere"
 msgstr "Ieškoti _visur"
 
-#: src/nautilus-files-view.c:3813 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3813
+msgid "More locations can be added to search in the settings"
+msgstr "Daugiau paieškos vietų galima pridėti nuostatose"
+
+#. Translators: %s is the name of the search location formatted for display
+#: src/nautilus-files-view.c:3821
+#, c-format
+msgid "No matches in “%s”"
+msgstr "Nėra atitikmenų „%s“"
+
+#: src/nautilus-files-view.c:3829 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "Nerasta rezultatų"
 
-#: src/nautilus-files-view.c:3816
-msgid "No matches found in indexed locations"
-msgstr "Nerasta atitikmenų indeksuojamose vietose"
-
-#: src/nautilus-files-view.c:3821
+#: src/nautilus-files-view.c:3834
 msgid "Trash is Empty"
 msgstr "Šiukšlinė yra tuščia"
 
-#: src/nautilus-files-view.c:3827
+#: src/nautilus-files-view.c:3840
 msgid "No Starred Files"
 msgstr "Nėra failų su žvaigždute"
 
-#: src/nautilus-files-view.c:3833
+#: src/nautilus-files-view.c:3846
 msgid "No Recent Files"
 msgstr "Nėra nesenų failų"
 
-#: src/nautilus-files-view.c:3839
+#: src/nautilus-files-view.c:3852
 msgid "Folder is Empty"
 msgstr "Aplankas yra tuščias"
 
-#: src/nautilus-files-view.c:5998
+#: src/nautilus-files-view.c:6011
 msgid "Select Move Destination"
 msgstr "Pasirinkite perkėlimo paskirtį"
 
-#: src/nautilus-files-view.c:6002
+#: src/nautilus-files-view.c:6015
 msgid "Select Copy Destination"
 msgstr "Pasirinkite kopijavimo paskirtį"
 
-#: src/nautilus-files-view.c:6008 src/nautilus-files-view.c:6412
+#: src/nautilus-files-view.c:6021 src/nautilus-files-view.c:6425
 #: src/nautilus-properties-window.c:4077
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "_Pažymėti"
 
-#: src/nautilus-files-view.c:6411
+#: src/nautilus-files-view.c:6424
 msgid "Select Extract Destination"
 msgstr "Pasirinkite išskleidimo paskirtį"
 
-#: src/nautilus-files-view.c:6500
+#: src/nautilus-files-view.c:6513
 msgid "Error sending email."
 msgstr "Klaida siunčiant el. laišką."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6798
+#: src/nautilus-files-view.c:6811
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Nepavyko pašalinti „%s“"
 
-#: src/nautilus-files-view.c:6848
+#: src/nautilus-files-view.c:6861
 msgid "Unable to stop drive"
 msgstr "Nepavyko sustabdyti kaupiklio"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6959 src/gtk/nautilusgtkplacessidebar.c:2011
+#: src/nautilus-files-view.c:6972 src/gtk/nautilusgtkplacessidebar.c:2011
 #: src/gtk/nautilusgtkplacessidebar.c:2915
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Nepavyko paleisti „%s“"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:7956
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2737,64 +2743,64 @@ msgstr[0] "Naujas aplankas su pažymėjimu (%'d elementas)"
 msgstr[1] "Naujas aplankas su pažymėjimu (%'d elementai)"
 msgstr[2] "Naujas aplankas su pažymėjimu (%'d elementų)"
 
-#: src/nautilus-files-view.c:7998
+#: src/nautilus-files-view.c:8011
 #, c-format
 msgid "Open With %s"
 msgstr "Atverti naudojant %s"
 
-#: src/nautilus-files-view.c:8009
+#: src/nautilus-files-view.c:8022
 msgid "Run"
 msgstr "Vykdyti"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8027
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Išskleisti"
 
-#: src/nautilus-files-view.c:8015
+#: src/nautilus-files-view.c:8028
 msgid "Extract to…"
 msgstr "Išskleisti į…"
 
-#: src/nautilus-files-view.c:8019
+#: src/nautilus-files-view.c:8032
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "Atverti"
 
-#: src/nautilus-files-view.c:8097
+#: src/nautilus-files-view.c:8110
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3345
 msgid "_Start"
 msgstr "_Paleisti"
 
-#: src/nautilus-files-view.c:8103 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8116 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "_Prisijungti"
 
-#: src/nautilus-files-view.c:8109
+#: src/nautilus-files-view.c:8122
 msgid "_Start Multi-disk Drive"
 msgstr "_Paleisti daugiadiskį kaupiklį"
 
-#: src/nautilus-files-view.c:8115
+#: src/nautilus-files-view.c:8128
 msgid "U_nlock Drive"
 msgstr "_Atrakinti kaupiklį"
 
-#: src/nautilus-files-view.c:8133
+#: src/nautilus-files-view.c:8146
 msgid "Stop Drive"
 msgstr "Stabdyti kaupiklį"
 
-#: src/nautilus-files-view.c:8139 src/gtk/nautilusgtkplacessidebar.c:3362
+#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Safely Remove Drive"
 msgstr "_Saugiai išimti kaupiklį"
 
-#: src/nautilus-files-view.c:8145 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8158 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "_Atjungti"
 
-#: src/nautilus-files-view.c:8151
+#: src/nautilus-files-view.c:8164
 msgid "_Stop Multi-disk Drive"
 msgstr "_Sustabdyti daugiadiskį kaupiklį"
 
-#: src/nautilus-files-view.c:8157
+#: src/nautilus-files-view.c:8170
 msgid "_Lock Drive"
 msgstr "_Užrakinti kaupiklį"
 
@@ -3852,10 +3858,10 @@ msgstr "Atsisakyta"
 msgid "Preparing"
 msgstr "Ruošiamasi"
 
-#. Translators: This is an adjective describing an operation, such as copying files.
+#. Translators: This describes an operation, such as copying or compressing files, as being completed.
 #: src/nautilus-progress-info-widget.c:57
-msgid "Completed"
-msgstr "Užbaigta"
+msgid "Operation Completed"
+msgstr "Veiksmas užbaigtas"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -5765,6 +5771,9 @@ msgstr "Šoninė juosta"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Dažnų trumpinių, prijungimo taškų ir gairių sąrašas."
+
+#~ msgid "No matches found in indexed locations"
+#~ msgstr "Nerasta atitikmenų indeksuojamose vietose"
 
 #, c-format
 #~ msgid "%d Hz"
