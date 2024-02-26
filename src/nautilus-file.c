@@ -5321,7 +5321,7 @@ void
 nautilus_file_set_search_fts_snippet (NautilusFile *file,
                                       const gchar  *fts_snippet)
 {
-    file->details->fts_snippet = g_strdup (fts_snippet);
+    g_set_str (&file->details->fts_snippet, fts_snippet);
 }
 
 const gchar *
