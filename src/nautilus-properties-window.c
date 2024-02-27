@@ -910,30 +910,12 @@ create_extension_group_row (NautilusPropertiesItem   *item,
                             NautilusPropertiesWindow *self)
 {
     GtkWidget *row = adw_action_row_new ();
-    GtkWidget *box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
-    GtkWidget *name_label = gtk_label_new (NULL);
-    GtkWidget *value_label = gtk_label_new (NULL);
 
-    gtk_list_box_row_set_selectable (GTK_LIST_BOX_ROW (row), FALSE);
-    gtk_list_box_row_set_activatable (GTK_LIST_BOX_ROW (row), FALSE);
-    adw_action_row_add_prefix (ADW_ACTION_ROW (row), box);
+    adw_action_row_set_subtitle_selectable (ADW_ACTION_ROW (row), TRUE);
+    gtk_widget_add_css_class (row, "property");
 
-    gtk_widget_set_margin_top (box, 7);
-    gtk_widget_set_margin_bottom (box, 7);
-    gtk_box_append (GTK_BOX (box), name_label);
-    gtk_box_append (GTK_BOX (box), value_label);
-
-    g_object_bind_property (item, "name", name_label, "label", G_BINDING_SYNC_CREATE);
-    gtk_widget_add_css_class (name_label, "caption");
-    gtk_widget_add_css_class (name_label, "dim-label");
-    gtk_widget_set_halign (name_label, GTK_ALIGN_START);
-    gtk_label_set_ellipsize (GTK_LABEL (name_label), PANGO_ELLIPSIZE_END);
-
-    g_object_bind_property (item, "value", value_label, "label", G_BINDING_SYNC_CREATE);
-    gtk_widget_set_halign (value_label, GTK_ALIGN_START);
-    gtk_label_set_wrap (GTK_LABEL (value_label), TRUE);
-    gtk_label_set_wrap_mode (GTK_LABEL (value_label), PANGO_WRAP_WORD_CHAR);
-    gtk_label_set_selectable (GTK_LABEL (value_label), TRUE);
+    g_object_bind_property (item, "name", row, "title", G_BINDING_SYNC_CREATE);
+    g_object_bind_property (item, "value", row, "subtitle", G_BINDING_SYNC_CREATE);
 
     return row;
 }
