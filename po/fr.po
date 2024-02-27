@@ -27,18 +27,18 @@
 # Julien Humbert <julroy67@gmail.com>, 2020.
 # Charles Monzat <charles.monzat@free.fr>, 2016-2022.
 # mathieu <mathieu.bousquet2@gmail.com>, 2022.
-# Irénée THIRION <irenee.thirion@e.email>, 2022.
 # Simon Elst <kirmaha@duck.com>, 2022.
 # Vincent Chatelain <vinchatl_gnome@proton.me>, 2024.
+# Irénée THIRION <irenee.thirion@e.email>, 2022-2024.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-19 09:31+0000\n"
-"PO-Revision-Date: 2024-02-21 20:05+0100\n"
-"Last-Translator: Vincent Chatelain <vinchatl_gnome@proton.me>\n"
-"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
+"POT-Creation-Date: 2024-02-22 20:12+0000\n"
+"PO-Revision-Date: 2024-02-25 15:14+0100\n"
+"Last-Translator: Irénée THIRION <irenee.thirion@e.email>\n"
+"Language-Team: French <gnomefr@traduc.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -48,9 +48,10 @@ msgstr ""
 "X-DamnedLies-Scope: partial\n"
 "X-DL-Team: fr\n"
 "X-DL-Module: nautilus\n"
-"X-DL-Branch: gnome-42\n"
+"X-DL-Branch: main\n"
 "X-DL-Domain: po\n"
 "X-DL-State: Translating\n"
+"X-DL-Lang: fr\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -421,6 +422,20 @@ msgstr ""
 "Si défini à vrai, Fichiers cherche aussi une correspondance avec les "
 "contenus du fichier en plus des noms. Cela bascule l’état actif par défaut "
 "qui peut encore être outrepassé dans le champ recherche"
+
+#: data/org.gnome.nautilus.gschema.xml:193
+msgid "How to display file timestamps in the views"
+msgstr "Indique comment afficher les horodatages des fichiers dans les aperçus"
+
+#: data/org.gnome.nautilus.gschema.xml:194
+msgid ""
+"If set to 'simple', Files will show Today and Yesterday with time, otherwise "
+"the exact date without time. If set to 'detailed', it will always show the "
+"exact date and time."
+msgstr ""
+"Si ce paramètre est défini sur « simple », Fichiers affichera Aujourd’hui et "
+"Hier avec l’heure, sinon la date exacte sans l’heure. S’il est défini sur "
+"« détaillé », il affichera toujours la date exacte et l’heure."
 
 #: data/org.gnome.nautilus.gschema.xml:201
 msgid "Default format for compressing files"
@@ -1970,7 +1985,7 @@ msgid "Deleting Files"
 msgstr "Suppression des fichiers"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6837
 #: src/gtk/nautilusgtkplacessidebar.c:2689
 #: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
@@ -2000,7 +2015,7 @@ msgid "Do _not Empty Trash"
 msgstr "Ne _pas vider la corbeille"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6772
+#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6785
 #: src/gtk/nautilusgtkplacessidebar.c:2049
 #, c-format
 msgid "Unable to access “%s”"
@@ -2661,134 +2676,141 @@ msgstr "Paramètres de _recherche"
 msgid "Search _Everywhere"
 msgstr "Rechercher _partout"
 
-#: src/nautilus-files-view.c:3813 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3813
+msgid "More locations can be added to search in the settings"
+msgstr ""
+"D’autres emplacements peuvent être ajoutés à la recherche dans les paramètres"
+
+#. Translators: %s is the name of the search location formatted for display
+#: src/nautilus-files-view.c:3821
+#, c-format
+msgid "No matches in “%s”"
+msgstr "Aucune correspondance dans « %s »"
+
+#: src/nautilus-files-view.c:3829 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "Aucun résultat trouvé"
 
-#: src/nautilus-files-view.c:3816
-msgid "No matches found in indexed locations"
-msgstr "Aucune correspondance trouvée dans les emplacement indexés"
-
-#: src/nautilus-files-view.c:3821
+#: src/nautilus-files-view.c:3834
 msgid "Trash is Empty"
 msgstr "La corbeille est vide"
 
-#: src/nautilus-files-view.c:3827
+#: src/nautilus-files-view.c:3840
 msgid "No Starred Files"
 msgstr "Aucun fichier favori"
 
-#: src/nautilus-files-view.c:3833
+#: src/nautilus-files-view.c:3846
 msgid "No Recent Files"
 msgstr "Aucun fichier récent"
 
-#: src/nautilus-files-view.c:3839
+#: src/nautilus-files-view.c:3852
 msgid "Folder is Empty"
 msgstr "Le dossier est vide"
 
-#: src/nautilus-files-view.c:5998
+#: src/nautilus-files-view.c:6011
 msgid "Select Move Destination"
 msgstr "Sélectionner une destination pour le déplacement"
 
-#: src/nautilus-files-view.c:6002
+#: src/nautilus-files-view.c:6015
 msgid "Select Copy Destination"
 msgstr "Sélectionner une destination pour la copie"
 
-#: src/nautilus-files-view.c:6008 src/nautilus-files-view.c:6412
+#: src/nautilus-files-view.c:6021 src/nautilus-files-view.c:6425
 #: src/nautilus-properties-window.c:4077
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "_Sélectionner"
 
-#: src/nautilus-files-view.c:6411
+#: src/nautilus-files-view.c:6424
 msgid "Select Extract Destination"
 msgstr "Sélectionner une destination pour l’extraction"
 
-#: src/nautilus-files-view.c:6500
+#: src/nautilus-files-view.c:6513
 msgid "Error sending email."
 msgstr "Erreur d’envoi de courriel."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6798
+#: src/nautilus-files-view.c:6811
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Impossible de retirer « %s »"
 
-#: src/nautilus-files-view.c:6848
+#: src/nautilus-files-view.c:6861
 msgid "Unable to stop drive"
 msgstr "Impossible d’arrêter le lecteur"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6959 src/gtk/nautilusgtkplacessidebar.c:2011
+#: src/nautilus-files-view.c:6972 src/gtk/nautilusgtkplacessidebar.c:2011
 #: src/gtk/nautilusgtkplacessidebar.c:2915
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Impossible de démarrer « %s »"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:7956
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Nouveau dossier contenant la sélection (%'d élément)"
 msgstr[1] "Nouveau dossier contenant la sélection (%'d éléments)"
 
-#: src/nautilus-files-view.c:7998
+#: src/nautilus-files-view.c:8011
 #, c-format
 msgid "Open With %s"
 msgstr "Ouvrir avec %s"
 
-#: src/nautilus-files-view.c:8009
+#: src/nautilus-files-view.c:8022
 msgid "Run"
 msgstr "Lancer"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8027
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Extraire"
 
-#: src/nautilus-files-view.c:8015
+#: src/nautilus-files-view.c:8028
 msgid "Extract to…"
 msgstr "Extraire vers…"
 
-#: src/nautilus-files-view.c:8019
+#: src/nautilus-files-view.c:8032
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "Ouvrir"
 
-#: src/nautilus-files-view.c:8097
+#: src/nautilus-files-view.c:8110
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3345
 msgid "_Start"
 msgstr "_Démarrer"
 
-#: src/nautilus-files-view.c:8103 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8116 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "C_onnecter"
 
-#: src/nautilus-files-view.c:8109
+#: src/nautilus-files-view.c:8122
 msgid "_Start Multi-disk Drive"
 msgstr "_Démarrer l’unité multidisque"
 
-#: src/nautilus-files-view.c:8115
+#: src/nautilus-files-view.c:8128
 msgid "U_nlock Drive"
 msgstr "Dé_verrouiller le volume"
 
-#: src/nautilus-files-view.c:8133
+#: src/nautilus-files-view.c:8146
 msgid "Stop Drive"
 msgstr "Arrêter le volume"
 
-#: src/nautilus-files-view.c:8139 src/gtk/nautilusgtkplacessidebar.c:3362
+#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Safely Remove Drive"
 msgstr "_Retirer le volume sans risque"
 
-#: src/nautilus-files-view.c:8145 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8158 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "_Déconnecter"
 
-#: src/nautilus-files-view.c:8151
+#: src/nautilus-files-view.c:8164
 msgid "_Stop Multi-disk Drive"
 msgstr "_Arrêter l’unité multidisque"
 
-#: src/nautilus-files-view.c:8157
+#: src/nautilus-files-view.c:8170
 msgid "_Lock Drive"
 msgstr "Verroui_ller le volume"
 
@@ -3831,10 +3853,10 @@ msgstr "Annulé"
 msgid "Preparing"
 msgstr "Préparation"
 
-#. Translators: This is an adjective describing an operation, such as copying files.
+#. Translators: This describes an operation, such as copying or compressing files, as being completed.
 #: src/nautilus-progress-info-widget.c:57
-msgid "Completed"
-msgstr "Complété"
+msgid "Operation Completed"
+msgstr "Opération terminée"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -5750,972 +5772,3 @@ msgstr "Panneau latéral"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Liste des raccourcis, points de montage et signets courants."
-
-#, c-format
-#~ msgid "%d Hz"
-#~ msgstr "%d Hz"
-
-#~ msgid "--check cannot be used with other options."
-#~ msgstr "--check ne peut pas être utilisée avec d’autres options."
-
-#~ msgid "Perform a quick set of self-check tests."
-#~ msgstr "Effectue de rapides tests de cohérence."
-
-#~ msgid "Location"
-#~ msgstr "Emplacement"
-
-#~ msgid "The location of the file."
-#~ msgstr "L’emplacement du fichier."
-
-#~ msgid "Modified — Time"
-#~ msgstr "Date de modification"
-
-#~ msgid "Archive names cannot contain “/”."
-#~ msgstr "Les noms de fichiers d’archive ne peuvent pas contenir « / »."
-
-#~ msgid "An archive cannot be called “.”."
-#~ msgstr "Impossible d’appeler un fichier d’archive « . »."
-
-#~ msgid "An archive cannot be called “..”."
-#~ msgstr "Impossible d’appeler un fichier d’archive « .. »."
-
-#~ msgid "Archive name is too long."
-#~ msgstr "Le nom de l’archive est trop long."
-
-#~ msgid "Archives with “.” at the beginning of their name are hidden."
-#~ msgstr "Les archives dont le nom débute par « . » sont masquées."
-
-#, c-format
-#~ msgid "Another link to %s"
-#~ msgstr "Autre lien vers %s"
-
-#, c-format
-#~ msgid "%'dst link to %s"
-#~ msgstr "%'der lien vers %s"
-
-# ème -> e d’après le Petit guide de typographie française de Jacques André (Stéphane)
-#, c-format
-#~ msgid "%'dnd link to %s"
-#~ msgstr "%'de lien vers %s"
-
-#, c-format
-#~ msgid "%'drd link to %s"
-#~ msgstr "%'de lien vers %s"
-
-#, c-format
-#~ msgid "%'dth link to %s"
-#~ msgstr "%'de lien vers %s"
-
-#~ msgid " (copy)"
-#~ msgstr " (copie)"
-
-#~ msgid " (another copy)"
-#~ msgstr " (autre copie)"
-
-#~ msgid "th copy)"
-#~ msgstr "e copie)"
-
-#~ msgid "st copy)"
-#~ msgstr "e copie)"
-
-#~ msgid "nd copy)"
-#~ msgstr "e copie)"
-
-#~ msgid "rd copy)"
-#~ msgstr "e copie)"
-
-#, c-format
-#~ msgid "%s (copy)%s"
-#~ msgstr "%s (copie)%s"
-
-#, c-format
-#~ msgid "%s (another copy)%s"
-#~ msgstr "%s (autre copie)%s"
-
-#, c-format
-#~ msgid "%s (%'dth copy)%s"
-#~ msgstr "%s (%'de copie)%s"
-
-#, c-format
-#~ msgid "%s (%'dst copy)%s"
-#~ msgstr "%s (%'de copie)%s"
-
-#, c-format
-#~ msgid "%s (%'dnd copy)%s"
-#~ msgstr "%s (%'de copie)%s"
-
-#, c-format
-#~ msgid "%s (%'drd copy)%s"
-#~ msgstr "%s (%'de copie)%s"
-
-#~ msgid " ("
-#~ msgstr " ("
-
-#, c-format
-#~ msgid " (%'d"
-#~ msgstr " (%'d"
-
-#, c-format
-#~ msgid "Are you sure you want to permanently delete “%s” from the trash?"
-#~ msgstr ""
-#~ "Souhaitez-vous vraiment supprimer définitivement « %s » de la corbeille ?"
-
-#, c-format
-#~ msgid ""
-#~ "Are you sure you want to permanently delete the %'d selected item from "
-#~ "the trash?"
-#~ msgid_plural ""
-#~ "Are you sure you want to permanently delete the %'d selected items from "
-#~ "the trash?"
-#~ msgstr[0] ""
-#~ "Souhaitez-vous vraiment supprimer définitivement l’élément sélectionné de "
-#~ "la corbeille ?"
-#~ msgstr[1] ""
-#~ "Souhaitez-vous vraiment supprimer définitivement les %'d éléments "
-#~ "sélectionnés de la corbeille ?"
-
-#~ msgid "If you delete an item, it will be permanently lost."
-#~ msgstr "Si vous supprimez un élément, il sera définitivement perdu."
-
-#~ msgid "Empty all items from Trash?"
-#~ msgstr "Supprimer tous les éléments de la corbeille ?"
-
-#, c-format
-#~ msgid "Are you sure you want to permanently delete “%s”?"
-#~ msgstr "Souhaitez-vous vraiment supprimer définitivement « %s » ?"
-
-#, c-format
-#~ msgid "Unable to eject %s"
-#~ msgstr "Impossible d’éjecter %s"
-
-#~ msgid ""
-#~ "Nautilus 3.6 deprecated this directory and tried migrating this "
-#~ "configuration to ~/.local/share/nautilus"
-#~ msgstr ""
-#~ "Nautilus 3.6 abandonne ce répertoire et essaie de déplacer cette "
-#~ "configuration vers ~/.local/share/nautilus"
-
-#~ msgid "On this computer only"
-#~ msgstr "Sur cet ordinateur uniquement"
-
-#~ msgid "Search files and folders"
-#~ msgstr "Rechercher dans les fichiers et dossiers"
-
-#~ msgid "Clear entry"
-#~ msgstr "Effacer le champ"
-
-#~ msgid "Items in Trash older than 1 hour are automatically deleted"
-#~ msgstr ""
-#~ "Les éléments placés dans la corbeille depuis plus d’une heure sont "
-#~ "automatiquement supprimés"
-
-#, c-format
-#~ msgid "Items in Trash older than %d day are automatically deleted"
-#~ msgid_plural "Items in Trash older than %d days are automatically deleted"
-#~ msgstr[0] ""
-#~ "Les éléments placés dans la corbeille depuis plus de %d jour sont "
-#~ "automatiquement supprimés"
-#~ msgstr[1] ""
-#~ "Les éléments placés dans la corbeille depuis plus de %d jours sont "
-#~ "automatiquement supprimés"
-
-#~ msgid ""
-#~ "<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
-#~ "templates\">Learn more…</a>"
-#~ msgstr ""
-#~ "<a href=\"help:gnome-help/files-templates\" title=\"Aide de GNOME sur les "
-#~ "modèles\">En savoir plus…</a>"
-
-#~ msgctxt "shortcut window"
-#~ msgid "New window"
-#~ msgstr "Nouvelle fenêtre"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Search"
-#~ msgstr "Rechercher"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Open in new tab"
-#~ msgstr "Ouvrir dans un nouvel onglet"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Open in new window"
-#~ msgstr "Ouvrir dans une nouvelle fenêtre"
-
-#~ msgctxt "shortcut window"
-#~ msgid "New tab"
-#~ msgstr "Nouvel onglet"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Move tab left"
-#~ msgstr "Déplacer l’onglet vers la gauche"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Move tab right"
-#~ msgstr "Déplacer l’onglet vers la droite"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Go back"
-#~ msgstr "En arrière"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Go up"
-#~ msgstr "Au-dessus"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Go down"
-#~ msgstr "Au-dessous"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Enter location"
-#~ msgstr "Saisir l’emplacement"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Zoom in"
-#~ msgstr "Agrandir"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Zoom out"
-#~ msgstr "Diminuer"
-
-#~ msgctxt "shortcut window"
-#~ msgid "List view"
-#~ msgstr "Vue en liste"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Grid view"
-#~ msgstr "Vue en grille"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Move to trash"
-#~ msgstr "Mettre à la corbeille"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Delete permanently"
-#~ msgstr "Supprimer définitivement"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Select all"
-#~ msgstr "Tout sélectionner"
-
-# Dialog title
-#~ msgctxt "shortcut window"
-#~ msgid "Select items matching"
-#~ msgstr "Sélection d’éléments selon un motif"
-
-#~ msgid "Open In New _Tab"
-#~ msgstr "Ouvrir dans un nouvel on_glet"
-
-#~ msgid "Open In New _Window"
-#~ msgstr "Ouvrir dans une nouvelle _fenêtre"
-
-#~ msgctxt "the n-th position of an icon caption"
-#~ msgid "First"
-#~ msgstr "Première"
-
-#~ msgid "Show operations"
-#~ msgstr "Afficher les opérations"
-
-#~ msgid "What viewer should be used when searching"
-#~ msgstr "Indique quel visionneur doit être utilisé pour la recherche"
-
-#~ msgid ""
-#~ "When searching Nautilus will switch to the type of view in this setting."
-#~ msgstr ""
-#~ "Lors d’une recherche, Nautilus passe alors à ce type d’affichage "
-#~ "paramétré."
-
-#~ msgid "%H:%M"
-#~ msgstr "%H:%M"
-
-#~ msgid "%l:%M %p"
-#~ msgstr "%l:%M %p"
-
-#, no-c-format
-#~ msgid "Yesterday"
-#~ msgstr "Hier"
-
-#, no-c-format
-#~ msgid "%a"
-#~ msgstr "%a"
-
-#, no-c-format
-#~ msgid "%-e %b"
-#~ msgstr "%-e %b"
-
-#, no-c-format
-#~ msgid "%-e %b %H:%M"
-#~ msgstr "%-e %b à %H:%M"
-
-#, no-c-format
-#~ msgid "%-e %b %l:%M %p"
-#~ msgstr "%-e %b à %l:%M %p"
-
-#, no-c-format
-#~ msgid "%c"
-#~ msgstr "%c"
-
-#~ msgid "Show a list to select the date"
-#~ msgstr "Affiche une liste pour choisir la date"
-
-#~ msgid "Show a calendar to select the date"
-#~ msgstr "Affiche un calendrier pour choisir la date"
-
-#, c-format
-#~ msgid "%d file deleted"
-#~ msgid_plural "%d files deleted"
-#~ msgstr[0] "%d fichier supprimé"
-#~ msgstr[1] "%d fichiers supprimés"
-
-#~ msgid "Reset to De_fault"
-#~ msgstr "Réinitialiser aux valeurs par dé_faut"
-
-#~ msgid "Replace the current List Columns settings with the default settings"
-#~ msgstr ""
-#~ "Remplace les paramètres actuels des colonnes des listes par ceux par "
-#~ "défaut"
-
-#~ msgid "Choose the order of information to appear in this folder:"
-#~ msgstr "Choisissez l’ordre des informations apparaissant dans ce dossier :"
-
-#~ msgid "Select a date"
-#~ msgstr "Sélectionner une date"
-
-#~ msgid "Clear the currently selected date"
-#~ msgstr "Effacer la date actuellement sélectionnée"
-
-#~ msgid "Which file types will be searched"
-#~ msgstr "Quels types de fichiers seront recherchés"
-
-#~ msgid "Search on the file content and name"
-#~ msgstr "Recherche dans le contenu et le nom du fichier"
-
-#~ msgid "Search only on the file name"
-#~ msgstr "Recherche seulement dans le nom du fichier"
-
-#~ msgid "Show sidebar"
-#~ msgstr "Afficher le panneau latéral"
-
-#~ msgid "Connect to _Server"
-#~ msgstr "Connexion à un _serveur"
-
-#~ msgid "Show location bar in new windows"
-#~ msgstr "Afficher la barre d’emplacement dans les nouvelles fenêtres"
-
-#~ msgid ""
-#~ "If set to true, newly opened windows will have the location bar visible."
-#~ msgstr ""
-#~ "Si vrai (coché), la barre d’emplacement sera visible dans les fenêtres "
-#~ "nouvellement ouvertes."
-
-#~ msgid "dropped data"
-#~ msgstr "données déposées"
-
-#~ msgid "_Select Application"
-#~ msgstr "_Sélectionner une application"
-
-#~ msgctxt "shortcut window"
-#~ msgid "Open file and close window"
-#~ msgstr "Ouvrir le fichier et fermer la fenêtre"
-
-#~ msgid "Tile View"
-#~ msgstr "Vue en mosaïque"
-
-#~ msgid "Drag and drop is only supported on local file systems."
-#~ msgstr ""
-#~ "Le glisser-déposer est uniquement pris en charge dans les systèmes de "
-#~ "fichiers locaux."
-
-#~ msgid "Trashed items are automatically deleted after a period of time"
-#~ msgstr ""
-#~ "Les éléments mis à la corbeille sont automatiquement supprimés après un "
-#~ "certain temps"
-
-#~ msgid "Display system controls for trash content"
-#~ msgstr "Affiche les contrôles système pour le contenu de la corbeille"
-
-#~ msgid "_Restore"
-#~ msgstr "_Restaurer"
-
-#~ msgid "Restore selected items to their original position"
-#~ msgstr "Restaure les éléments sélectionnés à leurs emplacements initiaux"
-
-#~ msgid "_Empty…"
-#~ msgstr "_Vider…"
-
-#~ msgid "Delete all items in the Trash"
-#~ msgstr "Supprime tous les éléments de la corbeille"
-
-#~ msgid "Show grid"
-#~ msgstr "Afficher la grille"
-
-#~ msgid "Show list"
-#~ msgstr "Afficher la liste"
-
-#~ msgid "Show List"
-#~ msgstr "Afficher la liste"
-
-#~ msgid "Go back"
-#~ msgstr "En arrière"
-
-#~ msgid "Go forward"
-#~ msgstr "En avant"
-
-#~ msgid "_Add Bookmark"
-#~ msgstr "Ajouter le _signet"
-
-#~ msgid "Where to position newly open tabs in browser windows"
-#~ msgstr ""
-#~ "Indique où positionner les nouveaux onglets ouverts dans les fenêtres du "
-#~ "navigateur"
-
-#~ msgid ""
-#~ "If set to “after-current-tab”, then new tabs are inserted after the "
-#~ "current tab. If set to “end”, then new tabs are appended to the end of "
-#~ "the tab list."
-#~ msgstr ""
-#~ "Si défini à la valeur « after-current-tab » (après l’onglet actuel), les "
-#~ "nouveaux onglets sont insérés après l’onglet actif. Si défini à la valeur "
-#~ "« end » (fin), les nouveaux onglets sont ajoutés à la fin de la liste des "
-#~ "onglets."
-
-#~ msgid "Width of the side pane"
-#~ msgstr "Largeur du panneau latéral"
-
-#~ msgid "The default width of the side pane in new windows."
-#~ msgstr ""
-#~ "La largeur par défaut du panneau latéral pour les nouvelles fenêtres."
-
-#~ msgid "Show side pane in new windows"
-#~ msgstr "Afficher le panneau latéral dans les nouvelles fenêtres"
-
-#~ msgid ""
-#~ "If set to true, newly opened windows will have the side pane visible."
-#~ msgstr ""
-#~ "Si vrai (coché), le panneau latéral sera visible dans les fenêtres "
-#~ "nouvellement ouvertes."
-
-#~ msgctxt "Title"
-#~ msgid "Unknown"
-#~ msgstr "Inconnu"
-
-#~ msgctxt "Artist"
-#~ msgid "Unknown"
-#~ msgstr "Inconnu"
-
-#~ msgctxt "Album"
-#~ msgid "Unknown"
-#~ msgstr "Inconnu"
-
-#~ msgctxt "Year"
-#~ msgid "Unknown"
-#~ msgstr "Inconnue"
-
-#~ msgctxt "Media container"
-#~ msgid "Unknown"
-#~ msgstr "Inconnu"
-
-#~ msgctxt "Dimensions"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Video codec"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Video bit rate"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Frame rate"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Audio bit rate"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Audio codec"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgid "0 Hz"
-#~ msgstr "0 Hz"
-
-#~ msgid "0 Channels"
-#~ msgstr "0 canal"
-
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Stream bit rate"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Sample rate"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgctxt "Number of audio channels"
-#~ msgid "N/A"
-#~ msgstr "N/D"
-
-#~ msgid "Title:"
-#~ msgstr "Titre :"
-
-#~ msgid "Codec:"
-#~ msgstr "Codec :"
-
-#~ msgid "Send to…"
-#~ msgstr "Envoyer à…"
-
-#~ msgid "Send file by mail…"
-#~ msgstr "Envoyer un fichier par courriel…"
-
-#~ msgid "Send files by mail…"
-#~ msgstr "Envoyer des fichiers par courriel…"
-
-#~ msgid "Me"
-#~ msgstr "Moi"
-
-#~ msgid "Extract Here"
-#~ msgstr "Extraire ici"
-
-#~ msgid "(Empty)"
-#~ msgstr "(Vide)"
-
-#~ msgid "Use Default"
-#~ msgstr "Utiliser les valeurs par défaut"
-
-#, c-format
-#~ msgid "Do you want to view %d location?"
-#~ msgid_plural "Do you want to view %d locations?"
-#~ msgstr[0] "Voulez-vous voir %d emplacement ?"
-#~ msgstr[1] "Voulez-vous voir %d emplacements ?"
-
-#~ msgid "_Name"
-#~ msgid_plural "_Names"
-#~ msgstr[0] "_Nom"
-#~ msgstr[1] "_Noms"
-
-#, c-format
-#~ msgctxt "folder"
-#~ msgid "%s Properties"
-#~ msgstr "Propriétés de %s"
-
-#, c-format
-#~ msgctxt "file"
-#~ msgid "%s Properties"
-#~ msgstr "Propriétés de %s"
-
-#, c-format
-#~ msgctxt "MIME type description (MIME type)"
-#~ msgid "%s (%s)"
-#~ msgstr "%s (%s)"
-
-# Contenu : aucun
-#~ msgid "nothing"
-#~ msgstr "aucun"
-
-#~ msgid "unreadable"
-#~ msgstr "impossible à lire"
-
-#~ msgid "no "
-#~ msgstr "aucun(e) "
-
-#~ msgid "list"
-#~ msgstr "liste"
-
-#~ msgid "read"
-#~ msgstr "lecture"
-
-#~ msgid "create/delete"
-#~ msgstr "création/suppression"
-
-#~ msgid "write"
-#~ msgstr "écriture"
-
-#~ msgid "access"
-#~ msgstr "accès"
-
-#, c-format
-#~ msgid "Error while adding “%s”: %s"
-#~ msgstr "Erreur lors de l’ajout de « %s » : %s"
-
-#~ msgid "Could not add application"
-#~ msgstr "Impossible d’ajouter l’application"
-
-#~ msgid "Could not forget association"
-#~ msgstr "Impossible de défaire l’association"
-
-#, c-format
-#~ msgid "%s document"
-#~ msgstr "Document %s"
-
-#, c-format
-#~ msgid "Open all files of type “%s” with"
-#~ msgstr "Ouvrir tous les fichiers de type « %s » avec"
-
-#, c-format
-#~ msgid "Select an application to open “%s” and other files of type “%s”"
-#~ msgstr ""
-#~ "Sélectionnez une application pour ouvrir %s et les autres fichiers du "
-#~ "même type (« %s »)"
-
-#, c-format
-#~ msgid "“%s” deleted"
-#~ msgstr "« %s » supprimé"
-
-#~ msgid "Access and organize your files"
-#~ msgstr "Accéder aux fichiers et les organiser"
-
-#~ msgid "New _Folder"
-#~ msgstr "Nouveau _dossier"
-
-#~ msgid "_Open With Other Application"
-#~ msgstr "_Ouvrir avec une autre application"
-
-#~ msgid "Open With Other _Application"
-#~ msgstr "Ouvrir avec une autre _application"
-
-#~ msgid "Set As Wallpaper"
-#~ msgstr "Définir comme papier peint"
-
-#~ msgid "_Extract Here"
-#~ msgstr "_Extraire ici"
-
-#~ msgid "Tags"
-#~ msgstr "Étiquettes"
-
-#~ msgctxt "menu item"
-#~ msgid "Star"
-#~ msgstr "Marquer comme favori"
-
-#~ msgid "Contents"
-#~ msgstr "Contenus"
-
-#~ msgid "Volume"
-#~ msgstr "Volume"
-
-#~ msgid "Free space"
-#~ msgstr "Espace libre"
-
-#~ msgid "Total capacity"
-#~ msgstr "Capacité totale"
-
-#~ msgid "Basic"
-#~ msgstr "Général"
-
-#~ msgid "Execute"
-#~ msgstr "Exécution"
-
-#~ msgid "Reset"
-#~ msgstr "Réinitialiser"
-
-#~ msgid "_Forget"
-#~ msgstr "_Oublier"
-
-#~ msgid "_Add"
-#~ msgstr "_Ajouter"
-
-#~ msgid "Set as default"
-#~ msgstr "Définir par défaut"
-
-#~ msgid "Starred files will appear here"
-#~ msgstr "Les fichiers favoris s’affichent ici"
-
-#~ msgid "Toggle view"
-#~ msgstr "Basculer la vue"
-
-#~ msgid "No recent servers found"
-#~ msgstr "Aucune connexion récente trouvée"
-
-#~ msgid "No results found"
-#~ msgstr "Aucun résultat trouvé"
-
-#~ msgid "Wallpapers"
-#~ msgstr "Papiers peints"
-
-#~ msgid "Enable new experimental views"
-#~ msgstr "Activer les nouvelles vues expérimentales"
-
-#~ msgid ""
-#~ "Whether to use the new experimental views using the latest GTK+ widgets "
-#~ "to help giving feedback and shaping their future."
-#~ msgstr ""
-#~ "Indique s’il faut utiliser les nouvelles vues expérimentales utilisant "
-#~ "les composants GTK+ les plus récents pour aider à donner des retours et "
-#~ "ainsi contribuer à leur évolution."
-
-#~ msgid "Text Ellipsis Limit"
-#~ msgstr "Limite d’abréviation de texte"
-
-#~ msgid ""
-#~ "A string specifying how parts of overlong file names should be replaced "
-#~ "by ellipses, depending on the zoom level. Each of the list entries is of "
-#~ "the form “Zoom Level:Integer”. For each specified zoom level, if the "
-#~ "given integer is larger than 0, the file name will not exceed the given "
-#~ "number of lines. If the integer is 0 or smaller, no limit is imposed on "
-#~ "the specified zoom level. A default entry of the form “Integer” without "
-#~ "any specified zoom level is also allowed. It defines the maximum number "
-#~ "of lines for all other zoom levels. Examples: 0 — always display overlong "
-#~ "file names; 3 — shorten file names if they exceed three lines; smallest:5,"
-#~ "smaller:4,0 — shorten file names if they exceed five lines for zoom level "
-#~ "“smallest”. Shorten file names if they exceed four lines for zoom level "
-#~ "“smaller”. Do not shorten file names for other zoom levels. Available "
-#~ "zoom levels: small, standard, large."
-#~ msgstr ""
-#~ "Une chaîne indiquant comment, selon le niveau de zoom, écourter par des "
-#~ "points de suspension les noms de fichiers trop longs. Chaque élément de "
-#~ "la liste est de la forme « Niveau de zoom:Nombre entier ». Pour chaque "
-#~ "niveau de zoom indiqué, pour un entier donné supérieur à 0, le nom de "
-#~ "fichier n’excède pas ce nombre de lignes ; pour un entier inférieur ou "
-#~ "égal à 0, aucune limite ne s’applique. Il est loisible d’ajouter un "
-#~ "élément sous la forme « Nombre entier » sans préciser de niveau de zoom. "
-#~ "Ce nombre indique le maximum de lignes pour tous les autres niveaux de "
-#~ "zoom. Exemples : 0 - affiche dans tous les cas la totalité du nom ; 3 - "
-#~ "abrège les noms de fichiers s’ils dépassent trois lignes ; smallest:5,"
-#~ "smaller:4,0 - abrège les noms de fichiers s’ils dépassent cinq et quatre "
-#~ "lignes respectivement pour les niveaux de zoom « smallest » et "
-#~ "« smaller », mais n’abrège pas pour les autres niveaux de zoom. Les "
-#~ "niveaux de zoom disponibles sont : small, standard, large."
-
-#~ msgid "X"
-#~ msgstr "X"
-
-#~ msgid "Y"
-#~ msgstr "Y"
-
-#~ msgid "The selection rectangle"
-#~ msgstr "Le rectangle de sélection"
-
-#~ msgid "Reset zoom"
-#~ msgstr "Réinitialiser le zoom"
-
-#~ msgid "%f N / %f W (%.0f m)"
-#~ msgstr "%f N / %f O (%.0f m)"
-
-#~ msgid "This will open %'d separate tab."
-#~ msgid_plural "This will open %'d separate tabs."
-#~ msgstr[0] "Cette opération ouvrira %'d onglet indépendant."
-#~ msgstr[1] "Cette opération ouvrira %'d onglets indépendants."
-
-#~ msgid "This will open %'d separate window."
-#~ msgid_plural "This will open %'d separate windows."
-#~ msgstr[0] "Cette opération ouvrira %'d fenêtre indépendante."
-#~ msgstr[1] "Cette opération ouvrira %'d fenêtres indépendantes."
-
-#~ msgid "Forget association"
-#~ msgstr "Défaire l’association"
-
-#~ msgid "Edit"
-#~ msgstr "Modifier"
-
-#~ msgid "Cut"
-#~ msgstr "Couper"
-
-#~ msgid "Paste"
-#~ msgstr "Coller"
-
-#~ msgid ""
-#~ "Whether to ask for confirmation when deleting files, or emptying the Trash"
-#~ msgstr ""
-#~ "Indique s’il faut demander confirmation avant de supprimer des fichiers "
-#~ "ou de vider la corbeille"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will ask for confirmation when you attempt "
-#~ "to delete files, or empty the Trash."
-#~ msgstr ""
-#~ "Si vrai (coché), Nautilus demande une confirmation lorsque vous tentez de "
-#~ "supprimer des fichiers ou de vider la corbeille."
-
-#~ msgid "What to do with executable text files when activated"
-#~ msgstr "Que faire à l’activation de fichiers texte exécutables"
-
-#~ msgid ""
-#~ "What to do with executable text files when they are activated (single or "
-#~ "double clicked). Possible values are “launch” to launch them as programs, "
-#~ "“ask” to ask what to do via a dialog, and “display” to display them as "
-#~ "text files."
-#~ msgstr ""
-#~ "Indique quoi faire à l’activation (simple ou double-clic) des fichiers "
-#~ "texte exécutables. Les valeurs possibles sont « launch » pour les lancer "
-#~ "en tant que programmes, « ask » pour demander quoi faire dans une boîte "
-#~ "de dialogue et « display » pour les afficher comme fichiers texte."
-
-#~ msgid "Do you want to run “%s”, or display its contents?"
-#~ msgstr "Voulez-vous lancer « %s » ou afficher son contenu ?"
-
-#~ msgid "“%s” is an executable text file."
-#~ msgstr "« %s » est un fichier texte exécutable."
-
-#~ msgid "Run in _Terminal"
-#~ msgstr "Lancer dans un _terminal"
-
-#~ msgid "_Display"
-#~ msgstr "_Afficher"
-
-#~ msgid "%d MB"
-#~ msgstr "%d Mo"
-
-#~ msgctxt "preferences"
-#~ msgid "Sort"
-#~ msgstr "Trier"
-
-#~ msgid "Allow folders to be _expanded"
-#~ msgstr "Autoriser le _dépliage des dossiers"
-
-#~ msgid "Views"
-#~ msgstr "Vues"
-
-#~ msgid "Open Action"
-#~ msgstr "Action d’ouverture"
-
-#~ msgid "_Single click to open items"
-#~ msgstr "_Simple clic pour ouvrir les éléments"
-
-#~ msgid "Link Creation"
-#~ msgstr "Création de liens"
-
-#~ msgid "Show action to create symbolic _links"
-#~ msgstr "Afficher la fonction pour créer des _liens symboliques"
-
-#~ msgid "Executable Text Files"
-#~ msgstr "Fichiers texte exécutables"
-
-#~ msgid "_Display them"
-#~ msgstr "Les _afficher"
-
-#~ msgid "_Run them"
-#~ msgstr "Les _lancer"
-
-#~ msgid "_Ask what to do"
-#~ msgstr "_Demander quoi faire"
-
-#~ msgid "Ask before _emptying the Trash"
-#~ msgstr "Demander avant de _vider la corbeille"
-
-#~ msgid "Show action to _permanently delete files and folders"
-#~ msgstr ""
-#~ "Afficher la fonction pour supprimer _définitivement les fichiers et "
-#~ "dossiers"
-
-#~ msgid "Behavior"
-#~ msgstr "Comportement"
-
-#~ msgid "Choose the order of information to appear in the list view."
-#~ msgstr ""
-#~ "Choisissez l’ordre des informations apparaissant dans la vue en liste."
-
-#~ msgid "List Columns"
-#~ msgstr "Colonnes des listes"
-
-#~ msgid "_Never"
-#~ msgstr "_Jamais"
-
-#~ msgid "Thumbnails"
-#~ msgstr "Vignettes"
-
-#~ msgid "_Files on this computer only"
-#~ msgstr "_Fichiers sur cet ordinateur uniquement"
-
-#~ msgid "N_ever"
-#~ msgstr "_Jamais"
-
-#~ msgid "Onl_y for files smaller than:"
-#~ msgstr "_Uniquement pour les fichiers plus petits que :"
-
-#~ msgid "File count"
-#~ msgstr "Nombre de fichiers"
-
-#~ msgid "F_olders on this computer only"
-#~ msgstr "_Dossiers dans cet ordinateur uniquement"
-
-#~ msgid "Ne_ver"
-#~ msgstr "Ja_mais"
-
-#~ msgid "Search & Preview"
-#~ msgstr "Recherche et aperçu"
-
-#~ msgid "Always"
-#~ msgstr "Toujours"
-
-#~ msgid "Local Files Only"
-#~ msgstr "Uniquement les fichiers locaux"
-
-#~ msgid "Small"
-#~ msgstr "Petit"
-
-#~ msgid "Standard"
-#~ msgstr "Standard"
-
-#~ msgid "Large"
-#~ msgstr "Grand"
-
-#~ msgid "By Name"
-#~ msgstr "Par nom"
-
-#~ msgid "By Size"
-#~ msgstr "Par taille"
-
-#~ msgid "By Type"
-#~ msgstr "Par type"
-
-#~ msgid "By Modification Date"
-#~ msgstr "Par date de modification"
-
-#~ msgid "By Access Date"
-#~ msgstr "Par date d’accès"
-
-#~ msgid "By Trashed Date"
-#~ msgstr "Par date de mise à la corbeille"
-
-#~ msgid "Parent folder:"
-#~ msgstr "Dossier parent :"
-
-#~ msgid "Original folder:"
-#~ msgstr "Dossier original :"
-
-#~ msgid "Accessed:"
-#~ msgstr "Dernier accès :"
-
-#~ msgid "Modified:"
-#~ msgstr "Dernière modification :"
-
-#~ msgid "Owner:"
-#~ msgstr "Propriétaire :"
-
-#~ msgid "Group:"
-#~ msgstr "Groupe :"
-
-#~ msgid "Others:"
-#~ msgstr "Autres :"
-
-#~ msgid "Create the initial window with the given geometry."
-#~ msgstr "Crée la fenêtre initiale avec la géométrie indiquée."
-
-#~ msgid "GEOMETRY"
-#~ msgstr "GÉOMÉTRIE"
-
-#~ msgid "Only create windows for explicitly specified URIs."
-#~ msgstr ""
-#~ "Ne crée de nouvelles fenêtres que pour les URI explicitement précisés."
-
-#~ msgid "application-x-executable"
-#~ msgstr "application-x-executable"
-
-#~ msgid "Nautilus"
-#~ msgstr "Nautilus"
-
-#~ msgid "List view"
-#~ msgstr "Vue en liste"
-
-#~ msgid "@icon@"
-#~ msgstr "@icon@"
-
-#~ msgid "Prefere_nces"
-#~ msgstr "_Préférences"
-
-#~ msgid "smb://"
-#~ msgstr "smb://"
