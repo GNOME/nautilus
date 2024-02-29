@@ -20,11 +20,13 @@ stages:
 
 workflow:
   rules:
-    # run merge request pipelines and for main or release branches
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || 
-          $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH ||
-          $CI_COMMIT_BRANCH =~ /^gnome-.*$/ ||
-          $CI_PIPELINE_SOURCE == "web"
+    # run merge request pipelines, for main or release branches and for manually
+    # triggered pipelines (source "web"), but not for translation updates
+    - if: ($CI_PIPELINE_SOURCE == "merge_request_event" || 
+           $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH ||
+           $CI_COMMIT_BRANCH =~ /^gnome-.*$/ ||
+           $CI_PIPELINE_SOURCE == "web") &&
+          $CI_COMMIT_TITLE !~ /^Update.*translation$/
 
 flatpak@x86_64:
     extends: ['.flatpak@x86_64', '.vars-devel']
