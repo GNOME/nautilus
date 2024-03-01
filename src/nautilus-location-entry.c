@@ -760,6 +760,9 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
+    gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_URL);
+    gtk_entry_set_input_hints (GTK_ENTRY (entry), GTK_INPUT_HINT_NO_SPELLCHECK | GTK_INPUT_HINT_NO_EMOJI);
+
     priv->completer = g_filename_completer_new ();
     g_filename_completer_set_dirs_only (priv->completer, TRUE);
 
