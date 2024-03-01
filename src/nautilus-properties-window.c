@@ -3568,7 +3568,7 @@ should_show_permissions (NautilusPropertiesWindow *self)
 {
     GList *l;
 
-    /* Don't show permissions for Trash and Computer since they're not
+    /* Don't show permissions for Trash and Recent since they're not
      * really file system objects.
      */
     for (l = self->files; l != NULL; l = l->next)
