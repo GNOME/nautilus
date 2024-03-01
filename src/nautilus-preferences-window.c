@@ -342,11 +342,11 @@ nautilus_preferences_window_setup (GtkBuilder *builder)
     setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO,
                  (const char *[]) { _("Single-Click"), _("Double-Click"), NULL });
     setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_SEARCH_RECURSIVE_ROW,
-                 (const char *[]) { _("On This Computer Only"), _("All Locations"), _("Never"), NULL });
+                 (const char *[]) { _("On This Device Only"), _("All Locations"), _("Never"), NULL });
     setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_THUMBNAILS_ROW,
-                 (const char *[]) { _("On This Computer Only"), _("All Files"), _("Never"), NULL });
+                 (const char *[]) { _("On This Device Only"), _("All Files"), _("Never"), NULL });
     setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_COUNT_ROW,
-                 (const char *[]) { _("On This Computer Only"), _("All Folders"), _("Never"), NULL });
+                 (const char *[]) { _("On This Device Only"), _("All Folders"), _("Never"), NULL });
 
     /* setup preferences */
     bind_builder_bool (builder, gtk_filechooser_preferences,

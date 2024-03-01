@@ -3875,7 +3875,7 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (sidebar->swin), sidebar->list_box);
 
-  sidebar->hostname = g_strdup (_("Computer"));
+  sidebar->hostname = g_strdup (_("Device"));
   sidebar->hostnamed_cancellable = g_cancellable_new ();
   g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
                             G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
