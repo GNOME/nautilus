@@ -60,6 +60,8 @@ void nautilus_list_base_set_cursor (NautilusListBase *self,
                                     gboolean          scroll_to);
 void    nautilus_list_base_set_model               (NautilusListBase  *self,
                                                     NautilusViewModel *model);
+void    nautilus_list_base_add_overlay             (NautilusListBase  *self,
+                                                    GtkWidget         *widget);
 void    nautilus_list_base_set_sort_state          (NautilusListBase  *self,
                                                     GVariant          *sort_state);
 void    nautilus_list_base_set_zoom_level          (NautilusListBase  *self,

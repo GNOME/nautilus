@@ -3330,6 +3330,8 @@ connect_inner_view (NautilusFilesView *self)
                                  G_CALLBACK (on_unload_subdirectory), self,
                                  G_CONNECT_DEFAULT);
     }
+
+    nautilus_list_base_add_overlay (priv->list_base, priv->empty_view_page);
 }
 
 static void
@@ -3443,6 +3445,7 @@ nautilus_files_view_finalize (GObject *object)
     view = NAUTILUS_FILES_VIEW (object);
     priv = nautilus_files_view_get_instance_private (view);
 
+    g_clear_object (&priv->empty_view_page);
     g_clear_object (&priv->view_action_group);
     g_clear_object (&priv->background_menu_model);
     g_clear_object (&priv->selection_menu_model);
@@ -3829,12 +3832,13 @@ real_check_empty_states (NautilusFilesView *view)
             adw_status_page_set_description (status_page, NULL);
         }
 
-        gtk_stack_set_visible_child (GTK_STACK (priv->stack), priv->empty_view_page);
+        gtk_widget_set_visible (priv->empty_view_page, TRUE);
+
         nautilus_files_view_display_selection_info (view);
     }
     else
     {
-        gtk_stack_set_visible_child (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));
+        gtk_widget_set_visible (priv->empty_view_page, FALSE);
     }
 }
 
@@ -9492,7 +9496,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, overlay);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, stack);
-    gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, empty_view_page);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusFilesView, floating_bar);
 
     /* See also the global accelerators in init() in addition to all the local
@@ -9576,6 +9579,12 @@ nautilus_files_view_init (NautilusFilesView *view)
     };
 
     priv = nautilus_files_view_get_instance_private (view);
+
+    /* Own a reference to keep the status page alive even if reparented while
+     * switching view modes. */
+    priv->empty_view_page = g_object_ref_sink (adw_status_page_new ());
+    /* Ensure opaque background, to hide the view underneath it. */
+    gtk_widget_add_css_class (priv->empty_view_page, "view");
 
     priv->model = nautilus_view_model_new ();
     g_signal_connect_object (GTK_SELECTION_MODEL (priv->model),
@@ -9759,6 +9768,9 @@ nautilus_files_view_change (NautilusFilesView *self,
                             guint              id)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    /* Prepare empty page for reuse. It's not destroyed because we own it. */
+    gtk_widget_unparent (priv->empty_view_page);
 
     /* Destroy existing inner view (which is owned by the stack) */
     gtk_stack_remove (GTK_STACK (priv->stack), GTK_WIDGET (priv->list_base));

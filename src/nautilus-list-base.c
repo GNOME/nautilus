@@ -41,6 +41,7 @@ struct _NautilusListBasePrivate
     NautilusViewModel *model;
     NautilusFile *directory_as_file;
 
+    GtkWidget *overlay;
     GtkWidget *scrolled_window;
 
     gboolean single_click_mode;
@@ -213,6 +214,26 @@ rubberband_set_state (NautilusListBase *self,
     {
         gtk_column_view_set_enable_rubberband (GTK_COLUMN_VIEW (view), enabled);
     }
+}
+
+/**
+ * nautilus_list_base_add_overlay:
+ * @self: a `NautilusListBase` instance
+ * @widget: a `GtkWidget` to be added
+ *
+ * Adds @widget as an overlay to the view. This allows the view event handling,
+ * such as secondary clicks and drops, to work as expected even if the pointer
+ * is on the overlay.
+ *
+ * The primary use case is the empty status page.
+ */
+void
+nautilus_list_base_add_overlay (NautilusListBase *self,
+                                GtkWidget        *widget)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), widget);
 }
 
 static void
@@ -1268,7 +1289,10 @@ nautilus_list_base_init (NautilusListBase *self)
     GtkEventController *controller;
 
     priv->scrolled_window = gtk_scrolled_window_new ();
-    adw_bin_set_child (ADW_BIN (self), priv->scrolled_window);
+    priv->overlay = gtk_overlay_new ();
+
+    gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), priv->scrolled_window);
+    adw_bin_set_child (ADW_BIN (self), priv->overlay);
 
     controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
     gtk_widget_add_controller (priv->scrolled_window, controller);
