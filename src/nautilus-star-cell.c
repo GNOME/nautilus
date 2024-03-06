@@ -58,20 +58,22 @@ static void
 update_star (GtkButton    *star,
              NautilusFile *file)
 {
-    gboolean is_starred;
-    g_autofree gchar *file_uri = NULL;
-
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-    file_uri = nautilus_file_get_uri (file);
-    is_starred = nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (),
-                                                       file_uri);
+    g_autofree gchar *file_uri = nautilus_file_get_uri (file);
+    gboolean is_starred = nautilus_tag_manager_file_is_starred (nautilus_tag_manager_get (),
+                                                                file_uri);
+    const gchar *tooltip = is_starred ? _("Unstar") : _("Star");
 
-    gtk_button_set_icon_name (star, is_starred ? "starred-symbolic" : "non-starred-symbolic");
-
-    gtk_widget_set_tooltip_text (GTK_WIDGET (star),
-                                 is_starred ? _("Unstar") : _("Star"));
+    /* Setting the tooltip is somewhat expensive as it involves system calls, so only
+     * update UI on change. */
+    if (g_strcmp0 (gtk_widget_get_tooltip_text (GTK_WIDGET (star)), tooltip))
+    {
+        gtk_button_set_icon_name (star, is_starred ? "starred-symbolic" : "non-starred-symbolic");
+        gtk_widget_set_tooltip_text (GTK_WIDGET (star), tooltip);
+    }
 }
+
 static void
 on_file_changed (NautilusStarCell *self)
 {
