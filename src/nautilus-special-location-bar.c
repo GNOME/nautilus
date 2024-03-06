@@ -79,7 +79,7 @@ on_info_bar_response (GtkInfoBar *infobar,
         {
             GVariant *parameters;
 
-            parameters = g_variant_new_parsed ("('launch-panel', [<('usage', @av [])>], "
+            parameters = g_variant_new_parsed ("('launch-panel', [<('privacy', [<'usage'>])>], "
                                                "@a{sv} {})");
             nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
                                          NAUTILUS_DBUS_LAUNCHER_SETTINGS,
