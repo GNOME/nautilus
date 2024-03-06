@@ -60,6 +60,7 @@ update_star (GtkButton    *star,
 {
     gboolean is_starred;
     g_autofree gchar *file_uri = NULL;
+    const gchar *tooltip;
 
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
@@ -69,9 +70,15 @@ update_star (GtkButton    *star,
 
     gtk_button_set_icon_name (star, is_starred ? "starred-symbolic" : "non-starred-symbolic");
 
-    gtk_widget_set_tooltip_text (GTK_WIDGET (star),
-                                 is_starred ? _("Unstar") : _("Star"));
+    /* Setting this seems a bit expensive as it involves system calls, so only
+     * set on change. */
+    tooltip = is_starred ? _("Unstar") : _("Star");
+    if (g_strcmp0 (gtk_widget_get_tooltip_text (GTK_WIDGET (star)), tooltip))
+    {
+        gtk_widget_set_tooltip_text (GTK_WIDGET (star), tooltip);
+    }
 }
+
 static void
 on_file_changed (NautilusStarCell *self)
 {
