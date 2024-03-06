@@ -71,13 +71,13 @@ static void
 on_trash_auto_emptied_clicked (AdwBanner *banner)
 {
     GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (banner)));
-    GVariant *parameters = g_variant_new_parsed (
-        "('launch-panel', [<('usage', @av [])>], @a{sv} {})");
+    const gchar *parameters = "('launch-panel', [<('privacy', [<'usage'>])>], @a{sv} {})";
 
     nautilus_dbus_launcher_call (nautilus_dbus_launcher_get (),
                                  NAUTILUS_DBUS_LAUNCHER_SETTINGS,
                                  "Activate",
-                                 parameters, window);
+                                 g_variant_new_parsed (parameters),
+                                 window);
 }
 
 static void
