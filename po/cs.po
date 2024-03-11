@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-22 20:12+0000\n"
-"PO-Revision-Date: 2024-02-24 11:56+0100\n"
+"POT-Creation-Date: 2024-03-04 00:42+0000\n"
+"PO-Revision-Date: 2024-03-11 13:18+0100\n"
 "Last-Translator: Daniel Rusek <mail@asciiwolf.com>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -76,16 +76,16 @@ msgstr ""
 "stromové zobrazení. Funkčnost je možné rozšiřovat pomocí zásuvných modulů a "
 "skriptů."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:52 src/nautilus-view.c:150
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:53 src/nautilus-view.c:150
 msgid "Grid View"
 msgstr "Zobrazit v mřížce"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:56 src/nautilus-view.c:154
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:57 src/nautilus-view.c:154
 #: src/nautilus-view.c:158
 msgid "List View"
 msgstr "Seznamové zobrazení"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-query.c:542
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-query.c:542
 #: src/nautilus-search-directory-file.c:177
 #: src/nautilus-search-directory-file.c:231
 #: src/nautilus-search-directory-file.c:271
@@ -93,7 +93,7 @@ msgstr "Seznamové zobrazení"
 msgid "Search"
 msgstr "Hledat"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-bookmark.c:106
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:65 src/nautilus-bookmark.c:106
 #: src/nautilus-file.c:4238 src/nautilus-file-utilities.c:75
 #: src/nautilus-pathbar.c:386 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1435
@@ -4001,11 +4001,11 @@ msgstr "Filtrovat výsledky vyhledávání"
 
 #: src/nautilus-query-editor.c:717
 msgid "Search current folder"
-msgstr "Prohledávat aktuální složku"
+msgstr "prohledávat aktuální složku"
 
 #: src/nautilus-query-editor.c:718
 msgid "Search everywhere"
-msgstr "Hledat všude"
+msgstr "hledat všude"
 
 #: src/nautilus-rename-file-popover.c:226
 msgid "Rename Folder"
@@ -4311,11 +4311,6 @@ msgstr ""
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Neobsloužené chybové hlášení: %s"
-
-#: src/nautilus-window-slot.c:1873
-#, c-format
-msgid "Unable to load location"
-msgstr "Nelze nahrát umístění"
 
 #: src/nautilus-x-content-bar.c:141
 msgid "Open with:"
@@ -5482,7 +5477,7 @@ msgid "No network locations found"
 msgstr "Nenalezeno žádné síťové místo"
 
 #. Restore from Cancel to Connect
-#: src/gtk/nautilusgtkplacesview.c:1233 src/gtk/nautilusgtkplacesview.ui:241
+#: src/gtk/nautilusgtkplacesview.c:1233 src/gtk/nautilusgtkplacesview.ui:243
 msgid "Con_nect"
 msgstr "_Připojit"
 
@@ -5751,6 +5746,10 @@ msgstr "Postranní panel"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Seznam častých zkratek, bodů připojení a záložek."
+
+#, c-format
+#~ msgid "Unable to load location"
+#~ msgstr "Nelze nahrát umístění"
 
 #~ msgid "No matches found in indexed locations"
 #~ msgstr "Nenalezeny žádné shody v indexovaných umístěních"
