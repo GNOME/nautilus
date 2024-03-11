@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-12 11:58+0000\n"
-"PO-Revision-Date: 2024-02-16 22:55+0100\n"
+"POT-Creation-Date: 2024-03-04 00:42+0000\n"
+"PO-Revision-Date: 2024-03-10 21:53+0100\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -77,16 +77,16 @@ msgstr ""
 "graella d'icones, llista d'icones i llista d'arbre. Es poden ampliar les "
 "seves funcions mitjançant connectors i scripts."
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:52 src/nautilus-view.c:150
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:53 src/nautilus-view.c:150
 msgid "Grid View"
 msgstr "Vista de graella"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:56 src/nautilus-view.c:154
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:57 src/nautilus-view.c:154
 #: src/nautilus-view.c:158
 msgid "List View"
 msgstr "Visualització de llista"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-query.c:542
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-query.c:542
 #: src/nautilus-search-directory-file.c:177
 #: src/nautilus-search-directory-file.c:231
 #: src/nautilus-search-directory-file.c:271
@@ -94,7 +94,7 @@ msgstr "Visualització de llista"
 msgid "Search"
 msgstr "Cerca"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-bookmark.c:106
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:65 src/nautilus-bookmark.c:106
 #: src/nautilus-file.c:4238 src/nautilus-file-utilities.c:75
 #: src/nautilus-pathbar.c:386 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1435
@@ -1292,7 +1292,7 @@ msgid "Details: The proxy has not been created."
 msgstr "Detalls: no s'ha creat el servidor intermediari."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:670
+#: src/nautilus-directory.c:666
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -1770,27 +1770,20 @@ msgid "unknown"
 msgstr "desconegut"
 
 #: src/nautilus-file-operations.c:1132 src/nautilus-file-operations.c:1193
-#, fuzzy, c-format
-#| msgid "Delete “%s”"
+#, c-format
 msgid "Permanently Delete “%s”?"
-msgstr "Suprimeix «%s»"
+msgstr "Es vol suprimir permanentment «%s»?"
 
 #: src/nautilus-file-operations.c:1136 src/nautilus-file-operations.c:1198
-#, fuzzy, c-format
-#| msgid "Are you sure you want to permanently delete the %'d selected item?"
-#| msgid_plural ""
-#| "Are you sure you want to permanently delete the %'d selected items?"
+#, c-format
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
-msgstr[0] "Segur que voleu suprimir permanentment l'element seleccionat?"
-msgstr[1] ""
-"Segur que voleu suprimir permanentment els %'d elements seleccionats?"
+msgstr[0] "Es vol suprimir permanentment %'d element seleccionat?"
+msgstr[1] "Es vol suprimir permanentment %'d elements seleccionats?"
 
 #: src/nautilus-file-operations.c:1144 src/nautilus-file-operations.c:1206
-#, fuzzy
-#| msgid "The item cannot be restored from trash"
 msgid "Permanently deleted items can not be restored"
-msgstr "No es pot restaurar l'element des de la paperera"
+msgstr "Els elements suprimits permanentment no es poden recuperar"
 
 #: src/nautilus-file-operations.c:1159
 msgid "Empty Trash?"
@@ -1961,7 +1954,7 @@ msgid "Deleting Files"
 msgstr "S'estan suprimint els fitxers"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6837
 #: src/gtk/nautilusgtkplacessidebar.c:2689
 #: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
@@ -1969,9 +1962,9 @@ msgid "Unable to eject “%s”"
 msgstr "No s'ha pogut expulsar «%s»"
 
 #: src/nautilus-file-operations.c:2336
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to unmount “%s”"
-msgstr "No s'ha pogut desmuntar %s"
+msgstr "No s'ha pogut desmuntar «%s»"
 
 #: src/nautilus-file-operations.c:2507
 msgid "Do you want to empty the trash before you unmount?"
@@ -1991,7 +1984,7 @@ msgid "Do _not Empty Trash"
 msgstr "_No buidis la paperera"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6772
+#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6785
 #: src/gtk/nautilusgtkplacessidebar.c:2049
 #, c-format
 msgid "Unable to access “%s”"
@@ -2393,10 +2386,9 @@ msgstr[0] "S'està creant l'enllaç a %'d fitxer"
 msgstr[1] "S'estan creant els enllaços a %'d fitxers"
 
 #: src/nautilus-file-operations.c:6510
-#, fuzzy, c-format
-#| msgid "Error while creating link to %s."
+#, c-format
 msgid "Error while creating link to “%s”."
-msgstr "S'ha produït un error en crear l'enllaç a %s."
+msgstr "S'ha produït un error en crear l'enllaç a «%s»."
 
 #: src/nautilus-file-operations.c:6514
 msgid "Symbolic links only supported for local files"
@@ -2426,16 +2418,14 @@ msgid "Untitled Document"
 msgstr "Document sense nom"
 
 #: src/nautilus-file-operations.c:7390
-#, fuzzy, c-format
-#| msgid "Error while creating directory %s."
+#, c-format
 msgid "Error while creating directory “%s”."
-msgstr "S'ha produït un error en crear el directori %s."
+msgstr "S'ha produït un error en crear el directori «%s»."
 
 #: src/nautilus-file-operations.c:7395
-#, fuzzy, c-format
-#| msgid "Error while creating file %s."
+#, c-format
 msgid "Error while creating file “%s”."
-msgstr "S'ha produït un error en crear el fitxer %s."
+msgstr "S'ha produït un error en crear el fitxer «%s»."
 
 #: src/nautilus-file-operations.c:7399
 #, c-format
@@ -2492,10 +2482,9 @@ msgid "There was an error while extracting “%s”."
 msgstr "S'ha produït un error durant l'extracció de «%s»."
 
 #: src/nautilus-file-operations.c:8169
-#, fuzzy, c-format
-#| msgid "Not enough free space to extract %s"
+#, c-format
 msgid "Not enough free space to extract “%s”"
-msgstr "No hi ha prou espai lliure per a extraure %s"
+msgstr "No hi ha prou espai lliure per a extraure «%s»"
 
 #: src/nautilus-file-operations.c:8202
 #, c-format
@@ -2645,143 +2634,147 @@ msgid "%s, %s"
 msgstr "%s, %s"
 
 #: src/nautilus-files-view.c:3764
-#, fuzzy
-#| msgid "Sharing Settings"
 msgid "Search _Settings"
-msgstr "Paràmetres de compartició"
+msgstr "Cerca als _paràmetres"
 
 #: src/nautilus-files-view.c:3776
 msgid "Search _Everywhere"
 msgstr "Cerca _Arreu"
 
-#: src/nautilus-files-view.c:3813 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3813
+msgid "More locations can be added to search in the settings"
+msgstr "Als paràmetres, es poden afegir més ubicacions a la cerca"
+
+#. Translators: %s is the name of the search location formatted for display
+#: src/nautilus-files-view.c:3821
+#, c-format
+msgid "No matches in “%s”"
+msgstr "No hi ha coincidències a «%s»"
+
+#: src/nautilus-files-view.c:3829 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "No s'ha trobat cap resultat"
 
-#: src/nautilus-files-view.c:3816
-msgid "No matches found in indexed locations"
-msgstr "No s'ha trobat cap coincidència a les ubicacions indexades"
-
-#: src/nautilus-files-view.c:3821
+#: src/nautilus-files-view.c:3834
 msgid "Trash is Empty"
 msgstr "La carpeta és buida"
 
-#: src/nautilus-files-view.c:3827
+#: src/nautilus-files-view.c:3840
 msgid "No Starred Files"
 msgstr "No hi ha fitxers destacats"
 
-#: src/nautilus-files-view.c:3833
+#: src/nautilus-files-view.c:3846
 msgid "No Recent Files"
 msgstr "No hi ha fitxers utilitzats recentment"
 
-#: src/nautilus-files-view.c:3839
+#: src/nautilus-files-view.c:3852
 msgid "Folder is Empty"
 msgstr "La carpeta és buida"
 
-#: src/nautilus-files-view.c:5998
+#: src/nautilus-files-view.c:6011
 msgid "Select Move Destination"
 msgstr "Seleccioneu la destinació del moviment"
 
-#: src/nautilus-files-view.c:6002
+#: src/nautilus-files-view.c:6015
 msgid "Select Copy Destination"
 msgstr "Seleccioneu la destinació de la còpia"
 
-#: src/nautilus-files-view.c:6008 src/nautilus-files-view.c:6412
+#: src/nautilus-files-view.c:6021 src/nautilus-files-view.c:6425
 #: src/nautilus-properties-window.c:4077
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "_Selecciona"
 
-#: src/nautilus-files-view.c:6411
+#: src/nautilus-files-view.c:6424
 msgid "Select Extract Destination"
 msgstr "Seleccioneu una destinació per a l'extracció"
 
-#: src/nautilus-files-view.c:6500
+#: src/nautilus-files-view.c:6513
 msgid "Error sending email."
 msgstr "S'ha produït un error en enviar el correu electrònic."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6798
+#: src/nautilus-files-view.c:6811
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "No s'ha pogut suprimir «%s»"
 
-#: src/nautilus-files-view.c:6848
+#: src/nautilus-files-view.c:6861
 msgid "Unable to stop drive"
 msgstr "No s'ha pogut aturar la unitat"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6959 src/gtk/nautilusgtkplacessidebar.c:2011
+#: src/nautilus-files-view.c:6972 src/gtk/nautilusgtkplacessidebar.c:2011
 #: src/gtk/nautilusgtkplacessidebar.c:2915
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "No s'ha pogut iniciar «%s»"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:7956
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Carpeta nova amb la selecció (%'d element)"
 msgstr[1] "Carpeta nova amb la selecció (%'d elements)"
 
-#: src/nautilus-files-view.c:7998
+#: src/nautilus-files-view.c:8011
 #, c-format
 msgid "Open With %s"
 msgstr "Obre amb %s"
 
-#: src/nautilus-files-view.c:8009
+#: src/nautilus-files-view.c:8022
 msgid "Run"
 msgstr "Executa"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8027
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Extreu"
 
-#: src/nautilus-files-view.c:8015
+#: src/nautilus-files-view.c:8028
 msgid "Extract to…"
 msgstr "Extreu a…"
 
-#: src/nautilus-files-view.c:8019
+#: src/nautilus-files-view.c:8032
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "Obre"
 
-#: src/nautilus-files-view.c:8097
+#: src/nautilus-files-view.c:8110
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3345
 msgid "_Start"
 msgstr "_Inicia"
 
-#: src/nautilus-files-view.c:8103 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8116 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "_Connecta"
 
-#: src/nautilus-files-view.c:8109
+#: src/nautilus-files-view.c:8122
 msgid "_Start Multi-disk Drive"
 msgstr "_Inicia la unitat multi disc"
 
-#: src/nautilus-files-view.c:8115
+#: src/nautilus-files-view.c:8128
 msgid "U_nlock Drive"
 msgstr "_Desbloca la unitat"
 
-#: src/nautilus-files-view.c:8133
+#: src/nautilus-files-view.c:8146
 msgid "Stop Drive"
 msgstr "Atura la unitat"
 
-#: src/nautilus-files-view.c:8139 src/gtk/nautilusgtkplacessidebar.c:3362
+#: src/nautilus-files-view.c:8152 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Safely Remove Drive"
 msgstr "_Treu la unitat de forma segura"
 
-#: src/nautilus-files-view.c:8145 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8158 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "_Desconnecta"
 
-#: src/nautilus-files-view.c:8151
+#: src/nautilus-files-view.c:8164
 msgid "_Stop Multi-disk Drive"
 msgstr "_Atura la unitat multi disc"
 
-#: src/nautilus-files-view.c:8157
+#: src/nautilus-files-view.c:8170
 msgid "_Lock Drive"
 msgstr "_Bloca la unitat"
 
@@ -3820,9 +3813,10 @@ msgstr "Cancel·lada"
 msgid "Preparing"
 msgstr "S'està preparant"
 
-#: src/nautilus-progress-info-widget.c:56
-msgid "Completed"
-msgstr "Finalitzat"
+#. Translators: This describes an operation, such as copying or compressing files, as being completed.
+#: src/nautilus-progress-info-widget.c:57
+msgid "Operation Completed"
+msgstr "Operació finalitzada"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -4272,11 +4266,6 @@ msgstr ""
 msgid "Unhandled error message: %s"
 msgstr "Missatge d'error no gestionat: %s"
 
-#: src/nautilus-window-slot.c:1873
-#, c-format
-msgid "Unable to load location"
-msgstr "No s'ha pogut carregar la ubicació"
-
 #: src/nautilus-x-content-bar.c:141
 msgid "Open with:"
 msgstr "Obre amb:"
@@ -4458,9 +4447,6 @@ msgid "Location Bar With Root Location"
 msgstr "Barra d'ubicacions amb la ubicació arrel"
 
 #: src/resources/gtk/help-overlay.ui:225
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Location bar with home location"
 msgctxt "shortcut window"
 msgid "Location Bar With Home Location"
 msgstr "Barra d'ubicacions amb la carpeta d'usuari"
@@ -5460,7 +5446,7 @@ msgid "No network locations found"
 msgstr "No s'han trobat ubicacions de xarxa"
 
 #. Restore from Cancel to Connect
-#: src/gtk/nautilusgtkplacesview.c:1233 src/gtk/nautilusgtkplacesview.ui:241
+#: src/gtk/nautilusgtkplacesview.c:1233 src/gtk/nautilusgtkplacesview.ui:243
 msgid "Con_nect"
 msgstr "C_onnecta"
 
@@ -5730,6 +5716,13 @@ msgstr "Barra lateral"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Llista comuna de dreceres, punts de muntatge i adreces d'interès."
+
+#~ msgid "No matches found in indexed locations"
+#~ msgstr "No s'ha trobat cap coincidència a les ubicacions indexades"
+
+#, c-format
+#~ msgid "Unable to load location"
+#~ msgstr "No s'ha pogut carregar la ubicació"
 
 #, c-format
 #~ msgid "Are you sure you want to permanently delete “%s” from the trash?"
