@@ -2924,7 +2924,28 @@ action_paste_files_accel (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    if (nautilus_files_view_is_read_only (view))
+    if (showing_starred_directory (view))
+    {
+        show_dialog (_("Could not paste files"),
+                     _("Cannot paste files into Starred"),
+                     nautilus_files_view_get_containing_window (view),
+                     GTK_MESSAGE_ERROR);
+    }
+    else if (showing_recent_directory (view))
+    {
+        show_dialog (_("Could not paste files"),
+                     _("Cannot paste files into Recent"),
+                     nautilus_files_view_get_containing_window (view),
+                     GTK_MESSAGE_ERROR);
+    }
+    else if (showing_trash_directory (view))
+    {
+        show_dialog (_("Could not paste files"),
+                     _("Cannot paste files into Trash"),
+                     nautilus_files_view_get_containing_window (view),
+                     GTK_MESSAGE_ERROR);
+    }
+    else if (nautilus_files_view_is_read_only (view))
     {
         show_dialog (_("Could not paste files"),
                      _("Permissions do not allow pasting files in this directory"),
@@ -7826,12 +7847,17 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !is_read_only && !selection_contains_recent &&
+                                 !is_read_only &&
+                                 !selection_contains_recent &&
+                                 !is_in_trash &&
                                  !selection_contains_starred);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste-into");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !selection_contains_recent &&
+                                 !is_in_trash &&
+                                 !selection_contains_starred &&
                                  can_paste_files_into);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
