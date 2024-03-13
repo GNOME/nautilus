@@ -4186,7 +4186,7 @@ static void copy_move_file (CopyMoveJob  *job,
                             GHashTable   *debuting_files,
                             gboolean      overwrite,
                             gboolean     *skipped_file,
-                            gboolean      readonly_source_fs);
+                            gboolean      reset_perms);
 
 typedef enum
 {
@@ -4346,7 +4346,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
                      TransferInfo  *transfer_info,
                      GHashTable    *debuting_files,
                      gboolean      *skipped_file,
-                     gboolean       readonly_source_fs)
+                     gboolean       reset_perms)
 {
     g_autoptr (GFileInfo) src_info = NULL;
     GFileInfo *info;
@@ -4398,7 +4398,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
         }
 
         flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
-        if (readonly_source_fs)
+        if (reset_perms)
         {
             flags |= G_FILE_COPY_TARGET_DEFAULT_PERMS;
         }
@@ -4437,7 +4437,7 @@ retry:
                                          g_file_info_get_name (info));
             copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
                             source_info, transfer_info, NULL, FALSE, &local_skipped_file,
-                            readonly_source_fs);
+                            reset_perms);
 
             if (local_skipped_file)
             {
@@ -4870,7 +4870,7 @@ copy_move_file (CopyMoveJob   *copy_job,
                 GHashTable    *debuting_files,
                 gboolean       overwrite,
                 gboolean      *skipped_file,
-                gboolean       readonly_source_fs)
+                gboolean       reset_perms)
 {
     GFile *dest, *new_dest;
     g_autofree gchar *dest_uri = NULL;
@@ -5019,7 +5019,7 @@ retry:
     {
         flags |= G_FILE_COPY_OVERWRITE;
     }
-    if (readonly_source_fs)
+    if (reset_perms)
     {
         flags |= G_FILE_COPY_TARGET_DEFAULT_PERMS;
     }
@@ -5316,7 +5316,7 @@ retry:
                                   would_recurse, dest_fs_type,
                                   source_info, transfer_info,
                                   debuting_files, skipped_file,
-                                  readonly_source_fs))
+                                  reset_perms))
         {
             /* destination changed, since it was an invalid file name */
             g_assert (*dest_fs_type != NULL);
@@ -5397,10 +5397,10 @@ copy_files (CopyMoveJob  *job,
     GFile *source_dir;
     char *dest_fs_type;
     GFileInfo *inf;
-    gboolean readonly_source_fs;
+    gboolean reset_perms;
 
     dest_fs_type = NULL;
-    readonly_source_fs = FALSE;
+    reset_perms = FALSE;
 
     common = &job->common;
 
@@ -5410,10 +5410,17 @@ copy_files (CopyMoveJob  *job,
     source_dir = g_file_get_parent ((GFile *) job->files->data);
     if (source_dir)
     {
-        inf = g_file_query_filesystem_info (source_dir, "filesystem::readonly", NULL, NULL);
+        inf = g_file_query_filesystem_info (source_dir, "filesystem::type", NULL, NULL);
         if (inf != NULL)
         {
-            readonly_source_fs = g_file_info_get_attribute_boolean (inf, "filesystem::readonly");
+            /* Reset all permissions for isofs filesystems. If we didn't do this, we would
+             * end up with unfortunate r-x permissions for all files copied from CDs that
+             * don't have the POSIX permission extension. */
+            const char *source_fs_type;
+
+            source_fs_type = g_file_info_get_attribute_string (inf, "filesystem::type");
+            reset_perms = g_strcmp0 (source_fs_type, "isofs") == 0;
+
             g_object_unref (inf);
         }
         g_object_unref (source_dir);
@@ -5450,7 +5457,7 @@ copy_files (CopyMoveJob  *job,
                             source_info, transfer_info,
                             job->debuting_files,
                             FALSE, &skipped_file,
-                            readonly_source_fs);
+                            reset_perms);
             g_object_unref (dest);
 
             if (skipped_file)
