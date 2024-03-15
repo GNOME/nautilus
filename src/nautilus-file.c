@@ -4404,8 +4404,8 @@ get_default_file_icon (void)
     return fallback_icon;
 }
 
-GFilesystemPreviewType
-nautilus_file_get_filesystem_use_preview (NautilusFile *file)
+static GFilesystemPreviewType
+get_filesystem_use_preview (NautilusFile *file)
 {
     if (file->details->filesystem_info_is_up_to_date)
     {
@@ -4424,11 +4424,9 @@ nautilus_file_get_filesystem_use_preview (NautilusFile *file)
     return G_FILESYSTEM_PREVIEW_TYPE_IF_ALWAYS;
 }
 
-gboolean
-nautilus_file_get_filesystem_remote (NautilusFile *file)
+static gboolean
+get_filesystem_remote (NautilusFile *file)
 {
-    g_assert (NAUTILUS_IS_FILE (file));
-
     if (file->details->filesystem_info_is_up_to_date)
     {
         return file->details->filesystem_remote;
@@ -4466,7 +4464,7 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
         preffered_file = parent != NULL ? parent : file;
     }
 
-    use_preview = nautilus_file_get_filesystem_use_preview (preffered_file);
+    use_preview = get_filesystem_use_preview (preffered_file);
 
     if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
     {
@@ -4498,7 +4496,7 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
         else
         {
             /* only local files */
-            return !nautilus_file_is_remote (preffered_file);
+            return !get_filesystem_remote (preffered_file);
         }
     }
 
@@ -7430,7 +7428,7 @@ nautilus_file_is_remote (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return nautilus_file_get_filesystem_remote (file);
+    return get_filesystem_remote (file);
 }
 
 /**
