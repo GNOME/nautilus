@@ -4405,66 +4405,57 @@ get_default_file_icon (void)
 }
 
 static GFilesystemPreviewType
-get_filesystem_use_preview (NautilusFile *file)
+get_filesystem_use_preview (NautilusFile *file,
+                            NautilusFile *parent)
 {
     if (file->details->filesystem_info_is_up_to_date)
     {
         return file->details->filesystem_use_preview;
     }
+    else if (parent != NULL && parent->details->filesystem_info_is_up_to_date)
+    {
+        return parent->details->filesystem_use_preview;
+    }
     else
     {
-        g_autoptr (NautilusFile) parent = nautilus_file_get_parent (file);
-
-        if (parent != NULL && file->details->filesystem_info_is_up_to_date)
-        {
-            return parent->details->filesystem_use_preview;
-        }
+        return G_FILESYSTEM_PREVIEW_TYPE_IF_ALWAYS;
     }
-
-    return G_FILESYSTEM_PREVIEW_TYPE_IF_ALWAYS;
 }
 
 static gboolean
-get_filesystem_remote (NautilusFile *file)
+get_filesystem_remote (NautilusFile *file,
+                       NautilusFile *parent)
 {
     if (file->details->filesystem_info_is_up_to_date)
     {
         return file->details->filesystem_remote;
     }
-    else
-    {
-        g_autoptr (NautilusFile) parent = NULL;
 
-        parent = nautilus_file_get_parent (file);
-        if (parent != NULL && file->details->filesystem_info_is_up_to_date)
-        {
-            return parent->details->filesystem_remote;
-        }
+    g_autoptr (NautilusFile) tmp_parent = NULL;
+
+    if (parent == NULL)
+    {
+        tmp_parent = nautilus_file_get_parent (file);
+        parent = tmp_parent;
     }
 
-    return FALSE;
+    if (parent != NULL && parent->details->filesystem_info_is_up_to_date)
+    {
+        return parent->details->filesystem_remote;
+    }
+    else
+    {
+        return FALSE;
+    }
 }
 
 static gboolean
 get_speed_tradeoff_preference_for_file (NautilusFile               *file,
                                         NautilusSpeedTradeoffValue  value)
 {
-    GFilesystemPreviewType use_preview;
-    g_autoptr (NautilusFile) parent = NULL;
-    NautilusFile *preffered_file = file;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    /* If the info is not already available, it's better to share the parent
-     * between the filesystem info check functions then to let both parse it
-     * twice. */
-    if (!file->details->filesystem_info_is_up_to_date)
-    {
-        parent = nautilus_file_get_parent (file);
-        preffered_file = parent != NULL ? parent : file;
-    }
-
-    use_preview = get_filesystem_use_preview (preffered_file);
+    g_autoptr (NautilusFile) parent = file->details->filesystem_info_is_up_to_date ?
+                                      NULL : nautilus_file_get_parent (file);
+    GFilesystemPreviewType use_preview = get_filesystem_use_preview (file, parent);
 
     if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
     {
@@ -4496,7 +4487,7 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
         else
         {
             /* only local files */
-            return !get_filesystem_remote (preffered_file);
+            return !get_filesystem_remote (file, parent);
         }
     }
 
@@ -7428,7 +7419,7 @@ nautilus_file_is_remote (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return get_filesystem_remote (file);
+    return get_filesystem_remote (file, NULL);
 }
 
 /**
