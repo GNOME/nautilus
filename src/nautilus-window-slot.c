@@ -70,7 +70,7 @@ enum
 
 struct _NautilusWindowSlot
 {
-    AdwBin parent_instance;
+    GtkBox parent_instance;
 
     NautilusWindow *window;
 
@@ -148,7 +148,7 @@ struct _NautilusWindowSlot
     GList *selection;
 };
 
-G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
+G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
@@ -864,7 +864,7 @@ nautilus_window_slot_constructed (GObject *object)
     G_OBJECT_CLASS (nautilus_window_slot_parent_class)->constructed (object);
 
     self->stack = gtk_stack_new ();
-    adw_bin_set_child (ADW_BIN (self), self->stack);
+    gtk_box_append (GTK_BOX (self), self->stack);
 
     self->vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_stack_add_child (GTK_STACK (self->stack), self->vbox);
