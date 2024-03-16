@@ -5001,20 +5001,6 @@ nautilus_file_should_show_directory_item_count (NautilusFile *file)
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    /* FIXME "x-directory/smb-share" is obsolete. It was set by gnome-vfs in:
-     * https://gitlab.gnome.org/Archive/gnome-vfs/-/blob/master/modules/smb-method.c
-     *
-     * Nowadays, GVfsBackendSmbBrowse sets the "inode/directory" MIME type.
-     *
-     * This was introduced by commit f34f0e530982c5bdc0c3baeb2842fdbc2ced5187
-     * Do the concerns in that commit's description still apply?
-     */
-    if (file->details->mime_type &&
-        strcmp (file->details->mime_type, "x-directory/smb-share") == 0)
-    {
-        return FALSE;
-    }
-
     /* Add the callback once for the life of our process */
     if (!show_directory_item_count_callback_added)
     {
