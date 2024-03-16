@@ -4453,6 +4453,11 @@ static gboolean
 get_speed_tradeoff_preference_for_file (NautilusFile               *file,
                                         NautilusSpeedTradeoffValue  value)
 {
+    if (value == NAUTILUS_SPEED_TRADEOFF_NEVER)
+    {
+        return FALSE;
+    }
+
     g_autoptr (NautilusFile) parent = file->details->filesystem_info_is_up_to_date ?
                                       NULL : nautilus_file_get_parent (file);
     GFilesystemPreviewType use_preview = get_filesystem_use_preview (file, parent);
@@ -4467,10 +4472,6 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
         {
             return TRUE;
         }
-    }
-    else if (value == NAUTILUS_SPEED_TRADEOFF_NEVER)
-    {
-        return FALSE;
     }
     else if (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY)
     {
