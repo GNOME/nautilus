@@ -4462,37 +4462,27 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
                                       NULL : nautilus_file_get_parent (file);
     GFilesystemPreviewType use_preview = get_filesystem_use_preview (file, parent);
 
-    if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+    if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
     {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            return FALSE;
-        }
-        else
-        {
-            return TRUE;
-        }
+        /* file system says to never preview anything */
+        return FALSE;
     }
-    else if (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY)
+    else if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
     {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            /* file system says to never preview anything */
-            return FALSE;
-        }
-        else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
-        {
-            /* file system says we should treat file as if it's local */
-            return TRUE;
-        }
-        else
-        {
-            /* only local files */
-            return !get_filesystem_remote (file, parent);
-        }
+        /* we don't care whether it's local or not */
+        return TRUE;
     }
-
-    return FALSE;
+    /* value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY */
+    else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
+    {
+        /* file system says we should treat file as if it's local */
+        return TRUE;
+    }
+    else
+    {
+        /* check whether file is not remote */
+        return !get_filesystem_remote (file, parent);
+    }
 }
 
 gboolean
