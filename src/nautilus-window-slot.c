@@ -979,6 +979,7 @@ action_search_global (GSimpleAction *action,
         }
 
         nautilus_window_slot_set_search_visible (self, search_global);
+        gtk_widget_set_visible (GTK_WIDGET (self->banner), !search_global);
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCH_GLOBAL]);
     }
