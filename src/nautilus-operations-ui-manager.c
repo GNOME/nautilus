@@ -279,12 +279,12 @@ set_file_labels (FileConflictDialogData *data)
     destination_label = g_string_new (NULL);
     if (destination_is_directory)
     {
-        g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original folder"));
+        g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original Folder"));
         g_string_append_printf (destination_label, "%s %s\n", _("Contents:"), destination_size);
     }
     else
     {
-        g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original file"));
+        g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original File"));
         g_string_append_printf (destination_label, "%s %s\n", _("Size:"), destination_size);
     }
 
@@ -311,12 +311,12 @@ set_file_labels (FileConflictDialogData *data)
     {
         g_string_append_printf (source_label, "<b>%s</b>\n",
                                 destination_is_directory ?
-                                _("Merge with") : _("Replace with"));
+                                _("Merge With") : _("Replace With"));
         g_string_append_printf (source_label, "%s %s\n", _("Contents:"), source_size);
     }
     else
     {
-        g_string_append_printf (source_label, "<b>%s</b>\n", _("Replace with"));
+        g_string_append_printf (source_label, "<b>%s</b>\n", _("Replace With"));
         g_string_append_printf (source_label, "%s %s\n", _("Size:"), source_size);
     }
 
@@ -391,13 +391,13 @@ copy_move_conflict_on_file_list_ready (GList    *files,
     {
         title = g_strdup (nautilus_file_is_directory (data->destination) ?
                           _("Merge Folder") :
-                          _("File and Folder conflict"));
+                          _("File and Folder Conflict"));
     }
     else
     {
         title = g_strdup (nautilus_file_is_directory (data->destination) ?
-                          _("File and Folder conflict") :
-                          _("File conflict"));
+                          _("File and Folder Conflict") :
+                          _("File Conflict"));
     }
 
     gtk_window_set_title (GTK_WINDOW (data->dialog), title);
