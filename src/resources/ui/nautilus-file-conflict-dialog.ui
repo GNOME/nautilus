@@ -27,7 +27,7 @@
             <child type="end">
               <object class="GtkButton" id="rename_button">
                 <property name="visible">False</property>
-                <property name="label" translatable="yes">Re_name</property>
+                <property name="label" translatable="yes">_Rename</property>
                 <property name="use-underline">True</property>
                 <signal name="clicked" handler="rename_button_cb" swapped="yes"/>
                 <style>
@@ -37,7 +37,7 @@
             </child>
             <child type="end">
               <object class="GtkButton" id="replace_button">
-                <property name="label" translatable="yes">Re_place</property>
+                <property name="label" translatable="yes">_Replace</property>
                 <property name="use-underline">True</property>
                 <signal name="clicked" handler="replace_button_cb" swapped="yes"/>
                 <style>
@@ -123,7 +123,7 @@
                         </child>
                         <child>
                           <object class="GtkButton">
-                            <property name="label" translatable="yes">_Reset</property>
+                            <property name="label" translatable="yes">R_eset</property>
                             <property name="use-underline">True</property>
                             <signal name="clicked" handler="reset_button_clicked_cb"/>
                           </object>
