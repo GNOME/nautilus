@@ -1386,34 +1386,23 @@ remove_similar_callbacks (NautilusDirectory *directory,
 {
     GList *list, *node;
 
-    /* Remove all queued callback from the list (including ready). */
-    do
+    /* Remove all queued ready callbacks */
+    list = g_hash_table_lookup (directory->details->call_when_ready_hash.ready, callback->file);
+    node = g_list_find_custom (list, callback, ready_callback_key_compare);
+    while (node != NULL)
     {
-        list = g_hash_table_lookup (directory->details->call_when_ready_hash.ready, callback->file);
-        node = g_list_find_custom (list, callback, ready_callback_key_compare);
-
-        if (node != NULL)
-        {
-            remove_callback_link (directory, node, TRUE);
-
-            nautilus_directory_async_state_changed (directory);
-        }
+        node = remove_callback_link (directory, node, TRUE);
+        nautilus_directory_async_state_changed (directory);
     }
-    while (node != NULL);
 
-    do
+    /* Remove all queued unsatisfied callbacks */
+    list = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, callback->file);
+    node = g_list_find_custom (list, callback, ready_callback_key_compare);
+    while (node != NULL)
     {
-        list = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied,
-                                    callback->file);
-        node = g_list_find_custom (list, callback, ready_callback_key_compare);
-        if (node != NULL)
-        {
-            remove_callback_link (directory, node, FALSE);
-
-            nautilus_directory_async_state_changed (directory);
-        }
+        node = remove_callback_link (directory, node, FALSE);
+        nautilus_directory_async_state_changed (directory);
     }
-    while (node != NULL);
 }
 
 void
