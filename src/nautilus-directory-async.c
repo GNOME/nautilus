@@ -1795,32 +1795,39 @@ static gboolean
 call_ready_callbacks_at_idle (gpointer callback_data)
 {
     NautilusDirectory *directory;
-    GList *node;
-    ReadyCallback *callback;
+    g_autoptr (GPtrArray) values = NULL;
 
     directory = NAUTILUS_DIRECTORY (callback_data);
     directory->details->call_ready_idle_id = 0;
 
     nautilus_directory_ref (directory);
 
-    GHashTableIter hash_iter;
-    g_hash_table_iter_init (&hash_iter, directory->details->call_when_ready_hash.ready);
+    /* Steal all ready callbacks, new callbacks will end up in empty table. */
+    values = g_hash_table_steal_all_values (directory->details->call_when_ready_hash.ready);
 
-    /* Check if any callbacks are ready and call them if they are. */
-    while (g_hash_table_iter_next (&hash_iter, NULL, (gpointer *) &node))
+    if (values->len == 0)
     {
-        callback = node->data;
+        /* Return early in case all ready callbacks were cancelled, don't emit state change */
+        return FALSE;
+    }
 
-        /* Callbacks are one-shots, so remove it now. */
-        remove_callback_link_keep_data (directory, node, TRUE);
+    for (guint i = 0; i < values->len; i++)
+    {
+        for (GList *node = values->pdata[i]; node != NULL; node = node->next)
+        {
+            ReadyCallback *callback = node->data;
 
-        /* Call the callback. */
-        ready_callback_call (directory, callback);
-        g_free (callback);
+            request_counter_remove_request (directory->details->call_when_ready_counters,
+                                            callback->request);
 
-        /* Need to parse the node from the hash table again because it might
-        * have been freed */
-        g_hash_table_iter_init (&hash_iter, directory->details->call_when_ready_hash.ready);
+            ready_callback_call (directory, callback);
+        }
+    }
+
+    /* Cleanup */
+    for (guint i = 0; i < values->len; i++)
+    {
+        g_list_free_full (values->pdata[i], g_free);
     }
 
     nautilus_directory_async_state_changed (directory);
