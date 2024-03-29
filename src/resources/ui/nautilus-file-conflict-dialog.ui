@@ -139,13 +139,8 @@
                 </child>
                 <child>
                   <object class="GtkCheckButton" id="checkbox">
+                    <property name="label" translatable="yes">Apply this action to all files and folders</property>
                     <signal name="toggled" handler="checkbox_toggled_cb"/>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label" translatable="yes">Apply this action to all files and folders</property>
-                        <property name="use-underline">True</property>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>
