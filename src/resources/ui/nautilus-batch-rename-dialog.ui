@@ -96,11 +96,11 @@
     <property name="height-request">563</property>
     <property name="destroy_with_parent">True</property>
     <property name="content">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkHeaderBar">
-            <property name="show-title-buttons">False</property>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-start-title-buttons">False</property>
+            <property name="show-end-title-buttons">False</property>
             <child type="start">
               <object class="GtkButton">
                 <property name="label" translatable="yes">_Cancel</property>
@@ -120,7 +120,7 @@
             </child>
           </object>
         </child>
-        <child>
+        <property name="content">
           <object class="GtkBox">
             <child>
               <object class="GtkGrid" id="grid">
@@ -392,7 +392,7 @@
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
     </property>
     <child>
