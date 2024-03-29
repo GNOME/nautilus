@@ -1836,25 +1836,24 @@ schedule_call_ready_callbacks (NautilusDirectory *directory)
     }
 }
 
-/* Moves all the callbacks that are ready and
- * calls them at idle time, unless they are removed
- * before then */
+/* Moves all the callbacks that are ready from the unsatisfied hash table
+ * to the ready hash table and schedules them to be called at idle, unless
+ * they are removed before then */
 static gboolean
 call_ready_callbacks (NautilusDirectory *directory)
 {
-    gboolean found_any;
-    GList *unsatisfied_list, *ready_list, *node, *next;
-    g_autoptr (GPtrArray) values = NULL;
-
-    values = g_hash_table_get_values_as_ptr_array (directory->details->call_when_ready_hash.unsatisfied);
-
-    found_any = FALSE;
+    GHashTable *ready_hash = directory->details->call_when_ready_hash.ready;
+    GHashTable *unsatisfied_hash = directory->details->call_when_ready_hash.unsatisfied;
+    g_autoptr (GPtrArray) unsatisfied_callbacks = g_hash_table_get_values_as_ptr_array (unsatisfied_hash);
+    gboolean found_any = FALSE;
 
     /* Check if any callbacks are satisfied and mark them for call them if they are. */
-    for (guint i = 0; i < values->len; i++)
+    for (guint i = 0; i < unsatisfied_callbacks->len; i++)
     {
-        unsatisfied_list = values->pdata[i];
-        for (node = values->pdata[i]; node != NULL; node = next)
+        GList *unsatisfied_list = unsatisfied_callbacks->pdata[i];
+        GList *ready_list = NULL;
+        GList *next;
+        for (GList *node = unsatisfied_list; node != NULL; node = next)
         {
             next = node->next;
             ReadyCallback *callback = node->data;
@@ -1864,20 +1863,16 @@ call_ready_callbacks (NautilusDirectory *directory)
 
                 if (unsatisfied_list != NULL)
                 {
-                    g_hash_table_replace (directory->details->call_when_ready_hash.unsatisfied,
-                                          callback->file, unsatisfied_list);
+                    g_hash_table_replace (unsatisfied_hash, callback->file, unsatisfied_list);
                 }
                 else
                 {
-                    g_hash_table_remove (directory->details->call_when_ready_hash.unsatisfied,
-                                         callback->file);
+                    g_hash_table_remove (unsatisfied_hash, callback->file);
                 }
 
-                ready_list = g_hash_table_lookup (directory->details->call_when_ready_hash.ready,
-                                                  callback->file);
+                ready_list = g_hash_table_lookup (ready_hash, callback->file);
                 ready_list = g_list_prepend (ready_list, callback);
-                g_hash_table_replace (directory->details->call_when_ready_hash.ready,
-                                      callback->file, ready_list);
+                g_hash_table_replace (ready_hash, callback->file, ready_list);
 
                 found_any = TRUE;
             }
