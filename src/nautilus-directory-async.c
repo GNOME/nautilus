@@ -1853,29 +1853,45 @@ call_ready_callbacks (NautilusDirectory *directory)
         GList *unsatisfied_list = unsatisfied_callbacks->pdata[i];
         GList *ready_list = NULL;
         GList *next;
+        NautilusFile *callback_file = NULL;
+        gboolean satisfied_callbacks = FALSE;
+
         for (GList *node = unsatisfied_list; node != NULL; node = next)
         {
             next = node->next;
             ReadyCallback *callback = node->data;
-            if (request_is_satisfied (directory, callback->file, callback->request))
+
+            if (!request_is_satisfied (directory, callback->file, callback->request))
             {
-                unsatisfied_list = g_list_delete_link (unsatisfied_list, node);
-
-                if (unsatisfied_list != NULL)
-                {
-                    g_hash_table_replace (unsatisfied_hash, callback->file, unsatisfied_list);
-                }
-                else
-                {
-                    g_hash_table_remove (unsatisfied_hash, callback->file);
-                }
-
-                ready_list = g_hash_table_lookup (ready_hash, callback->file);
-                ready_list = g_list_prepend (ready_list, callback);
-                g_hash_table_replace (ready_hash, callback->file, ready_list);
-
-                found_any = TRUE;
+                continue;
             }
+
+            if (!satisfied_callbacks)
+            {
+                ready_list = g_hash_table_lookup (ready_hash, callback->file);
+                callback_file = callback->file;
+                satisfied_callbacks = TRUE;
+            }
+
+            /* Move callback from unready list to ready list */
+            unsatisfied_list = g_list_delete_link (unsatisfied_list, node);
+            ready_list = g_list_prepend (ready_list, callback);
+        }
+
+        if (satisfied_callbacks)
+        {
+            g_hash_table_replace (ready_hash, callback_file, ready_list);
+
+            if (unsatisfied_list != NULL)
+            {
+                g_hash_table_replace (unsatisfied_hash, callback_file, unsatisfied_list);
+            }
+            else
+            {
+                g_hash_table_remove (unsatisfied_hash, callback_file);
+            }
+
+            found_any = TRUE;
         }
     }
 
