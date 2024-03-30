@@ -366,7 +366,7 @@ set_replace_button_label (FileConflictDialogData *data)
         else if (source_is_directory)
         {
             nautilus_file_conflict_dialog_set_replace_button_label (data->dialog,
-                                                                    _("Merge"));
+                                                                    _("_Merge"));
         }
     }
 }
