@@ -346,7 +346,6 @@ on_name_entry_activated (NautilusCompressDialog *self)
     }
     else
     {
-        nautilus_filename_validator_validate (self->validator);
         nautilus_filename_validator_try_accept (self->validator);
     }
 }
