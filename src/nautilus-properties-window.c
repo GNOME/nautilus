@@ -3758,9 +3758,6 @@ create_properties_window (StartupData *startup_data)
         gtk_widget_set_visible (GTK_WIDGET (window->execution_row), TRUE);
     }
 
-    /* Add available extension models pages */
-    refresh_extension_model_pages (window);
-
     /* Update from initial state */
     properties_window_update (window, NULL);
 
