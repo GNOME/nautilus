@@ -441,12 +441,14 @@ totem_properties_view_set_location (TotemPropertiesView *props,
 {
     g_assert (TOTEM_IS_PROPERTIES_VIEW (props));
 
-    if (props->priv->disco)
+    if (props->priv->disco == NULL)
     {
-        gst_discoverer_stop (props->priv->disco);
+        return;
     }
 
-    if (location != NULL && props->priv->disco != NULL)
+    gst_discoverer_stop (props->priv->disco);
+
+    if (location != NULL)
     {
         gst_discoverer_start (props->priv->disco);
 
