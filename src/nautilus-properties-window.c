@@ -197,6 +197,7 @@ struct _NautilusPropertiesWindow
     guint long_operation_underway;
 
     GList *changed_files;
+    GListStore *extensions_list;
 };
 
 typedef enum
@@ -3589,6 +3590,7 @@ refresh_extension_model_pages (NautilusPropertiesWindow *self)
                              (GtkListBoxCreateWidgetFunc) add_extension_model_page,
                              self,
                              NULL);
+    g_set_object (&self->extensions_list, extensions_list);
 }
 
 static gboolean
@@ -4014,6 +4016,7 @@ real_finalize (GObject *object)
 
     g_free (self->mime_type);
     g_free (self->device_identifier);
+    g_clear_object (&self->extensions_list);
 
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
