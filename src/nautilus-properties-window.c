@@ -186,7 +186,7 @@ struct _NautilusPropertiesWindow
     /* Extensions */
     GtkListBox *extension_list_box;
 
-    GList *value_fields;
+    GList *value_labels;
 
     char *mime_type;
 
@@ -445,7 +445,7 @@ static void update_execution_row (GtkWidget       *row,
                                   PermissionsInfo *permissions_info);
 static void update_permission_row (AdwComboRow     *row,
                                    PermissionsInfo *permissions_info);
-static void value_field_update (GtkLabel                 *field,
+static void value_label_update (GtkLabel                 *field,
                                 NautilusPropertiesWindow *self);
 static void properties_window_update (NautilusPropertiesWindow *self,
                                       GList                    *files);
@@ -1305,8 +1305,8 @@ properties_window_update (NautilusPropertiesWindow *self,
         g_list_foreach (self->permission_rows,
                         (GFunc) update_permission_row,
                         permissions_info);
-        g_list_foreach (self->value_fields,
-                        (GFunc) value_field_update,
+        g_list_foreach (self->value_labels,
+                        (GFunc) value_label_update,
                         self);
     }
 
@@ -1353,30 +1353,29 @@ schedule_files_update (NautilusPropertiesWindow *self)
 }
 
 static void
-value_field_update (GtkLabel                 *label,
+value_label_update (GtkLabel                 *label,
                     NautilusPropertiesWindow *self)
 {
-    const char *attribute_name;
+    const char *attr_value_name;
+    const char *attr_tooltip_name;
     g_autofree char *attribute_value = NULL;
 
     g_assert (GTK_IS_LABEL (label));
 
-    attribute_name = g_object_get_data (G_OBJECT (label), "file_attribute");
+    attr_value_name = g_object_get_data (G_OBJECT (label),
+                                         "file_attribute_value");
+    attr_tooltip_name = g_object_get_data (G_OBJECT (label),
+                                           "file_attribute_tooltip");
 
     attribute_value = file_list_get_string_attribute (self->files,
-                                                      attribute_name);
-    if (g_str_equal (attribute_name, "detailed_type"))
-    {
-        g_autofree char *mime_type = file_list_get_string_attribute (self->files, "mime_type");
-        gtk_widget_set_tooltip_text (GTK_WIDGET (label), mime_type);
-    }
-    else if (g_str_equal (attribute_name, "size"))
-    {
-        g_autofree char *size_detail = NULL;
+                                                      attr_value_name);
 
-        size_detail = file_list_get_string_attribute (self->files, "size_detail");
+    if (attr_tooltip_name != NULL)
+    {
+        g_autofree char *attribute_tooltip = file_list_get_string_attribute (self->files,
+                                                                             attr_tooltip_name);
 
-        gtk_widget_set_tooltip_text (GTK_WIDGET (label), size_detail);
+        gtk_widget_set_tooltip_text (GTK_WIDGET (label), attribute_tooltip);
     }
 
     gtk_label_set_text (label, attribute_value);
@@ -2550,12 +2549,23 @@ open_in_disks (NautilusPropertiesWindow *self)
 static void
 add_updatable_label (NautilusPropertiesWindow *self,
                      GtkWidget                *label,
-                     const char               *file_attribute)
+                     const char               *file_attribute_value,
+                     const char               *file_attribute_tooltip)
 {
-    g_object_set_data_full (G_OBJECT (label), "file_attribute",
-                            g_strdup (file_attribute), g_free);
+    g_object_set_data_full (G_OBJECT (label),
+                            "file_attribute_value",
+                            g_strdup (file_attribute_value),
+                            g_free);
 
-    self->value_fields = g_list_prepend (self->value_fields, label);
+    if (file_attribute_tooltip != NULL)
+    {
+        g_object_set_data_full (G_OBJECT (label),
+                                "file_attribute_tooltip",
+                                g_strdup (file_attribute_tooltip),
+                                g_free);
+    }
+
+    self->value_labels = g_list_prepend (self->value_labels, label);
 }
 
 static void
@@ -2588,13 +2598,13 @@ setup_basic_page (NautilusPropertiesWindow *self)
     if (should_show_file_type (self))
     {
         gtk_widget_set_visible (self->type_value_label, TRUE);
-        add_updatable_label (self, self->type_value_label, "detailed_type");
+        add_updatable_label (self, self->type_value_label, "detailed_type", "mime_type");
     }
 
     if (should_show_link_target (self))
     {
         gtk_widget_set_visible (self->link_target_row, TRUE);
-        add_updatable_label (self, self->link_target_value_label, "link_target");
+        add_updatable_label (self, self->link_target_value_label, "link_target", NULL);
 
         should_show_locations_list_box = TRUE;
     }
@@ -2612,13 +2622,13 @@ setup_basic_page (NautilusPropertiesWindow *self)
     else
     {
         gtk_widget_set_visible (self->size_value_label, TRUE);
-        add_updatable_label (self, self->size_value_label, "size");
+        add_updatable_label (self, self->size_value_label, "size", "size_detail");
     }
 
     if (should_show_location_info (self))
     {
         gtk_widget_set_visible (self->parent_folder_row, TRUE);
-        add_updatable_label (self, self->parent_folder_value_label, "where");
+        add_updatable_label (self, self->parent_folder_value_label, "where", NULL);
 
         should_show_locations_list_box = TRUE;
     }
@@ -2626,29 +2636,29 @@ setup_basic_page (NautilusPropertiesWindow *self)
     if (should_show_trashed_info (self))
     {
         gtk_widget_set_visible (self->trashed_list_box, TRUE);
-        add_updatable_label (self, self->original_folder_value_label, "trash_orig_path");
-        add_updatable_label (self, self->trashed_on_value_label, "trashed_on_full");
+        add_updatable_label (self, self->original_folder_value_label, "trash_orig_path", NULL);
+        add_updatable_label (self, self->trashed_on_value_label, "trashed_on_full", NULL);
     }
 
     if (should_show_modified_date (self))
     {
         gtk_widget_set_visible (self->times_list_box, TRUE);
         gtk_widget_set_visible (self->modified_row, TRUE);
-        add_updatable_label (self, self->modified_value_label, "date_modified_full");
+        add_updatable_label (self, self->modified_value_label, "date_modified_full", NULL);
     }
 
     if (should_show_created_date (self))
     {
         gtk_widget_set_visible (self->created_row, TRUE);
         gtk_widget_set_visible (self->times_list_box, TRUE);
-        add_updatable_label (self, self->created_value_label, "date_created_full");
+        add_updatable_label (self, self->created_value_label, "date_created_full", NULL);
     }
 
     if (should_show_accessed_date (self))
     {
         gtk_widget_set_visible (self->times_list_box, TRUE);
         gtk_widget_set_visible (self->accessed_row, TRUE);
-        add_updatable_label (self, self->accessed_value_label, "date_accessed_full");
+        add_updatable_label (self, self->accessed_value_label, "date_accessed_full", NULL);
     }
 
     if (should_show_free_space (self))
@@ -2657,7 +2667,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
         if (!is_volume_properties (self))
         {
             gtk_widget_set_visible (self->free_space_value_label, TRUE);
-            add_updatable_label (self, self->free_space_value_label, "free_space");
+            add_updatable_label (self, self->free_space_value_label, "free_space", NULL);
         }
     }
 
@@ -3502,13 +3512,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
 #ifdef HAVE_SELINUX
         gtk_widget_set_visible (self->security_context_list_box, TRUE);
-
-        /* Stash a copy of the file attribute name in this field for the callback's sake. */
-        g_object_set_data_full (G_OBJECT (self->security_context_value_label), "file_attribute",
-                                g_strdup ("selinux_context"), g_free);
-
-        self->value_fields = g_list_prepend (self->value_fields,
-                                             self->security_context_value_label);
+        add_updatable_label (self, self->security_context_value_label, "selinux_context", NULL);
 #endif
 
         if (self->has_recursive_apply)
@@ -3974,7 +3978,7 @@ real_dispose (GObject *object)
 
     g_clear_pointer (&self->initial_permissions, g_hash_table_destroy);
 
-    g_clear_list (&self->value_fields, NULL);
+    g_clear_list (&self->value_labels, NULL);
 
     g_clear_handle_id (&self->update_directory_contents_timeout_id, g_source_remove);
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
