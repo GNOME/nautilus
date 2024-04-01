@@ -364,39 +364,17 @@
                                     <property name="selection-mode">none</property>
                                     <child>
                                       <object class="AdwActionRow" id="link_target_row">
+                                        <property name="title" translatable="yes">_Link Target</property>
+                                        <property name="title-lines">1</property>
                                         <property name="visible">False</property>
                                         <property name="activatable">False</property>
                                         <property name="selectable">False</property>
-                                        <child type="prefix">
-                                          <object class="GtkBox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">3</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <child>
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">_Link Target</property>
-                                                <property name="hexpand">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <property name="use-underline">True</property>
-                                                <property name="mnemonic-widget">open_link_target_button</property>
-                                                <style>
-                                                  <class name="caption"/>
-                                                  <class name="dim-label"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="link_target_value_label">
-                                                <property name="hexpand">True</property>
-                                                <property name="selectable">True</property>
-                                                <property name="ellipsize">start</property>
-                                                <property name="halign">start</property>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
+                                        <property name="subtitle-selectable">True</property>
+                                        <property name="use-underline">True</property>
+                                        <style>
+                                          <class name="property"/>
+                                        </style>
+                                        <signal name="activate" handler="open_link_target" swapped="yes"/>
                                         <child type="suffix">
                                           <object class="GtkButton" id="open_link_target_button">
                                             <property name="tooltip-text" translatable="yes">Open Link Target</property>
@@ -412,39 +390,17 @@
                                     </child>
                                     <child>
                                       <object class="AdwActionRow" id="parent_folder_row">
+                                        <property name="title" translatable="yes">Parent _Folder</property>
+                                        <property name="title-lines">1</property>
                                         <property name="visible">False</property>
                                         <property name="activatable">False</property>
                                         <property name="selectable">False</property>
-                                        <child type="prefix">
-                                          <object class="GtkBox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">3</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <child>
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Parent _Folder</property>
-                                                <property name="hexpand">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <property name="use-underline">True</property>
-                                                <property name="mnemonic-widget">open_parent_folder_button</property>
-                                                <style>
-                                                  <class name="caption"/>
-                                                  <class name="dim-label"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="parent_folder_value_label">
-                                                <property name="hexpand">True</property>
-                                                <property name="selectable">True</property>
-                                                <property name="ellipsize">start</property>
-                                                <property name="halign">start</property>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
+                                        <property name="subtitle-selectable">True</property>
+                                        <property name="use-underline">True</property>
+                                        <style>
+                                          <class name="property"/>
+                                        </style>
+                                        <signal name="activate" handler="open_parent_folder" swapped="yes"/>
                                         <child type="suffix">
                                           <object class="GtkButton" id="open_parent_folder_button">
                                             <property name="tooltip-text" translatable="yes">Open Parent Folder</property>
@@ -468,74 +424,29 @@
                                     <property name="selection-mode">none</property>
                                     <property name="visible">False</property>
                                     <child>
-                                      <object class="AdwActionRow">
+                                      <object class="AdwActionRow" id="original_folder_row">
+                                        <property name="title" translatable="yes">Original Folder</property>
+                                        <property name="title-lines">1</property>
                                         <property name="activatable">False</property>
                                         <property name="selectable">False</property>
-                                        <child type="prefix">
-                                          <object class="GtkBox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">3</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <child>
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Original Folder</property>
-                                                <property name="hexpand">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="caption"/>
-                                                  <class name="dim-label"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="original_folder_value_label">
-                                                <property name="hexpand">True</property>
-                                                <property name="selectable">True</property>
-                                                <property name="ellipsize">start</property>
-                                                <property name="halign">start</property>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
+                                        <property name="subtitle-selectable">True</property>
+                                        <style>
+                                          <class name="property"/>
+                                        </style>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="AdwActionRow">
+                                      <object class="AdwActionRow" id="trashed_on_row">
+                                        <property name="title" translatable="yes">Trashed on</property>
+                                        <property name="title-lines">1</property>
                                         <property name="activatable">False</property>
                                         <property name="selectable">False</property>
-                                        <child type="prefix">
-                                          <object class="GtkBox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">3</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <child>
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Trashed on</property>
-                                                <property name="hexpand">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="caption"/>
-                                                  <class name="dim-label"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="trashed_on_value_label">
-                                                <property name="hexpand">True</property>
-                                                <property name="selectable">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="numeric"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
+                                        <property name="subtitle-selectable">True</property>
+                                        <property name="subtitle-lines">1</property>
+                                        <style>
+                                          <class name="property"/>
+                                          <class name="numeric"/>
+                                        </style>
                                       </object>
                                     </child>
                                     <style>
@@ -549,116 +460,47 @@
                                     <property name="visible">False</property>
                                     <child>
                                       <object class="AdwActionRow" id="accessed_row">
+                                        <property name="title" translatable="yes">Accessed</property>
+                                        <property name="title-lines">1</property>
                                         <property name="visible">False</property>
                                         <property name="activatable">False</property>
                                         <property name="selectable">False</property>
-                                        <child type="prefix">
-                                          <object class="GtkBox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">3</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <child>
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Accessed</property>
-                                                <property name="hexpand">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="caption"/>
-                                                  <class name="dim-label"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="accessed_value_label">
-                                                <property name="hexpand">True</property>
-                                                <property name="selectable">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="numeric"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
+                                        <property name="subtitle-selectable">True</property>
+                                        <property name="subtitle-lines">1</property>
+                                        <style>
+                                          <class name="property"/>
+                                          <class name="numeric"/>
+                                        </style>
                                       </object>
                                     </child>
                                     <child>
                                       <object class="AdwActionRow" id="modified_row">
+                                        <property name="title" translatable="yes">Modified</property>
+                                        <property name="title-lines">1</property>
                                         <property name="visible">False</property>
                                         <property name="activatable">False</property>
                                         <property name="selectable">False</property>
-                                        <child type="prefix">
-                                          <object class="GtkBox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">3</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <child>
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Modified</property>
-                                                <property name="hexpand">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="caption"/>
-                                                  <class name="dim-label"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="modified_value_label">
-                                                <property name="hexpand">True</property>
-                                                <property name="selectable">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="numeric"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
+                                        <property name="subtitle-selectable">True</property>
+                                        <property name="subtitle-lines">1</property>
+                                        <style>
+                                          <class name="property"/>
+                                          <class name="numeric"/>
+                                        </style>
                                       </object>
                                     </child>
                                     <child>
                                       <object class="AdwActionRow" id="created_row">
+                                        <property name="title" translatable="yes">Created</property>
+                                        <property name="title-lines">1</property>
                                         <property name="visible">False</property>
                                         <property name="activatable">False</property>
                                         <property name="selectable">False</property>
-                                        <child type="prefix">
-                                          <object class="GtkBox">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">3</property>
-                                            <property name="halign">start</property>
-                                            <property name="valign">center</property>
-                                            <child>
-                                              <object class="GtkLabel">
-                                                <property name="label" translatable="yes">Created</property>
-                                                <property name="hexpand">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="caption"/>
-                                                  <class name="dim-label"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkLabel" id="created_value_label">
-                                                <property name="hexpand">True</property>
-                                                <property name="selectable">True</property>
-                                                <property name="ellipsize">end</property>
-                                                <property name="halign">start</property>
-                                                <style>
-                                                  <class name="numeric"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
+                                        <property name="subtitle-selectable">True</property>
+                                        <property name="subtitle-lines">1</property>
+                                        <style>
+                                          <class name="property"/>
+                                          <class name="numeric"/>
+                                        </style>
                                       </object>
                                     </child>
                                     <style>
@@ -906,36 +748,16 @@
                                           <object class="GtkListBox" id="security_context_list_box">
                                             <property name="visible">False</property>
                                             <child>
-                                              <object class="AdwActionRow">
+                                              <object class="AdwActionRow" id="security_context_row">
+                                                <property name="title" translatable="yes">Security Context</property>
+                                                <property name="title-lines">1</property>
                                                 <property name="selectable">False</property>
-                                                <child type="prefix">
-                                                  <object class="GtkBox">
-                                                    <property name="orientation">vertical</property>
-                                                    <property name="spacing">3</property>
-                                                    <property name="halign">start</property>
-                                                    <property name="valign">center</property>
-                                                    <child>
-                                                      <object class="GtkLabel">
-                                                        <property name="label" translatable="yes">Security Context</property>
-                                                        <property name="hexpand">True</property>
-                                                        <property name="ellipsize">end</property>
-                                                        <property name="halign">start</property>
-                                                        <style>
-                                                          <class name="caption"/>
-                                                          <class name="dim-label"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkLabel" id="security_context_value_label">
-                                                        <property name="hexpand">True</property>
-                                                        <property name="selectable">True</property>
-                                                        <property name="ellipsize">end</property>
-                                                        <property name="halign">start</property>
-                                                      </object>
-                                                    </child>
-                                                  </object>
-                                                </child>
+                                                <property name="subtitle-selectable">True</property>
+                                                <property name="subtitle-lines">1</property>
+                                                <property name="activatable">False</property>
+                                                <style>
+                                                  <class name="property"/>
+                                                </style>
                                               </object>
                                             </child>
                                             <style>

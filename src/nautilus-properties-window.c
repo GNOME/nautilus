@@ -120,24 +120,19 @@ struct _NautilusPropertiesWindow
 
     GtkWidget *locations_list_box;
     GtkWidget *link_target_row;
-    GtkWidget *link_target_value_label;
     GtkWidget *contents_spinner;
     guint update_directory_contents_timeout_id;
     guint update_files_timeout_id;
     GtkWidget *parent_folder_row;
-    GtkWidget *parent_folder_value_label;
 
     GtkWidget *trashed_list_box;
-    GtkWidget *trashed_on_value_label;
-    GtkWidget *original_folder_value_label;
+    GtkWidget *trashed_on_row;
+    GtkWidget *original_folder_row;
 
     GtkWidget *times_list_box;
     GtkWidget *modified_row;
-    GtkWidget *modified_value_label;
     GtkWidget *created_row;
-    GtkWidget *created_value_label;
     GtkWidget *accessed_row;
-    GtkWidget *accessed_value_label;
 
     GtkWidget *permissions_navigation_row;
     GtkWidget *permissions_value_label;
@@ -170,7 +165,7 @@ struct _NautilusPropertiesWindow
     AdwSwitchRow *execution_row;
 
     GtkWidget *security_context_list_box;
-    GtkWidget *security_context_value_label;
+    GtkWidget *security_context_row;
 
     GtkWidget *change_permissions_button_box;
     GtkWidget *change_permissions_button;
@@ -187,6 +182,7 @@ struct _NautilusPropertiesWindow
     GtkListBox *extension_list_box;
 
     GList *value_labels;
+    GList *value_rows;
 
     char *mime_type;
 
@@ -447,6 +443,8 @@ static void update_permission_row (AdwComboRow     *row,
                                    PermissionsInfo *permissions_info);
 static void value_label_update (GtkLabel                 *field,
                                 NautilusPropertiesWindow *self);
+static void value_row_update (AdwActionRow             *row,
+                              NautilusPropertiesWindow *self);
 static void properties_window_update (NautilusPropertiesWindow *self,
                                       GList                    *files);
 static void is_directory_ready_callback (NautilusFile *file,
@@ -1308,6 +1306,9 @@ properties_window_update (NautilusPropertiesWindow *self,
         g_list_foreach (self->value_labels,
                         (GFunc) value_label_update,
                         self);
+        g_list_foreach (self->value_rows,
+                        (GFunc) value_row_update,
+                        self);
     }
 
     update_extension_list (self);
@@ -1379,6 +1380,23 @@ value_label_update (GtkLabel                 *label,
     }
 
     gtk_label_set_text (label, attribute_value);
+}
+
+static void
+value_row_update (AdwActionRow             *row,
+                  NautilusPropertiesWindow *self)
+{
+    const char *attribute_name;
+    g_autofree char *attribute_value = NULL;
+
+    g_assert (ADW_IS_ACTION_ROW (row));
+
+    attribute_name = g_object_get_data (G_OBJECT (row), "file_attribute");
+
+    attribute_value = file_list_get_string_attribute (self->files,
+                                                      attribute_name);
+
+    adw_action_row_set_subtitle (row, attribute_value);
 }
 
 static guint
@@ -2569,6 +2587,17 @@ add_updatable_label (NautilusPropertiesWindow *self,
 }
 
 static void
+add_updatable_row (NautilusPropertiesWindow *self,
+                   GtkWidget                *row,
+                   const char               *file_attribute)
+{
+    g_object_set_data_full (G_OBJECT (row), "file_attribute",
+                            g_strdup (file_attribute), g_free);
+
+    self->value_rows = g_list_prepend (self->value_rows, row);
+}
+
+static void
 setup_basic_page (NautilusPropertiesWindow *self)
 {
     gboolean should_show_locations_list_box = FALSE;
@@ -2604,7 +2633,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
     if (should_show_link_target (self))
     {
         gtk_widget_set_visible (self->link_target_row, TRUE);
-        add_updatable_label (self, self->link_target_value_label, "link_target", NULL);
+        add_updatable_row (self, self->link_target_row, "link_target");
 
         should_show_locations_list_box = TRUE;
     }
@@ -2628,7 +2657,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
     if (should_show_location_info (self))
     {
         gtk_widget_set_visible (self->parent_folder_row, TRUE);
-        add_updatable_label (self, self->parent_folder_value_label, "where", NULL);
+        add_updatable_row (self, self->parent_folder_row, "where");
 
         should_show_locations_list_box = TRUE;
     }
@@ -2636,29 +2665,29 @@ setup_basic_page (NautilusPropertiesWindow *self)
     if (should_show_trashed_info (self))
     {
         gtk_widget_set_visible (self->trashed_list_box, TRUE);
-        add_updatable_label (self, self->original_folder_value_label, "trash_orig_path", NULL);
-        add_updatable_label (self, self->trashed_on_value_label, "trashed_on_full", NULL);
+        add_updatable_row (self, self->original_folder_row, "trash_orig_path");
+        add_updatable_row (self, self->trashed_on_row, "trashed_on_full");
     }
 
     if (should_show_modified_date (self))
     {
         gtk_widget_set_visible (self->times_list_box, TRUE);
         gtk_widget_set_visible (self->modified_row, TRUE);
-        add_updatable_label (self, self->modified_value_label, "date_modified_full", NULL);
+        add_updatable_row (self, self->modified_row, "date_modified_full");
     }
 
     if (should_show_created_date (self))
     {
         gtk_widget_set_visible (self->created_row, TRUE);
         gtk_widget_set_visible (self->times_list_box, TRUE);
-        add_updatable_label (self, self->created_value_label, "date_created_full", NULL);
+        add_updatable_row (self, self->created_row, "date_created_full");
     }
 
     if (should_show_accessed_date (self))
     {
         gtk_widget_set_visible (self->times_list_box, TRUE);
         gtk_widget_set_visible (self->accessed_row, TRUE);
-        add_updatable_label (self, self->accessed_value_label, "date_accessed_full", NULL);
+        add_updatable_row (self, self->accessed_row, "date_accessed_full");
     }
 
     if (should_show_free_space (self))
@@ -3512,7 +3541,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
 #ifdef HAVE_SELINUX
         gtk_widget_set_visible (self->security_context_list_box, TRUE);
-        add_updatable_label (self, self->security_context_value_label, "selinux_context", NULL);
+        add_updatable_row (self, self->security_context_row, "selinux_context");
 #endif
 
         if (self->has_recursive_apply)
@@ -3979,6 +4008,7 @@ real_dispose (GObject *object)
     g_clear_pointer (&self->initial_permissions, g_hash_table_destroy);
 
     g_clear_list (&self->value_labels, NULL);
+    g_clear_list (&self->value_rows, NULL);
 
     g_clear_handle_id (&self->update_directory_contents_timeout_id, g_source_remove);
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
@@ -4131,19 +4161,14 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, locations_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_list_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_row);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, times_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_row);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_navigation_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_models_list_box);
@@ -4164,7 +4189,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execution_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_list_box);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_list_box);
