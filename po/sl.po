@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-03-30 08:26+0000\n"
-"PO-Revision-Date: 2024-03-31 12:50+0200\n"
+"POT-Creation-Date: 2024-04-01 23:18+0000\n"
+"PO-Revision-Date: 2024-04-02 10:31+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -80,13 +80,6 @@ msgstr "Seznamski pogled"
 #: src/resources/ui/nautilus-search-popover.ui:278
 msgid "Search"
 msgstr "Iskanje"
-
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:65 src/nautilus-bookmark.c:103
-#: src/nautilus-file.c:4230 src/nautilus-file-utilities.c:75
-#: src/nautilus-pathbar.c:386 src/gtk/nautilusgtkplacesview.ui:158
-#: src/gtk/nautilusgtkplacessidebar.c:1435
-msgid "Other Locations"
-msgstr "Druga mesta"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
@@ -608,7 +601,7 @@ msgstr "Kanali"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1591
+#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1590
 msgid "Oops! Something went wrong."
 msgstr "Ops! Pri je do nepričakovane napake."
 
@@ -1025,6 +1018,12 @@ msgstr "01, 02, 03"
 #: src/nautilus-batch-rename-dialog.h:202
 msgid "001, 002, 003"
 msgstr "001, 002, 003"
+
+#: src/nautilus-bookmark.c:103 src/nautilus-file.c:4230
+#: src/nautilus-file-utilities.c:75 src/nautilus-pathbar.c:386
+#: src/gtk/nautilusgtkplacesview.ui:158 src/gtk/nautilusgtkplacessidebar.c:1435
+msgid "Other Locations"
+msgstr "Druga mesta"
 
 #: src/nautilus-bookmark.c:107 src/nautilus-file-utilities.c:59
 #: src/nautilus-pathbar.c:381 src/nautilus-shell-search-provider.c:341
@@ -1709,6 +1708,7 @@ msgid "Delete _All"
 msgstr "_Izbriši vse"
 
 #: src/nautilus-file-operations.c:279
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
 msgstr "_Zamenjaj"
 
@@ -2592,7 +2592,7 @@ msgstr "Stiskanje datotek"
 msgid "Searching…"
 msgstr "Poteka iskanje …"
 
-#: src/nautilus-files-view.c:390 src/nautilus-window-slot.c:887
+#: src/nautilus-files-view.c:390 src/nautilus-window-slot.c:886
 msgid "Loading…"
 msgstr "Poteka nalaganje …"
 
@@ -4273,67 +4273,67 @@ msgstr ""
 "Matjaž Horvat\n"
 "Andraž Tori"
 
-#: src/nautilus-window-slot.c:873 src/resources/ui/nautilus-window.ui:126
+#: src/nautilus-window-slot.c:872 src/resources/ui/nautilus-window.ui:126
 msgid "Search Everywhere"
 msgstr "Poišči povsod"
 
-#: src/nautilus-window-slot.c:874
+#: src/nautilus-window-slot.c:873
 msgid "Find files and folders in all search locations"
 msgstr "Poišči datoteke in mape na vseh iskalnih mestih"
 
-#: src/nautilus-window-slot.c:877
+#: src/nautilus-window-slot.c:876
 msgid "Search Settings"
 msgstr "Nastavitve iskanja"
 
-#: src/nautilus-window-slot.c:1089
+#: src/nautilus-window-slot.c:1088
 msgid "Searching locations only"
 msgstr "Iskanje mest"
 
-#: src/nautilus-window-slot.c:1093
+#: src/nautilus-window-slot.c:1092
 msgid "Searching network locations only"
 msgstr "Iskanje omrežnih mest"
 
-#: src/nautilus-window-slot.c:1098
+#: src/nautilus-window-slot.c:1097
 msgid "Remote location — only searching the current folder"
 msgstr "Oddaljeno mesto — iskanje le trenutne mape"
 
-#: src/nautilus-window-slot.c:1102
+#: src/nautilus-window-slot.c:1101
 msgid "Only searching the current folder"
 msgstr "Iskanje le po trenutni mapi"
 
-#: src/nautilus-window-slot.c:1597
+#: src/nautilus-window-slot.c:1596
 msgid "Unable to display the contents of this folder."
 msgstr "Vsebine te mape ni mogoče prikazati."
 
-#: src/nautilus-window-slot.c:1601
+#: src/nautilus-window-slot.c:1600
 msgid "This location doesn’t appear to be a folder."
 msgstr "To mesto ni videti kot mapa."
 
-#: src/nautilus-window-slot.c:1613
+#: src/nautilus-window-slot.c:1612
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "Datoteke »%s« ni mogoče najti. Preverite črkovanje in poskusite znova."
 
-#: src/nautilus-window-slot.c:1618
+#: src/nautilus-window-slot.c:1617
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Zahtevane datoteke ni mogoče najti. Preverite črkovanje in poskusite znova."
 
-#: src/nautilus-window-slot.c:1629
+#: src/nautilus-window-slot.c:1628
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Mesta »%s« niso podprta."
 
-#: src/nautilus-window-slot.c:1634
+#: src/nautilus-window-slot.c:1633
 msgid "Unable to handle this kind of location."
 msgstr "S to vrsto mesta ni mogoče upravljati."
 
-#: src/nautilus-window-slot.c:1642
+#: src/nautilus-window-slot.c:1641
 msgid "Unable to access the requested location."
 msgstr "Dostop do zahtevanega mesta ni mogoč."
 
-#: src/nautilus-window-slot.c:1648
+#: src/nautilus-window-slot.c:1647
 msgid "Don’t have permission to access the requested location."
 msgstr "Za dostop do ciljnega mesta so zahtevana posebna dovoljenja."
 
@@ -4342,7 +4342,7 @@ msgstr "Za dostop do ciljnega mesta so zahtevana posebna dovoljenja."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1659
+#: src/nautilus-window-slot.c:1658
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4352,7 +4352,7 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1668
+#: src/nautilus-window-slot.c:1667
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4360,7 +4360,7 @@ msgstr ""
 "Strežnik je zavrnil povezavo. Običajno to pomeni, da je požarni zid "
 "onemogočil dostop, ali pa oddaljena storitev ne deluje."
 
-#: src/nautilus-window-slot.c:1687
+#: src/nautilus-window-slot.c:1686
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Neobravnavano sporočilo napake: %s"
@@ -4738,6 +4738,7 @@ msgid "Original File Name"
 msgstr "Izvorno ime datoteke"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:113
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:30
 #: src/resources/ui/nautilus-rename-file-popover.ui:47
 #: src/gtk/nautilusgtkplacessidebar.c:2362
 #: src/gtk/nautilusgtkplacessidebar.c:3286
@@ -4839,25 +4840,17 @@ msgstr "_Ustvari"
 msgid "Folder Name"
 msgstr "Ime mape"
 
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:30
-msgid "Re_name"
-msgstr "_Preimenuj"
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:108
+msgid "Select a _new name for the destination"
+msgstr "Izbor _novega imena za cilj"
 
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:40
-msgid "Re_place"
-msgstr "_Zamenjaj"
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:126
+msgid "R_eset"
+msgstr "P_onastavi"
 
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:111
-msgid "_Select a new name for the destination"
-msgstr "_Izbor novega imena za cilj"
-
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:129
-msgid "_Reset"
-msgstr "_Ponastavi"
-
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:145
-msgid "Apply this action to all files and folders"
-msgstr "Uveljavi to dejanje za vse datoteke in mape"
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:139
+msgid "_Apply this action to all files and folders"
+msgstr "_Uveljavi to dejanje za vse datoteke in mape"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
 msgid "Change Permissions for Enclosed Files"
