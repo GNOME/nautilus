@@ -408,7 +408,7 @@ action_prompt_for_location_root (GSimpleAction *action,
                                  GVariant      *state,
                                  gpointer       user_data)
 {
-    prompt_for_location (NAUTILUS_WINDOW (user_data), G_DIR_SEPARATOR_S);
+    prompt_for_location (NAUTILUS_WINDOW (user_data), "/");
 }
 
 static void
