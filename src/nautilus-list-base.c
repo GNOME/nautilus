@@ -1101,6 +1101,37 @@ on_scroll_end (GtkEventControllerScroll *scroll,
 }
 
 static gboolean
+nautilus_list_base_focus (GtkWidget        *widget,
+                          GtkDirectionType  direction)
+{
+    NautilusListBase *self = NAUTILUS_LIST_BASE (widget);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+    g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+    gboolean no_selection = gtk_bitset_is_empty (selection);
+    gboolean handled;
+
+    handled = GTK_WIDGET_CLASS (nautilus_list_base_parent_class)->focus (widget, direction);
+
+    if (handled && no_selection)
+    {
+        GtkWidget *focus_widget = gtk_root_get_focus (gtk_widget_get_root (widget));
+
+        /* Workaround for https://gitlab.gnome.org/GNOME/nautilus/-/issues/2489
+         * Also ensures an item gets selected when using <Tab> to focus the view.
+         * Ideally to be fixed in GtkListBase instead. */
+        if (focus_widget != NULL)
+        {
+            gtk_widget_activate_action (focus_widget,
+                                        "listitem.select",
+                                        "(bb)",
+                                        FALSE, FALSE);
+        }
+    }
+
+    return handled;
+}
+
+static gboolean
 nautilus_list_base_grab_focus (GtkWidget *widget)
 {
     /* focus the child of the scrolled window if it exists */
@@ -1192,6 +1223,7 @@ nautilus_list_base_class_init (NautilusListBaseClass *klass)
     object_class->get_property = nautilus_list_base_get_property;
     object_class->set_property = nautilus_list_base_set_property;
 
+    widget_class->focus = nautilus_list_base_focus;
     widget_class->grab_focus = nautilus_list_base_grab_focus;
 
     klass->get_backing_item = default_get_backing_item;
