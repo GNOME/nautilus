@@ -1194,16 +1194,28 @@ static int
 ready_callback_key_compare (gconstpointer a,
                             gconstpointer b)
 {
-    const ReadyCallback *callback_a, *callback_b;
+    const ReadyCallback *callback_a = a;
+    const ReadyCallback *callback_b = b;
 
-    callback_a = a;
-    callback_b = b;
+    if (callback_a->file != callback_b->file)
+    {
+        return -1;
+    }
 
-    return !(callback_a->file == callback_b->file &&
-             (callback_a->file != NULL ?
-              callback_a->callback.file == callback_b->callback.file :
-              callback_a->callback.directory == callback_b->callback.directory) &&
-             callback_a->callback_data == callback_b->callback_data);
+    if (callback_a->file == NULL ?
+        (callback_a->callback.directory != callback_b->callback.directory) :
+        (callback_a->callback.file != callback_b->callback.file))
+    {
+        return -1;
+    }
+
+    if (callback_a->callback_data != callback_b->callback_data)
+    {
+        return -1;
+    }
+
+    /* It's a match */
+    return 0;
 }
 
 static int
