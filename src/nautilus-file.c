@@ -8370,12 +8370,6 @@ update_show_directory_item_count (void)
 }
 
 static void
-show_directory_item_count_changed_callback (gpointer)
-{
-    update_show_directory_item_count ();
-}
-
-static void
 mime_type_data_changed_callback (GObject  *signaller,
                                  gpointer  user_data)
 {
@@ -8596,7 +8590,7 @@ nautilus_file_class_init (NautilusFileClass *class)
     update_show_directory_item_count ();
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-                              G_CALLBACK (show_directory_item_count_changed_callback),
+                              G_CALLBACK (update_show_directory_item_count),
                               NULL);
 
     g_signal_connect (nautilus_signaller_get_current (),
