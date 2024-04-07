@@ -141,6 +141,7 @@ struct _NautilusWindowSlot
 
     /* View bindings */
     GBinding *searching_binding;
+    GBinding *selection_binding;
     GBinding *extensions_background_menu_binding;
     GBinding *templates_menu_binding;
 };
@@ -2627,6 +2628,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
     if (self->content_view != NULL)
     {
         g_binding_unbind (self->searching_binding);
+        g_binding_unbind (self->selection_binding);
         g_binding_unbind (self->extensions_background_menu_binding);
         g_binding_unbind (self->templates_menu_binding);
         widget = GTK_WIDGET (self->content_view);
