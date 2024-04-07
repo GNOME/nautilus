@@ -452,7 +452,6 @@ on_item_drag_prepare (GtkDragSource *source,
         }
     }
     selected_files = g_list_reverse (selected_files);
-    file_list = g_slist_reverse (file_list);
 
     gtk_drag_source_set_actions (source, actions);
 
