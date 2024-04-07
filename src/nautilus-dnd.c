@@ -305,12 +305,10 @@ get_paintable_for_drag_selection (GList *selection,
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (selection->data), NULL);
 
-    /* The selection list is reversed compared to what the user sees. Get the
-     * first items by starting from the end of the list. */
     flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
-    for (GList *l = g_list_last (selection);
+    for (GList *l = selection;
          l != NULL && g_queue_get_length (icons) <= MAX_DRAWN_DRAG_ICONS;
-         l = l->prev)
+         l = l->next)
     {
         icon = nautilus_file_get_icon_paintable (l->data, icon_size, scale, flags);
         g_queue_push_tail (icons, icon);
