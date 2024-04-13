@@ -1,0 +1,20 @@
+<!DOCTYPE node PUBLIC
+'-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'
+'http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd'>
+<node>
+
+  <interface name="org.gnome.Mutter.ServiceChannel">
+
+    <!--
+        ServiceClientTypes:
+           PORTAL_BACKEND: 1
+    -->
+    <method name="OpenWaylandServiceConnection">
+      <arg name="service_client_type" type="u" direction="in" />
+      <annotation name="org.gtk.GDBus.C.UnixFD" value="true"/>
+      <arg name="fd" type="h" direction="out" />
+    </method>
+
+  </interface>
+
+</node>
