@@ -31,6 +31,7 @@
   </object>
   <template class="NautilusProgressIndicator" parent="AdwBin">
     <property name="name">NautilusProgressIndicator</property>
+    <property name="hexpand">true</property>
     <property name="child">
       <object class="GtkMenuButton" id="operations_button">
         <property name="tooltip_text" translatable="yes">Show File Operations</property>
@@ -41,6 +42,7 @@
         </style>
         <property name="child">
           <object class="GtkListView" id="sidebar_list">
+            <property name="valign">center</property>
             <property name="factory">
               <object class="GtkBuilderListItemFactory">
                 <property name="bytes"><![CDATA[
