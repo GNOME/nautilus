@@ -873,7 +873,7 @@ nautilus_get_common_filename_prefix (GList *file_list,
 
     if (result_files != NULL)
     {
-        g_ptr_array_add (directory_names, result_files);
+        g_ptr_array_add (directory_names, g_steal_pointer (&result_files));
     }
 
     result = nautilus_filename_get_common_prefix ((const char * const *) directory_names->pdata,
