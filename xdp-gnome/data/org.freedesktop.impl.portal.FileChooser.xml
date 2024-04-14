@@ -1,0 +1,267 @@
+<?xml version="1.0"?>
+<!--
+ Copyright (C) 2015 Red Hat, Inc.
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library. If not, see <http://www.gnu.org/licenses/>.
+
+ Author: Alexander Larsson <alexl@redhat.com>
+-->
+<node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd" name="/">
+  <!--
+      org.freedesktop.impl.portal.FileChooser:
+      @short_description: File chooser portal backend interface
+
+      The FileChooser portal allows sandboxed applications to ask
+      the user for access to files outside the sandbox. The portal
+      backend will present the user with a file chooser dialog.
+
+      Backends must normalize URIs of locations selected by the
+      user into "file://" URIs. URIs that cannot be normalized
+      should be discarded.
+  -->
+  <interface name="org.freedesktop.impl.portal.FileChooser">
+    <!--
+        OpenFile:
+        @handle: Object path for the :ref:`org.freedesktop.impl.portal.Request` object representing this call
+        @app_id: App id of the application
+        @parent_window: Identifier for the application window, see :doc:`window-identifiers`
+        @title: Title for the file chooser dialog
+        @options: Vardict with optional further information
+        @response: Numeric response
+        @results: Vardict with the results of the call
+
+        Presents a file chooser dialog to the user to open one or more files.
+
+        Supported keys in the @options vardict include:
+
+        * ``accept_label`` (``s``)
+
+          The label for the accept button. Mnemonic underlines are allowed.
+
+        * ``modal`` (``b``)
+
+          Whether to make the dialog modal. Default is yes.
+
+        * ``multiple`` (``b``)
+
+          Whether to allow selection of multiple files. Default is no.
+
+        * ``directory`` (``b``)
+
+          Whether to select for folders instead of files. Default is to select files.
+
+        * ``filters`` (``a(sa(us))``)
+
+          A list of serialized file filters.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``current_filter`` (``(sa(us))``)
+
+          Request that this filter be set by default at dialog creation.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``choices`` (``a(ssa(ss)s)``)
+
+          A list of serialized combo boxes.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``current_folder`` (``ay``)
+
+          A suggested folder to open the files from.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        The following results get returned via the @results vardict:
+
+        * ``uris`` (``as``)
+
+          An array of strings containing the uris of the selected files. All
+          URIs must have the ``file://`` scheme.
+
+        * ``choices`` (``a(ss)``)
+
+          An array of pairs of strings, corresponding to the passed-in choices.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``current_filter`` (``(sa(us))``)
+
+          The filter that was selected.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``writable`` (``b``)
+
+          Whether the file is opened with write access. Default is ``false``.
+    -->
+    <method name="OpenFile">
+      <arg type="o" name="handle" direction="in"/>
+      <arg type="s" name="app_id" direction="in"/>
+      <arg type="s" name="parent_window" direction="in"/>
+      <arg type="s" name="title" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In4" value="QVariantMap"/>
+      <arg type="a{sv}" name="options" direction="in"/>
+      <arg type="u" name="response" direction="out"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out1" value="QVariantMap"/>
+      <arg type="a{sv}" name="results" direction="out"/>
+    </method>
+    <!--
+        SaveFile:
+        @handle: Object path for the :ref:`org.freedesktop.impl.portal.Request` object representing this call
+        @app_id: App id of the application
+        @parent_window: Identifier for the application window, see :doc:`window-identifiers`
+        @title: Title for the file chooser dialog
+        @options: Vardict with optional further information
+        @response: Numeric response
+        @results: Vardict with the results of the call
+
+        Presents a file chooser dialog to the user to save a file.
+
+        Supported keys in the @options vardict include:
+
+        * ``accept_label`` (``s``)
+
+          The label for the accept button. Mnemonic underlines are allowed.
+
+        * ``modal`` (``b``)
+
+          Whether to make the dialog modal. Default is yes.
+
+        * ``multiple`` (``b``)
+
+          Whether to allow selection of multiple files. Default is no.
+
+        * ``filters`` (``a(sa(us))``)
+
+          A list of serialized file filters.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``current_filter`` (``(sa(us))``)
+
+          Request that this filter be set by default at dialog creation.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``choices`` (``a(ssa(ss)s)``)
+
+          A list of serialized combo boxes.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``current_name`` (``s``)
+
+          A suggested filename.
+
+        * ``current_folder`` (``ay``)
+
+          A suggested folder to save the file in.
+
+        * ``current_file`` (``ay``)
+
+          The current file (when saving an existing file).
+
+        The following results get returned via the @results vardict:
+
+        * ``uris`` (``as``)
+
+          An array of strings containing the uri of the selected file. All
+          URIs must have the "file://" scheme.
+
+        * ``choices`` (``a(ss)``)
+
+          An array of pairs of strings, corresponding to the passed-in choices.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+        * ``current_filter`` (``(sa(us))``)
+
+          The filter that was selected.
+          See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+    -->
+    <method name="SaveFile">
+      <arg type="o" name="handle" direction="in"/>
+      <arg type="s" name="app_id" direction="in"/>
+      <arg type="s" name="parent_window" direction="in"/>
+      <arg type="s" name="title" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In4" value="QVariantMap"/>
+      <arg type="a{sv}" name="options" direction="in"/>
+      <arg type="u" name="response" direction="out"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out1" value="QVariantMap"/>
+      <arg type="a{sv}" name="results" direction="out"/>
+    </method>
+    <!--
+      SaveFiles:
+      @parent_window: Identifier for the application window, see :doc:`window-identifiers`
+      @title: Title for the file chooser dialog
+      @options: Vardict with optional further information
+      @handle: Object path for the :ref:`org.freedesktop.portal.Request` object representing this call
+      @response: Numeric response
+      @results: Vardict with the results of the call
+
+      Asks for a folder as a location to save one or more files. The
+      names of the files will be used as-is and appended to the
+      selected folder's path in the list of returned files. If the
+      selected folder already contains a file with one of the given
+      names, the portal may prompt or take some other action to
+      construct a unique file name and return that instead.
+
+      Supported keys in the @options vardict include:
+
+      * ``accept_label`` (``s``)
+
+        Label for the accept button. Mnemonic underlines are allowed.
+
+      * ``modal`` (``b``)
+
+        Whether the dialog should be modal. Default is yes.
+
+      * ``choices`` (``a(ssa(ss)s)``)
+
+        List of serialized combo boxes.
+        See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+
+      * ``current_folder`` (``ay``)
+
+        Suggested folder to save the files in. The byte array is
+        expected to be null-terminated.
+
+      * ``files`` (``aay``)
+
+        An array of file names to be saved. The array and byte
+        arrays are expected to be null-terminated.
+
+      The following results get returned via the
+      :ref:`org.freedesktop.portal.Request::Response` signal:
+
+      * ``uris`` (``as``)
+
+        An array of strings containing the uri corresponding to
+        each file given by @options, in the same order. Note that
+        the file names may have changed, for example if a file
+        with the same name in the selected folder already exists.
+
+        All URIs must have the "file://" scheme.
+
+      * ``choices`` (``a(ss)``)
+
+        An array of pairs of strings, corresponding to the passed-in choices.
+        See :ref:`org.freedesktop.portal.FileChooser.OpenFile` for details.
+    -->
+    <method name="SaveFiles">
+      <arg type="o" name="handle" direction="in"/>
+      <arg type="s" name="app_id" direction="in"/>
+      <arg type="s" name="parent_window" direction="in"/>
+      <arg type="s" name="title" direction="in"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In4" value="QVariantMap"/>
+      <arg type="a{sv}" name="options" direction="in"/>
+      <arg type="u" name="response" direction="out"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out1" value="QVariantMap"/>
+      <arg type="a{sv}" name="results" direction="out"/>
+    </method>
+  </interface>
+</node>
