@@ -355,57 +355,58 @@ test_smaller_min_length_and_doesnt_have_common_prefix (void)
 static void
 setup_test_suite (void)
 {
-    g_test_add_func ("/get-common-filename-prefix/1.0",
+    /* nautilus_get_common_filename_prefix_from_filenames () */
+    g_test_add_func ("/get-common-filename-prefix/string-list/1.0",
                      test_has_large_enough_common_prefix);
-    g_test_add_func ("/get-common-filename-prefix/1.1",
+    g_test_add_func ("/get-common-filename-prefix/string-list/1.1",
                      test_has_large_enough_common_prefix_with_spaces_in_middle);
-    g_test_add_func ("/get-common-filename-prefix/1.2",
+    g_test_add_func ("/get-common-filename-prefix/string-list/1.2",
                      test_has_large_enough_common_prefix_with_punctuation_in_middle);
-    g_test_add_func ("/get-common-filename-prefix/1.3",
+    g_test_add_func ("/get-common-filename-prefix/string-list/1.3",
                      test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension);
 
-    g_test_add_func ("/get-common-filename-prefix/2.0",
+    g_test_add_func ("/get-common-filename-prefix/string-list/2.0",
                      test_doesnt_have_large_enough_common_prefix);
-    g_test_add_func ("/get-common-filename-prefix/2.1",
+    g_test_add_func ("/get-common-filename-prefix/string-list/2.1",
                      test_doesnt_have_large_enough_common_prefix_completely_different_strings);
-    g_test_add_func ("/get-common-filename-prefix/2.2",
+    g_test_add_func ("/get-common-filename-prefix/string-list/2.2",
                      test_doesnt_have_large_enough_common_prefix_first_character_differs);
-    g_test_add_func ("/get-common-filename-prefix/2.3",
+    g_test_add_func ("/get-common-filename-prefix/string-list/2.3",
                      test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_string);
 
-    g_test_add_func ("/get-common-filename-prefix/3.0",
+    g_test_add_func ("/get-common-filename-prefix/string-list/3.0",
                      test_has_large_enough_common_prefix_until_extension_removed);
 
-    g_test_add_func ("/get-common-filename-prefix/4.0",
+    g_test_add_func ("/get-common-filename-prefix/string-list/4.0",
                      test_extension_is_removed);
-    g_test_add_func ("/get-common-filename-prefix/4.1",
+    g_test_add_func ("/get-common-filename-prefix/string-list/4.1",
                      test_whitespace_is_removed);
-    g_test_add_func ("/get-common-filename-prefix/4.2",
+    g_test_add_func ("/get-common-filename-prefix/string-list/4.2",
                      test_whitespace_and_extension_are_removed);
-    g_test_add_func ("/get-common-filename-prefix/4.3",
+    g_test_add_func ("/get-common-filename-prefix/string-list/4.3",
                      test_punctuation_is_preserved);
 
-    g_test_add_func ("/get-common-filename-prefix/5.0",
+    g_test_add_func ("/get-common-filename-prefix/string-list/5.0",
                      test_unicode_on_inside);
-    g_test_add_func ("/get-common-filename-prefix/5.1",
+    g_test_add_func ("/get-common-filename-prefix/string-list/5.1",
                      test_unicode_on_outside);
-    g_test_add_func ("/get-common-filename-prefix/5.2",
+    g_test_add_func ("/get-common-filename-prefix/string-list/5.2",
                      test_unicode_whole_string);
-    g_test_add_func ("/get-common-filename-prefix/5.3",
+    g_test_add_func ("/get-common-filename-prefix/string-list/5.3",
                      test_unicode_extension);
-    g_test_add_func ("/get-common-filename-prefix/5.4",
+    g_test_add_func ("/get-common-filename-prefix/string-list/5.4",
                      test_unicode_with_punctuation);
 
-    g_test_add_func ("/get-common-filename-prefix/6.0",
+    g_test_add_func ("/get-common-filename-prefix/string-list/6.0",
                      test_many_strings);
-    g_test_add_func ("/get-common-filename-prefix/6.1",
+    g_test_add_func ("/get-common-filename-prefix/string-list/6.1",
                      test_many_strings_last_differs);
-    g_test_add_func ("/get-common-filename-prefix/6.2",
+    g_test_add_func ("/get-common-filename-prefix/string-list/6.2",
                      test_many_strings_first_differs);
 
-    g_test_add_func ("/get-common-filename-prefix/7.0",
+    g_test_add_func ("/get-common-filename-prefix/string-list/7.0",
                      test_smaller_min_length_and_does_have_common_prefix);
-    g_test_add_func ("/get-common-filename-prefix/7.1",
+    g_test_add_func ("/get-common-filename-prefix/string-list/7.1",
                      test_smaller_min_length_and_doesnt_have_common_prefix);
 }
 
