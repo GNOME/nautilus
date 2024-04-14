@@ -288,6 +288,7 @@ nautilus_deps = [
   nautilus_extension,
   selinux,
   tracker_sparql,
+  xdp_gnome,
   cloudproviders,
 ]
 
