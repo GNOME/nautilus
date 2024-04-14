@@ -1,8 +1,11 @@
 #include <glib.h>
 #include <glib/gprintf.h>
 
+#include "nautilus-file.h"
+#include "nautilus-file-private.h"
 #include "src/nautilus-file-utilities.h"
 
+#include "test-utilities.h"
 
 static void
 test_has_large_enough_common_prefix (void)
@@ -351,6 +354,85 @@ test_smaller_min_length_and_doesnt_have_common_prefix (void)
     g_assert_null (actual);
 }
 
+static GList *
+get_files_for_names (const GStrv files_names)
+{
+    gsize len = g_strv_length (files_names);
+    GList *files = NULL;
+
+    for (gsize i = 0; i < len; i++)
+    {
+        gchar *name = files_names[i];
+        g_autofree gchar *uri = g_strconcat ("file:///", name, NULL);
+        NautilusFile *file = nautilus_file_get_by_uri (uri);
+
+        if (name[strlen (name) - 1] == G_DIR_SEPARATOR)
+        {
+            /* Info about the file type being a directory need to be set manually. */
+            file->details->type = G_FILE_TYPE_DIRECTORY;
+        }
+
+        files = g_list_prepend (files, file);
+    }
+
+    return files;
+}
+
+static void
+test_empty_file_list (void)
+{
+    g_autofree char *actual = nautilus_get_common_filename_prefix (NULL, 1);
+
+    g_assert_null (actual);
+}
+
+static void
+test_files (void)
+{
+    const GStrv names = (char *[])
+    {
+        "AB",
+        "AC",
+        NULL
+    };
+    g_autolist (NautilusFile) files = get_files_for_names (names);
+    g_autofree gchar *prefix = nautilus_get_common_filename_prefix (files, 1);
+
+    g_assert_nonnull (prefix);
+    g_assert_cmpstr (prefix, ==, "A");
+}
+
+static void
+test_directories (void)
+{
+    const GStrv names = (char *[])
+    {
+        "AB/",
+        "AC/",
+        NULL
+    };
+    g_autolist (NautilusFile) files = get_files_for_names (names);
+    g_autofree gchar *prefix = nautilus_get_common_filename_prefix (files, 1);
+
+    g_assert_nonnull (prefix);
+    g_assert_cmpstr (prefix, ==, "A");
+}
+
+static void
+test_files_and_directories (void)
+{
+    const GStrv names = (char *[])
+    {
+        "AB",
+        "AC/",
+        NULL
+    };
+    g_autolist (NautilusFile) files = get_files_for_names (names);
+    g_autofree gchar *prefix = nautilus_get_common_filename_prefix (files, 1);
+
+    g_assert_nonnull (prefix);
+    g_assert_cmpstr (prefix, ==, "A");
+}
 
 static void
 setup_test_suite (void)
@@ -408,6 +490,19 @@ setup_test_suite (void)
                      test_smaller_min_length_and_does_have_common_prefix);
     g_test_add_func ("/get-common-filename-prefix/string-list/7.1",
                      test_smaller_min_length_and_doesnt_have_common_prefix);
+
+    /* nautilus_get_common_filename_prefix () */
+    g_test_add_func ("/get-common-filename-prefix/file-list/1.0",
+                     test_empty_file_list);
+
+    g_test_add_func ("/get-common-filename-prefix/file-list/2.0",
+                     test_files);
+
+    g_test_add_func ("/get-common-filename-prefix/file-list/3.0",
+                     test_directories);
+
+    g_test_add_func ("/get-common-filename-prefix/file-list/4.0",
+                     test_files_and_directories);
 }
 
 int
@@ -417,6 +512,7 @@ main (int   argc,
     g_test_init (&argc, &argv, NULL);
     g_test_bug_base ("http://bugzilla.gnome.org/show_bug.cgi?id=747907");
     g_test_set_nonfatal_assertions ();
+    nautilus_ensure_extension_points ();
 
     setup_test_suite ();
 
