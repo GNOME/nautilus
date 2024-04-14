@@ -29,6 +29,8 @@
 #include "mutter-x11-interop-client-protocol.h"
 #include "shell-dbus.h"
 
+#pragma GCC diagnostic ignored "-Wshadow"
+
 #define WAYLAND_HANDLE_PREFIX "wayland:"
 #define X11_HANDLE_PREFIX "x11:"
 
