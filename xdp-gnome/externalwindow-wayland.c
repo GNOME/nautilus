@@ -38,6 +38,7 @@ typedef enum _ServiceClientType
 {
   SERVICE_CLIENT_TYPE_NONE,
   SERVICE_CLIENT_TYPE_PORTAL_BACKEND,
+  SERVICE_CLIENT_TYPE_FILECHOOSER_PORTAL_BACKEND,
 } ServiceClientType;
 
 typedef enum _ParentWindowType
@@ -274,7 +275,7 @@ init_external_window_wayland_display (GError **error)
 
   if (!org_gnome_mutter_service_channel_call_open_wayland_service_connection_sync (
         proxy,
-        SERVICE_CLIENT_TYPE_PORTAL_BACKEND,
+        SERVICE_CLIENT_TYPE_FILECHOOSER_PORTAL_BACKEND,
         NULL,
         &fd_variant,
         &fd_list,
