@@ -74,6 +74,11 @@
 
 #define ICON_NAME_THUMBNAIL_LOADING   "image-loading"
 
+/* Emblems sometimes displayed for NautilusFiles. */
+#define NAUTILUS_FILE_EMBLEM_NAME_SYMBOLIC_LINK "symbolic-link-symbolic"
+#define NAUTILUS_FILE_EMBLEM_NAME_CANT_READ "readonly-symbolic"
+#define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "unwriteable-symbolic"
+
 #undef NAUTILUS_FILE_DEBUG_REF
 #undef NAUTILUS_FILE_DEBUG_REF_VALGRIND
 
