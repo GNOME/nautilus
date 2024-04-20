@@ -22,4 +22,17 @@ G_DECLARE_FINAL_TYPE (NautilusFileChooser, nautilus_file_chooser, NAUTILUS, FILE
 NautilusFileChooser *
 nautilus_file_chooser_new (NautilusMode mode);
 
+void
+nautilus_file_chooser_set_accept_label (NautilusFileChooser *self,
+                                        const char          *accept_label);
+void
+nautilus_file_chooser_set_current_filter (NautilusFileChooser *self,
+                                          guint                position);
+void
+nautilus_file_chooser_set_filters (NautilusFileChooser *self,
+                                   GListModel          *filters);
+void
+nautilus_file_chooser_set_starting_location (NautilusFileChooser *self,
+                                             GFile               *starting_location);
+
 G_END_DECLS
