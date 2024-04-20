@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <template class="NautilusFileChooser" parent="AdwWindow">
+    <property name="name">NautilusFileChooser</property>
+    <property name="width-request">360</property>
+    <property name="height-request">348</property>
+    <property name="default-width">890</property>
+    <property name="default-height">550</property>
+    <property name="content">
+      <object class="NautilusShortcutManager">
+        <property name="child">
+          <object class="AdwToastOverlay">
+            <property name="child">
+              <object class="AdwOverlaySplitView" id="split_view">
+                <property name="max-sidebar-width">240</property>
+                <property name="sidebar-width-unit">px</property>
+                <property name="sidebar-width-fraction">0.2</property>
+                <style>
+                  <class name="view"/>
+                </style>
+                <property name="sidebar">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="AdwHeaderBar">
+                        <child type="start">
+                          <object class="GtkToggleButton">
+                            <property name="tooltip_text" translatable="yes">Search Everywhere</property>
+                            <property name="action_name">slot.search-global</property>
+                            <property name="icon_name">edit-find-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <property name="content">
+                      <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
+                        <property name="vexpand">true</property>
+                        <property name="window-slot"
+                                  bind-source="slot_container" bind-property="content" bind-flags="sync-create"/>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+                <property name="content">
+                  <object class="AdwToolbarView" id="slot_container">
+                    <child type="top">
+                      <object class="NautilusToolbar" id="toolbar">
+                        <property name="show-toolbar-children">true</property>
+                        <property name="window-slot"
+                                  bind-source="slot_container" bind-property="content" bind-flags="sync-create"/>
+                      </object>
+                    </child>
+                    <child type="bottom">
+                      <object class="AdwMultiLayoutView" id="bottom_toolbar">
+                        <child>
+                          <object class="AdwLayout">
+                            <property name="name">wide</property>
+                            <property name="content">
+                              <object class="GtkCenterBox">
+                                <style>
+                                  <class name="toolbar"/>
+                                </style>
+                                <child type="start">
+                                  <object class="GtkBox">
+                                    <style>
+                                      <class name="toolbar"/>
+                                    </style>
+                                    <child>
+                                      <object class="GtkDropDown" id="filters_dropdown">
+                                        <property name="valign">center</property>
+                                        <property name="tooltip-text" translatable="yes">Visible Files Filter</property>
+                                        <property name="expression">
+                                          <lookup type="GtkFileFilter" name="name"/>
+                                        </property>
+                                        <style>
+                                          <class name="flat-dropdown"/>
+                                        </style>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child type="end">
+                                  <object class="GtkBox">
+                                    <style>
+                                      <class name="toolbar"/>
+                                    </style>
+                                    <child>
+                                      <object class="AdwLayoutSlot">
+                                        <property name="id">choices-menu-button</property>
+                                        <property name="valign">center</property>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwLayoutSlot">
+                                        <property name="id">accept-button</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwLayout">
+                            <property name="name">narrow</property>
+                            <property name="content">
+                              <object class="GtkBox">
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkCenterBox">
+                                    <child type="start">
+                                      <object class="GtkBox">
+                                        <property name="valign">center</property>
+                                        <style>
+                                          <class name="toolbar"/>
+                                        </style>
+                                        <child>
+                                          <object class="GtkToggleButton">
+                                            <property name="active"
+                                                      bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
+                                            <property name="tooltip-text" translatable="yes">Show Sidebar</property>
+                                            <property name="icon-name">sidebar-show-symbolic</property>
+                                            <child>
+                                              <object class="GtkShortcutController">
+                                                <property name="scope">managed</property>
+                                                <child>
+                                                  <object class="GtkShortcut">
+                                                    <property name="trigger">F9</property>
+                                                    <property name="action">activate</property>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child type="center">
+                                      <object class="AdwLayoutSlot">
+                                        <property name="id">accept-button</property>
+                                        <property name="margin-top">6</property>
+                                        <property name="margin-bottom">6</property>
+                                      </object>
+                                    </child>
+                                    <child type="end">
+                                      <object class="GtkBox">
+                                        <property name="valign">center</property>
+                                        <style>
+                                          <class name="toolbar"/>
+                                        </style>
+                                        <child>
+                                          <object class="AdwLayoutSlot">
+                                            <property name="id">choices-menu-button</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child type="accept-button">
+                          <object class="GtkButton" id="accept_button">
+                            <property name="label">_Select</property>
+                            <property name="use-underline">true</property>
+                            <style>
+                              <class name="pill"/>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child type="choices-menu-button">
+                          <object class="GtkMenuButton" id="choices_menu_button">
+                            <property name="icon-name">nautilus-file-chooser-options-symbolic</property>
+                            <property name="tooltip-text" translatable="yes">Show Options</property>
+                            <property name="popover">
+                              <object class="GtkPopover">
+                                <property name="child">
+                                  <object class="GtkCheckButton" id="read_only_checkbox">
+                                    <property name="label" translatable="yes">Open _Read-Only</property>
+                                    <property name="use-underline">true</property>
+                                  </object>
+                                </property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </property>
+    <child>
+      <object class="AdwBreakpoint">
+        <condition>max-width: 682sp</condition>
+        <setter object="split_view" property="collapsed">true</setter>
+        <setter object="bottom_toolbar" property="layout-name">narrow</setter>
+      </object>
+    </child>
+    <child>
+      <object class="GtkShortcutController">
+        <property name="scope">managed</property>
+        <child>
+          <object class="GtkShortcut">
+            <property name="trigger">Escape</property>
+            <property name="action">action(window.close)</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

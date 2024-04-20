@@ -73,6 +73,8 @@ libnautilus_sources = [
   'nautilus-error-reporting.h',
   'nautilus-preferences-dialog.c',
   'nautilus-preferences-dialog.h',
+  'nautilus-file-chooser.c',
+  'nautilus-file-chooser.h',
   'nautilus-files-view.c',
   'nautilus-files-view.h',
   'nautilus-files-view-dnd.c',
