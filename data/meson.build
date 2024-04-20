@@ -146,5 +146,15 @@ if appstreamcli.found()
   )
 endif
 
+portal_impl_conf = configuration_data()
+portal_impl_conf.set('appid', application_id)
+
+configure_file(
+  input: 'nautilus.portal.in',
+  output: 'nautilus.portal',
+  configuration: portal_impl_conf,
+  install_dir: datadir / 'xdg-desktop-portal' / 'portals',
+)
+
 subdir('ontology')
 subdir('tracker')
