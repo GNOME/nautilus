@@ -320,3 +320,7 @@ rubberband {
   --accent-bg-color: #959595;
   --accent-color: oklab(from var(--accent-bg-color) var(--standalone-color-oklab));
 }
+
+#NautilusFileChooser dropdown.flat-dropdown:not(:hover) > button {
+  background: none;
+}

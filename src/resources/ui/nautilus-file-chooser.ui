@@ -166,6 +166,17 @@
                           <object class="GtkButton" id="accept_button">
                             <property name="label">_Select</property>
                             <property name="use-underline">true</property>
+                            <binding name="sensitive">
+                              <closure type="gboolean" function="nautilus_file_chooser_can_accept">
+                                <lookup type="NautilusWindowSlot" name="selection">
+                                  <lookup name="content">slot_container</lookup>
+                                </lookup>
+                                <lookup type="NautilusWindowSlot" name="location">
+                                  <lookup name="content">slot_container</lookup>
+                                </lookup>
+                              </closure>
+                            </binding>
+                            <signal name="clicked" handler="on_accept_button_clicked" swapped="yes"/>
                             <style>
                               <class name="pill"/>
                               <class name="suggested-action"/>
