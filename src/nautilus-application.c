@@ -54,6 +54,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-module.h"
+#include "nautilus-portal.h"
 #include "nautilus-preferences-dialog.h"
 #include "nautilus-previewer.h"
 #include "nautilus-progress-persistence-handler.h"
@@ -73,6 +74,7 @@ typedef struct
     NautilusProgressPersistenceHandler *progress_handler;
     NautilusDBusManager *dbus_manager;
     NautilusFreedesktopDBus *fdb_manager;
+    NautilusPortal *portal_implementation;
 
     NautilusBookmarkList *bookmark_list;
 
@@ -1204,6 +1206,15 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
+    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
+    {
+        priv->portal_implementation = nautilus_portal_new ();
+        if (!nautilus_portal_register (priv->portal_implementation, connection, error))
+        {
+            return FALSE;
+        }
+    }
+
     priv->search_provider = nautilus_shell_search_provider_new ();
     if (!nautilus_shell_search_provider_register (priv->search_provider, connection, error))
     {
@@ -1234,6 +1245,12 @@ nautilus_application_dbus_unregister (GApplication    *app,
     {
         nautilus_freedesktop_dbus_unregister (priv->fdb_manager);
         g_clear_object (&priv->fdb_manager);
+    }
+
+    if (priv->portal_implementation != NULL)
+    {
+        nautilus_portal_unregister (priv->portal_implementation);
+        g_clear_object (&priv->portal_implementation);
     }
 
     if (priv->search_provider)
