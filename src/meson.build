@@ -209,6 +209,8 @@ libnautilus_sources = [
   'nautilus-module.h',
   'nautilus-monitor.c',
   'nautilus-monitor.h',
+  'nautilus-portal.c',
+  'nautilus-portal.h',
   'nautilus-progress-info.c',
   'nautilus-progress-info.h',
   'nautilus-progress-info-manager.c',
