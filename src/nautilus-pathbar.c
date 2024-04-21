@@ -65,7 +65,7 @@ typedef enum
 
 static guint path_bar_signals[LAST_SIGNAL] = { 0 };
 
-#define NAUTILUS_PATH_BAR_BUTTON_ELLISPIZE_MINIMUM_CHARS 7
+#define NAUTILUS_PATH_BAR_BUTTON_ELLIPSIZE_MINIMUM_CHARS 7
 
 typedef struct
 {
@@ -909,7 +909,7 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
                                             gboolean    current_dir)
 {
     const gchar *dir_name = get_dir_name (button_data);
-    gint min_chars = NAUTILUS_PATH_BAR_BUTTON_ELLISPIZE_MINIMUM_CHARS;
+    gint min_chars = NAUTILUS_PATH_BAR_BUTTON_ELLIPSIZE_MINIMUM_CHARS;
     GIcon *icon;
 
     if (button_data->label != NULL)
