@@ -372,6 +372,10 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
     }
     action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "files-view-mode-toggle");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), NAUTILUS_IS_FILES_VIEW (view));
+
+    /* Global search doesn't work with NautilusPlacesView. */
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "search-global");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), NAUTILUS_IS_FILES_VIEW (view));
 }
 
 static void
