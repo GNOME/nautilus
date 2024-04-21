@@ -4398,7 +4398,8 @@ get_default_file_icon (void)
     static GIcon *fallback_icon = NULL;
     if (fallback_icon == NULL)
     {
-        fallback_icon = g_themed_icon_new ("application-x-generic");
+        fallback_icon = g_themed_icon_new_from_names ((char *[]){"application-x-generic",
+                                                                 "text-x-generic"}, 2);
     }
 
     return fallback_icon;
