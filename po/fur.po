@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2024-04-01 23:18+0000\n"
-"PO-Revision-Date: 2024-04-19 11:21+0200\n"
+"PO-Revision-Date: 2024-04-22 14:10+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -104,16 +104,12 @@ msgid "Where to perform recursive search"
 msgstr "Dulà meti in vore la ricercje ricorsive"
 
 #: data/org.gnome.nautilus.gschema.xml:88
-#, fuzzy
-#| msgid ""
-#| "In which locations Nautilus should search on subfolders. Available values "
-#| "are “local-only”, “always”, “never”."
 msgid ""
 "Locations in which Files should search subfolders. Available values are "
 "“local-only”, “always”, “never”."
 msgstr ""
-"Dulà che Nautilus al à di cirî tes sot-cartelis. I valôrs disponibii a son "
-"“local-only”, “always” e “never”."
+"Lis posizions là che Files al à di cirî tes sot-cartelis. I valôrs "
+"disponibii a son “local-only”, “always” e “never”."
 
 #: data/org.gnome.nautilus.gschema.xml:92
 msgid "Filter the search dates using either last used or last modified"
@@ -197,12 +193,8 @@ msgstr ""
 "aplicazion adeguade par doprâlu."
 
 #: data/org.gnome.nautilus.gschema.xml:123
-#, fuzzy
-#| msgid "Use extra mouse button events in Nautilus’ browser window"
 msgid "Use extra mouse button events in Files"
-msgstr ""
-"Dopre i events dai botons adizionâi dal mouse tal barcon di esplorazion "
-"Nautilus"
+msgstr "Dopre i events dai botons adizionâi dal mouse in Files"
 
 #: data/org.gnome.nautilus.gschema.xml:124
 msgid ""
@@ -1042,10 +1034,8 @@ msgid "Nautilus Clipboard must not have empty lines."
 msgstr "Lis notis di Nautilus no àn di vê riis vueidis."
 
 #: src/nautilus-column-chooser.c:358
-#, fuzzy
-#| msgid "View menu"
 msgid "View More"
-msgstr "Menù visualize"
+msgstr "Viôt di plui"
 
 #: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:2356
 msgid "Name"
@@ -1715,10 +1705,8 @@ msgid "Copy _Anyway"
 msgstr "Copie _di istès"
 
 #: src/nautilus-file-operations.c:284
-#, fuzzy
-#| msgid "Copy _Anyway"
 msgid "Proceed _Anyway"
-msgstr "Copie _di istès"
+msgstr "Continue di _istès"
 
 #: src/nautilus-file-operations.c:285 src/nautilus-file-operations.c:2513
 msgid "Empty _Trash"
@@ -1750,27 +1738,20 @@ msgid "unknown"
 msgstr "no cognossût"
 
 #: src/nautilus-file-operations.c:1132 src/nautilus-file-operations.c:1193
-#, fuzzy, c-format
-#| msgid "Delete “%s”"
+#, c-format
 msgid "Permanently Delete “%s”?"
-msgstr "Elimine “%s”"
+msgstr "Eliminâ par simpri “%s”?"
 
 #: src/nautilus-file-operations.c:1136 src/nautilus-file-operations.c:1198
-#, fuzzy, c-format
-#| msgid "Are you sure you want to permanently delete the %'d selected item?"
-#| msgid_plural ""
-#| "Are you sure you want to permanently delete the %'d selected items?"
+#, c-format
 msgid "Permanently Delete %'d Selected Item?"
 msgid_plural "Permanently Delete %'d Selected Items?"
-msgstr[0] "Sigûrs di volê eliminâ definitivamentri l'%'d element selezionât?"
-msgstr[1] ""
-"Sêstu sigûr di volê eliminâ definitivamentri i %'d elements selezionâts?"
+msgstr[0] "Eliminâ par simpri %'d element selezionât?"
+msgstr[1] "Eliminâ par simpri i %'d elements selezionâts?"
 
 #: src/nautilus-file-operations.c:1144 src/nautilus-file-operations.c:1206
-#, fuzzy
-#| msgid "The item cannot be restored from trash"
 msgid "Permanently deleted items can not be restored"
-msgstr "No si pues tirâ fûr de scovacere l'element"
+msgstr "I elements eliminâts par simpri no si podaran recuperâ"
 
 #: src/nautilus-file-operations.c:1159
 msgid "Empty Trash?"
@@ -1943,10 +1924,9 @@ msgid "Unable to eject “%s”"
 msgstr "No si pues parâ fûr “%s”"
 
 #: src/nautilus-file-operations.c:2335
-#, fuzzy, c-format
-#| msgid "Unable to unmount %s"
+#, c-format
 msgid "Unable to unmount “%s”"
-msgstr "Impussibil dismontâ %s"
+msgstr "Impussibil dismontâ “%s”"
 
 #: src/nautilus-file-operations.c:2506
 msgid "Do you want to empty the trash before you unmount?"
@@ -2460,10 +2440,9 @@ msgid "There was an error while extracting “%s”."
 msgstr "Al è vignût fûr un erôr tal tirâ fûr “%s”."
 
 #: src/nautilus-file-operations.c:8175
-#, fuzzy, c-format
-#| msgid "Not enough free space to extract %s"
+#, c-format
 msgid "Not enough free space to extract “%s”"
-msgstr "No vonde spazi libar par estrai %s"
+msgstr "No vonde spazi libar par estrai “%s”"
 
 #: src/nautilus-file-operations.c:8208
 #, c-format
@@ -2626,10 +2605,8 @@ msgid "%s, %s"
 msgstr "%s, %s"
 
 #: src/nautilus-files-view.c:3793
-#, fuzzy
-#| msgid "Sharing Settings"
 msgid "Search _Settings"
-msgstr "Impostazions di condivision"
+msgstr "Cîr tes impostazions"
 
 #: src/nautilus-files-view.c:3805
 msgid "Search _Everywhere"
@@ -2641,10 +2618,9 @@ msgstr "Tes impostazions al è pussibil zontâ ae ricercje altris posizions"
 
 #. Translators: %s is the name of the search location formatted for display
 #: src/nautilus-files-view.c:3850
-#, fuzzy, c-format
-#| msgid "Trashing “%s”"
+#, c-format
 msgid "No matches in “%s”"
-msgstr "Daûr a butâ te scovacere “%s”"
+msgstr "Nissune corispondence in “%s”"
 
 #: src/nautilus-files-view.c:3858 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
@@ -3324,26 +3300,20 @@ msgid "Executable files in this folder will appear in the Scripts menu"
 msgstr "I files eseguibii in cheste cartele a vignaran fûr intal menù Scripts"
 
 #: src/nautilus-location-banner.c:208
-#, fuzzy
-#| msgid ""
-#| "Turn on File Sharing to share the contents of this folder over the "
-#| "network."
 msgid ""
 "Turn on File Sharing to share the contents of this folder over the network"
 msgstr ""
 "Ative la condivision dai files par condividi i contignûts di cheste cartele "
-"te rêt."
+"te rêt"
 
 #: src/nautilus-location-banner.c:209
 msgid "Sharing Settings"
 msgstr "Impostazions di condivision"
 
 #: src/nautilus-location-banner.c:216
-#, fuzzy
-#| msgid "Put files in this folder to use them as templates for new documents."
 msgid "Put files in this folder to use them as templates for new documents"
 msgstr ""
-"Met i files in cheste cartele par doprâju come modei par gnûfs documents."
+"Met i files in cheste cartele par doprâju come modei par gnûfs documents"
 
 #: src/nautilus-location-banner.c:217
 msgid "_Learn More"
@@ -3354,10 +3324,8 @@ msgid "_Empty Trash…"
 msgstr "_Disvuede scovacere…"
 
 #: src/nautilus-location-banner.c:238
-#, fuzzy
-#| msgid "_Settings"
 msgid "_Trash Settings"
-msgstr "_Impostazions"
+msgstr "_Impostazions Scovacere"
 
 #: src/nautilus-location-entry.c:707 src/nautilus-query-editor.c:615
 msgid "Clear Entry"
@@ -3628,8 +3596,6 @@ msgid "Contents:"
 msgstr "Contignûts:"
 
 #: src/nautilus-operations-ui-manager.c:287
-#, fuzzy
-#| msgid "Original file"
 msgid "Original File"
 msgstr "File origjinâl"
 
@@ -3719,8 +3685,6 @@ msgid "Examples: “%s”, “%s”"
 msgstr "Esemplis: “%s”, “%s”"
 
 #: src/nautilus-preferences-window.c:343
-#, fuzzy
-#| msgid "Single click"
 msgid "Single-Click"
 msgstr "Clic singul"
 
@@ -3730,10 +3694,8 @@ msgstr "Dopli clic"
 
 #: src/nautilus-preferences-window.c:345 src/nautilus-preferences-window.c:347
 #: src/nautilus-preferences-window.c:349
-#, fuzzy
-#| msgid "On this computer only"
 msgid "On This Device Only"
-msgstr "Dome su chest computer"
+msgstr "Dome su chest dispositîf"
 
 #: src/nautilus-preferences-window.c:345
 msgid "All Locations"
@@ -3796,10 +3758,8 @@ msgstr "Daûr a prontâ"
 
 #. Translators: This describes an operation, such as copying or compressing files, as being completed.
 #: src/nautilus-progress-info-widget.c:57
-#, fuzzy
-#| msgid "Operating System"
 msgid "Operation Completed"
-msgstr "Sisteme Operatîf"
+msgstr "Operazion completade"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -3822,8 +3782,6 @@ msgid "All file operations have been completed"
 msgstr "Dutis lis operazions sui files a son stadis completadis"
 
 #: src/nautilus-properties-window.c:356
-#, fuzzy
-#| msgid "Read and write"
 msgid "Read and Write"
 msgstr "Leture e scriture"
 
@@ -3832,14 +3790,10 @@ msgid "Create and Delete Files"
 msgstr "Creâ e eliminâ files"
 
 #: src/nautilus-properties-window.c:364
-#, fuzzy
-#| msgid "Read/write, no access"
 msgid "Read and Write, No Access"
-msgstr "Leture/scriture, nissun acès"
+msgstr "Leture e scriture, nissun acès"
 
 #: src/nautilus-properties-window.c:371
-#, fuzzy
-#| msgid "Read-only"
 msgid "Read-Only"
 msgstr "Dome leture"
 
@@ -3852,14 +3806,10 @@ msgid "List Files Only"
 msgstr "Listâ dome i files"
 
 #: src/nautilus-properties-window.c:389
-#, fuzzy
-#| msgid "Write-only"
 msgid "Write-Only"
-msgstr "Dome-leture"
+msgstr "Dome-scriture"
 
 #: src/nautilus-properties-window.c:393
-#, fuzzy
-#| msgid "Write-only, no access"
 msgid "Write-Only, No Access"
 msgstr "Dome-scriture, nissun acès"
 
@@ -3963,16 +3913,12 @@ msgid "Filter Search Results"
 msgstr "Risultâts de ricercje dal filtri"
 
 #: src/nautilus-query-editor.c:717
-#, fuzzy
-#| msgid "Only searching the current folder"
 msgid "Search current folder"
-msgstr "Daûr a cirî nome te cartele atuâl"
+msgstr "Cîr te cartele corinte"
 
 #: src/nautilus-query-editor.c:718
-#, fuzzy
-#| msgid "Search _Everywhere"
 msgid "Search everywhere"
-msgstr "Cîr _dapardut"
+msgstr "Cîr dapardut"
 
 #: src/nautilus-rename-file-popover.c:226
 msgid "Rename Folder"
@@ -4167,20 +4113,16 @@ msgstr ""
 "Fabio Tomat <f.t.public@gmail.com>"
 
 #: src/nautilus-window-slot.c:872 src/resources/ui/nautilus-window.ui:126
-#, fuzzy
-#| msgid "Search _Everywhere"
 msgid "Search Everywhere"
-msgstr "Cîr _dapardut"
+msgstr "Cîr dapardut"
 
 #: src/nautilus-window-slot.c:873
 msgid "Find files and folders in all search locations"
 msgstr "Cjate files e cartelis in dutis lis posizions di ricercje"
 
 #: src/nautilus-window-slot.c:876
-#, fuzzy
-#| msgid "Sharing Settings"
 msgid "Search Settings"
-msgstr "Impostazions di condivision"
+msgstr "Cîr tes impostazions"
 
 #: src/nautilus-window-slot.c:1088
 msgid "Searching locations only"
@@ -4289,18 +4231,14 @@ msgid "Quit"
 msgstr "Jes"
 
 #: src/resources/gtk/help-overlay.ui:32
-#, fuzzy
-#| msgid "Search _Everywhere"
 msgctxt "shortcut window"
 msgid "Search Everywhere"
-msgstr "Cîr _dapardut"
+msgstr "Cîr dapardut"
 
 #: src/resources/gtk/help-overlay.ui:38
-#, fuzzy
-#| msgid "Parent Folder"
 msgctxt "shortcut window"
 msgid "Search Current Folder"
-msgstr "Cartele superiôr"
+msgstr "Cîr te cartele corinte"
 
 #: src/resources/gtk/help-overlay.ui:44
 msgctxt "shortcut window"
@@ -4308,17 +4246,11 @@ msgid "Bookmark Current Location"
 msgstr "Met tai segnelibris la posizion atuâl"
 
 #: src/resources/gtk/help-overlay.ui:50
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show help"
 msgctxt "shortcut window"
 msgid "Show Help"
 msgstr "Mostre jutori"
 
 #: src/resources/gtk/help-overlay.ui:56
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show preferences"
 msgctxt "shortcut window"
 msgid "Show Preferences"
 msgstr "Mostre preferencis"
@@ -4349,31 +4281,21 @@ msgid "Open"
 msgstr "Vierç"
 
 #: src/resources/gtk/help-overlay.ui:91
-#, fuzzy
-#| msgid "Open in New _Tab"
 msgctxt "shortcut window"
 msgid "Open in New Tab"
-msgstr "Vierç intune gnove _schede"
+msgstr "Vierç intune gnove schede"
 
 #: src/resources/gtk/help-overlay.ui:97
-#, fuzzy
-#| msgid "Open in New _Window"
 msgctxt "shortcut window"
 msgid "Open in New Window"
-msgstr "Vierç intun gnûf _barcon"
+msgstr "Vierç intun gnûf barcon"
 
 #: src/resources/gtk/help-overlay.ui:103
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open item location (search and recent only)"
 msgctxt "shortcut window"
 msgid "Open Item Location (Search and Recent Only)"
 msgstr "Vierç la posizion dal element (nome ricercje e resints)"
 
 #: src/resources/gtk/help-overlay.ui:109
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open with default app"
 msgctxt "shortcut window"
 msgid "Open With Default App"
 msgstr "Vierç cu la aplicazion predefinide"
@@ -4399,9 +4321,6 @@ msgid "Go to Next Tab"
 msgstr "Va ae schede sucessive"
 
 #: src/resources/gtk/help-overlay.ui:138
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open tab"
 msgctxt "shortcut window"
 msgid "Open Tab"
 msgstr "Vierç schede"
@@ -4417,9 +4336,6 @@ msgid "Move Tab Right"
 msgstr "Sposte schede a drete"
 
 #: src/resources/gtk/help-overlay.ui:156
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Restore tab"
 msgctxt "shortcut window"
 msgid "Restore Tab"
 msgstr "Ripristine schede"
@@ -4475,55 +4391,36 @@ msgid "View"
 msgstr "Viodude"
 
 #: src/resources/gtk/help-overlay.ui:236
-#, fuzzy
-#| msgid "Zoom In"
 msgctxt "shortcut window"
 msgid "Zoom In"
 msgstr "Ingrandìs"
 
 #: src/resources/gtk/help-overlay.ui:242
-#, fuzzy
-#| msgid "Zoom Out"
 msgctxt "shortcut window"
 msgid "Zoom Out"
 msgstr "Impiçulìs"
 
 #: src/resources/gtk/help-overlay.ui:248
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Reset zoom"
 msgctxt "shortcut window"
 msgid "Reset Zoom"
 msgstr "Azerâ ingrandiment"
 
 #: src/resources/gtk/help-overlay.ui:254
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Refresh view"
 msgctxt "shortcut window"
 msgid "Refresh View"
 msgstr "Inzorne viodude"
 
 #: src/resources/gtk/help-overlay.ui:260
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show/hide hidden files"
 msgctxt "shortcut window"
 msgid "Show/Hide Hidden Files"
 msgstr "Mostre/plate i files platâts"
 
 #: src/resources/gtk/help-overlay.ui:266
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show/hide sidebar"
 msgctxt "shortcut window"
 msgid "Show/Hide Sidebar"
 msgstr "Mostre/plate il panel laterâl"
 
 #: src/resources/gtk/help-overlay.ui:272
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show/hide action menu"
 msgctxt "shortcut window"
 msgid "Show/Hide Action Menu"
 msgstr "Mostre/plate menù azion"
@@ -4599,11 +4496,9 @@ msgid "Paste"
 msgstr "Tache"
 
 #: src/resources/gtk/help-overlay.ui:377
-#, fuzzy
-#| msgid "Select All"
 msgctxt "shortcut window"
 msgid "Select All"
-msgstr "Selezione Dut"
+msgstr "Selezione dut"
 
 #: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
@@ -4611,16 +4506,11 @@ msgid "Invert Selection"
 msgstr "Invertìs selezion"
 
 #: src/resources/gtk/help-overlay.ui:389
-#, fuzzy
-#| msgid "Select Items Matching"
 msgctxt "shortcut window"
 msgid "Select Items Matching"
-msgstr "Selezione i elements compagns"
+msgstr "Selezione i elements che a corispuindin"
 
 #: src/resources/gtk/help-overlay.ui:395
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show item properties"
 msgctxt "shortcut window"
 msgid "Show Item Properties"
 msgstr "Mostre propietâts element"
@@ -4739,10 +4629,8 @@ msgid "_Revert"
 msgstr "_Invertìs"
 
 #: src/resources/ui/nautilus-column-chooser.ui:57
-#, fuzzy
-#| msgid "Only Apply to Current Folder"
 msgid "_Only Apply to Current Folder"
-msgstr "Apliche nome a cheste cartele"
+msgstr "Apliche n_ome a cheste cartele"
 
 #: src/resources/ui/nautilus-column-chooser.ui:72
 msgid "Move _Up"
@@ -4794,16 +4682,12 @@ msgid "Folder Name"
 msgstr "Non de cartele"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:108
-#, fuzzy
-#| msgid "_Select a new name for the destination"
 msgid "Select a _new name for the destination"
-msgstr "_Sielç un gnûf non pe destinazion"
+msgstr "Selezione un g_nûf non pe destinazion"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:126
-#, fuzzy
-#| msgid "Reset"
 msgid "R_eset"
-msgstr "Reset"
+msgstr "_Ristabilìs"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:139
 msgid "_Apply this action to all files and folders"
@@ -5086,29 +4970,21 @@ msgid "Performance"
 msgstr "Prestazions"
 
 #: src/resources/ui/nautilus-preferences-window.ui:70
-#, fuzzy
-#| msgid ""
-#| "These features may cause slowdowns and excess network usage, especially "
-#| "when browsing files outside this computer, such as on a remote server."
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this device, such as on a remote server."
 msgstr ""
-"Cheste funzionalitât e pues causâ ralentaments e un ûs esagjerât de rêt, in "
-"particolâr cuant che si navighe tra i file fûr di chest computer, come "
-"suntun servidôr esterni."
+"Chestis funzionalitâts a puedin causâ ralentaments e un ûs esagjerât de rêt, "
+"in particolâr cuant che si navighe tra i files fûr di chest dispositîf, come "
+"par esempli suntun servidôr esterni."
 
 #: src/resources/ui/nautilus-preferences-window.ui:75
-#, fuzzy
-#| msgid "Search in Subfolders"
 msgid "Search in Su_bfolders"
-msgstr "Cîr tes sot-cartelis"
+msgstr "Cîr tes so_t-cartelis"
 
 #: src/resources/ui/nautilus-preferences-window.ui:84
-#, fuzzy
-#| msgid "Show Thumbnails"
 msgid "Show _Thumbnails"
-msgstr "Mostre miniaturis"
+msgstr "Mostre _miniaturis"
 
 #: src/resources/ui/nautilus-preferences-window.ui:93
 msgid "_Count Number of Files in Folders"
@@ -5151,27 +5027,19 @@ msgstr "P_rin"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:153
-#, fuzzy
-#| msgctxt "the n-th position of an icon caption"
-#| msgid "Second"
 msgctxt "the n-th position of an icon caption"
 msgid "Seco_nd"
-msgstr "Secont"
+msgstr "Seco_nt"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:162
-#, fuzzy
-#| msgctxt "the n-th position of an icon caption"
-#| msgid "Third"
 msgctxt "the n-th position of an icon caption"
 msgid "T_hird"
-msgstr "Tierce"
+msgstr "T_ierce"
 
 #: src/resources/ui/nautilus-progress-indicator.ui:36
-#, fuzzy
-#| msgid "File Operations"
 msgid "Show File Operations"
-msgstr "Operazions sui files"
+msgstr "Mostre operazions sui files"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
 #: src/resources/ui/nautilus-properties-window.ui:17
@@ -5180,16 +5048,12 @@ msgid "Properties"
 msgstr "Propietâts"
 
 #: src/resources/ui/nautilus-properties-window.ui:103
-#, fuzzy
-#| msgid "Select Custom Icon"
 msgid "Set Custom Icon"
-msgstr "Sielç icone personalizade"
+msgstr "Stabilìs icone personalizade"
 
 #: src/resources/ui/nautilus-properties-window.ui:124
-#, fuzzy
-#| msgid "Select Custom Icon"
 msgid "Remove Custom Icon"
-msgstr "Sielç icone personalizade"
+msgstr "Gjave icone personalizade"
 
 #: src/resources/ui/nautilus-properties-window.ui:171
 msgid "Unknown Filesystem"
@@ -5219,22 +5083,16 @@ msgid "_Link Target"
 msgstr "Cree co_legament ae destinazion"
 
 #: src/resources/ui/nautilus-properties-window.ui:402
-#, fuzzy
-#| msgid "Link Target"
 msgid "Open Link Target"
-msgstr "Destinazion colegament"
+msgstr "Vierç destinazion colegament"
 
 #: src/resources/ui/nautilus-properties-window.ui:426
-#, fuzzy
-#| msgid "Parent Folder"
 msgid "Parent _Folder"
-msgstr "Cartele superiôr"
+msgstr "_Cartele superiôr"
 
 #: src/resources/ui/nautilus-properties-window.ui:450
-#, fuzzy
-#| msgid "Parent Folder"
 msgid "Open Parent Folder"
-msgstr "Cartele superiôr"
+msgstr "Vierç cartele superiôr"
 
 #: src/resources/ui/nautilus-properties-window.ui:516
 msgid "Trashed on"
@@ -5311,10 +5169,8 @@ msgid "When"
 msgstr "Cuant"
 
 #: src/resources/ui/nautilus-search-popover.ui:44
-#, fuzzy
-#| msgid "Select Dates…"
 msgid "Select _Dates…"
-msgstr "Sielç Datis…"
+msgstr "Selezione _datis…"
 
 #: src/resources/ui/nautilus-search-popover.ui:55
 msgid "Clear Date Filter"
@@ -5361,10 +5217,8 @@ msgid "Don't Search Inside Files"
 msgstr "No sta cirî dentri dai files"
 
 #: src/resources/ui/nautilus-toolbar.ui:55
-#, fuzzy
-#| msgid "Parent Folder"
 msgid "Search Current Folder"
-msgstr "Cartele superiôr"
+msgstr "Cîr te cartele corinte"
 
 #: src/resources/ui/nautilus-toolbar.ui:78
 msgid "Show Sidebar"
@@ -5566,10 +5420,8 @@ msgid "Networks"
 msgstr "Rêts"
 
 #: src/gtk/nautilusgtkplacesview.c:2097 src/gtk/nautilusgtkplacesview.c:2106
-#, fuzzy
-#| msgid "On This Computer"
 msgid "On This Device"
-msgstr "Su chest computer"
+msgstr "Su chest dispositîf"
 
 #. Translators: respectively, free and total space of the drive. The plural form
 #. * should be based on the free space available.
@@ -5652,22 +5504,16 @@ msgid "Recent"
 msgstr "Resint"
 
 #: src/gtk/nautilusgtkplacessidebar.c:986
-#, fuzzy
-#| msgid "Recent files"
 msgid "Recent Files"
 msgstr "Files resints"
 
 #: src/gtk/nautilusgtkplacessidebar.c:997
-#, fuzzy
-#| msgid "Starred files"
 msgid "Starred Files"
 msgstr "Files preferîts"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1008
-#, fuzzy
-#| msgid "Open your personal folder"
 msgid "Open Personal Folder"
-msgstr "Vierç la tô cartele personâl"
+msgstr "Vierç cartele personâl"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1021
 msgid "Desktop"
@@ -5686,10 +5532,8 @@ msgid "Manually enter a location"
 msgstr "Inserìs a man une posizion"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1051
-#, fuzzy
-#| msgid "Open the trash"
 msgid "Open Trash"
-msgstr "Vierç la scovacere"
+msgstr "Vierç Scovacere"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1162
 #: src/gtk/nautilusgtkplacessidebar.c:1190
@@ -5711,8 +5555,6 @@ msgid "Add a new bookmark"
 msgstr "Zonte un gnûf segnelibri"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1436
-#, fuzzy
-#| msgid "Show other locations"
 msgid "Show Other Locations"
 msgstr "Mostre altris posizions"
 
