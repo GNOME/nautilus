@@ -365,6 +365,7 @@
                         <child>
                           <object class="GtkButton" id="conflict_down">
                             <property name="icon-name">go-down-symbolic</property>
+                            <property name="tooltip-text">Next Conflict</property>
                             <signal name="clicked" handler="select_next_conflict_down" swapped="yes"/>
                             <style>
                               <class name="flat"/>
@@ -374,6 +375,7 @@
                         <child>
                           <object class="GtkButton" id="conflict_up">
                             <property name="icon-name">go-up-symbolic</property>
+                            <property name="tooltip-text">Previous Conflict</property>
                             <signal name="clicked" handler="select_next_conflict_up" swapped="yes"/>
                             <style>
                               <class name="flat"/>
