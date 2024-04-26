@@ -233,6 +233,8 @@ libnautilus_sources = [
   'nautilus-search-engine-simple.h',
   'nautilus-search-hit.c',
   'nautilus-search-hit.h',
+  'nautilus-shortcut-manager.c',
+  'nautilus-shortcut-manager.h',
   'nautilus-signaller.h',
   'nautilus-signaller.c',
   'nautilus-query.c',

@@ -112,125 +112,129 @@
       <class name="view"/>
     </style>
     <child>
-      <object class="AdwToastOverlay" id="toast_overlay">
+      <object class="NautilusShortcutManager">
         <property name="child">
-          <object class="AdwOverlaySplitView" id="split_view">
-            <property name="enable-show-gesture">False</property>
-            <property name="enable-hide-gesture">False</property>
-            <property name="max-sidebar-width">240</property>
-            <property name="sidebar-width-unit">px</property>
-            <property name="sidebar-width-fraction">0.2</property>
-            <property name="sidebar">
-              <object class="AdwToolbarView">
-                <property name="reveal-bottom-bars"
-                          bind-source="progress_indicator" bind-property="reveal"
-                          bind-flags="sync-create"/>
-                <child type="top">
-                  <object class="AdwHeaderBar">
-                    <child type="start">
-                      <object class="GtkToggleButton">
-                        <property name="tooltip_text" translatable="yes">Search Everywhere</property>
-                        <property name="action_name">slot.search-global</property>
-                        <property name="icon_name">edit-find-symbolic</property>
-                      </object>
-                    </child>
-                    <property name="title-widget">
-                      <object class="AdwWindowTitle">
-                        <property name="title" translatable="yes">Files</property>
-                      </object>
-                    </property>
-                    <child type="end">
-                      <object class="GtkMenuButton">
-                        <property name="tooltip-text" translatable="yes">Main Menu</property>
-                        <property name="icon_name">open-menu-symbolic</property>
-                        <property name="popover">
-                          <object class="GtkPopoverMenu">
-                            <property name="menu-model">app_menu</property>
-                            <child type="zoom-out">
-                              <object class="GtkButton">
-                                <property name="icon-name">zoom-out-symbolic</property>
-                                <property name="action-name">view.zoom-out</property>
-                                <property name="tooltip-text" translatable="yes">Zoom Out</property>
-                                <style>
-                                  <class name="flat"/>
-                                  <class name="circular"/>
-                                </style>
-                              </object>
-                            </child>
-                            <child type="zoom-in">
-                              <object class="GtkButton">
-                                <property name="icon-name">zoom-in-symbolic</property>
-                                <property name="action-name">view.zoom-in</property>
-                                <property name="tooltip-text" translatable="yes">Zoom In</property>
-                                <style>
-                                  <class name="flat"/>
-                                  <class name="circular"/>
-                                </style>
-                              </object>
-                            </child>
+          <object class="AdwToastOverlay" id="toast_overlay">
+            <property name="child">
+              <object class="AdwOverlaySplitView" id="split_view">
+                <property name="enable-show-gesture">False</property>
+                <property name="enable-hide-gesture">False</property>
+                <property name="max-sidebar-width">240</property>
+                <property name="sidebar-width-unit">px</property>
+                <property name="sidebar-width-fraction">0.2</property>
+                <property name="sidebar">
+                  <object class="AdwToolbarView">
+                    <property name="reveal-bottom-bars"
+                              bind-source="progress_indicator" bind-property="reveal"
+                              bind-flags="sync-create"/>
+                    <child type="top">
+                      <object class="AdwHeaderBar">
+                        <child type="start">
+                          <object class="GtkToggleButton">
+                            <property name="tooltip_text" translatable="yes">Search Everywhere</property>
+                            <property name="action_name">slot.search-global</property>
+                            <property name="icon_name">edit-find-symbolic</property>
+                          </object>
+                        </child>
+                        <property name="title-widget">
+                          <object class="AdwWindowTitle">
+                            <property name="title" translatable="yes">Files</property>
                           </object>
                         </property>
+                        <child type="end">
+                          <object class="GtkMenuButton">
+                            <property name="tooltip-text" translatable="yes">Main Menu</property>
+                            <property name="icon_name">open-menu-symbolic</property>
+                            <property name="popover">
+                              <object class="GtkPopoverMenu">
+                                <property name="menu-model">app_menu</property>
+                                <child type="zoom-out">
+                                  <object class="GtkButton">
+                                    <property name="icon-name">zoom-out-symbolic</property>
+                                    <property name="action-name">view.zoom-out</property>
+                                    <property name="tooltip-text" translatable="yes">Zoom Out</property>
+                                    <style>
+                                      <class name="flat"/>
+                                      <class name="circular"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child type="zoom-in">
+                                  <object class="GtkButton">
+                                    <property name="icon-name">zoom-in-symbolic</property>
+                                    <property name="action-name">view.zoom-in</property>
+                                    <property name="tooltip-text" translatable="yes">Zoom In</property>
+                                    <style>
+                                      <class name="flat"/>
+                                      <class name="circular"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
                       </object>
                     </child>
-                  </object>
-                </child>
-                <child type="bottom">
-                  <object class="GtkBox">
-                    <style>
-                      <class name="toolbar"/>
-                    </style>
-                    <child>
-                      <object class="NautilusProgressIndicator" id="progress_indicator" />
+                    <child type="bottom">
+                      <object class="GtkBox">
+                        <style>
+                          <class name="toolbar"/>
+                        </style>
+                        <child>
+                          <object class="NautilusProgressIndicator" id="progress_indicator" />
+                        </child>
+                      </object>
                     </child>
-                  </object>
-                </child>
-                <property name="content">
-                  <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
-                    <property name="vexpand">True</property>
-                    <property name="show-other-locations">false</property>
-                  </object>
-                </property>
-              </object>
-            </property>
-            <property name="content">
-              <object class="AdwToolbarView">
-                <child type="top">
-                  <object class="NautilusToolbar" id="toolbar">
-                    <property name="show-toolbar-children">True</property>
-                    <property name="sidebar-button-active" bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
-                    <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
-                  </object>
-                </child>
-                <child type="top">
-                  <object class="AdwTabBar" id="tab_bar">
-                    <property name="view">tab_view</property>
-                  </object>
-                </child>
-                <property name="content">
-                  <object class="AdwTabView" id="tab_view">
-                    <property name="menu-model">tab_menu_model</property>
+                    <property name="content">
+                      <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
+                        <property name="vexpand">True</property>
+                        <property name="show-other-locations">false</property>
+                      </object>
+                    </property>
                   </object>
                 </property>
-                <child type="bottom">
-                  <object class="NautilusNetworkAddressBar" id="network_address_bar">
-                    <property name="visible">False</property>
-                  </object>
-                </child>
-                <child type="bottom">
-                  <object class="GtkActionBar" id="action_bar">
-                    <property name="revealed">False</property>
-                    <child type="start">
-                      <object class="NautilusHistoryControls">
+                <property name="content">
+                  <object class="AdwToolbarView">
+                    <child type="top">
+                      <object class="NautilusToolbar" id="toolbar">
+                        <property name="show-toolbar-children">True</property>
+                        <property name="sidebar-button-active" bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
                         <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                       </object>
                     </child>
-                    <child type="end">
-                      <object class="NautilusViewControls">
-                        <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
+                    <child type="top">
+                      <object class="AdwTabBar" id="tab_bar">
+                        <property name="view">tab_view</property>
+                      </object>
+                    </child>
+                    <property name="content">
+                      <object class="AdwTabView" id="tab_view">
+                        <property name="menu-model">tab_menu_model</property>
+                      </object>
+                    </property>
+                    <child type="bottom">
+                      <object class="NautilusNetworkAddressBar" id="network_address_bar">
+                        <property name="visible">False</property>
+                      </object>
+                    </child>
+                    <child type="bottom">
+                      <object class="GtkActionBar" id="action_bar">
+                        <property name="revealed">False</property>
+                        <child type="start">
+                          <object class="NautilusHistoryControls">
+                            <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
+                          </object>
+                        </child>
+                        <child type="end">
+                          <object class="NautilusViewControls">
+                            <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
-                </child>
+                </property>
               </object>
             </property>
           </object>
