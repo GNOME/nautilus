@@ -4578,33 +4578,22 @@ clean_up_metadata_keywords (NautilusFile  *file,
 {
     g_autoptr (NautilusFile) parent_file = nautilus_file_get_parent (file);
     gboolean parent_can_write = parent_file == NULL || nautilus_file_can_write (parent_file);
-    GList *l, *res = NULL;
-    char *keyword;
-    gboolean found;
 
     if (parent_can_write)
     {
         return;
     }
 
-    for (l = *metadata_keywords; l != NULL; l = l->next)
+    for (GList *l = *metadata_keywords; l != NULL;)
     {
-        keyword = l->data;
-        found = FALSE;
+        const char *keyword = l->data;
+        l = l->next;
 
-        if (strcmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0)
+        if (strcmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) != 0)
         {
-            found = TRUE;
-        }
-
-        if (!found)
-        {
-            res = g_list_prepend (res, keyword);
+            *metadata_keywords = g_list_delete_link (*metadata_keywords, l);
         }
     }
-
-    g_list_free (*metadata_keywords);
-    *metadata_keywords = res;
 }
 
 /**
