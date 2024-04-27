@@ -656,12 +656,6 @@ nautilus_window_slot_set_property (GObject      *object,
 
     switch (property_id)
     {
-        case PROP_ACTIVE:
-        {
-            nautilus_window_slot_set_active (self, g_value_get_boolean (value));
-        }
-        break;
-
         case PROP_WINDOW:
         {
             nautilus_window_slot_set_window (self, g_value_get_object (value));
@@ -2847,7 +2841,7 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               "Whether the slot is active",
                               "Whether the slot is the active slot of the window",
                               FALSE,
-                              G_PARAM_READWRITE);
+                              G_PARAM_READABLE);
 
     properties[PROP_LOADING] =
         g_param_spec_boolean ("loading",
@@ -3253,7 +3247,6 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
         else
         {
             window = nautilus_window_slot_get_window (self);
-            g_assert (self == nautilus_window_get_active_slot (window));
 
             gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", NULL);
         }
