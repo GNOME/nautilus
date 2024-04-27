@@ -2999,10 +2999,7 @@ nautilus_window_slot_set_window (NautilusWindowSlot *self,
 void
 nautilus_window_slot_update_title (NautilusWindowSlot *self)
 {
-    NautilusWindow *window;
-    g_autofree char *title = NULL;
-    title = nautilus_compute_title_for_location (self->location);
-    window = nautilus_window_slot_get_window (self);
+    g_autofree char *title = nautilus_compute_title_for_location (self->location);
 
     if (g_strcmp0 (title, self->title) != 0)
     {
@@ -3010,8 +3007,6 @@ nautilus_window_slot_update_title (NautilusWindowSlot *self)
         self->title = g_steal_pointer (&title);
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TITLE]);
-
-        nautilus_window_sync_title (window, self);
     }
 }
 
@@ -3238,7 +3233,6 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
 
             /* sync window to new slot */
             nautilus_window_sync_allow_stop (window, self);
-            nautilus_window_sync_title (window, self);
             nautilus_window_sync_location_widgets (window);
             nautilus_window_slot_sync_actions (self);
 

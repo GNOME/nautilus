@@ -102,7 +102,11 @@
     <property name="width-request">360</property>
     <property name="height-request">380</property>
     <property name="show-menubar">False</property>
-    <property name="title" translatable="yes">_Files</property>
+    <binding name="title">
+      <lookup name="title">
+        <lookup name="active-slot">NautilusWindow</lookup>
+      </lookup>
+    </binding>
     <signal name="direction-changed" handler="window_set_back_forward_accelerators"/>
     <style>
       <class name="view"/>

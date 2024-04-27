@@ -2073,19 +2073,6 @@ nautilus_window_key_bubble (GtkEventControllerKey *controller,
     return GDK_EVENT_PROPAGATE;
 }
 
-void
-nautilus_window_sync_title (NautilusWindow     *window,
-                            NautilusWindowSlot *slot)
-{
-    g_return_if_fail (NAUTILUS_IS_WINDOW (window));
-    g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (slot));
-
-    if (slot == nautilus_window_get_active_slot (window))
-    {
-        gtk_window_set_title (GTK_WINDOW (window), nautilus_window_slot_get_title (slot));
-    }
-}
-
 #ifdef GDK_WINDOWING_WAYLAND
 typedef struct
 {
