@@ -4576,38 +4576,25 @@ static void
 clean_up_metadata_keywords (NautilusFile  *file,
                             GList        **metadata_keywords)
 {
-    NautilusFile *parent_file;
+    g_autoptr (NautilusFile) parent_file = nautilus_file_get_parent (file);
+    gboolean parent_can_write = parent_file == NULL || nautilus_file_can_write (parent_file);
     GList *l, *res = NULL;
-    char *exclude[4];
     char *keyword;
     gboolean found;
-    gint i;
 
-    i = 0;
-
-    parent_file = nautilus_file_get_parent (file);
-    if (parent_file)
+    if (parent_can_write)
     {
-        if (!nautilus_file_can_write (parent_file))
-        {
-            exclude[i++] = NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE;
-        }
-        nautilus_file_unref (parent_file);
+        return;
     }
-    exclude[i++] = NULL;
 
     for (l = *metadata_keywords; l != NULL; l = l->next)
     {
         keyword = l->data;
         found = FALSE;
 
-        for (i = 0; exclude[i] != NULL; i++)
+        if (strcmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) == 0)
         {
-            if (strcmp (exclude[i], keyword) == 0)
-            {
-                found = TRUE;
-                break;
-            }
+            found = TRUE;
         }
 
         if (!found)
