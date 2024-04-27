@@ -897,14 +897,6 @@ nautilus_window_sync_allow_stop (NautilusWindow     *window,
     }
 }
 
-AdwTabView *
-nautilus_window_get_tab_view (NautilusWindow *window)
-{
-    g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
-
-    return window->tab_view;
-}
-
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
 static void
 open_location_cb (NautilusWindow             *window,
@@ -2013,6 +2005,10 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     /* make new slot active, if it exists */
     if (new_slot)
     {
+        AdwTabPage *page = adw_tab_view_get_page (window->tab_view,
+                                                  GTK_WIDGET (new_slot));
+        adw_tab_view_set_selected_page (window->tab_view, page);
+
         /* inform slot & view */
         nautilus_window_slot_set_active (new_slot, TRUE);
 

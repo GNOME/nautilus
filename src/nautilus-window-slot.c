@@ -3240,15 +3240,7 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
 
         if (active)
         {
-            AdwTabView *tab_view;
-            AdwTabPage *page;
-
             window = self->window;
-
-            tab_view = nautilus_window_get_tab_view (window);
-            page = adw_tab_view_get_page (tab_view, GTK_WIDGET (self));
-
-            adw_tab_view_set_selected_page (tab_view, page);
 
             /* sync window to new slot */
             nautilus_window_sync_allow_stop (window, self);

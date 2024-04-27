@@ -85,8 +85,6 @@ void                 nautilus_window_sync_location_widgets (NautilusWindow *wind
 
 void nautilus_window_reset_menus (NautilusWindow *window);
 
-AdwTabView * nautilus_window_get_tab_view (NautilusWindow *window);
-
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);
 
 /* sync window GUI with current slot. Used when changing slots,
