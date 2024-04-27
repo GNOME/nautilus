@@ -109,7 +109,7 @@ date_to_str (GDateTime *timestamp,
         GTimeSpan time_difference = g_date_time_difference (today_midnight, date_midnight);
 
         /* Show the word "Today" and time if date is on today */
-        if (time_difference < G_TIME_SPAN_DAY)
+        if (time_difference < G_TIME_SPAN_DAY && time_difference >= 0)
         {
             if (use_24_hour)
             {
@@ -127,7 +127,7 @@ date_to_str (GDateTime *timestamp,
             }
         }
         /* Show the word "Yesterday" and time if date is on yesterday */
-        else if (time_difference < 2 * G_TIME_SPAN_DAY)
+        else if (time_difference < 2 * G_TIME_SPAN_DAY && time_difference >= 0)
         {
             if (use_24_hour)
             {
