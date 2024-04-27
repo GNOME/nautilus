@@ -30,7 +30,6 @@
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
 
-#include "nautilus-window.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
 

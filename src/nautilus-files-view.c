@@ -84,7 +84,6 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
 #include "nautilus-view-model.h"
-#include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
 
 /* Minimum starting update inverval */

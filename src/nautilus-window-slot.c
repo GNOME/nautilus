@@ -35,7 +35,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
-#include "nautilus-window.h"
 #include "nautilus-x-content-bar.h"
 
 #include <glib/gi18n.h>

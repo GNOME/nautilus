@@ -33,13 +33,10 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-view-controls.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-window.h"
 
 struct _NautilusToolbar
 {
     AdwBin parent_instance;
-
-    NautilusWindow *window;
 
     GtkWidget *history_controls_stack;
     GtkWidget *history_controls;

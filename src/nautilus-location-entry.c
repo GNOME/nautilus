@@ -32,7 +32,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-scheme.h"
-#include "nautilus-window.h"
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
