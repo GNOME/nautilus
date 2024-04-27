@@ -82,6 +82,7 @@ static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              gboolean        back,
                                              guint           distance);
 static void nautilus_window_sync_location_widgets (NautilusWindow *window);
+static void nautilus_window_sync_allow_stop (NautilusWindow *window);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -613,6 +614,8 @@ static void
 connect_slot (NautilusWindow     *window,
               NautilusWindowSlot *slot)
 {
+    g_signal_connect_swapped (slot, "notify::allow-stop",
+                              G_CALLBACK (nautilus_window_sync_allow_stop), window);
     g_signal_connect (slot, "notify::location",
                       G_CALLBACK (on_slot_location_changed), window);
     g_signal_connect (slot, "notify::search-global",
@@ -860,13 +863,13 @@ update_cursor (NautilusWindow *window)
     }
 }
 
-void
-nautilus_window_sync_allow_stop (NautilusWindow     *window,
-                                 NautilusWindowSlot *slot)
+static void
+nautilus_window_sync_allow_stop (NautilusWindow *window)
 {
+    NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
     GAction *stop_action;
     GAction *reload_action;
-    gboolean allow_stop, slot_is_active, slot_allow_stop;
+    gboolean allow_stop, slot_allow_stop;
 
     stop_action = g_action_map_lookup_action (G_ACTION_MAP (window),
                                               "stop");
@@ -875,17 +878,11 @@ nautilus_window_sync_allow_stop (NautilusWindow     *window,
     allow_stop = g_action_get_enabled (stop_action);
 
     slot_allow_stop = nautilus_window_slot_get_allow_stop (slot);
-    slot_is_active = (slot == nautilus_window_get_active_slot (window));
 
-
-    if (!slot_is_active ||
-        allow_stop != slot_allow_stop)
+    if (allow_stop != slot_allow_stop)
     {
-        if (slot_is_active)
-        {
-            g_simple_action_set_enabled (G_SIMPLE_ACTION (stop_action), slot_allow_stop);
-            g_simple_action_set_enabled (G_SIMPLE_ACTION (reload_action), !slot_allow_stop);
-        }
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (stop_action), slot_allow_stop);
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (reload_action), !slot_allow_stop);
         if (gtk_widget_get_realized (GTK_WIDGET (window)))
         {
             update_cursor (window);
@@ -2008,6 +2005,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
         nautilus_window_slot_set_active (new_slot, TRUE);
 
         on_location_changed (window);
+        nautilus_window_sync_allow_stop (window);
     }
 
     g_object_notify_by_pspec (G_OBJECT (window), properties[PROP_ACTIVE_SLOT]);

@@ -3021,7 +3021,6 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
     self->allow_stop = allow;
 
     window = nautilus_window_slot_get_window (self);
-    nautilus_window_sync_allow_stop (window, self);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ALLOW_STOP]);
 }
@@ -3227,7 +3226,6 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
             window = self->window;
 
             /* sync window to new slot */
-            nautilus_window_sync_allow_stop (window, self);
             nautilus_window_slot_sync_actions (self);
 
             gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", self->slot_action_group);

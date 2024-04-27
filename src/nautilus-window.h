@@ -83,12 +83,6 @@ void                 nautilus_window_slot_close            (NautilusWindow *wind
 
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);
 
-/* sync window GUI with current slot. Used when changing slots,
- * and when updating the slot state.
- */
-void nautilus_window_sync_allow_stop       (NautilusWindow *window,
-					    NautilusWindowSlot *slot);
-
 void nautilus_window_show_operation_notification (NautilusWindow *window,
                                                   gchar          *main_label,
                                                   GFile          *folder_to_open,
