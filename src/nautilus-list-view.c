@@ -1056,7 +1056,7 @@ setup_view_columns (NautilusListView *self)
 static void
 nautilus_list_view_reload (NautilusListView *self)
 {
-    gtk_widget_activate_action (GTK_WIDGET (self), "win.reload", NULL);
+    gtk_widget_activate_action (GTK_WIDGET (self), "slot.reload", NULL);
 }
 
 static void

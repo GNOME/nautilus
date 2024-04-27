@@ -1052,6 +1052,26 @@ action_files_view_mode (GSimpleAction *action,
     g_simple_action_set_state (action, value);
 }
 
+static void
+action_reload (GSimpleAction *action,
+               GVariant      *state,
+               gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_queue_reload (self);
+}
+
+static void
+action_stop (GSimpleAction *action,
+             GVariant      *state,
+             gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_stop_loading (self);
+}
+
 const GActionEntry slot_entries[] =
 {
     {
@@ -1063,6 +1083,8 @@ const GActionEntry slot_entries[] =
     { .name = "search-visible", .state = "false", .change_state = action_search_visible },
     { .name = "search-global", .state = "false", .change_state = action_search_global },
     { .name = "focus-search", .activate = action_focus_search },
+    { .name = "reload", .activate = action_reload },
+    { .name = "stop", .activate = action_stop },
 };
 
 static void
@@ -1147,6 +1169,8 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                     "slot",
                                     G_ACTION_GROUP (self->slot_action_group));
 
+#define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
+
     nautilus_application_set_accelerator (app,
                                           "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_LIST_ID) ")",
                                           "<control>1");
@@ -1155,6 +1179,10 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                           "<control>2");
     nautilus_application_set_accelerators (app, "slot.focus-search", search_visible_accels);
     nautilus_application_set_accelerator (app, "slot.search-global", "<control><shift>f");
+    nautilus_application_set_accelerators (app, "slot.reload", ACCELS ("F5", "<ctrl>r", "Refresh", "Reload"));
+    nautilus_application_set_accelerator (app, "slot.stop", "Stop");
+
+#undef ACCELS
 
     self->fd_holder = nautilus_fd_holder_new ();
     self->view_mode_before_network = NAUTILUS_VIEW_INVALID_ID;
@@ -3015,12 +3043,16 @@ void
 nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
                                      gboolean            allow)
 {
-    NautilusWindow *window;
     g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
 
     self->allow_stop = allow;
 
-    window = nautilus_window_slot_get_window (self);
+    GActionMap *action_map = G_ACTION_MAP (self->slot_action_group);
+    GAction *stop_action = g_action_map_lookup_action (action_map, "stop");
+    GAction *reload_action = g_action_map_lookup_action (action_map, "reload");
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (stop_action), self->allow_stop);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (reload_action), !self->allow_stop);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ALLOW_STOP]);
 }

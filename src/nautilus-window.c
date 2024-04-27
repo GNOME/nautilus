@@ -82,7 +82,7 @@ static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              gboolean        back,
                                              guint           distance);
 static void nautilus_window_sync_location_widgets (NautilusWindow *window);
-static void nautilus_window_sync_allow_stop (NautilusWindow *window);
+static void update_cursor (NautilusWindow *window);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -237,31 +237,6 @@ action_go_starred (GSimpleAction *action,
     starred = g_file_new_for_uri (SCHEME_STARRED ":///");
 
     nautilus_window_open_location_full (window, starred, 0, NULL, NULL);
-}
-
-static void
-action_reload (GSimpleAction *action,
-               GVariant      *state,
-               gpointer       user_data)
-{
-    NautilusWindowSlot *slot;
-
-    slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
-    nautilus_window_slot_queue_reload (slot);
-}
-
-static void
-action_stop (GSimpleAction *action,
-             GVariant      *state,
-             gpointer       user_data)
-{
-    NautilusWindow *window;
-    NautilusWindowSlot *slot;
-
-    window = NAUTILUS_WINDOW (user_data);
-    slot = nautilus_window_get_active_slot (window);
-
-    nautilus_window_slot_stop_loading (slot);
 }
 
 static void
@@ -615,7 +590,7 @@ connect_slot (NautilusWindow     *window,
               NautilusWindowSlot *slot)
 {
     g_signal_connect_swapped (slot, "notify::allow-stop",
-                              G_CALLBACK (nautilus_window_sync_allow_stop), window);
+                              G_CALLBACK (update_cursor), window);
     g_signal_connect (slot, "notify::location",
                       G_CALLBACK (on_slot_location_changed), window);
     g_signal_connect (slot, "notify::search-global",
@@ -848,9 +823,12 @@ nautilus_window_new_tab (NautilusWindow *window)
 static void
 update_cursor (NautilusWindow *window)
 {
-    NautilusWindowSlot *slot;
+    NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
 
-    slot = nautilus_window_get_active_slot (window);
+    if (!gtk_widget_get_realized (GTK_WIDGET (window)))
+    {
+        return;
+    }
 
     if (slot != NULL &&
         nautilus_window_slot_get_allow_stop (slot))
@@ -860,33 +838,6 @@ update_cursor (NautilusWindow *window)
     else
     {
         gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
-    }
-}
-
-static void
-nautilus_window_sync_allow_stop (NautilusWindow *window)
-{
-    NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
-    GAction *stop_action;
-    GAction *reload_action;
-    gboolean allow_stop, slot_allow_stop;
-
-    stop_action = g_action_map_lookup_action (G_ACTION_MAP (window),
-                                              "stop");
-    reload_action = g_action_map_lookup_action (G_ACTION_MAP (window),
-                                                "reload");
-    allow_stop = g_action_get_enabled (stop_action);
-
-    slot_allow_stop = nautilus_window_slot_get_allow_stop (slot);
-
-    if (allow_stop != slot_allow_stop)
-    {
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (stop_action), slot_allow_stop);
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (reload_action), !slot_allow_stop);
-        if (gtk_widget_get_realized (GTK_WIDGET (window)))
-        {
-            update_cursor (window);
-        }
     }
 }
 
@@ -1664,8 +1615,6 @@ const GActionEntry win_entries[] =
     { .name = "down", .activate = action_down },
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
     { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
-    { .name = "reload", .activate = action_reload },
-    { .name = "stop", .activate = action_stop },
     { .name = "new-tab", .activate = action_new_tab },
     { .name = "enter-location", .activate = action_enter_location },
     { .name = "bookmark-current-location", .activate = action_bookmark_current_location },
@@ -1718,10 +1667,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerators (app, "win.enter-location", ACCELS ("<control>l", "Go", "OpenURL"));
     nautilus_application_set_accelerator (app, "win.new-tab", "<control>t");
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
-
-    /* Special case reload, since users are used to use two shortcuts instead of one */
-    nautilus_application_set_accelerators (app, "win.reload", ACCELS ("F5", "<ctrl>r", "Refresh", "Reload"));
-    nautilus_application_set_accelerator (app, "win.stop", "Stop");
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
@@ -2005,7 +1950,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
         nautilus_window_slot_set_active (new_slot, TRUE);
 
         on_location_changed (window);
-        nautilus_window_sync_allow_stop (window);
+        update_cursor (window);
     }
 
     g_object_notify_by_pspec (G_OBJECT (window), properties[PROP_ACTIVE_SLOT]);
