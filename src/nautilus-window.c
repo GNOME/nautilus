@@ -81,6 +81,7 @@ static GtkWidget *nautilus_window_ensure_location_entry (NautilusWindow *window)
 static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              gboolean        back,
                                              guint           distance);
+static void nautilus_window_sync_location_widgets (NautilusWindow *window);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -511,6 +512,7 @@ action_open_location (GSimpleAction *action,
 static void
 on_location_changed (NautilusWindow *window)
 {
+    nautilus_window_sync_location_widgets (window);
     nautilus_gtk_places_sidebar_set_location (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
                                               nautilus_window_slot_get_location (nautilus_window_get_active_slot (window)));
 }
@@ -1197,16 +1199,15 @@ nautilus_window_sync_starred (NautilusWindow *window)
     }
 }
 
-void
+static void
 nautilus_window_sync_location_widgets (NautilusWindow *window)
 {
-    NautilusWindowSlot *slot;
+    NautilusWindowSlot *slot = window->active_slot;
     GFile *location;
     GAction *action;
     gboolean enabled;
 
-    slot = window->active_slot;
-    /* This function is called by the active slot. */
+    /* This function can only be called when there is a slot. */
     g_assert (slot != NULL);
 
     location = nautilus_window_slot_get_location (slot);

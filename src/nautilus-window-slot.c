@@ -1385,11 +1385,6 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
     old_location = self->location;
     self->location = g_object_ref (location);
 
-    if (nautilus_window_slot_get_active (self))
-    {
-        nautilus_window_sync_location_widgets (self->window);
-    }
-
     nautilus_window_slot_update_title (self);
 
     if (old_location)
@@ -3233,7 +3228,6 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
 
             /* sync window to new slot */
             nautilus_window_sync_allow_stop (window, self);
-            nautilus_window_sync_location_widgets (window);
             nautilus_window_slot_sync_actions (self);
 
             gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", self->slot_action_group);
