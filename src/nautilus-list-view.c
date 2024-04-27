@@ -50,6 +50,8 @@ struct _NautilusListView
     GtkColumnViewColumn *star_column;
     GtkWidget *column_editor;
     GHashTable *factory_to_column_map;
+
+    GtkSorter *view_model_sorter;
 };
 
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_LIST_BASE)
@@ -1071,7 +1073,9 @@ on_model_changed (NautilusListView *self)
         directories_sorter = gtk_custom_sorter_new (sort_directories_func, &self->directories_first, NULL);
         gtk_multi_sorter_append (sorter, g_object_ref (GTK_SORTER (directories_sorter)));
         gtk_multi_sorter_append (sorter, g_object_ref (column_view_sorter));
-        nautilus_view_model_set_sorter (model, GTK_SORTER (sorter));
+        g_set_object (&self->view_model_sorter, GTK_SORTER (sorter));
+
+        nautilus_view_model_set_sorter (model, self->view_model_sorter);
 
         nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
     }
@@ -1147,9 +1151,15 @@ nautilus_list_view_dispose (GObject *object)
 
     if (model != NULL)
     {
-        /* We should unset the sorter because it may reference the view. */
-        nautilus_view_model_set_sorter (model, NULL);
+        GtkSorter *sorter = nautilus_view_model_get_sorter (model);
+
+        /* We should unset the sorter if it references the view. */
+        if (sorter == self->view_model_sorter)
+        {
+            nautilus_view_model_set_sorter (model, NULL);
+        }
     }
+    g_clear_object (&self->view_model_sorter);
 
     g_clear_object (&self->search_directory);
 
