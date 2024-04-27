@@ -8471,12 +8471,9 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
 void
 nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
 {
-    NautilusWindow *window;
-    NautilusFilesViewPrivate *priv;
-
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
-    priv = nautilus_files_view_get_instance_private (view);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
 
     /* Don't update after destroy (#349551),
      * or if we are not active.
@@ -8486,8 +8483,6 @@ nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
     {
         return;
     }
-    window = nautilus_files_view_get_window (view);
-    nautilus_window_reset_menus (window);
 
     nautilus_files_view_update_actions_state (view);
     nautilus_files_view_reset_view_menu (view);

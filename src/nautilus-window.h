@@ -81,8 +81,6 @@ GList *              nautilus_window_get_slots             (NautilusWindow *wind
 void                 nautilus_window_slot_close            (NautilusWindow *window,
                                                             NautilusWindowSlot *slot);
 
-void nautilus_window_reset_menus (NautilusWindow *window);
-
 void     nautilus_window_show_about_dialog    (NautilusWindow *window);
 
 /* sync window GUI with current slot. Used when changing slots,

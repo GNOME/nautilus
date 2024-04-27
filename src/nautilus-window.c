@@ -861,12 +861,6 @@ update_cursor (NautilusWindow *window)
 }
 
 void
-nautilus_window_reset_menus (NautilusWindow *window)
-{
-    nautilus_window_sync_allow_stop (window, nautilus_window_get_active_slot (window));
-}
-
-void
 nautilus_window_sync_allow_stop (NautilusWindow     *window,
                                  NautilusWindowSlot *slot)
 {
