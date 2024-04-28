@@ -116,7 +116,7 @@ typedef struct
     char *filename;
     gboolean make_dir;
     GFile *src;
-    char *src_data;
+    void *src_data;
     int length;
     gboolean new_mtime;
     GFile *created_file;
@@ -7118,7 +7118,7 @@ create_task_thread_func (GTask        *task,
     gboolean filename_is_utf8;
     char *primary, *secondary, *details;
     int response;
-    char *data;
+    void *data;
     gsize length;
     GFileOutputStream *out;
     gboolean handled_invalid_filename;
@@ -7254,7 +7254,7 @@ retry:
         }
         else
         {
-            data = "";
+            data = NULL;
             length = 0;
             if (job->src_data)
             {
@@ -7694,7 +7694,7 @@ void
 nautilus_file_operations_new_file (GtkWidget              *parent_view,
                                    const char             *parent_dir,
                                    const char             *target_filename,
-                                   const char             *initial_contents,
+                                   const void             *initial_contents,
                                    gsize                   length,
                                    NautilusCreateCallback  done_callback,
                                    gpointer                done_callback_data)

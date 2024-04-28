@@ -1011,11 +1011,11 @@ nautilus_file_undo_info_create_new (NautilusFileUndoOp op_type)
 void
 nautilus_file_undo_info_create_set_data (NautilusFileUndoInfoCreate *self,
                                          GFile                      *file,
-                                         const char                 *template,
+                                         const void                 *template,
                                          gsize                       length)
 {
     self->target_file = g_object_ref (file);
-    self->template = g_strdup (template);
+    self->template = g_memdup2 (template, length);
     self->length = length;
 }
 
