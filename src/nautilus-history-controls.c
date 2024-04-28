@@ -109,15 +109,10 @@ navigation_button_press_cb (GtkGestureClick *gesture,
                             gdouble          y,
                             gpointer         user_data)
 {
-    NautilusHistoryControls *self;
-    NautilusWindow *window;
-    GtkWidget *widget;
-    guint button;
+    NautilusHistoryControls *self = NAUTILUS_HISTORY_CONTROLS (user_data);
 
-    self = NAUTILUS_HISTORY_CONTROLS (user_data);
-    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
-    window = NAUTILUS_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
+    GtkWidget *widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+    guint button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
 
     if (button == GDK_BUTTON_PRIMARY)
     {
@@ -128,11 +123,19 @@ navigation_button_press_cb (GtkGestureClick *gesture,
     else if (button == GDK_BUTTON_MIDDLE)
     {
         NautilusNavigationDirection direction;
+        GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (self));
+
+        if (!NAUTILUS_IS_WINDOW (window))
+        {
+            /* Only NautilusWindow offers special behavior for this event. */
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
+            return;
+        }
 
         direction = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget),
                                                          "nav-direction"));
 
-        nautilus_window_back_or_forward_in_new_tab (window, direction);
+        nautilus_window_back_or_forward_in_new_tab (NAUTILUS_WINDOW (window), direction);
     }
     else if (button == GDK_BUTTON_SECONDARY)
     {
