@@ -2373,7 +2373,7 @@ void
 nautilus_files_view_new_file_with_initial_contents (NautilusFilesView *view,
                                                     const char        *parent_uri,
                                                     const char        *filename,
-                                                    const char        *initial_contents,
+                                                    const void        *initial_contents,
                                                     gsize              length)
 {
     NewFolderData *data;

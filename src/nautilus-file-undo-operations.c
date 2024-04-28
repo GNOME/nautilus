@@ -805,9 +805,13 @@ struct _NautilusFileUndoInfoCreate
 {
     NautilusFileUndoInfo parent_instance;
 
-    char *template;
+    union
+    {
+        char *template;
+        void *buffer;
+    };
     GFile *target_file;
-    gint length;
+    gsize length;
 };
 
 G_DEFINE_TYPE (NautilusFileUndoInfoCreate, nautilus_file_undo_info_create, NAUTILUS_TYPE_FILE_UNDO_INFO)
@@ -1011,12 +1015,23 @@ nautilus_file_undo_info_create_new (NautilusFileUndoOp op_type)
 void
 nautilus_file_undo_info_create_set_data (NautilusFileUndoInfoCreate *self,
                                          GFile                      *file,
-                                         const char                 *template,
+                                         const void                 *template,
                                          gsize                       length)
 {
+    NautilusFileUndoOp op_type = nautilus_file_undo_info_get_op_type (NAUTILUS_FILE_UNDO_INFO (self));
+
     self->target_file = g_object_ref (file);
-    self->template = g_strdup (template);
-    self->length = length;
+    if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_EMPTY_FILE)
+    {
+        /* Operation name is a misnomer, it still can hold data to write to
+         * the newly created file. */
+        self->buffer = g_memdup2 (template, length);
+        self->length = length;
+    }
+    else if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE)
+    {
+        self->template = g_strdup (template);
+    }
 }
 
 /* rename */

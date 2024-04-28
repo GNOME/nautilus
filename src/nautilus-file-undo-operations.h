@@ -119,7 +119,7 @@ G_DECLARE_FINAL_TYPE (NautilusFileUndoInfoCreate, nautilus_file_undo_info_create
 NautilusFileUndoInfo *nautilus_file_undo_info_create_new (NautilusFileUndoOp op_type);
 void nautilus_file_undo_info_create_set_data (NautilusFileUndoInfoCreate *self,
                                               GFile                      *file,
-                                              const char                 *template,
+                                              const void                 *template,
                                               gsize                       length);
 
 /* rename */
