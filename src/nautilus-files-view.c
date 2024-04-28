@@ -9360,7 +9360,6 @@ on_parent_changed (GObject    *object,
                    gpointer    user_data)
 {
     GtkWidget *widget;
-    NautilusWindow *window;
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
     GtkWidget *parent;
@@ -9370,11 +9369,10 @@ on_parent_changed (GObject    *object,
     priv = nautilus_files_view_get_instance_private (view);
 
     parent = gtk_widget_get_parent (widget);
-    window = nautilus_files_view_get_window (view);
 
     if (parent != NULL)
     {
-        if (priv->slot == nautilus_window_get_active_slot (window))
+        if (nautilus_window_slot_get_active (priv->slot))
         {
             priv->active = TRUE;
             gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
