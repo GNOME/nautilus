@@ -18,6 +18,8 @@
                     <property name="child">
                       <object class="NautilusPathBar" id="path_bar">
                         <property name="valign">center</property>
+                        <property name="window-slot"
+                                  bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
                       </object>
                     </property>
                   </object>

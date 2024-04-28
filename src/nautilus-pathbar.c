@@ -25,7 +25,6 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-properties-window.h"
 
-#include "nautilus-application.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-enum-types.h"
@@ -36,7 +35,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-window.h"
 
 #ifdef GDK_WINDOWING_X11
 #include <gdk/x11/gdkx.h>
@@ -64,6 +62,15 @@ typedef enum
 #define BUTTON_DATA(x) ((ButtonData *) (x))
 
 static guint path_bar_signals[LAST_SIGNAL] = { 0 };
+
+enum
+{
+    PROP_0,
+    PROP_WINDOW_SLOT,
+    NUM_PROPERTIES
+};
+
+static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 #define NAUTILUS_PATH_BAR_BUTTON_ELLIPSIZE_MINIMUM_CHARS 7
 
@@ -115,6 +122,8 @@ struct _NautilusPathBar
     GMenu *button_menu;
 
     gchar *os_name;
+
+    NautilusWindowSlot *slot;
 };
 
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_BOX);
@@ -335,6 +344,8 @@ nautilus_path_bar_finalize (GObject *object)
     g_clear_object (&self->current_view_menu_popover);
     g_free (self->os_name);
 
+    g_clear_weak_pointer (&self->slot);
+
     unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
 
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
@@ -403,6 +414,29 @@ button_data_free (ButtonData *button_data)
 
     g_free (button_data);
 }
+static void
+nautilus_path_bar_set_property (GObject      *object,
+                                guint         property_id,
+                                const GValue *value,
+                                GParamSpec   *pspec)
+{
+    NautilusPathBar *self = NAUTILUS_PATH_BAR (object);
+
+    switch (property_id)
+    {
+        case PROP_WINDOW_SLOT:
+        {
+            g_set_weak_pointer (&self->slot, g_value_get_object (value));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        }
+        break;
+    }
+}
 
 static void
 nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
@@ -413,6 +447,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
 
     gobject_class->finalize = nautilus_path_bar_finalize;
     gobject_class->dispose = nautilus_path_bar_dispose;
+    gobject_class->set_property = nautilus_path_bar_set_property;
 
     path_bar_signals [OPEN_LOCATION] =
         g_signal_new ("open-location",
@@ -423,6 +458,13 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
                       G_TYPE_NONE, 2,
                       G_TYPE_FILE,
                       NAUTILUS_TYPE_OPEN_FLAGS);
+
+    properties [PROP_WINDOW_SLOT] =
+        g_param_spec_object ("window-slot", NULL, NULL,
+                             NAUTILUS_TYPE_WINDOW_SLOT,
+                             G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+
+    g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
 }
 
 void
@@ -688,22 +730,19 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
 static void
 switch_location (ButtonData *button_data)
 {
-    GFile *location;
-    GtkRoot *window;
-
     if (button_data->file == NULL)
     {
         return;
     }
 
-    window = gtk_widget_get_root (button_data->button);
-    g_assert (NAUTILUS_IS_WINDOW (window));
+    NautilusPathBar *self = button_data->path_bar;
+    g_autoptr (GFile) location = nautilus_file_get_location (button_data->file);
 
-    location = nautilus_file_get_location (button_data->file);
-    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+    g_return_if_fail (self->slot != NULL);
+
+    nautilus_window_slot_open_location_full (self->slot,
                                              location, NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE,
-                                             NULL, NAUTILUS_WINDOW (window), NULL);
-    g_object_unref (location);
+                                             NULL);
 }
 
 static gboolean
@@ -797,23 +836,20 @@ on_drag_drop (GtkDropTarget *target,
               gdouble        y,
               gpointer       user_data)
 {
-    GtkRoot *window;
-    NautilusWindowSlot *target_slot;
+    ButtonData *button_data = user_data;
+    NautilusPathBar *self = button_data->path_bar;
     NautilusFilesView *target_view;
     g_autoptr (GFile) target_location = NULL;
-    ButtonData *button_data = user_data;
     GdkDragAction action;
 
-    window = gtk_widget_get_root (button_data->button);
-    g_assert (NAUTILUS_IS_WINDOW (window));
+    g_return_if_fail (self->slot != NULL);
 
-    target_slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (window));
     target_location = nautilus_file_get_location (button_data->file);
-    target_view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (target_slot));
+    target_view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (self->slot));
     action = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
 
     #ifdef GDK_WINDOWING_X11
-    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (self))))
     {
         /* Temporary workaround until the below GTK MR (or equivalent fix)
          * is merged.  Without this fix, the preferred action isn't set correctly.
