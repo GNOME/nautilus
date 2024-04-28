@@ -1919,10 +1919,6 @@ setup_view (NautilusWindowSlot *self,
     {
         /* Load the pending location and selection */
         nautilus_view_set_location (self->new_content_view, self->pending_location);
-        nautilus_view_set_selection (self->new_content_view, self->pending_selection);
-
-        nautilus_file_list_free (self->pending_selection);
-        self->pending_selection = NULL;
 
         if (self->pending_file_to_activate != NULL &&
             NAUTILUS_IS_FILES_VIEW (self->new_content_view))
