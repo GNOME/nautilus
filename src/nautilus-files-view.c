@@ -1294,11 +1294,10 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (PreviewExportData, preview_export_data_free)
 static void
 on_window_handle_export (NautilusWindow *window,
                          const char     *handle,
-                         guint           xid,
                          gpointer        user_data)
 {
     g_autoptr (PreviewExportData) data = user_data;
-    nautilus_previewer_call_show_file (data->uri, handle, xid, !data->is_update);
+    nautilus_previewer_call_show_file (data->uri, handle, !data->is_update);
 }
 
 static void
@@ -1310,7 +1309,7 @@ nautilus_files_view_preview (NautilusFilesView *view,
                                         data))
     {
         /* Let's use a fallback, so at least a preview will be displayed */
-        nautilus_previewer_call_show_file (data->uri, "x11:0", 0, !data->is_update);
+        nautilus_previewer_call_show_file (data->uri, "x11:0", !data->is_update);
     }
 }
 

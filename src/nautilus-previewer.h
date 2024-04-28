@@ -29,7 +29,6 @@ G_BEGIN_DECLS
 
 void nautilus_previewer_call_show_file (const gchar *uri,
                                         const gchar *window_handle,
-                                        guint        xid,
 					gboolean     close_if_already_visible);
 void nautilus_previewer_call_close     (void);
 

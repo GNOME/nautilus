@@ -43,7 +43,6 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 
 typedef void (* NautilusWindowHandleExported) (NautilusWindow *window,
                                                const char *handle,
-                                               guint xid,
                                                gpointer user_data);
 
 /* window geometry */

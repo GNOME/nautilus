@@ -174,7 +174,6 @@ previewer2_method_ready_cb (GObject      *source,
 void
 nautilus_previewer_call_show_file (const gchar *uri,
                                    const gchar *window_handle,
-                                   guint        xid,
                                    gboolean     close_if_already_visible)
 {
     if (!ensure_previewer_proxy ())

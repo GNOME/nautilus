@@ -2027,7 +2027,7 @@ wayland_window_handle_exported (GdkToplevel *toplevel,
     WaylandWindowHandleExportedData *data = user_data;
 
     data->window->export_handle = g_strdup_printf ("wayland:%s", wayland_handle_str);
-    data->callback (data->window, data->window->export_handle, 0, data->user_data);
+    data->callback (data->window, data->window->export_handle, data->user_data);
 }
 #endif
 
@@ -2036,19 +2036,17 @@ nautilus_window_export_handle (NautilusWindow               *window,
                                NautilusWindowHandleExported  callback,
                                gpointer                      user_data)
 {
-    guint xid = get_window_xid (window);
-
     if (window->export_handle != NULL)
     {
-        callback (window, window->export_handle, xid, user_data);
+        callback (window, window->export_handle, user_data);
         return TRUE;
     }
 
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
-        window->export_handle = g_strdup_printf ("x11:%x", xid);
-        callback (window, window->export_handle, xid, user_data);
+        window->export_handle = g_strdup_printf ("x11:%x", get_window_xid (window));
+        callback (window, window->export_handle, user_data);
 
         return TRUE;
     }
