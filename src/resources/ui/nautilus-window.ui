@@ -111,6 +111,8 @@
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
           <object class="AdwOverlaySplitView" id="split_view">
+            <property name="enable-show-gesture">False</property>
+            <property name="enable-hide-gesture">False</property>
             <property name="max-sidebar-width">240</property>
             <property name="sidebar-width-unit">px</property>
             <property name="sidebar-width-fraction">0.2</property>
@@ -231,6 +233,8 @@
       <object class="AdwBreakpoint">
         <condition>max-width: 682sp</condition>
         <setter object="split_view" property="collapsed">True</setter>
+        <setter object="split_view" property="enable-show-gesture">True</setter>
+        <setter object="split_view" property="enable-hide-gesture">True</setter>
         <setter object="toolbar" property="show-sidebar-button">True</setter>
         <setter object="toolbar" property="show-toolbar-children">False</setter>
         <setter object="action_bar" property="revealed">True</setter>
