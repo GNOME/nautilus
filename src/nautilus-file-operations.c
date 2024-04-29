@@ -7249,7 +7249,7 @@ retry:
 
                 uri = g_file_get_uri (job->src);
                 nautilus_file_undo_info_create_set_data (NAUTILUS_FILE_UNDO_INFO_CREATE (common->undo_info),
-                                                         dest, uri, 0);
+                                                         dest, uri, strlen (uri));
             }
         }
         else
