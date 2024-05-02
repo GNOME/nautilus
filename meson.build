@@ -114,7 +114,7 @@ gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.4')
 gnome_desktop = dependency('gnome-desktop-4', version: '>= 43')
 gtk = dependency('gtk4', version: '>= 4.13.6')
-libadwaita = dependency('libadwaita-1', version: '>= 1.4.0')
+libadwaita = dependency('libadwaita-1', version: '>= 1.6.alpha')
 libportal = dependency('libportal', version: '>= 0.5')
 libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
 selinux = []

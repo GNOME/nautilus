@@ -115,7 +115,7 @@ struct _NautilusPropertiesWindow
     GtkWidget *disk_space_used_value;
     GtkWidget *disk_space_free_value;
     GtkWidget *disk_space_capacity_value;
-    GtkWidget *open_in_disks_row;
+    GtkWidget *open_in_disks_button_row;
     gchar *device_identifier;
 
     GtkWidget *locations_list_box;
@@ -2544,7 +2544,7 @@ setup_open_in_disks (NautilusPropertiesWindow *self)
         }
     }
 
-    gtk_widget_set_visible (self->open_in_disks_row, (self->device_identifier != NULL));
+    gtk_widget_set_visible (self->open_in_disks_button_row, (self->device_identifier != NULL));
 }
 
 static void
@@ -2622,7 +2622,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
         gtk_widget_set_visible (self->disk_list_box,
                                 (gtk_widget_get_visible (self->volume_usage_row) ||
-                                 gtk_widget_get_visible (self->open_in_disks_row)));
+                                 gtk_widget_get_visible (self->open_in_disks_button_row)));
     }
 
     if (should_show_file_type (self))
@@ -4158,7 +4158,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_used_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_free_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_capacity_value);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_row);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_button_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, locations_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_row);
