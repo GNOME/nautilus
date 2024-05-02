@@ -34,18 +34,11 @@
                       </object>
                     </child>
                     <property name="content">
-                      <object class="GtkScrolledWindow">
-                        <property name="hscrollbar-policy">never</property>
-                        <property name="vexpand">true</property>
-                        <property name="min-content-height">480</property>
-                        <property name="propagate-natural-height">true</property>
-                        <property name="child">
-                          <object class="AdwClamp">
-                            <property name="margin-bottom">18</property>
-                            <property name="margin-start">18</property>
-                            <property name="margin-end">18</property>
-                            <property name="child">
-                              <object class="GtkBox" id="basic_box">
+                      <object class="AdwPreferencesPage">
+                        <child>
+                          <object class="AdwPreferencesGroup">
+                            <child>
+                              <object class="GtkBox">
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">12</property>
                                 <child>
@@ -215,110 +208,114 @@
                                     </child>
                                   </object>
                                 </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="disk_group">
+                            <property name="visible">False</property>
+                            <child>
+                              <object class="GtkListBox">
+                                <property name="selection-mode">none</property>
+                                <signal name="row-activated" handler="open_in_disks" object="NautilusPropertiesWindow" swapped="yes"/>
                                 <child>
-                                  <object class="GtkListBox" id="disk_list_box">
-                                    <property name="selection-mode">none</property>
-                                    <property name="visible">False</property>
-                                    <signal name="row-activated" handler="open_in_disks" object="NautilusPropertiesWindow" swapped="yes"/>
+                                  <object class="GtkListBoxRow" id="volume_usage_row">
+                                    <property name="activatable">False</property>
+                                    <property name="selectable">False</property>
                                     <child>
-                                      <object class="GtkListBoxRow" id="volume_usage_row">
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
+                                      <object class="GtkBox">
+                                        <property name="margin-bottom">12</property>
+                                        <property name="margin-end">12</property>
+                                        <property name="margin-start">12</property>
+                                        <property name="margin-top">18</property>
+                                        <property name="spacing">12</property>
+                                        <property name="orientation">vertical</property>
+                                        <child>
+                                          <object class="GtkLevelBar" id="disk_space_level_bar">
+                                            <property name="hexpand">True</property>
+                                          </object>
+                                        </child>
                                         <child>
                                           <object class="GtkBox">
-                                            <property name="margin-bottom">12</property>
-                                            <property name="margin-end">12</property>
-                                            <property name="margin-start">12</property>
-                                            <property name="margin-top">18</property>
                                             <property name="spacing">12</property>
-                                            <property name="orientation">vertical</property>
+                                            <property name="halign">center</property>
                                             <child>
-                                              <object class="GtkLevelBar" id="disk_space_level_bar">
-                                                <property name="hexpand">True</property>
+                                              <object class="GtkBox">
+                                                <property name="spacing">3</property>
+                                                <child>
+                                                  <object class="GtkLabel" id="disk_space_capacity_value">
+                                                    <style>
+                                                      <class name="dim-label"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="label" translatable="yes">total</property>
+                                                    <style>
+                                                      <class name="dim-label"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
                                               </object>
                                             </child>
                                             <child>
                                               <object class="GtkBox">
-                                                <property name="spacing">12</property>
-                                                <property name="halign">center</property>
+                                                <property name="spacing">3</property>
                                                 <child>
-                                                  <object class="GtkBox">
-                                                    <property name="spacing">3</property>
-                                                    <child>
-                                                      <object class="GtkLabel" id="disk_space_capacity_value">
-                                                        <style>
-                                                          <class name="dim-label"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkLabel">
-                                                        <property name="label" translatable="yes">total</property>
-                                                        <style>
-                                                          <class name="dim-label"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
+                                                  <object class="GtkLabel">
+                                                    <property name="label">●</property>
+                                                    <style>
+                                                      <class name="disk-space-used"/>
+                                                    </style>
                                                   </object>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkBox">
-                                                    <property name="spacing">3</property>
-                                                    <child>
-                                                      <object class="GtkLabel">
-                                                        <property name="label">●</property>
-                                                        <style>
-                                                          <class name="disk-space-used"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkLabel" id="disk_space_used_value">
-                                                        <style>
-                                                          <class name="caption-style"/>
-                                                          <class name="dim-label"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkLabel">
-                                                        <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">used</property>
-                                                        <style>
-                                                          <class name="caption-style"/>
-                                                          <class name="dim-label"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
+                                                  <object class="GtkLabel" id="disk_space_used_value">
+                                                    <style>
+                                                      <class name="caption-style"/>
+                                                      <class name="dim-label"/>
+                                                    </style>
                                                   </object>
                                                 </child>
                                                 <child>
-                                                  <object class="GtkBox">
-                                                    <property name="spacing">3</property>
-                                                    <child>
-                                                      <object class="GtkLabel">
-                                                        <property name="label">●</property>
-                                                        <style>
-                                                          <class name="disk-space-free"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkLabel" id="disk_space_free_value">
-                                                        <style>
-                                                          <class name="caption-style"/>
-                                                          <class name="dim-label"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
-                                                    <child>
-                                                      <object class="GtkLabel">
-                                                        <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">free</property>
-                                                        <style>
-                                                          <class name="caption-style"/>
-                                                          <class name="dim-label"/>
-                                                        </style>
-                                                      </object>
-                                                    </child>
+                                                  <object class="GtkLabel">
+                                                    <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">used</property>
+                                                    <style>
+                                                      <class name="caption-style"/>
+                                                      <class name="dim-label"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="spacing">3</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="label">●</property>
+                                                    <style>
+                                                      <class name="disk-space-free"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkLabel" id="disk_space_free_value">
+                                                    <style>
+                                                      <class name="caption-style"/>
+                                                      <class name="dim-label"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="label" translatable="yes" comments="Refers to the capacity of the filesystem">free</property>
+                                                    <style>
+                                                      <class name="caption-style"/>
+                                                      <class name="dim-label"/>
+                                                    </style>
                                                   </object>
                                                 </child>
                                               </object>
@@ -327,218 +324,206 @@
                                         </child>
                                       </object>
                                     </child>
-                                    <child>
-                                      <object class="AdwButtonRow" id="open_in_disks_button_row">
-                                        <property name="title" translatable="yes" comments="Disks refers to GNOME Disks.">_Open in Disks</property>
-                                        <property name="end-icon-name">external-link-symbolic</property>
-                                        <property name="use-underline">True</property>
-                                      </object>
-                                    </child>
-                                    <style>
-                                      <class name="boxed-list"/>
-                                    </style>
                                   </object>
                                 </child>
                                 <child>
-                                  <object class="GtkListBox" id="locations_list_box">
-                                    <property name="visible">False</property>
-                                    <property name="selection-mode">none</property>
-                                    <child>
-                                      <object class="AdwActionRow" id="link_target_row">
-                                        <property name="title" translatable="yes">_Link Target</property>
-                                        <property name="title-lines">1</property>
-                                        <property name="visible">False</property>
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
-                                        <property name="subtitle-selectable">True</property>
-                                        <property name="use-underline">True</property>
-                                        <style>
-                                          <class name="property"/>
-                                        </style>
-                                        <signal name="activate" handler="open_link_target" swapped="yes"/>
-                                        <child type="suffix">
-                                          <object class="GtkButton" id="open_link_target_button">
-                                            <property name="tooltip-text" translatable="yes">Open Link Target</property>
-                                            <property name="icon-name">folder-open-symbolic</property>
-                                            <property name="valign">center</property>
-                                            <signal name="clicked" handler="open_link_target" swapped="yes"/>
-                                            <style>
-                                              <class name="flat"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwActionRow" id="parent_folder_row">
-                                        <property name="title" translatable="yes">Parent _Folder</property>
-                                        <property name="title-lines">1</property>
-                                        <property name="visible">False</property>
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
-                                        <property name="subtitle-selectable">True</property>
-                                        <property name="use-underline">True</property>
-                                        <style>
-                                          <class name="property"/>
-                                        </style>
-                                        <signal name="activate" handler="open_parent_folder" swapped="yes"/>
-                                        <child type="suffix">
-                                          <object class="GtkButton" id="open_parent_folder_button">
-                                            <property name="tooltip-text" translatable="yes">Open Parent Folder</property>
-                                            <property name="icon-name">folder-open-symbolic</property>
-                                            <property name="valign">center</property>
-                                            <signal name="clicked" handler="open_parent_folder" swapped="yes"/>
-                                            <style>
-                                              <class name="flat"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <style>
-                                      <class name="boxed-list"/>
-                                    </style>
+                                  <object class="AdwButtonRow" id="open_in_disks_button_row">
+                                    <property name="title" translatable="yes" comments="Disks refers to GNOME Disks.">_Open in Disks</property>
+                                    <property name="end-icon-name">external-link-symbolic</property>
+                                    <property name="use-underline">True</property>
                                   </object>
                                 </child>
-                                <child>
-                                  <object class="GtkListBox" id="trashed_list_box">
-                                    <property name="selection-mode">none</property>
-                                    <property name="visible">False</property>
-                                    <child>
-                                      <object class="AdwActionRow" id="original_folder_row">
-                                        <property name="title" translatable="yes">Original Folder</property>
-                                        <property name="title-lines">1</property>
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
-                                        <property name="subtitle-selectable">True</property>
-                                        <style>
-                                          <class name="property"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwActionRow" id="trashed_on_row">
-                                        <property name="title" translatable="yes">Trashed on</property>
-                                        <property name="title-lines">1</property>
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
-                                        <property name="subtitle-selectable">True</property>
-                                        <property name="subtitle-lines">1</property>
-                                        <style>
-                                          <class name="property"/>
-                                          <class name="numeric"/>
-                                        </style>
-                                      </object>
-                                    </child>
+                                <style>
+                                  <class name="boxed-list"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="locations_group">
+                            <property name="visible">False</property>
+                            <child>
+                              <object class="AdwActionRow" id="link_target_row">
+                                <property name="title" translatable="yes">_Link Target</property>
+                                <property name="title-lines">1</property>
+                                <property name="visible">False</property>
+                                <property name="activatable">False</property>
+                                <property name="selectable">False</property>
+                                <property name="subtitle-selectable">True</property>
+                                <property name="use-underline">True</property>
+                                <style>
+                                  <class name="property"/>
+                                </style>
+                                <signal name="activate" handler="open_link_target" swapped="yes"/>
+                                <child type="suffix">
+                                  <object class="GtkButton" id="open_link_target_button">
+                                    <property name="tooltip-text" translatable="yes">Open Link Target</property>
+                                    <property name="icon-name">folder-open-symbolic</property>
+                                    <property name="valign">center</property>
+                                    <signal name="clicked" handler="open_link_target" swapped="yes"/>
                                     <style>
-                                      <class name="boxed-list"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkListBox" id="times_list_box">
-                                    <property name="selection-mode">none</property>
-                                    <property name="visible">False</property>
-                                    <child>
-                                      <object class="AdwActionRow" id="accessed_row">
-                                        <property name="title" translatable="yes">Accessed</property>
-                                        <property name="title-lines">1</property>
-                                        <property name="visible">False</property>
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
-                                        <property name="subtitle-selectable">True</property>
-                                        <property name="subtitle-lines">1</property>
-                                        <style>
-                                          <class name="property"/>
-                                          <class name="numeric"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwActionRow" id="modified_row">
-                                        <property name="title" translatable="yes">Modified</property>
-                                        <property name="title-lines">1</property>
-                                        <property name="visible">False</property>
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
-                                        <property name="subtitle-selectable">True</property>
-                                        <property name="subtitle-lines">1</property>
-                                        <style>
-                                          <class name="property"/>
-                                          <class name="numeric"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwActionRow" id="created_row">
-                                        <property name="title" translatable="yes">Created</property>
-                                        <property name="title-lines">1</property>
-                                        <property name="visible">False</property>
-                                        <property name="activatable">False</property>
-                                        <property name="selectable">False</property>
-                                        <property name="subtitle-selectable">True</property>
-                                        <property name="subtitle-lines">1</property>
-                                        <style>
-                                          <class name="property"/>
-                                          <class name="numeric"/>
-                                        </style>
-                                      </object>
-                                    </child>
-                                    <style>
-                                      <class name="boxed-list"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkListBox" id="permissions_list_box">
-                                    <property name="selection-mode">none</property>
-                                    <child>
-                                      <object class="AdwActionRow" id="permissions_navigation_row">
-                                        <property name="activatable">True</property>
-                                        <property name="selectable">False</property>
-                                        <property name="title" translatable="yes">_Permissions</property>
-                                        <property name="use-underline">True</property>
-                                        <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWindow" swapped="yes"/>
-                                        <child>
-                                          <object class="GtkLabel" id="permissions_value_label">
-                                            <property name="ellipsize">end</property>
-                                            <style>
-                                              <class name="dim-label"/>
-                                            </style>
-                                          </object>
-                                        </child>
-                                        <child>
-                                          <object class="GtkImage">
-                                            <property name="icon-name">go-next-symbolic</property>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="AdwSwitchRow" id="execution_row">
-                                        <property name="visible">False</property>
-                                        <property name="activatable">True</property>
-                                        <property name="title" translatable="yes">_Executable as Program</property>
-                                        <property name="use-underline">True</property>
-                                      </object>
-                                    </child>
-                                    <style>
-                                      <class name="boxed-list"/>
-                                    </style>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkListBox" id="extension_models_list_box">
-                                    <property name="selection-mode">none</property>
-                                    <style>
-                                      <class name="boxed-list"/>
+                                      <class name="flat"/>
                                     </style>
                                   </object>
                                 </child>
                               </object>
-                            </property>
+                            </child>
+                            <child>
+                              <object class="AdwActionRow" id="parent_folder_row">
+                                <property name="title" translatable="yes">Parent _Folder</property>
+                                <property name="title-lines">1</property>
+                                <property name="visible">False</property>
+                                <property name="activatable">False</property>
+                                <property name="selectable">False</property>
+                                <property name="subtitle-selectable">True</property>
+                                <property name="use-underline">True</property>
+                                <style>
+                                  <class name="property"/>
+                                </style>
+                                <signal name="activate" handler="open_parent_folder" swapped="yes"/>
+                                <child type="suffix">
+                                  <object class="GtkButton" id="open_parent_folder_button">
+                                    <property name="tooltip-text" translatable="yes">Open Parent Folder</property>
+                                    <property name="icon-name">folder-open-symbolic</property>
+                                    <property name="valign">center</property>
+                                    <signal name="clicked" handler="open_parent_folder" swapped="yes"/>
+                                    <style>
+                                      <class name="flat"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
-                        </property>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="trashed_group">
+                            <property name="visible">False</property>
+                            <child>
+                              <object class="AdwActionRow" id="original_folder_row">
+                                <property name="title" translatable="yes">Original Folder</property>
+                                <property name="title-lines">1</property>
+                                <property name="activatable">False</property>
+                                <property name="selectable">False</property>
+                                <property name="subtitle-selectable">True</property>
+                                <style>
+                                  <class name="property"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwActionRow" id="trashed_on_row">
+                                <property name="title" translatable="yes">Trashed on</property>
+                                <property name="title-lines">1</property>
+                                <property name="activatable">False</property>
+                                <property name="selectable">False</property>
+                                <property name="subtitle-selectable">True</property>
+                                <property name="subtitle-lines">1</property>
+                                <style>
+                                  <class name="property"/>
+                                  <class name="numeric"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup" id="times_group">
+                            <property name="visible">False</property>
+                            <child>
+                              <object class="AdwActionRow" id="accessed_row">
+                                <property name="title" translatable="yes">Accessed</property>
+                                <property name="title-lines">1</property>
+                                <property name="visible">False</property>
+                                <property name="activatable">False</property>
+                                <property name="selectable">False</property>
+                                <property name="subtitle-selectable">True</property>
+                                <property name="subtitle-lines">1</property>
+                                <style>
+                                  <class name="property"/>
+                                  <class name="numeric"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwActionRow" id="modified_row">
+                                <property name="title" translatable="yes">Modified</property>
+                                <property name="title-lines">1</property>
+                                <property name="visible">False</property>
+                                <property name="activatable">False</property>
+                                <property name="selectable">False</property>
+                                <property name="subtitle-selectable">True</property>
+                                <property name="subtitle-lines">1</property>
+                                <style>
+                                  <class name="property"/>
+                                  <class name="numeric"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwActionRow" id="created_row">
+                                <property name="title" translatable="yes">Created</property>
+                                <property name="title-lines">1</property>
+                                <property name="visible">False</property>
+                                <property name="activatable">False</property>
+                                <property name="selectable">False</property>
+                                <property name="subtitle-selectable">True</property>
+                                <property name="subtitle-lines">1</property>
+                                <style>
+                                  <class name="property"/>
+                                  <class name="numeric"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup">
+                            <child>
+                              <object class="AdwActionRow" id="permissions_navigation_row">
+                                <property name="activatable">True</property>
+                                <property name="selectable">False</property>
+                                <property name="title" translatable="yes">_Permissions</property>
+                                <property name="use-underline">True</property>
+                                <signal name="activated" handler="navigate_permissions_page" object="NautilusPropertiesWindow" swapped="yes"/>
+                                <child>
+                                  <object class="GtkLabel" id="permissions_value_label">
+                                    <property name="ellipsize">end</property>
+                                    <style>
+                                      <class name="dim-label"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkImage">
+                                    <property name="icon-name">go-next-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwSwitchRow" id="execution_row">
+                                <property name="visible">False</property>
+                                <property name="activatable">True</property>
+                                <property name="title" translatable="yes">_Executable as Program</property>
+                                <property name="use-underline">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwPreferencesGroup">
+                            <child>
+                              <object class="GtkListBox" id="extension_models_list_box">
+                                <property name="selection-mode">none</property>
+                                <style>
+                                  <class name="boxed-list"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
                       </object>
                     </property>
                   </object>
@@ -555,196 +540,163 @@
                       <object class="AdwHeaderBar"/>
                     </child>
                     <property name="content">
-                      <object class="GtkScrolledWindow">
-                        <property name="hscrollbar-policy">never</property>
-                        <property name="vexpand">true</property>
-                        <property name="child">
-                          <object class="GtkBox">
-                            <property name="orientation">vertical</property>
+                      <object class="GtkBox">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="AdwBanner" id="owner_permission_banner">
+                            <property name="title" translatable="yes">Only the owner can edit these permissions</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStack" id="permissions_stack">
                             <child>
-                              <object class="AdwBanner" id="owner_permission_banner">
-                                <property name="title" translatable="yes">Only the owner can edit these permissions</property>
+                              <object class="GtkStackPage">
+                                <property name="name">permission-indeterminable</property>
+                                <property name="child">
+                                  <object class="AdwStatusPage" id="unknown_permissions_page">
+                                    <property name="icon-name">dialog-error-symbolic</property>
+                                    <property name="title" translatable="yes">Unknown Permissions</property>
+                                    <property name="description" translatable="yes">The permissions of the selected files could not be determined.</property>
+                                  </object>
+                                </property>
                               </object>
                             </child>
                             <child>
-                              <object class="AdwClamp">
-                                <property name="margin-top">18</property>
-                                <property name="margin-bottom">18</property>
-                                <property name="margin-start">18</property>
-                                <property name="margin-end">18</property>
+                              <object class="GtkStackPage">
+                                <property name="name">permissions-box</property>
                                 <property name="child">
-                                  <object class="GtkStack" id="permissions_stack">
+                                  <object class="AdwPreferencesPage">
                                     <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">permission-indeterminable</property>
-                                        <property name="child">
-                                          <object class="AdwStatusPage" id="unknown_permissions_page">
-                                            <property name="icon-name">dialog-error-symbolic</property>
-                                            <property name="title" translatable="yes">Unknown Permissions</property>
-                                            <property name="description" translatable="yes">The permissions of the selected files could not be determined.</property>
+                                      <object class="AdwPreferencesGroup">
+                                        <child>
+                                          <object class="AdwComboRow" id="owner_row">
+                                            <property name="sensitive">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">_Owner</property>
+                                            <property name="use-underline">True</property>
+                                            <property name="expression">
+                                              <lookup type="GtkStringObject" name="string"/>
+                                            </property>
                                           </object>
-                                        </property>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="owner_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">Access</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="owner_folder_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">Folder Access</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="owner_file_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">File Access</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkStackPage">
-                                        <property name="name">permissions-box</property>
-                                        <property name="child">
-                                          <object class="GtkBox" id="permissions_box">
-                                            <property name="orientation">vertical</property>
-                                            <property name="spacing">12</property>
-                                            <child>
-                                              <object class="GtkListBox" id="owner_list_box">
-                                                <property name="selection-mode">none</property>
-                                                <child>
-                                                  <object class="AdwComboRow" id="owner_row">
-                                                    <property name="sensitive">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">_Owner</property>
-                                                    <property name="use-underline">True</property>
-                                                    <property name="expression">
-                                                      <lookup type="GtkStringObject" name="string"/>
-                                                    </property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="owner_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">Access</property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="owner_folder_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">Folder Access</property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="owner_file_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">File Access</property>
-                                                  </object>
-                                                </child>
-                                                <style>
-                                                  <class name="boxed-list"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkListBox" id="group_list_box">
-                                                <property name="selection-mode">none</property>
-                                                <child>
-                                                  <object class="AdwComboRow" id="group_row">
-                                                    <property name="sensitive">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">_Group</property>
-                                                    <property name="use-underline">True</property>
-                                                    <property name="expression">
-                                                      <lookup type="GtkStringObject" name="string"/>
-                                                    </property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="group_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">Access</property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="group_folder_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">Folder Access</property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="group_file_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">File Access</property>
-                                                  </object>
-                                                </child>
-                                                <style>
-                                                  <class name="boxed-list"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkListBox" id="others_list_box">
-                                                <property name="selection-mode">none</property>
-                                                <child>
-                                                  <object class="AdwComboRow" id="others_row">
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">Others</property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="others_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">Access</property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="others_folder_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">Folder Access</property>
-                                                  </object>
-                                                </child>
-                                                <child>
-                                                  <object class="AdwComboRow" id="others_file_access_row">
-                                                    <property name="visible">False</property>
-                                                    <property name="activatable">False</property>
-                                                    <property name="title" translatable="yes">File Access</property>
-                                                  </object>
-                                                </child>
-                                                <style>
-                                                  <class name="boxed-list"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkListBox" id="security_context_list_box">
-                                                <property name="visible">False</property>
-                                                <child>
-                                                  <object class="AdwActionRow" id="security_context_row">
-                                                    <property name="title" translatable="yes">Security Context</property>
-                                                    <property name="title-lines">1</property>
-                                                    <property name="selectable">False</property>
-                                                    <property name="subtitle-selectable">True</property>
-                                                    <property name="subtitle-lines">1</property>
-                                                    <property name="activatable">False</property>
-                                                    <style>
-                                                      <class name="property"/>
-                                                    </style>
-                                                  </object>
-                                                </child>
-                                                <style>
-                                                  <class name="boxed-list"/>
-                                                </style>
-                                              </object>
-                                            </child>
-                                            <child>
-                                              <object class="GtkBox" id="change_permissions_button_box">
-                                                <property name="visible">False</property>
-                                                <property name="margin_top">12</property>
-                                                <child>
-                                                  <object class="GtkButton" id="change_permissions_button">
-                                                    <property name="label" translatable="yes">Change Permissions for _Enclosed Files…</property>
-                                                    <property name="focusable">True</property>
-                                                    <property name="receives_default">True</property>
-                                                    <property name="use-underline">True</property>
-                                                  </object>
-                                                </child>
-                                              </object>
-                                            </child>
+                                      <object class="AdwPreferencesGroup">
+                                        <child>
+                                          <object class="AdwComboRow" id="group_row">
+                                            <property name="sensitive">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">_Group</property>
+                                            <property name="use-underline">True</property>
+                                            <property name="expression">
+                                              <lookup type="GtkStringObject" name="string"/>
+                                            </property>
                                           </object>
-                                        </property>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="group_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">Access</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="group_folder_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">Folder Access</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="group_file_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">File Access</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwPreferencesGroup">
+                                        <child>
+                                          <object class="AdwComboRow" id="others_row">
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">Others</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="others_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">Access</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="others_folder_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">Folder Access</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="AdwComboRow" id="others_file_access_row">
+                                            <property name="visible">False</property>
+                                            <property name="activatable">False</property>
+                                            <property name="title" translatable="yes">File Access</property>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwPreferencesGroup" id="security_context_group">
+                                        <property name="visible">False</property>
+                                        <child>
+                                          <object class="AdwActionRow" id="security_context_row">
+                                            <property name="title" translatable="yes">Security Context</property>
+                                            <property name="title-lines">1</property>
+                                            <property name="selectable">False</property>
+                                            <property name="subtitle-selectable">True</property>
+                                            <property name="subtitle-lines">1</property>
+                                            <property name="activatable">False</property>
+                                            <style>
+                                              <class name="property"/>
+                                            </style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="AdwPreferencesGroup" id="change_permissions_enclosed_files_group">
+                                        <child>
+                                          <object class="GtkButton" id="change_permissions_button">
+                                            <property name="label" translatable="yes">Change Permissions for _Enclosed Files…</property>
+                                            <property name="focusable">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use-underline">True</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -752,7 +704,7 @@
                               </object>
                             </child>
                           </object>
-                        </property>
+                        </child>
                       </object>
                     </property>
                   </object>
@@ -768,26 +720,19 @@
                       <object class="AdwHeaderBar"/>
                     </child>
                     <property name="content">
-                      <object class="GtkScrolledWindow">
-                        <property name="hscrollbar-policy">never</property>
-                        <property name="vexpand">true</property>
-                        <property name="child">
-                          <object class="AdwClamp">
-                            <property name="margin-top">18</property>
-                            <property name="margin-bottom">18</property>
-                            <property name="margin-start">18</property>
-                            <property name="margin-end">18</property>
-                            <property name="child">
+                      <object class="AdwPreferencesPage">
+                        <child>
+                          <object class="AdwPreferencesGroup">
+                            <child>
                               <object class="GtkListBox" id="extension_list_box">
                                 <property name="selection-mode">none</property>
-                                <property name="valign">start</property>
                                 <style>
                                   <class name="boxed-list"/>
                                 </style>
                               </object>
-                            </property>
+                            </child>
                           </object>
-                        </property>
+                        </child>
                       </object>
                     </property>
                   </object>
