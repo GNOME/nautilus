@@ -31,6 +31,13 @@
 
 #include <gio/gio.h>
 
+#ifdef GDK_WINDOWING_WAYLAND
+#include <gdk/wayland/gdkwayland.h>
+#endif
+#ifdef GDK_WINDOWING_X11
+#include <gdk/x11/gdkx.h>
+#endif
+
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
 
 static const char *previewer_dbus_name = "org.gnome.NautilusPreviewer" PROFILE;
@@ -43,7 +50,12 @@ static guint subscription_id = 0;
 
 static GCancellable *cancellable = NULL;
 
+static GtkRoot *current_window = NULL; /* weak ref */
+static gchar *exported_window_handle = NULL;
 
+static void real_call_show_file (const gchar *uri,
+                                 const gchar *window_handle,
+                                 gboolean     close_if_already_visible);
 static void create_new_bus (void);
 static void previewer_selection_event (GDBusConnection *connection,
                                        const gchar     *sender_name,
@@ -52,6 +64,61 @@ static void previewer_selection_event (GDBusConnection *connection,
                                        const gchar     *signal_name,
                                        GVariant        *parameters,
                                        gpointer         user_data);
+
+#ifdef GDK_WINDOWING_WAYLAND
+typedef struct
+{
+    gchar *uri;
+    gboolean close_if_already_visible;
+} PreviewExportData;
+
+static void
+preview_export_data_free (gpointer _data)
+{
+    PreviewExportData *data = _data;
+    g_free (data->uri);
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (PreviewExportData, preview_export_data_free)
+
+static void
+wayland_window_handle_exported (GdkToplevel *toplevel,
+                                const char  *wayland_handle_str,
+                                gpointer     user_data)
+{
+    PreviewExportData *data = user_data;
+    g_autofree char *wayland_handle = g_strdup_printf ("wayland:%s", wayland_handle_str);
+
+    real_call_show_file (data->uri, wayland_handle, data->close_if_already_visible);
+}
+#endif
+
+static void
+clear_exported_window_handle (void)
+{
+    if (exported_window_handle == NULL)
+    {
+        return;
+    }
+
+#ifdef GDK_WINDOWING_WAYLAND
+    if (current_window != NULL &&
+        GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (current_window))))
+    {
+        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (current_window));
+        if (GDK_IS_WAYLAND_TOPLEVEL (gdk_surface) &&
+            g_str_has_prefix (exported_window_handle, "wayland:"))
+        {
+            gdk_wayland_toplevel_drop_exported_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
+                                                       exported_window_handle + strlen ("wayland:"));
+        }
+    }
+#endif
+
+    g_free (exported_window_handle);
+    exported_window_handle = NULL;
+}
 
 static void
 on_ping_finished (GObject      *object,
@@ -173,9 +240,65 @@ previewer2_method_ready_cb (GObject      *source,
 
 void
 nautilus_previewer_call_show_file (const gchar *uri,
-                                   const gchar *window_handle,
+                                   GtkRoot     *window,
                                    gboolean     close_if_already_visible)
 {
+    /* Reuse existing handle if called again for the same window. */
+    if (current_window == window &&
+        exported_window_handle != NULL)
+    {
+        real_call_show_file (uri, exported_window_handle, close_if_already_visible);
+        return;
+    }
+
+    /* Otherwise, obtain a new window handle. */
+    clear_exported_window_handle ();
+    g_set_weak_pointer (&current_window, window);
+
+    GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
+#ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        guint xid = (guint) gdk_x11_surface_get_xid (gdk_surface);
+        g_autofree char *window_handle = g_strdup_printf ("x11:%x", xid);
+
+        real_call_show_file (uri, window_handle, close_if_already_visible);
+        return;
+    }
+#endif
+#ifdef GDK_WINDOWING_WAYLAND
+    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        g_autoptr (PreviewExportData) data = g_new0 (PreviewExportData, 1);
+
+        data->uri = g_strdup (uri);
+        data->close_if_already_visible = close_if_already_visible;
+
+        if (gdk_wayland_toplevel_export_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
+                                                wayland_window_handle_exported,
+                                                data,
+                                                preview_export_data_free))
+        {
+            /* Don't let autoptr free data successfully taken by the call. */
+            (void) g_steal_pointer (&data);
+            return;
+        }
+    }
+#endif
+
+    g_warning ("Couldn't export handle, unsupported windowing system");
+
+    /* Let's use a fallback, so at least a preview will be displayed */
+    real_call_show_file (uri, "x11:0", close_if_already_visible);
+}
+
+static void
+real_call_show_file (const gchar *uri,
+                     const gchar *window_handle,
+                     gboolean     close_if_already_visible)
+{
+    g_set_str (&exported_window_handle, window_handle);
+
     if (!ensure_previewer_proxy ())
     {
         return;
@@ -270,6 +393,8 @@ nautilus_previewer_teardown (GDBusConnection *connection)
     g_cancellable_cancel (cancellable);
     g_clear_object (&cancellable);
     g_clear_object (&previewer_proxy);
+    clear_exported_window_handle ();
+    g_clear_weak_pointer (&current_window);
 }
 
 gboolean

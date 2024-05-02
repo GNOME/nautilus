@@ -38,10 +38,6 @@
 #include <gdk/wayland/gdkwayland.h>
 #endif
 
-#ifdef GDK_WINDOWING_X11
-#include <gdk/x11/gdkx.h>
-#endif
-
 #include "gtk/nautilusgtkplacessidebarprivate.h"
 
 #include "nautilus-application.h"
@@ -125,9 +121,6 @@ struct _NautilusWindow
 
     /* focus widget before the location bar has been shown temporarily */
     GtkWidget *last_focus_widget;
-
-    /* Handle when exported */
-    gchar *export_handle;
 
     guint sidebar_width_handler_id;
     gulong bookmarks_id;
@@ -1013,20 +1006,6 @@ action_toggle_sidebar (GSimpleAction *action,
     adw_overlay_split_view_set_show_sidebar (ADW_OVERLAY_SPLIT_VIEW (window->split_view), !revealed);
 }
 
-
-static guint
-get_window_xid (NautilusWindow *window)
-{
-#ifdef GDK_WINDOWING_X11
-    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
-        return (guint) gdk_x11_surface_get_xid (gdk_surface);
-    }
-#endif
-    return 0;
-}
-
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
@@ -1836,8 +1815,6 @@ nautilus_window_dispose (GObject *object)
         g_clear_signal_handler (&window->starred_id, nautilus_tag_manager_get ());
     }
 
-    nautilus_window_unexport_handle (window);
-
     gtk_widget_dispose_template (GTK_WIDGET (window), NAUTILUS_TYPE_WINDOW);
 
     G_OBJECT_CLASS (nautilus_window_parent_class)->dispose (object);
@@ -2009,101 +1986,6 @@ nautilus_window_key_bubble (GtkEventControllerKey *controller,
     }
 
     return GDK_EVENT_PROPAGATE;
-}
-
-#ifdef GDK_WINDOWING_WAYLAND
-typedef struct
-{
-    NautilusWindow *window;
-    NautilusWindowHandleExported callback;
-    gpointer user_data;
-} WaylandWindowHandleExportedData;
-
-static void
-wayland_window_handle_exported (GdkToplevel *toplevel,
-                                const char  *wayland_handle_str,
-                                gpointer     user_data)
-{
-    WaylandWindowHandleExportedData *data = user_data;
-
-    data->window->export_handle = g_strdup_printf ("wayland:%s", wayland_handle_str);
-    data->callback (data->window, data->window->export_handle, data->user_data);
-}
-#endif
-
-gboolean
-nautilus_window_export_handle (NautilusWindow               *window,
-                               NautilusWindowHandleExported  callback,
-                               gpointer                      user_data)
-{
-    if (window->export_handle != NULL)
-    {
-        callback (window, window->export_handle, user_data);
-        return TRUE;
-    }
-
-#ifdef GDK_WINDOWING_X11
-    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        window->export_handle = g_strdup_printf ("x11:%x", get_window_xid (window));
-        callback (window, window->export_handle, user_data);
-
-        return TRUE;
-    }
-#endif
-#ifdef GDK_WINDOWING_WAYLAND
-    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
-        WaylandWindowHandleExportedData *data;
-
-        data = g_new0 (WaylandWindowHandleExportedData, 1);
-        data->window = window;
-        data->callback = callback;
-        data->user_data = user_data;
-
-        if (!gdk_wayland_toplevel_export_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
-                                                 wayland_window_handle_exported,
-                                                 data,
-                                                 g_free))
-        {
-            g_free (data);
-            return FALSE;
-        }
-        else
-        {
-            return TRUE;
-        }
-    }
-#endif
-
-    g_warning ("Couldn't export handle, unsupported windowing system");
-
-    return FALSE;
-}
-
-void
-nautilus_window_unexport_handle (NautilusWindow *window)
-{
-    if (window->export_handle == NULL)
-    {
-        return;
-    }
-
-#ifdef GDK_WINDOWING_WAYLAND
-    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
-        if (GDK_IS_WAYLAND_TOPLEVEL (gdk_surface) &&
-            g_str_has_prefix (window->export_handle, "wayland:"))
-        {
-            gdk_wayland_toplevel_drop_exported_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
-                                                       window->export_handle + strlen ("wayland:"));
-        }
-    }
-#endif
-
-    g_clear_pointer (&window->export_handle, g_free);
 }
 
 /**
