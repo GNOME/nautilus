@@ -145,8 +145,7 @@ struct _NautilusPropertiesWindow
 
     GtkWidget *unknown_permissions_page;
 
-    GtkWidget *bottom_prompt_seperator;
-    GtkWidget *not_the_owner_label;
+    AdwBanner *owner_permission_banner;
 
     AdwComboRow *owner_row;
     AdwComboRow *owner_access_row;
@@ -3533,8 +3532,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 
         if (!all_can_set_permissions (self->files))
         {
-            gtk_widget_set_visible (self->not_the_owner_label, TRUE);
-            gtk_widget_set_visible (self->bottom_prompt_seperator, TRUE);
+            adw_banner_set_revealed (self->owner_permission_banner, TRUE);
         }
 
         gtk_stack_set_visible_child_name (GTK_STACK (self->permissions_stack), "permissions-box");
@@ -4151,7 +4149,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_spinner);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_usage_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, disk_space_level_bar);
@@ -4174,7 +4171,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_models_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_permission_banner);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, unknown_permissions_page);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_row);
