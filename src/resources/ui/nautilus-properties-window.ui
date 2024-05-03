@@ -690,11 +690,10 @@
                                     <child>
                                       <object class="AdwPreferencesGroup" id="change_permissions_enclosed_files_group">
                                         <child>
-                                          <object class="GtkButton" id="change_permissions_button">
-                                            <property name="label" translatable="yes">Change Permissions for _Enclosed Files…</property>
-                                            <property name="focusable">True</property>
-                                            <property name="receives_default">True</property>
+                                          <object class="AdwButtonRow">
+                                            <property name="title" translatable="yes">Change Permissions for _Enclosed Files…</property>
                                             <property name="use-underline">True</property>
+                                            <signal name="activated" handler="on_change_permissions_clicked" object="NautilusPropertiesWindow" swapped="yes"/>
                                           </object>
                                         </child>
                                       </object>

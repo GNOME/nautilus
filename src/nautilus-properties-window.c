@@ -167,7 +167,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *security_context_row;
 
     GtkWidget *change_permissions_enclosed_files_group;
-    GtkWidget *change_permissions_button;
 
     GroupChange *group_change;
     OwnerChange *owner_change;
@@ -3448,8 +3447,7 @@ on_change_permissions_close (GtkWidget *widget,
 }
 
 static void
-on_change_permissions_clicked (GtkWidget                *button,
-                               NautilusPropertiesWindow *self)
+on_change_permissions_clicked (NautilusPropertiesWindow *self)
 {
     GtkWidget *dialog;
     GtkDropDown *drop_down;
@@ -3546,9 +3544,6 @@ setup_permissions_page (NautilusPropertiesWindow *self)
         if (self->has_recursive_apply)
         {
             gtk_widget_set_visible (self->change_permissions_enclosed_files_group, TRUE);
-            g_signal_connect (self->change_permissions_button, "clicked",
-                              G_CALLBACK (on_change_permissions_clicked),
-                              self);
         }
     }
     else
@@ -4188,7 +4183,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_group);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_enclosed_files_group);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_list_box);
 
     gtk_widget_class_bind_template_callback (widget_class, star_clicked);
@@ -4198,6 +4192,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, navigate_permissions_page);
     gtk_widget_class_bind_template_callback (widget_class, reset_icon);
     gtk_widget_class_bind_template_callback (widget_class, select_image_button_callback);
+    gtk_widget_class_bind_template_callback (widget_class, on_change_permissions_clicked);
 }
 
 static void
