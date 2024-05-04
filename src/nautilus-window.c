@@ -574,8 +574,7 @@ tab_view_notify_selected_page_cb (AdwTabView     *tab_view,
     slot = NAUTILUS_WINDOW_SLOT (widget);
     g_assert (slot != NULL);
 
-    nautilus_window_set_active_slot (nautilus_window_slot_get_window (slot),
-                                     slot);
+    nautilus_window_set_active_slot (window, slot);
 }
 
 static void
@@ -603,7 +602,7 @@ nautilus_window_create_and_init_slot (NautilusWindow    *window,
 {
     NautilusWindowSlot *slot;
 
-    slot = nautilus_window_slot_new (window);
+    slot = nautilus_window_slot_new ();
     nautilus_window_initialize_slot (window, slot, flags);
 
     return slot;
@@ -1484,7 +1483,6 @@ tab_view_page_attached_cb (AdwTabView     *tab_view,
 {
     NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
-    nautilus_window_slot_set_window (slot, window);
     window->slots = g_list_append (window->slots, slot);
     g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
 }
@@ -1893,9 +1891,9 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
 
     g_assert (NAUTILUS_IS_WINDOW (window));
 
-    if (new_slot)
+    if (new_slot != NULL)
     {
-        g_assert ((window == nautilus_window_slot_get_window (new_slot)));
+        g_assert (gtk_widget_is_ancestor (GTK_WIDGET (new_slot), GTK_WIDGET (window)));
     }
 
     old_slot = nautilus_window_get_active_slot (window);
@@ -2062,7 +2060,7 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
     NautilusNavigationState *state;
 
     window_slot = nautilus_window_get_active_slot (window);
-    new_slot = nautilus_window_slot_new (window);
+    new_slot = nautilus_window_slot_new ();
     state = nautilus_window_slot_get_navigation_state (window_slot);
 
     /* Manually fix up the back / forward lists and location.

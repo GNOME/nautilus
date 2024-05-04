@@ -316,6 +316,13 @@ get_window_slot_for_location (NautilusApplication *self,
     return NULL;
 }
 
+static NautilusWindow *
+get_nautilus_window_containing_slot (NautilusWindowSlot *slot)
+{
+    return NAUTILUS_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (slot),
+                                                     NAUTILUS_TYPE_WINDOW));
+}
+
 void
 nautilus_application_open_location_full (NautilusApplication *self,
                                          GFile               *location,
@@ -390,7 +397,7 @@ real_open_location_full (NautilusApplication *self,
      * slot we target at */
     if (target_slot != NULL)
     {
-        target_window = nautilus_window_slot_get_window (target_slot);
+        target_window = get_nautilus_window_containing_slot (target_slot);
     }
 
     g_assert (!((flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW) != 0 &&
@@ -413,7 +420,7 @@ real_open_location_full (NautilusApplication *self,
             }
             else
             {
-                target_window = nautilus_window_slot_get_window (target_slot);
+                target_window = get_nautilus_window_containing_slot (target_slot);
             }
         }
     }
@@ -482,7 +489,7 @@ nautilus_application_open_location (NautilusApplication *self,
     }
     else
     {
-        window = nautilus_window_slot_get_window (slot);
+        window = get_nautilus_window_containing_slot (slot);
     }
 
     nautilus_application_open_location_full (self, location, 0, sel_list, window, slot);

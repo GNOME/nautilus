@@ -51,7 +51,6 @@
 enum
 {
     PROP_ACTIVE = 1,
-    PROP_WINDOW,
     PROP_ICON_NAME,
     PROP_TOOLBAR_MENU_SECTIONS,
     PROP_EXTENSIONS_BACKGROUND_MENU,
@@ -70,8 +69,6 @@ enum
 struct _NautilusWindowSlot
 {
     AdwBin parent_instance;
-
-    NautilusWindow *window;
 
     gboolean active : 1;
     guint loading : 1;
@@ -436,7 +433,7 @@ hide_query_editor (NautilusWindowSlot *self)
 
     if (nautilus_window_slot_get_active (self))
     {
-        gtk_widget_grab_focus (GTK_WIDGET (self->window));
+        gtk_widget_grab_focus (GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (self))));
     }
 }
 
@@ -656,12 +653,6 @@ nautilus_window_slot_set_property (GObject      *object,
 
     switch (property_id)
     {
-        case PROP_WINDOW:
-        {
-            nautilus_window_slot_set_window (self, g_value_get_object (value));
-        }
-        break;
-
         case PROP_LOCATION:
         {
             nautilus_window_slot_set_location (self, g_value_get_object (value));
@@ -744,12 +735,6 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_ACTIVE:
         {
             g_value_set_boolean (value, nautilus_window_slot_get_active (self));
-        }
-        break;
-
-        case PROP_WINDOW:
-        {
-            g_value_set_object (value, self->window);
         }
         break;
 
@@ -1599,10 +1584,10 @@ mount_not_mounted_callback (GObject      *source_object,
 }
 
 static void
-nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
-                                                     NautilusFile   *file,
-                                                     GFile          *location,
-                                                     GError         *error)
+nautilus_window_slot_display_view_selection_failure (GtkWindow    *window,
+                                                     NautilusFile *file,
+                                                     GFile        *location,
+                                                     GError       *error)
 {
     char *error_message;
     char *detail_message;
@@ -1710,7 +1695,7 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
         detail_message = g_strdup_printf (_("Unhandled error message: %s"), error->message);
     }
 
-    show_dialog (error_message, detail_message, GTK_WINDOW (window), GTK_MESSAGE_ERROR);
+    show_dialog (error_message, detail_message, window, GTK_MESSAGE_ERROR);
 
 done:
     g_free (error_message);
@@ -1738,14 +1723,12 @@ static gboolean
 handle_mount_if_needed (NautilusWindowSlot *self,
                         NautilusFile       *file)
 {
-    NautilusWindow *window;
     GMountOperation *mount_op;
     MountNotMountedData *data;
     GFile *location;
     GError *error = NULL;
     gboolean needs_mount_handling = FALSE;
 
-    window = nautilus_window_slot_get_window (self);
     if (self->mount_error)
     {
         error = g_error_copy (self->mount_error);
@@ -1760,7 +1743,7 @@ handle_mount_if_needed (NautilusWindowSlot *self,
     {
         self->tried_mount = TRUE;
 
-        mount_op = gtk_mount_operation_new (GTK_WINDOW (window));
+        mount_op = gtk_mount_operation_new (GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))));
         g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
         location = nautilus_file_get_location (file);
         data = g_new0 (MountNotMountedData, 1);
@@ -1823,13 +1806,11 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
                                            gpointer      callback_data)
 {
     GError *error = NULL;
-    NautilusWindow *window;
     NautilusWindowSlot *self;
     NautilusView *view;
     GFile *location;
 
     self = callback_data;
-    window = nautilus_window_slot_get_window (self);
 
     g_assert (self->determine_view_file == file);
     self->determine_view_file = NULL;
@@ -1864,6 +1845,8 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
     }
     else
     {
+        GtkWindow *window = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
+
         nautilus_window_slot_display_view_selection_failure (window,
                                                              file,
                                                              location,
@@ -2862,13 +2845,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               "The selection of the current view of the slot. Proxy property from the view",
                               G_PARAM_READWRITE);
 
-    properties[PROP_WINDOW] =
-        g_param_spec_object ("window",
-                             "The NautilusWindow",
-                             "The NautilusWindow this slot is part of",
-                             NAUTILUS_TYPE_WINDOW,
-                             G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
-
     properties[PROP_ICON_NAME] =
         g_param_spec_string ("icon-name",
                              "Icon that represents the slot",
@@ -2955,28 +2931,6 @@ nautilus_window_slot_get_location_uri (NautilusWindowSlot *self)
         return g_file_get_uri (self->location);
     }
     return NULL;
-}
-
-NautilusWindow *
-nautilus_window_slot_get_window (NautilusWindowSlot *self)
-{
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-
-    return self->window;
-}
-
-void
-nautilus_window_slot_set_window (NautilusWindowSlot *self,
-                                 NautilusWindow     *window)
-{
-    g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
-    g_assert (NAUTILUS_IS_WINDOW (window));
-
-    if (self->window != window)
-    {
-        self->window = window;
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW]);
-    }
 }
 
 /* nautilus_window_slot_update_title:
@@ -3103,10 +3057,9 @@ nautilus_window_slot_get_forward_history (NautilusWindowSlot *self)
 }
 
 NautilusWindowSlot *
-nautilus_window_slot_new (NautilusWindow *window)
+nautilus_window_slot_new (void)
 {
     return g_object_new (NAUTILUS_TYPE_WINDOW_SLOT,
-                         "window", window,
                          NULL);
 }
 
@@ -3212,18 +3165,16 @@ void
 nautilus_window_slot_set_active (NautilusWindowSlot *self,
                                  gboolean            active)
 {
-    NautilusWindow *window;
-
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (self));
 
     if (self->active != active)
     {
+        GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (self));
+
         self->active = active;
 
         if (active)
         {
-            window = self->window;
-
             /* sync window to new slot */
             nautilus_window_slot_sync_actions (self);
 
@@ -3231,8 +3182,6 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
         }
         else
         {
-            window = nautilus_window_slot_get_window (self);
-
             gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", NULL);
         }
 
