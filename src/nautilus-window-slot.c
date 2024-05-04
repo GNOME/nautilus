@@ -1827,7 +1827,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
     NautilusWindowSlot *self;
     NautilusView *view;
     GFile *location;
-    NautilusApplication *app;
 
     self = callback_data;
     window = nautilus_window_slot_get_window (self);
@@ -1870,74 +1869,42 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
                                                              location,
                                                              error);
 
-        if (!gtk_widget_get_visible (GTK_WIDGET (window)))
+        GFile *slot_location = nautilus_window_slot_get_location (self);
+
+        if (slot_location == NULL)
         {
-            /* Destroy never-had-a-chance-to-be-seen window. This case
-             * happens when a new window cannot display its initial URI.
-             */
-            /* if this is the only window, we don't want to quit, so we redirect it to home */
+            /* This happens when a new slot cannot display its initial URI.
+             * As usual, fallback to $HOME.
+             *
+             * But guard against the case that $HOME cannot be displayed either,
+             * otherwise we would enter an infinite loop. */
 
-            app = NAUTILUS_APPLICATION (g_application_get_default ());
-
-            if (g_list_length (nautilus_application_get_windows (app)) == 1)
+            if (!nautilus_is_home_directory (location))
             {
-                /* the user could have typed in a home directory that doesn't exist,
-                 *  in which case going home would cause an infinite loop, so we
-                 *  better test for that */
-
-                if (!nautilus_is_root_directory (location))
-                {
-                    if (!nautilus_is_home_directory (location))
-                    {
-                        nautilus_window_slot_go_home (self, FALSE);
-                    }
-                    else
-                    {
-                        GFile *root;
-
-                        root = g_file_new_for_path ("/");
-                        /* the last fallback is to go to a known place that can't be deleted! */
-                        nautilus_window_slot_open_location_full (self, location, 0, NULL);
-                        g_object_unref (root);
-                    }
-                }
-                else
-                {
-                    gtk_window_destroy (GTK_WINDOW (window));
-                }
+                nautilus_window_slot_go_home (self, FALSE);
             }
             else
             {
-                /* Since this is a window, destroying it will also unref it. */
-                gtk_window_destroy (GTK_WINDOW (window));
+                /* the last fallback is to go to a known place that can't be deleted! */
+                g_autoptr (GFile) root = g_file_new_for_path ("/");
+                nautilus_window_slot_open_location_full (self, root, 0, NULL);
             }
         }
         else
         {
-            GFile *slot_location;
-
-            /* Clean up state of already-showing window */
+            /* Clean up state of slot already showing a previous location */
             end_location_change (self);
-            slot_location = nautilus_window_slot_get_location (self);
 
-            if (slot_location == NULL)
-            {
-                /* Location is NULL if we open a broken bookmark in a new window */
-                nautilus_window_slot_go_home (self, 0);
-            }
-            else
-            {
-                /* We disconnected this, so we need to re-connect it.
-                 * Although not conceptually correct, a force reload is a simple
-                 * way to do that. In the future we may want to have an error
-                 * status page instead and only reload on explicit request. */
-                nautilus_window_slot_force_reload (self);
+            /* We disconnected this, so we need to re-connect it.
+             * Although not conceptually correct, a force reload is a simple
+             * way to do that. In the future we may want to have an error
+             * status page instead and only reload on explicit request. */
+            nautilus_window_slot_force_reload (self);
 
-                /* Leave the location bar showing the bad location that the user
-                 * typed (or maybe achieved by dragging or something). Many times
-                 * the mistake will just be an easily-correctable typo.
-                 */
-            }
+            /* Leave the location bar showing the bad location that the user
+             * typed (or maybe achieved by dragging or something). Many times
+             * the mistake will just be an easily-correctable typo.
+             */
         }
     }
 
