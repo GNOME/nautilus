@@ -36,7 +36,7 @@ struct _NautilusBatchRenameDialog
     GtkDialog parent;
 
     GtkWidget *grid;
-    NautilusWindow *window;
+    GtkRoot *window;
 
     GtkWidget *cancel_button;
     GtkWidget *original_name_listbox;
@@ -1824,7 +1824,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
 GtkWidget *
 nautilus_batch_rename_dialog_new (GList             *selection,
                                   NautilusDirectory *directory,
-                                  NautilusWindow    *window)
+                                  GtkRoot           *window)
 {
     NautilusBatchRenameDialog *dialog;
     GString *dialog_title;

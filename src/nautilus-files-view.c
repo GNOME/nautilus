@@ -1227,16 +1227,6 @@ create_templates_parameters_free (CreateTemplateParameters *parameters)
     g_free (parameters);
 }
 
-static NautilusWindow *
-nautilus_files_view_get_window (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    return nautilus_window_slot_get_window (priv->slot);
-}
-
 /* Returns the GtkWindow that this directory view occupies, or NULL
  * if at the moment this directory view is not in a GtkWindow or the
  * GtkWindow cannot be determined. Primarily used for parenting dialogs.
@@ -1834,12 +1824,10 @@ select_pattern (NautilusFilesView *view)
 {
     g_autoptr (GtkBuilder) builder = NULL;
     GtkWidget *dialog;
-    NautilusWindow *window;
     GtkWidget *example;
     GtkWidget *entry, *select_button;
     char *example_pattern;
 
-    window = nautilus_files_view_get_window (view);
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-select-items.ui");
     dialog = GTK_WIDGET (gtk_builder_get_object (builder, "select_items_dialog"));
 
@@ -1849,7 +1837,8 @@ select_pattern (NautilusFilesView *view)
                                        "*.png, file\?\?.txt, pict*.\?\?\?");
     gtk_label_set_markup (GTK_LABEL (example), example_pattern);
     g_free (example_pattern);
-    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
+    gtk_window_set_transient_for (GTK_WINDOW (dialog),
+                                  GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))));
 
     entry = GTK_WIDGET (gtk_builder_get_object (builder, "pattern_entry"));
     select_button = GTK_WIDGET (gtk_builder_get_object (builder, "select_button"));
@@ -3163,14 +3152,14 @@ slot_active_changed (NautilusWindowSlot *slot,
 
         schedule_update_context_menus (view);
 
-        gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+        gtk_widget_insert_action_group (GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (view))),
                                         "view",
                                         G_ACTION_GROUP (priv->view_action_group));
     }
     else
     {
         remove_update_context_menus_timeout_callback (view);
-        gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+        gtk_widget_insert_action_group (GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (view))),
                                         "view",
                                         NULL);
     }
@@ -6078,7 +6067,7 @@ copy_or_move_selection (NautilusFilesView *view,
     gtk_file_dialog_set_initial_folder (dialog, location);
 
     gtk_file_dialog_select_folder (dialog,
-                                   GTK_WINDOW (nautilus_files_view_get_window (view)),
+                                   GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))),
                                    NULL,
                                    (GAsyncReadyCallback) on_destination_dialog_response,
                                    copy_data);
@@ -6230,9 +6219,8 @@ real_action_rename (NautilusFilesView *view)
         /* If there is more than one file selected, invoke a batch renamer */
         if (selection->next != NULL)
         {
-            NautilusWindow *window;
+            GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (view));
 
-            window = nautilus_files_view_get_window (view);
             gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
 
             dialog = nautilus_batch_rename_dialog_new (selection,
@@ -6465,7 +6453,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
     data->files = nautilus_file_list_copy (files);
 
     gtk_file_dialog_select_folder (dialog,
-                                   GTK_WINDOW (nautilus_files_view_get_window (view)),
+                                   GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))),
                                    NULL,
                                    (GAsyncReadyCallback) on_extract_destination_dialog_response,
                                    data);
@@ -6809,7 +6797,7 @@ file_mount_callback (NautilusFile *file,
                                                  nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (self)),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6836,7 +6824,7 @@ file_unmount_callback (NautilusFile *file,
                                                  nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (self)),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6859,7 +6847,7 @@ file_eject_callback (NautilusFile *file,
                                                  nautilus_file_get_display_name (file));
         show_dialog (text,
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (self)),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6879,7 +6867,7 @@ file_stop_callback (NautilusFile *file,
     {
         show_dialog (_("Unable to stop drive"),
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (self)),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -6995,7 +6983,7 @@ file_start_callback (NautilusFile *file,
         g_autofree char *text = g_strdup_printf (_("Unable to start “%s”"), name);
         show_dialog (text,
                      error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))),
                      GTK_MESSAGE_ERROR);
     }
 }
@@ -9332,7 +9320,7 @@ on_parent_changed (GObject    *object,
         if (nautilus_window_slot_get_active (priv->slot))
         {
             priv->active = TRUE;
-            gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+            gtk_widget_insert_action_group (GTK_WIDGET (gtk_widget_get_root (widget)),
                                             "view",
                                             G_ACTION_GROUP (priv->view_action_group));
         }
@@ -9346,7 +9334,7 @@ on_parent_changed (GObject    *object,
          */
         if (priv->active)
         {
-            gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+            gtk_widget_insert_action_group (GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (priv->slot))),
                                             "view",
                                             NULL);
         }

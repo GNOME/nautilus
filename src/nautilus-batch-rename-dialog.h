@@ -223,7 +223,7 @@ G_DECLARE_FINAL_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, N
 
 GtkWidget*      nautilus_batch_rename_dialog_new                      (GList                     *selection,
                                                                        NautilusDirectory         *directory,
-                                                                       NautilusWindow            *window);
+                                                                       GtkRoot                   *window);
 
 void            nautilus_batch_rename_dialog_query_finished           (NautilusBatchRenameDialog *dialog,
                                                                        GHashTable                *hash_table,
