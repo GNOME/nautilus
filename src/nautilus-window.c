@@ -156,10 +156,9 @@ static GParamSpec *properties[N_PROPS];
 
 static const GtkPadActionEntry pad_actions[] =
 {
-    { GTK_PAD_ACTION_BUTTON, 0, -1, N_("Parent folder"), "up" },
-    { GTK_PAD_ACTION_BUTTON, 1, -1, N_("Home"), "go-home" },
-    { GTK_PAD_ACTION_BUTTON, 2, -1, N_("New tab"), "new-tab" },
-    { GTK_PAD_ACTION_BUTTON, 3, -1, N_("Close current view"), "close-current-view" },
+    { GTK_PAD_ACTION_BUTTON, 0, -1, N_("Home"), "go-home" },
+    { GTK_PAD_ACTION_BUTTON, 1, -1, N_("New tab"), "new-tab" },
+    { GTK_PAD_ACTION_BUTTON, 2, -1, N_("Close current view"), "close-current-view" },
     /* Button number sequence continues in window-slot.c */
 };
 
@@ -230,32 +229,6 @@ action_go_starred (GSimpleAction *action,
     starred = g_file_new_for_uri (SCHEME_STARRED ":///");
 
     nautilus_window_open_location_full (window, starred, 0, NULL, NULL);
-}
-
-static void
-action_up (GSimpleAction *action,
-           GVariant      *state,
-           gpointer       user_data)
-{
-    NautilusWindowSlot *slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
-
-    if (slot != NULL)
-    {
-        nautilus_window_slot_go_up (slot);
-    }
-}
-
-static void
-action_down (GSimpleAction *action,
-             GVariant      *state,
-             gpointer       user_data)
-{
-    NautilusWindowSlot *slot = nautilus_window_get_active_slot (NAUTILUS_WINDOW (user_data));
-
-    if (slot != NULL)
-    {
-        nautilus_window_slot_go_down (slot);
-    }
 }
 
 static void
@@ -1530,8 +1503,6 @@ extra_drag_drop_cb (AdwTabBar    *self,
 
 const GActionEntry win_entries[] =
 {
-    { .name = "up", .activate = action_up },
-    { .name = "down", .activate = action_down },
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
     { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
     { .name = "new-tab", .activate = action_new_tab },
@@ -1580,8 +1551,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
     /* Only accessible by shorcuts */
     nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
-    nautilus_application_set_accelerator (app, "win.up", "<alt>Up");
-    nautilus_application_set_accelerator (app, "win.down", "<alt>Down");
     nautilus_application_set_accelerators (app, "win.go-home", ACCELS ("<alt>Home", "HomePage", "Start"));
     nautilus_application_set_accelerator (app, "win.go-starred", "Favorites");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");

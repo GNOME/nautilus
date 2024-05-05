@@ -150,6 +150,7 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static const GtkPadActionEntry pad_actions[] =
 {
+    { GTK_PAD_ACTION_BUTTON, 3, -1, N_("Parent folder"), "up" },
     { GTK_PAD_ACTION_BUTTON, 4, -1, N_("Back"), "back" },
     { GTK_PAD_ACTION_BUTTON, 5, -1, N_("Forward"), "forward" },
 };
@@ -170,6 +171,8 @@ static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
 static void nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                                   NautilusFile       *file);
 static void update_search_information (NautilusWindowSlot *self);
+static void nautilus_window_slot_go_up (NautilusWindowSlot *self);
+static void nautilus_window_slot_go_down (NautilusWindowSlot *self);
 
 void
 free_navigation_state (gpointer data)
@@ -943,6 +946,26 @@ action_forward_n (GSimpleAction *action,
 }
 
 static void
+action_up (GSimpleAction *action,
+           GVariant      *state,
+           gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_go_up (self);
+}
+
+static void
+action_down (GSimpleAction *action,
+             GVariant      *state,
+             gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_go_down (self);
+}
+
+static void
 action_focus_search (GSimpleAction *action,
                      GVariant      *state,
                      gpointer       user_data)
@@ -1132,6 +1155,8 @@ const GActionEntry slot_entries[] =
     { .name = "forward", .activate = action_forward },
     { .name = "back-n", .activate = action_back_n, .parameter_type = "u" },
     { .name = "forward-n", .activate = action_forward_n, .parameter_type = "u" },
+    { .name = "up", .activate = action_up },
+    { .name = "down", .activate = action_down },
     {
         .name = "files-view-mode", .parameter_type = "u",
         .state = "uint32 " G_STRINGIFY (NAUTILUS_VIEW_INVALID_ID),
@@ -1259,6 +1284,8 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.search-global", "<control><shift>f");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.reload", "F5|<ctrl>r|Refresh|Reload");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.stop", "Stop");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.up", "<alt>Up");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.down", "<alt>Down");
 
 #undef ADD_SHORTCUT_FOR_ACTION
 
@@ -3265,7 +3292,7 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
     return self->query_editor;
 }
 
-void
+static void
 nautilus_window_slot_go_up (NautilusWindowSlot *self)
 {
     GFile *location = nautilus_window_slot_get_location (self);
@@ -3287,7 +3314,7 @@ nautilus_window_slot_go_up (NautilusWindowSlot *self)
     }
 }
 
-void
+static void
 nautilus_window_slot_go_down (NautilusWindowSlot *self)
 {
     g_autolist (GFile) down_list = g_steal_pointer (&self->down_list);
