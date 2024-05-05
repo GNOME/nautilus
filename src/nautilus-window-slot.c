@@ -80,6 +80,7 @@ struct _NautilusWindowSlot
 
     /* Slot actions */
     GActionGroup *slot_action_group;
+    GtkShortcutController *shortcuts;
 
     /* Current location. */
     GFile *location;
@@ -1129,16 +1130,6 @@ recursive_search_preferences_changed (GSettings *settings,
 static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
-    GApplication *app;
-    const gchar *search_visible_accels[] =
-    {
-        "<control>f",
-        "Search",
-        NULL
-    };
-
-    app = g_application_get_default ();
-
     g_signal_connect_object (nautilus_preferences,
                              "changed::recursive-search",
                              G_CALLBACK (recursive_search_preferences_changed),
@@ -1153,20 +1144,34 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                     "slot",
                                     G_ACTION_GROUP (self->slot_action_group));
 
-#define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
+    self->shortcuts = GTK_SHORTCUT_CONTROLLER (gtk_shortcut_controller_new ());
 
-    nautilus_application_set_accelerator (app,
-                                          "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_LIST_ID) ")",
-                                          "<control>1");
-    nautilus_application_set_accelerator (app,
-                                          "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_GRID_ID) ")",
-                                          "<control>2");
-    nautilus_application_set_accelerators (app, "slot.focus-search", search_visible_accels);
-    nautilus_application_set_accelerator (app, "slot.search-global", "<control><shift>f");
-    nautilus_application_set_accelerators (app, "slot.reload", ACCELS ("F5", "<ctrl>r", "Refresh", "Reload"));
-    nautilus_application_set_accelerator (app, "slot.stop", "Stop");
+    gtk_shortcut_controller_set_scope (self->shortcuts, GTK_SHORTCUT_SCOPE_MANAGED);
+    gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (self->shortcuts));
 
-#undef ACCELS
+    g_autoptr (GtkShortcutAction) view_mode_action = gtk_named_action_new ("slot.files-view-mode");
+    GtkShortcut *shortcut;
+
+    shortcut = gtk_shortcut_new_with_arguments (gtk_shortcut_trigger_parse_string ("<control>1"),
+                                                g_object_ref (view_mode_action),
+                                                "u", NAUTILUS_VIEW_LIST_ID);
+    gtk_shortcut_controller_add_shortcut (self->shortcuts, shortcut);
+    shortcut = gtk_shortcut_new_with_arguments (gtk_shortcut_trigger_parse_string ("<control>2"),
+                                                g_object_ref (view_mode_action),
+                                                "u", NAUTILUS_VIEW_GRID_ID);
+    gtk_shortcut_controller_add_shortcut (self->shortcuts, shortcut);
+
+#define ADD_SHORTCUT_FOR_ACTION(controller, action, trigger) \
+        (gtk_shortcut_controller_add_shortcut ((controller), \
+                                               gtk_shortcut_new (gtk_shortcut_trigger_parse_string ((trigger)), \
+                                                                 gtk_named_action_new ((action)))))
+
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.focus-search", "<control>f|Search");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.search-global", "<control><shift>f");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.reload", "F5|<ctrl>r|Refresh|Reload");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.stop", "Stop");
+
+#undef ADD_SHORTCUT_FOR_ACTION
 
     self->fd_holder = nautilus_fd_holder_new ();
     self->view_mode_before_network = NAUTILUS_VIEW_INVALID_ID;
