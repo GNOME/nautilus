@@ -148,6 +148,12 @@ G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
+static const GtkPadActionEntry pad_actions[] =
+{
+    { GTK_PAD_ACTION_BUTTON, 4, -1, N_("Back"), "back" },
+    { GTK_PAD_ACTION_BUTTON, 5, -1, N_("Forward"), "forward" },
+};
+
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
 static void change_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self);
@@ -876,6 +882,67 @@ nautilus_window_slot_constructed (GObject *object)
 }
 
 static void
+update_back_forward_actions (NautilusWindowSlot *self)
+{
+    GAction *action;
+    gboolean enabled;
+
+    enabled = (nautilus_window_slot_get_back_history (self) != NULL &&
+               !nautilus_window_slot_get_search_global (self));
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "back");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "back-n");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+
+    enabled = (nautilus_window_slot_get_forward_history (self) != NULL &&
+               !nautilus_window_slot_get_search_global (self));
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "forward");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+    action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group), "forward-n");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+}
+
+static void
+action_back (GSimpleAction *action,
+             GVariant      *state,
+             gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_back_or_forward (self, TRUE, 0);
+}
+
+static void
+action_forward (GSimpleAction *action,
+                GVariant      *state,
+                gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_back_or_forward (self, FALSE, 0);
+}
+
+static void
+action_back_n (GSimpleAction *action,
+               GVariant      *parameter,
+               gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_back_or_forward (self, TRUE, g_variant_get_uint32 (parameter));
+}
+
+static void
+action_forward_n (GSimpleAction *action,
+                  GVariant      *parameter,
+                  gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_window_slot_back_or_forward (self, FALSE, g_variant_get_uint32 (parameter));
+}
+
+static void
 action_focus_search (GSimpleAction *action,
                      GVariant      *state,
                      gpointer       user_data)
@@ -969,6 +1036,8 @@ action_search_global (GSimpleAction *action,
         nautilus_window_slot_set_search_visible (self, search_global);
         gtk_widget_set_visible (GTK_WIDGET (self->banner), !search_global);
 
+        update_back_forward_actions (self);
+
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCH_GLOBAL]);
     }
 }
@@ -1059,6 +1128,10 @@ action_stop (GSimpleAction *action,
 
 const GActionEntry slot_entries[] =
 {
+    { .name = "back", .activate = action_back },
+    { .name = "forward", .activate = action_forward },
+    { .name = "back-n", .activate = action_back_n, .parameter_type = "u" },
+    { .name = "forward-n", .activate = action_forward_n, .parameter_type = "u" },
     {
         .name = "files-view-mode", .parameter_type = "u",
         .state = "uint32 " G_STRINGIFY (NAUTILUS_VIEW_INVALID_ID),
@@ -1128,6 +1201,22 @@ recursive_search_preferences_changed (GSettings *settings,
 }
 
 static void
+set_back_forward_accelerators (NautilusWindowSlot *self)
+{
+    gboolean ltr = (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_LTR);
+
+#define ADD_SHORTCUT_FOR_ACTION(controller, action, trigger) \
+        (gtk_shortcut_controller_add_shortcut ((controller), \
+                                               gtk_shortcut_new (gtk_shortcut_trigger_parse_string ((trigger)), \
+                                                                 gtk_named_action_new ((action)))))
+
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.back", ltr ? "<alt>Left|Back" : "<alt>Right|Back");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.forward", ltr ? "<alt>Right|Forward" : "<alt>Left|Forward");
+
+#undef ADD_SHORTCUT_FOR_ACTION
+}
+
+static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     g_signal_connect_object (nautilus_preferences,
@@ -1172,6 +1261,14 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.stop", "Stop");
 
 #undef ADD_SHORTCUT_FOR_ACTION
+
+    set_back_forward_accelerators (self);
+    g_signal_connect_swapped (self, "direction-changed",
+                              G_CALLBACK (set_back_forward_accelerators), self);
+
+    GtkPadController *pad_controller = gtk_pad_controller_new (G_ACTION_GROUP (self->slot_action_group), NULL);
+    gtk_pad_controller_set_action_entries (pad_controller, pad_actions, G_N_ELEMENTS (pad_actions));
+    gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (pad_controller));
 
     self->fd_holder = nautilus_fd_holder_new ();
     self->view_mode_before_network = NAUTILUS_VIEW_INVALID_ID;
@@ -1404,6 +1501,7 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
     }
 
     nautilus_fd_holder_set_location (self->fd_holder, self->location);
+    update_back_forward_actions (self);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOCATION]);
 }
