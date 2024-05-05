@@ -233,6 +233,7 @@ typedef struct
     GtkWidget *background_menu;
 
     GActionGroup *view_action_group;
+    GtkShortcutController *shortcuts;
 
     /* Empty states */
     GtkWidget *empty_view_page;
@@ -5439,8 +5440,9 @@ add_script_to_scripts_menus (NautilusFilesView *view,
 
     if ((shortcut = g_hash_table_lookup (script_accels, name)))
     {
-        nautilus_application_set_accelerator (g_application_get_default (),
-                                              detailed_action_name, shortcut);
+        gtk_shortcut_controller_add_shortcut (priv->shortcuts,
+                                              gtk_shortcut_new (gtk_shortcut_trigger_parse_string (shortcut),
+                                                                gtk_named_action_new (detailed_action_name)));
     }
 
     g_free (action_name);
@@ -9664,28 +9666,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     GtkShortcut *shortcut;
     gchar *templates_uri;
     GdkClipboard *clipboard;
-    GApplication *app;
-    const gchar *zoom_in_accels[] =
-    {
-        "<control>equal",
-        "<control>plus",
-        "<control>KP_Add",
-        "ZoomIn",
-        NULL
-    };
-    const gchar *zoom_out_accels[] =
-    {
-        "<control>minus",
-        "<control>KP_Subtract",
-        "ZoomOut",
-        NULL
-    };
-    const gchar *zoom_standard_accels[] =
-    {
-        "<control>0",
-        "<control>KP_0",
-        NULL
-    };
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -9794,30 +9774,39 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_signal_connect_object (priv->view_action_group, "action-state-changed::sort",
                              G_CALLBACK (on_sort_action_state_changed), view, 0);
 
-    app = g_application_get_default ();
-
     /* NOTE: Please do not add any key here that could interfere with
      * the rest of the app's use of those keys. Some example of keys set here
      * that broke keynav include Enter/Return, Menu, F2 and Delete keys.
-     * The accelerators below are set on the whole app level for the sole purpose
+     * The accelerators below are set on the window level for the sole purpose
      * of making it more convenient when you don't have the focus exactly on the
      * files view, but some keys are used in a contextual way, and those should
      * should be added in nautilus_files_view_class_init() above instead of a
-     * global accelerator, unless it really makes sense to have them globally
+     * managed accelerator, unless it really makes sense to have them managed
      * (e.g. Zoom in/out shortcuts).
      */
-    nautilus_application_set_accelerators (app, "view.zoom-in", zoom_in_accels);
-    nautilus_application_set_accelerators (app, "view.zoom-out", zoom_out_accels);
-    nautilus_application_set_accelerator (app, "view.show-hidden-files", "<control>h");
+#define ADD_SHORTCUT_FOR_ACTION(controller, action, trigger) \
+        (gtk_shortcut_controller_add_shortcut ((controller), \
+                                               gtk_shortcut_new (gtk_shortcut_trigger_parse_string ((trigger)), \
+                                                                 gtk_named_action_new ((action)))))
+
+    priv->shortcuts = GTK_SHORTCUT_CONTROLLER (gtk_shortcut_controller_new ());
+
+    gtk_shortcut_controller_set_scope (priv->shortcuts, GTK_SHORTCUT_SCOPE_MANAGED);
+    gtk_widget_add_controller (GTK_WIDGET (view), GTK_EVENT_CONTROLLER (priv->shortcuts));
+
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.zoom-in", "<control>equal|<control>plus|<control>KP_Add|ZoomIn");
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.zoom-out", "<control>minus|<control>KP_Subtract|ZoomOut");
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.show-hidden-files", "<control>h");
     /* Despite putting copy/cut at the widget scope instead of the global one,
-     * we're putting paste globally so that it's easy to switch between apps
+     * we're putting paste "managed" so that it's easy to switch between apps
      * with e.g. Alt+Tab and paste directly the copied file without having to
      * make sure the focus is on the files view.
      */
-    nautilus_application_set_accelerator (app, "view.paste_accel", "<control>v");
-    nautilus_application_set_accelerator (app, "view.new-folder", "<control><shift>n");
-    nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
-    nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.paste_accel", "<control>v");
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.new-folder", "<control><shift>n");
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.select-pattern", "<control>s");
+    ADD_SHORTCUT_FOR_ACTION (priv->shortcuts, "view.zoom-standard", "<control>0|<control>KP_0");
+#undef ADD_SHORTCUT_FOR_ACTION
 
     /* This one should have been a keybinding, because it should trigger only
      * when the view is focused. Unfortunately, children can override bindings,
