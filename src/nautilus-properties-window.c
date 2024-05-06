@@ -1454,7 +1454,7 @@ update_combo_row_dropdown (AdwComboRow *row,
 }
 
 typedef gboolean CompareOwnershipRowFunc (GListModel *list,
-                                          guint       position,
+                                          guint position,
                                           const char *str);
 
 static void
