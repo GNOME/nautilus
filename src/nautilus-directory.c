@@ -339,9 +339,9 @@ nautilus_directory_init (NautilusDirectory *directory)
     directory->details = nautilus_directory_get_instance_private (directory);
     directory->details->file_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                            g_free, NULL);
-    directory->details->high_priority_queue = nautilus_file_queue_new ();
-    directory->details->low_priority_queue = nautilus_file_queue_new ();
-    directory->details->extension_queue = nautilus_file_queue_new ();
+    directory->details->high_priority_queue = nautilus_file_queue_new (g_direct_hash, g_direct_equal, g_object_ref, g_object_unref);
+    directory->details->low_priority_queue = nautilus_file_queue_new (g_direct_hash, g_direct_equal, g_object_ref, g_object_unref);
+    directory->details->extension_queue = nautilus_file_queue_new (g_direct_hash, g_direct_equal, g_object_ref, g_object_unref);
     directory->details->monitor_table = g_hash_table_new (NULL, NULL);
 }
 

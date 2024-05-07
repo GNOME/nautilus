@@ -21,9 +21,15 @@
 
 #include "nautilus-file.h"
 
+/** Function to create a hashable key from an item. */
+typedef gpointer (* KeyCreateFunc) (gpointer item);
+
 typedef struct NautilusFileQueue NautilusFileQueue;
 
-NautilusFileQueue *nautilus_file_queue_new      (void);
+NautilusFileQueue *nautilus_file_queue_new      (GHashFunc          hash_func,
+                                                 GEqualFunc         equal_func,
+                                                 KeyCreateFunc      key_create_func,
+                                                 GDestroyNotify     key_destroy_func);
 void               nautilus_file_queue_destroy  (NautilusFileQueue *queue);
 
 /* Add a file to the tail of the queue, unless it's already in the queue */
