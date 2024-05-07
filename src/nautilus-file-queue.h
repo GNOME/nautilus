@@ -23,11 +23,13 @@
 
 typedef struct NautilusFileQueue NautilusFileQueue;
 
-NautilusFileQueue *nautilus_file_queue_new      (void);
+NautilusFileQueue *nautilus_file_queue_new      (GHashFunc          hash_func,
+                                                 GEqualFunc         equal_func,
+                                                 GDestroyNotify     key_destroy_func);
 void               nautilus_file_queue_destroy  (NautilusFileQueue *queue);
 
 /* Add a file to the tail of the queue, unless it's already in the queue */
-void               nautilus_file_queue_enqueue  (NautilusFileQueue *queue,
+gboolean           nautilus_file_queue_enqueue  (NautilusFileQueue *queue,
 						 NautilusFile      *file);
 
 /* Return the file at the head of the queue after removing it from the

@@ -33,14 +33,28 @@ struct NautilusFileQueue
     GHashTable *item_to_link_map;
 };
 
+/**
+ * nautilus_file_queue_new:
+ * @hash_func: a function to create a hash value from a key
+ * @key_equal_func: a function to check two keys for equality
+ * @key_destroy_func: (nullable): a function to free the memory allocated for
+ *     the key used when removing the entry from the #GHashTable, or `NULL` if
+ *     you don't want to supply such a function.
+ *
+ * Creates a new #NautilusFileQueue.
+ *
+ * Returns: (transfer full): a new #NautilusFileQueue
+ */
 NautilusFileQueue *
-nautilus_file_queue_new (void)
+nautilus_file_queue_new (GHashFunc      hash_func,
+                         GEqualFunc     equal_func,
+                         GDestroyNotify key_destroy_func)
 {
     NautilusFileQueue *queue;
 
     queue = g_new0 (NautilusFileQueue, 1);
     g_queue_init ((GQueue *) queue);
-    queue->item_to_link_map = g_hash_table_new (g_direct_hash, g_direct_equal);
+    queue->item_to_link_map = g_hash_table_new_full (hash_func, equal_func, key_destroy_func, NULL);
 
     return queue;
 }
@@ -49,22 +63,24 @@ void
 nautilus_file_queue_destroy (NautilusFileQueue *queue)
 {
     g_hash_table_destroy (queue->item_to_link_map);
-    g_queue_clear_full ((GQueue *) queue, g_object_unref);
+    /* Items in queue already freed by hash table */
     g_free (queue);
 }
 
-void
+gboolean
 nautilus_file_queue_enqueue (NautilusFileQueue *queue,
                              NautilusFile      *file)
 {
     if (g_hash_table_lookup (queue->item_to_link_map, file) != NULL)
     {
         /* It's already on the queue. */
-        return;
+        return FALSE;
     }
 
     g_queue_push_tail ((GQueue *) queue, file);
-    g_hash_table_insert (queue->item_to_link_map, g_object_ref (file), queue->parent.tail);
+    g_hash_table_insert (queue->item_to_link_map, file, queue->parent.tail);
+
+    return TRUE;
 }
 
 NautilusFile *
@@ -94,6 +110,4 @@ nautilus_file_queue_remove (NautilusFileQueue *queue,
 
     g_queue_delete_link ((GQueue *) queue, link);
     g_hash_table_remove (queue->item_to_link_map, file);
-
-    nautilus_file_unref (file);
 }
