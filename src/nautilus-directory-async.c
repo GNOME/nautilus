@@ -4111,8 +4111,10 @@ nautilus_directory_add_file_to_work_queue (NautilusDirectory *directory,
 {
     g_return_if_fail (file->details->directory == directory);
 
-    nautilus_file_queue_enqueue (directory->details->high_priority_queue,
-                                 file);
+    if (nautilus_file_queue_enqueue (directory->details->high_priority_queue, file))
+    {
+        g_object_ref (file);
+    }
 }
 
 
@@ -4148,8 +4150,10 @@ move_file_to_low_priority_queue (NautilusDirectory *directory,
                                  NautilusFile      *file)
 {
     /* Must add before removing to avoid ref underflow */
-    nautilus_file_queue_enqueue (directory->details->low_priority_queue,
-                                 file);
+    if (nautilus_file_queue_enqueue (directory->details->low_priority_queue, file))
+    {
+        g_object_ref (file);
+    }
     nautilus_file_queue_remove (directory->details->high_priority_queue,
                                 file);
 }
@@ -4159,8 +4163,10 @@ move_file_to_extension_queue (NautilusDirectory *directory,
                               NautilusFile      *file)
 {
     /* Must add before removing to avoid ref underflow */
-    nautilus_file_queue_enqueue (directory->details->extension_queue,
-                                 file);
+    if (nautilus_file_queue_enqueue (directory->details->extension_queue, file))
+    {
+        g_object_ref (file);
+    }
     nautilus_file_queue_remove (directory->details->low_priority_queue,
                                 file);
 }
