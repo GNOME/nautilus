@@ -67,9 +67,9 @@ struct NautilusDirectoryPrivate
 	GHashTable *file_hash;
 
 	/* Queues of files needing some I/O done. */
-	NautilusFileQueue *high_priority_queue;
-	NautilusFileQueue *low_priority_queue;
-	NautilusFileQueue *extension_queue;
+	NautilusHashQueue *high_priority_queue;
+	NautilusHashQueue *low_priority_queue;
+	NautilusHashQueue *extension_queue;
 
 	/* These lists are going to be pretty short.  If we think they
 	 * are going to get big, we can use hash tables instead.

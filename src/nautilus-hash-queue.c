@@ -18,41 +18,41 @@
  */
 
 #include <config.h>
-#include "nautilus-file-queue.h"
+#include "nautilus-hash-queue.h"
 
 #include <glib.h>
 
 /**
- * `NautilusFileQueue` is a `GQueue` with 2 special features:
+ * `NautilusHashQueue` is a `GQueue` with 2 special features:
  * 1) It can find and remove items in constant time
  * 2) It doesn't allow duplicates.
  */
-struct NautilusFileQueue
+struct NautilusHashQueue
 {
     GQueue parent;
     GHashTable *item_to_link_map;
 };
 
 /**
- * nautilus_file_queue_new:
+ * nautilus_hash_queue_new:
  * @hash_func: a function to create a hash value from a key
  * @key_equal_func: a function to check two keys for equality
  * @key_destroy_func: (nullable): a function to free the memory allocated for
  *     the key used when removing the entry from the #GHashTable, or `NULL` if
  *     you don't want to supply such a function.
  *
- * Creates a new #NautilusFileQueue.
+ * Creates a new #NautilusHashQueue.
  *
- * Returns: (transfer full): a new #NautilusFileQueue
+ * Returns: (transfer full): a new #NautilusHashQueue
  */
-NautilusFileQueue *
-nautilus_file_queue_new (GHashFunc      hash_func,
+NautilusHashQueue *
+nautilus_hash_queue_new (GHashFunc      hash_func,
                          GEqualFunc     equal_func,
                          GDestroyNotify key_destroy_func)
 {
-    NautilusFileQueue *queue;
+    NautilusHashQueue *queue;
 
-    queue = g_new0 (NautilusFileQueue, 1);
+    queue = g_new0 (NautilusHashQueue, 1);
     g_queue_init ((GQueue *) queue);
     queue->item_to_link_map = g_hash_table_new_full (hash_func, equal_func, key_destroy_func, NULL);
 
@@ -60,7 +60,7 @@ nautilus_file_queue_new (GHashFunc      hash_func,
 }
 
 void
-nautilus_file_queue_destroy (NautilusFileQueue *queue)
+nautilus_hash_queue_destroy (NautilusHashQueue *queue)
 {
     g_hash_table_destroy (queue->item_to_link_map);
     /* Items in queue already freed by hash table */
@@ -69,7 +69,7 @@ nautilus_file_queue_destroy (NautilusFileQueue *queue)
 
 /** Add an item to the tail of the queue, unless it's already in the queue. */
 gboolean
-nautilus_file_queue_enqueue (NautilusFileQueue *queue,
+nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
                              gpointer           item)
 {
     if (g_hash_table_lookup (queue->item_to_link_map, item) != NULL)
@@ -86,11 +86,11 @@ nautilus_file_queue_enqueue (NautilusFileQueue *queue,
 
 /** Remove the item at the head of the queue and return it. */
 gpointer
-nautilus_file_queue_dequeue (NautilusFileQueue *queue)
+nautilus_hash_queue_dequeue (NautilusHashQueue *queue)
 {
     gpointer item = g_queue_peek_head ((GQueue *) queue);
 
-    nautilus_file_queue_remove (queue, item);
+    nautilus_hash_queue_remove (queue, item);
 
     return item;
 }
@@ -99,7 +99,7 @@ nautilus_file_queue_dequeue (NautilusFileQueue *queue)
  * Remove the item responding to the provided key from the queue in constant time.
  */
 void
-nautilus_file_queue_remove (NautilusFileQueue *queue,
+nautilus_hash_queue_remove (NautilusHashQueue *queue,
                             gconstpointer      key)
 {
     GList *link = g_hash_table_lookup (queue->item_to_link_map, key);

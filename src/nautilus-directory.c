@@ -28,9 +28,9 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-enums.h"
 #include "nautilus-file-private.h"
-#include "nautilus-file-queue.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-hash-queue.h"
 #include "nautilus-metadata.h"
 #include "nautilus-scheme.h"
 #include "nautilus-search-directory-file.h"
@@ -211,9 +211,9 @@ nautilus_directory_finalize (GObject *object)
     g_assert (directory->details->file_list == NULL);
     g_hash_table_destroy (directory->details->file_hash);
 
-    nautilus_file_queue_destroy (directory->details->high_priority_queue);
-    nautilus_file_queue_destroy (directory->details->low_priority_queue);
-    nautilus_file_queue_destroy (directory->details->extension_queue);
+    nautilus_hash_queue_destroy (directory->details->high_priority_queue);
+    nautilus_hash_queue_destroy (directory->details->low_priority_queue);
+    nautilus_hash_queue_destroy (directory->details->extension_queue);
     g_clear_list (&directory->details->files_changed_while_adding, g_object_unref);
     g_assert (directory->details->directory_load_in_progress == NULL);
     g_assert (directory->details->count_in_progress == NULL);
@@ -339,9 +339,9 @@ nautilus_directory_init (NautilusDirectory *directory)
     directory->details = nautilus_directory_get_instance_private (directory);
     directory->details->file_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                            g_free, NULL);
-    directory->details->high_priority_queue = nautilus_file_queue_new (g_direct_hash, g_direct_equal, g_object_unref);
-    directory->details->low_priority_queue = nautilus_file_queue_new (g_direct_hash, g_direct_equal, g_object_unref);
-    directory->details->extension_queue = nautilus_file_queue_new (g_direct_hash, g_direct_equal, g_object_unref);
+    directory->details->high_priority_queue = nautilus_hash_queue_new (g_direct_hash, g_direct_equal, g_object_unref);
+    directory->details->low_priority_queue = nautilus_hash_queue_new (g_direct_hash, g_direct_equal, g_object_unref);
+    directory->details->extension_queue = nautilus_hash_queue_new (g_direct_hash, g_direct_equal, g_object_unref);
     directory->details->monitor_table = g_hash_table_new (NULL, NULL);
 }
 
