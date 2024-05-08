@@ -28,16 +28,8 @@ NautilusFileQueue *nautilus_file_queue_new      (GHashFunc          hash_func,
                                                  GDestroyNotify     key_destroy_func);
 void               nautilus_file_queue_destroy  (NautilusFileQueue *queue);
 
-/* Add a file to the tail of the queue, unless it's already in the queue */
 gboolean           nautilus_file_queue_enqueue  (NautilusFileQueue *queue,
-						 NautilusFile      *file);
-
-/* Return the file at the head of the queue after removing it from the
- * queue. This is dangerous unless you have another ref to the file,
- * since it will unref it.  
- */
-NautilusFile *     nautilus_file_queue_dequeue  (NautilusFileQueue *queue);
-
-/* Remove a file from an arbitrary point in the queue in constant time. */
+                                                 gpointer           item);
+gpointer           nautilus_file_queue_dequeue  (NautilusFileQueue *queue);
 void               nautilus_file_queue_remove   (NautilusFileQueue *queue,
-						 NautilusFile      *file);
+                                                 gconstpointer      key);
