@@ -6732,7 +6732,7 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
     if (attribute_q == attribute_trash_orig_path_q)
     {
         /* If n/a */
-        return g_strdup ("");
+        return g_strdup ("—");
     }
     if (attribute_q == attribute_recency_q)
     {
