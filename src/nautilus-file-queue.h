@@ -32,13 +32,10 @@ NautilusFileQueue *nautilus_file_queue_new      (GHashFunc          hash_func,
                                                  GDestroyNotify     key_destroy_func);
 void               nautilus_file_queue_destroy  (NautilusFileQueue *queue);
 
-/* Add a file to the tail of the queue, unless it's already in the queue */
 void               nautilus_file_queue_enqueue  (NautilusFileQueue *queue,
-						 NautilusFile      *file);
-
-/* Remove a file from an arbitrary point in the queue in constant time. */
+                                                 gpointer           item);
 void               nautilus_file_queue_remove   (NautilusFileQueue *queue,
-						 NautilusFile      *file);
+                                                 gconstpointer      key);
 
 /* Get the file at the head of the queue without removing or unrefing it. */
 #define nautilus_file_queue_head(queue) (g_queue_peek_head ((GQueue *) (queue)))

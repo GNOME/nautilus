@@ -73,11 +73,12 @@ nautilus_file_queue_destroy (NautilusFileQueue *queue)
     g_free (queue);
 }
 
+/** Add an item to the tail of the queue, unless it's already in the queue. */
 void
 nautilus_file_queue_enqueue (NautilusFileQueue *queue,
-                             NautilusFile      *file)
+                             gpointer           item)
 {
-    gpointer key = queue->key_create_func (file);
+    gpointer key = queue->key_create_func (item);
 
     if (g_hash_table_lookup (queue->item_to_link_map, key) != NULL)
     {
@@ -86,17 +87,18 @@ nautilus_file_queue_enqueue (NautilusFileQueue *queue,
         return;
     }
 
-    g_queue_push_tail ((GQueue *) queue, file);
+    g_queue_push_tail ((GQueue *) queue, item);
     g_hash_table_insert (queue->item_to_link_map, key, queue->parent.tail);
 }
 
+/**
+ * Remove the item responding to the provided key from the queue in constant time.
+ */
 void
 nautilus_file_queue_remove (NautilusFileQueue *queue,
-                            NautilusFile      *file)
+                            gconstpointer      key)
 {
-    GList *link;
-
-    link = g_hash_table_lookup (queue->item_to_link_map, file);
+    GList *link = g_hash_table_lookup (queue->item_to_link_map, key);
 
     if (link == NULL)
     {
@@ -105,5 +107,5 @@ nautilus_file_queue_remove (NautilusFileQueue *queue,
     }
 
     g_queue_delete_link ((GQueue *) queue, link);
-    g_hash_table_remove (queue->item_to_link_map, file);
+    g_hash_table_remove (queue->item_to_link_map, key);
 }
