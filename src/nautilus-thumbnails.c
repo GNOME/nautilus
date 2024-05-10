@@ -297,8 +297,6 @@ void
 nautilus_create_thumbnail (NautilusFile *file)
 {
     time_t file_mtime = 0;
-    NautilusThumbnailInfo *existing_info;
-    NautilusThumbnailInfo *pending_info;
 
     nautilus_file_set_is_thumbnailing (file, TRUE);
 
@@ -332,10 +330,14 @@ nautilus_create_thumbnail (NautilusFile *file)
 
     /* Check if it is already in the list of thumbnails to make or
      *  currently being made. */
-    existing_info = g_hash_table_lookup (currently_thumbnailing_hash, info->image_uri);
-    pending_info = nautilus_hash_queue_find_item (thumbnails_to_make, info->image_uri);
+    NautilusThumbnailInfo *existing_info = g_hash_table_lookup (currently_thumbnailing_hash, info->image_uri);
 
-    if (existing_info == NULL && pending_info == NULL)
+    if (existing_info == NULL)
+    {
+        existing_info = nautilus_hash_queue_find_item (thumbnails_to_make, info->image_uri);
+    }
+
+    if (existing_info == NULL)
     {
         /* Add the thumbnail to the list. */
         g_debug ("(Main Thread) Adding thumbnail: %s",
@@ -356,10 +358,6 @@ nautilus_create_thumbnail (NautilusFile *file)
                  info->image_uri);
 
         /* The file in the queue might need a new original mtime */
-        if (existing_info == NULL)
-        {
-            existing_info = pending_info;
-        }
         existing_info->updated_file_mtime = info->original_file_mtime;
     }
 }
