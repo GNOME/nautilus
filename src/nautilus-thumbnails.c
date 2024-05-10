@@ -124,6 +124,7 @@ free_thumbnail_info (NautilusThumbnailInfo *info)
     g_clear_object (&info->cancellable);
     g_free (info);
 }
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusThumbnailInfo, free_thumbnail_info)
 
 static gpointer
 create_info_key (gpointer item)
@@ -296,13 +297,12 @@ void
 nautilus_create_thumbnail (NautilusFile *file)
 {
     time_t file_mtime = 0;
-    NautilusThumbnailInfo *info;
     NautilusThumbnailInfo *existing_info;
     NautilusThumbnailInfo *pending_info;
 
     nautilus_file_set_is_thumbnailing (file, TRUE);
 
-    info = g_new0 (NautilusThumbnailInfo, 1);
+    g_autoptr (NautilusThumbnailInfo) info = g_new0 (NautilusThumbnailInfo, 1);
     info->image_uri = nautilus_file_get_uri (file);
     info->mime_type = g_strdup (nautilus_file_get_mime_type (file));
     info->cancellable = g_cancellable_new ();
@@ -340,7 +340,7 @@ nautilus_create_thumbnail (NautilusFile *file)
         /* Add the thumbnail to the list. */
         g_debug ("(Main Thread) Adding thumbnail: %s",
                  info->image_uri);
-        nautilus_hash_queue_enqueue (thumbnails_to_make, info);
+        nautilus_hash_queue_enqueue (thumbnails_to_make, g_steal_pointer (&info));
 
         /* If we didn't schedule the thumbnail function to start on idle, do
          *  that now. We don't want to start it until all the other work is
@@ -361,7 +361,6 @@ nautilus_create_thumbnail (NautilusFile *file)
             existing_info = pending_info;
         }
         existing_info->updated_file_mtime = info->original_file_mtime;
-        free_thumbnail_info (info);
     }
 }
 
