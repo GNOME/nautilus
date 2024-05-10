@@ -31,7 +31,14 @@ struct NautilusHashQueue
 {
     GQueue parent;
     GHashTable *item_to_link_map;
+    CreateKeyFunc create_key_func;
 };
+
+static gpointer
+identity_key_func (gpointer ptr)
+{
+    return ptr;
+}
 
 /**
  * nautilus_hash_queue_new:
@@ -40,6 +47,8 @@ struct NautilusHashQueue
  * @key_destroy_func: (nullable): a function to free the memory allocated for
  *     the key used when removing the entry from the #GHashTable, or `NULL` if
  *     you don't want to supply such a function.
+ * @create_key_func: (nullable): a function to create a hashable key from a
+ *     value, or `NULL` to use the item itself as a key.
  *
  * Creates a new #NautilusHashQueue.
  *
@@ -48,13 +57,15 @@ struct NautilusHashQueue
 NautilusHashQueue *
 nautilus_hash_queue_new (GHashFunc      hash_func,
                          GEqualFunc     equal_func,
-                         GDestroyNotify key_destroy_func)
+                         GDestroyNotify key_destroy_func,
+                         CreateKeyFunc  create_key_func)
 {
     NautilusHashQueue *queue;
 
     queue = g_new0 (NautilusHashQueue, 1);
     g_queue_init ((GQueue *) queue);
     queue->item_to_link_map = g_hash_table_new_full (hash_func, equal_func, key_destroy_func, NULL);
+    queue->create_key_func = create_key_func != NULL ? create_key_func : identity_key_func;
 
     return queue;
 }
@@ -78,8 +89,10 @@ nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
         return FALSE;
     }
 
+    gpointer key = queue->create_key_func (item);
+
     g_queue_push_tail ((GQueue *) queue, item);
-    g_hash_table_insert (queue->item_to_link_map, item, queue->parent.tail);
+    g_hash_table_insert (queue->item_to_link_map, key, queue->parent.tail);
 
     return TRUE;
 }
@@ -88,9 +101,10 @@ nautilus_hash_queue_enqueue (NautilusHashQueue *queue,
 gpointer
 nautilus_hash_queue_dequeue (NautilusHashQueue *queue)
 {
-    gpointer item = g_queue_peek_head ((GQueue *) queue);
+    gpointer item = g_queue_pop_head ((GQueue *) queue);
+    gpointer key = queue->create_key_func (item);
 
-    nautilus_hash_queue_remove (queue, item);
+    g_hash_table_remove (queue->item_to_link_map, key);
 
     return item;
 }
