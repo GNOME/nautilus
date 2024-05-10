@@ -69,7 +69,7 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2024-04-29 12:03+0000\n"
-"PO-Revision-Date: 2024-05-08 11:55+0300\n"
+"PO-Revision-Date: 2024-05-11 01:04+0300\n"
 "Last-Translator: Efstathios Iosifidis <eiosifidis@gnome.org>\n"
 "Language-Team: Ελληνικά <>\n"
 "Language: el\n"
@@ -1149,11 +1149,8 @@ msgid "Nautilus Clipboard must not have empty lines."
 msgstr "Το πρόχειρο Nautilus δεν πρέπει να έχει κενές γραμμές."
 
 #: src/nautilus-column-chooser.c:358
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "View"
 msgid "View More"
-msgstr "Προβολή"
+msgstr "Προβολή περισσοτέρων"
 
 #
 #: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:2356
@@ -1310,18 +1307,18 @@ msgstr ""
 #. Translators: date and time in 24h format,
 #. * i.e. "12/31/2023 23:59"
 #: src/nautilus-date-utilities.c:83
-#, fuzzy, no-c-format
+#, no-c-format
 #| msgid "%-e %b %Y %-H:%M"
 msgid "%m/%d/%Y %H:%M"
-msgstr "%-e %b %Y %-H:%M"
+msgstr "%m/%d/%Y %H:%M"
 
 #. Translators: date and time in 12h format,
 #. * i.e. "12/31/2023 11:59 PM"
 #: src/nautilus-date-utilities.c:90
-#, fuzzy, no-c-format
+#, no-c-format
 #| msgid "%-e %b %Y %-I:%M %p"
 msgid "%m/%d/%Y %I:%M %p"
-msgstr "%-e %b %Y %-I:%M %p"
+msgstr "%m/%d/%Y %I:%M %p"
 
 #. Translators: this is the word "Today" followed by
 #. * a time in 24h format. i.e. "Today 23:04"
@@ -2789,10 +2786,8 @@ msgid "%s, %s"
 msgstr "%s, %s"
 
 #: src/nautilus-files-view.c:3772
-#, fuzzy
-#| msgid "Sharing Settings"
 msgid "Search _Settings"
-msgstr "Ρυθμίσεις κοινής χρήσης"
+msgstr "_Ρυθμίσεις αναζήτησης"
 
 #: src/nautilus-files-view.c:3784
 msgid "Search _Everywhere"
@@ -3490,8 +3485,6 @@ msgstr "Περιέχει φωτογραφίες και μουσική"
 # #       keep msg length relatively short...
 #. Translators: This is appended to a file name when a copy of a file is created.
 #: src/nautilus-filename-utilities.c:165
-#, fuzzy
-#| msgid "Copy"
 msgctxt "Noun"
 msgid "Copy"
 msgstr "Αντιγραφή"
@@ -3501,11 +3494,10 @@ msgstr "Αντιγραφή"
 #. Translators: This is appended to a file name when a copy of an already copied file is created.
 #. * `%zu` will be replaced with a number one higher than that of the previous copy.
 #: src/nautilus-filename-utilities.c:168
-#, fuzzy, c-format
-#| msgid "Copy"
+#, c-format
 msgctxt "Noun"
 msgid "Copy %zu"
-msgstr "Αντιγραφή"
+msgstr "Αντιγραφή %zu"
 
 #. Translators: File name for new symlink. %s is target's name, %zu is number of symlink.
 #: src/nautilus-filename-utilities.c:259
@@ -3564,16 +3556,12 @@ msgid "_Learn More"
 msgstr ""
 
 #: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:3297
-#, fuzzy
-#| msgid "Empty Trash…"
 msgid "_Empty Trash…"
-msgstr "Άδειασμα απορριμμάτων…"
+msgstr "Άδειασμα _απορριμμάτων…"
 
 #: src/nautilus-location-banner.c:238
-#, fuzzy
-#| msgid "_Settings"
 msgid "_Trash Settings"
-msgstr "_Ρυθμίσεις"
+msgstr "Ρυθμίσεις _απορριμάτων"
 
 #: src/nautilus-location-entry.c:707 src/nautilus-query-editor.c:615
 msgid "Clear Entry"
@@ -3934,34 +3922,25 @@ msgstr "Καμία"
 
 #. Translators: Both %s will be replaced with formatted timestamps.
 #: src/nautilus-preferences-window.c:252
-#, fuzzy, c-format
-#| msgid "Rename “%s” as “%s”"
+#, c-format
 msgid "Examples: “%s”, “%s”"
-msgstr "Μετονομασία του «%s» σε «%s»."
+msgstr "Παραδείγματα: «%s», «%s»."
 
 #: src/nautilus-preferences-window.c:343
-#, fuzzy
-#| msgid "Single click"
 msgid "Single-Click"
 msgstr "Απλό κλικ"
 
 #: src/nautilus-preferences-window.c:343
-#, fuzzy
-#| msgid "Double click"
 msgid "Double-Click"
 msgstr "Διπλό κλικ"
 
 #: src/nautilus-preferences-window.c:345 src/nautilus-preferences-window.c:347
 #: src/nautilus-preferences-window.c:349
-#, fuzzy
-#| msgid "On This Computer"
 msgid "On This Computer Only"
-msgstr "Σε αυτό τον υπολογιστή"
+msgstr "Μόνο σε αυτόν τον υπολογιστή"
 
 #
 #: src/nautilus-preferences-window.c:345
-#, fuzzy
-#| msgid "All locations"
 msgid "All Locations"
 msgstr "Όλες οι τοποθεσίες"
 
@@ -3973,15 +3952,11 @@ msgstr "Ποτέ"
 
 #
 #: src/nautilus-preferences-window.c:347
-#, fuzzy
-#| msgid "All files"
 msgid "All Files"
 msgstr "Όλα τα αρχεία"
 
 #
 #: src/nautilus-preferences-window.c:349
-#, fuzzy
-#| msgid "All folders"
 msgid "All Folders"
 msgstr "Όλοι οι φάκελοι"
 
@@ -4029,10 +4004,8 @@ msgstr "Προετοιμασία"
 
 #. Translators: This describes an operation, such as copying or compressing files, as being completed.
 #: src/nautilus-progress-info-widget.c:57
-#, fuzzy
-#| msgid "Operating System"
 msgid "Operation Completed"
-msgstr "Λειτουργικό σύστημα"
+msgstr "Η ενέργεια ολοκληρώθηκε"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -4055,56 +4028,38 @@ msgid "All file operations have been completed"
 msgstr "Όλες οι λειτουργίες αρχείων ολοκληρώθηκαν"
 
 #: src/nautilus-properties-window.c:356
-#, fuzzy
-#| msgid "Read and write"
 msgid "Read and Write"
 msgstr "Ανάγνωση και εγγραφή"
 
 #: src/nautilus-properties-window.c:360
-#, fuzzy
-#| msgid "Create and delete files"
 msgid "Create and Delete Files"
 msgstr "Δημιουργία και διαγραφή αρχείων"
 
 #: src/nautilus-properties-window.c:364
-#, fuzzy
-#| msgid "Read/write, no access"
 msgid "Read and Write, No Access"
-msgstr "Ανάγνωση/εγγραφή, χωρίς πρόσβαση"
+msgstr "Ανάγνωση και εγγραφή, χωρίς πρόσβαση"
 
 #: src/nautilus-properties-window.c:371
-#, fuzzy
-#| msgid "Read-only"
 msgid "Read-Only"
 msgstr "Μόνο ανάγνωση"
 
 #: src/nautilus-properties-window.c:375
-#, fuzzy
-#| msgid "Access files"
 msgid "Access Files"
 msgstr "Πρόσβαση αρχείων"
 
 #: src/nautilus-properties-window.c:379
-#, fuzzy
-#| msgid "List files only"
 msgid "List Files Only"
 msgstr "Μόνο λίστα αρχείων"
 
 #: src/nautilus-properties-window.c:389
-#, fuzzy
-#| msgid "Write-only"
 msgid "Write-Only"
 msgstr "Μόνο για εγγραφή"
 
 #: src/nautilus-properties-window.c:393
-#, fuzzy
-#| msgid "Write-only, no access"
 msgid "Write-Only, No Access"
 msgstr "Μόνο εγγραφή, χωρίς πρόσβαση"
 
 #: src/nautilus-properties-window.c:400
-#, fuzzy
-#| msgid "Access-only"
 msgid "Access-Only"
 msgstr "Μόνο για πρόσβαση"
 
@@ -4441,10 +4396,8 @@ msgid "Find files and folders in all search locations"
 msgstr ""
 
 #: src/nautilus-window-slot.c:905
-#, fuzzy
-#| msgid "Sharing Settings"
 msgid "Search Settings"
-msgstr "Ρυθμίσεις κοινής χρήσης"
+msgstr "Ρυθμίσεις αναζήτησης"
 
 #: src/nautilus-window-slot.c:1118
 msgid "Searching locations only"
@@ -4541,16 +4494,11 @@ msgid "General"
 msgstr "Γενικά"
 
 #: src/resources/gtk/help-overlay.ui:14
-#, fuzzy
-#| msgid "New Window"
 msgctxt "shortcut window"
 msgid "New Window"
 msgstr "Νέο παράθυρο"
 
 #: src/resources/gtk/help-overlay.ui:20
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Close window or tab"
 msgctxt "shortcut window"
 msgid "Close Window or Tab"
 msgstr "Κλείσιμο παραθύρου ή καρτέλας"
@@ -4561,42 +4509,29 @@ msgid "Quit"
 msgstr "Έξοδος"
 
 #: src/resources/gtk/help-overlay.ui:32
-#, fuzzy
-#| msgid "Search _Everywhere"
 msgctxt "shortcut window"
 msgid "Search Everywhere"
-msgstr "Αναζήτηση _παντού"
+msgstr "Αναζήτηση παντού"
 
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
 #: src/resources/gtk/help-overlay.ui:38
-#, fuzzy
-#| msgid "Parent Folder"
 msgctxt "shortcut window"
 msgid "Search Current Folder"
-msgstr "Γονικός φάκελος"
+msgstr "Αναζήτηση στον τρέχοντα φάκελο"
 
 #: src/resources/gtk/help-overlay.ui:44
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Bookmark current location"
 msgctxt "shortcut window"
 msgid "Bookmark Current Location"
 msgstr "Προσθήκη σελιδοδείκτη για την τρέχουσα τοποθεσία"
 
 #: src/resources/gtk/help-overlay.ui:50
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show help"
 msgctxt "shortcut window"
 msgid "Show Help"
 msgstr "Εμφάνιση βοήθειας"
 
 #
 #: src/resources/gtk/help-overlay.ui:56
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show preferences"
 msgctxt "shortcut window"
 msgid "Show Preferences"
 msgstr "Εμφάνιση προτιμήσεων"
@@ -4629,18 +4564,14 @@ msgid "Open"
 msgstr "Άνοιγμα"
 
 #: src/resources/gtk/help-overlay.ui:91
-#, fuzzy
-#| msgid "Open in New _Tab"
 msgctxt "shortcut window"
 msgid "Open in New Tab"
-msgstr "Άνοιγμα σε νέα _καρτέλα"
+msgstr "Άνοιγμα σε νέα καρτέλα"
 
 #: src/resources/gtk/help-overlay.ui:97
-#, fuzzy
-#| msgid "Open in New _Window"
 msgctxt "shortcut window"
 msgid "Open in New Window"
-msgstr "Άνοιγμα σε νέο παρά_θυρο"
+msgstr "Άνοιγμα σε νέο παράθυρο"
 
 #: src/resources/gtk/help-overlay.ui:103
 #, fuzzy
@@ -4651,9 +4582,6 @@ msgid "Open Item Location (Search and Recent Only)"
 msgstr "Άνοιγμα τοποθεσίας αντικειμένου (αναζήτηση και πρόσφατα μόνο)"
 
 #: src/resources/gtk/help-overlay.ui:109
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open with default app"
 msgctxt "shortcut window"
 msgid "Open With Default App"
 msgstr "Άνοιγμα με την προεπιλεγμένη εφαρμογή"
@@ -4664,54 +4592,36 @@ msgid "Tabs"
 msgstr "Καρτέλες"
 
 #: src/resources/gtk/help-overlay.ui:120
-#, fuzzy
-#| msgid "_New Tab"
 msgctxt "shortcut window"
 msgid "New Tab"
-msgstr "_Νέα καρτέλα"
+msgstr "Νέα καρτέλα"
 
 #: src/resources/gtk/help-overlay.ui:126
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go to previous tab"
 msgctxt "shortcut window"
 msgid "Go to Previous Tab"
 msgstr "Μετάβαση στην προηγούμενη καρτέλα"
 
 #: src/resources/gtk/help-overlay.ui:132
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go to next tab"
 msgctxt "shortcut window"
 msgid "Go to Next Tab"
 msgstr "Μετάβαση στην επόμενη καρτέλα"
 
 #: src/resources/gtk/help-overlay.ui:138
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Open tab"
 msgctxt "shortcut window"
 msgid "Open Tab"
 msgstr "Άνοιγμα καρτέλας"
 
 #: src/resources/gtk/help-overlay.ui:144
-#, fuzzy
-#| msgid "Move Tab _Left"
 msgctxt "shortcut window"
 msgid "Move Tab Left"
-msgstr "Μετακίνηση καρτέλας _αριστερά"
+msgstr "Μετακίνηση καρτέλας αριστερά"
 
 #: src/resources/gtk/help-overlay.ui:150
-#, fuzzy
-#| msgid "Move Tab _Right"
 msgctxt "shortcut window"
 msgid "Move Tab Right"
-msgstr "Μετακίνηση καρτέλας _δεξιά"
+msgstr "Μετακίνηση καρτέλας δεξιά"
 
 #: src/resources/gtk/help-overlay.ui:156
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Restore tab"
 msgctxt "shortcut window"
 msgid "Restore Tab"
 msgstr "Επαναφορά καρτέλας"
@@ -4722,16 +4632,11 @@ msgid "Navigation"
 msgstr "Περιήγηση"
 
 #: src/resources/gtk/help-overlay.ui:167 src/resources/gtk/help-overlay.ui:174
-#, fuzzy
-#| msgid "Back"
 msgctxt "shortcut window"
 msgid "Go Back"
-msgstr "Πίσω"
+msgstr "Μετάβαση πίσω"
 
 #: src/resources/gtk/help-overlay.ui:181 src/resources/gtk/help-overlay.ui:188
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go forward"
 msgctxt "shortcut window"
 msgid "Go Forward"
 msgstr "Μετάβαση εμπρός"
@@ -4742,24 +4647,17 @@ msgid "Go Up"
 msgstr ""
 
 #: src/resources/gtk/help-overlay.ui:201
-#, fuzzy
-#| msgid "Move _Down"
 msgctxt "shortcut window"
 msgid "Go Down"
-msgstr "Μετακίνηση προς τα _κάτω"
+msgstr "Μετακίνηση προς τα κάτω"
 
 #: src/resources/gtk/help-overlay.ui:207
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Go to home folder"
 msgctxt "shortcut window"
 msgid "Go to Home Folder"
 msgstr "Μετάβαση στον προσωπικό φάκελο"
 
 #
 #: src/resources/gtk/help-overlay.ui:213
-#, fuzzy
-#| msgid "Enter Location"
 msgctxt "shortcut window"
 msgid "Enter Location"
 msgstr "Εισαγωγή τοποθεσίας"
@@ -4788,39 +4686,26 @@ msgid "View"
 msgstr "Προβολή"
 
 #: src/resources/gtk/help-overlay.ui:236
-#, fuzzy
-#| msgid "Zoom In"
 msgctxt "shortcut window"
 msgid "Zoom In"
 msgstr "Μεγέθυνση"
 
 #: src/resources/gtk/help-overlay.ui:242
-#, fuzzy
-#| msgid "Zoom Out"
 msgctxt "shortcut window"
 msgid "Zoom Out"
 msgstr "Σμίκρυνση"
 
 #: src/resources/gtk/help-overlay.ui:248
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Reset zoom"
 msgctxt "shortcut window"
 msgid "Reset Zoom"
 msgstr "Επαναφορά εστίασης"
 
 #: src/resources/gtk/help-overlay.ui:254
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Refresh view"
 msgctxt "shortcut window"
 msgid "Refresh View"
 msgstr "Ανανέωση της προβολής"
 
 #: src/resources/gtk/help-overlay.ui:260
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show/hide hidden files"
 msgctxt "shortcut window"
 msgid "Show/Hide Hidden Files"
 msgstr "Εμφάνιση/απόκρυψη κρυφών αρχείων"
@@ -4834,23 +4719,16 @@ msgid "Show/Hide Sidebar"
 msgstr "Εμφάνιση/απόκρυψη πλευρικής στήλης"
 
 #: src/resources/gtk/help-overlay.ui:272
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show/hide action menu"
 msgctxt "shortcut window"
 msgid "Show/Hide Action Menu"
 msgstr "Εμφάνιση/απόκρυψη μενού ενεργειών"
 
 #: src/resources/gtk/help-overlay.ui:278
-#, fuzzy
-#| msgid "List View"
 msgctxt "shortcut window"
 msgid "List View"
 msgstr "Προβολή λίστας"
 
 #: src/resources/gtk/help-overlay.ui:284
-#, fuzzy
-#| msgid "Grid View"
 msgctxt "shortcut window"
 msgid "Grid View"
 msgstr "Προβολή πλέγματος"
@@ -4858,17 +4736,11 @@ msgstr "Προβολή πλέγματος"
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
 #: src/resources/gtk/help-overlay.ui:290 src/resources/gtk/help-overlay.ui:297
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Expand folder"
 msgctxt "shortcut window"
 msgid "Expand Folder"
 msgstr "Ανάπτυξη φακέλου"
 
 #: src/resources/gtk/help-overlay.ui:304 src/resources/gtk/help-overlay.ui:311
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Collapse folder"
 msgctxt "shortcut window"
 msgid "Collapse Folder"
 msgstr "Σύμπτυξη φακέλου"
@@ -4879,9 +4751,6 @@ msgid "Editing"
 msgstr "Επεξεργασία"
 
 #: src/resources/gtk/help-overlay.ui:323
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create folder"
 msgctxt "shortcut window"
 msgid "Create Folder"
 msgstr "Δημιουργία φακέλου"
@@ -4893,31 +4762,21 @@ msgid "Rename"
 msgstr "Μετονομασία"
 
 #: src/resources/gtk/help-overlay.ui:335
-#, fuzzy
-#| msgid "Mo_ve to Trash"
 msgctxt "shortcut window"
 msgid "Move to Trash"
-msgstr "Μετακίνηση στα απο_ρρίμματα"
+msgstr "Μετακίνηση στα απορρίμματα"
 
 #: src/resources/gtk/help-overlay.ui:341
-#, fuzzy
-#| msgid "_Delete Permanently"
 msgctxt "shortcut window"
 msgid "Delete Permanently"
-msgstr "Οριστική _διαγραφή"
+msgstr "Οριστική διαγραφή"
 
 #: src/resources/gtk/help-overlay.ui:347
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create link to copied item"
 msgctxt "shortcut window"
 msgid "Create Link to Copied Item"
 msgstr "Δημιουργία συνδέσμων προς το αντιγραμμένο αντικείμενο"
 
 #: src/resources/gtk/help-overlay.ui:353
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Create link to selected item"
 msgctxt "shortcut window"
 msgid "Create Link to Selected Item"
 msgstr "Δημιουργία συνδέσμων προς επιλεγμένο αντικείμενο"
@@ -4940,31 +4799,21 @@ msgid "Paste"
 msgstr "Επικόλληση"
 
 #: src/resources/gtk/help-overlay.ui:377
-#, fuzzy
-#| msgid "Select All"
 msgctxt "shortcut window"
 msgid "Select All"
 msgstr "Επιλογή όλων"
 
 #: src/resources/gtk/help-overlay.ui:383
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Invert selection"
 msgctxt "shortcut window"
 msgid "Invert Selection"
 msgstr "Αντιστροφή επιλογής"
 
 #: src/resources/gtk/help-overlay.ui:389
-#, fuzzy
-#| msgid "Select Items Matching"
 msgctxt "shortcut window"
 msgid "Select Items Matching"
 msgstr "Επιλογή αντικειμένων που ταιριάζουν"
 
 #: src/resources/gtk/help-overlay.ui:395
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "Show item properties"
 msgctxt "shortcut window"
 msgid "Show Item Properties"
 msgstr "Προβολή ιδιοτήτων αντικειμένου"
@@ -5119,37 +4968,27 @@ msgid "Password"
 msgstr "Συνθηματικό"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:110
-#, fuzzy
-#| msgid "Enter a password here."
 msgid "Enter a Password"
-msgstr "Εισαγωγή συνθηματικού εδώ."
+msgstr "Εισαγωγή συνθηματικού εδώ"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:118
 #: src/resources/ui/nautilus-compress-dialog.ui:130
-#, fuzzy
-#| msgid "Password"
 msgid "Confirm Password"
-msgstr "Συνθηματικό"
+msgstr "Επιβεβαίωση συνθηματικού"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:8
 msgid "New Folder"
 msgstr "Νέος φάκελος"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:18
-#, fuzzy
-#| msgid "Cancel"
 msgid "C_ancel"
-msgstr "Ακύρωση"
+msgstr "Α_κύρωση"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:25
-#, fuzzy
-#| msgid "Create"
 msgid "_Create"
-msgstr "Δημιουργία"
+msgstr "_Δημιουργία"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:46
-#, fuzzy
-#| msgid "Folder name"
 msgid "Folder Name"
 msgstr "Όνομα φακέλου"
 
@@ -5415,10 +5254,8 @@ msgstr "Προσθήκη στους _σελιδοδείκτες"
 
 #
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:53
-#, fuzzy
-#| msgid "Enter Location"
 msgid "Edit _Location"
-msgstr "Εισαγωγή τοποθεσίας"
+msgstr "Εισαγωγή _τοποθεσίας"
 
 #
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:57
@@ -5474,22 +5311,16 @@ msgstr ""
 "όπως σε απομακρυσμένο διακομιστή."
 
 #: src/resources/ui/nautilus-preferences-window.ui:75
-#, fuzzy
-#| msgid "Search in Subfolders"
 msgid "Search in Su_bfolders"
-msgstr "Αναζήτηση σε υποφακέλους"
+msgstr "Αναζήτηση σε _υποφακέλους"
 
 #: src/resources/ui/nautilus-preferences-window.ui:84
-#, fuzzy
-#| msgid "Show Thumbnails"
 msgid "Show _Thumbnails"
-msgstr "Εμφάνιση μικρογραφιών"
+msgstr "Εμφάνιση _μικρογραφιών"
 
 #: src/resources/ui/nautilus-preferences-window.ui:93
-#, fuzzy
-#| msgid "Count Number of Files in Folders"
 msgid "_Count Number of Files in Folders"
-msgstr "Μέτρηση αριθμού αρχείων στους φακέλους"
+msgstr "_Μέτρηση αριθμού αρχείων στους φακέλους"
 
 #: src/resources/ui/nautilus-preferences-window.ui:103
 msgid "Date and Time Format"
@@ -5559,10 +5390,8 @@ msgid "Properties"
 msgstr "Ιδιότητες"
 
 #: src/resources/ui/nautilus-properties-window.ui:103
-#, fuzzy
-#| msgid "Select Custom Icon"
 msgid "Set Custom Icon"
-msgstr "Επιλογή προσαρμοσμένου εικονιδίου"
+msgstr "Ορισμός προσαρμοσμένου εικονιδίου"
 
 #: src/resources/ui/nautilus-properties-window.ui:124
 #, fuzzy
@@ -5727,36 +5556,28 @@ msgid "Last _used"
 msgstr "Τελευταία χ_ρησιμοποιημένο"
 
 #: src/resources/ui/nautilus-search-popover.ui:179
-#, fuzzy
-#| msgid "Created"
 msgid "_Created"
-msgstr "Δημιουργήθηκε"
+msgstr "_Δημιουργήθηκε"
 
 #: src/resources/ui/nautilus-search-popover.ui:201
 msgid "What"
 msgstr "Τι"
 
 #: src/resources/ui/nautilus-search-popover.ui:232
-#, fuzzy
-#| msgid "Anything"
 msgid "_Anything"
-msgstr "Οτιδήποτε"
+msgstr "_Οτιδήποτε"
 
 #: src/resources/ui/nautilus-search-popover.ui:295
-#, fuzzy
-#| msgid "Full Text"
 msgid "Full _Text"
-msgstr "Πλήρες κείμενο"
+msgstr "Πλήρες _κείμενο"
 
 #: src/resources/ui/nautilus-search-popover.ui:297
 msgid "Search Inside Files"
 msgstr "Να γίνει αναζήτηση μέσα σε αρχεία"
 
 #: src/resources/ui/nautilus-search-popover.ui:305
-#, fuzzy
-#| msgid "File Name"
 msgid "File _Name"
-msgstr "Όνομα αρχείου"
+msgstr "Ό_νομα αρχείου"
 
 #: src/resources/ui/nautilus-search-popover.ui:307
 msgid "Don't Search Inside Files"
@@ -5765,10 +5586,8 @@ msgstr "Να μην γίνει αναζήτηση μέσα σε αρχεία"
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
 #: src/resources/ui/nautilus-toolbar.ui:55
-#, fuzzy
-#| msgid "Parent Folder"
 msgid "Search Current Folder"
-msgstr "Γονικός φάκελος"
+msgstr "Αναζήτηση στον τρέχοντα φάκελο"
 
 #: src/resources/ui/nautilus-toolbar.ui:78
 msgid "Show Sidebar"
@@ -5974,10 +5793,8 @@ msgid "Networks"
 msgstr "Δίκτυα"
 
 #: src/gtk/nautilusgtkplacesview.c:2097 src/gtk/nautilusgtkplacesview.c:2106
-#, fuzzy
-#| msgid "On This Computer"
 msgid "On This Device"
-msgstr "Σε αυτό τον υπολογιστή"
+msgstr "Σε αυτή τη συσκευή"
 
 #. Translators: respectively, free and total space of the drive. The plural form
 #. * should be based on the free space available.
@@ -6060,8 +5877,6 @@ msgid "Recent"
 msgstr "Πρόσφατα"
 
 #: src/gtk/nautilusgtkplacessidebar.c:986
-#, fuzzy
-#| msgid "Recent files"
 msgid "Recent Files"
 msgstr "Πρόσφατα αρχεία"
 
@@ -6072,8 +5887,6 @@ msgid "Starred Files"
 msgstr "Επισήμανση αρχεία"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1008
-#, fuzzy
-#| msgid "Open your personal folder"
 msgid "Open Personal Folder"
 msgstr "Άνοιγμα του προσωπικού σας φακέλου"
 
@@ -6095,8 +5908,6 @@ msgid "Manually enter a location"
 msgstr "Χειροκίνητη εισαγωγή τοποθεσίας"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1051
-#, fuzzy
-#| msgid "Open the trash"
 msgid "Open Trash"
 msgstr "Άνοιγμα των απορριμμάτων"
 
@@ -6121,8 +5932,6 @@ msgstr "Προσθήκη νέου σελιδοδείκτη"
 
 #
 #: src/gtk/nautilusgtkplacessidebar.c:1436
-#, fuzzy
-#| msgid "Show other locations"
 msgid "Show Other Locations"
 msgstr "Εμφάνιση άλλων τοποθεσιών"
 
