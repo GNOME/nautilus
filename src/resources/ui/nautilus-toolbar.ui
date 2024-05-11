@@ -16,7 +16,7 @@
                   <object class="GtkStackPage">
                     <property name="name">pathbar</property>
                     <property name="child">
-                      <object class="GtkBox" id="path_bar_container">
+                      <object class="NautilusPathBar" id="path_bar">
                         <property name="valign">center</property>
                       </object>
                     </property>
@@ -26,10 +26,20 @@
                   <object class="GtkStackPage">
                     <property name="name">location</property>
                     <property name="child">
-                      <object class="GtkBox" id="location_entry_container">
+                      <object class="GtkBox">
                         <style>
                           <class name="linked"/>
                         </style>
+                        <child>
+                          <object class="NautilusLocationEntry" id="location_entry"/>
+                        </child>
+                        <child>
+                          <object class="GtkButton">
+                            <property name="icon-name">window-close-symbolic</property>
+                            <property name="tooltip_text" translatable="yes">Cancel</property>
+                            <signal name="clicked" handler="on_location_entry_close"/>
+                          </object>
+                        </child>
                       </object>
                     </property>
                   </object>

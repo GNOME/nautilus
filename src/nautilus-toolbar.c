@@ -44,7 +44,6 @@ struct _NautilusToolbar
     GtkWidget *history_controls_stack;
     GtkWidget *history_controls;
     GtkWidget *history_controls_placeholder;
-    GtkWidget *path_bar_container;
     GtkWidget *location_entry_container;
     GtkWidget *search_container;
     GtkWidget *toolbar_switcher;
@@ -61,8 +60,6 @@ struct _NautilusToolbar
     gboolean sidebar_button_active;
 
     gboolean show_toolbar_children;
-
-    GtkWidget *location_entry_close_button;
 
     /* active slot & bindings */
     NautilusWindowSlot *window_slot;
@@ -158,20 +155,6 @@ nautilus_toolbar_constructed (GObject *object)
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
     GtkEventController *controller;
 
-    self->path_bar = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL));
-    gtk_box_append (GTK_BOX (self->path_bar_container),
-                    self->path_bar);
-
-    self->location_entry = nautilus_location_entry_new ();
-    gtk_box_append (GTK_BOX (self->location_entry_container),
-                    self->location_entry);
-    self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic");
-    gtk_widget_set_tooltip_text (self->location_entry_close_button, _("Cancel"));
-    gtk_box_append (GTK_BOX (self->location_entry_container),
-                    self->location_entry_close_button);
-    g_signal_connect (self->location_entry_close_button, "clicked",
-                      G_CALLBACK (on_location_entry_close), self);
-
     controller = gtk_event_controller_focus_new ();
     gtk_widget_add_controller (self->location_entry, controller);
     g_signal_connect (controller, "leave",
@@ -189,6 +172,8 @@ nautilus_toolbar_init (NautilusToolbar *self)
 {
     g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
     g_type_ensure (NAUTILUS_TYPE_VIEW_CONTROLS);
+    g_type_ensure (NAUTILUS_TYPE_PATH_BAR);
+    g_type_ensure (NAUTILUS_TYPE_LOCATION_ENTRY);
 
     gtk_widget_init_template (GTK_WIDGET (self));
 }
@@ -379,11 +364,13 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, history_controls_placeholder);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_placeholder);
+
+    gtk_widget_class_bind_template_callback (widget_class, on_location_entry_close);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
 }
