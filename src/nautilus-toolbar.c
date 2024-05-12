@@ -159,6 +159,25 @@ nautilus_toolbar_close_location_entry (NautilusToolbar *self)
 }
 
 static void
+on_path_bar_open_location (NautilusPathBar   *path_bar,
+                           GFile             *location,
+                           NautilusOpenFlags  open_flags,
+                           gpointer           user_data)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (user_data);
+
+    if (open_flags & (NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NEW_TAB))
+    {
+        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                 location, open_flags, NULL, NULL, NULL);
+    }
+    else
+    {
+        nautilus_window_slot_open_location_full (self->window_slot, location, open_flags, NULL);
+    }
+}
+
+static void
 on_location_entry_focus_leave (GtkEventControllerFocus *controller,
                                gpointer                 user_data)
 {
@@ -207,6 +226,12 @@ nautilus_toolbar_init (NautilusToolbar *self)
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
+    /* Setup path bar */
+    g_signal_connect_object (self->path_bar, "open-location",
+                             G_CALLBACK (on_path_bar_open_location), self,
+                             G_CONNECT_DEFAULT);
+
+    /* Setup location entry */
     GtkEventController *controller = gtk_event_controller_focus_new ();
 
     gtk_widget_add_controller (self->location_entry, controller);

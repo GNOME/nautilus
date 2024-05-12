@@ -1230,34 +1230,6 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     adw_toast_overlay_add_toast (window->toast_overlay, toast);
 }
 
-static void
-on_path_bar_open_location (NautilusWindow    *window,
-                           GFile             *location,
-                           NautilusOpenFlags  open_flags)
-{
-    if (open_flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW)
-    {
-        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                 location, NAUTILUS_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
-    }
-    else
-    {
-        nautilus_window_open_location_full (window, location, open_flags, NULL, NULL);
-    }
-}
-
-static void
-setup_toolbar (NautilusWindow *window)
-{
-    GtkWidget *path_bar;
-
-    /* connect to the pathbar signals */
-    path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->toolbar));
-
-    g_signal_connect_swapped (path_bar, "open-location",
-                              G_CALLBACK (on_path_bar_open_location), window);
-}
-
 static gboolean
 tab_view_close_page_cb (AdwTabView     *view,
                         AdwTabPage     *page,
@@ -1525,8 +1497,6 @@ nautilus_window_constructed (GObject *self)
 
     application = NAUTILUS_APPLICATION (g_application_get_default ());
     gtk_window_set_application (GTK_WINDOW (window), GTK_APPLICATION (application));
-
-    setup_toolbar (window);
 
     gtk_window_set_default_size (GTK_WINDOW (window),
                                  NAUTILUS_WINDOW_DEFAULT_WIDTH,
