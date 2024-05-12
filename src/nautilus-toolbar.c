@@ -131,7 +131,7 @@ nautilus_toolbar_open_location_entry (NautilusToolbar *self)
     gtk_widget_grab_focus (self->location_entry);
 }
 
-void
+static void
 nautilus_toolbar_close_location_entry (NautilusToolbar *self)
 {
     if (!self->show_location_entry)
@@ -179,6 +179,17 @@ on_location_entry_focus_leave (GtkEventControllerFocus *controller,
 }
 
 static void
+on_location_entry_location_changed (NautilusLocationEntry *entry,
+                                    GFile                 *location,
+                                    gpointer               user_data)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (user_data);
+
+    nautilus_toolbar_close_location_entry (self);
+    nautilus_window_slot_open_location_full (self->window_slot, location, 0, NULL);
+}
+
+static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
     g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
@@ -197,6 +208,12 @@ nautilus_toolbar_init (NautilusToolbar *self)
     /* Setting a max width on one entry to effectively set a max expansion for
      * the whole title widget. */
     gtk_editable_set_max_width_chars (GTK_EDITABLE (self->location_entry), 88);
+    g_signal_connect_object (self->location_entry, "location-changed",
+                             G_CALLBACK (on_location_entry_location_changed), self,
+                             G_CONNECT_DEFAULT);
+    g_signal_connect_object (self->location_entry, "cancel",
+                             G_CALLBACK (nautilus_toolbar_close_location_entry), self,
+                             G_CONNECT_SWAPPED);
 
     toolbar_update_appearance (self);
 }

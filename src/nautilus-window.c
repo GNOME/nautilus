@@ -644,23 +644,6 @@ nautilus_window_grab_focus (GtkWidget *widget)
 }
 
 static void
-location_entry_cancel_callback (GtkWidget      *widget,
-                                NautilusWindow *window)
-{
-    nautilus_toolbar_close_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
-}
-
-static void
-location_entry_location_changed_callback (GtkWidget      *widget,
-                                          GFile          *location,
-                                          NautilusWindow *window)
-{
-    nautilus_toolbar_close_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
-
-    nautilus_window_open_location_full (window, location, 0, NULL, NULL);
-}
-
-static void
 remove_slot_from_window (NautilusWindowSlot *slot,
                          NautilusWindow     *window)
 {
@@ -1289,21 +1272,12 @@ static void
 setup_toolbar (NautilusWindow *window)
 {
     GtkWidget *path_bar;
-    GtkWidget *location_entry;
 
     /* connect to the pathbar signals */
     path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->toolbar));
 
     g_signal_connect_swapped (path_bar, "open-location",
                               G_CALLBACK (on_path_bar_open_location), window);
-
-    /* connect to the location entry signals */
-    location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
-
-    g_signal_connect_object (location_entry, "location-changed",
-                             G_CALLBACK (location_entry_location_changed_callback), window, 0);
-    g_signal_connect_object (location_entry, "cancel",
-                             G_CALLBACK (location_entry_cancel_callback), window, 0);
 }
 
 static gboolean

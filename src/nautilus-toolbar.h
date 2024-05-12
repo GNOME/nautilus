@@ -40,7 +40,6 @@ GtkWidget *nautilus_toolbar_get_path_bar (NautilusToolbar *self);
 GtkWidget *nautilus_toolbar_get_location_entry (NautilusToolbar *self);
 
 void       nautilus_toolbar_open_location_entry (NautilusToolbar *self);
-void       nautilus_toolbar_close_location_entry (NautilusToolbar *self);
 
 void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
                                                 NautilusWindowSlot *slot);

@@ -676,7 +676,7 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
                                     G_SIGNAL_RUN_LAST, 0,
                                     NULL, NULL,
                                     g_cclosure_marshal_generic,
-                                    G_TYPE_NONE, 1, G_TYPE_OBJECT);
+                                    G_TYPE_NONE, 1, G_TYPE_FILE);
 
     shortcut = gtk_shortcut_new (gtk_keyval_trigger_new (GDK_KEY_Escape, 0),
                                  gtk_signal_action_new ("cancel"));
