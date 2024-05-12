@@ -147,12 +147,17 @@ on_location_entry_focus_leave (GtkEventControllerFocus *controller,
 }
 
 static void
-nautilus_toolbar_constructed (GObject *object)
+nautilus_toolbar_init (NautilusToolbar *self)
 {
-    NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
-    GtkEventController *controller;
+    g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
+    g_type_ensure (NAUTILUS_TYPE_VIEW_CONTROLS);
+    g_type_ensure (NAUTILUS_TYPE_PATH_BAR);
+    g_type_ensure (NAUTILUS_TYPE_LOCATION_ENTRY);
 
-    controller = gtk_event_controller_focus_new ();
+    gtk_widget_init_template (GTK_WIDGET (self));
+
+    GtkEventController *controller = gtk_event_controller_focus_new ();
+
     gtk_widget_add_controller (self->location_entry, controller);
     g_signal_connect (controller, "leave",
                       G_CALLBACK (on_location_entry_focus_leave), self);
@@ -162,17 +167,6 @@ nautilus_toolbar_constructed (GObject *object)
     gtk_editable_set_max_width_chars (GTK_EDITABLE (self->location_entry), 88);
 
     toolbar_update_appearance (self);
-}
-
-static void
-nautilus_toolbar_init (NautilusToolbar *self)
-{
-    g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
-    g_type_ensure (NAUTILUS_TYPE_VIEW_CONTROLS);
-    g_type_ensure (NAUTILUS_TYPE_PATH_BAR);
-    g_type_ensure (NAUTILUS_TYPE_LOCATION_ENTRY);
-
-    gtk_widget_init_template (GTK_WIDGET (self));
 }
 
 static void
@@ -324,7 +318,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     oclass->set_property = nautilus_toolbar_set_property;
     oclass->dispose = nautilus_toolbar_dispose;
     oclass->finalize = nautilus_toolbar_finalize;
-    oclass->constructed = nautilus_toolbar_constructed;
 
     properties[PROP_SHOW_LOCATION_ENTRY] =
         g_param_spec_boolean ("show-location-entry",
