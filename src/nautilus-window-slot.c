@@ -1184,12 +1184,6 @@ static void got_file_info_for_view_selection_callback (NautilusFile *file,
                                                        gpointer      callback_data);
 static gboolean setup_view (NautilusWindowSlot *self,
                             NautilusView       *view);
-static void load_new_location (NautilusWindowSlot *slot,
-                               GFile              *location,
-                               GList              *selection,
-                               NautilusFile       *file_to_activate,
-                               gboolean            tell_current_content_view,
-                               gboolean            tell_new_content_view);
 
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
@@ -1907,6 +1901,8 @@ static gboolean
 setup_view (NautilusWindowSlot *self,
             NautilusView       *view)
 {
+    g_assert (view != NULL);
+
     gboolean ret = TRUE;
     GFile *old_location;
 
@@ -1919,31 +1915,37 @@ setup_view (NautilusWindowSlot *self,
     /* Forward search selection and state before loading the new model */
     old_location = self->content_view ? nautilus_view_get_location (self->content_view) : NULL;
 
-    /* Actually load the pending location and selection: */
     if (self->pending_location != NULL)
     {
-        load_new_location (self,
-                           self->pending_location,
-                           self->pending_selection,
-                           self->pending_file_to_activate,
-                           FALSE,
-                           TRUE);
+        /* Load the pending location and selection */
+        nautilus_view_set_location (self->new_content_view, self->pending_location);
+        nautilus_view_set_selection (self->new_content_view, self->pending_selection);
 
         nautilus_file_list_free (self->pending_selection);
         self->pending_selection = NULL;
+
+        if (self->pending_file_to_activate != NULL &&
+            NAUTILUS_IS_FILES_VIEW (self->new_content_view))
+        {
+            g_autoptr (GAppInfo) app_info = NULL;
+            const gchar *app_id;
+
+            app_info = nautilus_mime_get_default_application_for_file (self->pending_file_to_activate);
+            app_id = g_app_info_get_id (app_info);
+            if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
+            {
+                nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (view),
+                                                   self->pending_file_to_activate, 0);
+            }
+        }
     }
     else if (old_location != NULL)
     {
-        g_autolist (NautilusFile) selection = NULL;
+        /* Reuse current location and selection */
+        g_autolist (NautilusFile) selection = nautilus_view_get_selection (self->content_view);
 
-        selection = nautilus_view_get_selection (self->content_view);
-
-        load_new_location (self,
-                           old_location,
-                           selection,
-                           NULL,
-                           FALSE,
-                           TRUE);
+        nautilus_view_set_location (self->new_content_view, old_location);
+        nautilus_view_set_selection (self->new_content_view, selection);
     }
     else
     {
@@ -1955,52 +1957,6 @@ setup_view (NautilusWindowSlot *self,
 
 out:
     return ret;
-}
-
-static void
-load_new_location (NautilusWindowSlot *self,
-                   GFile              *location,
-                   GList              *selection,
-                   NautilusFile       *file_to_activate,
-                   gboolean            tell_current_content_view,
-                   gboolean            tell_new_content_view)
-{
-    NautilusView *view = NULL;
-    g_assert (self != NULL);
-    g_assert (location != NULL);
-
-    /* Note, these may recurse into report_load_underway */
-    if (self->content_view != NULL && tell_current_content_view)
-    {
-        view = self->content_view;
-        nautilus_view_set_location (self->content_view, location);
-    }
-
-    if (self->new_content_view != NULL && tell_new_content_view &&
-        (!tell_current_content_view ||
-         self->new_content_view != self->content_view))
-    {
-        view = self->new_content_view;
-        nautilus_view_set_location (self->new_content_view, location);
-    }
-    if (view)
-    {
-        nautilus_view_set_selection (view, selection);
-        if (file_to_activate != NULL)
-        {
-            g_autoptr (GAppInfo) app_info = NULL;
-            const gchar *app_id;
-
-            g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-            app_info = nautilus_mime_get_default_application_for_file (file_to_activate);
-            app_id = g_app_info_get_id (app_info);
-            if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
-            {
-                nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (view),
-                                                   file_to_activate, 0);
-            }
-        }
-    }
 }
 
 static void
@@ -3002,15 +2958,10 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
          * be told, or it is the very pending change we wish
          * to cancel.
          */
-        g_autolist (NautilusFile) selection = NULL;
+        g_autolist (NautilusFile) selection = nautilus_view_get_selection (self->content_view);
 
-        selection = nautilus_view_get_selection (self->content_view);
-        load_new_location (self,
-                           location,
-                           selection,
-                           NULL,
-                           TRUE,
-                           FALSE);
+        nautilus_view_set_location (self->content_view, location);
+        nautilus_view_set_selection (self->content_view, selection);
     }
 
     end_location_change (self);
