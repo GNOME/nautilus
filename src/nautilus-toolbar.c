@@ -65,7 +65,6 @@ struct _NautilusToolbar
 enum
 {
     PROP_0,
-    PROP_SHOW_LOCATION_ENTRY,
     PROP_WINDOW_SLOT,
     PROP_SHOW_SIDEBAR_BUTTON,
     PROP_SIDEBAR_BUTTON_ACTIVE,
@@ -179,12 +178,6 @@ nautilus_toolbar_get_property (GObject    *object,
 
     switch (property_id)
     {
-        case PROP_SHOW_LOCATION_ENTRY:
-        {
-            g_value_set_boolean (value, self->show_location_entry);
-        }
-        break;
-
         case PROP_WINDOW_SLOT:
         {
             g_value_set_object (value, self->window_slot);
@@ -238,12 +231,6 @@ nautilus_toolbar_set_property (GObject      *object,
 
     switch (property_id)
     {
-        case PROP_SHOW_LOCATION_ENTRY:
-        {
-            nautilus_toolbar_set_show_location_entry (self, g_value_get_boolean (value));
-        }
-        break;
-
         case PROP_WINDOW_SLOT:
         {
             nautilus_toolbar_set_window_slot (self, g_value_get_object (value));
@@ -319,13 +306,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     oclass->dispose = nautilus_toolbar_dispose;
     oclass->finalize = nautilus_toolbar_finalize;
 
-    properties[PROP_SHOW_LOCATION_ENTRY] =
-        g_param_spec_boolean ("show-location-entry",
-                              "Whether to show the location entry",
-                              "Whether to show the location entry instead of the pathbar",
-                              FALSE,
-                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
     properties [PROP_WINDOW_SLOT] =
         g_param_spec_object ("window-slot",
                              "Window slot currently active",
@@ -392,8 +372,6 @@ nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
     {
         self->show_location_entry = show_location_entry;
         toolbar_update_appearance (self);
-
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SHOW_LOCATION_ENTRY]);
     }
 }
 
