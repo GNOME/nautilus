@@ -51,6 +51,7 @@ struct _NautilusToolbar
     GtkWidget *search_button_placeholder;
 
     gboolean show_location_entry;
+    GtkWidget *focus_before_location_entry;
 
     GtkWidget *sidebar_button;
     gboolean show_sidebar_button;
@@ -110,11 +111,43 @@ toolbar_update_appearance (NautilusToolbar *self)
                                  search_global ? self->history_controls_placeholder : self->history_controls);
 }
 
-static void
-on_location_entry_close (GtkWidget       *close_button,
-                         NautilusToolbar *self)
+void
+nautilus_toolbar_open_location_entry (NautilusToolbar *self)
 {
-    nautilus_toolbar_set_show_location_entry (self, FALSE);
+    if (self->show_location_entry)
+    {
+        return;
+    }
+
+    /* Remember focus widget. */
+    GtkRoot *root = gtk_widget_get_root (GTK_WIDGET (self));
+    GtkWidget *focus_widget = (root != NULL) ? gtk_root_get_focus (root) : NULL;
+
+    g_set_weak_pointer (&self->focus_before_location_entry, focus_widget);
+
+    self->show_location_entry = TRUE;
+    toolbar_update_appearance (self);
+
+    gtk_widget_grab_focus (self->location_entry);
+}
+
+void
+nautilus_toolbar_close_location_entry (NautilusToolbar *self)
+{
+    if (!self->show_location_entry)
+    {
+        return;
+    }
+
+    self->show_location_entry = FALSE;
+    toolbar_update_appearance (self);
+
+    if (self->focus_before_location_entry != NULL)
+    {
+        /* Restore focus widget. */
+        gtk_widget_grab_focus (self->focus_before_location_entry);
+        g_clear_weak_pointer (&self->focus_before_location_entry);
+    }
 }
 
 static void
@@ -142,7 +175,7 @@ on_location_entry_focus_leave (GtkEventControllerFocus *controller,
         return;
     }
 
-    nautilus_toolbar_set_show_location_entry (toolbar, FALSE);
+    nautilus_toolbar_close_location_entry (toolbar);
 }
 
 static void
@@ -279,6 +312,8 @@ nautilus_toolbar_finalize (GObject *obj)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
 
+    g_clear_weak_pointer (&self->focus_before_location_entry);
+
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           toolbar_update_appearance, self);
 
@@ -340,7 +375,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_placeholder);
 
-    gtk_widget_class_bind_template_callback (widget_class, on_location_entry_close);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_toolbar_close_location_entry);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
 }
@@ -362,17 +397,6 @@ GtkWidget *
 nautilus_toolbar_get_location_entry (NautilusToolbar *self)
 {
     return self->location_entry;
-}
-
-void
-nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
-                                          gboolean         show_location_entry)
-{
-    if (show_location_entry != self->show_location_entry)
-    {
-        self->show_location_entry = show_location_entry;
-        toolbar_update_appearance (self);
-    }
 }
 
 static void

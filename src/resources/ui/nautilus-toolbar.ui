@@ -39,7 +39,7 @@
                           <object class="GtkButton">
                             <property name="icon-name">window-close-symbolic</property>
                             <property name="tooltip_text" translatable="yes">Cancel</property>
-                            <signal name="clicked" handler="on_location_entry_close"/>
+                            <signal name="clicked" handler="nautilus_toolbar_close_location_entry" swapped="true"/>
                           </object>
                         </child>
                       </object>

@@ -120,9 +120,6 @@ struct _NautilusWindow
 
     GtkWidget *network_address_bar;
 
-    /* focus widget before the location bar has been shown temporarily */
-    GtkWidget *last_focus_widget;
-
     guint sidebar_width_handler_id;
     gulong bookmarks_id;
     gulong starred_id;
@@ -631,33 +628,6 @@ nautilus_window_open_location_full (NautilusWindow     *window,
     nautilus_window_slot_open_location_full (target_slot, location, flags, selection);
 }
 
-static void
-unset_focus_widget (NautilusWindow *window)
-{
-    if (window->last_focus_widget != NULL)
-    {
-        g_object_remove_weak_pointer (G_OBJECT (window->last_focus_widget),
-                                      (gpointer *) &window->last_focus_widget);
-        window->last_focus_widget = NULL;
-    }
-}
-
-static void
-remember_focus_widget (NautilusWindow *window)
-{
-    GtkWidget *focus_widget;
-
-    focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
-    if (focus_widget != NULL)
-    {
-        unset_focus_widget (window);
-
-        window->last_focus_widget = focus_widget;
-        g_object_add_weak_pointer (G_OBJECT (focus_widget),
-                                   (gpointer *) &(window->last_focus_widget));
-    }
-}
-
 static gboolean
 nautilus_window_grab_focus (GtkWidget *widget)
 {
@@ -674,22 +644,10 @@ nautilus_window_grab_focus (GtkWidget *widget)
 }
 
 static void
-restore_focus_widget (NautilusWindow *window)
-{
-    if (window->last_focus_widget != NULL)
-    {
-        gtk_widget_grab_focus (window->last_focus_widget);
-        unset_focus_widget (window);
-    }
-}
-
-static void
 location_entry_cancel_callback (GtkWidget      *widget,
                                 NautilusWindow *window)
 {
-    nautilus_toolbar_set_show_location_entry (NAUTILUS_TOOLBAR (window->toolbar), FALSE);
-
-    restore_focus_widget (window);
+    nautilus_toolbar_close_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
 }
 
 static void
@@ -697,9 +655,7 @@ location_entry_location_changed_callback (GtkWidget      *widget,
                                           GFile          *location,
                                           NautilusWindow *window)
 {
-    nautilus_toolbar_set_show_location_entry (NAUTILUS_TOOLBAR (window->toolbar), FALSE);
-
-    restore_focus_widget (window);
+    nautilus_toolbar_close_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
 
     nautilus_window_open_location_full (window, location, 0, NULL, NULL);
 }
@@ -1080,12 +1036,9 @@ nautilus_window_ensure_location_entry (NautilusWindow *window)
 {
     GtkWidget *location_entry;
 
-    remember_focus_widget (window);
-
-    nautilus_toolbar_set_show_location_entry (NAUTILUS_TOOLBAR (window->toolbar), TRUE);
+    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
 
     location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
-    gtk_widget_grab_focus (location_entry);
 
     return location_entry;
 }
