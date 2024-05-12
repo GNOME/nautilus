@@ -112,7 +112,8 @@ toolbar_update_appearance (NautilusToolbar *self)
 }
 
 void
-nautilus_toolbar_open_location_entry (NautilusToolbar *self)
+nautilus_toolbar_open_location_entry (NautilusToolbar *self,
+                                      const char      *special_text)
 {
     if (self->show_location_entry)
     {
@@ -129,6 +130,13 @@ nautilus_toolbar_open_location_entry (NautilusToolbar *self)
     toolbar_update_appearance (self);
 
     gtk_widget_grab_focus (self->location_entry);
+
+    if (special_text != NULL)
+    {
+        nautilus_location_entry_set_special_text (NAUTILUS_LOCATION_ENTRY (self->location_entry),
+                                                  special_text);
+        gtk_editable_set_position (GTK_EDITABLE (self->location_entry), -1);
+    }
 }
 
 static void
@@ -408,12 +416,6 @@ GtkWidget *
 nautilus_toolbar_get_path_bar (NautilusToolbar *self)
 {
     return self->path_bar;
-}
-
-GtkWidget *
-nautilus_toolbar_get_location_entry (NautilusToolbar *self)
-{
-    return self->location_entry;
 }
 
 static void

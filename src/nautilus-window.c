@@ -49,7 +49,6 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-location-entry.h"
 #include "nautilus-metadata.h"
 #include "nautilus-network-address-bar.h"
 #include "nautilus-mime-actions.h"
@@ -74,7 +73,6 @@ static void mouse_back_button_changed (gpointer callback_data);
 static void mouse_forward_button_changed (gpointer callback_data);
 static void use_extra_mouse_buttons_changed (gpointer callback_data);
 static void nautilus_window_initialize_actions (NautilusWindow *window);
-static GtkWidget *nautilus_window_ensure_location_entry (NautilusWindow *window);
 static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              gboolean        back,
                                              guint           distance);
@@ -294,9 +292,9 @@ action_enter_location (GSimpleAction *action,
                        GVariant      *state,
                        gpointer       user_data)
 {
-    NautilusWindow *window = user_data;
+    NautilusWindow *self = user_data;
 
-    nautilus_window_ensure_location_entry (window);
+    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (self->toolbar), NULL);
 }
 
 static void
@@ -339,23 +337,13 @@ action_go_to_tab (GSimpleAction *action,
 }
 
 static void
-prompt_for_location (NautilusWindow *window,
-                     const char     *path)
-{
-    GtkWidget *entry;
-
-    entry = nautilus_window_ensure_location_entry (window);
-    nautilus_location_entry_set_special_text (NAUTILUS_LOCATION_ENTRY (entry),
-                                              path);
-    gtk_editable_set_position (GTK_EDITABLE (entry), -1);
-}
-
-static void
 action_prompt_for_location_root (GSimpleAction *action,
                                  GVariant      *state,
                                  gpointer       user_data)
 {
-    prompt_for_location (NAUTILUS_WINDOW (user_data), "/");
+    NautilusWindow *self = NAUTILUS_WINDOW (user_data);
+
+    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (self->toolbar), "/");
 }
 
 static void
@@ -363,7 +351,9 @@ action_prompt_for_location_home (GSimpleAction *action,
                                  GVariant      *state,
                                  gpointer       user_data)
 {
-    prompt_for_location (NAUTILUS_WINDOW (user_data), "~");
+    NautilusWindow *self = NAUTILUS_WINDOW (user_data);
+
+    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (self->toolbar), "~");
 }
 
 static void
@@ -1012,18 +1002,6 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
 
     nautilus_window_sync_bookmarks (window);
     nautilus_window_sync_starred (window);
-}
-
-static GtkWidget *
-nautilus_window_ensure_location_entry (NautilusWindow *window)
-{
-    GtkWidget *location_entry;
-
-    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
-
-    location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
-
-    return location_entry;
 }
 
 static gchar *
