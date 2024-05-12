@@ -437,12 +437,6 @@ nautilus_toolbar_new (void)
                          NULL);
 }
 
-GtkWidget *
-nautilus_toolbar_get_path_bar (NautilusToolbar *self)
-{
-    return self->path_bar;
-}
-
 static void
 box_remove_all_children (GtkBox *box)
 {
@@ -491,6 +485,12 @@ slot_on_templates_menu_changed (NautilusToolbar    *self,
     menu = nautilus_window_slot_get_templates_menu (slot);
     nautilus_path_bar_set_templates_menu (NAUTILUS_PATH_BAR (self->path_bar),
                                           menu);
+}
+
+void
+nautilus_toolbar_show_current_location_menu (NautilusToolbar *self)
+{
+    nautilus_path_bar_show_current_location_menu (NAUTILUS_PATH_BAR (self->path_bar));
 }
 
 /* Called from on_window_slot_destroyed(), since bindings and signal handlers

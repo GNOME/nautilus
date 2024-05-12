@@ -36,7 +36,7 @@ G_DECLARE_FINAL_TYPE (NautilusToolbar, nautilus_toolbar, NAUTILUS, TOOLBAR, AdwB
 
 GtkWidget *nautilus_toolbar_new (void);
 
-GtkWidget *nautilus_toolbar_get_path_bar (NautilusToolbar *self);
+void       nautilus_toolbar_show_current_location_menu (NautilusToolbar *self);
 
 void       nautilus_toolbar_open_location_entry (NautilusToolbar *self,
                                                  const char      *special_text);
