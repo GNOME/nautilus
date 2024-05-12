@@ -408,6 +408,22 @@ box_remove_all_children (GtkBox *box)
 }
 
 static void
+on_slot_location_changed (NautilusToolbar *self)
+{
+    g_assert (self->window_slot != NULL);
+
+    GFile *location = nautilus_window_slot_get_location (self->window_slot);
+
+    if (location == NULL)
+    {
+        return;
+    }
+
+    nautilus_location_entry_set_location (NAUTILUS_LOCATION_ENTRY (self->location_entry), location);
+    nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (self->path_bar), location);
+}
+
+static void
 slot_on_extensions_background_menu_changed (NautilusToolbar    *self,
                                             GParamSpec         *param,
                                             NautilusWindowSlot *slot)
@@ -438,8 +454,6 @@ static void
 nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                        NautilusWindowSlot *slot)
 {
-    g_autoptr (GList) children = NULL;
-
     self->window_slot = slot;
 
     if (self->window_slot != NULL)
@@ -448,6 +462,10 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                            on_window_slot_destroyed,
                            self);
 
+        on_slot_location_changed (self);
+
+        g_signal_connect_swapped (self->window_slot, "notify::location",
+                                  G_CALLBACK (on_slot_location_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::extensions-background-menu",
                                   G_CALLBACK (slot_on_extensions_background_menu_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::templates-menu",

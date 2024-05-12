@@ -1065,18 +1065,8 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
 
     location = nautilus_window_slot_get_location (slot);
 
-    /* Change the location bar and path bar to match the current location. */
     if (location != NULL)
     {
-        GtkWidget *location_entry;
-        GtkWidget *path_bar;
-
-        location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->toolbar));
-        nautilus_location_entry_set_location (NAUTILUS_LOCATION_ENTRY (location_entry), location);
-
-        path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->toolbar));
-        nautilus_path_bar_set_path (NAUTILUS_PATH_BAR (path_bar), location);
-
         gtk_widget_set_visible (window->network_address_bar,
                                 g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW));
     }
