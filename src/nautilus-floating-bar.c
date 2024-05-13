@@ -357,8 +357,8 @@ nautilus_floating_bar_constructed (GObject *obj)
                   "hexpand", TRUE,
                   "margin-top", 2,
                   "margin-bottom", 2,
-                  "margin-start", 12,
-                  "margin-end", 12,
+                  "margin-start", 8,
+                  "margin-end", 8,
                   NULL);
 
     w = gtk_label_new (NULL);
@@ -388,6 +388,12 @@ static void
 nautilus_floating_bar_init (NautilusFloatingBar *self)
 {
     gtk_widget_add_css_class (GTK_WIDGET (self), "floating-bar");
+    g_object_set (self,
+                  "margin-top", 4,
+                  "margin-bottom", 4,
+                  "margin-start", 4,
+                  "margin-end", 4,
+                  NULL);
 
     self->motion_controller = NULL;
     self->pointer_in_parent_coordinates.x = -1;
