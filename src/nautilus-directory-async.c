@@ -1892,34 +1892,43 @@ lookup_all_files_monitors (GHashTable *monitor_table)
     return g_hash_table_lookup (monitor_table, NULL);
 }
 
+static gboolean
+nautilus_directory_callback_exists (NautilusDirectory *directory,
+                                    NautilusFile      *file)
+{
+    for (GList *node = directory->details->call_when_ready_lists.unsatisfied;
+         node != NULL; node = node->next)
+    {
+        ReadyCallback *callback = node->data;
+        if (callback->file == file ||
+            callback->file == NULL)
+        {
+            return TRUE;
+        }
+    }
+
+    for (GList *node = directory->details->call_when_ready_lists.ready;
+         node != NULL; node = node->next)
+    {
+        ReadyCallback *callback = node->data;
+        if (callback->file == file ||
+            callback->file == NULL)
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
 gboolean
 nautilus_directory_has_request_for_file (NautilusDirectory *directory,
                                          NautilusFile      *file)
 {
-    GList *node;
-    ReadyCallback *callback;
-
-    for (node = directory->details->call_when_ready_lists.unsatisfied;
-         node != NULL; node = node->next)
+    if (nautilus_directory_callback_exists (directory, file))
     {
-        callback = node->data;
-        if (callback->file == file ||
-            callback->file == NULL)
-        {
-            return TRUE;
-        }
+        return TRUE;
     }
-    for (node = directory->details->call_when_ready_lists.ready;
-         node != NULL; node = node->next)
-    {
-        callback = node->data;
-        if (callback->file == file ||
-            callback->file == NULL)
-        {
-            return TRUE;
-        }
-    }
-
     if (lookup_monitors (directory->details->monitor_table, file) != NULL)
     {
         return TRUE;
