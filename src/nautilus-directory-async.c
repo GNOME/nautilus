@@ -2343,23 +2343,29 @@ is_wanted_by_monitor (NautilusFile *file,
 }
 
 static gboolean
-is_needy (NautilusFile *file,
-          FileCheck     check_missing,
-          RequestType   request_type_wanted)
+nautilus_directory_callbacks_has_unsatisfied_request (NautilusDirectory *directory,
+                                                      NautilusFile      *file,
+                                                      RequestType        request_type)
 {
-    NautilusDirectory *directory;
-    GList *node;
-    ReadyCallback *callback;
-
-    if (!(*check_missing)(file))
+    if (directory->details->call_when_ready_counters[request_type] <= 0)
     {
         return FALSE;
     }
 
-    directory = file->details->directory;
-    if (directory->details->call_when_ready_counters[request_type_wanted] > 0)
+    GList *node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, file);
+
+    for (; node != NULL; node = node->next)
     {
-        node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, file);
+        callback = node->data;
+        if (REQUEST_WANTS_TYPE (callback->request, request_type_wanted))
+        {
+            return TRUE;
+        }
+    }
+
+    if (!nautilus_file_is_self_owned (file))
+    {
+        node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, NULL);
         for (; node != NULL; node = node->next)
         {
             callback = node->data;
@@ -2368,19 +2374,26 @@ is_needy (NautilusFile *file,
                 return TRUE;
             }
         }
+    }
 
-        if (!nautilus_file_is_self_owned (file))
-        {
-            node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, NULL);
-            for (; node != NULL; node = node->next)
-            {
-                callback = node->data;
-                if (REQUEST_WANTS_TYPE (callback->request, request_type_wanted))
-                {
-                    return TRUE;
-                }
-            }
-        }
+    return FALSE;
+}
+
+static gboolean
+is_needy (NautilusFile *file,
+          FileCheck     check_missing,
+          RequestType   request_type_wanted)
+{
+    if (!(*check_missing)(file))
+    {
+        return FALSE;
+    }
+
+    NautilusDirectory *directory = file->details->directory;
+
+    if (nautilus_directory_callbacks_has_unsatisfied_request (directory, file, request_type_wanted))
+    {
+        return TRUE;
     }
 
     if (directory->details->monitor_counters[request_type_wanted] > 0)
