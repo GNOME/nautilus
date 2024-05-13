@@ -1521,25 +1521,19 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
                           state);
 }
 
-void
-nautilus_async_destroying_file (NautilusFile *file)
+static gboolean
+nautilus_directory_callback_clear (NautilusDirectory *directory,
+                                   NautilusFile      *file)
 {
-    NautilusDirectory *directory;
-    gboolean changed;
+    gboolean removed = FALSE;
     GList *node, *next;
-    ReadyCallback *callback;
-    Monitor *monitor;
 
-    directory = file->details->directory;
-    changed = FALSE;
-
-    /* Check for callbacks. */
     node = directory->details->call_when_ready_lists.unsatisfied;
 
     for (; node != NULL; node = next)
     {
+        ReadyCallback *callback = node->data;
         next = node->next;
-        callback = node->data;
 
         if (callback->file != file)
         {
@@ -1550,15 +1544,15 @@ nautilus_async_destroying_file (NautilusFile *file)
         g_warning ("destroyed file has call_when_ready pending");
 
         remove_callback_link (directory, node, FALSE);
-        changed = TRUE;
+        removed = TRUE;
     }
 
     node = directory->details->call_when_ready_lists.unsatisfied;
 
     for (; node != NULL; node = next)
     {
+        ReadyCallback *callback = node->data;
         next = node->next;
-        callback = node->data;
 
         if (callback->file != file)
         {
@@ -1566,19 +1560,31 @@ nautilus_async_destroying_file (NautilusFile *file)
         }
 
         remove_callback_link (directory, node, TRUE);
-        changed = TRUE;
+        removed = TRUE;
     }
 
+    return removed;
+}
+
+void
+nautilus_async_destroying_file (NautilusFile *file)
+{
+    NautilusDirectory *directory = file->details->directory;
+    gboolean changed;
+
+    /* Check for callbacks. */
+    changed = nautilus_directory_callback_clear (directory, file);
+
     /* Check for monitors. */
-    node = g_hash_table_lookup (directory->details->monitor_table, file);
+    GList *node = g_hash_table_lookup (directory->details->monitor_table, file);
     if (node != NULL)
     {
         /* Client should have removed monitor earlier. */
         g_warning ("destroyed file still being monitored");
-        for (; node; node = next)
+        while (node != NULL)
         {
-            next = node->next;
-            monitor = node->data;
+            Monitor *monitor = node->data;
+            node = node->next;
 
             remove_monitor (directory, monitor->file, monitor->client);
         }
