@@ -1960,9 +1960,9 @@ lookup_all_files_monitors (GHashTable *monitor_table)
     return g_hash_table_lookup (monitor_table, NULL);
 }
 
-gboolean
-nautilus_directory_has_request_for_file (NautilusDirectory *directory,
-                                         NautilusFile      *file)
+static gboolean
+nautilus_directory_callbacks_exists (NautilusDirectory *directory,
+                                     NautilusFile      *file)
 {
     if (g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, NULL) != NULL ||
         g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, file) != NULL ||
@@ -1972,6 +1972,17 @@ nautilus_directory_has_request_for_file (NautilusDirectory *directory,
         return TRUE;
     }
 
+    return FALSE;
+}
+
+gboolean
+nautilus_directory_has_request_for_file (NautilusDirectory *directory,
+                                         NautilusFile      *file)
+{
+    if (nautilus_directory_callbacks_exists (directory, file))
+    {
+        return TRUE;
+    }
     if (lookup_monitors (directory->details->monitor_table, file) != NULL)
     {
         return TRUE;
