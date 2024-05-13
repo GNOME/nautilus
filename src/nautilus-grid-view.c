@@ -540,6 +540,8 @@ nautilus_grid_view_init (NautilusGridView *self)
 
     self->view_ui = create_view_ui (self);
     nautilus_list_base_setup_gestures (NAUTILUS_LIST_BASE (self));
+    nautilus_list_base_setup_background_longpress (NAUTILUS_LIST_BASE (self),
+                                                   GTK_WIDGET (self->view_ui));
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window),
                                    GTK_WIDGET (self->view_ui));
