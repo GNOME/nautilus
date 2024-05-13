@@ -2289,13 +2289,41 @@ is_wanted_by_monitor (NautilusFile *file,
 }
 
 static gboolean
+nautilus_directory_callback_unsatisfied_request_exists (NautilusDirectory *directory,
+                                                        NautilusFile      *file,
+                                                        RequestType        request_type)
+{
+    if (directory->details->call_when_ready_counters[request_type] <= 0)
+    {
+        return FALSE;
+    }
+
+    for (GList *node = directory->details->call_when_ready_lists.unsatisfied;
+         node != NULL; node = node->next)
+    {
+        ReadyCallback *callback = node->data;
+
+        if (!REQUEST_WANTS_TYPE (callback->request, request_type))
+        {
+            continue;
+        }
+
+        if (callback->file == file ||
+            (callback->file == NULL && !nautilus_file_is_self_owned (file)))
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+static gboolean
 is_needy (NautilusFile *file,
           FileCheck     check_missing,
           RequestType   request_type_wanted)
 {
     NautilusDirectory *directory;
-    GList *node;
-    ReadyCallback *callback;
 
     if (!(*check_missing)(file))
     {
@@ -2303,25 +2331,9 @@ is_needy (NautilusFile *file,
     }
 
     directory = file->details->directory;
-    if (directory->details->call_when_ready_counters[request_type_wanted] > 0)
+    if (nautilus_directory_callback_unsatisfied_request_exists (directory, file, request_type_wanted))
     {
-        for (node = directory->details->call_when_ready_lists.unsatisfied;
-             node != NULL; node = node->next)
-        {
-            callback = node->data;
-            if (REQUEST_WANTS_TYPE (callback->request, request_type_wanted))
-            {
-                if (callback->file == file)
-                {
-                    return TRUE;
-                }
-                if (callback->file == NULL &&
-                    !nautilus_file_is_self_owned (file))
-                {
-                    return TRUE;
-                }
-            }
-        }
+        return TRUE;
     }
 
     if (directory->details->monitor_counters[request_type_wanted] > 0)
