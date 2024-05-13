@@ -1545,10 +1545,10 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
                           state);
 }
 
-void
-nautilus_async_destroying_file (NautilusFile *file)
+static gboolean
+nautilus_directory_callbacks_clear (NautilusDirectory *directory,
+                                    NautilusFile      *file)
 {
-    NautilusDirectory *directory = file->details->directory;
     gboolean changed = FALSE;
     GList *node;
 
@@ -1575,8 +1575,19 @@ nautilus_async_destroying_file (NautilusFile *file)
         changed = TRUE;
     }
 
+    return changed;
+}
+
+void
+nautilus_async_destroying_file (NautilusFile *file)
+{
+    NautilusDirectory *directory = file->details->directory;
+
+    /* Check for callbacks. */
+    gboolean changed = nautilus_directory_callbacks_clear (directory, file);
+
     /* Check for monitors. */
-    node = g_hash_table_lookup (directory->details->monitor_table, file);
+    GList *node = g_hash_table_lookup (directory->details->monitor_table, file);
     if (node != NULL)
     {
         /* Client should have removed monitor earlier. */
