@@ -1403,23 +1403,34 @@ remove_callback_link (NautilusDirectory *directory,
 }
 
 static void
-remove_similar_callbacks (NautilusDirectory *directory,
-                          ReadyCallback     *callback)
+nautilus_directory_callbacks_remove (NautilusDirectory         *directory,
+                                     NautilusFile              *file,
+                                     NautilusDirectoryCallback  directory_callback,
+                                     NautilusFileCallback       file_callback,
+                                     gpointer                   callback_data)
 {
+    ReadyCallback callback =
+    {
+        .file = file,
+        .callback = (file == NULL) ? (CallbackUnion){.directory = directory_callback} :
+                                     (CallbackUnion){.file = file_callback},
+        .callback_data = callback_data,
+    };
+
     gboolean changed = FALSE;
     GList *list, *node;
 
     /* Remove all queued ready callbacks */
-    list = g_hash_table_lookup (directory->details->call_when_ready_hash.ready, callback->file);
-    while ((node = g_list_find_custom (list, callback, ready_callback_key_compare)) != NULL)
+    list = g_hash_table_lookup (directory->details->call_when_ready_hash.ready, callback.file);
+    while ((node = g_list_find_custom (list, &callback, ready_callback_key_compare)) != NULL)
     {
         list = remove_callback_link (directory, node, TRUE);
         changed = TRUE;
     }
 
     /* Remove all queued unsatisfied callbacks */
-    list = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, callback->file);
-    while ((node = g_list_find_custom (list, callback, ready_callback_key_compare)) != NULL)
+    list = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied, callback.file);
+    while ((node = g_list_find_custom (list, &callback, ready_callback_key_compare)) != NULL)
     {
         list = remove_callback_link (directory, node, FALSE);
         changed = TRUE;
@@ -1438,8 +1449,6 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory         *director
                                              NautilusFileCallback       file_callback,
                                              gpointer                   callback_data)
 {
-    ReadyCallback callback;
-
     if (directory == NULL)
     {
         return;
@@ -1450,19 +1459,7 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory         *director
     g_assert (file != NULL || directory_callback != NULL);
     g_assert (file == NULL || file_callback != NULL);
 
-    /* Construct a callback object. */
-    callback.file = file;
-    if (file == NULL)
-    {
-        callback.callback.directory = directory_callback;
-    }
-    else
-    {
-        callback.callback.file = file_callback;
-    }
-    callback.callback_data = callback_data;
-
-    remove_similar_callbacks (directory, &callback);
+    nautilus_directory_callbacks_remove (directory, file, directory_callback, file_callback, callback_data);
 }
 
 static void
