@@ -1371,9 +1371,19 @@ remove_callback_link (NautilusDirectory *directory,
 }
 
 static void
-remove_similar_callbacks (NautilusDirectory *directory,
-                          ReadyCallback     *callback)
+nautilus_directory_callback_remove (NautilusDirectory         *directory,
+                                    NautilusFile              *file,
+                                    NautilusDirectoryCallback  directory_callback,
+                                    NautilusFileCallback       file_callback,
+                                    gpointer                   callback_data)
 {
+    ReadyCallback callback = {
+        .file = file,
+        .callback = (file == NULL) ? (CallbackUnion){.directory = directory_callback} :
+                                     (CallbackUnion){.file = file_callback},
+        .callback_data = callback_data,
+    };
+
     GList *node;
 
     /* Remove all queued callback from the list (including ready). */
@@ -1413,8 +1423,6 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory         *director
                                              NautilusFileCallback       file_callback,
                                              gpointer                   callback_data)
 {
-    ReadyCallback callback;
-
     if (directory == NULL)
     {
         return;
@@ -1425,19 +1433,7 @@ nautilus_directory_cancel_callback_internal (NautilusDirectory         *director
     g_assert (file != NULL || directory_callback != NULL);
     g_assert (file == NULL || file_callback != NULL);
 
-    /* Construct a callback object. */
-    callback.file = file;
-    if (file == NULL)
-    {
-        callback.callback.directory = directory_callback;
-    }
-    else
-    {
-        callback.callback.file = file_callback;
-    }
-    callback.callback_data = callback_data;
-
-    remove_similar_callbacks (directory, &callback);
+    nautilus_directory_callback_remove (directory, file, directory_callback, file_callback, callback_data);
 }
 
 static void
