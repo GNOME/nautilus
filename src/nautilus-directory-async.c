@@ -106,16 +106,16 @@ struct DeepCountState
     char *fs_id;
 };
 
-
+typedef union
+{
+    NautilusDirectoryCallback directory;
+    NautilusFileCallback file;
+} CallbackUnion;
 
 typedef struct
 {
     NautilusFile *file;     /* Which file, NULL means all. */
-    union
-    {
-        NautilusDirectoryCallback directory;
-        NautilusFileCallback file;
-    } callback;
+    CallbackUnion callback;
     gpointer callback_data;
     Request request;
 } ReadyCallback;
@@ -1249,37 +1249,22 @@ ready_callback_call (NautilusDirectory   *directory,
     }
 }
 
-void
-nautilus_directory_call_when_ready_internal (NautilusDirectory         *directory,
-                                             NautilusFile              *file,
-                                             NautilusFileAttributes     file_attributes,
-                                             gboolean                   wait_for_file_list,
-                                             NautilusDirectoryCallback  directory_callback,
-                                             NautilusFileCallback       file_callback,
-                                             gpointer                   callback_data)
+static void
+nautilus_directory_callback_add (NautilusDirectory         *directory,
+                                 NautilusFile              *file,
+                                 Request                    request,
+                                 NautilusDirectoryCallback  directory_callback,
+                                 NautilusFileCallback       file_callback,
+                                 gpointer                   callback_data)
 {
-    ReadyCallback callback;
-
-    g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (file == NULL || NAUTILUS_IS_FILE (file));
-    g_assert (file != NULL || directory_callback != NULL);
-
     /* Construct a callback object. */
-    callback.file = file;
-    if (file == NULL)
-    {
-        callback.callback.directory = directory_callback;
-    }
-    else
-    {
-        callback.callback.file = file_callback;
-    }
-    callback.callback_data = callback_data;
-    callback.request = nautilus_directory_set_up_request (file_attributes);
-    if (wait_for_file_list)
-    {
-        REQUEST_SET_TYPE (callback.request, REQUEST_FILE_LIST);
-    }
+    ReadyCallback callback = {
+        .file = file,
+        .callback = (file == NULL) ? (CallbackUnion){.directory = directory_callback} :
+                                     (CallbackUnion){.file = file_callback},
+        .callback_data = callback_data,
+        .request = request
+    };
 
     /* Handle the NULL case. */
     if (directory == NULL)
@@ -1306,7 +1291,30 @@ nautilus_directory_call_when_ready_internal (NautilusDirectory         *director
     directory->details->call_when_ready_lists.unsatisfied = unsatisfied_list;
 
     request_counter_add_request (directory->details->call_when_ready_counters,
-                                 callback.request);
+                                 request);
+}
+
+void
+nautilus_directory_call_when_ready_internal (NautilusDirectory         *directory,
+                                             NautilusFile              *file,
+                                             NautilusFileAttributes     file_attributes,
+                                             gboolean                   wait_for_file_list,
+                                             NautilusDirectoryCallback  directory_callback,
+                                             NautilusFileCallback       file_callback,
+                                             gpointer                   callback_data)
+{
+    g_assert (directory == NULL || NAUTILUS_IS_DIRECTORY (directory));
+    g_assert (file == NULL || NAUTILUS_IS_FILE (file));
+    g_assert (file != NULL || directory_callback != NULL);
+
+    Request request = nautilus_directory_set_up_request (file_attributes);
+
+    if (wait_for_file_list)
+    {
+        REQUEST_SET_TYPE (request, REQUEST_FILE_LIST);
+    }
+
+    nautilus_directory_callback_add (directory, file, request, directory_callback, file_callback, callback_data);
 
     /* Put the callback file or all the files on the work queue. */
     if (file != NULL)
