@@ -681,12 +681,23 @@ update_cut_status_callback (GObject      *source_object,
                             GAsyncResult *res,
                             gpointer      user_data)
 {
-    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    NautilusFilesView *self;
+    NautilusFilesViewPrivate *priv;
     const GValue *value;
     GList *cut_files = NULL;
+    g_autoptr (GError) error = NULL;
 
-    value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, NULL);
+    value = gdk_clipboard_read_value_finish (GDK_CLIPBOARD (source_object), res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* The files view has already been disposed, bailout */
+        return;
+    }
+
+    self = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (self);
+
     if (value != NULL &&
         G_VALUE_HOLDS (value, NAUTILUS_TYPE_CLIPBOARD))
     {
