@@ -26,6 +26,7 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file-private.h"
+#include "nautilus-request.h"
 #include <glib/gi18n.h>
 
 G_DEFINE_TYPE (NautilusVFSFile, nautilus_vfs_file, NAUTILUS_TYPE_FILE);
@@ -85,12 +86,8 @@ static gboolean
 vfs_file_check_if_ready (NautilusFile           *file,
                          NautilusFileAttributes  file_attributes)
 {
-    NautilusDirectory *directory;
-
-    directory = nautilus_file_get_directory (file);
-
-    return nautilus_directory_check_if_ready_internal (directory, file,
-                                                       file_attributes);
+    Request request = nautilus_request_new (file_attributes, FALSE);
+    return nautilus_request_file_is_ready (request, file);
 }
 
 static void

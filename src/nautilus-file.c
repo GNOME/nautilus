@@ -8135,7 +8135,7 @@ nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
         return;
     }
 
-    request = nautilus_directory_set_up_request (file_attributes);
+    request = nautilus_request_new (file_attributes, FALSE);
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT))
     {

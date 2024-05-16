@@ -217,6 +217,8 @@ libnautilus_sources = [
   'nautilus-recent-servers.h',
   'nautilus-rename-file-popover.c',
   'nautilus-rename-file-popover.h',
+  'nautilus-request.c',
+  'nautilus-request.h',
   'nautilus-scheme.c',
   'nautilus-scheme.h',
   'nautilus-search-directory.c',
