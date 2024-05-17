@@ -458,6 +458,25 @@ GList *                 nautilus_file_list_filter                       (GList  
                                                                          gpointer                        user_data);
 gboolean                nautilus_file_list_are_all_folders              (const GList                    *files);
 
+/* Attribute checking */
+
+gboolean
+nautilus_file_needs_deep_count (NautilusFile *file);
+gboolean
+nautilus_file_needs_directory_count (NautilusFile *file);
+gboolean
+nautilus_file_needs_extension_info (NautilusFile *file);
+gboolean
+nautilus_file_needs_file_info (NautilusFile *file);
+gboolean
+nautilus_file_needs_filesystem_info (NautilusFile *file);
+gboolean
+nautilus_file_needs_mount (NautilusFile *file);
+gboolean
+nautilus_file_needs_thumbnail_buffer (NautilusFile *file);
+gboolean
+nautilus_file_needs_thumbnail_info (NautilusFile *file);
+
 /* Debugging */
 
 void                    nautilus_file_dump                              (NautilusFile                   *file);

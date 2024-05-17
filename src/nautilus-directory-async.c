@@ -1669,76 +1669,9 @@ nautilus_async_destroying_file (NautilusFile *file)
 }
 
 static gboolean
-lacks_directory_count (NautilusFile *file)
-{
-    return !file->details->directory_count_is_up_to_date
-           && nautilus_file_should_show_directory_item_count (file);
-}
-
-static gboolean
 should_get_directory_count_now (NautilusFile *file)
 {
-    return lacks_directory_count (file)
-           && !file->details->loading_directory;
-}
-
-static gboolean
-lacks_info (NautilusFile *file)
-{
-    return !file->details->file_info_is_up_to_date
-           && !file->details->is_gone;
-}
-
-static gboolean
-lacks_filesystem_info (NautilusFile *file)
-{
-    return !file->details->filesystem_info_is_up_to_date;
-}
-
-static gboolean
-lacks_deep_count (NautilusFile *file)
-{
-    return file->details->deep_counts_status != NAUTILUS_REQUEST_DONE;
-}
-
-static gboolean
-lacks_extension_info (NautilusFile *file)
-{
-    return file->details->pending_info_providers != NULL;
-}
-
-static gboolean
-lacks_thumbnail_info (NautilusFile *file)
-{
-    return !file->details->thumbnail_info_is_up_to_date;
-}
-
-static gboolean
-lacks_thumbnail_buf (NautilusFile *file)
-{
-    return file->details->thumbnail_info_is_up_to_date &&
-           file->details->thumbnail_path != NULL &&
-           !file->details->thumbnail_is_up_to_date &&
-           nautilus_file_should_show_thumbnail (file);
-}
-
-static gboolean
-lacks_mount (NautilusFile *file)
-{
-    return (!file->details->mount_is_up_to_date &&
-            (
-                /* Unix mountpoint, could be a GMount */
-                file->details->is_mountpoint ||
-
-                /* The toplevel directory of something */
-                (file->details->type == G_FILE_TYPE_DIRECTORY &&
-                 nautilus_file_is_self_owned (file)) ||
-
-                /* Mountable, could be a mountpoint */
-                (file->details->type == G_FILE_TYPE_MOUNTABLE)
-
-            )
-            );
+    return nautilus_file_needs_directory_count (file);
 }
 
 static gboolean
@@ -1778,7 +1711,7 @@ request_is_satisfied (NautilusDirectory *directory,
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT))
     {
-        if (has_problem (directory, file, lacks_directory_count))
+        if (has_problem (directory, file, nautilus_file_needs_directory_count))
         {
             return FALSE;
         }
@@ -1786,7 +1719,7 @@ request_is_satisfied (NautilusDirectory *directory,
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
     {
-        if (has_problem (directory, file, lacks_info))
+        if (has_problem (directory, file, nautilus_file_needs_file_info))
         {
             return FALSE;
         }
@@ -1794,7 +1727,7 @@ request_is_satisfied (NautilusDirectory *directory,
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO))
     {
-        if (has_problem (directory, file, lacks_filesystem_info))
+        if (has_problem (directory, file, nautilus_file_needs_filesystem_info))
         {
             return FALSE;
         }
@@ -1802,7 +1735,7 @@ request_is_satisfied (NautilusDirectory *directory,
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
     {
-        if (has_problem (directory, file, lacks_deep_count))
+        if (has_problem (directory, file, nautilus_file_needs_deep_count))
         {
             return FALSE;
         }
@@ -1810,7 +1743,7 @@ request_is_satisfied (NautilusDirectory *directory,
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_INFO))
     {
-        if (has_problem (directory, file, lacks_thumbnail_info))
+        if (has_problem (directory, file, nautilus_file_needs_thumbnail_info))
         {
             return FALSE;
         }
@@ -1818,7 +1751,7 @@ request_is_satisfied (NautilusDirectory *directory,
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_BUFFER))
     {
-        if (has_problem (directory, file, lacks_thumbnail_buf))
+        if (has_problem (directory, file, nautilus_file_needs_thumbnail_buffer))
         {
             return FALSE;
         }
@@ -1826,7 +1759,7 @@ request_is_satisfied (NautilusDirectory *directory,
 
     if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT))
     {
-        if (has_problem (directory, file, lacks_mount))
+        if (has_problem (directory, file, nautilus_file_needs_mount))
         {
             return FALSE;
         }
@@ -2956,7 +2889,7 @@ deep_count_stop (NautilusDirectory *directory)
             g_assert (NAUTILUS_IS_FILE (file));
             g_assert (file->details->directory == directory);
             if (is_needy (file,
-                          lacks_deep_count,
+                          nautilus_file_needs_deep_count,
                           REQUEST_DEEP_COUNT))
             {
                 return;
@@ -3003,7 +2936,7 @@ deep_count_start (NautilusDirectory *directory,
     }
 
     if (!is_needy (file,
-                   lacks_deep_count,
+                   nautilus_file_needs_deep_count,
                    REQUEST_DEEP_COUNT))
     {
         return;
@@ -3135,7 +3068,7 @@ file_info_stop (NautilusDirectory *directory)
         {
             g_assert (NAUTILUS_IS_FILE (file));
             g_assert (file->details->directory == directory);
-            if (is_needy (file, lacks_info, REQUEST_FILE_INFO))
+            if (is_needy (file, nautilus_file_needs_file_info, REQUEST_FILE_INFO))
             {
                 return;
             }
@@ -3162,7 +3095,7 @@ file_info_start (NautilusDirectory *directory,
         return;
     }
 
-    if (!is_needy (file, lacks_info, REQUEST_FILE_INFO))
+    if (!is_needy (file, nautilus_file_needs_file_info, REQUEST_FILE_INFO))
     {
         return;
     }
@@ -3219,7 +3152,7 @@ thumbnail_info_stop (NautilusDirectory *directory)
         g_assert (file->details->directory == directory);
 
         if (is_needy (file,
-                      lacks_thumbnail_info,
+                      nautilus_file_needs_thumbnail_info,
                       REQUEST_THUMBNAIL_INFO))
         {
             return;
@@ -3290,7 +3223,7 @@ thumbnail_info_start (NautilusDirectory *directory,
     }
 
     if (!is_needy (file,
-                   lacks_thumbnail_info,
+                   nautilus_file_needs_thumbnail_info,
                    REQUEST_THUMBNAIL_INFO))
     {
         return;
@@ -3415,7 +3348,7 @@ thumbnail_buf_stop (NautilusDirectory *directory)
             g_assert (NAUTILUS_IS_FILE (file));
             g_assert (file->details->directory == directory);
             if (is_needy (file,
-                          lacks_thumbnail_buf,
+                          nautilus_file_needs_thumbnail_buffer,
                           REQUEST_THUMBNAIL_BUFFER))
             {
                 return;
@@ -3542,7 +3475,7 @@ thumbnail_buf_start (NautilusDirectory *directory,
     }
 
     if (!is_needy (file,
-                   lacks_thumbnail_buf,
+                   nautilus_file_needs_thumbnail_buffer,
                    REQUEST_THUMBNAIL_BUFFER))
     {
         return;
@@ -3585,7 +3518,7 @@ mount_stop (NautilusDirectory *directory)
             g_assert (NAUTILUS_IS_FILE (file));
             g_assert (file->details->directory == directory);
             if (is_needy (file,
-                          lacks_mount,
+                          nautilus_file_needs_mount,
                           REQUEST_MOUNT))
             {
                 return;
@@ -3687,7 +3620,7 @@ mount_start (NautilusDirectory *directory,
     }
 
     if (!is_needy (file,
-                   lacks_mount,
+                   nautilus_file_needs_mount,
                    REQUEST_MOUNT))
     {
         return;
@@ -3765,7 +3698,7 @@ filesystem_info_stop (NautilusDirectory *directory)
             g_assert (NAUTILUS_IS_FILE (file));
             g_assert (file->details->directory == directory);
             if (is_needy (file,
-                          lacks_filesystem_info,
+                          nautilus_file_needs_filesystem_info,
                           REQUEST_FILESYSTEM_INFO))
             {
                 return;
@@ -3861,7 +3794,7 @@ filesystem_info_start (NautilusDirectory *directory,
     }
 
     if (!is_needy (file,
-                   lacks_filesystem_info,
+                   nautilus_file_needs_filesystem_info,
                    REQUEST_FILESYSTEM_INFO))
     {
         return;
@@ -3930,7 +3863,7 @@ extension_info_stop (NautilusDirectory *directory)
         {
             g_assert (NAUTILUS_IS_FILE (file));
             g_assert (file->details->directory == directory);
-            if (is_needy (file, lacks_extension_info, REQUEST_EXTENSION_INFO))
+            if (is_needy (file, nautilus_file_needs_extension_info, REQUEST_EXTENSION_INFO))
             {
                 return;
             }
@@ -4033,7 +3966,7 @@ extension_info_start (NautilusDirectory *directory,
         return;
     }
 
-    if (!is_needy (file, lacks_extension_info, REQUEST_EXTENSION_INFO))
+    if (!is_needy (file, nautilus_file_needs_extension_info, REQUEST_EXTENSION_INFO))
     {
         return;
     }
