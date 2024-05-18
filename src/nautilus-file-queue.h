@@ -30,12 +30,6 @@ void               nautilus_file_queue_destroy  (NautilusFileQueue *queue);
 void               nautilus_file_queue_enqueue  (NautilusFileQueue *queue,
 						 NautilusFile      *file);
 
-/* Return the file at the head of the queue after removing it from the
- * queue. This is dangerous unless you have another ref to the file,
- * since it will unref it.  
- */
-NautilusFile *     nautilus_file_queue_dequeue  (NautilusFileQueue *queue);
-
 /* Remove a file from an arbitrary point in the queue in constant time. */
 void               nautilus_file_queue_remove   (NautilusFileQueue *queue,
 						 NautilusFile      *file);

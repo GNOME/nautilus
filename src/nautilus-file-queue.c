@@ -73,18 +73,6 @@ nautilus_file_queue_enqueue (NautilusFileQueue *queue,
     g_hash_table_insert (queue->item_to_link_map, file, queue->tail);
 }
 
-NautilusFile *
-nautilus_file_queue_dequeue (NautilusFileQueue *queue)
-{
-    NautilusFile *file;
-
-    file = nautilus_file_queue_head (queue);
-    nautilus_file_queue_remove (queue, file);
-
-    return file;
-}
-
-
 void
 nautilus_file_queue_remove (NautilusFileQueue *queue,
                             NautilusFile      *file)
