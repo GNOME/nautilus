@@ -1527,6 +1527,13 @@ nautilus_directory_get_file_list (NautilusDirectory *directory)
 }
 
 gboolean
+nautilus_directory_has_file_list (NautilusDirectory *directory)
+{
+    return directory->details->directory_loaded &&
+           directory->details->directory_loaded_sent_notification;
+}
+
+gboolean
 nautilus_directory_is_editable (NautilusDirectory *directory)
 {
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->is_editable (directory);

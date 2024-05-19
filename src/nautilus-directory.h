@@ -210,6 +210,7 @@ void               nautilus_directory_force_reload             (NautilusDirector
 
 /* Get a list of all files currently known in the directory. */
 GList *            nautilus_directory_get_file_list            (NautilusDirectory         *directory);
+gboolean           nautilus_directory_has_file_list            (NautilusDirectory         *directory);
 
 GList *            nautilus_directory_match_pattern            (NautilusDirectory         *directory,
 							        const char *glob);

@@ -1703,8 +1703,7 @@ request_is_satisfied (NautilusDirectory *directory,
                       Request            request)
 {
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_LIST) &&
-        !(directory->details->directory_loaded &&
-          directory->details->directory_loaded_sent_notification))
+        !nautilus_directory_has_file_list (directory))
     {
         return FALSE;
     }
