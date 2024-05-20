@@ -169,61 +169,82 @@ static void     move_file_to_extension_queue (NautilusDirectory *directory,
 static void     nautilus_directory_invalidate_file_attributes (NautilusDirectory     *directory,
                                                                NautilusFileAttributes file_attributes);
 
-#if 0
-static void
-nautilus_directory_verify_request_counts (NautilusDirectory *directory)
+static gboolean
+nautilus_directory_callbacks_verify_request_counts (NautilusDirectory *directory)
 {
-    GList *l;
-    RequestCounter counters;
-    int i;
-    gboolean fail;
-    GHashTableIter monitor_iter;
+    RequestCounter counters = {0};
+    gboolean ok = TRUE;
+    GHashTableIter hash_iter;
     gpointer value;
 
-    fail = FALSE;
-    for (i = 0; i < REQUEST_TYPE_LAST; i++)
+    g_hash_table_iter_init (&hash_iter, directory->details->call_when_ready_hash.ready);
+    while (g_hash_table_iter_next (&hash_iter, NULL, &value))
     {
-        counters[i] = 0;
-    }
-    g_hash_table_iter_init (&monitor_iter, directory->details->monitor_table);
-    while (g_hash_table_iter_next (&monitor_iter, NULL, &value))
-    {
-        for (l = value; l; l = l->next)
+        for (GList *node = value; node != NULL; node = node->next)
         {
-            Monitor *monitor = l->data;
-            nautilus_request_counter_add (counters, monitor->request);
+            ReadyCallback *callback = node->data;
+            nautilus_request_counter_add (counters, callback->request);
         }
     }
-    for (i = 0; i < REQUEST_TYPE_LAST; i++)
+
+    g_hash_table_iter_init (&hash_iter, directory->details->call_when_ready_hash.unsatisfied);
+    while (g_hash_table_iter_next (&hash_iter, NULL, &value))
     {
-        if (counters[i] != directory->details->monitor_counters[i])
+        for (GList *node = value; node != NULL; node = node->next)
         {
-            g_warning ("monitor counter for %i is wrong, expecting %d but found %d",
-                       i, counters[i], directory->details->monitor_counters[i]);
-            fail = TRUE;
+            ReadyCallback *callback = node->data;
+            nautilus_request_counter_add (counters, callback->request);
         }
     }
-    for (i = 0; i < REQUEST_TYPE_LAST; i++)
-    {
-        counters[i] = 0;
-    }
-    for (l = directory->details->call_when_ready_list; l != NULL; l = l->next)
-    {
-        ReadyCallback *callback = l->data;
-        nautilus_request_counter_add (counters, callback->request);
-    }
-    for (i = 0; i < REQUEST_TYPE_LAST; i++)
+
+    for (uint i = 0; i < REQUEST_TYPE_LAST; i++)
     {
         if (counters[i] != directory->details->call_when_ready_counters[i])
         {
             g_warning ("call when ready counter for %i is wrong, expecting %d but found %d",
                        i, counters[i], directory->details->call_when_ready_counters[i]);
-            fail = TRUE;
+            ok = FALSE;
         }
     }
-    g_assert (!fail);
+
+    return ok;
 }
+
+/** Debug method that checks if counters match */
+gboolean
+nautilus_directory_verify_counters (NautilusDirectory *directory)
+{
+    gboolean ok;
+
+    ok = nautilus_directory_callbacks_verify_request_counts (directory);
+
+#if 0
+    RequestCounter counters = {0};
+    GHashTableIter monitor_iter;
+    gpointer value;
+
+    g_hash_table_iter_init (&monitor_iter, directory->details->monitor_table);
+    while (g_hash_table_iter_next (&monitor_iter, NULL, &value))
+    {
+        for (GList *l = value; l != NULL; l = l->next)
+        {
+            Monitor *monitor = l->data;
+            nautilus_request_counter_add (counters, monitor->request);
+        }
+    }
+    for (uint i = 0; i < REQUEST_TYPE_LAST; i++)
+    {
+        if (counters[i] != directory->details->monitor_counters[i])
+        {
+            g_warning ("monitor counter for %i is wrong, expecting %d but found %d",
+                       i, counters[i], directory->details->monitor_counters[i]);
+            ok = FALSE;
+        }
+    }
 #endif
+
+    return ok;
+}
 
 /* Start a job. This is really just a way of limiting the number of
  * async. requests that we issue at any given time. Without this, the

@@ -79,8 +79,11 @@ test_directory_call_when_ready (void)
                                         got_files_callback, &data_dummy);
     for (guint i = 0; !got_files_flag && i < 100000; i++)
     {
+        g_assert_true (nautilus_directory_verify_counters (directory));
         g_main_context_iteration (NULL, TRUE);
     }
+
+    g_assert_true (nautilus_directory_verify_counters (directory));
 
     g_assert_true (got_files_flag);
     /* Every NautilusFile created by call_when_ready must have been

@@ -208,3 +208,4 @@ void               nautilus_directory_prioritze_file                  (NautilusD
 
 /* debugging functions */
 int                nautilus_directory_number_outstanding              (void);
+gboolean           nautilus_directory_verify_counters                 (NautilusDirectory *directory);
