@@ -1235,7 +1235,7 @@ nautilus_directory_callbacks_add (NautilusDirectory         *directory,
 
     if (g_list_find_custom (node, &callback, ready_callback_key_compare) != NULL)
     {
-        if (file_callback != NULL && directory_callback != NULL)
+        if (file_callback != NULL || directory_callback != NULL)
         {
             g_warning ("tried to add a new callback while an old one was pending");
         }
