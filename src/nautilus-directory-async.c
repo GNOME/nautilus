@@ -158,9 +158,8 @@ static GHashTable *async_jobs;
 /* Forward declarations for functions that need them. */
 static void     deep_count_load (DeepCountState *state,
                                  GFile          *location);
-static gboolean request_is_satisfied (NautilusDirectory *directory,
-                                      NautilusFile      *file,
-                                      Request            request);
+static gboolean nautilus_request_file_is_ready (Request       request,
+                                                NautilusFile *file);
 static void     cancel_loading_attributes (NautilusDirectory     *directory,
                                            NautilusFileAttributes file_attributes);
 static void     add_all_files_to_work_queue (NautilusDirectory *directory);
@@ -1365,7 +1364,8 @@ nautilus_directory_check_if_ready_internal (NautilusDirectory      *directory,
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
     request = nautilus_directory_set_up_request (file_attributes);
-    return request_is_satisfied (directory, file, request);
+
+    return nautilus_request_file_is_ready (request, file);
 }
 
 static GList *
@@ -1675,90 +1675,81 @@ should_get_directory_count_now (NautilusFile *file)
 }
 
 static gboolean
-has_problem (NautilusDirectory *directory,
-             NautilusFile      *file,
-             FileCheck          problem)
+file_is_ready (Request       request,
+               NautilusFile *file)
 {
-    GList *node;
-
-    if (file != NULL)
+    if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT) &&
+        nautilus_file_needs_directory_count (file))
     {
-        return (*problem)(file);
+        return FALSE;
     }
 
-    for (node = directory->details->file_list; node != NULL; node = node->next)
+    if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO) &&
+        nautilus_file_needs_file_info (file))
     {
-        if ((*problem)(node->data))
-        {
-            return TRUE;
-        }
+        return FALSE;
     }
 
-    return FALSE;
+    if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO) &&
+        nautilus_file_needs_filesystem_info (file))
+    {
+        return FALSE;
+    }
+
+    if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT) &&
+        nautilus_file_needs_deep_count (file))
+    {
+        return FALSE;
+    }
+
+    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_BUFFER) &&
+        nautilus_file_needs_thumbnail_buffer (file))
+    {
+        return FALSE;
+    }
+
+    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_INFO) &&
+        nautilus_file_needs_thumbnail_info (file))
+    {
+        return FALSE;
+    }
+
+    if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT) &&
+        nautilus_file_needs_mount (file))
+    {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+gboolean
+nautilus_request_file_is_ready (Request       request,
+                                NautilusFile *file)
+{
+    g_return_val_if_fail (file != NULL, FALSE);
+    g_return_val_if_fail (!REQUEST_WANTS_TYPE (request, REQUEST_FILE_LIST), FALSE);
+
+    return file_is_ready (request, file);
 }
 
 static gboolean
-request_is_satisfied (NautilusDirectory *directory,
-                      NautilusFile      *file,
-                      Request            request)
+nautilus_request_directory_is_ready (Request            request,
+                                     NautilusDirectory *directory)
 {
+    g_return_val_if_fail (directory != NULL, FALSE);
+
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_LIST) &&
         !nautilus_directory_has_file_list (directory))
     {
         return FALSE;
     }
 
-    if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT))
+    for (GList *node = directory->details->file_list; node != NULL; node = node->next) 
     {
-        if (has_problem (directory, file, nautilus_file_needs_directory_count))
-        {
-            return FALSE;
-        }
-    }
+        NautilusFile *file = node->data;
 
-    if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
-    {
-        if (has_problem (directory, file, nautilus_file_needs_file_info))
-        {
-            return FALSE;
-        }
-    }
-
-    if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO))
-    {
-        if (has_problem (directory, file, nautilus_file_needs_filesystem_info))
-        {
-            return FALSE;
-        }
-    }
-
-    if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
-    {
-        if (has_problem (directory, file, nautilus_file_needs_deep_count))
-        {
-            return FALSE;
-        }
-    }
-
-    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_INFO))
-    {
-        if (has_problem (directory, file, nautilus_file_needs_thumbnail_info))
-        {
-            return FALSE;
-        }
-    }
-
-    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_BUFFER))
-    {
-        if (has_problem (directory, file, nautilus_file_needs_thumbnail_buffer))
-        {
-            return FALSE;
-        }
-    }
-
-    if (REQUEST_WANTS_TYPE (request, REQUEST_MOUNT))
-    {
-        if (has_problem (directory, file, nautilus_file_needs_mount))
+        if (!file_is_ready (request, file))
         {
             return FALSE;
         }
@@ -1839,7 +1830,9 @@ call_ready_callbacks (NautilusDirectory *directory)
             next = node->next;
             ReadyCallback *callback = node->data;
 
-            if (!request_is_satisfied (directory, callback->file, callback->request))
+            if ((callback->file != NULL)
+                ? !nautilus_request_file_is_ready (callback->request, callback->file)
+                : !nautilus_request_directory_is_ready (callback->request, directory))
             {
                 continue;
             }
