@@ -65,6 +65,13 @@ vfs_file_call_when_ready (NautilusFile           *file,
 
     directory = nautilus_file_get_directory (file);
 
+    if (directory == NULL)
+    {
+        /* No parent directory, call callback directly */
+        (*callback)(file, callback_data);
+        return;
+    }
+
     nautilus_directory_call_when_ready_internal (directory, file, file_attributes,
                                                  FALSE, NULL, callback, callback_data);
 }
@@ -77,6 +84,12 @@ vfs_file_cancel_call_when_ready (NautilusFile         *file,
     NautilusDirectory *directory;
 
     directory = nautilus_file_get_directory (file);
+
+    if (directory == NULL)
+    {
+        /* No parent directory, no callback */
+        return;
+    }
 
     nautilus_directory_cancel_callback_internal (directory, file, NULL,
                                                  callback, callback_data);
