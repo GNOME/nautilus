@@ -122,13 +122,30 @@ NautilusDirectory *nautilus_directory_get_existing                    (GFile    
 
 /* async. interface */
 void               nautilus_directory_async_state_changed             (NautilusDirectory         *directory);
-void               nautilus_directory_call_when_ready_internal        (NautilusDirectory         *directory,
-								       NautilusFile              *file,
-								       NautilusFileAttributes     file_attributes,
-								       gboolean                   wait_for_file_list,
-								       NautilusDirectoryCallback  directory_callback,
-								       NautilusFileCallback       file_callback,
-								       gpointer                   callback_data);
+
+void
+nautilus_directory_call_when_directory_ready (NautilusDirectory         *directory,
+                                              NautilusFileAttributes     file_attributes,
+                                              gboolean                   wait_for_file_list,
+                                              NautilusDirectoryCallback  directory_callback,
+                                              gpointer                   callback_data);
+void
+nautilus_directory_call_when_file_ready (NautilusDirectory         *directory,
+                                         NautilusFile              *file,
+                                         NautilusFileAttributes     file_attributes,
+                                         NautilusFileCallback       file_callback,
+                                         gpointer                   callback_data);
+
+void
+nautilus_directory_cancel_directory_callback (NautilusDirectory         *directory,
+                                              NautilusDirectoryCallback  directory_callback,
+                                              gpointer                   callback_data);
+void
+nautilus_directory_cancel_file_callback (NautilusDirectory         *directory,
+                                         NautilusFile              *file,
+                                         NautilusFileCallback       file_callback,
+                                         gpointer                   callback_data);
+
 void               nautilus_directory_cancel_callback_internal        (NautilusDirectory         *directory,
 								       NautilusFile              *file,
 								       NautilusDirectoryCallback  directory_callback,
