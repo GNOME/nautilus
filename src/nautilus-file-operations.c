@@ -7222,7 +7222,7 @@ retry:
             res = g_file_copy (job->src,
                                dest,
                                G_FILE_COPY_TARGET_DEFAULT_PERMS |
-                               job->new_mtime ? G_FILE_COPY_TARGET_DEFAULT_MODIFIED_TIME : 0,
+                               (job->new_mtime ? G_FILE_COPY_TARGET_DEFAULT_MODIFIED_TIME : 0),
                                common->cancellable,
                                NULL, NULL,
                                &error);
