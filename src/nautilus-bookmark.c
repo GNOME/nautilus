@@ -190,37 +190,28 @@ gboolean
 nautilus_bookmark_get_xdg_type (NautilusBookmark *bookmark,
                                 GUserDirectory   *directory)
 {
-    gboolean match;
-    GFile *location;
-    const gchar *path;
-    GUserDirectory dir;
-
-    match = FALSE;
-
-    for (dir = 0; dir < G_USER_N_DIRECTORIES; dir++)
+    for (GUserDirectory dir = 0; dir < G_USER_N_DIRECTORIES; dir++)
     {
-        path = g_get_user_special_dir (dir);
-        if (!path)
+        const gchar *path = g_get_user_special_dir (dir);
+
+        if (path == NULL)
         {
             continue;
         }
 
-        location = g_file_new_for_path (path);
-        match = g_file_equal (location, bookmark->location);
-        g_object_unref (location);
+        g_autoptr (GFile) location = g_file_new_for_path (path);
 
-        if (match)
+        if (g_file_equal (location, bookmark->location))
         {
-            break;
+            if (directory != NULL)
+            {
+                *directory = dir;
+            }
+            return TRUE;
         }
     }
 
-    if (match && directory != NULL)
-    {
-        *directory = dir;
-    }
-
-    return match;
+    return FALSE;
 }
 
 static GIcon *
@@ -228,44 +219,20 @@ get_native_icon (NautilusBookmark *bookmark,
                  gboolean          symbolic)
 {
     GUserDirectory xdg_type;
-    GIcon *icon = NULL;
 
-    if (bookmark->file == NULL)
-    {
-        goto out;
-    }
-
-    if (!nautilus_bookmark_get_xdg_type (bookmark, &xdg_type))
-    {
-        goto out;
-    }
-
-    if (xdg_type < G_USER_N_DIRECTORIES)
+    if (nautilus_bookmark_get_xdg_type (bookmark, &xdg_type))
     {
         if (symbolic)
         {
-            icon = nautilus_special_directory_get_symbolic_icon (xdg_type);
+            return nautilus_special_directory_get_symbolic_icon (xdg_type);
         }
         else
         {
-            icon = nautilus_special_directory_get_icon (xdg_type);
+            return nautilus_special_directory_get_icon (xdg_type);
         }
     }
 
-out:
-    if (icon == NULL)
-    {
-        if (symbolic)
-        {
-            icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER);
-        }
-        else
-        {
-            icon = g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER);
-        }
-    }
-
-    return icon;
+    return g_themed_icon_new (symbolic ? NAUTILUS_ICON_FOLDER : NAUTILUS_ICON_FULLCOLOR_FOLDER);
 }
 
 static void
