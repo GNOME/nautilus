@@ -137,6 +137,7 @@ struct _NautilusPropertiesWindow
     GtkWidget *permissions_navigation_row;
     GtkWidget *permissions_value_label;
 
+    GtkWidget *extension_models_group;
     GtkWidget *extension_models_list_box;
 
     /* Permissions page */
@@ -3587,7 +3588,7 @@ refresh_extension_model_pages (NautilusPropertiesWindow *self)
         g_list_store_append (extensions_list, NAUTILUS_PROPERTIES_MODEL (l->data));
     }
 
-    gtk_widget_set_visible (self->extension_models_list_box,
+    gtk_widget_set_visible (self->extension_models_group,
                             g_list_model_get_n_items (G_LIST_MODEL (extensions_list)) > 0);
 
     gtk_list_box_bind_model (GTK_LIST_BOX (self->extension_models_list_box),
@@ -4163,6 +4164,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_navigation_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_models_group);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, extension_models_list_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_stack);
