@@ -332,8 +332,7 @@ nautilus_bookmark_list_contains (NautilusBookmarkList *bookmarks,
 
     return g_list_find_custom (bookmarks->list,
                                (gpointer) bookmark,
-                               nautilus_bookmark_compare_with)
-           != NULL;
+                               nautilus_bookmark_compare_with) != NULL;
 }
 
 /**
@@ -347,19 +346,16 @@ void
 nautilus_bookmark_list_delete_item_at (NautilusBookmarkList *bookmarks,
                                        guint                 index)
 {
-    GList *doomed;
-
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
     g_return_if_fail (index < g_list_length (bookmarks->list));
 
-    doomed = g_list_nth (bookmarks->list, index);
-    bookmarks->list = g_list_remove_link (bookmarks->list, doomed);
+    GList *doomed = g_list_nth (bookmarks->list, index);
 
     g_assert (NAUTILUS_IS_BOOKMARK (doomed->data));
     stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (doomed->data));
     g_object_unref (doomed->data);
 
-    g_list_free_1 (doomed);
+    bookmarks->list = g_list_delete_link (bookmarks->list, doomed);
 
     nautilus_bookmark_list_save_file (bookmarks);
 }
@@ -376,22 +372,21 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
                                   guint                 index,
                                   guint                 destination)
 {
-    GList *bookmark_item;
-
     if (index == destination)
     {
         return;
     }
 
-    bookmark_item = g_list_nth (bookmarks->list, index);
+    GList *link_to_move = g_list_nth (bookmarks->list, index);
+
     bookmarks->list = g_list_remove_link (bookmarks->list,
-                                          bookmark_item);
+                                          link_to_move);
 
-    bookmarks->list = g_list_insert (bookmarks->list,
-                                     bookmark_item->data,
-                                     destination);
-
-    g_list_free_1 (bookmark_item);
+    GList *link_at_destination = g_list_nth (bookmarks->list, destination);
+    /* NULL link at destination means end of the list */
+    bookmarks->list = g_list_insert_before_link (bookmarks->list,
+                                                 link_at_destination,
+                                                 link_to_move);
 
     nautilus_bookmark_list_save_file (bookmarks);
 }
@@ -407,28 +402,25 @@ void
 nautilus_bookmark_list_delete_items_with_uri (NautilusBookmarkList *bookmarks,
                                               const char           *uri)
 {
-    GList *node, *next;
-    gboolean list_changed;
-    char *bookmark_uri;
-
     g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
     g_return_if_fail (uri != NULL);
 
-    list_changed = FALSE;
-    for (node = bookmarks->list; node != NULL; node = next)
+    gboolean list_changed = FALSE;
+    GList *next = NULL;
+
+    for (GList *node = bookmarks->list; node != NULL; node = next)
     {
         next = node->next;
 
-        bookmark_uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data));
+        g_autofree char *bookmark_uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (node->data));
+
         if (g_strcmp0 (bookmark_uri, uri) == 0)
         {
-            bookmarks->list = g_list_remove_link (bookmarks->list, node);
             stop_monitoring_bookmark (bookmarks, NAUTILUS_BOOKMARK (node->data));
             g_object_unref (node->data);
-            g_list_free_1 (node);
+            bookmarks->list = g_list_delete_link (bookmarks->list, node);
             list_changed = TRUE;
         }
-        g_free (bookmark_uri);
     }
 
     if (list_changed)
