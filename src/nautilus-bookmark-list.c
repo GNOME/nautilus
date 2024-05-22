@@ -391,6 +391,8 @@ nautilus_bookmark_list_move_item (NautilusBookmarkList *bookmarks,
                                      bookmark_item->data,
                                      destination);
 
+    g_list_free_1 (bookmark_item);
+
     nautilus_bookmark_list_save_file (bookmarks);
 }
 
