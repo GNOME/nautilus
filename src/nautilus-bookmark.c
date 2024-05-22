@@ -218,6 +218,12 @@ static GIcon *
 get_native_icon (NautilusBookmark *bookmark,
                  gboolean          symbolic)
 {
+    if (!bookmark->exists)
+    {
+        g_debug ("%s: file does not exist, set warning icon", nautilus_bookmark_get_name (bookmark));
+        return g_themed_icon_new (symbolic ? "dialog-warning-symbolic" : "dialog-warning");
+    }
+
     GUserDirectory xdg_type;
 
     if (nautilus_bookmark_get_xdg_type (bookmark, &xdg_type))
@@ -241,13 +247,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
     g_autoptr (GIcon) icon = NULL;
     g_autoptr (GIcon) symbolic_icon = NULL;
 
-    if (!bookmark->exists)
-    {
-        g_debug ("%s: file does not exist, set warning icon", nautilus_bookmark_get_name (bookmark));
-        symbolic_icon = g_themed_icon_new ("dialog-warning-symbolic");
-        icon = g_themed_icon_new ("dialog-warning");
-    }
-    else if (g_file_is_native (bookmark->location))
+    if (g_file_is_native (bookmark->location))
     {
         symbolic_icon = get_native_icon (bookmark, TRUE);
         icon = get_native_icon (bookmark, FALSE);
