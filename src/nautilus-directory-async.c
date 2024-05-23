@@ -1201,6 +1201,8 @@ ready_callback_call (const ReadyCallback *callback)
                                         callback->callback_data);
 
         nautilus_file_list_free (file_list);
+
+        nautilus_directory_async_state_changed (callback->directory);
     }
 }
 
@@ -1675,8 +1677,6 @@ call_ready_callbacks_at_idle (gpointer callback_data)
          * have been freed */
         g_hash_table_iter_init (&hash_iter, directory->details->call_when_ready_hash.ready);
     }
-
-    nautilus_directory_async_state_changed (directory);
 }
 
 static void
