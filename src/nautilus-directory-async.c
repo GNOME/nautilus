@@ -1337,7 +1337,7 @@ remove_callback_link (NautilusDirectory *directory,
     return list;
 }
 
-static void
+static gboolean
 nautilus_directory_callbacks_remove_internal (NautilusDirectory *directory,
                                               ReadyCallback      callback)
 {
@@ -1360,13 +1360,11 @@ nautilus_directory_callbacks_remove_internal (NautilusDirectory *directory,
         changed = TRUE;
     }
 
-    if (changed)
-    {
-        nautilus_directory_async_state_changed (directory);
-    }
+    return changed;
 }
 
-static void
+/** @return: whether at least one callback was removed. */
+static gboolean
 nautilus_directory_callbacks_remove_directory (NautilusDirectory         *directory,
                                                NautilusDirectoryCallback  directory_callback,
                                                gpointer                   callback_data)
@@ -1377,10 +1375,11 @@ nautilus_directory_callbacks_remove_directory (NautilusDirectory         *direct
         .callback_data = callback_data,
     };
 
-    nautilus_directory_callbacks_remove_internal (directory, callback);
+    return nautilus_directory_callbacks_remove_internal (directory, callback);
 }
 
-static void
+/** @return: whether at least one callback was removed. */
+static gboolean
 nautilus_directory_callbacks_remove_file (NautilusDirectory    *directory,
                                           NautilusFile         *file,
                                           NautilusFileCallback  file_callback,
@@ -1393,7 +1392,7 @@ nautilus_directory_callbacks_remove_file (NautilusDirectory    *directory,
         .callback_data = callback_data,
     };
 
-    nautilus_directory_callbacks_remove_internal (directory, callback);
+    return nautilus_directory_callbacks_remove_internal (directory, callback);
 }
 
 void
@@ -1403,7 +1402,12 @@ nautilus_directory_cancel_directory_callback (NautilusDirectory         *directo
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-    nautilus_directory_callbacks_remove_directory (directory, directory_callback, callback_data);
+    if (nautilus_directory_callbacks_remove_directory (directory,
+                                                       directory_callback,
+                                                       callback_data))
+    {
+        nautilus_directory_async_state_changed (directory);
+    }
 }
 
 void
@@ -1415,7 +1419,13 @@ nautilus_directory_cancel_file_callback (NautilusDirectory    *directory,
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
     g_assert (NAUTILUS_IS_FILE (file));
 
-    nautilus_directory_callbacks_remove_file (directory, file, file_callback, callback_data);
+    if (nautilus_directory_callbacks_remove_file (directory,
+                                                  file,
+                                                  file_callback,
+                                                  callback_data))
+    {
+        nautilus_directory_async_state_changed (directory);
+    }
 }
 
 static void
