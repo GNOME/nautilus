@@ -9,12 +9,12 @@
     <property name="default-width">500</property>
     <property name="default-height">210</property>
     <property name="default-widget">activation_button</property>
-    <property name="content">
-      <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkHeaderBar">
-            <property name="show-title-buttons">False</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-start-title-buttons">False</property>
+            <property name="show-end-title-buttons">False</property>
             <child type="start">
               <object class="GtkButton">
                 <property name="label" translatable="yes">Cancel</property>
@@ -40,101 +40,57 @@
             </child>
           </object>
         </child>
-        <child>
-          <object class="GtkBox" id="content_area">
-            <property name="orientation">vertical</property>
-            <property name="margin-top">30</property>
-            <property name="margin-bottom">30</property>
-            <property name="margin-start">30</property>
-            <property name="margin-end">30</property>
-            <property name="width-request">390</property>
-            <property name="halign">center</property>
-            <property name="spacing">6</property>
+        <property name="content">
+          <object class="AdwPreferencesPage">
             <child>
-              <object class="GtkLabel" id="name_label">
-                <property name="label" translatable="yes">Archive name</property>
-                <property name="xalign">0</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
-              </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="spacing">12</property>
+              <object class="AdwPreferencesGroup">
                 <child>
-                  <object class="GtkEntry" id="name_entry">
-                    <accessibility>
-                      <relation name="labelled-by">name_label</relation>
-                    </accessibility>
-                    <property name="hexpand">True</property>
-                    <property name="width-chars">30</property>
+                  <object class="AdwEntryRow" id="name_entry">
+                    <property name="title" translatable="yes">Archive Name</property>
                     <signal name="changed" handler="nautilus_filename_validator_validate" object="validator" swapped="yes"/>
-                    <signal name="activate" handler="on_name_entry_activated" swapped="yes"/>
+                    <signal name="entry-activated" handler="on_name_entry_activated" swapped="yes"/>
+                    <child type="suffix">
+                      <object class="GtkDropDown" id="extension_dropdown">
+                        <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
+                        <property name="valign">center</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
                 <child>
-                  <object class="GtkDropDown" id="extension_dropdown">
-                    <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
+                  <object class="GtkRevealer">
+                    <property name="reveal-child" bind-source="validator" bind-property="has-feedback"/>
+                    <property name="child">
+                      <object class="GtkLabel">
+                        <property name="label" bind-source="validator" bind-property="feedback-text"/>
+                        <property name="margin_top">4</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </property>
                   </object>
                 </child>
               </object>
             </child>
             <child>
-              <object class="GtkRevealer">
-                <property name="reveal-child" bind-source="validator" bind-property="has-feedback"/>
-                <property name="child">
-                  <object class="GtkLabel">
-                    <property name="label" bind-source="validator" bind-property="feedback-text"/>
-                    <property name="margin_top">4</property>
-                    <property name="margin_bottom">4</property>
-                    <property name="xalign">0</property>
+              <object class="AdwPreferencesGroup" id="passphrase_group">
+                <property name="title" translatable="yes">Encryption</property>
+                <child>
+                  <object class="AdwPasswordEntryRow" id="passphrase_entry">
+                    <property name="title" translatable="yes">Password</property>
+                    <signal name="entry-activated" handler="gtk_widget_grab_focus" object="passphrase_confirm_entry" swapped="yes"/>
                   </object>
-                </property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="passphrase_label">
-                <property name="visible">False</property>
-                <property name="label" translatable="yes">Password</property>
-                <property name="margin-top">6</property>
-                <property name="xalign">0</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkPasswordEntry" id="passphrase_entry">
-                <accessibility>
-                  <relation name="labelled-by">passphrase_label</relation>
-                </accessibility>
-                <property name="visible">False</property>
-                <property name="placeholder-text" translatable="yes">Enter a Password</property>
-                <property name="show-peek-icon">True</property>
-                <signal name="activate" handler="gtk_widget_grab_focus" object="passphrase_confirm_entry" swapped="yes"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="passphrase_confirm_label">
-                <property name="visible">False</property>
-                <property name="label" translatable="yes">Confirm Password</property>
-                <property name="margin-top">6</property>
-                <property name="xalign">0</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkPasswordEntry" id="passphrase_confirm_entry">
-                <accessibility>
-                  <relation name="labelled-by">passphrase_confirm_label</relation>
-                </accessibility>
-                <property name="activates-default">true</property>
-                <property name="visible">False</property>
-                <property name="placeholder-text" translatable="yes">Confirm Password</property>
-                <property name="show-peek-icon">True</property>
+                </child>
+                 <child>
+                  <object class="AdwPasswordEntryRow" id="passphrase_confirm_entry">
+                    <property name="title" translatable="yes">Confirm Password</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
-        </child>
+        </property>
       </object>
-    </property>
+    </child>
     <child>
       <object class="GtkShortcutController">
         <property name="scope">managed</property>

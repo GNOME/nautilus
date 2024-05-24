@@ -22,9 +22,8 @@ struct _NautilusCompressDialog
     GtkWidget *name_entry;
     GtkWidget *extension_dropdown;
     GtkSizeGroup *extension_sizegroup;
-    GtkWidget *passphrase_label;
     GtkWidget *passphrase_entry;
-    GtkWidget *passphrase_confirm_label;
+    GtkWidget *passphrase_group;
     GtkWidget *passphrase_confirm_entry;
 
     CompressCallback callback;
@@ -88,10 +87,7 @@ static void
 set_show_passphrase (NautilusCompressDialog *self,
                      gboolean                show_passphrase)
 {
-    gtk_widget_set_visible (self->passphrase_label, show_passphrase);
-    gtk_widget_set_visible (self->passphrase_entry, show_passphrase);
-    gtk_widget_set_visible (self->passphrase_confirm_label, show_passphrase);
-    gtk_widget_set_visible (self->passphrase_confirm_entry, show_passphrase);
+    gtk_widget_set_sensitive (self->passphrase_group, show_passphrase);
     if (!show_passphrase)
     {
         gtk_editable_set_text (GTK_EDITABLE (self->passphrase_entry), "");
@@ -444,9 +440,8 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, extension_sizegroup);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, name_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_confirm_entry);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_confirm_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_entry);
-    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, passphrase_group);
     gtk_widget_class_bind_template_child (widget_class, NautilusCompressDialog, validator);
 
     gtk_widget_class_bind_template_callback (widget_class, update_selected_format);
