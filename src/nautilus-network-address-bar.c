@@ -219,11 +219,22 @@ on_connect_button_clicked (NautilusNetworkAddressBar *self)
 }
 
 static void
+on_entry_icon_press (GtkEntry             *entry,
+                     GtkEntryIconPosition  icon_pos,
+                     gpointer              user_data)
+{
+    g_return_if_fail (icon_pos == GTK_ENTRY_ICON_SECONDARY);
+
+    gtk_editable_set_text (GTK_EDITABLE (entry), "");
+}
+
+static void
 on_address_entry_text_changed (NautilusNetworkAddressBar *self)
 {
     const char * const *supported_protocols = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
     const char *address = gtk_editable_get_text (GTK_EDITABLE (self->address_entry));
     g_autofree char *scheme = g_uri_parse_scheme (address);
+    gboolean is_empty = (address == NULL || *address == '\0');
     gboolean supported = FALSE;
 
     if (supported_protocols != NULL && scheme != NULL)
@@ -231,6 +242,10 @@ on_address_entry_text_changed (NautilusNetworkAddressBar *self)
         supported = g_strv_contains (supported_protocols, scheme) &&
                     !g_strv_contains (unsupported_protocols, scheme);
     }
+
+    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (self->address_entry),
+                                       GTK_ENTRY_ICON_SECONDARY,
+                                       is_empty ? NULL : "edit-clear-symbolic");
 
     gtk_widget_set_sensitive (self->connect_button, supported);
     if (scheme != NULL && !supported)
@@ -344,6 +359,8 @@ static void
 nautilus_network_address_bar_init (NautilusNetworkAddressBar *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
+
+    g_signal_connect (self->address_entry, "icon-press", G_CALLBACK (on_entry_icon_press), NULL);
 
     populate_available_protocols_grid (GTK_GRID (self->available_protocols_grid));
 }
