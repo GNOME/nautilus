@@ -33,9 +33,6 @@
 #include "nautilus-hash-queue.h"
 #include "nautilus-metadata.h"
 #include "nautilus-scheme.h"
-#include "nautilus-search-directory-file.h"
-#include "nautilus-search-directory.h"
-#include "nautilus-starred-directory.h"
 #include "nautilus-vfs-directory.h"
 #include "nautilus-vfs-file.h"
 
@@ -124,37 +121,9 @@ real_new_file_from_filename (NautilusDirectory *directory,
                              const char        *filename,
                              gboolean           self_owned)
 {
-    NautilusFile *file;
-
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (filename != NULL);
-    g_assert (filename[0] != '\0');
-
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
-    {
-        if (self_owned)
-        {
-            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE,
-                                                "directory", directory,
-                                                NULL));
-        }
-        else
-        {
-            /* This doesn't normally happen, unless the user somehow types in a uri
-             * that references a file like this. (See #349840) */
-            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
-                                                "directory", directory,
-                                                NULL));
-        }
-    }
-    else
-    {
-        file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
-                                            "directory", directory,
-                                            NULL));
-    }
-
-    return file;
+    return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
+                                        "directory", directory,
+                                        NULL));
 }
 
 static gboolean
@@ -692,6 +661,10 @@ nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
                                            const char        *filename,
                                            gboolean           self_owned)
 {
+    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+    g_assert (filename != NULL);
+    g_assert (filename[0] != '\0');
+
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->new_file_from_filename (directory,
                                                                                               filename,
                                                                                               self_owned);
