@@ -4918,13 +4918,6 @@ GDateTime *
 nautilus_file_get_date (NautilusFile     *file,
                         NautilusDateType  date_type)
 {
-    g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_ACCESSED
-                          || date_type == NAUTILUS_DATE_TYPE_MODIFIED
-                          || date_type == NAUTILUS_DATE_TYPE_CREATED
-                          || date_type == NAUTILUS_DATE_TYPE_TRASHED
-                          || date_type == NAUTILUS_DATE_TYPE_RECENCY,
-                          FALSE);
-
     if (file == NULL)
     {
         return NULL;
@@ -4932,7 +4925,53 @@ nautilus_file_get_date (NautilusFile     *file,
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_date (file, date_type);
+    time_t file_time_raw = 0;
+
+    switch (date_type)
+    {
+        case NAUTILUS_DATE_TYPE_ACCESSED:
+        {
+            file_time_raw = nautilus_file_get_atime (file);
+        }
+        break;
+
+        case NAUTILUS_DATE_TYPE_MODIFIED:
+        {
+            file_time_raw = nautilus_file_get_mtime (file);
+        }
+        break;
+
+        case NAUTILUS_DATE_TYPE_CREATED:
+        {
+            file_time_raw = nautilus_file_get_btime (file);
+        }
+        break;
+
+        case NAUTILUS_DATE_TYPE_TRASHED:
+        {
+            file_time_raw = nautilus_file_get_trash_time (file);
+        }
+        break;
+
+        case NAUTILUS_DATE_TYPE_RECENCY:
+        {
+            file_time_raw = nautilus_file_get_recency (file);
+        }
+        break;
+
+        default:
+        {
+            g_return_val_if_reached (NULL);
+        }
+    }
+
+    /* Before we have info on a file, the date is unknown. */
+    if (file_time_raw == 0)
+    {
+        return NULL;
+    }
+
+    return g_date_time_new_from_unix_local (file_time_raw);
 }
 
 static char *

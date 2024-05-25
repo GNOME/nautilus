@@ -223,56 +223,6 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
                                  nautilus_file_ref (file));
 }
 
-static GDateTime *
-vfs_file_get_date (NautilusFile     *file,
-                   NautilusDateType  date_type)
-{
-    time_t file_time_raw = 0;
-
-    switch (date_type)
-    {
-        case NAUTILUS_DATE_TYPE_ACCESSED:
-        {
-            file_time_raw = nautilus_file_get_atime (file);
-        }
-        break;
-
-        case NAUTILUS_DATE_TYPE_MODIFIED:
-        {
-            file_time_raw = nautilus_file_get_mtime (file);
-        }
-        break;
-
-        case NAUTILUS_DATE_TYPE_CREATED:
-        {
-            file_time_raw = nautilus_file_get_btime (file);
-        }
-        break;
-
-        case NAUTILUS_DATE_TYPE_TRASHED:
-        {
-            file_time_raw = nautilus_file_get_trash_time (file);
-        }
-        break;
-
-        case NAUTILUS_DATE_TYPE_RECENCY:
-        {
-            file_time_raw = nautilus_file_get_recency (file);
-        }
-        break;
-    }
-
-    /* Before we have info on a file, the date is unknown. */
-    if (file_time_raw == 0)
-    {
-        return NULL;
-    }
-    else
-    {
-        return g_date_time_new_from_unix_local (file_time_raw);
-    }
-}
-
 static char *
 vfs_file_get_where_string (NautilusFile *file)
 {
@@ -677,7 +627,6 @@ nautilus_vfs_file_class_init (NautilusVFSFileClass *klass)
     file_class->call_when_ready = vfs_file_call_when_ready;
     file_class->cancel_call_when_ready = vfs_file_cancel_call_when_ready;
     file_class->check_if_ready = vfs_file_check_if_ready;
-    file_class->get_date = vfs_file_get_date;
     file_class->get_where_string = vfs_file_get_where_string;
     file_class->set_metadata = vfs_file_set_metadata;
     file_class->set_metadata_as_list = vfs_file_set_metadata_as_list;

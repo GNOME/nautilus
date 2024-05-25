@@ -523,8 +523,6 @@ typedef struct {
 							  guint                  *file_count,
 							  guint                  *unreadable_directory_count,
 							  goffset       *total_size);
-	GDateTime *           (* get_date)               (NautilusFile           *file,
-							  NautilusDateType        type);
 	char *                (* get_where_string)       (NautilusFile           *file);
 
 	void                  (* set_metadata)           (NautilusFile           *file,
