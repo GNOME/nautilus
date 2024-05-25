@@ -8528,22 +8528,6 @@ real_get_deep_counts (NautilusFile *file,
 }
 
 static void
-real_set_metadata (NautilusFile *file,
-                   const char   *key,
-                   const char   *value)
-{
-    /* Dummy default impl */
-}
-
-static void
-real_set_metadata_as_list (NautilusFile  *file,
-                           const char    *key,
-                           char         **value)
-{
-    /* Dummy default impl */
-}
-
-static void
 nautilus_file_get_property (GObject    *object,
                             guint       prop_id,
                             GValue     *value,
@@ -8587,6 +8571,12 @@ nautilus_file_set_property (GObject      *object,
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         }
     }
+}
+
+static void
+default_no_op (NautilusFile *file)
+{
+    /* Dummy default impl */
 }
 
 static void
@@ -8636,8 +8626,18 @@ nautilus_file_class_init (NautilusFileClass *class)
 
     class->get_item_count = real_get_item_count;
     class->get_deep_counts = real_get_deep_counts;
-    class->set_metadata = real_set_metadata;
-    class->set_metadata_as_list = real_set_metadata_as_list;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
+    class->set_metadata = default_no_op;
+    class->set_metadata_as_list = default_no_op;
+    class->mount = default_no_op;
+    class->unmount = default_no_op;
+    class->eject = default_no_op;
+    class->start = default_no_op;
+    class->stop = default_no_op;
+    class->poll_for_media = default_no_op;
+#pragma GCC diagnostic pop
 
     signals[CHANGED] =
         g_signal_new ("changed",

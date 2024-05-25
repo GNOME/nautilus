@@ -499,7 +499,7 @@ typedef struct {
 	/* Called periodically while directory deep count is being computed. */
 	void                  (* updated_deep_count_in_progress) (NautilusFile *file);
 
-	/* Virtual functions (mainly used for trash directory). */
+	/* Virtual functions which MUST be implemented by subclasses */
 	void                  (* monitor_add)            (NautilusFile           *file,
 							  gconstpointer           client,
 							  NautilusFileAttributes  attributes);
@@ -514,6 +514,8 @@ typedef struct {
 							  gpointer                callback_data);
 	gboolean              (* check_if_ready)         (NautilusFile           *file,
 							  NautilusFileAttributes  attributes);
+
+        /* Virtual functions which MAY be overridden by subclasses */
 	gboolean              (* get_item_count)         (NautilusFile           *file,
 							  guint                  *count,
 							  gboolean               *count_unreadable);
@@ -523,6 +525,7 @@ typedef struct {
 							  guint                  *unreadable_directory_count,
 							  goffset       *total_size);
 
+        /* Virtual functions which MAY be implemented by subclasses (default implementation does nothing) */
 	void                  (* set_metadata)           (NautilusFile           *file,
 							  const char             *key,
 							  const char             *value);
