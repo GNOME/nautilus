@@ -1801,7 +1801,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                                   "NAUTILUS_DISABLE_PLUGINS=TRUE nautilus", NULL);
     }
 
-    adw_show_about_window (window ? GTK_WINDOW (window) : NULL,
+    adw_show_about_dialog (window ? GTK_WIDGET (window) : NULL,
                            "application-name", _("Files"),
                            "application-icon", APPLICATION_ID,
                            "developer-name", _("The GNOME Project"),
