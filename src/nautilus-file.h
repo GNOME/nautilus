@@ -163,7 +163,6 @@ char *                  nautilus_file_get_uri_scheme                    (Nautilu
 NautilusFile *          nautilus_file_get_parent                        (NautilusFile                   *file);
 GFile *                 nautilus_file_get_parent_location               (NautilusFile                   *file);
 char *                  nautilus_file_get_parent_uri                    (NautilusFile                   *file);
-char *                  nautilus_file_get_parent_uri_for_display        (NautilusFile                   *file);
 const char *            nautilus_file_get_thumbnail_path                (NautilusFile                   *file);
 gboolean                nautilus_file_can_get_size                      (NautilusFile                   *file);
 guint64                 nautilus_file_get_size                          (NautilusFile                   *file);
@@ -523,7 +522,6 @@ typedef struct {
 							  guint                  *file_count,
 							  guint                  *unreadable_directory_count,
 							  goffset       *total_size);
-	char *                (* get_where_string)       (NautilusFile           *file);
 
 	void                  (* set_metadata)           (NautilusFile           *file,
 							  const char             *key,

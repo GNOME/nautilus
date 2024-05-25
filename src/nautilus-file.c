@@ -990,7 +990,7 @@ nautilus_file_unref (NautilusFile *file)
  * and adding trailing slash).
  * If the parent is NULL, returns the empty string.
  */
-char *
+static char *
 nautilus_file_get_parent_uri_for_display (NautilusFile *file)
 {
     g_autoptr (GFile) parent = NULL;
@@ -4984,7 +4984,20 @@ nautilus_file_get_where_string (NautilusFile *file)
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_where_string (file);
+    g_autoptr (NautilusFile) real_file = NULL;
+
+    if (nautilus_file_is_in_recent (file))
+    {
+        g_autoptr (GFile) activation_location = nautilus_file_get_activation_location (file);
+
+        real_file = nautilus_file_get (activation_location);
+    }
+    else
+    {
+        real_file = g_object_ref (file);
+    }
+
+    return nautilus_file_get_parent_uri_for_display (real_file);
 }
 
 static char *

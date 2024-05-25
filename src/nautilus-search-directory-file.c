@@ -171,12 +171,6 @@ search_directory_file_get_deep_counts (NautilusFile *file,
     return NAUTILUS_REQUEST_DONE;
 }
 
-static char *
-search_directory_file_get_where_string (NautilusFile *file)
-{
-    return g_strdup (_("Search"));
-}
-
 static void
 search_directory_file_set_metadata (NautilusFile *file,
                                     const char   *key,
@@ -303,7 +297,6 @@ nautilus_search_directory_file_class_init (NautilusSearchDirectoryFileClass *kla
     file_class->check_if_ready = search_directory_file_check_if_ready;
     file_class->get_item_count = search_directory_file_get_item_count;
     file_class->get_deep_counts = search_directory_file_get_deep_counts;
-    file_class->get_where_string = search_directory_file_get_where_string;
     file_class->set_metadata = search_directory_file_set_metadata;
     file_class->set_metadata_as_list = search_directory_file_set_metadata_as_list;
 }

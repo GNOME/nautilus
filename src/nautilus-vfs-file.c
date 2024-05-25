@@ -223,30 +223,6 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
                                  nautilus_file_ref (file));
 }
 
-static char *
-vfs_file_get_where_string (NautilusFile *file)
-{
-    GFile *activation_location;
-    NautilusFile *location;
-    char *where_string;
-
-    if (!nautilus_file_is_in_recent (file))
-    {
-        location = nautilus_file_ref (file);
-    }
-    else
-    {
-        activation_location = nautilus_file_get_activation_location (file);
-        location = nautilus_file_get (activation_location);
-        g_object_unref (activation_location);
-    }
-
-    where_string = nautilus_file_get_parent_uri_for_display (location);
-
-    nautilus_file_unref (location);
-    return where_string;
-}
-
 static void
 vfs_file_mount_callback (GObject      *source_object,
                          GAsyncResult *res,
@@ -627,7 +603,6 @@ nautilus_vfs_file_class_init (NautilusVFSFileClass *klass)
     file_class->call_when_ready = vfs_file_call_when_ready;
     file_class->cancel_call_when_ready = vfs_file_cancel_call_when_ready;
     file_class->check_if_ready = vfs_file_check_if_ready;
-    file_class->get_where_string = vfs_file_get_where_string;
     file_class->set_metadata = vfs_file_set_metadata;
     file_class->set_metadata_as_list = vfs_file_set_metadata_as_list;
     file_class->mount = vfs_file_mount;
