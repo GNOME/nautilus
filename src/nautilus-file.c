@@ -182,6 +182,7 @@ G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
 enum
 {
     PROP_0,
+    PROP_DIRECTORY,
     PROP_DISPLAY_NAME,
     N_PROPS
 };
@@ -587,16 +588,17 @@ void
 nautilus_file_set_directory (NautilusFile      *file,
                              NautilusDirectory *directory)
 {
-    char *parent_uri;
+    if (!g_set_object (&file->details->directory, directory))
+    {
+        return;
+    }
 
-    g_clear_object (&file->details->directory);
+    g_autofree char *parent_uri = nautilus_file_get_parent_uri (file);
+
     g_free (file->details->directory_name_collation_key);
-
-    file->details->directory = nautilus_directory_ref (directory);
-
-    parent_uri = nautilus_file_get_parent_uri (file);
     file->details->directory_name_collation_key = g_utf8_collate_key_for_filename (parent_uri, -1);
-    g_free (parent_uri);
+
+    g_object_notify_by_pspec (G_OBJECT (file), properties[PROP_DIRECTORY]);
 }
 
 NautilusFile *
@@ -719,8 +721,9 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
     g_return_val_if_fail (info != NULL, NULL);
 
-    file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
-    nautilus_file_set_directory (file, directory);
+    file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
+                                        "directory", directory,
+                                        NULL));
 
     update_info_and_name (file, info);
 
@@ -8512,6 +8515,29 @@ nautilus_file_get_property (GObject    *object,
 }
 
 static void
+nautilus_file_set_property (GObject      *object,
+                            guint         prop_id,
+                            const GValue *value,
+                            GParamSpec   *pspec)
+{
+    NautilusFile *file = NAUTILUS_FILE (object);
+
+    switch (prop_id)
+    {
+        case PROP_DIRECTORY:
+        {
+            nautilus_file_set_directory (file, g_value_get_object (value));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
     nautilus_file_info_getter = nautilus_file_get_internal;
@@ -8554,6 +8580,7 @@ nautilus_file_class_init (NautilusFileClass *class)
     G_OBJECT_CLASS (class)->finalize = finalize;
     G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;
     G_OBJECT_CLASS (class)->get_property = nautilus_file_get_property;
+    G_OBJECT_CLASS (class)->set_property = nautilus_file_set_property;
 
     class->get_item_count = real_get_item_count;
     class->get_deep_counts = real_get_deep_counts;
@@ -8599,6 +8626,10 @@ nautilus_file_class_init (NautilusFileClass *class)
                       G_CALLBACK (mime_type_data_changed_callback),
                       NULL);
 
+    properties[PROP_DIRECTORY] = g_param_spec_object ("directory", NULL, NULL,
+                                                      NAUTILUS_TYPE_DIRECTORY,
+                                                      (G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
+                                                       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS));
     properties[PROP_DISPLAY_NAME] = g_param_spec_string ("display-name", NULL, NULL,
                                                          "",
                                                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);

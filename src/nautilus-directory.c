@@ -134,20 +134,25 @@ real_new_file_from_filename (NautilusDirectory *directory,
     {
         if (self_owned)
         {
-            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, NULL));
+            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE,
+                                                "directory", directory,
+                                                NULL));
         }
         else
         {
             /* This doesn't normally happen, unless the user somehow types in a uri
              * that references a file like this. (See #349840) */
-            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
+                                                "directory", directory,
+                                                NULL));
         }
     }
     else
     {
-        file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+        file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE,
+                                            "directory", directory,
+                                            NULL));
     }
-    nautilus_file_set_directory (file, directory);
 
     return file;
 }
