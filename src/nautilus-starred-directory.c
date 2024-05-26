@@ -17,9 +17,12 @@
  */
 
 #include "nautilus-starred-directory.h"
-#include "nautilus-tag-manager.h"
-#include "nautilus-file-utilities.h"
+
 #include "nautilus-directory-private.h"
+#include "nautilus-file-private.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-internal-place-file.h"
+#include "nautilus-tag-manager.h"
 #include "nautilus-scheme.h"
 #include <glib/gi18n.h>
 
@@ -174,6 +177,22 @@ on_starred_files_changed (NautilusTagManager *tag_manager,
     self = NAUTILUS_STARRED_DIRECTORY (user_data);
 
     nautilus_starred_directory_update_files (self, changed_files);
+}
+
+static NautilusFile *
+real_new_file_from_filename (NautilusDirectory *directory,
+                             const char        *filename,
+                             gboolean           self_owned)
+{
+    if (!self_owned)
+    {
+        g_warning ("Creating a file within starred://. This shouldn't happen.");
+        return NAUTILUS_DIRECTORY_CLASS (nautilus_starred_directory_parent_class)->new_file_from_filename (directory, filename, self_owned);
+    }
+
+    return NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_INTERNAL_PLACE_FILE,
+                                        "directory", directory,
+                                        NULL));
 }
 
 static gboolean
@@ -499,6 +518,7 @@ nautilus_starred_directory_class_init (NautilusFavoriteDirectoryClass *klass)
     oclass->finalize = nautilus_starred_directory_finalize;
     oclass->dispose = nautilus_starred_directory_dispose;
 
+    directory_class->new_file_from_filename = real_new_file_from_filename;
     directory_class->handles_location = real_handles_location;
     directory_class->contains_file = real_contains_file;
     directory_class->is_editable = real_is_editable;

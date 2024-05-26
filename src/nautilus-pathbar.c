@@ -386,11 +386,6 @@ get_dir_name (ButtonData *button_data)
             return _("Other Locations");
         }
 
-        case STARRED_BUTTON:
-        {
-            return _("Starred");
-        }
-
         default:
         {
             return button_data->dir_name;

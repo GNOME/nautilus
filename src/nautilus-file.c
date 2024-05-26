@@ -4232,10 +4232,6 @@ nautilus_file_get_display_name (NautilusFile *file)
     {
         return _("Other Locations");
     }
-    else if (nautilus_file_is_starred_location (file))
-    {
-        return _("Starred");
-    }
     else
     {
         return nautilus_file_peek_display_name (file);

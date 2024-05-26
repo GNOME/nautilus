@@ -195,6 +195,8 @@ libnautilus_sources = [
   'nautilus-icon-info.c',
   'nautilus-icon-info.h',
   'nautilus-icon-names.h',
+  'nautilus-internal-place-file.c',
+  'nautilus-internal-place-file.h',
   'nautilus-keyfile-metadata.c',
   'nautilus-keyfile-metadata.h',
   'nautilus-metadata.h',
