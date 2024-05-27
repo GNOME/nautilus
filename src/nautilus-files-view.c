@@ -8715,15 +8715,17 @@ load_directory (NautilusFilesView *view,
     priv = nautilus_files_view_get_instance_private (view);
 
     nautilus_files_view_stop_loading (view);
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory) || NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory))
+
+    /* To make search feel fast and smooth as if it were filtering the current
+     * view, avoid blanking the view temporarily in the following cases:
+     * 1- Going from a search to a search
+     * 2- Going from a location to local search
+     */
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory) &&
+        (NAUTILUS_IS_SEARCH_DIRECTORY (priv->directory) ||
+         (priv->search_query != NULL && !nautilus_query_is_global (priv->search_query))))
     {
-        if (priv->search_query != NULL &&
-            !nautilus_query_is_global (priv->search_query))
-        {
-            /* To make search feel fast and smooth as if it were filtering the
-             * current view, avoid blanking the view temporarily. */
-            search_transition_schedule_delayed_signals (view);
-        }
+        search_transition_schedule_delayed_signals (view);
     }
 
     emit_clear (view);
