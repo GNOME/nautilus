@@ -169,10 +169,7 @@ nautilus_directory_finalize (GObject *object)
         g_source_remove (directory->details->dequeue_pending_idle_id);
     }
 
-    if (directory->details->call_ready_idle_id != 0)
-    {
-        g_source_remove (directory->details->call_ready_idle_id);
-    }
+    nautilus_directory_callbacks_free (directory->details->callbacks);
 
     if (directory->details->location)
     {
@@ -185,8 +182,6 @@ nautilus_directory_finalize (GObject *object)
     nautilus_hash_queue_destroy (directory->details->high_priority_queue);
     nautilus_hash_queue_destroy (directory->details->low_priority_queue);
     nautilus_hash_queue_destroy (directory->details->extension_queue);
-    g_clear_pointer (&directory->details->call_when_ready_hash.unsatisfied, g_hash_table_unref);
-    g_clear_pointer (&directory->details->call_when_ready_hash.ready, g_hash_table_unref);
     g_clear_list (&directory->details->files_changed_while_adding, g_object_unref);
     g_assert (directory->details->directory_load_in_progress == NULL);
     g_assert (directory->details->count_in_progress == NULL);

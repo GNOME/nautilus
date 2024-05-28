@@ -1229,7 +1229,7 @@ nautilus_directory_callbacks_add_internal (NautilusDirectoryCallbacks *self,
                                            gpointer                    callback_data)
 {
     /* Check if the callback is already there. */
-    GList *node = g_hash_table_lookup (directory->details->call_when_ready_hash.unsatisfied,
+    GList *node = g_hash_table_lookup (self->call_when_ready_hash.unsatisfied,
                                        callback.file);
 
     if (g_list_find_custom (node, &callback, ready_callback_key_compare) != NULL)
@@ -1547,36 +1547,20 @@ nautilus_directory_get_info_for_new_files (NautilusDirectory *directory,
 NautilusDirectoryCallbacks *
 nautilus_directory_callbacks_new (void)
 {
-    return g_new0 (NautilusDirectoryCallbacks, 1);
+    NautilusDirectoryCallbacks *self = g_new0 (NautilusDirectoryCallbacks, 1);
+
+    self->call_when_ready_hash.unsatisfied = g_hash_table_new (NULL, NULL);
+    self->call_when_ready_hash.ready = g_hash_table_new (NULL, NULL);
+
+    return self;
 }
 
 void
 nautilus_directory_callbacks_free (NautilusDirectoryCallbacks *self)
 {
-    if (self->call_ready_idle_id != 0)
-    {
-        g_source_remove (self->call_ready_idle_id);
-    }
-
-    while (self->unsatisfied != NULL)
-    {
-        ReadyCallback *callback = self->unsatisfied->data;
-        g_autofree char *uri = (callback->file != NULL) ? nautilus_file_get_uri (callback->file) :
-                                                          nautilus_directory_get_uri (callback->directory);
-        g_warning ("destroyed directory has unsatisfied pending callbacks for %s", uri);
-
-        remove_callback_link (self, self->unsatisfied, FALSE);
-    }
-
-    while (self->ready != NULL)
-    {
-        ReadyCallback *callback = self->ready->data;
-        g_autofree char *uri = (callback->file != NULL) ? nautilus_file_get_uri (callback->file) :
-                                                          nautilus_directory_get_uri (callback->directory);
-        g_warning ("destroyed directory has ready pending callbacks for %s", uri);
-
-        remove_callback_link (self, self->ready, TRUE);
-    }
+    g_clear_handle_id (&self->call_ready_idle_id, g_source_remove);
+    g_clear_pointer (&self->call_when_ready_hash.unsatisfied, g_hash_table_unref);
+    g_clear_pointer (&self->call_when_ready_hash.ready, g_hash_table_unref);
 }
 
 static gboolean
@@ -1605,7 +1589,7 @@ nautilus_directory_callbacks_clear (NautilusDirectoryCallbacks *self,
 
     while (node != NULL)
     {
-        node = remove_callback_link (directory, node, TRUE);
+        node = remove_callback_link (self, node, TRUE);
         changed = TRUE;
     }
 
@@ -1705,21 +1689,21 @@ should_get_directory_count_now (NautilusFile *file)
 static void
 call_ready_callbacks_at_idle (gpointer callback_data)
 {
-    NautilusDirectoryCallbacks *self = callback_data;
     /* Ensure the directory is alive until the end of this scope */
-    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (self->directory);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (callback_data);
+    NautilusDirectoryCallbacks *callbacks = directory->details->callbacks;
     GHashTableIter hash_iter;
     GList *node;
 
-    self->call_ready_idle_id = 0;
+    callbacks->call_ready_idle_id = 0;
 
-    if (g_hash_table_size (self->call_when_ready_hash.ready) == 0)
+    if (g_hash_table_size (callbacks->call_when_ready_hash.ready) == 0)
     {
         /* Return early in case all ready callbacks were cancelled, don't emit state change */
         return;
     }
 
-    g_hash_table_iter_init (&hash_iter, self->call_when_ready_hash.ready);
+    g_hash_table_iter_init (&hash_iter, callbacks->call_when_ready_hash.ready);
 
     /* Check if any callbacks are ready and call them if they are. */
     while (g_hash_table_iter_next (&hash_iter, NULL, (gpointer *) &node))
@@ -1727,23 +1711,24 @@ call_ready_callbacks_at_idle (gpointer callback_data)
         ReadyCallback *callback = node->data;
 
         /* Callbacks are one-shots, so remove it now. */
-        remove_callback_link (self, node, TRUE);
+        remove_callback_link (callbacks, node, TRUE);
 
         /* Call the callback. */
         ready_callback_call (callback);
 
         /* Need to parse the node from the hash table again because it might
          * have been freed */
-        g_hash_table_iter_init (&hash_iter, self->call_when_ready_hash.ready);
+        g_hash_table_iter_init (&hash_iter, callbacks->call_when_ready_hash.ready);
     }
 }
 
 static void
 schedule_call_ready_callbacks (NautilusDirectory *directory)
 {
-    if (self->call_ready_idle_id == 0)
+    NautilusDirectoryCallbacks *callbacks = directory->details->callbacks;
+    if (callbacks->call_ready_idle_id == 0)
     {
-        self->call_ready_idle_id = g_idle_add_once (call_ready_callbacks_at_idle, directory);
+        callbacks->call_ready_idle_id = g_idle_add_once (call_ready_callbacks_at_idle, directory);
     }
 }
 
@@ -1753,8 +1738,9 @@ schedule_call_ready_callbacks (NautilusDirectory *directory)
 static gboolean
 call_ready_callbacks (NautilusDirectory *directory)
 {
-    GHashTable *ready_hash = self->call_when_ready_hash.ready;
-    GHashTable *unsatisfied_hash = self->call_when_ready_hash.unsatisfied;
+    NautilusDirectoryCallbacks *callbacks = directory->details->callbacks;
+    GHashTable *ready_hash = callbacks->call_when_ready_hash.ready;
+    GHashTable *unsatisfied_hash = callbacks->call_when_ready_hash.unsatisfied;
     g_autoptr (GPtrArray) unsatisfied_callbacks = g_hash_table_get_values_as_ptr_array (unsatisfied_hash);
     gboolean found_any = FALSE;
 
@@ -1774,7 +1760,7 @@ call_ready_callbacks (NautilusDirectory *directory)
 
             if ((callback->file != NULL)
                 ? !nautilus_request_file_is_ready (callback->request, callback->file)
-                : !nautilus_request_directory_is_ready (callback->request, directory))
+                : !nautilus_request_directory_is_ready (callback->request, callback->directory))
             {
                 continue;
             }
@@ -1810,7 +1796,7 @@ call_ready_callbacks (NautilusDirectory *directory)
 
     if (found_any)
     {
-        schedule_call_ready_callbacks (self);
+        schedule_call_ready_callbacks (directory);
     }
 
     return found_any;
@@ -4040,7 +4026,7 @@ nautilus_directory_async_state_changed (NautilusDirectory *directory)
     {
         directory->details->state_changed = FALSE;
         start_or_stop_io (directory);
-        if (call_ready_callbacks (directory->details->callbacks))
+        if (call_ready_callbacks (directory))
         {
             directory->details->state_changed = TRUE;
         }
