@@ -2091,10 +2091,11 @@ nautilus_window_unexport_handle (NautilusWindow *window)
     if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
         GdkSurface *gdk_surface = gtk_native_get_surface (GTK_NATIVE (window));
-        if (GDK_IS_WAYLAND_TOPLEVEL (gdk_surface))
+        if (GDK_IS_WAYLAND_TOPLEVEL (gdk_surface) &&
+            g_str_has_prefix (window->export_handle, "wayland:"))
         {
             gdk_wayland_toplevel_drop_exported_handle (GDK_WAYLAND_TOPLEVEL (gdk_surface),
-                                                       window->export_handle);
+                                                       window->export_handle + strlen ("wayland:"));
         }
     }
 #endif
