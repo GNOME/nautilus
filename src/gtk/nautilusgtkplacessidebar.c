@@ -509,9 +509,10 @@ add_builtin_directories (NautilusGtkPlacesSidebar *sidebar)
 
       NautilusBookmark *bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, location, NULL);
 
-      g_autofree char *name = (bookmark != NULL ?
-                               g_strdup (nautilus_bookmark_get_name (bookmark)) :
-                               g_file_get_basename (location));
+      if (bookmark == NULL)
+        continue;
+
+      g_autofree char *name = g_strdup (nautilus_bookmark_get_name (bookmark));
 
       g_autoptr (GIcon) start_icon = nautilus_special_directory_get_symbolic_icon (index);
       g_autofree char *mount_uri = g_file_get_uri (location);

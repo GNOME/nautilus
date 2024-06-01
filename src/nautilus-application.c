@@ -58,6 +58,7 @@
 #include "nautilus-progress-persistence-handler.h"
 #include "nautilus-scheme.h"
 #include "nautilus-shell-search-provider.h"
+#include "nautilus-sidebar-editor.h"
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-tracker-utilities.h"
@@ -678,6 +679,18 @@ action_clone_window (GSimpleAction *action,
 }
 
 static void
+action_edit_sidebar (GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data)
+{
+    GtkApplication *application = user_data;
+    NautilusSidebarEditor *sidebar_editor = g_object_new (NAUTILUS_TYPE_SIDEBAR_EDITOR, NULL);
+
+    adw_dialog_present (ADW_DIALOG (sidebar_editor),
+                        GTK_WIDGET (gtk_application_get_active_window (application)));
+}
+
+static void
 action_preferences (GSimpleAction *action,
                     GVariant      *parameter,
                     gpointer       user_data)
@@ -774,6 +787,7 @@ static const GActionEntry app_entries[] =
 {
     { .name = "new-window", .activate = action_new_window },
     { .name = "clone-window", .activate = action_clone_window },
+    { .name = "edit-sidebar", .activate = action_edit_sidebar },
     { .name = "preferences", .activate = action_preferences },
     { .name = "search-settings", .activate = action_search_settings },
     { .name = "about", .activate = action_about },

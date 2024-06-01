@@ -124,6 +124,8 @@ libnautilus_sources = [
   'nautilus-scheme.h',
   'nautilus-search-popover.c',
   'nautilus-shell-search-provider.c',
+  'nautilus-sidebar-editor.c',
+  'nautilus-sidebar-editor.h',
   'nautilus-star-cell.c',
   'nautilus-star-cell.h',
   'nautilus-toolbar.c',
