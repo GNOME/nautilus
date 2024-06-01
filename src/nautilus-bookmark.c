@@ -181,9 +181,7 @@ nautilus_bookmark_get_is_builtin (NautilusBookmark *bookmark)
     }
 
     /* exclude XDG locations which are not in our builtin list */
-    return (xdg_type != G_USER_DIRECTORY_DESKTOP) &&
-           (xdg_type != G_USER_DIRECTORY_TEMPLATES) &&
-           (xdg_type != G_USER_DIRECTORY_PUBLIC_SHARE);
+    return nautilus_special_directory_is_builtin (xdg_type);
 }
 
 gboolean

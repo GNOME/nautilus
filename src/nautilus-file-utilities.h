@@ -54,6 +54,7 @@ gboolean nautilus_is_file_roller_installed           (void);
 
 GIcon *  nautilus_special_directory_get_icon         (GUserDirectory directory);
 GIcon *  nautilus_special_directory_get_symbolic_icon (GUserDirectory directory);
+gboolean nautilus_special_directory_is_builtin       (GUserDirectory directory);
 
 /* Return an allocated file location that is guranteed to be unique, but
  * tries to make the location name readable to users.

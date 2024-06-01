@@ -500,9 +500,7 @@ add_builtin_directories (NautilusGtkPlacesSidebar *sidebar)
 
   for (int index = 0; index < G_USER_N_DIRECTORIES; index++)
     {
-      if (index == G_USER_DIRECTORY_DESKTOP ||
-          index == G_USER_DIRECTORY_TEMPLATES ||
-          index == G_USER_DIRECTORY_PUBLIC_SHARE)
+      if (!nautilus_special_directory_is_builtin (index))
         continue;
 
       const char *path = g_get_user_special_dir (index);
