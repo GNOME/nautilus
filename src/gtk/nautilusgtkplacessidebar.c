@@ -494,28 +494,18 @@ path_is_home_dir (const char *path)
 }
 
 static void
-add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
+add_builtin_directories (NautilusGtkPlacesSidebar *sidebar)
 {
-  GList *dirs;
-  int index;
+  g_autoptr (GList) dirs = NULL;
 
-  dirs = NULL;
-  for (index = 0; index < G_USER_N_DIRECTORIES; index++)
+  for (int index = 0; index < G_USER_N_DIRECTORIES; index++)
     {
-      const char *path;
-      GFile *root;
-      GIcon *start_icon;
-      char *name;
-      char *mount_uri;
-      char *tooltip;
-      NautilusBookmark *bookmark;
-
       if (index == G_USER_DIRECTORY_DESKTOP ||
           index == G_USER_DIRECTORY_TEMPLATES ||
           index == G_USER_DIRECTORY_PUBLIC_SHARE)
         continue;
 
-      path = g_get_user_special_dir (index);
+      const char *path = g_get_user_special_dir (index);
 
       /* XDG resets special dirs to the home directory in case
        * it's not finiding what it expects. We don't want the home
@@ -526,34 +516,26 @@ add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
           g_list_find_custom (dirs, path, (GCompareFunc) g_strcmp0) != NULL)
         continue;
 
-      root = g_file_new_for_path (path);
+      g_autoptr (GFile) location = g_file_new_for_path (path);
 
-      bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, root, NULL);
+      NautilusBookmark *bookmark = nautilus_bookmark_list_item_with_location (sidebar->bookmark_list, location, NULL);
 
-      if (bookmark)
-        name = g_strdup (nautilus_bookmark_get_name (bookmark));
-      else
-        name = g_file_get_basename (root);
+      g_autofree char *name = (bookmark != NULL ?
+                               g_strdup (nautilus_bookmark_get_name (bookmark)) :
+                               g_file_get_basename (location));
 
-      start_icon = nautilus_special_directory_get_symbolic_icon (index);
-      mount_uri = g_file_get_uri (root);
-      tooltip = g_file_get_parse_name (root);
+      g_autoptr (GIcon) start_icon = nautilus_special_directory_get_symbolic_icon (index);
+      g_autofree char *mount_uri = g_file_get_uri (location);
+      g_autofree char *tooltip = g_file_get_parse_name (location);
 
       add_place (sidebar, NAUTILUS_GTK_PLACES_XDG_DIR,
                  NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, NULL, NULL, 0,
                  tooltip);
-      g_free (name);
-      g_object_unref (root);
-      g_object_unref (start_icon);
-      g_free (mount_uri);
-      g_free (tooltip);
 
       dirs = g_list_prepend (dirs, (char *)path);
     }
-
-  g_list_free (dirs);
 }
 
 static char *
@@ -804,7 +786,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     }
 
   /* XDG directories */
-  add_special_dirs (sidebar);
+  add_builtin_directories (sidebar);
 
   /* Trash */
   start_icon = nautilus_trash_monitor_get_symbolic_icon ();
