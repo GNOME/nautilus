@@ -496,22 +496,13 @@ path_is_home_dir (const char *path)
 static void
 add_builtin_directories (NautilusGtkPlacesSidebar *sidebar)
 {
-  g_autoptr (GList) dirs = NULL;
+  const char * const * builtin_paths = nautilus_get_unique_builtin_special_dirs ();
 
   for (int index = 0; index < G_USER_N_DIRECTORIES; index++)
     {
-      if (!nautilus_special_directory_is_builtin (index))
-        continue;
+      const char *path = builtin_paths[index];
 
-      const char *path = g_get_user_special_dir (index);
-
-      /* XDG resets special dirs to the home directory in case
-       * it's not finiding what it expects. We don't want the home
-       * to be added multiple times in that weird configuration.
-       */
-      if (path == NULL ||
-          path_is_home_dir (path) ||
-          g_list_find_custom (dirs, path, (GCompareFunc) g_strcmp0) != NULL)
+      if (path == NULL)
         continue;
 
       g_autoptr (GFile) location = g_file_new_for_path (path);
@@ -531,8 +522,6 @@ add_builtin_directories (NautilusGtkPlacesSidebar *sidebar)
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, NULL, NULL, 0,
                  tooltip);
-
-      dirs = g_list_prepend (dirs, (char *)path);
     }
 }
 

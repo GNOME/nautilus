@@ -366,6 +366,67 @@ nautilus_special_directory_is_builtin (GUserDirectory directory)
            (directory != G_USER_DIRECTORY_PUBLIC_SHARE);
 }
 
+static gboolean
+locations_list_has_equal_location (GList *list,
+                                   GFile *location)
+{
+    for (GList *l = list; l != NULL; l = l->next)
+    {
+        if (g_file_equal (l->data, location))
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+/**
+ * Get a fixed array with one entry for each value of the `GUserDirectory` enum.
+ * Each element is either the path for the index directory, or NULL.
+ *
+ * It's NULL in one of 3 cases:
+ *   - if the index directory is disabled (i.e. it points to the homedir, as
+ *     per http://freedesktop.org/wiki/Software/xdg-user-dirs);
+ *   - if the index directory is not built-in;
+ *   - or if the index directory is set to the same location as an earlier one.
+ */
+const char * const *
+nautilus_get_unique_builtin_special_dirs (void)
+{
+    static const gchar *unique_builtin_paths[G_USER_N_DIRECTORIES] = { NULL };
+    static gsize init = 0;
+
+    if (g_once_init_enter (&init))
+    {
+        g_autolist (GFile) unique_locations = NULL;
+
+        for (GUserDirectory dir = 0; dir < G_USER_N_DIRECTORIES; dir++)
+        {
+            if (!nautilus_special_directory_is_builtin (dir))
+            {
+                continue;
+            }
+
+            const char *path = g_get_user_special_dir (dir);
+            g_autoptr (GFile) location = g_file_new_for_path (path);
+
+            if (nautilus_is_home_directory (location) ||
+                locations_list_has_equal_location (unique_locations, location))
+            {
+                continue;
+            }
+
+            unique_builtin_paths[dir] = path;
+            unique_locations = g_list_prepend (unique_locations,
+                                               g_steal_pointer (&location));
+        }
+
+        g_once_init_leave (&init, 1);
+    }
+
+    return unique_builtin_paths;
+}
+
 gboolean
 nautilus_is_file_roller_installed (void)
 {
