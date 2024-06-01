@@ -40,6 +40,7 @@
 #include "nautilus-dbus-launcher.h"
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-properties-window.h"
 #include "nautilus-scheme.h"
@@ -217,17 +218,6 @@ enum {
 #define ICON_NAME_NETWORK  "network-workgroup-symbolic"
 #define ICON_NAME_FOLDER_NETWORK "folder-remote-symbolic"
 #define ICON_NAME_OTHER_LOCATIONS "list-add-symbolic"
-
-#define ICON_NAME_FOLDER                "folder-symbolic"
-#define ICON_NAME_FOLDER_DESKTOP  "user-desktop-symbolic"
-#define ICON_NAME_FOLDER_DOCUMENTS      "folder-documents-symbolic"
-#define ICON_NAME_FOLDER_DOWNLOAD       "folder-download-symbolic"
-#define ICON_NAME_FOLDER_MUSIC    "folder-music-symbolic"
-#define ICON_NAME_FOLDER_PICTURES       "folder-pictures-symbolic"
-#define ICON_NAME_FOLDER_PUBLIC_SHARE   "folder-publicshare-symbolic"
-#define ICON_NAME_FOLDER_TEMPLATES      "folder-templates-symbolic"
-#define ICON_NAME_FOLDER_VIDEOS   "folder-videos-symbolic"
-#define ICON_NAME_FOLDER_SAVED_SEARCH   "folder-saved-search-symbolic"
 
 static guint places_sidebar_signals [LAST_SIGNAL] = { 0 };
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
@@ -451,33 +441,6 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
   return row;
 }
 
-static GIcon *
-special_directory_get_gicon (GUserDirectory directory)
-{
-#define ICON_CASE(x)                      \
-  case G_USER_DIRECTORY_ ## x:                                    \
-          return g_themed_icon_new_with_default_fallbacks (ICON_NAME_FOLDER_ ## x);
-
-  switch (directory)
-    {
-
-    ICON_CASE (DESKTOP);
-    ICON_CASE (DOCUMENTS);
-    ICON_CASE (DOWNLOAD);
-    ICON_CASE (MUSIC);
-    ICON_CASE (PICTURES);
-    ICON_CASE (PUBLIC_SHARE);
-    ICON_CASE (TEMPLATES);
-    ICON_CASE (VIDEOS);
-
-    case G_USER_N_DIRECTORIES:
-    default:
-      return g_themed_icon_new_with_default_fallbacks (ICON_NAME_FOLDER);
-    }
-
-#undef ICON_CASE
-}
-
 static gboolean
 recent_files_setting_is_enabled (NautilusGtkPlacesSidebar *sidebar)
 {
@@ -572,7 +535,7 @@ add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
       else
         name = g_file_get_basename (root);
 
-      start_icon = special_directory_get_gicon (index);
+      start_icon = nautilus_special_directory_get_symbolic_icon (index);
       mount_uri = g_file_get_uri (root);
       tooltip = g_file_get_parse_name (root);
 
