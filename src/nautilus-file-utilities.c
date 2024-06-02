@@ -362,8 +362,7 @@ gboolean
 nautilus_special_directory_is_builtin (GUserDirectory directory)
 {
     return (directory != G_USER_DIRECTORY_DESKTOP) &&
-           (directory != G_USER_DIRECTORY_TEMPLATES) &&
-           (directory != G_USER_DIRECTORY_PUBLIC_SHARE);
+           (directory != G_USER_DIRECTORY_TEMPLATES);
 }
 
 static gboolean
