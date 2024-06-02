@@ -51,7 +51,6 @@ network_mount_callback (GObject      *source_object,
                         GAsyncResult *result,
                         gpointer      data)
 {
-    NautilusInternalPlaceFile *self = NAUTILUS_INTERNAL_PLACE_FILE (data);
     g_autoptr (GError) error = NULL;
 
     (void) g_file_mount_enclosing_volume_finish (G_FILE (source_object), result, &error);
@@ -59,6 +58,8 @@ network_mount_callback (GObject      *source_object,
     {
         return;
     }
+
+    NautilusInternalPlaceFile *self = NAUTILUS_INTERNAL_PLACE_FILE (data);
 
     /* Clear cancellable and steal callbacks list because call_when_ready() may
      * be called again inside the `for` loop. */
