@@ -719,6 +719,17 @@ nautilus_tag_manager_can_star_contents (NautilusTagManager *self,
     return g_file_has_prefix (directory, self->home) || g_file_equal (directory, self->home);
 }
 
+gboolean
+nautilus_tag_manager_can_star_location (NautilusTagManager *self,
+                                        GFile              *directory)
+{
+    /* We only allow files to be starred inside the home directory for now.
+     * This avoids the starred files database growing too big.
+     * See https://gitlab.gnome.org/GNOME/nautilus/-/merge_requests/553#note_903108
+     */
+    return g_file_has_prefix (directory, self->home);
+}
+
 static void
 update_moved_uris_callback (GObject      *object,
                             GAsyncResult *result,
