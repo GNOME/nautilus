@@ -343,9 +343,8 @@ static void
 star_or_unstar_current_location (NautilusWindow *window)
 {
     NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
-
     GFile *location = nautilus_window_slot_get_location (slot);
-    NautilusFile *file = nautilus_file_get (location);
+    g_autoptr (NautilusFile) file = nautilus_file_get (location);
     g_autofree gchar *uri = nautilus_file_get_uri (file);
 
     NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
