@@ -4485,13 +4485,12 @@ static void
 display_pending_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
-    g_autoptr (GtkBitset) selection = NULL;
-    gboolean no_selection = FALSE;
 
     search_transition_emit_delayed_signals_if_pending (view);
 
-    selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
-    no_selection = gtk_bitset_is_empty (selection);
+    /* Get selection after delayed signals are emitted. */
+    g_autoptr (GtkBitset) selection = gtk_selection_model_get_selection (GTK_SELECTION_MODEL (priv->model));
+    gboolean no_selection = gtk_bitset_is_empty (selection);
 
     process_pending_files (view);
 
