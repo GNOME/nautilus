@@ -26,7 +26,7 @@
                 <binding name="sensitive">
                   <closure type="gboolean" function="are_name_and_passphrase_ready">
                     <lookup name="passed">validator</lookup>
-                    <lookup name="selected-item">extension_dropdown</lookup>
+                    <lookup name="selected-item">extension_combo_row</lookup>
                     <lookup name="text">passphrase_entry</lookup>
                     <lookup name="text">passphrase_confirm_entry</lookup>
                   </closure>
@@ -48,12 +48,12 @@
                     <property name="title" translatable="yes">Archive Name</property>
                     <signal name="changed" handler="nautilus_filename_validator_validate" object="validator" swapped="yes"/>
                     <signal name="entry-activated" handler="on_name_entry_activated" swapped="yes"/>
-                    <child type="suffix">
-                      <object class="GtkDropDown" id="extension_dropdown">
-                        <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
-                        <property name="valign">center</property>
-                      </object>
-                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwComboRow" id="extension_combo_row">
+                    <property name="title" translatable="yes">Archive Type</property>
+                    <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
                   </object>
                 </child>
                 <child>
@@ -102,12 +102,11 @@
       </object>
     </child>
   </template>
-  <object class="GtkSizeGroup" id="extension_sizegroup"/>
   <object class="NautilusFilenameValidator" id="validator">
     <binding name="new-name">
       <closure type="gchararray" function="maybe_append_extension">
         <lookup name="text">name_entry</lookup>
-        <lookup name="selected-item">extension_dropdown</lookup>
+        <lookup name="selected-item">extension_combo_row</lookup>
       </closure>
     </binding>
     <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
