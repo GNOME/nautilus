@@ -173,7 +173,7 @@ struct _NautilusPropertiesWindow
     OwnerChange *owner_change;
 
     GList *permission_rows;
-    GList *change_permission_drop_downs;
+    GList *change_permission_combo_rows;
     GHashTable *initial_permissions;
     gboolean has_recursive_apply;
 
@@ -3041,7 +3041,7 @@ update_permission_row (AdwComboRow     *row,
 }
 
 static void
-setup_permissions_drop_down (GtkDropDown    *drop_down,
+setup_permissions_combo_row (AdwComboRow    *combo_row,
                              PermissionType  type,
                              FilterType      filter_type)
 {
@@ -3049,13 +3049,13 @@ setup_permissions_drop_down (GtkDropDown    *drop_down,
     g_autoptr (GtkExpression) expression = NULL;
 
     store = g_list_store_new (NAUTILUS_TYPE_PERMISSION_ENTRY);
-    gtk_drop_down_set_model (drop_down, G_LIST_MODEL (store));
+    adw_combo_row_set_model (combo_row, G_LIST_MODEL (store));
     expression = gtk_property_expression_new (NAUTILUS_TYPE_PERMISSION_ENTRY, NULL, "name");
-    gtk_drop_down_set_expression (drop_down, expression);
+    adw_combo_row_set_expression (combo_row, expression);
 
 
-    g_object_set_data (G_OBJECT (drop_down), "filter-type", GINT_TO_POINTER (filter_type));
-    g_object_set_data (G_OBJECT (drop_down), "permission-type", GINT_TO_POINTER (type));
+    g_object_set_data (G_OBJECT (combo_row), "filter-type", GINT_TO_POINTER (filter_type));
+    g_object_set_data (G_OBJECT (combo_row), "permission-type", GINT_TO_POINTER (type));
 
     if (filter_type == FOLDERS_ONLY)
     {
@@ -3248,7 +3248,7 @@ on_change_permissions_response_cancel (AdwWindow *dialog,
     NautilusPropertiesWindow *self =
         NAUTILUS_PROPERTIES_WINDOW (gtk_window_get_transient_for (GTK_WINDOW (dialog)));
 
-    g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
+    g_clear_pointer (&self->change_permission_combo_rows, g_list_free);
     gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
@@ -3268,18 +3268,18 @@ on_change_permissions_response_change (AdwWindow *dialog,
     int mask;
 
     /* Simple mode, minus exec checkbox */
-    for (l = self->change_permission_drop_downs; l != NULL; l = l->next)
+    for (l = self->change_permission_combo_rows; l != NULL; l = l->next)
     {
-        GtkDropDown *drop_down = l->data;
-        NautilusPermissionEntry *selected = gtk_drop_down_get_selected_item (drop_down);
+        AdwComboRow *combo_row = l->data;
+        NautilusPermissionEntry *selected = adw_combo_row_get_selected_item (combo_row);
 
         if (selected == NULL)
         {
             continue;
         }
 
-        type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (drop_down), "permission-type"));
-        filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (drop_down), "filter-type"));
+        type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo_row), "permission-type"));
+        filter_type = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (combo_row), "filter-type"));
 
         vfs_new_perm = permission_to_vfs (type, selected->permission_value);
 
@@ -3325,16 +3325,16 @@ on_change_permissions_response_change (AdwWindow *dialog,
                                                      self);
         }
     }
-    g_clear_pointer (&self->change_permission_drop_downs, g_list_free);
+    g_clear_pointer (&self->change_permission_combo_rows, g_list_free);
     gtk_window_destroy (GTK_WINDOW (dialog));
 }
 
 static void
-set_active_from_umask (GtkDropDown    *drop_down,
+set_active_from_umask (AdwComboRow    *combo_row,
                        PermissionType  type,
                        FilterType      filter_type)
 {
-    GListModel *model = gtk_drop_down_get_model (drop_down);
+    GListModel *model = adw_combo_row_get_model (combo_row);
     mode_t initial;
     mode_t mask;
     mode_t p;
@@ -3432,7 +3432,7 @@ set_active_from_umask (GtkDropDown    *drop_down,
 
         if (entry->permission_value == perm)
         {
-            gtk_drop_down_set_selected (drop_down, i);
+            adw_combo_row_set_selected (combo_row, i);
             break;
         }
     }
@@ -3452,7 +3452,7 @@ static void
 on_change_permissions_clicked (NautilusPropertiesWindow *self)
 {
     GtkWidget *dialog;
-    GtkDropDown *drop_down;
+    AdwComboRow *combo_row;
     GtkButton *cancel_button, *change_button;
     GtkShortcut *esc_shortcut;
     GtkShortcutAction *cb_action;
@@ -3464,43 +3464,43 @@ on_change_permissions_clicked (NautilusPropertiesWindow *self)
     gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (self));
 
     /* Owner Permissions */
-    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "file_owner_drop_down"));
-    setup_permissions_drop_down (drop_down, PERMISSION_USER, FILES_ONLY);
-    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
-                                                         drop_down);
-    set_active_from_umask (drop_down, PERMISSION_USER, FILES_ONLY);
+    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (change_permissions_builder, "file_owner_combo_row"));
+    setup_permissions_combo_row (combo_row, PERMISSION_USER, FILES_ONLY);
+    self->change_permission_combo_rows = g_list_prepend (self->change_permission_combo_rows,
+                                                         combo_row);
+    set_active_from_umask (combo_row, PERMISSION_USER, FILES_ONLY);
 
-    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "folder_owner_drop_down"));
-    setup_permissions_drop_down (drop_down, PERMISSION_USER, FOLDERS_ONLY);
-    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
-                                                         drop_down);
-    set_active_from_umask (drop_down, PERMISSION_USER, FOLDERS_ONLY);
+    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (change_permissions_builder, "folder_owner_combo_row"));
+    setup_permissions_combo_row (combo_row, PERMISSION_USER, FOLDERS_ONLY);
+    self->change_permission_combo_rows = g_list_prepend (self->change_permission_combo_rows,
+                                                         combo_row);
+    set_active_from_umask (combo_row, PERMISSION_USER, FOLDERS_ONLY);
 
     /* Group Permissions */
-    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "file_group_drop_down"));
-    setup_permissions_drop_down (drop_down, PERMISSION_GROUP, FILES_ONLY);
-    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
-                                                         drop_down);
-    set_active_from_umask (drop_down, PERMISSION_GROUP, FILES_ONLY);
+    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (change_permissions_builder, "file_group_combo_row"));
+    setup_permissions_combo_row (combo_row, PERMISSION_GROUP, FILES_ONLY);
+    self->change_permission_combo_rows = g_list_prepend (self->change_permission_combo_rows,
+                                                         combo_row);
+    set_active_from_umask (combo_row, PERMISSION_GROUP, FILES_ONLY);
 
-    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "folder_group_drop_down"));
-    setup_permissions_drop_down (drop_down, PERMISSION_GROUP, FOLDERS_ONLY);
-    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
-                                                         drop_down);
-    set_active_from_umask (drop_down, PERMISSION_GROUP, FOLDERS_ONLY);
+    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (change_permissions_builder, "folder_group_combo_row"));
+    setup_permissions_combo_row (combo_row, PERMISSION_GROUP, FOLDERS_ONLY);
+    self->change_permission_combo_rows = g_list_prepend (self->change_permission_combo_rows,
+                                                         combo_row);
+    set_active_from_umask (combo_row, PERMISSION_GROUP, FOLDERS_ONLY);
 
     /* Others Permissions */
-    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "file_other_drop_down"));
-    setup_permissions_drop_down (drop_down, PERMISSION_OTHER, FILES_ONLY);
-    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
-                                                         drop_down);
-    set_active_from_umask (drop_down, PERMISSION_OTHER, FILES_ONLY);
+    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (change_permissions_builder, "file_other_combo_row"));
+    setup_permissions_combo_row (combo_row, PERMISSION_OTHER, FILES_ONLY);
+    self->change_permission_combo_rows = g_list_prepend (self->change_permission_combo_rows,
+                                                         combo_row);
+    set_active_from_umask (combo_row, PERMISSION_OTHER, FILES_ONLY);
 
-    drop_down = GTK_DROP_DOWN (gtk_builder_get_object (change_permissions_builder, "folder_other_drop_down"));
-    setup_permissions_drop_down (drop_down, PERMISSION_OTHER, FOLDERS_ONLY);
-    self->change_permission_drop_downs = g_list_prepend (self->change_permission_drop_downs,
-                                                         drop_down);
-    set_active_from_umask (drop_down, PERMISSION_OTHER, FOLDERS_ONLY);
+    combo_row = ADW_COMBO_ROW (gtk_builder_get_object (change_permissions_builder, "folder_other_combo_row"));
+    setup_permissions_combo_row (combo_row, PERMISSION_OTHER, FOLDERS_ONLY);
+    self->change_permission_combo_rows = g_list_prepend (self->change_permission_combo_rows,
+                                                         combo_row);
+    set_active_from_umask (combo_row, PERMISSION_OTHER, FOLDERS_ONLY);
 
     cancel_button = GTK_BUTTON (gtk_builder_get_object (change_permissions_builder, "cancel_button"));
     change_button = GTK_BUTTON (gtk_builder_get_object (change_permissions_builder, "change_button"));
@@ -3997,7 +3997,7 @@ real_dispose (GObject *object)
 
     g_clear_list (&self->permission_rows, NULL);
 
-    g_clear_list (&self->change_permission_drop_downs, NULL);
+    g_clear_list (&self->change_permission_combo_rows, NULL);
 
     g_clear_pointer (&self->initial_permissions, g_hash_table_destroy);
 
