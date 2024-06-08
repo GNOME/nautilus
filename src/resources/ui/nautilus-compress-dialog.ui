@@ -16,13 +16,15 @@
             <property name="show-end-title-buttons">False</property>
             <child type="start">
               <object class="GtkButton">
-                <property name="label" translatable="yes">Cancel</property>
+                <property name="label" translatable="yes">_Cancel</property>
+                <property name="use-underline">True</property>
                 <signal name="clicked" handler="gtk_window_close" swapped="yes"/>
               </object>
             </child>
             <child type="end">
               <object class="GtkButton" id="activation_button">
-                <property name="label" translatable="yes">Create</property>
+                <property name="label" translatable="yes">C_reate</property>
+                <property name="use-underline">True</property>
                 <binding name="sensitive">
                   <closure type="gboolean" function="are_name_and_passphrase_ready">
                     <lookup name="passed">validator</lookup>
@@ -45,14 +47,16 @@
               <object class="AdwPreferencesGroup">
                 <child>
                   <object class="AdwEntryRow" id="name_entry">
-                    <property name="title" translatable="yes">Archive Name</property>
+                    <property name="title" translatable="yes">Archive _Name</property>
+                    <property name="use-underline">True</property>
                     <signal name="changed" handler="nautilus_filename_validator_validate" object="validator" swapped="yes"/>
                     <signal name="entry-activated" handler="on_name_entry_activated" swapped="yes"/>
                   </object>
                 </child>
                 <child>
                   <object class="AdwComboRow" id="extension_combo_row">
-                    <property name="title" translatable="yes">Archive Type</property>
+                    <property name="title" translatable="yes">Archive _Type</property>
+                    <property name="use-underline">True</property>
                     <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
                   </object>
                 </child>
@@ -75,13 +79,15 @@
                 <property name="title" translatable="yes">Encryption</property>
                 <child>
                   <object class="AdwPasswordEntryRow" id="passphrase_entry">
-                    <property name="title" translatable="yes">Password</property>
+                    <property name="title" translatable="yes">_Password</property>
+                    <property name="use-underline">True</property>
                     <signal name="entry-activated" handler="gtk_widget_grab_focus" object="passphrase_confirm_entry" swapped="yes"/>
                   </object>
                 </child>
                  <child>
                   <object class="AdwPasswordEntryRow" id="passphrase_confirm_entry">
-                    <property name="title" translatable="yes">Confirm Password</property>
+                    <property name="title" translatable="yes">_Confirm Password</property>
+                    <property name="use-underline">True</property>
                   </object>
                 </child>
               </object>
