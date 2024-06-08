@@ -1873,7 +1873,7 @@ rename_entry_changed (GtkEntry         *entry,
                     "label", &name,
                     NULL);
 
-      if ((type == NAUTILUS_GTK_PLACES_XDG_DIR || type == NAUTILUS_GTK_PLACES_BOOKMARK) &&
+      if (type == NAUTILUS_GTK_PLACES_BOOKMARK &&
           strcmp (uri, sidebar->rename_uri) != 0 &&
           strcmp (new_name, name) == 0)
         found = TRUE;
@@ -2094,7 +2094,7 @@ rename_bookmark (NautilusGtkSidebarRow *row)
 
   g_object_get (row, "place-type", &type, NULL);
 
-  if (type != NAUTILUS_GTK_PLACES_BOOKMARK && type != NAUTILUS_GTK_PLACES_XDG_DIR)
+  if (type != NAUTILUS_GTK_PLACES_BOOKMARK)
     return;
 
   show_rename_popover (row);
@@ -2841,8 +2841,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "remove");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "rename");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK ||
-                                                          type == NAUTILUS_GTK_PLACES_XDG_DIR));
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "open");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "empty-trash");
@@ -3229,13 +3228,7 @@ list_box_sort_func (GtkListBoxRow *row1,
 
   if (section_type_1 == section_type_2)
     {
-      if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS &&
-          place_type_1 == place_type_2 &&
-          place_type_1 == NAUTILUS_GTK_PLACES_XDG_DIR)
-        {
-          retval = g_utf8_collate (label_1, label_2);
-        }
-      else if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
+      if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
         {
           if (place_type_1 == place_type_2)
             {
