@@ -684,7 +684,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   home_uri = get_home_directory_uri ();
   start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_HOME);
   add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
              _("Home"), start_icon, NULL, home_uri,
              NULL, NULL, NULL, NULL, 0,
              _("Open Personal Folder"));
@@ -695,7 +695,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     {
       start_icon = g_themed_icon_new_with_default_fallbacks ("document-open-recent-symbolic");
       add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                 NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+                 NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
                  _("Recent"), start_icon, NULL, SCHEME_RECENT ":///",
                  NULL, NULL, NULL, NULL, 0,
                  _("Recent Files"));
@@ -704,7 +704,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
 
   start_icon = g_themed_icon_new_with_default_fallbacks ("starred-symbolic");
   add_place (sidebar, NAUTILUS_GTK_PLACES_STARRED_LOCATION,
-             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
              _("Starred"), start_icon, NULL, SCHEME_STARRED ":///",
              NULL, NULL, NULL, NULL, 0,
              _("Starred Files"));
@@ -718,7 +718,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
         {
           start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_DESKTOP);
           add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                     NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+                     NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
                      _("Desktop"), start_icon, NULL, mount_uri,
                      NULL, NULL, NULL, NULL, 0,
                      _("Open the contents of your desktop in a folder"));
@@ -730,7 +730,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   /* Network view */
   start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_NETWORK_VIEW);
   add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-             NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+             NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
              _("Network"), start_icon, NULL, SCHEME_NETWORK_VIEW ":///",
              NULL, NULL, NULL, NULL, 0,
              _("Open Network Locations"));
@@ -739,7 +739,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   /* Trash */
   start_icon = nautilus_trash_monitor_get_symbolic_icon ();
   sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                                  NAUTILUS_GTK_PLACES_SECTION_COMPUTER,
+                                  NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
                                   _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
                                   NULL, NULL, NULL, NULL, 0,
                                   _("Open Trash"));
@@ -3229,7 +3229,7 @@ list_box_sort_func (GtkListBoxRow *row1,
 
   if (section_type_1 == section_type_2)
     {
-      if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_COMPUTER &&
+      if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS &&
           place_type_1 == place_type_2 &&
           place_type_1 == NAUTILUS_GTK_PLACES_XDG_DIR)
         {
