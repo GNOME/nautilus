@@ -667,31 +667,6 @@ update_cursor (NautilusWindow *window)
     }
 }
 
-/* Callback used when the places sidebar changes location; we need to change the displayed folder */
-static void
-open_location_cb (NautilusWindow    *window,
-                  GFile             *location,
-                  NautilusOpenFlags  flags)
-{
-    NautilusApplication *application;
-    AdwOverlaySplitView *split_view = ADW_OVERLAY_SPLIT_VIEW (window->split_view);
-
-    if (flags == NAUTILUS_OPEN_FLAG_NEW_TAB)
-    {
-        flags |= NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
-    }
-
-    application = NAUTILUS_APPLICATION (g_application_get_default ());
-    nautilus_application_open_location_full (application, location, flags,
-                                             NULL, NULL, NULL);
-
-    if (adw_overlay_split_view_get_collapsed (split_view) &&
-        flags == NAUTILUS_OPEN_FLAG_NORMAL)
-    {
-        adw_overlay_split_view_set_show_sidebar (split_view, FALSE);
-    }
-}
-
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
@@ -799,9 +774,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
                                                 (NAUTILUS_OPEN_FLAG_NORMAL
                                                  | NAUTILUS_OPEN_FLAG_NEW_TAB
                                                  | NAUTILUS_OPEN_FLAG_NEW_WINDOW));
-
-    g_signal_connect_swapped (window->places_sidebar, "open-location",
-                              G_CALLBACK (open_location_cb), window);
 
     g_signal_connect (window->places_sidebar, "drag-action-requested",
                       G_CALLBACK (places_sidebar_drag_action_requested_cb), window);

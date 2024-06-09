@@ -168,9 +168,6 @@ struct _NautilusGtkPlacesSidebar {
 struct _NautilusGtkPlacesSidebarClass {
   GtkWidgetClass parent_class;
 
-  void    (* open_location)          (NautilusGtkPlacesSidebar   *sidebar,
-                                      GFile              *location,
-                                      NautilusOpenFlags  open_flags);
   GdkDragAction (* drag_action_requested)  (NautilusGtkPlacesSidebar   *sidebar,
                                       GFile              *dest_file,
                                       GSList             *source_file_list);
@@ -188,7 +185,6 @@ struct _NautilusGtkPlacesSidebarClass {
 };
 
 enum {
-  OPEN_LOCATION,
   DRAG_ACTION_REQUESTED,
   DRAG_ACTION_ASK,
   DRAG_PERFORM_DROP,
@@ -250,15 +246,37 @@ static GMountOperation * get_unmount_operation (NautilusGtkPlacesSidebar *sideba
 G_DEFINE_TYPE (NautilusGtkPlacesSidebar, nautilus_gtk_places_sidebar, GTK_TYPE_WIDGET);
 
 static void
-emit_open_location (NautilusGtkPlacesSidebar   *sidebar,
-                    GFile              *location,
-                    NautilusOpenFlags  open_flags)
+call_open_location (NautilusGtkPlacesSidebar *self,
+                    GFile                    *location,
+                    NautilusOpenFlags         open_flags)
 {
-  if ((open_flags & sidebar->open_flags) == 0)
+  if ((open_flags & self->open_flags) == 0)
     open_flags = NAUTILUS_OPEN_FLAG_NORMAL;
 
-  g_signal_emit (sidebar, places_sidebar_signals[OPEN_LOCATION], 0,
-                 location, open_flags);
+  if (open_flags == NAUTILUS_OPEN_FLAG_NEW_TAB)
+    {
+      open_flags |= NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
+    }
+
+  if (open_flags & (NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NEW_TAB))
+    {
+      nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                               location, open_flags, NULL, NULL, NULL);
+    }
+  else
+    {
+      nautilus_window_slot_open_location_full (self->window_slot, location, open_flags, NULL);
+
+      GtkWidget *ancestor = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_OVERLAY_SPLIT_VIEW);
+      AdwOverlaySplitView *split_view = ADW_OVERLAY_SPLIT_VIEW (ancestor);
+
+      g_assert (split_view != NULL);
+
+      if (adw_overlay_split_view_get_collapsed (split_view))
+        {
+          adw_overlay_split_view_set_show_sidebar (split_view, FALSE);
+        }
+    }
 }
 
 static void
@@ -1113,7 +1131,7 @@ hover_timer (gpointer user_data)
       if (uri != NULL && g_strcmp0 (uri, SCHEME_TRASH ":///") != 0)
         {
           location = g_file_new_for_uri (uri);
-          emit_open_location (sidebar, location, 0);
+          call_open_location (sidebar, location, 0);
         }
     }
 
@@ -1698,7 +1716,7 @@ volume_mount_cb (GObject      *source_object,
       GFile *location;
 
       location = g_mount_get_default_location (mount);
-      emit_open_location (sidebar, location, sidebar->go_to_after_mount_open_flags);
+      call_open_location (sidebar, location, sidebar->go_to_after_mount_open_flags);
 
       g_object_unref (G_OBJECT (location));
       g_object_unref (G_OBJECT (mount));
@@ -1772,7 +1790,7 @@ open_uri (NautilusGtkPlacesSidebar   *sidebar,
   GFile *location;
 
   location = g_file_new_for_uri (uri);
-  emit_open_location (sidebar, location, open_flags);
+  call_open_location (sidebar, location, open_flags);
   g_object_unref (location);
 }
 
@@ -3720,28 +3738,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
 
   widget_class->measure = nautilus_gtk_places_sidebar_measure;
   widget_class->size_allocate = nautilus_gtk_places_sidebar_size_allocate;
-
-  /*
-   * NautilusGtkPlacesSidebar::open-location:
-   * @sidebar: the object which received the signal.
-   * @location: (type Gio.File): GFile to which the caller should switch.
-   * @open_flags: a single value from NautilusOpenFlags specifying how the @location should be opened.
-   *
-   * The places sidebar emits this signal when the user selects a location
-   * in it.  The calling application should display the contents of that
-   * location; for example, a file manager should show a list of files in
-   * the specified location.
-   */
-  places_sidebar_signals [OPEN_LOCATION] =
-          g_signal_new ("open-location",
-                        G_OBJECT_CLASS_TYPE (gobject_class),
-                        G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, open_location),
-                        NULL, NULL,
-                        NULL,
-                        G_TYPE_NONE, 2,
-                        G_TYPE_OBJECT,
-                        NAUTILUS_TYPE_OPEN_FLAGS);
 
   /*
    * NautilusGtkPlacesSidebar::drag-action-requested:
