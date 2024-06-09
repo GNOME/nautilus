@@ -1253,12 +1253,6 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                 "file", &dest_file,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
-    {
-      g_free (uri);
-      return FALSE;
-    }
-
   if (place_type == NAUTILUS_GTK_PLACES_OTHER_LOCATIONS)
     {
       g_free (uri);
@@ -3229,8 +3223,7 @@ on_row_released (GtkGestureClick *gesture,
         }
       else if (button == 3)
         {
-          if (row_type != NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
-            show_row_popover (NAUTILUS_GTK_SIDEBAR_ROW (row), x, y);
+          show_row_popover (NAUTILUS_GTK_SIDEBAR_ROW (row), x, y);
         }
     }
 }
@@ -3305,8 +3298,7 @@ popup_menu_cb (NautilusGtkSidebarRow *row)
 
   g_object_get (row, "place-type", &row_type, NULL);
 
-  if (row_type != NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
-    show_row_popover (row, -1, -1);
+  show_row_popover (row, -1, -1);
 }
 
 static void
@@ -3346,62 +3338,50 @@ list_box_sort_func (GtkListBoxRow *row1,
                 "order-index", &index_2,
                 NULL);
 
-  /* Always last position for "connect to server" */
-  if (place_type_1 == NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
+  if (section_type_1 == section_type_2)
     {
-      retval = 1;
-    }
-  else if (place_type_2 == NAUTILUS_GTK_PLACES_CONNECT_TO_SERVER)
-    {
-      retval = -1;
+      if ((section_type_1 == NAUTILUS_GTK_PLACES_SECTION_COMPUTER &&
+           place_type_1 == place_type_2 &&
+           place_type_1 == NAUTILUS_GTK_PLACES_XDG_DIR) ||
+          section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
+        {
+          retval = g_utf8_collate (label_1, label_2);
+        }
+      else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK) &&
+               (place_type_1 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
+        {
+          retval = index_1 - index_2;
+        }
+      /* We order the bookmarks sections based on the bookmark index that we
+       * set on the row as an order-index property, but we have to deal with
+       * the placeholder row wanted to be between two consecutive bookmarks,
+       * with two consecutive order-index values which is the usual case.
+       * For that, in the list box sort func we give priority to the placeholder row,
+       * that means that if the index-order is the same as another bookmark
+       * the placeholder row goes before. However if we want to show it after
+       * the current row, for instance when the cursor is in the lower half
+       * of the row, we need to increase the order-index.
+       */
+      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK)
+        {
+          if (index_1 == index_2)
+            retval =  index_1 - index_2 - 1;
+          else
+            retval = index_1 - index_2;
+        }
+      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+        {
+          if (index_1 == index_2)
+            retval =  index_1 - index_2 + 1;
+          else
+            retval = index_1 - index_2;
+        }
     }
   else
     {
-      if (section_type_1 == section_type_2)
-        {
-          if ((section_type_1 == NAUTILUS_GTK_PLACES_SECTION_COMPUTER &&
-               place_type_1 == place_type_2 &&
-               place_type_1 == NAUTILUS_GTK_PLACES_XDG_DIR) ||
-              section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
-            {
-              retval = g_utf8_collate (label_1, label_2);
-            }
-          else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK) &&
-                   (place_type_1 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
-            {
-              retval = index_1 - index_2;
-            }
-          /* We order the bookmarks sections based on the bookmark index that we
-           * set on the row as an order-index property, but we have to deal with
-           * the placeholder row wanted to be between two consecutive bookmarks,
-           * with two consecutive order-index values which is the usual case.
-           * For that, in the list box sort func we give priority to the placeholder row,
-           * that means that if the index-order is the same as another bookmark
-           * the placeholder row goes before. However if we want to show it after
-           * the current row, for instance when the cursor is in the lower half
-           * of the row, we need to increase the order-index.
-           */
-          else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK)
-            {
-              if (index_1 == index_2)
-                retval =  index_1 - index_2 - 1;
-              else
-                retval = index_1 - index_2;
-            }
-          else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
-            {
-              if (index_1 == index_2)
-                retval =  index_1 - index_2 + 1;
-              else
-                retval = index_1 - index_2;
-            }
-        }
-      else
-        {
-          /* Order by section. That means the order in the enum of section types
-           * define the actual order of them in the list */
-          retval = section_type_1 - section_type_2;
-        }
+      /* Order by section. That means the order in the enum of section types
+       * define the actual order of them in the list */
+      retval = section_type_1 - section_type_2;
     }
 
   g_free (label_1);
