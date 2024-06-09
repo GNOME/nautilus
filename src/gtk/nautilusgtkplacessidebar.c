@@ -158,7 +158,6 @@ struct _NautilusGtkPlacesSidebar {
 
   guint mounting               : 1;
   guint show_desktop           : 1;
-  guint show_other_locations   : 1;
 };
 
 struct _NautilusGtkPlacesSidebarClass {
@@ -180,9 +179,6 @@ struct _NautilusGtkPlacesSidebarClass {
                                       GList              *source_file_list,
                                       GdkDragAction       action);
 
-  void    (* show_other_locations_with_flags)   (NautilusGtkPlacesSidebar   *sidebar,
-                                                 NautilusGtkPlacesOpenFlags  open_flags);
-
   void    (* show_starred_location)    (NautilusGtkPlacesSidebar   *sidebar);
 
   void    (* mount)                  (NautilusGtkPlacesSidebar   *sidebar,
@@ -197,7 +193,6 @@ enum {
   DRAG_ACTION_REQUESTED,
   DRAG_ACTION_ASK,
   DRAG_PERFORM_DROP,
-  SHOW_OTHER_LOCATIONS_WITH_FLAGS,
   SHOW_STARRED_LOCATION,
   MOUNT,
   UNMOUNT,
@@ -207,7 +202,6 @@ enum {
 enum {
   PROP_LOCATION = 1,
   PROP_OPEN_FLAGS,
-  PROP_SHOW_OTHER_LOCATIONS,
   NUM_PROPERTIES
 };
 
@@ -218,7 +212,6 @@ enum {
 #define ICON_NAME_NETWORK  "network-workgroup-symbolic"
 #define ICON_NAME_NETWORK_VIEW  "network-computer-symbolic"
 #define ICON_NAME_FOLDER_NETWORK "folder-remote-symbolic"
-#define ICON_NAME_OTHER_LOCATIONS "list-add-symbolic"
 
 static guint places_sidebar_signals [LAST_SIGNAL] = { 0 };
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
@@ -276,14 +269,6 @@ emit_show_error_message (NautilusGtkPlacesSidebar *sidebar,
 {
   g_signal_emit (sidebar, places_sidebar_signals[SHOW_ERROR_MESSAGE], 0,
                  primary, secondary);
-}
-
-static void
-emit_show_other_locations_with_flags (NautilusGtkPlacesSidebar   *sidebar,
-                                      NautilusGtkPlacesOpenFlags  open_flags)
-{
-  g_signal_emit (sidebar, places_sidebar_signals[SHOW_OTHER_LOCATIONS_WITH_FLAGS],
-                 0, open_flags);
 }
 
 static void
@@ -888,12 +873,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                 }
               g_free (identifier);
 
-              if (sidebar->show_other_locations && !is_external_volume (volume))
-                {
-                  g_object_unref (volume);
-                  continue;
-                }
-
               mount = g_volume_get_mount (volume);
               if (mount != NULL)
                 {
@@ -981,7 +960,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   volumes = g_volume_monitor_get_volumes (sidebar->volume_monitor);
   for (l = volumes; l != NULL; l = l->next)
     {
-      gboolean is_loop = FALSE;
       volume = l->data;
       drive = g_volume_get_drive (volume);
       if (drive != NULL)
@@ -999,17 +977,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           network_volumes = g_list_prepend (network_volumes, volume);
           continue;
         }
-      else if (g_strcmp0 (identifier, "loop") == 0)
-        is_loop = TRUE;
       g_free (identifier);
-
-      if (sidebar->show_other_locations &&
-          !is_external_volume (volume) &&
-          !is_loop)
-        {
-          g_object_unref (volume);
-          continue;
-        }
 
       mount = g_volume_get_mount (volume);
       if (mount != NULL)
@@ -1188,15 +1156,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   g_list_free_full (network_volumes, g_object_unref);
   g_list_free_full (network_mounts, g_object_unref);
 
-  /* Other locations */
-  if (sidebar->show_other_locations)
-    {
-      start_icon = g_themed_icon_new_with_default_fallbacks (ICON_NAME_OTHER_LOCATIONS);
-
-
-      g_object_unref (start_icon);
-    }
-
   /* We want this hidden by default, but need to do it after the show_all call */
   nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), TRUE);
 
@@ -1260,12 +1219,6 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
                 "uri", &uri,
                 "file", &dest_file,
                 NULL);
-
-  if (place_type == NAUTILUS_GTK_PLACES_OTHER_LOCATIONS)
-    {
-      g_free (uri);
-      return FALSE;
-    }
 
   if (place_type == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
     {
@@ -1917,11 +1870,7 @@ open_row (NautilusGtkSidebarRow      *row,
                 "volume", &volume,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_OTHER_LOCATIONS)
-    {
-      emit_show_other_locations_with_flags (sidebar, open_flags);
-    }
-  else if (place_type == NAUTILUS_GTK_PLACES_STARRED_LOCATION)
+  if (place_type == NAUTILUS_GTK_PLACES_STARRED_LOCATION)
     {
       emit_show_starred_location (sidebar, open_flags);
     }
@@ -3523,8 +3472,6 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   sidebar->cancellable = g_cancellable_new ();
 
-  sidebar->show_other_locations = TRUE;
-
   create_volume_monitor (sidebar);
 
   sidebar->open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
@@ -3648,10 +3595,6 @@ nautilus_gtk_places_sidebar_set_property (GObject      *obj,
       nautilus_gtk_places_sidebar_set_open_flags (sidebar, g_value_get_flags (value));
       break;
 
-    case PROP_SHOW_OTHER_LOCATIONS:
-      nautilus_gtk_places_sidebar_set_show_other_locations (sidebar, g_value_get_boolean (value));
-      break;
-
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, property_id, pspec);
       break;
@@ -3674,10 +3617,6 @@ nautilus_gtk_places_sidebar_get_property (GObject    *obj,
 
     case PROP_OPEN_FLAGS:
       g_value_set_flags (value, nautilus_gtk_places_sidebar_get_open_flags (sidebar));
-      break;
-
-    case PROP_SHOW_OTHER_LOCATIONS:
-      g_value_set_boolean (value, nautilus_gtk_places_sidebar_get_show_other_locations (sidebar));
       break;
 
     default:
@@ -3961,27 +3900,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         GDK_TYPE_DRAG_ACTION);
 
   /*
-   * NautilusGtkPlacesSidebar::show-other-locations-with-flags:
-   * @sidebar: the object which received the signal.
-   * @open_flags: a single value from NautilusGtkPlacesOpenFlags specifying how it should be opened.
-   *
-   * The places sidebar emits this signal when it needs the calling
-   * application to present a way to show other locations e.g. drives
-   * and network access points.
-   * For example, the application may bring up a page showing persistent
-   * volumes and discovered network addresses.
-   */
-  places_sidebar_signals [SHOW_OTHER_LOCATIONS_WITH_FLAGS] =
-          g_signal_new ("show-other-locations-with-flags",
-                        G_OBJECT_CLASS_TYPE (gobject_class),
-                        G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, show_other_locations_with_flags),
-                        NULL, NULL,
-                        NULL,
-                        G_TYPE_NONE, 1,
-                        NAUTILUS_TYPE_OPEN_FLAGS);
-
-  /*
    * NautilusGtkPlacesSidebar::mount:
    * @sidebar: the object which received the signal.
    * @mount_operation: the GMountOperation that is going to start.
@@ -4055,12 +3973,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                               NAUTILUS_TYPE_OPEN_FLAGS,
                               NAUTILUS_GTK_PLACES_OPEN_NORMAL,
                               G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
-  properties[PROP_SHOW_OTHER_LOCATIONS] =
-          g_param_spec_boolean ("show-other-locations",
-                                "Show “Other locations”",
-                                "Whether the sidebar includes an item to show external locations",
-                                TRUE,
-                                G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
 
   g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
 
@@ -4242,51 +4154,6 @@ nautilus_gtk_places_sidebar_get_location_title (NautilusGtkPlacesSidebar *sideba
     g_object_get (selected, "label", &title, NULL);
 
   return title;
-}
-
-/*
- * nautilus_gtk_places_sidebar_set_show_other_locations:
- * @sidebar: a places sidebar
- * @show_other_locations: whether to show an item for the Other Locations view
- *
- * Sets whether the @sidebar should show an item for the application to show
- * an Other Locations view; this is off by default. When set to %TRUE, persistent
- * devices such as hard drives are hidden, otherwise they are shown in the sidebar.
- * An application may want to turn this on if it implements a way for the user to
- * see and interact with drives and network servers directly.
- *
- * If you enable this, you should connect to the
- * NautilusGtkPlacesSidebar::show-other-locations-with-flags signal.
- */
-void
-nautilus_gtk_places_sidebar_set_show_other_locations (NautilusGtkPlacesSidebar *sidebar,
-                                             gboolean          show_other_locations)
-{
-  g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
-
-  show_other_locations = !!show_other_locations;
-  if (sidebar->show_other_locations != show_other_locations)
-    {
-      sidebar->show_other_locations = show_other_locations;
-      update_places (sidebar);
-      g_object_notify_by_pspec (G_OBJECT (sidebar), properties[PROP_SHOW_OTHER_LOCATIONS]);
-    }
-  }
-
-/*
- * nautilus_gtk_places_sidebar_get_show_other_locations:
- * @sidebar: a places sidebar
- *
- * Returns the value previously set with nautilus_gtk_places_sidebar_set_show_other_locations()
- *
- * Returns: %TRUE if the sidebar will display an “Other Locations” item.
- */
-gboolean
-nautilus_gtk_places_sidebar_get_show_other_locations (NautilusGtkPlacesSidebar *sidebar)
-{
-  g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), FALSE);
-
-  return sidebar->show_other_locations;
 }
 
 /*

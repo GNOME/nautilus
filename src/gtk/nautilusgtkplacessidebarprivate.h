@@ -85,10 +85,6 @@ GFile *            nautilus_gtk_places_sidebar_get_nth_bookmark           (Nauti
 void               nautilus_gtk_places_sidebar_set_drop_targets_visible   (NautilusGtkPlacesSidebar   *sidebar,
                                                                   gboolean            visible);
 
-void                 nautilus_gtk_places_sidebar_set_show_other_locations (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  gboolean            show_other_locations);
-gboolean             nautilus_gtk_places_sidebar_get_show_other_locations (NautilusGtkPlacesSidebar   *sidebar);
-
 /* Keep order, since it's used for the sort functions */
 typedef enum {
   NAUTILUS_GTK_PLACES_SECTION_INVALID,
@@ -96,7 +92,6 @@ typedef enum {
   NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
   NAUTILUS_GTK_PLACES_SECTION_CLOUD,
   NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
-  NAUTILUS_GTK_PLACES_SECTION_OTHER_LOCATIONS,
   NAUTILUS_GTK_PLACES_N_SECTIONS
 } NautilusGtkPlacesSectionType;
 
@@ -110,7 +105,6 @@ typedef enum {
   NAUTILUS_GTK_PLACES_HEADING,
   NAUTILUS_GTK_PLACES_DROP_FEEDBACK,
   NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER,
-  NAUTILUS_GTK_PLACES_OTHER_LOCATIONS,
   NAUTILUS_GTK_PLACES_STARRED_LOCATION,
   NAUTILUS_GTK_PLACES_N_PLACES
 } NautilusGtkPlacesPlaceType;
