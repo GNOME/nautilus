@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-05-15 21:14+0000\n"
-"PO-Revision-Date: 2024-05-17 01:26+0200\n"
+"POT-Creation-Date: 2024-05-16 23:29+0000\n"
+"PO-Revision-Date: 2024-06-09 22:01+0200\n"
 "Last-Translator: Jose Riha <jose1711@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -66,9 +66,9 @@ msgstr ""
 "Program Nautilus podporuje všetky základné funkcie správcu súborov a ešte "
 "viac. Dokáže vyhľadať a spravovať vaše súbory a priečinky, miestne aj v "
 "sieti, čítať a zapísať údaje na vymeniteľných médiách, spúšťať skripty a "
-"aplikácie. Obsahuje tri druhy zobrazení: Mriežka ikôn, zoznam ikon a "
-"stromové zobrazenie. Jeho funkcie môžete rozšíriť pomocou zásuvných "
-"modulov a skriptov."
+"aplikácie. Obsahuje tri druhy zobrazení: Mriežka ikon, zoznam ikon a "
+"stromové zobrazenie. Jeho funkcie môžete rozšíriť pomocou zásuvných modulov "
+"a skriptov."
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:53 src/nautilus-view.c:150
 msgid "Grid View"
@@ -114,9 +114,8 @@ msgid ""
 "If set to true, Files will always use a textual input entry for the location "
 "toolbar, instead of the pathbar."
 msgstr ""
-"Ak je voľba nastavená na hodnotu „true“, Súbory budú vždy "
-"používať textové vstupné pole v lište s nástrojmi umiestnenia namiesto lišty "
-"s cestou."
+"Ak je voľba nastavená na hodnotu „true“, Súbory budú vždy používať textové "
+"vstupné pole v lište s nástrojmi umiestnenia namiesto lišty s cestou."
 
 #: data/org.gnome.nautilus.gschema.xml:87
 msgid "Where to perform recursive search"
@@ -154,8 +153,8 @@ msgid ""
 "If set to true, Files will show a delete permanently context menu item to "
 "bypass the Trash."
 msgstr ""
-"Ak je voľba nastavená na hodnotu „true“, program Súbory bude zobrazovať položku v "
-"kontextovej ponuke na trvalé odstránenie na obídenie koša."
+"Ak je voľba nastavená na hodnotu „true“, program Súbory bude zobrazovať "
+"položku v kontextovej ponuke na trvalé odstránenie na obídenie koša."
 
 #: data/org.gnome.nautilus.gschema.xml:102
 msgid ""
@@ -170,9 +169,9 @@ msgid ""
 "If set to true, Files will show context menu items to create links from the "
 "copied or selected files."
 msgstr ""
-"Ak je voľba nastavená na hodnotu „true“, program Súbory bude zobrazovať položky "
-"kontextovej ponuky na vytvorenie odkazov z kopírovaných alebo vybratých "
-"súborov."
+"Ak je voľba nastavená na hodnotu „true“, program Súbory bude zobrazovať "
+"položky kontextovej ponuky na vytvorenie odkazov z kopírovaných alebo "
+"vybratých súborov."
 
 #: data/org.gnome.nautilus.gschema.xml:108
 msgid "When to show number of items in a folder"
@@ -217,8 +216,7 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:123
 msgid "Use extra mouse button events in Files"
-msgstr ""
-"Používať udalosti ďalších tlačidiel myši v Súboroch"
+msgstr "Používať udalosti ďalších tlačidiel myši v Súboroch"
 
 #: data/org.gnome.nautilus.gschema.xml:124
 msgid ""
@@ -345,6 +343,13 @@ msgstr ""
 msgid "Whether GTK 4 settings migration happened"
 msgstr "Či sa udiala migrácia nastavení rozhrania GTK 4"
 
+#: data/org.gnome.nautilus.gschema.xml:179
+msgid ""
+"Whether settings shared with GtkFileChooser have been migrated from their "
+"GTK 3 keys to the GTK 4 ones."
+msgstr ""
+"Či boli nastavenia zdieľané s GtkFileChooser prevedené z podoby pre GTK 3 do podoby pre GTK 4."
+
 #: data/org.gnome.nautilus.gschema.xml:183
 msgid ""
 "Whether to open the hovered folder after a timeout when drag and drop "
@@ -380,15 +385,19 @@ msgstr ""
 "súborov a nielen v názvoch. Týmto sa prepne predvolený aktívny stav, ktorý "
 "môže byť stále prevážený vo vyskakovacom okne vyhľadávania."
 
+#: data/org.gnome.nautilus.gschema.xml:193
+msgid "How to display file timestamps in the views"
+msgstr "Ako zobrazovať časové údaje súborov v zobrazeniach"
+
 #: data/org.gnome.nautilus.gschema.xml:194
 msgid ""
 "If set to 'simple', Files will show Today and Yesterday with time, otherwise "
 "the exact date without time. If set to 'detailed', it will always show the "
 "exact date and time."
 msgstr ""
-"Ak je nastavené na \"jednoduché\", program Súbory zobrazí Dnes a Včera s časom, "
-"inak presný dátum bez času. Ak je nastavená na \"podrobný\", vždy sa zobrazí "
-"presný dátum a čas."
+"Ak je nastavené na \"jednoduché\", program Súbory zobrazí Dnes a Včera s "
+"časom, inak presný dátum bez času. Ak je nastavená na \"podrobný\", vždy sa "
+"zobrazí presný dátum a čas."
 
 #: data/org.gnome.nautilus.gschema.xml:201
 msgid "Default format for compressing files"
@@ -1206,16 +1215,16 @@ msgstr ""
 #. Translators: date and time in 24h format,
 #. * i.e. "12/31/2023 23:59"
 #: src/nautilus-date-utilities.c:83
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "%m/%d/%Y %H:%M"
-msgstr "%-e. %b %Y o %H:%M"
+msgstr "%d. %m. %Y o %H:%M"
 
 #. Translators: date and time in 12h format,
 #. * i.e. "12/31/2023 11:59 PM"
 #: src/nautilus-date-utilities.c:90
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "%m/%d/%Y %I:%M %p"
-msgstr "%-e. %b %Y o %H:%M"
+msgstr "%d. %m. %Y o %I:%M %p"
 
 #. Translators: this is the word "Today" followed by
 #. * a time in 24h format. i.e. "Today 23:04"
@@ -1901,9 +1910,9 @@ msgstr[1] "(%d súbor/s)"
 msgstr[2] "(%d súbory/s)"
 
 #: src/nautilus-file-operations.c:1492
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to delete all child files"
-msgstr "Príprava na odstránenie %'d súborov (%s)"
+msgstr "Nepodarilo sa odstrániť všetky podriadené súbory"
 
 #: src/nautilus-file-operations.c:1545 src/nautilus-file-operations.c:2839
 msgid "Error while deleting."
@@ -2148,7 +2157,8 @@ msgstr "Súbor je pre cieľové umiestnenie príliš veľký"
 
 #: src/nautilus-file-operations.c:3406
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
-msgstr "Súbory väčšie ako 4.3 GB nie je možné skopírovať do systému súborov FAT."
+msgstr ""
+"Súbory väčšie ako 4.3 GB nie je možné skopírovať do systému súborov FAT."
 
 #: src/nautilus-file-operations.c:3427
 msgid "The destination is read-only."
@@ -5176,7 +5186,8 @@ msgstr "Formát dátumu a času"
 
 #: src/resources/ui/nautilus-preferences-window.ui:104
 msgid "Choose how dates and times are displayed in list and grid views."
-msgstr "Vyberte, ako sa bude zobrazovať čas a dátum v zobrazení zoznamu a mriežky."
+msgstr ""
+"Vyberte, ako sa bude zobrazovať čas a dátum v zobrazení zoznamu a mriežky."
 
 #: src/resources/ui/nautilus-preferences-window.ui:107
 msgid "_Simple"
