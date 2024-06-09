@@ -1957,34 +1957,6 @@ open_shortcut_cb (GSimpleAction *action,
   open_row (sidebar->context_row, flags);
 }
 
-/* Add bookmark for the selected item - just used from mount points */
-static void
-add_shortcut_cb (GSimpleAction *action,
-                 GVariant      *parameter,
-                 gpointer       data)
-{
-  NautilusGtkPlacesSidebar *sidebar = data;
-  char *uri;
-  char *name;
-  GFile *location;
-
-  g_object_get (sidebar->context_row,
-                "uri", &uri,
-                "label", &name,
-                NULL);
-
-  if (uri != NULL)
-    {
-      location = g_file_new_for_uri (uri);
-      g_autoptr (NautilusBookmark) bookmark = nautilus_bookmark_new (location, name);
-      nautilus_bookmark_list_append (sidebar->bookmark_list, bookmark);
-      g_object_unref (location);
-    }
-
-  g_free (uri);
-  g_free (name);
-}
-
 static void
 rename_entry_changed (GtkEntry         *entry,
                       NautilusGtkPlacesSidebar *sidebar)
@@ -2817,7 +2789,6 @@ format_cb (GSimpleAction *action,
 static GActionEntry entries[] = {
   { .name = "open", .activate = open_shortcut_cb, .parameter_type = "i"},
   { .name = "open-other", .activate = open_shortcut_cb, .parameter_type = "i"},
-  { .name = "bookmark", .activate = add_shortcut_cb},
   { .name = "remove", .activate = remove_shortcut_cb},
   { .name = "rename", .activate = rename_shortcut_cb},
   { .name = "mount", .activate = mount_shortcut_cb},
@@ -2989,8 +2960,6 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "rename");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_BOOKMARK ||
                                                           type == NAUTILUS_GTK_PLACES_XDG_DIR));
-  action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "bookmark");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_MOUNTED_VOLUME));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "open");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "empty-trash");
@@ -3027,10 +2996,6 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   g_object_unref (section);
 
   section = g_menu_new ();
-  item = g_menu_item_new (_("Add to _Bookmarks"), "row.bookmark");
-  g_menu_item_set_attribute (item, "hidden-when", "s", "action-disabled");
-  g_menu_append_item (section, item);
-  g_object_unref (item);
 
   item = g_menu_item_new (_("_Remove from Bookmarks"), "row.remove");
   g_menu_item_set_attribute (item, "hidden-when", "s", "action-disabled");
