@@ -45,6 +45,7 @@
 #include "nautilus-properties-window.h"
 #include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
+#include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
 
 #ifdef GDK_WINDOWING_X11
@@ -170,9 +171,6 @@ struct _NautilusGtkPlacesSidebarClass {
   void    (* open_location)          (NautilusGtkPlacesSidebar   *sidebar,
                                       GFile              *location,
                                       NautilusGtkPlacesOpenFlags  open_flags);
-  void    (* show_error_message)     (NautilusGtkPlacesSidebar   *sidebar,
-                                      const char         *primary,
-                                      const char         *secondary);
   GdkDragAction (* drag_action_requested)  (NautilusGtkPlacesSidebar   *sidebar,
                                       GFile              *dest_file,
                                       GSList             *source_file_list);
@@ -191,7 +189,6 @@ struct _NautilusGtkPlacesSidebarClass {
 
 enum {
   OPEN_LOCATION,
-  SHOW_ERROR_MESSAGE,
   DRAG_ACTION_REQUESTED,
   DRAG_ACTION_ASK,
   DRAG_PERFORM_DROP,
@@ -265,12 +262,14 @@ emit_open_location (NautilusGtkPlacesSidebar   *sidebar,
 }
 
 static void
-emit_show_error_message (NautilusGtkPlacesSidebar *sidebar,
-                         const char       *primary,
-                         const char       *secondary)
+show_error_message (NautilusGtkPlacesSidebar *self,
+                    const char               *primary,
+                    const char               *secondary)
 {
-  g_signal_emit (sidebar, places_sidebar_signals[SHOW_ERROR_MESSAGE], 0,
-                 primary, secondary);
+  show_dialog (primary,
+               secondary,
+               GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self))),
+               GTK_MESSAGE_ERROR);
 }
 
 static void
@@ -1646,7 +1645,7 @@ drive_start_from_bookmark_cb (GObject      *source_object,
           name = g_drive_get_name (G_DRIVE (source_object));
           primary = g_strdup_printf (_("Unable to start “%s”"), name);
           g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
+          show_error_message (sidebar, primary, error->message);
           g_free (primary);
         }
       g_error_free (error);
@@ -1684,7 +1683,7 @@ volume_mount_cb (GObject      *source_object,
           else
             primary = g_strdup_printf (_("Unable to access “%s”"), name);
           g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
+          show_error_message (sidebar, primary, error->message);
           g_free (primary);
         }
       g_error_free (error);
@@ -2255,7 +2254,7 @@ drive_stop_cb (GObject      *source_object,
           name = g_drive_get_name (G_DRIVE (source_object));
           primary = g_strdup_printf (_("Unable to stop “%s”"), name);
           g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
+          show_error_message (sidebar, primary, error->message);
           g_free (primary);
         }
       g_error_free (error);
@@ -2284,7 +2283,7 @@ drive_eject_cb (GObject      *source_object,
           name = g_drive_get_name (G_DRIVE (source_object));
           primary = g_strdup_printf (_("Unable to eject “%s”"), name);
           g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
+          show_error_message (sidebar, primary, error->message);
           g_free (primary);
         }
       g_error_free (error);
@@ -2313,7 +2312,7 @@ volume_eject_cb (GObject      *source_object,
           name = g_volume_get_name (G_VOLUME (source_object));
           primary = g_strdup_printf (_("Unable to eject “%s”"), name);
           g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
+          show_error_message (sidebar, primary, error->message);
           g_free (primary);
         }
       g_error_free (error);
@@ -2462,7 +2461,7 @@ drive_poll_for_media_cb (GObject      *source_object,
           name = g_drive_get_name (G_DRIVE (source_object));
           primary = g_strdup_printf (_("Unable to poll “%s” for media changes"), name);
           g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
+          show_error_message (sidebar, primary, error->message);
           g_free (primary);
         }
       g_error_free (error);
@@ -2510,7 +2509,7 @@ drive_start_cb (GObject      *source_object,
           name = g_drive_get_name (G_DRIVE (source_object));
           primary = g_strdup_printf (_("Unable to start “%s”"), name);
           g_free (name);
-          emit_show_error_message (sidebar, primary, error->message);
+          show_error_message (sidebar, primary, error->message);
           g_free (primary);
         }
       g_error_free (error);
@@ -3743,28 +3742,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         G_TYPE_NONE, 2,
                         G_TYPE_OBJECT,
                         NAUTILUS_TYPE_OPEN_FLAGS);
-
-  /*
-   * NautilusGtkPlacesSidebar::show-error-message:
-   * @sidebar: the object which received the signal.
-   * @primary: primary message with a summary of the error to show.
-   * @secondary: secondary message with details of the error to show.
-   *
-   * The places sidebar emits this signal when it needs the calling
-   * application to present an error message.  Most of these messages
-   * refer to mounting or unmounting media, for example, when a drive
-   * cannot be started for some reason.
-   */
-  places_sidebar_signals [SHOW_ERROR_MESSAGE] =
-          g_signal_new ("show-error-message",
-                        G_OBJECT_CLASS_TYPE (gobject_class),
-                        G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, show_error_message),
-                        NULL, NULL,
-                        NULL,
-                        G_TYPE_NONE, 2,
-                        G_TYPE_STRING,
-                        G_TYPE_STRING);
 
   /*
    * NautilusGtkPlacesSidebar::drag-action-requested:

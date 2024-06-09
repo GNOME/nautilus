@@ -714,18 +714,6 @@ open_location_cb (NautilusWindow             *window,
     }
 }
 
-/* Callback used when the places sidebar needs us to present an error message */
-static void
-places_sidebar_show_error_message_cb (NautilusGtkPlacesSidebar *sidebar,
-                                      const char               *primary,
-                                      const char               *secondary,
-                                      gpointer                  user_data)
-{
-    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-
-    show_dialog (primary, secondary, GTK_WINDOW (window), GTK_MESSAGE_ERROR);
-}
-
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
@@ -836,8 +824,6 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
 
     g_signal_connect_swapped (window->places_sidebar, "open-location",
                               G_CALLBACK (open_location_cb), window);
-    g_signal_connect (window->places_sidebar, "show-error-message",
-                      G_CALLBACK (places_sidebar_show_error_message_cb), window);
 
     g_signal_connect (window->places_sidebar, "drag-action-requested",
                       G_CALLBACK (places_sidebar_drag_action_requested_cb), window);
