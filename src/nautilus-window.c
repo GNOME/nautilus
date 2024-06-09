@@ -402,8 +402,6 @@ static void
 on_location_changed (NautilusWindow *window)
 {
     nautilus_window_sync_location_widgets (window);
-    nautilus_gtk_places_sidebar_set_location (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                              nautilus_window_slot_get_location (nautilus_window_get_active_slot (window)));
 }
 
 static void
@@ -414,28 +412,6 @@ on_slot_location_changed (NautilusWindowSlot *slot,
     if (nautilus_window_get_active_slot (window) == slot)
     {
         on_location_changed (window);
-    }
-}
-
-static void
-on_slot_search_global_changed (NautilusWindowSlot *slot,
-                               GParamSpec         *pspec,
-                               NautilusWindow     *self)
-{
-    NautilusGtkPlacesSidebar *sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (self->places_sidebar);
-
-    if (nautilus_window_get_active_slot (self) != slot)
-    {
-        return;
-    }
-
-    if (nautilus_window_slot_get_search_global (slot))
-    {
-        nautilus_gtk_places_sidebar_set_location (sidebar, NULL);
-    }
-    else
-    {
-        nautilus_gtk_places_sidebar_set_location (sidebar, nautilus_window_slot_get_location (slot));
     }
 }
 
@@ -503,8 +479,6 @@ connect_slot (NautilusWindow     *window,
                               G_CALLBACK (update_cursor), window);
     g_signal_connect (slot, "notify::location",
                       G_CALLBACK (on_slot_location_changed), window);
-    g_signal_connect (slot, "notify::search-global",
-                      G_CALLBACK (on_slot_search_global_changed), window);
 }
 
 static void

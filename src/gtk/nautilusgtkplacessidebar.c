@@ -45,6 +45,7 @@
 #include "nautilus-properties-window.h"
 #include "nautilus-scheme.h"
 #include "nautilus-trash-monitor.h"
+#include "nautilus-window-slot.h"
 
 #ifdef GDK_WINDOWING_X11
 #include <gdk/x11/gdkx.h>
@@ -105,6 +106,9 @@ typedef enum {
 
 struct _NautilusGtkPlacesSidebar {
   GtkWidget parent;
+
+  NautilusWindowSlot *window_slot;
+  GSignalGroup *slot_signal_group;
 
   GtkWidget *swin;
   GtkWidget *list_box;
@@ -199,6 +203,7 @@ enum {
 enum {
   PROP_LOCATION = 1,
   PROP_OPEN_FLAGS,
+  PROP_WINDOW_SLOT,
   NUM_PROPERTIES
 };
 
@@ -3372,6 +3377,20 @@ shell_shows_desktop_changed (GtkSettings *settings,
 }
 
 static void
+update_location (NautilusGtkPlacesSidebar *self)
+{
+  GFile *location = NULL;
+
+  if (self->window_slot != NULL &&
+      !nautilus_window_slot_get_search_global (self->window_slot))
+    {
+      location = nautilus_window_slot_get_location (self->window_slot);
+    }
+
+  nautilus_gtk_places_sidebar_set_location (self, location);
+}
+
+static void
 nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 {
   GtkDropTarget *target;
@@ -3382,6 +3401,14 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
   sidebar->cancellable = g_cancellable_new ();
 
   create_volume_monitor (sidebar);
+
+  sidebar->slot_signal_group = g_signal_group_new (NAUTILUS_TYPE_WINDOW_SLOT);
+  g_signal_group_connect_object (sidebar->slot_signal_group, "notify::location",
+                                 G_CALLBACK (update_location), sidebar,
+                                 G_CONNECT_SWAPPED);
+  g_signal_group_connect_object (sidebar->slot_signal_group, "notify::search-global",
+                                 G_CALLBACK (update_location), sidebar,
+                                 G_CONNECT_SWAPPED);
 
   sidebar->open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
 
@@ -3504,6 +3531,14 @@ nautilus_gtk_places_sidebar_set_property (GObject      *obj,
       nautilus_gtk_places_sidebar_set_open_flags (sidebar, g_value_get_flags (value));
       break;
 
+    case PROP_WINDOW_SLOT:
+      if (g_set_object (&sidebar->window_slot, g_value_get_object (value)))
+        {
+          g_signal_group_set_target (sidebar->slot_signal_group, sidebar->window_slot);
+          update_location (sidebar);
+        }
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, property_id, pspec);
       break;
@@ -3543,6 +3578,9 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
 #endif
 
   sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (object);
+
+  g_clear_object (&sidebar->window_slot);
+  g_clear_object (&sidebar->slot_signal_group);
 
   if (sidebar->cancellable)
     {
@@ -3862,6 +3900,10 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                               NAUTILUS_TYPE_OPEN_FLAGS,
                               NAUTILUS_GTK_PLACES_OPEN_NORMAL,
                               G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
+  properties[PROP_WINDOW_SLOT] =
+          g_param_spec_object ("window-slot", NULL, NULL,
+                               NAUTILUS_TYPE_WINDOW_SLOT,
+                               G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
 

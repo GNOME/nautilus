@@ -188,6 +188,7 @@
                     <property name="content">
                       <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
                         <property name="vexpand">True</property>
+                        <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                       </object>
                     </property>
                   </object>
