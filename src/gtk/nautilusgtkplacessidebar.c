@@ -179,8 +179,6 @@ struct _NautilusGtkPlacesSidebarClass {
                                       GList              *source_file_list,
                                       GdkDragAction       action);
 
-  void    (* show_starred_location)    (NautilusGtkPlacesSidebar   *sidebar);
-
   void    (* mount)                  (NautilusGtkPlacesSidebar   *sidebar,
                                       GMountOperation    *mount_operation);
   void    (* unmount)                (NautilusGtkPlacesSidebar   *sidebar,
@@ -193,7 +191,6 @@ enum {
   DRAG_ACTION_REQUESTED,
   DRAG_ACTION_ASK,
   DRAG_PERFORM_DROP,
-  SHOW_STARRED_LOCATION,
   MOUNT,
   UNMOUNT,
   LAST_SIGNAL
@@ -270,15 +267,6 @@ emit_show_error_message (NautilusGtkPlacesSidebar *sidebar,
   g_signal_emit (sidebar, places_sidebar_signals[SHOW_ERROR_MESSAGE], 0,
                  primary, secondary);
 }
-
-static void
-emit_show_starred_location (NautilusGtkPlacesSidebar  *sidebar,
-                            NautilusGtkPlacesOpenFlags open_flags)
-{
-  g_signal_emit (sidebar, places_sidebar_signals[SHOW_STARRED_LOCATION], 0,
-                 open_flags);
-}
-
 
 static void
 emit_mount_operation (NautilusGtkPlacesSidebar *sidebar,
@@ -703,7 +691,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     }
 
   start_icon = g_themed_icon_new_with_default_fallbacks ("starred-symbolic");
-  add_place (sidebar, NAUTILUS_GTK_PLACES_STARRED_LOCATION,
+  add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
              NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
              _("Starred"), start_icon, NULL, SCHEME_STARRED ":///",
              NULL, NULL, NULL, NULL, 0,
@@ -1802,11 +1790,7 @@ open_row (NautilusGtkSidebarRow      *row,
                 "volume", &volume,
                 NULL);
 
-  if (place_type == NAUTILUS_GTK_PLACES_STARRED_LOCATION)
-    {
-      emit_show_starred_location (sidebar, open_flags);
-    }
-  else if (uri != NULL)
+  if (uri != NULL)
     {
       open_uri (sidebar, uri, open_flags);
     }
@@ -3864,26 +3848,6 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                         G_TYPE_NONE,
                         1,
                         G_TYPE_MOUNT_OPERATION);
-
-  /*
-   * NautilusGtkPlacesSidebar::show-starred-location:
-   * @sidebar: the object which received the signal
-   * @flags: the flags for the operation
-   *
-   * The places sidebar emits this signal when it needs the calling
-   * application to present a way to show the starred files. In GNOME,
-   * starred files are implemented by setting the nao:predefined-tag-favorite
-   * tag in the tracker database.
-   */
-  places_sidebar_signals [SHOW_STARRED_LOCATION] =
-          g_signal_new ("show-starred-location",
-                        G_OBJECT_CLASS_TYPE (gobject_class),
-                        G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (NautilusGtkPlacesSidebarClass, show_starred_location),
-                        NULL, NULL,
-                        NULL,
-                        G_TYPE_NONE, 1,
-                        NAUTILUS_TYPE_OPEN_FLAGS);
 
   properties[PROP_LOCATION] =
           g_param_spec_object ("location",

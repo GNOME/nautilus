@@ -752,19 +752,6 @@ places_sidebar_show_error_message_cb (NautilusGtkPlacesSidebar *sidebar,
     show_dialog (primary, secondary, GTK_WINDOW (window), GTK_MESSAGE_ERROR);
 }
 
-static void
-places_sidebar_show_starred_location (NautilusWindow             *window,
-                                      NautilusGtkPlacesOpenFlags  open_flags)
-{
-    GFile *location;
-
-    location = g_file_new_for_uri (SCHEME_STARRED ":///");
-
-    open_location_cb (window, location, open_flags);
-
-    g_object_unref (location);
-}
-
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
@@ -1937,12 +1924,6 @@ nautilus_window_init (NautilusWindow *window)
     g_type_ensure (NAUTILUS_TYPE_PROGRESS_INDICATOR);
     g_type_ensure (NAUTILUS_TYPE_SHORTCUT_MANAGER);
     gtk_widget_init_template (GTK_WIDGET (window));
-
-    g_signal_connect_object (window->places_sidebar,
-                             "show-starred-location",
-                             G_CALLBACK (places_sidebar_show_starred_location),
-                             window,
-                             G_CONNECT_SWAPPED);
 
     g_signal_connect (window, "notify::maximized",
                       G_CALLBACK (on_is_maximized_changed), NULL);
