@@ -906,7 +906,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   name = g_mount_get_name (mount);
                   tooltip = g_file_get_parse_name (root);
 
-                  add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
+                  add_place (sidebar, (is_external_volume (volume) ?
+                                       NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
+                                       NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
                              NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                              name, start_icon, NULL, mount_uri,
                              drive, volume, mount, NULL, 0, tooltip);
@@ -931,7 +933,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   name = g_volume_get_name (volume);
                   tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
-                  add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
+                  add_place (sidebar, (is_external_volume (volume) ?
+                                       NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
+                                       NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
                              NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                              name, start_icon, NULL, NULL,
                              drive, volume, NULL, NULL, 0, tooltip);
@@ -1017,7 +1021,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           mount_uri = g_file_get_uri (root);
           tooltip = g_file_get_parse_name (root);
           name = g_mount_get_name (mount);
-          add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
+          add_place (sidebar, (is_external_volume (volume) ?
+                               NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
+                               NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
                      NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                      name, start_icon, NULL, mount_uri,
                      NULL, volume, mount, NULL, 0, tooltip);
@@ -1033,7 +1039,9 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           /* see comment above in why we add an icon for an unmounted mountable volume */
           start_icon = g_volume_get_symbolic_icon (volume);
           name = g_volume_get_name (volume);
-          add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
+          add_place (sidebar, (is_external_volume (volume) ?
+                               NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT :
+                               NAUTILUS_GTK_PLACES_INTERNAL_MOUNT),
                      NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                      name, start_icon, NULL, NULL,
                      NULL, volume, NULL, NULL, 0, name);
@@ -1077,7 +1085,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       mount_uri = g_file_get_uri (root);
       name = g_mount_get_name (mount);
       tooltip = g_file_get_parse_name (root);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
+      add_place (sidebar, NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT,
                  NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, mount, NULL, 0, tooltip);
@@ -1144,7 +1152,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           name = g_volume_get_name (volume);
           tooltip = g_strdup_printf (_("Mount and Open “%s”"), name);
 
-          add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
+          add_place (sidebar, NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT,
                      NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                      name, start_icon, NULL, NULL,
                      NULL, volume, NULL, NULL, 0, tooltip);
@@ -1165,7 +1173,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       mount_uri = g_file_get_uri (root);
       name = g_mount_get_name (mount);
       tooltip = g_file_get_parse_name (root);
-      add_place (sidebar, NAUTILUS_GTK_PLACES_MOUNTED_VOLUME,
+      add_place (sidebar, NAUTILUS_GTK_PLACES_EXTERNAL_MOUNT,
                  NAUTILUS_GTK_PLACES_SECTION_MOUNTS,
                  name, start_icon, NULL, mount_uri,
                  NULL, NULL, mount, NULL, 0, tooltip);
@@ -3340,12 +3348,23 @@ list_box_sort_func (GtkListBoxRow *row1,
 
   if (section_type_1 == section_type_2)
     {
-      if ((section_type_1 == NAUTILUS_GTK_PLACES_SECTION_COMPUTER &&
-           place_type_1 == place_type_2 &&
-           place_type_1 == NAUTILUS_GTK_PLACES_XDG_DIR) ||
-          section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
+      if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_COMPUTER &&
+          place_type_1 == place_type_2 &&
+          place_type_1 == NAUTILUS_GTK_PLACES_XDG_DIR)
         {
           retval = g_utf8_collate (label_1, label_2);
+        }
+      else if (section_type_1 == NAUTILUS_GTK_PLACES_SECTION_MOUNTS)
+        {
+          if (place_type_1 == place_type_2)
+            {
+              retval = g_utf8_collate (label_1, label_2);
+            }
+          else
+            {
+              /* Sort internals last */
+              retval = (place_type_1 == NAUTILUS_GTK_PLACES_INTERNAL_MOUNT) ? 1 : -1;
+            }
         }
       else if ((place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK || place_type_2 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK) &&
                (place_type_1 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK || place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK))
