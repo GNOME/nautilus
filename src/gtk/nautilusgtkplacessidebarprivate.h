@@ -24,6 +24,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "nautilus-enums.h"
+
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_GTK_PLACES_SIDEBAR			(nautilus_gtk_places_sidebar_get_type ())
@@ -36,45 +38,12 @@ G_BEGIN_DECLS
 typedef struct _NautilusGtkPlacesSidebar NautilusGtkPlacesSidebar;
 typedef struct _NautilusGtkPlacesSidebarClass NautilusGtkPlacesSidebarClass;
 
-/*
- * NautilusGtkPlacesOpenFlags:
- * @NAUTILUS_GTK_PLACES_OPEN_NORMAL: This is the default mode that NautilusGtkPlacesSidebar uses if no other flags
- *  are specified.  It indicates that the calling application should open the selected location
- *  in the normal way, for example, in the folder view beside the sidebar.
- * @NAUTILUS_GTK_PLACES_OPEN_NEW_TAB: When passed to nautilus_gtk_places_sidebar_set_open_flags(), this indicates
- *  that the application can open folders selected from the sidebar in new tabs.  This value
- *  will be passed to the NautilusGtkPlacesSidebar::open-location signal when the user selects
- *  that a location be opened in a new tab instead of in the standard fashion.
- * @NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW: Similar to @NAUTILUS_GTK_PLACES_OPEN_NEW_TAB, but indicates that the application
- *  can open folders in new windows.
- *
- * These flags serve two purposes.  First, the application can call nautilus_gtk_places_sidebar_set_open_flags()
- * using these flags as a bitmask.  This tells the sidebar that the application is able to open
- * folders selected from the sidebar in various ways, for example, in new tabs or in new windows in
- * addition to the normal mode.
- *
- * Second, when one of these values gets passed back to the application in the
- * NautilusGtkPlacesSidebar::open-location signal, it means that the application should
- * open the selected location in the normal way, in a new tab, or in a new
- * window.  The sidebar takes care of determining the desired way to open the location,
- * based on the modifier keys that the user is pressing at the time the selection is made.
- *
- * If the application never calls nautilus_gtk_places_sidebar_set_open_flags(), then the sidebar will only
- * use NAUTILUS_GTK_PLACES_OPEN_NORMAL in the NautilusGtkPlacesSidebar::open-location signal.  This is the
- * default mode of operation.
- */
-typedef enum {
-  NAUTILUS_GTK_PLACES_OPEN_NORMAL     = 1 << 0,
-  NAUTILUS_GTK_PLACES_OPEN_NEW_TAB    = 1 << 1,
-  NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW = 1 << 2
-} NautilusGtkPlacesOpenFlags;
-
 GType              nautilus_gtk_places_sidebar_get_type                   (void) G_GNUC_CONST;
 GtkWidget *        nautilus_gtk_places_sidebar_new                        (void);
 
-NautilusGtkPlacesOpenFlags nautilus_gtk_places_sidebar_get_open_flags             (NautilusGtkPlacesSidebar   *sidebar);
+NautilusOpenFlags  nautilus_gtk_places_sidebar_get_open_flags             (NautilusGtkPlacesSidebar   *sidebar);
 void               nautilus_gtk_places_sidebar_set_open_flags             (NautilusGtkPlacesSidebar   *sidebar,
-                                                                  NautilusGtkPlacesOpenFlags  flags);
+                                                                           NautilusOpenFlags           flags);
 
 GFile *            nautilus_gtk_places_sidebar_get_location               (NautilusGtkPlacesSidebar   *sidebar);
 void               nautilus_gtk_places_sidebar_set_location               (NautilusGtkPlacesSidebar   *sidebar,

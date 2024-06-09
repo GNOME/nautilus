@@ -149,7 +149,7 @@ struct _NautilusGtkPlacesSidebar {
   GtkListBoxRow *hover_row;
 
   /* volume mounting - delayed open process */
-  NautilusGtkPlacesOpenFlags go_to_after_mount_open_flags;
+  NautilusOpenFlags go_to_after_mount_open_flags;
   GCancellable *cancellable;
 
   GtkWidget *popover;
@@ -159,7 +159,7 @@ struct _NautilusGtkPlacesSidebar {
   GCancellable *hostnamed_cancellable;
   char *hostname;
 
-  NautilusGtkPlacesOpenFlags open_flags;
+  NautilusOpenFlags open_flags;
 
   guint mounting               : 1;
   guint show_desktop           : 1;
@@ -170,7 +170,7 @@ struct _NautilusGtkPlacesSidebarClass {
 
   void    (* open_location)          (NautilusGtkPlacesSidebar   *sidebar,
                                       GFile              *location,
-                                      NautilusGtkPlacesOpenFlags  open_flags);
+                                      NautilusOpenFlags  open_flags);
   GdkDragAction (* drag_action_requested)  (NautilusGtkPlacesSidebar   *sidebar,
                                       GFile              *dest_file,
                                       GSList             *source_file_list);
@@ -252,10 +252,10 @@ G_DEFINE_TYPE (NautilusGtkPlacesSidebar, nautilus_gtk_places_sidebar, GTK_TYPE_W
 static void
 emit_open_location (NautilusGtkPlacesSidebar   *sidebar,
                     GFile              *location,
-                    NautilusGtkPlacesOpenFlags  open_flags)
+                    NautilusOpenFlags  open_flags)
 {
   if ((open_flags & sidebar->open_flags) == 0)
-    open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
+    open_flags = NAUTILUS_OPEN_FLAG_NORMAL;
 
   g_signal_emit (sidebar, places_sidebar_signals[OPEN_LOCATION], 0,
                  location, open_flags);
@@ -1728,7 +1728,7 @@ mount_volume (NautilusGtkSidebarRow *row,
 static void
 open_drive (NautilusGtkSidebarRow      *row,
             GDrive             *drive,
-            NautilusGtkPlacesOpenFlags  open_flags)
+            NautilusOpenFlags  open_flags)
 {
   NautilusGtkPlacesSidebar *sidebar;
 
@@ -1749,7 +1749,7 @@ open_drive (NautilusGtkSidebarRow      *row,
 static void
 open_volume (NautilusGtkSidebarRow      *row,
              GVolume            *volume,
-             NautilusGtkPlacesOpenFlags  open_flags)
+             NautilusOpenFlags  open_flags)
 {
   NautilusGtkPlacesSidebar *sidebar;
 
@@ -1767,7 +1767,7 @@ open_volume (NautilusGtkSidebarRow      *row,
 static void
 open_uri (NautilusGtkPlacesSidebar   *sidebar,
           const char         *uri,
-          NautilusGtkPlacesOpenFlags  open_flags)
+          NautilusOpenFlags  open_flags)
 {
   GFile *location;
 
@@ -1778,7 +1778,7 @@ open_uri (NautilusGtkPlacesSidebar   *sidebar,
 
 static void
 open_row (NautilusGtkSidebarRow      *row,
-          NautilusGtkPlacesOpenFlags  open_flags)
+          NautilusOpenFlags  open_flags)
 {
   char *uri;
   GDrive *drive;
@@ -1822,9 +1822,9 @@ open_shortcut_cb (GSimpleAction *action,
                   gpointer       data)
 {
   NautilusGtkPlacesSidebar *sidebar = data;
-  NautilusGtkPlacesOpenFlags flags;
+  NautilusOpenFlags flags;
 
-  flags = (NautilusGtkPlacesOpenFlags)g_variant_get_int32 (parameter);
+  flags = (NautilusOpenFlags)g_variant_get_int32 (parameter);
   open_row (sidebar->context_row, flags);
 }
 
@@ -2588,12 +2588,12 @@ on_key_pressed (GtkEventControllerKey *controller,
           keyval == GDK_KEY_ISO_Enter ||
           keyval == GDK_KEY_space)
         {
-          NautilusGtkPlacesOpenFlags open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
+          NautilusOpenFlags open_flags = NAUTILUS_OPEN_FLAG_NORMAL;
 
           if ((state & modifiers) == GDK_SHIFT_MASK)
-            open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
+            open_flags = NAUTILUS_OPEN_FLAG_NEW_TAB;
           else if ((state & modifiers) == GDK_CONTROL_MASK)
-            open_flags = NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW;
+            open_flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
 
           open_row (NAUTILUS_GTK_SIDEBAR_ROW (row), open_flags);
 
@@ -2724,21 +2724,21 @@ build_popup_menu_using_gmenu (NautilusGtkSidebarRow *row)
       GMenuItem *item;
       item = g_menu_item_new (_("_Open"), "row.open");
       g_menu_item_set_action_and_target_value (item, "row.open",
-                                               g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NORMAL));
+                                               g_variant_new_int32 (NAUTILUS_OPEN_FLAG_NORMAL));
       g_menu_append_item (menu, item);
       g_object_unref (item);
 
-      if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB)
+      if (sidebar->open_flags & NAUTILUS_OPEN_FLAG_NEW_TAB)
         {
           item = g_menu_item_new (_("Open in New _Tab"), "row.open-other");
-          g_menu_item_set_action_and_target_value (item, "row.open-other", g_variant_new_int32(NAUTILUS_GTK_PLACES_OPEN_NEW_TAB));
+          g_menu_item_set_action_and_target_value (item, "row.open-other", g_variant_new_int32(NAUTILUS_OPEN_FLAG_NEW_TAB));
           g_menu_append_item (menu, item);
           g_object_unref (item);
         }
-      if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW)
+      if (sidebar->open_flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW)
         {
           item = g_menu_item_new (_("Open in New _Window"), "row.open-other");
-          g_menu_item_set_action_and_target_value (item, "row.open-other", g_variant_new_int32(NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW));
+          g_menu_item_set_action_and_target_value (item, "row.open-other", g_variant_new_int32(NAUTILUS_OPEN_FLAG_NEW_WINDOW));
           g_menu_append_item (menu, item);
           g_object_unref (item);
         }
@@ -2840,24 +2840,24 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   item = g_menu_item_new (_("_Open"), "row.open");
   g_menu_item_set_action_and_target_value (item, "row.open",
-                                           g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NORMAL));
+                                           g_variant_new_int32 (NAUTILUS_OPEN_FLAG_NORMAL));
   g_menu_append_item (section, item);
   g_object_unref (item);
 
-  if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_TAB)
+  if (sidebar->open_flags & NAUTILUS_OPEN_FLAG_NEW_TAB)
     {
       item = g_menu_item_new (_("Open in New _Tab"), "row.open-other");
       g_menu_item_set_action_and_target_value (item, "row.open-other",
-                                               g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NEW_TAB));
+                                               g_variant_new_int32 (NAUTILUS_OPEN_FLAG_NEW_TAB));
       g_menu_append_item (section, item);
       g_object_unref (item);
     }
 
-  if (sidebar->open_flags & NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW)
+  if (sidebar->open_flags & NAUTILUS_OPEN_FLAG_NEW_WINDOW)
     {
       item = g_menu_item_new (_("Open in New _Window"), "row.open-other");
       g_menu_item_set_action_and_target_value (item, "row.open-other",
-                                               g_variant_new_int32 (NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW));
+                                               g_variant_new_int32 (NAUTILUS_OPEN_FLAG_NEW_WINDOW));
       g_menu_append_item (section, item);
       g_object_unref (item);
     }
@@ -3087,11 +3087,11 @@ on_row_released (GtkGestureClick *gesture,
     {
       if (button == 2)
         {
-          NautilusGtkPlacesOpenFlags open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
+          NautilusOpenFlags open_flags = NAUTILUS_OPEN_FLAG_NORMAL;
 
           open_flags = (state & GDK_CONTROL_MASK) ?
-            NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW :
-            NAUTILUS_GTK_PLACES_OPEN_NEW_TAB;
+            NAUTILUS_OPEN_FLAG_NEW_WINDOW :
+            NAUTILUS_OPEN_FLAG_NEW_TAB;
 
           open_row (NAUTILUS_GTK_SIDEBAR_ROW (row), open_flags);
           gtk_gesture_set_state (GTK_GESTURE (gesture),
@@ -3409,7 +3409,7 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
                                  G_CALLBACK (update_location), sidebar,
                                  G_CONNECT_SWAPPED);
 
-  sidebar->open_flags = NAUTILUS_GTK_PLACES_OPEN_NORMAL;
+  sidebar->open_flags = NAUTILUS_OPEN_FLAG_NORMAL;
 
   NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
   sidebar->bookmark_list = nautilus_application_get_bookmarks (app);
@@ -3725,7 +3725,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
    * NautilusGtkPlacesSidebar::open-location:
    * @sidebar: the object which received the signal.
    * @location: (type Gio.File): GFile to which the caller should switch.
-   * @open_flags: a single value from NautilusGtkPlacesOpenFlags specifying how the @location should be opened.
+   * @open_flags: a single value from NautilusOpenFlags specifying how the @location should be opened.
    *
    * The places sidebar emits this signal when the user selects a location
    * in it.  The calling application should display the contents of that
@@ -3875,7 +3875,7 @@ nautilus_gtk_places_sidebar_class_init (NautilusGtkPlacesSidebarClass *class)
                               "Open Flags",
                               "Modes in which the calling app can open locations selected in the sidebar",
                               NAUTILUS_TYPE_OPEN_FLAGS,
-                              NAUTILUS_GTK_PLACES_OPEN_NORMAL,
+                              NAUTILUS_OPEN_FLAG_NORMAL,
                               G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB);
   properties[PROP_WINDOW_SLOT] =
           g_param_spec_object ("window-slot", NULL, NULL,
@@ -3923,12 +3923,12 @@ nautilus_gtk_places_sidebar_new (void)
  * argument will be set to one of the @flags that was passed in
  * nautilus_gtk_places_sidebar_set_open_flags().
  *
- * Passing 0 for @flags will cause NAUTILUS_GTK_PLACES_OPEN_NORMAL to always be sent
+ * Passing 0 for @flags will cause NAUTILUS_OPEN_FLAG_NORMAL to always be sent
  * to callbacks for the “open-location” signal.
  */
 void
 nautilus_gtk_places_sidebar_set_open_flags (NautilusGtkPlacesSidebar   *sidebar,
-                                   NautilusGtkPlacesOpenFlags  flags)
+                                   NautilusOpenFlags  flags)
 {
   g_return_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar));
 
@@ -3945,9 +3945,9 @@ nautilus_gtk_places_sidebar_set_open_flags (NautilusGtkPlacesSidebar   *sidebar,
  *
  * Gets the open flags.
  *
- * Returns: the NautilusGtkPlacesOpenFlags of @sidebar
+ * Returns: the NautilusOpenFlags of @sidebar
  */
-NautilusGtkPlacesOpenFlags
+NautilusOpenFlags
 nautilus_gtk_places_sidebar_get_open_flags (NautilusGtkPlacesSidebar *sidebar)
 {
   g_return_val_if_fail (NAUTILUS_IS_GTK_PLACES_SIDEBAR (sidebar), 0);

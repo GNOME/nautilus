@@ -669,35 +669,16 @@ update_cursor (NautilusWindow *window)
 
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
 static void
-open_location_cb (NautilusWindow             *window,
-                  GFile                      *location,
-                  NautilusGtkPlacesOpenFlags  open_flags)
+open_location_cb (NautilusWindow    *window,
+                  GFile             *location,
+                  NautilusOpenFlags  flags)
 {
-    NautilusOpenFlags flags;
     NautilusApplication *application;
     AdwOverlaySplitView *split_view = ADW_OVERLAY_SPLIT_VIEW (window->split_view);
 
-    switch (open_flags)
+    if (flags == NAUTILUS_OPEN_FLAG_NEW_TAB)
     {
-        case NAUTILUS_GTK_PLACES_OPEN_NEW_TAB:
-        {
-            flags = NAUTILUS_OPEN_FLAG_NEW_TAB |
-                    NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
-        }
-        break;
-
-        case NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW:
-        {
-            flags = NAUTILUS_OPEN_FLAG_NEW_WINDOW;
-        }
-        break;
-
-        case NAUTILUS_GTK_PLACES_OPEN_NORMAL: /* fall-through */
-        default:
-        {
-            flags = 0;
-        }
-        break;
+        flags |= NAUTILUS_OPEN_FLAG_DONT_MAKE_ACTIVE;
     }
 
     application = NAUTILUS_APPLICATION (g_application_get_default ());
@@ -708,7 +689,7 @@ open_location_cb (NautilusWindow             *window,
                                              NULL, window, NULL);
 
     if (adw_overlay_split_view_get_collapsed (split_view) &&
-        open_flags == NAUTILUS_GTK_PLACES_OPEN_NORMAL)
+        flags == NAUTILUS_OPEN_FLAG_NORMAL)
     {
         adw_overlay_split_view_set_show_sidebar (split_view, FALSE);
     }
@@ -818,9 +799,9 @@ static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
     nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                                (NAUTILUS_GTK_PLACES_OPEN_NORMAL
-                                                 | NAUTILUS_GTK_PLACES_OPEN_NEW_TAB
-                                                 | NAUTILUS_GTK_PLACES_OPEN_NEW_WINDOW));
+                                                (NAUTILUS_OPEN_FLAG_NORMAL
+                                                 | NAUTILUS_OPEN_FLAG_NEW_TAB
+                                                 | NAUTILUS_OPEN_FLAG_NEW_WINDOW));
 
     g_signal_connect_swapped (window->places_sidebar, "open-location",
                               G_CALLBACK (open_location_cb), window);
