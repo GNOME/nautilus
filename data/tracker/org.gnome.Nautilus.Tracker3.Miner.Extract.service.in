@@ -1,7 +1,7 @@
 [D-BUS Service]
 Name=@application_id@.Tracker3.Miner.Extract
-Exec=/app/libexec/tracker-extract-3 --domain-ontology @domain_rule@
+Exec=/app/libexec/localsearch-extractor-3 --domain-ontology @domain_rule@
 
-# Miner details needed for tracker-control
+# Miner details needed for localsearch-control
 Path=/org/freedesktop/Tracker3/Miner/Extract
 NameSuffix=Miner.Files
