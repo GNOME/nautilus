@@ -386,19 +386,6 @@ action_show_current_location_menu (GSimpleAction *action,
 }
 
 static void
-action_open_location (GSimpleAction *action,
-                      GVariant      *state,
-                      gpointer       user_data)
-{
-    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    g_autoptr (GFile) folder_to_open = NULL;
-
-    folder_to_open = g_file_new_for_uri (g_variant_get_string (state, NULL));
-
-    nautilus_window_open_location_full (window, folder_to_open, 0, NULL, NULL);
-}
-
-static void
 on_location_changed (NautilusWindow *window)
 {
     nautilus_window_sync_location_widgets (window);
@@ -1116,7 +1103,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
         button_label = g_strdup_printf (_("Open %s"),
                                         nautilus_file_get_display_name (folder));
         adw_toast_set_button_label (toast, button_label);
-        adw_toast_set_action_name (toast, "win.open-location");
+        adw_toast_set_action_name (toast, "slot.open-location");
         adw_toast_set_action_target_value (toast, target);
     }
 
@@ -1264,7 +1251,6 @@ extra_drag_drop_cb (AdwTabBar    *self,
 const GActionEntry win_entries[] =
 {
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
-    { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
     { .name = "new-tab", .activate = action_new_tab },
     { .name = "enter-location", .activate = action_enter_location },
     { .name = "bookmark-current-location", .activate = action_bookmark_current_location },
