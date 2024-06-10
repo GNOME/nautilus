@@ -118,7 +118,6 @@ struct _NautilusWindow
     GtkWidget *network_address_bar;
 
     guint sidebar_width_handler_id;
-    gulong bookmarks_id;
     gulong starred_id;
 
     GQueue *tab_data_queue;
@@ -209,20 +208,6 @@ action_go_home (GSimpleAction *action,
     nautilus_window_open_location_full (window, home, 0, NULL, NULL);
 
     g_object_unref (home);
-}
-
-static void
-action_bookmark_current_location (GSimpleAction *action,
-                                  GVariant      *state,
-                                  gpointer       user_data)
-{
-    NautilusWindow *window = user_data;
-    NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
-    NautilusWindowSlot *slot;
-
-    slot = nautilus_window_get_active_slot (window);
-    nautilus_bookmark_list_append (nautilus_application_get_bookmarks (app),
-                                   nautilus_window_slot_get_bookmark (slot));
 }
 
 static void
@@ -762,29 +747,6 @@ nautilus_window_slot_close (NautilusWindow     *window,
 }
 
 static void
-nautilus_window_sync_bookmarks (NautilusWindow *window)
-{
-    gboolean can_bookmark = FALSE;
-    NautilusWindowSlot *slot;
-    NautilusBookmarkList *bookmarks;
-    GAction *action;
-    GFile *location;
-
-    slot = window->active_slot;
-    location = slot != NULL ? nautilus_window_slot_get_location (slot) : NULL;
-
-    if (location != NULL)
-    {
-        bookmarks = nautilus_application_get_bookmarks
-                        (NAUTILUS_APPLICATION (gtk_window_get_application (GTK_WINDOW (window))));
-        can_bookmark = nautilus_bookmark_list_can_bookmark_location (bookmarks, location);
-    }
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (window), "bookmark-current-location");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_bookmark);
-}
-
-static void
 nautilus_window_sync_starred (NautilusWindow *window)
 {
     NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
@@ -836,7 +798,6 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
                                 g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW));
     }
 
-    nautilus_window_sync_bookmarks (window);
     nautilus_window_sync_starred (window);
 }
 
@@ -1208,7 +1169,6 @@ const GActionEntry win_entries[] =
 {
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
     { .name = "new-tab", .activate = action_new_tab },
-    { .name = "bookmark-current-location", .activate = action_bookmark_current_location },
     { .name = "star-current-location", .activate = action_star_current_location },
     { .name = "unstar-current-location", .activate = action_unstar_current_location },
     { .name = "undo", .activate = action_undo },
@@ -1247,7 +1207,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
     /* Only accessible by shorcuts */
-    nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
     nautilus_application_set_accelerator (app, "win.current-location-menu", "F10");
@@ -1363,11 +1322,6 @@ nautilus_window_constructed (GObject *self)
      * some actions trigger UI widgets to show/hide. */
     nautilus_window_initialize_actions (window);
 
-    window->bookmarks_id = g_signal_connect_object (nautilus_application_get_bookmarks (application),
-                                                    "changed",
-                                                    G_CALLBACK (nautilus_window_sync_bookmarks),
-                                                    window, G_CONNECT_SWAPPED);
-
     window->starred_id = g_signal_connect_object (nautilus_tag_manager_get (),
                                                   "starred-changed",
                                                   G_CALLBACK (nautilus_window_sync_starred),
@@ -1398,8 +1352,6 @@ nautilus_window_dispose (GObject *object)
 
     if (application != NULL)
     {
-        g_clear_signal_handler (&window->bookmarks_id,
-                                nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (application)));
         g_clear_signal_handler (&window->starred_id, nautilus_tag_manager_get ());
     }
 
