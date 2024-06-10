@@ -1160,6 +1160,18 @@ action_stop (GSimpleAction *action,
     nautilus_window_slot_stop_loading (self);
 }
 
+static void
+action_bookmark_current_directory (GSimpleAction *action,
+                                   GVariant      *state,
+                                   gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+    NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
+
+    nautilus_bookmark_list_append (nautilus_application_get_bookmarks (app),
+                                   nautilus_window_slot_get_bookmark (self));
+}
+
 const GActionEntry slot_entries[] =
 {
     { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
@@ -1180,6 +1192,7 @@ const GActionEntry slot_entries[] =
     { .name = "focus-search", .activate = action_focus_search },
     { .name = "reload", .activate = action_reload },
     { .name = "stop", .activate = action_stop },
+    { .name = "bookmark-current-directory", .activate = action_bookmark_current_directory },
 };
 
 static void
@@ -1254,6 +1267,26 @@ set_back_forward_accelerators (NautilusWindowSlot *self)
 }
 
 static void
+update_bookmark_action (NautilusWindowSlot *self)
+{
+    gboolean can_bookmark = FALSE;
+    GFile *location = nautilus_window_slot_get_location (self);
+
+    if (location != NULL)
+    {
+        NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
+        NautilusBookmarkList *bookmarks = nautilus_application_get_bookmarks (app);
+
+        can_bookmark = nautilus_bookmark_list_can_bookmark_location (bookmarks, location);
+    }
+
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
+                                                  "bookmark-current-directory");
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_bookmark);
+}
+
+static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     g_autofree char *home_uri = nautilus_get_home_directory_uri ();
@@ -1306,6 +1339,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.stop", "Stop");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.up", "<alt>Up");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.down", "<alt>Down");
+    ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.bookmark-current-directory", "<control>d|AddFavorite");
 
 #undef ADD_SHORTCUT_FOR_ACTION
 #undef ADD_SHORTCUT_FOR_ACTION_WITH_ARGS
@@ -1317,6 +1351,12 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     GtkPadController *pad_controller = gtk_pad_controller_new (G_ACTION_GROUP (self->slot_action_group), NULL);
     gtk_pad_controller_set_action_entries (pad_controller, pad_actions, G_N_ELEMENTS (pad_actions));
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (pad_controller));
+
+    g_signal_connect_object (nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ())),
+                             "changed",
+                             G_CALLBACK (update_bookmark_action),
+                             self,
+                             G_CONNECT_SWAPPED);
 
     self->fd_holder = nautilus_fd_holder_new ();
     self->view_mode_before_network = NAUTILUS_VIEW_INVALID_ID;
@@ -1550,6 +1590,7 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
 
     nautilus_fd_holder_set_location (self->fd_holder, self->location);
     update_back_forward_actions (self);
+    update_bookmark_action (self);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOCATION]);
 }
