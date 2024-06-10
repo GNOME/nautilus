@@ -33,6 +33,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-scheme.h"
+#include "nautilus-tag-manager.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
 #include "nautilus-x-content-bar.h"
@@ -1172,6 +1173,28 @@ action_bookmark_current_directory (GSimpleAction *action,
                                    nautilus_window_slot_get_bookmark (self));
 }
 
+static void
+action_star_current_directory (GSimpleAction *action,
+                               GVariant      *state,
+                               gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_tag_manager_star_files (nautilus_tag_manager_get (), G_OBJECT (self),
+                                     &(GList){ .data = self->viewed_file }, NULL, NULL);
+}
+
+static void
+action_unstar_current_directory (GSimpleAction *action,
+                                 GVariant      *state,
+                                 gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+
+    nautilus_tag_manager_unstar_files (nautilus_tag_manager_get (), G_OBJECT (self),
+                                       &(GList){ .data = self->viewed_file }, NULL, NULL);
+}
+
 const GActionEntry slot_entries[] =
 {
     { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
@@ -1193,6 +1216,8 @@ const GActionEntry slot_entries[] =
     { .name = "reload", .activate = action_reload },
     { .name = "stop", .activate = action_stop },
     { .name = "bookmark-current-directory", .activate = action_bookmark_current_directory },
+    { .name = "star-current-directory", .activate = action_star_current_directory },
+    { .name = "unstar-current-directory", .activate = action_unstar_current_directory },
 };
 
 static void
@@ -1287,6 +1312,34 @@ update_bookmark_action (NautilusWindowSlot *self)
 }
 
 static void
+update_star_unstar_actions (NautilusWindowSlot *self)
+{
+    gboolean can_star_location = FALSE;
+    gboolean is_starred = FALSE;
+    GFile *location = nautilus_window_slot_get_location (self);
+
+    if (location != NULL)
+    {
+        NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
+        g_autofree gchar *uri = g_file_get_uri (location);
+
+        can_star_location = nautilus_tag_manager_can_star_location (tag_manager, location);
+        if (uri != NULL)
+        {
+            is_starred = nautilus_tag_manager_file_is_starred (tag_manager, uri);
+        }
+    }
+
+    GAction *star = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
+                                                "star-current-directory");
+    GAction *unstar = g_action_map_lookup_action (G_ACTION_MAP (self->slot_action_group),
+                                                  "unstar-current-directory");
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (star), !is_starred && can_star_location);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (unstar), is_starred && can_star_location);
+}
+
+static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     g_autofree char *home_uri = nautilus_get_home_directory_uri ();
@@ -1355,6 +1408,11 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect_object (nautilus_application_get_bookmarks (NAUTILUS_APPLICATION (g_application_get_default ())),
                              "changed",
                              G_CALLBACK (update_bookmark_action),
+                             self,
+                             G_CONNECT_SWAPPED);
+    g_signal_connect_object (nautilus_tag_manager_get (),
+                             "starred-changed",
+                             G_CALLBACK (update_star_unstar_actions),
                              self,
                              G_CONNECT_SWAPPED);
 
@@ -1591,6 +1649,7 @@ nautilus_window_slot_set_location (NautilusWindowSlot *self,
     nautilus_fd_holder_set_location (self->fd_holder, self->location);
     update_back_forward_actions (self);
     update_bookmark_action (self);
+    update_star_unstar_actions (self);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOCATION]);
 }
