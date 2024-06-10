@@ -1297,7 +1297,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
     /* Only accessible by shorcuts */
     nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
-    nautilus_application_set_accelerators (app, "win.go-home", ACCELS ("<alt>Home", "HomePage", "Start"));
     nautilus_application_set_accelerator (app, "win.go-starred", "Favorites");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");

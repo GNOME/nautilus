@@ -1256,6 +1256,8 @@ set_back_forward_accelerators (NautilusWindowSlot *self)
 static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
+    g_autofree char *home_uri = nautilus_get_home_directory_uri ();
+
     g_signal_connect_object (nautilus_preferences,
                              "changed::recursive-search",
                              G_CALLBACK (recursive_search_preferences_changed),
@@ -1275,23 +1277,26 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     gtk_shortcut_controller_set_scope (self->shortcuts, GTK_SHORTCUT_SCOPE_MANAGED);
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (self->shortcuts));
 
-    g_autoptr (GtkShortcutAction) view_mode_action = gtk_named_action_new ("slot.files-view-mode");
-    GtkShortcut *shortcut;
-
-    shortcut = gtk_shortcut_new_with_arguments (gtk_shortcut_trigger_parse_string ("<control>1"),
-                                                g_object_ref (view_mode_action),
-                                                "u", NAUTILUS_VIEW_LIST_ID);
-    gtk_shortcut_controller_add_shortcut (self->shortcuts, shortcut);
-    shortcut = gtk_shortcut_new_with_arguments (gtk_shortcut_trigger_parse_string ("<control>2"),
-                                                g_object_ref (view_mode_action),
-                                                "u", NAUTILUS_VIEW_GRID_ID);
-    gtk_shortcut_controller_add_shortcut (self->shortcuts, shortcut);
-
 #define ADD_SHORTCUT_FOR_ACTION(controller, action, trigger) \
         (gtk_shortcut_controller_add_shortcut ((controller), \
                                                gtk_shortcut_new (gtk_shortcut_trigger_parse_string ((trigger)), \
                                                                  gtk_named_action_new ((action)))))
+#define ADD_SHORTCUT_FOR_ACTION_WITH_ARGS(controller, action, trigger, format_string, ...) \
+        (gtk_shortcut_controller_add_shortcut ((controller), \
+                                               gtk_shortcut_new_with_arguments (gtk_shortcut_trigger_parse_string ((trigger)), \
+                                                                                gtk_named_action_new ((action)), \
+                                                                                (format_string), \
+                                                                                __VA_ARGS__)))
 
+    ADD_SHORTCUT_FOR_ACTION_WITH_ARGS (self->shortcuts,
+                                       "slot.files-view-mode", "<control>1",
+                                       "u", NAUTILUS_VIEW_LIST_ID);
+    ADD_SHORTCUT_FOR_ACTION_WITH_ARGS (self->shortcuts,
+                                       "slot.files-view-mode", "<control>2",
+                                       "u", NAUTILUS_VIEW_GRID_ID);
+    ADD_SHORTCUT_FOR_ACTION_WITH_ARGS (self->shortcuts,
+                                       "slot.open-location", "<alt>Home|HomePage|Start",
+                                       "s", home_uri);
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.focus-search", "<control>f|Search");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.search-global", "<control><shift>f");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.reload", "F5|<ctrl>r|Refresh|Reload");
@@ -1300,6 +1305,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.down", "<alt>Down");
 
 #undef ADD_SHORTCUT_FOR_ACTION
+#undef ADD_SHORTCUT_FOR_ACTION_WITH_ARGS
 
     set_back_forward_accelerators (self);
     g_signal_connect_swapped (self, "direction-changed",
