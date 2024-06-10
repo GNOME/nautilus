@@ -116,6 +116,19 @@ update_selected_format (NautilusCompressDialog *self)
 }
 
 static void
+on_feedback_changed (NautilusCompressDialog *self)
+{
+    if (nautilus_filename_validator_get_has_feedback (self->validator))
+    {
+        gtk_widget_add_css_class (self->name_entry, "warning");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (self->name_entry, "warning");
+    }
+}
+
+static void
 extension_combo_row_setup_item (GtkSignalListItemFactory *factory,
                                 GtkListItem              *item,
                                 gpointer                  user_data)
@@ -431,6 +444,7 @@ nautilus_compress_dialog_class_init (NautilusCompressDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, update_selected_format);
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
     gtk_widget_class_bind_template_callback (widget_class, on_name_entry_activated);
+    gtk_widget_class_bind_template_callback (widget_class, on_feedback_changed);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
     gtk_widget_class_bind_template_callback (widget_class, maybe_append_extension);
