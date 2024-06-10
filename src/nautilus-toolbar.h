@@ -38,9 +38,6 @@ GtkWidget *nautilus_toolbar_new (void);
 
 void       nautilus_toolbar_show_current_location_menu (NautilusToolbar *self);
 
-void       nautilus_toolbar_open_location_entry (NautilusToolbar *self,
-                                                 const char      *special_text);
-
 void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
                                                 NautilusWindowSlot *slot);
 
