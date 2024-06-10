@@ -1297,6 +1297,9 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     ADD_SHORTCUT_FOR_ACTION_WITH_ARGS (self->shortcuts,
                                        "slot.open-location", "<alt>Home|HomePage|Start",
                                        "s", home_uri);
+    ADD_SHORTCUT_FOR_ACTION_WITH_ARGS (self->shortcuts,
+                                       "slot.open-location", "Favorites",
+                                       "s", SCHEME_STARRED ":///");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.focus-search", "<control>f|Search");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.search-global", "<control><shift>f");
     ADD_SHORTCUT_FOR_ACTION (self->shortcuts, "slot.reload", "F5|<ctrl>r|Refresh|Reload");
