@@ -24,3 +24,4 @@ void    nautilus_filename_validator_set_original_name        (NautilusFilenameVa
                                                               const char                *original_name);
 void    nautilus_filename_validator_validate                 (NautilusFilenameValidator *self);
 void    nautilus_filename_validator_try_accept               (NautilusFilenameValidator *self);
+gboolean    nautilus_filename_validator_get_has_feedback     (NautilusFilenameValidator *self);

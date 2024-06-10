@@ -312,6 +312,12 @@ nautilus_filename_validator_try_accept (NautilusFilenameValidator *self)
                                         self);
 }
 
+gboolean
+nautilus_filename_validator_get_has_feedback (NautilusFilenameValidator *self)
+{
+    return (self->feedback_text != NULL);
+}
+
 static void
 nautilus_filename_validator_init (NautilusFilenameValidator *self)
 {
@@ -335,7 +341,7 @@ nautilus_filename_validator_get_property (GObject    *object,
 
         case PROP_HAS_FEEDBACK:
         {
-            g_value_set_boolean (value, (self->feedback_text != NULL));
+            g_value_set_boolean (value, nautilus_filename_validator_get_has_feedback (self));
         }
         break;
 
