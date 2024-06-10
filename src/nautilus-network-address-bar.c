@@ -123,7 +123,7 @@ server_mount_ready_cb (GObject      *source_file,
             }
 
             gtk_widget_activate_action (GTK_WIDGET (self),
-                                        "win.open-location", "s", uri_to_open);
+                                        "slot.open-location", "s", uri_to_open);
         }
     }
 }

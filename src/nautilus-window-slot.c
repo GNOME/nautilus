@@ -906,6 +906,17 @@ update_back_forward_actions (NautilusWindowSlot *self)
 }
 
 static void
+action_open_location (GSimpleAction *action,
+                      GVariant      *state,
+                      gpointer       user_data)
+{
+    NautilusWindowSlot *self = NAUTILUS_WINDOW_SLOT (user_data);
+    g_autoptr (GFile) location = g_file_new_for_uri (g_variant_get_string (state, NULL));
+
+    nautilus_window_slot_open_location_full (self, location, NAUTILUS_OPEN_FLAG_NORMAL, NULL);
+}
+
+static void
 action_back (GSimpleAction *action,
              GVariant      *state,
              gpointer       user_data)
@@ -1151,6 +1162,7 @@ action_stop (GSimpleAction *action,
 
 const GActionEntry slot_entries[] =
 {
+    { .name = "open-location", .activate = action_open_location, .parameter_type = "s" },
     { .name = "back", .activate = action_back },
     { .name = "forward", .activate = action_forward },
     { .name = "back-n", .activate = action_back_n, .parameter_type = "u" },
