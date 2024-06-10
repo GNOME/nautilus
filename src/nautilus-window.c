@@ -57,7 +57,6 @@
 #include "nautilus-scheme.h"
 #include "nautilus-shortcut-manager.h"
 #include "nautilus-signaller.h"
-#include "nautilus-tag-manager.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
@@ -118,7 +117,6 @@ struct _NautilusWindow
     GtkWidget *network_address_bar;
 
     guint sidebar_width_handler_id;
-    gulong starred_id;
 
     GQueue *tab_data_queue;
 
@@ -208,45 +206,6 @@ action_go_home (GSimpleAction *action,
     nautilus_window_open_location_full (window, home, 0, NULL, NULL);
 
     g_object_unref (home);
-}
-
-static void
-star_or_unstar_current_location (NautilusWindow *window)
-{
-    NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
-    GFile *location = nautilus_window_slot_get_location (slot);
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
-    g_autofree gchar *uri = nautilus_file_get_uri (file);
-
-    NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
-    if (nautilus_tag_manager_file_is_starred (tag_manager, uri))
-    {
-        nautilus_tag_manager_unstar_files (tag_manager, G_OBJECT (window),
-                                           &(GList){ .data = file }, NULL, NULL);
-    }
-    else
-    {
-        nautilus_tag_manager_star_files (tag_manager, G_OBJECT (window),
-                                         &(GList){ .data = file }, NULL, NULL);
-    }
-}
-
-static void
-action_star_current_location (GSimpleAction *action,
-                              GVariant      *state,
-                              gpointer       user_data)
-{
-    NautilusWindow *window = user_data;
-    star_or_unstar_current_location (window);
-}
-
-static void
-action_unstar_current_location (GSimpleAction *action,
-                                GVariant      *state,
-                                gpointer       user_data)
-{
-    NautilusWindow *window = user_data;
-    star_or_unstar_current_location (window);
 }
 
 static void
@@ -747,41 +706,6 @@ nautilus_window_slot_close (NautilusWindow     *window,
 }
 
 static void
-nautilus_window_sync_starred (NautilusWindow *window)
-{
-    NautilusWindowSlot *slot = nautilus_window_get_active_slot (window);
-    GFile *location = slot != NULL ? nautilus_window_slot_get_location (slot) : NULL;
-
-    gboolean can_star_location = FALSE;
-    gboolean is_starred = FALSE;
-
-    if (location != NULL)
-    {
-        g_autofree gchar *uri = g_file_get_uri (location);
-        if (uri)
-        {
-            NautilusTagManager *tag_manager = nautilus_tag_manager_get ();
-            can_star_location = nautilus_tag_manager_can_star_location (tag_manager, location);
-            is_starred = nautilus_tag_manager_file_is_starred (tag_manager, uri);
-        }
-    }
-
-    GAction *star_action = g_action_map_lookup_action (G_ACTION_MAP (window), "star-current-location");
-    GAction *unstar_action = g_action_map_lookup_action (G_ACTION_MAP (window), "unstar-current-location");
-
-    if (can_star_location)
-    {
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (star_action), !is_starred);
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (unstar_action), is_starred);
-    }
-    else
-    {
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (star_action), FALSE);
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (unstar_action), FALSE);
-    }
-}
-
-static void
 nautilus_window_sync_location_widgets (NautilusWindow *window)
 {
     NautilusWindowSlot *slot = window->active_slot;
@@ -797,8 +721,6 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
         gtk_widget_set_visible (window->network_address_bar,
                                 g_file_has_uri_scheme (location, SCHEME_NETWORK_VIEW));
     }
-
-    nautilus_window_sync_starred (window);
 }
 
 static gchar *
@@ -1169,8 +1091,6 @@ const GActionEntry win_entries[] =
 {
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
     { .name = "new-tab", .activate = action_new_tab },
-    { .name = "star-current-location", .activate = action_star_current_location },
-    { .name = "unstar-current-location", .activate = action_unstar_current_location },
     { .name = "undo", .activate = action_undo },
     { .name = "redo", .activate = action_redo },
     /* Only accessible by shorcuts */
@@ -1321,22 +1241,15 @@ nautilus_window_constructed (GObject *self)
     /* Is required that the UI is constructed before initializating the actions, since
      * some actions trigger UI widgets to show/hide. */
     nautilus_window_initialize_actions (window);
-
-    window->starred_id = g_signal_connect_object (nautilus_tag_manager_get (),
-                                                  "starred-changed",
-                                                  G_CALLBACK (nautilus_window_sync_starred),
-                                                  window, G_CONNECT_SWAPPED);
 }
 
 static void
 nautilus_window_dispose (GObject *object)
 {
     NautilusWindow *window;
-    GtkApplication *application;
     GList *slots_copy;
 
     window = NAUTILUS_WINDOW (object);
-    application = gtk_window_get_application (GTK_WINDOW (window));
 
     g_debug ("Destroying window");
 
@@ -1349,11 +1262,6 @@ nautilus_window_dispose (GObject *object)
     g_assert (window->slots == NULL);
 
     g_clear_weak_pointer (&window->active_slot);
-
-    if (application != NULL)
-    {
-        g_clear_signal_handler (&window->starred_id, nautilus_tag_manager_get ());
-    }
 
     gtk_widget_dispose_template (GTK_WIDGET (window), NAUTILUS_TYPE_WINDOW);
 
