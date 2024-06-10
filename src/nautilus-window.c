@@ -273,16 +273,6 @@ action_new_tab (GSimpleAction *action,
 }
 
 static void
-action_enter_location (GSimpleAction *action,
-                       GVariant      *state,
-                       gpointer       user_data)
-{
-    NautilusWindow *self = user_data;
-
-    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (self->toolbar), NULL);
-}
-
-static void
 action_tab_move_left (GSimpleAction *action,
                       GVariant      *state,
                       gpointer       user_data)
@@ -319,26 +309,6 @@ action_go_to_tab (GSimpleAction *action,
 
         adw_tab_view_set_selected_page (window->tab_view, page);
     }
-}
-
-static void
-action_prompt_for_location_root (GSimpleAction *action,
-                                 GVariant      *state,
-                                 gpointer       user_data)
-{
-    NautilusWindow *self = NAUTILUS_WINDOW (user_data);
-
-    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (self->toolbar), "/");
-}
-
-static void
-action_prompt_for_location_home (GSimpleAction *action,
-                                 GVariant      *state,
-                                 gpointer       user_data)
-{
-    NautilusWindow *self = NAUTILUS_WINDOW (user_data);
-
-    nautilus_toolbar_open_location_entry (NAUTILUS_TOOLBAR (self->toolbar), "~");
 }
 
 static void
@@ -1238,7 +1208,6 @@ const GActionEntry win_entries[] =
 {
     { .name = "current-location-menu", .activate = action_show_current_location_menu },
     { .name = "new-tab", .activate = action_new_tab },
-    { .name = "enter-location", .activate = action_enter_location },
     { .name = "bookmark-current-location", .activate = action_bookmark_current_location },
     { .name = "star-current-location", .activate = action_star_current_location },
     { .name = "unstar-current-location", .activate = action_unstar_current_location },
@@ -1251,8 +1220,6 @@ const GActionEntry win_entries[] =
     { .name = "tab-move-left", .activate = action_tab_move_left },
     { .name = "tab-move-right", .activate = action_tab_move_right },
     { .name = "tab-move-new-window", .activate = action_tab_move_new_window },
-    { .name = "prompt-root-location", .activate = action_prompt_for_location_root },
-    { .name = "prompt-home-location", .activate = action_prompt_for_location_home },
     { .name = "go-to-tab", .parameter_type = "i", .state = "0", .change_state = action_go_to_tab },
     { .name = "restore-tab", .activate = action_restore_tab },
     { .name = "toggle-sidebar", .activate = action_toggle_sidebar },
@@ -1274,7 +1241,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 #define ACCELS(...) ((const char *[]) { __VA_ARGS__, NULL })
 
     app = g_application_get_default ();
-    nautilus_application_set_accelerators (app, "win.enter-location", ACCELS ("<control>l", "Go", "OpenURL"));
     nautilus_application_set_accelerator (app, "win.new-tab", "<control>t");
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
 
@@ -1284,9 +1250,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
-    nautilus_application_set_accelerators (app, "win.prompt-root-location", ACCELS ("slash", "KP_Divide"));
-    /* Support keyboard layouts which have a dead tilde key but not a tilde key. */
-    nautilus_application_set_accelerators (app, "win.prompt-home-location", ACCELS ("asciitilde", "dead_tilde"));
     nautilus_application_set_accelerator (app, "win.current-location-menu", "F10");
     nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
     nautilus_application_set_accelerator (app, "win.toggle-sidebar", "F9");

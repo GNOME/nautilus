@@ -111,7 +111,7 @@ toolbar_update_appearance (NautilusToolbar *self)
                                  search_global ? self->history_controls_placeholder : self->history_controls);
 }
 
-void
+static void
 nautilus_toolbar_open_location_entry (NautilusToolbar *self,
                                       const char      *special_text)
 {
@@ -217,6 +217,36 @@ on_location_entry_location_changed (NautilusLocationEntry *entry,
 }
 
 static void
+action_edit_location (GtkWidget  *widget,
+                      const char *action_name,
+                      GVariant   *parameter)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (widget);
+
+    nautilus_toolbar_open_location_entry (self, NULL);
+}
+
+static void
+action_prompt_root_location (GtkWidget  *widget,
+                             const char *action_name,
+                             GVariant   *parameter)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (widget);
+
+    nautilus_toolbar_open_location_entry (self, "/");
+}
+
+static void
+action_prompt_home_location (GtkWidget  *widget,
+                             const char *action_name,
+                             GVariant   *parameter)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (widget);
+
+    nautilus_toolbar_open_location_entry (self, "~");
+}
+
+static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
     g_type_ensure (NAUTILUS_TYPE_HISTORY_CONTROLS);
@@ -225,6 +255,23 @@ nautilus_toolbar_init (NautilusToolbar *self)
     g_type_ensure (NAUTILUS_TYPE_LOCATION_ENTRY);
 
     gtk_widget_init_template (GTK_WIDGET (self));
+
+    GtkShortcutController *shortcuts = GTK_SHORTCUT_CONTROLLER (gtk_shortcut_controller_new ());
+
+    gtk_shortcut_controller_set_scope (shortcuts, GTK_SHORTCUT_SCOPE_MANAGED);
+    gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (shortcuts));
+
+#define ADD_SHORTCUT_FOR_ACTION(controller, action, trigger) \
+        (gtk_shortcut_controller_add_shortcut ((controller), \
+                                               gtk_shortcut_new (gtk_shortcut_trigger_parse_string ((trigger)), \
+                                                                 gtk_named_action_new ((action)))))
+
+    ADD_SHORTCUT_FOR_ACTION (shortcuts, "toolbar.edit-location", "<control>l|Go|OpenURL");
+    ADD_SHORTCUT_FOR_ACTION (shortcuts, "toolbar.prompt-root-location", "slash|KP_Divide");
+    /* Support keyboard layouts which have a dead tilde key but not a tilde key. */
+    ADD_SHORTCUT_FOR_ACTION (shortcuts, "toolbar.prompt-home-location", "asciitilde|dead_tilde");
+
+#undef ADD_SHORTCUT_FOR_ACTION
 
     /* Setup path bar */
     g_signal_connect_object (self->path_bar, "open-location",
@@ -428,6 +475,10 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, nautilus_toolbar_close_location_entry);
 
     gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_TOOLBAR);
+
+    gtk_widget_class_install_action (widget_class, "toolbar.edit-location", NULL, action_edit_location);
+    gtk_widget_class_install_action (widget_class, "toolbar.prompt-root-location", NULL, action_prompt_root_location);
+    gtk_widget_class_install_action (widget_class, "toolbar.prompt-home-location", NULL, action_prompt_home_location);
 }
 
 GtkWidget *
