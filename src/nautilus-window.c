@@ -212,20 +212,6 @@ action_go_home (GSimpleAction *action,
 }
 
 static void
-action_go_starred (GSimpleAction *action,
-                   GVariant      *state,
-                   gpointer       user_data)
-{
-    NautilusWindow *window;
-    g_autoptr (GFile) starred = NULL;
-
-    window = NAUTILUS_WINDOW (user_data);
-    starred = g_file_new_for_uri (SCHEME_STARRED ":///");
-
-    nautilus_window_open_location_full (window, starred, 0, NULL, NULL);
-}
-
-static void
 action_bookmark_current_location (GSimpleAction *action,
                                   GVariant      *state,
                                   gpointer       user_data)
@@ -1262,7 +1248,6 @@ const GActionEntry win_entries[] =
     { .name = "close-current-view", .activate = action_close_current_view },
     { .name = "close-other-tabs", .activate = action_close_other_tabs },
     { .name = "go-home", .activate = action_go_home },
-    { .name = "go-starred", .activate = action_go_starred },
     { .name = "tab-move-left", .activate = action_tab_move_left },
     { .name = "tab-move-right", .activate = action_tab_move_right },
     { .name = "tab-move-new-window", .activate = action_tab_move_new_window },
@@ -1297,7 +1282,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
     /* Only accessible by shorcuts */
     nautilus_application_set_accelerators (app, "win.bookmark-current-location", ACCELS ("<control>d", "AddFavorite"));
-    nautilus_application_set_accelerator (app, "win.go-starred", "Favorites");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
     nautilus_application_set_accelerators (app, "win.prompt-root-location", ACCELS ("slash", "KP_Divide"));
