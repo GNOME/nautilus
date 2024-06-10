@@ -1,11 +1,12 @@
-# Files needed for running Tracker inside the Flatpak sandbox, for systems
-# which don't have a suitable version of Tracker in the host OS.
+# Files needed for running LocalSearch (historically known as Tracker) inside
+# the Flatpak sandbox, for systems which don't have a suitable version of
+# LocalSearch in the host OS.
 #
 # We must export the .service files from the sandbox so they work on the
-# session bus. This means the Tracker domain name must correspond with the
+# session bus. This means the LocalSearch domain name must correspond with the
 # application ID.
 
-domain_ontologies_dir = get_option('datadir') / 'tracker3' / 'domain-ontologies'
+domain_ontologies_dir = get_option('datadir') / 'localsearch3' / 'domain-ontologies'
 dbus_services_dir = get_option('datadir') / 'dbus-1' / 'services'
 
 tracker_domain_config = configuration_data()

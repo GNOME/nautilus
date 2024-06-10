@@ -67,11 +67,11 @@
       ]
     },
     {
-      "name": "tracker-miners",
+      "name": "localsearch",
       "buildsystem": "meson",
       "cleanup": [
         "/etc",
-        "/libexec/tracker-3",
+        "/libexec/localsearch-3",
         "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Extract.service",
         "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.service",
         "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service"
@@ -90,8 +90,8 @@
       "sources": [
         {
           "type": "git",
-          "url": "https://gitlab.gnome.org/GNOME/tracker-miners.git",
-          "branch": "master"
+          "url": "https://gitlab.gnome.org/GNOME/localsearch.git",
+          "branch": "main"
         }
       ]
     },

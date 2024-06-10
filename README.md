@@ -29,7 +29,7 @@ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
 
 ## Runtime dependencies
 - [Bubblewrap](https://github.com/projectatomic/bubblewrap) installed. Used for security reasons.
-- [Tracker (including tracker-miners)](https://gitlab.gnome.org/GNOME/tracker) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
+- [LocalSearch](https://gitlab.gnome.org/GNOME/localsearch) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
 
 ## Discourse
 
