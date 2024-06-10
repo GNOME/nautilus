@@ -26,6 +26,19 @@ struct _NautilusNewFolderDialog
 G_DEFINE_TYPE (NautilusNewFolderDialog, nautilus_new_folder_dialog, ADW_TYPE_WINDOW)
 
 static void
+on_feedback_changed (NautilusNewFolderDialog *self)
+{
+    if (nautilus_filename_validator_get_has_feedback (self->validator))
+    {
+        gtk_widget_add_css_class (self->name_entry, "warning");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (self->name_entry, "warning");
+    }
+}
+
+static void
 on_name_accepted (NautilusNewFolderDialog *self)
 {
     g_autofree char *name = nautilus_filename_validator_get_new_name (self->validator);
@@ -102,6 +115,7 @@ nautilus_new_folder_dialog_class_init (NautilusNewFolderDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, name_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusNewFolderDialog, validator);
 
+    gtk_widget_class_bind_template_callback (widget_class, on_feedback_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_name_accepted);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_try_accept);
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);

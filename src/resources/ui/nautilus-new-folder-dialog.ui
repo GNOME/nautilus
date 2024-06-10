@@ -51,9 +51,12 @@
                     <property name="child">
                       <object class="GtkLabel">
                         <property name="label" bind-source="validator" bind-property="feedback-text"/>
-                        <property name="margin_top">4</property>
-                        <property name="margin_bottom">4</property>
+                        <property name="margin-top">6</property>
                         <property name="xalign">0</property>
+                        <style>
+                          <class name="warning"/>
+                          <class name="caption"/>
+                        </style>
                       </object>
                     </property>
                   </object>
@@ -80,5 +83,6 @@
     <property name="new-name" bind-source="name_entry" bind-property="text"/>
     <property name="target-is-folder">true</property>
     <signal name="name-accepted" handler="on_name_accepted" swapped="yes"/>
+    <signal name="notify::has-feedback" handler="on_feedback_changed" swapped="yes" object="NautilusNewFolderDialog"/>
   </object>
 </interface>
