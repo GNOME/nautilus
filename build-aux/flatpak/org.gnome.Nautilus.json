@@ -29,8 +29,12 @@
     "--talk-name=org.gnome.Settings",
     "--talk-name=org.gnome.Console",
     "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
+    "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:Audio",
+    "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:Documents",
     "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:FileSystem",
-    "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:Documents"
+    "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:Pictures",
+    "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:Music",
+    "--add-policy=Tracker3.dbus:org.freedesktop.Tracker3.Miner.Files=tracker:Video"
   ],
   "modules": [
     {
