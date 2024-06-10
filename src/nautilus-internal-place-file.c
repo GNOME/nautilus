@@ -53,9 +53,12 @@ network_mount_callback (GObject      *source_object,
 {
     g_autoptr (GError) error = NULL;
 
-    (void) g_file_mount_enclosing_volume_finish (G_FILE (source_object), result, &error);
-    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), result, &error))
     {
+        if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+        {
+            g_warning ("Could not mount '%s': %s", SCHEME_NETWORK ":///", error->message);
+        }
         return;
     }
 
