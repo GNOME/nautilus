@@ -955,7 +955,7 @@ child_watch_cb (GPid     pid,
 static void
 export_tracker2_data (NautilusTagManager *self)
 {
-    gchar *argv[] = {"tracker3", "export", "--2to3", "files-starred", "--keyfile", NULL};
+    gchar *argv[] = {"tinysparql3", "export", "--2to3", "files-starred", "--keyfile", NULL};
     gint stdout_fd;
     GPid child_pid;
     g_autoptr (GError) error = NULL;
@@ -979,7 +979,7 @@ export_tracker2_data (NautilusTagManager *self)
                                         &error);
     if (!success)
     {
-        g_warning ("Tracker 2 migration: Couldn't run `tracker3`: %s", error->message);
+        g_warning ("Tracker 2 migration: Couldn't run `tinysparql3`: %s", error->message);
         return;
     }
 
