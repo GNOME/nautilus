@@ -1,6 +1,4 @@
-trackertestutils = dependency('tracker-testutils-3.0')
-
-tracker_sandbox = find_program(trackertestutils.get_variable('command'))
+tracker_sandbox = find_program('localsearch3')
 
 tests = [
   ['test-directory', [
@@ -75,7 +73,7 @@ foreach t: tracker_tests
   test(
     t[0],
     tracker_sandbox,
-    args: ['--store-tmpdir', '--index-recursive-tmpdir', test_exe],
+    args: ['test-sandbox', '--store-tmpdir', '--index-recursive-tmpdir', test_exe],
     env: [
       test_env,
       'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
