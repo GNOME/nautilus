@@ -54,13 +54,6 @@
                   </object>
                 </child>
                 <child>
-                  <object class="AdwComboRow" id="extension_combo_row">
-                    <property name="title" translatable="yes">Co_mpression Method</property>
-                    <property name="use-underline">True</property>
-                    <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
-                  </object>
-                </child>
-                <child>
                   <object class="GtkRevealer">
                     <property name="reveal-child" bind-source="validator" bind-property="has-feedback"/>
                     <property name="child">
@@ -74,6 +67,17 @@
                         </style>
                       </object>
                     </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="AdwPreferencesGroup">
+                <child>
+                  <object class="AdwComboRow" id="extension_combo_row">
+                    <property name="title" translatable="yes">Co_mpression Method</property>
+                    <property name="use-underline">True</property>
+                    <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
                   </object>
                 </child>
               </object>
