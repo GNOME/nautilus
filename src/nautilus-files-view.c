@@ -2961,8 +2961,6 @@ show_hidden_files_changed_callback (gpointer callback_data)
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
     nautilus_files_view_set_show_hidden_files (view, preference_value);
-
-    schedule_update_context_menus (view);
 }
 
 static gboolean
@@ -4102,8 +4100,6 @@ copy_move_done_callback (GHashTable *debuting_files,
                                    (GClosureNotify) debuting_files_data_free,
                                    G_CONNECT_AFTER);
         }
-        /* Schedule menu update for undo items */
-        schedule_update_context_menus (directory_view);
     }
 
     copy_move_done_data_free (copy_move_done_data);
