@@ -1959,9 +1959,7 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
     location = self->pending_location;
 
-    /* desktop and other-locations GFile operations report G_IO_ERROR_NOT_SUPPORTED,
-     * but it's not an actual error for Nautilus */
-    if (!error || g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED))
+    if (error == NULL)
     {
         view = nautilus_window_slot_get_view_for_location (self, location);
         setup_view (self, view);
