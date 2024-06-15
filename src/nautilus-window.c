@@ -682,11 +682,8 @@ open_location_cb (NautilusWindow    *window,
     }
 
     application = NAUTILUS_APPLICATION (g_application_get_default ());
-    /* FIXME: We shouldn't need to provide the window, but seems gtk_application_get_active_window
-     * is not working properly in GtkApplication, so we cannot rely on that...
-     */
     nautilus_application_open_location_full (application, location, flags,
-                                             NULL, window, NULL);
+                                             NULL, NULL, NULL);
 
     if (adw_overlay_split_view_get_collapsed (split_view) &&
         flags == NAUTILUS_OPEN_FLAG_NORMAL)
