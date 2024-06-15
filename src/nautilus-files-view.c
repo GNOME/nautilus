@@ -2675,21 +2675,25 @@ update_zoom_actions_state (NautilusFilesView *self)
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
     NautilusViewInfo view_info = nautilus_list_base_get_view_info (priv->list_base);
     gint zoom_level = nautilus_list_base_get_zoom_level (priv->list_base);
+    gboolean view_is_not_empty = !nautilus_files_view_is_empty (self);
     GAction *action;
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                          "zoom-in");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 view_is_not_empty &&
                                  zoom_level < view_info.zoom_level_max);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                          "zoom-out");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 view_is_not_empty &&
                                  zoom_level > view_info.zoom_level_min);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                          "zoom-standard");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 view_is_not_empty &&
                                  zoom_level != view_info.zoom_level_standard);
 }
 
@@ -4163,6 +4167,18 @@ still_should_show_file (NautilusFilesView *view,
 }
 
 static void
+update_select_all_action_enabled_status (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                                  "select-all");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !nautilus_files_view_is_empty (self) &&
+                                 !priv->loading);
+}
+
+static void
 real_end_file_changes (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -4173,8 +4189,10 @@ real_end_file_changes (NautilusFilesView *view)
 
     /* Addition and removal of files modify the empty state */
     nautilus_files_view_check_empty_states (view);
-    /* If the view is empty, zoom slider and sort menu are insensitive */
-    nautilus_files_view_update_actions_state (view);
+    /* If the view is empty, then zoom actions and select-all are disabled, as
+     * they wouldn't have any visible effect. */
+    update_zoom_actions_state (view);
+    update_select_all_action_enabled_status (view);
 
     /* Reveal files that were pending to be revealed, only if all of them
      * were acknowledged by the view
@@ -7925,11 +7943,7 @@ nautilus_files_view_update_actions_state (NautilusFilesView *view)
      * and update them once we have the data */
     update_actions_state_for_clipboard_targets (view);
 
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "select-all");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !nautilus_files_view_is_empty (view) &&
-                                 !priv->loading);
+    update_select_all_action_enabled_status (view);
 
     /* Toolbar menu actions */
     g_action_group_change_action_state (view_action_group,
