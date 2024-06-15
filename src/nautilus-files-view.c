@@ -345,7 +345,6 @@ static void nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView
 static void nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                                 graphene_point_t  *point);
 static void nautilus_files_view_update_context_menus (NautilusFilesView *view);
-static void nautilus_files_view_update_toolbar_menus (NautilusFilesView *view);
 static void nautilus_files_view_update_actions_state (NautilusFilesView *view);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
@@ -3177,7 +3176,6 @@ slot_active_changed (NautilusWindowSlot *slot,
          * view mode changes
          */
         nautilus_files_view_update_context_menus (view);
-        nautilus_files_view_update_toolbar_menus (view);
         nautilus_files_view_preview_update (view);
 
         schedule_update_context_menus (view);
@@ -3886,7 +3884,7 @@ done_loading (NautilusFilesView *view,
         remove_loading_floating_bar (view);
         schedule_update_context_menus (view);
         schedule_update_status (view);
-        nautilus_files_view_update_toolbar_menus (view);
+        nautilus_files_view_update_actions_state (view);
         reset_update_interval (view);
 
         if (nautilus_view_is_searching (NAUTILUS_VIEW (view)) &&
@@ -4176,7 +4174,7 @@ real_end_file_changes (NautilusFilesView *view)
     /* Addition and removal of files modify the empty state */
     nautilus_files_view_check_empty_states (view);
     /* If the view is empty, zoom slider and sort menu are insensitive */
-    nautilus_files_view_update_toolbar_menus (view);
+    nautilus_files_view_update_actions_state (view);
 
     /* Reveal files that were pending to be revealed, only if all of them
      * were acknowledged by the view
@@ -8379,28 +8377,6 @@ nautilus_files_view_update_context_menus (NautilusFilesView *view)
     update_selection_menu (view, builder);
     update_background_menu (view, builder);
     update_extensions_menus (view, builder);
-
-    nautilus_files_view_update_actions_state (view);
-}
-
-/* Convenience function to reset the menus owned by the view but managed on
- * the toolbar, and update them with the current state.
- */
-static void
-nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
-{
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
-
-    /* Don't update after destroy (#349551),
-     * or if we are not active.
-     */
-    if (priv->in_destruction ||
-        !priv->active)
-    {
-        return;
-    }
 
     nautilus_files_view_update_actions_state (view);
 }
