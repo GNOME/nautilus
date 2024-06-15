@@ -53,7 +53,8 @@ network_mount_callback (GObject      *source_object,
 {
     g_autoptr (GError) error = NULL;
 
-    if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), result, &error))
+    if (!g_file_mount_enclosing_volume_finish (G_FILE (source_object), result, &error) &&
+        !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_ALREADY_MOUNTED))
     {
         if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
         {
