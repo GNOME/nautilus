@@ -9544,10 +9544,20 @@ nautilus_files_view_constructed (GObject *object)
 
     NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    NautilusMode mode = nautilus_window_slot_get_mode (priv->slot);
+    gboolean use_single_selection = (mode == NAUTILUS_MODE_OPEN_FILE ||
+                                     mode == NAUTILUS_MODE_OPEN_FOLDER ||
+                                     mode == NAUTILUS_MODE_SAVE_FILE ||
+                                     mode == NAUTILUS_MODE_SAVE_FILES);
 
     g_signal_connect_object (priv->slot, "notify::active",
                              G_CALLBACK (slot_active_changed), self,
                              G_CONNECT_DEFAULT);
+
+    priv->model = nautilus_view_model_new (use_single_selection);
+    g_signal_connect_object (GTK_SELECTION_MODEL (priv->model), "selection-changed",
+                             G_CALLBACK (nautilus_files_view_notify_selection_changed), self,
+                             G_CONNECT_SWAPPED);
 }
 
 static void
@@ -9741,13 +9751,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     priv->empty_view_page = g_object_ref_sink (adw_status_page_new ());
     /* Ensure opaque background, to hide the view underneath it. */
     gtk_widget_add_css_class (priv->empty_view_page, "view");
-
-    priv->model = nautilus_view_model_new ();
-    g_signal_connect_object (GTK_SELECTION_MODEL (priv->model),
-                             "selection-changed",
-                             G_CALLBACK (nautilus_files_view_notify_selection_changed),
-                             view,
-                             G_CONNECT_SWAPPED);
 
     /* Toolbar menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");

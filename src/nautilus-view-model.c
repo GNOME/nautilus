@@ -12,8 +12,9 @@ struct _NautilusViewModel
 
     GtkTreeListModel *tree_model;
     GtkSortListModel *sort_model;
-    GtkMultiSelection *selection_model;
+    GtkSelectionModel *selection_model;
 
+    gboolean single_selection;
     gboolean expand_as_a_tree;
     GList *cut_files;
 };
@@ -111,9 +112,8 @@ nautilus_view_model_is_selected (GtkSelectionModel *model,
                                  guint              position)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
-    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->selection_model);
 
-    return gtk_selection_model_is_selected (selection_model, position);
+    return gtk_selection_model_is_selected (self->selection_model, position);
 }
 
 static GtkBitset *
@@ -122,9 +122,18 @@ nautilus_view_model_get_selection_in_range (GtkSelectionModel *model,
                                             guint              n_items)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
-    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->selection_model);
 
-    return gtk_selection_model_get_selection_in_range (selection_model, pos, n_items);
+    return gtk_selection_model_get_selection_in_range (self->selection_model, pos, n_items);
+}
+
+static gboolean
+nautilus_view_model_select_item (GtkSelectionModel *model,
+                                 guint              position,
+                                 gboolean           unselect_rest)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
+
+    return gtk_selection_model_select_item (self->selection_model, position, unselect_rest);
 }
 
 static gboolean
@@ -133,12 +142,18 @@ nautilus_view_model_set_selection (GtkSelectionModel *model,
                                    GtkBitset         *mask)
 {
     NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
-    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL (self->selection_model);
-    gboolean res;
 
-    res = gtk_selection_model_set_selection (selection_model, selected, mask);
+    return gtk_selection_model_set_selection (self->selection_model, selected, mask);
+}
 
-    return res;
+
+static gboolean
+nautilus_view_model_unselect_item (GtkSelectionModel *model,
+                                   guint              position)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
+
+    return gtk_selection_model_unselect_item (self->selection_model, position);
 }
 
 
@@ -147,7 +162,9 @@ nautilus_view_model_selection_model_init (GtkSelectionModelInterface *iface)
 {
     iface->is_selected = nautilus_view_model_is_selected;
     iface->get_selection_in_range = nautilus_view_model_get_selection_in_range;
+    iface->select_item = nautilus_view_model_select_item;
     iface->set_selection = nautilus_view_model_set_selection;
+    iface->unselect_item = nautilus_view_model_unselect_item;
 }
 
 G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
@@ -161,6 +178,7 @@ G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
 enum
 {
     PROP_0,
+    PROP_SINGLE_SELECTION,
     PROP_SORTER,
     N_PROPS
 };
@@ -244,6 +262,12 @@ set_property (GObject      *object,
 
     switch (prop_id)
     {
+        case PROP_SINGLE_SELECTION:
+        {
+            self->single_selection = g_value_get_boolean (value);
+        }
+        break;
+
         case PROP_SORTER:
         {
             nautilus_view_model_set_sorter (self, g_value_get_object (value));
@@ -292,7 +316,21 @@ constructed (GObject *object)
                                                 (GtkTreeListModelCreateModelFunc) create_model_func,
                                                 self, NULL);
     self->sort_model = gtk_sort_list_model_new (g_object_ref (G_LIST_MODEL (self->tree_model)), NULL);
-    self->selection_model = gtk_multi_selection_new (g_object_ref (G_LIST_MODEL (self->sort_model)));
+
+    if (self->single_selection)
+    {
+        GtkSingleSelection *single = gtk_single_selection_new (NULL);
+
+        gtk_single_selection_set_autoselect (single, FALSE);
+        gtk_single_selection_set_can_unselect (single, TRUE);
+
+        gtk_single_selection_set_model (single, G_LIST_MODEL (self->sort_model));
+        self->selection_model = GTK_SELECTION_MODEL (single);
+    }
+    else
+    {
+        self->selection_model = GTK_SELECTION_MODEL (gtk_multi_selection_new (g_object_ref (G_LIST_MODEL (self->sort_model))));
+    }
 
     self->map_files_to_model = g_hash_table_new (NULL, NULL);
     self->directory_reverse_map = g_hash_table_new_full (NULL, NULL, NULL, g_object_unref);
@@ -316,9 +354,12 @@ nautilus_view_model_class_init (NautilusViewModelClass *klass)
     object_class->set_property = set_property;
     object_class->constructed = constructed;
 
+    properties[PROP_SINGLE_SELECTION] =
+        g_param_spec_boolean ("single-selection", NULL, NULL,
+                              FALSE,
+                              G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
     properties[PROP_SORTER] =
-        g_param_spec_object ("sorter",
-                             "", "",
+        g_param_spec_object ("sorter", NULL, NULL,
                              GTK_TYPE_SORTER,
                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
@@ -346,9 +387,11 @@ compare_data_func (gconstpointer a,
 }
 
 NautilusViewModel *
-nautilus_view_model_new (void)
+nautilus_view_model_new (gboolean single_selection)
 {
-    return g_object_new (NAUTILUS_TYPE_VIEW_MODEL, NULL);
+    return g_object_new (NAUTILUS_TYPE_VIEW_MODEL,
+                         "single-selection", single_selection,
+                         NULL);
 }
 
 GtkSorter *
