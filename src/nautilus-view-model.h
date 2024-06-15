@@ -10,7 +10,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusViewModel, nautilus_view_model, NAUTILUS, VIEW_MODEL, GObject)
 
-NautilusViewModel * nautilus_view_model_new (void);
+NautilusViewModel * nautilus_view_model_new (gboolean single_selection);
 
 GtkSorter *nautilus_view_model_get_sorter (NautilusViewModel *self);
 void nautilus_view_model_set_sorter (NautilusViewModel *self,
