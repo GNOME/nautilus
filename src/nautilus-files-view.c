@@ -177,6 +177,8 @@ typedef struct
     gboolean scripts_menu_updated;
     gboolean templates_menu_updated;
 
+    gboolean update_context_menu_update_when_active;
+
     guint display_selection_idle_id;
     guint update_context_menus_timeout_id;
     guint update_status_idle_id;
@@ -2951,21 +2953,16 @@ static void
 show_hidden_files_changed_callback (gpointer callback_data)
 {
     NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
     gboolean preference_value;
 
     view = NAUTILUS_FILES_VIEW (callback_data);
-    priv = nautilus_files_view_get_instance_private (view);
 
     preference_value =
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
     nautilus_files_view_set_show_hidden_files (view, preference_value);
 
-    if (priv->active)
-    {
-        schedule_update_context_menus (view);
-    }
+    schedule_update_context_menus (view);
 }
 
 static gboolean
@@ -3013,10 +3010,7 @@ scripts_added_or_changed_callback (NautilusDirectory *directory,
     priv = nautilus_files_view_get_instance_private (view);
 
     priv->scripts_menu_updated = FALSE;
-    if (priv->active)
-    {
-        schedule_update_context_menus (view);
-    }
+    schedule_update_context_menus (view);
 }
 
 static void
@@ -3031,10 +3025,7 @@ templates_added_or_changed_callback (NautilusDirectory *directory,
     priv = nautilus_files_view_get_instance_private (view);
 
     priv->templates_menu_updated = FALSE;
-    if (priv->active)
-    {
-        schedule_update_context_menus (view);
-    }
+    schedule_update_context_menus (view);
 }
 
 static void
@@ -3155,14 +3146,13 @@ slot_active_changed (NautilusWindowSlot *slot,
 
     if (priv->active)
     {
-        /* Avoid updating the toolbar withouth making sure the toolbar
-         * zoom slider has the correct adjustment that changes when the
-         * view mode changes
-         */
-        nautilus_files_view_update_context_menus (view);
         nautilus_files_view_preview_update (view);
 
-        schedule_update_context_menus (view);
+        if (priv->update_context_menu_update_when_active)
+        {
+            schedule_update_context_menus (view);
+            priv->update_context_menu_update_when_active = FALSE;
+        }
 
         gtk_widget_insert_action_group (GTK_WIDGET (gtk_widget_get_root (GTK_WIDGET (view))),
                                         "view",
@@ -8466,11 +8456,16 @@ schedule_update_context_menus (NautilusFilesView *view)
     priv = nautilus_files_view_get_instance_private (view);
 
     /* Don't schedule updates after destroy (#349551),
-     * or if we are not active.
      */
     if (priv->in_destruction ||
         !priv->active)
     {
+        return;
+    }
+
+    if (!priv->active)
+    {
+        priv->update_context_menu_update_when_active = TRUE;
         return;
     }
 
