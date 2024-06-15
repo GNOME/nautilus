@@ -668,15 +668,42 @@ update_sort_order_from_metadata_and_preferences (NautilusFilesView *self)
 }
 
 static void
+update_sort_menu_special_options (NautilusFilesView *view)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    NautilusFile *file = priv->directory_as_file;
+    GMenuModel *sort_section = priv->toolbar_menu_sections->sort_section;
+    const gchar *action;
+    gint i;
+
+    /* When not in the special location, set an inexistant action to hide the
+     * menu item. This works under the assumptiont that the menu item has its
+     * "hidden-when" attribute set to "action-disabled", and that an inexistant
+     * action is treated as a disabled action. */
+    action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
+    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "last_trashed");
+    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+
+    action = nautilus_file_is_in_recent (file) ? "view.sort" : "doesnt-exist";
+    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "recency");
+    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+
+    action = nautilus_file_is_in_search (file) ? "view.sort" : "doesnt-exist";
+    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "relevance");
+    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
+}
+
+static void
 real_begin_loading (NautilusFilesView *self)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
     update_sort_order_from_metadata_and_preferences (self);
+    update_sort_menu_special_options (self);
 
     /* We could have changed to the trash directory or to searching, and then
      * we need to update the menus */
     nautilus_files_view_update_context_menus (self);
-    nautilus_files_view_update_toolbar_menus (self);
 
     nautilus_list_base_setup_directory (priv->list_base, priv->directory);
 }
@@ -8356,32 +8383,6 @@ nautilus_files_view_update_context_menus (NautilusFilesView *view)
     nautilus_files_view_update_actions_state (view);
 }
 
-static void
-nautilus_files_view_reset_view_menu (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
-    NautilusFile *file = priv->directory_as_file;
-    GMenuModel *sort_section = priv->toolbar_menu_sections->sort_section;
-    const gchar *action;
-    gint i;
-
-    /* When not in the special location, set an inexistant action to hide the
-     * menu item. This works under the assumptiont that the menu item has its
-     * "hidden-when" attribute set to "action-disabled", and that an inexistant
-     * action is treated as a disabled action. */
-    action = nautilus_file_is_in_trash (file) ? "view.sort" : "doesnt-exist";
-    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "last_trashed");
-    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
-
-    action = nautilus_file_is_in_recent (file) ? "view.sort" : "doesnt-exist";
-    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "recency");
-    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
-
-    action = nautilus_file_is_in_search (file) ? "view.sort" : "doesnt-exist";
-    i = nautilus_g_menu_model_find_by_string (sort_section, "nautilus-menu-item", "relevance");
-    nautilus_g_menu_replace_string_in_item (G_MENU (sort_section), i, "action", action);
-}
-
 /* Convenience function to reset the menus owned by the view but managed on
  * the toolbar, and update them with the current state.
  */
@@ -8402,7 +8403,6 @@ nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
     }
 
     nautilus_files_view_update_actions_state (view);
-    nautilus_files_view_reset_view_menu (view);
 }
 
 static void
