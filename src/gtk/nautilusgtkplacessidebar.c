@@ -2311,15 +2311,6 @@ properties_cb (GSimpleAction *action,
 }
 
 static void
-empty_trash_cb (GSimpleAction *action,
-                GVariant      *parameter,
-                gpointer       data)
-{
-  NautilusGtkPlacesSidebar *sidebar = data;
-  nautilus_file_operations_empty_trash (GTK_WIDGET (sidebar), TRUE, NULL);
-}
-
-static void
 remove_bookmark (NautilusGtkSidebarRow *row)
 {
   NautilusGtkPlacesPlaceType type;
@@ -2864,7 +2855,6 @@ static GActionEntry entries[] = {
   { .name = "start", .activate = start_shortcut_cb},
   { .name = "stop", .activate = stop_shortcut_cb},
   { .name = "properties", .activate = properties_cb},
-  { .name = "empty-trash", .activate = empty_trash_cb},
   { .name = "format", .activate = format_cb},
 };
 
@@ -3030,8 +3020,6 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), (type == NAUTILUS_GTK_PLACES_MOUNTED_VOLUME));
   action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "open");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !gtk_list_box_row_is_selected (GTK_LIST_BOX_ROW (row)));
-  action = g_action_map_lookup_action (G_ACTION_MAP (sidebar->row_actions), "empty-trash");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), !nautilus_trash_monitor_is_empty());
 
   menu = g_menu_new ();
   section = g_menu_new ();
@@ -3083,7 +3071,7 @@ create_row_popover (NautilusGtkPlacesSidebar *sidebar,
 
   if (is_trash) {
     section = g_menu_new ();
-    item = g_menu_item_new (_("_Empty Trash…"), "row.empty-trash");
+    item = g_menu_item_new (_("_Empty Trash…"), "win.empty-trash");
     g_menu_append_item (section, item);
     g_object_unref (item);
 

@@ -80,7 +80,6 @@
 #include "nautilus-signaller.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-toolbar.h"
-#include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
 #include "nautilus-view-model.h"
@@ -310,9 +309,6 @@ static void     metadata_for_directory_as_file_ready_callback (NautilusFile *fil
 static void     metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
                                                                 GList             *files,
                                                                 gpointer           callback_data);
-static void     nautilus_files_view_trash_state_changed_callback (NautilusTrashMonitor *trash,
-                                                                  gboolean              state,
-                                                                  gpointer              callback_data);
 static void     update_templates_directory (NautilusFilesView *view);
 
 static void     extract_files (NautilusFilesView *view,
@@ -2460,22 +2456,6 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
 }
 
 static void
-action_empty_trash (GSimpleAction *action,
-                    GVariant      *state,
-                    gpointer       user_data)
-{
-    NautilusFilesView *view;
-    GtkRoot *window;
-
-    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    window = gtk_widget_get_root (GTK_WIDGET (view));
-
-    nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
-}
-
-static void
 action_new_folder (GSimpleAction *action,
                    GVariant      *state,
                    gpointer       user_data)
@@ -3430,8 +3410,6 @@ nautilus_files_view_dispose (GObject *object)
                                           nautilus_files_view_display_selection_info, view);
     g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
                                           schedule_update_context_menus, view);
-    g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
-                                          nautilus_files_view_trash_state_changed_callback, view);
 
     clipboard = gdk_display_get_clipboard (gdk_display_get_default ());
     g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, view);
@@ -7150,7 +7128,6 @@ const GActionEntry view_entries[] =
     { .name = "show-hidden-files", .state = "true", .change_state = action_show_hidden_files },
     { .name = "visible-columns", .activate = action_visible_columns },
     /* Background menu */
-    { .name = "empty-trash", .activate = action_empty_trash },
     { .name = "new-folder", .activate = action_new_folder },
     { .name = "select-all", .activate = action_select_all },
     { .name = "paste", .activate = action_paste_files },
@@ -7886,13 +7863,6 @@ nautilus_files_view_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "new-folder");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                         "empty-trash");
-
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !nautilus_trash_monitor_is_empty () &&
-                                 is_in_trash);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste");
@@ -9117,19 +9087,6 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
 }
 
 static void
-nautilus_files_view_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
-                                                  gboolean              state,
-                                                  gpointer              callback_data)
-{
-    NautilusFilesView *view;
-
-    view = (NautilusFilesView *) callback_data;
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    schedule_update_context_menus (view);
-}
-
-static void
 nautilus_files_view_get_property (GObject    *object,
                                   guint       prop_id,
                                   GValue     *value,
@@ -9688,9 +9645,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     priv->show_hidden_files =
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-
-    g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
-                             G_CALLBACK (nautilus_files_view_trash_state_changed_callback), view, 0);
 
     /* React to clipboard changes */
     clipboard = gdk_display_get_clipboard (gdk_display_get_default ());

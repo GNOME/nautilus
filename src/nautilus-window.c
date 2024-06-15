@@ -866,6 +866,16 @@ action_toggle_sidebar (GSimpleAction *action,
 }
 
 static void
+action_empty_trash (GSimpleAction *action,
+                    GVariant      *state,
+                    gpointer       user_data)
+{
+    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+
+    nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
+}
+
+static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
     nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar),
@@ -1049,6 +1059,15 @@ toast_undo_unstar_get_label (NautilusFileUndoInfo *undo_info)
     }
 
     return label;
+}
+
+static void
+update_empty_trash_action (NautilusWindow *self)
+{
+    GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self),
+                                                  "empty-trash");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 !nautilus_trash_monitor_is_empty ());
 }
 
 static void
@@ -1388,6 +1407,7 @@ const GActionEntry win_entries[] =
     { .name = "go-to-tab", .parameter_type = "i", .state = "0", .change_state = action_go_to_tab },
     { .name = "restore-tab", .activate = action_restore_tab },
     { .name = "toggle-sidebar", .activate = action_toggle_sidebar },
+    { .name = "empty-trash", .activate = action_empty_trash },
 };
 
 static void
@@ -1440,6 +1460,11 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     action = g_action_map_lookup_action (G_ACTION_MAP (window), "toggle-sidebar");
     g_object_bind_property (window->split_view, "collapsed",
                             action, "enabled", G_BINDING_SYNC_CREATE);
+
+    update_empty_trash_action (window);
+    g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
+                             G_CALLBACK (update_empty_trash_action), window,
+                             G_CONNECT_SWAPPED);
 }
 
 static gboolean
