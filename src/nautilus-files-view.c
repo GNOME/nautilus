@@ -208,9 +208,9 @@ typedef struct
     gboolean active;
 
     /* loading indicates whether this view has begun loading a directory.
-     * This flag should need not be set inside subclasses. NautilusFilesView automatically
-     * sets 'loading' to TRUE before it begins loading a directory's contents and to FALSE
-     * after it finishes loading the directory and its view.
+     * NautilusFilesView automatically sets 'loading' to TRUE before it begins
+     * loading a directory's contents and to FALSE after it finishes loading the
+     * directory and its view.
      */
     gboolean loading;
 
@@ -344,6 +344,9 @@ static void nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView
                                                                graphene_point_t  *point);
 static void nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                                 graphene_point_t  *point);
+static void nautilus_files_view_update_context_menus (NautilusFilesView *view);
+static void nautilus_files_view_update_toolbar_menus (NautilusFilesView *view);
+static void nautilus_files_view_update_actions_state (NautilusFilesView *view);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
@@ -3757,12 +3760,6 @@ build_search_everywhere_button (NautilusFilesView *self)
 
 static void
 nautilus_files_view_check_empty_states (NautilusFilesView *view)
-{
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->check_empty_states (view);
-}
-
-static void
-real_check_empty_states (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     AdwStatusPage *status_page = ADW_STATUS_PAGE (priv->empty_view_page);
@@ -7516,8 +7513,10 @@ nautilus_handles_all_files_to_extract (GList *files)
 }
 
 static void
-real_update_actions_state (NautilusFilesView *view)
+nautilus_files_view_update_actions_state (NautilusFilesView *view)
 {
+    g_assert (NAUTILUS_IS_FILES_VIEW (view));
+
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
@@ -7985,19 +7984,6 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_remove_recent_server);
 }
 
-/* Convenience function to be called when updating menus,
- * so children can subclass it and it will be called when
- * they chain up to the parent in update_context_menus
- * or update_toolbar_menus
- */
-void
-nautilus_files_view_update_actions_state (NautilusFilesView *view)
-{
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_actions_state (view);
-}
-
 static void
 update_selection_menu (NautilusFilesView *view,
                        GtkBuilder        *builder)
@@ -8343,8 +8329,10 @@ update_background_menu (NautilusFilesView *view,
 }
 
 static void
-real_update_context_menus (NautilusFilesView *view)
+nautilus_files_view_update_context_menus (NautilusFilesView *view)
 {
+    g_assert (NAUTILUS_IS_FILES_VIEW (view));
+
     NautilusFilesViewPrivate *priv;
     g_autoptr (GtkBuilder) builder = NULL;
     GObject *object;
@@ -8366,21 +8354,6 @@ real_update_context_menus (NautilusFilesView *view)
     update_extensions_menus (view, builder);
 
     nautilus_files_view_update_actions_state (view);
-}
-
-/* Convenience function to reset the context menus owned by the view and update
- * them with the current state.
- * Children can subclass it and add items on the menu after chaining up to the
- * parent, so menus are already reseted.
- * It will also update the actions state, which will also update children
- * actions state if the children subclass nautilus_files_view_update_actions_state
- */
-void
-nautilus_files_view_update_context_menus (NautilusFilesView *view)
-{
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->update_context_menus (view);
 }
 
 static void
@@ -8411,10 +8384,8 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
 
 /* Convenience function to reset the menus owned by the view but managed on
  * the toolbar, and update them with the current state.
- * It will also update the actions state, which will also update children
- * actions state if the children subclass nautilus_files_view_update_actions_state
  */
-void
+static void
 nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
 {
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
@@ -8688,7 +8659,6 @@ emit_begin_loading (NautilusFilesView *self)
     priv->begin_loading_delayed = FALSE;
 
     /* Tell interested parties that we've begun loading this directory now.
-     * Subclasses use this to know that the new metadata is now available.
      */
     g_signal_emit (self, signals[BEGIN_LOADING], 0);
 }
@@ -9581,9 +9551,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     klass->end_file_changes = real_end_file_changes;
     klass->begin_loading = real_begin_loading;
     klass->end_loading = real_end_loading;
-    klass->update_context_menus = real_update_context_menus;
-    klass->update_actions_state = real_update_actions_state;
-    klass->check_empty_states = real_check_empty_states;
 
     g_object_class_install_property (
         oclass,

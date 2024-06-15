@@ -43,7 +43,6 @@ struct _NautilusFilesViewClass {
         AdwBinClass parent_class;
 
         /* The 'clear' signal is emitted to empty the view of its contents.
-         * It must be replaced by each subclass.
          */
         void         (* clear)                  (NautilusFilesView *view);
 
@@ -94,21 +93,6 @@ struct _NautilusFilesViewClass {
          */
         void         (* end_loading)          (NautilusFilesView *view,
                                                gboolean           all_files_seen);
-
-        /* Function pointers that don't have corresponding signals */
-
-        /* update_menus is a function pointer that subclasses can override to
-         * update the sensitivity or wording of menu items in the menu bar.
-         * It is called (at least) whenever the selection changes. If overridden,
-         * subclasses must call parent class's function.
-         */
-        void    (* update_context_menus)     (NautilusFilesView *view);
-
-        void    (* update_actions_state)     (NautilusFilesView *view);
-
-        /* Use this to show an optional visual feedback when the directory is empty.
-         * By default it shows a widget overlay on top of the view */
-        void           (* check_empty_states)          (NautilusFilesView *view);
 };
 
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
@@ -156,9 +140,5 @@ void              nautilus_files_view_activate_selection         (NautilusFilesV
 void              nautilus_files_view_preview_selection_event    (NautilusFilesView      *view,
                                                                   GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
-
-void              nautilus_files_view_update_context_menus       (NautilusFilesView      *view);
-void              nautilus_files_view_update_toolbar_menus       (NautilusFilesView      *view);
-void              nautilus_files_view_update_actions_state       (NautilusFilesView      *view);
 
 G_END_DECLS
