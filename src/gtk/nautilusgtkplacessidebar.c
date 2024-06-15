@@ -2021,23 +2021,27 @@ update_popover_shadowing (GtkWidget *row,
 }
 
 static void
-set_prelight (NautilusGtkPlacesSidebar *sidebar)
+set_prelight (NautilusGtkSidebarRow *row)
 {
-  update_popover_shadowing (GTK_WIDGET (sidebar->context_row), TRUE);
+  update_popover_shadowing (GTK_WIDGET (row), TRUE);
 }
 
 static void
-unset_prelight (NautilusGtkPlacesSidebar *sidebar)
+unset_prelight (NautilusGtkSidebarRow *row)
 {
-  update_popover_shadowing (GTK_WIDGET (sidebar->context_row), FALSE);
+  update_popover_shadowing (GTK_WIDGET (row), FALSE);
 }
 
 static void
 setup_popover_shadowing (GtkWidget                *popover,
                          NautilusGtkPlacesSidebar *sidebar)
 {
-  g_signal_connect_swapped (popover, "map", G_CALLBACK (set_prelight), sidebar);
-  g_signal_connect_swapped (popover, "unmap", G_CALLBACK (unset_prelight), sidebar);
+  g_signal_connect_object (popover, "map",
+                           G_CALLBACK (set_prelight), sidebar->context_row,
+                           G_CONNECT_SWAPPED);
+  g_signal_connect_object (popover, "unmap",
+                            G_CALLBACK (unset_prelight), sidebar->context_row,
+                            G_CONNECT_SWAPPED);
 }
 
 static void
@@ -3016,6 +3020,7 @@ show_row_popover (NautilusGtkSidebarRow *row,
 
   g_clear_pointer (&sidebar->popover, gtk_widget_unparent);
 
+  sidebar->context_row = row;
   create_row_popover (sidebar, row);
 
   if ((x == -1 && y == -1) ||
@@ -3029,7 +3034,6 @@ show_row_popover (NautilusGtkSidebarRow *row,
                                    &(GdkRectangle){p_in_sidebar.x, p_in_sidebar.y, 0, 0});
     }
 
-  sidebar->context_row = row;
   gtk_popover_popup (GTK_POPOVER (sidebar->popover));
 
   g_object_unref (sidebar);
