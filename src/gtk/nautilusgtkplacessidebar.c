@@ -3431,7 +3431,9 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
 
   NautilusApplication *app = NAUTILUS_APPLICATION (g_application_get_default ());
   sidebar->bookmark_list = nautilus_application_get_bookmarks (app);
-  g_signal_connect_swapped (sidebar->bookmark_list, "changed", G_CALLBACK (update_places), sidebar);
+  g_signal_connect_object (sidebar->bookmark_list, "changed",
+                           G_CALLBACK (update_places), sidebar,
+                           G_CONNECT_SWAPPED);
 
   g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
                            G_CALLBACK (update_trash_icon), sidebar,
