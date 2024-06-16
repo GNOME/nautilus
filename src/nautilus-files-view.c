@@ -9299,7 +9299,6 @@ nautilus_files_view_set_property (GObject      *object,
 {
     NautilusFilesView *directory_view;
     NautilusFilesViewPrivate *priv;
-    NautilusWindowSlot *slot;
 
     directory_view = NAUTILUS_FILES_VIEW (object);
     priv = nautilus_files_view_get_instance_private (directory_view);
@@ -9310,12 +9309,7 @@ nautilus_files_view_set_property (GObject      *object,
         {
             g_assert (priv->slot == NULL);
 
-            slot = NAUTILUS_WINDOW_SLOT (g_value_get_object (value));
-            priv->slot = slot;
-
-            g_signal_connect_object (priv->slot,
-                                     "notify::active", G_CALLBACK (slot_active_changed),
-                                     directory_view, 0);
+            priv->slot = NAUTILUS_WINDOW_SLOT (g_value_get_object (value));
         }
         break;
 
@@ -9544,6 +9538,19 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
 }
 
 static void
+nautilus_files_view_constructed (GObject *object)
+{
+    G_OBJECT_CLASS (nautilus_files_view_parent_class)->constructed (object);
+
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (object);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    g_signal_connect_object (priv->slot, "notify::active",
+                             G_CALLBACK (slot_active_changed), self,
+                             G_CONNECT_DEFAULT);
+}
+
+static void
 nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 {
     GObjectClass *oclass;
@@ -9552,6 +9559,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
 
+    oclass->constructed = nautilus_files_view_constructed;
     oclass->dispose = nautilus_files_view_dispose;
     oclass->finalize = nautilus_files_view_finalize;
     oclass->get_property = nautilus_files_view_get_property;
