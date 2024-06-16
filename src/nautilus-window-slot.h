@@ -46,13 +46,14 @@ typedef struct
     NautilusQuery *current_search_query;
 } NautilusNavigationState;
 
-NautilusWindowSlot * nautilus_window_slot_new              (void);
+NautilusWindowSlot * nautilus_window_slot_new              (NautilusMode        mode);
 
 void nautilus_window_slot_open_location_full               (NautilusWindowSlot *slot,
                                                             GFile              *location,
                                                             NautilusOpenFlags   flags,
                                                             GList              *new_selection);
 
+NautilusMode nautilus_window_slot_get_mode                 (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);
 
