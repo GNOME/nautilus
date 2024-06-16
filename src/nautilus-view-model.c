@@ -3,6 +3,29 @@
 #include "nautilus-directory.h"
 #include "nautilus-global-preferences.h"
 
+/**
+ * NautilusViewModel:
+ *
+ * Internal structure goes like this:
+ *
+ * selection_model : GtkSelectionModel<GtkTreeListRow<NautilusViewItem>>
+ *  |
+ *  +-- sort_model : GtkSectionModel<GtkTreeListRow<NautilusViewItem>>
+ *       |
+ *       +-- tree_model : GtkTreeListModel<GtkTreeListRow<NautilusViewItem>>
+ *            |
+ *            +-- root_filter_model : GtkFilterListModel<NautilusViewItem>
+ *            |    |
+ *            |    +-- GListStore<NautilusViewItem>
+ *            |
+ *         (0...n) GtkFilterListModel<NautilusViewItem>  //subdirectories
+ *                 |
+ *                 +-- GListStore<NautilusViewItem>
+ *
+ * The overall model item type is GtkTreeListRow, but the :filter and :sorter
+ * properties are meant for internal models whose item type is NautilusViewItem.
+ */
+
 struct _NautilusViewModel
 {
     GObject parent_instance;
@@ -10,6 +33,7 @@ struct _NautilusViewModel
     GHashTable *map_files_to_model;
     GHashTable *directory_reverse_map;
 
+    GtkFilterListModel *root_filter_model;
     GtkTreeListModel *tree_model;
     GtkSortListModel *sort_model;
     GtkSelectionModel *selection_model;
@@ -28,7 +52,7 @@ get_directory_store (NautilusViewModel *self,
     store = g_hash_table_lookup (self->directory_reverse_map, directory);
     if (store == NULL)
     {
-        store = G_LIST_STORE (gtk_tree_list_model_get_model (self->tree_model));
+        store = G_LIST_STORE (gtk_filter_list_model_get_model (self->root_filter_model));
     }
 
     return store;
@@ -178,6 +202,7 @@ G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
 enum
 {
     PROP_0,
+    PROP_FILTER,
     PROP_SINGLE_SELECTION,
     PROP_SORTER,
     N_PROPS
@@ -212,6 +237,7 @@ dispose (GObject *object)
     }
 
     g_clear_object (&self->tree_model);
+    g_clear_object (&self->root_filter_model);
 
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->dispose (object);
 }
@@ -239,6 +265,12 @@ get_property (GObject    *object,
 
     switch (prop_id)
     {
+        case PROP_FILTER:
+        {
+            g_value_set_object (value, nautilus_view_model_get_filter (self));
+        }
+        break;
+
         case PROP_SINGLE_SELECTION:
         {
             g_value_set_boolean (value, nautilus_view_model_get_single_selection (self));
@@ -268,6 +300,12 @@ set_property (GObject      *object,
 
     switch (prop_id)
     {
+        case PROP_FILTER:
+        {
+            nautilus_view_model_set_filter (self, g_value_get_object (value));
+        }
+        break;
+
         case PROP_SINGLE_SELECTION:
         {
             self->single_selection = g_value_get_boolean (value);
@@ -307,7 +345,13 @@ create_model_func (GObject           *item,
         g_hash_table_insert (self->directory_reverse_map, file, store);
     }
 
-    return g_object_ref (G_LIST_MODEL (store));
+    GtkFilterListModel *filter_model = gtk_filter_list_model_new (g_object_ref (G_LIST_MODEL (store)), NULL);
+
+    g_object_bind_property (self->root_filter_model, "filter",
+                            filter_model, "filter",
+                            G_BINDING_SYNC_CREATE);
+
+    return G_LIST_MODEL (filter_model);
 }
 
 static void
@@ -317,7 +361,9 @@ constructed (GObject *object)
 
     G_OBJECT_CLASS (nautilus_view_model_parent_class)->constructed (object);
 
-    self->tree_model = gtk_tree_list_model_new (G_LIST_MODEL (g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM)),
+    self->root_filter_model = gtk_filter_list_model_new (G_LIST_MODEL (g_list_store_new (NAUTILUS_TYPE_VIEW_ITEM)), NULL);
+
+    self->tree_model = gtk_tree_list_model_new (g_object_ref (G_LIST_MODEL (self->root_filter_model)),
                                                 FALSE, FALSE,
                                                 (GtkTreeListModelCreateModelFunc) create_model_func,
                                                 self, NULL);
@@ -360,6 +406,10 @@ nautilus_view_model_class_init (NautilusViewModelClass *klass)
     object_class->set_property = set_property;
     object_class->constructed = constructed;
 
+    properties[PROP_FILTER] =
+        g_param_spec_object ("filter", NULL, NULL,
+                             GTK_TYPE_FILTER,
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
     properties[PROP_SINGLE_SELECTION] =
         g_param_spec_boolean ("single-selection", NULL, NULL,
                               FALSE,
@@ -398,6 +448,28 @@ nautilus_view_model_new (gboolean single_selection)
     return g_object_new (NAUTILUS_TYPE_VIEW_MODEL,
                          "single-selection", single_selection,
                          NULL);
+}
+
+GtkFilter *
+nautilus_view_model_get_filter (NautilusViewModel *self)
+{
+    return gtk_filter_list_model_get_filter (self->root_filter_model);
+}
+
+void
+nautilus_view_model_set_filter (NautilusViewModel *self,
+                                GtkFilter         *filter)
+{
+    if (self->root_filter_model == NULL ||
+        gtk_filter_list_model_get_filter (self->root_filter_model) == filter)
+    {
+        return;
+    }
+
+    gtk_filter_list_model_set_filter (self->root_filter_model, filter);
+    /* Subdirectory filter models are synchronized through bindings. */
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FILTER]);
 }
 
 gboolean
@@ -541,7 +613,7 @@ nautilus_view_model_remove_items (NautilusViewModel *self,
 void
 nautilus_view_model_remove_all_items (NautilusViewModel *self)
 {
-    g_list_store_remove_all (G_LIST_STORE (gtk_tree_list_model_get_model (self->tree_model)));
+    g_list_store_remove_all (G_LIST_STORE (gtk_filter_list_model_get_model (self->root_filter_model)));
     g_hash_table_remove_all (self->map_files_to_model);
     g_hash_table_remove_all (self->directory_reverse_map);
 }

@@ -12,6 +12,9 @@ G_DECLARE_FINAL_TYPE (NautilusViewModel, nautilus_view_model, NAUTILUS, VIEW_MOD
 
 NautilusViewModel * nautilus_view_model_new (gboolean single_selection);
 
+GtkFilter *nautilus_view_model_get_filter (NautilusViewModel *self);
+void nautilus_view_model_set_filter (NautilusViewModel *self,
+                                     GtkFilter         *filter);
 gboolean nautilus_view_model_get_single_selection (NautilusViewModel *self);
 GtkSorter *nautilus_view_model_get_sorter (NautilusViewModel *self);
 void nautilus_view_model_set_sorter (NautilusViewModel *self,
