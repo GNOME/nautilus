@@ -313,3 +313,10 @@ button.star.interacted:not(.starred) image {
 rubberband {
   border-radius: 6px;
 }
+
+.nautilus-list-view listview,
+.nautilus-grid-view gridview,
+.nautilus-network-view listview {
+  --accent-bg-color: #959595;
+  --accent-color: oklab(from var(--accent-bg-color) var(--standalone-color-oklab));
+}
