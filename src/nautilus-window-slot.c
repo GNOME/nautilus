@@ -27,6 +27,7 @@
 #include "nautilus-application.h"
 #include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
+#include "nautilus-enum-types.h"
 #include "nautilus-fd-holder.h"
 #include "nautilus-files-view.h"
 #include "nautilus-location-banner.h"
@@ -51,6 +52,7 @@
 enum
 {
     PROP_ACTIVE = 1,
+    PROP_MODE,
     PROP_ICON_NAME,
     PROP_TOOLBAR_MENU_SECTIONS,
     PROP_EXTENSIONS_BACKGROUND_MENU,
@@ -69,6 +71,8 @@ enum
 struct _NautilusWindowSlot
 {
     AdwBin parent_instance;
+
+    NautilusMode mode;
 
     gboolean active : 1;
     guint loading : 1;
@@ -663,6 +667,12 @@ nautilus_window_slot_set_property (GObject      *object,
 
     switch (property_id)
     {
+        case PROP_MODE:
+        {
+            self->mode = g_value_get_enum (value);
+        }
+        break;
+
         case PROP_LOCATION:
         {
             nautilus_window_slot_set_location (self, g_value_get_object (value));
@@ -745,6 +755,12 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_ACTIVE:
         {
             g_value_set_boolean (value, nautilus_window_slot_get_active (self));
+        }
+        break;
+
+        case PROP_MODE:
+        {
+            g_value_set_enum (value, nautilus_window_slot_get_mode (self));
         }
         break;
 
@@ -2974,6 +2990,11 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               FALSE,
                               G_PARAM_READABLE);
 
+    properties[PROP_MODE] =
+        g_param_spec_enum ("mode", NULL, NULL,
+                           NAUTILUS_TYPE_MODE, NAUTILUS_MODE_BROWSE,
+                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
     properties[PROP_LOADING] =
         g_param_spec_boolean ("loading",
                               "Whether the slot loading",
@@ -3210,9 +3231,10 @@ nautilus_window_slot_get_forward_history (NautilusWindowSlot *self)
 }
 
 NautilusWindowSlot *
-nautilus_window_slot_new (void)
+nautilus_window_slot_new (NautilusMode mode)
 {
     return g_object_new (NAUTILUS_TYPE_WINDOW_SLOT,
+                         "mode", mode,
                          NULL);
 }
 
@@ -3351,6 +3373,14 @@ nautilus_window_slot_set_loading (NautilusWindowSlot *self,
     self->loading = loading;
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_LOADING]);
+}
+
+NautilusMode
+nautilus_window_slot_get_mode (NautilusWindowSlot *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NAUTILUS_MODE_BROWSE);
+
+    return self->mode;
 }
 
 gboolean

@@ -381,7 +381,7 @@ nautilus_window_create_and_init_slot (NautilusWindow    *window,
 {
     NautilusWindowSlot *slot;
 
-    slot = nautilus_window_slot_new ();
+    slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     nautilus_window_initialize_slot (window, slot, flags);
 
     return slot;
@@ -1483,7 +1483,7 @@ nautilus_window_back_or_forward_in_new_tab (NautilusWindow              *window,
     NautilusNavigationState *state;
 
     window_slot = nautilus_window_get_active_slot (window);
-    new_slot = nautilus_window_slot_new ();
+    new_slot = nautilus_window_slot_new (NAUTILUS_MODE_BROWSE);
     state = nautilus_window_slot_get_navigation_state (window_slot);
 
     /* Manually fix up the back / forward lists and location.
