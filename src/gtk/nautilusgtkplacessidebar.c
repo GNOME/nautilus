@@ -1028,10 +1028,12 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       row = add_place (sidebar, NAUTILUS_GTK_PLACES_BOOKMARK,
                        NAUTILUS_GTK_PLACES_SECTION_BOOKMARKS,
                        nautilus_bookmark_get_name (l->data),
-                       nautilus_bookmark_get_symbolic_icon (l->data),
+                       NULL,
                        NULL, mount_uri, NULL, NULL, NULL, NULL, index, tooltip);
       g_object_bind_property (l->data, "symbolic-icon", row, "start-icon", G_BINDING_SYNC_CREATE);
       index++;
+
+      g_free (tooltip);
     }
 
   /* Add new bookmark row */
