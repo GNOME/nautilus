@@ -17,6 +17,7 @@ libnautilus_sources = [
       'gtk/nautilusgtkplacessidebarprivate.h',
       'nautilus-enums.h',
       'nautilus-location-banner.h',
+      'nautilus-mode.h',
       'nautilus-search-popover.h',
       'nautilus-query.h',
       'nautilus-search-provider.h'
