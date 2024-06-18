@@ -44,7 +44,9 @@ struct _NautilusListBasePrivate
     GtkWidget *overlay;
     GtkWidget *scrolled_window;
 
+    gboolean dnd_disabled;
     gboolean single_click_mode;
+
     gboolean activate_on_release;
     gboolean deny_background_click;
 
@@ -424,6 +426,11 @@ on_item_drag_prepare (GtkDragSource *source,
     GtkBitsetIter iter;
     guint i;
 
+    if (priv->dnd_disabled)
+    {
+        return NULL;
+    }
+
     /* Anticipate selection, if necessary, for dragging the clicked item. */
     select_single_item_if_not_selected (self, cell);
 
@@ -607,6 +614,12 @@ on_item_drag_enter (GtkDropTarget *target,
     /* Reset action cache. */
     priv->drag_item_action = 0;
 
+    if (priv->dnd_disabled)
+    {
+        gtk_drop_target_reject (target);
+        return 0;
+    }
+
     item = nautilus_view_cell_get_item (cell);
     if (item == NULL)
     {
@@ -732,6 +745,12 @@ on_view_drag_enter (GtkDropTarget *target,
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     NautilusFile *dest_file = nautilus_list_base_get_directory_as_file (self);
     const GValue *value;
+
+    if (priv->dnd_disabled)
+    {
+        gtk_drop_target_reject (target);
+        return 0;
+    }
 
     value = gtk_drop_target_get_value (target);
     priv->drag_view_action = get_preferred_action (dest_file, value);
@@ -1360,6 +1379,14 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
     g_signal_connect (drop_target, "drop", G_CALLBACK (on_view_drop), self);
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (drop_target));
     priv->view_drop_target = drop_target;
+}
+
+void
+nautilus_list_base_disable_dnd (NautilusListBase *self)
+{
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    priv->dnd_disabled = TRUE;
 }
 
 /**

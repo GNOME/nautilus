@@ -9982,6 +9982,8 @@ create_inner_view (NautilusFilesView *self,
                    guint              id)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+    NautilusMode mode = nautilus_window_slot_get_mode (priv->slot);
+
     switch (id)
     {
         case NAUTILUS_VIEW_GRID_ID:
@@ -10007,6 +10009,11 @@ create_inner_view (NautilusFilesView *self,
             g_critical ("Unknown view type ID: %d. Falling back to list.", id);
             priv->list_base = NAUTILUS_LIST_BASE (nautilus_list_view_new ());
         }
+    }
+
+    if (mode != NAUTILUS_MODE_BROWSE)
+    {
+        nautilus_list_base_disable_dnd (priv->list_base);
     }
 
     gtk_overlay_set_child (GTK_OVERLAY (priv->overlay), GTK_WIDGET (priv->list_base));
