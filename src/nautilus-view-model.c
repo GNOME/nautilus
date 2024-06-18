@@ -239,6 +239,12 @@ get_property (GObject    *object,
 
     switch (prop_id)
     {
+        case PROP_SINGLE_SELECTION:
+        {
+            g_value_set_boolean (value, nautilus_view_model_get_single_selection (self));
+        }
+        break;
+
         case PROP_SORTER:
         {
             g_value_set_object (value, nautilus_view_model_get_sorter (self));
@@ -357,7 +363,7 @@ nautilus_view_model_class_init (NautilusViewModelClass *klass)
     properties[PROP_SINGLE_SELECTION] =
         g_param_spec_boolean ("single-selection", NULL, NULL,
                               FALSE,
-                              G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
     properties[PROP_SORTER] =
         g_param_spec_object ("sorter", NULL, NULL,
                              GTK_TYPE_SORTER,
@@ -392,6 +398,12 @@ nautilus_view_model_new (gboolean single_selection)
     return g_object_new (NAUTILUS_TYPE_VIEW_MODEL,
                          "single-selection", single_selection,
                          NULL);
+}
+
+gboolean
+nautilus_view_model_get_single_selection (NautilusViewModel *self)
+{
+    return self->single_selection;
 }
 
 GtkSorter *

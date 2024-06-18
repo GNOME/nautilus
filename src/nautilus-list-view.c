@@ -383,7 +383,6 @@ create_view_ui (NautilusListView *self)
      * activation, as it affects the selection behavior as well (e.g. selects on
      * hover). Setting it to FALSE gives us the expected behavior. */
     gtk_column_view_set_single_click_activate (GTK_COLUMN_VIEW (widget), FALSE);
-    gtk_column_view_set_enable_rubberband (GTK_COLUMN_VIEW (widget), TRUE);
     gtk_column_view_set_tab_behavior (GTK_COLUMN_VIEW (widget), GTK_LIST_TAB_ITEM);
     gtk_column_view_set_row_factory (GTK_COLUMN_VIEW (widget), row_factory);
 
@@ -1078,6 +1077,9 @@ on_model_changed (NautilusListView *self)
         nautilus_view_model_set_sorter (model, self->view_model_sorter);
 
         nautilus_view_model_expand_as_a_tree (model, self->expand_as_a_tree);
+
+        gtk_column_view_set_enable_rubberband (GTK_COLUMN_VIEW (self->view_ui),
+                                               !nautilus_view_model_get_single_selection (model));
     }
 
     gtk_column_view_set_model (self->view_ui, GTK_SELECTION_MODEL (model));

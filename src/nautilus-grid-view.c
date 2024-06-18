@@ -469,6 +469,19 @@ setup_cell (GtkSignalListItemFactory *factory,
     gtk_expression_bind (expression, listitem, "accessible-label", listitem);
 }
 
+static void
+on_model_changed (NautilusGridView *self)
+{
+    NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
+
+    if (model != NULL)
+    {
+        gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (self->view_ui),
+                                             !nautilus_view_model_get_single_selection (model));
+    }
+
+    gtk_grid_view_set_model (self->view_ui, GTK_SELECTION_MODEL (model));
+}
 static GtkGridView *
 create_view_ui (NautilusGridView *self)
 {
@@ -481,7 +494,6 @@ create_view_ui (NautilusGridView *self)
     g_signal_connect (factory, "unbind", G_CALLBACK (unbind_cell), self);
 
     widget = gtk_grid_view_new (NULL, factory);
-    g_object_bind_property (self, "model", widget, "model", G_BINDING_SYNC_CREATE);
 
     /* We don't use the built-in child activation feature for clicks because it
      * doesn't fill all our needs nor does it match our expected behavior.
@@ -491,7 +503,6 @@ create_view_ui (NautilusGridView *self)
      * hover). Setting it to FALSE gives us the expected behavior. */
     gtk_grid_view_set_single_click_activate (GTK_GRID_VIEW (widget), FALSE);
     gtk_grid_view_set_max_columns (GTK_GRID_VIEW (widget), 20);
-    gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (widget), TRUE);
     gtk_grid_view_set_tab_behavior (GTK_GRID_VIEW (widget), GTK_LIST_TAB_ITEM);
 
     /* While we don't want to use GTK's click activation, we'll let it handle
@@ -540,6 +551,8 @@ nautilus_grid_view_init (NautilusGridView *self)
 
     self->view_ui = create_view_ui (self);
     nautilus_list_base_setup_gestures (NAUTILUS_LIST_BASE (self));
+
+    g_signal_connect_swapped (self, "notify::model", G_CALLBACK (on_model_changed), self);
 
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (scrolled_window),
                                    GTK_WIDGET (self->view_ui));

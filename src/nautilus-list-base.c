@@ -205,9 +205,15 @@ rubberband_set_state (NautilusListBase *self,
      * rubberband on item release/stop. See:
      * https://gitlab.gnome.org/GNOME/gtk/-/issues/5670 */
 
-    GtkWidget *view;
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
 
-    view = nautilus_list_base_get_view_ui (self);
+    if (priv->model != NULL && nautilus_view_model_get_single_selection (priv->model))
+    {
+        /* Rubberband is always disabled in this case. Do nothing. */
+        return;
+    }
+
+    GtkWidget *view = nautilus_list_base_get_view_ui (self);
     if (GTK_IS_GRID_VIEW (view))
     {
         gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (view), enabled);
