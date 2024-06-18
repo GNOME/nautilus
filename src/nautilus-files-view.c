@@ -8116,6 +8116,7 @@ update_selection_menu (NautilusFilesView *view,
                        GtkBuilder        *builder)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    NautilusMode mode = nautilus_window_slot_get_mode (priv->slot);
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
     gint selection_count;
@@ -8148,106 +8149,112 @@ update_selection_menu (NautilusFilesView *view,
     show_stop = (selection != NULL && selection_count == 1);
     show_detect_media = (selection != NULL && selection_count == 1);
     start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
-    item_label = g_strdup_printf (ngettext ("New Folder with Selection (%'d Item)",
-                                            "New Folder with Selection (%'d Items)",
-                                            selection_count),
-                                  selection_count);
-    menu_item = g_menu_item_new (item_label, "view.new-folder-with-selection");
-    g_menu_item_set_attribute (menu_item, "hidden-when", "s", "action-disabled");
-    object = gtk_builder_get_object (builder, "new-folder-with-selection-section");
-    g_menu_append_item (G_MENU (object), menu_item);
-    g_object_unref (menu_item);
-    g_free (item_label);
 
-    /* Open With <App> menu item */
-    show_extract = show_app = show_run = item_opens_in_view = selection_count != 0;
-    for (l = selection; l != NULL; l = l->next)
+    if (mode == NAUTILUS_MODE_BROWSE)
     {
-        NautilusFile *file;
-
-        file = NAUTILUS_FILE (l->data);
-
-        if (show_extract && !nautilus_mime_file_extracts (file))
-        {
-            show_extract = FALSE;
-        }
-
-        if (show_app && !nautilus_mime_file_opens_in_external_app (file))
-        {
-            show_app = FALSE;
-        }
-
-        if (show_run && !nautilus_mime_file_launches (file))
-        {
-            show_run = FALSE;
-        }
-
-        if (item_opens_in_view && !nautilus_file_opens_in_view (file))
-        {
-            item_opens_in_view = FALSE;
-        }
-
-        if (!show_extract && !show_app && !show_run && !item_opens_in_view)
-        {
-            break;
-        }
-    }
-
-    item_label = NULL;
-    app = NULL;
-    if (show_app)
-    {
-        app = nautilus_mime_get_default_application_for_files (selection);
-    }
-
-    if (app != NULL)
-    {
-        g_autofree char *escaped_app = escape_underscores (g_app_info_get_name (app));
-        item_label = g_strdup_printf (_("Open With %s"), escaped_app);
-
-        app_icon = g_app_info_get_icon (app);
-        if (app_icon != NULL)
-        {
-            g_object_ref (app_icon);
-        }
-        g_object_unref (app);
-    }
-    else if (show_run)
-    {
-        item_label = g_strdup (_("Run"));
-    }
-    else if (show_extract)
-    {
-        item_label = nautilus_files_view_supports_extract_here (view) ?
-                     g_strdup (_("Extract")) :
-                     g_strdup (_("Extract to…"));
-    }
-    else
-    {
-        item_label = g_strdup (_("Open"));
-    }
-
-    /* The action already exists in the submenu if item opens in view */
-    if (!item_opens_in_view)
-    {
-        menu_item = g_menu_item_new (item_label, "view.open-with-default-application");
-        if (app_icon != NULL)
-        {
-            g_menu_item_set_icon (menu_item, app_icon);
-        }
-
-        object = gtk_builder_get_object (builder, "open-with-application-section");
-        g_menu_prepend_item (G_MENU (object), menu_item);
-
+        item_label = g_strdup_printf (ngettext ("New Folder with Selection (%'d Item)",
+                                                "New Folder with Selection (%'d Items)",
+                                                selection_count),
+                                      selection_count);
+        menu_item = g_menu_item_new (item_label, "view.new-folder-with-selection");
+        g_menu_item_set_attribute (menu_item, "hidden-when", "s", "action-disabled");
+        object = gtk_builder_get_object (builder, "new-folder-with-selection-section");
+        g_menu_append_item (G_MENU (object), menu_item);
         g_object_unref (menu_item);
-    }
-    else
-    {
-        object = gtk_builder_get_object (builder, "open-with-application-section");
-        i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
-                                                  "nautilus-menu-item",
-                                                  "open_with_in_main_menu");
-        g_menu_remove (G_MENU (object), i);
+        g_free (item_label);
+
+        /* Open With <App> menu item */
+        show_extract = show_app = show_run = item_opens_in_view = selection_count != 0;
+        for (l = selection; l != NULL; l = l->next)
+        {
+            NautilusFile *file;
+
+            file = NAUTILUS_FILE (l->data);
+
+            if (show_extract && !nautilus_mime_file_extracts (file))
+            {
+                show_extract = FALSE;
+            }
+
+            if (show_app && !nautilus_mime_file_opens_in_external_app (file))
+            {
+                show_app = FALSE;
+            }
+
+            if (show_run && !nautilus_mime_file_launches (file))
+            {
+                show_run = FALSE;
+            }
+
+            if (item_opens_in_view && !nautilus_file_opens_in_view (file))
+            {
+                item_opens_in_view = FALSE;
+            }
+
+            if (!show_extract && !show_app && !show_run && !item_opens_in_view)
+            {
+                break;
+            }
+        }
+
+        item_label = NULL;
+        app = NULL;
+        if (show_app)
+        {
+            app = nautilus_mime_get_default_application_for_files (selection);
+        }
+
+        if (app != NULL)
+        {
+            g_autofree char *escaped_app = escape_underscores (g_app_info_get_name (app));
+            item_label = g_strdup_printf (_("Open With %s"), escaped_app);
+
+            app_icon = g_app_info_get_icon (app);
+            if (app_icon != NULL)
+            {
+                g_object_ref (app_icon);
+            }
+            g_object_unref (app);
+        }
+        else if (show_run)
+        {
+            item_label = g_strdup (_("Run"));
+        }
+        else if (show_extract)
+        {
+            item_label = nautilus_files_view_supports_extract_here (view) ?
+                         g_strdup (_("Extract")) :
+                         g_strdup (_("Extract to…"));
+        }
+        else
+        {
+            item_label = g_strdup (_("Open"));
+        }
+
+        /* The action already exists in the submenu if item opens in view */
+        if (!item_opens_in_view)
+        {
+            menu_item = g_menu_item_new (item_label, "view.open-with-default-application");
+            if (app_icon != NULL)
+            {
+                g_menu_item_set_icon (menu_item, app_icon);
+            }
+
+            object = gtk_builder_get_object (builder, "open-with-application-section");
+            g_menu_prepend_item (G_MENU (object), menu_item);
+
+            g_object_unref (menu_item);
+        }
+        else
+        {
+            object = gtk_builder_get_object (builder, "open-with-application-section");
+            i = nautilus_g_menu_model_find_by_string (G_MENU_MODEL (object),
+                                                      "nautilus-menu-item",
+                                                      "open_with_in_main_menu");
+            g_menu_remove (G_MENU (object), i);
+        }
+
+        g_free (item_label);
     }
 
     /* The "Open" submenu should be hidden if the item doesn't open in the view. */
@@ -8257,9 +8264,8 @@ update_selection_menu (NautilusFilesView *view,
                                               "open_in_view_submenu");
     nautilus_g_menu_replace_string_in_item (G_MENU (object), i,
                                             "hidden-when",
-                                            (!item_opens_in_view) ? "action-missing" : NULL);
-
-    g_free (item_label);
+                                            (!item_opens_in_view ||
+                                             mode != NAUTILUS_MODE_BROWSE) ? "action-missing" : NULL);
 
     /* Drives */
     for (l = selection; l != NULL && (show_mount || show_unmount
@@ -8373,7 +8379,13 @@ update_selection_menu (NautilusFilesView *view,
         g_object_unref (menu_item);
     }
 
-    if (!priv->scripts_menu_updated)
+    if (mode != NAUTILUS_MODE_BROWSE)
+    {
+        object = gtk_builder_get_object (builder, "move-copy-section");
+        g_menu_remove_all (G_MENU (object));
+    }
+
+    if (!priv->scripts_menu_updated && mode == NAUTILUS_MODE_BROWSE)
     {
         update_scripts_menu (view, builder);
         priv->scripts_menu_updated = TRUE;
@@ -8458,11 +8470,11 @@ update_background_menu (NautilusFilesView *view,
 static void
 real_update_context_menus (NautilusFilesView *view)
 {
-    NautilusFilesViewPrivate *priv;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    NautilusMode mode = nautilus_window_slot_get_mode (priv->slot);
     g_autoptr (GtkBuilder) builder = NULL;
     GObject *object;
 
-    priv = nautilus_files_view_get_instance_private (view);
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
 
     g_clear_object (&priv->background_menu_model);
@@ -8475,8 +8487,12 @@ real_update_context_menus (NautilusFilesView *view)
     priv->selection_menu_model = g_object_ref (G_MENU (object));
 
     update_selection_menu (view, builder);
-    update_background_menu (view, builder);
-    update_extensions_menus (view, builder);
+
+    if (mode == NAUTILUS_MODE_BROWSE)
+    {
+        update_background_menu (view, builder);
+        update_extensions_menus (view, builder);
+    }
 
     nautilus_files_view_update_actions_state (view);
 }
@@ -8609,6 +8625,11 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
     priv = nautilus_files_view_get_instance_private (view);
+
+    if (nautilus_window_slot_get_mode (priv->slot) != NAUTILUS_MODE_BROWSE)
+    {
+        return;
+    }
 
     /* Make the context menu items not flash as they update to proper disabled,
      * etc. states by forcing menus to update now.
