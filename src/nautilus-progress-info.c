@@ -372,7 +372,7 @@ on_canceled (GCancellable         *cancellable,
              NautilusProgressInfo *info)
 {
     G_LOCK (progress_info);
-    set_details (info, _("Canceled"));
+    set_details (info, _("Cancelled"));
     info->cancel_at_idle = TRUE;
     g_timer_stop (info->progress_timer);
     queue_idle (info, TRUE);
