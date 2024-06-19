@@ -68,6 +68,16 @@ enum
     NUM_PROPERTIES
 };
 
+static GParamSpec *properties[NUM_PROPERTIES];
+
+enum
+{
+    SIGNAL_ACTIVATE_FILES,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 struct _NautilusWindowSlot
 {
     AdwBin parent_instance;
@@ -150,8 +160,6 @@ struct _NautilusWindowSlot
 };
 
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
-
-static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static const GtkPadActionEntry pad_actions[] =
 {
@@ -566,6 +574,27 @@ nautilus_window_slot_search (NautilusWindowSlot *self,
     {
         self->pending_search_query = g_object_ref (query);
     }
+}
+
+gboolean
+nautilus_window_slot_handle_activate_files (NautilusWindowSlot *self,
+                                            GList              *files)
+{
+    if (self->mode == NAUTILUS_MODE_BROWSE)
+    {
+        return FALSE;
+    }
+
+    if (files != NULL && files->next == NULL &&
+        nautilus_file_opens_in_view (NAUTILUS_FILE (files->data)))
+    {
+        /* Single folder or folder-like item is always handled by the view. */
+        return FALSE;
+    }
+
+    g_signal_emit (self, signals[SIGNAL_ACTIVATE_FILES], 0, files);
+
+    return TRUE;
 }
 
 gboolean
@@ -3076,6 +3105,12 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
+
+    signals[SIGNAL_ACTIVATE_FILES] = g_signal_new ("activate-files",
+                                                   G_TYPE_FROM_CLASS (oclass),
+                                                   G_SIGNAL_RUN_LAST, 0, NULL, NULL,
+                                                   g_cclosure_marshal_VOID__POINTER,
+                                                   G_TYPE_NONE, 1, G_TYPE_POINTER);
 }
 
 GFile *
