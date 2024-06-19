@@ -125,7 +125,16 @@ nautilus_get_user_directory (void)
 char *
 nautilus_get_scripts_directory_path (void)
 {
-    return g_build_filename (g_get_user_data_dir (), "nautilus", "scripts", NULL);
+    if (nautilus_application_is_sandboxed ())
+    {
+        /* g_get_user_data_dir() leads to a different path then expected under
+         * the flatpak sandbox */
+        return g_build_filename (g_get_home_dir (), ".local", "share", "nautilus", "scripts", NULL);
+    }
+    else
+    {
+        return g_build_filename (g_get_user_data_dir (), "nautilus", "scripts", NULL);
+    }
 }
 
 char *
