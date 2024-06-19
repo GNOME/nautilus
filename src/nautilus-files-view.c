@@ -1354,7 +1354,13 @@ nautilus_files_view_activate_files (NautilusFilesView *view,
                                     NautilusOpenFlags  flags,
                                     gboolean           confirm_multiple)
 {
-    NautilusFilesViewPrivate *priv;
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    if (nautilus_window_slot_handle_activate_files (priv->slot, files))
+    {
+        return;
+    }
+
     GList *files_to_extract;
     GList *files_to_activate;
     char *path;
@@ -1363,8 +1369,6 @@ nautilus_files_view_activate_files (NautilusFilesView *view,
     {
         return;
     }
-
-    priv = nautilus_files_view_get_instance_private (view);
 
     files_to_extract = nautilus_file_list_filter (files,
                                                   &files_to_activate,
