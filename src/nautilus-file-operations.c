@@ -2498,19 +2498,21 @@ has_trash_files (GMount *mount)
 }
 
 static GtkWidget *
-create_empty_trash_prompt (GtkWindow *parent_window)
+create_empty_trash_prompt (UnmountData *data)
 {
     GtkWidget *dialog;
+    g_autofree gchar *name = g_mount_get_name (data->mount);
+    g_autofree gchar *trash_dialog = g_strdup_printf (_("Empty the trash to free "
+                                                        "up space on “%s”. All trashed items will "
+                                                        "be permanently deleted."), name);
 
-    dialog = adw_message_dialog_new (parent_window,
-                                     _("Do you want to empty the trash before you unmount?"),
-                                     _("In order to regain the free space on this volume "
-                                       "the trash must be emptied. All trashed items on the volume "
-                                       "will be permanently lost."));
+    dialog = adw_message_dialog_new (data->parent_window,
+                                     _("Empty Trash Before Ejecting?"),
+                                     trash_dialog);
     adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
-                                      "do-not-empty", _("Do _not Empty Trash"),
                                       "cancel", _("Cancel"),
-                                      "empty-trash", _("Empty _Trash"),
+                                      "do-not-empty", _("Do _Not Empty"),
+                                      "empty-trash", _("_Empty"),
                                       NULL);
     adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "empty-trash");
     adw_message_dialog_set_close_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
@@ -2596,7 +2598,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
     if (check_trash && has_trash_files (mount))
     {
         GtkWidget *dialog;
-        dialog = create_empty_trash_prompt (parent_window);
+        dialog = create_empty_trash_prompt (data);
 
         g_signal_connect (dialog, "response", G_CALLBACK (empty_trash_prompt_cb), data);
         gtk_window_present (GTK_WINDOW (dialog));
