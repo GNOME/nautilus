@@ -2110,6 +2110,8 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
         }
         else
         {
+            gboolean reloading = slot_location == location;
+
             /* Clean up state of slot already showing a previous location */
             end_location_change (self);
 
@@ -2117,7 +2119,11 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
              * Although not conceptually correct, a force reload is a simple
              * way to do that. In the future we may want to have an error
              * status page instead and only reload on explicit request. */
-            nautilus_window_slot_force_reload (self);
+            /* Since there has been an error, force reloading the same location will throw us in a loop */
+            if (!reloading)
+            {
+                nautilus_window_slot_force_reload (self);
+            }
 
             /* Leave the location bar showing the bad location that the user
              * typed (or maybe achieved by dragging or something). Many times
