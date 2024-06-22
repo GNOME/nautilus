@@ -156,10 +156,9 @@ struct _NautilusWindowSlot
 
     /* View bindings */
     GBinding *searching_binding;
-    GBinding *selection_binding;
+    gulong selection_notify_id;
     GBinding *extensions_background_menu_binding;
     GBinding *templates_menu_binding;
-    GList *selection;
 };
 
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, ADW_TYPE_BIN);
@@ -666,12 +665,8 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
 }
 
 static void
-nautilus_window_slot_set_selection (NautilusWindowSlot *self,
-                                    GList              *selection)
+on_view_selection_notify (NautilusWindowSlot *self)
 {
-    nautilus_file_list_free (self->selection);
-
-    self->selection = selection;
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SELECTION]);
 }
 
@@ -732,12 +727,6 @@ nautilus_window_slot_set_property (GObject      *object,
         case PROP_TEMPLATES_MENU:
         {
             real_set_templates_menu (self, g_value_get_object (value));
-        }
-        break;
-
-        case PROP_SELECTION:
-        {
-            nautilus_window_slot_set_selection (self, g_value_get_pointer (value));
         }
         break;
 
@@ -826,6 +815,12 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SELECTION:
+        {
+            g_value_set_pointer (value, nautilus_window_slot_get_selection (self));
+        }
+        break;
+
         case PROP_TEMPLATES_MENU:
         {
             g_value_set_object (value, real_get_templates_menu (self));
@@ -885,7 +880,12 @@ nautilus_window_slot_get_property (GObject    *object,
 GList *
 nautilus_window_slot_get_selection (NautilusWindowSlot *self)
 {
-    return self->selection;
+    if (self->content_view != NULL)
+    {
+        return nautilus_view_get_selection (self->content_view);
+    }
+
+    return NULL;
 }
 
 static void
@@ -2853,7 +2853,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
     if (self->content_view != NULL)
     {
         g_binding_unbind (self->searching_binding);
-        g_binding_unbind (self->selection_binding);
+        g_clear_signal_handler (&self->selection_notify_id, self->content_view);
         g_binding_unbind (self->extensions_background_menu_binding);
         g_binding_unbind (self->templates_menu_binding);
         widget = GTK_WIDGET (self->content_view);
@@ -2875,9 +2875,8 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         self->searching_binding = g_object_bind_property (self->content_view, "searching",
                                                           self, "search-visible",
                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        self->selection_binding = g_object_bind_property (self->content_view, "selection",
-                                                          self, "selection",
-                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+        self->selection_notify_id = g_signal_connect_swapped (self->content_view, "notify::selection",
+                                                              G_CALLBACK (on_view_selection_notify), self);
         self->extensions_background_menu_binding = g_object_bind_property (self->content_view, "extensions-background-menu",
                                                                            self, "extensions-background-menu",
                                                                            G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
@@ -2936,7 +2935,6 @@ nautilus_window_slot_dispose (GObject *object)
     nautilus_window_slot_remove_extra_location_widgets (self);
 
     g_clear_pointer (&self->searching_binding, g_binding_unbind);
-    g_clear_pointer (&self->selection_binding, g_binding_unbind);
     g_clear_pointer (&self->extensions_background_menu_binding, g_binding_unbind);
     g_clear_pointer (&self->templates_menu_binding, g_binding_unbind);
 
@@ -2945,6 +2943,7 @@ nautilus_window_slot_dispose (GObject *object)
 
     if (self->content_view)
     {
+        g_clear_signal_handler (&self->selection_notify_id, self->content_view);
         gtk_box_remove (GTK_BOX (self->vbox), GTK_WIDGET (self->content_view));
         g_clear_object (&self->content_view);
     }
@@ -2962,7 +2961,6 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_object (&self->location);
     g_clear_object (&self->pending_file_to_activate);
     g_clear_pointer (&self->pending_selection, nautilus_file_list_free);
-    g_clear_pointer (&self->selection, nautilus_file_list_free);
 
     g_clear_object (&self->current_location_bookmark);
     g_clear_object (&self->last_location_bookmark);
@@ -3071,7 +3069,7 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
         g_param_spec_pointer ("selection",
                               "Selection of the current view of the slot",
                               "The selection of the current view of the slot. Proxy property from the view",
-                              G_PARAM_READWRITE);
+                              G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_ICON_NAME] =
         g_param_spec_string ("icon-name",
