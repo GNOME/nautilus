@@ -56,6 +56,7 @@ enum
     PROP_ICON_NAME,
     PROP_TOOLBAR_MENU_SECTIONS,
     PROP_EXTENSIONS_BACKGROUND_MENU,
+    PROP_FILTER,
     PROP_TEMPLATES_MENU,
     PROP_LOADING,
     PROP_SEARCH_VISIBLE,
@@ -92,6 +93,8 @@ struct _NautilusWindowSlot
     AdwStatusPage *global_search_page;
 
     GtkWidget *extra_location_widgets;
+
+    GtkFilter *filter;
 
     /* Slot actions */
     GActionGroup *slot_action_group;
@@ -702,6 +705,12 @@ nautilus_window_slot_set_property (GObject      *object,
         }
         break;
 
+        case PROP_FILTER:
+        {
+            nautilus_window_slot_set_filter (self, g_value_get_object (value));
+        }
+        break;
+
         case PROP_LOCATION:
         {
             nautilus_window_slot_set_location (self, g_value_get_object (value));
@@ -784,6 +793,12 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_ACTIVE:
         {
             g_value_set_boolean (value, nautilus_window_slot_get_active (self));
+        }
+        break;
+
+        case PROP_FILTER:
+        {
+            g_value_set_object (value, nautilus_window_slot_get_filter (self));
         }
         break;
 
@@ -3019,6 +3034,11 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               FALSE,
                               G_PARAM_READABLE);
 
+    properties[PROP_FILTER] =
+        g_param_spec_object ("filter", NULL, NULL,
+                             GTK_TYPE_FILTER,
+                             G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
     properties[PROP_MODE] =
         g_param_spec_enum ("mode", NULL, NULL,
                            NAUTILUS_TYPE_MODE, NAUTILUS_MODE_BROWSE,
@@ -3416,6 +3436,28 @@ nautilus_window_slot_get_mode (NautilusWindowSlot *self)
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NAUTILUS_MODE_BROWSE);
 
     return self->mode;
+}
+
+GtkFilter *
+nautilus_window_slot_get_filter (NautilusWindowSlot *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    return self->filter;
+}
+
+void
+nautilus_window_slot_set_filter (NautilusWindowSlot *self,
+                                 GtkFilter          *filter)
+{
+    g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (self));
+
+    if (!g_set_object (&self->filter, filter))
+    {
+        return;
+    }
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_FILTER]);
 }
 
 gboolean

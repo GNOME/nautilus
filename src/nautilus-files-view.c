@@ -9637,6 +9637,9 @@ nautilus_files_view_constructed (GObject *object)
     g_signal_connect_object (GTK_SELECTION_MODEL (priv->model), "selection-changed",
                              G_CALLBACK (nautilus_files_view_notify_selection_changed), self,
                              G_CONNECT_SWAPPED);
+    g_object_bind_property (priv->slot, "filter",
+                            priv->model, "filter",
+                            G_BINDING_SYNC_CREATE);
 }
 
 static void
