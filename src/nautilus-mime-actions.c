@@ -38,6 +38,7 @@
 #include "nautilus-scheme.h"
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-window-slot.h"
 
 typedef enum
 {
@@ -1644,12 +1645,19 @@ activate_files_internal (ActivateParameters *parameters)
             }
 
             location_with_permissions = g_file_new_for_uri (uri);
-            /* FIXME: we need to pass the parent_window, but we only use it for the current active window,
-             * which nautilus-application should take care of. However is not working and creating regressions
-             * in some cases. Until we figure out what's going on, continue to use the parameters->slot
-             * to make splicit the window we want to use for activating the files */
-            nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                     location_with_permissions, parameters->flags, NULL, NULL, parameters->slot);
+
+            if (parameters->flags & (NAUTILUS_OPEN_FLAG_NEW_WINDOW | NAUTILUS_OPEN_FLAG_NEW_TAB))
+            {
+                nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                         location_with_permissions, parameters->flags, NULL, NULL, parameters->slot);
+            }
+            else
+            {
+                nautilus_window_slot_open_location_full (parameters->slot,
+                                                         location_with_permissions,
+                                                         parameters->flags,
+                                                         NULL);
+            }
         }
     }
 
