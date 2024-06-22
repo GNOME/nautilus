@@ -53,6 +53,9 @@ void nautilus_window_slot_open_location_full               (NautilusWindowSlot *
                                                             NautilusOpenFlags   flags,
                                                             GList              *new_selection);
 
+GtkFilter *nautilus_window_slot_get_filter                 (NautilusWindowSlot *slot);
+void nautilus_window_slot_set_filter                       (NautilusWindowSlot *slot,
+                                                            GtkFilter          *filter);
 NautilusMode nautilus_window_slot_get_mode                 (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);
