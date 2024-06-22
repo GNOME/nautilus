@@ -2067,7 +2067,7 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
         g_clear_object (&self->pending_file_to_activate);
 
         self->pending_location = nautilus_file_get_parent_location (file);
-        if (nautilus_mime_file_extracts (file))
+        if (self->mode == NAUTILUS_MODE_BROWSE && nautilus_mime_file_extracts (file))
         {
             self->pending_file_to_activate = nautilus_file_ref (file);
         }
