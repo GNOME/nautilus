@@ -38,6 +38,7 @@ struct _NautilusToolbar
 {
     AdwBin parent_instance;
 
+    AdwHeaderBar *header_bar;
     GtkWidget *history_controls_stack;
     GtkWidget *history_controls;
     GtkWidget *history_controls_placeholder;
@@ -49,6 +50,7 @@ struct _NautilusToolbar
     GtkWidget *search_button_stack;
     GtkWidget *search_button;
     GtkWidget *search_button_placeholder;
+    GtkWidget *new_folder_button;
 
     gboolean show_location_entry;
     GtkWidget *focus_before_location_entry;
@@ -109,6 +111,18 @@ toolbar_update_appearance (NautilusToolbar *self)
                                  search_global ? self->search_button_placeholder : self->search_button);
     gtk_stack_set_visible_child (GTK_STACK (self->history_controls_stack),
                                  search_global ? self->history_controls_placeholder : self->history_controls);
+
+    if (self->window_slot != NULL)
+    {
+        NautilusMode mode = nautilus_window_slot_get_mode (self->window_slot);
+        gboolean show_title_buttons = (mode != NAUTILUS_MODE_SAVE_FILE);
+
+        adw_header_bar_set_show_start_title_buttons (self->header_bar, show_title_buttons);
+        adw_header_bar_set_show_end_title_buttons (self->header_bar, show_title_buttons);
+
+        gtk_widget_set_visible (self->new_folder_button, (mode == NAUTILUS_MODE_SAVE_FILE ||
+                                                          mode == NAUTILUS_MODE_SAVE_FILES));
+    }
 }
 
 static void
@@ -461,6 +475,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, header_bar);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, history_controls_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, history_controls);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, history_controls_placeholder);
@@ -471,6 +486,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button_placeholder);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, new_folder_button);
 
     gtk_widget_class_bind_template_callback (widget_class, nautilus_toolbar_close_location_entry);
 

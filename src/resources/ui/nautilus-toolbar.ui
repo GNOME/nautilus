@@ -3,7 +3,7 @@
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusToolbar" parent="AdwBin">
     <child>
-      <object class="AdwHeaderBar">
+      <object class="AdwHeaderBar" id="header_bar">
         <child type="title">
           <object class="GtkBox" id="header_toolbar">
             <property name="spacing">6</property>
@@ -110,6 +110,14 @@
           <object class="NautilusViewControls">
             <property name="visible" bind-source="NautilusToolbar" bind-property="show-toolbar-children" bind-flags="sync-create"/>
             <property name="window-slot" bind-source="NautilusToolbar" bind-property="window-slot" bind-flags="sync-create"/>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkButton" id="new_folder_button">
+            <property name="visible">false</property>
+            <property name="icon-name">folder-new-symbolic</property>
+            <property name="tooltip_text" translatable="yes">New Folder</property>
+            <property name="action-name">view.new-folder</property>
           </object>
         </child>
       </object>
