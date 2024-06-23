@@ -54,6 +54,7 @@ struct _NautilusToolbar
     GtkWidget *focus_before_location_entry;
 
     GtkWidget *sidebar_button;
+    gboolean show_new_folder_button;
     gboolean show_sidebar_button;
     gboolean sidebar_button_active;
 
@@ -67,6 +68,7 @@ enum
 {
     PROP_0,
     PROP_WINDOW_SLOT,
+    PROP_SHOW_NEW_FOLDER_BUTTON,
     PROP_SHOW_SIDEBAR_BUTTON,
     PROP_SIDEBAR_BUTTON_ACTIVE,
     PROP_SHOW_TOOLBAR_CHILDREN,
@@ -314,6 +316,12 @@ nautilus_toolbar_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SHOW_NEW_FOLDER_BUTTON:
+        {
+            g_value_set_boolean (value, self->show_new_folder_button);
+        }
+        break;
+
         case PROP_SHOW_SIDEBAR_BUTTON:
         {
             g_value_set_boolean (value, self->show_sidebar_button);
@@ -364,6 +372,12 @@ nautilus_toolbar_set_property (GObject      *object,
         case PROP_WINDOW_SLOT:
         {
             nautilus_toolbar_set_window_slot (self, g_value_get_object (value));
+        }
+        break;
+
+        case PROP_SHOW_NEW_FOLDER_BUTTON:
+        {
+            self->show_new_folder_button = g_value_get_boolean (value);
         }
         break;
 
@@ -446,6 +460,10 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                              (G_PARAM_READWRITE |
                               G_PARAM_STATIC_STRINGS));
 
+    properties[PROP_SHOW_NEW_FOLDER_BUTTON] =
+        g_param_spec_boolean ("show-new-folder-button", NULL, NULL,
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_SHOW_SIDEBAR_BUTTON] =
         g_param_spec_boolean ("show-sidebar-button", NULL, NULL, FALSE,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
