@@ -22,6 +22,8 @@ struct _NautilusFilenameValidator
     const char *feedback_text;
     char *new_name;
     gboolean passed;
+    gboolean valid_name;
+    gboolean duplicated_name;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -174,9 +176,7 @@ duplicated_file_label_show (NautilusFilenameValidator *self)
 }
 
 static void
-filename_validator_process_new_name (NautilusFilenameValidator *self,
-                                     gboolean                  *duplicated_name,
-                                     gboolean                  *valid_name)
+filename_validator_process_new_name (NautilusFilenameValidator *self)
 {
     g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
 
@@ -184,9 +184,9 @@ filename_validator_process_new_name (NautilusFilenameValidator *self,
     gchar *error_message = NULL;
     g_autoptr (NautilusFile) existing_file = NULL;
 
-    *valid_name = nautilus_filename_validator_name_is_valid (self,
-                                                             name,
-                                                             &error_message);
+    self->valid_name = nautilus_filename_validator_name_is_valid (self,
+                                                                  name,
+                                                                  &error_message);
 
     if (self->feedback_text != error_message)
     {
@@ -196,19 +196,21 @@ filename_validator_process_new_name (NautilusFilenameValidator *self,
     }
 
     existing_file = nautilus_directory_get_file_by_name (self->containing_directory, name);
-    *duplicated_name = existing_file != NULL &&
-                       !nautilus_filename_validator_ignore_existing_file (self,
-                                                                          existing_file);
+    self->duplicated_name = existing_file != NULL &&
+                            !nautilus_filename_validator_ignore_existing_file (self,
+                                                                               existing_file);
 
-    if (self->passed != (*valid_name && !*duplicated_name))
+    gboolean passed = (self->valid_name && !self->duplicated_name);
+
+    if (self->passed != passed)
     {
-        self->passed = (*valid_name && !*duplicated_name);
+        self->passed = passed;
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PASSED]);
     }
 
     g_clear_handle_id (&self->duplicated_label_timeout_id, g_source_remove);
 
-    if (*duplicated_name)
+    if (self->duplicated_name)
     {
         self->duplicated_is_folder = nautilus_file_is_directory (existing_file);
     }
@@ -220,18 +222,14 @@ on_directory_info_ready_to_validate (NautilusDirectory *directory,
                                      gpointer           user_data)
 {
     NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
-    gboolean duplicated_name;
-    gboolean valid_name;
 
-    filename_validator_process_new_name (self,
-                                         &duplicated_name,
-                                         &valid_name);
+    filename_validator_process_new_name (self);
 
     /* Report duplicated file only if not other message shown (for instance,
      * folders like "." or ".." will always exists, but we consider it as an
      * error, not as a duplicated file or if the name is the same as the file
      * we are renaming also don't report as a duplicated */
-    if (duplicated_name && valid_name)
+    if (self->duplicated_name && self->valid_name)
     {
         self->duplicated_label_timeout_id = g_timeout_add (FILE_NAME_DUPLICATED_LABEL_TIMEOUT,
                                                            (GSourceFunc) duplicated_file_label_show,
@@ -266,14 +264,10 @@ on_directory_info_ready_to_try_accept (NautilusDirectory *directory,
                                        gpointer           user_data)
 {
     NautilusFilenameValidator *self = NAUTILUS_FILENAME_VALIDATOR (user_data);
-    gboolean duplicated_name;
-    gboolean valid_name;
 
-    filename_validator_process_new_name (self,
-                                         &duplicated_name,
-                                         &valid_name);
+    filename_validator_process_new_name (self);
 
-    if (valid_name && !duplicated_name)
+    if (self->passed)
     {
         g_signal_emit (self, signals[NAME_ACCEPTED], 0);
     }
@@ -282,7 +276,7 @@ on_directory_info_ready_to_try_accept (NautilusDirectory *directory,
         /* Report duplicated file only if not other message shown (for instance,
          * folders like "." or ".." will always exists, but we consider it as an
          * error, not as a duplicated file) */
-        if (duplicated_name && valid_name)
+        if (self->duplicated_name && self->valid_name)
         {
             /* Show it inmediatily since the user tried to trigger the action */
             duplicated_file_label_show (self);
