@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-06-08 19:57+0000\n"
-"PO-Revision-Date: 2024-06-08 23:21+0200\n"
+"POT-Creation-Date: 2024-06-22 09:54+0000\n"
+"PO-Revision-Date: 2024-06-23 12:32+0200\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -29,7 +29,7 @@ msgstr "Zaženi programsko opremo"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:101
-#: src/nautilus-window.c:2395 src/resources/ui/nautilus-window.ui:139
+#: src/nautilus-window.c:2046 src/resources/ui/nautilus-window.ui:140
 msgid "Files"
 msgstr "Datoteke"
 
@@ -597,7 +597,7 @@ msgstr "Kanali"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1598
+#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1722
 msgid "Oops! Something went wrong."
 msgstr "Ops! Pri je do nepričakovane napake."
 
@@ -1017,7 +1017,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
 #: src/nautilus-pathbar.c:392 src/nautilus-shell-search-provider.c:341
-#: src/nautilus-window.c:159 src/gtk/nautilusgtkplacessidebar.c:821
+#: src/nautilus-window.c:153 src/gtk/nautilusgtkplacessidebar.c:698
 msgid "Home"
 msgstr "Domača mapa"
 
@@ -1041,7 +1041,7 @@ msgstr "Odložišče Nautilus ne sme vsebovati praznih vrstic"
 msgid "View More"
 msgstr "Poglej več"
 
-#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:2150
+#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1976
 msgid "Name"
 msgstr "Ime"
 
@@ -1952,9 +1952,9 @@ msgid "Deleting Files"
 msgstr "Brisanje datotek"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6845
-#: src/gtk/nautilusgtkplacessidebar.c:2478
-#: src/gtk/nautilusgtkplacessidebar.c:2507
+#: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6847
+#: src/gtk/nautilusgtkplacessidebar.c:2308
+#: src/gtk/nautilusgtkplacessidebar.c:2337
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Ni mogoče izvreči »%s«"
@@ -1981,8 +1981,8 @@ msgid "Do _not Empty Trash"
 msgstr "_Ne izprazni smeti"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2654 src/nautilus-files-view.c:6795
-#: src/gtk/nautilusgtkplacessidebar.c:1842
+#: src/nautilus-file-operations.c:2654 src/nautilus-files-view.c:6797
+#: src/gtk/nautilusgtkplacessidebar.c:1704
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Dostop do »%s« ni mogoč."
@@ -2575,45 +2575,45 @@ msgstr[3] "Stisnjene so %d datoteke na nosilec »%s«"
 msgid "Compressing Files"
 msgstr "Stiskanje datotek"
 
-#: src/nautilus-files-view.c:391
+#: src/nautilus-files-view.c:392
 msgid "Searching…"
 msgstr "Poteka iskanje …"
 
-#: src/nautilus-files-view.c:391 src/nautilus-window-slot.c:873
+#: src/nautilus-files-view.c:392 src/nautilus-window-slot.c:883
 msgid "Loading…"
 msgstr "Poteka nalaganje …"
 
-#: src/nautilus-files-view.c:1835
+#: src/nautilus-files-view.c:1836
 msgid "Examples: "
 msgstr "Primeri: "
 
-#: src/nautilus-files-view.c:2893 src/nautilus-files-view.c:2900
-#: src/nautilus-files-view.c:2907 src/nautilus-files-view.c:2914
+#: src/nautilus-files-view.c:2894 src/nautilus-files-view.c:2901
+#: src/nautilus-files-view.c:2908 src/nautilus-files-view.c:2915
 msgid "Could not paste files"
 msgstr "Datotek ni mogoče prilepiti"
 
-#: src/nautilus-files-view.c:2894
+#: src/nautilus-files-view.c:2895
 msgid "Cannot paste files into Starred"
 msgstr "Datotek ni mogoče prilepiti med Z zvezdico"
 
-#: src/nautilus-files-view.c:2901
+#: src/nautilus-files-view.c:2902
 msgid "Cannot paste files into Recent"
 msgstr "Datotek ni mogoče prilepiti med Nedavne"
 
-#: src/nautilus-files-view.c:2908
+#: src/nautilus-files-view.c:2909
 msgid "Cannot paste files into Trash"
 msgstr "Datotek ni mogoče prilepiti v Koš"
 
-#: src/nautilus-files-view.c:2915
+#: src/nautilus-files-view.c:2916
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Nastavljena dovoljenja ne omogočajo prilepiti datotek v to mapo."
 
-#: src/nautilus-files-view.c:3546 src/nautilus-files-view.c:3593
+#: src/nautilus-files-view.c:3547 src/nautilus-files-view.c:3594
 #, c-format
 msgid "“%s” selected"
 msgstr "»%s« izbrano"
 
-#: src/nautilus-files-view.c:3550
+#: src/nautilus-files-view.c:3551
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
@@ -2622,7 +2622,7 @@ msgstr[1] "%'d izbrana mapa"
 msgstr[2] "%'d izbrani mapi"
 msgstr[3] "%'d izbrane mape"
 
-#: src/nautilus-files-view.c:3564
+#: src/nautilus-files-view.c:3565
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2632,7 +2632,7 @@ msgstr[2] "(vsebuje %'d predmeta)"
 msgstr[3] "(vsebuje %'d predmete)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3579
+#: src/nautilus-files-view.c:3580
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -2641,7 +2641,7 @@ msgstr[1] "(skupaj vsebuje %'d predmet)"
 msgstr[2] "(skupaj vsebuje %'d predmeta)"
 msgstr[3] "(skupaj vsebuje %'d predmete)"
 
-#: src/nautilus-files-view.c:3598
+#: src/nautilus-files-view.c:3599
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2651,7 +2651,7 @@ msgstr[2] "%'d izbrana predmeta"
 msgstr[3] "%'d izbrani predmeti"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3607
+#: src/nautilus-files-view.c:3608
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2664,7 +2664,7 @@ msgstr[3] "%'d drugi izbrani predmeti"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3622
+#: src/nautilus-files-view.c:3623
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2676,97 +2676,97 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3672
+#: src/nautilus-files-view.c:3673
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3735
+#: src/nautilus-files-view.c:3736
 msgid "Search _Settings"
 msgstr "Nastavitve _iskanja"
 
-#: src/nautilus-files-view.c:3747
+#: src/nautilus-files-view.c:3748
 msgid "Search _Everywhere"
 msgstr "Poišči _povsod"
 
-#: src/nautilus-files-view.c:3784
+#: src/nautilus-files-view.c:3785
 msgid "More locations can be added to search in the settings"
 msgstr "Več mest za iskanje je mogoče dodati med nastavitvami."
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3792
+#: src/nautilus-files-view.c:3793
 #, c-format
 msgid "No matches in “%s”"
 msgstr "Ni zadetkov v »%s«."
 
-#: src/nautilus-files-view.c:3800
+#: src/nautilus-files-view.c:3801
 msgid "No Results Found"
 msgstr "Ni zadetkov"
 
-#: src/nautilus-files-view.c:3805
+#: src/nautilus-files-view.c:3806
 msgid "Trash is Empty"
 msgstr "Smeti so prazne"
 
-#: src/nautilus-files-view.c:3811
+#: src/nautilus-files-view.c:3812
 msgid "No Starred Files"
 msgstr "Ni datotek z zvezdico"
 
-#: src/nautilus-files-view.c:3817
+#: src/nautilus-files-view.c:3818
 msgid "No Recent Files"
 msgstr "Ni nedavnih datotek"
 
-#: src/nautilus-files-view.c:3823
+#: src/nautilus-files-view.c:3824
 msgid "No Known Connections"
 msgstr "Ni znanih povezav"
 
-#: src/nautilus-files-view.c:3824
+#: src/nautilus-files-view.c:3825
 msgid "Enter an address to connect to a network location."
 msgstr "Vnesite naslov, da vzpostavite povezavo z omrežnim mestom."
 
-#: src/nautilus-files-view.c:3829
+#: src/nautilus-files-view.c:3830
 msgid "Folder is Empty"
 msgstr "Mapa je prazna."
 
-#: src/nautilus-files-view.c:6047
+#: src/nautilus-files-view.c:6049
 msgid "Select Move Destination"
 msgstr "Izbor ciljnega mesta za premikanje"
 
-#: src/nautilus-files-view.c:6051
+#: src/nautilus-files-view.c:6053
 msgid "Select Copy Destination"
 msgstr "Izbor ciljnega mesta za kopiranje"
 
-#: src/nautilus-files-view.c:6057 src/nautilus-files-view.c:6445
+#: src/nautilus-files-view.c:6059 src/nautilus-files-view.c:6447
 #: src/nautilus-properties-window.c:4092
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "_Izberi"
 
-#: src/nautilus-files-view.c:6444
+#: src/nautilus-files-view.c:6446
 msgid "Select Extract Destination"
 msgstr "Izbor ciljnega mesta za razširjanje"
 
-#: src/nautilus-files-view.c:6520
+#: src/nautilus-files-view.c:6522
 msgid "Error sending email."
 msgstr "Napaka med pošiljanjem sporočila."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6822
+#: src/nautilus-files-view.c:6824
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Ni mogoče odstraniti »%s«"
 
-#: src/nautilus-files-view.c:6867
+#: src/nautilus-files-view.c:6869
 msgid "Unable to stop drive"
 msgstr "Ni mogoče zaustaviti pogona"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6982 src/gtk/nautilusgtkplacessidebar.c:1804
-#: src/gtk/nautilusgtkplacessidebar.c:2704
+#: src/nautilus-files-view.c:6984 src/gtk/nautilusgtkplacessidebar.c:1666
+#: src/gtk/nautilusgtkplacessidebar.c:2534
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Ni mogoče začeti »%s«"
 
-#: src/nautilus-files-view.c:8036
+#: src/nautilus-files-view.c:8038
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
@@ -2775,64 +2775,64 @@ msgstr[1] "Nova mapa z izborom (%'d predmet)"
 msgstr[2] "Nova mapa z izborom (%'d predmeta)"
 msgstr[3] "Nova mapa z izborom (%'d predmeti)"
 
-#: src/nautilus-files-view.c:8091
+#: src/nautilus-files-view.c:8093
 #, c-format
 msgid "Open With %s"
 msgstr "Odpri s programom %s"
 
-#: src/nautilus-files-view.c:8102
+#: src/nautilus-files-view.c:8104
 msgid "Run"
 msgstr "Zaženi"
 
-#: src/nautilus-files-view.c:8107
+#: src/nautilus-files-view.c:8109
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Razširi"
 
-#: src/nautilus-files-view.c:8108
+#: src/nautilus-files-view.c:8110
 msgid "Extract to…"
 msgstr "Razširi v …"
 
-#: src/nautilus-files-view.c:8112
+#: src/nautilus-files-view.c:8114
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "Odpri"
 
-#: src/nautilus-files-view.c:8190
+#: src/nautilus-files-view.c:8192
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
-#: src/gtk/nautilusgtkplacessidebar.c:3134
+#: src/gtk/nautilusgtkplacessidebar.c:2956
 msgid "_Start"
 msgstr "_Zaženi"
 
-#: src/nautilus-files-view.c:8196
+#: src/nautilus-files-view.c:8198
 msgid "_Connect"
 msgstr "_Poveži se"
 
-#: src/nautilus-files-view.c:8202
+#: src/nautilus-files-view.c:8204
 msgid "_Start Multi-disk Drive"
 msgstr "_Zaženi več-diskovni pogon"
 
-#: src/nautilus-files-view.c:8208
+#: src/nautilus-files-view.c:8210
 msgid "U_nlock Drive"
 msgstr "_Odkleni pogon"
 
-#: src/nautilus-files-view.c:8226
+#: src/nautilus-files-view.c:8228
 msgid "Stop Drive"
 msgstr "Zaustavi pogon"
 
-#: src/nautilus-files-view.c:8232 src/gtk/nautilusgtkplacessidebar.c:3151
+#: src/nautilus-files-view.c:8234 src/gtk/nautilusgtkplacessidebar.c:2973
 msgid "_Safely Remove Drive"
 msgstr "_Varno odstrani pogon"
 
-#: src/nautilus-files-view.c:8238
+#: src/nautilus-files-view.c:8240
 msgid "_Disconnect"
 msgstr "_Prekini povezavo"
 
-#: src/nautilus-files-view.c:8244
+#: src/nautilus-files-view.c:8246
 msgid "_Stop Multi-disk Drive"
 msgstr "_Zaustavi več-diskovni pogon"
 
-#: src/nautilus-files-view.c:8250
+#: src/nautilus-files-view.c:8252
 msgid "_Lock Drive"
 msgstr "_Zakleni pogon"
 
@@ -2849,7 +2849,7 @@ msgstr "Način povleci in spusti ni podprt."
 msgid "An invalid drag type was used."
 msgstr "Uporabljena je bila neveljavna vrsta vlečenja."
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1357
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1073
 msgid "Undo"
 msgstr "Razveljavi"
 
@@ -2937,7 +2937,7 @@ msgstr[2] "Premakni %d predmeta nazaj v smeti"
 msgstr[3] "Premakni %d predmete nazaj v smeti"
 
 #: src/nautilus-file-undo-operations.c:486
-#: src/nautilus-file-undo-operations.c:1609
+#: src/nautilus-file-undo-operations.c:1624
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
@@ -2994,9 +2994,9 @@ msgstr[3] "Ponovno _uveljavi kopiranje %d predmetov"
 
 #: src/nautilus-file-undo-operations.c:516
 #: src/nautilus-file-undo-operations.c:543
-#: src/nautilus-file-undo-operations.c:827
-#: src/nautilus-file-undo-operations.c:2365
-#: src/nautilus-file-undo-operations.c:2528
+#: src/nautilus-file-undo-operations.c:831
+#: src/nautilus-file-undo-operations.c:2380
+#: src/nautilus-file-undo-operations.c:2543
 #, c-format
 msgid "Delete “%s”"
 msgstr "Izbriši »%s«"
@@ -3099,61 +3099,61 @@ msgstr "_Razveljavi ustvarjanje povezave"
 msgid "_Redo Create Link"
 msgstr "_Ponovno uveljavi ustvarjanje povezave"
 
-#: src/nautilus-file-undo-operations.c:831
+#: src/nautilus-file-undo-operations.c:835
 #, c-format
 msgid "Create an empty file “%s”"
 msgstr "Ustvari prazno datoteko »%s«"
 
-#: src/nautilus-file-undo-operations.c:833
+#: src/nautilus-file-undo-operations.c:837
 msgid "_Undo Create Empty File"
 msgstr "_Razveljavi ustvarjanje prazne datoteke"
 
-#: src/nautilus-file-undo-operations.c:834
+#: src/nautilus-file-undo-operations.c:838
 msgid "_Redo Create Empty File"
 msgstr "Ponovno _uveljavi ustvarjanje prazne datoteke"
 
-#: src/nautilus-file-undo-operations.c:838
+#: src/nautilus-file-undo-operations.c:842
 #, c-format
 msgid "Create a new folder “%s”"
 msgstr "Ustvari novo mapo »%s«"
 
-#: src/nautilus-file-undo-operations.c:840
+#: src/nautilus-file-undo-operations.c:844
 msgid "_Undo Create Folder"
 msgstr "_Razveljavi ustvarjanje mape"
 
-#: src/nautilus-file-undo-operations.c:841
+#: src/nautilus-file-undo-operations.c:845
 msgid "_Redo Create Folder"
 msgstr "Ponovno _uveljavi ustvarjanje mape"
 
-#: src/nautilus-file-undo-operations.c:845
+#: src/nautilus-file-undo-operations.c:849
 #, c-format
 msgid "Create new file “%s” from template "
 msgstr "Ustvari nov dokument »%s« iz predloge"
 
-#: src/nautilus-file-undo-operations.c:847
+#: src/nautilus-file-undo-operations.c:851
 msgid "_Undo Create From Template"
 msgstr "_Razveljavi ustvarjanje dokumenta iz predloge"
 
-#: src/nautilus-file-undo-operations.c:848
+#: src/nautilus-file-undo-operations.c:852
 msgid "_Redo Create From Template"
 msgstr "Ponovno _uveljavi ustvarjanje dokumenta iz predloge"
 
-#: src/nautilus-file-undo-operations.c:1048
-#: src/nautilus-file-undo-operations.c:1049
+#: src/nautilus-file-undo-operations.c:1063
+#: src/nautilus-file-undo-operations.c:1064
 #, c-format
 msgid "Rename “%s” as “%s”"
 msgstr "Preimenuj »%s« v »%s«"
 
-#: src/nautilus-file-undo-operations.c:1051
+#: src/nautilus-file-undo-operations.c:1066
 msgid "_Undo Rename"
 msgstr "Razveljavi _preimenovanje"
 
-#: src/nautilus-file-undo-operations.c:1052
+#: src/nautilus-file-undo-operations.c:1067
 msgid "_Redo Rename"
 msgstr "Ponovno _uveljavi preimenovanje"
 
-#: src/nautilus-file-undo-operations.c:1167
-#: src/nautilus-file-undo-operations.c:1171
+#: src/nautilus-file-undo-operations.c:1182
+#: src/nautilus-file-undo-operations.c:1186
 #, c-format
 msgid "Batch rename %d file"
 msgid_plural "Batch rename %d files"
@@ -3162,16 +3162,16 @@ msgstr[1] "Paketno preimenuj %d datoteko"
 msgstr[2] "Paketno preimenuj %d datoteki"
 msgstr[3] "Paketno preimenuj %d datoteke"
 
-#: src/nautilus-file-undo-operations.c:1176
+#: src/nautilus-file-undo-operations.c:1191
 msgid "_Undo Batch Rename"
 msgstr "_Razveljavi paketno preimenovanje"
 
-#: src/nautilus-file-undo-operations.c:1177
+#: src/nautilus-file-undo-operations.c:1192
 msgid "_Redo Batch Rename"
 msgstr "_Ponovni paketno preimenovanje"
 
-#: src/nautilus-file-undo-operations.c:1393
-#: src/nautilus-file-undo-operations.c:1410
+#: src/nautilus-file-undo-operations.c:1408
+#: src/nautilus-file-undo-operations.c:1425
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
@@ -3180,8 +3180,8 @@ msgstr[1] "Odstrani zvezdico %d datoteki"
 msgstr[2] "Odstrani zvezdico %d datotekama"
 msgstr[3] "Odstrani zvezdico %d datotekam"
 
-#: src/nautilus-file-undo-operations.c:1397
-#: src/nautilus-file-undo-operations.c:1406
+#: src/nautilus-file-undo-operations.c:1412
+#: src/nautilus-file-undo-operations.c:1421
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
@@ -3190,23 +3190,23 @@ msgstr[1] "Dodaj zvezdico %d datoteki"
 msgstr[2] "Dodaj zvezdico %d datotekama"
 msgstr[3] "Dodaj zvezdico %d datotekam"
 
-#: src/nautilus-file-undo-operations.c:1401
+#: src/nautilus-file-undo-operations.c:1416
 msgid "_Undo Starring"
 msgstr "_Razveljavi označevanje z zvezdico"
 
-#: src/nautilus-file-undo-operations.c:1402
+#: src/nautilus-file-undo-operations.c:1417
 msgid "_Redo Starring"
 msgstr "_Ponovi označevanje z zvezdico"
 
-#: src/nautilus-file-undo-operations.c:1414
+#: src/nautilus-file-undo-operations.c:1429
 msgid "_Undo Unstarring"
 msgstr "_Razveljavi odstranjevanje oznake zvezdice"
 
-#: src/nautilus-file-undo-operations.c:1415
+#: src/nautilus-file-undo-operations.c:1430
 msgid "_Redo Unstarring"
 msgstr "_Ponovi odstranjevanje oznake zvezdice"
 
-#: src/nautilus-file-undo-operations.c:1612
+#: src/nautilus-file-undo-operations.c:1627
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
@@ -3215,99 +3215,99 @@ msgstr[1] "Premakni %d predmet v smeti"
 msgstr[2] "Premakni %d predmeta v smeti"
 msgstr[3] "Premakni %d predmete v smeti"
 
-#: src/nautilus-file-undo-operations.c:1626
+#: src/nautilus-file-undo-operations.c:1641
 #, c-format
 msgid "Restore “%s” to “%s”"
 msgstr "Obnovi »%s« v »%s«."
 
-#: src/nautilus-file-undo-operations.c:1633
+#: src/nautilus-file-undo-operations.c:1648
 #, c-format
 msgid "Move “%s” to trash"
 msgstr "Premakni »%s« v smeti"
 
-#: src/nautilus-file-undo-operations.c:1638
+#: src/nautilus-file-undo-operations.c:1653
 msgid "_Undo Trash"
 msgstr "Razveljavi _pošiljanje v smeti"
 
-#: src/nautilus-file-undo-operations.c:1639
+#: src/nautilus-file-undo-operations.c:1654
 msgid "_Redo Trash"
 msgstr "Obnovi datoteke _iz smeti"
 
-#: src/nautilus-file-undo-operations.c:1933
+#: src/nautilus-file-undo-operations.c:1948
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "Obnovi izvorna dovoljena predmetov v »%s«"
 
-#: src/nautilus-file-undo-operations.c:1934
+#: src/nautilus-file-undo-operations.c:1949
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr "Nastavi dovoljena predmetov v »%s«"
 
-#: src/nautilus-file-undo-operations.c:1936
-#: src/nautilus-file-undo-operations.c:2089
+#: src/nautilus-file-undo-operations.c:1951
+#: src/nautilus-file-undo-operations.c:2104
 msgid "_Undo Change Permissions"
 msgstr "_Razveljavi spreminjanje dovoljenj"
 
-#: src/nautilus-file-undo-operations.c:1937
-#: src/nautilus-file-undo-operations.c:2090
+#: src/nautilus-file-undo-operations.c:1952
+#: src/nautilus-file-undo-operations.c:2105
 msgid "_Redo Change Permissions"
 msgstr "Ponovno _uveljavi spreminjanje dovoljenj"
 
-#: src/nautilus-file-undo-operations.c:2086
+#: src/nautilus-file-undo-operations.c:2101
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr "Obnovi i_zvorna dovoljenja »%s«"
 
-#: src/nautilus-file-undo-operations.c:2087
+#: src/nautilus-file-undo-operations.c:2102
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr "Nastavi dovoljenja »%s«"
 
-#: src/nautilus-file-undo-operations.c:2199
+#: src/nautilus-file-undo-operations.c:2214
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr "Obnovi skupino »%s« na »%s«"
 
-#: src/nautilus-file-undo-operations.c:2201
+#: src/nautilus-file-undo-operations.c:2216
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr "Nastavi skupino »%s« na »%s«."
 
-#: src/nautilus-file-undo-operations.c:2204
+#: src/nautilus-file-undo-operations.c:2219
 msgid "_Undo Change Group"
 msgstr "_Razveljavi spremembo skupine"
 
-#: src/nautilus-file-undo-operations.c:2205
+#: src/nautilus-file-undo-operations.c:2220
 msgid "_Redo Change Group"
 msgstr "Ponovno _uveljavi spremembo skupine"
 
-#: src/nautilus-file-undo-operations.c:2209
+#: src/nautilus-file-undo-operations.c:2224
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr "Obnovi lastnika »%s« na »%s«"
 
-#: src/nautilus-file-undo-operations.c:2211
+#: src/nautilus-file-undo-operations.c:2226
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr "Nastavi lastnika »%s« na »%s«."
 
-#: src/nautilus-file-undo-operations.c:2214
+#: src/nautilus-file-undo-operations.c:2229
 msgid "_Undo Change Owner"
 msgstr "Razveljavi spreminjanje _lastništva"
 
-#: src/nautilus-file-undo-operations.c:2215
+#: src/nautilus-file-undo-operations.c:2230
 msgid "_Redo Change Owner"
 msgstr "Ponovno uveljavi spreminjanje _lastništva"
 
-#: src/nautilus-file-undo-operations.c:2351
+#: src/nautilus-file-undo-operations.c:2366
 msgid "_Undo Extract"
 msgstr "_Razveljavi razširjanje"
 
-#: src/nautilus-file-undo-operations.c:2352
+#: src/nautilus-file-undo-operations.c:2367
 msgid "_Redo Extract"
 msgstr "_Ponovi razširjanje"
 
-#: src/nautilus-file-undo-operations.c:2369
+#: src/nautilus-file-undo-operations.c:2384
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
@@ -3316,12 +3316,12 @@ msgstr[1] "Izbriši %d razširjeno datoteko"
 msgstr[2] "Izbriši %d razširjeni datoteki"
 msgstr[3] "Izbriši %d razširjene datoteke"
 
-#: src/nautilus-file-undo-operations.c:2383
+#: src/nautilus-file-undo-operations.c:2398
 #, c-format
 msgid "Extract “%s”"
 msgstr "Razširi »%s«"
 
-#: src/nautilus-file-undo-operations.c:2387
+#: src/nautilus-file-undo-operations.c:2402
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
@@ -3330,12 +3330,12 @@ msgstr[1] "Razširi %d datoteko"
 msgstr[2] "Razširi %d datoteki"
 msgstr[3] "Razširi %d datoteke"
 
-#: src/nautilus-file-undo-operations.c:2539
+#: src/nautilus-file-undo-operations.c:2554
 #, c-format
 msgid "Compress “%s”"
 msgstr "Stisni »%s«"
 
-#: src/nautilus-file-undo-operations.c:2543
+#: src/nautilus-file-undo-operations.c:2558
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
@@ -3344,11 +3344,11 @@ msgstr[1] "Stisni %d datoteko"
 msgstr[2] "Stisni %d datoteki"
 msgstr[3] "Stisni %d datoteke"
 
-#: src/nautilus-file-undo-operations.c:2549
+#: src/nautilus-file-undo-operations.c:2564
 msgid "_Undo Compress"
 msgstr "_Razveljavi stiskanje"
 
-#: src/nautilus-file-undo-operations.c:2550
+#: src/nautilus-file-undo-operations.c:2565
 msgid "_Redo Compress"
 msgstr "_Ponovno stisni"
 
@@ -3416,13 +3416,13 @@ msgstr "kopija %zu"
 msgid "Link to %s (%zu)"
 msgstr "Povezava do %s (%zu)"
 
-#: src/nautilus-internal-place-file.c:161
-#: src/gtk/nautilusgtkplacessidebar.c:851
+#: src/nautilus-internal-place-file.c:165
+#: src/gtk/nautilusgtkplacessidebar.c:744
 msgid "Network"
 msgstr "Omrežje"
 
-#: src/nautilus-internal-place-file.c:165
-#: src/gtk/nautilusgtkplacessidebar.c:811
+#: src/nautilus-internal-place-file.c:169
+#: src/gtk/nautilusgtkplacessidebar.c:718
 msgid "Starred"
 msgstr "Označeno z zvezdico"
 
@@ -3460,7 +3460,7 @@ msgstr "Datoteke v tej mapi bodo prikazane kot predloge za nove dokumente."
 msgid "_Learn More"
 msgstr "_Več podrobnosti"
 
-#: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:3086
+#: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:2908
 msgid "_Empty Trash…"
 msgstr "_Izprazni smeti …"
 
@@ -3961,7 +3961,7 @@ msgid "Details: "
 msgstr "Podrobnosti: "
 
 #: src/nautilus-progress-info.c:375
-msgid "Canceled"
+msgid "Cancelled"
 msgstr "Preklicano"
 
 #: src/nautilus-progress-info.c:422 src/nautilus-progress-info.c:443
@@ -4035,7 +4035,7 @@ msgstr "Le dostop"
 msgid "Custom icon removed"
 msgstr "Ikona po meri je odstranjena"
 
-#: src/nautilus-properties-window.c:642 src/nautilus-window.c:1274
+#: src/nautilus-properties-window.c:642 src/nautilus-window.c:990
 #: src/resources/ui/nautilus-window.ui:32
 msgid "_Undo"
 msgstr "_Razveljavi"
@@ -4181,7 +4181,7 @@ msgstr "Izbor datumov …"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:346
-#: src/gtk/nautilusgtkplacessidebar.c:860
+#: src/gtk/nautilusgtkplacessidebar.c:753
 msgid "Trash"
 msgstr "Smeti"
 
@@ -4257,35 +4257,23 @@ msgstr[1] "Pred %d letom"
 msgstr[2] "Pred %d letoma"
 msgstr[3] "Pred %d leti"
 
-#: src/nautilus-window.c:158
-msgid "Parent folder"
-msgstr "Nadrejena mapa"
-
-#: src/nautilus-window.c:160
+#: src/nautilus-window.c:154
 msgid "New tab"
 msgstr "Nov zavihek"
 
-#: src/nautilus-window.c:161
+#: src/nautilus-window.c:155
 msgid "Close current view"
 msgstr "Zapri trenutni pogled"
 
-#: src/nautilus-window.c:162 src/resources/ui/nautilus-history-controls.ui:11
-msgid "Back"
-msgstr "Nazaj"
-
-#: src/nautilus-window.c:163 src/resources/ui/nautilus-history-controls.ui:19
-msgid "Forward"
-msgstr "Naprej"
-
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:1197
+#: src/nautilus-window.c:913
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "Predmet »%s« je premaknjen smeti"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:1204
+#: src/nautilus-window.c:920
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4295,14 +4283,14 @@ msgstr[2] "%d datoteki sta premikani v smeti"
 msgstr[3] "%d datoteke so premikane v smeti"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1223
+#: src/nautilus-window.c:939
 #, c-format
 msgid "“%s” unstarred"
 msgstr "Datoteki »%s« je odstranjena oznaka z zvezdico."
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1229
+#: src/nautilus-window.c:945
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
@@ -4311,30 +4299,30 @@ msgstr[1] "%d datoteki je odstranjena oznaka z zvezdico"
 msgstr[2] "%d datotekama je odstranjena oznaka z zvezdico"
 msgstr[3] "%d datotekam je odstranjena oznaka z zvezdico"
 
-#: src/nautilus-window.c:1284 src/resources/ui/nautilus-window.ui:36
+#: src/nautilus-window.c:1000 src/resources/ui/nautilus-window.ui:36
 msgid "_Redo"
 msgstr "_Ponovno uveljavi"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1400 src/gtk/nautilusgtkplacessidebar.c:712
+#: src/nautilus-window.c:1116 src/gtk/nautilusgtkplacessidebar.c:607
 #, c-format
 msgid "Open %s"
 msgstr "Odpri %s"
 
-#: src/nautilus-window.c:2367 src/nautilus-window.c:2372
-#: src/nautilus-window.c:2377 src/nautilus-window.c:2397
+#: src/nautilus-window.c:2018 src/nautilus-window.c:2023
+#: src/nautilus-window.c:2028 src/nautilus-window.c:2048
 msgid "The GNOME Project"
 msgstr "Projekt GNOME"
 
-#: src/nautilus-window.c:2384
+#: src/nautilus-window.c:2035
 msgid "No plugins currently installed."
 msgstr "Trenutno še ni nameščenih vstavkov."
 
-#: src/nautilus-window.c:2388
+#: src/nautilus-window.c:2039
 msgid "Currently installed plugins:"
 msgstr "Trenutno nameščeni vstavki:"
 
-#: src/nautilus-window.c:2390
+#: src/nautilus-window.c:2041
 msgid "For bug testing only, the following command can be used:"
 msgstr "Le za preizkušanje hroščev, mogoče je uporabiti ukaz:"
 
@@ -4342,70 +4330,84 @@ msgstr "Le za preizkušanje hroščev, mogoče je uporabiti ukaz:"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2412
+#: src/nautilus-window.c:2063
 msgid "translator-credits"
 msgstr ""
 "Matej Urbančič <mateju@src.gnome.org>\n"
 "Matjaž Horvat\n"
 "Andraž Tori"
 
-#: src/nautilus-window-slot.c:859 src/resources/ui/nautilus-window.ui:132
+#: src/nautilus-window-slot.c:153
+msgid "Parent folder"
+msgstr "Nadrejena mapa"
+
+#: src/nautilus-window-slot.c:154
+#: src/resources/ui/nautilus-history-controls.ui:11
+msgid "Back"
+msgstr "Nazaj"
+
+#: src/nautilus-window-slot.c:155
+#: src/resources/ui/nautilus-history-controls.ui:19
+msgid "Forward"
+msgstr "Naprej"
+
+#: src/nautilus-window-slot.c:869 src/resources/ui/nautilus-window.ui:133
 msgid "Search Everywhere"
 msgstr "Poišči povsod"
 
-#: src/nautilus-window-slot.c:860
+#: src/nautilus-window-slot.c:870
 msgid "Find files and folders in all search locations"
 msgstr "Poišči datoteke in mape na vseh iskalnih mestih"
 
-#: src/nautilus-window-slot.c:863
+#: src/nautilus-window-slot.c:873
 msgid "Search Settings"
 msgstr "Nastavitve iskanja"
 
-#: src/nautilus-window-slot.c:1099
+#: src/nautilus-window-slot.c:1198
 msgid "Searching network locations only"
 msgstr "Iskanje omrežnih mest"
 
-#: src/nautilus-window-slot.c:1104
+#: src/nautilus-window-slot.c:1203
 msgid "Remote location — only searching the current folder"
 msgstr "Oddaljeno mesto — iskanje le trenutne mape"
 
-#: src/nautilus-window-slot.c:1108
+#: src/nautilus-window-slot.c:1207
 msgid "Only searching the current folder"
 msgstr "Iskanje le po trenutni mapi"
 
-#: src/nautilus-window-slot.c:1604
+#: src/nautilus-window-slot.c:1728
 msgid "Unable to display the contents of this folder."
 msgstr "Vsebine te mape ni mogoče prikazati."
 
-#: src/nautilus-window-slot.c:1608
+#: src/nautilus-window-slot.c:1732
 msgid "This location doesn’t appear to be a folder."
 msgstr "To mesto ni videti kot mapa."
 
-#: src/nautilus-window-slot.c:1620
+#: src/nautilus-window-slot.c:1744
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "Datoteke »%s« ni mogoče najti. Preverite črkovanje in poskusite znova."
 
-#: src/nautilus-window-slot.c:1625
+#: src/nautilus-window-slot.c:1749
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Zahtevane datoteke ni mogoče najti. Preverite črkovanje in poskusite znova."
 
-#: src/nautilus-window-slot.c:1636
+#: src/nautilus-window-slot.c:1760
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Mesta »%s« niso podprta."
 
-#: src/nautilus-window-slot.c:1641
+#: src/nautilus-window-slot.c:1765
 msgid "Unable to handle this kind of location."
 msgstr "S to vrsto mesta ni mogoče upravljati."
 
-#: src/nautilus-window-slot.c:1649
+#: src/nautilus-window-slot.c:1773
 msgid "Unable to access the requested location."
 msgstr "Dostop do zahtevanega mesta ni mogoč."
 
-#: src/nautilus-window-slot.c:1655
+#: src/nautilus-window-slot.c:1779
 msgid "Don’t have permission to access the requested location."
 msgstr "Za dostop do ciljnega mesta so zahtevana posebna dovoljenja."
 
@@ -4414,7 +4416,7 @@ msgstr "Za dostop do ciljnega mesta so zahtevana posebna dovoljenja."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1666
+#: src/nautilus-window-slot.c:1790
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4424,7 +4426,7 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1675
+#: src/nautilus-window-slot.c:1799
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4432,7 +4434,7 @@ msgstr ""
 "Strežnik je zavrnil povezavo. Običajno to pomeni, da je požarni zid "
 "onemogočil dostop, ali pa oddaljena storitev ne deluje."
 
-#: src/nautilus-window-slot.c:1694
+#: src/nautilus-window-slot.c:1818
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Neobravnavano sporočilo napake: %s"
@@ -4756,8 +4758,8 @@ msgstr "Vedno uporabi za to vrsto datoteke"
 
 #: src/resources/ui/nautilus-app-chooser.ui:102
 #: src/resources/ui/nautilus-files-view-context-menus.ui:84
-#: src/gtk/nautilusgtkplacessidebar.c:2920
-#: src/gtk/nautilusgtkplacessidebar.c:3039
+#: src/gtk/nautilusgtkplacessidebar.c:2749
+#: src/gtk/nautilusgtkplacessidebar.c:2865
 msgid "_Open"
 msgstr "_Odpri"
 
@@ -4812,8 +4814,8 @@ msgstr "Izvorno ime datoteke"
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:113
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:30
 #: src/resources/ui/nautilus-rename-file-popover.ui:47
-#: src/gtk/nautilusgtkplacessidebar.c:2156
-#: src/gtk/nautilusgtkplacessidebar.c:3077
+#: src/gtk/nautilusgtkplacessidebar.c:1982
+#: src/gtk/nautilusgtkplacessidebar.c:2899
 msgid "_Rename"
 msgstr "P_reimenuj"
 
@@ -5025,15 +5027,15 @@ msgstr "_Zaženi kot program"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:94
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacessidebar.c:2928
-#: src/gtk/nautilusgtkplacessidebar.c:3047
+#: src/gtk/nautilusgtkplacessidebar.c:2757
+#: src/gtk/nautilusgtkplacessidebar.c:2873
 msgid "Open in New _Tab"
 msgstr "Odpri v novem _zavihku"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:99
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacessidebar.c:2935
-#: src/gtk/nautilusgtkplacessidebar.c:3056
+#: src/gtk/nautilusgtkplacessidebar.c:2764
+#: src/gtk/nautilusgtkplacessidebar.c:2882
 msgid "Open in New _Window"
 msgstr "Odpri v _novem oknu"
 
@@ -5050,27 +5052,27 @@ msgid "_Open Scripts Folder"
 msgstr "_Odpri mapo skriptov"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:138
-#: src/gtk/nautilusgtkplacessidebar.c:3099
+#: src/gtk/nautilusgtkplacessidebar.c:2921
 msgid "_Mount"
 msgstr "_Priklopi"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:143
-#: src/gtk/nautilusgtkplacessidebar.c:3108
+#: src/gtk/nautilusgtkplacessidebar.c:2930
 msgid "_Unmount"
 msgstr "_Odklopi"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:148
-#: src/gtk/nautilusgtkplacessidebar.c:3115
+#: src/gtk/nautilusgtkplacessidebar.c:2937
 msgid "_Eject"
 msgstr "I_zvrzi"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:158
-#: src/gtk/nautilusgtkplacessidebar.c:3149
+#: src/gtk/nautilusgtkplacessidebar.c:2971
 msgid "_Stop"
 msgstr "_Zaustavi"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:163
-#: src/gtk/nautilusgtkplacessidebar.c:3125
+#: src/gtk/nautilusgtkplacessidebar.c:2947
 msgid "_Detect Media"
 msgstr "_Zaznaj nosilec"
 
@@ -5184,7 +5186,7 @@ msgid "Server address"
 msgstr "Naslov strežnika"
 
 #: src/resources/ui/nautilus-network-cell.ui:75
-#: src/gtk/nautilusgtkplacessidebar.c:406
+#: src/gtk/nautilusgtkplacessidebar.c:391
 msgid "Disconnect"
 msgstr "Odklopi povezavo"
 
@@ -5209,7 +5211,6 @@ msgid "St_op"
 msgstr "Zau_stavi"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:49
-#: src/gtk/nautilusgtkplacessidebar.c:3067
 msgid "Add to _Bookmarks"
 msgstr "_Dodaj med zaznamke"
 
@@ -5339,7 +5340,7 @@ msgstr "Pokaži opravila datotek"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
 #: src/resources/ui/nautilus-properties-window.ui:16
-#: src/gtk/nautilusgtkplacessidebar.c:3173
+#: src/gtk/nautilusgtkplacessidebar.c:2995
 msgid "Properties"
 msgstr "Lastnosti"
 
@@ -5621,139 +5622,139 @@ msgstr "_Zapri zavihek"
 msgid "Close _Other Tabs"
 msgstr "Zapri _druge zavihke"
 
-#: src/resources/ui/nautilus-window.ui:144
+#: src/resources/ui/nautilus-window.ui:145
 msgid "Main Menu"
 msgstr "Glavni meni"
 
-#: src/resources/ui/nautilus-window.ui:153
+#: src/resources/ui/nautilus-window.ui:154
 msgid "Zoom Out"
 msgstr "Oddalji"
 
-#: src/resources/ui/nautilus-window.ui:164
+#: src/resources/ui/nautilus-window.ui:165
 msgid "Zoom In"
 msgstr "Približaj"
 
-#: src/gtk/nautilusgtkplacessidebar.c:408
+#: src/gtk/nautilusgtkplacessidebar.c:393
 msgid "Eject"
 msgstr "Izvrzi"
 
-#: src/gtk/nautilusgtkplacessidebar.c:410
+#: src/gtk/nautilusgtkplacessidebar.c:395
 msgid "Unmount"
 msgstr "Odklopi"
 
-#: src/gtk/nautilusgtkplacessidebar.c:802
-msgid "Recent"
-msgstr "Nedavno"
-
-#: src/gtk/nautilusgtkplacessidebar.c:804
-msgid "Recent Files"
-msgstr "Nedavne datoteke"
-
-#: src/gtk/nautilusgtkplacessidebar.c:813
-msgid "Starred Files"
-msgstr "Datoteke z zvezdico"
-
-#: src/gtk/nautilusgtkplacessidebar.c:823
+#: src/gtk/nautilusgtkplacessidebar.c:700
 msgid "Open Personal Folder"
 msgstr "Odpri osebno mapo"
 
-#: src/gtk/nautilusgtkplacessidebar.c:836
+#: src/gtk/nautilusgtkplacessidebar.c:709
+msgid "Recent"
+msgstr "Nedavno"
+
+#: src/gtk/nautilusgtkplacessidebar.c:711
+msgid "Recent Files"
+msgstr "Nedavne datoteke"
+
+#: src/gtk/nautilusgtkplacessidebar.c:720
+msgid "Starred Files"
+msgstr "Datoteke z zvezdico"
+
+#: src/gtk/nautilusgtkplacessidebar.c:732
 msgid "Desktop"
 msgstr "Namizje"
 
-#: src/gtk/nautilusgtkplacessidebar.c:838
+#: src/gtk/nautilusgtkplacessidebar.c:734
 msgid "Open the contents of your desktop in a folder"
 msgstr "Odpri vsebino namizja v mapi"
 
-#: src/gtk/nautilusgtkplacessidebar.c:853
+#: src/gtk/nautilusgtkplacessidebar.c:746
 msgid "Open Network Locations"
 msgstr "Odpri omrežna mesta"
 
-#: src/gtk/nautilusgtkplacessidebar.c:862
+#: src/gtk/nautilusgtkplacessidebar.c:755
 msgid "Open Trash"
 msgstr "Odpri smeti"
 
-#: src/gtk/nautilusgtkplacessidebar.c:969
-#: src/gtk/nautilusgtkplacessidebar.c:997
-#: src/gtk/nautilusgtkplacessidebar.c:1182
+#: src/gtk/nautilusgtkplacessidebar.c:858
+#: src/gtk/nautilusgtkplacessidebar.c:888
+#: src/gtk/nautilusgtkplacessidebar.c:1065
 #, c-format
 msgid "Mount and Open “%s”"
 msgstr "Priklopi in odpri »%s«"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1160
+#: src/gtk/nautilusgtkplacessidebar.c:1043
 msgid "New bookmark"
 msgstr "Nov zaznamek"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1162
+#: src/gtk/nautilusgtkplacessidebar.c:1045
 msgid "Add a new bookmark"
 msgstr "Dodaj nov zaznamek"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/gtk/nautilusgtkplacessidebar.c:1840
+#: src/gtk/nautilusgtkplacessidebar.c:1702
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "Napaka odklepanja »%s«."
 
-#: src/gtk/nautilusgtkplacessidebar.c:2069
+#: src/gtk/nautilusgtkplacessidebar.c:1895
 msgid "This name is already taken"
 msgstr "To ime je že uporabljeno"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2449
+#: src/gtk/nautilusgtkplacessidebar.c:2279
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "Ni mogoče zaustaviti »%s«"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2656
+#: src/gtk/nautilusgtkplacessidebar.c:2486
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "Ni mogoče preveriti »%s« za spremembe nosilca"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3072
+#: src/gtk/nautilusgtkplacessidebar.c:2894
 msgid "_Remove from Bookmarks"
 msgstr "Odstrani iz zaznamkov"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3136
+#: src/gtk/nautilusgtkplacessidebar.c:2958
 msgid "_Power On"
 msgstr "_Vklopi"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3137
+#: src/gtk/nautilusgtkplacessidebar.c:2959
 msgid "_Connect Drive"
 msgstr "_Poveži pogon"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3138
+#: src/gtk/nautilusgtkplacessidebar.c:2960
 msgid "_Start Multi-disk Device"
 msgstr "_Zaženi več-diskovno napravo"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3139
+#: src/gtk/nautilusgtkplacessidebar.c:2961
 msgid "_Unlock Device"
 msgstr "_Odkleni napravo"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3152
+#: src/gtk/nautilusgtkplacessidebar.c:2974
 msgid "_Disconnect Drive"
 msgstr "_Prekini povezavo s pogonom"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3153
+#: src/gtk/nautilusgtkplacessidebar.c:2975
 msgid "_Stop Multi-disk Device"
 msgstr "_Zaustavi več-diskovno napravo"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3154
+#: src/gtk/nautilusgtkplacessidebar.c:2976
 msgid "_Lock Device"
 msgstr "_Zakleni napravo"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3163
+#: src/gtk/nautilusgtkplacessidebar.c:2985
 msgid "Format…"
 msgstr "Formatiraj …"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3661
+#: src/gtk/nautilusgtkplacessidebar.c:3496
 msgid "Device"
 msgstr "Naprava"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3701
+#: src/gtk/nautilusgtkplacessidebar.c:3536
 msgid "Sidebar"
 msgstr "Stranska vrstica"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3703
+#: src/gtk/nautilusgtkplacessidebar.c:3538
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Seznam splošnih tipkovnih bližnjic, točk priklopa in zaznamkov."
