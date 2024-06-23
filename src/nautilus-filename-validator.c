@@ -17,6 +17,7 @@ struct _NautilusFilenameValidator
 
     NautilusDirectory *containing_directory;
     gboolean target_is_folder;
+    gboolean allow_overwrite;
     char *original_name;
 
     const char *feedback_text;
@@ -43,6 +44,7 @@ enum
     PROP_NEW_NAME,
     PROP_CONTAINING_DIRECTORY,
     PROP_PASSED,
+    PROP_ALLOW_OVERWRITE,
     PROP_TARGET_IS_FOLDER,
     NUM_PROPERTIES
 };
@@ -200,7 +202,8 @@ filename_validator_process_new_name (NautilusFilenameValidator *self)
                             !nautilus_filename_validator_ignore_existing_file (self,
                                                                                existing_file);
 
-    gboolean passed = (self->valid_name && !self->duplicated_name);
+    gboolean passed = (self->valid_name &&
+                       (self->allow_overwrite || !self->duplicated_name));
 
     if (self->passed != passed)
     {
@@ -384,6 +387,12 @@ nautilus_filename_validator_set_property (GObject      *object,
         }
         break;
 
+        case PROP_ALLOW_OVERWRITE:
+        {
+            self->allow_overwrite = g_value_get_boolean (value);
+        }
+        break;
+
         case PROP_TARGET_IS_FOLDER:
         {
             self->target_is_folder = g_value_get_boolean (value);
@@ -459,10 +468,20 @@ nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
         g_param_spec_object ("containing-directory", NULL, NULL,
                              NAUTILUS_TYPE_DIRECTORY,
                              G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_ALLOW_OVERWRITE] =
+        g_param_spec_boolean ("allow-overwrite", NULL, NULL,
+                              FALSE,
+                              G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
     properties[PROP_TARGET_IS_FOLDER] =
         g_param_spec_boolean ("target-is-folder", NULL, NULL,
                               FALSE,
                               G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
+}
+
+gboolean
+nautilus_filename_validator_will_overwrite (NautilusFilenameValidator *self)
+{
+    return (self->allow_overwrite && self->passed && self->duplicated_name);
 }
