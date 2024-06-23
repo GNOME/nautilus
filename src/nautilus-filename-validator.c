@@ -252,7 +252,11 @@ void
 nautilus_filename_validator_validate (NautilusFilenameValidator *self)
 {
     g_return_if_fail (NAUTILUS_IS_FILENAME_VALIDATOR (self));
-    g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
+
+    if (self->containing_directory == NULL)
+    {
+        return;
+    }
 
     nautilus_directory_call_when_ready (self->containing_directory,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
