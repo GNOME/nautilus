@@ -173,21 +173,9 @@ selector_can_accept (NautilusFileChooser *self,
 
 static void
 emit_accepted (NautilusFileChooser *self,
-               GList               *files)
+               GList               *file_locations)
 {
-    g_autolist (GFile) file_locations = NULL;
     gboolean writable = !gtk_check_button_get_active (GTK_CHECK_BUTTON (self->read_only_checkbox));
-
-    if (files != NULL)
-    {
-        file_locations = g_list_copy_deep (files, (GCopyFunc) nautilus_file_get_activation_location, NULL);
-    }
-    else
-    {
-        GFile *location = nautilus_window_slot_get_location (self->slot);
-
-        file_locations = g_list_prepend (NULL, g_object_ref (location));
-    }
 
     g_signal_emit (self, signals[SIGNAL_ACCEPTED], 0,
                    file_locations,
@@ -213,13 +201,24 @@ on_selector_accept_button_clicked (NautilusFileChooser *self)
 {
     GList *selection = nautilus_window_slot_get_selection (self->slot);
 
-    if (mode_can_accept_files (self->mode, selection))
+    if (self->mode == NAUTILUS_MODE_SAVE_FILE)
     {
-        emit_accepted (self, selection);
+        /* TODO */
     }
     else
     {
-        emit_accepted (self, NULL);
+        if (mode_can_accept_files (self->mode, selection))
+        {
+            g_autolist (GFile) file_locations = g_list_copy_deep (selection, (GCopyFunc) nautilus_file_get_activation_location, NULL);
+
+            emit_accepted (self, file_locations);
+        }
+        else
+        {
+            GFile *location = nautilus_window_slot_get_location (self->slot);
+
+            emit_accepted (self, &(GList){ .data = location });
+        }
     }
 }
 
@@ -243,7 +242,16 @@ on_slot_activate_files (NautilusFileChooser *self,
 {
     if (mode_can_accept_files (self->mode, files))
     {
-        emit_accepted (self, files);
+        if (self->mode == NAUTILUS_MODE_SAVE_FILE)
+        {
+            /* TODO */
+        }
+        else
+        {
+            g_autolist (GFile) file_locations = g_list_copy_deep (files, (GCopyFunc) nautilus_file_get_activation_location, NULL);
+
+            emit_accepted (self, file_locations);
+        }
     }
 }
 

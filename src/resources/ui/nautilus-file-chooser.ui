@@ -6,9 +6,6 @@
     <property name="height-request">348</property>
     <property name="default-width">890</property>
     <property name="default-height">550</property>
-    <style>
-      <class name="view"/>
-    </style>
     <child>
       <object class="NautilusShortcutManager">
         <property name="child">
@@ -21,6 +18,9 @@
                 <property name="max-sidebar-width">240</property>
                 <property name="sidebar-width-unit">px</property>
                 <property name="sidebar-width-fraction">0.2</property>
+                <style>
+                  <class name="view"/>
+                </style>
                 <property name="sidebar">
                   <object class="AdwToolbarView">
                     <child type="top">
