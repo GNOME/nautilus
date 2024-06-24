@@ -34,5 +34,8 @@ nautilus_file_chooser_set_filters (NautilusFileChooser *self,
 void
 nautilus_file_chooser_set_starting_location (NautilusFileChooser *self,
                                              GFile               *starting_location);
+void
+nautilus_file_chooser_set_suggested_name (NautilusFileChooser *self,
+                                          const char          *suggested_name);
 
 G_END_DECLS

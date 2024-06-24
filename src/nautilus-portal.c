@@ -85,6 +85,13 @@ complete_file_chooser (FileChooserData *data,
                                                   response,
                                                   g_variant_builder_end (results));
     }
+    else if (strcmp (method_name, "SaveFile") == 0)
+    {
+        xdp_impl_file_chooser_complete_save_file (data->self->impl_file_chooser_skeleton,
+                                                  data->invocation,
+                                                  response,
+                                                  g_variant_builder_end (results));
+    }
     else
     {
         g_assert_not_reached ();
@@ -209,6 +216,10 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
                 (open_multiple ? NAUTILUS_MODE_OPEN_FOLDERS : NAUTILUS_MODE_OPEN_FOLDER) :
                 (open_multiple ? NAUTILUS_MODE_OPEN_FILES : NAUTILUS_MODE_OPEN_FILE));
     }
+    else if (strcmp (method_name, "SaveFile") == 0)
+    {
+        mode = NAUTILUS_MODE_SAVE_FILE;
+    }
     else
     {
         g_return_val_if_reached (G_DBUS_METHOD_INVOCATION_UNHANDLED);
@@ -224,11 +235,31 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
         {
             accept_label = open_multiple ? _("_Open") : _("_Select");
         }
+        else
+        {
+            accept_label = _("_Save");
+        }
     }
 
-    /* Define starting location */
+    /* Define starting location (and name, for SAVE_FILE mode)*/
     const char *path;
+    g_autofree char *suggested_filename = NULL;
     g_autoptr (GFile) starting_location = NULL;
+
+    if (mode == NAUTILUS_MODE_SAVE_FILE)
+    {
+        if (g_variant_lookup (arg_options, "current_file", "^&ay", &path))
+        {
+            g_autoptr (GFile) file = g_file_new_for_path (path);
+
+            suggested_filename = g_file_get_basename (file);
+            starting_location = g_file_get_parent (file);
+        }
+        else
+        {
+            (void) g_variant_lookup (arg_options, "current_name", "s", &suggested_filename);
+        }
+    }
 
     if (starting_location == NULL)
     {
@@ -319,6 +350,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     nautilus_file_chooser_set_filters (window, G_LIST_MODEL (filters));
     nautilus_file_chooser_set_current_filter (window, current_filter_position);
     nautilus_file_chooser_set_starting_location (window, starting_location);
+    nautilus_file_chooser_set_suggested_name (window, suggested_filename);
     gtk_window_set_title (GTK_WINDOW (window), arg_title);
 
     g_signal_connect_swapped (window, "close-request",
@@ -409,6 +441,8 @@ nautilus_portal_register (NautilusPortal   *self,
     }
 
     g_signal_connect (self->impl_file_chooser_skeleton, "handle-open-file",
+                      G_CALLBACK (handle_file_chooser_methods), self);
+    g_signal_connect (self->impl_file_chooser_skeleton, "handle-save-file",
                       G_CALLBACK (handle_file_chooser_methods), self);
 
     return TRUE;
