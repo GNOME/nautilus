@@ -399,24 +399,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     /* Show window */
     if (arg_parent_window != NULL)
     {
-        data->external_parent = create_external_window_from_handle (arg_parent_window);
-        if (data->external_parent == NULL)
-        {
-            g_warning ("Failed to associate portal window with parent window %s",
-                       arg_parent_window);
-        }
-        else
-        {
-            gtk_widget_realize (GTK_WIDGET (window));
-
-            GdkSurface *surface = gtk_native_get_surface (GTK_NATIVE (window));
-            gboolean modal = TRUE;
-
-            (void) g_variant_lookup (arg_options, "modal", "b", &modal);
-
-            external_window_set_parent_of (data->external_parent, surface);
-            gtk_window_set_modal (data->window, modal);
-        }
+        g_message ("No parenting. Testing purposes only.");
     }
 
     gtk_window_present (data->window);
