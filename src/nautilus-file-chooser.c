@@ -11,6 +11,7 @@
 #include "nautilus-file-chooser.h"
 
 #include <config.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include "gtk/nautilusgtkplacessidebarprivate.h"
@@ -18,6 +19,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
+#include "nautilus-filename-validator.h"
 #include "nautilus-scheme.h"
 #include "nautilus-shortcut-manager.h"
 #include "nautilus-toolbar.h"
@@ -29,6 +31,9 @@ struct _NautilusFileChooser
     AdwWindow parent_instance;
 
     NautilusMode mode;
+    char *accept_label;
+    char *suggested_name;
+
     GtkWidget *split_view;
     GtkWidget *places_sidebar;
     NautilusToolbar *toolbar;
@@ -38,6 +43,13 @@ struct _NautilusFileChooser
     GtkWidget *choices_menu_button;
     GtkWidget *read_only_checkbox;
     GtkWidget *accept_button;
+    GtkWidget *filename_widget;
+    GtkWidget *filename_button_container;
+    GtkWidget *filename_undo_button;
+    GtkWidget *filename_entry;
+    GtkWidget *new_folder_button;
+
+    NautilusFilenameValidator *validator;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusFileChooser, nautilus_file_chooser, ADW_TYPE_WINDOW)
@@ -73,6 +85,7 @@ mode_can_accept_files (NautilusMode  mode,
     switch (mode)
     {
         case NAUTILUS_MODE_OPEN_FILE:
+        case NAUTILUS_MODE_SAVE_FILE:
         {
             gboolean is_folder = nautilus_file_opens_in_view (NAUTILUS_FILE (files->data));
 
@@ -124,6 +137,7 @@ mode_can_accept_current_directory (NautilusMode  mode,
     switch (mode)
     {
         case NAUTILUS_MODE_OPEN_FOLDER:
+        case NAUTILUS_MODE_SAVE_FILE:
         {
             g_autofree char *scheme = g_file_get_uri_scheme (location);
 
@@ -149,10 +163,19 @@ mode_can_accept_current_directory (NautilusMode  mode,
 static gboolean
 nautilus_file_chooser_can_accept (NautilusFileChooser *self,
                                   GList               *files,
-                                  GFile               *location)
+                                  GFile               *location,
+                                  gboolean             filename_passed)
 {
-    return (mode_can_accept_files (self->mode, files) ||
-            mode_can_accept_current_directory (self->mode, location));
+    if (self->mode == NAUTILUS_MODE_SAVE_FILE)
+    {
+        return (filename_passed ||
+                mode_can_accept_current_directory (self->mode, location));
+    }
+    else
+    {
+        return (mode_can_accept_files (self->mode, files) ||
+                mode_can_accept_current_directory (self->mode, location));
+    }
 }
 
 static void
@@ -168,13 +191,69 @@ emit_accepted (NautilusFileChooser *self,
 }
 
 static void
+on_overwrite_confirm_response (AdwAlertDialog      *dialog,
+                               GAsyncResult        *result,
+                               NautilusFileChooser *self)
+{
+    const char *response = adw_alert_dialog_choose_finish (dialog, result);
+
+    if (g_strcmp0 (response, "replace") == 0)
+    {
+        GFile *parent_location = nautilus_window_slot_get_location (self->slot);
+        g_autofree char *new_filename = nautilus_filename_validator_get_new_name (self->validator);
+        g_autoptr (GFile) new_file_location = g_file_get_child (parent_location, new_filename);
+
+        emit_accepted (self, &(GList){ .data = new_file_location });
+    }
+}
+
+static void
+ask_confirm_overwrite (NautilusFileChooser *self)
+{
+    AdwDialog *dialog = adw_alert_dialog_new (_("Replace When Saving?"), NULL);
+    g_autofree char *filename = nautilus_filename_validator_get_new_name (self->validator);
+    g_autoptr (NautilusFile) directory_as_file = nautilus_file_get (nautilus_window_slot_get_location (self->slot));
+    const char *directory_name = nautilus_file_get_display_name (directory_as_file);
+
+    adw_alert_dialog_format_body (ADW_ALERT_DIALOG (dialog),
+                                  _("“%s” already exists in “%s”. Saving will replace or overwrite its contents."),
+                                  filename, directory_name);
+
+    adw_alert_dialog_add_responses (ADW_ALERT_DIALOG (dialog),
+                                    "cancel", _("_Cancel"),
+                                    "replace", _("_Replace"),
+                                    NULL);
+
+    adw_alert_dialog_set_response_appearance (ADW_ALERT_DIALOG (dialog),
+                                              "replace",
+                                              ADW_RESPONSE_DESTRUCTIVE);
+
+    adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "cancel");
+    adw_alert_dialog_set_close_response (ADW_ALERT_DIALOG (dialog), "cancel");
+
+    adw_alert_dialog_choose (ADW_ALERT_DIALOG (dialog), GTK_WIDGET (self),
+                             NULL, (GAsyncReadyCallback) on_overwrite_confirm_response, self);
+}
+
+static void
 on_accept_button_clicked (NautilusFileChooser *self)
 {
     GList *selection = nautilus_window_slot_get_selection (self->slot);
 
     if (self->mode == NAUTILUS_MODE_SAVE_FILE)
     {
-        /* TODO */
+        if (nautilus_filename_validator_get_will_overwrite (self->validator))
+        {
+            ask_confirm_overwrite (self);
+        }
+        else
+        {
+            GFile *parent_location = nautilus_window_slot_get_location (self->slot);
+            g_autofree char *name = nautilus_filename_validator_get_new_name (self->validator);
+            g_autoptr (GFile) file_location = g_file_get_child (parent_location, name);
+
+            emit_accepted (self, &(GList){ .data = file_location });
+        }
     }
     else
     {
@@ -190,6 +269,41 @@ on_accept_button_clicked (NautilusFileChooser *self)
 
             emit_accepted (self, &(GList){ .data = location });
         }
+    }
+}
+
+static void
+on_validator_has_feedback_changed (NautilusFileChooser *self)
+{
+    gboolean has_feedback;
+
+    g_object_get (self->validator,
+                  "has-feedback", &has_feedback,
+                  NULL);
+    if (has_feedback)
+    {
+        gtk_widget_add_css_class (self->filename_entry, "warning");
+    }
+    else
+    {
+        gtk_widget_remove_css_class (self->filename_entry, "warning");
+    }
+}
+
+static void
+on_validator_will_overwrite_changed (NautilusFileChooser *self)
+{
+    if (nautilus_filename_validator_get_will_overwrite (self->validator))
+    {
+        gtk_widget_remove_css_class (self->accept_button, "suggested-action");
+        gtk_widget_add_css_class (self->accept_button, "destructive-action");
+        gtk_button_set_label (GTK_BUTTON (self->accept_button), _("_Replace"));
+    }
+    else
+    {
+        gtk_widget_remove_css_class (self->accept_button, "destructive-action");
+        gtk_widget_add_css_class (self->accept_button, "suggested-action");
+        gtk_button_set_label (GTK_BUTTON (self->accept_button), self->accept_label);
     }
 }
 
@@ -213,17 +327,85 @@ on_slot_activate_files (NautilusFileChooser *self,
 {
     if (mode_can_accept_files (self->mode, files))
     {
-        if (self->mode == NAUTILUS_MODE_SAVE_FILE)
-        {
-            /* TODO */
-        }
-        else
-        {
-            g_autolist (GFile) file_locations = g_list_copy_deep (files, (GCopyFunc) nautilus_file_get_activation_location, NULL);
-
-            emit_accepted (self, file_locations);
-        }
+        gtk_widget_activate (self->accept_button);
     }
+}
+
+static void
+on_filename_entry_focus_leave (NautilusFileChooser *self)
+{
+    /* The filename entry is a transient: it should hide when it loses focus.
+     *
+     * However, if we lose focus because the window itself lost focus, then the
+     * filename entry should persist, because this may happen due to the user
+     * switching keyboard layout/input method; or they may want to copy/drop
+     * an path from another window/app. We detect this case by looking at the
+     * focus widget of the window (GtkRoot).
+     */
+
+    GtkWidget *focus_widget = gtk_root_get_focus (gtk_widget_get_root (GTK_WIDGET (self)));
+    if (focus_widget != NULL &&
+        gtk_widget_is_ancestor (focus_widget, GTK_WIDGET (self->filename_entry)))
+    {
+        return;
+    }
+
+    gtk_stack_set_visible_child (GTK_STACK (self->filename_widget),
+                                 self->filename_button_container);
+}
+
+static void
+on_filename_entry_changed (NautilusFileChooser *self)
+{
+    const char *current_text = gtk_editable_get_text (GTK_EDITABLE (self->filename_entry));
+    gboolean is_not_suggested_text = (g_strcmp0 (self->suggested_name, current_text) != 0);
+
+    gtk_widget_set_visible (self->filename_undo_button, is_not_suggested_text);
+
+    nautilus_filename_validator_validate (self->validator);
+}
+
+static void
+open_filename_entry (NautilusFileChooser *self)
+{
+    gtk_stack_set_visible_child (GTK_STACK (self->filename_widget),
+                                 self->filename_entry);
+    gtk_entry_grab_focus_without_selecting (GTK_ENTRY (self->filename_entry));
+}
+
+static void
+on_filename_undo_button_clicked (NautilusFileChooser *self)
+{
+    gtk_editable_set_text (GTK_EDITABLE (self->filename_entry), self->suggested_name);
+
+    nautilus_window_slot_open_location_full (self->slot, nautilus_window_slot_get_location (self->slot), 0, NULL);
+}
+
+static void
+on_slot_selection_notify (NautilusFileChooser *self)
+{
+    g_return_if_fail (self->mode == NAUTILUS_MODE_SAVE_FILE);
+
+    GList *selection = nautilus_window_slot_get_selection (self->slot);
+
+    if (mode_can_accept_files (self->mode, selection))
+    {
+        NautilusFile *file = NAUTILUS_FILE (selection->data);
+
+        gtk_editable_set_text (GTK_EDITABLE (self->filename_entry),
+                               nautilus_file_get_edit_name (file));
+    }
+}
+
+static void
+on_location_changed (NautilusFileChooser *self)
+{
+    g_autoptr (NautilusDirectory) directory = NULL;
+    GFile *location = nautilus_window_slot_get_location (self->slot);
+
+    directory = nautilus_directory_get (location);
+    nautilus_filename_validator_set_containing_directory (self->validator, directory);
+    nautilus_filename_validator_validate (self->validator);
 }
 
 static gboolean
@@ -261,6 +443,17 @@ nautilus_file_chooser_dispose (GObject *object)
     }
 
     G_OBJECT_CLASS (nautilus_file_chooser_parent_class)->dispose (object);
+}
+
+static void
+nautilus_file_chooser_finalize (GObject *object)
+{
+    NautilusFileChooser *self = (NautilusFileChooser *) object;
+
+    g_free (self->accept_label);
+    g_free (self->suggested_name);
+
+    G_OBJECT_CLASS (nautilus_file_chooser_parent_class)->finalize (object);
 }
 
 static void
@@ -319,6 +512,7 @@ nautilus_file_chooser_constructed (GObject *object)
     /* Setup slot.
      * We hold a reference to control its lifetime with relation to bindings. */
     self->slot = g_object_ref (nautilus_window_slot_new (self->mode));
+    g_signal_connect_swapped (self->slot, "notify::location", G_CALLBACK (on_location_changed), self);
     adw_toolbar_view_set_content (self->slot_container, GTK_WIDGET (self->slot));
     nautilus_window_slot_set_active (self->slot, TRUE);
     g_signal_connect_swapped (self->slot, "notify::allow-stop",
@@ -333,14 +527,29 @@ nautilus_file_chooser_constructed (GObject *object)
                             G_BINDING_SYNC_CREATE);
     nautilus_window_slot_set_filter (self->slot, GTK_FILTER (filter));
 
+    gtk_widget_set_visible (self->filename_widget,
+                            (self->mode == NAUTILUS_MODE_SAVE_FILE));
+
     gtk_widget_set_visible (self->choices_menu_button,
                             (self->mode != NAUTILUS_MODE_SAVE_FILE &&
                              self->mode != NAUTILUS_MODE_SAVE_FILES));
+
+    gtk_widget_set_visible (self->new_folder_button,
+                            (self->mode == NAUTILUS_MODE_SAVE_FILE ||
+                             self->mode == NAUTILUS_MODE_SAVE_FILES));
+
+    if (self->mode == NAUTILUS_MODE_SAVE_FILE)
+    {
+        g_signal_connect_object (self->slot, "notify::selection",
+                                 G_CALLBACK (on_slot_selection_notify), self,
+                                 G_CONNECT_SWAPPED);
+    }
 }
 
 static void
 nautilus_file_chooser_init (NautilusFileChooser *self)
 {
+    g_type_ensure (NAUTILUS_TYPE_FILENAME_VALIDATOR);
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
     g_type_ensure (NAUTILUS_TYPE_SHORTCUT_MANAGER);
@@ -371,6 +580,7 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
 
     object_class->constructed = nautilus_file_chooser_constructed;
     object_class->dispose = nautilus_file_chooser_dispose;
+    object_class->finalize = nautilus_file_chooser_finalize;
     object_class->get_property = nautilus_file_chooser_get_property;
     object_class->set_property = nautilus_file_chooser_set_property;
 
@@ -384,9 +594,22 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, choices_menu_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, read_only_checkbox);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, accept_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filename_widget);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filename_button_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filename_undo_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filename_entry);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, new_folder_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, validator);
 
     gtk_widget_class_bind_template_callback (widget_class, nautilus_file_chooser_can_accept);
     gtk_widget_class_bind_template_callback (widget_class, on_accept_button_clicked);
+    gtk_widget_class_bind_template_callback (widget_class, open_filename_entry);
+    gtk_widget_class_bind_template_callback (widget_class, on_filename_undo_button_clicked);
+    gtk_widget_class_bind_template_callback (widget_class, on_filename_entry_changed);
+    gtk_widget_class_bind_template_callback (widget_class, on_filename_entry_focus_leave);
+    gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
+    gtk_widget_class_bind_template_callback (widget_class, on_validator_has_feedback_changed);
+    gtk_widget_class_bind_template_callback (widget_class, on_validator_will_overwrite_changed);
 
     properties[PROP_MODE] =
         g_param_spec_enum ("mode", NULL, NULL,
@@ -417,6 +640,8 @@ void
 nautilus_file_chooser_set_accept_label (NautilusFileChooser *self,
                                         const char          *accept_label)
 {
+    g_set_str (&self->accept_label, accept_label);
+
     gtk_button_set_label (GTK_BUTTON (self->accept_button), accept_label);
 }
 
@@ -453,4 +678,16 @@ nautilus_file_chooser_set_starting_location (NautilusFileChooser *self,
     }
 
     nautilus_window_slot_open_location_full (self->slot, location_to_open, 0, NULL);
+}
+
+void
+nautilus_file_chooser_set_suggested_name (NautilusFileChooser *self,
+                                          const char          *suggested_name)
+{
+    g_set_str (&self->suggested_name, suggested_name);
+
+    if (suggested_name != NULL)
+    {
+        gtk_editable_set_text (GTK_EDITABLE (self->filename_entry), suggested_name);
+    }
 }

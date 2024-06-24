@@ -48,6 +48,8 @@
                         <property name="show-toolbar-children">true</property>
                         <property name="window-slot"
                                   bind-source="slot_container" bind-property="content" bind-flags="sync-create"/>
+                        <property name="show-new-folder-button"
+                                  bind-source="new_folder_button" bind-property="visible" bind-flags="sync-create"/>
                       </object>
                     </child>
                     <child type="bottom">
@@ -79,6 +81,11 @@
                                     </child>
                                   </object>
                                 </child>
+                                <child type="center">
+                                  <object class="AdwLayoutSlot">
+                                    <property name="id">filename-widget</property>
+                                  </object>
+                                </child>
                                 <child type="end">
                                   <object class="GtkBox">
                                     <style>
@@ -107,6 +114,13 @@
                             <property name="content">
                               <object class="GtkBox">
                                 <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="AdwLayoutSlot">
+                                    <property name="id">filename-widget</property>
+                                    <property name="visible"
+                                              bind-source="filename_widget" bind-property="visible" bind-flags="sync-create"/>
+                                  </object>
+                                </child>
                                 <child>
                                   <object class="GtkCenterBox">
                                     <child type="start">
@@ -150,6 +164,14 @@
                                           <class name="toolbar"/>
                                         </style>
                                         <child>
+                                          <object class="GtkButton" id="new_folder_button">
+                                            <property name="visible">false</property>
+                                            <property name="icon-name">folder-new-symbolic</property>
+                                            <property name="tooltip_text" translatable="yes">New Folder</property>
+                                            <property name="action-name">view.new-folder</property>
+                                          </object>
+                                        </child>
+                                        <child>
                                           <object class="AdwLayoutSlot">
                                             <property name="id">choices-menu-button</property>
                                           </object>
@@ -160,6 +182,66 @@
                                 </child>
                               </object>
                             </property>
+                          </object>
+                        </child>
+                        <child type="filename-widget">
+                          <object class="GtkStack" id="filename_widget">
+                            <child>
+                              <object class="GtkOverlay" id="filename_button_container">
+                                <property name="valign">center</property>
+                                <child>
+                                  <object class="GtkButton">
+                                    <property name="tooltip-text" translatable="yes">Edit File Name</property>
+                                    <accessibility>
+                                      <relation name="labelled-by">filename_label</relation>
+                                    </accessibility>
+                                    <signal name="clicked"
+                                            handler="open_filename_entry" object="NautilusFileChooser" swapped="yes"/>
+                                    <property name="child">
+                                      <object class="GtkCenterBox">
+                                      <child type="center">
+                                        <object class="GtkLabel" id="filename_label">
+                                          <property name="label" bind-source="filename_entry" bind-property="text" bind-flags="sync-create"/>
+                                          <property name="ellipsize">middle</property>
+                                        </object>
+                                      </child>
+                                      <child type="end">
+                                        <object class="GtkImage">
+                                          <property name="margin-start">12</property>
+                                          <property name="icon-name">document-edit-symbolic</property>
+                                        </object>
+                                      </child>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child type="overlay">
+                                  <object class="GtkButton" id="filename_undo_button">
+                                    <property name="tooltip-text" translatable="yes">Reset File Name</property>
+                                    <property name="icon-name">edit-undo-symbolic</property>
+                                    <property name="visible">false</property>
+                                    <property name="halign">start</property>
+                                    <signal name="clicked"
+                                            handler="on_filename_undo_button_clicked" object="NautilusFileChooser" swapped="yes"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="filename_entry">
+                                <property name="tooltip-text" translatable="yes">File Name</property>
+                                <property name="valign">center</property>
+                                <property name="max-width-chars">30</property>
+                                <signal name="changed"
+                                        handler="on_filename_entry_changed" object="NautilusFileChooser" swapped="yes"/>
+                                <child>
+                                  <object class="GtkEventControllerFocus">
+                                    <signal name="leave"
+                                            handler="on_filename_entry_focus_leave" object="NautilusFileChooser" swapped="yes"/>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
                           </object>
                         </child>
                         <child type="accept-button">
@@ -174,6 +256,7 @@
                                 <lookup type="NautilusWindowSlot" name="location">
                                   <lookup name="content">slot_container</lookup>
                                 </lookup>
+                                <lookup name="passed">validator</lookup>
                               </closure>
                             </binding>
                             <signal name="clicked" handler="on_accept_button_clicked" swapped="yes"/>
@@ -213,6 +296,7 @@
       <object class="AdwBreakpoint">
         <condition>max-width: 682sp</condition>
         <setter object="split_view" property="collapsed">true</setter>
+        <setter object="toolbar" property="show-new-folder-button">false</setter>
         <setter object="bottom_toolbar" property="layout-name">narrow</setter>
       </object>
     </child>
@@ -228,4 +312,11 @@
       </object>
     </child>
   </template>
+  <object class="NautilusFilenameValidator" id="validator">
+    <property name="allow-overwrite">true</property>
+    <property name="new-name" bind-source="filename_entry" bind-property="text"/>
+    <signal name="notify::has-feedback" handler="on_validator_has_feedback_changed" swapped="yes"/>
+    <signal name="notify::will-overwrite" handler="on_validator_will_overwrite_changed" swapped="yes"/>
+  </object>
 </interface>
+
