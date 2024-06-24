@@ -1128,22 +1128,10 @@ nautilus_application_startup (GApplication *app)
 
     g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/nautilus");
 
-    /* Initialize GDK display (for wayland-x11-interop protocol) before GTK does
-     * it during the chain-up. */
-    g_autoptr (GError) error = NULL;
-    GdkDisplay *display = init_external_window_display (&error);
-    if (error != NULL)
-    {
-        g_message ("Failed to initialize display server connection: %s",
-                   error->message);
-    }
-
     /* Chain up to the GtkApplication implementation early, so that gtk_init()
      * is called for us.
      */
     G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
-
-    g_assert (gdk_display_get_default () == display);
 
     gtk_window_set_default_icon_name (APPLICATION_ID);
 
