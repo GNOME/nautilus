@@ -354,6 +354,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     nautilus_file_chooser_set_filters (window, G_LIST_MODEL (filters));
     nautilus_file_chooser_set_current_filter (window, current_filter_position);
     nautilus_file_chooser_set_starting_location (window, starting_location);
+    nautilus_file_chooser_set_suggested_name (window, suggested_filename);
     gtk_window_set_title (GTK_WINDOW (window), arg_title);
 
     g_signal_connect_swapped (window, "close-request",
