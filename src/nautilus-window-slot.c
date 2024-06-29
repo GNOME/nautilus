@@ -128,9 +128,6 @@ struct _NautilusWindowSlot
     /* Banner */
     AdwBanner *banner;
 
-    GtkLabel *search_info_label;
-    GtkRevealer *search_info_label_revealer;
-
     /* Load state */
     GCancellable *find_mount_cancellable;
     /* It could be either the view is loading the files or the search didn't
@@ -186,7 +183,6 @@ static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
 static void nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                                   NautilusFile       *file);
-static void update_search_information (NautilusWindowSlot *self);
 static void nautilus_window_slot_go_up (NautilusWindowSlot *self);
 static void nautilus_window_slot_go_down (NautilusWindowSlot *self);
 
@@ -921,16 +917,6 @@ nautilus_window_slot_constructed (GObject *object)
     gtk_box_append (GTK_BOX (self->vbox),
                     GTK_WIDGET (self->banner));
 
-    self->search_info_label = GTK_LABEL (gtk_label_new (NULL));
-    self->search_info_label_revealer = GTK_REVEALER (gtk_revealer_new ());
-
-    gtk_revealer_set_child (GTK_REVEALER (self->search_info_label_revealer),
-                            GTK_WIDGET (self->search_info_label));
-    gtk_box_append (GTK_BOX (self->vbox),
-                    GTK_WIDGET (self->search_info_label_revealer));
-
-    gtk_widget_add_css_class (GTK_WIDGET (self->search_info_label), "search-information");
-
     self->global_search_page = ADW_STATUS_PAGE (adw_status_page_new ());
     adw_status_page_set_icon_name (self->global_search_page, "edit-find-symbolic");
     adw_status_page_set_title (self->global_search_page, _("Search Everywhere"));
@@ -1078,8 +1064,6 @@ action_search_visible (GSimpleAction *action,
         }
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCH_VISIBLE]);
-
-        update_search_information (self);
     }
 
     /* Update global_search_page visibility even if the state of search-visible
@@ -1287,61 +1271,6 @@ const GActionEntry slot_entries[] =
 };
 
 static void
-update_search_information (NautilusWindowSlot *self)
-{
-    GFile *location;
-
-    if (!nautilus_window_slot_get_search_visible (self))
-    {
-        gtk_revealer_set_reveal_child (self->search_info_label_revealer, FALSE);
-
-        return;
-    }
-
-    location = nautilus_window_slot_get_current_location (self);
-
-    if (location)
-    {
-        g_autoptr (NautilusFile) file = NULL;
-        gchar *label;
-
-        file = nautilus_file_get (location);
-        label = NULL;
-
-        if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW) ||
-            nautilus_is_root_for_scheme (location, SCHEME_NETWORK))
-        {
-            label = _("Searching network locations only");
-        }
-        else if (nautilus_file_is_remote (file) &&
-                 location_settings_search_get_recursive_for_location (location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
-        {
-            label = _("Remote location — only searching the current folder");
-        }
-        else if (location_settings_search_get_recursive_for_location (location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
-        {
-            label = _("Only searching the current folder");
-        }
-
-        gtk_label_set_label (self->search_info_label, label);
-        gtk_revealer_set_reveal_child (self->search_info_label_revealer,
-                                       label != NULL);
-    }
-}
-
-static void
-recursive_search_preferences_changed (GSettings *settings,
-                                      gchar     *key,
-                                      gpointer   callback_data)
-{
-    NautilusWindowSlot *self;
-
-    self = callback_data;
-
-    update_search_information (self);
-}
-
-static void
 set_back_forward_accelerators (NautilusWindowSlot *self)
 {
     gboolean ltr = (gtk_widget_get_direction (GTK_WIDGET (self)) == GTK_TEXT_DIR_LTR);
@@ -1409,11 +1338,6 @@ static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     g_autofree char *home_uri = nautilus_get_home_directory_uri ();
-
-    g_signal_connect_object (nautilus_preferences,
-                             "changed::recursive-search",
-                             G_CALLBACK (recursive_search_preferences_changed),
-                             self, 0);
 
     self->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (self->slot_action_group),
