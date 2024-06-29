@@ -1389,33 +1389,6 @@ nautilus_window_realize (GtkWidget *widget)
 }
 
 static gboolean
-nautilus_window_key_capture (GtkEventControllerKey *controller,
-                             unsigned int           keyval,
-                             unsigned int           keycode,
-                             GdkModifierType        state,
-                             gpointer               user_data)
-{
-    GtkWidget *widget;
-    GtkWidget *focus_widget;
-
-    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
-    focus_widget = gtk_window_get_focus (GTK_WINDOW (widget));
-    if (focus_widget != NULL && GTK_IS_EDITABLE (focus_widget))
-    {
-        /* if we have input focus on a GtkEditable (e.g. a GtkEntry), forward
-         * the event to it before activating accelerators. This allows, e.g.,
-         * typing a tilde without activating the prompt-home-location action.
-         */
-        if (gtk_event_controller_key_forward (controller, focus_widget))
-        {
-            return GDK_EVENT_STOP;
-        }
-    }
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-static gboolean
 nautilus_window_key_bubble (GtkEventControllerKey *controller,
                             unsigned int           keyval,
                             unsigned int           keycode,
@@ -1660,12 +1633,6 @@ nautilus_window_init (NautilusWindow *window)
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_click_gesture_pressed), NULL);
-
-    controller = gtk_event_controller_key_new ();
-    gtk_widget_add_controller (GTK_WIDGET (window), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
-    g_signal_connect (controller, "key-pressed",
-                      G_CALLBACK (nautilus_window_key_capture), NULL);
 
     controller = gtk_event_controller_key_new ();
     gtk_widget_add_controller (GTK_WIDGET (window), controller);
