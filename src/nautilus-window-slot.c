@@ -2670,24 +2670,6 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
     nautilus_location_banner_load (self->banner, new_location);
 }
 
-static gboolean
-focus_is_on_popup (GtkRoot *window)
-{
-    GtkWidget *focus = gtk_root_get_focus (window);
-
-    if (focus != NULL)
-    {
-        GtkNative *native = gtk_widget_get_native (focus);
-
-        if (native != NULL)
-        {
-            return GDK_IS_POPUP (gtk_native_get_surface (native));
-        }
-    }
-
-    return FALSE;
-}
-
 static void
 view_started_loading (NautilusWindowSlot *self,
                       NautilusView       *view)
@@ -2695,31 +2677,6 @@ view_started_loading (NautilusWindowSlot *self,
     if (view == self->content_view)
     {
         nautilus_window_slot_set_allow_stop (self, TRUE);
-    }
-
-    GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (self));
-
-    if (!focus_is_on_popup (window))
-    {
-        /* This mysterious gtk_widget_grab_focus() call has been carried over
-         * many refactorings, along the way having been wrapped in multiple ways
-         * (nautilus_view_grab_focus(), nautilus_window_pane_grab_focus(),
-         * nautilus_view_grab_focus()). It's been added in a series of bugfixes
-         * related to extra pane.[0] If I had to guess, I'd say it was to deal
-         * with side effects of the grandparent commit[1], which removed a much
-         * older bugfix[2].
-         *
-         * Regardless of its original purpose, we still rely on this call to
-         * prevent a "lost focus" situation. This is easily reproduced, in a
-         * build where this call is removed, by refreshing a view where nothing
-         * is selected. This "lost focus" state means, e.g., some keybindings,
-         * such as Ctrl+A, won't work.
-         *
-         * [0] Commit c69f3a2ba2d0bd23de5a218b8ce13d256481213a
-         * [1] Commit 4efd42312584b46f248e2839582a87776a7baebe
-         * [2] Commit 4f7ae827f7e13cf06965cc72ca60cf7801906a33
-         */
-        gtk_widget_grab_focus (GTK_WIDGET (window));
     }
 
     nautilus_window_slot_set_loading (self, TRUE);
