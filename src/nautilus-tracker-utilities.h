@@ -29,3 +29,6 @@ void nautilus_tracker_setup_miner_fs_connection (void);
 
 /* nautilus_tracker_setup_host_miner_fs_connection_sync() is for testing purposes only */
 void nautilus_tracker_setup_host_miner_fs_connection_sync (void);
+
+gboolean nautilus_tracker_directory_is_tracked (GFile *directory);
+gboolean nautilus_tracker_directory_is_single (GFile *directory);
