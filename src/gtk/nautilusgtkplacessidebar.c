@@ -248,6 +248,7 @@ G_DEFINE_TYPE (NautilusGtkPlacesSidebar, nautilus_gtk_places_sidebar, GTK_TYPE_W
 static void
 call_open_location (NautilusGtkPlacesSidebar *self,
                     GFile                    *location,
+                    NautilusWindowSlot       *preferred_slot,
                     NautilusOpenFlags         open_flags)
 {
   if ((open_flags & self->open_flags) == 0)
@@ -265,7 +266,11 @@ call_open_location (NautilusGtkPlacesSidebar *self,
     }
   else
     {
-      nautilus_window_slot_open_location_full (self->window_slot, location, open_flags, NULL);
+      if (!preferred_slot) {
+        nautilus_window_slot_open_location_full (self->window_slot, location, open_flags, NULL);
+      } else {
+        nautilus_window_slot_open_location_full (preferred_slot, location, open_flags, NULL);
+      }
 
       GtkWidget *ancestor = gtk_widget_get_ancestor (GTK_WIDGET (self), ADW_TYPE_OVERLAY_SPLIT_VIEW);
       AdwOverlaySplitView *split_view = ADW_OVERLAY_SPLIT_VIEW (ancestor);
@@ -1133,7 +1138,7 @@ hover_timer (gpointer user_data)
       if (uri != NULL && g_strcmp0 (uri, SCHEME_TRASH ":///") != 0)
         {
           location = g_file_new_for_uri (uri);
-          call_open_location (sidebar, location, 0);
+          call_open_location (sidebar, location, NULL, 0);
         }
     }
 
@@ -1672,12 +1677,18 @@ drive_start_from_bookmark_cb (GObject      *source_object,
     }
 }
 
+typedef struct {
+  NautilusGtkSidebarRow *row;
+  NautilusWindowSlot *window_slot; /* weak reference */
+} VolumeMountCallbackData;
+
 static void
 volume_mount_cb (GObject      *source_object,
                  GAsyncResult *result,
                  gpointer      user_data)
 {
-  NautilusGtkSidebarRow *row = NAUTILUS_GTK_SIDEBAR_ROW (user_data);
+  g_autofree VolumeMountCallbackData *callback_data = user_data;
+  NautilusGtkSidebarRow *row = NAUTILUS_GTK_SIDEBAR_ROW (callback_data->row);
   NautilusGtkPlacesSidebar *sidebar;
   GVolume *volume;
   GError *error;
@@ -1716,9 +1727,10 @@ volume_mount_cb (GObject      *source_object,
   if (mount != NULL)
     {
       GFile *location;
+      NautilusWindowSlot *window_slot = callback_data->window_slot;
 
       location = g_mount_get_default_location (mount);
-      call_open_location (sidebar, location, sidebar->go_to_after_mount_open_flags);
+      call_open_location (sidebar, location, window_slot, sidebar->go_to_after_mount_open_flags);
 
       g_object_unref (G_OBJECT (location));
       g_object_unref (G_OBJECT (mount));
@@ -1726,6 +1738,7 @@ volume_mount_cb (GObject      *source_object,
 
   g_object_unref (row);
   g_object_unref (sidebar);
+  g_clear_weak_pointer (&callback_data->window_slot);
 }
 
 static void
@@ -1734,15 +1747,18 @@ mount_volume (NautilusGtkSidebarRow *row,
 {
   NautilusGtkPlacesSidebar *sidebar;
   g_autoptr (GMountOperation) mount_op = NULL;
+  VolumeMountCallbackData *callback_data = NULL;
 
   g_object_get (row, "sidebar", &sidebar, NULL);
 
   mount_op = get_mount_operation (sidebar);
   g_mount_operation_set_password_save (mount_op, G_PASSWORD_SAVE_FOR_SESSION);
 
-  g_object_ref (row);
   g_object_ref (sidebar);
-  g_volume_mount (volume, 0, mount_op, NULL, volume_mount_cb, row);
+  callback_data = g_new0 (VolumeMountCallbackData, 1);
+  g_set_weak_pointer (&callback_data->window_slot, sidebar->window_slot);
+  callback_data->row = g_object_ref (row);
+  g_volume_mount (volume, 0, mount_op, NULL, volume_mount_cb, callback_data);
 }
 
 static void
@@ -1792,7 +1808,7 @@ open_uri (NautilusGtkPlacesSidebar   *sidebar,
   GFile *location;
 
   location = g_file_new_for_uri (uri);
-  call_open_location (sidebar, location, open_flags);
+  call_open_location (sidebar, location, NULL, open_flags);
   g_object_unref (location);
 }
 
