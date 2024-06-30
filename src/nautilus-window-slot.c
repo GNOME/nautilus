@@ -1203,7 +1203,7 @@ static gboolean setup_view (NautilusWindowSlot *self,
                             NautilusView       *view);
 static void load_new_location (NautilusWindowSlot *slot,
                                GFile              *location,
-                               GList              *selection,
+                               GList             **selection,
                                NautilusFile       *file_to_activate,
                                gboolean            tell_current_content_view,
                                gboolean            tell_new_content_view);
@@ -1981,7 +1981,7 @@ setup_view (NautilusWindowSlot *self,
     {
         load_new_location (self,
                            self->pending_location,
-                           self->pending_selection,
+                           &self->pending_selection,
                            self->pending_file_to_activate,
                            FALSE,
                            TRUE);
@@ -1997,7 +1997,7 @@ setup_view (NautilusWindowSlot *self,
 
         load_new_location (self,
                            old_location,
-                           selection,
+                           &selection,
                            NULL,
                            FALSE,
                            TRUE);
@@ -2015,12 +2015,12 @@ out:
 }
 
 static void
-load_new_location (NautilusWindowSlot *self,
-                   GFile              *location,
-                   GList              *selection,
-                   NautilusFile       *file_to_activate,
-                   gboolean            tell_current_content_view,
-                   gboolean            tell_new_content_view)
+load_new_location (NautilusWindowSlot  *self,
+                   GFile               *location,
+                   GList              **selection,
+                   NautilusFile        *file_to_activate,
+                   gboolean             tell_current_content_view,
+                   gboolean             tell_new_content_view)
 {
     NautilusView *view = NULL;
     g_assert (self != NULL);
@@ -2042,7 +2042,7 @@ load_new_location (NautilusWindowSlot *self,
     }
     if (view)
     {
-        nautilus_view_set_selection (view, selection);
+        nautilus_view_set_selection (view, *selection);
         if (file_to_activate != NULL)
         {
             g_autoptr (GAppInfo) app_info = NULL;
@@ -3059,7 +3059,7 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
         selection = nautilus_view_get_selection (self->content_view);
         load_new_location (self,
                            location,
-                           selection,
+                           &selection,
                            NULL,
                            TRUE,
                            FALSE);
