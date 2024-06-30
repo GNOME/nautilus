@@ -2495,11 +2495,12 @@ found_mount_cb (GObject      *source_object,
     FindMountData *data = user_data;
     NautilusWindowSlot *self;
     GMount *mount;
-    self = NAUTILUS_WINDOW_SLOT (data->slot);
+
     if (g_cancellable_is_cancelled (data->cancellable))
     {
         goto out;
     }
+    self = NAUTILUS_WINDOW_SLOT (data->slot);
 
     mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
                                                 res,
