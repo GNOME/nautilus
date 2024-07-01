@@ -115,7 +115,7 @@ gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.4')
 gnome_desktop = dependency('gnome-desktop-4', version: '>= 43')
 gtk = dependency('gtk4', version: '>= 4.13.6')
 libadwaita = dependency('libadwaita-1', version: '>= 1.6.alpha')
-libportal = dependency('libportal', version: '>= 0.5')
+libportal = dependency('libportal', version: '>= 0.7')
 libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
 selinux = []
 if get_option('selinux')

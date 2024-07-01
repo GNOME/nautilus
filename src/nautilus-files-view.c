@@ -6535,10 +6535,18 @@ real_send_email (GStrv              attachments,
      * provide an empty list */
     const char * const addresses[] = {NULL};
     g_autoptr (XdpPortal) portal = NULL;
+    g_autoptr (GError) error = NULL;
     XdpParent *parent;
     GtkWidget *toplevel;
 
-    portal = xdp_portal_new ();
+    portal = xdp_portal_initable_new (&error);
+
+    if (error != NULL)
+    {
+        g_critical ("Failed to create XdpPortal instance: %s", error->message);
+        return;
+    }
+
     toplevel = gtk_widget_get_ancestor (GTK_WIDGET (view), GTK_TYPE_WINDOW);
     parent = xdp_parent_new_gtk (GTK_WINDOW (toplevel));
     xdp_portal_compose_email (portal, parent, addresses,
@@ -6735,11 +6743,19 @@ set_wallpaper_with_portal (NautilusFile *file,
                            gpointer      user_data)
 {
     g_autoptr (XdpPortal) portal = NULL;
+    g_autoptr (GError) error = NULL;
     g_autofree gchar *uri = NULL;
     XdpParent *parent = NULL;
     GtkWidget *toplevel;
 
-    portal = xdp_portal_new ();
+    portal = xdp_portal_initable_new (&error);
+
+    if (error != NULL)
+    {
+        g_critical ("Failed to create XdpPortal instance: %s", error->message);
+        return;
+    }
+
     toplevel = gtk_widget_get_ancestor (GTK_WIDGET (user_data), GTK_TYPE_WINDOW);
     parent = xdp_parent_new_gtk (GTK_WINDOW (toplevel));
     uri = nautilus_file_get_uri (file);
