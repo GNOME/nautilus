@@ -150,8 +150,6 @@ struct _NautilusGtkPlacesSidebar {
 
   /* volume mounting - delayed open process */
   NautilusOpenFlags go_to_after_mount_open_flags;
-  GCancellable *cancellable;
-
   GtkWidget *popover;
   NautilusGtkSidebarRow *context_row;
 
@@ -679,11 +677,6 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
     g_object_get (selected, "uri", &original_uri, NULL);
   else
     original_uri = NULL;
-
-  g_cancellable_cancel (sidebar->cancellable);
-
-  g_object_unref (sidebar->cancellable);
-  sidebar->cancellable = g_cancellable_new ();
 
   /* Reset drag state, just in case we update the places while dragging or
    * ending a drag */
@@ -3437,8 +3430,6 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
   GtkEventController *controller;
   GtkGesture *gesture;
 
-  sidebar->cancellable = g_cancellable_new ();
-
   create_volume_monitor (sidebar);
 
   sidebar->slot_signal_group = g_signal_group_new (NAUTILUS_TYPE_WINDOW_SLOT);
@@ -3622,13 +3613,6 @@ nautilus_gtk_places_sidebar_dispose (GObject *object)
 
   g_clear_object (&sidebar->window_slot);
   g_clear_object (&sidebar->slot_signal_group);
-
-  if (sidebar->cancellable)
-    {
-      g_cancellable_cancel (sidebar->cancellable);
-      g_object_unref (sidebar->cancellable);
-      sidebar->cancellable = NULL;
-    }
 
   g_clear_pointer (&sidebar->popover, gtk_widget_unparent);
 
