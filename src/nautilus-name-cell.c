@@ -28,7 +28,7 @@ struct _NautilusNameCell
     GtkWidget *icon;
     GtkWidget *emblems_box;
     GtkWidget *snippet_button;
-    GtkWidget *snippet;
+    GtkLabel *snippet;
     GtkWidget *path;
 
     gboolean show_snippet;
@@ -118,7 +118,7 @@ update_labels (NautilusNameCell *self)
     }
 
     gtk_label_set_text (GTK_LABEL (self->path), path_text);
-    gtk_label_set_markup (GTK_LABEL (self->snippet), fts_snippet);
+    gtk_label_set_markup (self->snippet, fts_snippet);
 
     gtk_widget_set_visible (self->path, (path_text != NULL));
     gtk_widget_set_visible (self->snippet_button, (fts_snippet != NULL));
@@ -342,6 +342,16 @@ on_map_changed (GtkWidget *widget,
 }
 
 static void
+popover_show_cb (NautilusNameCell *self)
+{
+    const char *label = gtk_label_get_label (self->snippet);
+
+    gtk_accessible_announce (GTK_ACCESSIBLE (self),
+                             label,
+                             GTK_ACCESSIBLE_ANNOUNCEMENT_PRIORITY_MEDIUM);
+}
+
+static void
 nautilus_name_cell_init (NautilusNameCell *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
@@ -411,6 +421,8 @@ nautilus_name_cell_class_init (NautilusNameCellClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, snippet_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, snippet);
     gtk_widget_class_bind_template_child (widget_class, NautilusNameCell, path);
+
+    gtk_widget_class_bind_template_callback (widget_class, popover_show_cb);
 }
 
 NautilusViewCell *
