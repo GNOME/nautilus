@@ -2,7 +2,7 @@
 
 @keyframes needs_attention_keyframes {
   0% { }
-  10% { background-color: @accent_bg_color; }
+  10% { background-color: var(--accent-bg-color); }
   100% { }
 }
 
@@ -18,13 +18,13 @@
 
 /* Give the button same colors as the rows */
 #NautilusProgressIndicator menubutton > button:hover {
-  background-color: alpha(@sidebar_fg_color, .07);
+  background-color: color-mix(in srgb, var(--sidebar-fg-color) 7%, transparent);
 }
 #NautilusProgressIndicator menubutton > button:checked {
-  background-color: alpha(@sidebar_fg_color, .10);
+  background-color: color-mix(in srgb, var(--sidebar-fg-color) 10%, transparent);
 }
 #NautilusProgressIndicator menubutton > button:checked:hover {
-  background-color: alpha(@sidebar_fg_color, .13);
+  background-color: color-mix(in srgb, var(--sidebar-fg-color) 13%, transparent);
 }
 
 /* Remove white background and highlight on hover which GTK adds by default
@@ -37,7 +37,7 @@
 /* Path bar */
 
 #NautilusPathBar {
-  background-color: alpha(currentColor, 0.1);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
   border-radius: 6px;
 }
 #NautilusPathBar > menubutton {
@@ -45,12 +45,12 @@
 }
 
 #NautilusPathBar > scrolledwindow undershoot.left {
-  background: linear-gradient(to right, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
-  border-left: solid 1px @borders;
+  background: linear-gradient(to right, var(--headerbar-shade-color) 6px, transparent 24px);
+  border-left: solid 1px var(--border-color);
 }
 #NautilusPathBar > scrolledwindow undershoot.right {
-  background: linear-gradient(to left, @headerbar_shade_color 6px, alpha(@headerbar_shade_color, 0) 24px);
-  border-right: solid 1px @borders;
+  background: linear-gradient(to left, var(--headerbar-shade-color) 6px, transparent 24px);
+  border-right: solid 1px var(--border-color);
 }
 
 /* Match sidebar's rounded corners on the "start" side. */
@@ -94,7 +94,7 @@
 }
 
 #NautilusQueryEditorTag {
-  background-color: alpha(currentColor, 0.1);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
   border-radius: 100px;
 }
 
@@ -109,8 +109,8 @@
 /* Floating status bar */
 .floating-bar {
   padding: 3px;
-  background-color: @view_bg_color;
-  box-shadow: inset 0 100px 0 0 alpha(currentColor, 0.1);
+  background-color: var(--view-bg-color);
+  box-shadow: inset 0 100px 0 0 color-mix(in srgb, currentColor 10%, transparent);
   border-radius: 8px;
 }
 
@@ -123,24 +123,24 @@
 }
 
 .disk-space-free {
-  color: alpha(currentColor, 0.15);
+  color: color-mix(in srgb, currentColor 15%, transparent);
 }
 .disk-space-used {
-  color: @accent_bg_color;
+  color: var(--accent-bg-color);
 }
 
 .search-information {
-  background-color: @accent_bg_color;
+  background-color: var(--accent-bg-color);
   color:white;
   padding:2px;
 }
 
 .batch-rename-preview {
-  border-top: solid @borders 1px;
+  border-top: solid var(--border-color) 1px;
 }
 .conflict-row {
-    background: @warning_bg_color;
-    color: @warning_fg_color;
+    background: var(--warning-bg-color);
+    color: var(--warning-fg-color);
 }
 
 /* Grid view */
@@ -269,8 +269,8 @@ placesview list {
   background: url('/org/gnome/nautilus/Checkerboard.png') repeat;
   border-radius: 2px;
   /* Draw a shin and outline to meld better with full-color icons */
-  box-shadow: 0px 0px 0px 1px @shade_color,
-              0px 2px 0px 0px @shade_color;
+  box-shadow: 0px 0px 0px 1px var(--shade-color),
+              0px 2px 0px 0px var(--shade-color);
 }
 
 .view picture {
@@ -283,7 +283,7 @@ placesview list {
 .nautilus-network-view image.network-icon {
   padding: 8px;
   border-radius: 999999px;
-  background-color: alpha(currentColor, 0.1);
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
 }
 
 .view .cut {
