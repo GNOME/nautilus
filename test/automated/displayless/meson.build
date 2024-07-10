@@ -1,4 +1,4 @@
-tracker_sandbox = find_program('localsearch3')
+tracker_sandbox = find_program('localsearch')
 
 tests = [
   ['test-directory', [
