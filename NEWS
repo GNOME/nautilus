@@ -1,3 +1,50 @@
+Major changes in 47.alpha
+=====================
+* Enhancements
+ - Add the Network view (António Fernandes, Allan Day)
+ - Show xdg dirs in sidebar as regular (removable) bookmarks (António Fernandes)
+ - Show sidebar bookmarks before mounts (António Fernandes)
+ - Remove "Other Locations" and show mounts directly on the sidebar (António Fernandes)
+ - Improve view performance (Khalid Abu Shawarib)
+ - Use new adw views (Automeris naranja)
+ - Improve internal NautilusFile performance (Peter Eisenmann)
+ - Improve ui for progress indicator (Peter Eisenmann)
+ - Improve ui to floating bar (Sam Hewitt, piegames)
+ - Allow staring from the context menu (José Guilherme)
+ - Redesign trash dialog (Anuraag Reddy Patllollu, Allan Day)
+ - Allow Scripts in flatpak (Anuraag Reddy Patllollu)
+ - Open mounts in original tab instead of focused tab (Anuraag Reddy Patllollu)
+ - Allow simultaneous mounting (Khalid Abu Shawarib)
+* Bugfixes:
+  - Create archive with Enter on Compress dialog (Lukáš Tyrychtr)
+  - Accessibility fixes (Automeris naranja, Sabri Ünal)
+  - Move focus correctly when item is removed (Khalid Abu Shawarib)
+  - Don't reset permissions when copying from a non-isofs readonly filesystem (Fina Wilke)
+  - Open correct panel in GNOME Settings for trash settings (Khalid Abu Shawarib)
+  - Disable paste in Trash, Recent, and Starred (Jonathan Lin)
+  - Fix error when passing invalid location to portals (Khalid Abu Shawarib)
+  - Fix memory leaks (Khalid Abu Shawarib, António Fernandes)
+  - Call shutdown() on modules (Corey Berla)
+  - Don't show banners in global search (Khalid Abu Shawarib)
+  - Prevent a crash (Khalid Abu Shawarib, Gary Li)
+  - Keep correct file list order in a DnD (Khalid Abu Shawarib)
+  - Don't display future dates as "Today" or "Yesterday" (Grey Nicholson)
+  - Prevent freeze (Peter Eisenmann)
+  - Fix broken sort order when switching views (Gary Li)
+  - Don't irreversibly hide sidebar with touch gesture (Khalid Abu Shawarib)
+  - Don't unnecessarily re-set selection in search (Gary Li)
+  - Don't scale up images in properties preview (Khalid Abu Shawarib)
+  - Actually drop wayland export handles (António Fernandes)
+  - Fix potentially incorrect file operation (Khalid Abu Shawarib)
+  - Batch rename fix tags, and allow illegal characters (Anuraag Reddy Patllollu)
+  - Allow xdp to fail (Balló György)
+  - Fix typo (Alexandre Franke)
+* Cleanups
+  - Use property styling for adw rows (Automeris naranja, Anton Snigirev)
+  - Code cleanup (Khalid Abu Shawarib, Peter Eisenmann, Corey Berla, António Fernandes)
+  - Significant refactoring and cleanup to prepare to Nautilus as a file chooser (António Fernandes)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 46.0
 =====================
 * Bugfixes:
