@@ -13,15 +13,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-06-07 13:32+0000\n"
-"PO-Revision-Date: 2024-06-08 12:10+0530\n"
+"POT-Creation-Date: 2024-07-10 10:46+0000\n"
+"PO-Revision-Date: 2024-07-10 17:44+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-DamnedLies-Scope: partial\n"
 "X-Generator: Gtranslator 46.1\n"
 
@@ -31,9 +31,7 @@ msgstr "सॉफ्टवेयर को चलायें"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:101
-#: src/nautilus-window.c:2395
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:43
-#: src/resources/ui/nautilus-window.ui:139
+#: src/nautilus-window.c:2046 src/resources/ui/nautilus-window.ui:140
 msgid "Files"
 msgstr "फाइल्स"
 
@@ -48,9 +46,9 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"*फाइल्स*, जिसे नॉटिलस के नाम से भी जाना जाता है, गनोम डेस्कटॉप का तयशुदा फाइल प्रबंधक "
-"है। यह आपकी फाइलों को प्रबंधित करने और फाइल सिस्टम को देखने का एक सरल और एकीकृत तरीका "
-"प्रदान करता है।"
+"<i>फाइल्स</i>, जिसे नॉटिलस के नाम से भी जाना जाता है, गनोम डेस्कटॉप का तयशुदा फाइल "
+"प्रबंधक है। यह आपकी फाइलों को प्रबंधित करने और फाइल सिस्टम को देखने का एक सरल और एकीकृत "
+"तरीका प्रदान करता है।"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:12
 msgid ""
@@ -88,7 +86,7 @@ msgstr "फोल्डर;प्रबंधक;अन्वेषण करे
 
 #: data/org.gnome.Nautilus.desktop.in.in:21
 msgid "New Window"
-msgstr "नई खिड़की"
+msgstr "नई विंडो"
 
 #: data/org.gnome.nautilus.gschema.xml:82
 msgid "Always use the location entry, instead of the pathbar"
@@ -99,7 +97,7 @@ msgid ""
 "If set to true, Files will always use a textual input entry for the location "
 "toolbar, instead of the pathbar."
 msgstr ""
-"यदि चयनित है, तो *फाइल्स* हमेशा पथपट्टी के बजाय स्थान औज़ारपट्टी के लिए पाठ इनपुट "
+"यदि चयनित है, तो <i>फाइल्स</i> हमेशा पथपट्टी के बजाय स्थान औज़ारपट्टी के लिए पाठ इनपुट "
 "प्रविष्टि का उपयोग करेंगी।"
 
 #: data/org.gnome.nautilus.gschema.xml:87
@@ -111,8 +109,8 @@ msgid ""
 "Locations in which Files should search subfolders. Available values are "
 "“local-only”, “always”, “never”."
 msgstr ""
-"वे स्थान जहाँ *फाइल्स* को उप-फोल्डर खोजना चाहिए। उपलब्ध मान “केवल स्थानीय”, “हमेशा”, "
-"“कभी नहीं” हैं।"
+"वे स्थान जहाँ <i>फाइल्स</i> को उप-फोल्डर खोजना चाहिए। उपलब्ध मान “केवल स्थानीय”, "
+"“हमेशा”, “कभी नहीं” हैं।"
 
 #: data/org.gnome.nautilus.gschema.xml:92
 msgid "Filter the search dates using either last used or last modified"
@@ -131,8 +129,8 @@ msgid ""
 "If set to true, Files will show a delete permanently context menu item to "
 "bypass the Trash."
 msgstr ""
-"यदि चयनित है, तो *फाइल्स* रद्दी को बायपास करने के लिए *स्थायी रूप से मिटाएं* संदर्भ मेनू "
-"वस्तु दिखाएगी।"
+"यदि चयनित है, तो <i>फाइल्स</i> रद्दी को बायपास करने के लिए <i>स्थायी रूप से मिटाएं</"
+"i> संदर्भ मेनू वस्तु दिखाएगी।"
 
 #: data/org.gnome.nautilus.gschema.xml:102
 msgid ""
@@ -145,8 +143,8 @@ msgid ""
 "If set to true, Files will show context menu items to create links from the "
 "copied or selected files."
 msgstr ""
-"यदि चयनित है, तो *फाइल्स* कॉपी की गई या चयनित फाइलों से लिंक बनाने के लिए संदर्भ मेनू "
-"वस्तु दिखाएंगी।"
+"यदि चयनित है, तो <i>फाइल्स</i> कॉपी की गई या चयनित फाइलों से लिंक बनाने के लिए संदर्भ "
+"मेनू वस्तु दिखाएंगी।"
 
 #: data/org.gnome.nautilus.gschema.xml:108
 msgid "When to show number of items in a folder"
@@ -179,19 +177,19 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:118
 msgid "Show the package installer for unknown MIME types"
-msgstr "अज्ञात MIME प्रकारों के लिए पैकेज स्थापनकर्ता दिखाएं"
+msgstr "अज्ञात माइम प्रकारों के लिए पैकेज स्थापनकर्ता दिखाएं"
 
 #: data/org.gnome.nautilus.gschema.xml:119
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an app to handle it."
 msgstr ""
-"क्या अज्ञात MIME प्रकार के खुलने की स्थिति में उपयोक्ता को पैकेज स्थापनकर्ता संवाद दिखाया "
+"क्या अज्ञात माइम प्रकार के खुलने की स्थिति में उपयोक्ता को पैकेज स्थापनकर्ता संवाद दिखाया "
 "जाए, ताकि उसे संभालने के लिए ऐप खोजा जा सके।"
 
 #: data/org.gnome.nautilus.gschema.xml:123
 msgid "Use extra mouse button events in Files"
-msgstr "*फाइल्स* में अतिरिक्त माउस बटन ईवेंट का उपयोग करें"
+msgstr "<i>फाइल्स</i> में अतिरिक्त माउस बटन ईवेंट का उपयोग करें"
 
 #: data/org.gnome.nautilus.gschema.xml:124
 msgid ""
@@ -199,11 +197,11 @@ msgid ""
 "determine if any action is taken inside of Files when either is pressed."
 msgstr ""
 "जिन उपयोक्ताओं के माउस में “आगे” और “पीछे” बटन हैं, उनके लिए यह कुंजी निर्धारित करेगी कि "
-"इनमें से किसी को दबाने पर *फाइल्स* के अंदर कोई कार्रवाई की गई है या नहीं।"
+"इनमें से किसी को दबाने पर <i>फाइल्स</i> के अंदर कोई कार्रवाई की गई है या नहीं।"
 
 #: data/org.gnome.nautilus.gschema.xml:128
 msgid "Mouse button to activate the “Forward” command in browser window"
-msgstr "ब्राउज़र खिड़की में “आगे” कमांड को सक्रिय करने के लिए माउस बटन"
+msgstr "ब्राउज़र विंडो में “आगे” कमांड को सक्रिय करने के लिए माउस बटन"
 
 #: data/org.gnome.nautilus.gschema.xml:129
 msgid ""
@@ -212,12 +210,12 @@ msgid ""
 "Possible values range between 6 and 14."
 msgstr ""
 "जिन उपयोक्ताओं के माउस में “आगे” और “पीछे” बटन होते हैं, उनके लिए यह कुंजी निर्धारित करेगी "
-"कि कौन सा बटन ब्राउज़र खिड़की में “आगे” कमांड को सक्रिय करेगा। संभावित मान 6 से 14 के "
-"बीच होते हैं।"
+"कि कौन सा बटन ब्राउज़र विंडो में “आगे” कमांड को सक्रिय करेगा। संभावित मान 6 से 14 के बीच "
+"होते हैं।"
 
 #: data/org.gnome.nautilus.gschema.xml:133
 msgid "Mouse button to activate the “Back” command in browser window"
-msgstr "ब्राउज़र खिड़की में “पीछे” कमांड को सक्रिय करने के लिए माउस बटन"
+msgstr "ब्राउज़र विंडो में “पीछे” कमांड को सक्रिय करने के लिए माउस बटन"
 
 #: data/org.gnome.nautilus.gschema.xml:134
 msgid ""
@@ -226,7 +224,7 @@ msgid ""
 "Possible values range between 6 and 14."
 msgstr ""
 "जिन उपयोक्ताओं के माउस में “आगे” और “पीछे” बटन होते हैं, उनके लिए यह कुंजी निर्धारित करेगी "
-"कि कौन सा बटन ब्राउज़र खिड़की में “पीछे” कमांड को सक्रिय करेगा। संभावित मान 6 से 14 के "
+"कि कौन सा बटन ब्राउज़र विंडो में “पीछे” कमांड को सक्रिय करेगा। संभावित मान 6 से 14 के "
 "बीच होते हैं।"
 
 #: data/org.gnome.nautilus.gschema.xml:139
@@ -276,7 +274,7 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:157
 msgid "Reverse sort order in new windows"
-msgstr "नई खिड़की में छंटाई क्रम को उल्टा करें"
+msgstr "नई विंडो में छंटाई क्रम को उल्टा करें"
 
 #: data/org.gnome.nautilus.gschema.xml:158
 msgid ""
@@ -285,7 +283,7 @@ msgid ""
 "be sorted from “z” to “a”; if sorted by size, instead of being incrementally "
 "they will be sorted decrementally."
 msgstr ""
-"यदि चयनित है, तो नई खिड़की में फाइलें उल्टे क्रम में छांटी जाएंगी। यानी, यदि नाम के अनुसार "
+"यदि चयनित है, तो नई विंडो में फाइलें उल्टे क्रम में छांटी जाएंगी। यानी, यदि नाम के अनुसार "
 "छांटा जाता है, तो फाइलों को “a” से “z” तक छांटने के बजाय, उन्हें “z” से “a” तक छांटा "
 "जाएगा; यदि आकार के अनुसार छांटा जाता है, तो वृद्धिशील होने के बजाय उन्हें घटते क्रम में "
 "छांटा जाएगा।"
@@ -344,7 +342,7 @@ msgstr ""
 msgid ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
-msgstr "क्या नई खिड़की/टैब खोलते समय तयशुदा रूप से पूर्ण पाठ खोज सक्षम होनी चाहिए"
+msgstr "क्या नई विंडो/टैब खोलते समय तयशुदा रूप से पूर्ण पाठ खोज सक्षम होनी चाहिए"
 
 #: data/org.gnome.nautilus.gschema.xml:189
 msgid ""
@@ -420,23 +418,23 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:250
 msgid "Initial size of the window"
-msgstr "खिड़की का प्रारंभिक आकार"
+msgstr "विंडो का प्रारंभिक आकार"
 
 #: data/org.gnome.nautilus.gschema.xml:251
 msgid "A tuple containing the initial width and height of the app window."
-msgstr "ऐप खिड़की की प्रारंभिक चौड़ाई और ऊंचाई युक्त एक टपल।"
+msgstr "ऐप विंडो की प्रारंभिक चौड़ाई और ऊंचाई युक्त एक टपल।"
 
 #: data/org.gnome.nautilus.gschema.xml:255
 msgid "Whether the navigation window should be maximized"
-msgstr "क्या नेविगेशन खिड़की को अधिकतम किया जाना चाहिए"
+msgstr "क्या नेविगेशन विंडो को अधिकतम किया जाना चाहिए"
 
 #: data/org.gnome.nautilus.gschema.xml:256
 msgid "Whether the navigation window should be maximized by default."
-msgstr "क्या नेविगेशन खिड़की तयशुदा रूप से अधिकतम होनी चाहिए।"
+msgstr "क्या नेविगेशन विंडो तयशुदा रूप से अधिकतम होनी चाहिए।"
 
 #: eel/eel-stock-dialogs.c:195
 msgid "You can stop this operation by clicking cancel."
-msgstr "आप *रद्द करें* पर क्लिक करके इस अभियान को रोक सकते हैं।"
+msgstr "आप <i>रद्द करें</i> पर क्लिक करके इस अभियान को रोक सकते हैं।"
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
 #: src/nautilus-file-operations.c:273 src/nautilus-mime-actions.c:609
@@ -445,7 +443,7 @@ msgstr "आप *रद्द करें* पर क्लिक करके �
 #: src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:16
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:19
 #: src/resources/ui/nautilus-files-view-select-items.ui:17
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:16
 msgid "_Cancel"
@@ -585,7 +583,7 @@ msgstr "चैनल"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1598
+#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1722
 msgid "Oops! Something went wrong."
 msgstr "उफ़! कुछ गलत हो गया।"
 
@@ -770,7 +768,7 @@ msgid ""
 "There was an error displaying help: \n"
 "%s"
 msgstr ""
-"मदद दिखाने में एक त्रुटि हुई: \n"
+"सहायता दिखाने में एक त्रुटि हुई: \n"
 "%s"
 
 #: src/nautilus-application.c:740 src/nautilus-autorun-software.c:162
@@ -791,7 +789,7 @@ msgstr "प्रोग्राम संस्करण दिखाएं।"
 
 #: src/nautilus-application.c:953
 msgid "Always open a new window for browsing specified URIs"
-msgstr "निर्दिष्ट URI देखने के लिए हमेशा एक नई खिड़की खोलें"
+msgstr "निर्दिष्ट URI देखने के लिए हमेशा एक नई विंडो खोलें"
 
 #: src/nautilus-application.c:957
 msgid "Quit Nautilus."
@@ -860,7 +858,8 @@ msgstr "उफ़! इस सॉफ़्टवेयर को चलाने 
 
 #: src/nautilus-autorun-software.c:190
 msgid "If you don’t trust this location or aren’t sure, press Cancel."
-msgstr "यदि आपको इस स्थान पर भरोसा नहीं है या आप निश्चित नहीं हैं, तो *रद्द करें* दबाएं।"
+msgstr ""
+"यदि आपको इस स्थान पर भरोसा नहीं है या आप निश्चित नहीं हैं, तो <i>रद्द करें</i> दबाएं।"
 
 #: src/nautilus-autorun-software.c:192
 #, c-format
@@ -999,7 +998,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
 #: src/nautilus-pathbar.c:392 src/nautilus-shell-search-provider.c:341
-#: src/nautilus-window.c:159 src/gtk/nautilusgtkplacessidebar.c:821
+#: src/nautilus-window.c:153 src/gtk/nautilusgtkplacessidebar.c:693
 msgid "Home"
 msgstr "गृह"
 
@@ -1023,7 +1022,7 @@ msgstr "नॉटिलस क्लिपबोर्ड में रिक्
 msgid "View More"
 msgstr "अधिक देखें"
 
-#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:2150
+#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1982
 msgid "Name"
 msgstr "नाम"
 
@@ -1083,7 +1082,7 @@ msgid "The date the file was created."
 msgstr "फाइल निर्माण की तिथि।"
 
 #: src/nautilus-column-utilities.c:125
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:67
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:38
 msgid "Owner"
 msgstr "मालिक"
 
@@ -1092,7 +1091,7 @@ msgid "The owner of the file."
 msgstr "फाइल का मालिक।"
 
 #: src/nautilus-column-utilities.c:133
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:96
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:55
 msgid "Group"
 msgstr "समूह"
 
@@ -1158,15 +1157,17 @@ msgstr "सभी ऑपरेटिंग सिस्टमों के स�
 
 #: src/nautilus-compress-dialog.c:274
 msgid "Password protected .zip, must be installed on Windows and Mac."
-msgstr "पासवर्ड से सुरक्षित .zip, *विंडोज़* और *मैक* पर स्थापित होना चाहिए।"
+msgstr "पासवर्ड से सुरक्षित .zip, <i>विंडोज़</i> और <i>मैक</i> पर स्थापित होना चाहिए।"
 
 #: src/nautilus-compress-dialog.c:279
 msgid "Smaller archives but Linux and Mac only."
-msgstr "छोटे अभिलेखागार लेकिन केवल *लिनक्स* और *मैक* के लिए।"
+msgstr "छोटे अभिलेखागार लेकिन केवल <i>लिनक्स</i> और <i>मैक</i> के लिए।"
 
 #: src/nautilus-compress-dialog.c:284
 msgid "Smaller archives but must be installed on Windows and Mac."
-msgstr "छोटे अभिलेखागार, लेकिन इन्हें *विंडोज़* और *मैक* पर स्थापित किया जाना आवश्यक है।"
+msgstr ""
+"छोटे अभिलेखागार, लेकिन इन्हें <i>विंडोज़</i> और <i>मैक</i> पर स्थापित किया जाना आवश्यक "
+"है।"
 
 #. Translators: date and time in 24h format,
 #. * i.e. "12/31/2023 23:59"
@@ -1265,7 +1266,7 @@ msgstr "यहां कॉपी करें (_C)"
 msgid "_Link Here"
 msgstr "यहां लिंक करें (_L)"
 
-#: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2512
+#: src/nautilus-dnd.c:126 src/nautilus-file-operations.c:2513
 #: src/nautilus-mime-actions.c:620
 #: src/resources/ui/nautilus-compress-dialog.ui:20
 #: src/resources/ui/nautilus-progress-info-widget.ui:39
@@ -1704,7 +1705,7 @@ msgid "Proceed _Anyway"
 msgstr "फिर भी आगे बढ़े (_A)"
 
 #  FIXME: We don't use spaces to pad labels!
-#: src/nautilus-file-operations.c:285 src/nautilus-file-operations.c:2513
+#: src/nautilus-file-operations.c:285
 msgid "Empty _Trash"
 msgstr "रद्दी खाली करें (_T)"
 
@@ -1818,9 +1819,9 @@ msgstr[1] "%'d फ़ाइलें हटाई जा रही हैं"
 #: src/nautilus-file-operations.c:1348 src/nautilus-file-operations.c:1356
 #: src/nautilus-file-operations.c:1396 src/nautilus-file-operations.c:1742
 #: src/nautilus-file-operations.c:1750 src/nautilus-file-operations.c:1790
-#: src/nautilus-file-operations.c:3688 src/nautilus-file-operations.c:3696
-#: src/nautilus-file-operations.c:3767 src/nautilus-file-operations.c:8485
-#: src/nautilus-file-operations.c:8553
+#: src/nautilus-file-operations.c:3690 src/nautilus-file-operations.c:3698
+#: src/nautilus-file-operations.c:3769 src/nautilus-file-operations.c:8487
+#: src/nautilus-file-operations.c:8555
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1849,7 +1850,7 @@ msgstr[1] "(%d फ़ाइलें)"
 msgid "Failed to delete all child files"
 msgstr "सभी उप फाइलें मिटाने में विफल"
 
-#: src/nautilus-file-operations.c:1545 src/nautilus-file-operations.c:2838
+#: src/nautilus-file-operations.c:1545 src/nautilus-file-operations.c:2840
 msgid "Error while deleting."
 msgstr "मिटाने समय त्रुटि हुई।"
 
@@ -1917,9 +1918,9 @@ msgid "Deleting Files"
 msgstr "फाइलें मिटाई जा रही है"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6845
-#: src/gtk/nautilusgtkplacessidebar.c:2478
-#: src/gtk/nautilusgtkplacessidebar.c:2507
+#: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6863
+#: src/gtk/nautilusgtkplacessidebar.c:2314
+#: src/gtk/nautilusgtkplacessidebar.c:2343
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "“%s” को बाहर निकालने में असमर्थ"
@@ -1929,84 +1930,89 @@ msgstr "“%s” को बाहर निकालने में असम�
 msgid "Unable to unmount “%s”"
 msgstr "“%s” को अनारोहित करने में असमर्थ"
 
-#: src/nautilus-file-operations.c:2506
-msgid "Do you want to empty the trash before you unmount?"
-msgstr "क्या आप अनारोहित करने के पहले रद्दी रिक्त करना चाहते हैं?"
-
-#: src/nautilus-file-operations.c:2507
+#: src/nautilus-file-operations.c:2505
+#, c-format
 msgid ""
-"In order to regain the free space on this volume the trash must be emptied. "
-"All trashed items on the volume will be permanently lost."
+"Empty the trash to free up space on “%s”. All trashed items will be "
+"permanently deleted."
 msgstr ""
-"इस वॉल्यूम पर खाली स्थान पुनः प्राप्त करने के लिए रद्दी खाली करना होगा। वॉल्यूम पर सभी "
-"रद्दी किए गए वस्तुएं स्थायी रूप से खो जाएंगे।"
+"“%s” पर जगह खाली करने हेतु रद्दी खाली करें। रद्दी में डाले गए सभी मद स्थायी रूप से मिटा "
+"दिए जाएंगे।"
 
-#: src/nautilus-file-operations.c:2511
-msgid "Do _not Empty Trash"
-msgstr "रद्दी खाली मत करें (_n)"
+#: src/nautilus-file-operations.c:2510
+msgid "Empty Trash Before Ejecting?"
+msgstr "बाहर निकालने से पहले रद्दी खाली करें?"
+
+#: src/nautilus-file-operations.c:2514
+msgid "Do _Not Empty"
+msgstr "खाली न करें (_N)"
+
+#: src/nautilus-file-operations.c:2515
+msgid "_Empty"
+msgstr "खाली करें (_E)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2654 src/nautilus-files-view.c:6795
-#: src/gtk/nautilusgtkplacessidebar.c:1842
+#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6813
+#: src/gtk/nautilusgtkplacessidebar.c:1706
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "“%s” तक पहुंचने में असमर्थ"
 
-#: src/nautilus-file-operations.c:2739
+#: src/nautilus-file-operations.c:2741
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
 msgstr[0] "%'d फाइल (%s) कॉपी करने की तैयारी की जा रही है"
 msgstr[1] "%'d फ़ाइलें (%s) कॉपी करने की तैयारी की जा रही है"
 
-#: src/nautilus-file-operations.c:2752
+#: src/nautilus-file-operations.c:2754
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
 msgstr[0] "%'d फाइल (%s) को स्थानांतरित करने की तैयारी की जा रही है"
 msgstr[1] "%'d फ़ाइलें (%s) स्थानांतरित करने की तैयारी की जा रही है"
 
-#: src/nautilus-file-operations.c:2765
+#: src/nautilus-file-operations.c:2767
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
 msgstr[0] "%'d फाइल (%s) मिटाने की तैयारी की जा रही है"
 msgstr[1] "%'d फ़ाइलें (%s) मिटाने की तैयारी की जा रही है"
 
-#: src/nautilus-file-operations.c:2775
+#: src/nautilus-file-operations.c:2777
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "%'d फाइल को रद्दी में भेजने की तैयारी की जा रही है"
 msgstr[1] "%'d फ़ाइलों को रद्दी में भेजने की तैयारी की जा रही है"
 
-#: src/nautilus-file-operations.c:2784
+#: src/nautilus-file-operations.c:2786
 #, c-format
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
 msgstr[0] "%'d फाइल को संपीड़ित करने की तैयारी की जा रही है"
 msgstr[1] "%'d फ़ाइलों को संपीड़ित करने की तैयारी की जा रही है"
 
-#: src/nautilus-file-operations.c:2828 src/nautilus-file-operations.c:4275
-#: src/nautilus-file-operations.c:4467 src/nautilus-file-operations.c:4549
-#: src/nautilus-file-operations.c:4836
+#: src/nautilus-file-operations.c:2830 src/nautilus-file-operations.c:4277
+#: src/nautilus-file-operations.c:4469 src/nautilus-file-operations.c:4551
+#: src/nautilus-file-operations.c:4838
 msgid "Error while copying."
 msgstr "कॉपी करते समय त्रुटि।"
 
-#: src/nautilus-file-operations.c:2833 src/nautilus-file-operations.c:4463
-#: src/nautilus-file-operations.c:4545 src/nautilus-file-operations.c:4832
+#: src/nautilus-file-operations.c:2835 src/nautilus-file-operations.c:4465
+#: src/nautilus-file-operations.c:4547 src/nautilus-file-operations.c:4834
 msgid "Error while moving."
 msgstr "स्थानांतरण करते समय त्रुटि।"
 
-#: src/nautilus-file-operations.c:2843
+#: src/nautilus-file-operations.c:2845
 msgid "Error while moving files to trash."
 msgstr "फाइलों को रद्दी में ले जाते समय त्रुटि।"
 
-#: src/nautilus-file-operations.c:2848
+#: src/nautilus-file-operations.c:2850
 msgid "Error while compressing files."
 msgstr "फाइलें संपीड़ित करते समय त्रुटि।"
 
-#: src/nautilus-file-operations.c:2940
+#: src/nautilus-file-operations.c:2942
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be handled because you do not have "
@@ -2014,13 +2020,13 @@ msgid ""
 msgstr ""
 "“%s” फोल्डर में फाइलें प्रबंधित नहीं की जा सकती क्योंकि आपके पास उन्हें देखने की अनुमति नहीं है।"
 
-#: src/nautilus-file-operations.c:2946 src/nautilus-file-operations.c:4479
+#: src/nautilus-file-operations.c:2948 src/nautilus-file-operations.c:4481
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
 msgstr "“%s” फोल्डर में फाइलों के बारे में जानकारी प्राप्त करने में त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:3001
+#: src/nautilus-file-operations.c:3003
 #, c-format
 msgid ""
 "The folder “%s” cannot be handled because you do not have permissions to "
@@ -2028,12 +2034,12 @@ msgid ""
 msgstr ""
 "फोल्डर \"%s\" को प्रबंधित नहीं किया जा सकता क्योंकि आपके पास इसे पढ़ने की अनुमति नहीं है।"
 
-#: src/nautilus-file-operations.c:3007 src/nautilus-file-operations.c:4561
+#: src/nautilus-file-operations.c:3009 src/nautilus-file-operations.c:4563
 #, c-format
 msgid "There was an error reading the folder “%s”."
 msgstr "“%s” फोल्डर को पढ़ने में त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:3117
+#: src/nautilus-file-operations.c:3119
 #, c-format
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
@@ -2041,84 +2047,84 @@ msgid ""
 msgstr ""
 "फाइल “%s” को प्रबंधित नहीं किया जा सकता क्योंकि आपके पास इसे पढ़ने की अनुमति नहीं है।"
 
-#: src/nautilus-file-operations.c:3122
+#: src/nautilus-file-operations.c:3124
 #, c-format
 msgid "There was an error getting information about “%s”."
 msgstr "“%s” के बारे में जानकारी प्राप्त करने में त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:3246 src/nautilus-file-operations.c:3308
-#: src/nautilus-file-operations.c:3363 src/nautilus-file-operations.c:3425
+#: src/nautilus-file-operations.c:3248 src/nautilus-file-operations.c:3310
+#: src/nautilus-file-operations.c:3365 src/nautilus-file-operations.c:3427
 #, c-format
 msgid "Error while copying to “%s”."
 msgstr "“%s” में कॉपी करते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:3251
+#: src/nautilus-file-operations.c:3253
 msgid "You do not have permissions to access the destination folder."
 msgstr "आपके पास गंतव्य फोल्डर तक पहुंचने की अनुमति नहीं है।"
 
-#: src/nautilus-file-operations.c:3255
+#: src/nautilus-file-operations.c:3257
 msgid "There was an error getting information about the destination."
 msgstr "गंतव्य के बारे में जानकारी प्राप्त करने में त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:3309
+#: src/nautilus-file-operations.c:3311
 msgid "The destination is not a folder."
 msgstr "गंतव्य एक फोल्डर नहीं है।"
 
-#: src/nautilus-file-operations.c:3364
+#: src/nautilus-file-operations.c:3366
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr "गंतव्य पर पर्याप्त स्थान नहीं है। स्थान बनाने के लिए फाइलें हटाने का प्रयास करें।"
 
-#: src/nautilus-file-operations.c:3368
+#: src/nautilus-file-operations.c:3370
 #, c-format
 msgid "%s more space is required to copy to the destination."
 msgstr "गंतव्य पर कॉपी करने के लिए %s अधिक स्थान की आवश्यकता है।"
 
-#: src/nautilus-file-operations.c:3404
+#: src/nautilus-file-operations.c:3406
 msgid "File too Large for Destination"
 msgstr "फाइल गंतव्य के लिए बहुत बड़ी है"
 
-#: src/nautilus-file-operations.c:3405
+#: src/nautilus-file-operations.c:3407
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
 msgstr "4.3 जीबी से बड़ी फाइलों को FAT फाइलप्रणाली पर कॉपी नहीं किया जा सकता।"
 
-#: src/nautilus-file-operations.c:3426
+#: src/nautilus-file-operations.c:3428
 msgid "The destination is read-only."
 msgstr "गंतव्य सिर्फ पढ़ने-योग्य है।"
 
-#: src/nautilus-file-operations.c:3503
+#: src/nautilus-file-operations.c:3505
 #, c-format
 msgid "Moving “%s” to “%s”"
 msgstr "“%1$s” को “%2$s” में स्थानांतरित किया जा रहा है"
 
-#: src/nautilus-file-operations.c:3507
+#: src/nautilus-file-operations.c:3509
 #, c-format
 msgid "Moved “%s” to “%s”"
 msgstr "“%1$s” को “%2$s” में स्थानांतरित किया गया"
 
-#: src/nautilus-file-operations.c:3514
+#: src/nautilus-file-operations.c:3516
 #, c-format
 msgid "Copying “%s” to “%s”"
 msgstr "“%1$s” को “%2$s” में कॉपी किया जा रहा है"
 
-#: src/nautilus-file-operations.c:3518
+#: src/nautilus-file-operations.c:3520
 #, c-format
 msgid "Copied “%s” to “%s”"
 msgstr "“%1$s” को “%2$s” में कॉपी किया गया"
 
-#: src/nautilus-file-operations.c:3552
+#: src/nautilus-file-operations.c:3554
 #, c-format
 msgid "Duplicating “%s”"
 msgstr "“%s” को अनुकृत किया जा रहा है"
 
-#: src/nautilus-file-operations.c:3556
+#: src/nautilus-file-operations.c:3558
 #, c-format
 msgid "Duplicated “%s”"
 msgstr "“%s” को अनुकृत किया गया"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:3575
+#: src/nautilus-file-operations.c:3577
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
@@ -2126,7 +2132,7 @@ msgstr[0] "%'d फाइल को “%s” में स्थानांत�
 msgstr[1] "%'d फ़ाइलों को “%s” में स्थानांतरित किया जा रहा है"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:3581
+#: src/nautilus-file-operations.c:3583
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
@@ -2134,7 +2140,7 @@ msgstr[0] "%'d फाइल को “%s” में कॉपी किया 
 msgstr[1] "%'d फ़ाइलों को “%s” में कॉपी किया जा रहा है"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:3600
+#: src/nautilus-file-operations.c:3602
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
@@ -2142,21 +2148,21 @@ msgstr[0] "%'d फाइल को “%s” में स्थानांत�
 msgstr[1] "%'d फ़ाइलों को “%s” में स्थानांतरित किया गया"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:3606
+#: src/nautilus-file-operations.c:3608
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
 msgstr[0] "%'d फाइल को “%s” में कॉपी किया गया"
 msgstr[1] "%'d फ़ाइलों को “%s” में कॉपी किया गया"
 
-#: src/nautilus-file-operations.c:3629
+#: src/nautilus-file-operations.c:3631
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
 msgstr[0] "%'d फाइल को “%s” में अनुकृत किया जा रहा है"
 msgstr[1] "%'d फ़ाइलों को “%s” में अनुकृत किया जा रहा है"
 
-#: src/nautilus-file-operations.c:3639
+#: src/nautilus-file-operations.c:3641
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
@@ -2170,9 +2176,9 @@ msgstr[1] "%'d फ़ाइलों को “%s” में अनुकृ�
 #.
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
-#: src/nautilus-file-operations.c:3678 src/nautilus-file-operations.c:3738
-#: src/nautilus-file-operations.c:7998 src/nautilus-file-operations.c:8225
-#: src/nautilus-file-operations.c:8480 src/nautilus-file-operations.c:8523
+#: src/nautilus-file-operations.c:3680 src/nautilus-file-operations.c:3740
+#: src/nautilus-file-operations.c:8000 src/nautilus-file-operations.c:8227
+#: src/nautilus-file-operations.c:8482 src/nautilus-file-operations.c:8525
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2195,8 +2201,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3722 src/nautilus-file-operations.c:8016
-#: src/nautilus-file-operations.c:8512
+#: src/nautilus-file-operations.c:3724 src/nautilus-file-operations.c:8018
+#: src/nautilus-file-operations.c:8514
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2208,14 +2214,14 @@ msgstr[1] "%s / %s — %s शेष (%s/s)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3756 src/nautilus-file-operations.c:8542
+#: src/nautilus-file-operations.c:3758 src/nautilus-file-operations.c:8544
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
 msgstr[0] "%'d / %'d — %s शेष (%s/s)"
 msgstr[1] "%'d / %'d — %s शेष (%s/s)"
 
-#: src/nautilus-file-operations.c:4281
+#: src/nautilus-file-operations.c:4283
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
@@ -2224,12 +2230,12 @@ msgstr ""
 "फोल्डर “%s” की प्रतिलिपि नहीं बनाई जा सकती क्योंकि आपके पास गंतव्य में इसे बनाने की "
 "अनुमति नहीं है।"
 
-#: src/nautilus-file-operations.c:4287
+#: src/nautilus-file-operations.c:4289
 #, c-format
 msgid "There was an error creating the folder “%s”."
 msgstr "“%s” फोल्डर बनाते समय एक त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:4474
+#: src/nautilus-file-operations.c:4476
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
@@ -2237,11 +2243,11 @@ msgid ""
 msgstr ""
 "“%s” फोल्डर की फाइलें कॉपी नहीं की जा सकतीं क्योंकि आपके पास उन्हें देखने की अनुमति नहीं है।"
 
-#: src/nautilus-file-operations.c:4490
+#: src/nautilus-file-operations.c:4492
 msgid "_Skip files"
 msgstr "फाइल छोड़ें (_S)"
 
-#: src/nautilus-file-operations.c:4556
+#: src/nautilus-file-operations.c:4558
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
@@ -2249,316 +2255,316 @@ msgid ""
 msgstr ""
 "फोल्डर “%s” को कॉपी नहीं किया जा सकता क्योंकि आपके पास इसे पढ़ने की अनुमति नहीं है।"
 
-#: src/nautilus-file-operations.c:4621 src/nautilus-file-operations.c:5254
-#: src/nautilus-file-operations.c:6006
+#: src/nautilus-file-operations.c:4623 src/nautilus-file-operations.c:5256
+#: src/nautilus-file-operations.c:6008
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "“%s” को स्थानांतरित करते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:4622
+#: src/nautilus-file-operations.c:4624
 msgid "Could not remove the source folder."
 msgstr "स्रोत फोल्डर हटाया नहीं जा सका।"
 
-#: src/nautilus-file-operations.c:4838
+#: src/nautilus-file-operations.c:4840
 msgid "There was an error getting information about the source."
 msgstr "स्रोत के बारे में जानकारी प्राप्त करने में त्रुटि हुई।"
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4940 src/nautilus-file-operations.c:5764
+#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5766
 msgid "You cannot move a folder into itself."
 msgstr "आप किसी फोल्डर को स्वयं में स्थानांतरित नहीं कर सकते।"
 
-#: src/nautilus-file-operations.c:4941 src/nautilus-file-operations.c:5765
+#: src/nautilus-file-operations.c:4943 src/nautilus-file-operations.c:5767
 msgid "You cannot copy a folder into itself."
 msgstr "आप किसी फोल्डर को स्वयं में कॉपी नहीं कर सकते।"
 
-#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5766
+#: src/nautilus-file-operations.c:4944 src/nautilus-file-operations.c:5768
 msgid "The destination folder is inside the source folder."
 msgstr "गंतव्य फोल्डर स्त्रोत फोल्डर के भीतर है।"
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4982 src/nautilus-file-operations.c:5807
+#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5809
 msgid "You cannot move a file over itself."
 msgstr "आप किसी फाइल को उसके ऊपर स्थानांतरित नहीं कर सकते।"
 
-#: src/nautilus-file-operations.c:4983 src/nautilus-file-operations.c:5808
+#: src/nautilus-file-operations.c:4985 src/nautilus-file-operations.c:5810
 msgid "You cannot copy a file over itself."
 msgstr "आप किसी फाइल को उसी पर कॉपी नहीं कर सकते।"
 
-#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5809
+#: src/nautilus-file-operations.c:4986 src/nautilus-file-operations.c:5811
 msgid "The source file would be overwritten by the destination."
 msgstr "स्रोत फाइल गंतव्य द्वारा अधिलेखित कर दी जाएगी।"
 
-#: src/nautilus-file-operations.c:5258 src/nautilus-file-operations.c:5346
+#: src/nautilus-file-operations.c:5260 src/nautilus-file-operations.c:5348
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "“%s” कॉपी करते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:5261
+#: src/nautilus-file-operations.c:5263
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "%s में समान नाम वाली पहले से मौजूद फाइल को हटाया नहीं जा सका।"
 
-#: src/nautilus-file-operations.c:5348
+#: src/nautilus-file-operations.c:5350
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "फाइल को %s में कॉपी करते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:5545
+#: src/nautilus-file-operations.c:5547
 msgid "Copying Files"
 msgstr "फाइलें कॉपी की जा रही है"
 
-#: src/nautilus-file-operations.c:5665
+#: src/nautilus-file-operations.c:5667
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "\"%s\" पर स्थानांतरित करने की तैयारी की जा रही है"
 
-#: src/nautilus-file-operations.c:5669
+#: src/nautilus-file-operations.c:5671
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "%'d फाइल को स्थानांतरित करने की तैयारी की जा रही है"
 msgstr[1] "%'d फ़ाइलें स्थानांतरित करने की तैयारी की जा रही है"
 
-#: src/nautilus-file-operations.c:6008
+#: src/nautilus-file-operations.c:6010
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "फाइल को %s में स्थानांतरण करते समय त्रुटि हुई।"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:6256
+#: src/nautilus-file-operations.c:6258
 msgid "Moving Files"
 msgstr "फाइलें स्थानांतरित की जा रही है"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:6362
+#: src/nautilus-file-operations.c:6364
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "“%s” में लिंक बनाया जा रहा है"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:6366
+#: src/nautilus-file-operations.c:6368
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "%'d फाइल का लिंक बनाया जा रहा है"
 msgstr[1] "%'d फ़ाइलों के लिए लिंक बनाया जा रहा है"
 
-#: src/nautilus-file-operations.c:6516
+#: src/nautilus-file-operations.c:6518
 #, c-format
 msgid "Error while creating link to “%s”."
 msgstr "“%s” के लिए लिंक बनाते समय त्रुटि।"
 
-#: src/nautilus-file-operations.c:6520
+#: src/nautilus-file-operations.c:6522
 msgid "Symbolic links only supported for local files"
 msgstr "प्रतीकात्मक लिंक केवल स्थानीय फाइलों के लिए समर्थित हैं"
 
-#: src/nautilus-file-operations.c:6525
+#: src/nautilus-file-operations.c:6527
 msgid "The target doesn’t support symbolic links."
 msgstr "लक्ष्य प्रतीकात्मक लिंक का समर्थन नहीं करता है।"
 
-#: src/nautilus-file-operations.c:6533
+#: src/nautilus-file-operations.c:6535
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "%s में सिमलिंक बनाते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:6863
+#: src/nautilus-file-operations.c:6865
 msgid "Setting permissions"
 msgstr "अनुमतियां निर्धारित की जा रही हैं"
 
 #  localizers: the initial name of a new folder
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7155
+#: src/nautilus-file-operations.c:7157
 msgid "Untitled Folder"
 msgstr "अनाम फोल्डर"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7170
+#: src/nautilus-file-operations.c:7172
 msgid "Untitled Document"
 msgstr "अनाम दस्तावेज़"
 
-#: src/nautilus-file-operations.c:7396
+#: src/nautilus-file-operations.c:7398
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "निर्देशिका “%s” बनाते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:7401
+#: src/nautilus-file-operations.c:7403
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "फाइल “%s” बनाते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:7405
+#: src/nautilus-file-operations.c:7407
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "%s में निर्देशिका बनाते समय त्रुटि हुई।"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:7506
+#: src/nautilus-file-operations.c:7508
 msgid "Saving image to file"
 msgstr "छवि को फाइल में सहेजा जा रहा है"
 
-#: src/nautilus-file-operations.c:7515
+#: src/nautilus-file-operations.c:7517
 msgid "Successfully saved image to file"
 msgstr "फाइल में छवि सफलतापूर्वक सहेजी गई"
 
-#: src/nautilus-file-operations.c:7545
+#: src/nautilus-file-operations.c:7547
 msgid "Failed to save image"
 msgstr "छवि सहेजने में विफल"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7607
+#: src/nautilus-file-operations.c:7609
 msgid "Pasted image"
 msgstr "चिपकाई गई छवि"
 
-#: src/nautilus-file-operations.c:7614
+#: src/nautilus-file-operations.c:7616
 msgid "Retrieving clipboard data"
 msgstr "क्लिपबोर्ड डेटा पुनर्प्राप्त किया जा रहा है"
 
-#: src/nautilus-file-operations.c:7646
+#: src/nautilus-file-operations.c:7648
 msgid "Retrieving image data"
 msgstr "छवि डेटा पुनर्प्राप्त किया जा रहा है"
 
-#: src/nautilus-file-operations.c:7864
+#: src/nautilus-file-operations.c:7866
 msgid "Emptying Trash"
 msgstr "रद्दी खाली की जा रही है"
 
-#: src/nautilus-file-operations.c:7906
+#: src/nautilus-file-operations.c:7908
 msgid "Verifying destination"
 msgstr "गंतव्य का सत्यापन किया जा रहा है"
 
-#: src/nautilus-file-operations.c:7956
+#: src/nautilus-file-operations.c:7958
 #, c-format
 msgid "Extracting “%s”"
 msgstr "“%s” निष्कर्षित किया जा रहा है"
 
-#: src/nautilus-file-operations.c:8082 src/nautilus-file-operations.c:8172
+#: src/nautilus-file-operations.c:8084 src/nautilus-file-operations.c:8174
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "“%s” निष्कर्षण में त्रुटि"
 
-#: src/nautilus-file-operations.c:8089
+#: src/nautilus-file-operations.c:8091
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "“%s” निष्कर्षित करते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:8175
+#: src/nautilus-file-operations.c:8177
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "“%s” निष्कर्षण के लिए पर्याप्त खाली स्थान नहीं है"
 
-#: src/nautilus-file-operations.c:8208
+#: src/nautilus-file-operations.c:8210
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "“%1$s” को “%2$s” में निष्कर्षित किया गया"
 
-#: src/nautilus-file-operations.c:8214
+#: src/nautilus-file-operations.c:8216
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "%'d फाइल को “%s” में निष्कर्षित किया गया"
 msgstr[1] "%'d फ़ाइलों को “%s” में निष्कर्षित किया गया"
 
-#: src/nautilus-file-operations.c:8248
+#: src/nautilus-file-operations.c:8250
 msgid "Preparing to extract"
 msgstr "निष्कर्षण की तैयारी"
 
-#: src/nautilus-file-operations.c:8376
+#: src/nautilus-file-operations.c:8378
 msgid "Extracting Files"
 msgstr "फाइलें निष्कर्षित की जा रही है"
 
-#: src/nautilus-file-operations.c:8436
+#: src/nautilus-file-operations.c:8438
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "“%1$s” को “%2$s” में संपीड़ित किया जा रहा है"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:8442
+#: src/nautilus-file-operations.c:8444
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "%'d फाइल को “%s” में संपीड़ित किया जा रहा है"
 msgstr[1] "%'d फ़ाइलों को “%s” में संपीड़ित किया जा रहा है"
 
-#: src/nautilus-file-operations.c:8590
+#: src/nautilus-file-operations.c:8592
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "“%s” को “%s” में संपीड़ित करने में त्रुटि"
 
-#: src/nautilus-file-operations.c:8596
+#: src/nautilus-file-operations.c:8598
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "%'d फाइल को “%s” में संपीड़ित करने में त्रुटि"
 msgstr[1] "%'d फ़ाइलों को “%s” में संपीड़ित करने में त्रुटि"
 
-#: src/nautilus-file-operations.c:8606
+#: src/nautilus-file-operations.c:8608
 msgid "There was an error while compressing files."
 msgstr "फाइलें संपीड़ित करते समय त्रुटि हुई।"
 
-#: src/nautilus-file-operations.c:8631
+#: src/nautilus-file-operations.c:8633
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "“%1$s” को “%2$s” में संपीड़ित किया गया"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:8637
+#: src/nautilus-file-operations.c:8639
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "%'d फाइल को “%s” में संपीड़ित किया गया"
 msgstr[1] "%'d फ़ाइलों को “%s” में संपीड़ित किया गया"
 
-#: src/nautilus-file-operations.c:8756
+#: src/nautilus-file-operations.c:8758
 msgid "Compressing Files"
 msgstr "फाइलें संपीड़ित की जा रही है"
 
-#: src/nautilus-files-view.c:391
+#: src/nautilus-files-view.c:392
 msgid "Searching…"
 msgstr "खोज रहे हैं…"
 
-#: src/nautilus-files-view.c:391 src/nautilus-window-slot.c:873
+#: src/nautilus-files-view.c:392 src/nautilus-window-slot.c:883
 msgid "Loading…"
 msgstr "लोड किया जा रहा है…"
 
-#: src/nautilus-files-view.c:1835
+#: src/nautilus-files-view.c:1836
 msgid "Examples: "
 msgstr "उदाहरण: "
 
-#: src/nautilus-files-view.c:2893 src/nautilus-files-view.c:2900
-#: src/nautilus-files-view.c:2907 src/nautilus-files-view.c:2914
+#: src/nautilus-files-view.c:2894 src/nautilus-files-view.c:2901
+#: src/nautilus-files-view.c:2908 src/nautilus-files-view.c:2915
 msgid "Could not paste files"
 msgstr "फाइलें चिपकाई नहीं जा सकी"
 
-#: src/nautilus-files-view.c:2894
+#: src/nautilus-files-view.c:2895
 msgid "Cannot paste files into Starred"
 msgstr "तारांकित में फाइलें चिपकाई नहीं जा सकी"
 
-#: src/nautilus-files-view.c:2901
+#: src/nautilus-files-view.c:2902
 msgid "Cannot paste files into Recent"
 msgstr "हालिया में फाइलें चिपकाई नहीं जा सकी"
 
-#: src/nautilus-files-view.c:2908
+#: src/nautilus-files-view.c:2909
 msgid "Cannot paste files into Trash"
 msgstr "रद्दी में फाइलें चिपकाई नहीं जा सकी"
 
-#: src/nautilus-files-view.c:2915
+#: src/nautilus-files-view.c:2916
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "अनुमतियां इस निर्देशिका में फाइलें चिपकाने की अनुमति नहीं देती हैं"
 
-#: src/nautilus-files-view.c:3546 src/nautilus-files-view.c:3593
+#: src/nautilus-files-view.c:3547 src/nautilus-files-view.c:3594
 #, c-format
 msgid "“%s” selected"
 msgstr "“%s” चयनित"
 
-#: src/nautilus-files-view.c:3550
+#: src/nautilus-files-view.c:3551
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d फोल्डर चयनित"
 msgstr[1] "%'d फोल्डर चयनित"
 
-#: src/nautilus-files-view.c:3564
+#: src/nautilus-files-view.c:3565
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2566,7 +2572,7 @@ msgstr[0] "(%'d वस्तु युक्त)"
 msgstr[1] "(%'d वस्तुएं युक्त)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3579
+#: src/nautilus-files-view.c:3580
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
@@ -2574,7 +2580,7 @@ msgstr[0] "(कुल %'d वस्तु युक्त)"
 msgstr[1] "(कुल %'d वस्तुएं युक्त)"
 
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3598
+#: src/nautilus-files-view.c:3599
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2583,7 +2589,7 @@ msgstr[1] "%'d वस्तुएं चयनित"
 
 #  translators: this is preceded with a string of form 'N folders' (N more than 1)
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3607
+#: src/nautilus-files-view.c:3608
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2594,7 +2600,7 @@ msgstr[1] "%'d अन्य वस्तुएं चयनित"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3622
+#: src/nautilus-files-view.c:3623
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2612,162 +2618,162 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3672
+#: src/nautilus-files-view.c:3673
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3735
+#: src/nautilus-files-view.c:3736
 msgid "Search _Settings"
 msgstr "सेटिंग खोजें (_S)"
 
-#: src/nautilus-files-view.c:3747
+#: src/nautilus-files-view.c:3748
 msgid "Search _Everywhere"
 msgstr "हर जगह खोजें (_E)"
 
-#: src/nautilus-files-view.c:3784
+#: src/nautilus-files-view.c:3785
 msgid "More locations can be added to search in the settings"
 msgstr "सेटिंग्स में खोज के लिए और अधिक स्थान जोड़े जा सकते हैं"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3792
+#: src/nautilus-files-view.c:3793
 #, c-format
 msgid "No matches in “%s”"
 msgstr "“%s” में कोई मिलान नहीं"
 
-#: src/nautilus-files-view.c:3800
+#: src/nautilus-files-view.c:3801
 msgid "No Results Found"
 msgstr "कोई परिणाम नहीं मिला"
 
-#: src/nautilus-files-view.c:3805
+#: src/nautilus-files-view.c:3806
 msgid "Trash is Empty"
 msgstr "रद्दी खाली है"
 
-#: src/nautilus-files-view.c:3811
+#: src/nautilus-files-view.c:3812
 msgid "No Starred Files"
 msgstr "कोई तारांकित फाइलें नहीं"
 
 #  localizers: progress dialog title
-#: src/nautilus-files-view.c:3817
+#: src/nautilus-files-view.c:3818
 msgid "No Recent Files"
 msgstr "कोई हालिया फाइलें नहीं"
 
-#: src/nautilus-files-view.c:3823
+#: src/nautilus-files-view.c:3824
 msgid "No Known Connections"
 msgstr "कोई ज्ञात कनेक्शन नहीं"
 
-#: src/nautilus-files-view.c:3824
+#: src/nautilus-files-view.c:3825
 msgid "Enter an address to connect to a network location."
 msgstr "नेटवर्क स्थान से जुड़ने के लिए एक पता दर्ज करें।"
 
-#: src/nautilus-files-view.c:3829
+#: src/nautilus-files-view.c:3830
 msgid "Folder is Empty"
 msgstr "फोल्डर खाली है"
 
-#: src/nautilus-files-view.c:6047
+#: src/nautilus-files-view.c:6049
 msgid "Select Move Destination"
-msgstr "*गंतव्य स्थानांतरित करें* का चयन करें"
+msgstr "<i>गंतव्य स्थानांतरित करें</i> का चयन करें"
 
-#: src/nautilus-files-view.c:6051
+#: src/nautilus-files-view.c:6053
 msgid "Select Copy Destination"
-msgstr "*कॉपी गंतव्य* चुनें"
+msgstr "<i>गंतव्य कॉपी करें</i> चुनें"
 
-#: src/nautilus-files-view.c:6057 src/nautilus-files-view.c:6445
+#: src/nautilus-files-view.c:6059 src/nautilus-files-view.c:6447
 #: src/nautilus-properties-window.c:4092
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "चुनें (_S)"
 
-#: src/nautilus-files-view.c:6444
+#: src/nautilus-files-view.c:6446
 msgid "Select Extract Destination"
 msgstr "निष्कर्षण गंतव्य चुनें"
 
-#: src/nautilus-files-view.c:6520
+#: src/nautilus-files-view.c:6522
 msgid "Error sending email."
 msgstr "ईमेल भेजने में त्रुटि।"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6822
+#: src/nautilus-files-view.c:6840
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "“%s” को हटाने में असमर्थ"
 
-#: src/nautilus-files-view.c:6867
+#: src/nautilus-files-view.c:6885
 msgid "Unable to stop drive"
 msgstr "ड्राइव रोकने में असमर्थ"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6982 src/gtk/nautilusgtkplacessidebar.c:1804
-#: src/gtk/nautilusgtkplacessidebar.c:2704
+#: src/nautilus-files-view.c:7000 src/gtk/nautilusgtkplacessidebar.c:1661
+#: src/gtk/nautilusgtkplacessidebar.c:2540
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "“%s” प्रारंभ करने में असमर्थ"
 
-#: src/nautilus-files-view.c:8036
+#: src/nautilus-files-view.c:8054
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "चयन के साथ नया फोल्डर (%'d वस्तु)"
 msgstr[1] "चयन के साथ नया फ़ोल्डर (%'d वस्तुएं)"
 
-#: src/nautilus-files-view.c:8091
+#: src/nautilus-files-view.c:8109
 #, c-format
 msgid "Open With %s"
 msgstr "%s से खोलें"
 
-#: src/nautilus-files-view.c:8102
+#: src/nautilus-files-view.c:8120
 msgid "Run"
 msgstr "चलाएं"
 
-#: src/nautilus-files-view.c:8107
+#: src/nautilus-files-view.c:8125
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "निष्कर्षित करें"
 
-#: src/nautilus-files-view.c:8108
+#: src/nautilus-files-view.c:8126
 msgid "Extract to…"
 msgstr "यहां निष्कर्षित करें…"
 
-#: src/nautilus-files-view.c:8112
+#: src/nautilus-files-view.c:8130
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "खोलें"
 
-#: src/nautilus-files-view.c:8190
+#: src/nautilus-files-view.c:8208
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
-#: src/gtk/nautilusgtkplacessidebar.c:3134
+#: src/gtk/nautilusgtkplacessidebar.c:2962
 msgid "_Start"
 msgstr "प्रारंभ (_S)"
 
-#: src/nautilus-files-view.c:8196
+#: src/nautilus-files-view.c:8214
 msgid "_Connect"
 msgstr "जुडें (_C)"
 
-#: src/nautilus-files-view.c:8202
+#: src/nautilus-files-view.c:8220
 msgid "_Start Multi-disk Drive"
 msgstr "मल्टी-डिस्क ड्राइव प्रारंभ करें (_S)"
 
-#: src/nautilus-files-view.c:8208
+#: src/nautilus-files-view.c:8226
 msgid "U_nlock Drive"
 msgstr "ड्राइव अनलॉक करें (_n)"
 
-#: src/nautilus-files-view.c:8226
+#: src/nautilus-files-view.c:8244
 msgid "Stop Drive"
 msgstr "ड्राइव रोकें"
 
-#: src/nautilus-files-view.c:8232 src/gtk/nautilusgtkplacessidebar.c:3151
+#: src/nautilus-files-view.c:8250 src/gtk/nautilusgtkplacessidebar.c:2979
 msgid "_Safely Remove Drive"
 msgstr "ड्राइव सुरक्षित रूप से निकालें (_S)"
 
-#: src/nautilus-files-view.c:8238
+#: src/nautilus-files-view.c:8256
 msgid "_Disconnect"
 msgstr "डिस्कनेक्ट (_D)"
 
-#: src/nautilus-files-view.c:8244
+#: src/nautilus-files-view.c:8262
 msgid "_Stop Multi-disk Drive"
 msgstr "मल्टी-डिस्क ड्राइव रोकें (_S)"
 
-#: src/nautilus-files-view.c:8250
+#: src/nautilus-files-view.c:8268
 msgid "_Lock Drive"
 msgstr "ड्राइव लॉक करें (_L)"
 
@@ -2784,7 +2790,7 @@ msgstr "खींचना और छोड़ना समर्थित नह�
 msgid "An invalid drag type was used."
 msgstr "एक अमान्य ड्रैग प्रकार का उपयोग किया गया था।"
 
-#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1357
+#: src/nautilus-file-undo-operations.c:177 src/nautilus-window.c:1073
 msgid "Undo"
 msgstr "पूर्ववत करें"
 
@@ -2863,7 +2869,7 @@ msgstr[0] "%d वस्तु को वापस रद्दी में ल�
 msgstr[1] "%d वस्तुओं को वापस रद्दी में ले जाएं"
 
 #: src/nautilus-file-undo-operations.c:486
-#: src/nautilus-file-undo-operations.c:1609
+#: src/nautilus-file-undo-operations.c:1624
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
@@ -2911,9 +2917,9 @@ msgstr[1] "पुनः %d वस्तु कॉपी करें (_R)"
 
 #: src/nautilus-file-undo-operations.c:516
 #: src/nautilus-file-undo-operations.c:543
-#: src/nautilus-file-undo-operations.c:827
-#: src/nautilus-file-undo-operations.c:2365
-#: src/nautilus-file-undo-operations.c:2528
+#: src/nautilus-file-undo-operations.c:831
+#: src/nautilus-file-undo-operations.c:2380
+#: src/nautilus-file-undo-operations.c:2543
 #, c-format
 msgid "Delete “%s”"
 msgstr "“%s” मिटाएं"
@@ -3011,232 +3017,232 @@ msgid "_Redo Create Link"
 msgstr "लिंक पुनः बनाएं (_R)"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-undo-operations.c:831
+#: src/nautilus-file-undo-operations.c:835
 #, c-format
 msgid "Create an empty file “%s”"
 msgstr "एक खाली फाइल “%s” बनाएं"
 
-#: src/nautilus-file-undo-operations.c:833
+#: src/nautilus-file-undo-operations.c:837
 msgid "_Undo Create Empty File"
 msgstr "खाली फाइल बनाना पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:834
+#: src/nautilus-file-undo-operations.c:838
 msgid "_Redo Create Empty File"
 msgstr "ख़ाली फाइल पुनः बनाएं (_R)"
 
-#: src/nautilus-file-undo-operations.c:838
+#: src/nautilus-file-undo-operations.c:842
 #, c-format
 msgid "Create a new folder “%s”"
 msgstr "एक नया फोल्डर “%s” बनाएं"
 
-#: src/nautilus-file-undo-operations.c:840
+#: src/nautilus-file-undo-operations.c:844
 msgid "_Undo Create Folder"
 msgstr "फोल्डर बनाना पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:841
+#: src/nautilus-file-undo-operations.c:845
 msgid "_Redo Create Folder"
 msgstr "फोल्डर पुनः बनाएं (_R)"
 
-#: src/nautilus-file-undo-operations.c:845
+#: src/nautilus-file-undo-operations.c:849
 #, c-format
 msgid "Create new file “%s” from template "
 msgstr "खाके से नई फाइल “%s” बनाएं "
 
-#: src/nautilus-file-undo-operations.c:847
+#: src/nautilus-file-undo-operations.c:851
 msgid "_Undo Create From Template"
 msgstr "खाके से बनाना पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:848
+#: src/nautilus-file-undo-operations.c:852
 msgid "_Redo Create From Template"
 msgstr "खाके से पुनः बनाएं (_R)"
 
-#: src/nautilus-file-undo-operations.c:1048
-#: src/nautilus-file-undo-operations.c:1049
+#: src/nautilus-file-undo-operations.c:1063
+#: src/nautilus-file-undo-operations.c:1064
 #, c-format
 msgid "Rename “%s” as “%s”"
 msgstr "“%1$s” का नाम बदलकर “%2$s” करें"
 
-#: src/nautilus-file-undo-operations.c:1051
+#: src/nautilus-file-undo-operations.c:1066
 msgid "_Undo Rename"
 msgstr "नाम बदलना पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:1052
+#: src/nautilus-file-undo-operations.c:1067
 msgid "_Redo Rename"
 msgstr "पुनः नाम बदलें (_R)"
 
-#: src/nautilus-file-undo-operations.c:1167
-#: src/nautilus-file-undo-operations.c:1171
+#: src/nautilus-file-undo-operations.c:1182
+#: src/nautilus-file-undo-operations.c:1186
 #, c-format
 msgid "Batch rename %d file"
 msgid_plural "Batch rename %d files"
 msgstr[0] "%d फाइल का सामूहिक नाम बदलें"
 msgstr[1] "%d फ़ाइलों का सामूहिक नाम बदलें"
 
-#: src/nautilus-file-undo-operations.c:1176
+#: src/nautilus-file-undo-operations.c:1191
 msgid "_Undo Batch Rename"
 msgstr "सामूहिक नाम बदलना पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:1177
+#: src/nautilus-file-undo-operations.c:1192
 msgid "_Redo Batch Rename"
 msgstr "सामूहिक नाम पुनः बदलें (_R)"
 
-#: src/nautilus-file-undo-operations.c:1393
-#: src/nautilus-file-undo-operations.c:1410
+#: src/nautilus-file-undo-operations.c:1408
+#: src/nautilus-file-undo-operations.c:1425
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
 msgstr[0] "%d फाइल अतारांकित करें"
 msgstr[1] "%d फ़ाइलें अतारांकित करें"
 
-#: src/nautilus-file-undo-operations.c:1397
-#: src/nautilus-file-undo-operations.c:1406
+#: src/nautilus-file-undo-operations.c:1412
+#: src/nautilus-file-undo-operations.c:1421
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
 msgstr[0] "%d फाइल तारांकित करें"
 msgstr[1] "%d फ़ाइलें तारांकित करें"
 
-#: src/nautilus-file-undo-operations.c:1401
+#: src/nautilus-file-undo-operations.c:1416
 msgid "_Undo Starring"
 msgstr "तारांकन पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:1402
+#: src/nautilus-file-undo-operations.c:1417
 msgid "_Redo Starring"
 msgstr "पुनः तारांकन करें (_R)"
 
-#: src/nautilus-file-undo-operations.c:1414
+#: src/nautilus-file-undo-operations.c:1429
 msgid "_Undo Unstarring"
 msgstr "अतारांकन पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:1415
+#: src/nautilus-file-undo-operations.c:1430
 msgid "_Redo Unstarring"
 msgstr "पुनः अतारांकन करें (_R)"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-undo-operations.c:1612
+#: src/nautilus-file-undo-operations.c:1627
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
 msgstr[0] "%d वस्तु को रद्दी में ले जाएं"
 msgstr[1] "%d वस्तुओं को रद्दी में ले जाएं"
 
-#: src/nautilus-file-undo-operations.c:1626
+#: src/nautilus-file-undo-operations.c:1641
 #, c-format
 msgid "Restore “%s” to “%s”"
 msgstr "“%1$s” को “%2$s” पर पुनर्स्थापित करें"
 
-#: src/nautilus-file-undo-operations.c:1633
+#: src/nautilus-file-undo-operations.c:1648
 #, c-format
 msgid "Move “%s” to trash"
 msgstr "“%s” को रद्दी में ले जाएं"
 
-#: src/nautilus-file-undo-operations.c:1638
+#: src/nautilus-file-undo-operations.c:1653
 msgid "_Undo Trash"
 msgstr "रद्दी को पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:1639
+#: src/nautilus-file-undo-operations.c:1654
 msgid "_Redo Trash"
 msgstr "पुनः रद्दी में भेजें (_R)"
 
-#: src/nautilus-file-undo-operations.c:1933
+#: src/nautilus-file-undo-operations.c:1948
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "“%s” में संलग्न वस्तुओं की मूल अनुमतियां पुनर्स्थापित करें"
 
-#: src/nautilus-file-undo-operations.c:1934
+#: src/nautilus-file-undo-operations.c:1949
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr "“%s” में संलग्न वस्तुओं की अनुमतियां निर्धारित करें"
 
-#: src/nautilus-file-undo-operations.c:1936
-#: src/nautilus-file-undo-operations.c:2089
+#: src/nautilus-file-undo-operations.c:1951
+#: src/nautilus-file-undo-operations.c:2104
 msgid "_Undo Change Permissions"
 msgstr "अनुमतियां परिवर्तन पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:1937
-#: src/nautilus-file-undo-operations.c:2090
+#: src/nautilus-file-undo-operations.c:1952
+#: src/nautilus-file-undo-operations.c:2105
 msgid "_Redo Change Permissions"
 msgstr "पुनः अनुमतियां बदलें (_R)"
 
-#: src/nautilus-file-undo-operations.c:2086
+#: src/nautilus-file-undo-operations.c:2101
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr "“%s” की मूल अनुमतियां पुनर्स्थापित करें"
 
-#: src/nautilus-file-undo-operations.c:2087
+#: src/nautilus-file-undo-operations.c:2102
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr "“%s” की अनुमतियां निर्धारित करें"
 
-#: src/nautilus-file-undo-operations.c:2199
+#: src/nautilus-file-undo-operations.c:2214
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr "“%1$s” के समूह को “%2$s” पर पुनर्स्थापित करें"
 
-#: src/nautilus-file-undo-operations.c:2201
+#: src/nautilus-file-undo-operations.c:2216
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr "“%1$s” के समूह को “%2$s” पर निर्धारित करें"
 
-#: src/nautilus-file-undo-operations.c:2204
+#: src/nautilus-file-undo-operations.c:2219
 msgid "_Undo Change Group"
 msgstr "समूह परिवर्तित पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:2205
+#: src/nautilus-file-undo-operations.c:2220
 msgid "_Redo Change Group"
 msgstr "पुन: समूह परिवर्तित करें (_R)"
 
-#: src/nautilus-file-undo-operations.c:2209
+#: src/nautilus-file-undo-operations.c:2224
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr "“%1$s” के मालिक को “%2$s” पर पुनर्स्थापित करें"
 
-#: src/nautilus-file-undo-operations.c:2211
+#: src/nautilus-file-undo-operations.c:2226
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr "“%1$s” के मालिक को “%2$s” पर निर्धारित करें"
 
-#: src/nautilus-file-undo-operations.c:2214
+#: src/nautilus-file-undo-operations.c:2229
 msgid "_Undo Change Owner"
 msgstr "स्वामी को बदलें पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:2215
+#: src/nautilus-file-undo-operations.c:2230
 msgid "_Redo Change Owner"
 msgstr "स्वामी को बदलें पुनः करें (_R)"
 
-#: src/nautilus-file-undo-operations.c:2351
+#: src/nautilus-file-undo-operations.c:2366
 msgid "_Undo Extract"
 msgstr "निष्कर्षण पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:2352
+#: src/nautilus-file-undo-operations.c:2367
 msgid "_Redo Extract"
 msgstr "पुनः निष्कर्षण करें (_R)"
 
-#: src/nautilus-file-undo-operations.c:2369
+#: src/nautilus-file-undo-operations.c:2384
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
 msgstr[0] "%d निष्कर्षित फाइल मिटाएं"
 msgstr[1] "%d निष्कर्षित फ़ाइलें मिटाएं"
 
-#: src/nautilus-file-undo-operations.c:2383
+#: src/nautilus-file-undo-operations.c:2398
 #, c-format
 msgid "Extract “%s”"
 msgstr "“%s” निष्कर्षित करें"
 
-#: src/nautilus-file-undo-operations.c:2387
+#: src/nautilus-file-undo-operations.c:2402
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
 msgstr[0] "%d फाइल निष्कर्षित करें"
 msgstr[1] "%d फ़ाइलें निष्कर्षित करें"
 
-#: src/nautilus-file-undo-operations.c:2539
+#: src/nautilus-file-undo-operations.c:2554
 #, c-format
 msgid "Compress “%s”"
 msgstr "“%s” को संपीड़ित करें"
 
-#: src/nautilus-file-undo-operations.c:2543
+#: src/nautilus-file-undo-operations.c:2558
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
@@ -3244,55 +3250,55 @@ msgstr[0] "%d फाइल संपीड़ित करें"
 msgstr[1] "%d फ़ाइलें संपीड़ित करें"
 
 #  localizers: tag used to detect the x2nd copy of a file
-#: src/nautilus-file-undo-operations.c:2549
+#: src/nautilus-file-undo-operations.c:2564
 msgid "_Undo Compress"
 msgstr "संपीड़न पूर्ववत करें (_U)"
 
-#: src/nautilus-file-undo-operations.c:2550
+#: src/nautilus-file-undo-operations.c:2565
 msgid "_Redo Compress"
 msgstr "पुनः संपीड़ित करें (_R)"
 
-#: src/nautilus-file-utilities.c:557
+#: src/nautilus-file-utilities.c:566
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "“%s” का मूल स्थान निर्धारित नहीं किया जा सका "
 
-#: src/nautilus-file-utilities.c:561
+#: src/nautilus-file-utilities.c:570
 msgid "The item cannot be restored from trash"
 msgstr "वस्तु को रद्दी से पुनर्स्थापित नहीं किया जा सकता"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:684
+#: src/nautilus-file-utilities.c:693
 msgid "Photo CD"
 msgstr "फोटो सीडी"
 
-#: src/nautilus-file-utilities.c:688 src/nautilus-file-utilities.c:735
+#: src/nautilus-file-utilities.c:697 src/nautilus-file-utilities.c:744
 msgid "Contains digital photos"
 msgstr "डिजिटल तस्वीरें शामिल हैं"
 
-#: src/nautilus-file-utilities.c:692
+#: src/nautilus-file-utilities.c:701
 msgid "Contains music"
 msgstr "संगीत शामिल है"
 
-#: src/nautilus-file-utilities.c:696
+#: src/nautilus-file-utilities.c:705
 msgid "Contains software to run"
 msgstr "चलाने के लिए सॉफ्टवेयर शामिल है"
 
-#: src/nautilus-file-utilities.c:700
+#: src/nautilus-file-utilities.c:709
 msgid "Contains software to install"
 msgstr "स्थापित करने के लिए सॉफ़्टवेयर शामिल है"
 
-#: src/nautilus-file-utilities.c:706
+#: src/nautilus-file-utilities.c:715
 #, c-format
 msgid "Detected as “%s”"
 msgstr "“%s” के रूप में पहचाना गया"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:727
+#: src/nautilus-file-utilities.c:736
 msgid "Contains music and photos"
 msgstr "संगीत और तस्वीरें शामिल हैं"
 
-#: src/nautilus-file-utilities.c:731
+#: src/nautilus-file-utilities.c:740
 msgid "Contains photos and music"
 msgstr "तस्वीरें और संगीत शामिल हैं"
 
@@ -3320,13 +3326,13 @@ msgstr "%zu कॉपी करें"
 msgid "Link to %s (%zu)"
 msgstr "%s से लिंक करें (%zu)"
 
-#: src/nautilus-internal-place-file.c:161
-#: src/gtk/nautilusgtkplacessidebar.c:851
+#: src/nautilus-internal-place-file.c:165
+#: src/gtk/nautilusgtkplacessidebar.c:739
 msgid "Network"
 msgstr "नेटवर्क"
 
-#: src/nautilus-internal-place-file.c:165
-#: src/gtk/nautilusgtkplacessidebar.c:811
+#: src/nautilus-internal-place-file.c:169
+#: src/gtk/nautilusgtkplacessidebar.c:713
 msgid "Starred"
 msgstr "तारांकित"
 
@@ -3362,7 +3368,7 @@ msgstr "नए दस्तावेज़ों के लिए खाके �
 msgid "_Learn More"
 msgstr "अधिक जानें (_L)"
 
-#: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:3086
+#: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:2914
 msgid "_Empty Trash…"
 msgstr "रद्दी खाली करें (_E)…"
 
@@ -3397,7 +3403,6 @@ msgid "Anything"
 msgstr "कुछ भी"
 
 #: src/nautilus-mime-actions.c:110
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:55
 msgid "Folders"
 msgstr "फोल्डर"
 
@@ -3457,7 +3462,7 @@ msgstr "क्या आप सुनिश्चित हैं कि आप 
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
-msgstr[0] "इससे %d अलग टैब और खिड़की खुल जाएगी।"
+msgstr[0] "इससे %d अलग टैब और विंडो खुल जाएगी।"
 msgstr[1] "इससे %d अलग टैब और विंडो खुल जाएंगी।"
 
 #: src/nautilus-mime-actions.c:1007
@@ -3471,7 +3476,7 @@ msgstr[1] "इससे %d अलग टैब खुल जायेंगे."
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
-msgstr[0] "इससे %d अलग खिड़की खुल जाएगी।"
+msgstr[0] "इससे %d अलग विंडो खुल जाएगी।"
 msgstr[1] "इससे %d अलग विंडो खुल जाएंगी."
 
 #: src/nautilus-mime-actions.c:1019
@@ -3510,7 +3515,7 @@ msgstr "ऐप खोजने में असमर्थ"
 
 #: src/nautilus-mime-actions.c:1330
 msgid "_Search in Software"
-msgstr "*सॉफ्टवेयर* में खोजें (_S)"
+msgstr "<i>सॉफ्टवेयर</i> में खोजें (_S)"
 
 #: src/nautilus-mime-actions.c:1333
 #, c-format
@@ -3635,7 +3640,7 @@ msgstr "गंतव्य फोल्डर की सामग्री क�
 
 #: src/nautilus-operations-ui-manager.c:157
 msgid "Please rename the symbolic link or press the skip button."
-msgstr "कृपया प्रतीकात्मक लिंक का नाम बदलें या *छोड़ें* बटन दबाएं।"
+msgstr "कृपया प्रतीकात्मक लिंक का नाम बदलें या <i>छोड़ें</i> बटन दबाएं।"
 
 #: src/nautilus-operations-ui-manager.c:161
 #, c-format
@@ -3863,7 +3868,7 @@ msgid "Details: "
 msgstr "विवरण: "
 
 #: src/nautilus-progress-info.c:375
-msgid "Canceled"
+msgid "Cancelled"
 msgstr "रद्द"
 
 #: src/nautilus-progress-info.c:422 src/nautilus-progress-info.c:443
@@ -3936,7 +3941,7 @@ msgstr "केवल-अभिगम"
 msgid "Custom icon removed"
 msgstr "तदनुकूल चिह्न हटाया गया"
 
-#: src/nautilus-properties-window.c:642 src/nautilus-window.c:1274
+#: src/nautilus-properties-window.c:642 src/nautilus-window.c:990
 #: src/resources/ui/nautilus-window.ui:32
 msgid "_Undo"
 msgstr "पूर्ववत करें (_U)"
@@ -4014,7 +4019,7 @@ msgstr "“%s” की अनुमतियां निर्धारित 
 
 #: src/nautilus-properties-window.c:3958
 msgid "Creating Properties window."
-msgstr "गुण खिड़की बना रहे।"
+msgstr "गुण विंडो बना रहे।"
 
 #: src/nautilus-properties-window.c:4091
 msgid "Select Custom Icon"
@@ -4082,7 +4087,7 @@ msgstr "तिथियां चुनें…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:346
-#: src/gtk/nautilusgtkplacessidebar.c:860
+#: src/gtk/nautilusgtkplacessidebar.c:748
 msgid "Trash"
 msgstr "रद्दी"
 
@@ -4142,35 +4147,23 @@ msgid_plural "%d years ago"
 msgstr[0] "पिछले वर्ष"
 msgstr[1] "%d वर्षों पहले"
 
-#: src/nautilus-window.c:158
-msgid "Parent folder"
-msgstr "मूल फोल्डर"
-
-#: src/nautilus-window.c:160
+#: src/nautilus-window.c:154
 msgid "New tab"
 msgstr "नया टैब"
 
-#: src/nautilus-window.c:161
+#: src/nautilus-window.c:155
 msgid "Close current view"
 msgstr "वर्तमान दृश्य बंद करें"
 
-#: src/nautilus-window.c:162 src/resources/ui/nautilus-history-controls.ui:11
-msgid "Back"
-msgstr "पीछे"
-
-#: src/nautilus-window.c:163 src/resources/ui/nautilus-history-controls.ui:19
-msgid "Forward"
-msgstr "आगे"
-
 #. Translators: only one item has been moved to trash and %s is its name.
-#: src/nautilus-window.c:1197
+#: src/nautilus-window.c:913
 #, c-format
 msgid "“%s” moved to trash"
 msgstr "“%s” को रद्दी में ले जाया गया"
 
 #. Translators: one or more items might have been moved to trash, and %d
 #. * is the count.
-#: src/nautilus-window.c:1204
+#: src/nautilus-window.c:920
 #, c-format
 msgid "%d file moved to trash"
 msgid_plural "%d files moved to trash"
@@ -4178,44 +4171,44 @@ msgstr[0] "%d फाइल को रद्दी में ले जाया 
 msgstr[1] "%d फ़ाइलें रद्दी में ले जाई गई"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1223
+#: src/nautilus-window.c:939
 #, c-format
 msgid "“%s” unstarred"
 msgstr "“%s” अतारांकित"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1229
+#: src/nautilus-window.c:945
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
 msgstr[0] "%d फाइल अतारांकित"
 msgstr[1] "%d फ़ाइलें अतारांकित"
 
-#: src/nautilus-window.c:1284 src/resources/ui/nautilus-window.ui:36
+#: src/nautilus-window.c:1000 src/resources/ui/nautilus-window.ui:36
 msgid "_Redo"
 msgstr "पुनः करें (_R)"
 
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:1400 src/gtk/nautilusgtkplacessidebar.c:712
+#: src/nautilus-window.c:1116 src/gtk/nautilusgtkplacessidebar.c:607
 #, c-format
 msgid "Open %s"
 msgstr "%s खोलें"
 
-#: src/nautilus-window.c:2367 src/nautilus-window.c:2372
-#: src/nautilus-window.c:2377 src/nautilus-window.c:2397
+#: src/nautilus-window.c:2018 src/nautilus-window.c:2023
+#: src/nautilus-window.c:2028 src/nautilus-window.c:2048
 msgid "The GNOME Project"
 msgstr "GNOME परियोजना"
 
-#: src/nautilus-window.c:2384
+#: src/nautilus-window.c:2035
 msgid "No plugins currently installed."
 msgstr "वर्तमान में कोई प्लगइन स्थापित नहीं है।"
 
-#: src/nautilus-window.c:2388
+#: src/nautilus-window.c:2039
 msgid "Currently installed plugins:"
 msgstr "वर्तमान में स्थापित प्लगइन्स:"
 
-#: src/nautilus-window.c:2390
+#: src/nautilus-window.c:2041
 msgid "For bug testing only, the following command can be used:"
 msgstr "केवल बग परीक्षण के लिए, निम्नलिखित कमांड का उपयोग किया जा सकता है:"
 
@@ -4226,69 +4219,83 @@ msgstr "केवल बग परीक्षण के लिए, निम्
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2412
+#: src/nautilus-window.c:2063
 msgid "translator-credits"
 msgstr ""
 "राजेश रंजन (rajeshkajha@yahoo.com)\n"
 "चंदन कुमार (chandankumar.093047@gmail.com)\n"
 "Scrambled777 <weblate.scrambled777@simplelogin.com>"
 
-#: src/nautilus-window-slot.c:859 src/resources/ui/nautilus-window.ui:132
+#: src/nautilus-window-slot.c:153
+msgid "Parent folder"
+msgstr "मूल फोल्डर"
+
+#: src/nautilus-window-slot.c:154
+#: src/resources/ui/nautilus-history-controls.ui:11
+msgid "Back"
+msgstr "पीछे"
+
+#: src/nautilus-window-slot.c:155
+#: src/resources/ui/nautilus-history-controls.ui:19
+msgid "Forward"
+msgstr "आगे"
+
+#: src/nautilus-window-slot.c:869 src/resources/ui/nautilus-window.ui:133
 msgid "Search Everywhere"
 msgstr "हर जगह खोजें"
 
-#: src/nautilus-window-slot.c:860
+#: src/nautilus-window-slot.c:870
 msgid "Find files and folders in all search locations"
 msgstr "सभी खोज स्थानों में फाइलें और फोल्डर खोजें"
 
-#: src/nautilus-window-slot.c:863
+#: src/nautilus-window-slot.c:873
 msgid "Search Settings"
 msgstr "सेटिंग खोजें"
 
-#: src/nautilus-window-slot.c:1099
+#: src/nautilus-window-slot.c:1198
 msgid "Searching network locations only"
 msgstr "केवल नेटवर्क स्थान खोजे जा रहे हैं"
 
-#: src/nautilus-window-slot.c:1104
+#: src/nautilus-window-slot.c:1203
 msgid "Remote location — only searching the current folder"
 msgstr "रिमोट स्थान - केवल वर्तमान फोल्डर खोजा जा रहा है"
 
-#: src/nautilus-window-slot.c:1108
+#: src/nautilus-window-slot.c:1207
 msgid "Only searching the current folder"
 msgstr "केवल वर्तमान फोल्डर खोजा जा रहा है"
 
-#: src/nautilus-window-slot.c:1604
+#: src/nautilus-window-slot.c:1728
 msgid "Unable to display the contents of this folder."
 msgstr "इस फोल्डर की सामग्री प्रदर्शित करने में असमर्थ।"
 
-#: src/nautilus-window-slot.c:1608
+#: src/nautilus-window-slot.c:1732
 msgid "This location doesn’t appear to be a folder."
 msgstr "यह स्थान कोई फोल्डर नहीं प्रतीत होता है।"
 
-#: src/nautilus-window-slot.c:1620
+#: src/nautilus-window-slot.c:1744
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "“%s” नहीं मिल पाया। कृपया वर्तनी जाँचें और पुनः प्रयास करें।"
 
-#: src/nautilus-window-slot.c:1625
+#: src/nautilus-window-slot.c:1749
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "अनुरोधित फाइल नहीं मिल पाई। कृपया वर्तनी जाँचें और पुनः प्रयास करें।"
 
-#: src/nautilus-window-slot.c:1636
+#: src/nautilus-window-slot.c:1760
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "“%s” स्थान समर्थित नहीं हैं।"
 
-#: src/nautilus-window-slot.c:1641
+#: src/nautilus-window-slot.c:1765
 msgid "Unable to handle this kind of location."
 msgstr "इस तरह के स्थान को संभालने में असमर्थ।"
 
-#: src/nautilus-window-slot.c:1649
+#: src/nautilus-window-slot.c:1773
 msgid "Unable to access the requested location."
 msgstr "अनुरोधित स्थान तक पहुंचने में असमर्थ।"
 
-#: src/nautilus-window-slot.c:1655
+#: src/nautilus-window-slot.c:1779
 msgid "Don’t have permission to access the requested location."
 msgstr "अनुरोधित स्थान तक पहुंचने की अनुमति नहीं है।"
 
@@ -4297,7 +4304,7 @@ msgstr "अनुरोधित स्थान तक पहुंचने �
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1666
+#: src/nautilus-window-slot.c:1790
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4306,7 +4313,7 @@ msgstr "अनुरोधित स्थान नहीं मिल पा�
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1675
+#: src/nautilus-window-slot.c:1799
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4314,7 +4321,7 @@ msgstr ""
 "सर्वर ने कनेक्शन से इनकार कर दिया है। आम तौर पर इसका मतलब है कि फायरवॉल पहुंच को "
 "अवरुद्ध कर रहा है या रिमोट सेवा नहीं चल रही है।"
 
-#: src/nautilus-window-slot.c:1694
+#: src/nautilus-window-slot.c:1818
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "अनियंत्रित त्रुटि संदेश: %s"
@@ -4331,12 +4338,12 @@ msgstr "सामान्य"
 #: src/resources/gtk/help-overlay.ui:14
 msgctxt "shortcut window"
 msgid "New Window"
-msgstr "नई खिड़की"
+msgstr "नई विंडो"
 
 #: src/resources/gtk/help-overlay.ui:20
 msgctxt "shortcut window"
 msgid "Close Window or Tab"
-msgstr "खिड़की या टैब बंद करें"
+msgstr "विंडो या टैब बंद करें"
 
 #: src/resources/gtk/help-overlay.ui:26
 msgctxt "shortcut window"
@@ -4401,7 +4408,7 @@ msgstr "नए टैब में खोलें"
 #: src/resources/gtk/help-overlay.ui:97
 msgctxt "shortcut window"
 msgid "Open in New Window"
-msgstr "नई खिड़की में खोलें"
+msgstr "नई विंडो में खोलें"
 
 #: src/resources/gtk/help-overlay.ui:103
 msgctxt "shortcut window"
@@ -4640,8 +4647,8 @@ msgstr "हमेशा इस फाइल प्रकार के लिए 
 
 #: src/resources/ui/nautilus-app-chooser.ui:102
 #: src/resources/ui/nautilus-files-view-context-menus.ui:84
-#: src/gtk/nautilusgtkplacessidebar.c:2920
-#: src/gtk/nautilusgtkplacessidebar.c:3039
+#: src/gtk/nautilusgtkplacessidebar.c:2755
+#: src/gtk/nautilusgtkplacessidebar.c:2871
 msgid "_Open"
 msgstr "खोलें (_O)"
 
@@ -4696,8 +4703,8 @@ msgstr "मूल फाइल नाम"
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:113
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:30
 #: src/resources/ui/nautilus-rename-file-popover.ui:47
-#: src/gtk/nautilusgtkplacessidebar.c:2156
-#: src/gtk/nautilusgtkplacessidebar.c:3077
+#: src/gtk/nautilusgtkplacessidebar.c:1988
+#: src/gtk/nautilusgtkplacessidebar.c:2905
 msgid "_Rename"
 msgstr "नाम बदलें (_R)"
 
@@ -4817,14 +4824,38 @@ msgstr "यह कार्रवाई सभी फाइलों और फ�
 msgid "Change Permissions for Enclosed Files"
 msgstr "संलग्न फाइल में अनुमति परिवर्तन करें"
 
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:22
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:25
 msgid "C_hange"
 msgstr "बदलें (_h)"
 
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:141
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:41
+msgid "_Files"
+msgstr "फाइल (_F)"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:47
+msgid "F_olders"
+msgstr "फोल्डर (_o)"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:58
+msgid "Fi_les"
+msgstr "फाइल (_l)"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:64
+msgid "Fol_ders"
+msgstr "फोल्डर (_d)"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:72
 #: src/resources/ui/nautilus-properties-window.ui:627
 msgid "Others"
 msgstr "अन्य"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:75
+msgid "Fil_es"
+msgstr "फाइल (_e)"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:81
+msgid "Folde_rs"
+msgstr "फोल्डर (_r)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:6
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:20
@@ -4847,7 +4878,7 @@ msgstr "इससे खोलें (_W)…"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:111
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:33
 msgid "Open in Consol_e"
-msgstr "*कंसोल* में खोलें (_e)"
+msgstr "<i>कंसोल</i> में खोलें (_e)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:25
 msgid "_Paste"
@@ -4891,17 +4922,17 @@ msgstr "प्रोग्राम के रूप में चलाएं (
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:94
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacessidebar.c:2928
-#: src/gtk/nautilusgtkplacessidebar.c:3047
+#: src/gtk/nautilusgtkplacessidebar.c:2763
+#: src/gtk/nautilusgtkplacessidebar.c:2879
 msgid "Open in New _Tab"
 msgstr "नए टैब में खोलें (_T)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:99
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacessidebar.c:2935
-#: src/gtk/nautilusgtkplacessidebar.c:3056
+#: src/gtk/nautilusgtkplacessidebar.c:2770
+#: src/gtk/nautilusgtkplacessidebar.c:2888
 msgid "Open in New _Window"
-msgstr "नए खिड़की में खोलें (_W)"
+msgstr "नए विंडो में खोलें (_W)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:119
 msgid "_Open Item Location"
@@ -4916,27 +4947,27 @@ msgid "_Open Scripts Folder"
 msgstr "स्क्रिप्ट फोल्डर खोलें (_O)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:138
-#: src/gtk/nautilusgtkplacessidebar.c:3099
+#: src/gtk/nautilusgtkplacessidebar.c:2927
 msgid "_Mount"
 msgstr "आरोहित करें (_M)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:143
-#: src/gtk/nautilusgtkplacessidebar.c:3108
+#: src/gtk/nautilusgtkplacessidebar.c:2936
 msgid "_Unmount"
 msgstr "अनारोहित करें (_U)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:148
-#: src/gtk/nautilusgtkplacessidebar.c:3115
+#: src/gtk/nautilusgtkplacessidebar.c:2943
 msgid "_Eject"
 msgstr "बाहर निकालें (_E)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:158
-#: src/gtk/nautilusgtkplacessidebar.c:3149
+#: src/gtk/nautilusgtkplacessidebar.c:2977
 msgid "_Stop"
 msgstr "रोकें (_S)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:163
-#: src/gtk/nautilusgtkplacessidebar.c:3125
+#: src/gtk/nautilusgtkplacessidebar.c:2953
 msgid "_Detect Media"
 msgstr "मीडिया पता करें (_D)"
 
@@ -4965,7 +4996,7 @@ msgid "_Paste Into Folder"
 msgstr "फोल्डर में चिपकाएं (_P)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:197
-#: src/resources/ui/nautilus-preferences-window.ui:50
+#: src/resources/ui/nautilus-preferences-window.ui:38
 msgid "Create _Link"
 msgstr "लिंक बनाएं (_L)"
 
@@ -5049,7 +5080,7 @@ msgid "Server address"
 msgstr "सर्वर पता"
 
 #: src/resources/ui/nautilus-network-cell.ui:75
-#: src/gtk/nautilusgtkplacessidebar.c:406
+#: src/gtk/nautilusgtkplacessidebar.c:391
 msgid "Disconnect"
 msgstr "निकालें"
 
@@ -5074,7 +5105,6 @@ msgid "St_op"
 msgstr "रोकें (_o)"
 
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:49
-#: src/gtk/nautilusgtkplacessidebar.c:3067
 msgid "Add to _Bookmarks"
 msgstr "बुकमार्क में जोड़ें (_B)"
 
@@ -5096,27 +5126,27 @@ msgid "_Copy Location"
 msgstr "स्थान कॉपी करें (_C)"
 
 #: src/resources/ui/nautilus-preferences-window.ui:8
-#: src/resources/ui/nautilus-preferences-window.ui:12
+#: src/resources/ui/nautilus-preferences-window.ui:11
 msgid "General"
 msgstr "सामान्य"
 
-#: src/resources/ui/nautilus-preferences-window.ui:17
+#: src/resources/ui/nautilus-preferences-window.ui:14
 msgid "Sort _Folders Before Files"
 msgstr "फाइलों से पहले फोल्डर छाटें (_F)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:26
+#: src/resources/ui/nautilus-preferences-window.ui:20
 msgid "_Expandable Folders in List View"
 msgstr "सूची दृश्य में विस्तारणीय फोल्डर (_E)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:34
+#: src/resources/ui/nautilus-preferences-window.ui:26
 msgid "_Action to Open Items"
 msgstr "वस्तुएं खोलने की कार्रवाई (_A)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:44
+#: src/resources/ui/nautilus-preferences-window.ui:34
 msgid "Optional Context Menu Actions"
 msgstr "वैकल्पिक संदर्भ मेनू कार्रवाइयां"
 
-#: src/resources/ui/nautilus-preferences-window.ui:45
+#: src/resources/ui/nautilus-preferences-window.ui:35
 msgid ""
 "Show more actions in the menus. Keyboard shortcuts can be used even if the "
 "actions are not shown."
@@ -5124,15 +5154,15 @@ msgstr ""
 "मेनू में और अधिक कार्रवाइयां दिखाएं। कार्रवाइयां न दिखाए जाने पर भी कीबोर्ड शॉर्टकट का "
 "उपयोग किया जा सकता है।"
 
-#: src/resources/ui/nautilus-preferences-window.ui:59
+#: src/resources/ui/nautilus-preferences-window.ui:44
 msgid "_Delete Permanently"
 msgstr "इसे स्थाई रूप से मिटाएं (_D)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:69
+#: src/resources/ui/nautilus-preferences-window.ui:52
 msgid "Performance"
 msgstr "प्रदर्शन"
 
-#: src/resources/ui/nautilus-preferences-window.ui:70
+#: src/resources/ui/nautilus-preferences-window.ui:53
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this device, such as on a remote server."
@@ -5140,35 +5170,35 @@ msgstr ""
 "इन सुविधाओं के कारण नेटवर्क धीमा हो सकता है और नेटवर्क का अधिक उपयोग हो सकता है, विशेष "
 "रूप से इस उपकरण के बाहर फाइलें देखते समय, जैसे कि किसी रिमोट सर्वर पर।"
 
-#: src/resources/ui/nautilus-preferences-window.ui:75
+#: src/resources/ui/nautilus-preferences-window.ui:56
 msgid "Search in Su_bfolders"
 msgstr "उपफोल्डर में खोजें (_b)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:84
+#: src/resources/ui/nautilus-preferences-window.ui:62
 msgid "Show _Thumbnails"
 msgstr "लघुछवियां दिखाएं (_T)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:93
+#: src/resources/ui/nautilus-preferences-window.ui:68
 msgid "_Count Number of Files in Folders"
 msgstr "फोल्डरों में फाइलों की संख्या गिनें (_C)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:103
+#: src/resources/ui/nautilus-preferences-window.ui:76
 msgid "Date and Time Format"
 msgstr "तिथि और समय प्रारूप"
 
-#: src/resources/ui/nautilus-preferences-window.ui:104
+#: src/resources/ui/nautilus-preferences-window.ui:77
 msgid "Choose how dates and times are displayed in list and grid views."
 msgstr "चुनें कि सूची और ग्रिड दृश्यों में तिथि और समय कैसे प्रदर्शित किए जाएं।"
 
-#: src/resources/ui/nautilus-preferences-window.ui:107
+#: src/resources/ui/nautilus-preferences-window.ui:80
 msgid "_Simple"
 msgstr "साधारण (_S)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:121
+#: src/resources/ui/nautilus-preferences-window.ui:94
 msgid "Deta_iled"
 msgstr "विस्तृत (_i)"
 
-#: src/resources/ui/nautilus-preferences-window.ui:138
+#: src/resources/ui/nautilus-preferences-window.ui:111
 msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
@@ -5176,24 +5206,24 @@ msgstr ""
 "फाइल और फोल्डर नामों के नीचे प्रदर्शित की जाने वाली जानकारी जोड़ें। बड़ा करने पर अधिक "
 "जानकारी दिखाई देगी।"
 
-#: src/resources/ui/nautilus-preferences-window.ui:139
+#: src/resources/ui/nautilus-preferences-window.ui:112
 msgid "Grid View Captions"
 msgstr "ग्रिड दृश्य कैप्शन"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:144
+#: src/resources/ui/nautilus-preferences-window.ui:115
 msgctxt "the n-th position of an icon caption"
 msgid "Fi_rst"
 msgstr "पहला (_r)"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:153
+#: src/resources/ui/nautilus-preferences-window.ui:121
 msgctxt "the n-th position of an icon caption"
 msgid "Seco_nd"
 msgstr "दूसरा (_n)"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:162
+#: src/resources/ui/nautilus-preferences-window.ui:127
 msgctxt "the n-th position of an icon caption"
 msgid "T_hird"
 msgstr "तीसरा (_h)"
@@ -5204,7 +5234,7 @@ msgstr "फाइल अभियान दिखाएं"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
 #: src/resources/ui/nautilus-properties-window.ui:16
-#: src/gtk/nautilusgtkplacessidebar.c:3173
+#: src/gtk/nautilusgtkplacessidebar.c:3001
 msgid "Properties"
 msgstr "गुण"
 
@@ -5237,7 +5267,7 @@ msgstr "मुक्त"
 #. Disks refers to GNOME Disks.
 #: src/resources/ui/nautilus-properties-window.ui:330
 msgid "_Open in Disks"
-msgstr "*डिस्क* में खोलें (_O)"
+msgstr "<i>डिस्क</i> में खोलें (_O)"
 
 #: src/resources/ui/nautilus-properties-window.ui:343
 msgid "_Link Target"
@@ -5427,7 +5457,7 @@ msgstr "विकल्प देखें"
 
 #: src/resources/ui/nautilus-window.ui:7
 msgid "New _Window"
-msgstr "नई खिड़की (_W)"
+msgstr "नई विंडो (_W)"
 
 #: src/resources/ui/nautilus-window.ui:12
 msgid "New _Tab"
@@ -5455,7 +5485,7 @@ msgstr "सहायता (_H)"
 
 #: src/resources/ui/nautilus-window.ui:60
 msgid "_About Files"
-msgstr "*फाइल* के बारे में (_A)"
+msgstr "<i>फाइल्स</i> के बारे में (_A)"
 
 #: src/resources/ui/nautilus-window.ui:68
 msgid "_New Tab"
@@ -5467,7 +5497,7 @@ msgstr "बंद टैब पुनः संग्रहीत करें (
 
 #: src/resources/ui/nautilus-window.ui:78
 msgid "Move Tab to New _Window"
-msgstr "टैब को नई खिड़की में ले जाएं (_W)"
+msgstr "टैब को नई विंडो में ले जाएं (_W)"
 
 #. Translators: use “Move Tab _Right” for RTL languages
 #: src/resources/ui/nautilus-window.ui:82
@@ -5487,140 +5517,150 @@ msgstr "टैब बंद करें (_C)"
 msgid "Close _Other Tabs"
 msgstr "अन्य टैब बंद करें (_O)"
 
-#: src/resources/ui/nautilus-window.ui:144
+#: src/resources/ui/nautilus-window.ui:145
 msgid "Main Menu"
 msgstr "मुख्य मेनू"
 
-#: src/resources/ui/nautilus-window.ui:153
+#: src/resources/ui/nautilus-window.ui:154
 msgid "Zoom Out"
 msgstr "छोटा करें"
 
-#: src/resources/ui/nautilus-window.ui:164
+#: src/resources/ui/nautilus-window.ui:165
 msgid "Zoom In"
 msgstr "बड़ा करें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:408
+#: src/gtk/nautilusgtkplacessidebar.c:393
 msgid "Eject"
 msgstr "बाहर निकालें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:410
+#: src/gtk/nautilusgtkplacessidebar.c:395
 msgid "Unmount"
 msgstr "अनारोहित करें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:802
+#: src/gtk/nautilusgtkplacessidebar.c:695
+msgid "Open Personal Folder"
+msgstr "व्यक्तिगत फोल्डर खोलें"
+
+#: src/gtk/nautilusgtkplacessidebar.c:704
 msgid "Recent"
 msgstr "हालिया"
 
 #  localizers: progress dialog title
-#: src/gtk/nautilusgtkplacessidebar.c:804
+#: src/gtk/nautilusgtkplacessidebar.c:706
 msgid "Recent Files"
 msgstr "हालिया फाइलें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:813
+#: src/gtk/nautilusgtkplacessidebar.c:715
 msgid "Starred Files"
 msgstr "तारांकित फाइलें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:823
-msgid "Open Personal Folder"
-msgstr "व्यक्तिगत फोल्डर खोलें"
-
-#: src/gtk/nautilusgtkplacessidebar.c:836
+#: src/gtk/nautilusgtkplacessidebar.c:727
 msgid "Desktop"
 msgstr "डेस्कटॉप"
 
-#: src/gtk/nautilusgtkplacessidebar.c:838
+#: src/gtk/nautilusgtkplacessidebar.c:729
 msgid "Open the contents of your desktop in a folder"
 msgstr "अपने डेस्कटॉप की सामग्री को निर्देशिका की तरह खोलें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:853
+#: src/gtk/nautilusgtkplacessidebar.c:741
 msgid "Open Network Locations"
 msgstr "नेटवर्क स्थान खोलें (_O)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:862
+#: src/gtk/nautilusgtkplacessidebar.c:750
 msgid "Open Trash"
 msgstr "रद्दी खोलें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:969
-#: src/gtk/nautilusgtkplacessidebar.c:997
-#: src/gtk/nautilusgtkplacessidebar.c:1182
+#: src/gtk/nautilusgtkplacessidebar.c:853
+#: src/gtk/nautilusgtkplacessidebar.c:883
+#: src/gtk/nautilusgtkplacessidebar.c:1060
 #, c-format
 msgid "Mount and Open “%s”"
 msgstr "“%s” को माउंट करें और खोलें"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1160
+#: src/gtk/nautilusgtkplacessidebar.c:1038
 msgid "New bookmark"
 msgstr "नया बुकमार्क"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1162
+#: src/gtk/nautilusgtkplacessidebar.c:1040
 msgid "Add a new bookmark"
 msgstr "नया बुकमार्क जोड़ें"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/gtk/nautilusgtkplacessidebar.c:1840
+#: src/gtk/nautilusgtkplacessidebar.c:1704
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "“%s” खोलने में त्रुटि"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2069
+#: src/gtk/nautilusgtkplacessidebar.c:1901
 msgid "This name is already taken"
 msgstr "यह नाम पहले ही लिया जा चुका है"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2449
+#: src/gtk/nautilusgtkplacessidebar.c:2285
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "“%s” को रोकने में असमर्थ"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2656
+#: src/gtk/nautilusgtkplacessidebar.c:2492
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "मीडिया परिवर्तनों के लिए “%s” का सर्वेक्षण करने में असमर्थ"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3072
+#: src/gtk/nautilusgtkplacessidebar.c:2900
 msgid "_Remove from Bookmarks"
 msgstr "बुकमार्क से हटाएं (_B)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3136
+#: src/gtk/nautilusgtkplacessidebar.c:2964
 msgid "_Power On"
 msgstr "बिजली चालू (_P)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3137
+#: src/gtk/nautilusgtkplacessidebar.c:2965
 msgid "_Connect Drive"
 msgstr "ड्राइव जोड़ें (_C)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3138
+#: src/gtk/nautilusgtkplacessidebar.c:2966
 msgid "_Start Multi-disk Device"
 msgstr "मल्टी-डिस्क उपकरण प्रारंभ करें (_S)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3139
+#: src/gtk/nautilusgtkplacessidebar.c:2967
 msgid "_Unlock Device"
 msgstr "उपकरण खोलें (_U)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3152
+#: src/gtk/nautilusgtkplacessidebar.c:2980
 msgid "_Disconnect Drive"
 msgstr "ड्राइव निकालें (_D)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3153
+#: src/gtk/nautilusgtkplacessidebar.c:2981
 msgid "_Stop Multi-disk Device"
 msgstr "मल्टी-डिस्क उपकरण रोकें (_S)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3154
+#: src/gtk/nautilusgtkplacessidebar.c:2982
 msgid "_Lock Device"
 msgstr "उपकरण लॉक करें (_L)"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3163
+#: src/gtk/nautilusgtkplacessidebar.c:2991
 msgid "Format…"
 msgstr "प्रारूप…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3661
+#: src/gtk/nautilusgtkplacessidebar.c:3500
 msgid "Device"
 msgstr "उपकरण"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3701
+#: src/gtk/nautilusgtkplacessidebar.c:3540
 msgid "Sidebar"
 msgstr "पार्श्वपट्टी"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3703
+#: src/gtk/nautilusgtkplacessidebar.c:3542
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "सामान्य शॉर्टकट, माउंटपॉइंट और बुकमार्क की सूची।"
+
+#~ msgid "Do you want to empty the trash before you unmount?"
+#~ msgstr "क्या आप अनारोहित करने के पहले रद्दी रिक्त करना चाहते हैं?"
+
+#~ msgid ""
+#~ "In order to regain the free space on this volume the trash must be "
+#~ "emptied. All trashed items on the volume will be permanently lost."
+#~ msgstr ""
+#~ "इस वॉल्यूम पर खाली स्थान पुनः प्राप्त करने के लिए रद्दी खाली करना होगा। वॉल्यूम पर "
+#~ "सभी रद्दी किए गए वस्तुएं स्थायी रूप से खो जाएंगे।"
