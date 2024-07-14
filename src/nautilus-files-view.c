@@ -6590,7 +6590,7 @@ action_send_email (GSimpleAction *action,
     {
         if (nautilus_file_has_local_path (l->data))
         {
-            g_autoptr (GFile) location = nautilus_file_get_location (l->data);
+            g_autoptr (GFile) location = nautilus_file_get_activation_location (l->data);
             g_strv_builder_add (strv_builder, g_file_get_path (location));
         }
         /* If there's a directory in the list, we can't attach a folder,
