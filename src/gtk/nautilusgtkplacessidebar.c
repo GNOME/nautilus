@@ -523,30 +523,6 @@ typedef struct {
   gboolean is_native;
 } BookmarkQueryClosure;
 
-static gboolean
-is_external_volume (GVolume *volume)
-{
-  gboolean is_external;
-  GDrive *drive;
-  char *id;
-
-  drive = g_volume_get_drive (volume);
-  id = g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_CLASS);
-
-  is_external = g_volume_can_eject (volume);
-
-  /* NULL volume identifier only happens on removable devices */
-  is_external |= !id;
-
-  if (drive)
-    is_external |= g_drive_is_removable (drive);
-
-  g_clear_object (&drive);
-  g_free (id);
-
-  return is_external;
-}
-
 static void
 update_trash_icon (NautilusGtkPlacesSidebar *sidebar)
 {

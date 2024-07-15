@@ -131,3 +131,4 @@ NautilusQueryRecursive location_settings_search_get_recursive (void);
 NautilusQueryRecursive location_settings_search_get_recursive_for_location (GFile *location);
 
 gboolean check_schema_available (const gchar *schema_id);
+gboolean is_external_volume (GVolume *volume);
