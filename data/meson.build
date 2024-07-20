@@ -44,7 +44,8 @@ desktop_autorun_software = i18n.merge_file(
 # get current date, used as build date for snapshots between releases
 today = 'unknown'
 date = find_program('date', required: false)
-if date.found()
+# Only set dates for nightly builds to make release builds reproducible
+if date.found() and profile == 'Devel'
   r = run_command(date, '-I')
   if r.returncode() == 0
     today = r.stdout().strip()
