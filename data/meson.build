@@ -56,7 +56,15 @@ appdata_conf = configuration_data()
 
 appdata_conf.set('appid', application_id)
 appdata_conf.set('build-date', today)
-appdata_conf.set('release-version', meson.project_version())
+
+release_version = meson.project_version()
+python = find_program('python3', required: false)
+if python.found()
+  args = '''exec("import re\nprint(re.sub(r'^(.+)(\\.)([a-z]+.*)$', r'\\1~\\3', '@0@'))")'''
+  args = args.format(meson.project_version())
+  release_version = run_command(python, '-c', args).stdout()
+endif
+appdata_conf.set('release-version', release_version)
 
 appdata = i18n.merge_file(
   input: configure_file(
