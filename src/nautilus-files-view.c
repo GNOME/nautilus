@@ -1654,6 +1654,25 @@ action_open_current_directory_with_other_application (GSimpleAction *action,
 }
 
 static void
+action_open_current_directory_with_files (GSimpleAction *action,
+                                          GVariant      *state,
+                                          gpointer       user_data)
+{
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
+
+    if (priv->directory_as_file != NULL)
+    {
+        GList *files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+
+        nautilus_files_view_activate_files (self, files, NAUTILUS_OPEN_FLAG_NEW_WINDOW, FALSE);
+
+    }
+}
+
+static void
 trash_or_delete_selected_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -7191,6 +7210,7 @@ const GActionEntry view_entries[] =
         .name = "open-current-directory-with-other-application",
         .activate = action_open_current_directory_with_other_application
     },
+    { .name = "open-current-directory-with-files", .activate = action_open_current_directory_with_files },
     { .name = "open-item-new-window", .activate = action_open_item_new_window },
     { .name = "open-item-new-tab", .activate = action_open_item_new_tab },
     { .name = "cut", .activate = action_cut},
@@ -7939,6 +7959,11 @@ real_update_actions_state (NautilusFilesView *view)
                                  !selection_contains_search &&
                                  !selection_contains_starred &&
                                  !is_network_view);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "open-current-directory-with-files");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 mode != NAUTILUS_MODE_BROWSE &&
+                                 !selection_contains_search);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "new-folder");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
