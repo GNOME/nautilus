@@ -112,6 +112,11 @@ mode_can_accept_files (NautilusMode  mode,
             return exactly_one_item;
         }
 
+        case NAUTILUS_MODE_SAVE_FILES:
+        {
+            return FALSE;
+        }
+
         case NAUTILUS_MODE_OPEN_FILES:
         case NAUTILUS_MODE_OPEN_FOLDERS:
         {
@@ -151,6 +156,7 @@ mode_can_accept_current_directory (NautilusMode  mode,
     {
         case NAUTILUS_MODE_OPEN_FOLDER:
         case NAUTILUS_MODE_SAVE_FILE:
+        case NAUTILUS_MODE_SAVE_FILES:
         {
             g_autofree char *scheme = g_file_get_uri_scheme (location);
 

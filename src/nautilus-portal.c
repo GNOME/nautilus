@@ -17,6 +17,7 @@
 #include <xdp-gnome/xdg-desktop-portal-dbus.h>
 
 #include "nautilus-file-chooser.h"
+#include "nautilus-file-utilities.h"
 
 #define DESKTOP_PORTAL_OBJECT_PATH "/org/freedesktop/portal/desktop"
 
@@ -45,6 +46,7 @@ typedef struct {
     GtkWindow *window;
 
     GVariant *choices;
+    char **filenames_to_save;
 } FileChooserData;
 
 static void
@@ -66,6 +68,7 @@ file_chooser_data_free (gpointer data)
     }
 
     g_clear_pointer (&fc_data->choices, g_variant_unref);
+    g_clear_pointer (&fc_data->filenames_to_save, g_strfreev);
 
     g_free (fc_data);
 }
@@ -91,6 +94,13 @@ complete_file_chooser (FileChooserData *data,
                                                   data->invocation,
                                                   response,
                                                   g_variant_builder_end (results));
+    }
+    else if (strcmp (method_name, "SaveFiles") == 0)
+    {
+        xdp_impl_file_chooser_complete_save_files (data->self->impl_file_chooser_skeleton,
+                                                   data->invocation,
+                                                   response,
+                                                   g_variant_builder_end (results));
     }
     else
     {
@@ -139,8 +149,28 @@ on_file_chooser_accepted (gpointer       user_data,
     g_autoptr (FileChooserData) data = (FileChooserData *) user_data;
     g_auto (GVariantBuilder) results = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
     g_auto (GVariantBuilder) uris = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_STRING_ARRAY);
+    const char *method_name = g_dbus_method_invocation_get_method_name (data->invocation);
 
-    build_uris_variant (&uris, locations);
+    if (strcmp (method_name, "SaveFiles") == 0)
+    {
+        GFile *directory = G_FILE (locations->data);
+        g_autolist (GFile) unique_locations = NULL;
+
+        for (gsize i = 0; data->filenames_to_save[i] != NULL; i++)
+        {
+            g_autoptr (GFile) location = NULL;
+
+            location = nautilus_generate_unique_file_in_directory (directory,
+                                                                   data->filenames_to_save[i]);
+            unique_locations = g_list_prepend (unique_locations, g_steal_pointer (&location));
+        }
+
+        build_uris_variant (&uris, unique_locations);
+    }
+    else
+    {
+        build_uris_variant (&uris, locations);
+    }
 
     /* TODO: add to recents */
 
@@ -220,6 +250,10 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     {
         mode = NAUTILUS_MODE_SAVE_FILE;
     }
+    else if (strcmp (method_name, "SaveFiles") == 0)
+    {
+        mode = NAUTILUS_MODE_SAVE_FILES;
+    }
     else
     {
         g_return_val_if_reached (G_DBUS_METHOD_INVOCATION_UNHANDLED);
@@ -259,6 +293,10 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
         {
             (void) g_variant_lookup (arg_options, "current_name", "s", &suggested_filename);
         }
+    }
+    else if (mode == NAUTILUS_MODE_SAVE_FILES)
+    {
+        (void) g_variant_lookup (arg_options, "files", "^aay", &data->filenames_to_save);
     }
 
     if (starting_location == NULL)
@@ -443,6 +481,8 @@ nautilus_portal_register (NautilusPortal   *self,
     g_signal_connect (self->impl_file_chooser_skeleton, "handle-open-file",
                       G_CALLBACK (handle_file_chooser_methods), self);
     g_signal_connect (self->impl_file_chooser_skeleton, "handle-save-file",
+                      G_CALLBACK (handle_file_chooser_methods), self);
+    g_signal_connect (self->impl_file_chooser_skeleton, "handle-save-files",
                       G_CALLBACK (handle_file_chooser_methods), self);
 
     return TRUE;
