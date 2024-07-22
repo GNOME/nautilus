@@ -53,6 +53,9 @@ struct _NautilusFileChooser
     GtkWidget *location_row;
     GtkWidget *namer_accept_button;
 
+    AdwAnimation *width_animation;
+    AdwAnimation *height_animation;
+
     NautilusDirectory *current_directory;
     NautilusFilenameValidator *validator;
 };
@@ -209,14 +212,22 @@ update_current_directory (NautilusFileChooser *self,
 }
 
 static void
-switch_to_stack_child (NautilusFileChooser *self,
-                       GtkWidget           *page)
+animate_switch_to_stack_child (NautilusFileChooser *self,
+                               GtkWidget           *page)
 {
     gboolean to_namer = (page == self->namer_view);
 
-    gtk_window_set_default_size (GTK_WINDOW (self),
-                                 (to_namer ? NAMER_DEFAULT_WIDTH : SELECTOR_DEFAULT_WIDTH),
-                                 (to_namer ? NAMER_DEFAULT_HEIGHT : SELECTOR_DEFAULT_HEIGHT));
+    adw_timed_animation_set_value_from (ADW_TIMED_ANIMATION (self->width_animation),
+                                        gtk_widget_get_width (GTK_WIDGET (self)));
+    adw_timed_animation_set_value_from (ADW_TIMED_ANIMATION (self->height_animation),
+                                        gtk_widget_get_height (GTK_WIDGET (self)));
+    adw_timed_animation_set_value_to (ADW_TIMED_ANIMATION (self->width_animation),
+                                      (to_namer ? NAMER_DEFAULT_WIDTH : SELECTOR_DEFAULT_WIDTH));
+    adw_timed_animation_set_value_to (ADW_TIMED_ANIMATION (self->height_animation),
+                                      (to_namer ? NAMER_DEFAULT_HEIGHT : SELECTOR_DEFAULT_HEIGHT));
+
+    adw_animation_play (self->width_animation);
+    adw_animation_play (self->height_animation);
 
     gtk_stack_set_visible_child (self->stack, page);
 }
@@ -251,7 +262,7 @@ on_selector_accept_button_clicked (NautilusFileChooser *self)
             update_current_directory (self, nautilus_window_slot_get_location (self->slot));
         }
 
-        switch_to_stack_child (self, self->namer_view);
+        animate_switch_to_stack_child (self, self->namer_view);
     }
     else
     {
@@ -359,7 +370,7 @@ action_pick_location (GtkWidget  *widget,
 {
     NautilusFileChooser *self = NAUTILUS_FILE_CHOOSER (widget);
 
-    switch_to_stack_child (self, self->selector_view);
+    animate_switch_to_stack_child (self, self->selector_view);
 }
 
 static void
@@ -393,7 +404,7 @@ on_slot_activate_files (NautilusFileChooser *self,
             g_autoptr (GFile) parent_location = g_file_get_parent (location);
             update_current_directory (self, parent_location);
 
-            switch_to_stack_child (self, self->namer_view);
+            animate_switch_to_stack_child (self, self->namer_view);
         }
         else
         {
@@ -410,7 +421,7 @@ on_close_request (NautilusFileChooser *self)
     if (self->mode == NAUTILUS_MODE_SAVE_FILE &&
         gtk_stack_get_visible_child (self->stack) == self->selector_view)
     {
-        switch_to_stack_child (self, self->namer_view);
+        animate_switch_to_stack_child (self, self->namer_view);
         return TRUE;
     }
 
@@ -440,6 +451,8 @@ nautilus_file_chooser_dispose (GObject *object)
 {
     NautilusFileChooser *self = (NautilusFileChooser *) object;
 
+    g_clear_object (&self->width_animation);
+    g_clear_object (&self->height_animation);
     g_clear_object (&self->current_directory);
 
     if (self->slot != NULL)
@@ -566,6 +579,16 @@ nautilus_file_chooser_init (NautilusFileChooser *self)
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     g_signal_connect (controller, "key-pressed",
                       G_CALLBACK (on_key_pressed_bubble), self);
+
+    self->width_animation = adw_timed_animation_new (GTK_WIDGET (self),
+                                                     0.0, 0.0, 500,
+                                                     adw_property_animation_target_new (G_OBJECT (self),
+                                                                                        "default-width"));
+    self->height_animation = adw_timed_animation_new (GTK_WIDGET (self),
+                                                      0.0, 0.0, 500,
+                                                      adw_property_animation_target_new (G_OBJECT (self),
+                                                                                         "default-height"));
+
 
     g_signal_connect_swapped (self, "close-request", G_CALLBACK (on_close_request), self);
 }
