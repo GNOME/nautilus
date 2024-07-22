@@ -67,6 +67,11 @@
         <attribute name="label" translatable="yes">_Copy Location</attribute>
         <attribute name="action">view.copy-current-location</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">_Open in File Manager</attribute>
+        <attribute name="action">view.open-current-directory-with-files</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
     </section>
     <section id="background-extensions-section"/>
     <section>
