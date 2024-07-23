@@ -136,14 +136,6 @@ real_get_icon_size (NautilusListBase *list_base_view)
     return get_icon_size_for_zoom_level (self->zoom_level);
 }
 
-static GtkWidget *
-real_get_view_ui (NautilusListBase *list_base_view)
-{
-    NautilusListView *self = NAUTILUS_LIST_VIEW (list_base_view);
-
-    return GTK_WIDGET (self->view_ui);
-}
-
 static int
 real_get_zoom_level (NautilusListBase *list_base_view)
 {
@@ -1244,7 +1236,6 @@ nautilus_list_view_class_init (NautilusListViewClass *klass)
     list_base_view_class->get_icon_size = real_get_icon_size;
     list_base_view_class->get_sort_state = real_get_sort_state;
     list_base_view_class->get_view_info = real_get_view_info;
-    list_base_view_class->get_view_ui = real_get_view_ui;
     list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->scroll_to = real_scroll_to;
     list_base_view_class->set_enable_rubberband = real_set_enable_rubberband;

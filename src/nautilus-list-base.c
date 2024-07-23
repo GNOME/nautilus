@@ -118,12 +118,6 @@ nautilus_list_base_get_sort_state (NautilusListBase *self)
     return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_sort_state (self);
 }
 
-static GtkWidget *
-nautilus_list_base_get_view_ui (NautilusListBase *self)
-{
-    return NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->get_view_ui (self);
-}
-
 void
 nautilus_list_base_set_model (NautilusListBase  *self,
                               NautilusViewModel *model)

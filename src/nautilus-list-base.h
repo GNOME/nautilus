@@ -26,7 +26,6 @@ struct _NautilusListBaseClass
         NautilusViewInfo (*get_view_info)     (NautilusListBase *self);
         guint      (*get_icon_size)  (NautilusListBase *self);
         GVariant  *(*get_sort_state)          (NautilusListBase *self);
-        GtkWidget *(*get_view_ui)    (NautilusListBase *self);
         int        (*get_zoom_level)          (NautilusListBase *self);
         void       (*scroll_to)      (NautilusListBase   *self,
                                       guint               position,
