@@ -219,15 +219,7 @@ rubberband_set_state (NautilusListBase *self,
         return;
     }
 
-    GtkWidget *view = nautilus_list_base_get_view_ui (self);
-    if (GTK_IS_GRID_VIEW (view))
-    {
-        gtk_grid_view_set_enable_rubberband (GTK_GRID_VIEW (view), enabled);
-    }
-    else if (GTK_IS_COLUMN_VIEW (view))
-    {
-        gtk_column_view_set_enable_rubberband (GTK_COLUMN_VIEW (view), enabled);
-    }
+    NAUTILUS_LIST_BASE_CLASS (G_OBJECT_GET_CLASS (self))->set_enable_rubberband (self, enabled);
 }
 
 /**

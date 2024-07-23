@@ -362,6 +362,15 @@ real_get_sort_state (NautilusListBase *list_base)
 }
 
 static void
+real_set_enable_rubberband (NautilusListBase *list_base,
+                            gboolean          enabled)
+{
+    NautilusGridView *self = NAUTILUS_GRID_VIEW (list_base);
+
+    gtk_grid_view_set_enable_rubberband (self->view_ui, enabled);
+}
+
+static void
 real_set_sort_state (NautilusListBase *list_base,
                      GVariant         *value)
 {
@@ -541,6 +550,7 @@ nautilus_grid_view_class_init (NautilusGridViewClass *klass)
     list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->preview_selection_event = real_preview_selection_event;
     list_base_view_class->scroll_to = real_scroll_to;
+    list_base_view_class->set_enable_rubberband = real_set_enable_rubberband;
     list_base_view_class->set_sort_state = real_set_sort_state;
     list_base_view_class->set_zoom_level = real_set_zoom_level;
     list_base_view_class->setup_directory = nautilus_grid_view_setup_directory;

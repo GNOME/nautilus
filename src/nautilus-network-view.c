@@ -175,6 +175,15 @@ real_get_sort_state (NautilusListBase *list_base)
 }
 
 static void
+real_set_enable_rubberband (NautilusListBase *list_base,
+                            gboolean          enabled)
+{
+    NautilusNetworkView *self = NAUTILUS_NETWORK_VIEW (list_base);
+
+    gtk_list_view_set_enable_rubberband (self->view_ui, enabled);
+}
+
+static void
 real_set_sort_state (NautilusListBase *list_base,
                      GVariant         *value)
 {
@@ -373,6 +382,7 @@ nautilus_network_view_class_init (NautilusNetworkViewClass *klass)
     list_base_view_class->get_zoom_level = real_get_zoom_level;
     list_base_view_class->popup_background_context_menu = real_popup_background_context_menu;
     list_base_view_class->scroll_to = real_scroll_to;
+    list_base_view_class->set_enable_rubberband = real_set_enable_rubberband;
     list_base_view_class->set_sort_state = real_set_sort_state;
     list_base_view_class->set_zoom_level = real_set_zoom_level;
 }

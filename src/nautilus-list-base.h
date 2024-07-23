@@ -32,6 +32,8 @@ struct _NautilusListBaseClass
                                       guint               position,
                                       GtkListScrollFlags  flags,
                                       GtkScrollInfo      *scroll);
+        void       (*set_enable_rubberband)   (NautilusListBase *self,
+                                               gboolean          enabled);
         void       (*set_sort_state)          (NautilusListBase *self,
                                                GVariant         *sort_state);
         void       (*set_zoom_level)          (NautilusListBase *self,
