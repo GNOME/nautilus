@@ -391,20 +391,6 @@ on_item_longpress_pressed (GtkGestureLongPress *gesture,
     gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
-static void
-on_view_longpress_pressed (GtkGestureLongPress *gesture,
-                           gdouble              x,
-                           gdouble              y,
-                           gpointer             user_data)
-{
-    NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
-    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-
-    gtk_selection_model_unselect_all (GTK_SELECTION_MODEL (priv->model));
-
-    g_signal_emit (self, signals[POPUP_BACKGROUND_CONTEXT_MENU], 0, x, y);
-}
-
 static GdkContentProvider *
 on_item_drag_prepare (GtkDragSource *source,
                       double         x,
