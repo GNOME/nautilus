@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 3.1.90\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-02-09 10:50+0000\n"
-"PO-Revision-Date: 2024-02-21 14:25+0000\n"
+"POT-Creation-Date: 2024-05-08 08:56+0000\n"
+"PO-Revision-Date: 2024-07-24 02:50+0000\n"
 "Last-Translator: Chao-Hsiung Liao <pesder@mail.edu.tw>\n"
 "Language-Team: Chinese (Traditional) <http://darkbear.mercusysddns.com/"
 "projects/gnome-45/nautilus-po-ui-main/zh_Hant/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.3.1\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -34,7 +34,7 @@ msgstr "執行軟體"
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:101
 #: src/nautilus-window.c:2522
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:49
-#: src/resources/ui/nautilus-window.ui:133
+#: src/resources/ui/nautilus-window.ui:135
 msgid "Files"
 msgstr "檔案"
 
@@ -65,16 +65,16 @@ msgstr ""
 "介面支援兩種檢視畫面：圖示檢視與列表檢視；並能透過外掛元件與命令稿來延伸功"
 "能。"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:52 src/nautilus-view.c:150
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:53 src/nautilus-view.c:150
 msgid "Grid View"
 msgstr "圖示檢視"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:56 src/nautilus-view.c:154
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:57 src/nautilus-view.c:154
 #: src/nautilus-view.c:158
 msgid "List View"
 msgstr "列表檢視"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:60 src/nautilus-query.c:542
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:61 src/nautilus-query.c:542
 #: src/nautilus-search-directory-file.c:177
 #: src/nautilus-search-directory-file.c:231
 #: src/nautilus-search-directory-file.c:271
@@ -82,7 +82,7 @@ msgstr "列表檢視"
 msgid "Search"
 msgstr "搜尋"
 
-#: data/org.gnome.Nautilus.metainfo.xml.in.in:64 src/nautilus-bookmark.c:106
+#: data/org.gnome.Nautilus.metainfo.xml.in.in:65 src/nautilus-bookmark.c:106
 #: src/nautilus-file.c:4238 src/nautilus-file-utilities.c:75
 #: src/nautilus-pathbar.c:386 src/gtk/nautilusgtkplacesview.ui:158
 #: src/gtk/nautilusgtkplacessidebar.c:1435
@@ -108,7 +108,8 @@ msgstr "總是使用傳統位置列，而非互動式路徑列"
 msgid ""
 "If set to true, Files will always use a textual input entry for the location "
 "toolbar, instead of the pathbar."
-msgstr "若設為「true」，《檔案》將永遠使用位置工具列的文字輸入項目，而不是路徑列。"
+msgstr ""
+"若設為「true」，《檔案》將永遠使用位置工具列的文字輸入項目，而不是路徑列。"
 
 #: data/org.gnome.nautilus.gschema.xml:87
 msgid "Where to perform recursive search"
@@ -118,8 +119,9 @@ msgstr "進行遞迴搜尋的位置"
 msgid ""
 "Locations in which Files should search subfolders. Available values are "
 "“local-only”, “always”, “never”."
-msgstr "《檔案》要在哪些位置搜尋子目錄。可用的數值有「locale-"
-"only」(僅限本機)、「always」(永遠)、「never」(永不)。"
+msgstr ""
+"《檔案》要在哪些位置搜尋子目錄。可用的數值有「locale-only」(僅限本機)、"
+"「always」(永遠)、「never」(永不)。"
 
 #: data/org.gnome.nautilus.gschema.xml:92
 msgid "Filter the search dates using either last used or last modified"
@@ -149,7 +151,8 @@ msgstr "是否在情境選單顯示為複製或選取的檔案建立連結的項
 msgid ""
 "If set to true, Files will show context menu items to create links from the "
 "copied or selected files."
-msgstr "如設定為「true」，《檔案》會顯示從複製或選取的檔案建立連結的脈絡選單項目。"
+msgstr ""
+"如設定為「true」，《檔案》會顯示從複製或選取的檔案建立連結的脈絡選單項目。"
 
 #: data/org.gnome.nautilus.gschema.xml:108
 msgid "When to show number of items in a folder"
@@ -198,7 +201,8 @@ msgstr "在《檔案》中使用額外的滑鼠按鈕"
 msgid ""
 "For users with mice that have “Forward” and “Back” buttons, this key will "
 "determine if any action is taken inside of Files when either is pressed."
-msgstr "用於當使用者的滑鼠有「前進」和「返回」按鍵時，該設定鍵可以設定按下按鍵時《檔"
+msgstr ""
+"用於當使用者的滑鼠有「前進」和「返回」按鍵時，該設定鍵可以設定按下按鍵時《檔"
 "案》所要執行的動作。"
 
 #: data/org.gnome.nautilus.gschema.xml:128
@@ -342,8 +346,9 @@ msgid ""
 "If set to true, Files will also match the file contents besides the name. "
 "This toggles the default active state, which can still be overridden in the "
 "search popover"
-msgstr "若設為「true」，《檔案》除了檔名外也會比對檔案內容。該選項為切換預設作用狀態"
-"，仍可透過彈出搜尋框覆蓋該設定"
+msgstr ""
+"若設為「true」，《檔案》除了檔名外也會比對檔案內容。該選項為切換預設作用狀"
+"態，仍可透過彈出搜尋框覆蓋該設定"
 
 #: data/org.gnome.nautilus.gschema.xml:193
 msgid "How to display file timestamps in the views"
@@ -429,7 +434,7 @@ msgstr "您可以按下取消來停止作業。"
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
 #: src/nautilus-file-operations.c:273 src/nautilus-mime-actions.c:609
 #: src/nautilus-mime-actions.c:1018 src/nautilus-mime-actions.c:1329
-#: src/nautilus-search-popover.c:648
+#: src/nautilus-search-popover.c:650
 #: src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
@@ -563,7 +568,7 @@ msgstr "聲道"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1615
+#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1620
 msgid "Oops! Something went wrong."
 msgstr "噢噢！有些地方發生問題。"
 
@@ -1016,7 +1021,7 @@ msgid "The type of the file."
 msgstr "檔案的類型。"
 
 #: src/nautilus-column-utilities.c:90
-#: src/resources/ui/nautilus-properties-window.ui:602
+#: src/resources/ui/nautilus-properties-window.ui:601
 msgid "Modified"
 msgstr "修改時間"
 
@@ -1033,7 +1038,7 @@ msgid "The detailed type of the file."
 msgstr "檔案的詳細類型。"
 
 #: src/nautilus-column-utilities.c:106
-#: src/resources/ui/nautilus-properties-window.ui:564
+#: src/resources/ui/nautilus-properties-window.ui:563
 msgid "Accessed"
 msgstr "存取時間"
 
@@ -1042,7 +1047,7 @@ msgid "The date the file was accessed."
 msgstr "檔案最後存取的時間。"
 
 #: src/nautilus-column-utilities.c:115
-#: src/resources/ui/nautilus-properties-window.ui:640
+#: src/resources/ui/nautilus-properties-window.ui:639
 msgid "Created"
 msgstr "建立時間"
 
@@ -1085,8 +1090,8 @@ msgstr "近期存取時間"
 msgid "The date the file was accessed by the user."
 msgstr "使用者近期存取檔案的日期。"
 
-#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:735
-#: src/nautilus-star-cell.c:73
+#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:741
+#: src/nautilus-star-cell.c:66
 msgid "Star"
 msgstr "星標"
 
@@ -1393,149 +1398,149 @@ msgstr "找不到檔案"
 msgid "Starred"
 msgstr "星標"
 
-#: src/nautilus-file.c:5422
+#: src/nautilus-file.c:5433
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "不允許設定權限"
 
-#: src/nautilus-file.c:5766
+#: src/nautilus-file.c:5777
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "不允許設定擁有者"
 
-#: src/nautilus-file.c:5785
+#: src/nautilus-file.c:5796
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "指定的擁有者「%s」不存在"
 
-#: src/nautilus-file.c:6075
+#: src/nautilus-file.c:6086
 #, c-format
 msgid "Not allowed to set group"
 msgstr "不允許設定群組"
 
-#: src/nautilus-file.c:6094
+#: src/nautilus-file.c:6105
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "指定的群組「%s」不存在"
 
 #. Translators: This is a username followed by "(You)" to indicate the file is owned by the current user
-#: src/nautilus-file.c:6234
+#: src/nautilus-file.c:6245
 #, c-format
 msgid "%s (You)"
 msgstr "%s（您）"
 
-#: src/nautilus-file.c:6266
+#: src/nautilus-file.c:6277
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u 個項目"
 
-#: src/nautilus-file.c:6267
+#: src/nautilus-file.c:6278
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u 個資料夾"
 
-#: src/nautilus-file.c:6268
+#: src/nautilus-file.c:6279
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u 個檔案"
 
-#: src/nautilus-file.c:6352 src/nautilus-properties-window.c:2089
+#: src/nautilus-file.c:6363 src/nautilus-properties-window.c:2103
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
 msgstr[0] "%s 個位元組"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6756
+#: src/nautilus-file.c:6767
 msgid "? bytes"
 msgstr "？個位元組"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:6768
+#: src/nautilus-file.c:6779
 msgid "? items"
 msgstr "？個項目"
 
 #. Translators: This about a file type.
-#: src/nautilus-file.c:6777
+#: src/nautilus-file.c:6788
 msgid "Unknown type"
 msgstr "不明類型"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:6808
+#: src/nautilus-file.c:6819
 msgid "Unknown"
 msgstr "不明"
 
-#: src/nautilus-file.c:6845 src/nautilus-file.c:6853 src/nautilus-file.c:6912
+#: src/nautilus-file.c:6856 src/nautilus-file.c:6864 src/nautilus-file.c:6923
 msgid "Program"
 msgstr "程式"
 
-#: src/nautilus-file.c:6846
+#: src/nautilus-file.c:6857
 msgid "Audio"
 msgstr "音訊檔"
 
-#: src/nautilus-file.c:6847
+#: src/nautilus-file.c:6858
 msgid "Font"
 msgstr "字型檔"
 
-#: src/nautilus-file.c:6848
+#: src/nautilus-file.c:6859
 msgid "Image"
 msgstr "影像檔"
 
-#: src/nautilus-file.c:6849
+#: src/nautilus-file.c:6860
 msgid "Archive"
 msgstr "封存檔"
 
-#: src/nautilus-file.c:6850
+#: src/nautilus-file.c:6861
 msgid "Markup"
 msgstr "標記語言"
 
-#: src/nautilus-file.c:6851 src/nautilus-file.c:6852
+#: src/nautilus-file.c:6862 src/nautilus-file.c:6863
 msgid "Text"
 msgstr "文字檔"
 
-#: src/nautilus-file.c:6854 src/nautilus-mime-actions.c:244
+#: src/nautilus-file.c:6865 src/nautilus-mime-actions.c:244
 msgid "Video"
 msgstr "視訊檔"
 
-#: src/nautilus-file.c:6855
+#: src/nautilus-file.c:6866
 msgid "Contacts"
 msgstr "連絡人"
 
-#: src/nautilus-file.c:6856
+#: src/nautilus-file.c:6867
 msgid "Calendar"
 msgstr "行事曆"
 
-#: src/nautilus-file.c:6857
+#: src/nautilus-file.c:6868
 msgid "Document"
 msgstr "文件"
 
-#: src/nautilus-file.c:6858 src/nautilus-mime-actions.c:205
+#: src/nautilus-file.c:6869 src/nautilus-mime-actions.c:205
 msgid "Presentation"
 msgstr "簡報"
 
-#: src/nautilus-file.c:6859 src/nautilus-mime-actions.c:217
+#: src/nautilus-file.c:6870 src/nautilus-mime-actions.c:217
 msgid "Spreadsheet"
 msgstr "試算表"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:6892
+#: src/nautilus-file.c:6903
 msgid "Other"
 msgstr "其他"
 
-#: src/nautilus-file.c:6914
+#: src/nautilus-file.c:6925
 msgid "Binary"
 msgstr "二進制檔"
 
-#: src/nautilus-file.c:6919
+#: src/nautilus-file.c:6930
 msgid "Folder"
 msgstr "資料夾"
 
-#: src/nautilus-file.c:6977
+#: src/nautilus-file.c:6988
 msgid "Link"
 msgstr "連結"
 
@@ -1544,17 +1549,17 @@ msgstr "連結"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. Translators: File name for new symlink. %s is target's name
-#: src/nautilus-file.c:6983 src/nautilus-filename-utilities.c:254
+#: src/nautilus-file.c:6994 src/nautilus-filename-utilities.c:254
 #, c-format
 msgid "Link to %s"
 msgstr "連結的%s"
 
-#: src/nautilus-file.c:6999 src/nautilus-file.c:7015 src/nautilus-file.c:7031
+#: src/nautilus-file.c:7010 src/nautilus-file.c:7026 src/nautilus-file.c:7042
 msgid "Link (broken)"
 msgstr "連結（目標不存在）"
 
 #. Translators: This refers to available space in a folder; e.g.: 100 MB Free
-#: src/nautilus-file.c:7192
+#: src/nautilus-file.c:7203
 #, c-format
 msgid "%s Free"
 msgstr "%s 可用"
@@ -1675,7 +1680,7 @@ msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d 小時"
 
-#: src/nautilus-file-operations.c:483 src/nautilus-properties-window.c:898
+#: src/nautilus-file-operations.c:483 src/nautilus-properties-window.c:904
 msgid "unknown"
 msgstr "不明"
 
@@ -1756,8 +1761,8 @@ msgstr[0] "正在刪除 %'d 個檔案"
 #: src/nautilus-file-operations.c:1396 src/nautilus-file-operations.c:1742
 #: src/nautilus-file-operations.c:1750 src/nautilus-file-operations.c:1790
 #: src/nautilus-file-operations.c:3689 src/nautilus-file-operations.c:3697
-#: src/nautilus-file-operations.c:3768 src/nautilus-file-operations.c:8479
-#: src/nautilus-file-operations.c:8547
+#: src/nautilus-file-operations.c:3768 src/nautilus-file-operations.c:8486
+#: src/nautilus-file-operations.c:8554
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1849,7 +1854,7 @@ msgid "Deleting Files"
 msgstr "正在刪除檔案"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6824
+#: src/nautilus-file-operations.c:2331 src/nautilus-files-view.c:6874
 #: src/gtk/nautilusgtkplacessidebar.c:2689
 #: src/gtk/nautilusgtkplacessidebar.c:2718
 #, c-format
@@ -1877,7 +1882,7 @@ msgid "Do _not Empty Trash"
 msgstr "不要清空垃圾桶(_N)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6772
+#: src/nautilus-file-operations.c:2655 src/nautilus-files-view.c:6822
 #: src/gtk/nautilusgtkplacessidebar.c:2049
 #, c-format
 msgid "Unable to access “%s”"
@@ -2084,8 +2089,8 @@ msgstr[0] "已再製位於「%2$s」的 %1$'d 個檔案"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3679 src/nautilus-file-operations.c:3739
-#: src/nautilus-file-operations.c:7992 src/nautilus-file-operations.c:8219
-#: src/nautilus-file-operations.c:8474 src/nautilus-file-operations.c:8517
+#: src/nautilus-file-operations.c:7999 src/nautilus-file-operations.c:8226
+#: src/nautilus-file-operations.c:8481 src/nautilus-file-operations.c:8524
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2108,8 +2113,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3723 src/nautilus-file-operations.c:8010
-#: src/nautilus-file-operations.c:8506
+#: src/nautilus-file-operations.c:3723 src/nautilus-file-operations.c:8017
+#: src/nautilus-file-operations.c:8513
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2120,7 +2125,7 @@ msgstr[0] "%s / %s — 剩餘 %s（%s/秒）"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3757 src/nautilus-file-operations.c:8536
+#: src/nautilus-file-operations.c:3757 src/nautilus-file-operations.c:8543
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
@@ -2157,7 +2162,7 @@ msgid ""
 msgstr "無法複製「%s」：您沒有讀取的權能。"
 
 #: src/nautilus-file-operations.c:4622 src/nautilus-file-operations.c:5255
-#: src/nautilus-file-operations.c:6000
+#: src/nautilus-file-operations.c:6007
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "移動「%s」時發生錯誤。"
@@ -2171,28 +2176,28 @@ msgid "There was an error getting information about the source."
 msgstr "取得來源資訊時發生錯誤。"
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4941 src/nautilus-file-operations.c:5758
+#: src/nautilus-file-operations.c:4941 src/nautilus-file-operations.c:5765
 msgid "You cannot move a folder into itself."
 msgstr "無法將資料夾移至資料夾本身。"
 
-#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5759
+#: src/nautilus-file-operations.c:4942 src/nautilus-file-operations.c:5766
 msgid "You cannot copy a folder into itself."
 msgstr "無法將資料夾複製至資料夾本身。"
 
-#: src/nautilus-file-operations.c:4943 src/nautilus-file-operations.c:5760
+#: src/nautilus-file-operations.c:4943 src/nautilus-file-operations.c:5767
 msgid "The destination folder is inside the source folder."
 msgstr "目的端資料夾位於來源資料夾中。"
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4983 src/nautilus-file-operations.c:5801
+#: src/nautilus-file-operations.c:4983 src/nautilus-file-operations.c:5808
 msgid "You cannot move a file over itself."
 msgstr "無法將檔案移動至同一位置。"
 
-#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5802
+#: src/nautilus-file-operations.c:4984 src/nautilus-file-operations.c:5809
 msgid "You cannot copy a file over itself."
 msgstr "無法將檔案複製至同一位置。"
 
-#: src/nautilus-file-operations.c:4985 src/nautilus-file-operations.c:5803
+#: src/nautilus-file-operations.c:4985 src/nautilus-file-operations.c:5810
 msgid "The source file would be overwritten by the destination."
 msgstr "來源檔案會被目的端檔案覆寫。"
 
@@ -2211,254 +2216,254 @@ msgstr "無法移除位於「%s」中名稱相同的檔案。"
 msgid "There was an error copying the file into %s."
 msgstr "將檔案複製至 %s 時發生錯誤。"
 
-#: src/nautilus-file-operations.c:5539
+#: src/nautilus-file-operations.c:5546
 msgid "Copying Files"
 msgstr "正在複製檔案"
 
-#: src/nautilus-file-operations.c:5659
+#: src/nautilus-file-operations.c:5666
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "準備移動至「%s」"
 
-#: src/nautilus-file-operations.c:5663
+#: src/nautilus-file-operations.c:5670
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "準備移動 %'d 個檔案"
 
-#: src/nautilus-file-operations.c:6002
+#: src/nautilus-file-operations.c:6009
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "將檔案移動至 %s 時發生錯誤。"
 
-#: src/nautilus-file-operations.c:6250
+#: src/nautilus-file-operations.c:6257
 msgid "Moving Files"
 msgstr "正在移動檔案"
 
-#: src/nautilus-file-operations.c:6356
+#: src/nautilus-file-operations.c:6363
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "於「%s」中建立連結"
 
-#: src/nautilus-file-operations.c:6360
+#: src/nautilus-file-operations.c:6367
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "正在建立 %'d 個檔案的連結"
 
-#: src/nautilus-file-operations.c:6510
+#: src/nautilus-file-operations.c:6517
 #, c-format
 msgid "Error while creating link to “%s”."
 msgstr "建立「%s」的連結時發生錯誤。"
 
-#: src/nautilus-file-operations.c:6514
+#: src/nautilus-file-operations.c:6521
 msgid "Symbolic links only supported for local files"
 msgstr "符號連結只支援本機檔案"
 
-#: src/nautilus-file-operations.c:6519
+#: src/nautilus-file-operations.c:6526
 msgid "The target doesn’t support symbolic links."
 msgstr "目標不支援符號連結。"
 
-#: src/nautilus-file-operations.c:6527
+#: src/nautilus-file-operations.c:6534
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "於「%s」建立符號連結時發生錯誤。"
 
-#: src/nautilus-file-operations.c:6857
+#: src/nautilus-file-operations.c:6864
 msgid "Setting permissions"
 msgstr "設定權限"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7149
+#: src/nautilus-file-operations.c:7156
 msgid "Untitled Folder"
 msgstr "未命名資料夾"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7164
+#: src/nautilus-file-operations.c:7171
 msgid "Untitled Document"
 msgstr "未命名文件"
 
-#: src/nautilus-file-operations.c:7390
+#: src/nautilus-file-operations.c:7397
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "建立目錄「%s」時發生錯誤。"
 
-#: src/nautilus-file-operations.c:7395
+#: src/nautilus-file-operations.c:7402
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "建立檔案「%s」時發生錯誤。"
 
-#: src/nautilus-file-operations.c:7399
+#: src/nautilus-file-operations.c:7406
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "於「%s」中建立目錄時發生錯誤。"
 
-#: src/nautilus-file-operations.c:7500
+#: src/nautilus-file-operations.c:7507
 msgid "Saving image to file"
 msgstr "正將影像儲存成檔案"
 
-#: src/nautilus-file-operations.c:7509
+#: src/nautilus-file-operations.c:7516
 msgid "Successfully saved image to file"
 msgstr "成功將影像儲存成檔案"
 
-#: src/nautilus-file-operations.c:7539
+#: src/nautilus-file-operations.c:7546
 msgid "Failed to save image"
 msgstr "無法儲存影像"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7601
+#: src/nautilus-file-operations.c:7608
 msgid "Pasted image"
 msgstr "貼上的影像"
 
-#: src/nautilus-file-operations.c:7608
+#: src/nautilus-file-operations.c:7615
 msgid "Retrieving clipboard data"
 msgstr "正在取得剪貼簿資料"
 
-#: src/nautilus-file-operations.c:7640
+#: src/nautilus-file-operations.c:7647
 msgid "Retrieving image data"
 msgstr "正在取得影像資料"
 
-#: src/nautilus-file-operations.c:7858
+#: src/nautilus-file-operations.c:7865
 msgid "Emptying Trash"
 msgstr "正在清空垃圾桶"
 
-#: src/nautilus-file-operations.c:7900
+#: src/nautilus-file-operations.c:7907
 msgid "Verifying destination"
 msgstr "正在核驗目的端位置"
 
-#: src/nautilus-file-operations.c:7950
+#: src/nautilus-file-operations.c:7957
 #, c-format
 msgid "Extracting “%s”"
 msgstr "正在取出「%s」"
 
-#: src/nautilus-file-operations.c:8076 src/nautilus-file-operations.c:8166
+#: src/nautilus-file-operations.c:8083 src/nautilus-file-operations.c:8173
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "取出「%s」時發生錯誤"
 
-#: src/nautilus-file-operations.c:8083
+#: src/nautilus-file-operations.c:8090
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "取出「%s」時發生錯誤。"
 
-#: src/nautilus-file-operations.c:8169
+#: src/nautilus-file-operations.c:8176
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "空間不足，無法取出「%s」"
 
-#: src/nautilus-file-operations.c:8202
+#: src/nautilus-file-operations.c:8209
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "已經取出「%s」放到「%s」"
 
-#: src/nautilus-file-operations.c:8208
+#: src/nautilus-file-operations.c:8215
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "已經取出 %'d 個檔案放到「%s」"
 
-#: src/nautilus-file-operations.c:8242
+#: src/nautilus-file-operations.c:8249
 msgid "Preparing to extract"
 msgstr "正準備取出"
 
-#: src/nautilus-file-operations.c:8370
+#: src/nautilus-file-operations.c:8377
 msgid "Extracting Files"
 msgstr "正在取出檔案"
 
-#: src/nautilus-file-operations.c:8430
+#: src/nautilus-file-operations.c:8437
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "正在將「%s」壓縮為「%s」"
 
-#: src/nautilus-file-operations.c:8436
+#: src/nautilus-file-operations.c:8443
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "正在將 %'d 個檔案壓縮為「%s」"
 
-#: src/nautilus-file-operations.c:8584
+#: src/nautilus-file-operations.c:8591
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "將「%s」壓縮為「%s」時發生錯誤"
 
-#: src/nautilus-file-operations.c:8590
+#: src/nautilus-file-operations.c:8597
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "將 %'d 個檔案壓縮為「%s」時發生錯誤"
 
-#: src/nautilus-file-operations.c:8600
+#: src/nautilus-file-operations.c:8607
 msgid "There was an error while compressing files."
 msgstr "壓縮檔案時發生錯誤。"
 
-#: src/nautilus-file-operations.c:8625
+#: src/nautilus-file-operations.c:8632
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "已將「%s」壓縮為「%s」"
 
-#: src/nautilus-file-operations.c:8631
+#: src/nautilus-file-operations.c:8638
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "已將 %'d 個檔案壓縮為「%s」"
 
-#: src/nautilus-file-operations.c:8750
+#: src/nautilus-file-operations.c:8757
 msgid "Compressing Files"
 msgstr "正在壓縮檔案"
 
-#: src/nautilus-files-view.c:392
+#: src/nautilus-files-view.c:390
 msgid "Searching…"
 msgstr "正在搜尋…"
 
-#: src/nautilus-files-view.c:392 src/nautilus-window-slot.c:911
+#: src/nautilus-files-view.c:390 src/nautilus-window-slot.c:915
 msgid "Loading…"
 msgstr "正在載入…"
 
-#: src/nautilus-files-view.c:1874
+#: src/nautilus-files-view.c:1872
 msgid "Examples: "
 msgstr "範例："
 
-#: src/nautilus-files-view.c:2931
+#: src/nautilus-files-view.c:2929
 msgid "Could not paste files"
 msgstr "無法貼上檔案"
 
-#: src/nautilus-files-view.c:2932
+#: src/nautilus-files-view.c:2930
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "權限設定不允許在本目錄貼上檔案"
 
-#: src/nautilus-files-view.c:3575 src/nautilus-files-view.c:3622
+#: src/nautilus-files-view.c:3583 src/nautilus-files-view.c:3630
 #, c-format
 msgid "“%s” selected"
 msgstr "已選取「%s」"
 
-#: src/nautilus-files-view.c:3579
+#: src/nautilus-files-view.c:3587
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "已選取 %'d 個資料夾"
 
-#: src/nautilus-files-view.c:3593
+#: src/nautilus-files-view.c:3601
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] "（內含 %'d 個項目）"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3608
+#: src/nautilus-files-view.c:3616
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "（共有 %'d 個項目）"
 
-#: src/nautilus-files-view.c:3627
+#: src/nautilus-files-view.c:3635
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "已選取 %'d 個項目"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3636
+#: src/nautilus-files-view.c:3644
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2468,7 +2473,7 @@ msgstr[0] "%'d 個項目"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3651
+#: src/nautilus-files-view.c:3659
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2480,147 +2485,153 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3701
+#: src/nautilus-files-view.c:3709
 #, c-format
 msgid "%s, %s"
 msgstr "%s與 %s"
 
-#: src/nautilus-files-view.c:3764
+#: src/nautilus-files-view.c:3772
 msgid "Search _Settings"
 msgstr "搜尋設定(_S)"
 
-#: src/nautilus-files-view.c:3776
+#: src/nautilus-files-view.c:3784
 msgid "Search _Everywhere"
 msgstr "搜尋所有地方(_E)"
 
-#: src/nautilus-files-view.c:3813 src/gtk/nautilusgtkplacesview.ui:193
+#: src/nautilus-files-view.c:3821
+msgid "More locations can be added to search in the settings"
+msgstr "在設定中，可以加入更多位置進行搜尋"
+
+#. Translators: %s is the name of the search location formatted for display
+#: src/nautilus-files-view.c:3829
+#, c-format
+msgid "No matches in “%s”"
+msgstr "「%s」中沒有符合項"
+
+#: src/nautilus-files-view.c:3837 src/gtk/nautilusgtkplacesview.ui:193
 msgid "No Results Found"
 msgstr "找不到結果"
 
-#: src/nautilus-files-view.c:3816
-msgid "No matches found in indexed locations"
-msgstr "在有編列索引的位置中找不到"
-
-#: src/nautilus-files-view.c:3821
+#: src/nautilus-files-view.c:3842
 msgid "Trash is Empty"
 msgstr "空垃圾桶"
 
-#: src/nautilus-files-view.c:3827
+#: src/nautilus-files-view.c:3848
 msgid "No Starred Files"
 msgstr "沒有星標的項目"
 
-#: src/nautilus-files-view.c:3833
+#: src/nautilus-files-view.c:3854
 msgid "No Recent Files"
 msgstr "沒有最近項目"
 
-#: src/nautilus-files-view.c:3839
+#: src/nautilus-files-view.c:3860
 msgid "Folder is Empty"
 msgstr "空資料夾"
 
-#: src/nautilus-files-view.c:5998
+#: src/nautilus-files-view.c:6076
 msgid "Select Move Destination"
 msgstr "選擇移動的目的地"
 
-#: src/nautilus-files-view.c:6002
+#: src/nautilus-files-view.c:6080
 msgid "Select Copy Destination"
 msgstr "選擇複製的目的地"
 
-#: src/nautilus-files-view.c:6008 src/nautilus-files-view.c:6412
-#: src/nautilus-properties-window.c:4068
+#: src/nautilus-files-view.c:6086 src/nautilus-files-view.c:6475
+#: src/nautilus-properties-window.c:4084
 #: src/resources/ui/nautilus-files-view-select-items.ui:24
 msgid "_Select"
 msgstr "選擇(_S)"
 
-#: src/nautilus-files-view.c:6411
+#: src/nautilus-files-view.c:6474
 msgid "Select Extract Destination"
 msgstr "選擇取出放置的目的地"
 
-#: src/nautilus-files-view.c:6500
+#: src/nautilus-files-view.c:6550
 msgid "Error sending email."
 msgstr "寄送電子郵件時發生錯誤。"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6798
+#: src/nautilus-files-view.c:6848
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "無法移除「%s」"
 
-#: src/nautilus-files-view.c:6848
+#: src/nautilus-files-view.c:6898
 msgid "Unable to stop drive"
 msgstr "無法關閉裝置"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6959 src/gtk/nautilusgtkplacessidebar.c:2011
+#: src/nautilus-files-view.c:7009 src/gtk/nautilusgtkplacessidebar.c:2011
 #: src/gtk/nautilusgtkplacessidebar.c:2915
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "無法啟動「%s」"
 
-#: src/nautilus-files-view.c:7943
+#: src/nautilus-files-view.c:7993
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "為所選項目新增資料夾（%'d 個項目）"
 
 # (Freddy)原為：使用《%s》開啟，考量手機排版取消《》符號
-#: src/nautilus-files-view.c:7998
+#: src/nautilus-files-view.c:8048
 #, c-format
 msgid "Open With %s"
 msgstr "使用 %s 開啟"
 
-#: src/nautilus-files-view.c:8009
+#: src/nautilus-files-view.c:8059
 msgid "Run"
 msgstr "執行"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8064
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "取出"
 
-#: src/nautilus-files-view.c:8015
+#: src/nautilus-files-view.c:8065
 msgid "Extract to…"
 msgstr "取出放至…"
 
-#: src/nautilus-files-view.c:8019
+#: src/nautilus-files-view.c:8069
 #: src/resources/ui/nautilus-files-view-context-menus.ui:89
 msgid "Open"
 msgstr "開啟"
 
-#: src/nautilus-files-view.c:8097
+#: src/nautilus-files-view.c:8147
 #: src/resources/ui/nautilus-files-view-context-menus.ui:153
 #: src/gtk/nautilusgtkplacessidebar.c:3345
 msgid "_Start"
 msgstr "啟動(_S)"
 
-#: src/nautilus-files-view.c:8103 src/gtk/nautilusgtkplacesview.c:1724
+#: src/nautilus-files-view.c:8153 src/gtk/nautilusgtkplacesview.c:1724
 msgid "_Connect"
 msgstr "連線(_C)"
 
-#: src/nautilus-files-view.c:8109
+#: src/nautilus-files-view.c:8159
 msgid "_Start Multi-disk Drive"
 msgstr "啟動多磁碟裝置(_S)"
 
-#: src/nautilus-files-view.c:8115
+#: src/nautilus-files-view.c:8165
 msgid "U_nlock Drive"
 msgstr "解鎖裝置(_N)"
 
-#: src/nautilus-files-view.c:8133
+#: src/nautilus-files-view.c:8183
 msgid "Stop Drive"
 msgstr "關閉裝置"
 
-#: src/nautilus-files-view.c:8139 src/gtk/nautilusgtkplacessidebar.c:3362
+#: src/nautilus-files-view.c:8189 src/gtk/nautilusgtkplacessidebar.c:3362
 msgid "_Safely Remove Drive"
 msgstr "安全地移除裝置(_S)"
 
-#: src/nautilus-files-view.c:8145 src/gtk/nautilusgtkplacesview.c:1713
+#: src/nautilus-files-view.c:8195 src/gtk/nautilusgtkplacesview.c:1713
 msgid "_Disconnect"
 msgstr "中斷連接(_D)"
 
-#: src/nautilus-files-view.c:8151
+#: src/nautilus-files-view.c:8201
 msgid "_Stop Multi-disk Drive"
 msgstr "關閉多磁碟裝置(_S)"
 
-#: src/nautilus-files-view.c:8157
+#: src/nautilus-files-view.c:8207
 msgid "_Lock Drive"
 msgstr "鎖定裝置(_L)"
 
@@ -3514,7 +3525,7 @@ msgstr "目前資料夾選單"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:369 src/nautilus-properties-window.c:847
+#: src/nautilus-pathbar.c:369 src/nautilus-properties-window.c:853
 #: src/gtk/nautilusgtkplacesview.c:1107
 msgid "Operating System"
 msgstr "作業系統"
@@ -3531,7 +3542,7 @@ msgstr "關閉(_C)"
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
-#: src/nautilus-preferences-window.c:84 src/nautilus-properties-window.c:399
+#: src/nautilus-preferences-window.c:84 src/nautilus-properties-window.c:405
 msgid "None"
 msgstr "無"
 
@@ -3610,9 +3621,10 @@ msgstr "已取消"
 msgid "Preparing"
 msgstr "正在準備"
 
-#: src/nautilus-progress-info-widget.c:56
-msgid "Completed"
-msgstr "已完成"
+#. Translators: This describes an operation, such as copying or compressing files, as being completed.
+#: src/nautilus-progress-info-widget.c:57
+msgid "Operation Completed"
+msgstr "操作已完成"
 
 #: src/nautilus-progress-persistence-handler.c:106
 #: src/nautilus-progress-persistence-handler.c:146
@@ -3633,124 +3645,124 @@ msgstr[0] "%'d 個檔案作業進行中"
 msgid "All file operations have been completed"
 msgstr "所有檔案作業均已完成"
 
-#: src/nautilus-properties-window.c:350
+#: src/nautilus-properties-window.c:356
 msgid "Read and Write"
 msgstr "讀取與寫入"
 
-#: src/nautilus-properties-window.c:354
+#: src/nautilus-properties-window.c:360
 msgid "Create and Delete Files"
 msgstr "建立與刪除檔案"
 
-#: src/nautilus-properties-window.c:358
+#: src/nautilus-properties-window.c:364
 msgid "Read and Write, No Access"
 msgstr "讀取與寫入，無法存取"
 
-#: src/nautilus-properties-window.c:365
+#: src/nautilus-properties-window.c:371
 msgid "Read-Only"
 msgstr "僅能讀取"
 
-#: src/nautilus-properties-window.c:369
+#: src/nautilus-properties-window.c:375
 msgid "Access Files"
 msgstr "存取檔案"
 
-#: src/nautilus-properties-window.c:373
+#: src/nautilus-properties-window.c:379
 msgid "List Files Only"
 msgstr "僅能列出檔案"
 
-#: src/nautilus-properties-window.c:383
+#: src/nautilus-properties-window.c:389
 msgid "Write-Only"
 msgstr "僅能寫入"
 
-#: src/nautilus-properties-window.c:387
+#: src/nautilus-properties-window.c:393
 msgid "Write-Only, No Access"
 msgstr "僅能寫入，無法存取"
 
-#: src/nautilus-properties-window.c:394
+#: src/nautilus-properties-window.c:400
 msgid "Access-Only"
 msgstr "僅能存取"
 
-#: src/nautilus-properties-window.c:636
+#: src/nautilus-properties-window.c:642
 msgid "Custom icon removed"
 msgstr "自訂圖示已移除"
 
-#: src/nautilus-properties-window.c:637 src/nautilus-window.c:1292
+#: src/nautilus-properties-window.c:643 src/nautilus-window.c:1292
 #: src/resources/ui/nautilus-window.ui:32
 msgid "_Undo"
 msgstr "還原(_U)"
 
-#: src/nautilus-properties-window.c:667
+#: src/nautilus-properties-window.c:673
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "無法同時指定一個以上的自訂圖示！"
 
-#: src/nautilus-properties-window.c:668
+#: src/nautilus-properties-window.c:674
 msgid "Please drop just one image to set a custom icon."
 msgstr "拖放影像檔即可作為自訂圖示。"
 
-#: src/nautilus-properties-window.c:684
+#: src/nautilus-properties-window.c:690
 msgid "The file that you dropped is not local."
 msgstr "拖放的檔案並非本機檔案。"
 
-#: src/nautilus-properties-window.c:685 src/nautilus-properties-window.c:692
+#: src/nautilus-properties-window.c:691 src/nautilus-properties-window.c:698
 msgid "You can only use local images as custom icons."
 msgstr "僅能使用本機的影像檔作為自訂圖示。"
 
-#: src/nautilus-properties-window.c:691
+#: src/nautilus-properties-window.c:697
 msgid "The file that you dropped is not an image."
 msgstr "拖放的檔案並非影像檔。"
 
 #. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:735 src/nautilus-star-cell.c:73
+#: src/nautilus-properties-window.c:741 src/nautilus-star-cell.c:66
 #: src/resources/ui/nautilus-files-view-context-menus.ui:247
 msgid "Unstar"
 msgstr "移除星標"
 
-#: src/nautilus-properties-window.c:1582
+#: src/nautilus-properties-window.c:1588
 msgid "Cancel Group Change?"
 msgstr "要取消對群組所做的更動嗎？"
 
-#: src/nautilus-properties-window.c:1731
+#: src/nautilus-properties-window.c:1737
 msgid "Cancel Owner Change?"
 msgstr "要取消對擁有者所做的更動嗎？"
 
-#: src/nautilus-properties-window.c:1883 src/nautilus-properties-window.c:1930
+#: src/nautilus-properties-window.c:1889 src/nautilus-properties-window.c:1936
 msgid "Multiple"
 msgstr "多重"
 
-#: src/nautilus-properties-window.c:2056
+#: src/nautilus-properties-window.c:2070
 msgid "Empty folder"
 msgstr "空資料夾"
 
-#: src/nautilus-properties-window.c:2060
+#: src/nautilus-properties-window.c:2074
 msgid "Contents unreadable"
 msgstr "無法讀取內容"
 
-#: src/nautilus-properties-window.c:2072
+#: src/nautilus-properties-window.c:2086
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] "%'d 個項目，大小為 %s"
 
-#: src/nautilus-properties-window.c:2082
+#: src/nautilus-properties-window.c:2096
 msgid "(some contents unreadable)"
 msgstr "（無法讀取某些內容）"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2412
+#: src/nautilus-properties-window.c:2428
 #, c-format
 msgid "%s Filesystem"
 msgstr "%s 檔案系統"
 
-#: src/nautilus-properties-window.c:3539
+#: src/nautilus-properties-window.c:3555
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "無法得知「%s」的權限。"
 
-#: src/nautilus-properties-window.c:3936
+#: src/nautilus-properties-window.c:3952
 msgid "Creating Properties window."
 msgstr "正在建立屬性視窗。"
 
-#: src/nautilus-properties-window.c:4067
+#: src/nautilus-properties-window.c:4083
 msgid "Select Custom Icon"
 msgstr "選擇自訂圖示"
 
@@ -3802,15 +3814,15 @@ msgstr "任何時間"
 msgid "Other Type…"
 msgstr "其他類型…"
 
-#: src/nautilus-search-popover.c:645
+#: src/nautilus-search-popover.c:647
 msgid "Select type"
 msgstr "選擇類型"
 
-#: src/nautilus-search-popover.c:649
+#: src/nautilus-search-popover.c:651
 msgid "Select"
 msgstr "選擇"
 
-#: src/nautilus-search-popover.c:726
+#: src/nautilus-search-popover.c:728
 msgid "Select Dates…"
 msgstr "選擇日期…"
 
@@ -3926,6 +3938,11 @@ msgstr "重做(_R)"
 msgid "Open %s"
 msgstr "開啟「%s」"
 
+#: src/nautilus-window.c:2494 src/nautilus-window.c:2499
+#: src/nautilus-window.c:2504 src/nautilus-window.c:2524
+msgid "The GNOME Project"
+msgstr "GNOME 專案"
+
 #: src/nautilus-window.c:2511
 msgid "No plugins currently installed."
 msgstr "目前並未安裝外掛元件。"
@@ -3937,10 +3954,6 @@ msgstr "目前已安裝的外掛元件："
 #: src/nautilus-window.c:2517
 msgid "For bug testing only, the following command can be used:"
 msgstr "僅限漏洞測試，可使用下列命令："
-
-#: src/nautilus-window.c:2524
-msgid "The GNOME Project"
-msgstr "GNOME 專案"
 
 # 如對翻譯有任何意見，請送一封電子郵件給
 # 以下地址，GNOME 翻譯團隊會儘快回覆您：
@@ -3957,66 +3970,66 @@ msgstr ""
 "Gong Yi LIAO <granziliao@sinamail.com>, 2000\n"
 "Freddy Cheng <freddy4212@gmail.com>, 2022."
 
-#: src/nautilus-window-slot.c:897 src/resources/ui/nautilus-window.ui:126
+#: src/nautilus-window-slot.c:901 src/resources/ui/nautilus-window.ui:128
 msgid "Search Everywhere"
 msgstr "搜尋所有地方"
 
-#: src/nautilus-window-slot.c:898
+#: src/nautilus-window-slot.c:902
 msgid "Find files and folders in all search locations"
 msgstr "在所有搜尋位置尋找檔案與資料夾"
 
-#: src/nautilus-window-slot.c:901
+#: src/nautilus-window-slot.c:905
 msgid "Search Settings"
 msgstr "搜尋設定"
 
-#: src/nautilus-window-slot.c:1113
+#: src/nautilus-window-slot.c:1118
 msgid "Searching locations only"
 msgstr "僅搜尋本機位置"
 
-#: src/nautilus-window-slot.c:1117
+#: src/nautilus-window-slot.c:1122
 msgid "Searching network locations only"
 msgstr "僅搜尋網路位置"
 
-#: src/nautilus-window-slot.c:1122
+#: src/nautilus-window-slot.c:1127
 msgid "Remote location — only searching the current folder"
 msgstr "遠端位置—僅搜尋目前的資料夾"
 
-#: src/nautilus-window-slot.c:1126
+#: src/nautilus-window-slot.c:1131
 msgid "Only searching the current folder"
 msgstr "僅搜尋目前的資料夾"
 
-#: src/nautilus-window-slot.c:1621
+#: src/nautilus-window-slot.c:1626
 msgid "Unable to display the contents of this folder."
 msgstr "無法顯示該資料夾的內容。"
 
-#: src/nautilus-window-slot.c:1625
+#: src/nautilus-window-slot.c:1630
 msgid "This location doesn’t appear to be a folder."
 msgstr "該位置似乎不是資料夾。"
 
-#: src/nautilus-window-slot.c:1637
+#: src/nautilus-window-slot.c:1642
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr "找不到「%s」。請檢查拼字是否正確並重試。"
 
-#: src/nautilus-window-slot.c:1642
+#: src/nautilus-window-slot.c:1647
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "找不到要求的檔案。請檢查拼字是否正確並重試。"
 
-#: src/nautilus-window-slot.c:1653
+#: src/nautilus-window-slot.c:1658
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "「%s」不支援。"
 
-#: src/nautilus-window-slot.c:1658
+#: src/nautilus-window-slot.c:1663
 msgid "Unable to handle this kind of location."
 msgstr "無法處理此類型的位置。"
 
-#: src/nautilus-window-slot.c:1666
+#: src/nautilus-window-slot.c:1671
 msgid "Unable to access the requested location."
 msgstr "無法存取請求的位置。"
 
-#: src/nautilus-window-slot.c:1672
+#: src/nautilus-window-slot.c:1677
 msgid "Don’t have permission to access the requested location."
 msgstr "您沒有存取請求位置的許可。"
 
@@ -4025,7 +4038,7 @@ msgstr "您沒有存取請求位置的許可。"
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1683
+#: src/nautilus-window-slot.c:1688
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4034,21 +4047,16 @@ msgstr "無法尋找請求的位置。請檢查拼字或網路設定值。"
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1692
+#: src/nautilus-window-slot.c:1697
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
 msgstr "伺服器拒絕連線。一般來說這代表防火牆在阻擋存取，或是遠端服務並未運作。"
 
-#: src/nautilus-window-slot.c:1711
+#: src/nautilus-window-slot.c:1716
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "無法處理的錯誤訊息：%s"
-
-#: src/nautilus-window-slot.c:1873
-#, c-format
-msgid "Unable to load location"
-msgstr "無法載入位置"
 
 #: src/nautilus-x-content-bar.c:141
 msgid "Open with:"
@@ -4544,7 +4552,7 @@ msgstr "為目的端檔案選擇新名稱(_S)"
 msgid "_Reset"
 msgstr "重設(_R)"
 
-#: src/resources/ui/nautilus-file-conflict-dialog.ui:145
+#: src/resources/ui/nautilus-file-conflict-dialog.ui:142
 msgid "Apply this action to all files and folders"
 msgstr "將該動作套用至所有檔案與資料夾"
 
@@ -4557,7 +4565,7 @@ msgid "C_hange"
 msgstr "更改(_H)"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:147
-#: src/resources/ui/nautilus-properties-window.ui:877
+#: src/resources/ui/nautilus-properties-window.ui:876
 msgid "Others"
 msgstr "其他"
 
@@ -4890,7 +4898,7 @@ msgctxt "the n-th position of an icon caption"
 msgid "T_hird"
 msgstr "第三行(_H)"
 
-#: src/resources/ui/nautilus-progress-indicator.ui:36
+#: src/resources/ui/nautilus-progress-indicator.ui:35
 msgid "Show File Operations"
 msgstr "顯示檔案操作"
 
@@ -4912,108 +4920,108 @@ msgstr "移除自訂圖示"
 msgid "Unknown Filesystem"
 msgstr "檔案系統不明"
 
-#: src/resources/ui/nautilus-properties-window.ui:257
+#: src/resources/ui/nautilus-properties-window.ui:256
 msgid "total"
 msgstr "總計"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:286
+#: src/resources/ui/nautilus-properties-window.ui:285
 msgid "used"
 msgstr "已用"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:316
+#: src/resources/ui/nautilus-properties-window.ui:315
 msgid "free"
 msgstr "可用"
 
 #. Disks refers to GNOME Disks.
-#: src/resources/ui/nautilus-properties-window.ui:345
+#: src/resources/ui/nautilus-properties-window.ui:344
 msgid "Open in Disks"
 msgstr "在《磁碟》中開啟"
 
-#: src/resources/ui/nautilus-properties-window.ui:379
+#: src/resources/ui/nautilus-properties-window.ui:378
 msgid "_Link Target"
 msgstr "連結目標(_L)"
 
-#: src/resources/ui/nautilus-properties-window.ui:403
+#: src/resources/ui/nautilus-properties-window.ui:402
 msgid "Open Link Target"
 msgstr "開啟連結目標"
 
-#: src/resources/ui/nautilus-properties-window.ui:427
+#: src/resources/ui/nautilus-properties-window.ui:426
 msgid "Parent _Folder"
 msgstr "上層資料夾(_F)"
 
-#: src/resources/ui/nautilus-properties-window.ui:451
+#: src/resources/ui/nautilus-properties-window.ui:450
 msgid "Open Parent Folder"
 msgstr "開啟上層資料夾"
 
-#: src/resources/ui/nautilus-properties-window.ui:483
+#: src/resources/ui/nautilus-properties-window.ui:482
 msgid "Original Folder"
 msgstr "原始資料夾"
 
-#: src/resources/ui/nautilus-properties-window.ui:517
+#: src/resources/ui/nautilus-properties-window.ui:516
 msgid "Trashed on"
 msgstr "丟進垃圾桶日期"
 
-#: src/resources/ui/nautilus-properties-window.ui:677
+#: src/resources/ui/nautilus-properties-window.ui:676
 msgid "_Permissions"
 msgstr "權限(_P)"
 
-#: src/resources/ui/nautilus-properties-window.ui:699
+#: src/resources/ui/nautilus-properties-window.ui:698
 msgid "_Executable as Program"
 msgstr "允許作為程式執行(_E)"
 
-#: src/resources/ui/nautilus-properties-window.ui:729
+#: src/resources/ui/nautilus-properties-window.ui:728
 msgid "Set Custom Permissions"
 msgstr "自訂權限"
 
-#: src/resources/ui/nautilus-properties-window.ui:753
+#: src/resources/ui/nautilus-properties-window.ui:752
 msgid "Unknown Permissions"
 msgstr "權限不明"
 
-#: src/resources/ui/nautilus-properties-window.ui:754
+#: src/resources/ui/nautilus-properties-window.ui:753
 msgid "The permissions of the selected files could not be determined."
 msgstr "無法得知所選檔案的權限。"
 
-#: src/resources/ui/nautilus-properties-window.ui:769
+#: src/resources/ui/nautilus-properties-window.ui:768
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "您並非擁有者，無法更改這些權限。"
 
-#: src/resources/ui/nautilus-properties-window.ui:785
+#: src/resources/ui/nautilus-properties-window.ui:784
 msgid "The permissions of the selected file could not be determined."
 msgstr "無法得知所選檔案的權限。"
 
-#: src/resources/ui/nautilus-properties-window.ui:798
+#: src/resources/ui/nautilus-properties-window.ui:797
 msgid "_Owner"
 msgstr "擁有者(_O)"
 
-#: src/resources/ui/nautilus-properties-window.ui:809
-#: src/resources/ui/nautilus-properties-window.ui:849
-#: src/resources/ui/nautilus-properties-window.ui:884
+#: src/resources/ui/nautilus-properties-window.ui:808
+#: src/resources/ui/nautilus-properties-window.ui:848
+#: src/resources/ui/nautilus-properties-window.ui:883
 msgid "Access"
 msgstr "存取權"
 
-#: src/resources/ui/nautilus-properties-window.ui:816
-#: src/resources/ui/nautilus-properties-window.ui:856
-#: src/resources/ui/nautilus-properties-window.ui:891
+#: src/resources/ui/nautilus-properties-window.ui:815
+#: src/resources/ui/nautilus-properties-window.ui:855
+#: src/resources/ui/nautilus-properties-window.ui:890
 msgid "Folder Access"
 msgstr "資料夾存取權"
 
-#: src/resources/ui/nautilus-properties-window.ui:823
-#: src/resources/ui/nautilus-properties-window.ui:863
-#: src/resources/ui/nautilus-properties-window.ui:898
+#: src/resources/ui/nautilus-properties-window.ui:822
+#: src/resources/ui/nautilus-properties-window.ui:862
+#: src/resources/ui/nautilus-properties-window.ui:897
 msgid "File Access"
 msgstr "檔案存取權"
 
-#: src/resources/ui/nautilus-properties-window.ui:838
+#: src/resources/ui/nautilus-properties-window.ui:837
 msgid "_Group"
 msgstr "群組(_G)"
 
-#: src/resources/ui/nautilus-properties-window.ui:920
+#: src/resources/ui/nautilus-properties-window.ui:919
 msgid "Security Context"
 msgstr "安全性情境"
 
-#: src/resources/ui/nautilus-properties-window.ui:953
+#: src/resources/ui/nautilus-properties-window.ui:952
 msgid "Change Permissions for _Enclosed Files…"
 msgstr "更改內含檔案權限(_E)…"
 
@@ -5194,15 +5202,15 @@ msgstr "關閉其他分頁(_O)"
 msgid "_Files"
 msgstr "檔案(_F)"
 
-#: src/resources/ui/nautilus-window.ui:138
+#: src/resources/ui/nautilus-window.ui:140
 msgid "Main Menu"
 msgstr "主選單"
 
-#: src/resources/ui/nautilus-window.ui:147
+#: src/resources/ui/nautilus-window.ui:149
 msgid "Zoom Out"
 msgstr "拉遠"
 
-#: src/resources/ui/nautilus-window.ui:158
+#: src/resources/ui/nautilus-window.ui:160
 msgid "Zoom In"
 msgstr "拉近"
 
@@ -5215,7 +5223,7 @@ msgid "No network locations found"
 msgstr "找不到網路位置"
 
 #. Restore from Cancel to Connect
-#: src/gtk/nautilusgtkplacesview.c:1233 src/gtk/nautilusgtkplacesview.ui:241
+#: src/gtk/nautilusgtkplacesview.c:1233 src/gtk/nautilusgtkplacesview.ui:243
 msgid "Con_nect"
 msgstr "連接(_N)"
 
@@ -5481,6 +5489,13 @@ msgstr "側邊欄"
 #: src/gtk/nautilusgtkplacessidebar.c:3924
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "常見的捷徑鍵、掛載點、書籤列表。"
+
+#~ msgid "No matches found in indexed locations"
+#~ msgstr "在有編列索引的位置中找不到"
+
+#, c-format
+#~ msgid "Unable to load location"
+#~ msgstr "無法載入位置"
 
 #~ msgid ""
 #~ "If set to true, then Nautilus will show a delete permanently context menu "
