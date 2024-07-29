@@ -3,6 +3,7 @@ resources = gnome.compile_resources(
   join_paths(
     'resources', 'nautilus.gresource.xml'
   ),
+  dependencies: [appdata],
   source_dir: 'resources',
   c_name: 'nautilus',
   extra_args: '--manual-register'

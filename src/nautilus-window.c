@@ -1710,6 +1710,7 @@ nautilus_window_new (void)
 void
 nautilus_window_show_about_dialog (NautilusWindow *window)
 {
+    AdwDialog *dialog;
     g_autofree gchar *module_names = nautilus_module_get_installed_module_names ();
     g_autofree gchar *debug_info = NULL;
 
@@ -1742,26 +1743,19 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                                   "NAUTILUS_DISABLE_PLUGINS=TRUE nautilus", NULL);
     }
 
-    adw_show_about_dialog (window ? GTK_WIDGET (window) : NULL,
-                           "application-name", _("Files"),
-                           "application-icon", APPLICATION_ID,
-                           "developer-name", _("The GNOME Project"),
-                           "version", VERSION,
-                           "website", "https://apps.gnome.org/Nautilus/",
-                           "issue-url", "https://gitlab.gnome.org/GNOME/nautilus/-/issues",
-                           "support-url", "https://discourse.gnome.org/tag/nautilus",
-                           "debug-info", debug_info,
-                           "copyright", "© 1999 The Files Authors",
-                           "license-type", GTK_LICENSE_GPL_3_0,
-                           "designers", designers,
-                           "developers", developers,
-                           "documenters", documenters,
-                           /* Translators should localize the following string
-                            * which will be displayed at the bottom of the about
-                            * box to give credit to the translator(s).
-                            */
-                           "translator-credits", _("translator-credits"),
-                           NULL);
+    dialog = adw_about_dialog_new_from_appdata ("/org/gnome/nautilus/appdata", NULL);
+
+    adw_about_dialog_set_version (ADW_ABOUT_DIALOG (dialog), VERSION);
+    adw_about_dialog_set_debug_info (ADW_ABOUT_DIALOG (dialog), debug_info);
+    adw_about_dialog_set_copyright (ADW_ABOUT_DIALOG (dialog), "© 1999 The Files Authors");
+    adw_about_dialog_set_developers (ADW_ABOUT_DIALOG (dialog), developers);
+    adw_about_dialog_set_designers (ADW_ABOUT_DIALOG (dialog), designers);
+    adw_about_dialog_set_documenters (ADW_ABOUT_DIALOG (dialog), documenters);
+    /* Translators should localize the following string which will be displayed at the bottom of
+     * the about box to give credit to the translator(s). */
+    adw_about_dialog_set_translator_credits (ADW_ABOUT_DIALOG (dialog), _("translator-credits"));
+
+    adw_dialog_present (dialog, window ? GTK_WIDGET (window) : NULL);
 }
 
 void
