@@ -22,6 +22,7 @@
 
 #include "nautilus-query-editor.h"
 
+#include <adwaita.h>
 #include <gdk/gdkkeysyms.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
@@ -35,6 +36,7 @@
 #include "nautilus-search-directory.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-tracker-utilities.h"
 #include "nautilus-ui-utilities.h"
 
 struct _NautilusQueryEditor
@@ -47,6 +49,9 @@ struct _NautilusQueryEditor
     GtkWidget *clear_icon;
     GtkWidget *popover;
     GtkWidget *dropdown_button;
+    GtkWidget *search_info_button;
+    GtkWidget *status_page;
+    GtkWidget *search_settings_button;
 
     GtkWidget *mime_types_tag;
     GtkWidget *date_range_tag;
@@ -135,6 +140,7 @@ nautilus_query_editor_dispose (GObject *object)
     g_clear_pointer (&editor->tags_box, gtk_widget_unparent);
     g_clear_pointer (&editor->text, gtk_widget_unparent);
     g_clear_pointer (&editor->dropdown_button, gtk_widget_unparent);
+    g_clear_pointer (&editor->search_info_button, gtk_widget_unparent);
     g_clear_pointer (&editor->clear_icon, gtk_widget_unparent);
 
     g_clear_object (&editor->location);
@@ -632,6 +638,15 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
                             editor->popover, "query",
                             G_BINDING_DEFAULT);
 
+    GtkWidget *search_info_popover = gtk_popover_new ();
+    editor->status_page = adw_status_page_new ();
+    editor->search_settings_button = gtk_button_new_with_mnemonic ("_Search Settings");
+    gtk_actionable_set_action_name (GTK_ACTIONABLE (editor->search_settings_button), "app.search-settings");
+    adw_status_page_set_child (ADW_STATUS_PAGE (editor->status_page), editor->search_settings_button);
+    gtk_widget_set_size_request (editor->status_page, 300, -1);
+    gtk_widget_add_css_class (editor->status_page, "compact");
+    gtk_popover_set_child (GTK_POPOVER (search_info_popover), editor->status_page);
+
     /* setup the filter menu button */
     editor->dropdown_button = gtk_menu_button_new ();
     gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->dropdown_button), "nautilus-search-filters-symbolic");
@@ -639,6 +654,14 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->dropdown_button), editor->popover);
     gtk_widget_set_parent (editor->dropdown_button, GTK_WIDGET (editor));
     gtk_widget_add_css_class (editor->dropdown_button, "circular");
+
+    editor->search_info_button = gtk_menu_button_new ();
+    gtk_menu_button_set_icon_name (GTK_MENU_BUTTON (editor->search_info_button), "info-outline-symbolic");
+    gtk_widget_set_tooltip_text (GTK_WIDGET (editor->search_info_button), _("Search Information"));
+    gtk_menu_button_set_popover (GTK_MENU_BUTTON (editor->search_info_button), search_info_popover);
+    gtk_widget_add_css_class (editor->search_info_button, "circular");
+    gtk_widget_set_visible (editor->search_info_button, FALSE);
+    gtk_widget_set_parent (editor->search_info_button, GTK_WIDGET (editor));
 
     g_signal_connect (editor->text, "activate",
                       G_CALLBACK (entry_activate_cb), editor);
