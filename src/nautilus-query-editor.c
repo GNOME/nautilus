@@ -160,6 +160,38 @@ find_enclosing_mount_cb (GObject      *source_object,
                                        _("External Drive"));
             gtk_widget_set_visible (editor->search_info_button, TRUE);
         }
+        else if (!nautilus_tracker_directory_is_tracked (editor->location))
+        {
+            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                       _("Folder Not in Search Locations"));
+            gtk_widget_set_visible (editor->search_info_button, TRUE);
+            gtk_widget_set_visible (editor->search_settings_button, TRUE);
+        }
+        else if (nautilus_tracker_directory_is_single (editor->location))
+        {
+            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                       _("Subfolders Not in Search Locations"));
+            gtk_widget_set_visible (editor->search_info_button, TRUE);
+            gtk_widget_set_visible (editor->search_settings_button, TRUE);
+
+
+            /* Subfolders are disabled */
+            if (location_settings_search_get_recursive_for_location (editor->location)
+                == NAUTILUS_QUERY_RECURSIVE_NEVER)
+            {
+                adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
+                                                 _("Some subfolders will not be included "
+                                                   "in search results")
+                                                 );
+            }
+            else
+            {
+                adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
+                                                 _("Search will be slower and will not include "
+                                                   "file contents for some folders")
+                                                 );
+            }
+        }
     }
 }
 
