@@ -56,6 +56,8 @@ struct _NautilusQueryEditor
     GtkWidget *mime_types_tag;
     GtkWidget *date_range_tag;
 
+    GCancellable *cancellable;
+
     guint search_changed_idle_id;
     gboolean change_frozen;
 
@@ -105,6 +107,79 @@ update_fts_sensitivity (NautilusQueryEditor *editor)
 }
 
 static void
+find_enclosing_mount_cb (GObject      *source_object,
+                         GAsyncResult *res,
+                         gpointer      user_data)
+{
+    NautilusQueryEditor *editor;
+    g_autoptr (GMount) mount = NULL;
+    g_autoptr (GVolume) volume = NULL;
+    g_autoptr (NautilusFile) file = NULL;
+
+    editor = user_data;
+
+    file = nautilus_file_get (editor->location);
+    mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
+                                                res, NULL);
+
+    g_autofree gchar *uri_scheme = g_file_get_uri_scheme (editor->location);
+
+    if (mount != NULL)
+    {
+        volume = g_mount_get_volume (mount);
+    }
+
+    if (!nautilus_scheme_is_internal (uri_scheme))
+    {
+        /* Subfolders are disabled */
+        if (location_settings_search_get_recursive_for_location (editor->location)
+            == NAUTILUS_QUERY_RECURSIVE_NEVER)
+        {
+            adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
+                                             _("Search may be slow and will not include "
+                                               "subfolders or file contents")
+                                             );
+        }
+        else
+        {
+            adw_status_page_set_description (ADW_STATUS_PAGE (editor->status_page),
+                                             _("Search may be slow and will not include "
+                                               "file contents")
+                                             );
+        }
+
+        if (nautilus_file_is_remote (file))
+        {
+            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                       _("Remote Location"));
+            gtk_widget_set_visible (editor->search_info_button, TRUE);
+        }
+        else if (volume != NULL && is_external_volume (volume))
+        {
+            adw_status_page_set_title (ADW_STATUS_PAGE (editor->status_page),
+                                       _("External Drive"));
+            gtk_widget_set_visible (editor->search_info_button, TRUE);
+        }
+    }
+}
+
+static void
+update_search_information (NautilusQueryEditor *editor)
+{
+    gtk_widget_set_visible (editor->search_settings_button, FALSE);
+    gtk_widget_set_visible (editor->search_info_button, FALSE);
+
+    if (editor->location != NULL)
+    {
+        g_file_find_enclosing_mount_async (editor->location,
+                                           G_PRIORITY_DEFAULT,
+                                           editor->cancellable,
+                                           find_enclosing_mount_cb,
+                                           editor);
+    }
+}
+
+static void
 recursive_search_preferences_changed (GSettings           *settings,
                                       gchar               *key,
                                       NautilusQueryEditor *editor)
@@ -124,6 +199,7 @@ recursive_search_preferences_changed (GSettings           *settings,
     }
 
     update_fts_sensitivity (editor);
+    update_search_information (editor);
 }
 
 
@@ -149,6 +225,9 @@ nautilus_query_editor_dispose (GObject *object)
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           recursive_search_preferences_changed,
                                           object);
+
+    g_cancellable_cancel (editor->cancellable);
+    g_clear_object (&editor->cancellable);
 
     G_OBJECT_CLASS (nautilus_query_editor_parent_class)->dispose (object);
 }
@@ -599,6 +678,8 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
                       G_CALLBACK (recursive_search_preferences_changed),
                       editor);
 
+    editor->cancellable = g_cancellable_new ();
+
     /* create the search entry */
     editor->prefix_icon = gtk_image_new ();
     g_object_set (editor->prefix_icon, "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION, NULL);
@@ -729,6 +810,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
     nautilus_query_set_location (editor->query, editor->location);
 
     update_fts_sensitivity (editor);
+    update_search_information (editor);
 
     gtk_image_set_from_icon_name (GTK_IMAGE (editor->prefix_icon),
                                   (editor->location != NULL ?
