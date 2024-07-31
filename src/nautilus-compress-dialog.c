@@ -38,6 +38,7 @@ struct _NautilusCompressItem
 {
     GObject parent_instance;
     NautilusCompressionFormat format;
+    gchar *title;
     char *extension;
     char *description;
 };
@@ -55,6 +56,7 @@ nautilus_compress_item_finalize (GObject *object)
     NautilusCompressItem *item = NAUTILUS_COMPRESS_ITEM (object);
 
     g_free (item->extension);
+    g_free (item->title);
     g_free (item->description);
 
     G_OBJECT_CLASS (nautilus_compress_item_parent_class)->finalize (object);
@@ -71,12 +73,14 @@ nautilus_compress_item_class_init (NautilusCompressItemClass *class)
 static NautilusCompressItem *
 nautilus_compress_item_new (NautilusCompressionFormat  format,
                             const char                *extension,
+                            const char                *title,
                             const char                *description)
 {
     NautilusCompressItem *item = g_object_new (NAUTILUS_TYPE_COMPRESS_ITEM, NULL);
 
     item->format = format;
     item->extension = g_strdup (extension);
+    item->title = g_strdup (title);
     item->description = g_strdup (description);
 
     return item;
@@ -210,7 +214,7 @@ extension_combo_row_bind (GtkSignalListItemFactory *factory,
     title = g_object_get_data (G_OBJECT (list_item), "title");
     subtitle = g_object_get_data (G_OBJECT (list_item), "subtitle");
 
-    gtk_label_set_label (GTK_LABEL (title), item->extension);
+    gtk_label_set_label (GTK_LABEL (title), item->title);
 
     if (subtitle)
     {
@@ -260,21 +264,25 @@ extension_combo_row_setup (NautilusCompressDialog *self)
     store = g_list_store_new (NAUTILUS_TYPE_COMPRESS_ITEM);
     item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_ZIP,
                                        ".zip",
+                                       _("ZIP (.zip)"),
                                        _("Compatible with all operating systems."));
     g_list_store_append (store, item);
     g_object_unref (item);
     item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_ENCRYPTED_ZIP,
                                        ".zip",
+                                       _("Encrypted ZIP (.zip)"),
                                        _("Password-protected ZIP, must be installed on Windows and Mac."));
     g_list_store_append (store, item);
     g_object_unref (item);
     item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_TAR_XZ,
                                        ".tar.xz",
+                                       _("TAR (.tar.xz)"),
                                        _("Smaller archives but Linux and Mac only."));
     g_list_store_append (store, item);
     g_object_unref (item);
     item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_7ZIP,
                                        ".7z",
+                                       _("7Z (.7z)"),
                                        _("Smaller archives but must be installed on Windows and Mac."));
     g_list_store_append (store, item);
     g_object_unref (item);
