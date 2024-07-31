@@ -285,7 +285,6 @@ on_loading_timeout (gpointer user_data)
     if (is_loading)
     {
         gtk_widget_set_visible (self->spinner, TRUE);
-        gtk_spinner_start (GTK_SPINNER (self->spinner));
     }
 }
 
@@ -311,7 +310,6 @@ on_item_is_loading_changed (NautilusNameCell *self)
                                              !nautilus_directory_is_not_empty (directory));
 
         gtk_widget_set_visible (self->spinner, FALSE);
-        gtk_spinner_stop (GTK_SPINNER (self->spinner));
     }
 }
 

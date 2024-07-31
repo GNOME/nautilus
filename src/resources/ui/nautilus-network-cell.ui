@@ -57,12 +57,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkSpinner" id="spinner">
-            <binding name="spinning">
-              <lookup name="loading">
-                <lookup name="item">NautilusNetworkCell</lookup>
-              </lookup>
-            </binding>
+          <object class="AdwSpinner" id="spinner">
             <binding name="visible">
               <lookup name="loading">
                 <lookup name="item">NautilusNetworkCell</lookup>

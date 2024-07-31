@@ -984,7 +984,6 @@ static gboolean
 start_spinner_callback (NautilusPropertiesWindow *self)
 {
     gtk_widget_set_visible (self->contents_spinner, TRUE);
-    gtk_spinner_start (GTK_SPINNER (self->contents_spinner));
     self->deep_count_spinner_timeout_id = 0;
 
     return FALSE;
@@ -1005,7 +1004,6 @@ schedule_start_spinner (NautilusPropertiesWindow *self)
 static void
 stop_spinner (NautilusPropertiesWindow *self)
 {
-    gtk_spinner_stop (GTK_SPINNER (self->contents_spinner));
     gtk_widget_set_visible (self->contents_spinner, FALSE);
     g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
 }
