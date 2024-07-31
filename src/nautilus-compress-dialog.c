@@ -265,7 +265,7 @@ extension_combo_row_setup (NautilusCompressDialog *self)
     g_object_unref (item);
     item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_ENCRYPTED_ZIP,
                                        ".zip",
-                                       _("Password protected .zip, must be installed on Windows and Mac."));
+                                       _("Password-protected ZIP, must be installed on Windows and Mac."));
     g_list_store_append (store, item);
     g_object_unref (item);
     item = nautilus_compress_item_new (NAUTILUS_COMPRESSION_TAR_XZ,

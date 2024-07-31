@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusCompressDialog" parent="AdwWindow">
-    <property name="title" translatable="yes">Create Compressed Archive</property>
+    <property name="title" translatable="yes">Compress Files and Folders</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="destroy_with_parent">True</property>
@@ -23,7 +23,7 @@
             </child>
             <child type="end">
               <object class="GtkButton" id="activation_button">
-                <property name="label" translatable="yes">C_reate</property>
+                <property name="label" translatable="yes">C_ompress</property>
                 <property name="use-underline">True</property>
                 <binding name="sensitive">
                   <closure type="gboolean" function="are_name_and_passphrase_ready">
@@ -55,7 +55,7 @@
                 </child>
                 <child>
                   <object class="AdwComboRow" id="extension_combo_row">
-                    <property name="title" translatable="yes">Archive _Type</property>
+                    <property name="title" translatable="yes">Co_mpression Method</property>
                     <property name="use-underline">True</property>
                     <signal name="notify::selected-item" handler="update_selected_format" swapped="yes"/>
                   </object>
@@ -81,6 +81,7 @@
             <child>
               <object class="AdwPreferencesGroup" id="passphrase_group">
                 <property name="title" translatable="yes">Encryption</property>
+                <property name="description" translatable="yes">Encrypt contents of the archive with a password when the compression method supports password-protection.</property>
                 <child>
                   <object class="AdwPasswordEntryRow" id="passphrase_entry">
                     <property name="title" translatable="yes">_Password</property>
