@@ -62,6 +62,12 @@ nautilus_compress_item_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_compress_item_parent_class)->finalize (object);
 }
 
+static char *
+nautilus_compress_item_dup_title (NautilusCompressItem *item)
+{
+    return g_strdup (item->title);
+}
+
 static void
 nautilus_compress_item_class_init (NautilusCompressItemClass *class)
 {
@@ -130,20 +136,6 @@ on_feedback_changed (NautilusCompressDialog *self)
     {
         gtk_widget_remove_css_class (self->name_entry, "warning");
     }
-}
-
-static void
-extension_combo_row_setup_item (GtkSignalListItemFactory *factory,
-                                GtkListItem              *item,
-                                gpointer                  user_data)
-{
-    GtkWidget *title;
-
-    title = gtk_label_new ("");
-    gtk_label_set_xalign (GTK_LABEL (title), 0.0);
-
-    g_object_set_data (G_OBJECT (item), "title", title);
-    gtk_list_item_set_child (item, title);
 }
 
 static gboolean
@@ -215,13 +207,8 @@ extension_combo_row_bind (GtkSignalListItemFactory *factory,
     subtitle = g_object_get_data (G_OBJECT (list_item), "subtitle");
 
     gtk_label_set_label (GTK_LABEL (title), item->title);
-
-    if (subtitle)
-    {
-        gtk_label_set_label (GTK_LABEL (subtitle), item->description);
-    }
+    gtk_label_set_label (GTK_LABEL (subtitle), item->description);
 }
-
 
 static gboolean
 are_name_and_passphrase_ready (NautilusCompressDialog *self,
@@ -244,8 +231,9 @@ are_name_and_passphrase_ready (NautilusCompressDialog *self,
 static void
 extension_combo_row_setup (NautilusCompressDialog *self)
 {
-    GtkListItemFactory *factory, *list_factory;
+    GtkListItemFactory *list_factory;
     GListStore *store;
+    g_autoptr (GtkExpression) expression = NULL;
     NautilusCompressItem *item;
     NautilusCompressionFormat format;
 
@@ -275,19 +263,16 @@ extension_combo_row_setup (NautilusCompressDialog *self)
     g_list_store_append (store, item);
     g_object_unref (item);
 
-    factory = gtk_signal_list_item_factory_new ();
-    g_signal_connect_object (factory, "setup",
-                             G_CALLBACK (extension_combo_row_setup_item), self, 0);
-    g_signal_connect_object (factory, "bind",
-                             G_CALLBACK (extension_combo_row_bind), self, 0);
-
     list_factory = gtk_signal_list_item_factory_new ();
     g_signal_connect_object (list_factory, "setup",
                              G_CALLBACK (extension_combo_row_setup_item_full), self, 0);
     g_signal_connect_object (list_factory, "bind",
                              G_CALLBACK (extension_combo_row_bind), self, 0);
 
-    adw_combo_row_set_factory (self->extension_combo_row, factory);
+    expression = gtk_cclosure_expression_new (G_TYPE_STRING, NULL, 0, 0,
+                                              G_CALLBACK (nautilus_compress_item_dup_title),
+                                              NULL, NULL);
+    adw_combo_row_set_expression (self->extension_combo_row, expression);
     adw_combo_row_set_list_factory (self->extension_combo_row, list_factory);
     adw_combo_row_set_model (self->extension_combo_row, G_LIST_MODEL (store));
 
@@ -308,7 +293,6 @@ extension_combo_row_setup (NautilusCompressDialog *self)
     }
 
     g_object_unref (store);
-    g_object_unref (factory);
     g_object_unref (list_factory);
 }
 
