@@ -53,7 +53,7 @@ fill_menu (NautilusHistoryControls *self,
         name = nautilus_bookmark_get_name (NAUTILUS_BOOKMARK (list->data));
         item = g_menu_item_new (name, NULL);
         g_menu_item_set_action_and_target (item,
-                                           back ? "win.back-n" : "win.forward-n",
+                                           back ? "slot.back-n" : "slot.forward-n",
                                            "u", index);
         g_menu_append_item (menu, item);
 
