@@ -185,6 +185,7 @@ static void nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
                                                   NautilusFile       *file);
 static void nautilus_window_slot_go_up (NautilusWindowSlot *self);
 static void nautilus_window_slot_go_down (NautilusWindowSlot *self);
+static void update_back_forward_actions (NautilusWindowSlot *self);
 
 void
 free_navigation_state (gpointer data)
@@ -206,6 +207,8 @@ nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
     self->back_list = g_steal_pointer (&data->back_list);
 
     self->forward_list = g_steal_pointer (&data->forward_list);
+
+    update_back_forward_actions (self);
 
     g_set_object (&self->current_location_bookmark, data->current_location_bookmark);
 
