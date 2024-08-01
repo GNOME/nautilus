@@ -222,18 +222,6 @@ extension_combo_row_bind (GtkSignalListItemFactory *factory,
     }
 }
 
-static void
-extension_combo_row_unbind (GtkSignalListItemFactory *factory,
-                            GtkListItem              *item,
-                            gpointer                  user_data)
-{
-    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
-
-    if (self->extension_combo_row == NULL)
-    {
-        return;
-    }
-}
 
 static gboolean
 are_name_and_passphrase_ready (NautilusCompressDialog *self,
@@ -292,16 +280,12 @@ extension_combo_row_setup (NautilusCompressDialog *self)
                              G_CALLBACK (extension_combo_row_setup_item), self, 0);
     g_signal_connect_object (factory, "bind",
                              G_CALLBACK (extension_combo_row_bind), self, 0);
-    g_signal_connect_object (factory, "unbind",
-                             G_CALLBACK (extension_combo_row_unbind), self, 0);
 
     list_factory = gtk_signal_list_item_factory_new ();
     g_signal_connect_object (list_factory, "setup",
                              G_CALLBACK (extension_combo_row_setup_item_full), self, 0);
     g_signal_connect_object (list_factory, "bind",
                              G_CALLBACK (extension_combo_row_bind), self, 0);
-    g_signal_connect_object (list_factory, "unbind",
-                             G_CALLBACK (extension_combo_row_unbind), self, 0);
 
     adw_combo_row_set_factory (self->extension_combo_row, factory);
     adw_combo_row_set_list_factory (self->extension_combo_row, list_factory);
