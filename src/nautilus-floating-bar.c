@@ -521,7 +521,6 @@ nautilus_floating_bar_new (const gchar *primary_label,
                          "primary-label", primary_label,
                          "details-label", details_label,
                          "show-spinner", show_spinner,
-                         "orientation", GTK_ORIENTATION_HORIZONTAL,
                          "spacing", 8,
                          NULL);
 }
