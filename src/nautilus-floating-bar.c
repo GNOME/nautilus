@@ -69,6 +69,20 @@ G_DEFINE_TYPE (NautilusFloatingBar, nautilus_floating_bar,
                GTK_TYPE_BOX);
 
 static void
+nautilus_floating_bar_set_show_spinner (NautilusFloatingBar *self,
+                                        gboolean             show_spinner)
+{
+    if (self->show_spinner != show_spinner)
+    {
+        self->show_spinner = show_spinner;
+        gtk_widget_set_visible (self->spinner,
+                                show_spinner);
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SHOW_SPINNER]);
+    }
+}
+
+static void
 stop_button_clicked_cb (GtkButton           *button,
                         NautilusFloatingBar *self)
 {
@@ -481,20 +495,6 @@ nautilus_floating_bar_set_labels (NautilusFloatingBar *self,
 {
     nautilus_floating_bar_set_primary_label (self, primary_label);
     nautilus_floating_bar_set_details_label (self, details_label);
-}
-
-void
-nautilus_floating_bar_set_show_spinner (NautilusFloatingBar *self,
-                                        gboolean             show_spinner)
-{
-    if (self->show_spinner != show_spinner)
-    {
-        self->show_spinner = show_spinner;
-        gtk_widget_set_visible (self->spinner,
-                                show_spinner);
-
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SHOW_SPINNER]);
-    }
 }
 
 void

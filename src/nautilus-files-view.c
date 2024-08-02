@@ -391,7 +391,6 @@ real_setup_loading_floating_bar (NautilusFilesView *view)
     nautilus_floating_bar_set_primary_label (NAUTILUS_FLOATING_BAR (priv->floating_bar),
                                              nautilus_view_is_searching (NAUTILUS_VIEW (view)) ? _("Searching…") : _("Loading…"));
     nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (priv->floating_bar), NULL);
-    nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (priv->floating_bar), priv->loading);
     nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (priv->floating_bar), priv->loading);
 
     gtk_widget_set_halign (priv->floating_bar, GTK_ALIGN_END);
@@ -462,8 +461,6 @@ real_floating_bar_set_short_status (NautilusFilesView *view,
         return;
     }
 
-    nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (priv->floating_bar),
-                                            FALSE);
     nautilus_floating_bar_set_show_stop (NAUTILUS_FLOATING_BAR (priv->floating_bar),
                                          FALSE);
 
