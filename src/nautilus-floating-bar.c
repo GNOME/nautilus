@@ -431,28 +431,24 @@ nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
 
     properties[PROP_PRIMARY_LABEL] =
         g_param_spec_string ("primary-label",
-                             "Bar's primary label",
-                             "Primary label displayed by the bar",
+                             NULL, NULL,
                              NULL,
-                             G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
     properties[PROP_DETAILS_LABEL] =
         g_param_spec_string ("details-label",
-                             "Bar's details label",
-                             "Details label displayed by the bar",
+                             NULL, NULL,
                              NULL,
-                             G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+                             G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
     properties[PROP_SHOW_SPINNER] =
         g_param_spec_boolean ("show-spinner",
-                              "Show spinner",
-                              "Whether a spinner should be shown in the floating bar",
+                              NULL, NULL,
                               FALSE,
-                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
     properties[PROP_SHOW_STOP] =
         g_param_spec_boolean ("show-stop",
-                              "Show stop button",
-                              "Whether a stop button should be shown in the floating bar",
+                              NULL, NULL,
                               FALSE,
-                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_EXPLICIT_NOTIFY);
 
     signals[STOP] = g_signal_new ("stop",
                                   G_TYPE_FROM_CLASS (klass),
