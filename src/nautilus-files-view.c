@@ -3876,8 +3876,6 @@ real_check_empty_states (NautilusFilesView *view)
         }
 
         gtk_widget_set_visible (priv->empty_view_page, TRUE);
-
-        nautilus_files_view_display_selection_info (view);
     }
     else
     {
