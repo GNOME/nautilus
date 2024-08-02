@@ -123,6 +123,9 @@ set_x11_parent (ExternalWindow *external_window)
 
   g_return_if_fail (parent_surface);
 
+  if (!x11_interop)
+    return;
+
   wl_surface = gdk_wayland_surface_get_wl_surface (parent_surface);
   mutter_x11_interop_set_x11_parent (x11_interop, wl_surface,
                                      external_window_wayland->x11.xid);
