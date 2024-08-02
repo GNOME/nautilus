@@ -166,6 +166,7 @@ typedef struct
     guint dir_merge_id;
 
     NautilusViewModel *model;
+    GtkSelectionFilterModel *selection;
 
     NautilusQuery *search_query;
     GFile *location_before_search;
@@ -3454,6 +3455,7 @@ nautilus_files_view_dispose (GObject *object)
     g_clear_object (&priv->location_before_search);
     g_clear_object (&priv->outgoing_search);
     g_clear_object (&priv->location);
+    g_clear_object (&priv->selection);
     g_clear_object (&priv->model);
 
     adw_bin_set_child (ADW_BIN (view), NULL);
@@ -9632,7 +9634,14 @@ nautilus_files_view_constructed (GObject *object)
     g_object_bind_property (priv->slot, "filter",
                             priv->model, "filter",
                             G_BINDING_SYNC_CREATE);
-    g_signal_connect_object (GTK_SELECTION_MODEL (priv->model), "selection-changed",
+
+    /* GtkSelectionModel::selection-changed only notifies about individual item
+     * selection state changes. Changes to the selection set require listening
+     * to the GListModel::items-changed signal as well. Instead of reinventing
+     * the wheel, rely on GtkSelectionFilterModel to do the right thing for us.
+     */
+    priv->selection = gtk_selection_filter_model_new (GTK_SELECTION_MODEL (priv->model));
+    g_signal_connect_object (priv->selection, "items-changed",
                              G_CALLBACK (nautilus_files_view_notify_selection_changed), self,
                              G_CONNECT_SWAPPED);
 }
