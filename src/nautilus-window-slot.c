@@ -868,6 +868,12 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SELECTION:
+        {
+            g_value_set_pointer (value, nautilus_window_slot_get_selection (self));
+        }
+        break;
+
         case PROP_TITLE:
         {
             g_value_set_string (value, nautilus_window_slot_get_title (self));
@@ -3068,10 +3074,8 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_SELECTION] =
-        g_param_spec_pointer ("selection",
-                              "Selection of the current view of the slot",
-                              "The selection of the current view of the slot. Proxy property from the view",
-                              G_PARAM_READWRITE);
+        g_param_spec_pointer ("selection", NULL, NULL,
+                              G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
     properties[PROP_ICON_NAME] =
         g_param_spec_string ("icon-name",
