@@ -12,7 +12,7 @@
 
 struct _NautilusNewFolderDialog
 {
-    AdwWindow parent_instance;
+    AdwDialog parent_instance;
 
     NautilusFilenameValidator *validator;
 
@@ -23,7 +23,7 @@ struct _NautilusNewFolderDialog
     gpointer callback_data;
 };
 
-G_DEFINE_TYPE (NautilusNewFolderDialog, nautilus_new_folder_dialog, ADW_TYPE_WINDOW)
+G_DEFINE_TYPE (NautilusNewFolderDialog, nautilus_new_folder_dialog, ADW_TYPE_DIALOG)
 
 static void
 on_feedback_changed (NautilusNewFolderDialog *self)
@@ -45,11 +45,11 @@ on_name_accepted (NautilusNewFolderDialog *self)
 
     self->callback (name, self->with_selection, self->callback_data);
 
-    gtk_window_close (GTK_WINDOW (self));
+    adw_dialog_close (ADW_DIALOG (self));
 }
 
 NautilusNewFolderDialog *
-nautilus_new_folder_dialog_new (GtkWindow         *parent_window,
+nautilus_new_folder_dialog_new (GtkWidget         *parent,
                                 NautilusDirectory *destination_directory,
                                 gboolean           with_selection,
                                 gchar             *initial_name,
@@ -57,7 +57,6 @@ nautilus_new_folder_dialog_new (GtkWindow         *parent_window,
                                 gpointer           callback_data)
 {
     NautilusNewFolderDialog *self = g_object_new (NAUTILUS_TYPE_NEW_FOLDER_DIALOG,
-                                                  "transient-for", parent_window,
                                                   NULL);
 
     nautilus_filename_validator_set_containing_directory (self->validator,
@@ -72,9 +71,10 @@ nautilus_new_folder_dialog_new (GtkWindow         *parent_window,
     {
         gtk_editable_set_text (GTK_EDITABLE (self->name_entry), initial_name);
     }
-    gtk_widget_grab_focus (self->name_entry);
 
-    gtk_window_present (GTK_WINDOW (self));
+    adw_dialog_present (ADW_DIALOG (self), parent);
+
+    gtk_widget_grab_focus (self->name_entry);
 
     return self;
 }

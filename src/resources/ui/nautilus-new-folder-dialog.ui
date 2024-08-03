@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusNewFolderDialog" parent="AdwWindow">
-    <property name="resizable">False</property>
-    <property name="modal">True</property>
-    <property name="destroy_with_parent">True</property>
+  <template class="NautilusNewFolderDialog" parent="AdwDialog">
     <property name="title" translatable="yes">New Folder</property>
-    <property name="width_request">450</property>
-    <property name="content">
+    <property name="content-width">450</property>
+    <property name="content-height">175</property>
+    <property name="child">
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar">
@@ -17,7 +15,7 @@
               <object class="GtkButton">
                 <property name="label" translatable="yes">C_ancel</property>
                 <property name="use-underline">True</property>
-                <signal name="clicked" handler="gtk_window_close" swapped="yes"/>
+                <signal name="clicked" handler="adw_dialog_close" swapped="yes"/>
               </object>
             </child>
             <child type="end">
@@ -67,17 +65,6 @@
         </property>
       </object>
     </property>
-    <child>
-      <object class="GtkShortcutController">
-        <property name="scope">managed</property>
-        <child>
-          <object class="GtkShortcut">
-            <property name="trigger">Escape</property>
-            <property name="action">action(window.close)</property>
-          </object>
-        </child>
-      </object>
-    </child>
   </template>
   <object class="NautilusFilenameValidator" id="validator">
     <property name="new-name" bind-source="name_entry" bind-property="text"/>

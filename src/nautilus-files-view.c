@@ -2163,7 +2163,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
     }
 
-    (void) nautilus_new_folder_dialog_new (nautilus_files_view_get_containing_window (view),
+    (void) nautilus_new_folder_dialog_new (GTK_WIDGET (view),
                                            containing_directory,
                                            with_selection,
                                            common_prefix,

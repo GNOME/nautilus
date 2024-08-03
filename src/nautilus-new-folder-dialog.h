@@ -17,9 +17,9 @@ typedef void (*NewFolderCallback) (const char *new_name,
                                    gpointer    user_data);
 
 #define NAUTILUS_TYPE_NEW_FOLDER_DIALOG nautilus_new_folder_dialog_get_type ()
-G_DECLARE_FINAL_TYPE (NautilusNewFolderDialog, nautilus_new_folder_dialog, NAUTILUS, NEW_FOLDER_DIALOG, AdwWindow)
+G_DECLARE_FINAL_TYPE (NautilusNewFolderDialog, nautilus_new_folder_dialog, NAUTILUS, NEW_FOLDER_DIALOG, AdwDialog)
 
-NautilusNewFolderDialog * nautilus_new_folder_dialog_new (GtkWindow         *parent_window,
+NautilusNewFolderDialog * nautilus_new_folder_dialog_new (GtkWidget         *parent,
                                                           NautilusDirectory *destination_directory,
                                                           gboolean           with_selection,
                                                           gchar             *initial_name,
