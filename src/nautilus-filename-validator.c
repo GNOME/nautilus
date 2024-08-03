@@ -25,6 +25,7 @@ struct _NautilusFilenameValidator
     gboolean passed;
     gboolean valid_name;
     gboolean duplicated_name;
+    gboolean will_overwrite;
 
     gboolean duplicated_is_folder;
     gint duplicated_label_timeout_id;
@@ -46,6 +47,7 @@ enum
     PROP_PASSED,
     PROP_ALLOW_OVERWRITE,
     PROP_TARGET_IS_FOLDER,
+    PROP_WILL_OVERWRITE,
     NUM_PROPERTIES
 };
 
@@ -211,6 +213,16 @@ filename_validator_process_new_name (NautilusFilenameValidator *self)
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PASSED]);
     }
 
+    gboolean will_overwrite = (self->allow_overwrite &&
+                               self->passed &&
+                               self->duplicated_name);
+
+    if (self->will_overwrite != will_overwrite)
+    {
+        self->will_overwrite = will_overwrite;
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WILL_OVERWRITE]);
+    }
+
     g_clear_handle_id (&self->duplicated_label_timeout_id, g_source_remove);
 
     if (self->duplicated_name)
@@ -361,6 +373,12 @@ nautilus_filename_validator_get_property (GObject    *object,
         }
         break;
 
+        case PROP_WILL_OVERWRITE:
+        {
+            g_value_set_boolean (value, self->will_overwrite);
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -482,12 +500,16 @@ nautilus_filename_validator_class_init (NautilusFilenameValidatorClass *klass)
         g_param_spec_boolean ("target-is-folder", NULL, NULL,
                               FALSE,
                               G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_WILL_OVERWRITE] =
+        g_param_spec_boolean ("will-overwrite", NULL, NULL,
+                              FALSE,
+                              G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
 }
 
 gboolean
-nautilus_filename_validator_will_overwrite (NautilusFilenameValidator *self)
+nautilus_filename_validator_get_will_overwrite (NautilusFilenameValidator *self)
 {
-    return (self->allow_overwrite && self->passed && self->duplicated_name);
+    return self->will_overwrite;
 }
