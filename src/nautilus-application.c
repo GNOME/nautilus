@@ -690,7 +690,8 @@ action_preferences (GSimpleAction *action,
                     gpointer       user_data)
 {
     GtkApplication *application = user_data;
-    nautilus_preferences_window_show (gtk_application_get_active_window (application));
+    GtkWidget *active_window = GTK_WIDGET (gtk_application_get_active_window (application));
+    nautilus_preferences_window_show (active_window);
 }
 
 static void

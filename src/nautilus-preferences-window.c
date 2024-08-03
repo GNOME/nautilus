@@ -385,9 +385,9 @@ nautilus_preferences_window_setup (GtkBuilder *builder)
 }
 
 void
-nautilus_preferences_window_show (GtkWindow *parent_window)
+nautilus_preferences_window_show (GtkWidget *parent)
 {
-    static GtkWindow *preferences_window = NULL;
+    static AdwPreferencesDialog *preferences_window = NULL;
     g_autoptr (GtkBuilder) builder = NULL;
     g_autoptr (GSimpleActionGroup) action_group = g_simple_action_group_new ();
     g_autoptr (GAction) date_time_action = NULL;
@@ -396,13 +396,13 @@ nautilus_preferences_window_show (GtkWindow *parent_window)
     {
         /* Destroy existing window, which might be hidden behind other windows,
          * attached to another parent. */
-        gtk_window_destroy (preferences_window);
+        adw_dialog_force_close (ADW_DIALOG (preferences_window));
     }
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-preferences-window.ui");
     nautilus_preferences_window_setup (builder);
 
-    preferences_window = GTK_WINDOW (gtk_builder_get_object (builder, "preferences_window"));
+    preferences_window = ADW_PREFERENCES_DIALOG (gtk_builder_get_object (builder, "preferences_window"));
     g_object_add_weak_pointer (G_OBJECT (preferences_window), (gpointer *) &preferences_window);
 
     date_time_action = g_settings_create_action (nautilus_preferences,
@@ -412,7 +412,5 @@ nautilus_preferences_window_show (GtkWindow *parent_window)
                                     "preferences",
                                     G_ACTION_GROUP (action_group));
 
-    gtk_window_set_icon_name (preferences_window, APPLICATION_ID);
-    gtk_window_set_transient_for (preferences_window, parent_window);
-    gtk_window_present (preferences_window);
+    adw_dialog_present (ADW_DIALOG (preferences_window), parent);
 }
