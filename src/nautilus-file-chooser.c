@@ -20,6 +20,7 @@
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
 #include "nautilus-filename-validator.h"
+#include "nautilus-global-preferences.h"
 #include "nautilus-scheme.h"
 #include "nautilus-shortcut-manager.h"
 #include "nautilus-toolbar.h"
@@ -433,6 +434,28 @@ on_key_pressed_bubble (GtkEventControllerKey *controller,
 }
 
 static void
+on_click_gesture_pressed (GtkGestureClick *gesture,
+                          gint             n_press,
+                          gdouble          x,
+                          gdouble          y,
+                          gpointer         user_data)
+{
+    NautilusFileChooser *self = user_data;
+    guint button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+
+    if (nautilus_global_preferences_get_use_extra_buttons () &&
+        (button == nautilus_global_preferences_get_back_button ()))
+    {
+        nautilus_window_slot_back_or_forward (self->slot, TRUE, 0);
+    }
+    else if (nautilus_global_preferences_get_use_extra_buttons () &&
+             (button == nautilus_global_preferences_get_forward_button ()))
+    {
+        nautilus_window_slot_back_or_forward (self->slot, FALSE, 0);
+    }
+}
+
+static void
 nautilus_file_chooser_dispose (GObject *object)
 {
     NautilusFileChooser *self = (NautilusFileChooser *) object;
@@ -576,6 +599,11 @@ nautilus_file_chooser_init (NautilusFileChooser *self)
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_BUBBLE);
     g_signal_connect (controller, "key-pressed",
                       G_CALLBACK (on_key_pressed_bubble), self);
+    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
+    g_signal_connect (controller, "pressed", G_CALLBACK (on_click_gesture_pressed), self);
 }
 
 static void

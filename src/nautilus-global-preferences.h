@@ -137,6 +137,9 @@ typedef enum
 } NautilusDateTimeFormat;
 
 void nautilus_global_preferences_init                      (void);
+guint nautilus_global_preferences_get_back_button (void);
+guint nautilus_global_preferences_get_forward_button (void);
+gboolean nautilus_global_preferences_get_use_extra_buttons (void);
 
 extern GSettings *nautilus_preferences;
 extern GSettings *nautilus_compression_preferences;

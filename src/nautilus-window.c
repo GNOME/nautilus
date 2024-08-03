@@ -62,14 +62,6 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
 
-/* Forward and back buttons on the mouse */
-static gboolean mouse_extra_buttons = TRUE;
-static guint mouse_forward_button = 9;
-static guint mouse_back_button = 8;
-
-static void mouse_back_button_changed (gpointer callback_data);
-static void mouse_forward_button_changed (gpointer callback_data);
-static void use_extra_mouse_buttons_changed (gpointer callback_data);
 static void nautilus_window_initialize_actions (NautilusWindow *window);
 static void nautilus_window_back_or_forward (NautilusWindow *window,
                                              gboolean        back,
@@ -84,7 +76,6 @@ static void update_cursor (NautilusWindow *window);
  * we'll move the bar. Makes you wonder why the X guys don't have
  * defined values for these like the XKB stuff, huh?
  */
-#define UPPER_MOUSE_LIMIT 14
 
 struct _NautilusWindow
 {
@@ -1538,52 +1529,16 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     window = NAUTILUS_WINDOW (widget);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
 
-    if (mouse_extra_buttons && (button == mouse_back_button))
+    if (nautilus_global_preferences_get_use_extra_buttons () &&
+        (button == nautilus_global_preferences_get_back_button ()))
     {
         nautilus_window_back_or_forward (window, TRUE, 0);
     }
-    else if (mouse_extra_buttons && (button == mouse_forward_button))
+    else if (nautilus_global_preferences_get_use_extra_buttons () &&
+             (button == nautilus_global_preferences_get_forward_button ()))
     {
         nautilus_window_back_or_forward (window, FALSE, 0);
     }
-}
-
-static void
-mouse_back_button_changed (gpointer callback_data)
-{
-    int new_back_button;
-
-    new_back_button = g_settings_get_uint (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON);
-
-    /* Bounds checking */
-    if (new_back_button < 6 || new_back_button > UPPER_MOUSE_LIMIT)
-    {
-        return;
-    }
-
-    mouse_back_button = new_back_button;
-}
-
-static void
-mouse_forward_button_changed (gpointer callback_data)
-{
-    int new_forward_button;
-
-    new_forward_button = g_settings_get_uint (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON);
-
-    /* Bounds checking */
-    if (new_forward_button < 6 || new_forward_button > UPPER_MOUSE_LIMIT)
-    {
-        return;
-    }
-
-    mouse_forward_button = new_forward_button;
-}
-
-static void
-use_extra_mouse_buttons_changed (gpointer callback_data)
-{
-    mouse_extra_buttons = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
 }
 
 static void
@@ -1741,21 +1696,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__OBJECT,
                       G_TYPE_NONE, 1, NAUTILUS_TYPE_WINDOW_SLOT);
-
-    g_signal_connect_swapped (nautilus_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON,
-                              G_CALLBACK (mouse_back_button_changed),
-                              NULL);
-
-    g_signal_connect_swapped (nautilus_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON,
-                              G_CALLBACK (mouse_forward_button_changed),
-                              NULL);
-
-    g_signal_connect_swapped (nautilus_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS,
-                              G_CALLBACK (use_extra_mouse_buttons_changed),
-                              NULL);
 }
 
 NautilusWindow *

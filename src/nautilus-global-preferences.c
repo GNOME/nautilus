@@ -40,6 +40,50 @@ GSettings *gnome_interface_preferences;
 GSettings *gnome_privacy_preferences;
 GSettings *localsearch_preferences;
 
+#define UPPER_MOUSE_LIMIT 14
+/* Forward and back buttons on the mouse */
+static gboolean mouse_extra_buttons = TRUE;
+static guint mouse_forward_button = 9;
+static guint mouse_back_button = 8;
+
+static void
+use_extra_mouse_buttons_changed (gpointer callback_data)
+{
+    mouse_extra_buttons = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS);
+}
+
+static void
+mouse_back_button_changed (gpointer callback_data)
+{
+    int new_back_button;
+
+    new_back_button = g_settings_get_uint (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON);
+
+    /* Bounds checking */
+    if (new_back_button < 6 || new_back_button > UPPER_MOUSE_LIMIT)
+    {
+        return;
+    }
+
+    mouse_back_button = new_back_button;
+}
+
+static void
+mouse_forward_button_changed (gpointer callback_data)
+{
+    int new_forward_button;
+
+    new_forward_button = g_settings_get_uint (nautilus_preferences, NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON);
+
+    /* Bounds checking */
+    if (new_forward_button < 6 || new_forward_button > UPPER_MOUSE_LIMIT)
+    {
+        return;
+    }
+
+    mouse_forward_button = new_forward_button;
+}
+
 void
 nautilus_global_preferences_init (void)
 {
@@ -64,4 +108,37 @@ nautilus_global_preferences_init (void)
     gnome_interface_preferences = g_settings_new ("org.gnome.desktop.interface");
     gnome_privacy_preferences = g_settings_new ("org.gnome.desktop.privacy");
     localsearch_preferences = g_settings_new ("org.freedesktop.Tracker3.Miner.Files");
+
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON,
+                              G_CALLBACK (mouse_back_button_changed),
+                              NULL);
+
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_MOUSE_FORWARD_BUTTON,
+                              G_CALLBACK (mouse_forward_button_changed),
+                              NULL);
+
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_MOUSE_USE_EXTRA_BUTTONS,
+                              G_CALLBACK (use_extra_mouse_buttons_changed),
+                              NULL);
+}
+
+guint
+nautilus_global_preferences_get_back_button (void)
+{
+    return mouse_back_button;
+}
+
+guint
+nautilus_global_preferences_get_forward_button (void)
+{
+    return mouse_forward_button;
+}
+
+gboolean
+nautilus_global_preferences_get_use_extra_buttons (void)
+{
+    return mouse_extra_buttons;
 }
