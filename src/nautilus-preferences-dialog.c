@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-#include "nautilus-preferences-window.h"
+#include "nautilus-preferences-dialog.h"
 
 #include <adwaita.h>
 #include <glib/gi18n.h>
@@ -205,7 +205,7 @@ update_icon_captions_from_settings (GPtrArray *combo_rows)
 }
 
 static void
-nautilus_preferences_window_setup_icon_caption_page (GtkBuilder *builder)
+nautilus_preferences_dialog_setup_icon_caption_page (GtkBuilder *builder)
 {
     g_autoptr (GPtrArray) combo_rows = g_ptr_array_sized_new (G_N_ELEMENTS (icon_captions_components));
     GList *columns;
@@ -337,7 +337,7 @@ setup_combo (GtkBuilder  *builder,
 }
 
 static void
-nautilus_preferences_window_setup (GtkBuilder *builder)
+nautilus_preferences_dialog_setup (GtkBuilder *builder)
 {
     setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO,
                  (const char *[]) { _("Single-Click"), _("Double-Click"), NULL });
@@ -381,36 +381,36 @@ nautilus_preferences_window_setup (GtkBuilder *builder)
                             NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
                             (const char **) speed_tradeoff_values);
 
-    nautilus_preferences_window_setup_icon_caption_page (builder);
+    nautilus_preferences_dialog_setup_icon_caption_page (builder);
 }
 
 void
-nautilus_preferences_window_show (GtkWidget *parent)
+nautilus_preferences_dialog_show (GtkWidget *parent)
 {
-    static AdwPreferencesDialog *preferences_window = NULL;
+    static AdwPreferencesDialog *preferences_dialog = NULL;
     g_autoptr (GtkBuilder) builder = NULL;
     g_autoptr (GSimpleActionGroup) action_group = g_simple_action_group_new ();
     g_autoptr (GAction) date_time_action = NULL;
 
-    if (preferences_window != NULL)
+    if (preferences_dialog != NULL)
     {
         /* Destroy existing window, which might be hidden behind other windows,
          * attached to another parent. */
-        adw_dialog_force_close (ADW_DIALOG (preferences_window));
+        adw_dialog_force_close (ADW_DIALOG (preferences_dialog));
     }
 
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-preferences-window.ui");
-    nautilus_preferences_window_setup (builder);
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-preferences-dialog.ui");
+    nautilus_preferences_dialog_setup (builder);
 
-    preferences_window = ADW_PREFERENCES_DIALOG (gtk_builder_get_object (builder, "preferences_window"));
-    g_object_add_weak_pointer (G_OBJECT (preferences_window), (gpointer *) &preferences_window);
+    preferences_dialog = ADW_PREFERENCES_DIALOG (gtk_builder_get_object (builder, "preferences_dialog"));
+    g_object_add_weak_pointer (G_OBJECT (preferences_dialog), (gpointer *) &preferences_dialog);
 
     date_time_action = g_settings_create_action (nautilus_preferences,
                                                  NAUTILUS_PREFERENCES_DATE_TIME_FORMAT);
     g_action_map_add_action (G_ACTION_MAP (action_group), date_time_action);
-    gtk_widget_insert_action_group (GTK_WIDGET (preferences_window),
+    gtk_widget_insert_action_group (GTK_WIDGET (preferences_dialog),
                                     "preferences",
                                     G_ACTION_GROUP (action_group));
 
-    adw_dialog_present (ADW_DIALOG (preferences_window), parent);
+    adw_dialog_present (ADW_DIALOG (preferences_dialog), parent);
 }

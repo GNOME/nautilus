@@ -1,6 +1,6 @@
 
-/* nautilus-preferences-window.h - Function to show the nautilus preference
-   window.
+/* nautilus-preferences-dialog.h - Function to show the nautilus preferences
+   dialog.
 
    Copyright (C) 2002 Jan Arne Petersen
    Copyright (C) 2016 Carlos Soriano <csoriano@gnome.org>
@@ -28,6 +28,6 @@
 
 G_BEGIN_DECLS
 
-void nautilus_preferences_window_show (GtkWidget *widget);
+void nautilus_preferences_dialog_show (GtkWidget *widget);
 
 G_END_DECLS

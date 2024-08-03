@@ -54,7 +54,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-module.h"
-#include "nautilus-preferences-window.h"
+#include "nautilus-preferences-dialog.h"
 #include "nautilus-previewer.h"
 #include "nautilus-progress-persistence-handler.h"
 #include "nautilus-scheme.h"
@@ -691,7 +691,7 @@ action_preferences (GSimpleAction *action,
 {
     GtkApplication *application = user_data;
     GtkWidget *active_window = GTK_WIDGET (gtk_application_get_active_window (application));
-    nautilus_preferences_window_show (active_window);
+    nautilus_preferences_dialog_show (active_window);
 }
 
 static void
