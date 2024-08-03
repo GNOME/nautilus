@@ -19,6 +19,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-enum-types.h"
 #include "nautilus-file.h"
+#include "nautilus-filename-utilities.h"
 #include "nautilus-filename-validator.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-scheme.h"
@@ -378,6 +379,10 @@ open_filename_entry (NautilusFileChooser *self)
     gtk_stack_set_visible_child (GTK_STACK (self->filename_widget),
                                  self->filename_entry);
     gtk_entry_grab_focus_without_selecting (GTK_ENTRY (self->filename_entry));
+
+    const char *filename = gtk_editable_get_text (GTK_EDITABLE (self->filename_entry));
+    int extension_offset = nautilus_filename_get_extension_char_offset (filename);
+    gtk_editable_select_region (GTK_EDITABLE (self->filename_entry), 0, extension_offset);
 }
 
 static void
