@@ -184,6 +184,8 @@ filename_validator_process_new_name (NautilusFilenameValidator *self)
 {
     g_return_if_fail (NAUTILUS_IS_DIRECTORY (self->containing_directory));
 
+    g_object_freeze_notify (G_OBJECT (self));
+
     g_autofree gchar *name = nautilus_filename_validator_get_new_name (self);
     gchar *error_message = NULL;
     g_autoptr (NautilusFile) existing_file = NULL;
@@ -229,6 +231,8 @@ filename_validator_process_new_name (NautilusFilenameValidator *self)
     {
         self->duplicated_is_folder = nautilus_file_is_directory (existing_file);
     }
+
+    g_object_thaw_notify (G_OBJECT (self));
 }
 
 static void
