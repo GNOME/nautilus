@@ -14,7 +14,7 @@
             <property name="show-start-title-buttons">False</property>
             <property name="show-end-title-buttons">False</property>
             <child type="start">
-              <object class="GtkButton">
+              <object class="GtkButton" id="cancel_button">
                 <property name="label" translatable="yes">_Cancel</property>
                 <property name="use-underline">True</property>
                 <property name="can-shrink">True</property>
@@ -157,5 +157,11 @@
         </property>
       </object>
     </property>
+  </object>
+  <object class="GtkSizeGroup">
+    <widgets>
+      <widget name="cancel_button"/>
+      <widget name="select_button"/>
+    </widgets>
   </object>
 </interface>
