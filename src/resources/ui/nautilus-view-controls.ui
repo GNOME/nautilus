@@ -2,6 +2,16 @@
 <interface>
   <menu id="view_menu">
     <section>
+      <attribute name="label" translatable="yes">Icon Size</attribute>
+      <attribute name="display-hint">inline-buttons</attribute>
+      <item>
+        <attribute name="custom">zoom-out</attribute>
+      </item>
+      <item>
+        <attribute name="custom">zoom-in</attribute>
+      </item>
+    </section>
+    <section>
       <attribute name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</attribute>
       <!--
            Sort section.
@@ -9,6 +19,12 @@
            The toolbar code assumes this is the second item of this menu model.
            Its contents is provided by the view.
       -->
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Show _Hidden Files</attribute>
+        <attribute name="action">view.show-hidden-files</attribute>
+      </item>
     </section>
     <section>
       <item>
@@ -25,7 +41,33 @@
         <property name="valign">center</property>
         <property name="dropdown-tooltip" translatable="yes" comments="Translators: This is a noun, meaning the options pertaining to the view.">View Options</property>
         <property name="action_name">slot.files-view-mode-toggle</property>
-        <property name="menu-model">view_menu</property>
+        <property name="popover">
+          <object class="GtkPopoverMenu">
+            <property name="menu-model">view_menu</property>
+            <child type="zoom-out">
+              <object class="GtkButton">
+                <property name="icon-name">zoom-out-symbolic</property>
+                <property name="action-name">view.zoom-out</property>
+                <property name="tooltip-text" translatable="yes">Zoom Out</property>
+                <style>
+                  <class name="flat"/>
+                  <class name="circular"/>
+                </style>
+              </object>
+            </child>
+            <child type="zoom-in">
+              <object class="GtkButton">
+                <property name="icon-name">zoom-in-symbolic</property>
+                <property name="action-name">view.zoom-in</property>
+                <property name="tooltip-text" translatable="yes">Zoom In</property>
+                <style>
+                  <class name="flat"/>
+                  <class name="circular"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </property>
         <binding name="icon-name">
           <lookup name="icon-name">
             <lookup name="window-slot">NautilusViewControls</lookup>

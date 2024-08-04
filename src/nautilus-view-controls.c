@@ -47,13 +47,13 @@ on_slot_toolbar_menu_sections_changed (NautilusViewControls *self,
         return;
     }
 
-    /* Let's assume that sort section is the first item
+    /* Let's assume that sort section is the second item
      * in view_menu, as per nautilus-toolbar.ui. */
 
-    sort_item = g_menu_item_new_from_model (self->view_menu, 0);
-    g_menu_remove (G_MENU (self->view_menu), 0);
+    sort_item = g_menu_item_new_from_model (self->view_menu, 1);
+    g_menu_remove (G_MENU (self->view_menu), 1);
     g_menu_item_set_section (sort_item, new_sections->sort_section);
-    g_menu_insert_item (G_MENU (self->view_menu), 0, sort_item);
+    g_menu_insert_item (G_MENU (self->view_menu), 1, sort_item);
 }
 
 static void
