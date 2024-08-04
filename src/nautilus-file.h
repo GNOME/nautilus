@@ -1,8 +1,8 @@
 /*
    nautilus-file.h: Nautilus file model.
- 
+
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
-  
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
    published by the Free Software Foundation; either version 2 of the
@@ -81,7 +81,7 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS = (1<<0),
 	/* uses the icon of the mount if present */
 	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON = (1<<1),
-} NautilusFileIconFlags;	
+} NautilusFileIconFlags;
 
 #define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 32
 
@@ -217,7 +217,7 @@ void                    nautilus_file_set_search_fts_snippet            (Nautilu
                                                                          const gchar                    *fts_snippet);
 const gchar*            nautilus_file_get_search_fts_snippet            (NautilusFile                   *file);
 
-void                    nautilus_file_set_attributes                    (NautilusFile                   *file, 
+void                    nautilus_file_set_attributes                    (NautilusFile                   *file,
 									 GFileInfo                      *attributes,
 									 NautilusFileOperationCallback   callback,
 									 gpointer                        callback_data);
@@ -489,8 +489,8 @@ typedef struct {
 	   it will be used as the default file type. This is useful when creating
 	   a "virtual" NautilusFile subclass that you can't actually get real
 	   information about. For exaple NautilusDesktopDirectoryFile. */
-	GFileType default_file_type; 
-	
+	GFileType default_file_type;
+
 	/* Called when the file notices any change. */
 	void                  (* changed)                (NautilusFile *file);
 
@@ -530,7 +530,7 @@ typedef struct {
 	void                  (* set_metadata_as_list)   (NautilusFile           *file,
 							  const char             *key,
 							  char                  **value);
-	
+
 	void                  (* mount)                  (NautilusFile                   *file,
 							  GMountOperation                *mount_op,
 							  GCancellable                   *cancellable,
