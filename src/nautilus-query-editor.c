@@ -136,7 +136,7 @@ find_enclosing_mount_cb (GObject      *source_object,
 
     if (!nautilus_scheme_is_internal (uri_scheme))
     {
-        g_autoptr (NautilusFile) file =  nautilus_file_get (editor->location);
+        g_autoptr (NautilusFile) file = nautilus_file_get (editor->location);
 
         /* Subfolders are disabled */
         if (location_settings_search_get_recursive_for_location (editor->location)
