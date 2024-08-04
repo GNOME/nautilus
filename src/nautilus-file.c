@@ -4579,8 +4579,6 @@ clean_up_metadata_keywords (NautilusFile  *file,
     gint i;
 
     i = 0;
-    exclude[i++] = NAUTILUS_FILE_EMBLEM_NAME_TRASH;
-    exclude[i++] = NAUTILUS_FILE_EMBLEM_NAME_NOTE;
 
     parent_file = nautilus_file_get_parent (file);
     if (parent_file)
