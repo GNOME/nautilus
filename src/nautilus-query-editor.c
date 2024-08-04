@@ -113,14 +113,19 @@ find_enclosing_mount_cb (GObject      *source_object,
 {
     NautilusQueryEditor *editor;
     g_autoptr (GMount) mount = NULL;
+    g_autoptr (GError) error = NULL;
     g_autoptr (GVolume) volume = NULL;
-    g_autoptr (NautilusFile) file = NULL;
 
     editor = user_data;
 
-    file = nautilus_file_get (editor->location);
     mount = g_file_find_enclosing_mount_finish (G_FILE (source_object),
-                                                res, NULL);
+                                                res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        /* The operation was cancelled and the editor was already freed, bailout. */
+        return;
+    }
 
     g_autofree gchar *uri_scheme = g_file_get_uri_scheme (editor->location);
 
@@ -131,6 +136,8 @@ find_enclosing_mount_cb (GObject      *source_object,
 
     if (!nautilus_scheme_is_internal (uri_scheme))
     {
+        g_autoptr (NautilusFile) file =  nautilus_file_get (editor->location);
+
         /* Subfolders are disabled */
         if (location_settings_search_get_recursive_for_location (editor->location)
             == NAUTILUS_QUERY_RECURSIVE_NEVER)
