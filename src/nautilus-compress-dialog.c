@@ -184,6 +184,7 @@ extension_combo_row_setup_item_full (GtkSignalListItemFactory *factory,
 
     gtk_list_item_set_child (item, hbox);
 
+    /* Checkmark will be retrieved via last_child later */
     g_assert (gtk_widget_get_last_child (hbox) == checkmark);
 }
 
