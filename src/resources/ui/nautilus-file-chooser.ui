@@ -68,15 +68,8 @@
                                       <class name="toolbar"/>
                                     </style>
                                     <child>
-                                      <object class="GtkDropDown" id="filters_dropdown">
-                                        <property name="valign">center</property>
-                                        <property name="tooltip-text" translatable="yes">Visible Files Filter</property>
-                                        <property name="expression">
-                                          <lookup type="GtkFileFilter" name="name"/>
-                                        </property>
-                                        <style>
-                                          <class name="flat-dropdown"/>
-                                        </style>
+                                      <object class="AdwLayoutSlot">
+                                        <property name="id">filter-dropdown</property>
                                       </object>
                                     </child>
                                   </object>
@@ -280,6 +273,18 @@
                                 </property>
                               </object>
                             </property>
+                          </object>
+                        </child>
+                        <child type="filter-dropdown">
+                          <object class="GtkDropDown" id="filters_dropdown">
+                            <property name="valign">center</property>
+                            <property name="tooltip-text" translatable="yes">Visible Files Filter</property>
+                            <property name="expression">
+                              <lookup type="GtkFileFilter" name="name"/>
+                            </property>
+                            <style>
+                              <class name="flat-dropdown"/>
+                            </style>
                           </object>
                         </child>
                       </object>
