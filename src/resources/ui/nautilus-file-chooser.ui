@@ -141,6 +141,11 @@
                                             </child>
                                           </object>
                                         </child>
+                                        <child>
+                                          <object class="AdwLayoutSlot">
+                                            <property name="id">filter-dropdown</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                     <child type="center">
@@ -322,6 +327,8 @@
         <setter object="split_view" property="collapsed">true</setter>
         <setter object="toolbar" property="show-new-folder-button">false</setter>
         <setter object="bottom_toolbar" property="layout-name">narrow</setter>
+        <setter object="filters_dropdown" property="show-arrow">false</setter>
+        <setter object="filters_dropdown" property="factory">builder_list_item_image</setter>
       </object>
     </child>
     <child>
@@ -341,6 +348,19 @@
     <property name="new-name" bind-source="filename_entry" bind-property="text"/>
     <signal name="notify::has-feedback" handler="on_validator_has_feedback_changed" swapped="yes"/>
     <signal name="notify::will-overwrite" handler="on_validator_will_overwrite_changed" swapped="yes"/>
+  </object>
+  <object class="GtkBuilderListItemFactory" id="builder_list_item_image">
+    <property name="bytes"><![CDATA[
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkImage">
+        <property name="icon-name">funnel-outline-symbolic</property>
+      </object>
+    </property>
+  </template>
+</interface>
+    ]]></property>
   </object>
 </interface>
 
