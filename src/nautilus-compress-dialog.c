@@ -138,20 +138,18 @@ on_feedback_changed (NautilusCompressDialog *self)
     }
 }
 
-static gboolean
-make_opaque_iff_selected (GBinding     *binding,
-                          const GValue *from_value,
-                          GValue       *to_value,
-                          gpointer      user_data)
+static void
+on_combo_row_selected_changed (AdwComboRow *combo,
+                               GParamSpec  *spec,
+                               gpointer     user_data)
 {
     GtkListItem *listitem = GTK_LIST_ITEM (user_data);
-    NautilusCompressItem *selected_item = NAUTILUS_COMPRESS_ITEM (g_value_get_object (from_value));
-    gboolean is_selected = (selected_item != NULL &&
-                            selected_item == gtk_list_item_get_item (listitem));
-    gdouble opacity = (is_selected) ? 1.0 : 0.0;
+    guint selected = adw_combo_row_get_selected (combo);
+    GtkWidget *child = gtk_list_item_get_child (listitem);
+    GtkWidget *checkmark = gtk_widget_get_last_child (child);
+    gdouble opacity = (selected == gtk_list_item_get_position (listitem)) ? 1.0 : 0.0;
 
-    g_value_set_double (to_value, opacity);
-    return TRUE;
+    gtk_widget_set_opacity (checkmark, opacity);
 }
 
 static void
@@ -159,7 +157,6 @@ extension_combo_row_setup_item_full (GtkSignalListItemFactory *factory,
                                      GtkListItem              *item,
                                      gpointer                  user_data)
 {
-    NautilusCompressDialog *self = NAUTILUS_COMPRESS_DIALOG (user_data);
     GtkWidget *hbox, *vbox, *title, *subtitle, *checkmark;
 
     title = gtk_label_new ("");
@@ -172,11 +169,6 @@ extension_combo_row_setup_item_full (GtkSignalListItemFactory *factory,
     gtk_widget_add_css_class (subtitle, "caption");
 
     checkmark = gtk_image_new_from_icon_name ("object-select-symbolic");
-    g_object_bind_property_full (self->extension_combo_row, "selected-item",
-                                 checkmark, "opacity",
-                                 G_BINDING_SYNC_CREATE,
-                                 make_opaque_iff_selected, NULL,
-                                 item, NULL);
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 3);
@@ -191,6 +183,9 @@ extension_combo_row_setup_item_full (GtkSignalListItemFactory *factory,
     g_object_set_data (G_OBJECT (item), "subtitle", subtitle);
 
     gtk_list_item_set_child (item, hbox);
+
+    /* Checkmark will be retrieved via last_child later */
+    g_assert (gtk_widget_get_last_child (hbox) == checkmark);
 }
 
 static void
@@ -200,14 +195,29 @@ extension_combo_row_bind (GtkSignalListItemFactory *factory,
 {
     GtkWidget *title, *subtitle;
     NautilusCompressItem *item;
+    NautilusCompressDialog *self = user_data;
 
     item = gtk_list_item_get_item (list_item);
 
     title = g_object_get_data (G_OBJECT (list_item), "title");
     subtitle = g_object_get_data (G_OBJECT (list_item), "subtitle");
+    g_signal_connect (self->extension_combo_row, "notify::selected",
+                      G_CALLBACK (on_combo_row_selected_changed), list_item);
+    on_combo_row_selected_changed (self->extension_combo_row, NULL, list_item);
 
     gtk_label_set_label (GTK_LABEL (title), item->title);
     gtk_label_set_label (GTK_LABEL (subtitle), item->description);
+}
+
+static void
+extension_combo_row_unbind (GtkSignalListItemFactory *factory,
+                            GtkListItem              *list_item,
+                            gpointer                  user_data)
+{
+    NautilusCompressDialog *self = user_data;
+
+    g_signal_handlers_disconnect_by_func (self->extension_combo_row,
+                                          on_combo_row_selected_changed, list_item);
 }
 
 static gboolean
@@ -268,6 +278,8 @@ extension_combo_row_setup (NautilusCompressDialog *self)
                              G_CALLBACK (extension_combo_row_setup_item_full), self, 0);
     g_signal_connect_object (list_factory, "bind",
                              G_CALLBACK (extension_combo_row_bind), self, 0);
+    g_signal_connect_object (list_factory, "unbind",
+                             G_CALLBACK (extension_combo_row_unbind), self, 0);
 
     expression = gtk_cclosure_expression_new (G_TYPE_STRING, NULL, 0, 0,
                                               G_CALLBACK (nautilus_compress_item_dup_title),
