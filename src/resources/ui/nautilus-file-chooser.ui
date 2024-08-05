@@ -279,8 +279,27 @@
                           <object class="GtkDropDown" id="filters_dropdown">
                             <property name="valign">center</property>
                             <property name="tooltip-text" translatable="yes">Visible Files Filter</property>
-                            <property name="expression">
-                              <lookup type="GtkFileFilter" name="name"/>
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory">
+                                <property name="bytes"><![CDATA[
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkLabel">
+        <property name="xalign">0</property>
+        <property name="max-width-chars">12</property>
+        <property name="ellipsize">middle</property>
+        <binding name="label">
+          <lookup name="name" type="GtkFileFilter">
+            <lookup name="item">GtkListItem</lookup>
+          </lookup>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>
+                                ]]></property>
+                              </object>
                             </property>
                             <style>
                               <class name="flat-dropdown"/>

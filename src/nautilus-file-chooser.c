@@ -461,6 +461,67 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
 }
 
 static void
+update_dropdown_checkmark (GtkDropDown *dropdown,
+                           GParamSpec  *psepc,
+                           GtkListItem *list_item)
+{
+    guint selected = gtk_drop_down_get_selected (dropdown);
+    GtkWidget *cell = gtk_list_item_get_child (list_item);
+    GtkWidget *check_mark = gtk_widget_get_last_child (cell);
+    gdouble opacity = (selected == gtk_list_item_get_position (list_item)) ? 1 : 0;
+
+    gtk_widget_set_opacity (check_mark, opacity);
+}
+
+static void
+filters_dropdown_setup (GtkListItemFactory *factory,
+                        GtkListItem        *list_item,
+                        gpointer            user_data)
+{
+    GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget *label = gtk_label_new (NULL);
+    GtkWidget *icon;
+
+    gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+    gtk_box_append (GTK_BOX (box), label);
+    icon = g_object_new (GTK_TYPE_IMAGE,
+                         "icon-name", "object-select-symbolic",
+                         "accessible-role", GTK_ACCESSIBLE_ROLE_PRESENTATION,
+                         NULL);
+    gtk_box_append (GTK_BOX (box), icon);
+    gtk_list_item_set_child (list_item, box);
+
+    g_assert (gtk_widget_get_first_child (box) == label &&
+              gtk_widget_get_last_child (box) == icon);
+}
+
+static void
+filters_dropdown_bind (GtkListItemFactory *factory,
+                       GtkListItem        *list_item,
+                       gpointer            user_data)
+{
+    NautilusFileChooser *self = user_data;
+    GtkFileFilter *filter = gtk_list_item_get_item (list_item);
+    GtkWidget *cell = gtk_list_item_get_child (list_item);
+    GtkWidget *label = gtk_widget_get_first_child (cell);
+
+    gtk_label_set_label (GTK_LABEL (label), gtk_file_filter_get_name (filter));
+
+    g_signal_connect (self->filters_dropdown, "notify::selected", G_CALLBACK (update_dropdown_checkmark), list_item);
+    update_dropdown_checkmark (self->filters_dropdown, NULL, list_item);
+}
+
+static void
+filters_dropdown_unbind (GtkListItemFactory *factory,
+                         GtkListItem        *list_item,
+                         gpointer            user_data)
+{
+    NautilusFileChooser *self = user_data;
+
+    g_signal_handlers_disconnect_by_func (self->filters_dropdown, update_dropdown_checkmark, list_item);
+}
+
+static void
 nautilus_file_chooser_dispose (GObject *object)
 {
     NautilusFileChooser *self = (NautilusFileChooser *) object;
@@ -609,6 +670,14 @@ nautilus_file_chooser_init (NautilusFileChooser *self)
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
     g_signal_connect (controller, "pressed", G_CALLBACK (on_click_gesture_pressed), self);
+
+    /* The factory is set in the ui, but we need to set the popup (list) factory
+     * in code to make the checkmark appear correctly. */
+    GtkListItemFactory *factory = gtk_signal_list_item_factory_new ();
+    g_signal_connect (factory, "setup", G_CALLBACK (filters_dropdown_setup), self);
+    g_signal_connect (factory, "bind", G_CALLBACK (filters_dropdown_bind), self);
+    g_signal_connect (factory, "unbind", G_CALLBACK (filters_dropdown_unbind), self);
+    gtk_drop_down_set_list_factory (self->filters_dropdown, factory);
 }
 
 static void
