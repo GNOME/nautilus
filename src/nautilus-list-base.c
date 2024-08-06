@@ -407,20 +407,6 @@ on_view_longpress_pressed (GtkGestureLongPress *gesture,
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
     NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
-    graphene_point_t view_point = GRAPHENE_POINT_INIT (x, y);
-    graphene_point_t file_point = GRAPHENE_POINT_INIT (0, 0);
-
-    /* Ignore this long-press if we are hovering over an item */
-    for (guint i = 0; i < g_list_model_get_n_items (G_LIST_MODEL (priv->model)); i++)
-    {
-        g_autoptr (NautilusViewItem) item = get_view_item (G_LIST_MODEL (priv->model), i);
-        GtkWidget *file = nautilus_view_item_get_item_ui (item);
-        if (file && gtk_widget_compute_point (GTK_WIDGET (self), file, &view_point, &file_point) &&
-            gtk_widget_contains (file, file_point.x, file_point.y))
-        {
-            return;
-        }
-    }
 
     gtk_selection_model_unselect_all (GTK_SELECTION_MODEL (priv->model));
 
@@ -1384,7 +1370,6 @@ nautilus_list_base_setup_gestures (NautilusListBase *self)
 
     controller = GTK_EVENT_CONTROLLER (gtk_gesture_long_press_new ());
     gtk_widget_add_controller (GTK_WIDGET (self), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (controller), TRUE);
     g_signal_connect (controller, "pressed",
                       G_CALLBACK (on_view_longpress_pressed), self);
