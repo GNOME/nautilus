@@ -245,10 +245,10 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
         (void) g_variant_lookup (arg_options, "multiple", "b", &open_multiple);
         (void) g_variant_lookup (arg_options, "directory", "b", &open_directory);
 
-        mode = (open_directory ? (open_multiple ? NAUTILUS_MODE_OPEN_FOLDERS :
-                                                  NAUTILUS_MODE_OPEN_FOLDER) :
-                                                  (open_multiple ? NAUTILUS_MODE_OPEN_FILES :
-                                                                   NAUTILUS_MODE_OPEN_FILE));
+        mode = (open_directory ? (open_multiple ? NAUTILUS_MODE_OPEN_FOLDERS
+                                                : NAUTILUS_MODE_OPEN_FOLDER)
+                               : (open_multiple ? NAUTILUS_MODE_OPEN_FILES
+                                                : NAUTILUS_MODE_OPEN_FILE));
     }
     else if (strcmp (method_name, "SaveFile") == 0)
     {
