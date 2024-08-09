@@ -412,6 +412,11 @@ on_slot_selection_notify (NautilusFileChooser *self)
 static void
 on_location_changed (NautilusFileChooser *self)
 {
+    if (self->mode != NAUTILUS_MODE_SAVE_FILE)
+    {
+        return;
+    }
+
     g_autoptr (NautilusDirectory) directory = NULL;
     GFile *location = nautilus_window_slot_get_location (self->slot);
 
