@@ -197,6 +197,11 @@
                                             handler="open_filename_entry" object="NautilusFileChooser" swapped="yes"/>
                                     <property name="child">
                                       <object class="GtkCenterBox">
+                                      <child type="start">
+                                        <!-- Center the label and don't overlap the overlay -->
+                                        <object class="AdwBin" id="filename_button_start">
+                                        </object>
+                                      </child>
                                       <child type="center">
                                         <object class="GtkLabel" id="filename_label">
                                           <property name="label" bind-source="filename_entry" bind-property="text" bind-flags="sync-create"/>
@@ -204,7 +209,7 @@
                                         </object>
                                       </child>
                                       <child type="end">
-                                        <object class="GtkImage">
+                                        <object class="GtkImage" id="filename_button_end">
                                           <property name="margin-start">12</property>
                                           <property name="icon-name">document-edit-symbolic</property>
                                         </object>
@@ -362,6 +367,13 @@
   </template>
 </interface>
     ]]></property>
+  </object>
+  <object class="GtkSizeGroup">
+    <widgets>
+      <widget name="filename_button_start"/>
+      <widget name="filename_button_end"/>
+      <widget name="filename_undo_button"/>
+    </widgets>
   </object>
 </interface>
 
