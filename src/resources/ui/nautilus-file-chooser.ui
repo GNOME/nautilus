@@ -197,6 +197,13 @@
                                             handler="open_filename_entry" object="NautilusFileChooser" swapped="yes"/>
                                     <property name="child">
                                       <object class="GtkCenterBox">
+                                      <child type="start">
+                                        <object class="GtkImage">
+                                          <property name="icon-name">edit-undo-symbolic</property>
+                                          <property name="visible" bind-source="filename_undo_button" bind-property="visible" bind-flags="sync-create"/>
+                                          <property name="opacity">0</property>
+                                        </object>
+                                      </child>
                                       <child type="center">
                                         <object class="GtkLabel" id="filename_label">
                                           <property name="label" bind-source="filename_entry" bind-property="text" bind-flags="sync-create"/>
