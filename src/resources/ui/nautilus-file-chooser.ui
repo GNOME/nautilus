@@ -198,9 +198,7 @@
                                     <property name="child">
                                       <object class="GtkCenterBox">
                                       <child type="start">
-                                        <object class="GtkImage">
-                                          <property name="icon-name">edit-undo-symbolic</property>
-                                          <property name="visible" bind-source="filename_undo_button" bind-property="visible" bind-flags="sync-create"/>
+                                        <object class="AdwBin" id="filename_button_start">
                                           <property name="opacity">0</property>
                                         </object>
                                       </child>
@@ -211,7 +209,7 @@
                                         </object>
                                       </child>
                                       <child type="end">
-                                        <object class="GtkImage">
+                                        <object class="GtkImage" id="filename_button_end">
                                           <property name="margin-start">12</property>
                                           <property name="icon-name">document-edit-symbolic</property>
                                         </object>
@@ -369,6 +367,12 @@
   </template>
 </interface>
     ]]></property>
+  </object>
+  <object class="GtkSizeGroup">
+    <widgets>
+      <widget name="filename_button_start"/>
+      <widget name="filename_button_end"/>
+    </widgets>
   </object>
 </interface>
 
