@@ -1310,8 +1310,6 @@ static void
 nautilus_files_view_preview_update (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
-    GtkApplication *app;
-    GtkRoot *window;
     g_autolist (NautilusFile) selection = NULL;
 
     if (!priv->active ||
@@ -1320,9 +1318,7 @@ nautilus_files_view_preview_update (NautilusFilesView *view)
         return;
     }
 
-    app = GTK_APPLICATION (g_application_get_default ());
-    window = gtk_widget_get_root (GTK_WIDGET (view));
-    if (window == NULL || GTK_WINDOW (window) != gtk_application_get_active_window (app))
+    if (gtk_widget_get_root (GTK_WIDGET (view)) == NULL)
     {
         return;
     }
@@ -1335,7 +1331,7 @@ nautilus_files_view_preview_update (NautilusFilesView *view)
 
     g_autofree gchar *uri = nautilus_file_get_uri (selection->data);
 
-    nautilus_previewer_call_show_file (uri, window, FALSE);
+    nautilus_previewer_call_show_file (uri, priv->slot, FALSE);
 }
 
 void
@@ -1839,14 +1835,14 @@ action_preview_selection (GSimpleAction *action,
                           gpointer       user_data)
 {
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (user_data);
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
     g_autolist (NautilusFile) selection = NULL;
-    GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (view));
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
     g_autofree gchar *uri = nautilus_file_get_uri (selection->data);
 
-    nautilus_previewer_call_show_file (uri, window, TRUE);
+    nautilus_previewer_call_show_file (uri, priv->slot, TRUE);
 }
 
 static void
