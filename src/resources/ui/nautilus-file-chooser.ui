@@ -113,6 +113,10 @@
                                     <property name="id">filename-widget</property>
                                     <property name="visible"
                                               bind-source="filename_widget" bind-property="visible" bind-flags="sync-create"/>
+                                    <style>
+                                      <class name="toolbar"/>
+                                      <class name="no-bottom-padding"/>
+                                    </style>
                                   </object>
                                 </child>
                                 <child>
