@@ -59,9 +59,6 @@
                             <property name="name">wide</property>
                             <property name="content">
                               <object class="GtkCenterBox">
-                                <style>
-                                  <class name="toolbar"/>
-                                </style>
                                 <child type="start">
                                   <object class="GtkBox">
                                     <style>
@@ -157,8 +154,6 @@
                                     <child type="center">
                                       <object class="AdwLayoutSlot">
                                         <property name="id">accept-button</property>
-                                        <property name="margin-top">6</property>
-                                        <property name="margin-bottom">6</property>
                                       </object>
                                     </child>
                                     <child type="end">
@@ -234,6 +229,9 @@
                                     <property name="halign">start</property>
                                     <signal name="clicked"
                                             handler="on_filename_undo_button_clicked" object="NautilusFileChooser" swapped="yes"/>
+                                    <style>
+                                      <class name="flat"/>
+                                    </style>
                                   </object>
                                 </child>
                               </object>
@@ -259,6 +257,10 @@
                           <object class="GtkButton" id="accept_button">
                             <property name="label">_Select</property>
                             <property name="use-underline">true</property>
+                            <property name="margin-top">6</property>
+                            <property name="margin-bottom">6</property>
+                            <property name="margin-start">6</property>
+                            <property name="margin-end">6</property>
                             <binding name="sensitive">
                               <closure type="gboolean" function="nautilus_file_chooser_can_accept">
                                 <lookup type="NautilusWindowSlot" name="selection">
