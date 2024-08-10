@@ -229,14 +229,15 @@ on_adjustment_changed (GtkAdjustment   *adjustment,
                        NautilusPathBar *self)
 {
     /* Automatically scroll to the end, to reveal the current folder. */
-    g_autoptr (AdwAnimation) anim = NULL;
-    anim = adw_timed_animation_new (GTK_WIDGET (self),
-                                    gtk_adjustment_get_value (adjustment),
-                                    gtk_adjustment_get_upper (adjustment),
-                                    800,
-                                    adw_property_animation_target_new (G_OBJECT (adjustment), "value"));
-    adw_timed_animation_set_easing (ADW_TIMED_ANIMATION (anim), ADW_EASE_OUT_CUBIC);
-    adw_animation_play (anim);
+    GtkWidget *last = gtk_widget_get_last_child (self->buttons_box);
+    GtkViewport *viewport;
+
+    viewport = GTK_VIEWPORT (gtk_scrolled_window_get_child (GTK_SCROLLED_WINDOW (self->scrolled)));
+
+    if (last != NULL)
+    {
+        gtk_viewport_scroll_to (viewport, last, NULL);
+    }
 }
 
 static gboolean
