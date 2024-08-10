@@ -239,14 +239,6 @@ on_adjustment_changed (GtkAdjustment   *adjustment,
     adw_animation_play (anim);
 }
 
-static void
-on_page_size_changed (GtkAdjustment *adjustment)
-{
-    /* When window is resized, immediately set new value, otherwise we would get
-     * an underflow gradient for an moment. */
-    gtk_adjustment_set_value (adjustment, gtk_adjustment_get_upper (adjustment));
-}
-
 static gboolean
 bind_current_view_menu_model_to_popover (NautilusPathBar *self)
 {
@@ -275,7 +267,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     adjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (self->scrolled));
     g_signal_connect (adjustment, "changed", G_CALLBACK (on_adjustment_changed), self);
-    g_signal_connect (adjustment, "notify::page-size", G_CALLBACK (on_page_size_changed), self);
 
     self->buttons_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (self->scrolled), self->buttons_box);
