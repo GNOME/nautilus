@@ -176,7 +176,7 @@ nautilus_file_chooser_can_accept (NautilusFileChooser *self,
 {
     if (self->mode == NAUTILUS_MODE_SAVE_FILE)
     {
-        return (filename_passed ||
+        return (filename_passed &&
                 mode_can_accept_current_directory (self->mode, location));
     }
     else
