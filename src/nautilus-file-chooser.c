@@ -419,6 +419,12 @@ on_location_changed (NautilusFileChooser *self)
 
     g_autoptr (NautilusDirectory) directory = NULL;
     GFile *location = nautilus_window_slot_get_location (self->slot);
+    g_autofree char *scheme = g_file_get_uri_scheme (location);
+
+    if (nautilus_scheme_is_internal (scheme))
+    {
+        return;
+    }
 
     directory = nautilus_directory_get (location);
     nautilus_filename_validator_set_containing_directory (self->validator, directory);
