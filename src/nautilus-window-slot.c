@@ -422,6 +422,13 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
     /* Setting search query may cause the view to load a new location. */
     nautilus_view_set_search_query (view, query);
     nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
+
+    if (nautilus_query_is_global (query) &&
+        NAUTILUS_VIEW_NETWORK_ID == nautilus_view_get_view_id (self->content_view))
+    {
+        nautilus_files_view_change (NAUTILUS_FILES_VIEW (self->content_view),
+                                    self->view_mode_before_network);
+    }
 }
 
 static void
@@ -451,7 +458,17 @@ hide_query_editor (NautilusWindowSlot *self)
         nautilus_view_set_search_query (view, NULL);
 
         /* The view location has changed, update the slot location. */
-        nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
+        GFile *location = nautilus_view_get_location (view);
+        nautilus_window_slot_set_location (self, location);
+
+        if (nautilus_is_root_for_scheme (location, SCHEME_NETWORK_VIEW) &&
+            NAUTILUS_VIEW_NETWORK_ID != nautilus_view_get_view_id (self->content_view))
+        {
+            self->view_mode_before_network = nautilus_view_get_view_id (self->content_view);
+            nautilus_files_view_change (NAUTILUS_FILES_VIEW (self->content_view),
+                                        NAUTILUS_VIEW_NETWORK_ID);
+        }
+
         nautilus_view_set_selection (view, selection);
     }
 
@@ -1110,6 +1127,12 @@ action_search_global (GSimpleAction *action,
             {
                 nautilus_query_set_location (query, NULL);
                 nautilus_view_set_search_query (self->content_view, query);
+
+                if (NAUTILUS_VIEW_NETWORK_ID == nautilus_view_get_view_id (self->content_view))
+                {
+                    nautilus_files_view_change (NAUTILUS_FILES_VIEW (self->content_view),
+                                                self->view_mode_before_network);
+                }
             }
 
             nautilus_query_editor_set_location (self->query_editor, NULL);
