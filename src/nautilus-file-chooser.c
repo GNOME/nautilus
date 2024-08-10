@@ -602,6 +602,19 @@ nautilus_file_chooser_set_property (GObject      *object,
     }
 }
 
+static gboolean
+nautilus_file_chooser_grab_focus (GtkWidget *widget)
+{
+    NautilusFileChooser *self = NAUTILUS_FILE_CHOOSER (widget);
+
+    if (self->slot != NULL)
+    {
+        return gtk_widget_grab_focus (GTK_WIDGET (self->slot));
+    }
+
+    return GTK_WIDGET_CLASS (nautilus_file_chooser_parent_class)->grab_focus (widget);
+}
+
 static void
 nautilus_file_chooser_constructed (GObject *object)
 {
@@ -696,6 +709,8 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     object_class->finalize = nautilus_file_chooser_finalize;
     object_class->get_property = nautilus_file_chooser_get_property;
     object_class->set_property = nautilus_file_chooser_set_property;
+
+    widget_class->grab_focus = nautilus_file_chooser_grab_focus;
 
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-file-chooser.ui");
