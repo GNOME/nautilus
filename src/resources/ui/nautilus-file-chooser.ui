@@ -70,6 +70,8 @@
                                     <child>
                                       <object class="AdwLayoutSlot">
                                         <property name="id">filter-dropdown</property>
+                                        <property name="visible"
+                                                  bind-source="filters_dropdown" bind-property="visible" bind-flags="sync-create"/>
                                       </object>
                                     </child>
                                   </object>
@@ -88,6 +90,8 @@
                                       <object class="AdwLayoutSlot">
                                         <property name="id">choices-menu-button</property>
                                         <property name="valign">center</property>
+                                        <property name="visible"
+                                                  bind-source="choices_menu_button" bind-property="visible" bind-flags="sync-create"/>
                                       </object>
                                     </child>
                                     <child>
@@ -144,6 +148,8 @@
                                         <child>
                                           <object class="AdwLayoutSlot">
                                             <property name="id">filter-dropdown</property>
+                                            <property name="visible"
+                                                      bind-source="filters_dropdown" bind-property="visible" bind-flags="sync-create"/>
                                           </object>
                                         </child>
                                       </object>
@@ -172,6 +178,8 @@
                                         <child>
                                           <object class="AdwLayoutSlot">
                                             <property name="id">choices-menu-button</property>
+                                            <property name="visible"
+                                                      bind-source="choices_menu_button" bind-property="visible" bind-flags="sync-create"/>
                                           </object>
                                         </child>
                                       </object>
