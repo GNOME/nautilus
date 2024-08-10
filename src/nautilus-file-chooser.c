@@ -39,7 +39,7 @@ struct _NautilusFileChooser
     GtkWidget *split_view;
     GtkWidget *places_sidebar;
     NautilusToolbar *toolbar;
-    AdwToolbarView *slot_container;
+    AdwBin *slot_container;
     NautilusWindowSlot *slot;
     GtkDropDown *filters_dropdown;
     GtkWidget *choices_menu_button;
@@ -533,12 +533,12 @@ nautilus_file_chooser_dispose (GObject *object)
 
     if (self->slot != NULL)
     {
-        g_assert (adw_toolbar_view_get_content (self->slot_container) == GTK_WIDGET (self->slot));
+        g_assert (adw_bin_get_child (self->slot_container) == GTK_WIDGET (self->slot));
 
         nautilus_window_slot_set_active (self->slot, FALSE);
         /* Let bindings on AdwToolbarView:content react to the slot being unset
          * while the slot itself is still alive. */
-        adw_toolbar_view_set_content (self->slot_container, NULL);
+        adw_bin_set_child (self->slot_container, NULL);
         g_clear_object (&self->slot);
     }
 
@@ -613,7 +613,7 @@ nautilus_file_chooser_constructed (GObject *object)
      * We hold a reference to control its lifetime with relation to bindings. */
     self->slot = g_object_ref (nautilus_window_slot_new (self->mode));
     g_signal_connect_swapped (self->slot, "notify::location", G_CALLBACK (on_location_changed), self);
-    adw_toolbar_view_set_content (self->slot_container, GTK_WIDGET (self->slot));
+    adw_bin_set_child (self->slot_container, GTK_WIDGET (self->slot));
     nautilus_window_slot_set_active (self->slot, TRUE);
     g_signal_connect_swapped (self->slot, "notify::allow-stop",
                               G_CALLBACK (update_cursor), self);

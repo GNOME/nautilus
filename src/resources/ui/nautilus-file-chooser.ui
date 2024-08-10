@@ -36,22 +36,25 @@
                       <object class="NautilusGtkPlacesSidebar" id="places_sidebar">
                         <property name="vexpand">true</property>
                         <property name="window-slot"
-                                  bind-source="slot_container" bind-property="content" bind-flags="sync-create"/>
+                                  bind-source="slot_container" bind-property="child" bind-flags="sync-create"/>
                       </object>
                     </property>
                   </object>
                 </property>
                 <property name="content">
-                  <object class="AdwToolbarView" id="slot_container">
+                  <object class="AdwToolbarView">
                     <child type="top">
                       <object class="NautilusToolbar" id="toolbar">
                         <property name="show-toolbar-children">true</property>
                         <property name="window-slot"
-                                  bind-source="slot_container" bind-property="content" bind-flags="sync-create"/>
+                                  bind-source="slot_container" bind-property="child" bind-flags="sync-create"/>
                         <property name="show-new-folder-button"
                                   bind-source="new_folder_button" bind-property="visible" bind-flags="sync-create"/>
                       </object>
                     </child>
+                    <property name="content">
+                      <object class="AdwBin" id="slot_container"/>
+                    </property>
                     <child type="bottom">
                       <object class="AdwMultiLayoutView" id="bottom_toolbar">
                         <child>
@@ -268,10 +271,10 @@
                             <binding name="sensitive">
                               <closure type="gboolean" function="nautilus_file_chooser_can_accept">
                                 <lookup type="NautilusWindowSlot" name="selection">
-                                  <lookup name="content">slot_container</lookup>
+                                  <lookup name="child">slot_container</lookup>
                                 </lookup>
                                 <lookup type="NautilusWindowSlot" name="location">
-                                  <lookup name="content">slot_container</lookup>
+                                  <lookup name="child">slot_container</lookup>
                                 </lookup>
                                 <lookup name="passed">validator</lookup>
                               </closure>
