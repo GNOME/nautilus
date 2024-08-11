@@ -2776,7 +2776,7 @@ nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self)
 }
 
 static void
-nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
+insert_and_bind_new_content_view (NautilusWindowSlot *self)
 {
     GtkWidget *widget;
     gboolean reusing_view;
@@ -2786,61 +2786,43 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
      * are the same, or the new_content_view is invalid */
     if (self->new_content_view == NULL || reusing_view)
     {
-        goto done;
-    }
-
-    if (self->content_view != NULL)
-    {
-        g_binding_unbind (self->searching_binding);
-        g_binding_unbind (self->selection_binding);
-        g_binding_unbind (self->extensions_background_menu_binding);
-        g_binding_unbind (self->templates_menu_binding);
-        widget = GTK_WIDGET (self->content_view);
-        gtk_box_remove (GTK_BOX (self->vbox), widget);
-        g_clear_object (&self->content_view);
-    }
-
-    if (self->new_content_view != NULL)
-    {
-        self->content_view = self->new_content_view;
         self->new_content_view = NULL;
-
-        widget = GTK_WIDGET (self->content_view);
-        gtk_box_append (GTK_BOX (self->vbox), widget);
-        gtk_widget_set_vexpand (widget, TRUE);
-
-        /* Note that this is not bidirectional and that we may also change
-         * :search-visible alone, e.g. when clicking the search button. */
-        self->searching_binding = g_object_bind_property (self->content_view, "searching",
-                                                          self, "search-visible",
-                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        self->selection_binding = g_object_bind_property (self->content_view, "selection",
-                                                          self, "selection",
-                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        self->extensions_background_menu_binding = g_object_bind_property (self->content_view, "extensions-background-menu",
-                                                                           self, "extensions-background-menu",
-                                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        self->templates_menu_binding = g_object_bind_property (self->content_view, "templates-menu",
-                                                               self, "templates-menu",
-                                                               G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
+        return;
     }
 
-done:
-    /* Clean up, so we don't confuse having a new_content_view available or
-     * just that we didn't care about it here */
+    self->content_view = self->new_content_view;
     self->new_content_view = NULL;
+
+    widget = GTK_WIDGET (self->content_view);
+    gtk_box_append (GTK_BOX (self->vbox), widget);
+    gtk_widget_set_vexpand (widget, TRUE);
+
+    /* Note that this is not bidirectional and that we may also change
+     * :search-visible alone, e.g. when clicking the search button. */
+    self->searching_binding = g_object_bind_property (self->content_view, "searching",
+                                                      self, "search-visible",
+                                                      G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+    self->selection_binding = g_object_bind_property (self->content_view, "selection",
+                                                      self, "selection",
+                                                      G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+    self->extensions_background_menu_binding = g_object_bind_property (self->content_view, "extensions-background-menu",
+                                                                       self, "extensions-background-menu",
+                                                                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+    self->templates_menu_binding = g_object_bind_property (self->content_view, "templates-menu",
+                                                           self, "templates-menu",
+                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
 }
 
 /* This is called when we have decided we can actually change to the new view/location situation. */
 static void
 change_view (NautilusWindowSlot *self)
 {
-    nautilus_window_slot_switch_new_content_view (self);
+    insert_and_bind_new_content_view (self);
 
     if (self->pending_location != NULL)
     {
