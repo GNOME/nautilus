@@ -251,6 +251,25 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     return data;
 }
 
+static void
+nautilus_window_slot_set_view_id (NautilusWindowSlot *self,
+                                  guint               view_id)
+{
+    NautilusView *view = nautilus_window_slot_get_current_view (self);
+
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+
+    if (nautilus_view_get_view_id (self->content_view) == view_id)
+    {
+        return;
+    }
+
+    nautilus_files_view_change (NAUTILUS_FILES_VIEW (view), view_id);
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
+}
+
 static NautilusView *
 nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
                                             GFile              *location)
@@ -1134,17 +1153,7 @@ static void
 change_files_view_mode (NautilusWindowSlot *self,
                         guint               view_id)
 {
-    if (!nautilus_window_slot_content_view_matches (self, view_id))
-    {
-        NautilusView *view = nautilus_window_slot_get_current_view (self);
-
-        g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-        nautilus_files_view_change (NAUTILUS_FILES_VIEW (view), view_id);
-
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
-    }
-
+    nautilus_window_slot_set_view_id (self, view_id);
     g_settings_set_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, view_id);
 }
 
