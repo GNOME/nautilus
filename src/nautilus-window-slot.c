@@ -267,12 +267,11 @@ nautilus_window_slot_set_view_id (NautilusWindowSlot *self,
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
 }
 
-static NautilusView *
-nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
-                                            GFile              *location)
+static guint
+nautilus_window_slot_get_view_id_for_location (NautilusWindowSlot *self,
+                                               GFile              *location)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get (location);
-    NautilusView *view = NULL;
     guint view_id = NAUTILUS_VIEW_INVALID_ID;
 
     if (self->content_view != NULL)
@@ -305,21 +304,7 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
         view_id = NAUTILUS_VIEW_LIST_ID;
     }
 
-    /* Try to reuse the current view */
-    if (self->content_view != NULL)
-    {
-        g_assert (NAUTILUS_IS_FILES_VIEW (self->content_view));
-
-        view = self->content_view;
-
-        nautilus_window_slot_set_view_id (self, view_id);
-    }
-    else
-    {
-        view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
-    }
-
-    return view;
+    return view_id;
 }
 
 static void
@@ -1431,8 +1416,7 @@ static void free_location_change (NautilusWindowSlot *self);
 static void end_location_change (NautilusWindowSlot *self);
 static void got_file_info_for_view_selection_callback (NautilusFile *file,
                                                        gpointer      callback_data);
-static void setup_view (NautilusWindowSlot *self,
-                        NautilusView       *view);
+static void setup_view (NautilusWindowSlot *self);
 
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
@@ -2050,7 +2034,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 {
     GError *error = NULL;
     NautilusWindowSlot *self;
-    NautilusView *view;
     GFile *location;
 
     self = callback_data;
@@ -2081,8 +2064,18 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
     if (error == NULL)
     {
-        view = nautilus_window_slot_get_view_for_location (self, location);
-        setup_view (self, view);
+        guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
+
+        if (self->content_view != NULL)
+        {
+            nautilus_window_slot_set_view_id (self, view_id);
+        }
+        else
+        {
+            self->content_view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
+        }
+
+        setup_view (self);
     }
     else
     {
@@ -2150,13 +2143,8 @@ done:
  * pending_location/selection will be used.
  */
 static void
-setup_view (NautilusWindowSlot *self,
-            NautilusView       *view)
+setup_view (NautilusWindowSlot *self)
 {
-    g_assert (view != NULL);
-
-    self->content_view = view;
-
     if (self->pending_location != NULL)
     {
         /* Load the pending location and selection */
@@ -2176,7 +2164,7 @@ setup_view (NautilusWindowSlot *self,
             app_id = g_app_info_get_id (app_info);
             if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
             {
-                nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (view),
+                nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (self->content_view),
                                                    self->pending_file_to_activate, 0);
             }
         }
