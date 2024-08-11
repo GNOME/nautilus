@@ -1423,8 +1423,8 @@ static void free_location_change (NautilusWindowSlot *self);
 static void end_location_change (NautilusWindowSlot *self);
 static void got_file_info_for_view_selection_callback (NautilusFile *file,
                                                        gpointer      callback_data);
-static gboolean setup_view (NautilusWindowSlot *self,
-                            NautilusView       *view);
+static void setup_view (NautilusWindowSlot *self,
+                        NautilusView       *view);
 
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
@@ -2133,29 +2133,21 @@ done:
 }
 
 /* Load a view into the window, either reusing the old one or creating
- * a new one. This happens when you want to load a new location, or just
- * switch to a different view.
+ * a new one. This happens when you want to load a new location.
  * If pending_location is set we're loading a new location and
- * pending_location/selection will be used. If not, we're just switching
- * view, and the current location will be used.
+ * pending_location/selection will be used.
  */
-static gboolean
+static void
 setup_view (NautilusWindowSlot *self,
             NautilusView       *view)
 {
     g_assert (view != NULL);
-
-    gboolean ret = TRUE;
-    GFile *old_location;
 
     nautilus_window_slot_disconnect_content_view (self);
 
     self->new_content_view = view;
 
     nautilus_window_slot_connect_new_content_view (self);
-
-    /* Forward search selection and state before loading the new model */
-    old_location = self->content_view ? nautilus_view_get_location (self->content_view) : NULL;
 
     if (self->pending_location != NULL)
     {
@@ -2181,24 +2173,13 @@ setup_view (NautilusWindowSlot *self,
             }
         }
     }
-    else if (old_location != NULL)
-    {
-        /* Reuse current location and selection */
-        g_autolist (NautilusFile) selection = nautilus_view_get_selection (self->content_view);
-
-        nautilus_view_set_location (self->new_content_view, old_location);
-        nautilus_view_set_selection (self->new_content_view, selection);
-    }
     else
     {
-        ret = FALSE;
-        goto out;
+        g_assert_not_reached ();
+        return;
     }
 
     change_view (self);
-
-out:
-    return ret;
 }
 
 static void
