@@ -168,8 +168,11 @@ static const GtkPadActionEntry pad_actions[] =
 };
 
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
-static void change_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self);
+static void create_and_bind_new_content_view (NautilusWindowSlot *self,
+                                              guint               view_id);
+static void nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self);
+static void apply_pending_location_and_selection_on_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
@@ -1399,7 +1402,6 @@ static void free_location_change (NautilusWindowSlot *self);
 static void end_location_change (NautilusWindowSlot *self);
 static void got_file_info_for_view_selection_callback (NautilusFile *file,
                                                        gpointer      callback_data);
-static void setup_view (NautilusWindowSlot *self);
 
 void
 nautilus_window_slot_open_location_full (NautilusWindowSlot *self,
@@ -2055,10 +2057,12 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
         }
         else
         {
-            self->content_view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
+            create_and_bind_new_content_view (self, view_id);
         }
 
-        setup_view (self);
+        g_assert (self->pending_location != NULL);
+        apply_pending_location_and_selection_on_view (self);
+        nautilus_window_slot_update_for_new_location (self);
     }
     else
     {
@@ -2114,45 +2118,29 @@ done:
     nautilus_file_unref (file);
 }
 
-/* Load a view into the window, either reusing the old one or creating
- * a new one. This happens when you want to load a new location.
- * If pending_location is set we're loading a new location and
- * pending_location/selection will be used.
- */
 static void
-setup_view (NautilusWindowSlot *self)
+apply_pending_location_and_selection_on_view (NautilusWindowSlot *self)
 {
-    if (self->pending_location != NULL)
+    nautilus_view_set_location (self->content_view, self->pending_location);
+    nautilus_view_set_selection (self->content_view, self->pending_selection);
+
+    nautilus_file_list_free (self->pending_selection);
+    self->pending_selection = NULL;
+
+    if (self->pending_file_to_activate != NULL &&
+        NAUTILUS_IS_FILES_VIEW (self->content_view))
     {
-        /* Load the pending location and selection */
-        nautilus_view_set_location (self->content_view, self->pending_location);
-        nautilus_view_set_selection (self->content_view, self->pending_selection);
+        g_autoptr (GAppInfo) app_info = NULL;
+        const gchar *app_id;
 
-        nautilus_file_list_free (self->pending_selection);
-        self->pending_selection = NULL;
-
-        if (self->pending_file_to_activate != NULL &&
-            NAUTILUS_IS_FILES_VIEW (self->content_view))
+        app_info = nautilus_mime_get_default_application_for_file (self->pending_file_to_activate);
+        app_id = g_app_info_get_id (app_info);
+        if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
         {
-            g_autoptr (GAppInfo) app_info = NULL;
-            const gchar *app_id;
-
-            app_info = nautilus_mime_get_default_application_for_file (self->pending_file_to_activate);
-            app_id = g_app_info_get_id (app_info);
-            if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
-            {
-                nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (self->content_view),
-                                                   self->pending_file_to_activate, 0);
-            }
+            nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (self->content_view),
+                                               self->pending_file_to_activate, 0);
         }
     }
-    else
-    {
-        g_assert_not_reached ();
-        return;
-    }
-
-    change_view (self);
 }
 
 static void
@@ -2708,19 +2696,12 @@ nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self)
 }
 
 static void
-insert_and_bind_new_content_view (NautilusWindowSlot *self)
+create_and_bind_new_content_view (NautilusWindowSlot *self,
+                                  guint               view_id)
 {
-    GtkWidget *widget;
-    gboolean reusing_view;
-    reusing_view = self->content_view &&
-                   gtk_widget_get_parent (GTK_WIDGET (self->content_view)) != NULL;
-    /* We are either reusing the view, or the content_view is invalid */
-    if (self->content_view == NULL || reusing_view)
-    {
-        return;
-    }
+    self->content_view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
 
-    widget = GTK_WIDGET (self->content_view);
+    GtkWidget *widget = GTK_WIDGET (self->content_view);
     gtk_box_append (GTK_BOX (self->vbox), widget);
     gtk_widget_set_vexpand (widget, TRUE);
 
@@ -2747,19 +2728,6 @@ insert_and_bind_new_content_view (NautilusWindowSlot *self)
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
-}
-
-/* This is called when we have decided we can actually change to the new view/location situation. */
-static void
-change_view (NautilusWindowSlot *self)
-{
-    insert_and_bind_new_content_view (self);
-
-    if (self->pending_location != NULL)
-    {
-        /* Tell the window we are finished. */
-        nautilus_window_slot_update_for_new_location (self);
-    }
 }
 
 static void
