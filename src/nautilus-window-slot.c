@@ -172,8 +172,6 @@ static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
 static void change_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self);
-static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
-                                                           guint               id);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
@@ -267,6 +265,7 @@ nautilus_window_slot_set_view_id (NautilusWindowSlot *self,
     nautilus_files_view_change (NAUTILUS_FILES_VIEW (view), view_id);
 
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON_NAME]);
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
     g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
 }
 
@@ -309,9 +308,13 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
     }
 
     /* Try to reuse the current view */
-    if (nautilus_window_slot_content_view_matches (self, view_id))
+    if (self->content_view != NULL)
     {
+        g_assert (NAUTILUS_IS_FILES_VIEW (self->content_view));
+
         view = self->content_view;
+
+        nautilus_window_slot_set_view_id (self, view_id);
     }
     else
     {
@@ -319,25 +322,6 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
     }
 
     return view;
-}
-
-static gboolean
-nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
-                                           guint               id)
-{
-    if (self->content_view == NULL)
-    {
-        return FALSE;
-    }
-
-    if (id != NAUTILUS_VIEW_INVALID_ID)
-    {
-        return nautilus_view_get_view_id (self->content_view) == id;
-    }
-    else
-    {
-        return FALSE;
-    }
 }
 
 static void
