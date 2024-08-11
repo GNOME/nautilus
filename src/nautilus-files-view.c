@@ -7631,7 +7631,7 @@ real_update_actions_state (NautilusFilesView *view)
         can_trash_all (selection) &&
         selection != NULL &&
         !selection_contains_home_dir;
-    can_copy_files = selection != NULL;
+    can_copy_files = selection != NULL && !is_network_view;
     can_move_files = can_delete_files && !selection_contains_recent &&
                      !selection_contains_starred;
     can_paste_files_into = (list_len_is_one (selection) &&
@@ -9795,6 +9795,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_o, GDK_CONTROL_MASK | GDK_ALT_MASK, "view.open-item-location", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_c, GDK_CONTROL_MASK, "view.copy", NULL);
     gtk_widget_class_add_binding_action (widget_class, GDK_KEY_x, GDK_CONTROL_MASK, "view.cut", NULL);
+    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_c, GDK_CONTROL_MASK, "view.copy-network-address", NULL);
 }
 
 static void
