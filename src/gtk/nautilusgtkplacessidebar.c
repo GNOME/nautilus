@@ -1119,8 +1119,15 @@ hover_timer (gpointer user_data)
       sidebar->hover_row != NULL &&
       gtk_widget_get_sensitive (GTK_WIDGET (sidebar->hover_row)))
     {
+      const gchar* drag_open_exlusion_list[] =
+      {
+        SCHEME_TRASH ":///",
+        SCHEME_STARRED ":///",
+        NULL,
+      };
+
       g_object_get (sidebar->hover_row, "uri", &uri, NULL);
-      if (uri != NULL && g_strcmp0 (uri, SCHEME_TRASH ":///") != 0)
+      if (uri != NULL && !g_strv_contains (drag_open_exlusion_list, uri))
         {
           location = g_file_new_for_uri (uri);
           call_open_location (sidebar, location, NULL, 0);
