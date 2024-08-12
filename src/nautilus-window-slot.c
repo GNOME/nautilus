@@ -170,6 +170,7 @@ static const GtkPadActionEntry pad_actions[] =
 
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
 static void change_view (NautilusWindowSlot *self);
+static void nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
@@ -2662,6 +2663,7 @@ nautilus_window_slot_update_for_new_location (NautilusWindowSlot *self)
     nautilus_window_slot_sync_actions (self);
 
     nautilus_location_banner_load (self->banner, new_location);
+    nautilus_window_slot_update_extra_location_widgets (self);
 }
 
 static void
@@ -2716,10 +2718,13 @@ view_is_loading_changed_cb (GObject            *object,
 }
 
 static void
-nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
+nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self)
 {
     GFile *location = nautilus_window_slot_get_current_location (self);
     FindMountData *data;
+
+    /* Remove existing, if any, which were meant for the previous location. */
+    nautilus_window_slot_remove_extra_location_widgets (self);
 
     if (location == NULL)
     {
@@ -2835,12 +2840,6 @@ done:
 static void
 change_view (NautilusWindowSlot *self)
 {
-    /* Switch to the new content view.
-     * Destroy the extra location widgets first, since they might hold
-     * a pointer to the old view, which will possibly be destroyed inside
-     * nautilus_window_slot_switch_new_content_view().
-     */
-    nautilus_window_slot_remove_extra_location_widgets (self);
     nautilus_window_slot_switch_new_content_view (self);
 
     if (self->pending_location != NULL)
@@ -2848,11 +2847,6 @@ change_view (NautilusWindowSlot *self)
         /* Tell the window we are finished. */
         nautilus_window_slot_update_for_new_location (self);
     }
-
-    /* Now that we finished switching to the new location,
-     * add back the extra location widgets.
-     */
-    nautilus_window_slot_setup_extra_location_widgets (self);
 }
 
 static void
