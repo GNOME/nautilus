@@ -131,6 +131,83 @@ nautilus_g_menu_model_find_by_string (GMenuModel  *model,
     return item_index;
 }
 
+typedef struct
+{
+    NautilusMode mode;
+    const char *name;
+} ModeAndName;
+
+static ModeAndName mode_map[] =
+{
+    { NAUTILUS_MODE_BROWSE, "browse" },
+    { NAUTILUS_MODE_OPEN_FILE, "open-file" },
+    { NAUTILUS_MODE_OPEN_FILES, "open-files" },
+    { NAUTILUS_MODE_OPEN_FOLDER, "open-folder" },
+    { NAUTILUS_MODE_OPEN_FOLDERS, "open-folders" },
+    { NAUTILUS_MODE_SAVE_FILE, "save-file" },
+    { NAUTILUS_MODE_SAVE_FILES, "save-files" },
+    { 0, NULL }
+};
+
+static const char *
+get_name_for_mode (NautilusMode mode)
+{
+    for (guint i = 0; mode_map[i].name != NULL; i++)
+    {
+        if (mode_map[i].mode == mode)
+        {
+            return mode_map[i].name;
+        }
+    }
+
+    g_return_val_if_reached (NULL);
+}
+
+static void
+filter_menu_model (GMenuModel *model,
+                   const char *filter_key,
+                   const char *filter_value)
+{
+    for (gint i = g_menu_model_get_n_items (model) - 1; i >= 0; i--)
+    {
+        g_autoptr (GMenuModel) section = NULL;
+        g_autofree char *value = NULL;
+
+        if (g_menu_model_get_item_attribute (model, i, filter_key, "s", &value))
+        {
+            g_auto (GStrv) tokens = g_strsplit (value, ",", 0);
+
+            if (!g_strv_contains ((const gchar * const *) tokens, filter_value))
+            {
+                g_menu_remove (G_MENU (model), i);
+                continue;
+            }
+        }
+
+        section = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION);
+
+        if (section != NULL)
+        {
+            filter_menu_model (section, filter_key, filter_value);
+        }
+    }
+}
+
+void
+nautilus_g_menu_model_set_for_mode (GMenuModel   *model,
+                                    NautilusMode  mode)
+{
+    const char *mode_name = get_name_for_mode (mode);
+    filter_menu_model (model, "show-in-mode", mode_name);
+}
+
+void
+nautilus_g_menu_model_set_for_view (GMenuModel *model,
+                                    const char *view_name)
+{
+    filter_menu_model (model, "show-in-view", view_name);
+}
+
 /**
  * nautilus_g_menu_replace_string_in_item:
  * @menu: the #GMenu to modify

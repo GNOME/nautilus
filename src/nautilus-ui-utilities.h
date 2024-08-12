@@ -25,6 +25,8 @@
 #include <adwaita.h>
 #include <gtk/gtk.h>
 
+#include "nautilus-enums.h"
+
 
 /**
  * nautilus_capitalize_str:
@@ -40,6 +42,13 @@ void        nautilus_gmenu_set_from_model           (GMenu             *target_m
 gint        nautilus_g_menu_model_find_by_string    (GMenuModel        *model,
                                                      const gchar       *attribute,
                                                      const gchar       *string);
+
+void        nautilus_g_menu_model_set_for_mode      (GMenuModel        *model,
+                                                     NautilusMode       mode);
+
+void        nautilus_g_menu_model_set_for_view      (GMenuModel        *model,
+                                                     const char        *view_name);
+
 void        nautilus_g_menu_replace_string_in_item  (GMenu             *menu,
                                                      gint               i,
                                                      const gchar       *attribute,
