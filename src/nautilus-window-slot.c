@@ -171,8 +171,6 @@ static const GtkPadActionEntry pad_actions[] =
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
 static void change_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self);
-static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self);
-static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
@@ -1570,8 +1568,6 @@ begin_location_change (NautilusWindowSlot         *self,
               || type == NAUTILUS_LOCATION_CHANGE_FORWARD
               || distance == 0);
 
-    /* Avoid to update status from the current view in our async calls */
-    nautilus_window_slot_disconnect_content_view (self);
     /* We are going to change the location, so make sure we stop any loading
      * or searching of the previous view, so we avoid to be slow */
     nautilus_window_slot_stop_loading (self);
@@ -2137,11 +2133,7 @@ setup_view (NautilusWindowSlot *self,
 {
     g_assert (view != NULL);
 
-    nautilus_window_slot_disconnect_content_view (self);
-
     self->new_content_view = view;
-
-    nautilus_window_slot_connect_new_content_view (self);
 
     if (self->pending_location != NULL)
     {
@@ -2729,30 +2721,6 @@ nautilus_window_slot_update_extra_location_widgets (NautilusWindowSlot *self)
 }
 
 static void
-nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self)
-{
-    if (self->new_content_view)
-    {
-        g_signal_connect (self->new_content_view,
-                          "notify::loading",
-                          G_CALLBACK (view_is_loading_changed_cb),
-                          self);
-    }
-}
-
-static void
-nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self)
-{
-    if (self->content_view)
-    {
-        /* disconnect old view */
-        g_signal_handlers_disconnect_by_func (self->content_view,
-                                              G_CALLBACK (view_is_loading_changed_cb),
-                                              self);
-    }
-}
-
-static void
 insert_and_bind_new_content_view (NautilusWindowSlot *self)
 {
     GtkWidget *widget;
@@ -2773,6 +2741,10 @@ insert_and_bind_new_content_view (NautilusWindowSlot *self)
     widget = GTK_WIDGET (self->content_view);
     gtk_box_append (GTK_BOX (self->vbox), widget);
     gtk_widget_set_vexpand (widget, TRUE);
+
+    g_signal_connect_object (self->content_view, "notify::loading",
+                             G_CALLBACK (view_is_loading_changed_cb), self,
+                             G_CONNECT_DEFAULT);
 
     /* Note that this is not bidirectional and that we may also change
      * :search-visible alone, e.g. when clicking the search button. */
