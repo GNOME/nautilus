@@ -107,7 +107,6 @@ struct _NautilusWindowSlot
 
     /* Viewed file */
     NautilusView *content_view;
-    NautilusView *new_content_view;
     NautilusFile *viewed_file;
     gboolean viewed_file_seen;
     gboolean viewed_file_in_trash;
@@ -357,7 +356,7 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
         return;
     }
 
-    if (self->content_view == NULL || self->new_content_view != NULL)
+    if (self->content_view == NULL)
     {
         return;
     }
@@ -2156,19 +2155,19 @@ setup_view (NautilusWindowSlot *self,
 {
     g_assert (view != NULL);
 
-    self->new_content_view = view;
+    self->content_view = view;
 
     if (self->pending_location != NULL)
     {
         /* Load the pending location and selection */
-        nautilus_view_set_location (self->new_content_view, self->pending_location);
-        nautilus_view_set_selection (self->new_content_view, self->pending_selection);
+        nautilus_view_set_location (self->content_view, self->pending_location);
+        nautilus_view_set_selection (self->content_view, self->pending_selection);
 
         nautilus_file_list_free (self->pending_selection);
         self->pending_selection = NULL;
 
         if (self->pending_file_to_activate != NULL &&
-            NAUTILUS_IS_FILES_VIEW (self->new_content_view))
+            NAUTILUS_IS_FILES_VIEW (self->content_view))
         {
             g_autoptr (GAppInfo) app_info = NULL;
             const gchar *app_id;
@@ -2748,18 +2747,13 @@ insert_and_bind_new_content_view (NautilusWindowSlot *self)
 {
     GtkWidget *widget;
     gboolean reusing_view;
-    reusing_view = self->new_content_view &&
-                   gtk_widget_get_parent (GTK_WIDGET (self->new_content_view)) != NULL;
-    /* We are either reusing the view, so new_content_view and content_view
-     * are the same, or the new_content_view is invalid */
-    if (self->new_content_view == NULL || reusing_view)
+    reusing_view = self->content_view &&
+                   gtk_widget_get_parent (GTK_WIDGET (self->content_view)) != NULL;
+    /* We are either reusing the view, or the content_view is invalid */
+    if (self->content_view == NULL || reusing_view)
     {
-        self->new_content_view = NULL;
         return;
     }
-
-    self->content_view = self->new_content_view;
-    self->new_content_view = NULL;
 
     widget = GTK_WIDGET (self->content_view);
     gtk_box_append (GTK_BOX (self->vbox), widget);
@@ -2831,12 +2825,6 @@ nautilus_window_slot_dispose (GObject *object)
         g_clear_object (&self->content_view);
     }
 
-    if (self->new_content_view)
-    {
-        gtk_box_remove (GTK_BOX (self->vbox), GTK_WIDGET (self->new_content_view));
-        g_clear_object (&self->new_content_view);
-    }
-
     nautilus_window_slot_set_viewed_file (self, NULL);
 
     g_clear_object (&self->fd_holder);
@@ -2886,10 +2874,6 @@ nautilus_window_slot_grab_focus (GtkWidget *widget)
     else if (self->content_view != NULL)
     {
         return gtk_widget_grab_focus (GTK_WIDGET (self->content_view));
-    }
-    else if (self->new_content_view != NULL)
-    {
-        return gtk_widget_grab_focus (GTK_WIDGET (self->new_content_view));
     }
 
     return GTK_WIDGET_CLASS (nautilus_window_slot_parent_class)->grab_focus (widget);
@@ -3124,27 +3108,12 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
     }
 
     end_location_change (self);
-
-    if (self->new_content_view)
-    {
-        g_object_unref (self->new_content_view);
-        self->new_content_view = NULL;
-    }
 }
 
 NautilusView *
 nautilus_window_slot_get_current_view (NautilusWindowSlot *self)
 {
-    if (self->content_view != NULL)
-    {
-        return self->content_view;
-    }
-    else if (self->new_content_view)
-    {
-        return self->new_content_view;
-    }
-
-    return NULL;
+    return self->content_view;
 }
 
 NautilusBookmark *
