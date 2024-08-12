@@ -441,6 +441,19 @@ button_data_free (ButtonData *button_data)
 
     g_free (button_data);
 }
+
+static void
+update_menu_for_file_chooser (NautilusPathBar *self)
+{
+    if (self->slot == NULL)
+    {
+        return;
+    }
+
+    NautilusMode mode = nautilus_window_slot_get_mode (self->slot);
+    nautilus_g_menu_model_set_for_mode (G_MENU_MODEL (self->current_view_menu), mode);
+}
+
 static void
 nautilus_path_bar_set_property (GObject      *object,
                                 guint         property_id,
@@ -454,6 +467,7 @@ nautilus_path_bar_set_property (GObject      *object,
         case PROP_WINDOW_SLOT:
         {
             g_set_weak_pointer (&self->slot, g_value_get_object (value));
+            update_menu_for_file_chooser (self);
         }
         break;
 
