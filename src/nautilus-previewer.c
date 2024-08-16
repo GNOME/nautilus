@@ -50,6 +50,7 @@ static guint subscription_id = 0;
 
 static GCancellable *cancellable = NULL;
 
+static NautilusWindowSlot *current_slot = NULL; /* weak ref */
 static GtkRoot *current_window = NULL; /* weak ref */
 static gchar *exported_window_handle = NULL;
 
@@ -239,10 +240,14 @@ previewer2_method_ready_cb (GObject      *source,
 }
 
 void
-nautilus_previewer_call_show_file (const gchar *uri,
-                                   GtkRoot     *window,
-                                   gboolean     close_if_already_visible)
+nautilus_previewer_call_show_file (const gchar        *uri,
+                                   NautilusWindowSlot *slot,
+                                   gboolean            close_if_already_visible)
 {
+    g_set_weak_pointer (&current_slot, slot);
+
+    GtkRoot *window = gtk_widget_get_root (GTK_WIDGET (slot));
+
     /* Reuse existing handle if called again for the same window. */
     if (current_window == window &&
         exported_window_handle != NULL)
@@ -343,29 +348,13 @@ previewer_selection_event (GDBusConnection *connection,
                            GVariant        *parameters,
                            gpointer         user_data)
 {
-    GApplication *application = g_application_get_default ();
-    GList *l, *windows = gtk_application_get_windows (GTK_APPLICATION (application));
-    NautilusWindow *window = NULL;
-    NautilusWindowSlot *slot;
-    NautilusView *view;
-    GtkDirectionType direction;
-
-    for (l = windows; l != NULL; l = l->next)
-    {
-        if (NAUTILUS_IS_WINDOW (l->data))
-        {
-            window = l->data;
-            break;
-        }
-    }
-
-    if (window == NULL)
+    if (current_slot == NULL)
     {
         return;
     }
 
-    slot = nautilus_window_get_active_slot (window);
-    view = nautilus_window_slot_get_current_view (slot);
+    NautilusView *view = nautilus_window_slot_get_current_view (current_slot);
+    GtkDirectionType direction;
 
     if (!NAUTILUS_IS_FILES_VIEW (view))
     {
@@ -395,6 +384,7 @@ nautilus_previewer_teardown (GDBusConnection *connection)
     g_clear_object (&previewer_proxy);
     clear_exported_window_handle ();
     g_clear_weak_pointer (&current_window);
+    g_clear_weak_pointer (&current_slot);
 }
 
 gboolean
