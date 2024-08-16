@@ -384,6 +384,7 @@ nautilus_previewer_teardown (GDBusConnection *connection)
     g_clear_object (&previewer_proxy);
     clear_exported_window_handle ();
     g_clear_weak_pointer (&current_window);
+    g_clear_weak_pointer (&current_slot);
 }
 
 gboolean
