@@ -250,6 +250,7 @@
                                 <property name="max-width-chars">30</property>
                                 <signal name="changed"
                                         handler="on_filename_entry_changed" object="NautilusFileChooser" swapped="yes"/>
+                                <signal name="activate" handler="on_accept_button_clicked" swapped="yes"/>
                                 <child>
                                   <object class="GtkEventControllerFocus">
                                     <signal name="leave"
