@@ -718,12 +718,13 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
         nautilus_file_list_free (file_list);
     }
 
-    /* Start the "real" monitoring (FAM or whatever). */
-    /* We always monitor the whole directory since in practice
-     * nautilus almost always shows the whole directory anyway, and
-     * it allows us to avoid one file monitor per file in a directory.
+    /* Start the "real" monitoring (FAM or whatever).
+     * Only set up the directory monitor during calls to nautilus_directory_file_monitor_add
+     * (when file is NULL). It allows us to avoid one file monitor per file in a directory.
+     * It also avoids setting up monitors for custom directories (starred, search...)
+     * where many unique folders may exist in one directory.
      */
-    if (directory->details->monitor == NULL)
+    if (directory->details->monitor == NULL && file == NULL)
     {
         directory->details->monitor = nautilus_monitor_directory (directory->details->location);
     }
