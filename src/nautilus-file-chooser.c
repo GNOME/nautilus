@@ -330,6 +330,19 @@ update_cursor (NautilusFileChooser *self)
 }
 
 static void
+on_file_drop (GtkDropTarget *target,
+              const GValue  *value,
+              gdouble        x,
+              gdouble        y,
+              gpointer       user_data)
+{
+    GFile *location = g_value_get_object (value);
+    NautilusFileChooser *self = user_data;
+
+    nautilus_window_slot_open_location_full (self->slot, location, 0, NULL);
+}
+
+static void
 on_slot_activate_files (NautilusFileChooser *self,
                         GList               *files)
 {
@@ -744,6 +757,7 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, nautilus_filename_validator_validate);
     gtk_widget_class_bind_template_callback (widget_class, on_validator_has_feedback_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_validator_will_overwrite_changed);
+    gtk_widget_class_bind_template_callback (widget_class, on_file_drop);
 
     properties[PROP_MODE] =
         g_param_spec_enum ("mode", NULL, NULL,
