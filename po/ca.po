@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-08-06 03:51+0000\n"
-"PO-Revision-Date: 2024-08-06 14:09+0200\n"
+"POT-Creation-Date: 2024-08-14 17:13+0000\n"
+"PO-Revision-Date: 2024-08-17 21:20+0200\n"
 "Last-Translator: Jordi Mas i Hernàndez <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -1027,7 +1027,7 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
-#: src/nautilus-pathbar.c:392 src/nautilus-shell-search-provider.c:341
+#: src/nautilus-pathbar.c:384 src/nautilus-shell-search-provider.c:341
 #: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:669
 msgid "Home"
 msgstr "Carpeta de l'usuari"
@@ -3796,19 +3796,19 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "«%s» està protegit amb contrasenya."
 
-#: src/nautilus-pathbar.c:289
+#: src/nautilus-pathbar.c:281
 msgid "Current Folder Menu"
 msgstr "Menú de la carpeta actual"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:380 src/nautilus-properties-window.c:853
+#: src/nautilus-pathbar.c:372 src/nautilus-properties-window.c:853
 msgid "Operating System"
 msgstr "Sistema operatiu"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:387
+#: src/nautilus-pathbar.c:379
 msgid "Administrator Root"
 msgstr "Arrel d'administrador"
 
@@ -4849,7 +4849,7 @@ msgid "_Confirm Password"
 msgstr "_Confirma la contrasenya"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
-#: src/resources/ui/nautilus-file-chooser.ui:170
+#: src/resources/ui/nautilus-file-chooser.ui:176
 #: src/resources/ui/nautilus-toolbar.ui:119
 msgid "New Folder"
 msgstr "Carpeta nova"
@@ -4862,34 +4862,36 @@ msgstr "_Nom de la carpeta"
 msgid "_Create"
 msgstr "_Crea"
 
-#: src/resources/ui/nautilus-file-chooser.ui:73
-msgid "Visible Files Filter"
-msgstr "Filtre dels fitxers visibles"
-
-#: src/resources/ui/nautilus-file-chooser.ui:136
+#: src/resources/ui/nautilus-file-chooser.ui:137
 #: src/resources/ui/nautilus-toolbar.ui:90
 msgid "Show Sidebar"
 msgstr "Mostra la barra lateral"
 
-#: src/resources/ui/nautilus-file-chooser.ui:194
+#: src/resources/ui/nautilus-file-chooser.ui:202
 msgid "Edit File Name"
 msgstr "Edita el nom del fitxer"
 
-#: src/resources/ui/nautilus-file-chooser.ui:220
+#: src/resources/ui/nautilus-file-chooser.ui:233
 msgid "Reset File Name"
 msgstr "Restableix el nom del fitxer"
 
-#: src/resources/ui/nautilus-file-chooser.ui:232
+#: src/resources/ui/nautilus-file-chooser.ui:248
 msgid "File Name"
 msgstr "Nom del fitxer"
 
-#: src/resources/ui/nautilus-file-chooser.ui:272
+#. Translators: 'Show' is a verb
+#: src/resources/ui/nautilus-file-chooser.ui:293
+msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Mostra les opcions"
 
-#: src/resources/ui/nautilus-file-chooser.ui:277
+#: src/resources/ui/nautilus-file-chooser.ui:298
 msgid "Open _Read-Only"
 msgstr "Obre en mode de només lectura"
+
+#: src/resources/ui/nautilus-file-chooser.ui:309
+msgid "Visible Files Filter"
+msgstr "Filtre dels fitxers visibles"
 
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:108
 msgid "Select a _new name for the destination"
@@ -5136,7 +5138,7 @@ msgstr "Visualització de contingut"
 msgid "View of the current folder"
 msgstr "Visualització de la carpeta actual"
 
-#: src/resources/ui/nautilus-name-cell.ui:109
+#: src/resources/ui/nautilus-name-cell.ui:112
 msgid "Full Text Match"
 msgstr "Coincidència de text complet"
 
