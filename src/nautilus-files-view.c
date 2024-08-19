@@ -3879,7 +3879,7 @@ real_check_empty_states (NautilusFilesView *view)
             adw_status_page_set_title (status_page, _("No Starred Files"));
             adw_status_page_set_description (status_page, NULL);
         }
-        else if (g_file_has_uri_scheme (priv->location, SCHEME_RECENT))
+        else if (g_file_has_uri_scheme (priv->location, SCHEME_NAUTILUS_RECENT))
         {
             adw_status_page_set_icon_name (status_page, "document-open-recent-symbolic");
             adw_status_page_set_title (status_page, _("No Recent Files"));

@@ -347,7 +347,7 @@ get_base_location (NautilusListView *self)
         location = nautilus_query_get_location (nautilus_search_directory_get_query (self->search_directory));
 
         if (location != NULL &&
-            !g_file_has_uri_scheme (location, SCHEME_RECENT) &&
+            !g_file_has_uri_scheme (location, SCHEME_NAUTILUS_RECENT) &&
             !g_file_has_uri_scheme (location, SCHEME_STARRED) &&
             !g_file_has_uri_scheme (location, SCHEME_TRASH))
         {

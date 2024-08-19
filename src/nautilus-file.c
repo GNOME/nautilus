@@ -3311,6 +3311,7 @@ prepend_automatic_keywords (NautilusFile *file,
      * so we want to ignore them here. */
     if (!nautilus_file_can_write (file) &&
         !nautilus_file_is_in_trash (file) &&
+        !nautilus_file_is_in_recent (file) &&
         (parent == NULL || nautilus_file_can_write (parent)))
     {
         names = g_list_prepend

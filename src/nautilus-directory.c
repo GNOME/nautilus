@@ -788,7 +788,8 @@ nautilus_directory_is_in_recent (NautilusDirectory *directory)
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, SCHEME_RECENT);
+    return g_file_has_uri_scheme (directory->details->location, SCHEME_RECENT) ||
+           g_file_has_uri_scheme (directory->details->location, SCHEME_NAUTILUS_RECENT);
 }
 
 gboolean

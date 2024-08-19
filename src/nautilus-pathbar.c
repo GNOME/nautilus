@@ -1007,7 +1007,7 @@ setup_button_type (ButtonData      *button_data,
         button_data->type = HOME_BUTTON;
         button_data->is_root = TRUE;
     }
-    else if (g_file_has_uri_scheme (location, SCHEME_RECENT))
+    else if (g_file_has_uri_scheme (location, SCHEME_NAUTILUS_RECENT))
     {
         button_data->type = RECENT_BUTTON;
         button_data->is_root = TRUE;

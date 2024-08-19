@@ -677,7 +677,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       start_icon = g_themed_icon_new_with_default_fallbacks ("document-open-recent-symbolic");
       add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
                  NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
-                 _("Recent"), start_icon, NULL, SCHEME_RECENT ":///",
+                 _("Recent"), start_icon, NULL, SCHEME_NAUTILUS_RECENT ":///",
                  NULL, NULL, NULL, NULL, 0,
                  _("Recent Files"));
       g_object_unref (start_icon);
@@ -1144,7 +1144,7 @@ check_valid_drop_target (NautilusGtkPlacesSidebar *sidebar,
   /* Disallow drops on recent:/// */
   if (place_type == NAUTILUS_GTK_PLACES_BUILT_IN)
     {
-      if (g_strcmp0 (uri, SCHEME_RECENT ":///") == 0)
+      if (g_strcmp0 (uri, SCHEME_NAUTILUS_RECENT ":///") == 0)
         {
           g_free (uri);
           return FALSE;
