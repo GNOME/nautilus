@@ -14,6 +14,7 @@
 #include "nautilus-file-private.h"
 #include "nautilus-scheme.h"
 #include "nautilus-network-directory.h"
+#include "nautilus-recent-directory.h"
 #include "nautilus-starred-directory.h"
 
 struct _NautilusInternalPlaceFile
@@ -167,6 +168,10 @@ nautilus_internal_place_file_constructed (GObject *object)
     else if (NAUTILUS_IS_STARRED_DIRECTORY (file->details->directory))
     {
         nautilus_file_set_display_name (file, _("Starred"), NULL, TRUE);
+    }
+    else if (NAUTILUS_IS_RECENT_DIRECTORY (file->details->directory))
+    {
+        nautilus_file_set_display_name (file, _("Recent"), NULL, TRUE);
     }
 
     file->details->got_file_info = TRUE;

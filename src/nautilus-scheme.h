@@ -12,6 +12,7 @@
 #define SCHEME_BURN "burn"
 #define SCHEME_COMPUTER "computer"
 #define SCHEME_SEARCH "x-nautilus-search"
+#define SCHEME_NAUTILUS_RECENT "x-nautilus-recent"
 #define SCHEME_NETWORK "network"
 #define SCHEME_NETWORK_VIEW "x-network-view"
 #define SCHEME_RECENT "recent"
