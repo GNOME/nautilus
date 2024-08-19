@@ -73,6 +73,7 @@
 #include "nautilus-previewer.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-properties-window.h"
+#include "nautilus-recent-directory.h"
 #include "nautilus-recent-servers.h"
 #include "nautilus-rename-file-popover.h"
 #include "nautilus-scheme.h"
@@ -8957,6 +8958,12 @@ load_directory (NautilusFilesView *view,
     {
         nautilus_directory_unref (priv->directory);
         priv->directory = nautilus_directory_ref (directory);
+    }
+
+    if (NAUTILUS_IS_RECENT_DIRECTORY (priv->directory))
+    {
+        nautilus_recent_directory_set_include_windows (NAUTILUS_RECENT_DIRECTORY (priv->directory),
+                                                       (nautilus_window_slot_get_mode (priv->slot) != NAUTILUS_MODE_BROWSE));
     }
 
     nautilus_file_unref (priv->directory_as_file);
