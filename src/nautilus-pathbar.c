@@ -249,11 +249,37 @@ bind_current_view_menu_model_to_popover (NautilusPathBar *self)
     return G_SOURCE_REMOVE;
 }
 
+static gboolean
+on_scroll (GtkEventControllerScroll *scroll,
+           gdouble                   dx,
+           gdouble                   dy,
+           GtkScrolledWindow        *self)
+{
+    GtkAdjustment *hadjustment;
+    gdouble step;
+    gdouble new_value;
+
+    if (dy == 0)
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    /* Scroll horizontally when vertically scrolled */
+    hadjustment = gtk_scrolled_window_get_hadjustment (self);
+    step = gtk_adjustment_get_step_increment (hadjustment);
+    new_value = gtk_adjustment_get_value (hadjustment) + dy * step;
+    gtk_adjustment_set_value (hadjustment, new_value);
+
+    return GDK_EVENT_STOP;
+}
+
+
 static void
 nautilus_path_bar_init (NautilusPathBar *self)
 {
     GtkAdjustment *adjustment;
     GtkBuilder *builder;
+    GtkEventController *controller;
     g_autoptr (GError) error = NULL;
 
     self->os_name = g_get_os_info (G_OS_INFO_KEY_NAME);
@@ -268,6 +294,10 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     adjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (self->scrolled));
     g_signal_connect (adjustment, "changed", G_CALLBACK (on_adjustment_changed), self);
+
+    controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
+    gtk_widget_add_controller (GTK_WIDGET (self->scrolled), controller);
+    g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), self->scrolled);
 
     self->buttons_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW (self->scrolled), self->buttons_box);
