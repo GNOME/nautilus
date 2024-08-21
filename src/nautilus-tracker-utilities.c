@@ -37,7 +37,7 @@ local_tracker_miner_fs_ready (GObject      *source,
                               GAsyncResult *res,
                               gpointer      user_data)
 {
-    tracker_miner_fs_connection = tracker_sparql_connection_new_finish (res, &tracker_miner_fs_error);
+    tracker_miner_fs_connection = tracker_sparql_connection_bus_new_finish (res, &tracker_miner_fs_error);
     if (tracker_miner_fs_error != NULL)
     {
         g_critical ("Could not start local Tracker indexer at %s: %s", tracker_miner_fs_busname, tracker_miner_fs_error->message);
