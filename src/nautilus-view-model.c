@@ -180,6 +180,14 @@ nautilus_view_model_unselect_item (GtkSelectionModel *model,
     return gtk_selection_model_unselect_item (self->selection_model, position);
 }
 
+static gboolean
+nautilus_view_model_unselect_all (GtkSelectionModel *model)
+{
+    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (model);
+
+    return gtk_selection_model_unselect_all (self->selection_model);
+}
+
 
 static void
 nautilus_view_model_selection_model_init (GtkSelectionModelInterface *iface)
@@ -189,6 +197,7 @@ nautilus_view_model_selection_model_init (GtkSelectionModelInterface *iface)
     iface->select_item = nautilus_view_model_select_item;
     iface->set_selection = nautilus_view_model_set_selection;
     iface->unselect_item = nautilus_view_model_unselect_item;
+    iface->unselect_all = nautilus_view_model_unselect_all;
 }
 
 G_DEFINE_TYPE_WITH_CODE (NautilusViewModel, nautilus_view_model, G_TYPE_OBJECT,
