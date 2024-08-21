@@ -9,11 +9,13 @@
     <item>
       <attribute name="label" translatable="yes">New _Document</attribute>
       <attribute name="nautilus-menu-item">templates-submenu</attribute>
+      <attribute name="show-in-mode">browse</attribute>
       <link name="submenu" id="templates-submenu"/>
     </item>
     <item>
       <attribute name="label" translatable="yes">Open _With…</attribute>
       <attribute name="action">view.open-current-directory-with-other-application</attribute>
+      <attribute name="show-in-mode">browse</attribute>
     </item>
     <item>
       <attribute name="label" translatable="yes">Open in Consol_e</attribute>
@@ -24,6 +26,7 @@
       <item>
         <attribute name="label" translatable="yes">_Paste</attribute>
         <attribute name="action">view.paste</attribute>
+        <attribute name="show-in-mode">browse</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Paste as _Link</attribute>

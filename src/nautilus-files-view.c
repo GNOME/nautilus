@@ -8440,6 +8440,7 @@ update_background_menu (NautilusFilesView *view,
                         GtkBuilder        *builder)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    NautilusMode mode = nautilus_window_slot_get_mode (priv->slot);
     GObject *object;
     gboolean remove_submenu = TRUE;
     gint i;
@@ -8479,6 +8480,12 @@ update_background_menu (NautilusFilesView *view,
     nautilus_g_menu_replace_string_in_item (priv->background_menu_model, i,
                                             "hidden-when",
                                             remove_submenu ? "action-missing" : NULL);
+
+    const char *view_name = NAUTILUS_IS_NETWORK_VIEW (priv->list_base) ? "network" : "normal";
+
+    /* Filter  the menus at the end to not interfere with other checks */
+    nautilus_g_menu_model_set_for_view (G_MENU_MODEL (priv->background_menu_model), view_name);
+    nautilus_g_menu_model_set_for_mode (G_MENU_MODEL (priv->background_menu_model), mode);
 }
 
 static void
@@ -8501,10 +8508,10 @@ real_update_context_menus (NautilusFilesView *view)
     priv->selection_menu_model = g_object_ref (G_MENU (object));
 
     update_selection_menu (view, builder);
+    update_background_menu (view, builder);
 
     if (mode == NAUTILUS_MODE_BROWSE)
     {
-        update_background_menu (view, builder);
         update_extensions_menus (view, builder);
     }
 
@@ -8639,11 +8646,6 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
     priv = nautilus_files_view_get_instance_private (view);
-
-    if (nautilus_window_slot_get_mode (priv->slot) != NAUTILUS_MODE_BROWSE)
-    {
-        return;
-    }
 
     /* Make the context menu items not flash as they update to proper disabled,
      * etc. states by forcing menus to update now.
