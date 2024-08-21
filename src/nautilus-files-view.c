@@ -8042,7 +8042,8 @@ real_update_actions_state (NautilusFilesView *view)
                                          "select-all");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !nautilus_files_view_is_empty (view) &&
-                                 !priv->loading);
+                                 !priv->loading &&
+                                 !nautilus_view_model_get_single_selection (priv->model));
 
     /* Toolbar menu actions */
     g_action_group_change_action_state (view_action_group,
