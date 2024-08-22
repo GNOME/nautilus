@@ -872,6 +872,11 @@ on_drag_drop (GtkDropTarget *target,
 
     g_return_val_if_fail (self->slot != NULL, FALSE);
 
+    if (nautilus_window_slot_get_mode (self->slot) != NAUTILUS_MODE_BROWSE)
+    {
+        return FALSE;
+    }
+
     target_location = nautilus_file_get_location (button_data->file);
     target_view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (self->slot));
     action = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));

@@ -719,6 +719,11 @@ on_item_drop (GtkDropTarget *target,
     g_autoptr (GFile) target_location = nautilus_file_get_location (nautilus_view_item_get_file (item));
     gboolean accepted = FALSE;
 
+    if (priv->dnd_disabled)
+    {
+        return FALSE;
+    }
+
     actions = gdk_drop_get_actions (gtk_drop_target_get_current_drop (target));
 
     #ifdef GDK_WINDOWING_X11
@@ -815,7 +820,7 @@ on_view_drop (GtkDropTarget *target,
     g_autoptr (GFile) target_location = NULL;
     gboolean accepted = FALSE;
 
-    if (priv->drag_view_action == 0)
+    if (priv->drag_view_action == 0 || priv->dnd_disabled)
     {
         /* We didn't reject earlier because the view's location may change and,
          * as a result, a drop action might become available. */
