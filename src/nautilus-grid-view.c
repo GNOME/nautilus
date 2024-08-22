@@ -69,7 +69,10 @@ update_sort_directories_first (NautilusGridView *self)
     NautilusFile *directory_as_file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (self));
     NautilusViewModel *model = nautilus_list_base_get_model (NAUTILUS_LIST_BASE (self));
 
-    if (nautilus_file_is_in_search (directory_as_file))
+    /* Always treat directories as normal items in search and recent. Recent
+     * can accidentally contain directories when they were picked via file chooser. */
+    if (nautilus_file_is_in_search (directory_as_file) ||
+        nautilus_file_is_in_recent (directory_as_file))
     {
         self->directories_first = FALSE;
     }
