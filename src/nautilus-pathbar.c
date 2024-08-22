@@ -851,7 +851,7 @@ on_drag_leave (GtkDropTarget *target,
     remove_switch_location_timer (user_data);
 }
 
-static void
+static gboolean
 on_drag_drop (GtkDropTarget *target,
               const GValue  *value,
               gdouble        x,
@@ -864,7 +864,7 @@ on_drag_drop (GtkDropTarget *target,
     g_autoptr (GFile) target_location = NULL;
     GdkDragAction action;
 
-    g_return_if_fail (self->slot != NULL);
+    g_return_val_if_fail (self->slot != NULL, FALSE);
 
     target_location = nautilus_file_get_location (button_data->file);
     target_view = NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (self->slot));
@@ -881,7 +881,7 @@ on_drag_drop (GtkDropTarget *target,
     }
     #endif
 
-    nautilus_dnd_perform_drop (target_view, value, action, target_location);
+    return nautilus_dnd_perform_drop (target_view, value, action, target_location);
 }
 
 static GIcon *
