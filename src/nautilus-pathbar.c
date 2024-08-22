@@ -809,9 +809,15 @@ on_drag_motion (GtkDropTarget *target,
                 gpointer       user_data)
 {
     ButtonData *button_data = user_data;
+    NautilusPathBar *self = button_data->path_bar;
     GdkDragAction action = 0;
     const GValue *value;
     graphene_point_t start;
+
+    if (nautilus_window_slot_get_mode (self->slot) != NAUTILUS_MODE_BROWSE)
+    {
+        gtk_drop_target_reject (target);
+    }
 
     value = gtk_drop_target_get_value (target);
     if (value == NULL)
