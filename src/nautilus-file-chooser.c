@@ -190,12 +190,9 @@ static void
 emit_accepted (NautilusFileChooser *self,
                GList               *file_locations)
 {
-    gboolean writable = !gtk_check_button_get_active (GTK_CHECK_BUTTON (self->read_only_checkbox));
-
     g_signal_emit (self, signals[SIGNAL_ACCEPTED], 0,
                    file_locations,
-                   GTK_FILE_FILTER (gtk_drop_down_get_selected_item (self->filters_dropdown)),
-                   writable);
+                   GTK_FILE_FILTER (gtk_drop_down_get_selected_item (self->filters_dropdown)));
 }
 
 static void
@@ -683,10 +680,6 @@ nautilus_file_chooser_constructed (GObject *object)
     gtk_widget_set_visible (self->filename_widget,
                             (self->mode == NAUTILUS_MODE_SAVE_FILE));
 
-    gtk_widget_set_visible (self->choices_menu_button,
-                            (self->mode != NAUTILUS_MODE_SAVE_FILE &&
-                             self->mode != NAUTILUS_MODE_SAVE_FILES));
-
     gtk_widget_set_visible (self->new_folder_button,
                             (self->mode == NAUTILUS_MODE_SAVE_FILE ||
                              self->mode == NAUTILUS_MODE_SAVE_FILES));
@@ -765,7 +758,6 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, slot_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filters_dropdown);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, choices_menu_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, read_only_checkbox);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, accept_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filename_widget);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filename_button_container);
@@ -796,8 +788,8 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
                       G_TYPE_FROM_CLASS (object_class),
                       G_SIGNAL_RUN_LAST, 0, NULL, NULL,
                       NULL,
-                      G_TYPE_NONE, 3,
-                      G_TYPE_POINTER, GTK_TYPE_FILE_FILTER, G_TYPE_BOOLEAN);
+                      G_TYPE_NONE, 2,
+                      G_TYPE_POINTER, GTK_TYPE_FILE_FILTER);
 }
 
 NautilusFileChooser *
@@ -864,4 +856,17 @@ nautilus_file_chooser_set_suggested_name (NautilusFileChooser *self,
     {
         gtk_editable_set_text (GTK_EDITABLE (self->filename_entry), suggested_name);
     }
+}
+
+void
+nautilus_file_chooser_add_choices (NautilusFileChooser *self,
+                                   GActionGroup        *action_group,
+                                   GMenuModel          *menu)
+{
+    gboolean visible = g_menu_model_get_n_items (menu) > 0;
+
+    gtk_widget_insert_action_group (GTK_WIDGET (self), "choices", action_group);
+    gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->choices_menu_button), menu);
+
+    gtk_widget_set_visible (self->choices_menu_button, visible);
 }

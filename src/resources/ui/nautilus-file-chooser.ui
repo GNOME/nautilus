@@ -301,16 +301,6 @@
                             <property name="icon-name">nautilus-file-chooser-options-symbolic</property>
                             <property name="tooltip-text" translatable="yes" comments="Translators: 'Show' is a verb"
                               context="File Chooser tooltips">Show Options</property>
-                            <property name="popover">
-                              <object class="GtkPopover">
-                                <property name="child">
-                                  <object class="GtkCheckButton" id="read_only_checkbox">
-                                    <property name="label" translatable="yes">Open _Read-Only</property>
-                                    <property name="use-underline">true</property>
-                                  </object>
-                                </property>
-                              </object>
-                            </property>
                           </object>
                         </child>
                         <child type="filter-dropdown">

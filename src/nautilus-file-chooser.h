@@ -38,4 +38,9 @@ void
 nautilus_file_chooser_set_suggested_name (NautilusFileChooser *self,
                                           const char          *suggested_name);
 
+void
+nautilus_file_chooser_add_choices        (NautilusFileChooser *self,
+                                          GActionGroup        *action_group,
+                                          GMenuModel          *menu);
+
 G_END_DECLS

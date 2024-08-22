@@ -46,7 +46,7 @@ typedef struct
     ExternalWindow *external_parent;
     GtkWindow *window;
 
-    GVariant *choices;
+    GActionGroup *choices_action_group;
     char **filenames_to_save;
 } FileChooserData;
 
@@ -68,8 +68,9 @@ file_chooser_data_free (gpointer data)
         g_clear_object (&fc_data->window);
     }
 
-    g_clear_pointer (&fc_data->choices, g_variant_unref);
     g_clear_pointer (&fc_data->filenames_to_save, g_strfreev);
+
+    g_clear_object (&fc_data->choices_action_group);
 
     g_free (fc_data);
 }
@@ -143,16 +144,53 @@ build_uris_variant (GVariantBuilder *uris,
     }
 }
 
+static GVariant *
+get_choices (GActionGroup *action_group,
+             gboolean     *writable)
+{
+    g_auto (GStrv) actions = g_action_group_list_actions (action_group);
+    g_auto (GVariantBuilder) builder = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE ("a(ss)"));
+
+    for (guint i = 0; actions[i] != NULL; i++)
+    {
+        GAction *action = g_action_map_lookup_action (G_ACTION_MAP (action_group), actions[i]);
+        const char *action_name = g_action_get_name (action);
+        const GVariantType *state_type = g_action_get_state_type (action);
+        g_autoptr (GVariant) state = g_action_get_state (action);
+
+        if (g_strcmp0 (actions[i], "x-nautilus-is-read-only") == 0)
+        {
+            *writable = !g_variant_get_boolean (state);
+        }
+        else if (g_strcmp0 (g_variant_type_peek_string (state_type), "b") == 0)
+        {
+            char *value = g_variant_get_boolean (state) ? "true" : "false";
+            g_variant_builder_add (&builder, "(ss)", action_name, value);
+        }
+        else if (g_strcmp0 (g_variant_type_peek_string (state_type), "s") == 0)
+        {
+            g_variant_builder_add (&builder, "(ss)", action_name, g_variant_get_string (state, NULL));
+        }
+        else
+        {
+            g_assert_not_reached ();
+        }
+    }
+
+    return g_variant_builder_end (&builder);
+}
+
 static gboolean
 on_file_chooser_accepted (gpointer       user_data,
                           GList         *locations,
-                          GtkFileFilter *current_filter,
-                          gboolean       writable)
+                          GtkFileFilter *current_filter)
 {
     g_autoptr (FileChooserData) data = (FileChooserData *) user_data;
     g_auto (GVariantBuilder) results = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_VARDICT);
     g_auto (GVariantBuilder) uris = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_STRING_ARRAY);
     const char *method_name = g_dbus_method_invocation_get_method_name (data->invocation);
+    gboolean writable = FALSE;
+    GVariant *choices = get_choices (data->choices_action_group, &writable);
 
     if (strcmp (method_name, "SaveFiles") == 0 && data->filenames_to_save != NULL)
     {
@@ -183,7 +221,7 @@ on_file_chooser_accepted (gpointer       user_data,
     }
 
     g_variant_builder_add (&results, "{sv}", "uris", g_variant_builder_end (&uris));
-    g_variant_builder_add (&results, "{sv}", "choices", data->choices);
+    g_variant_builder_add (&results, "{sv}", "choices", choices);
     g_variant_builder_add (&results, "{sv}", "writable", g_variant_new_boolean (writable));
 
     complete_file_chooser (data, RESPONSE_SUCCESS, &results);
@@ -215,6 +253,98 @@ handle_close (XdpImplRequest        *request,
     xdp_impl_request_complete_close (request, invocation);
 
     return G_DBUS_METHOD_INVOCATION_HANDLED;
+}
+
+static GActionGroup *
+create_choices_action_group (void)
+{
+    GSimpleActionGroup *action_group = g_simple_action_group_new ();
+    g_autoptr (GSimpleAction) action = NULL;
+
+    action = g_simple_action_new_stateful ("x-nautilus-is-read-only",
+                                           NULL,
+                                           g_variant_new_boolean (FALSE));
+
+    g_action_map_add_action (G_ACTION_MAP (action_group), G_ACTION (action));
+    g_simple_action_set_enabled (action, TRUE);
+
+    return G_ACTION_GROUP (action_group);
+}
+
+static GMenu *
+get_menu_from_choices (GVariant     *arg_options,
+                       GActionGroup *action_group)
+{
+    GMenu *menu = g_menu_new ();
+    g_autoptr (GVariantIter) iter = NULL;
+    GVariant *choices_list;
+    const char *choice_id;
+    const char *label;
+    const char *selected;
+    const char *option_id;
+    const char *option_label;
+
+    if (!g_variant_lookup (arg_options, "choices", "a(ssa(ss)s)", &iter))
+    {
+        return menu;
+    }
+
+    while (g_variant_iter_next (iter, "(&s&s@a(ss)&s)", &choice_id, &label, &choices_list, &selected))
+    {
+        g_autoptr (GSimpleAction) action = NULL;
+
+        if (g_variant_n_children (choices_list) > 0)
+        {
+            g_autoptr (GMenu) submenu = g_menu_new ();
+            g_autoptr (GMenuItem) item = g_menu_item_new_submenu (label, G_MENU_MODEL (submenu));
+            g_menu_append_item (menu, item);
+
+            action = g_simple_action_new_stateful (choice_id,
+                                                   G_VARIANT_TYPE_STRING,
+                                                   g_variant_new_string (""));
+
+            g_action_map_add_action (G_ACTION_MAP (action_group), G_ACTION (action));
+            g_simple_action_set_enabled (action, TRUE);
+
+            GVariantIter list_iter;
+            g_variant_iter_init (&list_iter, choices_list);
+
+            while (g_variant_iter_next (&list_iter, "(ss)", &option_id, &option_label))
+            {
+                g_autofree char *detailed_action_name = g_strdup_printf ("choices.%s::%s",
+                                                                         choice_id,
+                                                                         option_id);
+                g_autoptr (GMenuItem) option_item = g_menu_item_new (option_label, detailed_action_name);
+
+                g_menu_append_item (submenu, option_item);
+
+                if (g_strcmp0 (option_id, selected) == 0)
+                {
+                    g_simple_action_set_state (G_SIMPLE_ACTION (action), g_variant_new_string (option_id));
+                }
+            }
+        }
+        else
+        {
+            g_autofree char *action_name = g_strconcat ("choices.", choice_id, NULL);
+            GVariant *state = g_variant_new_boolean (FALSE);
+
+            if (g_strcmp0 (selected, "true") == 0)
+            {
+                state = g_variant_new_boolean (TRUE);
+            }
+
+            action = g_simple_action_new_stateful (choice_id, NULL, state);
+            g_action_map_add_action (G_ACTION_MAP (action_group), G_ACTION (action));
+            g_simple_action_set_enabled (action, TRUE);
+
+            g_menu_append (menu, label, action_name);
+        }
+
+        g_variant_unref (choices_list);
+    }
+
+    return menu;
 }
 
 static gboolean
@@ -350,39 +480,14 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
         current_filter_position = 0;
     }
 
-    /* Prepare choices.
-     * GtkFileDialog doesn't support choices, so this doesn't look like a big
-     * priority. Just assume the initial selection defined by the client. */
-    g_autoptr (GVariantIter) choices_iter = NULL;
-    g_auto (GVariantBuilder) choices_builder = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE ("a(ss)"));
+    /* Get choices */
+    data->choices_action_group = create_choices_action_group ();
+    g_autoptr (GMenu) menu = get_menu_from_choices (arg_options, data->choices_action_group);
 
-    if (g_variant_lookup (arg_options, "choices", "a(ssa(ss)s)", &choices_iter))
+    if (g_strcmp0 (method_name, "OpenFile") == 0)
     {
-        GVariant *choices_list;
-        const char *choice_id;
-        const char *selected;
-
-        while (g_variant_iter_next (choices_iter, "(&s&s@a(ss)&s)", &choice_id, NULL, &choices_list, &selected))
-        {
-            if (selected[0] == '\0')
-            {
-                /* No initial selection provided, pick the first one. */
-                if (g_variant_n_children (choices_list) > 0)
-                {
-                    g_variant_get_child (choices_list, 0, "(&s&s)", &selected, NULL);
-                }
-                else
-                {
-                    /* An empty list of choices indicates a boolean. */
-                    selected = "false";
-                }
-            }
-            g_variant_builder_add (&choices_builder, "(ss)", choice_id, selected);
-
-            g_variant_unref (choices_list);
-        }
+        g_menu_prepend (menu, _("Open Read-Only"), "choices.x-nautilus-is-read-only");
     }
-    data->choices = g_variant_ref_sink (g_variant_builder_end (&choices_builder));
 
     /* Prepare window */
     NautilusFileChooser *window = nautilus_file_chooser_new (mode);
@@ -394,6 +499,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     nautilus_file_chooser_set_current_filter (window, current_filter_position);
     nautilus_file_chooser_set_starting_location (window, starting_location);
     nautilus_file_chooser_set_suggested_name (window, suggested_filename);
+    nautilus_file_chooser_add_choices (window, data->choices_action_group, G_MENU_MODEL (menu));
 
     const char *title;
     title = (arg_title[0] == '\0') ? _("Files") : arg_title;
