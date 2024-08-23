@@ -154,7 +154,7 @@ on_file_chooser_accepted (gpointer       user_data,
     g_auto (GVariantBuilder) uris = G_VARIANT_BUILDER_INIT (G_VARIANT_TYPE_STRING_ARRAY);
     const char *method_name = g_dbus_method_invocation_get_method_name (data->invocation);
 
-    if (strcmp (method_name, "SaveFiles") == 0)
+    if (strcmp (method_name, "SaveFiles") == 0 && data->filenames_to_save != NULL)
     {
         GFile *directory = G_FILE (locations->data);
         g_autolist (GFile) unique_locations = NULL;
