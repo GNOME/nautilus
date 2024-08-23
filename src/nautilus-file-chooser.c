@@ -742,6 +742,8 @@ nautilus_file_chooser_init (NautilusFileChooser *self)
     /* Setup sidebar */
     nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (self->places_sidebar),
                                                 NAUTILUS_OPEN_FLAG_NORMAL);
+    nautilus_gtk_places_sidebar_set_show_trash (NAUTILUS_GTK_PLACES_SIDEBAR (self->places_sidebar),
+                                                FALSE);
 
     GtkEventController *controller = gtk_event_controller_key_new ();
     gtk_widget_add_controller (GTK_WIDGET (self), controller);

@@ -54,6 +54,9 @@ GFile *            nautilus_gtk_places_sidebar_get_nth_bookmark           (Nauti
 void               nautilus_gtk_places_sidebar_set_drop_targets_visible   (NautilusGtkPlacesSidebar   *sidebar,
                                                                   gboolean            visible);
 
+void               nautilus_gtk_places_sidebar_set_show_trash             (NautilusGtkPlacesSidebar   *sidebar,
+                                                                           gboolean                    show_trash);
+
 /* Keep order, since it's used for the sort functions */
 typedef enum {
   NAUTILUS_GTK_PLACES_SECTION_INVALID,

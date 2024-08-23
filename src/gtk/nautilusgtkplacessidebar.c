@@ -135,6 +135,7 @@ struct _NautilusGtkPlacesSidebar {
   char *rename_uri;
 
   GtkWidget *trash_row;
+  gboolean show_trash;
 
   /* DND */
   gboolean   dragging_over;
@@ -718,15 +719,18 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   g_object_unref (start_icon);
 
   /* Trash */
-  start_icon = nautilus_trash_monitor_get_symbolic_icon ();
-  sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
-                                  NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
-                                  _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
-                                  NULL, NULL, NULL, NULL, 0,
-                                  _("Open Trash"));
-  g_object_add_weak_pointer (G_OBJECT (sidebar->trash_row),
-                             (gpointer *) &sidebar->trash_row);
-  g_object_unref (start_icon);
+  if (sidebar->show_trash)
+    {
+      start_icon = nautilus_trash_monitor_get_symbolic_icon ();
+      sidebar->trash_row = add_place (sidebar, NAUTILUS_GTK_PLACES_BUILT_IN,
+                                      NAUTILUS_GTK_PLACES_SECTION_DEFAULT_LOCATIONS,
+                                      _("Trash"), start_icon, NULL, SCHEME_TRASH ":///",
+                                      NULL, NULL, NULL, NULL, 0,
+                                      _("Open Trash"));
+      g_object_add_weak_pointer (G_OBJECT (sidebar->trash_row),
+                                 (gpointer *) &sidebar->trash_row);
+      g_object_unref (start_icon);
+    }
 
   /* Cloud providers */
 #ifdef HAVE_CLOUDPROVIDERS
@@ -1084,6 +1088,21 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       g_object_unref (restore);
       g_free (original_uri);
     }
+}
+
+void
+nautilus_gtk_places_sidebar_set_show_trash (NautilusGtkPlacesSidebar *sidebar,
+                                            gboolean                  show_trash)
+{
+  if (sidebar->show_trash == show_trash)
+    return;
+
+  sidebar->show_trash = show_trash;
+
+  if (!sidebar->show_trash)
+    g_clear_weak_pointer (&sidebar->trash_row);
+
+  update_places (sidebar);
 }
 
 static gboolean
@@ -3502,6 +3521,8 @@ nautilus_gtk_places_sidebar_init (NautilusGtkPlacesSidebar *sidebar)
                             G_CALLBACK (update_places),
                             sidebar);
 #endif
+
+  sidebar->show_trash = TRUE;
 
   /* populate the sidebar */
   update_places (sidebar);
