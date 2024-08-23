@@ -697,6 +697,11 @@ nautilus_file_chooser_constructed (GObject *object)
                                  G_CALLBACK (on_slot_selection_notify), self,
                                  G_CONNECT_SWAPPED);
     }
+
+    if (g_strcmp0 (PROFILE, "") != 0)
+    {
+        gtk_widget_add_css_class (GTK_WIDGET (self), "devel");
+    }
 }
 
 static void
