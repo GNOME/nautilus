@@ -305,7 +305,8 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
 
     if (starting_location == NULL)
     {
-        if (g_variant_lookup (arg_options, "current_folder", "^&ay", &path))
+        if (g_variant_lookup (arg_options, "current_folder", "^&ay", &path) &&
+            path[0] != '\0')
         {
             starting_location = g_file_new_for_path (path);
         }
