@@ -50,6 +50,7 @@ struct _NautilusFileChooser
     GtkWidget *filename_undo_button;
     GtkWidget *filename_entry;
     GtkWidget *new_folder_button;
+    GtkWidget *title_widget;
 
     NautilusFilenameValidator *validator;
 };
@@ -563,6 +564,27 @@ filters_dropdown_unbind (GtkListItemFactory *factory,
     g_signal_handlers_disconnect_by_func (self->filters_dropdown, update_dropdown_checkmark, list_item);
 }
 
+static gboolean
+title_widget_query_tooltip (GtkWidget  *widget,
+                            gint        x,
+                            gint        y,
+                            gboolean    keyboard_mode,
+                            GtkTooltip *tooltip,
+                            gpointer    user_data)
+{
+    PangoLayout *layout = gtk_label_get_layout (GTK_LABEL (widget));
+
+    if (pango_layout_is_ellipsized (layout))
+    {
+        const char *label = gtk_label_get_label (GTK_LABEL (widget));
+        gtk_tooltip_set_text (tooltip, label);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+
 static void
 nautilus_file_chooser_dispose (GObject *object)
 {
@@ -695,6 +717,11 @@ nautilus_file_chooser_constructed (GObject *object)
     {
         gtk_widget_add_css_class (GTK_WIDGET (self), "devel");
     }
+
+    gtk_widget_add_css_class (self->title_widget, "windowtitle");
+    gtk_widget_add_css_class (self->title_widget, "title");
+    g_signal_connect (self->title_widget, "query-tooltip",
+                      G_CALLBACK (title_widget_query_tooltip), self);
 }
 
 static void
@@ -765,6 +792,7 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, filename_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, new_folder_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, validator);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, title_widget);
 
     gtk_widget_class_bind_template_callback (widget_class, nautilus_file_chooser_can_accept);
     gtk_widget_class_bind_template_callback (widget_class, on_accept_button_clicked);

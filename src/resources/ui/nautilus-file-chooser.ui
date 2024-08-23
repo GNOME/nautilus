@@ -31,6 +31,16 @@
                             <property name="icon_name">edit-find-symbolic</property>
                           </object>
                         </child>
+                        <property name="title-widget">
+                          <object class="GtkLabel" id="title_widget">
+                            <property name="ellipsize">end</property>
+                            <property name="wrap">False</property>
+                            <property name="single-line-mode">True</property>
+                            <property name="width-chars">5</property>
+                            <property name="has-tooltip">true</property>
+                            <property name="label" bind-source="NautilusFileChooser" bind-property="title"></property>
+                          </object>
+                        </property>
                       </object>
                     </child>
                     <property name="content">
