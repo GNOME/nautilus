@@ -348,7 +348,7 @@
                         <child>
                           <object class="GtkDropTarget">
                             <property name="actions">copy</property>
-                            <property name="formats">GFile</property>
+                            <property name="formats">GdkFileList</property>
                             <signal name="drop" handler="on_file_drop"/>
                           </object>
                         </child>

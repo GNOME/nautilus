@@ -336,10 +336,31 @@ on_file_drop (GtkDropTarget *target,
               gdouble        y,
               gpointer       user_data)
 {
-    GFile *location = g_value_get_object (value);
+    GSList *locations = g_value_get_boxed (value);
+    g_autolist (NautilusFile) selection = NULL;
+    g_autoptr (GFile) location = NULL;
     NautilusFileChooser *self = user_data;
 
-    nautilus_window_slot_open_location_full (self->slot, location, 0, NULL);
+    for (GSList *l = locations; l != NULL; l = l->next)
+    {
+        selection = g_list_prepend (selection, nautilus_file_get (l->data));
+    }
+
+    selection = g_list_reverse (selection);
+
+    if (nautilus_file_opens_in_view (selection->data) &&
+        self->mode != NAUTILUS_MODE_OPEN_FOLDER &&
+        self->mode != NAUTILUS_MODE_OPEN_FOLDERS)
+    {
+        /* If it's a folder go into the folder unless you want to open that folder */
+        location = g_object_ref (locations->data);
+    }
+    else
+    {
+        location = g_file_get_parent (locations->data);
+    }
+
+    nautilus_window_slot_open_location_full (self->slot, location, 0, selection);
 }
 
 static void
