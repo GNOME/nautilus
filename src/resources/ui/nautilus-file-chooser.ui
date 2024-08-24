@@ -7,6 +7,7 @@
     <property name="height-request">348</property>
     <property name="default-width">890</property>
     <property name="default-height">550</property>
+    <property name="default-widget">accept_button</property>
     <property name="content">
       <object class="NautilusShortcutManager">
         <property name="child">
@@ -248,9 +249,9 @@
                                 <property name="tooltip-text" translatable="yes">File Name</property>
                                 <property name="valign">center</property>
                                 <property name="max-width-chars">30</property>
+                                <property name="activates-default">true</property>
                                 <signal name="changed"
                                         handler="on_filename_entry_changed" object="NautilusFileChooser" swapped="yes"/>
-                                <signal name="activate" handler="on_accept_button_clicked" swapped="yes"/>
                                 <child>
                                   <object class="GtkEventControllerFocus">
                                     <signal name="leave"
