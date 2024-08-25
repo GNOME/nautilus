@@ -274,9 +274,24 @@ static guint
 nautilus_window_slot_get_view_id_for_location (NautilusWindowSlot *self,
                                                GFile              *location)
 {
-    g_autoptr (NautilusFile) file = nautilus_file_get (location);
+    g_autoptr (GFile) effective_location = g_object_ref (location);
 
-    if (nautilus_file_is_network_view (file))
+    if (self->content_view != NULL)
+    {
+        NautilusQuery *query = nautilus_view_get_search_query (self->content_view);
+
+        if (query != NULL)
+        {
+            g_autoptr (GFile) query_location = nautilus_query_get_location (query);
+
+            if (query_location != NULL)
+            {
+                g_set_object (&effective_location, query_location);
+            }
+        }
+    }
+
+    if (nautilus_is_root_for_scheme (effective_location, SCHEME_NETWORK_VIEW))
     {
         return NAUTILUS_VIEW_NETWORK_ID;
     }
@@ -378,13 +393,16 @@ query_editor_changed_callback (NautilusQueryEditor *editor,
                                gboolean             reload,
                                NautilusWindowSlot  *self)
 {
-    NautilusView *view;
+    NautilusView *view = nautilus_window_slot_get_current_view (self);
 
-    view = nautilus_window_slot_get_current_view (self);
+    nautilus_view_set_search_query (view, query);
 
     /* Setting search query may cause the view to load a new location. */
-    nautilus_view_set_search_query (view, query);
-    nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
+    GFile *location = nautilus_view_get_location (view);
+    guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
+
+    nautilus_window_slot_set_location (self, location);
+    nautilus_window_slot_set_view_id (self, view_id);
 }
 
 static void
@@ -414,7 +432,13 @@ hide_query_editor (NautilusWindowSlot *self)
         nautilus_view_set_search_query (view, NULL);
 
         /* The view location has changed, update the slot location. */
-        nautilus_window_slot_set_location (self, nautilus_view_get_location (view));
+        GFile *location = nautilus_view_get_location (view);
+        guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
+
+        nautilus_window_slot_set_location (self, location);
+        nautilus_window_slot_set_view_id (self, view_id);
+
+        /* Apply the saved selection */
         nautilus_view_set_selection (view, selection);
     }
 
@@ -1073,6 +1097,12 @@ action_search_global (GSimpleAction *action,
             {
                 nautilus_query_set_location (query, NULL);
                 nautilus_view_set_search_query (self->content_view, query);
+
+                /* The view location has changed, update the view mode. */
+                GFile *location = nautilus_view_get_location (self->content_view);
+                guint view_id = nautilus_window_slot_get_view_id_for_location (self, location);
+
+                nautilus_window_slot_set_view_id (self, view_id);
             }
 
             nautilus_query_editor_set_location (self->query_editor, NULL);
