@@ -144,7 +144,7 @@ struct _NautilusWindowSlot
     GCancellable *mount_cancellable;
     GError *mount_error;
     gboolean tried_mount;
-    gint view_mode_before_network;
+    guint view_id;
 
     /* Menus */
     GMenuModel *extensions_background_menu;
@@ -275,39 +275,13 @@ nautilus_window_slot_get_view_id_for_location (NautilusWindowSlot *self,
                                                GFile              *location)
 {
     g_autoptr (NautilusFile) file = nautilus_file_get (location);
-    guint view_id = NAUTILUS_VIEW_INVALID_ID;
-
-    if (self->content_view != NULL)
-    {
-        /* If there is already a view, just use the view mode that it's currently using */
-        view_id = nautilus_view_get_view_id (self->content_view);
-        if (view_id == NAUTILUS_VIEW_NETWORK_ID)
-        {
-            view_id = self->view_mode_before_network;
-        }
-    }
 
     if (nautilus_file_is_network_view (file))
     {
-        self->view_mode_before_network = view_id;
-        view_id = NAUTILUS_VIEW_NETWORK_ID;
+        return NAUTILUS_VIEW_NETWORK_ID;
     }
 
-    /* If there is not previous view in this slot, use the default view mode
-     * from preferences */
-    if (view_id == NAUTILUS_VIEW_INVALID_ID)
-    {
-        view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
-    }
-    if (view_id == NAUTILUS_VIEW_INVALID_ID)
-    {
-        g_warning ("Invalid value stored for 'default-folder-viewer' key for "
-                   "the 'org.gnome.nautilus.preferences' schemas. Installed "
-                   "schemas may be outdated. Falling back to 'list-view'.");
-        view_id = NAUTILUS_VIEW_LIST_ID;
-    }
-
-    return view_id;
+    return self->view_id;
 }
 
 static void
@@ -1123,6 +1097,10 @@ static void
 change_files_view_mode (NautilusWindowSlot *self,
                         guint               view_id)
 {
+    g_return_if_fail (view_id == NAUTILUS_VIEW_LIST_ID ||
+                      view_id == NAUTILUS_VIEW_GRID_ID);
+
+    self->view_id = view_id;
     nautilus_window_slot_set_view_id (self, view_id);
     g_settings_set_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER, view_id);
 }
@@ -1406,7 +1384,16 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                              G_CONNECT_SWAPPED);
 
     self->fd_holder = nautilus_fd_holder_new ();
-    self->view_mode_before_network = NAUTILUS_VIEW_INVALID_ID;
+
+    self->view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+    if (G_UNLIKELY (self->view_id != NAUTILUS_VIEW_LIST_ID &&
+                    self->view_id != NAUTILUS_VIEW_GRID_ID))
+    {
+        g_warning ("Invalid value stored for 'default-folder-viewer' key for "
+                   "the 'org.gnome.nautilus.preferences' schemas. Installed "
+                   "schemas may be outdated. Falling back to 'list-view'.");
+        self->view_id = NAUTILUS_VIEW_LIST_ID;
+    }
 }
 
 static void begin_location_change (NautilusWindowSlot        *slot,
