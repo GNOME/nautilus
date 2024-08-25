@@ -155,7 +155,8 @@
                   <object class="AdwToolbarView">
                     <child type="top">
                       <object class="NautilusToolbar" id="toolbar">
-                        <property name="show-toolbar-children">True</property>
+                        <property name="show-view-controls">true</property>
+                        <property name="show-history-controls">true</property>
                         <property name="sidebar-button-active" bind-source="split_view" bind-property="show-sidebar" bind-flags="bidirectional|sync-create"/>
                         <property name="window-slot" bind-source="NautilusWindow" bind-property="active-slot" bind-flags="sync-create"/>
                       </object>
@@ -205,7 +206,8 @@
         <setter object="split_view" property="enable-show-gesture">True</setter>
         <setter object="split_view" property="enable-hide-gesture">True</setter>
         <setter object="toolbar" property="show-sidebar-button">True</setter>
-        <setter object="toolbar" property="show-toolbar-children">False</setter>
+        <setter object="toolbar" property="show-view-controls">False</setter>
+        <setter object="toolbar" property="show-history-controls">False</setter>
         <setter object="action_bar" property="revealed">True</setter>
         <setter object="progress_indicator" property="popover-position">2</setter>
       </object>

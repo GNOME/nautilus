@@ -46,11 +46,13 @@
                   <object class="AdwToolbarView">
                     <child type="top">
                       <object class="NautilusToolbar" id="toolbar">
-                        <property name="show-toolbar-children">true</property>
+                        <property name="show-history-controls">true</property>
                         <property name="window-slot"
                                   bind-source="slot_container" bind-property="child" bind-flags="sync-create"/>
                         <property name="show-new-folder-button"
                                   bind-source="new_folder_button" bind-property="visible" bind-flags="sync-create"/>
+                        <property name="show-view-controls"
+                                  bind-source="view_controls" bind-property="visible" bind-flags="sync-create"/>
                       </object>
                     </child>
                     <property name="content">
@@ -183,6 +185,12 @@
                                             <property name="id">choices-menu-button</property>
                                             <property name="visible"
                                                       bind-source="choices_menu_button" bind-property="visible" bind-flags="sync-create"/>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="NautilusViewControls" id="view_controls">
+                                            <property name="window-slot"
+                                              bind-source="slot_container" bind-property="child" bind-flags="sync-create"/>
                                           </object>
                                         </child>
                                       </object>
@@ -359,6 +367,7 @@
         <condition>max-width: 682sp</condition>
         <setter object="split_view" property="collapsed">true</setter>
         <setter object="toolbar" property="show-new-folder-button">false</setter>
+        <setter object="toolbar" property="show-view-controls">false</setter>
         <setter object="bottom_toolbar" property="layout-name">narrow</setter>
         <setter object="filters_dropdown" property="show-arrow">false</setter>
         <setter object="filters_dropdown" property="factory">builder_list_item_image</setter>
