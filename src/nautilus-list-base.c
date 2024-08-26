@@ -22,6 +22,9 @@
 #include <gdk/x11/gdkx.h>
 #endif
 
+/* 1 page worth of scroll in 100ms zooms in or out when the ctrl key is held */
+#define SCROLL_TO_ZOOM_INTERVAL 100
+
 /**
  * NautilusListBase:
  *
@@ -55,6 +58,9 @@ struct _NautilusListBasePrivate
     graphene_point_t hover_start_point;
     guint hover_timer_id;
     GtkDropTarget *view_drop_target;
+
+    gdouble amount_scrolled_for_zoom;
+    guint scroll_timeout_id;
 };
 
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (NautilusListBase, nautilus_list_base, ADW_TYPE_BIN)
@@ -1070,6 +1076,7 @@ nautilus_list_base_dispose (GObject *object)
     g_clear_object (&priv->directory_as_file);
     g_clear_object (&priv->model);
     g_clear_handle_id (&priv->hover_timer_id, g_source_remove);
+    g_clear_handle_id (&priv->scroll_timeout_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->dispose (object);
 }
@@ -1080,6 +1087,16 @@ nautilus_list_base_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_list_base_parent_class)->finalize (object);
 }
 
+static void
+on_scroll_timeout (gpointer user_data)
+{
+    NautilusListBase *self = user_data;
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
+
+    priv->scroll_timeout_id = 0;
+    priv->amount_scrolled_for_zoom = 0;
+}
+
 /* handle Ctrl+Scroll, which will cause a zoom-in/out */
 static gboolean
 on_scroll (GtkEventControllerScroll *scroll,
@@ -1088,46 +1105,35 @@ on_scroll (GtkEventControllerScroll *scroll,
            gpointer                  user_data)
 {
     NautilusListBase *self = NAUTILUS_LIST_BASE (user_data);
+    NautilusListBasePrivate *priv = nautilus_list_base_get_instance_private (self);
     GdkModifierType state;
 
     state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
+
     if (state & GDK_CONTROL_MASK)
     {
-        if (dy <= -1)
+        if (priv->scroll_timeout_id == 0)
+        {
+            priv->scroll_timeout_id = g_timeout_add_once (SCROLL_TO_ZOOM_INTERVAL,
+                                                          on_scroll_timeout, self);
+        }
+
+        priv->amount_scrolled_for_zoom += dy;
+        if (priv->amount_scrolled_for_zoom <= -1)
         {
             gtk_widget_activate_action (GTK_WIDGET (self), "view.zoom-in", NULL);
+            priv->amount_scrolled_for_zoom = 0;
         }
-        else if (dy >= 1)
+        else if (priv->amount_scrolled_for_zoom >= 1)
         {
             gtk_widget_activate_action (GTK_WIDGET (self), "view.zoom-out", NULL);
+            priv->amount_scrolled_for_zoom = 0;
         }
 
         return GDK_EVENT_STOP;
     }
 
     return GDK_EVENT_PROPAGATE;
-}
-
-static void
-on_scroll_begin (GtkEventControllerScroll *scroll,
-                 gpointer                  user_data)
-{
-    GdkModifierType state;
-
-    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (scroll));
-    if (state & GDK_CONTROL_MASK)
-    {
-        gtk_event_controller_scroll_set_flags (scroll,
-                                               GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
-                                               GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
-    }
-}
-
-static void
-on_scroll_end (GtkEventControllerScroll *scroll,
-               gpointer                  user_data)
-{
-    gtk_event_controller_scroll_set_flags (scroll, GTK_EVENT_CONTROLLER_SCROLL_VERTICAL);
 }
 
 static gboolean
@@ -1326,8 +1332,6 @@ nautilus_list_base_init (NautilusListBase *self)
     gtk_widget_add_controller (priv->scrolled_window, controller);
     gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
     g_signal_connect (controller, "scroll", G_CALLBACK (on_scroll), self);
-    g_signal_connect (controller, "scroll-begin", G_CALLBACK (on_scroll_begin), self);
-    g_signal_connect (controller, "scroll-end", G_CALLBACK (on_scroll_end), self);
 
     g_signal_connect_object (nautilus_preferences,
                              "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
