@@ -1067,13 +1067,13 @@ on_scroll (GtkEventControllerScroll *scroll,
         if (dy <= -1)
         {
             gtk_widget_activate_action (GTK_WIDGET (self), "view.zoom-in", NULL);
-            return GDK_EVENT_STOP;
         }
         else if (dy >= 1)
         {
             gtk_widget_activate_action (GTK_WIDGET (self), "view.zoom-out", NULL);
-            return GDK_EVENT_STOP;
         }
+
+        return GDK_EVENT_STOP;
     }
 
     return GDK_EVENT_PROPAGATE;
