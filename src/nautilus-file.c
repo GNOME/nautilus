@@ -2033,78 +2033,6 @@ nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
 
 typedef struct
 {
-    NautilusFileOperation *op;
-    NautilusFile *file;
-} BatchRenameData;
-
-static void
-batch_rename_get_info_callback (GObject      *source_object,
-                                GAsyncResult *res,
-                                gpointer      callback_data)
-{
-    NautilusFileOperation *op;
-    NautilusDirectory *directory;
-    NautilusFile *existing_file;
-    char *old_uri;
-    char *new_uri;
-    const char *new_name;
-    GFileInfo *new_info;
-    GError *error;
-    BatchRenameData *data;
-
-    data = callback_data;
-
-    op = data->op;
-    op->file = data->file;
-
-    error = NULL;
-    new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
-    if (new_info != NULL)
-    {
-        old_uri = nautilus_file_get_uri (op->file);
-
-        new_name = g_file_info_get_name (new_info);
-
-        directory = op->file->details->directory;
-
-        /* If there was another file by the same name in this
-         * directory and it is not the same file that we are
-         * renaming, mark it gone.
-         */
-        existing_file = nautilus_directory_find_file_by_name (directory, new_name);
-        if (existing_file != NULL && existing_file != op->file)
-        {
-            nautilus_file_mark_gone (existing_file);
-            nautilus_file_changed (existing_file);
-        }
-
-        update_info_and_name (op->file, new_info);
-
-        new_uri = nautilus_file_get_uri (op->file);
-        nautilus_directory_moved (old_uri, new_uri);
-        g_free (new_uri);
-        g_free (old_uri);
-        g_object_unref (new_info);
-    }
-
-    op->renamed_files++;
-
-    if (op->files == NULL ||
-        op->renamed_files + op->skipped_files == g_list_length (op->files))
-    {
-        nautilus_file_operation_complete (op, NULL, error);
-    }
-
-    g_free (data);
-
-    if (error)
-    {
-        g_error_free (error);
-    }
-}
-
-typedef struct
-{
     GPtrArray *chain_files;
     gboolean is_cycle;
 
@@ -2177,24 +2105,12 @@ rename_file_chain (gpointer data,
 
         g_autofree gchar *new_name = g_file_get_basename (target);
         g_autoptr (GError) error = NULL;
-        BatchRenameData *rename_data = g_new0 (BatchRenameData, 1);
 
         /* Do the renaming. */
         g_autoptr (GFile) renamed_file = g_file_set_display_name (src,
                                                                   new_name,
                                                                   op->cancellable,
                                                                   &error);
-
-        rename_data->op = op;
-        rename_data->file = nautilus_file_get (src);
-
-        g_file_query_info_async (renamed_file,
-                                 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 G_FILE_QUERY_INFO_NONE,
-                                 G_PRIORITY_DEFAULT,
-                                 op->cancellable,
-                                 batch_rename_get_info_callback,
-                                 rename_data);
 
         if (error != NULL)
         {
@@ -2208,6 +2124,7 @@ rename_file_chain (gpointer data,
         }
         else
         {
+            g_atomic_int_inc (&op->renamed_files);
             old_files = g_list_prepend (old_files, g_object_ref (src));
             new_files = g_list_prepend (new_files, g_steal_pointer (&renamed_file));
         }
@@ -2252,6 +2169,7 @@ real_batch_rename (GList                         *files,
     g_autoptr (GAsyncQueue) changed_files = g_async_queue_new ();
     GThreadPool *thread_pool = NULL;
     g_autoptr (GAsyncQueue) rollback_files = g_async_queue_new ();
+    g_autoptr (GError) skip_error = NULL;
 
     /* Set up a batch renaming operation. */
     op = nautilus_file_operation_new (files->data, callback, callback_data);
@@ -2273,7 +2191,16 @@ real_batch_rename (GList                         *files,
         if (new_file_name == NULL)
         {
             g_hash_table_add (stub_files, location);
-            op->skipped_files++;
+
+            if (name_is (file, new_name->str))
+            {
+                /* We are ignoring this rename, and not even adding to the undo list. */
+                op->renamed_files++;
+            }
+            else
+            {
+                op->skipped_files++;
+            }
 
             continue;
         }
@@ -2391,6 +2318,34 @@ real_batch_rename (GList                         *files,
 
         g_file_move (new_file_list->data, old_file_list->data,
                      G_FILE_COPY_NONE, NULL, NULL, NULL, NULL);
+
+        NautilusFile *old_file = nautilus_file_get_existing (old_file_list->data);
+        NautilusFile *new_file = nautilus_file_get_existing (new_file_list->data);
+
+        if (old_file != NULL)
+        {
+            nautilus_file_invalidate_attributes (old_file, NAUTILUS_FILE_ATTRIBUTE_INFO);
+        }
+        if (new_file != NULL)
+        {
+            nautilus_file_invalidate_attributes (new_file, NAUTILUS_FILE_ATTRIBUTE_INFO);
+        }
+    }
+
+    /* Invalidate attributes of modified files in idle. */
+    for (l1 = old_files, l2 = new_files; l1 != NULL; l1 = l1->next, l2 = l2->next)
+    {
+        NautilusFile *old_file = nautilus_file_get_existing (l1->data);
+        NautilusFile *new_file = nautilus_file_get_existing (l2->data);
+
+        if (old_file != NULL)
+        {
+            nautilus_file_invalidate_attributes (old_file, NAUTILUS_FILE_ATTRIBUTE_INFO);
+        }
+        if (new_file != NULL)
+        {
+            nautilus_file_invalidate_attributes (new_file, NAUTILUS_FILE_ATTRIBUTE_INFO);
+        }
     }
 
     /* Tell the undo manager a batch rename is taking place if at least
@@ -2408,10 +2363,13 @@ real_batch_rename (GList                         *files,
         nautilus_file_undo_manager_set_action (op->undo_info);
     }
 
-    if (op->skipped_files == len)
+    if (op->skipped_files > 1)
     {
-        nautilus_file_operation_complete (op, NULL, NULL);
+        skip_error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
+                                  "Skipped %d file(s)", op->skipped_files);
     }
+
+    nautilus_file_operation_complete (op, NULL, skip_error);
 }
 
 void
