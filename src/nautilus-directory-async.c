@@ -95,19 +95,6 @@ struct DirectoryCountState
     int file_count;
 };
 
-struct DeepCountState
-{
-    NautilusDirectory *directory;
-    GCancellable *cancellable;
-    GFileEnumerator *enumerator;
-    GFile *deep_count_location;
-    GList *deep_count_subdirectories;
-    GArray *seen_deep_count_inodes;
-    char *fs_id;
-};
-
-
-
 typedef struct
 {
     NautilusFile *file;     /* Which file, NULL means all. */
@@ -152,8 +139,6 @@ static GHashTable *async_jobs;
 #endif
 
 /* Forward declarations for functions that need them. */
-static void     deep_count_load (DeepCountState *state,
-                                 GFile          *location);
 static gboolean request_is_satisfied (NautilusDirectory *directory,
                                       NautilusFile      *file,
                                       Request            request);
@@ -414,25 +399,6 @@ directory_count_cancel (NautilusDirectory *directory)
 }
 
 static void
-deep_count_cancel (NautilusDirectory *directory)
-{
-    if (directory->details->deep_count_in_progress != NULL)
-    {
-        g_assert (NAUTILUS_IS_FILE (directory->details->deep_count_file));
-
-        g_cancellable_cancel (directory->details->deep_count_in_progress->cancellable);
-
-        directory->details->deep_count_file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
-
-        directory->details->deep_count_in_progress->directory = NULL;
-        directory->details->deep_count_in_progress = NULL;
-        directory->details->deep_count_file = NULL;
-
-        async_job_end (directory, "deep count");
-    }
-}
-
-static void
 thumbnail_cancel (NautilusDirectory *directory)
 {
     if (directory->details->thumbnail_state != NULL)
@@ -633,11 +599,6 @@ nautilus_directory_set_up_request (NautilusFileAttributes file_attributes)
     if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT) != 0)
     {
         REQUEST_SET_TYPE (request, REQUEST_DIRECTORY_COUNT);
-    }
-
-    if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS) != 0)
-    {
-        REQUEST_SET_TYPE (request, REQUEST_DEEP_COUNT);
     }
 
     if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_INFO) != 0)
@@ -1576,11 +1537,6 @@ nautilus_async_destroying_file (NautilusFile *file)
         directory->details->count_in_progress->count_file = NULL;
         changed = TRUE;
     }
-    if (directory->details->deep_count_file == file)
-    {
-        directory->details->deep_count_file = NULL;
-        changed = TRUE;
-    }
     if (directory->details->get_info_file == file)
     {
         directory->details->get_info_file = NULL;
@@ -1645,12 +1601,6 @@ static gboolean
 lacks_filesystem_info (NautilusFile *file)
 {
     return !file->details->filesystem_info_is_up_to_date;
-}
-
-static gboolean
-lacks_deep_count (NautilusFile *file)
-{
-    return file->details->deep_counts_status != NAUTILUS_REQUEST_DONE;
 }
 
 static gboolean
@@ -1740,14 +1690,6 @@ request_is_satisfied (NautilusDirectory *directory,
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO))
     {
         if (has_problem (directory, file, lacks_filesystem_info))
-        {
-            return FALSE;
-        }
-    }
-
-    if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
-    {
-        if (has_problem (directory, file, lacks_deep_count))
         {
             return FALSE;
         }
@@ -2580,382 +2522,6 @@ directory_count_start (NautilusDirectory *directory,
                                      state->cancellable,
                                      count_children_callback,
                                      state);
-    g_object_unref (location);
-}
-
-static inline gboolean
-seen_inode (DeepCountState *state,
-            GFileInfo      *info)
-{
-    guint64 inode, inode2;
-    guint i;
-
-    inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
-
-    if (inode != 0)
-    {
-        for (i = 0; i < state->seen_deep_count_inodes->len; i++)
-        {
-            inode2 = g_array_index (state->seen_deep_count_inodes, guint64, i);
-            if (inode == inode2)
-            {
-                return TRUE;
-            }
-        }
-    }
-
-    return FALSE;
-}
-
-static inline void
-mark_inode_as_seen (DeepCountState *state,
-                    GFileInfo      *info)
-{
-    guint64 inode;
-
-    inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
-    if (inode != 0)
-    {
-        g_array_append_val (state->seen_deep_count_inodes, inode);
-    }
-}
-
-static void
-deep_count_one (DeepCountState *state,
-                GFileInfo      *info)
-{
-    NautilusFile *file;
-    GFile *subdir;
-    gboolean is_seen_inode;
-    const char *fs_id;
-
-    is_seen_inode = seen_inode (state, info);
-    if (!is_seen_inode)
-    {
-        mark_inode_as_seen (state, info);
-    }
-
-    file = state->directory->details->deep_count_file;
-
-    if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
-    {
-        /* Count the directory. */
-        file->details->deep_directory_count += 1;
-
-        /* Record the fact that we have to descend into this directory. */
-        fs_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
-        if (g_strcmp0 (fs_id, state->fs_id) == 0)
-        {
-            /* only if it is on the same filesystem */
-            subdir = g_file_get_child (state->deep_count_location, g_file_info_get_name (info));
-            state->deep_count_subdirectories = g_list_prepend
-                                                   (state->deep_count_subdirectories, subdir);
-        }
-    }
-    else
-    {
-        /* Even non-regular files count as files. */
-        file->details->deep_file_count += 1;
-    }
-
-    /* Count the size. */
-    if (!is_seen_inode && g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE))
-    {
-        file->details->deep_size += g_file_info_get_size (info);
-    }
-}
-
-static void
-deep_count_state_free (DeepCountState *state)
-{
-    if (state->enumerator)
-    {
-        if (!g_file_enumerator_is_closed (state->enumerator))
-        {
-            g_file_enumerator_close_async (state->enumerator,
-                                           0, NULL, NULL, NULL);
-        }
-        g_object_unref (state->enumerator);
-    }
-    g_object_unref (state->cancellable);
-    if (state->deep_count_location)
-    {
-        g_object_unref (state->deep_count_location);
-    }
-    g_list_free_full (state->deep_count_subdirectories, g_object_unref);
-    g_array_free (state->seen_deep_count_inodes, TRUE);
-    g_free (state->fs_id);
-    g_free (state);
-}
-
-static void
-deep_count_next_dir (DeepCountState *state)
-{
-    GFile *location;
-    NautilusFile *file;
-    NautilusDirectory *directory;
-    gboolean done;
-
-    directory = state->directory;
-
-    g_object_unref (state->deep_count_location);
-    state->deep_count_location = NULL;
-
-    done = FALSE;
-    file = directory->details->deep_count_file;
-
-    if (state->deep_count_subdirectories != NULL)
-    {
-        /* Work on a new directory. */
-        location = state->deep_count_subdirectories->data;
-        state->deep_count_subdirectories = g_list_remove
-                                               (state->deep_count_subdirectories, location);
-        deep_count_load (state, location);
-        g_object_unref (location);
-    }
-    else
-    {
-        file->details->deep_counts_status = NAUTILUS_REQUEST_DONE;
-        directory->details->deep_count_file = NULL;
-        directory->details->deep_count_in_progress = NULL;
-        deep_count_state_free (state);
-        done = TRUE;
-    }
-
-    nautilus_file_updated_deep_count_in_progress (file);
-
-    if (done)
-    {
-        nautilus_file_changed (file);
-        async_job_end (directory, "deep count");
-        nautilus_directory_async_state_changed (directory);
-    }
-}
-
-static void
-deep_count_more_files_callback (GObject      *source_object,
-                                GAsyncResult *res,
-                                gpointer      user_data)
-{
-    DeepCountState *state;
-    NautilusDirectory *directory;
-    GList *files, *l;
-    GFileInfo *info;
-
-    state = user_data;
-
-    if (state->directory == NULL)
-    {
-        /* Operation was cancelled. Bail out */
-        deep_count_state_free (state);
-        return;
-    }
-
-    directory = nautilus_directory_ref (state->directory);
-
-    g_assert (directory->details->deep_count_in_progress != NULL);
-    g_assert (directory->details->deep_count_in_progress == state);
-
-    files = g_file_enumerator_next_files_finish (state->enumerator,
-                                                 res, NULL);
-
-    for (l = files; l != NULL; l = l->next)
-    {
-        info = l->data;
-        deep_count_one (state, info);
-        g_object_unref (info);
-    }
-
-    if (files == NULL)
-    {
-        g_file_enumerator_close_async (state->enumerator, 0, NULL, NULL, NULL);
-        g_object_unref (state->enumerator);
-        state->enumerator = NULL;
-
-        deep_count_next_dir (state);
-    }
-    else
-    {
-        g_file_enumerator_next_files_async (state->enumerator,
-                                            DIRECTORY_LOAD_ITEMS_PER_CALLBACK,
-                                            G_PRIORITY_LOW,
-                                            state->cancellable,
-                                            deep_count_more_files_callback,
-                                            state);
-    }
-
-    g_list_free (files);
-
-    nautilus_directory_unref (directory);
-}
-
-static void
-deep_count_callback (GObject      *source_object,
-                     GAsyncResult *res,
-                     gpointer      user_data)
-{
-    DeepCountState *state;
-    GFileEnumerator *enumerator;
-    NautilusFile *file;
-
-    state = user_data;
-
-    if (state->directory == NULL)
-    {
-        /* Operation was cancelled. Bail out */
-        deep_count_state_free (state);
-        return;
-    }
-
-    file = state->directory->details->deep_count_file;
-
-    enumerator = g_file_enumerate_children_finish (G_FILE (source_object), res, NULL);
-
-    if (enumerator == NULL)
-    {
-        file->details->deep_unreadable_count += 1;
-
-        deep_count_next_dir (state);
-    }
-    else
-    {
-        state->enumerator = enumerator;
-        g_file_enumerator_next_files_async (state->enumerator,
-                                            DIRECTORY_LOAD_ITEMS_PER_CALLBACK,
-                                            G_PRIORITY_LOW,
-                                            state->cancellable,
-                                            deep_count_more_files_callback,
-                                            state);
-    }
-}
-
-
-static void
-deep_count_load (DeepCountState *state,
-                 GFile          *location)
-{
-    state->deep_count_location = g_object_ref (location);
-
-    g_debug ("load_directory called to get deep file count for %p", location);
-    g_file_enumerate_children_async (state->deep_count_location,
-                                     G_FILE_ATTRIBUTE_STANDARD_NAME ","
-                                     G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                                     G_FILE_ATTRIBUTE_STANDARD_SIZE ","
-                                     G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN ","
-                                     G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP ","
-                                     G_FILE_ATTRIBUTE_ID_FILESYSTEM ","
-                                     G_FILE_ATTRIBUTE_UNIX_INODE,
-                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,     /* flags */
-                                     G_PRIORITY_LOW,     /* prio */
-                                     state->cancellable,
-                                     deep_count_callback,
-                                     state);
-}
-
-static void
-deep_count_stop (NautilusDirectory *directory)
-{
-    NautilusFile *file;
-
-    if (directory->details->deep_count_in_progress != NULL)
-    {
-        file = directory->details->deep_count_file;
-        if (file != NULL)
-        {
-            g_assert (NAUTILUS_IS_FILE (file));
-            g_assert (file->details->directory == directory);
-            if (is_needy (file,
-                          lacks_deep_count,
-                          REQUEST_DEEP_COUNT))
-            {
-                return;
-            }
-        }
-
-        /* The count is not wanted, so stop it. */
-        deep_count_cancel (directory);
-    }
-}
-
-static void
-deep_count_got_info (GObject      *source_object,
-                     GAsyncResult *res,
-                     gpointer      user_data)
-{
-    GFileInfo *info;
-    const char *id;
-    GFile *file = (GFile *) source_object;
-    DeepCountState *state = (DeepCountState *) user_data;
-
-    info = g_file_query_info_finish (file, res, NULL);
-    if (info != NULL)
-    {
-        id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
-        state->fs_id = g_strdup (id);
-        g_object_unref (info);
-    }
-    deep_count_load (state, file);
-}
-
-static void
-deep_count_start (NautilusDirectory *directory,
-                  NautilusFile      *file,
-                  gboolean          *doing_io)
-{
-    GFile *location;
-    DeepCountState *state;
-
-    if (directory->details->deep_count_in_progress != NULL)
-    {
-        *doing_io = TRUE;
-        return;
-    }
-
-    if (!is_needy (file,
-                   lacks_deep_count,
-                   REQUEST_DEEP_COUNT))
-    {
-        return;
-    }
-    *doing_io = TRUE;
-
-    if (!nautilus_file_is_directory (file))
-    {
-        file->details->deep_counts_status = NAUTILUS_REQUEST_DONE;
-
-        nautilus_directory_async_state_changed (directory);
-        return;
-    }
-
-    if (!async_job_start (directory, "deep count"))
-    {
-        return;
-    }
-
-    /* Start counting. */
-    file->details->deep_counts_status = NAUTILUS_REQUEST_IN_PROGRESS;
-    file->details->deep_directory_count = 0;
-    file->details->deep_file_count = 0;
-    file->details->deep_unreadable_count = 0;
-    file->details->deep_size = 0;
-    directory->details->deep_count_file = file;
-
-    state = g_new0 (DeepCountState, 1);
-    state->directory = directory;
-    state->cancellable = g_cancellable_new ();
-    state->seen_deep_count_inodes = g_array_new (FALSE, TRUE, sizeof (guint64));
-    state->fs_id = NULL;
-
-    directory->details->deep_count_in_progress = state;
-
-    location = nautilus_file_get_location (file);
-    g_file_query_info_async (location,
-                             G_FILE_ATTRIBUTE_ID_FILESYSTEM,
-                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                             G_PRIORITY_DEFAULT,
-                             NULL,
-                             deep_count_got_info,
-                             state);
     g_object_unref (location);
 }
 
@@ -3839,7 +3405,6 @@ start_or_stop_io (NautilusDirectory *directory)
     /* Stop any no longer wanted attribute fetches. */
     file_info_stop (directory);
     directory_count_stop (directory);
-    deep_count_stop (directory);
     extension_info_stop (directory);
     mount_stop (directory);
     thumbnail_stop (directory);
@@ -3870,7 +3435,6 @@ start_or_stop_io (NautilusDirectory *directory)
         /* Start getting attributes if possible */
         mount_start (directory, file, &doing_io);
         directory_count_start (directory, file, &doing_io);
-        deep_count_start (directory, file, &doing_io);
         thumbnail_start (directory, file, &doing_io);
         filesystem_info_start (directory, file, &doing_io);
 
@@ -3940,7 +3504,6 @@ void
 nautilus_directory_cancel (NautilusDirectory *directory)
 {
     /* Arbitrary order (kept alphabetical). */
-    deep_count_cancel (directory);
     directory_count_cancel (directory);
     file_info_cancel (directory);
     file_list_cancel (directory);
@@ -3968,16 +3531,6 @@ cancel_directory_count_for_file (NautilusDirectory *directory,
         directory->details->count_in_progress->count_file == file)
     {
         directory_count_cancel (directory);
-    }
-}
-
-static void
-cancel_deep_counts_for_file (NautilusDirectory *directory,
-                             NautilusFile      *file)
-{
-    if (directory->details->deep_count_file == file)
-    {
-        deep_count_cancel (directory);
     }
 }
 
@@ -4036,10 +3589,6 @@ cancel_loading_attributes (NautilusDirectory      *directory,
     {
         directory_count_cancel (directory);
     }
-    if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
-    {
-        deep_count_cancel (directory);
-    }
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
     {
         file_info_cancel (directory);
@@ -4080,10 +3629,6 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *direc
     if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT))
     {
         cancel_directory_count_for_file (directory, file);
-    }
-    if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
-    {
-        cancel_deep_counts_for_file (directory, file);
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
     {

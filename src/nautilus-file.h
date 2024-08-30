@@ -196,13 +196,6 @@ GError *                nautilus_file_get_file_info_error               (Nautilu
 gboolean                nautilus_file_get_directory_item_count          (NautilusFile                   *file,
 									 guint                          *count,
 									 gboolean                       *count_unreadable);
-void                    nautilus_file_recompute_deep_counts             (NautilusFile                   *file);
-NautilusRequestStatus   nautilus_file_get_deep_counts                   (NautilusFile                   *file,
-									 guint                          *directory_count,
-									 guint                          *file_count,
-									 guint                          *unreadable_directory_count,
-									 goffset               *total_size,
-									 gboolean                        force);
 gboolean                nautilus_file_should_show_thumbnail             (NautilusFile                   *file);
 gboolean                nautilus_file_should_show_directory_item_count  (NautilusFile                   *file);
 
@@ -489,9 +482,6 @@ typedef struct {
 	/* Called when the file notices any change. */
 	void                  (* changed)                (NautilusFile *file);
 
-	/* Called periodically while directory deep count is being computed. */
-	void                  (* updated_deep_count_in_progress) (NautilusFile *file);
-
 	/* Virtual functions which MUST be implemented by subclasses */
 	void                  (* monitor_add)            (NautilusFile           *file,
 							  gconstpointer           client,
@@ -512,11 +502,6 @@ typedef struct {
 	gboolean              (* get_item_count)         (NautilusFile           *file,
 							  guint                  *count,
 							  gboolean               *count_unreadable);
-	NautilusRequestStatus (* get_deep_counts)        (NautilusFile           *file,
-							  guint                  *directory_count,
-							  guint                  *file_count,
-							  guint                  *unreadable_directory_count,
-							  goffset       *total_size);
 
         /* Virtual functions which MAY be implemented by subclasses (default implementation does nothing) */
 	void                  (* set_metadata)           (NautilusFile           *file,

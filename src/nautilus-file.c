@@ -117,7 +117,6 @@ typedef void (*ModifyListFunction) (GList       **list,
 enum
 {
     CHANGED,
-    UPDATED_DEEP_COUNT_IN_PROGRESS,
     LAST_SIGNAL
 };
 
@@ -144,10 +143,6 @@ static GQuark attribute_name_q,
               attribute_date_created_full_q,
               attribute_mime_type_q,
               attribute_size_detail_q,
-              attribute_deep_size_q,
-              attribute_deep_file_count_q,
-              attribute_deep_directory_count_q,
-              attribute_deep_total_count_q,
               attribute_search_relevance_q,
               attribute_trashed_on_q,
               attribute_trashed_on_full_q,
@@ -5075,78 +5070,6 @@ nautilus_file_get_directory_item_count (NautilusFile *file,
                (file, count, count_unreadable);
 }
 
-/**
- * nautilus_file_get_deep_counts
- *
- * Get the statistics about items inside a directory.
- * @file: NautilusFile representing a directory or file.
- * @directory_count: Place to put count of directories inside.
- * @files_count: Place to put count of files inside.
- * @unreadable_directory_count: Number of directories encountered
- * that were unreadable.
- * @total_size: Total size of all files and directories visited.
- * @force: Whether the deep counts should even be collected if
- * nautilus_file_should_show_directory_item_count returns FALSE
- * for this file.
- *
- * Returns: Status to indicate whether sizes are available.
- *
- **/
-NautilusRequestStatus
-nautilus_file_get_deep_counts (NautilusFile *file,
-                               guint        *directory_count,
-                               guint        *file_count,
-                               guint        *unreadable_directory_count,
-                               goffset      *total_size,
-                               gboolean      force)
-{
-    if (directory_count != NULL)
-    {
-        *directory_count = 0;
-    }
-    if (file_count != NULL)
-    {
-        *file_count = 0;
-    }
-    if (unreadable_directory_count != NULL)
-    {
-        *unreadable_directory_count = 0;
-    }
-    if (total_size != NULL)
-    {
-        *total_size = 0;
-    }
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NAUTILUS_REQUEST_DONE);
-
-    if (!force && !nautilus_file_should_show_directory_item_count (file))
-    {
-        /* Set field so an existing value isn't treated as up-to-date
-         * when preference changes later.
-         */
-        file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
-        return file->details->deep_counts_status;
-    }
-
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_deep_counts
-               (file, directory_count, file_count,
-               unreadable_directory_count, total_size);
-}
-
-void
-nautilus_file_recompute_deep_counts (NautilusFile *file)
-{
-    if (file->details->deep_counts_status != NAUTILUS_REQUEST_IN_PROGRESS)
-    {
-        file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
-        if (file->details->directory != NULL)
-        {
-            nautilus_directory_add_file_to_work_queue (file->details->directory, file);
-            nautilus_directory_async_state_changed (file->details->directory);
-        }
-    }
-}
-
 gboolean
 nautilus_file_can_get_size (NautilusFile *file)
 {
@@ -6340,156 +6263,6 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
                             size_str);
 }
 
-
-static char *
-nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
-                                                 gboolean      report_size,
-                                                 gboolean      report_directory_count,
-                                                 gboolean      report_file_count)
-{
-    NautilusRequestStatus status;
-    guint directory_count;
-    guint file_count;
-    guint unreadable_count;
-    guint total_count;
-    goffset total_size;
-
-    /* Must ask for size or some kind of count, but not both. */
-    g_assert (!report_size || (!report_directory_count && !report_file_count));
-    g_assert (report_size || report_directory_count || report_file_count);
-
-    if (file == NULL)
-    {
-        return NULL;
-    }
-
-    g_assert (NAUTILUS_IS_FILE (file));
-    g_assert (nautilus_file_is_directory (file));
-
-    status = nautilus_file_get_deep_counts
-                 (file, &directory_count, &file_count, &unreadable_count, &total_size, FALSE);
-
-    /* Check whether any info is available. */
-    if (status == NAUTILUS_REQUEST_NOT_STARTED)
-    {
-        return NULL;
-    }
-
-    total_count = file_count + directory_count;
-
-    if (total_count == 0)
-    {
-        switch (status)
-        {
-            case NAUTILUS_REQUEST_IN_PROGRESS:
-            {
-                /* Don't return confident "zero" until we're finished looking,
-                 * because of next case.
-                 */
-                return NULL;
-            }
-
-            case NAUTILUS_REQUEST_DONE:
-            {
-                /* Don't return "zero" if we there were contents but we couldn't read them. */
-                if (unreadable_count != 0)
-                {
-                    return NULL;
-                }
-            }
-
-            default:
-            {}
-            break;
-        }
-    }
-
-    /* Note that we don't distinguish the "everything was readable" case
-     * from the "some things but not everything was readable" case here.
-     * Callers can distinguish them using nautilus_file_get_deep_counts
-     * directly if desired.
-     */
-    if (report_size)
-    {
-        return g_format_size (total_size);
-    }
-
-    return format_item_count_for_display (report_directory_count
-                                          ? (report_file_count ? total_count : directory_count)
-                                          : file_count,
-                                          report_directory_count, report_file_count);
-}
-
-/**
- * nautilus_file_get_deep_size_as_string:
- *
- * Get a user-displayable string representing the size of all contained
- * items (only makes sense for directories). The caller
- * is responsible for g_free-ing this string.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: Newly allocated string ready to display to the user.
- *
- **/
-static char *
-nautilus_file_get_deep_size_as_string (NautilusFile *file)
-{
-    return nautilus_file_get_deep_count_as_string_internal (file, TRUE, FALSE, FALSE);
-}
-
-/**
- * nautilus_file_get_deep_total_count_as_string:
- *
- * Get a user-displayable string representing the count of all contained
- * items (only makes sense for directories). The caller
- * is responsible for g_free-ing this string.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: Newly allocated string ready to display to the user.
- *
- **/
-static char *
-nautilus_file_get_deep_total_count_as_string (NautilusFile *file)
-{
-    return nautilus_file_get_deep_count_as_string_internal (file, FALSE, TRUE, TRUE);
-}
-
-/**
- * nautilus_file_get_deep_file_count_as_string:
- *
- * Get a user-displayable string representing the count of all contained
- * items, not including directories. It only makes sense to call this
- * function on a directory. The caller
- * is responsible for g_free-ing this string.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: Newly allocated string ready to display to the user.
- *
- **/
-static char *
-nautilus_file_get_deep_file_count_as_string (NautilusFile *file)
-{
-    return nautilus_file_get_deep_count_as_string_internal (file, FALSE, FALSE, TRUE);
-}
-
-/**
- * nautilus_file_get_deep_directory_count_as_string:
- *
- * Get a user-displayable string representing the count of all contained
- * directories. It only makes sense to call this
- * function on a directory. The caller
- * is responsible for g_free-ing this string.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: Newly allocated string ready to display to the user.
- *
- **/
-static char *
-nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
-{
-    return nautilus_file_get_deep_count_as_string_internal (file, FALSE, TRUE, FALSE);
-}
-
 /**
  * nautilus_file_get_string_attribute:
  *
@@ -6500,8 +6273,8 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  *
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
- * set includes "name", "type", "detailed_type", "mime_type", "size", "deep_size", "deep_directory_count",
- * "deep_file_count", "deep_total_count", "date_modified", "date_accessed", "date_created",
+ * set includes "name", "type", "detailed_type", "mime_type", "size",
+ * "date_modified", "date_accessed", "date_created",
  * "date_modified_full", "date_accessed_full", "date_created_full",
  * "owner", "group", "permissions", "octal_permissions", "uri", "where",
  * "link_target", "volume", "free_space", "selinux_context", "trashed_on", "trashed_on_full", "trashed_orig_path",
@@ -6540,22 +6313,6 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
     if (attribute_q == attribute_size_detail_q)
     {
         return nautilus_file_get_size_as_string_with_real_size (file);
-    }
-    if (attribute_q == attribute_deep_size_q)
-    {
-        return nautilus_file_get_deep_size_as_string (file);
-    }
-    if (attribute_q == attribute_deep_file_count_q)
-    {
-        return nautilus_file_get_deep_file_count_as_string (file);
-    }
-    if (attribute_q == attribute_deep_directory_count_q)
-    {
-        return nautilus_file_get_deep_directory_count_as_string (file);
-    }
-    if (attribute_q == attribute_deep_total_count_q)
-    {
-        return nautilus_file_get_deep_total_count_as_string (file);
     }
     if (attribute_q == attribute_trash_orig_path_q)
     {
@@ -6707,7 +6464,6 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
     char *result;
     guint item_count;
     gboolean count_unreadable;
-    NautilusRequestStatus status;
 
     result = nautilus_file_get_string_attribute_q (file, attribute_q);
     if (result != NULL)
@@ -6731,28 +6487,6 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
             nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
         }
         return g_strdup (count_unreadable ? "—" : "…");
-    }
-    if (attribute_q == attribute_deep_size_q)
-    {
-        status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
-        if (status == NAUTILUS_REQUEST_DONE)
-        {
-            /* This means no contents at all were readable */
-            return g_strdup (_("? bytes"));
-        }
-        return g_strdup ("…");
-    }
-    if (attribute_q == attribute_deep_file_count_q
-        || attribute_q == attribute_deep_directory_count_q
-        || attribute_q == attribute_deep_total_count_q)
-    {
-        status = nautilus_file_get_deep_counts (file, NULL, NULL, NULL, NULL, FALSE);
-        if (status == NAUTILUS_REQUEST_DONE)
-        {
-            /* This means no contents at all were readable */
-            return g_strdup (_("? items"));
-        }
-        return g_strdup ("…");
     }
     if (attribute_q == attribute_type_q
         || attribute_q == attribute_detailed_type_q
@@ -7615,32 +7349,6 @@ nautilus_file_changed (NautilusFile *file)
 }
 
 /**
- * nautilus_file_updated_deep_count_in_progress
- *
- * Notify clients that a newer deep count is available for
- * the directory in question.
- */
-void
-nautilus_file_updated_deep_count_in_progress (NautilusFile *file)
-{
-    GList *link_files, *node;
-
-    g_assert (NAUTILUS_IS_FILE (file));
-    g_assert (nautilus_file_is_directory (file));
-
-    /* Send out a signal. */
-    g_signal_emit (file, signals[UPDATED_DEEP_COUNT_IN_PROGRESS], 0, file);
-
-    /* Tell link files pointing to this object about the change. */
-    link_files = get_link_files (file);
-    for (node = link_files; node != NULL; node = node->next)
-    {
-        nautilus_file_updated_deep_count_in_progress (NAUTILUS_FILE (node->data));
-    }
-    nautilus_file_list_free (link_files);
-}
-
-/**
  * nautilus_file_emit_changed
  *
  * Emit a file changed signal.
@@ -7788,12 +7496,6 @@ invalidate_directory_count (NautilusFile *file)
 }
 
 static void
-invalidate_deep_counts (NautilusFile *file)
-{
-    file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
-}
-
-static void
 invalidate_file_info (NautilusFile *file)
 {
     file->details->file_info_is_up_to_date = FALSE;
@@ -7839,10 +7541,6 @@ nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
     if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT))
     {
         invalidate_directory_count (file);
-    }
-    if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
-    {
-        invalidate_deep_counts (file);
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
     {
@@ -7947,7 +7645,6 @@ NautilusFileAttributes
 nautilus_file_get_all_attributes (void)
 {
     return NAUTILUS_FILE_ATTRIBUTE_INFO |
-           NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
            NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO |
            NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL |
@@ -7975,7 +7672,6 @@ nautilus_file_invalidate_all_attributes (NautilusFile *file)
 void
 nautilus_file_dump (NautilusFile *file)
 {
-    long size = file->details->deep_size;
     char *uri;
     const char *file_kind;
 
@@ -7991,7 +7687,6 @@ nautilus_file_dump (NautilusFile *file)
     }
     else
     {
-        g_print ("size: %ld \n", size);
         switch (file->details->type)
         {
             case G_FILE_TYPE_REGULAR:
@@ -8433,70 +8128,6 @@ real_get_item_count (NautilusFile *file,
     return TRUE;
 }
 
-static NautilusRequestStatus
-real_get_deep_counts (NautilusFile *file,
-                      guint        *directory_count,
-                      guint        *file_count,
-                      guint        *unreadable_directory_count,
-                      goffset      *total_size)
-{
-    GFileType type;
-
-    type = nautilus_file_get_file_type (file);
-
-    if (directory_count != NULL)
-    {
-        *directory_count = 0;
-    }
-    if (file_count != NULL)
-    {
-        *file_count = 0;
-    }
-    if (unreadable_directory_count != NULL)
-    {
-        *unreadable_directory_count = 0;
-    }
-    if (total_size != NULL)
-    {
-        *total_size = 0;
-    }
-
-    if (type != G_FILE_TYPE_DIRECTORY)
-    {
-        return NAUTILUS_REQUEST_DONE;
-    }
-
-    if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED)
-    {
-        if (directory_count != NULL)
-        {
-            *directory_count = file->details->deep_directory_count;
-        }
-        if (file_count != NULL)
-        {
-            *file_count = file->details->deep_file_count;
-        }
-        if (unreadable_directory_count != NULL)
-        {
-            *unreadable_directory_count = file->details->deep_unreadable_count;
-        }
-        if (total_size != NULL)
-        {
-            *total_size = file->details->deep_size;
-        }
-        return file->details->deep_counts_status;
-    }
-
-    /* For directories, or before we know the type, we haven't started. */
-    if (type == G_FILE_TYPE_UNKNOWN || type == G_FILE_TYPE_DIRECTORY)
-    {
-        return NAUTILUS_REQUEST_NOT_STARTED;
-    }
-
-    /* For other types, we are done, and the zeros are permanent. */
-    return NAUTILUS_REQUEST_DONE;
-}
-
 static void
 nautilus_file_get_property (GObject    *object,
                             guint       prop_id,
@@ -8569,10 +8200,6 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_date_created_full_q = g_quark_from_static_string ("date_created_full");
     attribute_mime_type_q = g_quark_from_static_string ("mime_type");
     attribute_size_detail_q = g_quark_from_static_string ("size_detail");
-    attribute_deep_size_q = g_quark_from_static_string ("deep_size");
-    attribute_deep_file_count_q = g_quark_from_static_string ("deep_file_count");
-    attribute_deep_directory_count_q = g_quark_from_static_string ("deep_directory_count");
-    attribute_deep_total_count_q = g_quark_from_static_string ("deep_total_count");
     attribute_search_relevance_q = g_quark_from_static_string ("search_relevance");
     attribute_trashed_on_q = g_quark_from_static_string ("trashed_on");
     attribute_trashed_on_full_q = g_quark_from_static_string ("trashed_on_full");
@@ -8595,7 +8222,6 @@ nautilus_file_class_init (NautilusFileClass *class)
     G_OBJECT_CLASS (class)->set_property = nautilus_file_set_property;
 
     class->get_item_count = real_get_item_count;
-    class->get_deep_counts = real_get_deep_counts;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
@@ -8614,15 +8240,6 @@ nautilus_file_class_init (NautilusFileClass *class)
                       G_TYPE_FROM_CLASS (class),
                       G_SIGNAL_RUN_LAST,
                       G_STRUCT_OFFSET (NautilusFileClass, changed),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
-
-    signals[UPDATED_DEEP_COUNT_IN_PROGRESS] =
-        g_signal_new ("updated-deep-count-in-progress",
-                      G_TYPE_FROM_CLASS (class),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFileClass, updated_deep_count_in_progress),
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);

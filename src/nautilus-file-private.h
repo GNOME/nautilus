@@ -80,11 +80,6 @@ struct NautilusFilePrivate
 	
 	guint directory_count;
 
-	guint deep_directory_count;
-	guint deep_file_count;
-	guint deep_unreadable_count;
-	goffset deep_size;
-
 	GIcon *icon;
 	
 	char *thumbnail_path;
@@ -145,11 +140,6 @@ struct NautilusFilePrivate
 	guint got_directory_count           : 1;
 	guint directory_count_failed        : 1;
 	guint directory_count_is_up_to_date : 1;
-
-	guint deep_counts_status      : 2; /* NautilusRequestStatus */
-	/* no deep_counts_are_up_to_date field; since we expose
-           intermediate values for this attribute, we do actually
-           forget it rather than invalidating. */
 
 	guint mount_is_up_to_date           : 1;
 	
@@ -224,8 +214,6 @@ void          nautilus_file_mark_gone                      (NautilusFile        
 
 GDateTime *   nautilus_file_get_date                       (NautilusFile           *file,
 							    NautilusDateType        date_type);
-void          nautilus_file_updated_deep_count_in_progress (NautilusFile           *file);
-
 
 void          nautilus_file_clear_info                     (NautilusFile           *file);
 /* Compare file's state with a fresh file info struct, return FALSE if

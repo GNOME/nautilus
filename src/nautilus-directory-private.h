@@ -30,7 +30,6 @@
 typedef struct FileMonitors FileMonitors;
 typedef struct DirectoryLoadState DirectoryLoadState;
 typedef struct DirectoryCountState DirectoryCountState;
-typedef struct DeepCountState DeepCountState;
 typedef struct GetInfoState GetInfoState;
 typedef struct NewFilesState NewFilesState;
 typedef struct ThumbnailState ThumbnailState;
@@ -38,7 +37,6 @@ typedef struct MountState MountState;
 typedef struct FilesystemInfoState FilesystemInfoState;
 
 typedef enum {
-	REQUEST_DEEP_COUNT,
 	REQUEST_DIRECTORY_COUNT,
 	REQUEST_FILE_INFO,
 	REQUEST_FILE_LIST, /* always FALSE if file != NULL */
@@ -104,9 +102,6 @@ struct NautilusDirectoryPrivate
 	GList *files_changed_while_adding;
 
 	DirectoryCountState *count_in_progress;
-
-	NautilusFile *deep_count_file;
-	DeepCountState *deep_count_in_progress;
 
 	NautilusFile *get_info_file;
 	GetInfoState *get_info_in_progress;

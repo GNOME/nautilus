@@ -117,60 +117,6 @@ search_directory_file_get_item_count (NautilusFile *file,
     return TRUE;
 }
 
-static NautilusRequestStatus
-search_directory_file_get_deep_counts (NautilusFile *file,
-                                       guint        *directory_count,
-                                       guint        *file_count,
-                                       guint        *unreadable_directory_count,
-                                       goffset      *total_size)
-{
-    NautilusDirectory *directory;
-    NautilusFile *dir_file;
-    GList *file_list, *l;
-    guint dirs, files;
-    GFileType type;
-
-    directory = nautilus_file_get_directory (file);
-    file_list = nautilus_directory_get_file_list (directory);
-
-    dirs = files = 0;
-    for (l = file_list; l != NULL; l = l->next)
-    {
-        dir_file = NAUTILUS_FILE (l->data);
-        type = nautilus_file_get_file_type (dir_file);
-        if (type == G_FILE_TYPE_DIRECTORY)
-        {
-            dirs++;
-        }
-        else
-        {
-            files++;
-        }
-    }
-
-    if (directory_count != NULL)
-    {
-        *directory_count = dirs;
-    }
-    if (file_count != NULL)
-    {
-        *file_count = files;
-    }
-    if (unreadable_directory_count != NULL)
-    {
-        *unreadable_directory_count = 0;
-    }
-    if (total_size != NULL)
-    {
-        /* FIXME: Maybe we want to calculate this? */
-        *total_size = 0;
-    }
-
-    nautilus_file_list_free (file_list);
-
-    return NAUTILUS_REQUEST_DONE;
-}
-
 static void
 search_directory_file_set_metadata (NautilusFile *file,
                                     const char   *key,
@@ -296,7 +242,6 @@ nautilus_search_directory_file_class_init (NautilusSearchDirectoryFileClass *kla
     file_class->cancel_call_when_ready = search_directory_file_cancel_call_when_ready;
     file_class->check_if_ready = search_directory_file_check_if_ready;
     file_class->get_item_count = search_directory_file_get_item_count;
-    file_class->get_deep_counts = search_directory_file_get_deep_counts;
     file_class->set_metadata = search_directory_file_set_metadata;
     file_class->set_metadata_as_list = search_directory_file_set_metadata_as_list;
 }
