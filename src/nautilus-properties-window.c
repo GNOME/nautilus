@@ -121,7 +121,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *locations_group;
     GtkWidget *link_target_row;
     GtkWidget *contents_spinner;
-    guint update_directory_contents_timeout_id;
     guint update_files_timeout_id;
     GtkWidget *parent_folder_row;
 
@@ -186,14 +185,18 @@ struct _NautilusPropertiesWindow
 
     char *mime_type;
 
-    gboolean deep_count_finished;
-    GList *deep_count_files;
     guint deep_count_spinner_timeout_id;
 
     guint long_operation_underway;
 
     GList *changed_files;
     GListStore *extensions_list;
+
+    GHashTable *prefix_hashes;
+    guint64 total_count;
+    guint64 total_size;
+    GList *currently_measuring;
+    GCancellable *cancellable;
 };
 
 typedef enum
@@ -434,8 +437,16 @@ typedef struct
  */
 #define CHOWN_CHGRP_TIMEOUT                     300 /* milliseconds */
 
-static void schedule_directory_contents_update (NautilusPropertiesWindow *self);
-static void directory_contents_value_field_update (NautilusPropertiesWindow *self);
+static void directory_contents_value_field_update (gboolean reporting,
+                                                   guint64  total_size,
+                                                   guint64  directory_count,
+                                                   guint64  file_count,
+                                                   gpointer user_data);
+static void directory_count_done (GObject      *object,
+                                  GAsyncResult *res,
+                                  gpointer      user_data);
+static gboolean file_has_prefix (NautilusPropertiesWindow *self,
+                                 NautilusFile             *file);
 static void file_changed_callback (NautilusFile *file,
                                    gpointer      user_data);
 static void update_execution_row (GtkWidget       *row,
@@ -1009,43 +1020,52 @@ stop_spinner (NautilusPropertiesWindow *self)
 }
 
 static void
-stop_deep_count_for_file (NautilusPropertiesWindow *self,
-                          NautilusFile             *file)
+measure_next_location (NautilusPropertiesWindow *self)
 {
-    if (g_list_find (self->deep_count_files, file))
+    if (self->currently_measuring == NULL)
     {
-        g_signal_handlers_disconnect_by_func (file,
-                                              G_CALLBACK (schedule_directory_contents_update),
-                                              self);
-        nautilus_file_unref (file);
-        self->deep_count_files = g_list_remove (self->deep_count_files, file);
-    }
-}
-
-static void
-start_deep_count_for_file (NautilusFile             *file,
-                           NautilusPropertiesWindow *self)
-{
-    if (!nautilus_file_is_directory (file))
-    {
+        stop_spinner (self);
         return;
     }
 
-    if (!g_list_find (self->deep_count_files, file))
-    {
-        nautilus_file_ref (file);
-        self->deep_count_files = g_list_prepend (self->deep_count_files, file);
+    NautilusFile *file = self->currently_measuring->data;
+    self->currently_measuring = self->currently_measuring->next;
 
-        nautilus_file_recompute_deep_counts (file);
-        if (!self->deep_count_finished)
-        {
-            g_signal_connect_object (file,
-                                     "updated-deep-count-in-progress",
-                                     G_CALLBACK (schedule_directory_contents_update),
-                                     self, G_CONNECT_SWAPPED);
-            schedule_start_spinner (self);
-        }
+    if (file_has_prefix (self, file))
+    {
+        measure_next_location (self);
+        return;
     }
+
+    GFileType type = nautilus_file_get_file_type (file);
+
+    if (type & ~(G_FILE_TYPE_REGULAR | G_FILE_TYPE_SPECIAL | G_FILE_TYPE_SHORTCUT))
+    {
+        g_hash_table_add (self->prefix_hashes, nautilus_file_get_uri (file));
+    }
+
+    if (!nautilus_file_is_directory (file))
+    {
+        self->total_size += nautilus_file_get_size (file);
+        self->total_count++;
+        directory_contents_value_field_update (FALSE, 0, 0, 0, self);
+        measure_next_location (self);
+        return;
+    }
+
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    g_file_measure_disk_usage_async (location,
+                                     0,
+                                     /* G_FILE_MEASURE_REPORT_ANY_ERROR, */
+                                     G_PRIORITY_DEFAULT,
+                                     self->cancellable,
+                                     directory_contents_value_field_update,
+                                     self,
+                                     directory_count_done,
+                                     self);
+
+    schedule_start_spinner (self);
 }
 
 static guint32 vfs_perms[3][3] =
@@ -1948,15 +1968,15 @@ setup_ownership_row (NautilusPropertiesWindow *self,
 }
 
 static gboolean
-file_has_prefix (NautilusFile *file,
-                 GHashTable   *prefix_candidates)
+file_has_prefix (NautilusPropertiesWindow *self,
+                 NautilusFile             *file)
 {
     for (g_autoptr (GFile) parent = nautilus_file_get_parent_location (file);
          parent != NULL;)
     {
         g_autofree gchar *parent_uri = g_file_get_uri (parent);
 
-        if (g_hash_table_lookup (prefix_candidates, parent_uri))
+        if (g_hash_table_lookup (self->prefix_hashes, parent_uri))
         {
             return TRUE;
         }
@@ -1971,95 +1991,29 @@ file_has_prefix (NautilusFile *file,
 }
 
 static void
-directory_contents_value_field_update (NautilusPropertiesWindow *self)
+directory_contents_value_field_update (gboolean reporting,
+                                       guint64  current_size,
+                                       guint64  directory_count,
+                                       guint64  file_count,
+                                       gpointer user_data)
 {
-    NautilusRequestStatus file_status;
-    g_autoptr (GHashTable) prefix_hashes = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                                  NULL, g_free);
+    NautilusPropertiesWindow *self = user_data;
+
     g_autofree char *text = NULL;
     g_autofree char *bytes_str = NULL;
     g_autofree char *tooltip = NULL;
-    guint directory_count;
-    guint file_count;
-    guint total_count;
-    guint unreadable_directory_count;
-    goffset total_size;
-    NautilusFile *file;
-    GList *l;
-    guint file_unreadable;
-    goffset file_size;
-    gboolean deep_count_active;
+
+    guint64 total_count = self->total_count + directory_count + file_count;
+    guint64 total_size = self->total_size + current_size;
+    guint unreadable_directory_count = 0; /* TODO this needs to be fixed in glib */
 
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
-
-    total_count = 0;
-    total_size = 0;
-    unreadable_directory_count = FALSE;
-
-    for (l = self->files; l; l = l->next)
-    {
-        g_autoptr (GFile) location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
-        GFileType type = nautilus_file_get_file_type (NAUTILUS_FILE (l->data));
-
-        if (type & ~(G_FILE_TYPE_REGULAR | G_FILE_TYPE_SPECIAL | G_FILE_TYPE_SHORTCUT))
-        {
-            g_hash_table_add (prefix_hashes, g_file_get_uri (location));
-        }
-    }
-
-    for (l = self->files; l; l = l->next)
-    {
-        file = NAUTILUS_FILE (l->data);
-
-        if (file_has_prefix (file, prefix_hashes))
-        {
-            /* don't count nested files twice */
-            continue;
-        }
-
-        if (nautilus_file_is_directory (file))
-        {
-            file_status = nautilus_file_get_deep_counts (file,
-                                                         &directory_count,
-                                                         &file_count,
-                                                         &file_unreadable,
-                                                         &file_size,
-                                                         TRUE);
-            total_count += (file_count + directory_count);
-            total_size += file_size;
-
-            if (file_unreadable)
-            {
-                unreadable_directory_count = TRUE;
-            }
-
-            if (file_status == NAUTILUS_REQUEST_DONE)
-            {
-                stop_deep_count_for_file (self, file);
-            }
-        }
-        else
-        {
-            ++total_count;
-            total_size += nautilus_file_get_size (file);
-        }
-    }
-
-    deep_count_active = (self->deep_count_files != NULL);
-    /* If we've already displayed the total once, don't do another visible
-     * count-up if the deep_count happens to get invalidated.
-     * But still display the new total, since it might have changed.
-     */
-    if (self->deep_count_finished && deep_count_active)
-    {
-        return;
-    }
 
     text = NULL;
 
     if (total_count == 0)
     {
-        if (!deep_count_active)
+        if (!reporting)
         {
             if (unreadable_directory_count == 0)
             {
@@ -2079,8 +2033,8 @@ directory_contents_value_field_update (NautilusPropertiesWindow *self)
     {
         g_autofree char *size_str = NULL;
         size_str = g_format_size (total_size);
-        text = g_strdup_printf (ngettext ("%'d item, with size %s",
-                                          "%'d items, totalling %s",
+        text = g_strdup_printf (ngettext ("%'ld item, with size %s",
+                                          "%'ld items, totalling %s",
                                           total_count),
                                 total_count, size_str);
 
@@ -2104,50 +2058,37 @@ directory_contents_value_field_update (NautilusPropertiesWindow *self)
 
     gtk_widget_set_tooltip_text (GTK_WIDGET (self->contents_value_label),
                                  tooltip);
-
-    if (!deep_count_active)
-    {
-        self->deep_count_finished = TRUE;
-        stop_spinner (self);
-    }
-}
-
-static gboolean
-update_directory_contents_callback (gpointer data)
-{
-    NautilusPropertiesWindow *self;
-
-    self = NAUTILUS_PROPERTIES_WINDOW (data);
-
-    self->update_directory_contents_timeout_id = 0;
-    directory_contents_value_field_update (self);
-
-    return FALSE;
 }
 
 static void
-schedule_directory_contents_update (NautilusPropertiesWindow *self)
+directory_count_done (GObject      *object,
+                      GAsyncResult *res,
+                      gpointer      user_data)
 {
-    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
+    guint64 total_size;
+    guint64 num_dirs;
+    guint64 num_files;
+    g_autoptr (GError) error = NULL;
+    NautilusPropertiesWindow *self = user_data;
 
-    if (self->update_directory_contents_timeout_id == 0)
+    g_file_measure_disk_usage_finish (G_FILE (object),
+                                      res,
+                                      &total_size,
+                                      &num_dirs,
+                                      &num_files,
+                                      &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-        self->update_directory_contents_timeout_id
-            = g_timeout_add (DIRECTORY_CONTENTS_UPDATE_INTERVAL,
-                             update_directory_contents_callback,
-                             self);
+        return;
     }
-}
 
-static void
-setup_contents_field (NautilusPropertiesWindow *self)
-{
-    g_list_foreach (self->files,
-                    (GFunc) start_deep_count_for_file,
-                    self);
+    self->total_count += num_dirs + num_files;
+    self->total_size += total_size;
 
-    /* Fill in the initial value. */
-    directory_contents_value_field_update (self);
+    directory_contents_value_field_update (FALSE, 0, 0, 0, self);
+
+    measure_next_location (self);
 }
 
 static gboolean
@@ -2645,7 +2586,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
         if (!is_volume_properties (self))
         {
             gtk_widget_set_visible (self->contents_box, TRUE);
-            setup_contents_field (self);
+            measure_next_location (self);
         }
     }
     else
@@ -3703,6 +3644,7 @@ create_properties_window (StartupData *startup_data)
                                                        NULL));
 
     window->files = nautilus_file_list_copy (startup_data->files);
+    window->currently_measuring = window->files;
 
     if (startup_data->parent_widget)
     {
@@ -3980,10 +3922,10 @@ real_dispose (GObject *object)
 
     g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
 
-    while (self->deep_count_files)
-    {
-        stop_deep_count_for_file (self, self->deep_count_files->data);
-    }
+    g_cancellable_cancel (self->cancellable);
+    g_clear_object (&self->cancellable);
+
+    g_clear_pointer (&self->prefix_hashes, g_hash_table_destroy);
 
     g_clear_list (&self->permission_rows, NULL);
 
@@ -3994,7 +3936,6 @@ real_dispose (GObject *object)
     g_clear_list (&self->value_labels, NULL);
     g_clear_list (&self->value_rows, NULL);
 
-    g_clear_handle_id (&self->update_directory_contents_timeout_id, g_source_remove);
     g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
 
     gtk_widget_dispose_template (GTK_WIDGET (self), NAUTILUS_TYPE_PROPERTIES_WINDOW);
@@ -4192,4 +4133,8 @@ static void
 nautilus_properties_window_init (NautilusPropertiesWindow *self)
 {
     gtk_widget_init_template (GTK_WIDGET (self));
+
+    self->cancellable = g_cancellable_new ();
+    self->prefix_hashes = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                 NULL, g_free);
 }
