@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2024-08-18 22:44+0000\n"
-"PO-Revision-Date: 2024-08-26 17:53+0200\n"
+"PO-Revision-Date: 2024-08-31 07:59+0200\n"
 "Last-Translator: Quentin PAGÈS\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -1646,16 +1646,16 @@ msgid "%s Free"
 msgstr "%s liure"
 
 #: src/nautilus-file-chooser.c:221
-#, fuzzy
-#| msgid "Replace With"
 msgid "Replace When Saving?"
-msgstr "Remplaçar per"
+msgstr "Remplaçar pendent l’enregistrament ?"
 
 #: src/nautilus-file-chooser.c:227
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
 msgstr ""
+"« %s » existís ja dins « %s ». L'enregistrament remplaçarà o subrecargarà "
+"son contengut."
 
 #: src/nautilus-file-chooser.c:232 src/nautilus-file-chooser.c:308
 #: src/nautilus-file-operations.c:279
@@ -1985,6 +1985,8 @@ msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
 "permanently deleted."
 msgstr ""
+"Voidatz l'escobilhièr per desliurar d'espaci sus « %s ». Totes los elements "
+"escobilhats seràn definitivament suprimits."
 
 #: src/nautilus-file-operations.c:2510
 msgid "Empty Trash Before Ejecting?"
@@ -3348,7 +3350,7 @@ msgstr "Copiar"
 #, c-format
 msgctxt "Noun"
 msgid "Copy %zu"
-msgstr "Copiar « %zu »"
+msgstr "Copiar « %zu"
 
 #. Translators: File name for new symlink. %s is target's name, %zu is number of symlink.
 #: src/nautilus-filename-utilities.c:259
@@ -4085,10 +4087,12 @@ msgstr "Recèrca de « %s »"
 #: src/nautilus-query-editor.c:146
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr ""
+"La recèrca pòt èsser lenta e inclurà pas de sosdorsièrs o de contenguts de "
+"fichièr"
 
 #: src/nautilus-query-editor.c:153
 msgid "Search may be slow and will not include file contents"
-msgstr ""
+msgstr "La recèrca pòt èsser lenta e inclurà pas lo contengut del fichièr"
 
 #: src/nautilus-query-editor.c:161
 msgid "Remote Location"
@@ -4099,25 +4103,23 @@ msgid "External Drive"
 msgstr "Disc extèrne"
 
 #: src/nautilus-query-editor.c:173
-#, fuzzy
-#| msgid "Find files and folders in all search locations"
 msgid "Folder Not in Search Locations"
-msgstr "Trobar los fichièrs e los dorsièrs de totes los emplaçaments"
+msgstr "Dorsièr pas dins los emplaçaments de recèrca"
 
 #: src/nautilus-query-editor.c:180
-#, fuzzy
-#| msgid "Find files and folders in all search locations"
 msgid "Subfolders Not in Search Locations"
-msgstr "Trobar los fichièrs e los dorsièrs de totes los emplaçaments"
+msgstr "Sosdssièrs pas dins los emplaçaments de recèrca"
 
 #: src/nautilus-query-editor.c:190
 msgid "Some subfolders will not be included in search results"
-msgstr ""
+msgstr "Qualques sosdorsièrs seràn pas incluses dins los resultats de recèrca"
 
 #: src/nautilus-query-editor.c:197
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr ""
+"La recèrca serà mai lenta e inclurà pas lo contengut del fichièr per "
+"qualques dorsièrs"
 
 #: src/nautilus-query-editor.c:774
 msgid "Filter Search Results"
@@ -4305,6 +4307,7 @@ msgstr "Amb tòca de pròva solament, se pòt utilizar la comanda seguenta :"
 msgid "translator-credits"
 msgstr ""
 "Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
+"Quentin PAGÈS\n"
 "\n"
 "Launchpad Contributions:\n"
 "  Cédric VALMARY (Tot en òc) https://launchpad.net/~cvalmary\n"
@@ -4823,7 +4826,7 @@ msgstr "_Restablir"
 
 #: src/resources/ui/nautilus-column-chooser.ui:57
 msgid "_Only Apply to Current Folder"
-msgstr "_Aplicar al dossièr actual sonque"
+msgstr "_Aplicar al dorsièr actual sonque"
 
 #: src/resources/ui/nautilus-column-chooser.ui:72
 msgid "Move _Up"
@@ -4858,6 +4861,8 @@ msgid ""
 "Encrypt contents of the archive with a password when the compression method "
 "supports password-protection."
 msgstr ""
+"Chifratz lo contengut de l'archiu amb un senhal quand lo metòde de "
+"compression pren en carga la proteccion per senhal."
 
 #: src/resources/ui/nautilus-compress-dialog.ui:89
 msgid "_Password"
@@ -5418,10 +5423,8 @@ msgid "The permissions of the selected files could not be determined"
 msgstr "Impossible de determinar las permissions dels fichièrs seleccionats"
 
 #: src/resources/ui/nautilus-properties-window.ui:545
-#, fuzzy
-#| msgid "You are not the owner, so you cannot change these permissions."
 msgid "Only the owner can edit these permissions"
-msgstr "Sètz pas lo proprietari doncas podètz pas modificar las permissions."
+msgstr "Solament lo proprietari pòt modificar las permissions"
 
 #: src/resources/ui/nautilus-properties-window.ui:556
 msgid "_Owner"
