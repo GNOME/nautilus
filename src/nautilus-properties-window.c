@@ -195,7 +195,10 @@ struct _NautilusPropertiesWindow
     GHashTable *prefix_hashes;
     guint64 total_count;
     guint64 total_size;
+    guint64 unreadable_count;
+    const char *deep_count_fs_id;
     GList *currently_measuring;
+    guint directory_contents_timeout_id;
     GCancellable *cancellable;
 };
 
@@ -437,6 +440,8 @@ typedef struct
  */
 #define CHOWN_CHGRP_TIMEOUT                     300 /* milliseconds */
 
+#define DIRECTORY_LOAD_ITEMS_PER_CALLBACK 100
+
 static void directory_contents_value_field_update (gboolean reporting,
                                                    guint64  total_size,
                                                    guint64  directory_count,
@@ -477,6 +482,10 @@ static void remove_pending (StartupData *data,
 static void refresh_extension_model_pages (NautilusPropertiesWindow *self);
 static gboolean is_root_directory (NautilusFile *file);
 static gboolean is_volume_properties (NautilusPropertiesWindow *self);
+static void deep_count_load (NautilusPropertiesWindow *self,
+                             GFile                    *location);
+static void measure_next_location (NautilusPropertiesWindow *self,
+                                   gboolean                  use_fallback);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
 
@@ -1020,7 +1029,178 @@ stop_spinner (NautilusPropertiesWindow *self)
 }
 
 static void
-measure_next_location (NautilusPropertiesWindow *self)
+update_directory_contents (gpointer user_data)
+{
+    NautilusPropertiesWindow *self = user_data;
+    self->directory_contents_timeout_id = 0;
+
+    directory_contents_value_field_update (FALSE, 0, 0, 0, self);
+}
+
+static void
+schedule_directory_contents_update (NautilusPropertiesWindow *self)
+{
+    if (self->directory_contents_timeout_id == 0)
+    {
+        self->directory_contents_timeout_id =
+            g_timeout_add_once (200, update_directory_contents, self);
+    }
+
+}
+
+static void
+deep_count_one (NautilusPropertiesWindow *self,
+                GFileInfo                *info,
+                GFileEnumerator          *enumerator)
+{
+    const char *fs_id;
+
+    self->total_count += 1;
+
+    if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+    {
+        /* Record the fact that we have to descend into this directory. */
+        fs_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
+        if (g_strcmp0 (fs_id, self->deep_count_fs_id) == 0)
+        {
+            /* only if it is on the same filesystem */
+            g_autoptr (GFile) subdir = g_file_enumerator_get_child (enumerator, info);
+            deep_count_load (self, subdir);
+        }
+    }
+
+    /* Count the size. */
+    if (g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE))
+    {
+        self->total_size += g_file_info_get_size (info);
+    }
+}
+
+static void
+deep_count_more_files_callback (GObject      *source_object,
+                                GAsyncResult *res,
+                                gpointer      user_data)
+{
+    NautilusPropertiesWindow *self = user_data;
+    GFileEnumerator *enumerator = G_FILE_ENUMERATOR (source_object);
+    g_autolist (GFileInfo) files = NULL;
+    g_autoptr (GError) error = NULL;
+
+    files = g_file_enumerator_next_files_finish (enumerator, res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        return;
+    }
+
+    for (GList *l = files; l != NULL; l = l->next)
+    {
+        deep_count_one (self, l->data, enumerator);
+    }
+
+    schedule_directory_contents_update (self);
+
+    if (files == NULL)
+    {
+        g_file_enumerator_close_async (enumerator, 0, NULL, NULL, NULL);
+        measure_next_location (self, TRUE);
+    }
+    else
+    {
+        g_file_enumerator_next_files_async (enumerator,
+                                            DIRECTORY_LOAD_ITEMS_PER_CALLBACK,
+                                            G_PRIORITY_LOW,
+                                            self->cancellable,
+                                            deep_count_more_files_callback,
+                                            self);
+    }
+}
+
+static void
+deep_count_callback (GObject      *source_object,
+                     GAsyncResult *res,
+                     gpointer      user_data)
+{
+    NautilusPropertiesWindow *self = user_data;
+    GFileEnumerator *enumerator;
+    g_autoptr (GError) error = NULL;
+
+    enumerator = g_file_enumerate_children_finish (G_FILE (source_object), res, &error);
+
+    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        return;
+    }
+
+    if (enumerator == NULL)
+    {
+        self->unreadable_count += 1;
+
+        measure_next_location (self, TRUE);
+    }
+    else
+    {
+        g_file_enumerator_next_files_async (enumerator,
+                                            DIRECTORY_LOAD_ITEMS_PER_CALLBACK,
+                                            G_PRIORITY_DEFAULT,
+                                            self->cancellable,
+                                            deep_count_more_files_callback,
+                                            self);
+    }
+}
+
+
+static void
+deep_count_load (NautilusPropertiesWindow *self,
+                 GFile                    *location)
+{
+    g_file_enumerate_children_async (location,
+                                     G_FILE_ATTRIBUTE_STANDARD_NAME ","
+                                     G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+                                     G_FILE_ATTRIBUTE_STANDARD_SIZE ","
+                                     G_FILE_ATTRIBUTE_ID_FILESYSTEM ",",
+                                     G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                     G_PRIORITY_DEFAULT,
+                                     self->cancellable,
+                                     deep_count_callback,
+                                     self);
+}
+
+static void
+deep_count_got_info (GObject      *source_object,
+                     GAsyncResult *res,
+                     gpointer      user_data)
+{
+    NautilusPropertiesWindow *self = user_data;
+    g_autoptr (GFileInfo) info = NULL;
+    const char *id;
+    GFile *file = G_FILE (source_object);
+
+    info = g_file_query_info_finish (file, res, NULL);
+    if (info != NULL)
+    {
+        id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
+        self->deep_count_fs_id = g_strdup (id);
+    }
+    deep_count_load (self, file);
+}
+
+static void
+deep_count_start (NautilusPropertiesWindow *self,
+                  GFile                    *location)
+{
+    g_file_query_info_async (location,
+                             G_FILE_ATTRIBUTE_ID_FILESYSTEM,
+                             G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                             G_PRIORITY_DEFAULT,
+                             self->cancellable,
+                             deep_count_got_info,
+                             self);
+}
+
+static void
+measure_next_location (NautilusPropertiesWindow *self,
+                       gboolean                  use_fallback)
 {
     if (self->currently_measuring == NULL)
     {
@@ -1033,7 +1213,7 @@ measure_next_location (NautilusPropertiesWindow *self)
 
     if (file_has_prefix (self, file))
     {
-        measure_next_location (self);
+        measure_next_location (self, use_fallback);
         return;
     }
 
@@ -1048,22 +1228,30 @@ measure_next_location (NautilusPropertiesWindow *self)
     {
         self->total_size += nautilus_file_get_size (file);
         self->total_count++;
-        directory_contents_value_field_update (FALSE, 0, 0, 0, self);
-        measure_next_location (self);
+        schedule_directory_contents_update (self);
+        measure_next_location (self, use_fallback);
         return;
     }
 
     g_autoptr (GFile) location = nautilus_file_get_location (file);
 
-    g_file_measure_disk_usage_async (location,
-                                     0,
-                                     /* G_FILE_MEASURE_REPORT_ANY_ERROR, */
-                                     G_PRIORITY_DEFAULT,
-                                     self->cancellable,
-                                     directory_contents_value_field_update,
-                                     self,
-                                     directory_count_done,
-                                     self);
+    if (!use_fallback)
+    {
+        g_file_measure_disk_usage_async (location,
+                                         0,
+                                         /* G_FILE_MEASURE_REPORT_ANY_ERROR, */
+                                         G_PRIORITY_DEFAULT,
+                                         self->cancellable,
+                                         directory_contents_value_field_update,
+                                         self,
+                                         directory_count_done,
+                                         self);
+    }
+    else
+    {
+        deep_count_start (self, location);
+    }
+
 
     schedule_start_spinner (self);
 }
@@ -2069,6 +2257,7 @@ directory_count_done (GObject      *object,
     guint64 num_dirs;
     guint64 num_files;
     g_autoptr (GError) error = NULL;
+    gboolean use_fallback = FALSE;
     NautilusPropertiesWindow *self = user_data;
 
     g_file_measure_disk_usage_finish (G_FILE (object),
@@ -2082,13 +2271,22 @@ directory_count_done (GObject      *object,
     {
         return;
     }
+    else if (error != NULL)
+    {
+        self->total_count = 0;
+        self->total_size = 0;
+        self->currently_measuring = self->files;
+        use_fallback = TRUE;
+    }
+    else
+    {
+        self->total_count += num_dirs + num_files;
+        self->total_size += total_size;
+    }
 
-    self->total_count += num_dirs + num_files;
-    self->total_size += total_size;
+    schedule_directory_contents_update (self);
 
-    directory_contents_value_field_update (FALSE, 0, 0, 0, self);
-
-    measure_next_location (self);
+    measure_next_location (self, use_fallback);
 }
 
 static gboolean
@@ -2586,7 +2784,7 @@ setup_basic_page (NautilusPropertiesWindow *self)
         if (!is_volume_properties (self))
         {
             gtk_widget_set_visible (self->contents_box, TRUE);
-            measure_next_location (self);
+            measure_next_location (self, FALSE);
         }
     }
     else
@@ -3921,6 +4119,7 @@ real_dispose (GObject *object)
     g_clear_list (&self->changed_files, (GDestroyNotify) nautilus_file_unref);
 
     g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
+    g_clear_handle_id (&self->directory_contents_timeout_id, g_source_remove);
 
     g_cancellable_cancel (self->cancellable);
     g_clear_object (&self->cancellable);
