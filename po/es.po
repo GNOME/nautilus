@@ -26,7 +26,7 @@ msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2024-08-18 22:44+0000\n"
-"PO-Revision-Date: 2024-09-02 08:50+0200\n"
+"PO-Revision-Date: 2024-09-03 11:05+0200\n"
 "Last-Translator: Daniel Mustieles García <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -1795,8 +1795,6 @@ msgstr "¿Reemplazar al guardar?"
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
 msgstr ""
-"«%s» ya existe en «%s». Al guardar se reemplazará o sobrescribirá su "
-"contenido."
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/dfos-xfer.c:419 src/file-manager/dfos-xfer.c:430
@@ -2161,8 +2159,6 @@ msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
 "permanently deleted."
 msgstr ""
-"Vaciar la papelera para liberar espacio en «%s». Todos los elementos de la "
-"papelera se eliminarán de manera permanente."
 
 # src/file-manager/fm-directory-view.c:2154
 #: src/nautilus-file-operations.c:2510
@@ -2172,7 +2168,7 @@ msgstr "¿Vaciar la papelera antes de expulsar?"
 # src/file-manager/fm-directory-view.c:2154
 #: src/nautilus-file-operations.c:2514
 msgid "Do _Not Empty"
-msgstr "_No vaciar la papelera"
+msgstr "_No vaciar"
 
 #: src/nautilus-file-operations.c:2515
 msgid "_Empty"
@@ -2821,15 +2817,15 @@ msgstr "No se ha podido pegar los archivos"
 
 #: src/nautilus-files-view.c:2961
 msgid "Cannot paste files into Starred"
-msgstr "No se puede pegar archivos en Favoritos"
+msgstr "No se ha podido pegar los archivos en Favoritos"
 
 #: src/nautilus-files-view.c:2968
 msgid "Cannot paste files into Recent"
-msgstr "No se puede pegar archivos en Recientes"
+msgstr "No se ha podido pegar los archivos en Recientes"
 
 #: src/nautilus-files-view.c:2975
 msgid "Cannot paste files into Trash"
-msgstr "No se puede pegar archivos en la papelera"
+msgstr "No se ha podido pegar los archivos en la papelera"
 
 #: src/nautilus-files-view.c:2982
 msgid "Permissions do not allow pasting files in this directory"
@@ -2946,11 +2942,11 @@ msgstr "No hay archivos recientes"
 
 #: src/nautilus-files-view.c:3891
 msgid "No Known Connections"
-msgstr "No hay conexiones conocidas"
+msgstr "Sin conexiones conocidas"
 
 #: src/nautilus-files-view.c:3892
 msgid "Enter an address to connect to a network location."
-msgstr "Introduzca una dirección para conectarse a una ubicación de red."
+msgstr "Introduzca una dirección para conectase a una ubicación de red."
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
@@ -4212,7 +4208,7 @@ msgstr "Doble pulsación"
 #: src/nautilus-preferences-dialog.c:345 src/nautilus-preferences-dialog.c:347
 #: src/nautilus-preferences-dialog.c:349
 msgid "On This Device Only"
-msgstr "En este equipo solamente"
+msgstr "Mostrar sólo este dispositivo"
 
 # src/nautilus-location-bar.c:401
 #: src/nautilus-preferences-dialog.c:345
@@ -4452,13 +4448,10 @@ msgstr "Buscar «%s»"
 #: src/nautilus-query-editor.c:146
 msgid "Search may be slow and will not include subfolders or file contents"
 msgstr ""
-"La búsqueda puede ser más lenta y no incluirá el contenido de los archivos o "
-"subcarpetas"
 
 #: src/nautilus-query-editor.c:153
 msgid "Search may be slow and will not include file contents"
 msgstr ""
-"La búsqueda puede ser más lenta y no incluirá el contenido de los archivos"
 
 # src/nautilus-location-bar.c:401
 #: src/nautilus-query-editor.c:161
@@ -4470,23 +4463,27 @@ msgid "External Drive"
 msgstr "Unidad externa"
 
 #: src/nautilus-query-editor.c:173
+#, fuzzy
+#| msgid "Find files and folders in all search locations"
 msgid "Folder Not in Search Locations"
-msgstr "La carpeta no está en la ubicaciones de búsqueda"
+msgstr "Buscar archivos y carpetas en todas las ubicaciones de búsqueda"
 
 #: src/nautilus-query-editor.c:180
+#, fuzzy
+#| msgid "Find files and folders in all search locations"
 msgid "Subfolders Not in Search Locations"
-msgstr "Las subcarpetas no están en la ubicaciones de búsqueda"
+msgstr "Buscar archivos y carpetas en todas las ubicaciones de búsqueda"
 
 #: src/nautilus-query-editor.c:190
+#, fuzzy
+#| msgid "Some files will not be displayed."
 msgid "Some subfolders will not be included in search results"
-msgstr "Algunas subcarpetas no se incluirán en los resultados de la búsqueda"
+msgstr "Algunos archivos no se mostrarán."
 
 #: src/nautilus-query-editor.c:197
 msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr ""
-"La búsqueda será más lenta y no incluirá el contenido de los archivos o "
-"algunas carpetas."
 
 # libnautilus-private/nautilus-global-preferences.c:727
 #: src/nautilus-query-editor.c:774
@@ -5306,7 +5303,7 @@ msgstr "_Nombre del archivador"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:76
 msgid "Co_mpression Method"
-msgstr "Método de compresión"
+msgstr "Método de c_ompresión"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:85
 msgid "Encryption"
@@ -5317,12 +5314,10 @@ msgid ""
 "Encrypt contents of the archive with a password when the compression method "
 "supports password-protection."
 msgstr ""
-"Cifrar el contenido de un archivador con una contraseña cuando el método de "
-"compresión lo soporte."
 
 #: src/resources/ui/nautilus-compress-dialog.ui:89
 msgid "_Password"
-msgstr "Contrase_ña"
+msgstr "Contrase_ña"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:96
 msgid "_Confirm Password"
@@ -5355,11 +5350,11 @@ msgstr "Mostrar barra lateral"
 
 #: src/resources/ui/nautilus-file-chooser.ui:202
 msgid "Edit File Name"
-msgstr "Editar el nombre del archivo"
+msgstr "Editar nombre de archivo"
 
 #: src/resources/ui/nautilus-file-chooser.ui:233
 msgid "Reset File Name"
-msgstr "Restablecer el nombre de archivo"
+msgstr "Restablecer nombre de archivo"
 
 #: src/resources/ui/nautilus-file-chooser.ui:248
 msgid "File Name"
@@ -5391,7 +5386,7 @@ msgstr "R_establecer"
 # src/file-manager/fm-properties-window.c:1641
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:139
 msgid "_Apply this action to all files and folders"
-msgstr "_Aplicar esta acción a todos los archivos y carpetas"
+msgstr "_sAplicar esta acción a todos los archivos y carpetas"
 
 # src/file-manager/fm-properties-window.c:1641
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
@@ -5412,17 +5407,17 @@ msgstr "_Archivos"
 # src/file-manager/fm-directory-view.c:2257
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "F_olders"
-msgstr "Car_petas"
+msgstr "C_arpetas"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:55
 msgid "Fi_les"
-msgstr "Ar_chivos"
+msgstr "A_rchivos"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:61
 msgid "Fol_ders"
-msgstr "C_arpetas"
+msgstr "Car_petas"
 
 # src/file-manager/fm-properties-window.c:1560
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:69
@@ -5432,13 +5427,13 @@ msgstr "Otros"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:72
 msgid "Fil_es"
-msgstr "A_rchivos"
+msgstr "Arch_ivos"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:78
 msgid "Folde_rs"
-msgstr "Ca_rpetas"
+msgstr "Carp_etas"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
@@ -5694,7 +5689,7 @@ msgstr "Prefijo"
 
 #: src/resources/ui/nautilus-network-address-bar.ui:94
 msgid "Server address"
-msgstr "Direcciones del servidor"
+msgstr "Dirección del servidor"
 
 #: src/resources/ui/nautilus-network-cell.ui:70
 #: src/gtk/nautilusgtkplacessidebar.c:391
@@ -5732,13 +5727,17 @@ msgstr "Añadir a _marcadores"
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:53
+#, fuzzy
+#| msgid "_Folder:"
 msgid "_Star Folder"
-msgstr "Marcar carpeta como _favorita"
+msgstr "_Carpeta:"
 
 # src/nautilus-window-manage-views.c:173
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:58
+#, fuzzy
+#| msgid "Untitled Folder"
 msgid "_Unstar Folder"
-msgstr "_Desmarcar carpeta como _favorita"
+msgstr "Carpeta sin título"
 
 # src/nautilus-location-bar.c:401
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:63
@@ -5793,6 +5792,10 @@ msgid "Performance"
 msgstr "Rendimiento"
 
 #: src/resources/ui/nautilus-preferences-dialog.ui:53
+#, fuzzy
+#| msgid ""
+#| "These features may cause slowdowns and excess network usage, especially "
+#| "when browsing files outside this computer, such as on a remote server."
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this device, such as on a remote server."
@@ -5953,7 +5956,7 @@ msgstr "No se han podido determinar los permisos de los archivos seleccionados"
 # src/file-manager/fm-properties-window.c:1499
 #: src/resources/ui/nautilus-properties-window.ui:545
 msgid "Only the owner can edit these permissions"
-msgstr "Sólo el propietario puede editar estos permisos"
+msgstr "Sólo el propietario, puede cambiar esos permisos"
 
 # src/file-manager/fm-properties-window.c:1554
 #: src/resources/ui/nautilus-properties-window.ui:556
@@ -6062,7 +6065,7 @@ msgstr "No buscar dentro de los archivos"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:5
 msgid "Add File Type Filter"
-msgstr "Añadir filtro de tipo de archivo"
+msgstr "Añadir filtro de tipo"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:26
 msgid "_Add"
@@ -6274,7 +6277,7 @@ msgstr "Abrir el contenido de su escritorio en una carpeta"
 # libnautilus-private/nautilus-global-preferences.c:693
 #: src/gtk/nautilusgtkplacessidebar.c:717
 msgid "Open Network Locations"
-msgstr "Abrir la ubicaciones de red"
+msgstr "Abrir ubicaciones de red"
 
 # src/nautilus-sidebar.c:1145
 #: src/gtk/nautilusgtkplacessidebar.c:726
