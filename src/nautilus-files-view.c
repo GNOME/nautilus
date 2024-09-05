@@ -8177,6 +8177,7 @@ update_selection_menu (NautilusFilesView *view,
     show_start = (selection != NULL && selection_count == 1);
     show_stop = (selection != NULL && selection_count == 1);
     show_detect_media = (selection != NULL && selection_count == 1);
+    item_opens_in_view = selection_count != 0;
     start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
 
     if (mode == NAUTILUS_MODE_BROWSE)
@@ -8193,7 +8194,7 @@ update_selection_menu (NautilusFilesView *view,
         g_free (item_label);
 
         /* Open With <App> menu item */
-        show_extract = show_app = show_run = item_opens_in_view = selection_count != 0;
+        show_extract = show_app = show_run = item_opens_in_view;
         for (l = selection; l != NULL; l = l->next)
         {
             NautilusFile *file;
