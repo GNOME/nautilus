@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-08-10 03:49+0000\n"
-"PO-Revision-Date: 2024-08-26 17:57+0200\n"
-"Last-Translator: Brage Fuglseth <bragefuglseth@gnome.org>\n"
+"POT-Creation-Date: 2024-09-03 20:57+0000\n"
+"PO-Revision-Date: 2024-09-05 18:08+0200\n"
+"Last-Translator: Brage <bragefuglseth@gnome.org>\n"
 "Language-Team: \n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,8 @@ msgstr "Kjør programvare"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-window.c:1745 src/resources/ui/nautilus-window.ui:124
+#: src/nautilus-portal.c:505 src/nautilus-window.c:1745
+#: src/resources/ui/nautilus-window.ui:124
 msgid "Files"
 msgstr "Filer"
 
@@ -431,7 +432,7 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Du kan avbryte denne handlingen."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-chooser.c:231 src/nautilus-file-operations.c:273
+#: src/nautilus-file-chooser.c:228 src/nautilus-file-operations.c:273
 #: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1019
 #: src/nautilus-mime-actions.c:1330 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
@@ -757,7 +758,7 @@ msgstr ""
 "%s"
 
 #: src/nautilus-application.c:744 src/nautilus-autorun-software.c:162
-#: src/nautilus-mime-actions.c:1189 src/nautilus-ui-utilities.c:360
+#: src/nautilus-mime-actions.c:1189 src/nautilus-ui-utilities.c:437
 msgid "_OK"
 msgstr "_OK"
 
@@ -982,7 +983,7 @@ msgid "001, 002, 003"
 msgstr "Tresifret"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
-#: src/nautilus-pathbar.c:392 src/nautilus-shell-search-provider.c:341
+#: src/nautilus-pathbar.c:414 src/nautilus-shell-search-provider.c:341
 #: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:669
 msgid "Home"
 msgstr "Hjem"
@@ -1595,17 +1596,17 @@ msgstr "Lenke (død)"
 msgid "%s Free"
 msgstr "%s ledig"
 
-#: src/nautilus-file-chooser.c:221
+#: src/nautilus-file-chooser.c:218
 msgid "Replace When Saving?"
 msgstr "Erstatte fil?"
 
-#: src/nautilus-file-chooser.c:227
+#: src/nautilus-file-chooser.c:224
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
 msgstr "«%s» finnes allerede i «%s». Å lagre dette vil erstatte den."
 
-#: src/nautilus-file-chooser.c:232 src/nautilus-file-chooser.c:308
+#: src/nautilus-file-chooser.c:229 src/nautilus-file-chooser.c:305
 #: src/nautilus-file-operations.c:279
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
@@ -1910,7 +1911,7 @@ msgid "Deleting Files"
 msgstr "Sletter filer"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6932
+#: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6928
 #: src/gtk/nautilusgtkplacessidebar.c:2290
 #: src/gtk/nautilusgtkplacessidebar.c:2319
 #, c-format
@@ -1944,7 +1945,7 @@ msgid "_Empty"
 msgstr "_Tøm"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6882
+#: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6878
 #: src/gtk/nautilusgtkplacessidebar.c:1682
 #, c-format
 msgid "Unable to access “%s”"
@@ -2515,44 +2516,44 @@ msgstr "Søker…"
 msgid "Loading…"
 msgstr "Laster inn…"
 
-#: src/nautilus-files-view.c:1908
+#: src/nautilus-files-view.c:1904
 msgid "Examples: "
 msgstr "Eksempler: "
 
-#: src/nautilus-files-view.c:2964 src/nautilus-files-view.c:2971
-#: src/nautilus-files-view.c:2978 src/nautilus-files-view.c:2985
+#: src/nautilus-files-view.c:2960 src/nautilus-files-view.c:2967
+#: src/nautilus-files-view.c:2974 src/nautilus-files-view.c:2981
 msgid "Could not paste files"
 msgstr "Innliming av filer mislyktes"
 
-#: src/nautilus-files-view.c:2965
+#: src/nautilus-files-view.c:2961
 msgid "Cannot paste files into Starred"
 msgstr "Filer kan ikke limes inn i Stjernemerket"
 
-#: src/nautilus-files-view.c:2972
+#: src/nautilus-files-view.c:2968
 msgid "Cannot paste files into Recent"
 msgstr "Filer kan ikke limes inn i Nylige"
 
-#: src/nautilus-files-view.c:2979
+#: src/nautilus-files-view.c:2975
 msgid "Cannot paste files into Trash"
 msgstr "Filer kan ikke limes inn i papirkurven"
 
-#: src/nautilus-files-view.c:2986
+#: src/nautilus-files-view.c:2982
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "Filer kan ikke limes inn i denne mappen"
 
-#: src/nautilus-files-view.c:3618 src/nautilus-files-view.c:3665
+#: src/nautilus-files-view.c:3614 src/nautilus-files-view.c:3661
 #, c-format
 msgid "“%s” selected"
 msgstr "«%s» valgt"
 
-#: src/nautilus-files-view.c:3622
+#: src/nautilus-files-view.c:3618
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d mappe valgt"
 msgstr[1] "%'d mapper valgt"
 
-#: src/nautilus-files-view.c:3636
+#: src/nautilus-files-view.c:3632
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2560,14 +2561,14 @@ msgstr[0] "(med %'d element)"
 msgstr[1] "(med %'d elementer)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3651
+#: src/nautilus-files-view.c:3647
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(med totalt %'d element)"
 msgstr[1] "(med totalt %'d elementer)"
 
-#: src/nautilus-files-view.c:3670
+#: src/nautilus-files-view.c:3666
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2575,7 +2576,7 @@ msgstr[0] "%'d element valgt"
 msgstr[1] "%'d elementer valgt"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3679
+#: src/nautilus-files-view.c:3675
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2586,7 +2587,7 @@ msgstr[1] "%'d andre elementer valgt"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3694
+#: src/nautilus-files-view.c:3690
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2598,162 +2599,162 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3744
+#: src/nautilus-files-view.c:3740
 #, c-format
 msgid "%s, %s"
 msgstr "%s, %s"
 
-#: src/nautilus-files-view.c:3807
+#: src/nautilus-files-view.c:3803
 msgid "Search _Settings"
 msgstr "Søke_innstillinger"
 
-#: src/nautilus-files-view.c:3819
+#: src/nautilus-files-view.c:3815
 msgid "Search _Everywhere"
 msgstr "Søk _overalt"
 
-#: src/nautilus-files-view.c:3856
+#: src/nautilus-files-view.c:3852
 msgid "More locations can be added to search in the settings"
 msgstr "Flere søkeområder kan legges til i innstillingene"
 
 #. Translators: %s is the name of the search location formatted for display
-#: src/nautilus-files-view.c:3864
+#: src/nautilus-files-view.c:3860
 #, c-format
 msgid "No matches in “%s”"
 msgstr "Ingen treff i «%s»"
 
-#: src/nautilus-files-view.c:3872
+#: src/nautilus-files-view.c:3868
 #: src/resources/ui/nautilus-search-types-dialog.ui:70
 msgid "No Results Found"
 msgstr "Ingen treff"
 
-#: src/nautilus-files-view.c:3877
+#: src/nautilus-files-view.c:3873
 msgid "Trash is Empty"
 msgstr "Papirkurven er tom"
 
-#: src/nautilus-files-view.c:3883
+#: src/nautilus-files-view.c:3879
 msgid "No Starred Files"
 msgstr "Ingen stjernemerkede filer"
 
-#: src/nautilus-files-view.c:3889
+#: src/nautilus-files-view.c:3885
 msgid "No Recent Files"
 msgstr "Ingen nylige filer"
 
-#: src/nautilus-files-view.c:3895
+#: src/nautilus-files-view.c:3891
 msgid "No Known Connections"
 msgstr "Ingen tilkoblinger"
 
-#: src/nautilus-files-view.c:3896
+#: src/nautilus-files-view.c:3892
 msgid "Enter an address to connect to a network location."
 msgstr "Skriv inn en adresse for å koble til en nettverksbasert plassering."
 
-#: src/nautilus-files-view.c:3901
+#: src/nautilus-files-view.c:3897
 msgid "Folder is Empty"
 msgstr "Mappen er tom"
 
-#: src/nautilus-files-view.c:6118
+#: src/nautilus-files-view.c:6114
 msgid "Select Move Destination"
 msgstr "Velg plassering for flytting"
 
-#: src/nautilus-files-view.c:6122
+#: src/nautilus-files-view.c:6118
 msgid "Select Copy Destination"
 msgstr "Velg plassering for kopiering"
 
-#: src/nautilus-files-view.c:6128 src/nautilus-files-view.c:6516
-#: src/nautilus-portal.c:274 src/nautilus-properties-window.c:4082
+#: src/nautilus-files-view.c:6124 src/nautilus-files-view.c:6512
+#: src/nautilus-portal.c:404 src/nautilus-properties-window.c:4082
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_Velg"
 
-#: src/nautilus-files-view.c:6515
+#: src/nautilus-files-view.c:6511
 msgid "Select Extract Destination"
 msgstr "Velg plassering for utpakking"
 
-#: src/nautilus-files-view.c:6591
+#: src/nautilus-files-view.c:6587
 msgid "Error sending email."
 msgstr "Sending av e-post mislyktes."
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6909
+#: src/nautilus-files-view.c:6905
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Fjerning av «%s» mislyktes"
 
-#: src/nautilus-files-view.c:6954
+#: src/nautilus-files-view.c:6950
 msgid "Unable to stop drive"
 msgstr "Stopping av disk mislyktes"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7069 src/gtk/nautilusgtkplacessidebar.c:1637
+#: src/nautilus-files-view.c:7065 src/gtk/nautilusgtkplacessidebar.c:1637
 #: src/gtk/nautilusgtkplacessidebar.c:2516
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Starting av «%s» mislyktes"
 
-#: src/nautilus-files-view.c:8187
+#: src/nautilus-files-view.c:8184
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Ny mappe med utvalg (%'d element)"
 msgstr[1] "Ny mappe med utvalg (%'d elementer)"
 
-#: src/nautilus-files-view.c:8242
+#: src/nautilus-files-view.c:8239
 #, c-format
 msgid "Open With %s"
 msgstr "Åpne med %s"
 
-#: src/nautilus-files-view.c:8253
+#: src/nautilus-files-view.c:8250
 msgid "Run"
 msgstr "Kjør"
 
-#: src/nautilus-files-view.c:8258
+#: src/nautilus-files-view.c:8255
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Pakk ut"
 
-#: src/nautilus-files-view.c:8259
+#: src/nautilus-files-view.c:8256
 msgid "Extract to…"
 msgstr "Pakk ut til…"
 
-#: src/nautilus-files-view.c:8263
-#: src/resources/ui/nautilus-files-view-context-menus.ui:89
+#: src/nautilus-files-view.c:8260
+#: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "Åpne"
 
-#: src/nautilus-files-view.c:8343
-#: src/resources/ui/nautilus-files-view-context-menus.ui:153
+#: src/nautilus-files-view.c:8339
+#: src/resources/ui/nautilus-files-view-context-menus.ui:159
 #: src/gtk/nautilusgtkplacessidebar.c:2938
 msgid "_Start"
 msgstr "_Start"
 
-#: src/nautilus-files-view.c:8349
+#: src/nautilus-files-view.c:8345
 msgid "_Connect"
 msgstr "_Koble til"
 
-#: src/nautilus-files-view.c:8355
+#: src/nautilus-files-view.c:8351
 msgid "_Start Multi-disk Drive"
 msgstr "_Start flerdisksenhet"
 
-#: src/nautilus-files-view.c:8361
+#: src/nautilus-files-view.c:8357
 msgid "U_nlock Drive"
 msgstr "_Lås opp enhet"
 
-#: src/nautilus-files-view.c:8379
+#: src/nautilus-files-view.c:8375
 msgid "Stop Drive"
 msgstr "Stopp enhet"
 
-#: src/nautilus-files-view.c:8385 src/gtk/nautilusgtkplacessidebar.c:2955
+#: src/nautilus-files-view.c:8381 src/gtk/nautilusgtkplacessidebar.c:2955
 msgid "_Safely Remove Drive"
 msgstr "_Løs ut enhet"
 
-#: src/nautilus-files-view.c:8391
+#: src/nautilus-files-view.c:8387
 msgid "_Disconnect"
 msgstr "_Koble fra"
 
-#: src/nautilus-files-view.c:8397
+#: src/nautilus-files-view.c:8393
 msgid "_Stop Multi-disk Drive"
 msgstr "_Stopp flerdisksenhet"
 
-#: src/nautilus-files-view.c:8403
+#: src/nautilus-files-view.c:8399
 msgid "_Lock Drive"
 msgstr "_Lås enhet"
 
@@ -3411,7 +3412,7 @@ msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "Snarveien «%s» er død. Flytte til papirkurven?"
 
 #: src/nautilus-mime-actions.c:611
-#: src/resources/ui/nautilus-files-view-context-menus.ui:217
+#: src/resources/ui/nautilus-files-view-context-menus.ui:226
 msgid "Mo_ve to Trash"
 msgstr "_Flytt til papirkurven"
 
@@ -3735,32 +3736,36 @@ msgstr ""
 msgid "“%s” is password-protected."
 msgstr "«%s» er passordbeskyttet."
 
-#: src/nautilus-pathbar.c:289
+#: src/nautilus-pathbar.c:311
 msgid "Current Folder Menu"
 msgstr "Denne mappen"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:380 src/nautilus-properties-window.c:853
+#: src/nautilus-pathbar.c:402 src/nautilus-properties-window.c:853
 msgid "Operating System"
 msgstr "System"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:387
+#: src/nautilus-pathbar.c:409
 msgid "Administrator Root"
 msgstr "Systembruker"
 
-#: src/nautilus-portal.c:274 src/resources/ui/nautilus-app-chooser.ui:102
-#: src/resources/ui/nautilus-files-view-context-menus.ui:84
+#: src/nautilus-portal.c:404 src/resources/ui/nautilus-app-chooser.ui:102
+#: src/resources/ui/nautilus-files-view-context-menus.ui:87
 #: src/gtk/nautilusgtkplacessidebar.c:2731
 #: src/gtk/nautilusgtkplacessidebar.c:2847
 msgid "_Open"
 msgstr "_Åpne"
 
-#: src/nautilus-portal.c:278
+#: src/nautilus-portal.c:408
 msgid "_Save"
 msgstr "_Lagre"
+
+#: src/nautilus-portal.c:489
+msgid "Open Read-Only"
+msgstr "Åpne som skrivebeskyttet"
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
@@ -3938,7 +3943,7 @@ msgstr "Den sluppede filen er ikke et bilde."
 #. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
 #: src/nautilus-properties-window.c:741 src/nautilus-star-cell.c:66
-#: src/resources/ui/nautilus-files-view-context-menus.ui:247
+#: src/resources/ui/nautilus-files-view-context-menus.ui:256
 msgid "Unstar"
 msgstr "Fjern stjernemerking"
 
@@ -4090,56 +4095,56 @@ msgid "Trash"
 msgstr "Papirkurv"
 
 # Denne delen skiller seg litt fra de engelske oversettelsene fordi norsk ikke har en utbredt struktur for "since 2 days ago", og det foreløpige stedet hvor denne oversettelsen brukes bygger på engelsk setningsstruktur.
-#: src/nautilus-ui-utilities.c:264
+#: src/nautilus-ui-utilities.c:341
 #, c-format
 msgid "Since %d day ago"
 msgid_plural "Since %d days ago"
 msgstr[0] "%d dag tilbake"
 msgstr[1] "%d dager tilbake"
 
-#: src/nautilus-ui-utilities.c:265
+#: src/nautilus-ui-utilities.c:342
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
 msgstr[0] "%d dag"
 msgstr[1] "%d dager"
 
-#: src/nautilus-ui-utilities.c:271
+#: src/nautilus-ui-utilities.c:348
 #, c-format
 msgid "Since last week"
 msgid_plural "Since %d weeks ago"
 msgstr[0] "1 uke tilbake"
 msgstr[1] "%d uker tilbake"
 
-#: src/nautilus-ui-utilities.c:272
+#: src/nautilus-ui-utilities.c:349
 #, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
 msgstr[0] "1 uke"
 msgstr[1] "%d uker"
 
-#: src/nautilus-ui-utilities.c:278
+#: src/nautilus-ui-utilities.c:355
 #, c-format
 msgid "Since last month"
 msgid_plural "Since %d months ago"
 msgstr[0] "1 måned tilbake"
 msgstr[1] "%d måneder tilbake"
 
-#: src/nautilus-ui-utilities.c:279
+#: src/nautilus-ui-utilities.c:356
 #, c-format
 msgid "Last month"
 msgid_plural "%d months ago"
 msgstr[0] "1 måned"
 msgstr[1] "%d måneder"
 
-#: src/nautilus-ui-utilities.c:284
+#: src/nautilus-ui-utilities.c:361
 #, c-format
 msgid "Since last year"
 msgid_plural "Since %d years ago"
 msgstr[0] "1 år"
 msgstr[1] "%d år"
 
-#: src/nautilus-ui-utilities.c:285
+#: src/nautilus-ui-utilities.c:362
 #, c-format
 msgid "Last year"
 msgid_plural "%d years ago"
@@ -4233,7 +4238,7 @@ msgstr "Tilbake"
 msgid "Forward"
 msgstr "Fremover"
 
-#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:28
+#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:29
 #: src/resources/ui/nautilus-window.ui:117
 msgid "Search Everywhere"
 msgstr "Søk overalt"
@@ -4773,7 +4778,7 @@ msgid "_Confirm Password"
 msgstr "_Bekreft passord"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
-#: src/resources/ui/nautilus-file-chooser.ui:168
+#: src/resources/ui/nautilus-file-chooser.ui:179
 #: src/resources/ui/nautilus-toolbar.ui:119
 msgid "New Folder"
 msgstr "Ny mappe"
@@ -4786,34 +4791,30 @@ msgstr "_Mappenavn"
 msgid "_Create"
 msgstr "_Opprett"
 
-#: src/resources/ui/nautilus-file-chooser.ui:129
+#: src/resources/ui/nautilus-file-chooser.ui:140
 #: src/resources/ui/nautilus-toolbar.ui:90
 msgid "Show Sidebar"
 msgstr "Vis sidemeny"
 
-#: src/resources/ui/nautilus-file-chooser.ui:192
+#: src/resources/ui/nautilus-file-chooser.ui:211
 msgid "Edit File Name"
 msgstr "Rediger filnavn"
 
-#: src/resources/ui/nautilus-file-chooser.ui:223
+#: src/resources/ui/nautilus-file-chooser.ui:242
 msgid "Reset File Name"
 msgstr "Tilbakestill filnavn"
 
-#: src/resources/ui/nautilus-file-chooser.ui:235
+#: src/resources/ui/nautilus-file-chooser.ui:257
 msgid "File Name"
 msgstr "Filnavn"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.ui:276
+#: src/resources/ui/nautilus-file-chooser.ui:303
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Vis alternativer"
 
-#: src/resources/ui/nautilus-file-chooser.ui:281
-msgid "Open _Read-Only"
-msgstr "Åpne som _skrivebeskyttet"
-
-#: src/resources/ui/nautilus-file-chooser.ui:292
+#: src/resources/ui/nautilus-file-chooser.ui:309
 msgid "Visible Files Filter"
 msgstr "Synlige filer"
 
@@ -4876,173 +4877,173 @@ msgstr "Ny _mappe…"
 msgid "New _Document"
 msgstr "Nytt _dokument"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:15
-#: src/resources/ui/nautilus-files-view-context-menus.ui:73
-#: src/resources/ui/nautilus-files-view-context-menus.ui:106
+#: src/resources/ui/nautilus-files-view-context-menus.ui:16
+#: src/resources/ui/nautilus-files-view-context-menus.ui:76
+#: src/resources/ui/nautilus-files-view-context-menus.ui:110
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:29
 msgid "Open _With…"
 msgstr "_Åpne med…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:19
-#: src/resources/ui/nautilus-files-view-context-menus.ui:111
+#: src/resources/ui/nautilus-files-view-context-menus.ui:21
+#: src/resources/ui/nautilus-files-view-context-menus.ui:115
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:33
 msgid "Open in Consol_e"
 msgstr "Åpne med _Konsoll"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:25
+#: src/resources/ui/nautilus-files-view-context-menus.ui:27
 msgid "_Paste"
 msgstr "_Lim inn"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:29
+#: src/resources/ui/nautilus-files-view-context-menus.ui:32
 msgid "Paste as _Link"
 msgstr "Lim inn _snarvei"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:34
+#: src/resources/ui/nautilus-files-view-context-menus.ui:37
 msgid "Select _All"
 msgstr "Velg _alt"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:38
+#: src/resources/ui/nautilus-files-view-context-menus.ui:41
 msgid "_Visible Columns"
 msgstr "_Velg kolonner"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:45
+#: src/resources/ui/nautilus-files-view-context-menus.ui:48
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:79
 msgid "Empty _Trash…"
 msgstr "_Tøm papirkurven…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:53
-#: src/resources/ui/nautilus-files-view-context-menus.ui:266
+#: src/resources/ui/nautilus-files-view-context-menus.ui:56
+#: src/resources/ui/nautilus-files-view-context-menus.ui:276
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:86
 msgid "P_roperties"
 msgstr "_Egenskaper"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:63
+#: src/resources/ui/nautilus-files-view-context-menus.ui:66
 msgid "_Extract"
 msgstr "P_akk ut"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:68
+#: src/resources/ui/nautilus-files-view-context-menus.ui:71
 msgid "E_xtract to…"
 msgstr "Pakk ut t_il…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:79
+#: src/resources/ui/nautilus-files-view-context-menus.ui:82
 msgid "_Run as a Program"
 msgstr "Kj_ør som program"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:94
+#: src/resources/ui/nautilus-files-view-context-menus.ui:98
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
 #: src/gtk/nautilusgtkplacessidebar.c:2739
 #: src/gtk/nautilusgtkplacessidebar.c:2855
 msgid "Open in New _Tab"
 msgstr "Åpne i ny _fane"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:99
+#: src/resources/ui/nautilus-files-view-context-menus.ui:103
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
 #: src/gtk/nautilusgtkplacessidebar.c:2746
 #: src/gtk/nautilusgtkplacessidebar.c:2864
 msgid "Open in New _Window"
 msgstr "Åpne i nytt _vindu"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:119
+#: src/resources/ui/nautilus-files-view-context-menus.ui:123
 msgid "_Open Item Location"
 msgstr "Åpne _plassering"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:124
+#: src/resources/ui/nautilus-files-view-context-menus.ui:130
 msgid "_Scripts"
 msgstr "_Skript"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:129
+#: src/resources/ui/nautilus-files-view-context-menus.ui:135
 msgid "_Open Scripts Folder"
 msgstr "Åpne skriptmappe"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:138
+#: src/resources/ui/nautilus-files-view-context-menus.ui:144
 #: src/gtk/nautilusgtkplacessidebar.c:2903
 msgid "_Mount"
 msgstr "_Monter"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:143
+#: src/resources/ui/nautilus-files-view-context-menus.ui:149
 #: src/gtk/nautilusgtkplacessidebar.c:2912
 msgid "_Unmount"
 msgstr "_Avmonter"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:148
+#: src/resources/ui/nautilus-files-view-context-menus.ui:154
 #: src/gtk/nautilusgtkplacessidebar.c:2919
 msgid "_Eject"
 msgstr "_Løs ut"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:158
+#: src/resources/ui/nautilus-files-view-context-menus.ui:164
 #: src/gtk/nautilusgtkplacessidebar.c:2953
 msgid "_Stop"
 msgstr "_Stopp"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:163
+#: src/resources/ui/nautilus-files-view-context-menus.ui:169
 #: src/gtk/nautilusgtkplacessidebar.c:2929
 msgid "_Detect Media"
 msgstr "_Oppdag medier"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:170
+#: src/resources/ui/nautilus-files-view-context-menus.ui:178
 msgid "Cu_t"
 msgstr "Klipp _ut"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:174
+#: src/resources/ui/nautilus-files-view-context-menus.ui:182
 msgid "_Copy"
 msgstr "_Kopier"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:178
+#: src/resources/ui/nautilus-files-view-context-menus.ui:186
 msgid "Move to…"
 msgstr "Flytt til…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:182
+#: src/resources/ui/nautilus-files-view-context-menus.ui:190
 msgid "Copy to…"
 msgstr "Kopier til…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:188
+#: src/resources/ui/nautilus-files-view-context-menus.ui:197
 msgid "Rena_me…"
 msgstr "En_dre navn…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:192
+#: src/resources/ui/nautilus-files-view-context-menus.ui:201
 msgid "_Paste Into Folder"
 msgstr "_Lim inn i mappe"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:197
+#: src/resources/ui/nautilus-files-view-context-menus.ui:206
 #: src/resources/ui/nautilus-preferences-dialog.ui:38
 msgid "Create _Link"
 msgstr "Opprett _snarvei"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:202
+#: src/resources/ui/nautilus-files-view-context-menus.ui:211
 msgid "C_ompress…"
 msgstr "Kom_primer…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:207
+#: src/resources/ui/nautilus-files-view-context-menus.ui:216
 msgid "Set as Background…"
 msgstr "Bruk som _bakgrunn…"
 
 #. Translators: This is the transitive verb meaning 'to send via email' (e.g. 'email this document to Angela).
-#: src/resources/ui/nautilus-files-view-context-menus.ui:212
+#: src/resources/ui/nautilus-files-view-context-menus.ui:221
 msgid "Email…"
 msgstr "Send e-post…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:222
+#: src/resources/ui/nautilus-files-view-context-menus.ui:231
 msgid "_Delete From Trash…"
 msgstr "_Slett fra papirkurven…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:227
-#: src/resources/ui/nautilus-files-view-context-menus.ui:232
+#: src/resources/ui/nautilus-files-view-context-menus.ui:236
+#: src/resources/ui/nautilus-files-view-context-menus.ui:241
 msgid "_Delete Permanently…"
 msgstr "_Slett permanent…"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:237
+#: src/resources/ui/nautilus-files-view-context-menus.ui:246
 msgid "_Restore From Trash"
 msgstr "_Gjenopprett"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:242
+#: src/resources/ui/nautilus-files-view-context-menus.ui:251
 msgid "_Remove From Recent"
 msgstr "_Fjern fra nylige"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:254
+#: src/resources/ui/nautilus-files-view-context-menus.ui:264
 msgid "_Copy Address"
 msgstr "_Kopier adresse"
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:258
+#: src/resources/ui/nautilus-files-view-context-menus.ui:268
 msgid "_Remove"
 msgstr "_Fjern"
 
@@ -5086,6 +5087,10 @@ msgstr "Prefiks"
 #: src/resources/ui/nautilus-network-address-bar.ui:94
 msgid "Server address"
 msgstr "Tjeneradresse"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:111
+msgid "Server Address Information"
+msgstr "Adresseinformasjon"
 
 #: src/resources/ui/nautilus-network-cell.ui:70
 #: src/gtk/nautilusgtkplacessidebar.c:391
