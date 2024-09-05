@@ -23,9 +23,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-08-23 22:01+0000\n"
-"PO-Revision-Date: 2024-08-25 21:55+0300\n"
-"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
+"POT-Creation-Date: 2024-09-03 20:57+0000\n"
+"PO-Revision-Date: 2024-09-05 08:00+0300\n"
+"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <takim@gnome.org.tr>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -42,7 +42,8 @@ msgstr "Yazılımı Çalıştır"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-window.c:1745 src/resources/ui/nautilus-window.ui:124
+#: src/nautilus-portal.c:505 src/nautilus-window.c:1745
+#: src/resources/ui/nautilus-window.ui:124
 msgid "Files"
 msgstr "Dosyalar"
 
@@ -469,7 +470,7 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "İptal düğmesine tıklayarak bu işlemi durdurabilirsiniz."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-chooser.c:231 src/nautilus-file-operations.c:273
+#: src/nautilus-file-chooser.c:228 src/nautilus-file-operations.c:273
 #: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1019
 #: src/nautilus-mime-actions.c:1330 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
@@ -1619,11 +1620,11 @@ msgstr "Bağlantı (bozuk)"
 msgid "%s Free"
 msgstr "%s Boş"
 
-#: src/nautilus-file-chooser.c:221
+#: src/nautilus-file-chooser.c:218
 msgid "Replace When Saving?"
 msgstr "Kaydederken Değiştirilsin Mi?"
 
-#: src/nautilus-file-chooser.c:227
+#: src/nautilus-file-chooser.c:224
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
@@ -1631,7 +1632,7 @@ msgstr ""
 "“%s” zaten “%s” içinde var. Kaydetmek içeriğini değiştirir ya da üzerine "
 "yazar."
 
-#: src/nautilus-file-chooser.c:232 src/nautilus-file-chooser.c:308
+#: src/nautilus-file-chooser.c:229 src/nautilus-file-chooser.c:305
 #: src/nautilus-file-operations.c:279
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
@@ -2645,7 +2646,7 @@ msgid "Select Copy Destination"
 msgstr "Kopyalamak İçin Hedef Seç"
 
 #: src/nautilus-files-view.c:6124 src/nautilus-files-view.c:6512
-#: src/nautilus-portal.c:274 src/nautilus-properties-window.c:4082
+#: src/nautilus-portal.c:404 src/nautilus-properties-window.c:4082
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_Seç"
@@ -3714,16 +3715,20 @@ msgstr "İşletim Sistemi"
 msgid "Administrator Root"
 msgstr "Yönetici Kökü"
 
-#: src/nautilus-portal.c:274 src/resources/ui/nautilus-app-chooser.ui:102
+#: src/nautilus-portal.c:404 src/resources/ui/nautilus-app-chooser.ui:102
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
 #: src/gtk/nautilusgtkplacessidebar.c:2731
 #: src/gtk/nautilusgtkplacessidebar.c:2847
 msgid "_Open"
 msgstr "_Aç"
 
-#: src/nautilus-portal.c:278
+#: src/nautilus-portal.c:408
 msgid "_Save"
 msgstr "_Kaydet"
+
+#: src/nautilus-portal.c:489
+msgid "Open Read-Only"
+msgstr "Salt Okunur Aç"
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
@@ -4170,8 +4175,7 @@ msgstr "Yalnızca hata sınama için, şu komut kullanılabilir:"
 msgid "translator-credits"
 msgstr ""
 "Emin Tufan Çetin <etcetin@gmail.com>\n"
-"Muhammet Kara <muhammetk@gmail.com>\n"
-"Barış ÇİÇEK <baris@teamforce.name.tr>"
+"Muhammet Kara <muhammetk@gmail.com>"
 
 #: src/nautilus-window-slot.c:166
 msgid "Parent folder"
@@ -4187,7 +4191,7 @@ msgstr "Geri"
 msgid "Forward"
 msgstr "İleri"
 
-#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:28
+#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:29
 #: src/resources/ui/nautilus-window.ui:117
 msgid "Search Everywhere"
 msgstr "Her Yerde Ara"
@@ -4726,7 +4730,7 @@ msgid "_Confirm Password"
 msgstr "Parolayı _Doğrula"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
-#: src/resources/ui/nautilus-file-chooser.ui:176
+#: src/resources/ui/nautilus-file-chooser.ui:179
 #: src/resources/ui/nautilus-toolbar.ui:119
 msgid "New Folder"
 msgstr "Yeni Klasör"
@@ -4739,34 +4743,30 @@ msgstr "_Klasör Adı"
 msgid "_Create"
 msgstr "_Oluştur"
 
-#: src/resources/ui/nautilus-file-chooser.ui:137
+#: src/resources/ui/nautilus-file-chooser.ui:140
 #: src/resources/ui/nautilus-toolbar.ui:90
 msgid "Show Sidebar"
 msgstr "Kenar Çubuğunu Göster"
 
-#: src/resources/ui/nautilus-file-chooser.ui:202
+#: src/resources/ui/nautilus-file-chooser.ui:211
 msgid "Edit File Name"
 msgstr "Dosya Adını Düzenle"
 
-#: src/resources/ui/nautilus-file-chooser.ui:233
+#: src/resources/ui/nautilus-file-chooser.ui:242
 msgid "Reset File Name"
 msgstr "Dosya Adını Sıfırla"
 
-#: src/resources/ui/nautilus-file-chooser.ui:248
+#: src/resources/ui/nautilus-file-chooser.ui:257
 msgid "File Name"
 msgstr "Dosya Adı"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.ui:294
+#: src/resources/ui/nautilus-file-chooser.ui:303
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Seçenekleri Göster"
 
-#: src/resources/ui/nautilus-file-chooser.ui:299
-msgid "Open _Read-Only"
-msgstr "_Salt Okunur Aç"
-
-#: src/resources/ui/nautilus-file-chooser.ui:310
+#: src/resources/ui/nautilus-file-chooser.ui:309
 msgid "Visible Files Filter"
 msgstr "Görünür Dosyalar Süzgeci"
 
@@ -5040,6 +5040,10 @@ msgstr "Ön Ek"
 #: src/resources/ui/nautilus-network-address-bar.ui:94
 msgid "Server address"
 msgstr "Sunucu adresi"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:111
+msgid "Server Address Information"
+msgstr "Sunucu Adres Bilgisi"
 
 #: src/resources/ui/nautilus-network-cell.ui:70
 #: src/gtk/nautilusgtkplacessidebar.c:391
