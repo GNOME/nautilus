@@ -2,14 +2,14 @@
 # Copyright (C) 2002, 2004, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
 # Copyright (C) 2009, 2010, 2011, 2012, 2014, 2015 Free Software Foundation, Inc.
 # Copyright (C) 2016, 2017 Free Software Foundation, Inc.
-# Copyright (C) 2021, 2022, 2023 Alexander Shopov.
+# Copyright (C) 2021, 2022, 2023, 2024 Alexander Shopov.
 # This file is distributed under the same license as the nautilus package.
 # Borislav Aleksandrov <B.Aleksandrov@cnsys.bg>, 2002.
 # Vladimir Petkov <kaladan@gmail.com>, 2004, 2005, 2006, 2007.
 # Rostislav "zbrox" Raykov <zbrox@i-space.org>,2004, 2005, 2006.
 # Alexander Shopov <ash@kambanaria.org>, 2002, 2006, 2007, 2008, 2009, 2010.
 # Alexander Shopov <ash@kambanaria.org>, 2011, 2012, 2014, 2015, 2016, 2017.
-# Alexander Shopov <ash@kambanaria.org>, 2021, 2022, 2023.
+# Alexander Shopov <ash@kambanaria.org>, 2021, 2022, 2023, 2024.
 # Yavor Doganov <yavor@gnu.org>, 2008.
 # Damyan Ivanov <dmn@debian.org>, 2010.
 # Владимир Kaladan Петков <kaladan@gmail.com>, 2024.
@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus main\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-08-23 22:01+0000\n"
-"PO-Revision-Date: 2024-09-01 12:40+0200\n"
+"POT-Creation-Date: 2024-09-07 08:59+0000\n"
+"PO-Revision-Date: 2024-09-07 17:44+0200\n"
 "Last-Translator: Владимир Kaladan Петков <kaladan@gmail.com>\n"
 "Language-Team: Bulgarian\n"
 "Language: bg\n"
@@ -35,7 +35,8 @@ msgstr "Стартиране на програми"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-window.c:1745 src/resources/ui/nautilus-window.ui:124
+#: src/nautilus-portal.c:505 src/nautilus-window.c:1745
+#: src/resources/ui/nautilus-window.ui:124
 msgid "Files"
 msgstr "Файлове"
 
@@ -462,7 +463,7 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Може да прекратите тази операция като натиснете „Отказване“."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-chooser.c:231 src/nautilus-file-operations.c:273
+#: src/nautilus-file-chooser.c:228 src/nautilus-file-operations.c:273
 #: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1019
 #: src/nautilus-mime-actions.c:1330 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
@@ -1629,11 +1630,11 @@ msgstr "Връзка (повредена)"
 msgid "%s Free"
 msgstr "%s свободни"
 
-#: src/nautilus-file-chooser.c:221
+#: src/nautilus-file-chooser.c:218
 msgid "Replace When Saving?"
 msgstr "Замяна при запис?"
 
-#: src/nautilus-file-chooser.c:227
+#: src/nautilus-file-chooser.c:224
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
@@ -1641,7 +1642,7 @@ msgstr ""
 "В „%2$s“ вече има „%1$s“. Запазването ще презапише съдържанието му или ще го "
 "замени."
 
-#: src/nautilus-file-chooser.c:232 src/nautilus-file-chooser.c:308
+#: src/nautilus-file-chooser.c:229 src/nautilus-file-chooser.c:305
 #: src/nautilus-file-operations.c:279
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
@@ -2695,7 +2696,7 @@ msgid "Select Copy Destination"
 msgstr "Избор на цел при копиране"
 
 #: src/nautilus-files-view.c:6124 src/nautilus-files-view.c:6512
-#: src/nautilus-portal.c:274 src/nautilus-properties-window.c:4082
+#: src/nautilus-portal.c:404 src/nautilus-properties-window.c:4082
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_Избор"
@@ -2725,71 +2726,71 @@ msgstr "Неуспешно спиране на устройство"
 msgid "Unable to start “%s”"
 msgstr "„%s“ не може да се стартира"
 
-#: src/nautilus-files-view.c:8184
+#: src/nautilus-files-view.c:8185
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Нова папка с %'d обект избран"
 msgstr[1] "Нова папка с %'d обекта избрани"
 
-#: src/nautilus-files-view.c:8239
+#: src/nautilus-files-view.c:8240
 #, c-format
 msgid "Open With %s"
 msgstr "Отваряне с %s"
 
-#: src/nautilus-files-view.c:8250
+#: src/nautilus-files-view.c:8251
 msgid "Run"
 msgstr "Изпълняване"
 
-#: src/nautilus-files-view.c:8255
+#: src/nautilus-files-view.c:8256
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Разархивиране"
 
-#: src/nautilus-files-view.c:8256
+#: src/nautilus-files-view.c:8257
 msgid "Extract to…"
 msgstr "Разархивиране в…"
 
-#: src/nautilus-files-view.c:8260
+#: src/nautilus-files-view.c:8261
 #: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "Отваряне"
 
-#: src/nautilus-files-view.c:8339
+#: src/nautilus-files-view.c:8340
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
 #: src/gtk/nautilusgtkplacessidebar.c:2938
 msgid "_Start"
 msgstr "_Стартиране"
 
-#: src/nautilus-files-view.c:8345
+#: src/nautilus-files-view.c:8346
 msgid "_Connect"
 msgstr "_Свързване"
 
-#: src/nautilus-files-view.c:8351
+#: src/nautilus-files-view.c:8352
 msgid "_Start Multi-disk Drive"
 msgstr "_Стартиране на многодисковото устройство"
 
-#: src/nautilus-files-view.c:8357
+#: src/nautilus-files-view.c:8358
 msgid "U_nlock Drive"
 msgstr "_Отключване на устройството"
 
-#: src/nautilus-files-view.c:8375
+#: src/nautilus-files-view.c:8376
 msgid "Stop Drive"
 msgstr "Спиране на устройство"
 
-#: src/nautilus-files-view.c:8381 src/gtk/nautilusgtkplacessidebar.c:2955
+#: src/nautilus-files-view.c:8382 src/gtk/nautilusgtkplacessidebar.c:2955
 msgid "_Safely Remove Drive"
 msgstr "_Безопасно махане на устройство"
 
-#: src/nautilus-files-view.c:8387
+#: src/nautilus-files-view.c:8388
 msgid "_Disconnect"
 msgstr "_Изключване"
 
-#: src/nautilus-files-view.c:8393
+#: src/nautilus-files-view.c:8394
 msgid "_Stop Multi-disk Drive"
 msgstr "_Спиране на многодисково устройство"
 
-#: src/nautilus-files-view.c:8399
+#: src/nautilus-files-view.c:8400
 msgid "_Lock Drive"
 msgstr "_Заключване на устройство"
 
@@ -3791,16 +3792,20 @@ msgstr "Операционна система"
 msgid "Administrator Root"
 msgstr "Коренова директория като администратор"
 
-#: src/nautilus-portal.c:274 src/resources/ui/nautilus-app-chooser.ui:102
+#: src/nautilus-portal.c:404 src/resources/ui/nautilus-app-chooser.ui:102
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
 #: src/gtk/nautilusgtkplacessidebar.c:2731
 #: src/gtk/nautilusgtkplacessidebar.c:2847
 msgid "_Open"
 msgstr "_Отваряне"
 
-#: src/nautilus-portal.c:278
+#: src/nautilus-portal.c:408
 msgid "_Save"
 msgstr "_Запазване"
+
+#: src/nautilus-portal.c:489
+msgid "Open Read-Only"
+msgstr "Само за четене"
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
@@ -4291,7 +4296,7 @@ msgstr "Назад"
 msgid "Forward"
 msgstr "Напред"
 
-#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:28
+#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:29
 #: src/resources/ui/nautilus-window.ui:117
 msgid "Search Everywhere"
 msgstr "Търсене навсякъде"
@@ -4835,7 +4840,7 @@ msgid "_Confirm Password"
 msgstr "По_твърдете паролата"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
-#: src/resources/ui/nautilus-file-chooser.ui:176
+#: src/resources/ui/nautilus-file-chooser.ui:179
 #: src/resources/ui/nautilus-toolbar.ui:119
 msgid "New Folder"
 msgstr "Нова папка"
@@ -4848,34 +4853,30 @@ msgstr "_Име на папката"
 msgid "_Create"
 msgstr "_Създаване"
 
-#: src/resources/ui/nautilus-file-chooser.ui:137
+#: src/resources/ui/nautilus-file-chooser.ui:140
 #: src/resources/ui/nautilus-toolbar.ui:90
 msgid "Show Sidebar"
 msgstr "Показване на страничната лента"
 
-#: src/resources/ui/nautilus-file-chooser.ui:202
+#: src/resources/ui/nautilus-file-chooser.ui:211
 msgid "Edit File Name"
 msgstr "Промяна на името на файл"
 
-#: src/resources/ui/nautilus-file-chooser.ui:233
+#: src/resources/ui/nautilus-file-chooser.ui:242
 msgid "Reset File Name"
 msgstr "Изчистване на името на файл"
 
-#: src/resources/ui/nautilus-file-chooser.ui:248
+#: src/resources/ui/nautilus-file-chooser.ui:257
 msgid "File Name"
 msgstr "Име на файл"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.ui:294
+#: src/resources/ui/nautilus-file-chooser.ui:303
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Настройки"
 
-#: src/resources/ui/nautilus-file-chooser.ui:299
-msgid "Open _Read-Only"
-msgstr "Само за _четене"
-
-#: src/resources/ui/nautilus-file-chooser.ui:310
+#: src/resources/ui/nautilus-file-chooser.ui:309
 msgid "Visible Files Filter"
 msgstr "Филтър на видимите файлове"
 
@@ -5148,6 +5149,10 @@ msgstr "Протокол"
 #: src/resources/ui/nautilus-network-address-bar.ui:94
 msgid "Server address"
 msgstr "Адрес на сървъра"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:111
+msgid "Server Address Information"
+msgstr "Информация за адреса на сървър"
 
 #: src/resources/ui/nautilus-network-cell.ui:70
 #: src/gtk/nautilusgtkplacessidebar.c:391
@@ -5492,8 +5497,8 @@ msgid "Search File Types"
 msgstr "Търсене по видове файлове"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:59
-msgid "Search by type name or description"
-msgstr "Избор по име на вида или описание"
+msgid "Search by type, name, or description"
+msgstr "Търсене по вид, име или описание"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:71
 msgid "Try a different search"
