@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-08-23 22:01+0000\n"
-"PO-Revision-Date: 2024-08-30 17:26+0100\n"
+"POT-Creation-Date: 2024-09-07 08:59+0000\n"
+"PO-Revision-Date: 2024-09-07 12:43+0100\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese (https://l10n.gnome.org/teams/pt/)\n"
 "Language: pt\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 "X-Language: pt_PT\n"
 "X-Source-Language: C\n"
 "X-Project-Style: gnome\n"
@@ -32,7 +32,8 @@ msgstr "Executar o Software"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-window.c:1745 src/resources/ui/nautilus-window.ui:124
+#: src/nautilus-portal.c:505 src/nautilus-window.c:1745
+#: src/resources/ui/nautilus-window.ui:124
 msgid "Files"
 msgstr "Ficheiros"
 
@@ -459,7 +460,7 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Pode parar esta operação clicando em cancelar."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-chooser.c:231 src/nautilus-file-operations.c:273
+#: src/nautilus-file-chooser.c:228 src/nautilus-file-operations.c:273
 #: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1019
 #: src/nautilus-mime-actions.c:1330 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
@@ -1628,11 +1629,11 @@ msgstr "Atalho (inválido)"
 msgid "%s Free"
 msgstr "%s Livre"
 
-#: src/nautilus-file-chooser.c:221
+#: src/nautilus-file-chooser.c:218
 msgid "Replace When Saving?"
 msgstr "Substituir Quando Grava?"
 
-#: src/nautilus-file-chooser.c:227
+#: src/nautilus-file-chooser.c:224
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
@@ -1640,7 +1641,7 @@ msgstr ""
 "\"%s\" já existe em \"%s\". A gravação substituirá ou sobrescreverá o seu "
 "conteúdo."
 
-#: src/nautilus-file-chooser.c:232 src/nautilus-file-chooser.c:308
+#: src/nautilus-file-chooser.c:229 src/nautilus-file-chooser.c:305
 #: src/nautilus-file-operations.c:279
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
@@ -2691,7 +2692,7 @@ msgid "Select Copy Destination"
 msgstr "Selecione o destino da cópia"
 
 #: src/nautilus-files-view.c:6124 src/nautilus-files-view.c:6512
-#: src/nautilus-portal.c:274 src/nautilus-properties-window.c:4082
+#: src/nautilus-portal.c:404 src/nautilus-properties-window.c:4082
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_Selecionar"
@@ -2721,71 +2722,71 @@ msgstr "Impossível parar a unidade"
 msgid "Unable to start “%s”"
 msgstr "Impossível iniciar “%s”"
 
-#: src/nautilus-files-view.c:8184
+#: src/nautilus-files-view.c:8185
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Nova Pasta com Seleção (%'d Item)"
 msgstr[1] "Nova pasta com seleção (%'d itens)"
 
-#: src/nautilus-files-view.c:8239
+#: src/nautilus-files-view.c:8240
 #, c-format
 msgid "Open With %s"
 msgstr "Abrir com %s"
 
-#: src/nautilus-files-view.c:8250
+#: src/nautilus-files-view.c:8251
 msgid "Run"
 msgstr "Executar"
 
-#: src/nautilus-files-view.c:8255
+#: src/nautilus-files-view.c:8256
 #: src/resources/ui/nautilus-operations-ui-manager-request-passphrase.ui:17
 msgid "Extract"
 msgstr "Extrair"
 
-#: src/nautilus-files-view.c:8256
+#: src/nautilus-files-view.c:8257
 msgid "Extract to…"
 msgstr "Extrair para…"
 
-#: src/nautilus-files-view.c:8260
+#: src/nautilus-files-view.c:8261
 #: src/resources/ui/nautilus-files-view-context-menus.ui:93
 msgid "Open"
 msgstr "Abrir"
 
-#: src/nautilus-files-view.c:8339
+#: src/nautilus-files-view.c:8340
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
 #: src/gtk/nautilusgtkplacessidebar.c:2938
 msgid "_Start"
 msgstr "_Iniciar"
 
-#: src/nautilus-files-view.c:8345
+#: src/nautilus-files-view.c:8346
 msgid "_Connect"
 msgstr "_Ligar"
 
-#: src/nautilus-files-view.c:8351
+#: src/nautilus-files-view.c:8352
 msgid "_Start Multi-disk Drive"
 msgstr "_Iniciar unidade multi-disco"
 
-#: src/nautilus-files-view.c:8357
+#: src/nautilus-files-view.c:8358
 msgid "U_nlock Drive"
 msgstr "_Desbloquear unidade"
 
-#: src/nautilus-files-view.c:8375
+#: src/nautilus-files-view.c:8376
 msgid "Stop Drive"
 msgstr "Para unidade"
 
-#: src/nautilus-files-view.c:8381 src/gtk/nautilusgtkplacessidebar.c:2955
+#: src/nautilus-files-view.c:8382 src/gtk/nautilusgtkplacessidebar.c:2955
 msgid "_Safely Remove Drive"
 msgstr "Remover unidade em _segurança"
 
-#: src/nautilus-files-view.c:8387
+#: src/nautilus-files-view.c:8388
 msgid "_Disconnect"
 msgstr "_Desligar"
 
-#: src/nautilus-files-view.c:8393
+#: src/nautilus-files-view.c:8394
 msgid "_Stop Multi-disk Drive"
 msgstr "_Parar unidade multi-disco"
 
-#: src/nautilus-files-view.c:8399
+#: src/nautilus-files-view.c:8400
 msgid "_Lock Drive"
 msgstr "_Bloquear a unidade"
 
@@ -3789,16 +3790,20 @@ msgstr "Sistema operativo"
 msgid "Administrator Root"
 msgstr "Administrador Root"
 
-#: src/nautilus-portal.c:274 src/resources/ui/nautilus-app-chooser.ui:102
+#: src/nautilus-portal.c:404 src/resources/ui/nautilus-app-chooser.ui:102
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
 #: src/gtk/nautilusgtkplacessidebar.c:2731
 #: src/gtk/nautilusgtkplacessidebar.c:2847
 msgid "_Open"
 msgstr "_Abrir"
 
-#: src/nautilus-portal.c:278
+#: src/nautilus-portal.c:408
 msgid "_Save"
 msgstr "_Guardar"
+
+#: src/nautilus-portal.c:489
+msgid "Open Read-Only"
+msgstr "Abrir apenas-leitura"
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions the user has in a directory.
@@ -4277,7 +4282,7 @@ msgstr "Voltar"
 msgid "Forward"
 msgstr "Avançar"
 
-#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:28
+#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:29
 #: src/resources/ui/nautilus-window.ui:117
 msgid "Search Everywhere"
 msgstr "Procurar em todo o lado"
@@ -4821,7 +4826,7 @@ msgid "_Confirm Password"
 msgstr "_Confirmar palavra-passe"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
-#: src/resources/ui/nautilus-file-chooser.ui:176
+#: src/resources/ui/nautilus-file-chooser.ui:179
 #: src/resources/ui/nautilus-toolbar.ui:119
 msgid "New Folder"
 msgstr "Nova pasta"
@@ -4834,34 +4839,30 @@ msgstr "Nome da pasta"
 msgid "_Create"
 msgstr "_Criar"
 
-#: src/resources/ui/nautilus-file-chooser.ui:137
+#: src/resources/ui/nautilus-file-chooser.ui:140
 #: src/resources/ui/nautilus-toolbar.ui:90
 msgid "Show Sidebar"
 msgstr "Mostrar barra lateral"
 
-#: src/resources/ui/nautilus-file-chooser.ui:202
+#: src/resources/ui/nautilus-file-chooser.ui:211
 msgid "Edit File Name"
 msgstr "Editar nome do ficheiro"
 
-#: src/resources/ui/nautilus-file-chooser.ui:233
+#: src/resources/ui/nautilus-file-chooser.ui:242
 msgid "Reset File Name"
 msgstr "Limpar nome de ficheiro"
 
-#: src/resources/ui/nautilus-file-chooser.ui:248
+#: src/resources/ui/nautilus-file-chooser.ui:257
 msgid "File Name"
 msgstr "Nome do ficheiro"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.ui:294
+#: src/resources/ui/nautilus-file-chooser.ui:303
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Mostrar opções"
 
-#: src/resources/ui/nautilus-file-chooser.ui:299
-msgid "Open _Read-Only"
-msgstr "Ab_rir apenas de leitura"
-
-#: src/resources/ui/nautilus-file-chooser.ui:310
+#: src/resources/ui/nautilus-file-chooser.ui:309
 msgid "Visible Files Filter"
 msgstr "Filtro de visualização de ficheiros"
 
@@ -5136,6 +5137,10 @@ msgstr "Prefixo"
 #: src/resources/ui/nautilus-network-address-bar.ui:94
 msgid "Server address"
 msgstr "Endereço do Servidor"
+
+#: src/resources/ui/nautilus-network-address-bar.ui:111
+msgid "Server Address Information"
+msgstr "Informação do endereço do servidor"
 
 #: src/resources/ui/nautilus-network-cell.ui:70
 #: src/gtk/nautilusgtkplacessidebar.c:391
@@ -5480,8 +5485,8 @@ msgid "Search File Types"
 msgstr "Procurar em tipos de ficheiro"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:59
-msgid "Search by type name or description"
-msgstr "Procurar por tipo no nome ou descrição"
+msgid "Search by type, name, or description"
+msgstr "Procurar por tipo, nome ou descrição"
 
 #: src/resources/ui/nautilus-search-types-dialog.ui:71
 msgid "Try a different search"
