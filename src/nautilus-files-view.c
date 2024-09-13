@@ -7968,7 +7968,9 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  (mode == NAUTILUS_MODE_BROWSE ||
                                   mode == NAUTILUS_MODE_SAVE_FILE ||
-                                  mode == NAUTILUS_MODE_SAVE_FILES) &&
+                                  mode == NAUTILUS_MODE_SAVE_FILES ||
+                                  mode == NAUTILUS_MODE_OPEN_FOLDER ||
+                                  mode == NAUTILUS_MODE_OPEN_FOLDERS) &&
                                  can_create_files);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),

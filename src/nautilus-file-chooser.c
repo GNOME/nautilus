@@ -705,7 +705,9 @@ nautilus_file_chooser_constructed (GObject *object)
 
     gtk_widget_set_visible (self->new_folder_button,
                             (self->mode == NAUTILUS_MODE_SAVE_FILE ||
-                             self->mode == NAUTILUS_MODE_SAVE_FILES));
+                             self->mode == NAUTILUS_MODE_SAVE_FILES ||
+                             self->mode == NAUTILUS_MODE_OPEN_FOLDER ||
+                             self->mode == NAUTILUS_MODE_OPEN_FOLDERS));
 
     /* Add the setter here once the new folder property is set */
     adw_breakpoint_add_setters (self->breakpoint, G_OBJECT (self->toolbar),
