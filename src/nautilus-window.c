@@ -1410,14 +1410,15 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     if (!is_current_location)
     {
         g_autoptr (NautilusFile) folder = NULL;
-        g_autofree gchar *button_label = NULL;
+        g_autoptr (GString) button_label = g_string_new ("");
         GVariant *target;
 
         target = g_variant_new_take_string (g_file_get_uri (folder_to_open));
         folder = nautilus_file_get (folder_to_open);
-        button_label = g_strdup_printf (_("Open %s"),
-                                        nautilus_file_get_display_name (folder));
-        adw_toast_set_button_label (toast, button_label);
+        g_string_printf (button_label, _("Open %s"), nautilus_file_get_display_name (folder));
+        /* Need to escape mnemonics since it's a button. */
+        g_string_replace (button_label, "_", "__", -1);
+        adw_toast_set_button_label (toast, button_label->str);
         adw_toast_set_action_name (toast, "win.open-location");
         adw_toast_set_action_target_value (toast, target);
     }
