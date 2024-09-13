@@ -18,6 +18,7 @@
 
 #include "nautilus-file-chooser.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
 
 #define DESKTOP_PORTAL_OBJECT_PATH "/org/freedesktop/portal/desktop"
 
@@ -77,6 +78,16 @@ file_chooser_data_free (gpointer data)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (FileChooserData, file_chooser_data_free)
 
 static void
+save_window_size (GtkWindow *window)
+{
+    int width, height;
+
+    gtk_window_get_default_size (window, &width, &height);
+    g_settings_set (nautilus_window_state, NAUTILUS_WINDOW_STATE_INITIAL_SIZE_FILE_CHOOSER,
+                    "(ii)", width, height);
+}
+
+static void
 complete_file_chooser (FileChooserData *data,
                        int              response,
                        GVariantBuilder *results)
@@ -111,6 +122,7 @@ complete_file_chooser (FileChooserData *data,
 
     request_unexport (data->request);
 
+    save_window_size (data->window);
     gtk_window_destroy (data->window);
 
     g_application_release (g_application_get_default ());

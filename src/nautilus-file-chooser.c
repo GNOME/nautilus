@@ -727,6 +727,11 @@ nautilus_file_chooser_constructed (GObject *object)
     gtk_widget_add_css_class (self->title_widget, "title");
     g_signal_connect (self->title_widget, "query-tooltip",
                       G_CALLBACK (title_widget_query_tooltip), self);
+
+    int width, height;
+    g_settings_get (nautilus_window_state, NAUTILUS_WINDOW_STATE_INITIAL_SIZE_FILE_CHOOSER,
+                    "(ii)", &width, &height);
+    gtk_window_set_default_size (GTK_WINDOW (self), width, height);
 }
 
 static void
