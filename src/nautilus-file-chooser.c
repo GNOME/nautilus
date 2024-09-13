@@ -53,6 +53,7 @@ struct _NautilusFileChooser
     GtkWidget *title_widget;
 
     NautilusFilenameValidator *validator;
+    AdwBreakpoint *breakpoint;
 };
 
 G_DEFINE_FINAL_TYPE (NautilusFileChooser, nautilus_file_chooser, ADW_TYPE_WINDOW)
@@ -706,6 +707,10 @@ nautilus_file_chooser_constructed (GObject *object)
                             (self->mode == NAUTILUS_MODE_SAVE_FILE ||
                              self->mode == NAUTILUS_MODE_SAVE_FILES));
 
+    /* Add the setter here once the new folder property is set */
+    adw_breakpoint_add_setters (self->breakpoint, G_OBJECT (self->toolbar),
+                                "show-new-folder-button", FALSE, NULL);
+
     if (self->mode == NAUTILUS_MODE_SAVE_FILE)
     {
         g_signal_connect_object (self->slot, "notify::selection",
@@ -795,6 +800,7 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, new_folder_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, validator);
     gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, title_widget);
+    gtk_widget_class_bind_template_child (widget_class, NautilusFileChooser, breakpoint);
 
     gtk_widget_class_bind_template_callback (widget_class, nautilus_file_chooser_can_accept);
     gtk_widget_class_bind_template_callback (widget_class, on_accept_button_clicked);
