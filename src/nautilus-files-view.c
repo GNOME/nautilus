@@ -1475,9 +1475,7 @@ action_open_item_location (GSimpleAction *action,
         selection->data = item;
     }
 
-    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                             parent_location, 0, selection, NULL,
-                                             priv->slot);
+    nautilus_window_slot_open_location_full (priv->slot, parent_location, 0, selection);
 
     nautilus_file_unref (parent);
     nautilus_file_unref (activation_file);
