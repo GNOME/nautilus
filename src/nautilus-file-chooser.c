@@ -401,7 +401,8 @@ static void
 on_filename_entry_changed (NautilusFileChooser *self)
 {
     const char *current_text = gtk_editable_get_text (GTK_EDITABLE (self->filename_entry));
-    gboolean is_not_suggested_text = (g_strcmp0 (self->suggested_name, current_text) != 0);
+    gboolean is_not_suggested_text = (g_strcmp0 (self->suggested_name, current_text) != 0 &&
+                                      self->suggested_name != NULL);
 
     gtk_widget_set_visible (self->filename_undo_button, is_not_suggested_text);
 
