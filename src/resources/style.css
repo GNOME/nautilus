@@ -321,8 +321,34 @@ rubberband {
   --accent-color: oklab(from var(--accent-bg-color) var(--standalone-color-oklab));
 }
 
-#NautilusFileChooser dropdown.flat-dropdown:not(:hover) > button {
+#NautilusFileChooser dropdown.flat-dropdown > button {
   background: none;
+}
+
+#NautilusFileChooser dropdown.flat-dropdown > button:not(:checked):not(:hover):not(:active):not(.keyboard-activating) {
+  box-shadow: none;
+}
+
+#NautilusFileChooser dropdown.flat-dropdown > button:hover {
+  background: color-mix(in srgb, currentColor 7%, transparent);
+}
+
+#NautilusFileChooser dropdown.flat-dropdown > button:active,
+#NautilusFileChooser dropdown.flat-dropdown > button.keyboard-activating {
+  background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+#NautilusFileChooser dropdown.flat-dropdown > button:checked {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+#NautilusFileChooser dropdown.flat-dropdown > button:checked:hover {
+  background: color-mix(in srgb, currentColor 13%, transparent);
+}
+
+#NautilusFileChooser dropdown.flat-dropdown > button:checked:active,
+#NautilusFileChooser dropdown.flat-dropdown > button:checked.keyboard-activating {
+  background: color-mix(in srgb, currentColor 19%, transparent);
 }
 
 .toolbar.no-bottom-padding {
