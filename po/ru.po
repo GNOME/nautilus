@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-09-07 08:59+0000\n"
-"PO-Revision-Date: 2024-09-07 12:29+0300\n"
+"POT-Creation-Date: 2024-09-13 21:35+0000\n"
+"PO-Revision-Date: 2024-09-14 16:40+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -36,7 +36,7 @@ msgstr "Запустить Центр приложений"
 
 #: data/org.gnome.Nautilus.metainfo.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-portal.c:505 src/nautilus-window.c:1745
+#: src/nautilus-portal.c:505 src/nautilus-window.c:1746
 #: src/resources/ui/nautilus-window.ui:124
 msgid "Files"
 msgstr "Файлы"
@@ -467,7 +467,7 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Действие можно остановить с помощью кнопки «Отменить»."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
-#: src/nautilus-file-chooser.c:228 src/nautilus-file-operations.c:273
+#: src/nautilus-file-chooser.c:229 src/nautilus-file-operations.c:273
 #: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1019
 #: src/nautilus-mime-actions.c:1330 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
@@ -700,7 +700,7 @@ msgstr "Фокусное расстояние"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:237
 msgid "Software"
-msgstr "Центр приложений"
+msgstr "Программное обеспечение"
 
 #: extensions/image-properties/nautilus-image-properties-model.c:239
 msgid "Description"
@@ -1031,7 +1031,7 @@ msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:59
 #: src/nautilus-pathbar.c:414 src/nautilus-shell-search-provider.c:341
-#: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:669
+#: src/nautilus-window.c:141 src/gtk/nautilusgtkplacessidebar.c:670
 msgid "Home"
 msgstr "Домашняя папка"
 
@@ -1055,7 +1055,7 @@ msgstr "Буфер обмена Nautilus не должен содержать п
 msgid "View More"
 msgstr "Посмотреть еще"
 
-#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1958
+#: src/nautilus-column-utilities.c:69 src/gtk/nautilusgtkplacessidebar.c:1977
 msgid "Name"
 msgstr "Имя"
 
@@ -1656,11 +1656,11 @@ msgstr "Ссылка (испорченная)"
 msgid "%s Free"
 msgstr "%s свободно"
 
-#: src/nautilus-file-chooser.c:218
+#: src/nautilus-file-chooser.c:219
 msgid "Replace When Saving?"
 msgstr "Заменить при сохранении?"
 
-#: src/nautilus-file-chooser.c:224
+#: src/nautilus-file-chooser.c:225
 #, c-format
 msgid ""
 "“%s” already exists in “%s”. Saving will replace or overwrite its contents."
@@ -1668,7 +1668,7 @@ msgstr ""
 "Файл “%s” уже существует в папке “%s”. Сохранение заменит или перезапишет "
 "его содержимое."
 
-#: src/nautilus-file-chooser.c:229 src/nautilus-file-chooser.c:305
+#: src/nautilus-file-chooser.c:230 src/nautilus-file-chooser.c:306
 #: src/nautilus-file-operations.c:279
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:40
 msgid "_Replace"
@@ -1986,8 +1986,8 @@ msgstr "Удаление файлов"
 
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-file-operations.c:2330 src/nautilus-files-view.c:6928
-#: src/gtk/nautilusgtkplacessidebar.c:2290
-#: src/gtk/nautilusgtkplacessidebar.c:2319
+#: src/gtk/nautilusgtkplacessidebar.c:2309
+#: src/gtk/nautilusgtkplacessidebar.c:2338
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Не удалось извлечь «%s»"
@@ -2020,7 +2020,7 @@ msgstr "_Очистить"
 
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-file-operations.c:2656 src/nautilus-files-view.c:6878
-#: src/gtk/nautilusgtkplacessidebar.c:1682
+#: src/gtk/nautilusgtkplacessidebar.c:1701
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Не удалось получить доступ к «%s»"
@@ -2777,8 +2777,8 @@ msgid "Unable to stop drive"
 msgstr "Не удалось остановить привод"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:7065 src/gtk/nautilusgtkplacessidebar.c:1637
-#: src/gtk/nautilusgtkplacessidebar.c:2516
+#: src/nautilus-files-view.c:7065 src/gtk/nautilusgtkplacessidebar.c:1656
+#: src/gtk/nautilusgtkplacessidebar.c:2535
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Не удалось запустить «%s»"
@@ -2819,7 +2819,7 @@ msgstr "Открыть"
 
 #: src/nautilus-files-view.c:8340
 #: src/resources/ui/nautilus-files-view-context-menus.ui:159
-#: src/gtk/nautilusgtkplacessidebar.c:2938
+#: src/gtk/nautilusgtkplacessidebar.c:2957
 msgid "_Start"
 msgstr "_Запустить"
 
@@ -2839,7 +2839,7 @@ msgstr "_Разблокировать привод"
 msgid "Stop Drive"
 msgstr "Остановить привод"
 
-#: src/nautilus-files-view.c:8382 src/gtk/nautilusgtkplacessidebar.c:2955
+#: src/nautilus-files-view.c:8382 src/gtk/nautilusgtkplacessidebar.c:2974
 msgid "_Safely Remove Drive"
 msgstr "_Безопасно удалить привод"
 
@@ -3413,12 +3413,12 @@ msgid "Link to %s (%zu)"
 msgstr "Ссылка на %s (%zu)"
 
 #: src/nautilus-internal-place-file.c:165
-#: src/gtk/nautilusgtkplacessidebar.c:715
+#: src/gtk/nautilusgtkplacessidebar.c:716
 msgid "Network"
 msgstr "Сеть"
 
 #: src/nautilus-internal-place-file.c:169
-#: src/gtk/nautilusgtkplacessidebar.c:689
+#: src/gtk/nautilusgtkplacessidebar.c:690
 msgid "Starred"
 msgstr "Избранные"
 
@@ -3459,7 +3459,7 @@ msgstr ""
 msgid "_Learn More"
 msgstr "_Узнать больше"
 
-#: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:2890
+#: src/nautilus-location-banner.c:225 src/gtk/nautilusgtkplacessidebar.c:2909
 msgid "_Empty Trash…"
 msgstr "О_чистить корзину…"
 
@@ -3886,8 +3886,8 @@ msgstr "Корень системы"
 
 #: src/nautilus-portal.c:404 src/resources/ui/nautilus-app-chooser.ui:102
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
-#: src/gtk/nautilusgtkplacessidebar.c:2731
-#: src/gtk/nautilusgtkplacessidebar.c:2847
+#: src/gtk/nautilusgtkplacessidebar.c:2750
+#: src/gtk/nautilusgtkplacessidebar.c:2866
 msgid "_Open"
 msgstr "_Открыть"
 
@@ -4226,7 +4226,7 @@ msgstr "Выбрать даты…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:346
-#: src/gtk/nautilusgtkplacessidebar.c:724
+#: src/gtk/nautilusgtkplacessidebar.c:727
 msgid "Trash"
 msgstr "Корзина"
 
@@ -4341,25 +4341,25 @@ msgstr "_Повторить"
 # "Открыть с помощью программы "%s" -- это слишком длинно и не помешается
 # на боковую панель даже без распаковки `%s'.
 #. translators: %s is the name of a cloud provider for files
-#: src/nautilus-window.c:933 src/gtk/nautilusgtkplacessidebar.c:583
+#: src/nautilus-window.c:933 src/gtk/nautilusgtkplacessidebar.c:584
 #, c-format
 msgid "Open %s"
 msgstr "Открыть %s"
 
-#: src/nautilus-window.c:1717 src/nautilus-window.c:1722
-#: src/nautilus-window.c:1727 src/nautilus-window.c:1747
+#: src/nautilus-window.c:1718 src/nautilus-window.c:1723
+#: src/nautilus-window.c:1728 src/nautilus-window.c:1748
 msgid "The GNOME Project"
 msgstr "Проект GNOME"
 
-#: src/nautilus-window.c:1734
+#: src/nautilus-window.c:1735
 msgid "No plugins currently installed."
 msgstr "В настоящее время плагины не установлены."
 
-#: src/nautilus-window.c:1738
+#: src/nautilus-window.c:1739
 msgid "Currently installed plugins:"
 msgstr "Текущие установленные плагины:"
 
-#: src/nautilus-window.c:1740
+#: src/nautilus-window.c:1741
 msgid "For bug testing only, the following command can be used:"
 msgstr "Только для тестирования ошибок, можно использовать следующую команду:"
 
@@ -4367,7 +4367,7 @@ msgstr "Только для тестирования ошибок, можно и
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:1762
+#: src/nautilus-window.c:1763
 msgid "translator-credits"
 msgstr ""
 "Станислав Соловей <whats_up@tut.by>, 2011-2020.\n"
@@ -4837,8 +4837,8 @@ msgstr "Исходное имя файла"
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:113
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:30
 #: src/resources/ui/nautilus-rename-file-popover.ui:47
-#: src/gtk/nautilusgtkplacessidebar.c:1964
-#: src/gtk/nautilusgtkplacessidebar.c:2881
+#: src/gtk/nautilusgtkplacessidebar.c:1983
+#: src/gtk/nautilusgtkplacessidebar.c:2900
 msgid "_Rename"
 msgstr "_Переименовать"
 
@@ -4933,7 +4933,7 @@ msgid "_Confirm Password"
 msgstr "П_одтвердить пароль"
 
 #: src/resources/ui/nautilus-new-folder-dialog.ui:5
-#: src/resources/ui/nautilus-file-chooser.ui:179
+#: src/resources/ui/nautilus-file-chooser.ui:189
 #: src/resources/ui/nautilus-toolbar.ui:119
 msgid "New Folder"
 msgstr "Создать папку"
@@ -4946,30 +4946,30 @@ msgstr "Имя _папки"
 msgid "_Create"
 msgstr "_Создать"
 
-#: src/resources/ui/nautilus-file-chooser.ui:140
+#: src/resources/ui/nautilus-file-chooser.ui:150
 #: src/resources/ui/nautilus-toolbar.ui:90
 msgid "Show Sidebar"
 msgstr "Показывать боковую панель"
 
-#: src/resources/ui/nautilus-file-chooser.ui:211
+#: src/resources/ui/nautilus-file-chooser.ui:221
 msgid "Edit File Name"
 msgstr "Редактировать имя файла"
 
-#: src/resources/ui/nautilus-file-chooser.ui:242
+#: src/resources/ui/nautilus-file-chooser.ui:252
 msgid "Reset File Name"
 msgstr "Сбросить имя файла"
 
-#: src/resources/ui/nautilus-file-chooser.ui:257
+#: src/resources/ui/nautilus-file-chooser.ui:267
 msgid "File Name"
 msgstr "Имя файла"
 
 #. Translators: 'Show' is a verb
-#: src/resources/ui/nautilus-file-chooser.ui:303
+#: src/resources/ui/nautilus-file-chooser.ui:313
 msgctxt "File Chooser tooltips"
 msgid "Show Options"
 msgstr "Показать параметры"
 
-#: src/resources/ui/nautilus-file-chooser.ui:309
+#: src/resources/ui/nautilus-file-chooser.ui:319
 msgid "Visible Files Filter"
 msgstr "Фильтр видимых файлов"
 
@@ -5086,15 +5086,15 @@ msgstr "_Запустить как приложение"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:98
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:10
-#: src/gtk/nautilusgtkplacessidebar.c:2739
-#: src/gtk/nautilusgtkplacessidebar.c:2855
+#: src/gtk/nautilusgtkplacessidebar.c:2758
+#: src/gtk/nautilusgtkplacessidebar.c:2874
 msgid "Open in New _Tab"
 msgstr "Открыть в новой _вкладке"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:103
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:6
-#: src/gtk/nautilusgtkplacessidebar.c:2746
-#: src/gtk/nautilusgtkplacessidebar.c:2864
+#: src/gtk/nautilusgtkplacessidebar.c:2765
+#: src/gtk/nautilusgtkplacessidebar.c:2883
 msgid "Open in New _Window"
 msgstr "Открыть в _новом окне"
 
@@ -5111,27 +5111,27 @@ msgid "_Open Scripts Folder"
 msgstr "Открыть папку с_ценариев"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:144
-#: src/gtk/nautilusgtkplacessidebar.c:2903
+#: src/gtk/nautilusgtkplacessidebar.c:2922
 msgid "_Mount"
 msgstr "_Присоединить"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:149
-#: src/gtk/nautilusgtkplacessidebar.c:2912
+#: src/gtk/nautilusgtkplacessidebar.c:2931
 msgid "_Unmount"
 msgstr "О_тсоединить том"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:154
-#: src/gtk/nautilusgtkplacessidebar.c:2919
+#: src/gtk/nautilusgtkplacessidebar.c:2938
 msgid "_Eject"
 msgstr "_Извлечь"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:164
-#: src/gtk/nautilusgtkplacessidebar.c:2953
+#: src/gtk/nautilusgtkplacessidebar.c:2972
 msgid "_Stop"
 msgstr "Ос_тановить"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:169
-#: src/gtk/nautilusgtkplacessidebar.c:2929
+#: src/gtk/nautilusgtkplacessidebar.c:2948
 msgid "_Detect Media"
 msgstr "Опреде_лить носитель"
 
@@ -5248,7 +5248,7 @@ msgid "Server Address Information"
 msgstr "Информация об адресе сервера"
 
 #: src/resources/ui/nautilus-network-cell.ui:70
-#: src/gtk/nautilusgtkplacessidebar.c:391
+#: src/gtk/nautilusgtkplacessidebar.c:392
 msgid "Disconnect"
 msgstr "Отключить"
 
@@ -5406,7 +5406,7 @@ msgstr "Показать действия над файлами"
 
 #: src/resources/ui/nautilus-properties-window.ui:5
 #: src/resources/ui/nautilus-properties-window.ui:16
-#: src/gtk/nautilusgtkplacessidebar.c:2977
+#: src/gtk/nautilusgtkplacessidebar.c:2996
 msgid "Properties"
 msgstr "Свойства"
 
@@ -5721,128 +5721,128 @@ msgstr "Закрыть _остальные вкладки"
 msgid "Main Menu"
 msgstr "Главное меню"
 
-#: src/gtk/nautilusgtkplacessidebar.c:393
+#: src/gtk/nautilusgtkplacessidebar.c:394
 msgid "Eject"
 msgstr "Извлечь"
 
-#: src/gtk/nautilusgtkplacessidebar.c:395
+#: src/gtk/nautilusgtkplacessidebar.c:396
 msgid "Unmount"
 msgstr "Отсоединить"
 
-#: src/gtk/nautilusgtkplacessidebar.c:671
+#: src/gtk/nautilusgtkplacessidebar.c:672
 msgid "Open Personal Folder"
 msgstr "Открыть личную папку"
 
-#: src/gtk/nautilusgtkplacessidebar.c:680
+#: src/gtk/nautilusgtkplacessidebar.c:681
 msgid "Recent"
 msgstr "Недавние"
 
-#: src/gtk/nautilusgtkplacessidebar.c:682
+#: src/gtk/nautilusgtkplacessidebar.c:683
 msgid "Recent Files"
 msgstr "Недавние файлы"
 
-#: src/gtk/nautilusgtkplacessidebar.c:691
+#: src/gtk/nautilusgtkplacessidebar.c:692
 msgid "Starred Files"
 msgstr "Избранные файлы"
 
-#: src/gtk/nautilusgtkplacessidebar.c:703
+#: src/gtk/nautilusgtkplacessidebar.c:704
 msgid "Desktop"
 msgstr "Рабочий стол"
 
-#: src/gtk/nautilusgtkplacessidebar.c:705
+#: src/gtk/nautilusgtkplacessidebar.c:706
 msgid "Open the contents of your desktop in a folder"
 msgstr "Открыть содержимое рабочего стола в папке"
 
-#: src/gtk/nautilusgtkplacessidebar.c:717
+#: src/gtk/nautilusgtkplacessidebar.c:718
 msgid "Open Network Locations"
 msgstr "Открыть сетевые расположения"
 
-#: src/gtk/nautilusgtkplacessidebar.c:726
+#: src/gtk/nautilusgtkplacessidebar.c:729
 msgid "Open Trash"
 msgstr "Открыть корзину"
 
-#: src/gtk/nautilusgtkplacessidebar.c:829
-#: src/gtk/nautilusgtkplacessidebar.c:859
-#: src/gtk/nautilusgtkplacessidebar.c:1036
+#: src/gtk/nautilusgtkplacessidebar.c:833
+#: src/gtk/nautilusgtkplacessidebar.c:863
+#: src/gtk/nautilusgtkplacessidebar.c:1040
 #, c-format
 msgid "Mount and Open “%s”"
 msgstr "Смонтировать и открыть «%s»"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1014
+#: src/gtk/nautilusgtkplacessidebar.c:1018
 msgid "New bookmark"
 msgstr "Создать закладку"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1016
+#: src/gtk/nautilusgtkplacessidebar.c:1020
 msgid "Add a new bookmark"
 msgstr "Добавить новую закладку"
 
 #. Translators: This means that unlocking an encrypted storage
 #. * device failed. %s is the name of the device.
 #.
-#: src/gtk/nautilusgtkplacessidebar.c:1680
+#: src/gtk/nautilusgtkplacessidebar.c:1699
 #, c-format
 msgid "Error unlocking “%s”"
 msgstr "Ошибка разблокировки «%s»"
 
-#: src/gtk/nautilusgtkplacessidebar.c:1877
+#: src/gtk/nautilusgtkplacessidebar.c:1896
 msgid "This name is already taken"
 msgstr "Это имя уже занято"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2261
+#: src/gtk/nautilusgtkplacessidebar.c:2280
 #, c-format
 msgid "Unable to stop “%s”"
 msgstr "Не удалось остановить «%s»"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2468
+#: src/gtk/nautilusgtkplacessidebar.c:2487
 #, c-format
 msgid "Unable to poll “%s” for media changes"
 msgstr "Не удалось опросить «%s» об изменении носителей"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2876
+#: src/gtk/nautilusgtkplacessidebar.c:2895
 msgid "_Remove from Bookmarks"
 msgstr "_Удалить из закладок"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2940
+#: src/gtk/nautilusgtkplacessidebar.c:2959
 msgid "_Power On"
 msgstr "_Включить"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2941
+#: src/gtk/nautilusgtkplacessidebar.c:2960
 msgid "_Connect Drive"
 msgstr "_Подключить диск"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2942
+#: src/gtk/nautilusgtkplacessidebar.c:2961
 msgid "_Start Multi-disk Device"
 msgstr "_Запустить многодисковое устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2943
+#: src/gtk/nautilusgtkplacessidebar.c:2962
 msgid "_Unlock Device"
 msgstr "_Разблокировать устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2956
+#: src/gtk/nautilusgtkplacessidebar.c:2975
 msgid "_Disconnect Drive"
 msgstr "_Отключить диск"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2957
+#: src/gtk/nautilusgtkplacessidebar.c:2976
 msgid "_Stop Multi-disk Device"
 msgstr "_Остановить многодисковое устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2958
+#: src/gtk/nautilusgtkplacessidebar.c:2977
 msgid "_Lock Device"
 msgstr "_Заблокировать устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:2967
+#: src/gtk/nautilusgtkplacessidebar.c:2986
 msgid "Format…"
 msgstr "Форматировать…"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3476
+#: src/gtk/nautilusgtkplacessidebar.c:3495
 msgid "Device"
 msgstr "Устройство"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3516
+#: src/gtk/nautilusgtkplacessidebar.c:3537
 msgid "Sidebar"
 msgstr "Боковая панель"
 
-#: src/gtk/nautilusgtkplacessidebar.c:3518
+#: src/gtk/nautilusgtkplacessidebar.c:3539
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Список общих ярлыков, точек монтирования и закладок."
 
