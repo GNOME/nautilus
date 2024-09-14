@@ -28,6 +28,8 @@
 #include "nautilus-view-item-filter.h"
 #include "nautilus-window-slot.h"
 
+#define FILTER_WIDTH_CHARS 12
+
 struct _NautilusFileChooser
 {
     AdwWindow parent_instance;
@@ -504,6 +506,13 @@ on_click_gesture_pressed (GtkGestureClick *gesture,
     }
 }
 
+static int
+get_filter_width_chars (GtkListItem *listitem,
+                        const char  *name)
+{
+    return MIN (g_utf8_strlen (name, -1), FILTER_WIDTH_CHARS);
+}
+
 static void
 update_dropdown_checkmark (GtkDropDown *dropdown,
                            GParamSpec  *psepc,
@@ -819,6 +828,7 @@ nautilus_file_chooser_class_init (NautilusFileChooserClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, on_validator_has_feedback_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_validator_will_overwrite_changed);
     gtk_widget_class_bind_template_callback (widget_class, on_file_drop);
+    gtk_widget_class_bind_template_callback (widget_class, get_filter_width_chars);
 
     properties[PROP_MODE] =
         g_param_spec_enum ("mode", NULL, NULL,

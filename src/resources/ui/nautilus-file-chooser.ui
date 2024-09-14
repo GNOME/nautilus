@@ -324,12 +324,18 @@
     <property name="child">
       <object class="GtkLabel">
         <property name="xalign">0</property>
-        <property name="width-chars">12</property>
         <property name="ellipsize">middle</property>
         <binding name="label">
           <lookup name="name" type="GtkFileFilter">
             <lookup name="item">GtkListItem</lookup>
           </lookup>
+        </binding>
+        <binding name = "width-chars">
+          <closure type="gint" function="get_filter_width_chars">
+            <lookup name="name" type="GtkFileFilter">
+              <lookup name="item">GtkListItem</lookup>
+            </lookup>
+          </closure>
         </binding>
       </object>
     </property>
