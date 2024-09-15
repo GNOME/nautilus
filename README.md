@@ -7,13 +7,6 @@ GNOME, internally known by its historical name `nautilus`.
 ## Supported version
 Only the latest version of Files as provided upstream is supported. Try out the [Flatpak nightly](https://welcome.gnome.org/en/app/Nautilus/#installing-a-nightly-build) installation before filling issues to ensure the installation is reproducible and doesn't have downstream changes on it. In case you cannot reproduce in the nightly installation, don't hesitate to file an issue in your distribution. This is to ensure the issue is well triaged and reaches the proper people.
 
-## Contributing to nautilus
-
-To build the development version of the Files app and hack on the code
-see the [welcome guide](https://welcome.gnome.org/en/app/Nautilus/#getting-the-app-to-build).
-
-Commit messages should follow the expected format [detailed here](https://handbook.gnome.org/development/commit-messages.html).
-
 ### Update default branch
 
 The default development branch of nautilus has been renamed to `main`. To
