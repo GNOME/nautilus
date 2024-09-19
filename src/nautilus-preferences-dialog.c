@@ -397,6 +397,7 @@ nautilus_preferences_dialog_show (GtkWidget *parent)
         /* Destroy existing window, which might be hidden behind other windows,
          * attached to another parent. */
         adw_dialog_force_close (ADW_DIALOG (preferences_dialog));
+        g_clear_weak_pointer (&preferences_dialog);
     }
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-preferences-dialog.ui");
