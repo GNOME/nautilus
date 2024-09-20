@@ -649,7 +649,8 @@ static void
 pop_up_pathbar_context_menu (NautilusPathBar *self,
                              NautilusFile    *file)
 {
-    if (file != NULL)
+    if (file != NULL &&
+        nautilus_window_slot_get_mode (self->slot) == NAUTILUS_MODE_BROWSE)
     {
         schedule_pop_up_context_menu (self, file);
     }
