@@ -19,6 +19,7 @@
     <item>
       <attribute name="label" translatable="yes">New _Folder…</attribute>
       <attribute name="action">view.new-folder</attribute>
+      <attribute name="accel">&lt;shift&gt;&lt;control&gt;n</attribute>
     </item>
     <item>
       <attribute name="label" translatable="yes">New _Document</attribute>
@@ -39,6 +40,7 @@
         <attribute name="label" translatable="yes">R_eload</attribute>
         <attribute name="action">slot.reload</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
+        <attribute name="accel">F5</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">St_op</attribute>
@@ -48,6 +50,7 @@
       <item>
         <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
         <attribute name="action">slot.bookmark-current-directory</attribute>
+        <attribute name="accel">&lt;control&gt;d</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Star Folder</attribute>
@@ -62,6 +65,7 @@
       <item>
         <attribute name="label" translatable="yes">Edit _Location</attribute>
         <attribute name="action">toolbar.edit-location</attribute>
+        <attribute name="accel">&lt;control&gt;L</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Copy Location</attribute>
@@ -85,6 +89,7 @@
       <item>
         <attribute name="label" translatable="yes">P_roperties</attribute>
         <attribute name="action">view.current-directory-properties</attribute>
+        <attribute name="accel">&lt;alt&gt;Return</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>
