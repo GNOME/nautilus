@@ -362,28 +362,25 @@ gdouble
 nautilus_query_matches_string (NautilusQuery *query,
                                const gchar   *string)
 {
-    gchar *prepared_string, *ptr;
-    gboolean found;
+    g_autofree gchar *prepared_string = NULL;
+    gchar *ptr = NULL;
+    gboolean found = TRUE;
     gdouble retval;
-    gint idx, nonexact_malus;
+    gint idx, nonexact_malus = 0;
 
     if (!query->text)
     {
         return -1;
     }
 
+    prepared_string = prepare_string_for_compare (string);
+
     g_mutex_lock (&query->prepared_words_mutex);
     if (!query->prepared_words)
     {
-        prepared_string = prepare_string_for_compare (query->text);
-        query->prepared_words = g_strsplit (prepared_string, " ", -1);
-        g_free (prepared_string);
+        g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
+        query->prepared_words = g_strsplit (prepared_query, " ", -1);
     }
-
-    prepared_string = prepare_string_for_compare (string);
-    found = TRUE;
-    ptr = NULL;
-    nonexact_malus = 0;
 
     for (idx = 0; query->prepared_words[idx] != NULL; idx++)
     {
@@ -399,7 +396,6 @@ nautilus_query_matches_string (NautilusQuery *query,
 
     if (!found)
     {
-        g_free (prepared_string);
         return -1;
     }
 
@@ -409,7 +405,6 @@ nautilus_query_matches_string (NautilusQuery *query,
      * smaller amount.
      */
     retval = MAX (MIN_RANK, MAX_RANK - (gdouble) (ptr - prepared_string) - (gdouble) nonexact_malus / RANK_SCALE_FACTOR);
-    g_free (prepared_string);
 
     return retval;
 }
