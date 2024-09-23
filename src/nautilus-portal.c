@@ -214,7 +214,8 @@ on_file_chooser_accepted (gpointer       user_data,
             g_autoptr (GFile) location = NULL;
 
             location = nautilus_generate_unique_file_in_directory (directory,
-                                                                   data->filenames_to_save[i]);
+                                                                   data->filenames_to_save[i],
+                                                                   FALSE);
             unique_locations = g_list_prepend (unique_locations, g_steal_pointer (&location));
         }
 

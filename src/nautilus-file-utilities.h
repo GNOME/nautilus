@@ -60,7 +60,8 @@ GIcon *  nautilus_special_directory_get_symbolic_icon (GUserDirectory directory)
  * This isn't race-free, so don't use for security-related things
  */
 GFile * nautilus_generate_unique_file_in_directory (GFile      *directory,
-                                                    const char *basename);
+                                                    const char *basename,
+                                                    gboolean    ignore_extension);
 
 GFile *  nautilus_find_existing_uri_in_hierarchy     (GFile *location);
 
