@@ -493,8 +493,7 @@ entry_changed_internal (NautilusQueryEditor *editor)
     }
     else
     {
-        g_autofree gchar *stripped_text = g_strstrip (g_strdup (text));
-        nautilus_query_set_text (editor->query, stripped_text);
+        nautilus_query_set_text (editor->query, text);
     }
 
     nautilus_query_editor_changed (editor);
