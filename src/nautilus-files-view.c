@@ -8914,12 +8914,6 @@ load_directory (NautilusFilesView *view,
 
     setup_loading_floating_bar (view);
 
-    /* Update menus when directory is empty, before going to new
-     * location, so they won't have any false lingering knowledge
-     * of old selection.
-     */
-    schedule_update_context_menus (view);
-
     g_clear_pointer (&priv->subdirectories_loading, g_list_free);
     while (priv->subdirectory_list != NULL)
     {
