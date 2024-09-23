@@ -46,7 +46,7 @@ struct _NautilusQuery
 
     gboolean searching;
     char **prepared_words;
-    GMutex prepared_words_mutex;
+    GRWLock prepared_words_rwlock;
 };
 
 static void  nautilus_query_class_init (NautilusQueryClass *class);
@@ -80,7 +80,7 @@ finalize (GObject *object)
     g_clear_object (&query->location);
     g_clear_pointer (&query->mime_types, g_ptr_array_unref);
     g_clear_pointer (&query->date_range, g_ptr_array_unref);
-    g_mutex_clear (&query->prepared_words_mutex);
+    g_rw_lock_clear (&query->prepared_words_rwlock);
 
     G_OBJECT_CLASS (nautilus_query_parent_class)->finalize (object);
 }
@@ -343,7 +343,7 @@ nautilus_query_init (NautilusQuery *query)
     query->show_hidden = TRUE;
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
-    g_mutex_init (&query->prepared_words_mutex);
+    g_rw_lock_init (&query->prepared_words_rwlock);
 }
 
 static gchar *
@@ -375,12 +375,7 @@ nautilus_query_matches_string (NautilusQuery *query,
 
     prepared_string = prepare_string_for_compare (string);
 
-    g_mutex_lock (&query->prepared_words_mutex);
-    if (!query->prepared_words)
-    {
-        g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
-        query->prepared_words = g_strsplit (prepared_query, " ", -1);
-    }
+    g_rw_lock_reader_lock (&query->prepared_words_rwlock);
 
     for (idx = 0; query->prepared_words[idx] != NULL; idx++)
     {
@@ -392,7 +387,8 @@ nautilus_query_matches_string (NautilusQuery *query,
 
         nonexact_malus += strlen (ptr) - strlen (query->prepared_words[idx]);
     }
-    g_mutex_unlock (&query->prepared_words_mutex);
+
+    g_rw_lock_reader_unlock (&query->prepared_words_rwlock);
 
     if (!found)
     {
@@ -433,10 +429,15 @@ nautilus_query_set_text (NautilusQuery *query,
     g_free (query->text);
     query->text = g_strstrip (g_strdup (text));
 
-    g_mutex_lock (&query->prepared_words_mutex);
+    g_autofree gchar *prepared_query = prepare_string_for_compare (query->text);
+    GStrv prepared_words = g_strsplit (prepared_query, " ", -1);
+
+    g_rw_lock_writer_lock (&query->prepared_words_rwlock);
+
     g_strfreev (query->prepared_words);
-    query->prepared_words = NULL;
-    g_mutex_unlock (&query->prepared_words_mutex);
+    query->prepared_words = prepared_words;
+
+    g_rw_lock_writer_unlock (&query->prepared_words_rwlock);
 
     g_object_notify (G_OBJECT (query), "text");
 }
