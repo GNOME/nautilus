@@ -264,7 +264,8 @@ nautilus_get_mounted_mount_for_root (GFile *location)
 
 GFile *
 nautilus_generate_unique_file_in_directory (GFile      *directory,
-                                            const char *basename)
+                                            const char *basename,
+                                            gboolean    ignore_extension)
 {
     g_return_val_if_fail (directory != NULL, NULL);
     g_return_val_if_fail (basename != NULL, NULL);
@@ -274,7 +275,10 @@ nautilus_generate_unique_file_in_directory (GFile      *directory,
 
     for (size_t counter = 1; g_file_query_exists (child, NULL); counter += 1)
     {
-        g_autofree char *filename = nautilus_filename_for_conflict (basename, counter, -1, FALSE);
+        g_autofree char *filename = nautilus_filename_for_conflict (basename,
+                                                                    counter,
+                                                                    -1,
+                                                                    ignore_extension);
 
         g_object_unref (child);
         child = g_file_get_child (directory, filename);
