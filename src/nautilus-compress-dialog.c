@@ -322,7 +322,16 @@ on_name_accepted (NautilusCompressDialog *self)
 static void
 on_name_entry_activated (NautilusCompressDialog *self)
 {
-    if (gtk_widget_is_visible (self->passphrase_entry))
+    gboolean filename_passed;
+
+    g_object_get (self->validator, "passed", &filename_passed, NULL);
+
+    if (filename_passed &&
+        !are_name_and_passphrase_ready (self,
+                                        filename_passed,
+                                        adw_combo_row_get_selected_item (self->extension_combo_row),
+                                        gtk_editable_get_text (GTK_EDITABLE (self->passphrase_entry)),
+                                        gtk_editable_get_text (GTK_EDITABLE (self->passphrase_confirm_entry))))
     {
         gtk_widget_grab_focus (self->passphrase_entry);
     }
