@@ -544,6 +544,7 @@ create_tag (NautilusQueryEditor *self,
     gtk_button_set_icon_name (GTK_BUTTON (button), "window-close-symbolic");
     gtk_widget_add_css_class (button, "flat");
     gtk_widget_add_css_class (button, "circular");
+    gtk_widget_set_tooltip_text (button, _("Remove Filter"));
     g_signal_connect_object (button, "clicked",
                              reset_callback, self->popover, G_CONNECT_SWAPPED);
     gtk_box_append (GTK_BOX (tag), button);
