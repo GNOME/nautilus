@@ -406,6 +406,13 @@ create_view_ui (NautilusListView *self)
     gtk_column_view_set_tab_behavior (GTK_COLUMN_VIEW (widget), GTK_LIST_TAB_ITEM);
     gtk_column_view_set_row_factory (GTK_COLUMN_VIEW (widget), row_factory);
 
+    gtk_accessible_update_property (GTK_ACCESSIBLE (widget),
+                                    GTK_ACCESSIBLE_PROPERTY_LABEL,
+                                    _("Content View"),
+                                    GTK_ACCESSIBLE_PROPERTY_ROLE_DESCRIPTION,
+                                    _("View of the current folder"),
+                                    -1);
+
     /* While we don't want to use GTK's click activation, we'll let it handle
      * the key activation part (with Enter).
      */

@@ -39,7 +39,7 @@
             <property name="margin-end">18</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="label">
                 <property name="halign">start</property>
                 <property name="label" translatable="yes">Pattern</property>
                 <attributes>
@@ -52,6 +52,9 @@
                 <property name="hexpand">True</property>
                 <property name="activates_default">True</property>
                 <property name="input-hints">no-spellcheck</property>
+                <accessibility>
+                  <relation name="labelled-by">label</relation>
+                </accessibility>
               </object>
             </child>
             <child>
