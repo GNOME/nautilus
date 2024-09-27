@@ -3501,6 +3501,7 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->toolbar_menu_sections->sort_section);
     g_clear_object (&priv->extensions_background_menu);
     g_clear_object (&priv->templates_menu);
+    g_clear_object (&priv->scripts_menu);
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
 
