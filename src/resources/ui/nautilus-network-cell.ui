@@ -2,9 +2,6 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <template class="NautilusNetworkCell" parent="NautilusViewCell">
-    <accessibility>
-      <relation name="labelled-by">label</relation>
-    </accessibility>
     <child>
       <object class="GtkBox">
         <property name="spacing">6</property>
@@ -16,6 +13,9 @@
             <style>
               <class name="network-icon"/>
             </style>
+            <accessibility>
+              <relation name="labelled-by">label</relation>
+            </accessibility>
           </object>
         </child>
         <child>

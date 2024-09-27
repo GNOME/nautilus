@@ -343,6 +343,13 @@ create_view_ui (NautilusNetworkView *self)
     gtk_list_view_set_enable_rubberband (list_view, FALSE);
     gtk_list_view_set_tab_behavior (list_view, GTK_LIST_TAB_ITEM);
 
+    gtk_accessible_update_property (GTK_ACCESSIBLE (list_view),
+                                    GTK_ACCESSIBLE_PROPERTY_LABEL,
+                                    _("Content View"),
+                                    GTK_ACCESSIBLE_PROPERTY_ROLE_DESCRIPTION,
+                                    _("View of the current folder"),
+                                    -1);
+
     /* While we don't want to use GTK's click activation, we'll let it handle
      * the key activation part (with Enter). */
     g_signal_connect (list_view, "activate", G_CALLBACK (on_list_view_item_activated), self);

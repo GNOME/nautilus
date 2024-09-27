@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include <glib/gi18n.h>
+
 #include "nautilus-list-base-private.h"
 #include "nautilus-grid-view.h"
 
@@ -507,6 +509,13 @@ create_view_ui (NautilusGridView *self)
     gtk_grid_view_set_single_click_activate (GTK_GRID_VIEW (widget), FALSE);
     gtk_grid_view_set_max_columns (GTK_GRID_VIEW (widget), 20);
     gtk_grid_view_set_tab_behavior (GTK_GRID_VIEW (widget), GTK_LIST_TAB_ITEM);
+
+    gtk_accessible_update_property (GTK_ACCESSIBLE (widget),
+                                    GTK_ACCESSIBLE_PROPERTY_LABEL,
+                                    _("Content View"),
+                                    GTK_ACCESSIBLE_PROPERTY_ROLE_DESCRIPTION,
+                                    _("View of the current folder"),
+                                    -1);
 
     /* While we don't want to use GTK's click activation, we'll let it handle
      * the key activation part (with Enter).

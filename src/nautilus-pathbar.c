@@ -1224,6 +1224,11 @@ make_button_data (NautilusPathBar *self,
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_append (GTK_BOX (button_data->container), button_data->button);
 
+            gtk_accessible_update_relation (GTK_ACCESSIBLE (button_data->image),
+                                            GTK_ACCESSIBLE_RELATION_LABELLED_BY,
+                                            button_data->label, NULL,
+                                            -1);
+
             gtk_box_append (GTK_BOX (child), button_data->image);
             gtk_box_append (GTK_BOX (child), button_data->label);
         }
