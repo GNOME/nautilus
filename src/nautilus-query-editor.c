@@ -760,7 +760,7 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
 
     GtkWidget *search_info_popover = gtk_popover_new ();
     editor->status_page = adw_status_page_new ();
-    editor->search_settings_button = gtk_button_new_with_mnemonic ("_Search Settings");
+    editor->search_settings_button = gtk_button_new_with_mnemonic (_("_Search Settings"));
     gtk_actionable_set_action_name (GTK_ACTIONABLE (editor->search_settings_button), "app.search-settings");
     adw_status_page_set_child (ADW_STATUS_PAGE (editor->status_page), editor->search_settings_button);
     g_signal_connect_swapped (editor->search_settings_button, "clicked", G_CALLBACK (gtk_popover_popdown), search_info_popover);
