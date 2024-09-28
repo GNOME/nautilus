@@ -23,6 +23,7 @@ git symbolic-ref refs/remotes/origin/HEAD refs/remotes/origin/main
 ## Runtime dependencies
 - [Bubblewrap](https://github.com/projectatomic/bubblewrap) installed. Used for security reasons.
 - [LocalSearch](https://gitlab.gnome.org/GNOME/localsearch) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
+- [xdg-user-dirs-gtk](https://gitlab.gnome.org/GNOME/xdg-user-dirs-gtk) installed.  Used to create the default bookmarks and update localization.
 
 ## Discourse
 
