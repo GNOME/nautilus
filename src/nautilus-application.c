@@ -1173,7 +1173,6 @@ nautilus_application_startup (GApplication *app)
     if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE") != 0)
     {
         maybe_migrate_gtk_filechooser_preferences ();
-        nautilus_tag_manager_maybe_migrate_tracker2_data (priv->tag_manager);
     }
 
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
