@@ -59,6 +59,4 @@ void                nautilus_tag_manager_update_moved_uris  (NautilusTagManager 
                                                              GFile              *src,
                                                              GFile              *dest);
 
-void                nautilus_tag_manager_maybe_migrate_tracker2_data (NautilusTagManager *self);
-
 G_END_DECLS
