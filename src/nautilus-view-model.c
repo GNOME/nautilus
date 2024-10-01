@@ -569,56 +569,48 @@ nautilus_view_model_remove_items (NautilusViewModel *self,
 {
     g_autoptr (NautilusFile) parent = nautilus_directory_get_corresponding_file (directory);
     GListStore *dir_store = get_directory_store (self, parent);
-    guint new_start, current_start;
-    guint n_items_in_range = 0;
-    g_autoptr (GtkBitset) positions = gtk_bitset_new_empty ();
-    GtkBitsetIter position_iter;
+    gint i;
+    guint range_start, n_items_in_range = 0;
 
-    for (gint i = g_list_model_get_n_items (G_LIST_MODEL (dir_store) - 1);
-         i >= 0 && g_hash_table_size (items) > 0;
-         i--)
+
+    for (i = g_list_model_get_n_items (G_LIST_MODEL (dir_store)) - 1;
+         i >= 0 && g_hash_table_size (items) > 0; i--)
     {
         NautilusViewItem *item = g_list_model_get_item (G_LIST_MODEL (dir_store), i);
         NautilusFile *file = NULL;
 
         if (!g_hash_table_steal_extended (items, item, NULL, (gpointer *) &file))
         {
+            /* Remove contiguous item ranges to minimize ::items-changed emissions.
+             * Remove after passing the range to not impact the index */
+            if (n_items_in_range > 0)
+            {
+                g_list_store_splice (dir_store, range_start, n_items_in_range, NULL, 0);
+                n_items_in_range = 0;
+            }
+
             continue;
         }
 
-        gtk_bitset_add (positions, i);
         g_hash_table_remove (self->map_files_to_model, file);
         if (nautilus_file_is_directory (file))
         {
             g_hash_table_remove (self->directory_reverse_map, file);
         }
+
+        n_items_in_range++;
+        range_start = i;
+    }
+
+    if (n_items_in_range > 0)
+    {
+        /* Flush the leftover range. */
+        g_list_store_splice (dir_store, range_start, n_items_in_range, NULL, 0);
     }
 
     if (g_hash_table_size (items) > 0)
     {
         g_warning ("Failed to remove %u item(s)", g_hash_table_size (items));
-    }
-
-    /* Remove contiguous item ranges to minimize ::items-changed emissions.
-     * Remove starting from the end, not to impact the index */
-    gtk_bitset_iter_init_last (&position_iter, positions, &new_start);
-    while (gtk_bitset_iter_is_valid (&position_iter))
-    {
-        /* The start of the range is a moving target that gets decremented as we
-         * move up the list. */
-        current_start = new_start;
-        n_items_in_range++;
-
-        if (gtk_bitset_iter_previous (&position_iter, &new_start) &&
-            new_start == current_start - 1)
-        {
-            /* The previous item is contiguous, keep growing the range. */
-            continue;
-        }
-
-        /* Flush full-grown range. */
-        g_list_store_splice (dir_store, current_start, n_items_in_range, 0, 0);
-        n_items_in_range = 0;
     }
 }
 
