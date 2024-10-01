@@ -28,7 +28,7 @@ GList * nautilus_view_model_get_sorted_items_for_files (NautilusViewModel *self,
                                                         GList             *files);
 /* Don't use inside a loop, use nautilus_view_model_remove_all_items instead. */
 void nautilus_view_model_remove_items (NautilusViewModel     *self,
-                                       GList                 *items,
+                                       GHashTable            *items,
                                        NautilusDirectory     *directory);
 void nautilus_view_model_remove_all_items (NautilusViewModel *self);
 /* Don't use inside a loop, use nautilus_view_model_add_items instead. */
