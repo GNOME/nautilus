@@ -6218,11 +6218,11 @@ nautilus_file_get_owner_as_string (NautilusFile *file,
         /* Translators: This is a username followed by "(You)" to indicate the file is owned by the current user */
         user_name = g_strdup_printf (_("%s (You)"), file->details->owner);
     }
-    else if (file->details->owner_real == NULL)
+    else if (file->details->owner_real == NULL || *file->details->owner_real == '\0')
     {
         user_name = g_strdup (file->details->owner);
     }
-    else if (file->details->owner == NULL)
+    else if (file->details->owner == NULL || *file->details->owner == '\0')
     {
         user_name = g_strdup (file->details->owner_real);
     }
