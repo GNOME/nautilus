@@ -564,7 +564,7 @@ nautilus_view_model_get_item_for_file (NautilusViewModel *self,
 
 void
 nautilus_view_model_remove_items (NautilusViewModel *self,
-                                  GList             *items,
+                                  GHashTable        *items,
                                   NautilusDirectory *directory)
 {
     g_autoptr (NautilusFile) parent = nautilus_directory_get_corresponding_file (directory);
@@ -573,18 +573,16 @@ nautilus_view_model_remove_items (NautilusViewModel *self,
     guint n_items_in_range = 0;
     g_autoptr (GtkBitset) positions = gtk_bitset_new_empty ();
     GtkBitsetIter position_iter;
+    guint i;
 
-    for (GList *l = items; l != NULL; l = l->next)
+    for (i = g_list_model_get_n_items (G_LIST_MODEL (dir_store)) - 1;
+         i >= 0 && g_hash_table_size (items) > 0; i--)
     {
-        NautilusViewItem *item = l->data;
-        NautilusFile *file = nautilus_view_item_get_file (item);
-        guint i;
+        NautilusViewItem *item = g_list_model_get_item (G_LIST_MODEL (dir_store), i);
+        NautilusFile *file = NULL;
 
-        if (!g_list_store_find (dir_store, item, &i))
+        if (!g_hash_table_steal_extended (items, item, NULL, (gpointer *) &file))
         {
-            g_autofree char *uri = nautilus_file_get_uri (file);
-
-            g_warning ("Failed to remove item %s", uri);
             continue;
         }
 
@@ -594,6 +592,11 @@ nautilus_view_model_remove_items (NautilusViewModel *self,
         {
             g_hash_table_remove (self->directory_reverse_map, file);
         }
+    }
+
+    if (g_hash_table_size (items) > 0)
+    {
+        g_warning ("Failed to remove %u item(s)", g_hash_table_size (items));
     }
 
     /* Remove contiguous item ranges to minimize ::items-changed emissions.

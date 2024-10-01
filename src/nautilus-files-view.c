@@ -4317,7 +4317,7 @@ real_remove_files (NautilusFilesView *self,
                    NautilusDirectory *directory)
 {
     NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (self);
-    g_autoptr (GList) items = NULL;
+    g_autoptr (GHashTable) items = g_hash_table_new (NULL, NULL);
 
     for (GList *l = files; l != NULL; l = l->next)
     {
@@ -4326,7 +4326,7 @@ real_remove_files (NautilusFilesView *self,
         item = nautilus_view_model_get_item_for_file (priv->model, l->data);
         if (item != NULL)
         {
-            items = g_list_prepend (items, item);
+            g_hash_table_insert (items, item, l->data);
         }
     }
 
