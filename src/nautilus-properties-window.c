@@ -1854,8 +1854,6 @@ update_owner_row (AdwComboRow     *row,
                                  && nautilus_file_can_set_owner (get_file (self)));
     gboolean had_dropdown = gtk_widget_is_sensitive (GTK_WIDGET (row));
 
-    gtk_widget_set_sensitive (GTK_WIDGET (row), provide_dropdown);
-
     /* check if should provide dropdown */
     if (provide_dropdown)
     {
