@@ -7,8 +7,12 @@
 #include "nautilus-grid-cell.h"
 
 #include "nautilus-global-preferences.h"
+#include "nautilus-icon-info.h"
 #include "nautilus-tag-manager.h"
 #include "nautilus-thumbnails.h"
+#include "nautilus-ui-utilities.h"
+
+#define NAUTILUS_ICON_CUT                   "cut-symbolic"
 
 struct _NautilusGridCell
 {
@@ -32,20 +36,31 @@ static void
 update_icon (NautilusGridCell *self)
 {
     g_autoptr (NautilusViewItem) item = NULL;
+    gboolean is_cut;
     NautilusFileIconFlags flags;
     g_autoptr (GdkPaintable) icon_paintable = NULL;
     NautilusFile *file;
     guint icon_size;
-    gint scale_factor;
+    gint scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
 
     item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
     g_return_if_fail (item != NULL);
-    file = nautilus_view_item_get_file (item);
-    g_object_get (self, "icon-size", &icon_size, NULL);
-    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (self));
-    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
 
+    g_object_get (self, "icon-size", &icon_size, NULL);
+    g_object_get (item, "is-cut", &is_cut, NULL);
+
+    if (is_cut)
+    {
+        gtk_picture_set_paintable (GTK_PICTURE (self->icon), NULL);
+        gtk_widget_remove_css_class (self->icon, "thumbnail");
+
+        return;
+    }
+
+    file = nautilus_view_item_get_file (item);
+    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
     icon_paintable = nautilus_file_get_icon_paintable (file, icon_size, scale_factor, flags);
+
     gtk_picture_set_paintable (GTK_PICTURE (self->icon), icon_paintable);
 
     if (nautilus_file_has_thumbnail (file) &&
@@ -157,26 +172,6 @@ on_icon_size_changed (NautilusGridCell *self)
     update_icon (self);
     update_captions (self);
     gtk_widget_queue_resize (GTK_WIDGET (self));
-}
-
-static void
-on_item_is_cut_changed (NautilusGridCell *self)
-{
-    gboolean is_cut;
-    g_autoptr (NautilusViewItem) item = NULL;
-
-    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
-    g_object_get (item,
-                  "is-cut", &is_cut,
-                  NULL);
-    if (is_cut)
-    {
-        gtk_widget_add_css_class (self->icon, "cut");
-    }
-    else
-    {
-        gtk_widget_remove_css_class (self->icon, "cut");
-    }
 }
 
 static gboolean
@@ -394,6 +389,48 @@ nautilus_grid_cell_size_allocate (GtkWidget *widget,
 }
 
 static void
+snapshot (GtkWidget   *widget,
+          GtkSnapshot *snapshot)
+{
+    NautilusGridCell *self = NAUTILUS_GRID_CELL (widget);
+    g_autoptr (NautilusViewItem) item = NULL;
+    gboolean is_cut;
+
+    item = nautilus_view_cell_get_item (NAUTILUS_VIEW_CELL (self));
+    g_object_get (item, "is-cut", &is_cut, NULL);
+
+    if (is_cut)
+    {
+        guint icon_size;
+        graphene_rect_t icon_bounds;
+        GdkRGBA color;
+        gboolean is_light;
+
+        g_object_get (self, "icon-size", &icon_size, NULL);
+        icon_bounds = GRAPHENE_RECT_INIT (EMBLEMS_BOX_WIDTH, 0, icon_size, icon_size);
+        gtk_widget_get_color (widget, &color);
+        is_light = color.red >= 0.5;
+        /* CHANGE THIS VALUE */
+        color.alpha = is_light ? 0.6 : 0.4;
+
+        nautilus_ui_draw_icon_dashed_border (snapshot, &icon_bounds, color);
+        graphene_rect_inset (&icon_bounds,
+                             0.2 * icon_bounds.size.width,
+                             0.2 * icon_bounds.size.height);
+
+        /* CHANGE THIS VALUE */
+        color.alpha = is_light ? 0.6 : 0.4;
+        nautilus_ui_draw_symbolic_icon (snapshot,
+                                        NAUTILUS_ICON_CUT,
+                                        &icon_bounds,
+                                        color,
+                                        gtk_widget_get_scale_factor (widget));
+    }
+
+    GTK_WIDGET_CLASS (nautilus_grid_cell_parent_class)->snapshot (widget, snapshot);
+}
+
+static void
 nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -403,6 +440,8 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
 
     widget_class->measure = nautilus_grid_cell_measure;
     widget_class->size_allocate = nautilus_grid_cell_size_allocate;
+
+    widget_class->snapshot = snapshot;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-grid-cell.ui");
 
@@ -438,7 +477,9 @@ nautilus_grid_cell_init (NautilusGridCell *self)
     /* Connect automatically to an item. */
     self->item_signal_group = g_signal_group_new (NAUTILUS_TYPE_VIEW_ITEM);
     g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
-                                    (GCallback) on_item_is_cut_changed, self);
+                                    (GCallback) update_icon, self);
+    g_signal_group_connect_swapped (self->item_signal_group, "notify::is-cut",
+                                    (GCallback) gtk_widget_queue_draw, self);
     g_signal_group_connect_swapped (self->item_signal_group, "file-changed",
                                     (GCallback) on_file_changed, self);
     g_signal_connect_object (self->item_signal_group, "bind",
