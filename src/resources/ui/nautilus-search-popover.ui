@@ -87,9 +87,8 @@
         <child>
           <object class="GtkRevealer" id="around_revealer">
             <property name="child">
-              <object class="GtkGrid">
-                <property name="row_spacing">8</property>
-                <property name="column_spacing">12</property>
+              <object class="GtkBox">
+                <property name="spacing">12</property>
                 <child>
                   <object class="GtkLabel" id="around_dim_label">
                     <property name="margin_top">10</property>
@@ -98,11 +97,6 @@
                     <style>
                       <class name="dim-label"/>
                     </style>
-                    <layout>
-                      <property name="column">0</property>
-                      <property name="row">0</property>
-                      <property name="column-span">2</property>
-                    </layout>
                   </object>
                 </child>
                 <child>
@@ -143,21 +137,11 @@
                         </property>
                       </object>
                     </child>
-                    <layout>
-                      <property name="column">0</property>
-                      <property name="row">1</property>
-                      <property name="column-span">2</property>
-                    </layout>
                   </object>
                 </child>
                 <child>
                   <object class="AdwToggleGroup" id="search_time_type_group">
                     <signal name="notify::active" handler="search_time_type_changed" swapped="yes"/>
-                    <layout>
-                      <property name="column">0</property>
-                      <property name="row">2</property>
-                      <property name="column-span">2</property>
-                    </layout>
                     <child>
                       <object class="AdwToggle">
                         <property name="name">last-modified</property>
@@ -319,21 +303,4 @@
       </object>
     </property>
   </template>
-  <object class="GtkSizeGroup">
-    <property name="mode">vertical</property>
-    <widgets>
-      <widget name="full_text_search_button"/>
-      <widget name="filename_search_button"/>
-      <widget name="select_date_button"/>
-      <widget name="clear_date_button"/>
-    </widgets>
-  </object>
-  <object class="GtkSizeGroup">
-    <widgets>
-      <widget name="search_dim_label"/>
-      <widget name="when_dim_label"/>
-      <widget name="around_dim_label"/>
-      <widget name="what_dim_label"/>
-    </widgets>
-  </object>
 </interface>
