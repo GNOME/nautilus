@@ -88,6 +88,7 @@
           <object class="GtkRevealer" id="around_revealer">
             <property name="child">
               <object class="GtkBox">
+                <property name="orientation">vertical</property>
                 <property name="spacing">12</property>
                 <child>
                   <object class="GtkLabel" id="around_dim_label">
@@ -254,10 +255,10 @@
         <child>
           <object class="GtkLabel" id="search_dim_label">
             <property name="margin_top">10</property>
-            <property name="label" translatable="yes">Search</property>
+            <property name="label" translatable="yes">Search Options</property>
             <property name="xalign">0</property>
             <style>
-              <class name="dim-label"/>
+              <class name="heading"/>
             </style>
             <layout>
               <property name="column">0</property>
@@ -267,14 +268,14 @@
           </object>
         </child>
         <child>
-          <object class="GtkBox">
-            <property name="hexpand">True</property>
+          <object class="AdwWrapBox">
+            <property name="line-spacing">6</property>
+            <property name="child-spacing">6</property>
             <child>
               <object class="GtkToggleButton" id="full_text_search_button">
                 <property name="label" translatable="yes">Full _Text</property>
                 <property name="use-underline">True</property>
                 <property name="tooltip_text" translatable="yes">Search Inside Files</property>
-                <property name="hexpand">True</property>
                 <property name="active">True</property>
                 <signal name="toggled" handler="search_fts_mode_changed" object="NautilusSearchPopover" swapped="no" />
               </object>
@@ -284,15 +285,11 @@
                 <property name="label" translatable="yes">File _Name</property>
                 <property name="use-underline">True</property>
                 <property name="tooltip_text" translatable="yes">Don't Search Inside Files</property>
-                <property name="hexpand">True</property>
                 <property name="group">full_text_search_button</property>
                 <property name="active">True</property>
                 <signal name="toggled" handler="search_fts_mode_changed" object="NautilusSearchPopover" swapped="no"/>
               </object>
             </child>
-            <style>
-              <class name="linked"/>
-            </style>
             <layout>
               <property name="column">0</property>
               <property name="row">6</property>
