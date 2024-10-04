@@ -45,9 +45,7 @@ struct _NautilusSearchPopover
     GtkWidget *date_stack;
     GtkWidget *select_date_button;
     GtkWidget *select_date_button_label;
-    GtkWidget *type_label;
-    GtkWidget *type_listbox;
-    GtkWidget *type_stack;
+    GtkWidget *type_box;
     GtkWidget *search_time_type_group;
     GtkWidget *full_text_search_button;
     GtkWidget *filename_search_button;
@@ -57,6 +55,8 @@ struct _NautilusSearchPopover
 
     NautilusQuery *query;
     GtkSingleSelection *other_types_model;
+
+    GtkWidget *last_type_button;
 
     gboolean fts_enabled;
 };
@@ -252,32 +252,7 @@ static void
 select_date_button_clicked (GtkButton             *button,
                             NautilusSearchPopover *popover)
 {
-    /* Hide the type selection widgets when date selection
-     * widgets are shown.
-     */
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
-
     show_date_selection_widgets (popover, TRUE);
-}
-
-static void
-select_type_button_clicked (GtkButton             *button,
-                            NautilusSearchPopover *popover)
-{
-    GtkListBoxRow *selected_row;
-
-    selected_row = gtk_list_box_get_selected_row (GTK_LIST_BOX (popover->type_listbox));
-
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-list");
-    if (selected_row != NULL)
-    {
-        gtk_widget_grab_focus (GTK_WIDGET (selected_row));
-    }
-
-    /* Hide the date selection widgets when the type selection
-     * listbox is shown.
-     */
-    show_date_selection_widgets (popover, FALSE);
 }
 
 static void
@@ -308,33 +283,6 @@ toggle_calendar_icon_clicked (GtkEntry              *entry,
     gtk_stack_set_visible_child_name (GTK_STACK (popover->around_stack), child);
     gtk_entry_set_icon_from_icon_name (entry, GTK_ENTRY_ICON_SECONDARY, icon_name);
     gtk_entry_set_icon_tooltip_text (entry, GTK_ENTRY_ICON_SECONDARY, tooltip);
-}
-
-static void
-types_listbox_row_activated (GtkListBox            *listbox,
-                             GtkListBoxRow         *row,
-                             NautilusSearchPopover *popover)
-{
-    gint group;
-
-    group = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "mimetype-group"));
-
-    /* The -1 group stands for the "Other Types" group, for which
-     * we should show the mimetype dialog.
-     */
-    if (group == -1)
-    {
-        show_other_types_dialog (popover);
-    }
-    else
-    {
-        gtk_label_set_label (GTK_LABEL (popover->type_label),
-                             nautilus_mime_types_group_get_name (group));
-
-        g_signal_emit_by_name (popover, "mime-type", group, NULL);
-    }
-
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
 }
 
 static void
@@ -486,27 +434,51 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
 }
 
 static void
-fill_types_listbox (NautilusSearchPopover *popover)
+type_button_clicked (GtkButton             *button,
+                     NautilusSearchPopover *popover)
 {
-    GtkWidget *row;
+    gint group;
+
+    if (popover->last_type_button)
+    {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (popover->last_type_button), FALSE);
+    }
+
+    if (popover->last_type_button == GTK_WIDGET (button))
+    {
+        group = 0;
+    }
+    else
+    {
+        group = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (button), "mimetype-group"));
+    }
+
+    popover->last_type_button = GTK_WIDGET (button);
+
+    g_signal_emit_by_name (popover, "mime-type", group, NULL);
+}
+
+static void
+fill_types_box (NautilusSearchPopover *popover)
+{
+    GtkWidget *button;
     guint n_groups = nautilus_mime_types_get_number_of_groups ();
 
     /* Mimetypes */
     for (guint i = 0; i < n_groups; i++)
     {
-        /* On the third row, which is right below "Folders", there should be an
-         * separator to logically group the types.
-         */
-        row = create_row_for_label (nautilus_mime_types_group_get_name (i), i == 3);
-        g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (i));
+        // Skip "Anything" button
+        if (i == 0)
+            continue;
 
-        gtk_list_box_insert (GTK_LIST_BOX (popover->type_listbox), row, -1);
+        button = gtk_toggle_button_new_with_label (nautilus_mime_types_group_get_name (i));
+
+        g_signal_connect (button, "clicked", G_CALLBACK (type_button_clicked), popover);
+
+        g_object_set_data (G_OBJECT (button), "mimetype-group", GINT_TO_POINTER (i));
+
+        adw_wrap_box_append (ADW_WRAP_BOX (popover->type_box), button);
     }
-
-    /* Other types */
-    row = create_row_for_label (_("Other Type…"), TRUE);
-    g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (-1));
-    gtk_list_box_insert (GTK_LIST_BOX (popover->type_listbox), row, -1);
 }
 
 static void
@@ -532,11 +504,9 @@ on_other_types_dialog_response (NautilusSearchPopover *popover)
     const gchar *description = nautilus_minimal_cell_get_title (item);
     const gchar *mimetype = nautilus_minimal_cell_get_subtitle (item);
 
-    gtk_label_set_label (GTK_LABEL (popover->type_label), description);
+//    gtk_label_set_label (GTK_LABEL (popover->type_label), description);
 
     g_signal_emit_by_name (popover, "mime-type", -1, mimetype);
-
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
 
     g_clear_object (&popover->other_types_model);
 
@@ -717,7 +687,6 @@ nautilus_search_popover_closed (GtkPopover *popover)
     GDateTime *now;
 
     /* Always switch back to the initial states */
-    gtk_stack_set_visible_child_name (GTK_STACK (self->type_stack), "type-button");
     show_date_selection_widgets (self, FALSE);
 
     /* If we're closing an ongoing query, the popover must not
@@ -890,9 +859,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, date_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, select_date_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, select_date_button_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_listbox);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_stack);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, search_time_type_group);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, full_text_search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, filename_search_button);
@@ -902,9 +869,8 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, date_entry_activate);
     gtk_widget_class_bind_template_callback (widget_class, dates_listbox_row_activated);
     gtk_widget_class_bind_template_callback (widget_class, select_date_button_clicked);
-    gtk_widget_class_bind_template_callback (widget_class, select_type_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, toggle_calendar_icon_clicked);
-    gtk_widget_class_bind_template_callback (widget_class, types_listbox_row_activated);
+    gtk_widget_class_bind_template_callback (widget_class, show_other_types_dialog);
     gtk_widget_class_bind_template_callback (widget_class, search_time_type_changed);
     gtk_widget_class_bind_template_callback (widget_class, search_fts_mode_changed);
 }
@@ -925,15 +891,7 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     fill_fuzzy_dates_listbox (self);
 
     /* Types listbox */
-    gtk_list_box_set_header_func (GTK_LIST_BOX (self->type_listbox),
-                                  (GtkListBoxUpdateHeaderFunc) listbox_header_func,
-                                  self,
-                                  NULL);
-
-    fill_types_listbox (self);
-
-    gtk_list_box_select_row (GTK_LIST_BOX (self->type_listbox),
-                             gtk_list_box_get_row_at_index (GTK_LIST_BOX (self->type_listbox), 0));
+    fill_types_box (self);
 
     filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
 
@@ -1026,13 +984,15 @@ nautilus_search_popover_reset_mime_types (NautilusSearchPopover *popover)
 {
     g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
 
-    gtk_list_box_select_row (GTK_LIST_BOX (popover->type_listbox),
-                             gtk_list_box_get_row_at_index (GTK_LIST_BOX (popover->type_listbox), 0));
+    if (popover->last_type_button)
+    {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (popover->last_type_button), FALSE);
+        popover->last_type_button = NULL;
+    }
 
-    gtk_label_set_label (GTK_LABEL (popover->type_label),
-                         nautilus_mime_types_group_get_name (0));
+//    gtk_label_set_label (GTK_LABEL (popover->type_label),
+//                         nautilus_mime_types_group_get_name (0));
     g_signal_emit_by_name (popover, "mime-type", 0, NULL);
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
 }
 
 void
