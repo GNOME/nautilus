@@ -48,9 +48,7 @@ struct _NautilusSearchPopover
     GtkWidget *type_label;
     GtkWidget *type_listbox;
     GtkWidget *type_stack;
-    GtkWidget *last_used_button;
-    GtkWidget *last_modified_button;
-    GtkWidget *created_button;
+    GtkWidget *search_time_type_group;
     GtkWidget *full_text_search_button;
     GtkWidget *filename_search_button;
 
@@ -340,23 +338,11 @@ types_listbox_row_activated (GtkListBox            *listbox,
 }
 
 static void
-search_time_type_changed (GtkCheckButton        *button,
-                          NautilusSearchPopover *popover)
+search_time_type_changed (NautilusSearchPopover *popover)
 {
-    NautilusQuerySearchType type = -1;
+    NautilusQuerySearchType type;
 
-    if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_modified_button)))
-    {
-        type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED;
-    }
-    else if (gtk_check_button_get_active (GTK_CHECK_BUTTON (popover->last_used_button)))
-    {
-        type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS;
-    }
-    else
-    {
-        type = NAUTILUS_QUERY_SEARCH_TYPE_CREATED;
-    }
+    type = adw_toggle_group_get_active (ADW_TOGGLE_GROUP (popover->search_time_type_group));
 
     g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
 
@@ -907,9 +893,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_listbox);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_stack);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_used_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_modified_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, created_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, search_time_type_group);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, full_text_search_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, filename_search_button);
 
@@ -952,24 +936,9 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
                              gtk_list_box_get_row_at_index (GTK_LIST_BOX (self->type_listbox), 0));
 
     filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
-    if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
-    {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), TRUE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
-    }
-    else if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
-    {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), TRUE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), FALSE);
-    }
-    else
-    {
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_modified_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->last_used_button), FALSE);
-        gtk_check_button_set_active (GTK_CHECK_BUTTON (self->created_button), TRUE);
-    }
+
+    adw_toggle_group_set_active (ADW_TOGGLE_GROUP (self->search_time_type_group),
+                                 filter_time_type);
 
     self->fts_enabled = g_settings_get_boolean (nautilus_preferences,
                                                 NAUTILUS_PREFERENCES_FTS_ENABLED);

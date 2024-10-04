@@ -151,39 +151,34 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkCheckButton" id="last_modified_button">
-                    <property name="label" translatable="yes">Last _modified</property>
-                    <property name="use_underline">True</property>
-                    <property name="active">True</property>
-                    <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
+                  <object class="AdwToggleGroup" id="search_time_type_group">
+                    <signal name="notify::active" handler="search_time_type_changed" swapped="yes"/>
                     <layout>
                       <property name="column">0</property>
                       <property name="row">2</property>
+                      <property name="column-span">2</property>
                     </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkCheckButton" id="last_used_button">
-                    <property name="label" translatable="yes">Last _used</property>
-                    <property name="use_underline">True</property>
-                    <property name="group">last_modified_button</property>
-                    <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                    <layout>
-                      <property name="column">0</property>
-                      <property name="row">3</property>
-                    </layout>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkCheckButton" id="created_button">
-                    <property name="label" translatable="yes">_Created</property>
-                    <property name="use-underline">True</property>
-                    <property name="group">last_modified_button</property>
-                    <signal name="toggled" handler="search_time_type_changed" object="NautilusSearchPopover" swapped="no"/>
-                    <layout>
-                      <property name="column">0</property>
-                      <property name="row">4</property>
-                    </layout>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="name">last-modified</property>
+                        <property name="label">Last _Modified</property>
+                        <property name="use-underline">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="name">last-used</property>
+                        <property name="label">Last _Used</property>
+                        <property name="use-underline">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwToggle">
+                        <property name="name">created</property>
+                        <property name="label">_Created</property>
+                        <property name="use-underline">True</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
