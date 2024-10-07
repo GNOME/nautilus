@@ -77,6 +77,8 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
+static void open_filename_entry (NautilusFileChooser *self);
+
 static gboolean
 mode_can_accept_files (NautilusMode  mode,
                        GList        *files)
@@ -213,6 +215,11 @@ on_overwrite_confirm_response (AdwAlertDialog      *dialog,
         g_autoptr (GFile) new_file_location = g_file_get_child (parent_location, new_filename);
 
         emit_accepted (self, &(GList){ .data = new_file_location });
+    }
+    else
+    {
+        /* The user probably wants to rename the file name, so focus entry */
+        open_filename_entry (self);
     }
 }
 
