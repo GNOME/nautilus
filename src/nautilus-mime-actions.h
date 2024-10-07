@@ -49,4 +49,5 @@ void                   nautilus_mime_activate_file                        (GtkWi
 									   NautilusOpenFlags   flags);
 guint                  nautilus_mime_types_get_number_of_groups           (void);
 const gchar*           nautilus_mime_types_group_get_name                 (guint                    group_index);
+const gchar*           nautilus_mime_types_group_get_icon_name            (guint                    group_index);
 GPtrArray*             nautilus_mime_types_group_get_mimetypes            (guint                    group_index);

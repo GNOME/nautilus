@@ -91,15 +91,18 @@ typedef struct
 struct
 {
     char *name;
+    char *icon_name;
     char *mimetypes[20];
 } mimetype_groups[] =
 {
     {
         N_("Anything"),
+        "text-x-generic-symbolic",
         { NULL }
     },
     {
         N_("Files"),
+        "text-x-generic-symbolic",
         {
             "application/octet-stream",
             "text/plain",
@@ -109,6 +112,7 @@ struct
     },
     {
         N_("Folders"),
+        "inode-directory-symbolic",
         {
             "inode/directory",
             NULL
@@ -116,6 +120,7 @@ struct
     },
     {
         N_("Documents"),
+        "x-office-document-symbolic",
         {
             "application/rtf",
             "application/msword",
@@ -138,6 +143,7 @@ struct
     },
     {
         N_("Illustration"),
+        "x-office-drawing-symbolic",
         {
             "application/illustrator",
             "application/vnd.corel-draw",
@@ -154,6 +160,7 @@ struct
     },
     {
         N_("Music"),
+        "audio-x-generic-symbolic",
         {
             "application/ogg",
             "audio/x-vorbis+ogg",
@@ -171,6 +178,7 @@ struct
     },
     {
         N_("PDF / PostScript"),
+        "x-office-document-symbolic",
         {
             "application/pdf",
             "application/postscript",
@@ -182,6 +190,7 @@ struct
     },
     {
         N_("Picture"),
+        "image-x-generic-symbolic",
         {
             "application/vnd.oasis.opendocument.image",
             "application/x-krita",
@@ -204,6 +213,7 @@ struct
     },
     {
         N_("Presentation"),
+        "x-office-presentation-symbolic",
         {
             "application/vnd.ms-powerpoint",
             "application/vnd.sun.xml.impress",
@@ -216,6 +226,7 @@ struct
     },
     {
         N_("Spreadsheet"),
+        "x-office-spreadsheet-symbolic",
         {
             "application/vnd.lotus-1-2-3",
             "application/vnd.ms-excel",
@@ -235,6 +246,7 @@ struct
     },
     {
         N_("Text File"),
+        "text-x-generic-symbolic",
         {
             "text/plain",
             "text/markdown",
@@ -243,6 +255,7 @@ struct
     },
     {
         N_("Video"),
+        "video-x-generic-symbolic",
         {
             "video/mp4",
             "video/3gpp",
@@ -2294,6 +2307,14 @@ nautilus_mime_types_group_get_name (guint group_index)
     g_return_val_if_fail (group_index < G_N_ELEMENTS (mimetype_groups), NULL);
 
     return gettext (mimetype_groups[group_index].name);
+}
+
+const gchar *
+nautilus_mime_types_group_get_icon_name (guint group_index)
+{
+    g_return_val_if_fail (group_index < G_N_ELEMENTS (mimetype_groups), NULL);
+
+    return mimetype_groups[group_index].icon_name;
 }
 
 GPtrArray *

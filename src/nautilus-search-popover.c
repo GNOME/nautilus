@@ -461,7 +461,7 @@ type_button_clicked (GtkButton             *button,
 static void
 fill_types_box (NautilusSearchPopover *popover)
 {
-    GtkWidget *button;
+    GtkWidget *button, *content;
     guint n_groups = nautilus_mime_types_get_number_of_groups ();
 
     /* Mimetypes */
@@ -471,7 +471,14 @@ fill_types_box (NautilusSearchPopover *popover)
         if (i == 0)
             continue;
 
-        button = gtk_toggle_button_new_with_label (nautilus_mime_types_group_get_name (i));
+        content = adw_button_content_new ();
+        adw_button_content_set_label (ADW_BUTTON_CONTENT (content),
+                                      nautilus_mime_types_group_get_name (i));
+        adw_button_content_set_icon_name (ADW_BUTTON_CONTENT (content),
+                                          nautilus_mime_types_group_get_icon_name (i));
+
+        button = gtk_toggle_button_new ();
+        gtk_button_set_child (GTK_BUTTON (button), content);
 
         g_signal_connect (button, "clicked", G_CALLBACK (type_button_clicked), popover);
 
