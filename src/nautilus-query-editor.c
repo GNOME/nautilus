@@ -766,6 +766,8 @@ nautilus_query_editor_init (NautilusQueryEditor *editor)
     g_signal_connect_swapped (editor->search_settings_button, "clicked", G_CALLBACK (gtk_popover_popdown), search_info_popover);
     gtk_widget_set_size_request (editor->status_page, 300, -1);
     gtk_widget_add_css_class (editor->status_page, "compact");
+    gtk_widget_add_css_class (editor->search_settings_button, "pill");
+    gtk_widget_set_halign (editor->search_settings_button, GTK_ALIGN_CENTER);
     gtk_popover_set_child (GTK_POPOVER (search_info_popover), editor->status_page);
 
     /* setup the filter menu button */
