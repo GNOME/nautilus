@@ -3285,6 +3285,15 @@ list_box_sort_func (GtkListBoxRow *row1,
           else
             retval = index_1 - index_2;
         }
+      /* Placeholder for dropping a row comes before the "New Bookmark" row. */
+      else if (place_type_1 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK && place_type_2 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER)
+        {
+          retval = 1;
+        }
+      else if (place_type_1 == NAUTILUS_GTK_PLACES_BOOKMARK_PLACEHOLDER && place_type_2 == NAUTILUS_GTK_PLACES_DROP_FEEDBACK)
+        {
+          retval = -1;
+        }
     }
   else
     {
