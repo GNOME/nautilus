@@ -5142,9 +5142,6 @@ retry:
         gboolean is_merge;
         FileConflictResponse *response;
 
-        source_is_directory = is_dir (src, job->cancellable);
-        destination_is_directory = is_dir (dest, job->cancellable);
-
         g_error_free (error);
 
         if (unique_names)
@@ -5153,6 +5150,9 @@ retry:
             dest = get_unique_target_file (src, dest_dir, job->cancellable, same_fs, *dest_fs_type, unique_name_nr++);
             goto retry;
         }
+
+        source_is_directory = is_dir (src, job->cancellable);
+        destination_is_directory = is_dir (dest, job->cancellable);
 
         is_merge = FALSE;
 
