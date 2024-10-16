@@ -118,5 +118,5 @@ GdkDisplay *
 init_external_window_x11_display (GError **error)
 {
   gdk_set_allowed_backends ("x11");
-  return gdk_display_open (NULL);
+  return gdk_x11_display_open (NULL);
 }
