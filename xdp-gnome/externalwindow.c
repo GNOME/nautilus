@@ -88,14 +88,25 @@ GdkDisplay *
 init_external_window_display (GError **error)
 {
   const char *session_type;
+  const char *gdk_backend;
+  g_auto (GStrv) backends = NULL;
 
+  gdk_backend = getenv ("GDK_BACKEND");
   session_type = getenv ("XDG_SESSION_TYPE");
+
+  if (gdk_backend != NULL && *gdk_backend != '\0')
+    {
+      backends = g_strsplit (gdk_backend, ",", -1);
+    }
+
 #ifdef HAVE_GTK_WAYLAND
-  if (g_strcmp0 (session_type, "wayland") == 0)
+  if (g_strcmp0 (session_type, "wayland") == 0 &&
+      (backends == NULL || g_strv_contains ((const gchar **)backends, "wayland")))
     return init_external_window_wayland_display (error);
 #endif
 #ifdef HAVE_GTK_X11
-  if (g_strcmp0 (session_type, "x11") == 0)
+  if (g_strcmp0 (session_type, "x11") == 0 ||
+      (backends != NULL && g_strv_contains ((const gchar **)backends, "x11")))
     return init_external_window_x11_display (error);
 #endif
 
