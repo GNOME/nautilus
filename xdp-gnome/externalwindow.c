@@ -88,19 +88,28 @@ GdkDisplay *
 init_external_window_display (GError **error)
 {
   const char *session_type;
+  const char *gdk_backend;
+  const gchar *selected_session;
 
+  gdk_backend = getenv ("GDK_BACKEND");
   session_type = getenv ("XDG_SESSION_TYPE");
+
+  if (gdk_backend != NULL && *gdk_backend != '\0')
+    selected_session = gdk_backend;
+  else
+    selected_session = session_type;
+
 #ifdef HAVE_GTK_WAYLAND
-  if (g_strcmp0 (session_type, "wayland") == 0)
+  if (g_strcmp0 (selected_session, "wayland") == 0)
     return init_external_window_wayland_display (error);
 #endif
 #ifdef HAVE_GTK_X11
-  if (g_strcmp0 (session_type, "x11") == 0)
+  if (g_strcmp0 (selected_session, "x11") == 0)
     return init_external_window_x11_display (error);
 #endif
 
   g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
                "Unsupported or missing session type '%s'",
-               session_type ? session_type : "");
+               selected_session ? selected_session : "");
   return FALSE;
 }
