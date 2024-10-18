@@ -422,8 +422,6 @@ create_column_editor (NautilusListView *view)
 
     file = nautilus_list_base_get_directory_as_file (NAUTILUS_LIST_BASE (view));
     column_chooser = nautilus_column_chooser_new (file);
-    gtk_window_set_transient_for (GTK_WINDOW (column_chooser),
-                                  GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (view))));
 
     g_signal_connect_swapped (column_chooser, "changed",
                               G_CALLBACK (apply_columns_settings),
@@ -442,7 +440,7 @@ nautilus_list_view_present_column_editor (NautilusListView *self)
                                    (gpointer *) &self->column_editor);
     }
 
-    gtk_window_present (GTK_WINDOW (self->column_editor));
+    adw_dialog_present (ADW_DIALOG (self->column_editor), GTK_WIDGET (self));
 }
 
 static void

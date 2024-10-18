@@ -36,7 +36,7 @@
 
 struct _NautilusColumnChooser
 {
-    AdwWindow parent;
+    AdwDialog parent;
 
     GListModel *model;
     GtkWidget *list_box;
@@ -68,7 +68,7 @@ enum
 };
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, ADW_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, ADW_TYPE_DIALOG);
 
 static GStrv
 get_column_names (NautilusColumnChooser *chooser,
@@ -414,10 +414,9 @@ column_sort_func (gconstpointer a,
     return a_pos == b_pos ? 0 : a_pos < b_pos ? -1 : 1;
 }
 
-static gboolean
-nautilus_column_chooser_close_request (GtkWindow *window)
+static void
+nautilus_column_chooser_close_attempt (NautilusColumnChooser *chooser)
 {
-    NautilusColumnChooser *chooser = NAUTILUS_COLUMN_CHOOSER (window);
     g_auto (GStrv) column_order = get_column_names (chooser, FALSE);
     g_auto (GStrv) visible_columns = get_column_names (chooser, TRUE);
     gboolean has_custom;
@@ -439,7 +438,7 @@ nautilus_column_chooser_close_request (GtkWindow *window)
         nautilus_column_save_metadata (chooser->file, NULL, NULL);
     }
 
-    return FALSE;
+    adw_dialog_force_close (ADW_DIALOG (chooser));
 }
 
 static void
@@ -580,15 +579,12 @@ static void
 nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
 {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (chooser_class);
-    GtkWindowClass *win_class = GTK_WINDOW_CLASS (chooser_class);
     GObjectClass *oclass = G_OBJECT_CLASS (chooser_class);
 
     oclass->set_property = nautilus_column_chooser_set_property;
     oclass->constructed = nautilus_column_chooser_constructed;
     oclass->dispose = nautilus_column_chooser_dispose;
     oclass->finalize = nautilus_column_chooser_finalize;
-
-    win_class->close_request = nautilus_column_chooser_close_request;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-column-chooser.ui");
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, list_box);
@@ -598,8 +594,6 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, use_custom_row);
     gtk_widget_class_bind_template_callback (widget_class, use_default_clicked_callback);
     gtk_widget_class_bind_template_child (widget_class, NautilusColumnChooser, row_button_menu);
-
-    gtk_widget_class_add_binding_action (widget_class, GDK_KEY_Escape, 0, "window.close", NULL);
 
     signals[CHANGED] = g_signal_new
                            ("changed",
@@ -640,6 +634,10 @@ nautilus_column_chooser_init (NautilusColumnChooser *chooser)
     gtk_widget_insert_action_group (GTK_WIDGET (chooser),
                                     "column-chooser",
                                     G_ACTION_GROUP (chooser->action_group));
+
+    g_signal_connect_object (chooser, "close-attempt",
+                             G_CALLBACK (nautilus_column_chooser_close_attempt),
+                             chooser, G_CONNECT_SWAPPED);
 }
 
 GtkWidget *

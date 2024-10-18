@@ -29,6 +29,6 @@
 
 #define NAUTILUS_TYPE_COLUMN_CHOOSER nautilus_column_chooser_get_type()
 
-G_DECLARE_FINAL_TYPE (NautilusColumnChooser, nautilus_column_chooser, NAUTILUS, COLUMN_CHOOSER, AdwWindow);
+G_DECLARE_FINAL_TYPE (NautilusColumnChooser, nautilus_column_chooser, NAUTILUS, COLUMN_CHOOSER, AdwDialog);
 
 GtkWidget *nautilus_column_chooser_new             (NautilusFile            *file);

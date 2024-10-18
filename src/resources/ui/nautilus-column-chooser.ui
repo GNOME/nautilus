@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusColumnChooser" parent="AdwWindow">
-    <property name="modal">True</property>
-    <property name="default-width">360</property>
-    <property name="default-height">480</property>
-    <property name="width-request">360</property>
-    <property name="height-request">294</property>
-    <property name="destroy-with-parent">True</property>
-    <property name="content">
+  <template class="NautilusColumnChooser" parent="AdwDialog">
+    <property name="content-width">360</property>
+    <property name="content-height">480</property>
+    <property name="can-close">False</property>
+    <property name="child">
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar">
