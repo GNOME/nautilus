@@ -157,6 +157,18 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
         *error_message = is_folder ? _("Folders with “.” at the beginning of their name are hidden.") :
                                      _("Files with “.” at the beginning of their name are hidden.");
     }
+    else if (is_valid && g_str_has_prefix (name, " "))
+    {
+        /* Translators an error message shown for folder / file names like " filename" */
+        *error_message = is_folder ? _("Extra space at beginning of folder name.") :
+                                     _("Extra space at beginning of file name.");
+    }
+    else if (is_valid && g_str_has_suffix (name, " "))
+    {
+        /* Translators an error message shown for folder / file names like "filename " */
+        *error_message = is_folder ? _("Extra space at end of folder name."):
+                                     _("Extra space at end of file name.");
+    }
 
     return is_valid;
 }
