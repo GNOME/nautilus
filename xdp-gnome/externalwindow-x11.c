@@ -117,6 +117,15 @@ external_window_x11_class_init (ExternalWindowX11Class *klass)
 GdkDisplay *
 init_external_window_x11_display (GError **error)
 {
+  g_assert (!gtk_is_initialized ());
   gdk_set_allowed_backends ("x11");
-  return gdk_display_open (NULL);
+  if (gtk_init_check ())
+    {
+      GdkDisplay *display = gdk_display_get_default ();
+
+      g_assert (GDK_IS_X11_DISPLAY (display));
+      return display;
+    }
+  else
+    return NULL;
 }
