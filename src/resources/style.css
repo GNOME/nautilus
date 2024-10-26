@@ -38,7 +38,7 @@
 
 #NautilusPathBar {
   background-color: color-mix(in srgb, currentColor 10%, transparent);
-  border-radius: 6px;
+  border-radius: 9px;
 }
 #NautilusPathBar > menubutton {
   margin: 0px;
@@ -55,15 +55,15 @@
 
 /* Match sidebar's rounded corners on the "start" side. */
 #NautilusPathBar > scrolledwindow:dir(ltr) undershoot.left {
-  border-radius: 6px 0px 0px 6px;
+  border-radius: 9px 0px 0px 9px;
 }
 #NautilusPathBar > scrolledwindow:dir(rtl) undershoot.right {
-  border-radius: 0px 6px 6px 0px;
+  border-radius: 0px 9px 9px 0px;
 }
 
 #NautilusPathButton {
   margin: 3px;
-  border-radius: 4px;
+  border-radius: 7px;
   padding-top: 0px;
   padding-bottom: 0px;
 }
@@ -185,7 +185,7 @@
 
 .nautilus-network-view listview > row,
 .nautilus-list-view columnview > listview > row {
-  border-radius: 6px;
+  border-radius: 9px;
 }
 
 /* GTK unconditionally sets padding on GtkColumnViewCell, even with .data-table.
