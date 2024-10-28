@@ -1,107 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusAppChooser" parent="GtkDialog">
+  <template class="NautilusAppChooser" parent="AdwDialog">
     <property name="title" translatable="yes">Open File</property>
-    <property name="focusable">False</property>
-    <property name="destroy-with-parent">True</property>
-    <property name="modal">True</property>
-    <property name="default-width">420</property>
-    <property name="default-height">560</property>
-    <child internal-child="content_area">
-      <object class="GtkBox" id="content_area">
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkStack">
-            <property name="hexpand">True</property>
-            <child>
-              <object class="GtkStackPage">
-                <property name="name">list</property>
-                <property name="child">
-                  <object class="GtkBox">
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkScrolledWindow">
-                        <property name="hscrollbar-policy">never</property>
-                        <property name="vscrollbar-policy">never</property>
-                        <property name="vexpand">true</property>
-                        <style>
-                          <class name="background"/>
-                        </style>
-                        <property name="child">
-                          <object class="AdwClamp">
-                            <property name="margin-top">18</property>
-                            <property name="margin-bottom">18</property>
-                            <property name="margin-start">18</property>
-                            <property name="margin-end">18</property>
-                            <property name="child">
-                              <object class="GtkBox" id="content_box">
-                                <property name="orientation">vertical</property>
-                                <property name="spacing">12</property>
-                                <child>
-                                  <object class="GtkLabel" id="label_description">
-                                    <property name="wrap">True</property>
-                                    <property name="wrap-mode">PANGO_WRAP_WORD_CHAR</property>
-                                    <property name="justify">center</property>
-                                    <property name="label" translatable="yes">Choose an app to open the selected files.</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </property>
-                          </object>
-                        </property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkBox" id="set_default_box">
-                        <property name="orientation">vertical</property>
-                        <style>
-                          <class name="background"/>
-                        </style>
-                        <child>
-                          <object class="GtkSeparator"/>
-                        </child>
-                        <child>
-                          <object class="GtkListBox">
-                            <style>
-                              <class name="background"/>
-                            </style>
-                            <child>
-                              <object class="AdwSwitchRow" id="set_default_row">
-                                <property name="hexpand">true</property>
-                                <property name="selectable">false</property>
-                                <property name="title" translatable="yes">Always use for this file type</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                    </child>
-                  </object>
-                </property>
+    <property name="content-width">420</property>
+    <property name="content-height">560</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-start-title-buttons">False</property>
+            <property name="show-end-title-buttons">False</property>
+            <child type="start">
+              <object class="GtkButton" id="cancel_button">
+                <property name="label" translatable="yes">_Cancel</property>
+                <property name="use-underline">True</property>
+                <signal name="clicked" object="NautilusAppChooser" handler="adw_dialog_close" swapped="yes"/>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton" id="ok_button">
+                <property name="label" translatable="yes">_Open</property>
+                <property name="use-underline">True</property>
+                <property name="sensitive">False</property>
+                <signal name="clicked" object="NautilusAppChooser" handler="open_cb" swapped="yes"/>
+                <style>
+                  <class name="suggested-action"/>
+                </style>
               </object>
             </child>
           </object>
         </child>
+        <property name="content">
+          <object class="AdwClamp">
+            <property name="margin-top">18</property>
+            <property name="margin-bottom">18</property>
+            <property name="margin-start">18</property>
+            <property name="margin-end">18</property>
+            <property name="child">
+              <object class="GtkBox" id="content_box">
+                <property name="orientation">vertical</property>
+                <property name="spacing">12</property>
+                <child>
+                  <object class="GtkLabel" id="label_description">
+                    <property name="wrap">True</property>
+                    <property name="wrap-mode">PANGO_WRAP_WORD_CHAR</property>
+                    <property name="justify">center</property>
+                    <property name="label" translatable="yes">Choose an app to open the selected files.</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </property>
+        <child type="bottom">
+          <object class="GtkListBox" id="set_default_list_box">
+            <property name="selection-mode">none</property>
+            <child>
+              <object class="AdwSwitchRow" id="set_default_row">
+                <property name="title" translatable="yes">Always use for this file type</property>
+              </object>
+            </child>
+            <style>
+              <class name="background"/>
+            </style>
+          </object>
+        </child>
       </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="cancel_button">
-        <property name="label" translatable="yes">_Cancel</property>
-        <property name="use-underline">True</property>
-      </object>
-    </child>
-    <child type="action">
-      <object class="GtkButton" id="ok_button">
-        <property name="label" translatable="yes">_Open</property>
-        <property name="use-underline">True</property>
-        <property name="sensitive">False</property>
-        <signal name="clicked" object="NautilusAppChooser" handler="open_cb" swapped="yes"/>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="ok" default="true">ok_button</action-widget>
-      <action-widget response="cancel">cancel_button</action-widget>
-    </action-widgets>
+    </property>
   </template>
 </interface>

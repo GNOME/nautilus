@@ -6,16 +6,15 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_APP_CHOOSER (nautilus_app_chooser_get_type())
 
-G_DECLARE_FINAL_TYPE (NautilusAppChooser, nautilus_app_chooser, NAUTILUS, APP_CHOOSER, GtkDialog)
+G_DECLARE_FINAL_TYPE (NautilusAppChooser, nautilus_app_chooser, NAUTILUS, APP_CHOOSER, AdwDialog)
 
-NautilusAppChooser *nautilus_app_chooser_new (GList     *files,
-                                              GtkWindow *parent_window);
+NautilusAppChooser *nautilus_app_chooser_new (GList     *files);
 
 GAppInfo           *nautilus_app_chooser_get_app_info (NautilusAppChooser *self);
 

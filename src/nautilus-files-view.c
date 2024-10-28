@@ -1562,9 +1562,8 @@ sandboxed_choose_program (NautilusFilesView *view,
 }
 
 static void
-app_chooser_dialog_response_cb (GtkDialog *dialog,
-                                gint       response_id,
-                                gpointer   user_data)
+app_choosen (AdwDialog *dialog,
+             gpointer   user_data)
 {
     GtkWindow *parent_window;
     GList *files;
@@ -1573,25 +1572,20 @@ app_chooser_dialog_response_cb (GtkDialog *dialog,
     parent_window = user_data;
     files = g_object_get_data (G_OBJECT (dialog), "directory-view:files");
 
-    if (response_id != GTK_RESPONSE_OK)
-    {
-        goto out;
-    }
-
     info = nautilus_app_chooser_get_app_info (NAUTILUS_APP_CHOOSER (dialog));
 
     nautilus_launch_application (info, files, parent_window);
 
     g_object_unref (info);
-out:
-    gtk_window_destroy (GTK_WINDOW (dialog));
+
+    adw_dialog_close (ADW_DIALOG (dialog));
 }
 
 static void
 choose_program (NautilusFilesView *view,
                 GList             *files)
 {
-    GtkWidget *dialog;
+    NautilusAppChooser *dialog;
     GtkWindow *parent_window;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
@@ -1604,15 +1598,16 @@ choose_program (NautilusFilesView *view,
         return;
     }
 
-    dialog = GTK_WIDGET (nautilus_app_chooser_new (files, parent_window));
+    dialog = nautilus_app_chooser_new (files);
     g_object_set_data_full (G_OBJECT (dialog),
                             "directory-view:files",
                             files,
                             (GDestroyNotify) nautilus_file_list_free);
-    gtk_window_present (GTK_WINDOW (dialog));
 
-    g_signal_connect_object (dialog, "response",
-                             G_CALLBACK (app_chooser_dialog_response_cb),
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (parent_window));
+
+    g_signal_connect_object (dialog, "app-selected",
+                             G_CALLBACK (app_choosen),
                              parent_window, 0);
 }
 
