@@ -734,12 +734,9 @@ action_help (GSimpleAction *action,
     window = gtk_application_get_active_window (application);
     gtk_show_uri (window, "help:gnome-help/files", GDK_CURRENT_TIME);
 
-    if (!error)
+    if (error)
     {
-        dialog = adw_alert_dialog_new (_("There was an error displaying help"),
-                                       NULL);
-        adw_alert_dialog_format_body (ADW_ALERT_DIALOG (dialog), "%s",
-                                      error->message);
+        dialog = adw_alert_dialog_new (_("There was an error displaying help"), error->message);
         adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "ok", _("_OK"));
         adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "ok");
 
