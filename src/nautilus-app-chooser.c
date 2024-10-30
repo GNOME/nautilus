@@ -55,7 +55,7 @@ open_cb (NautilusAppChooser *self)
     g_autoptr (GAppInfo) info = NULL;
     g_autoptr (GError) error = NULL;
 
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
+    info = nautilus_app_chooser_get_app_info (self);
 
     if (!self->single_content_type)
     {
@@ -186,7 +186,7 @@ nautilus_app_chooser_constructed (GObject *object)
     gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
 
     /* initialize sensitivity */
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
+    info = nautilus_app_chooser_get_app_info (self);
     if (info != NULL)
     {
         on_application_selected (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget),
