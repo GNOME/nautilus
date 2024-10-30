@@ -34,7 +34,7 @@
 
 typedef struct
 {
-    GtkWidget *dialog;
+    AdwDialog *dialog;
     GMount *mount;
 } AutorunSoftwareDialogData;
 
@@ -155,14 +155,13 @@ autorun (GMount *mount)
 out:
     if (error_string != NULL)
     {
-        GtkWidget *dialog;
-        dialog = adw_message_dialog_new (NULL,
-                                         _("Oops! There was a problem running this software."),
-                                         error_string);
-        adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "ok", _("_OK"));
-        adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "ok");
+        AdwDialog *dialog;
+        dialog = adw_alert_dialog_new (_("Oops! There was a problem running this software."),
+                                       error_string);
+        adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "ok", _("_OK"));
+        adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "ok");
 
-        gtk_window_present (GTK_WINDOW (dialog));
+        adw_dialog_present (dialog, NULL);
     }
 }
 
@@ -182,15 +181,15 @@ present_autorun_for_software_dialog (GMount *mount)
 {
     GIcon *icon;
     g_autofree char *mount_name = NULL;
-    GtkWidget *dialog;
+    AdwDialog *dialog;
     AutorunSoftwareDialogData *data;
 
     mount_name = g_mount_get_name (mount);
 
-    dialog = adw_message_dialog_new (NULL, NULL, _("If you don’t trust this location or aren’t sure, press Cancel."));
-    adw_message_dialog_format_heading (ADW_MESSAGE_DIALOG (dialog),
-                                       _("“%s” contains software intended to be automatically started. Would you like to run it?"),
-                                       mount_name);
+    dialog = adw_alert_dialog_new (NULL, _("If you don’t trust this location or aren’t sure, press Cancel."));
+    adw_alert_dialog_format_heading (ADW_ALERT_DIALOG (dialog),
+                                     _("“%s” contains software intended to be automatically started. Would you like to run it?"),
+                                     mount_name);
 
     /* TODO: in a star trek future add support for verifying
      * software on media (e.g. if it has a certificate, check it
@@ -220,18 +219,18 @@ present_autorun_for_software_dialog (GMount *mount)
                       G_CALLBACK (autorun_software_dialog_mount_unmounted),
                       data);
 
-    adw_message_dialog_add_responses (ADW_MESSAGE_DIALOG (dialog),
-                                      "cancel", _("_Cancel"),
-                                      "run", _("_Run"),
-                                      NULL);
-    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
+    adw_alert_dialog_add_responses (ADW_ALERT_DIALOG (dialog),
+                                    "cancel", _("_Cancel"),
+                                    "run", _("_Run"),
+                                    NULL);
+    adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "cancel");
 
     g_signal_connect (dialog,
                       "response",
                       G_CALLBACK (autorun_software_dialog_response),
                       mount);
 
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (dialog, NULL);
 }
 
 int
