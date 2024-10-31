@@ -111,6 +111,7 @@ gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.4.4')
 gnome_desktop = dependency('gnome-desktop-4', version: '>= 43')
 gtk = dependency('gtk4', version: '>= 4.20.0')
 libadwaita = dependency('libadwaita-1', version: '>= 1.6.beta')
+libgxdp = dependency('libgxdp')
 libportal = dependency('libportal', version: '>= 0.7')
 libportal_gtk4 = dependency('libportal-gtk4', version: '>= 0.5')
 tinysparql = dependency('tinysparql-3.0', version: '>= 3.8')
@@ -118,9 +119,6 @@ icu_dep = dependency('icu-uc', version: '>=56')
 icu_i18n_dep = dependency('icu-i18n', version: '>=56')
 
 gi_docgen = find_program('gi-docgen', required: get_option('docs'))
-gtk_x11 = dependency('gtk4-x11', required: false)
-gtk_wayland = dependency('gtk4-wayland', required: false)
-dependency('wayland-client', required: gtk_wayland.found())
 selinux = dependency('libselinux', version: '>= 2.0', required: get_option('selinux'))
 cloudproviders = dependency('cloudproviders', version: '>= 0.3.1', required: get_option('cloudproviders'))
 if get_option('extensions')
@@ -172,13 +170,6 @@ conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
 conf.set('HAVE_SELINUX', selinux.found())
 conf.set('HAVE_CLOUDPROVIDERS', cloudproviders.found())
 
-if gtk_x11.found()
-  conf.set('HAVE_GTK_X11', 1)
-endif
-if gtk_wayland.found()
-  conf.set('HAVE_GTK_WAYLAND', 1)
-endif
-
 ######################################
 # File Configuration (for xml files) #
 ######################################
@@ -217,7 +208,6 @@ nautilus_include_dirs = include_directories(
 subdirs = [
   'data',
   'eel',
-  'xdp-gnome',
   'libnautilus-extension',
   'po',
   'src',

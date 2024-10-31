@@ -40,7 +40,7 @@
 #include <nautilus-extension.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <xdp-gnome/externalwindow.h>
+#include <gxdp.h>
 
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
@@ -1125,8 +1125,10 @@ nautilus_application_startup (GApplication *app)
     /* Initialize GDK display (for wayland-x11-interop protocol) before GTK does
      * it during the chain-up. */
     g_autoptr (GError) error = NULL;
-    GdkDisplay *display = init_external_window_display (&error);
-    if (display == NULL || error != NULL)
+
+    gxdp_set_use_portals (TRUE);
+    gxdp_init_gtk (GXDP_SERVICE_CLIENT_TYPE_FILE_CHOOSER, &error);
+    if (error != NULL)
     {
         g_message ("Failed to initialize display server connection: %s",
                    error->message);
@@ -1136,8 +1138,6 @@ nautilus_application_startup (GApplication *app)
      * is called for us.
      */
     G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
-
-    g_assert (display == NULL || gdk_display_get_default () == display);
 
     gtk_window_set_default_icon_name (APPLICATION_ID);
 
