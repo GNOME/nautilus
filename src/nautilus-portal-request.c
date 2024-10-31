@@ -19,7 +19,7 @@
  *       Matthias Clasen <mclasen@redhat.com>
  */
 
-#include "request.h"
+#include "nautilus-portal-request.h"
 
 #include <string.h>
 
