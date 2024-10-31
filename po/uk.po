@@ -8,16 +8,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-09-17 22:15+0000\n"
-"PO-Revision-Date: 2024-09-08 09:56+0300\n"
+"POT-Creation-Date: 2024-10-27 23:56+0000\n"
+"PO-Revision-Date: 2024-10-31 22:02+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : "
-"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Lokalize 23.04.3\n"
 "X-Project-Style: gnome\n"
 
@@ -1035,7 +1035,8 @@ msgstr "Рядок у буфері обміну даними не може бу�
 #: src/nautilus-clipboard.c:89
 #, c-format
 msgid "Nautilus Clipboard must begin with “cut” or “copy”."
-msgstr "Вміст буфера обміну даними Nautilus має починатися з «cut» або «copy»."
+msgstr ""
+"Вміст буфера обміну даними Nautilus має починатися з «cut» або «copy»."
 
 #: src/nautilus-clipboard.c:98
 #, c-format
@@ -1317,7 +1318,8 @@ msgstr "Скинуте зображення"
 
 #: src/nautilus-error-reporting.c:82
 #, c-format
-msgid "You do not have the permissions necessary to view the contents of “%s”."
+msgid ""
+"You do not have the permissions necessary to view the contents of “%s”."
 msgstr "Ви не маєте прав, потрібних для перегляду вмісту «%s»."
 
 #: src/nautilus-error-reporting.c:89
@@ -1966,7 +1968,8 @@ msgstr[3] "Викинуто %'d файл"
 #: src/nautilus-file-operations.c:1862
 #, c-format
 msgid "“%s” can’t be put in the trash. Do you want to delete it immediately?"
-msgstr "Неможливо перемістити «%s» у смітник. Бажаєте вилучити його остаточно?"
+msgstr ""
+"Неможливо перемістити «%s» у смітник. Бажаєте вилучити його остаточно?"
 
 #: src/nautilus-file-operations.c:1874
 msgid "This remote location does not support sending items to the trash."
@@ -4215,19 +4218,19 @@ msgid ""
 "Search will be slower and will not include file contents for some folders"
 msgstr "Пошук буде повільнішим і не включатиме вмісту файлів у деяких теках"
 
-#: src/nautilus-query-editor.c:774
+#: src/nautilus-query-editor.c:776
 msgid "Filter Search Results"
 msgstr "Фільтрувати результати пошуку"
 
-#: src/nautilus-query-editor.c:781
+#: src/nautilus-query-editor.c:783
 msgid "Search Information"
 msgstr "Шукати дані"
 
-#: src/nautilus-query-editor.c:861
+#: src/nautilus-query-editor.c:863
 msgid "Search current folder"
 msgstr "Шукати у поточній теці"
 
-#: src/nautilus-query-editor.c:862
+#: src/nautilus-query-editor.c:864
 msgid "Search everywhere"
 msgstr "Шукати всюди"
 
@@ -4731,9 +4734,10 @@ msgid "Show/Hide Sidebar"
 msgstr "Показати або приховати бічну панель"
 
 #: src/resources/gtk/help-overlay.ui:272
+#| msgid "Current Folder Menu"
 msgctxt "shortcut window"
-msgid "Show/Hide Action Menu"
-msgstr "Показати або приховати меню дій"
+msgid "Open Current Folder Menu"
+msgstr "Відкрити меню поточної теки"
 
 #: src/resources/gtk/help-overlay.ui:278
 msgctxt "shortcut window"
@@ -5892,6 +5896,10 @@ msgstr "Бічна панель"
 #: src/gtk/nautilusgtkplacessidebar.c:3539
 msgid "List of common shortcuts, mountpoints, and bookmarks."
 msgstr "Список типових скорочень, точок монтування та закладок."
+
+#~ msgctxt "shortcut window"
+#~ msgid "Show/Hide Action Menu"
+#~ msgstr "Показати або приховати меню дій"
 
 #~ msgid "Other Locations"
 #~ msgstr "Інші адреси"
