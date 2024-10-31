@@ -1,5 +1,16 @@
 subdir('resources')
 
+# Desktop Portal D-Bus interfaces
+desktop_portal_dbus_interfaces = [
+  'org.freedesktop.impl.portal.FileChooser',
+  'org.freedesktop.impl.portal.Request',
+]
+
+desktop_portal_dbus_interfaces_files = []
+foreach intf: desktop_portal_dbus_interfaces
+  desktop_portal_dbus_interfaces_files += [meson.project_source_root() / 'data' / '@0@.xml'.format(intf)]
+endforeach
+
 libnautilus_sources = [
   gnome.mkenums(
     'nautilus-enum-types',
@@ -34,6 +45,12 @@ libnautilus_sources = [
     ),
     interface_prefix: 'org.gnome',
     namespace: 'Nautilus'
+  ),
+  gnome.gdbus_codegen(
+    'xdg-desktop-portal-dbus',
+    sources: desktop_portal_dbus_interfaces_files,
+    interface_prefix: 'org.freedesktop.impl.portal.',
+    namespace: 'XdpImpl',
   ),
   'nautilus-app-chooser.c',
   'nautilus-app-chooser.h',
@@ -174,6 +191,8 @@ libnautilus_sources = [
   'nautilus-pathbar.h',
   'nautilus-portal.c',
   'nautilus-portal.h',
+  'nautilus-portal-request.c',
+  'nautilus-portal-request.h',
   'nautilus-preferences-dialog.c',
   'nautilus-preferences-dialog.h',
   'nautilus-previewer.c',
@@ -282,12 +301,12 @@ nautilus_deps = [
   icu_dep,
   icu_i18n_dep,
   libadwaita,
+  libgxdp,
   libportal,
   libportal_gtk4,
   nautilus_extension,
   selinux,
   tinysparql,
-  xdp_gnome,
 ]
 
 libnautilus = static_library(
