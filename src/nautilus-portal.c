@@ -12,13 +12,14 @@
 
 #include <config.h>
 #include <glib/gi18n.h>
-#include <xdp-gnome/externalwindow.h>
-#include <xdp-gnome/request.h>
-#include <xdp-gnome/xdg-desktop-portal-dbus.h>
+#include <gxdp.h>
+#include <gxdp-dbus.h>
+#include <xdg-desktop-portal-dbus.h>
 
 #include "nautilus-file-chooser.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "request.h"
 
 #define DESKTOP_PORTAL_OBJECT_PATH "/org/freedesktop/portal/desktop"
 
@@ -44,7 +45,7 @@ typedef struct
     GDBusMethodInvocation *invocation;
     Request *request;
 
-    ExternalWindow *external_parent;
+    GxdpExternalWindow *external_parent;
     GtkWindow *window;
 
     GActionGroup *choices_action_group;
@@ -543,7 +544,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
     /* Show window */
     if (arg_parent_window != NULL)
     {
-        data->external_parent = create_external_window_from_handle (arg_parent_window);
+        data->external_parent = gxdp_external_window_new_from_handle (arg_parent_window);
         if (data->external_parent == NULL)
         {
             g_warning ("Failed to associate portal window with parent window %s",
@@ -558,7 +559,7 @@ handle_file_chooser_methods (XdpImplFileChooser    *object,
 
             (void) g_variant_lookup (arg_options, "modal", "b", &modal);
 
-            external_window_set_parent_of (data->external_parent, surface);
+            gxdp_external_window_set_parent_of (data->external_parent, surface);
             gtk_window_set_modal (data->window, modal);
         }
     }
