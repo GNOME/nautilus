@@ -46,7 +46,7 @@ typedef struct
     guint timeout_handler_id;
 
     /* Window, once it's created. */
-    GtkWidget *dialog;
+    AdwAlertDialog *dialog;
 
     /* system time (microseconds) when dialog was created */
     gint64 dialog_creation_time;
@@ -54,8 +54,8 @@ typedef struct
 
 static GHashTable *timed_wait_hash_table;
 
-static void timed_wait_dialog_destroy_callback (GtkWidget *object,
-                                                gpointer   callback_data);
+static void timed_wait_dialog_destroy_callback (AdwAlertDialog *object,
+                                                gpointer        callback_data);
 
 static guint
 timed_wait_hash (gconstpointer value)
@@ -82,8 +82,8 @@ timed_wait_hash_equal (gconstpointer value1,
 }
 
 static void
-timed_wait_delayed_close_destroy_dialog_callback (GtkWidget *object,
-                                                  gpointer   callback_data)
+timed_wait_delayed_close_destroy_dialog_callback (AdwAlertDialog *object,
+                                                  gpointer        callback_data)
 {
     g_source_remove (GPOINTER_TO_UINT (callback_data));
 }
@@ -159,8 +159,8 @@ timed_wait_free (TimedWait *wait)
 }
 
 static void
-timed_wait_dialog_destroy_callback (GtkWidget *object,
-                                    gpointer   callback_data)
+timed_wait_dialog_destroy_callback (AdwAlertDialog *object,
+                                    gpointer        callback_data)
 {
     TimedWait *wait;
 
@@ -185,20 +185,19 @@ static gboolean
 timed_wait_callback (gpointer callback_data)
 {
     TimedWait *wait;
-    GtkWidget *dialog;
+    AdwAlertDialog *dialog;
 
     wait = callback_data;
 
     /* Put up the timed wait window. */
-    dialog = adw_message_dialog_new (wait->parent_window,
-                                     wait->wait_message,
-                                     _("You can stop this operation by clicking cancel."));
+    dialog = ADW_ALERT_DIALOG (adw_alert_dialog_new (wait->wait_message,
+                                                     _("You can stop this operation by clicking cancel.")));
 
-    adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (dialog), "cancel", _("_Cancel"));
-    adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
+    adw_alert_dialog_add_response (dialog, "cancel", _("_Cancel"));
+    adw_alert_dialog_set_default_response (dialog, "cancel");
 
     wait->dialog_creation_time = g_get_monotonic_time ();
-    gtk_window_present (GTK_WINDOW (dialog));
+    adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (wait->parent_window));
 
     /* FIXME bugzilla.eazel.com 2441:
      * Could parent here, but it's complicated because we
