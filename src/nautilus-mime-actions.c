@@ -622,6 +622,9 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
     }
 
     adw_message_dialog_set_default_response (ADW_MESSAGE_DIALOG (dialog), "cancel");
+    adw_message_dialog_set_response_appearance (ADW_MESSAGE_DIALOG (dialog),
+                                                "move-to-trash",
+                                                ADW_RESPONSE_DESTRUCTIVE);
 
     /* Make this modal to avoid problems with reffing the view & file
      * to keep them around in case the view changes, which would then
@@ -640,6 +643,8 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
                       "response",
                       G_CALLBACK (trash_symbolic_link_cb),
                       data);
+
+    gtk_window_present (GTK_WINDOW (dialog));
 
     g_free (detail);
 }
