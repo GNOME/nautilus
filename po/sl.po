@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2024-11-04 09:31+0000\n"
-"PO-Revision-Date: 2024-11-04 18:38+0100\n"
+"POT-Creation-Date: 2024-11-05 05:52+0000\n"
+"PO-Revision-Date: 2024-11-05 14:57+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -453,8 +453,8 @@ msgstr "To dejanje lahko zaustavite s klikom na tipko preklica."
 
 #: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
 #: src/nautilus-file-chooser.c:232 src/nautilus-file-operations.c:273
-#: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1019
-#: src/nautilus-mime-actions.c:1330 src/resources/ui/nautilus-app-chooser.ui:96
+#: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1024
+#: src/nautilus-mime-actions.c:1335 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
 #: src/resources/ui/nautilus-compress-dialog.ui:17
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
@@ -788,7 +788,7 @@ msgstr ""
 "%s"
 
 #: src/nautilus-application.c:744 src/nautilus-autorun-software.c:162
-#: src/nautilus-mime-actions.c:1189 src/nautilus-ui-utilities.c:437
+#: src/nautilus-mime-actions.c:1194 src/nautilus-ui-utilities.c:437
 msgid "_OK"
 msgstr "_V redu"
 
@@ -3584,11 +3584,11 @@ msgstr "Premakni v _smeti"
 msgid "The link “%s” is broken."
 msgstr "Povezava »%s« je okvarjena."
 
-#: src/nautilus-mime-actions.c:999
+#: src/nautilus-mime-actions.c:1004
 msgid "Are you sure you want to open all files?"
 msgstr "Ali res želite odpreti vse datoteke?"
 
-#: src/nautilus-mime-actions.c:1003
+#: src/nautilus-mime-actions.c:1008
 #, c-format
 msgid "This will open %d separate tab and window."
 msgid_plural "This will open %d separate tabs and windows."
@@ -3597,7 +3597,7 @@ msgstr[1] "To bo odprlo %d ločeno okno."
 msgstr[2] "To bo odprlo %d ločeni okni."
 msgstr[3] "To bo odprlo %d ločena okna."
 
-#: src/nautilus-mime-actions.c:1008
+#: src/nautilus-mime-actions.c:1013
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
@@ -3606,7 +3606,7 @@ msgstr[1] "To bo odprlo %d ločen zavihek."
 msgstr[2] "To bo odprlo %d ločena zavihka."
 msgstr[3] "To bo odprlo %d ločene zavihke."
 
-#: src/nautilus-mime-actions.c:1013
+#: src/nautilus-mime-actions.c:1018
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3615,41 +3615,41 @@ msgstr[1] "To bo odprlo %d ločeno okno."
 msgstr[2] "To bo odprlo %d ločeni okni."
 msgstr[3] "To bo odprlo %d ločena okna."
 
-#: src/nautilus-mime-actions.c:1020
+#: src/nautilus-mime-actions.c:1025
 msgid "_Open All"
 msgstr "_Odpri vse"
 
-#: src/nautilus-mime-actions.c:1080
+#: src/nautilus-mime-actions.c:1085
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr "Ni mogoče prikazati »%s«."
 
-#: src/nautilus-mime-actions.c:1178
+#: src/nautilus-mime-actions.c:1183
 msgid "The file is of an unknown type"
 msgstr "Datoteka je neznane vrste"
 
-#: src/nautilus-mime-actions.c:1183
+#: src/nautilus-mime-actions.c:1188
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "Ni nameščenega programa, ki podpira vrsto datotek »%s«"
 
-#: src/nautilus-mime-actions.c:1188
+#: src/nautilus-mime-actions.c:1193
 msgid "_Select App"
 msgstr "_Izbor programa"
 
-#: src/nautilus-mime-actions.c:1224
+#: src/nautilus-mime-actions.c:1229
 msgid "There was an internal error trying to search for apps:"
 msgstr "Prišlo je do notranje napake med iskanjem programa:"
 
-#: src/nautilus-mime-actions.c:1226
+#: src/nautilus-mime-actions.c:1231
 msgid "Unable to search for app"
 msgstr "Ni mogoče iskati programa"
 
-#: src/nautilus-mime-actions.c:1331
+#: src/nautilus-mime-actions.c:1336
 msgid "_Search in Software"
 msgstr "_Iskanje programske opreme"
 
-#: src/nautilus-mime-actions.c:1334
+#: src/nautilus-mime-actions.c:1339
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
@@ -3659,21 +3659,21 @@ msgstr ""
 "program, s katerim bi datoteko lahko odprli?"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1730 src/nautilus-mime-actions.c:2029
+#: src/nautilus-mime-actions.c:1735 src/nautilus-mime-actions.c:2034
 #: src/nautilus-network-address-bar.c:78
 msgid "Unable to access location"
 msgstr "Dostop do mesta ni mogoč"
 
-#: src/nautilus-mime-actions.c:2120
+#: src/nautilus-mime-actions.c:2125
 msgid "Unable to start location"
 msgstr "Ni mogoče zagnati mesta"
 
-#: src/nautilus-mime-actions.c:2213
+#: src/nautilus-mime-actions.c:2218
 #, c-format
 msgid "Opening “%s”."
 msgstr "Odpiranje »%s«."
 
-#: src/nautilus-mime-actions.c:2217
+#: src/nautilus-mime-actions.c:2222
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -4647,8 +4647,8 @@ msgstr "Premakne na zavihek desno"
 
 #: src/resources/gtk/help-overlay.ui:156
 msgctxt "shortcut window"
-msgid "Restore Tab"
-msgstr "Obnovi zavihek"
+msgid "Restore Closed Tab"
+msgstr "Obnovi zaprti zavihek"
 
 #: src/resources/gtk/help-overlay.ui:164
 msgctxt "shortcut window"
@@ -5075,20 +5075,20 @@ msgid "New _Folder…"
 msgstr "_Nova mapa ..."
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:10
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:24
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:25
 msgid "New _Document"
 msgstr "Nov _dokument"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:16
 #: src/resources/ui/nautilus-files-view-context-menus.ui:76
 #: src/resources/ui/nautilus-files-view-context-menus.ui:110
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:29
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:30
 msgid "Open _With…"
 msgstr "Odpri _s programom …"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:21
 #: src/resources/ui/nautilus-files-view-context-menus.ui:115
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:33
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:34
 msgid "Open in Consol_e"
 msgstr "Odpri v terminalu"
 
@@ -5109,13 +5109,13 @@ msgid "_Visible Columns"
 msgstr "_Vidni stolpci"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:48
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:79
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:83
 msgid "Empty _Trash…"
 msgstr "Izprazni _smeti …"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:56
 #: src/resources/ui/nautilus-files-view-context-menus.ui:276
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:86
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:90
 msgid "P_roperties"
 msgstr "L_astnosti"
 
@@ -5312,35 +5312,35 @@ msgstr "Vpis gesl …"
 msgid "_Properties"
 msgstr "_Lastnosti"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:39
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:40
 msgid "R_eload"
 msgstr "Ponovno naloži"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:44
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:46
 msgid "St_op"
 msgstr "Zau_stavi"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:49
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:51
 msgid "Add to _Bookmarks"
 msgstr "_Dodaj med zaznamke"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:53
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:56
 msgid "_Star Folder"
 msgstr "Označi mapo z _zvezdico"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:58
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:61
 msgid "_Unstar Folder"
 msgstr "Odstrani mapi zvezdi_co"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:63
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:66
 msgid "Edit _Location"
 msgstr "Uredi _mesto"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:67
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:71
 msgid "_Copy Location"
 msgstr "Kopiraj _mesto"
 
-#: src/resources/ui/nautilus-pathbar-context-menu.ui:71
+#: src/resources/ui/nautilus-pathbar-context-menu.ui:75
 msgid "_Open in File Manager"
 msgstr "Odpri z _upravljalnikom datotek"
 
@@ -5693,20 +5693,20 @@ msgstr "Razvrsti"
 msgid "Show _Hidden Files"
 msgstr "Pokaži _skrite datoteke"
 
-#: src/resources/ui/nautilus-view-controls.ui:31
+#: src/resources/ui/nautilus-view-controls.ui:32
 msgid "_Visible Columns…"
 msgstr "Vidni _stolpci …"
 
 #. Translators: This is a noun, meaning the options pertaining to the view.
-#: src/resources/ui/nautilus-view-controls.ui:42
+#: src/resources/ui/nautilus-view-controls.ui:43
 msgid "View Options"
 msgstr "Možnosti pogleda"
 
-#: src/resources/ui/nautilus-view-controls.ui:51
+#: src/resources/ui/nautilus-view-controls.ui:52
 msgid "Zoom Out"
 msgstr "Oddalji"
 
-#: src/resources/ui/nautilus-view-controls.ui:62
+#: src/resources/ui/nautilus-view-controls.ui:63
 msgid "Zoom In"
 msgstr "Približaj"
 
