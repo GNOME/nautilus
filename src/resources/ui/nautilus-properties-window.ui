@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <template class="NautilusPropertiesWindow" parent="AdwWindow">
+  <template class="NautilusPropertiesWindow" parent="AdwDialog">
     <property name="title" translatable="yes">Properties</property>
-    <property name="modal">True</property>
-    <property name="width-request">360</property>
-    <property name="height-request">294</property>
-    <property name="default-width">480</property>
-    <child>
+    <property name="content-width">480</property>
+    <property name="child">
       <object class="AdwToastOverlay" id="toast_overlay">
         <property name="child">
           <object class="AdwNavigationView" id="nav_view">
@@ -738,6 +735,6 @@
           </object>
         </property>
       </object>
-    </child>
+    </property>
   </template>
 </interface>

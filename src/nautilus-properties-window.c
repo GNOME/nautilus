@@ -81,7 +81,7 @@ typedef struct
 
 struct _NautilusPropertiesWindow
 {
-    AdwWindow parent_instance;
+    AdwDialog parent_instance;
 
     GList *files;
 
@@ -467,7 +467,7 @@ static void refresh_extension_model_pages (NautilusPropertiesWindow *self);
 static gboolean is_root_directory (NautilusFile *file);
 static gboolean is_volume_properties (NautilusPropertiesWindow *self);
 
-G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, ADW_TYPE_DIALOG);
 
 static gboolean
 is_multi_file_window (NautilusPropertiesWindow *self)
@@ -572,11 +572,6 @@ update_properties_window_icon (NautilusPropertiesWindow *self)
     gint pixel_size;
 
     get_image_for_properties_window (self, &name, &paintable);
-
-    if (name != NULL)
-    {
-        gtk_window_set_icon_name (GTK_WINDOW (self), name);
-    }
 
     pixel_size = MAX (gdk_paintable_get_intrinsic_width (paintable),
                       gdk_paintable_get_intrinsic_width (paintable));
@@ -1328,7 +1323,7 @@ update_files_callback (gpointer data)
     if (self->files == NULL)
     {
         /* Close the window if no files are left */
-        gtk_window_destroy (GTK_WINDOW (self));
+        adw_dialog_close (ADW_DIALOG (self));
     }
     else
     {
@@ -2551,6 +2546,7 @@ open_in_disks (NautilusPropertiesWindow *self)
 {
     NautilusDBusLauncher *launcher = nautilus_dbus_launcher_get ();
     GVariant *parameters;
+    GtkWindow *toplevel;
 
     g_return_if_fail (self->device_identifier != NULL);
 
@@ -2558,10 +2554,11 @@ open_in_disks (NautilusPropertiesWindow *self)
                                        "@aay [], {'options': <{'block-device': <%s>}> })",
                                        self->device_identifier);
 
+    toplevel = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
     nautilus_dbus_launcher_call (launcher,
                                  NAUTILUS_DBUS_LAUNCHER_DISKS,
                                  "CommandLine", parameters,
-                                 GTK_WINDOW (self));
+                                 toplevel);
 }
 
 static void
@@ -2814,11 +2811,13 @@ permission_change_callback (NautilusFile *file,
 {
     g_autoptr (NautilusPropertiesWindow) self = NAUTILUS_PROPERTIES_WINDOW (callback_data);
     g_assert (self != NULL);
+    GtkWindow *toplevel;
 
     end_long_operation (self);
 
     /* Report the error if it's an error. */
-    nautilus_report_error_setting_permissions (file, error, GTK_WINDOW (self));
+    toplevel = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
+    nautilus_report_error_setting_permissions (file, error, toplevel);
 }
 
 static void
@@ -3704,22 +3703,6 @@ create_properties_window (StartupData *startup_data)
 
     window->files = nautilus_file_list_copy (startup_data->files);
 
-    if (startup_data->parent_widget)
-    {
-        gtk_window_set_display (GTK_WINDOW (window),
-                                gtk_widget_get_display (startup_data->parent_widget));
-    }
-
-    if (startup_data->parent_window)
-    {
-        gtk_window_set_transient_for (GTK_WINDOW (window), startup_data->parent_window);
-    }
-
-    if (startup_data->startup_id)
-    {
-        gtk_window_set_startup_id (GTK_WINDOW (window), startup_data->startup_id);
-    }
-
     for (l = window->files; l != NULL; l = l->next)
     {
         NautilusFile *file;
@@ -3873,7 +3856,7 @@ is_directory_ready_callback (NautilusFile *file,
 
         remove_pending (startup_data, FALSE, TRUE);
 
-        gtk_window_present (GTK_WINDOW (new_window));
+        adw_dialog_present (ADW_DIALOG (new_window), GTK_WIDGET (startup_data->parent_window));
         g_signal_connect (GTK_WIDGET (new_window), "destroy",
                           G_CALLBACK (widget_on_destroy), startup_data);
 
@@ -4077,6 +4060,7 @@ select_image_button_callback (GtkWidget                *widget,
     g_autoptr (GtkFileDialog) dialog = gtk_file_dialog_new ();
     g_autoptr (GtkFileFilter) filter = gtk_file_filter_new ();
     NautilusFile *file = get_file (self);
+    GtkWindow *toplevel;
 
     gtk_file_dialog_set_title (dialog, _("Select Custom Icon"));
     gtk_file_dialog_set_accept_label (dialog, _("_Select"));
@@ -4097,8 +4081,9 @@ select_image_button_callback (GtkWidget                *widget,
         }
     }
 
+    toplevel = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (self)));
     gtk_file_dialog_open (dialog,
-                          GTK_WINDOW (self),
+                          toplevel,
                           NULL,
                           (GAsyncReadyCallback) custom_icon_file_chooser_response_cb,
                           self);
@@ -4114,10 +4099,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     oclass = G_OBJECT_CLASS (klass);
     oclass->dispose = real_dispose;
     oclass->finalize = real_finalize;
-
-    gtk_widget_class_add_binding (widget_class,
-                                  GDK_KEY_Escape, 0,
-                                  (GtkShortcutFunc) gtk_window_close, NULL);
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
