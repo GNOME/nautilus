@@ -1751,6 +1751,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
     adw_about_dialog_set_developers (ADW_ABOUT_DIALOG (dialog), developers);
     adw_about_dialog_set_designers (ADW_ABOUT_DIALOG (dialog), designers);
     adw_about_dialog_set_documenters (ADW_ABOUT_DIALOG (dialog), documenters);
+    adw_about_dialog_set_support_url (ADW_ABOUT_DIALOG (dialog), "https://discourse.gnome.org/tag/nautilus");
     /* Translators should localize the following string which will be displayed at the bottom of
      * the about box to give credit to the translator(s). */
     adw_about_dialog_set_translator_credits (ADW_ABOUT_DIALOG (dialog), _("translator-credits"));
