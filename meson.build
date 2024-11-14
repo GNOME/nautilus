@@ -180,6 +180,12 @@ if gtk_wayland.found()
   conf.set('HAVE_GTK_WAYLAND', 1)
 endif
 
+######################################
+# File Configuration (for xml files) #
+######################################
+file_conf = configuration_data()
+file_conf.set('appid', application_id)
+
 #############################################################
 # config.h dependency, add to target dependencies if needed #
 #############################################################
