@@ -129,33 +129,33 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
     else if (strstr (name, "/") != NULL)
     {
         is_valid = FALSE;
-        *error_message = is_folder ? _("Folder names cannot contain “/”.") :
-                                     _("File names cannot contain “/”.");
+        *error_message = is_folder ? _("Folder names cannot contain “/”") :
+                                     _("File names cannot contain “/”");
     }
     else if (strcmp (name, ".") == 0)
     {
         is_valid = FALSE;
-        *error_message = is_folder ? _("A folder cannot be called “.”.") :
-                                     _("A file cannot be called “.”.");
+        *error_message = is_folder ? _("A folder cannot be called “.”") :
+                                     _("A file cannot be called “.”");
     }
     else if (strcmp (name, "..") == 0)
     {
         is_valid = FALSE;
-        *error_message = is_folder ? _("A folder cannot be called “..”.") :
-                                     _("A file cannot be called “..”.");
+        *error_message = is_folder ? _("A folder cannot be called “..”") :
+                                     _("A file cannot be called “..”");
     }
     else if (nautilus_filename_validator_is_name_too_long (self, name))
     {
         is_valid = FALSE;
-        *error_message = is_folder ? _("Folder name is too long.") :
-                                     _("File name is too long.");
+        *error_message = is_folder ? _("Folder name is too long") :
+                                     _("File name is too long");
     }
 
     if (is_valid && g_str_has_prefix (name, "."))
     {
         /* We must warn about the side effect */
-        *error_message = is_folder ? _("Folders with “.” at the beginning of their name are hidden.") :
-                                     _("Files with “.” at the beginning of their name are hidden.");
+        *error_message = is_folder ? _("Folders with “.” at the beginning of their name are hidden") :
+                                     _("Files with “.” at the beginning of their name are hidden");
     }
 
     return is_valid;
@@ -164,8 +164,8 @@ nautilus_filename_validator_name_is_valid (NautilusFilenameValidator  *self,
 static gboolean
 duplicated_file_label_show (NautilusFilenameValidator *self)
 {
-    const char *text = self->duplicated_is_folder ? _("A folder with that name already exists.") :
-                                                    _("A file with that name already exists.");
+    const char *text = self->duplicated_is_folder ? _("A folder with that name already exists") :
+                                                    _("A file with that name already exists");
 
     if (self->feedback_text != text)
     {
