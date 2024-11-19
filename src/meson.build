@@ -176,6 +176,8 @@ libnautilus_sources = [
   'nautilus-network-address-bar.h',
   'nautilus-network-cell.c',
   'nautilus-network-cell.h',
+  'nautilus-templates-dialog.c',
+  'nautilus-templates-dialog.h',
   'nautilus-network-directory.c',
   'nautilus-network-directory.h',
   'nautilus-network-view.c',
