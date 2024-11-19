@@ -49,13 +49,7 @@ struct _NautilusViewInterface
 
         void     (*set_extensions_background_menu) (NautilusView *view,
                                                     GMenuModel   *menu);
-        /*
-         * Returns the menu for templates.
-         */
-        GMenuModel *   (*get_templates_menu) (NautilusView         *view);
-
-        void     (*set_templates_menu) (NautilusView *view,
-                                        GMenuModel   *menu);
+ 
         /* Current location of the view */
         GFile*                          (*get_location)              (NautilusView         *view);
         void                            (*set_location)              (NautilusView         *view,
@@ -105,9 +99,6 @@ gboolean                       nautilus_view_is_loading                (Nautilus
 
 gboolean                       nautilus_view_is_searching              (NautilusView         *view);
 
-void                           nautilus_view_set_templates_menu        (NautilusView *view,
-                                                                        GMenuModel   *menu);
-GMenuModel *                   nautilus_view_get_templates_menu        (NautilusView *view);
 void                           nautilus_view_set_extensions_background_menu (NautilusView *view,
                                                                              GMenuModel   *menu);
 GMenuModel *                   nautilus_view_get_extensions_background_menu (NautilusView *view);
