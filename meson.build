@@ -123,12 +123,12 @@ gtk_wayland = dependency('gtk4-wayland', required: false)
 dependency('wayland-client', required: gtk_wayland.found())
 selinux = dependency('libselinux', version: '>= 2.0', required: get_option('selinux'))
 cloudproviders = dependency('cloudproviders', version: '>= 0.3.1', required: get_option('cloudproviders'))
-if get_option('extensions')
-  gexiv = dependency('gexiv2-0.16', version: '>= 0.16.0')
-  gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.30.0')
-  gst_tag_dep = dependency('gstreamer-tag-1.0')
-  gst_pbutils_dep = dependency('gstreamer-pbutils-1.0')
-endif
+# if get_option('extensions')
+#   gexiv = dependency('gexiv2-0.16', version: '>= 0.16.0')
+#   gdkpixbuf = dependency('gdk-pixbuf-2.0', version: '>= 2.30.0')
+#   gst_tag_dep = dependency('gstreamer-tag-1.0')
+#   gst_pbutils_dep = dependency('gstreamer-pbutils-1.0')
+# endif
 
 ####################
 # End dependencies #
@@ -233,9 +233,9 @@ endif
 if get_option('tests') != 'none'
   subdirs += 'test'
 endif
-if get_option('extensions')
-  subdirs += 'extensions'
-endif
+# if get_option('extensions')
+#   subdirs += 'extensions'
+# endif
 
 foreach dir : subdirs
   subdir(dir)
@@ -253,7 +253,7 @@ gnome.post_install(
 
 #### Summary ####
 
-summary('Extensions', get_option('extensions').to_string(), section: 'Features')
+# summary('Extensions', get_option('extensions').to_string(), section: 'Features')
 summary('Cloud providers support', get_option('cloudproviders'), section: 'Features')
 summary('SELinux support', get_option('selinux'), section: 'Features')
 
