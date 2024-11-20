@@ -65,6 +65,7 @@
 #include "nautilus-new-file-dialog.h"
 #include "nautilus-new-folder-dialog.h"
 #include "nautilus-query.h"
+#include "nautilus-templates-dialog.h"
 #include "nautilus-previewer.h"
 #include "nautilus-program-choosing.h"
 #include "nautilus-properties-window.h"
@@ -150,6 +151,7 @@ struct _NautilusFilesView
 
     NautilusWindowSlot *slot;
     NautilusDirectory *directory;
+    NautilusDirectory *templates_directory;
     NautilusFile *directory_as_file;
     GFile *location;
 
@@ -212,6 +214,8 @@ struct _NautilusFilesView
 
     gboolean metadata_for_directory_as_file_pending;
     gboolean metadata_for_files_in_directory_pending;
+
+    gboolean has_templates;
 
     NautilusDirectoryList *subdirectory_list;
     NautilusDirectoryList *subdirectories_loading;
@@ -320,6 +324,11 @@ static void nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView
                                                                graphene_point_t  *point);
 static void nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                                 graphene_point_t  *point);
+
+static void     nautilus_files_view_new_file (NautilusFilesView *directory_view,
+                                              const char        *parent_uri,
+                                              const char        *target_filename,
+                                              NautilusFile      *source);
 
 G_DEFINE_FINAL_TYPE (NautilusFilesView, nautilus_files_view, ADW_TYPE_BIN);
 
@@ -2288,6 +2297,7 @@ nautilus_files_view_new_file_with_initial_contents (NautilusFilesView *view,
 static void
 nautilus_files_view_new_file (NautilusFilesView *directory_view,
                               const char        *parent_uri,
+                              const char        *target_filename,
                               NautilusFile      *source)
 {
     NewFolderData *data;
@@ -2305,7 +2315,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
     {
         nautilus_files_view_new_file_with_initial_contents (directory_view,
                                                             parent_uri != NULL ? parent_uri : container_uri,
-                                                            NULL,
+                                                            target_filename,
                                                             NULL,
                                                             0);
         g_free (container_uri);
@@ -2318,7 +2328,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
 
     nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
                                                      parent_uri != NULL ? parent_uri : container_uri,
-                                                     NULL,
+                                                     target_filename,
                                                      source_uri,
                                                      new_folder_done, data);
 
@@ -2340,6 +2350,52 @@ action_empty_trash (GSimpleAction *action,
     window = gtk_widget_get_root (GTK_WIDGET (view));
 
     nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
+}
+
+static void
+templates_changed_cb (NautilusDirectory *directory,
+                      NautilusFilesView *files_view,
+                      gpointer           callback_data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (callback_data);
+
+    self->has_templates = nautilus_directory_is_not_empty (directory);
+}
+
+static void
+new_file_dialog_cb (gchar        *name,
+                    NautilusFile *file,
+                    gpointer     *data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (data);
+
+    nautilus_files_view_new_file (self, NULL, name, file);
+}
+
+static void
+action_new_file (GSimpleAction *action,
+                 GVariant      *state,
+                 gpointer       user_data)
+{
+    g_autoptr (NautilusDirectory) containing_directory = NULL;
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
+    g_autofree char *uri = NULL;
+    g_autofree char *templates_uri = NULL;
+
+    uri = nautilus_files_view_get_backing_uri (self);
+    containing_directory = nautilus_directory_get_by_uri (uri);
+
+    if (!self->has_templates) /* if the XDG Templates directory is empty */
+    {
+        nautilus_new_file_dialog_new (GTK_WIDGET (self),
+                                      containing_directory,
+                                      new_file_dialog_cb,
+                                      (gpointer) self);
+    }
+    else
+    {
+        nautilus_templates_dialog_new (nautilus_files_view_get_containing_window (self));
+    }
 }
 
 static void
@@ -3194,6 +3250,12 @@ nautilus_files_view_dispose (GObject *object)
     {
         nautilus_files_view_remove_subdirectory (self,
                                                  self->subdirectory_list->data);
+    }
+
+    if (self->templates_directory != NULL)
+    {
+        nautilus_directory_file_monitor_remove (self->templates_directory, self);
+        g_clear_object (&self->templates_directory);
     }
 
     remove_update_context_menus_timeout_callback (self);
@@ -6497,6 +6559,7 @@ const GActionEntry view_entries[] =
     /* Background menu */
     { .name = "empty-trash", .activate = action_empty_trash },
     { .name = "new-folder", .activate = action_new_folder },
+    { .name = "new-file", .activate = action_new_file },
     { .name = "select-all", .activate = action_select_all },
     { .name = "paste", .activate = action_paste_files },
     { .name = "copy-current-location", .activate = action_copy_current_location },
@@ -7276,6 +7339,9 @@ nautilus_files_view_update_actions_state (NautilusFilesView *self)
                                  !nautilus_trash_monitor_is_empty () &&
                                  is_in_trash);
 
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "new-file");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
@@ -9057,7 +9123,6 @@ nautilus_files_view_init (NautilusFilesView *self)
     NautilusDirectory *templates_directory;
     GtkEventController *controller;
     GtkShortcut *shortcut;
-    gchar *templates_uri;
     GdkClipboard *clipboard;
 
     /* Own a reference to keep the status page alive even if reparented while
@@ -9106,11 +9171,21 @@ nautilus_files_view_init (NautilusFilesView *self)
 
     if (nautilus_should_use_templates_directory ())
     {
-        templates_uri = nautilus_get_templates_directory_uri ();
+        g_autofree gchar *templates_uri = nautilus_get_templates_directory_uri ();
+
         templates_directory = nautilus_directory_get_by_uri (templates_uri);
-        g_free (templates_uri);
+        self->templates_directory = templates_directory;
         add_directory_to_templates_directory_list (self, templates_directory);
-        nautilus_directory_unref (templates_directory);
+
+        /* Monitor templates directory */
+        nautilus_directory_file_monitor_add (templates_directory, self,
+                                             FALSE, NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                             (NautilusDirectoryCallback) templates_changed_cb, self);
+
+        g_signal_connect_object (templates_directory, "files-added",
+                                 G_CALLBACK (templates_changed_cb), self, 0);
+        g_signal_connect_object (templates_directory, "files-changed",
+                                 G_CALLBACK (templates_changed_cb), self, 0);
     }
 
     self->show_hidden_files =

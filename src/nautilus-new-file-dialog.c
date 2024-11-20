@@ -18,7 +18,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+#include "config.h"
+
+#include "nautilus-file.h"
 #include "nautilus-new-file-dialog.h"
+#include "nautilus-files-view.h"
 
 #include <glib/gi18n.h>
 
@@ -38,6 +42,9 @@ struct _NautilusNewFileDialog
     AdwActionRow *spreadsheet_action_row;
     AdwActionRow *presentation_action_row;
 
+    NewFileCallback callback;
+    gpointer *callback_data;
+
     gchar *template_name;
     gchar *extension;
 };
@@ -55,6 +62,24 @@ static void
 new_file_dialog_on_create (AdwDialog             *dialog,
                            NautilusNewFileDialog *self)
 {
+    gchar *template_name = NULL;
+    g_autofree gchar *template_path = NULL;
+    g_autoptr (GFile) template_location = NULL;
+    g_autofree gchar *name = NULL;
+    g_autoptr (NautilusFile) file = NULL;
+
+    template_name = nautilus_new_file_dialog_get_template_name (NAUTILUS_NEW_FILE_DIALOG (self));
+    name = nautilus_filename_validator_get_new_name (self->validator);
+
+    if (template_name != NULL)
+    {
+        template_path = g_build_filename (NAUTILUS_DATADIR, "templates", template_name, NULL);
+        template_location = g_file_new_for_path (template_path);
+        file = nautilus_file_get (template_location);
+    }
+
+    self->callback (name, file, self->callback_data);
+
     adw_dialog_close (ADW_DIALOG (self));
 }
 
@@ -146,11 +171,15 @@ nautilus_new_file_dialog_class_init (NautilusNewFileDialogClass *klass)
 
 void
 nautilus_new_file_dialog_new (GtkWidget         *parent_window,
-                              NautilusDirectory *destination_directory)
+                              NautilusDirectory *destination_directory,
+                              NewFileCallback    callback,
+                              gpointer           callback_data)
 {
     GList *recommended_apps;
     NautilusNewFileDialog *self = g_object_new (NAUTILUS_TYPE_NEW_FILE_DIALOG,
                                                 NULL);
+    self->callback = callback;
+    self->callback_data = callback_data;
 
     nautilus_filename_validator_set_containing_directory (self->validator,
                                                           destination_directory);
