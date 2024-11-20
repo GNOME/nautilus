@@ -156,3 +156,4 @@ if appstreamcli.found()
 endif
 
 subdir('ontology')
+subdir('templates')

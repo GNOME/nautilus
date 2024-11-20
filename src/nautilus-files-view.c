@@ -347,6 +347,11 @@ static void nautilus_files_view_pop_up_selection_context_menu (NautilusFilesView
 static void nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                                 graphene_point_t  *point);
 
+static void     nautilus_files_view_new_file (NautilusFilesView *directory_view,
+                                              const char        *parent_uri,
+                                              const char        *target_filename,
+                                              NautilusFile      *source);
+
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
                          ADW_TYPE_BIN,
@@ -2400,6 +2405,7 @@ nautilus_files_view_new_file_with_initial_contents (NautilusFilesView *view,
 static void
 nautilus_files_view_new_file (NautilusFilesView *directory_view,
                               const char        *parent_uri,
+                              const char        *target_filename,
                               NautilusFile      *source)
 {
     NewFolderData *data;
@@ -2417,7 +2423,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
     {
         nautilus_files_view_new_file_with_initial_contents (directory_view,
                                                             parent_uri != NULL ? parent_uri : container_uri,
-                                                            NULL,
+                                                            target_filename,
                                                             NULL,
                                                             0);
         g_free (container_uri);
@@ -2430,7 +2436,7 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
 
     nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
                                                      parent_uri != NULL ? parent_uri : container_uri,
-                                                     NULL,
+                                                     target_filename,
                                                      source_uri,
                                                      new_folder_done, data);
 
@@ -2472,6 +2478,18 @@ templates_changed_cb (NautilusDirectory *directory,
 }
 
 static void
+new_file_dialog_cb (gchar        *name,
+                    NautilusFile *file,
+                    gpointer     *data)
+{
+    NautilusFilesView *self = NAUTILUS_FILES_VIEW (data);
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (self));
+
+    nautilus_files_view_new_file (self, NULL, name, file);
+}
+
+static void
 action_new_file (GSimpleAction *action,
                  GVariant      *state,
                  gpointer       user_data)
@@ -2492,7 +2510,9 @@ action_new_file (GSimpleAction *action,
     if (!priv->has_templates) /* if the XDG Templates directory is empty */
     {
         nautilus_new_file_dialog_new (GTK_WIDGET (view),
-                                      containing_directory);
+                                      containing_directory,
+                                      new_file_dialog_cb,
+                                      (gpointer) view);
     }
     else
     {
