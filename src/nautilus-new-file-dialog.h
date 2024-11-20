@@ -31,8 +31,12 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusNewFileDialog, nautilus_new_file_dialog, NAUTILUS, NEW_FILE_DIALOG, AdwDialog)
 
+typedef void (*NewFileCallback) (gchar *, NautilusFile *, gpointer *callback_data);
+
 void nautilus_new_file_dialog_new (GtkWidget         *parent_window,
-                                   NautilusDirectory *destination_directory);
+                                   NautilusDirectory *destination_directory,
+                                   NewFileCallback    callback,
+                                   gpointer           callback_data);
 
 /**
  * nautilus_new_file_dialog_get_template_name:
