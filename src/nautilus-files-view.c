@@ -69,6 +69,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-network-view.h"
 #include "nautilus-module.h"
+#include "nautilus-new-file-dialog.h"
 #include "nautilus-new-folder-dialog.h"
 #include "nautilus-previewer.h"
 #include "nautilus-program-choosing.h"
