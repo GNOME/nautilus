@@ -156,22 +156,19 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     GError *error;
     g_autoptr (GdkAppLaunchContext) launch_context = NULL;
     NautilusIconInfo *icon;
-    int count, total;
+    gboolean all_uris_local = TRUE;
 
     g_assert (uris != NULL);
 
-    /* count the number of uris with local paths */
-    count = 0;
-    total = g_list_length (uris);
     locations = NULL;
     for (l = uris; l != NULL; l = l->next)
     {
         uri = l->data;
 
         location = g_file_new_for_uri (uri);
-        if (g_file_is_native (location))
+        if (!g_file_is_native (location))
         {
-            count++;
+            all_uris_local = FALSE;
         }
         locations = g_list_prepend (locations, location);
     }
@@ -193,7 +190,7 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
 
     error = NULL;
 
-    if (count == total)
+    if (all_uris_local)
     {
         /* All files are local, so we can use g_app_info_launch () with
          * the file list we constructed before.

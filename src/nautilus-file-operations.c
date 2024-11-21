@@ -8206,11 +8206,11 @@ report_extract_final_progress (ExtractJob *extract_job)
                                             extract_job->destination_directory);
     basename_dest = get_basename (extract_job->destination_directory);
 
-    /* The g_list_length function is used intentionally here instead of the
+    /* extract_job->source_files variable is used intentionally here instead of the
      * extract_job->total_files variable to avoid printing wrong basename in
      * the case of skipped files.
      */
-    if (g_list_length (extract_job->source_files) == 1)
+    if (extract_job->source_files != NULL && extract_job->source_files->next == NULL)
     {
         GFile *source_file;
         g_autofree gchar *basename = NULL;

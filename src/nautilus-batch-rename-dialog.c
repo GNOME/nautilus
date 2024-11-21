@@ -873,7 +873,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
 
         gtk_widget_set_sensitive (dialog->conflict_up, FALSE);
 
-        if (g_list_length (dialog->duplicates) == 1)
+        if (dialog->duplicates != NULL && dialog->duplicates->next == NULL)
         {
             gtk_widget_set_sensitive (dialog->conflict_down, FALSE);
         }
@@ -1862,21 +1862,22 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     }
 
     dialog_title = g_string_new ("");
+    guint selection_count = g_list_length (selection);
     if (all_targets_are_folders)
     {
         g_string_append_printf (dialog_title,
                                 ngettext ("Rename %d Folder",
                                           "Rename %d Folders",
-                                          g_list_length (selection)),
-                                g_list_length (selection));
+                                          selection_count),
+                                selection_count);
     }
     else if (all_targets_are_regular_files)
     {
         g_string_append_printf (dialog_title,
                                 ngettext ("Rename %d File",
                                           "Rename %d Files",
-                                          g_list_length (selection)),
-                                g_list_length (selection));
+                                          selection_count),
+                                selection_count);
     }
     else
     {
@@ -1885,8 +1886,8 @@ nautilus_batch_rename_dialog_new (GList             *selection,
                                  * Singular case of the string is never used */
                                 ngettext ("Rename %d File and Folder",
                                           "Rename %d Files and Folders",
-                                          g_list_length (selection)),
-                                g_list_length (selection));
+                                          selection_count),
+                                selection_count);
     }
 
     gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);

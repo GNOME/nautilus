@@ -215,7 +215,7 @@ nautilus_progress_manager_add_viewer (NautilusProgressInfoManager *self,
         viewers = g_list_append (viewers, viewer);
         self->current_viewers = viewers;
 
-        if (g_list_length (viewers) == 1)
+        if (viewers != NULL && viewers->next == NULL)
         {
             g_signal_emit (self, signals[HAS_VIEWERS_CHANGED], 0);
         }

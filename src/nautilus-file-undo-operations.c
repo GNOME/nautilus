@@ -1178,15 +1178,17 @@ batch_rename_strings_func (NautilusFileUndoInfo  *info,
                            gchar                **redo_description)
 {
     NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
+    guint num_files = g_list_length (self->new_files);
+
 
     *undo_description = g_strdup_printf (ngettext ("Batch rename %d file",
                                                    "Batch rename %d files",
-                                                   g_list_length (self->new_files)),
-                                         g_list_length (self->new_files));
+                                                   num_files),
+                                         num_files);
     *redo_description = g_strdup_printf (ngettext ("Batch rename %d file",
                                                    "Batch rename %d files",
-                                                   g_list_length (self->new_files)),
-                                         g_list_length (self->new_files));
+                                                   num_files),
+                                         num_files);
 
     *undo_label = g_strdup (_("_Undo Batch Rename"));
     *redo_label = g_strdup (_("_Redo Batch Rename"));
@@ -1402,17 +1404,18 @@ starred_strings_func (NautilusFileUndoInfo  *info,
                       gchar                **redo_description)
 {
     NautilusFileUndoInfoStarred *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
+    guint num_files = g_list_length (self->files);
 
     if (self->starred)
     {
         *undo_description = g_strdup_printf (ngettext ("Unstar %d file",
                                                        "Unstar %d files",
-                                                       g_list_length (self->files)),
-                                             g_list_length (self->files));
+                                                       num_files),
+                                             num_files);
         *redo_description = g_strdup_printf (ngettext ("Star %d file",
                                                        "Star %d files",
-                                                       g_list_length (self->files)),
-                                             g_list_length (self->files));
+                                                       num_files),
+                                             num_files);
         *undo_label = g_strdup (_("_Undo Starring"));
         *redo_label = g_strdup (_("_Redo Starring"));
     }
@@ -1420,12 +1423,12 @@ starred_strings_func (NautilusFileUndoInfo  *info,
     {
         *undo_description = g_strdup_printf (ngettext ("Star %d file",
                                                        "Star %d files",
-                                                       g_list_length (self->files)),
-                                             g_list_length (self->files));
+                                                       num_files),
+                                             num_files);
         *redo_description = g_strdup_printf (ngettext ("Unstar %d file",
                                                        "Unstar %d files",
-                                                       g_list_length (self->files)),
-                                             g_list_length (self->files));
+                                                       num_files),
+                                             num_files);
         *undo_label = g_strdup (_("_Undo Unstarring"));
         *redo_label = g_strdup (_("_Redo Unstarring"));
     }
