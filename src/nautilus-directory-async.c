@@ -3171,20 +3171,22 @@ thumbnail_state_free (ThumbnailState *state)
     g_free (state);
 }
 
-static GdkPixbuf *
-get_pixbuf_for_stream (GInputStream *stream)
+static void
+thumbnail_pixbuf_ready_callback (GObject      *source_object,
+                                 GAsyncResult *res,
+                                 gpointer      user_data)
 {
-    GdkPixbuf *pixbuf, *pixbuf2;
-    pixbuf = NULL;
-    int max_thumbnail_size;
+    ThumbnailState *state = user_data;
+    GdkPixbuf *pixbuf = NULL, *pixbuf2;
 
-    /* scale very large images down to the max. size we need */
-    /* cf. nautilus_file_get_icon() */
-    max_thumbnail_size = NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE * NAUTILUS_GRID_ICON_SIZE_MEDIUM / NAUTILUS_GRID_ICON_SIZE_SMALL;
+    if (state->directory == NULL)
+    {
+        /* Operation was cancelled. Bail out */
+        thumbnail_state_free (state);
+        return;
+    }
 
-    pixbuf = gdk_pixbuf_new_from_stream_at_scale (G_INPUT_STREAM (stream),
-                                                  max_thumbnail_size, max_thumbnail_size, TRUE,
-                                                  NULL, NULL);
+    pixbuf = gdk_pixbuf_new_from_stream_finish (res, NULL);
 
     if (pixbuf)
     {
@@ -3192,9 +3194,16 @@ get_pixbuf_for_stream (GInputStream *stream)
         g_object_unref (pixbuf);
         pixbuf = pixbuf2;
     }
-    return pixbuf;
-}
 
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
+
+    state->directory->details->thumbnail_state = NULL;
+    async_job_end (state->directory, "thumbnail");
+
+    thumbnail_got_pixbuf (state->directory, state->file, pixbuf);
+
+    thumbnail_state_free (state);
+}
 
 static void
 thumbnail_read_callback (GObject      *source_object,
@@ -3203,8 +3212,6 @@ thumbnail_read_callback (GObject      *source_object,
 {
     ThumbnailState *state;
     g_autoptr (GFileInputStream) stream = NULL;
-    NautilusDirectory *directory;
-    GdkPixbuf *pixbuf;
 
     state = user_data;
 
@@ -3215,24 +3222,33 @@ thumbnail_read_callback (GObject      *source_object,
         return;
     }
 
-    directory = nautilus_directory_ref (state->directory);
-
     stream = g_file_read_finish (G_FILE (source_object), res, NULL);
 
-    pixbuf = NULL;
     if (stream)
     {
-        pixbuf = get_pixbuf_for_stream (G_INPUT_STREAM (stream));
+        /* Scale very large images down to the max. size we need.
+         * cf. nautilus_file_get_icon() */
+        int max_thumbnail_size = NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE *
+                                 NAUTILUS_GRID_ICON_SIZE_MEDIUM /
+                                 NAUTILUS_GRID_ICON_SIZE_SMALL;
+
+        gdk_pixbuf_new_from_stream_at_scale_async (G_INPUT_STREAM (stream),
+                                                   max_thumbnail_size, max_thumbnail_size, TRUE,
+                                                   state->cancellable,
+                                                   thumbnail_pixbuf_ready_callback,
+                                                   state);
     }
+    else
+    {
+        g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
 
-    state->directory->details->thumbnail_state = NULL;
-    async_job_end (state->directory, "thumbnail");
+        state->directory->details->thumbnail_state = NULL;
+        async_job_end (state->directory, "thumbnail");
 
-    thumbnail_got_pixbuf (state->directory, state->file, pixbuf);
+        thumbnail_got_pixbuf (state->directory, state->file, NULL);
 
-    thumbnail_state_free (state);
-
-    nautilus_directory_unref (directory);
+        thumbnail_state_free (state);
+    }
 }
 
 static void
