@@ -88,7 +88,7 @@ struct NautilusFilePrivate
 	GIcon *icon;
 	
 	char *thumbnail_path;
-	GdkPixbuf *thumbnail;
+	GdkTexture *thumbnail;
 	time_t thumbnail_mtime;
 
 	/* Info you might get from a link (.desktop, .directory or nautilus link) */
