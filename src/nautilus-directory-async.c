@@ -3171,65 +3171,20 @@ thumbnail_state_free (ThumbnailState *state)
     g_free (state);
 }
 
-/* scale very large images down to the max. size we need */
-static void
-thumbnail_loader_size_prepared (GdkPixbufLoader *loader,
-                                int              width,
-                                int              height,
-                                gpointer         user_data)
+static GdkPixbuf *
+get_pixbuf_for_stream (GInputStream *stream)
 {
+    GdkPixbuf *pixbuf, *pixbuf2;
+    pixbuf = NULL;
     int max_thumbnail_size;
-    double aspect_ratio;
 
-    aspect_ratio = ((double) width) / height;
-
+    /* scale very large images down to the max. size we need */
     /* cf. nautilus_file_get_icon() */
     max_thumbnail_size = NAUTILUS_GRID_ICON_SIZE_EXTRA_LARGE * NAUTILUS_GRID_ICON_SIZE_MEDIUM / NAUTILUS_GRID_ICON_SIZE_SMALL;
-    if (MAX (width, height) > max_thumbnail_size)
-    {
-        if (width > height)
-        {
-            width = max_thumbnail_size;
-            height = width / aspect_ratio;
-        }
-        else
-        {
-            height = max_thumbnail_size;
-            width = height * aspect_ratio;
-        }
 
-        gdk_pixbuf_loader_set_size (loader, width, height);
-    }
-}
-
-static GdkPixbuf *
-get_pixbuf_for_content (goffset  file_len,
-                        char    *file_contents)
-{
-    gboolean res;
-    GdkPixbuf *pixbuf, *pixbuf2;
-    GdkPixbufLoader *loader;
-    pixbuf = NULL;
-
-    loader = gdk_pixbuf_loader_new ();
-    g_signal_connect (loader, "size-prepared",
-                      G_CALLBACK (thumbnail_loader_size_prepared),
-                      NULL);
-
-    res = TRUE;
-    if (file_len > 0)
-    {
-        res = gdk_pixbuf_loader_write (loader, (guchar *) file_contents, file_len, NULL);
-    }
-    if (res)
-    {
-        res = gdk_pixbuf_loader_close (loader, NULL);
-    }
-    if (res)
-    {
-        pixbuf = g_object_ref (gdk_pixbuf_loader_get_pixbuf (loader));
-    }
-    g_object_unref (G_OBJECT (loader));
+    pixbuf = gdk_pixbuf_new_from_stream_at_scale (G_INPUT_STREAM (stream),
+                                                  max_thumbnail_size, max_thumbnail_size, TRUE,
+                                                  NULL, NULL);
 
     if (pixbuf)
     {
@@ -3247,9 +3202,7 @@ thumbnail_read_callback (GObject      *source_object,
                          gpointer      user_data)
 {
     ThumbnailState *state;
-    gsize file_size;
-    char *file_contents;
-    gboolean result;
+    g_autoptr (GFileInputStream) stream = NULL;
     NautilusDirectory *directory;
     GdkPixbuf *pixbuf;
 
@@ -3264,16 +3217,12 @@ thumbnail_read_callback (GObject      *source_object,
 
     directory = nautilus_directory_ref (state->directory);
 
-    result = g_file_load_contents_finish (G_FILE (source_object),
-                                          res,
-                                          &file_contents, &file_size,
-                                          NULL, NULL);
+    stream = g_file_read_finish (G_FILE (source_object), res, NULL);
 
     pixbuf = NULL;
-    if (result)
+    if (stream)
     {
-        pixbuf = get_pixbuf_for_content (file_size, file_contents);
-        g_free (file_contents);
+        pixbuf = get_pixbuf_for_stream (G_INPUT_STREAM (stream));
     }
 
     state->directory->details->thumbnail_state = NULL;
@@ -3322,10 +3271,11 @@ thumbnail_start (NautilusDirectory *directory,
 
     directory->details->thumbnail_state = state;
 
-    g_file_load_contents_async (location,
-                                state->cancellable,
-                                thumbnail_read_callback,
-                                state);
+    g_file_read_async (location,
+                       G_PRIORITY_DEFAULT,
+                       state->cancellable,
+                       thumbnail_read_callback,
+                       state);
     g_object_unref (location);
 }
 
