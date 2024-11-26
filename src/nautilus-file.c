@@ -4802,10 +4802,9 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     if (file->details->thumbnail != NULL)
     {
-        GdkPixbuf *pixbuf = file->details->thumbnail;
-        double width = gdk_pixbuf_get_width (pixbuf) / scale;
-        double height = gdk_pixbuf_get_height (pixbuf) / scale;
-        g_autoptr (GdkTexture) texture = gdk_texture_new_for_pixbuf (pixbuf);
+        GdkTexture *texture = file->details->thumbnail;
+        double width = gdk_texture_get_width (texture) / scale;
+        double height = gdk_texture_get_height (texture) / scale;
         g_autoptr (GtkSnapshot) snapshot = gtk_snapshot_new ();
         GskRoundedRect rounded_rect;
 
@@ -7941,7 +7940,7 @@ nautilus_file_set_thumbnail (NautilusFile *file,
         if (thumb_mtime == 0 ||
             thumb_mtime == file->details->mtime)
         {
-            file->details->thumbnail = g_object_ref (pixbuf);
+            file->details->thumbnail = gdk_texture_new_for_pixbuf (pixbuf);
             file->details->thumbnail_mtime = thumb_mtime;
         }
         else
