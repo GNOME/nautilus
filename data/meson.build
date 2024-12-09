@@ -156,4 +156,7 @@ if appstreamcli.found()
 endif
 
 subdir('ontology')
-subdir('tracker')
+
+if get_option('flatpak')
+  subdir('tracker')
+endif

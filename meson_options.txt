@@ -72,3 +72,10 @@ option(
   value: '',
   description: 'Build with specified application ID',
 )
+
+option(
+  'flatpak',
+  type: 'boolean',
+  value: 'false',
+  description: 'Build flatpak-specific files',
+)
