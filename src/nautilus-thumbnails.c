@@ -133,17 +133,17 @@ create_info_key (gpointer item)
     return info->image_uri;
 }
 
-static GnomeDesktopThumbnailFactory *
-get_thumbnail_factory (void)
+static GnomeDesktopThumbnailSize
+get_thumbnail_scale (void)
 {
-    static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
+    static gint max_scale = 0;
+    static GnomeDesktopThumbnailSize size;
 
-    if (G_UNLIKELY (thumbnail_factory == NULL))
+    if (G_UNLIKELY (max_scale == 0))
     {
         GdkDisplay *display = gdk_display_get_default ();
         GListModel *monitors = gdk_display_get_monitors (display);
-        gint max_scale = 1;
-        GnomeDesktopThumbnailSize size;
+        max_scale = 1;
 
         for (guint i = 0; i < g_list_model_get_n_items (monitors); i++)
         {
@@ -164,6 +164,19 @@ get_thumbnail_factory (void)
         {
             size = GNOME_DESKTOP_THUMBNAIL_SIZE_XXLARGE;
         }
+    }
+
+    return size;
+}
+
+static GnomeDesktopThumbnailFactory *
+get_thumbnail_factory (void)
+{
+    static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
+
+    if (G_UNLIKELY (thumbnail_factory == NULL))
+    {
+        GnomeDesktopThumbnailSize size = get_thumbnail_scale ();
 
         thumbnail_factory = gnome_desktop_thumbnail_factory_new (size);
     }
