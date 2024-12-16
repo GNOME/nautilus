@@ -18,7 +18,7 @@ RUN dnf builddep -y glib \
 
 RUN dnf builddep -y gobject-introspection \
  && dnf clean all \
- && git clone --depth 1 https://gitlab.gnome.org/GNOME/gobject-introspection.git \
+ && git clone --depth 1 --recurse-submodules -j4 https://gitlab.gnome.org/GNOME/gobject-introspection.git \
  && cd gobject-introspection \
  && meson setup _build --prefix /usr \
  && ninja -C _build \
