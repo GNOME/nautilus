@@ -7905,6 +7905,13 @@ nautilus_file_set_thumbnail (NautilusFile *file,
         {
             file->details->thumbnail = gdk_texture_new_for_pixbuf (pixbuf);
             file->details->thumbnail_mtime = thumb_mtime;
+
+            if (file->details->thumbnail_path == NULL)
+            {
+                g_autofree gchar *uri = nautilus_file_get_uri (file);
+
+                file->details->thumbnail_path = nautilus_thumbnail_get_path_for_uri (uri);
+            }
         }
         else
         {
