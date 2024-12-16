@@ -4757,7 +4757,8 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     icon = NULL;
 
-    if (file->details->thumbnail != NULL)
+    if (file->details->thumbnail_path != NULL &&
+        file->details->thumbnail != NULL)
     {
         GdkTexture *texture = file->details->thumbnail;
         double width = gdk_texture_get_width (texture) / scale;
