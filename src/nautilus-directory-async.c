@@ -3704,6 +3704,9 @@ finish_info_provider (NautilusDirectory    *directory,
                       NautilusFile         *file,
                       NautilusInfoProvider *provider)
 {
+    g_return_if_fail (directory != NULL);
+    g_return_if_fail (file != NULL);
+
     file->details->pending_info_providers =
         g_list_remove (file->details->pending_info_providers,
                        provider);
@@ -3726,6 +3729,8 @@ info_provider_idle_callback (gpointer user_data)
 
     response = user_data;
     directory = response->directory;
+
+    g_return_val_if_fail (directory != NULL, FALSE);
 
     if (response->handle != directory->details->extension_info_in_progress
         || response->provider != directory->details->extension_info_provider)
