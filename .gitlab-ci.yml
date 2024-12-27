@@ -2,6 +2,7 @@ include: 'https://gitlab.gnome.org/GNOME/citemplates/raw/master/flatpak/flatpak_
 
 variables:
     GIT_SUBMODULE_STRATEGY: normal
+    MESON_BUILD_DIR: _build
 
 stages:
     - image
@@ -100,16 +101,16 @@ asan:
         - when: manual
           allow_failure: true
     script:
-        - meson setup -Dextensions=false -Dintrospection=false -Dtests=all _build
-        - meson compile -C _build
-        - meson test -C _build
+        - meson setup -Dextensions=false -Dintrospection=false -Dtests=all $MESON_BUILD_DIR
+        - meson compile -C $MESON_BUILD_DIR
+        - meson test -C $MESON_BUILD_DIR
     artifacts:
         name: 'Address Sanitizer-built test results'
         when: on_failure
         paths:
-          - '_build/meson-logs/testlog.txt'
+          - $MESON_BUILD_DIR/meson-logs/testlog.txt
         reports:
-            junit: '_build/meson-logs/testlog.junit.xml'
+            junit: $MESON_BUILD_DIR/meson-logs/testlog.junit.xml
         expire_in: 7 days
 
 pages:
@@ -118,9 +119,9 @@ pages:
     rules:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "GNOME"
     script:
-        - meson setup -Ddocs=true -Dextensions=false -Dtests=none _build
-        - ninja -C _build
-        - mv _build/docs/reference/nautilus/ public/
+        - meson setup -Ddocs=true -Dextensions=false -Dtests=none $MESON_BUILD_DIR
+        - ninja -C $MESON_BUILD_DIR
+        - mv $MESON_BUILD_DIR/docs/reference/nautilus/ public/
     artifacts:
         paths:
             - public/
