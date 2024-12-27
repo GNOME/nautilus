@@ -6125,6 +6125,11 @@ copy_or_move_selection (NautilusFilesView *view,
 
     selection = nautilus_files_view_get_selection_for_file_transfer (view);
 
+    if (selection == NULL)
+    {
+        return;
+    }
+
     gtk_file_dialog_set_title (dialog, title);
     gtk_file_dialog_set_accept_label (dialog, _("_Select"));
 
