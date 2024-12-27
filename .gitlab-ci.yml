@@ -1,10 +1,16 @@
 include:
   - project: "GNOME/citemplates"
     file: "flatpak/flatpak_ci_initiative.yml"
+  - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
+    inputs:
+      job-stage: release
+      dist-job-name: "flatpak@x86_64"
+      tarball-artifact-path: "${TARBALL_ARTIFACT_PATH}"
 
 variables:
     GIT_SUBMODULE_STRATEGY: normal
     MESON_BUILD_DIR: _build
+    TARBALL_ARTIFACT_PATH: ".flatpak-builder/build/nautilus/_flatpak_build/meson-dist/${CI_PROJECT_NAME}-${CI_COMMIT_TAG}.tar.xz"
 
 stages:
     - image
@@ -12,6 +18,7 @@ stages:
     - test
     - analyze
     - deploy
+    - release
 
 .vars-devel:
     variables:
@@ -20,12 +27,19 @@ stages:
         RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
         BUNDLE: "nautilus-dev.flatpak"
+    rules:
+        # Disable tests for protected tags
+        - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
+          variables:
+              CONFIG_OPTS: '--libdir=/app/lib -Dprofile=Devel -Dtests=none'
+        - when: always
 
 workflow:
   rules:
-    # run merge request pipelines, for main or release branches and for manually
-    # triggered pipelines (source "web"), but not for translation updates
+    # Run merge request pipelines, for main or release branches, for manually
+    # triggered pipelines (source "web"), and tags, but not for translation updates
     - if: ($CI_PIPELINE_SOURCE == "merge_request_event" || 
+           $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED ||
            $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH ||
            $CI_COMMIT_BRANCH =~ /^gnome-.*$/ ||
            $CI_PIPELINE_SOURCE == "web") &&
