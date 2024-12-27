@@ -4459,6 +4459,14 @@ get_filesystem_remote (NautilusFile *file,
 
     if (parent != NULL && parent->details->filesystem_info_is_up_to_date)
     {
+        if (nautilus_file_is_regular_file (file))
+        {
+            file->details->filesystem_remote = parent->details->filesystem_remote;
+            file->details->filesystem_readonly = parent->details->filesystem_readonly;
+            file->details->filesystem_use_preview = parent->details->filesystem_use_preview;
+            file->details->filesystem_info_is_up_to_date = TRUE;
+        }
+
         return parent->details->filesystem_remote;
     }
     else
