@@ -102,7 +102,7 @@ struct DeepCountState
     GFileEnumerator *enumerator;
     GFile *deep_count_location;
     GList *deep_count_subdirectories;
-    GArray *seen_deep_count_inodes;
+    GHashTable *seen_deep_count_inodes;
     char *fs_id;
 };
 
@@ -2588,21 +2588,13 @@ static inline gboolean
 seen_inode (DeepCountState *state,
             GFileInfo      *info)
 {
-    guint64 inode, inode2;
-    guint i;
+    guint64 inode;
 
     inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
 
     if (inode != 0)
     {
-        for (i = 0; i < state->seen_deep_count_inodes->len; i++)
-        {
-            inode2 = g_array_index (state->seen_deep_count_inodes, guint64, i);
-            if (inode == inode2)
-            {
-                return TRUE;
-            }
-        }
+        return g_hash_table_lookup (state->seen_deep_count_inodes, &inode) != NULL;
     }
 
     return FALSE;
@@ -2617,7 +2609,7 @@ mark_inode_as_seen (DeepCountState *state,
     inode = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_UNIX_INODE);
     if (inode != 0)
     {
-        g_array_append_val (state->seen_deep_count_inodes, inode);
+        g_hash_table_add (state->seen_deep_count_inodes, &inode);
     }
 }
 
@@ -2684,7 +2676,7 @@ deep_count_state_free (DeepCountState *state)
         g_object_unref (state->deep_count_location);
     }
     g_list_free_full (state->deep_count_subdirectories, g_object_unref);
-    g_array_free (state->seen_deep_count_inodes, TRUE);
+    g_hash_table_unref (state->seen_deep_count_inodes);
     g_free (state->fs_id);
     g_free (state);
 }
@@ -2944,7 +2936,7 @@ deep_count_start (NautilusDirectory *directory,
     state = g_new0 (DeepCountState, 1);
     state->directory = directory;
     state->cancellable = g_cancellable_new ();
-    state->seen_deep_count_inodes = g_array_new (FALSE, TRUE, sizeof (guint64));
+    state->seen_deep_count_inodes = g_hash_table_new (g_int64_hash, g_int64_equal);
     state->fs_id = NULL;
 
     directory->details->deep_count_in_progress = state;
