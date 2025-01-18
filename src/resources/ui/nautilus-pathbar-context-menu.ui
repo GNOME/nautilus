@@ -50,7 +50,13 @@
       <item>
         <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
         <attribute name="action">slot.bookmark-current-directory</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
         <attribute name="accel">&lt;control&gt;d</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Remove from _Bookmarks</attribute>
+        <attribute name="action">slot.unbookmark-current-directory</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">_Star Folder</attribute>
