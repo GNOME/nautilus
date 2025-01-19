@@ -1070,7 +1070,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       g_free (mount_uri);
       g_free (tooltip);
     }
-  
+
 
   g_list_free_full (network_volumes, g_object_unref);
   g_list_free_full (network_mounts, g_object_unref);
@@ -1542,7 +1542,7 @@ drag_drop_callback (GtkDropTarget    *target,
               actions = gdk_drag_get_selected_action (drag);
           }
           #endif
-          
+
           emit_drag_perform_drop (sidebar,
                                   dest_file,
                                   g_value_get_boxed (value),
