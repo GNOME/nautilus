@@ -5,13 +5,14 @@
 # Andraž Tori <andraz.tori1@guest.arnes.si>, 2000.
 # Matjaž Horvat <m@owca.info>, 2006.
 # Matej Urbančič <mateju@src.gnome.org> 2007–2024.
+# Martin Srebotnjak <miles@filmsi.net>, 2023-2025.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-01-18 05:57+0000\n"
-"PO-Revision-Date: 2025-01-18 12:23+0100\n"
+"POT-Creation-Date: 2025-01-19 08:12+0000\n"
+"PO-Revision-Date: 2025-01-19 15:14+0100\n"
 "Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -446,14 +447,14 @@ msgstr "Ali naj bo okno krmarjenja razpeto"
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Ali naj bo okno krmarjenja privzeto odprto razpeto."
 
-#: eel/eel-stock-dialogs.c:195
+#: eel/eel-stock-dialogs.c:194
 msgid "You can stop this operation by clicking cancel."
 msgstr "To dejanje lahko zaustavite s klikom na tipko preklica."
 
-#: eel/eel-stock-dialogs.c:197 src/nautilus-autorun-software.c:224
+#: eel/eel-stock-dialogs.c:196 src/nautilus-autorun-software.c:223
 #: src/nautilus-file-chooser.c:239 src/nautilus-file-operations.c:274
 #: src/nautilus-mime-actions.c:610 src/nautilus-mime-actions.c:1024
-#: src/nautilus-mime-actions.c:1335 src/resources/ui/nautilus-app-chooser.ui:96
+#: src/nautilus-mime-actions.c:1336 src/resources/ui/nautilus-app-chooser.ui:96
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:106
 #: src/resources/ui/nautilus-compress-dialog.ui:17
 #: src/resources/ui/nautilus-file-conflict-dialog.ui:15
@@ -777,21 +778,16 @@ msgstr "možnosti --quit ni mogoče uporabiti naslovi URI."
 msgid "--select must be used with at least an URI."
 msgstr "--select mora biti uporabljen vsaj z enim naslovom URI."
 
-#: src/nautilus-application.c:742
-#, c-format
-msgid ""
-"There was an error displaying help: \n"
-"%s"
-msgstr ""
-"Prišlo je do napake med prikazovanjem pomoči: \n"
-"%s"
+#: src/nautilus-application.c:739
+msgid "There was an error displaying help"
+msgstr "Prišlo je do napake pri prikazovanju pomoči"
 
-#: src/nautilus-application.c:744 src/nautilus-autorun-software.c:162
-#: src/nautilus-mime-actions.c:1194 src/nautilus-ui-utilities.c:437
+#: src/nautilus-application.c:740 src/nautilus-autorun-software.c:161
+#: src/nautilus-mime-actions.c:1195 src/nautilus-ui-utilities.c:437
 msgid "_OK"
 msgstr "_V redu"
 
-#: src/nautilus-application.c:863
+#: src/nautilus-application.c:859
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -800,23 +796,23 @@ msgstr ""
 "Protokol »%s« je notranji protokol. Neposredno odpiranje tega mesta ni "
 "podprto."
 
-#: src/nautilus-application.c:953
+#: src/nautilus-application.c:949
 msgid "Show the version of the program."
 msgstr "Pokaži različico programa."
 
-#: src/nautilus-application.c:957
+#: src/nautilus-application.c:953
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Vedno odpri novo okno za pregledovanje navedenih naslovov URI."
 
-#: src/nautilus-application.c:961
+#: src/nautilus-application.c:957
 msgid "Quit Nautilus."
 msgstr "Končaj Nautilus."
 
-#: src/nautilus-application.c:965
+#: src/nautilus-application.c:961
 msgid "Select specified URI in parent folder."
 msgstr "Izberite določen naslov URI v nadrejeni mapi."
 
-#: src/nautilus-application.c:967
+#: src/nautilus-application.c:963
 msgid "[URI…]"
 msgstr "[URI …]"
 
@@ -869,16 +865,16 @@ msgstr "Program ni označen kot izvedljiv."
 msgid "Unable to locate the program"
 msgstr "Programa ni mogoče najti"
 
-#: src/nautilus-autorun-software.c:160
+#: src/nautilus-autorun-software.c:159
 msgid "Oops! There was a problem running this software."
 msgstr "Ops! Prišlo je do napake med delovanjem programske opreme."
 
-#: src/nautilus-autorun-software.c:190
+#: src/nautilus-autorun-software.c:189
 msgid "If you don’t trust this location or aren’t sure, press Cancel."
 msgstr ""
 "Če mestu ne zaupate oziroma niste prepričani, pritisnite tipko za preklic."
 
-#: src/nautilus-autorun-software.c:192
+#: src/nautilus-autorun-software.c:191
 #, c-format
 msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
@@ -887,7 +883,7 @@ msgstr ""
 "Nosilec »%s« vsebuje programsko opremo, ki se samodejno zažene. Ali jo "
 "želite zagnati?"
 
-#: src/nautilus-autorun-software.c:225
+#: src/nautilus-autorun-software.c:224
 msgid "_Run"
 msgstr "_Zaženi"
 
@@ -1995,7 +1991,11 @@ msgstr "Ni mogoče izvreči »%s«"
 msgid "Unable to unmount “%s”"
 msgstr "Nosilca »%s« ni mogoče odklopiti"
 
-#: src/nautilus-file-operations.c:2506
+#: src/nautilus-file-operations.c:2507
+msgid "Empty Trash Before Ejecting?"
+msgstr "Ali želite izprazniti smeti pred izvrženjem?"
+
+#: src/nautilus-file-operations.c:2510
 #, c-format
 msgid ""
 "Empty the trash to free up space on “%s”. All trashed items will be "
@@ -2003,10 +2003,6 @@ msgid ""
 msgstr ""
 "Izpraznite koš, da sprostite prostor na »%s«. Vsi predmeti v košu bodo "
 "trajno izbrisani."
-
-#: src/nautilus-file-operations.c:2511
-msgid "Empty Trash Before Ejecting?"
-msgstr "Ali želite izprazniti smeti pred izvrženjem?"
 
 #: src/nautilus-file-operations.c:2515
 msgid "Do _Not Empty"
@@ -3628,37 +3624,37 @@ msgstr[3] "To bo odprlo %d ločena okna."
 msgid "_Open All"
 msgstr "_Odpri vse"
 
-#: src/nautilus-mime-actions.c:1085
+#: src/nautilus-mime-actions.c:1086
 #, c-format
 msgid "Could Not Display “%s”"
 msgstr "Ni mogoče prikazati »%s«."
 
-#: src/nautilus-mime-actions.c:1183
+#: src/nautilus-mime-actions.c:1184
 msgid "The file is of an unknown type"
 msgstr "Datoteka je neznane vrste"
 
-#: src/nautilus-mime-actions.c:1188
+#: src/nautilus-mime-actions.c:1189
 #, c-format
 msgid "There is no app installed for “%s” files"
 msgstr "Ni nameščenega programa, ki podpira vrsto datotek »%s«"
 
-#: src/nautilus-mime-actions.c:1193
+#: src/nautilus-mime-actions.c:1194
 msgid "_Select App"
 msgstr "_Izbor programa"
 
-#: src/nautilus-mime-actions.c:1229
+#: src/nautilus-mime-actions.c:1230
 msgid "There was an internal error trying to search for apps:"
 msgstr "Prišlo je do notranje napake med iskanjem programa:"
 
-#: src/nautilus-mime-actions.c:1231
+#: src/nautilus-mime-actions.c:1232
 msgid "Unable to search for app"
 msgstr "Ni mogoče iskati programa"
 
-#: src/nautilus-mime-actions.c:1336
+#: src/nautilus-mime-actions.c:1337
 msgid "_Search in Software"
 msgstr "_Iskanje programske opreme"
 
-#: src/nautilus-mime-actions.c:1339
+#: src/nautilus-mime-actions.c:1340
 #, c-format
 msgid ""
 "There is no app installed for “%s” files. Do you want to search for an app "
@@ -3668,21 +3664,21 @@ msgstr ""
 "program, s katerim bi datoteko lahko odprli?"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1735 src/nautilus-mime-actions.c:2034
-#: src/nautilus-network-address-bar.c:78
+#: src/nautilus-mime-actions.c:1737 src/nautilus-mime-actions.c:2036
+#: src/nautilus-network-address-bar.c:80
 msgid "Unable to access location"
 msgstr "Dostop do mesta ni mogoč"
 
-#: src/nautilus-mime-actions.c:2125
+#: src/nautilus-mime-actions.c:2127
 msgid "Unable to start location"
 msgstr "Ni mogoče zagnati mesta"
 
-#: src/nautilus-mime-actions.c:2218
+#: src/nautilus-mime-actions.c:2220
 #, c-format
 msgid "Opening “%s”."
 msgstr "Odpiranje »%s«."
 
-#: src/nautilus-mime-actions.c:2222
+#: src/nautilus-mime-actions.c:2224
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3691,61 +3687,61 @@ msgstr[1] "Odpiranje %d predmeta."
 msgstr[2] "Odpiranje %d predmetov."
 msgstr[3] "Odpiranje %d predmetov."
 
-#: src/nautilus-network-address-bar.c:46
+#: src/nautilus-network-address-bar.c:47
 msgid "_Close"
 msgstr "Za_pri"
 
 #. Restore from Cancel to Connect
-#: src/nautilus-network-address-bar.c:89
+#: src/nautilus-network-address-bar.c:91
 #: src/resources/ui/nautilus-network-address-bar.ui:101
 msgid "Con_nect"
 msgstr "_Poveži"
 
 #. Allow to cancel the operation
-#: src/nautilus-network-address-bar.c:173
+#: src/nautilus-network-address-bar.c:175
 msgid "Cance_l"
 msgstr "_Prekliči"
 
-#: src/nautilus-network-address-bar.c:217
+#: src/nautilus-network-address-bar.c:219
 msgid "Unable to get remote server location"
 msgstr "Oddaljenega mesta strežnika ni mogoče najti"
 
-#: src/nautilus-network-address-bar.c:294
+#: src/nautilus-network-address-bar.c:296
 msgid "AppleTalk"
 msgstr "AppleTalk"
 
-#: src/nautilus-network-address-bar.c:300
+#: src/nautilus-network-address-bar.c:302
 msgid "File Transfer Protocol"
 msgstr "Protokol prenosa datotek FTP"
 
 #. Translators: do not translate ftp:// and ftps://
-#: src/nautilus-network-address-bar.c:302
+#: src/nautilus-network-address-bar.c:304
 msgid "ftp:// or ftps://"
 msgstr "ftp:// ali ftps://"
 
-#: src/nautilus-network-address-bar.c:308
+#: src/nautilus-network-address-bar.c:310
 msgid "Network File System"
 msgstr "Omrežni datotečni sistem"
 
-#: src/nautilus-network-address-bar.c:314
+#: src/nautilus-network-address-bar.c:316
 msgid "Samba"
 msgstr "Samba"
 
-#: src/nautilus-network-address-bar.c:320
+#: src/nautilus-network-address-bar.c:322
 msgid "SSH File Transfer Protocol"
 msgstr "Protokol prenosa datotek SSH"
 
 #. Translators: do not translate sftp:// and ssh://
-#: src/nautilus-network-address-bar.c:322
+#: src/nautilus-network-address-bar.c:324
 msgid "sftp:// or ssh://"
 msgstr "sftp:// ali ssh://"
 
-#: src/nautilus-network-address-bar.c:328
+#: src/nautilus-network-address-bar.c:330
 msgid "WebDAV"
 msgstr "WebDAV"
 
 #. Translators: do not translate dav:// and davs://
-#: src/nautilus-network-address-bar.c:330
+#: src/nautilus-network-address-bar.c:332
 msgid "dav:// or davs://"
 msgstr "dav:// ali davs://"
 
