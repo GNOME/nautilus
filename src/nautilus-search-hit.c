@@ -57,6 +57,7 @@ G_DEFINE_TYPE (NautilusSearchHit, nautilus_search_hit, G_TYPE_OBJECT)
 
 void
 nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
+                                    GDateTime         *now,
                                     NautilusQuery     *query)
 {
     g_autoptr (GFile) query_location = NULL;
@@ -100,7 +101,6 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
      * which makes prefix matches sort first. */
     if (dir_count != 0)
     {
-        g_autoptr (GDateTime) now = g_date_time_new_now_local ();
         if (hit->modification_time != NULL)
         {
             m_diff = g_date_time_difference (now, hit->modification_time);

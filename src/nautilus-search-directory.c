@@ -608,6 +608,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
     GList *hit_list;
     GList *file_list;
     NautilusFile *file;
+    g_autoptr (GDateTime) now = g_date_time_new_now_local ();
     SearchMonitor *monitor;
     GList *monitor_list;
 
@@ -620,7 +621,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 
         uri = nautilus_search_hit_get_uri (hit);
 
-        nautilus_search_hit_compute_scores (hit, self->query);
+        nautilus_search_hit_compute_scores (hit, now, self->query);
 
         file = nautilus_file_get_by_uri (uri);
         nautilus_file_set_search_relevance (file, nautilus_search_hit_get_relevance (hit));

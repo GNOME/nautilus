@@ -41,6 +41,7 @@ void                nautilus_search_hit_set_creation_time     (NautilusSearchHit
 void                nautilus_search_hit_set_fts_snippet       (NautilusSearchHit *hit,
                                                                const gchar       *snippet);
 void                nautilus_search_hit_compute_scores        (NautilusSearchHit *hit,
+                                                               GDateTime         *now,
 							       NautilusQuery     *query);
 
 const char *        nautilus_search_hit_get_uri               (NautilusSearchHit *hit);
