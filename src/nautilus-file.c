@@ -4525,9 +4525,9 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
     /* If the thumbnail has already been created, don't care about the size
      * of the original file.
      */
-    if (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type) &&
-        file->details->thumbnail_path == NULL &&
-        nautilus_file_get_size (file) > cached_thumbnail_limit)
+    if (file->details->thumbnail_path == NULL &&
+        nautilus_file_get_size (file) > cached_thumbnail_limit &&
+        nautilus_thumbnail_is_mimetype_limited_by_size (mime_type))
     {
         return FALSE;
     }
@@ -4861,8 +4861,8 @@ nautilus_file_get_icon (NautilusFile          *file,
     g_debug ("Called file_get_icon(), at size %d", size);
 
     if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
-        nautilus_file_should_show_thumbnail (file) &&
-        size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE)
+        size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
+        nautilus_file_should_show_thumbnail (file))
     {
         icon = nautilus_file_get_thumbnail_icon (file, size, scale, flags);
     }
