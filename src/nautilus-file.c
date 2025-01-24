@@ -4596,30 +4596,6 @@ sort_keyword_list_and_remove_duplicates (GList *keywords)
     return keywords;
 }
 
-static void
-clean_up_metadata_keywords (NautilusFile  *file,
-                            GList        **metadata_keywords)
-{
-    g_autoptr (NautilusFile) parent_file = nautilus_file_get_parent (file);
-    gboolean parent_can_write = parent_file == NULL || nautilus_file_can_write (parent_file);
-
-    if (parent_can_write)
-    {
-        return;
-    }
-
-    for (GList *l = *metadata_keywords; l != NULL;)
-    {
-        const char *keyword = l->data;
-        l = l->next;
-
-        if (strcmp (keyword, NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE) != 0)
-        {
-            *metadata_keywords = g_list_delete_link (*metadata_keywords, l);
-        }
-    }
-}
-
 /**
  * nautilus_file_get_keywords
  *
@@ -4655,7 +4631,6 @@ nautilus_file_get_keywords (NautilusFile *file)
     /* Free only the container array. The strings are owned by the list now. */
     g_free (metadata_strv);
 
-    clean_up_metadata_keywords (file, &metadata_keywords);
     keywords = g_list_concat (keywords, metadata_keywords);
 
     return sort_keyword_list_and_remove_duplicates (keywords);
