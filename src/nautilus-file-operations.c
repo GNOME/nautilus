@@ -2513,7 +2513,7 @@ create_empty_trash_prompt (UnmountData *data)
     adw_alert_dialog_add_responses (ADW_ALERT_DIALOG (dialog),
                                     "cancel", _("Cancel"),
                                     "do-not-empty", _("Do _Not Empty"),
-                                    "empty-trash", _("_Empty"),
+                                    "empty-trash", C_("Verb", "_Empty"),
                                     NULL);
     adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "empty-trash");
     adw_alert_dialog_set_close_response (ADW_ALERT_DIALOG (dialog), "cancel");
