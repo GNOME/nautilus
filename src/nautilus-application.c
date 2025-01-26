@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
+#include <gio/gunixmounts.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
@@ -87,6 +88,8 @@ typedef struct
     NautilusFileUndoManager *undo_manager;
 
     NautilusTagManager *tag_manager;
+
+    GUnixMountMonitor *mount_monitor;
 
     NautilusDBusLauncher *dbus_launcher;
 } NautilusApplicationPrivate;
@@ -567,6 +570,8 @@ nautilus_application_finalize (GObject *object)
 
     g_clear_object (&priv->tag_manager);
 
+    g_clear_object (&priv->mount_monitor);
+
     g_clear_object (&priv->dbus_launcher);
 
     nautilus_trash_monitor_clear ();
@@ -995,6 +1000,11 @@ nautilus_application_init (NautilusApplication *self)
 
     priv->undo_manager = nautilus_file_undo_manager_new ();
     priv->tag_manager = nautilus_tag_manager_new ();
+
+    /* Retain a mount monitor so GIO's caching works. This helps to speed
+     * up various filesystem queries, e.g. those determining whether to
+     * recurse during searches. */
+    priv->mount_monitor = g_unix_mount_monitor_get ();
 
     priv->dbus_launcher = nautilus_dbus_launcher_new ();
 
