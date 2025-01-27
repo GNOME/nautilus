@@ -1324,6 +1324,12 @@ update_files_callback (gpointer data)
     {
         /* Close the window if no files are left */
         adw_dialog_close (ADW_DIALOG (self));
+
+        if (self->permissions_dialog != NULL)
+        {
+            /* Also close enclosed permissions dialog */
+            adw_dialog_close (ADW_DIALOG (self->permissions_dialog));
+        }
     }
     else
     {
