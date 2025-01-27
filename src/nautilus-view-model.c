@@ -569,11 +569,11 @@ nautilus_view_model_remove_items (NautilusViewModel *self,
 {
     g_autoptr (NautilusFile) parent = nautilus_directory_get_corresponding_file (directory);
     GListStore *dir_store = get_directory_store (self, parent);
-    guint i, range_start, n_items_in_range = 0;
+    guint range_start, n_items_in_range = 0;
 
     /* Remove contiguous item ranges to minimize ::items-changed emissions.
      * Remove after passing the range to not impact the index. */
-    for (i = g_list_model_get_n_items (G_LIST_MODEL (dir_store)) - 1;
+    for (gint i = g_list_model_get_n_items (G_LIST_MODEL (dir_store)) - 1;
          i >= 0 && g_hash_table_size (items) > 0; i--)
     {
         NautilusViewItem *item = g_list_model_get_item (G_LIST_MODEL (dir_store), i);
