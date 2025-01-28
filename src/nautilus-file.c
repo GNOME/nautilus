@@ -8226,7 +8226,7 @@ static GList *ready_data_list = NULL;
 typedef struct
 {
     GList *file_list;
-    GList *remaining_files;
+    GHashTable *remaining_files;
     NautilusFileListCallback callback;
     gpointer callback_data;
 } FileListReadyData;
@@ -8242,7 +8242,7 @@ file_list_ready_data_free (FileListReadyData *data)
         ready_data_list = g_list_delete_link (ready_data_list, l);
 
         nautilus_file_list_free (data->file_list);
-        g_list_free (data->remaining_files);
+        g_hash_table_unref (data->remaining_files);
         g_free (data);
     }
 }
@@ -8256,9 +8256,14 @@ file_list_ready_data_new (GList                    *file_list,
 
     data = g_new0 (FileListReadyData, 1);
     data->file_list = nautilus_file_list_copy (file_list);
-    data->remaining_files = g_list_copy (file_list);
+    data->remaining_files = g_hash_table_new (NULL, NULL);
     data->callback = callback;
     data->callback_data = callback_data;
+
+    for (GList *l = file_list; l != NULL; l = l->next)
+    {
+        g_hash_table_add (data->remaining_files, l->data);
+    }
 
     ready_data_list = g_list_prepend (ready_data_list, data);
 
@@ -8272,9 +8277,9 @@ file_list_file_ready_callback (NautilusFile *file,
     FileListReadyData *data;
 
     data = user_data;
-    data->remaining_files = g_list_remove (data->remaining_files, file);
+    g_hash_table_remove (data->remaining_files, file);
 
-    if (data->remaining_files == NULL)
+    if (g_hash_table_size (data->remaining_files) == 0)
     {
         if (data->callback)
         {
@@ -8334,9 +8339,11 @@ nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
     l = g_list_find (ready_data_list, data);
     if (l != NULL)
     {
-        for (l = data->remaining_files; l != NULL; l = l->next)
+        g_autoptr (GPtrArray) remaining_files = g_hash_table_steal_all_keys (data->remaining_files);
+
+        for (guint i = 0; i < remaining_files->len; i++)
         {
-            file = NAUTILUS_FILE (l->data);
+            file = NAUTILUS_FILE (remaining_files->pdata[i]);
 
             NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->cancel_call_when_ready
                 (file, file_list_file_ready_callback, data);
