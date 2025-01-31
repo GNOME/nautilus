@@ -31,6 +31,9 @@ tests = [
   ['test-filename-utilities', [
     'test-filename-utilities.c'
   ]],
+  ['test-nautilus-files-view', [
+    'test-nautilus-files-view.c'
+  ]],
   ['test-nautilus-search-engine', [
     'test-nautilus-search-engine.c'
   ]],
