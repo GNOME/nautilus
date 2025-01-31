@@ -4330,7 +4330,7 @@ real_remove_files (NautilusFilesView *self,
         }
     }
 
-    if (items != NULL)
+    if (g_hash_table_size (items) > 0)
     {
         nautilus_view_model_remove_items (priv->model, items, directory);
     }
