@@ -29,6 +29,7 @@ void       nautilus_create_thumbnail                (NautilusFile *file);
 gboolean   nautilus_can_thumbnail                   (NautilusFile *file);
 gboolean   nautilus_thumbnail_is_mimetype_limited_by_size
 						    (const char *mime_type);
+char *     nautilus_thumbnail_get_path_for_uri      (const char *uri);
 
 /* Queue handling: */
 void       nautilus_thumbnail_remove_from_queue     (const char   *file_uri);
