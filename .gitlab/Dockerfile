@@ -2,8 +2,8 @@ FROM fedora:latest
 
 ENV CFLAGS "-fno-omit-frame-pointer"
 
-RUN dnf install --nogpg -y dnf-plugins-core findutils git uncrustify \
- && dnf builddep --nogpg -y nautilus \
+RUN dnf install -y dnf-plugins-core findutils git uncrustify \
+ && dnf builddep -y nautilus \
  && dnf clean all
 
 RUN dnf builddep -y glib \
