@@ -576,7 +576,7 @@ nautilus_view_model_remove_items (NautilusViewModel *self,
     for (gint i = g_list_model_get_n_items (G_LIST_MODEL (dir_store)) - 1;
          i >= 0 && g_hash_table_size (items) > 0; i--)
     {
-        NautilusViewItem *item = g_list_model_get_item (G_LIST_MODEL (dir_store), i);
+        g_autoptr (NautilusViewItem) item = g_list_model_get_item (G_LIST_MODEL (dir_store), i);
         NautilusFile *file = NULL;
 
         if (!g_hash_table_steal_extended (items, item, NULL, (gpointer *) &file))
