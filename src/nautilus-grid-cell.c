@@ -19,6 +19,7 @@ struct _NautilusGridCell
     GQuark *caption_attributes;
 
     GtkWidget *fixed_height_box;
+    GtkWidget *icon_bin;
     GtkWidget *icon;
     GtkWidget *emblems_box;
     GtkWidget *first_caption;
@@ -51,6 +52,7 @@ update_icon (NautilusGridCell *self)
     /* Set the same height and width for all icons regardless of aspect ratio.
      */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
+    gtk_widget_set_size_request (self->icon_bin, icon_size, icon_size);
     if (nautilus_file_get_thumbnail_path (file) != NULL &&
         nautilus_file_should_show_thumbnail (file) &&
         nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL))
@@ -280,6 +282,7 @@ nautilus_grid_cell_class_init (NautilusGridCellClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-grid-cell.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, fixed_height_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon_bin);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, emblems_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusGridCell, first_caption);
