@@ -46,6 +46,9 @@ tests = [
 ]
 
 tracker_tests = [
+  ['test-nautilus-files-view', [
+    'test-nautilus-files-view.c'
+  ]],
   ['test-nautilus-search-engine-tracker', [
     'test-nautilus-search-engine-tracker.c',
   ]],
