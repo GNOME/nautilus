@@ -1000,6 +1000,13 @@ nautilus_file_get_parent_uri_for_display (NautilusFile *file)
     {
         g_autofree gchar *parse_name = g_file_get_parse_name (parent);
 
+        /* URI decode the string if it is a network connection*/
+        if (g_uri_is_valid (parse_name, G_URI_FLAGS_NONE, NULL))
+        {
+            g_autofree gchar *temp = parse_name;
+            parse_name = g_uri_unescape_string (temp, NULL);
+        }
+
         /* Ensure a trailing slash to emphasize it is a directory */
         if (g_str_has_suffix (parse_name, G_DIR_SEPARATOR_S))
         {
