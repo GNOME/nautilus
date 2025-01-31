@@ -1,4 +1,7 @@
 tests = [
+  ['test-files-view', [
+    'test-files-view.c'
+  ]],
   ['test-nautilus-directory-async', [
     'test-nautilus-directory-async.c'
   ]],
