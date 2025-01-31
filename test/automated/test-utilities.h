@@ -10,6 +10,17 @@
 
 #pragma once
 
+#define MAX_CONTEXT_ITERATIONS 100
+
+#define ITER_CONTEXT_WHILE(CONDITION) \
+    for (guint i = 0; \
+         i < MAX_CONTEXT_ITERATIONS && \
+         CONDITION; \
+         i++) \
+    { \
+        g_main_context_iteration (NULL, TRUE); \
+    }
+
 const gchar *test_get_tmp_dir (void);
 void test_clear_tmp_dir (void);
 
