@@ -17,6 +17,7 @@ libtestutils_dep = declare_dependency(
 test_env += [
   'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
   'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
+  'XDG_CONFIG_HOME=@0@'.format(meson.current_build_dir()),
 ]
 
 subdir('displayless')
