@@ -54,6 +54,8 @@ tracker_tests = [
   ]],
 ]
 
+run_command('sh', 'script.sh', check: true)
+
 foreach t: tests
   test(
     t[0],
@@ -61,7 +63,8 @@ foreach t: tests
     env: [
       test_env,
       'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
-      'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir())
+      'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir()),
+      'XDG_CONFIG_HOME=@0@'.format(meson.current_source_dir())
     ],
     timeout: 480
   )
