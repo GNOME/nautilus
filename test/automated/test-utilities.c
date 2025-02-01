@@ -23,6 +23,46 @@ test_clear_tmp_dir (void)
     }
 }
 
+static gboolean config_dir_initialized = FALSE;
+
+void
+test_init_config_dir (void)
+{
+    if (config_dir_initialized == FALSE)
+    {
+        /* Initialize bookmarks */
+        g_autofree gchar *gtk3_dir = g_build_filename (g_get_user_config_dir (),
+                                                       "gtk-3.0",
+                                                       NULL);
+        g_autofree gchar *bookmarks_path = g_build_filename (gtk3_dir,
+                                                             "bookmarks",
+                                                             NULL);
+        g_autoptr (GFile) bookmarks_file = g_file_new_for_path (bookmarks_path);
+        g_autoptr (GError) error = NULL;
+
+        if (g_mkdir_with_parents (gtk3_dir, 0700) == -1)
+        {
+            int saved_errno = errno;
+
+            g_error ("Failed to create bookmarks folder %s: %s",
+                     gtk3_dir, g_strerror (saved_errno));
+            return;
+        }
+
+        g_autoptr (GFileOutputStream) stream = g_file_replace (bookmarks_file,
+                                                               NULL,
+                                                               FALSE,
+                                                               G_FILE_CREATE_REPLACE_DESTINATION,
+                                                               NULL, &error);
+        g_assert_no_error (error);
+        g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &error);
+        g_assert_no_error (error);
+
+        g_debug ("Initialized config folder %s", g_get_user_config_dir ());
+        config_dir_initialized = TRUE;
+    }
+}
+
 void
 empty_directory_by_prefix (GFile *parent,
                            gchar *prefix)
