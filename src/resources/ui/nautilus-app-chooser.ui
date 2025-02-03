@@ -15,6 +15,7 @@
               <object class="GtkButton" id="cancel_button">
                 <property name="label" translatable="yes">_Cancel</property>
                 <property name="use-underline">True</property>
+                <property name="can-shrink">True</property>
                 <signal name="clicked" object="NautilusAppChooser" handler="adw_dialog_close" swapped="yes"/>
               </object>
             </child>
@@ -22,6 +23,7 @@
               <object class="GtkButton" id="ok_button">
                 <property name="label" translatable="yes">_Open</property>
                 <property name="use-underline">True</property>
+                <property name="can-shrink">True</property>
                 <property name="sensitive">False</property>
                 <signal name="clicked" object="NautilusAppChooser" handler="open_cb" swapped="yes"/>
                 <style>
