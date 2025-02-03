@@ -78,16 +78,15 @@ open_cb (NautilusAppChooser *self)
 
     if (error != NULL)
     {
-        g_autofree gchar *message = NULL;
-        GtkWidget *message_dialog;
+        AdwAlertDialog *dialog;
 
-        message = g_strdup_printf (_("Error while setting “%s” as default app: %s"),
-                                   g_app_info_get_display_name (info), error->message);
-        message_dialog = adw_message_dialog_new (GTK_WINDOW (self),
-                                                 _("Could not set as default"),
-                                                 message);
-        adw_message_dialog_add_response (ADW_MESSAGE_DIALOG (message_dialog), "close", _("OK"));
-        gtk_window_present (GTK_WINDOW (message_dialog));
+        dialog = ADW_ALERT_DIALOG (adw_alert_dialog_new (_("Could not set as default"), NULL));
+        adw_alert_dialog_format_body (dialog,
+                                      _("Error while setting “%s” as default app: %s"),
+                                      g_app_info_get_display_name (info), error->message);
+        adw_alert_dialog_add_response (dialog, "close", _("_OK"));
+
+        adw_dialog_present (ADW_DIALOG (dialog), GTK_WIDGET (self));
     }
 
     g_signal_emit (self, signals[SIGNAL_APP_SELECTED], 0, info);
