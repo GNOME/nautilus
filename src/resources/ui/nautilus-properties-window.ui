@@ -559,13 +559,13 @@
                                       <object class="AdwPreferencesGroup">
                                         <child>
                                           <object class="AdwComboRow" id="owner_row">
-                                            <property name="activatable">False</property>
                                             <property name="title" translatable="yes">_Owner</property>
                                             <property name="use-underline">True</property>
                                             <property name="use-markup">False</property>
                                             <property name="expression">
                                               <lookup type="GtkStringObject" name="string"/>
                                             </property>
+                                            <signal name="notify::selected" handler="changed_owner_callback" object="NautilusPropertiesWindow" swapped="yes"/>
                                           </object>
                                         </child>
                                         <child>

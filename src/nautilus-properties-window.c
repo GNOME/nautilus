@@ -1795,18 +1795,16 @@ unschedule_or_cancel_owner_change (NautilusPropertiesWindow *self)
 }
 
 static void
-changed_owner_callback (AdwComboRow              *row,
-                        GParamSpec               *pspec,
-                        NautilusPropertiesWindow *self)
+changed_owner_callback (NautilusPropertiesWindow *self)
 {
-    guint selected_pos = adw_combo_row_get_selected (row);
+    guint selected_pos = adw_combo_row_get_selected (self->owner_row);
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
 
     if (selected_pos != GTK_INVALID_LIST_POSITION)
     {
         NautilusFile *file = get_file (self);
 
-        GListModel *list = adw_combo_row_get_model (row);
+        GListModel *list = adw_combo_row_get_model (self->owner_row);
         const gchar *selected_owner_str = gtk_string_list_get_string (GTK_STRING_LIST (list), selected_pos);
         gsize owner_name_length = get_first_word_length (selected_owner_str);
         g_autofree gchar *new_owner_name = g_strndup (selected_owner_str, owner_name_length);
@@ -1852,7 +1850,6 @@ update_owner_row (AdwComboRow     *row,
     NautilusPropertiesWindow *self = permissions_info->window;
     gboolean provide_dropdown = (!permissions_info->is_multi_file_window
                                  && nautilus_file_can_set_owner (get_file (self)));
-    gboolean had_dropdown = gtk_widget_is_sensitive (GTK_WIDGET (row));
 
     /* check if should provide dropdown */
     if (provide_dropdown)
@@ -1866,14 +1863,6 @@ update_owner_row (AdwComboRow     *row,
 
         /* display current owner */
         select_ownership_row_entry (row, owner_name, string_list_item_starts_with_word);
-
-        if (!had_dropdown)
-        {
-            /* Update file when selection changes. */
-            g_signal_connect (row, "notify::selected",
-                              G_CALLBACK (changed_owner_callback),
-                              self);
-        }
     }
     else
     {
@@ -1883,8 +1872,6 @@ update_owner_row (AdwComboRow     *row,
         {
             owner_name = g_strdup (_("Multiple"));
         }
-
-        g_signal_handlers_disconnect_by_func (row, G_CALLBACK (changed_owner_callback), self);
 
         ownership_row_set_single_entry (row, owner_name, string_list_item_starts_with_word);
     }
@@ -4170,6 +4157,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, navigate_permissions_page);
     gtk_widget_class_bind_template_callback (widget_class, reset_icon);
     gtk_widget_class_bind_template_callback (widget_class, select_image_button_callback);
+    gtk_widget_class_bind_template_callback (widget_class, changed_owner_callback);
     gtk_widget_class_bind_template_callback (widget_class, on_change_permissions_clicked);
 }
 
