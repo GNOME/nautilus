@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-01-26 04:19+0000\n"
-"PO-Revision-Date: 2025-01-26 16:58+0300\n"
+"POT-Creation-Date: 2025-01-27 16:12+0000\n"
+"PO-Revision-Date: 2025-01-28 17:28+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -613,7 +613,7 @@ msgstr "Каналы"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:182 src/nautilus-window-slot.c:1853
+#: src/nautilus-application.c:185 src/nautilus-window-slot.c:1853
 msgid "Oops! Something went wrong."
 msgstr "Ой! Что-то пошло не так."
 
@@ -759,7 +759,7 @@ msgstr "Не удалось получить сведения об изобра�
 msgid "Image Properties"
 msgstr "Свойства изображения"
 
-#: src/nautilus-application.c:185
+#: src/nautilus-application.c:188
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -770,7 +770,7 @@ msgstr ""
 "такие разрешения, чтобы было возможно создать папку:\n"
 "%s"
 
-#: src/nautilus-application.c:192
+#: src/nautilus-application.c:195
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -781,25 +781,25 @@ msgstr ""
 "такие разрешения, чтобы было возможно создать папки:\n"
 "%s"
 
-#: src/nautilus-application.c:587
+#: src/nautilus-application.c:592
 msgid "--quit cannot be used with URIs."
 msgstr "параметр --quit нельзя использовать с адресами URI."
 
-#: src/nautilus-application.c:596
+#: src/nautilus-application.c:601
 msgid "--select must be used with at least an URI."
 msgstr ""
 "параметр --select должен использоваться по крайней мере с одним адресом URI."
 
-#: src/nautilus-application.c:739
+#: src/nautilus-application.c:744
 msgid "There was an error displaying help"
 msgstr "При попытке показать справку произошла ошибка"
 
-#: src/nautilus-application.c:740 src/nautilus-autorun-software.c:161
+#: src/nautilus-application.c:745 src/nautilus-autorun-software.c:161
 #: src/nautilus-mime-actions.c:1195 src/nautilus-ui-utilities.c:437
 msgid "_OK"
 msgstr "_ОК"
 
-#: src/nautilus-application.c:859
+#: src/nautilus-application.c:864
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -808,23 +808,23 @@ msgstr ""
 "«%s» является внутренним протоколом. Открытие этого расположения напрямую не "
 "поддерживается."
 
-#: src/nautilus-application.c:949
+#: src/nautilus-application.c:954
 msgid "Show the version of the program."
 msgstr "Показать версию приложения."
 
-#: src/nautilus-application.c:953
+#: src/nautilus-application.c:958
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Всегда открывать новое окно, если указывается адрес URI"
 
-#: src/nautilus-application.c:957
+#: src/nautilus-application.c:962
 msgid "Quit Nautilus."
 msgstr "Закрыть Nautilus."
 
-#: src/nautilus-application.c:961
+#: src/nautilus-application.c:966
 msgid "Select specified URI in parent folder."
 msgstr "Выбрать указанный URI в родительской папке."
 
-#: src/nautilus-application.c:963
+#: src/nautilus-application.c:968
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -1878,9 +1878,9 @@ msgstr[2] "Удаляется %'d файлов"
 #: src/nautilus-file-operations.c:1349 src/nautilus-file-operations.c:1357
 #: src/nautilus-file-operations.c:1397 src/nautilus-file-operations.c:1743
 #: src/nautilus-file-operations.c:1751 src/nautilus-file-operations.c:1791
-#: src/nautilus-file-operations.c:3691 src/nautilus-file-operations.c:3699
-#: src/nautilus-file-operations.c:3770 src/nautilus-file-operations.c:8497
-#: src/nautilus-file-operations.c:8565
+#: src/nautilus-file-operations.c:3693 src/nautilus-file-operations.c:3701
+#: src/nautilus-file-operations.c:3772 src/nautilus-file-operations.c:8499
+#: src/nautilus-file-operations.c:8567
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d из %'d"
@@ -1911,7 +1911,7 @@ msgstr[2] "(%d файлов/с)"
 msgid "Failed to delete all child files"
 msgstr "Не удалось удалить все дочерние файлы"
 
-#: src/nautilus-file-operations.c:1546 src/nautilus-file-operations.c:2841
+#: src/nautilus-file-operations.c:1546 src/nautilus-file-operations.c:2843
 msgid "Error while deleting."
 msgstr "Произошла ошибка при удалении."
 
@@ -2010,19 +2010,20 @@ msgstr ""
 msgid "Do _Not Empty"
 msgstr "Не о_чищать"
 
-#: src/nautilus-file-operations.c:2516
-msgctxt "Verb"
+#. Translators: This is an action in a dialog to
+#. * to clear trashed items.
+#: src/nautilus-file-operations.c:2518
 msgid "_Empty"
 msgstr "_Очистить"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2657 src/nautilus-files-view.c:6863
+#: src/nautilus-file-operations.c:2659 src/nautilus-files-view.c:6863
 #: src/gtk/nautilusgtkplacessidebar.c:1704
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Не удалось получить доступ к «%s»"
 
-#: src/nautilus-file-operations.c:2742
+#: src/nautilus-file-operations.c:2744
 #, c-format
 msgid "Preparing to copy %'d file (%s)"
 msgid_plural "Preparing to copy %'d files (%s)"
@@ -2030,7 +2031,7 @@ msgstr[0] "Идёт подготовка к копированию %'d файл�
 msgstr[1] "Идёт подготовка к копированию %'d файлов (%s)"
 msgstr[2] "Идёт подготовка к копированию %'d файлов (%s)"
 
-#: src/nautilus-file-operations.c:2755
+#: src/nautilus-file-operations.c:2757
 #, c-format
 msgid "Preparing to move %'d file (%s)"
 msgid_plural "Preparing to move %'d files (%s)"
@@ -2038,7 +2039,7 @@ msgstr[0] "Идёт подготовка к перемещению %'d файл�
 msgstr[1] "Идёт подготовка к перемещению %'d файлов (%s)"
 msgstr[2] "Идёт подготовка к перемещению %'d файлов (%s)"
 
-#: src/nautilus-file-operations.c:2768
+#: src/nautilus-file-operations.c:2770
 #, c-format
 msgid "Preparing to delete %'d file (%s)"
 msgid_plural "Preparing to delete %'d files (%s)"
@@ -2046,7 +2047,7 @@ msgstr[0] "Идёт подготовка к удалению %'d файла (%s)
 msgstr[1] "Идёт подготовка к удалению %'d файлов (%s)"
 msgstr[2] "Идёт подготовка к удалению %'d файлов (%s)"
 
-#: src/nautilus-file-operations.c:2778
+#: src/nautilus-file-operations.c:2780
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
@@ -2054,7 +2055,7 @@ msgstr[0] "Идёт подготовка к удалению %'d файла в �
 msgstr[1] "Идёт подготовка к удалению %'d файлов в корзину"
 msgstr[2] "Идёт подготовка к удалению %'d файлов в корзину"
 
-#: src/nautilus-file-operations.c:2787
+#: src/nautilus-file-operations.c:2789
 #, c-format
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
@@ -2062,26 +2063,26 @@ msgstr[0] "Идёт подготовка к сжатию %'d файла"
 msgstr[1] "Идёт подготовка к сжатию %'d файлов"
 msgstr[2] "Идёт подготовка к сжатию %'d файлов"
 
-#: src/nautilus-file-operations.c:2831 src/nautilus-file-operations.c:4278
-#: src/nautilus-file-operations.c:4470 src/nautilus-file-operations.c:4552
-#: src/nautilus-file-operations.c:4840
+#: src/nautilus-file-operations.c:2833 src/nautilus-file-operations.c:4280
+#: src/nautilus-file-operations.c:4472 src/nautilus-file-operations.c:4554
+#: src/nautilus-file-operations.c:4842
 msgid "Error while copying."
 msgstr "Произошла ошибка при копировании."
 
-#: src/nautilus-file-operations.c:2836 src/nautilus-file-operations.c:4466
-#: src/nautilus-file-operations.c:4548 src/nautilus-file-operations.c:4836
+#: src/nautilus-file-operations.c:2838 src/nautilus-file-operations.c:4468
+#: src/nautilus-file-operations.c:4550 src/nautilus-file-operations.c:4838
 msgid "Error while moving."
 msgstr "Произошла ошибка при перемещении."
 
-#: src/nautilus-file-operations.c:2846
+#: src/nautilus-file-operations.c:2848
 msgid "Error while moving files to trash."
 msgstr "Произошла ошибка при удалении файлов в корзину."
 
-#: src/nautilus-file-operations.c:2851
+#: src/nautilus-file-operations.c:2853
 msgid "Error while compressing files."
 msgstr "Произошла ошибка при сжатии файлов."
 
-#: src/nautilus-file-operations.c:2943
+#: src/nautilus-file-operations.c:2945
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be handled because you do not have "
@@ -2089,55 +2090,55 @@ msgid ""
 msgstr ""
 "Невозможно обработать файлы в папке «%s», нет прав на просмотр данных файлов."
 
-#: src/nautilus-file-operations.c:2949 src/nautilus-file-operations.c:4482
+#: src/nautilus-file-operations.c:2951 src/nautilus-file-operations.c:4484
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
 msgstr "Произошла ошибка при получении сведений о файлах в папке «%s»."
 
-#: src/nautilus-file-operations.c:3004
+#: src/nautilus-file-operations.c:3006
 #, c-format
 msgid ""
 "The folder “%s” cannot be handled because you do not have permissions to "
 "read it."
 msgstr "Невозможно обработать папку «%s», нет прав на чтение данной папки."
 
-#: src/nautilus-file-operations.c:3010 src/nautilus-file-operations.c:4564
+#: src/nautilus-file-operations.c:3012 src/nautilus-file-operations.c:4566
 #, c-format
 msgid "There was an error reading the folder “%s”."
 msgstr "Произошла ошибка при чтении папки «%s»."
 
-#: src/nautilus-file-operations.c:3120
+#: src/nautilus-file-operations.c:3122
 #, c-format
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
 "it."
 msgstr "Невозможно обработать файл «%s», нет прав на чтение данного файла."
 
-#: src/nautilus-file-operations.c:3125
+#: src/nautilus-file-operations.c:3127
 #, c-format
 msgid "There was an error getting information about “%s”."
 msgstr "Произошла ошибка при получении сведений о «%s»."
 
-#: src/nautilus-file-operations.c:3249 src/nautilus-file-operations.c:3311
-#: src/nautilus-file-operations.c:3366 src/nautilus-file-operations.c:3428
+#: src/nautilus-file-operations.c:3251 src/nautilus-file-operations.c:3313
+#: src/nautilus-file-operations.c:3368 src/nautilus-file-operations.c:3430
 #, c-format
 msgid "Error while copying to “%s”."
 msgstr "Произошла ошибка при копировании в «%s»."
 
-#: src/nautilus-file-operations.c:3254
+#: src/nautilus-file-operations.c:3256
 msgid "You do not have permissions to access the destination folder."
 msgstr "Нет прав доступа к папке назначения."
 
-#: src/nautilus-file-operations.c:3258
+#: src/nautilus-file-operations.c:3260
 msgid "There was an error getting information about the destination."
 msgstr "Произошла ошибка при получении сведений о месте назначения."
 
-#: src/nautilus-file-operations.c:3312
+#: src/nautilus-file-operations.c:3314
 msgid "The destination is not a folder."
 msgstr "Место назначения не является папкой."
 
-#: src/nautilus-file-operations.c:3367
+#: src/nautilus-file-operations.c:3369
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
@@ -2145,56 +2146,56 @@ msgstr ""
 "Недостаточно места на устройстве назначения. Попробуйте удалить какие-нибудь "
 "файлы, чтобы освободить место."
 
-#: src/nautilus-file-operations.c:3371
+#: src/nautilus-file-operations.c:3373
 #, c-format
 msgid "%s more space is required to copy to the destination."
 msgstr ""
 "Требуется ещё %s свободного места для копирования в устройство назначения."
 
-#: src/nautilus-file-operations.c:3407
+#: src/nautilus-file-operations.c:3409
 msgid "File too Large for Destination"
 msgstr "Файл слишком велик для места назначения"
 
-#: src/nautilus-file-operations.c:3408
+#: src/nautilus-file-operations.c:3410
 msgid "Files bigger than 4.3 GB cannot be copied onto a FAT filesystem."
 msgstr ""
 "Файлы размером более 4,3 ГБ не могут быть скопированы в файловую систему FAT."
 
-#: src/nautilus-file-operations.c:3429
+#: src/nautilus-file-operations.c:3431
 msgid "The destination is read-only."
 msgstr "Устройство назначения доступно только для чтения."
 
-#: src/nautilus-file-operations.c:3506
+#: src/nautilus-file-operations.c:3508
 #, c-format
 msgid "Moving “%s” to “%s”"
 msgstr "Перемещение «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:3510
+#: src/nautilus-file-operations.c:3512
 #, c-format
 msgid "Moved “%s” to “%s”"
 msgstr "Перемещено «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:3517
+#: src/nautilus-file-operations.c:3519
 #, c-format
 msgid "Copying “%s” to “%s”"
 msgstr "Копирование «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:3521
+#: src/nautilus-file-operations.c:3523
 #, c-format
 msgid "Copied “%s” to “%s”"
 msgstr "Скопировано «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:3555
+#: src/nautilus-file-operations.c:3557
 #, c-format
 msgid "Duplicating “%s”"
 msgstr "Дублирование «%s»"
 
-#: src/nautilus-file-operations.c:3559
+#: src/nautilus-file-operations.c:3561
 #, c-format
 msgid "Duplicated “%s”"
 msgstr "Дублировано «%s»"
 
-#: src/nautilus-file-operations.c:3578
+#: src/nautilus-file-operations.c:3580
 #, c-format
 msgid "Moving %'d file to “%s”"
 msgid_plural "Moving %'d files to “%s”"
@@ -2202,7 +2203,7 @@ msgstr[0] "Перемещение %'d файла в «%s»"
 msgstr[1] "Перемещение %'d файлов в «%s»"
 msgstr[2] "Перемещение %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:3584
+#: src/nautilus-file-operations.c:3586
 #, c-format
 msgid "Copying %'d file to “%s”"
 msgid_plural "Copying %'d files to “%s”"
@@ -2210,7 +2211,7 @@ msgstr[0] "Копирование %'d файла в «%s»"
 msgstr[1] "Копирование %'d файлов в «%s»"
 msgstr[2] "Копирование %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:3603
+#: src/nautilus-file-operations.c:3605
 #, c-format
 msgid "Moved %'d file to “%s”"
 msgid_plural "Moved %'d files to “%s”"
@@ -2218,7 +2219,7 @@ msgstr[0] "Перемещён %'d файл в «%s»"
 msgstr[1] "Перемещено %'d файла в «%s»"
 msgstr[2] "Перемещено %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:3609
+#: src/nautilus-file-operations.c:3611
 #, c-format
 msgid "Copied %'d file to “%s”"
 msgid_plural "Copied %'d files to “%s”"
@@ -2226,7 +2227,7 @@ msgstr[0] "Скопирован %'d файл в «%s»"
 msgstr[1] "Скопировано %'d файла в «%s»"
 msgstr[2] "Скопировано %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:3632
+#: src/nautilus-file-operations.c:3634
 #, c-format
 msgid "Duplicating %'d file in “%s”"
 msgid_plural "Duplicating %'d files in “%s”"
@@ -2234,7 +2235,7 @@ msgstr[0] "Дублирование %'d файла в «%s»"
 msgstr[1] "Дублирование %'d файлов в «%s»"
 msgstr[2] "Дублирование %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:3642
+#: src/nautilus-file-operations.c:3644
 #, c-format
 msgid "Duplicated %'d file in “%s”"
 msgid_plural "Duplicated %'d files in “%s”"
@@ -2249,9 +2250,9 @@ msgstr[2] "Дублировано %'d файлов в «%s»"
 #.
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kB / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
-#: src/nautilus-file-operations.c:3681 src/nautilus-file-operations.c:3741
-#: src/nautilus-file-operations.c:8007 src/nautilus-file-operations.c:8237
-#: src/nautilus-file-operations.c:8492 src/nautilus-file-operations.c:8535
+#: src/nautilus-file-operations.c:3683 src/nautilus-file-operations.c:3743
+#: src/nautilus-file-operations.c:8009 src/nautilus-file-operations.c:8239
+#: src/nautilus-file-operations.c:8494 src/nautilus-file-operations.c:8537
 #, c-format
 msgid "%s / %s"
 msgstr "%s из %s"
@@ -2274,8 +2275,8 @@ msgstr "%s из %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3725 src/nautilus-file-operations.c:8025
-#: src/nautilus-file-operations.c:8524
+#: src/nautilus-file-operations.c:3727 src/nautilus-file-operations.c:8027
+#: src/nautilus-file-operations.c:8526
 #, c-format
 msgid "%s / %s — %s left (%s/s)"
 msgid_plural "%s / %s — %s left (%s/s)"
@@ -2288,7 +2289,7 @@ msgstr[2] "%s из %s — осталось: %s (%s/с)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:3759 src/nautilus-file-operations.c:8554
+#: src/nautilus-file-operations.c:3761 src/nautilus-file-operations.c:8556
 #, c-format
 msgid "%'d / %'d — %s left (%s/s)"
 msgid_plural "%'d / %'d — %s left (%s/s)"
@@ -2296,7 +2297,7 @@ msgstr[0] "%'d из %'d — осталось: %s (%s/с)"
 msgstr[1] "%'d из %'d — осталось: %s (%s/с)"
 msgstr[2] "%'d из %'d — осталось: %s (%s/с)"
 
-#: src/nautilus-file-operations.c:4284
+#: src/nautilus-file-operations.c:4286
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
@@ -2305,12 +2306,12 @@ msgstr ""
 "Не удалось скопировать папку «%s», нет прав на создание папки в месте "
 "назначения."
 
-#: src/nautilus-file-operations.c:4290
+#: src/nautilus-file-operations.c:4292
 #, c-format
 msgid "There was an error creating the folder “%s”."
 msgstr "Произошла ошибка при создании папки «%s»."
 
-#: src/nautilus-file-operations.c:4477
+#: src/nautilus-file-operations.c:4479
 #, c-format
 msgid ""
 "Files in the folder “%s” cannot be copied because you do not have "
@@ -2319,82 +2320,82 @@ msgstr ""
 "Не удалось скопировать файлы из папки «%s», нет прав на просмотр данных "
 "файлов."
 
-#: src/nautilus-file-operations.c:4493
+#: src/nautilus-file-operations.c:4495
 msgid "_Skip files"
 msgstr "_Пропустить файлы"
 
-#: src/nautilus-file-operations.c:4559
+#: src/nautilus-file-operations.c:4561
 #, c-format
 msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to read "
 "it."
 msgstr "Невозможно скопировать папку «%s», нет прав на чтение данной папки."
 
-#: src/nautilus-file-operations.c:4624 src/nautilus-file-operations.c:5258
-#: src/nautilus-file-operations.c:6010
+#: src/nautilus-file-operations.c:4626 src/nautilus-file-operations.c:5260
+#: src/nautilus-file-operations.c:6012
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "Произошла ошибка при перемещении «%s»."
 
-#: src/nautilus-file-operations.c:4625
+#: src/nautilus-file-operations.c:4627
 msgid "Could not remove the source folder."
 msgstr "Не удалось удалить исходную папку."
 
-#: src/nautilus-file-operations.c:4842
+#: src/nautilus-file-operations.c:4844
 msgid "There was an error getting information about the source."
 msgstr "Произошла ошибка при получении сведений об источнике."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4944 src/nautilus-file-operations.c:5768
+#: src/nautilus-file-operations.c:4946 src/nautilus-file-operations.c:5770
 msgid "You cannot move a folder into itself."
 msgstr "Нельзя переместить папку саму в себя."
 
-#: src/nautilus-file-operations.c:4945 src/nautilus-file-operations.c:5769
+#: src/nautilus-file-operations.c:4947 src/nautilus-file-operations.c:5771
 msgid "You cannot copy a folder into itself."
 msgstr "Нельзя скопировать папку саму в себя."
 
-#: src/nautilus-file-operations.c:4946 src/nautilus-file-operations.c:5770
+#: src/nautilus-file-operations.c:4948 src/nautilus-file-operations.c:5772
 msgid "The destination folder is inside the source folder."
 msgstr "Папка назначения находится внутри исходной папки."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:4986 src/nautilus-file-operations.c:5811
+#: src/nautilus-file-operations.c:4988 src/nautilus-file-operations.c:5813
 msgid "You cannot move a file over itself."
 msgstr "Нельзя переместить файл сам в себя."
 
-#: src/nautilus-file-operations.c:4987 src/nautilus-file-operations.c:5812
+#: src/nautilus-file-operations.c:4989 src/nautilus-file-operations.c:5814
 msgid "You cannot copy a file over itself."
 msgstr "Нельзя скопировать файл сам в себя."
 
-#: src/nautilus-file-operations.c:4988 src/nautilus-file-operations.c:5813
+#: src/nautilus-file-operations.c:4990 src/nautilus-file-operations.c:5815
 msgid "The source file would be overwritten by the destination."
 msgstr "Исходный файл будет переписан файлом назначения."
 
-#: src/nautilus-file-operations.c:5262 src/nautilus-file-operations.c:5350
+#: src/nautilus-file-operations.c:5264 src/nautilus-file-operations.c:5352
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "Произошла ошибка при копировании «%s»."
 
-#: src/nautilus-file-operations.c:5265
+#: src/nautilus-file-operations.c:5267
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "Не удалось удалить уже существующий файл с таким же именем в %s."
 
-#: src/nautilus-file-operations.c:5352
+#: src/nautilus-file-operations.c:5354
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "Произошла ошибка при копировании файла в %s."
 
-#: src/nautilus-file-operations.c:5549
+#: src/nautilus-file-operations.c:5551
 msgid "Copying Files"
 msgstr "Копируются файлы"
 
-#: src/nautilus-file-operations.c:5669
+#: src/nautilus-file-operations.c:5671
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "Подготовка к перемещению в «%s»"
 
-#: src/nautilus-file-operations.c:5673
+#: src/nautilus-file-operations.c:5675
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -2402,21 +2403,21 @@ msgstr[0] "Идёт подготовка к перемещению %'d файл�
 msgstr[1] "Идёт подготовка к перемещению %'d файлов"
 msgstr[2] "Идёт подготовка к перемещению %'d файлов"
 
-#: src/nautilus-file-operations.c:6012
+#: src/nautilus-file-operations.c:6014
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "Произошла ошибка при перемещении файла в %s."
 
-#: src/nautilus-file-operations.c:6260
+#: src/nautilus-file-operations.c:6262
 msgid "Moving Files"
 msgstr "Перемещаются файлы"
 
-#: src/nautilus-file-operations.c:6366
+#: src/nautilus-file-operations.c:6368
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "Создание ссылок в «%s»"
 
-#: src/nautilus-file-operations.c:6370
+#: src/nautilus-file-operations.c:6372
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2424,113 +2425,113 @@ msgstr[0] "Создание ссылки на %'d файл"
 msgstr[1] "Создание ссылок на %'d файла"
 msgstr[2] "Создание ссылок на %'d файлов"
 
-#: src/nautilus-file-operations.c:6520
+#: src/nautilus-file-operations.c:6522
 #, c-format
 msgid "Error while creating link to “%s”."
 msgstr "Произошла ошибка при создании ссылки на \"%s\"."
 
-#: src/nautilus-file-operations.c:6524
+#: src/nautilus-file-operations.c:6526
 msgid "Symbolic links only supported for local files"
 msgstr "Символьные ссылки поддерживаются только для локальных файлов"
 
-#: src/nautilus-file-operations.c:6529
+#: src/nautilus-file-operations.c:6531
 msgid "The target doesn’t support symbolic links."
 msgstr "Место назначения не поддерживает символьные ссылки."
 
-#: src/nautilus-file-operations.c:6537
+#: src/nautilus-file-operations.c:6539
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "Произошла ошибка при создании символьной ссылки в %s."
 
-#: src/nautilus-file-operations.c:6867
+#: src/nautilus-file-operations.c:6869
 msgid "Setting permissions"
 msgstr "Настройка разрешений"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7159
+#: src/nautilus-file-operations.c:7161
 msgid "Untitled Folder"
 msgstr "Безымянная папка"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7174
+#: src/nautilus-file-operations.c:7176
 msgid "Untitled Document"
 msgstr "Безымянный документ"
 
-#: src/nautilus-file-operations.c:7400
+#: src/nautilus-file-operations.c:7402
 #, c-format
 msgid "Error while creating directory “%s”."
 msgstr "Произошла ошибка при создании каталога \"%s\"."
 
-#: src/nautilus-file-operations.c:7405
+#: src/nautilus-file-operations.c:7407
 #, c-format
 msgid "Error while creating file “%s”."
 msgstr "Произошла ошибка при создании файла \"%s\"."
 
-#: src/nautilus-file-operations.c:7409
+#: src/nautilus-file-operations.c:7411
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "Произошла ошибка при создании каталога в %s."
 
-#: src/nautilus-file-operations.c:7510
+#: src/nautilus-file-operations.c:7512
 msgid "Saving image to file"
 msgstr "Сохранение изображения в файл"
 
-#: src/nautilus-file-operations.c:7519
+#: src/nautilus-file-operations.c:7521
 msgid "Successfully saved image to file"
 msgstr "Изображение успешно сохранено в файл"
 
-#: src/nautilus-file-operations.c:7549
+#: src/nautilus-file-operations.c:7551
 msgid "Failed to save image"
 msgstr "Не удалось сохранить изображение"
 
 #. Translators: This is used to auto-generate a file name for pasted images from
 #. * the clipboard i.e. "Pasted image.png", "Pasted image 1.png", ...
-#: src/nautilus-file-operations.c:7611
+#: src/nautilus-file-operations.c:7613
 msgid "Pasted image"
 msgstr "Вставленное изображение"
 
-#: src/nautilus-file-operations.c:7618
+#: src/nautilus-file-operations.c:7620
 msgid "Retrieving clipboard data"
 msgstr "Получение данных из буфера обмена"
 
-#: src/nautilus-file-operations.c:7650
+#: src/nautilus-file-operations.c:7652
 msgid "Retrieving image data"
 msgstr "Получение данных изображения"
 
-#: src/nautilus-file-operations.c:7868
+#: src/nautilus-file-operations.c:7870
 msgid "Emptying Trash"
 msgstr "Очистка корзины"
 
-#: src/nautilus-file-operations.c:7911
+#: src/nautilus-file-operations.c:7913
 msgid "Verifying destination"
 msgstr "Проверка назначения"
 
-#: src/nautilus-file-operations.c:7965
+#: src/nautilus-file-operations.c:7967
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Извлечение «%s»"
 
-#: src/nautilus-file-operations.c:8091 src/nautilus-file-operations.c:8184
+#: src/nautilus-file-operations.c:8093 src/nautilus-file-operations.c:8186
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Ошибка извлечения «%s»"
 
-#: src/nautilus-file-operations.c:8098
+#: src/nautilus-file-operations.c:8100
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "Произошла ошибка при извлечении «%s»."
 
-#: src/nautilus-file-operations.c:8187
+#: src/nautilus-file-operations.c:8189
 #, c-format
 msgid "Not enough free space to extract “%s”"
 msgstr "Недостаточно свободного места для извлечения \"%s\""
 
-#: src/nautilus-file-operations.c:8220
+#: src/nautilus-file-operations.c:8222
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Извлечено «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8226
+#: src/nautilus-file-operations.c:8228
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2538,20 +2539,20 @@ msgstr[0] "Извлечен %'d файл в «%s»"
 msgstr[1] "Извлечено %'d файла в «%s»"
 msgstr[2] "Извлечено %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:8260
+#: src/nautilus-file-operations.c:8262
 msgid "Preparing to extract"
 msgstr "Подготовка к извлечению"
 
-#: src/nautilus-file-operations.c:8388
+#: src/nautilus-file-operations.c:8390
 msgid "Extracting Files"
 msgstr "Извлечение файлов"
 
-#: src/nautilus-file-operations.c:8448
+#: src/nautilus-file-operations.c:8450
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Сжатие «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8454
+#: src/nautilus-file-operations.c:8456
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2559,12 +2560,12 @@ msgstr[0] "Сжатие %'d файла в «%s»"
 msgstr[1] "Сжатие %'d файлов в «%s»"
 msgstr[2] "Сжатие %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:8602
+#: src/nautilus-file-operations.c:8604
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Ошибка сжатия «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8608
+#: src/nautilus-file-operations.c:8610
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2572,16 +2573,16 @@ msgstr[0] "Ошибка сжатия %'d файла в «%s»"
 msgstr[1] "Ошибка сжатия %'d файлов в «%s»"
 msgstr[2] "Ошибка сжатия %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:8618
+#: src/nautilus-file-operations.c:8620
 msgid "There was an error while compressing files."
 msgstr "Произошла ошибка при сжатии файлов."
 
-#: src/nautilus-file-operations.c:8643
+#: src/nautilus-file-operations.c:8645
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Сжато «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8649
+#: src/nautilus-file-operations.c:8651
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2589,7 +2590,7 @@ msgstr[0] "Сжат %'d файл в «%s»"
 msgstr[1] "Сжато %'d файла в «%s»"
 msgstr[2] "Сжато %'d файлов в «%s»"
 
-#: src/nautilus-file-operations.c:8768
+#: src/nautilus-file-operations.c:8770
 msgid "Compressing Files"
 msgstr "Сжатие файлов"
 
