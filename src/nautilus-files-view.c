@@ -1217,7 +1217,7 @@ file_and_directory_get_file (FileAndDirectory *fad)
 {
     g_return_val_if_fail (fad != NULL, NULL);
 
-    return nautilus_file_ref (fad->file);
+    return fad->file;
 }
 
 static void
@@ -4482,7 +4482,7 @@ process_pending_files (NautilusFilesView *view)
             files = g_list_copy_deep (files_changed, (GCopyFunc) file_and_directory_get_file, NULL);
             send_selection_change = _g_lists_sort_and_check_for_intersection
                                         (&files, &selection);
-            nautilus_file_list_free (files);
+            g_list_free (files);
         }
 
         if (send_selection_change)
