@@ -452,6 +452,7 @@ static void is_directory_ready_callback (NautilusFile *file,
                                          gpointer      data);
 static void cancel_group_change_callback (GroupChange *change);
 static void cancel_owner_change_callback (OwnerChange *change);
+static gboolean all_can_set_permissions (GList *file_list);
 static void update_owner_row (AdwComboRow     *row,
                               PermissionsInfo *permissions_info);
 static void update_group_row (AdwComboRow     *row,
@@ -1292,6 +1293,8 @@ properties_window_update (NautilusPropertiesWindow *self,
         update_image_widget (self);
         update_name_field (self);
         update_permissions_navigation_row (self, permissions_info);
+        adw_banner_set_revealed (self->owner_permission_banner,
+                                 !all_can_set_permissions (self->files));
         update_owner_row (self->owner_row, permissions_info);
         update_group_row (self->group_row, permissions_info);
         update_execution_row (GTK_WIDGET (self->execution_row), permissions_info);
