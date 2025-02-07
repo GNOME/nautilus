@@ -4210,6 +4210,16 @@ still_should_show_file (NautilusFilesView *view,
            view_file_still_belongs (view, fad);
 }
 
+static gboolean
+still_should_add_file (NautilusFilesView *view,
+                       FileAndDirectory  *fad)
+{
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+
+    return still_should_show_file (view, fad) &&
+           nautilus_view_model_get_item_for_file (priv->model, fad->file) == NULL;
+}
+
 static void
 real_end_file_changes (NautilusFilesView *view)
 {
@@ -4391,32 +4401,29 @@ process_pending_files (NautilusFilesView *view)
 
         for (GList *node = files_added; node != NULL; node = node->next)
         {
+            gboolean should_add_file;
             pending = node->data;
-            if (nautilus_file_is_gone (pending->file))
-            {
-                if (g_getenv ("G_MESSAGES_DEBUG") == NULL)
-                {
-                    g_warning ("Attempted to add a non-existent file to the view.");
-                }
-                else
-                {
-                    g_autofree char *uri = nautilus_file_get_uri (pending->file);
-                    g_warning ("Attempted to add non-existent file \"%s\" to the view.", uri);
-                }
 
-                continue;
-            }
-            if (!nautilus_files_view_should_show_file (view, pending->file))
+            should_add_file = still_should_add_file (view, pending);
+            if (should_add_file)
             {
-                continue;
+                pending_additions = g_list_prepend (pending_additions, pending->file);
             }
-            pending_additions = g_list_prepend (pending_additions, pending->file);
+
             /* Acknowledge the files that were pending to be revealed */
             if (g_hash_table_contains (priv->pending_reveal, pending->file))
             {
-                g_hash_table_insert (priv->pending_reveal,
-                                     pending->file,
-                                     GUINT_TO_POINTER (TRUE));
+                if (should_add_file)
+                {
+                    g_hash_table_insert (priv->pending_reveal,
+                                         pending->file,
+                                         GUINT_TO_POINTER (TRUE));
+                }
+                else
+                {
+                    g_hash_table_remove (priv->pending_reveal,
+                                         pending->file);
+                }
             }
         }
         pending_additions = g_list_reverse (pending_additions);
