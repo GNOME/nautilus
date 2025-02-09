@@ -3857,7 +3857,6 @@ start_or_stop_io (NautilusDirectory *directory)
         mount_start (directory, file, &doing_io);
         directory_count_start (directory, file, &doing_io);
         deep_count_start (directory, file, &doing_io);
-        thumbnail_start (directory, file, &doing_io);
         filesystem_info_start (directory, file, &doing_io);
 
         if (doing_io)
@@ -3874,6 +3873,7 @@ start_or_stop_io (NautilusDirectory *directory)
         file = nautilus_hash_queue_peek_head (directory->details->extension_queue);
 
         /* Start getting attributes if possible */
+        thumbnail_start (directory, file, &doing_io);
         extension_info_start (directory, file, &doing_io);
         if (doing_io)
         {

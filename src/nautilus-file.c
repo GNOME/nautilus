@@ -872,6 +872,8 @@ finalize (GObject *object)
         nautilus_thumbnail_remove_from_queue (uri);
         g_free (uri);
     }
+    g_cancellable_cancel (file->details->thumb_cancel);
+    g_clear_object (&file->details->thumb_cancel);
 
     nautilus_async_destroying_file (file);
 
@@ -2367,6 +2369,70 @@ update_links_if_target (NautilusFile *target_file)
     nautilus_file_list_free (link_files);
 }
 
+typedef struct {
+    NautilusFile *file;
+} Ti;
+
+/* static void */
+/* dummy_cb (NautilusDirectory *directory, */
+/*           GList             *files, */
+/*           gpointer           callback_data) */
+/* { */
+
+/* } */
+
+
+static void
+dummy_cb (NautilusFile *file,
+          gpointer           callback_data)
+{
+
+}
+
+static void
+update_thumbnail_info (GObject      *source_object,
+                       GAsyncResult *res,
+                       gpointer      callback_data)
+{
+    g_autoptr (GError) error = NULL;
+    NautilusFile *file = callback_data;
+    g_autoptr (GFileInfo) info = g_file_query_info_finish (G_FILE (source_object), res, &error);
+    gboolean changed = FALSE;
+
+    if (info != NULL || error != NULL)
+    {
+        const gchar *thumbnail_path = g_file_info_get_attribute_byte_string (info,
+                                                                             G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
+        if (g_set_str (&file->details->thumbnail_path, thumbnail_path))
+        {
+            changed = TRUE;
+        }
+
+        gboolean thumbnailing_failed = g_file_info_get_attribute_boolean (info,
+                                                                          G_FILE_ATTRIBUTE_THUMBNAILING_FAILED);
+        if (file->details->thumbnailing_failed != thumbnailing_failed)
+        {
+            changed = TRUE;
+            file->details->thumbnailing_failed = thumbnailing_failed;
+        }
+
+        if (thumbnail_path != NULL)
+        {
+            /* nautilus_directory_call_when_ready (file->details->directory, */
+            /*                                     NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL, */
+            /*                                     FALSE, dummy_cb, NULL); */
+            nautilus_file_call_when_ready (file,
+                                           NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
+                                           dummy_cb, NULL);
+        }
+    }
+
+    if (changed)
+    {
+        nautilus_file_changed (file);
+    }
+}
+
 static gboolean
 update_info_internal (NautilusFile *file,
                       GFileInfo    *info,
@@ -2856,6 +2922,15 @@ update_info_internal (NautilusFile *file,
                 (file->details->directory, file, node);
         }
     }
+
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    g_file_query_info_async (G_FILE (location),
+                             "standard::display-name,thumbnail::*",
+                             0,
+                             G_PRIORITY_DEFAULT,
+                             file->details->thumb_cancel,
+                             update_thumbnail_info, file);
 
     if (changed)
     {

@@ -9009,7 +9009,6 @@ finish_loading (NautilusFilesView *view)
      * and possible custom name.
      */
     attributes =
-        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
         NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
         NAUTILUS_FILE_ATTRIBUTE_INFO |
         NAUTILUS_FILE_ATTRIBUTE_MOUNT |
