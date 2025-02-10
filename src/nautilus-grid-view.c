@@ -56,8 +56,8 @@ nautilus_grid_view_sort (gconstpointer a,
     NautilusFile *file_a;
     NautilusFile *file_b;
 
-    file_a = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) a));
-    file_b = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) b));
+    file_a = nautilus_view_item_get_file ((NautilusViewItem *) a);
+    file_b = nautilus_view_item_get_file ((NautilusViewItem *) b);
 
     return nautilus_file_compare_for_sort_by_attribute_q (file_a, file_b,
                                                           self->sort_attribute,
