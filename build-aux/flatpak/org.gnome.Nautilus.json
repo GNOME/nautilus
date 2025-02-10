@@ -83,6 +83,9 @@
         "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.service"
       ],
       "config-opts": [
+        "-Dfunctional_tests=false",
+        "-Dsandbox_tests=false",
+        "-Ddomain_prefix=org.gnome.NautilusDevel",
         "-Dextract=true",
         "-Dlandlock=disabled",
         "-Dman=false",
