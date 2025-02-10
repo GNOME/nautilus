@@ -441,7 +441,7 @@ compare_data_func (gconstpointer a,
                    gconstpointer b,
                    gpointer      user_data)
 {
-    NautilusViewModel *self = NAUTILUS_VIEW_MODEL (user_data);
+    NautilusViewModel *self = (NautilusViewModel *) user_data;
 
     if (nautilus_view_model_get_sorter (self) == NULL)
     {
@@ -492,7 +492,7 @@ nautilus_view_model_get_sorter (NautilusViewModel *self)
 {
     GtkTreeListRowSorter *row_sorter;
 
-    row_sorter = GTK_TREE_LIST_ROW_SORTER (gtk_sort_list_model_get_sorter (self->sort_model));
+    row_sorter = (GtkTreeListRowSorter *) gtk_sort_list_model_get_sorter (self->sort_model);
 
     return row_sorter != NULL ? gtk_tree_list_row_sorter_get_sorter (row_sorter) : NULL;
 }

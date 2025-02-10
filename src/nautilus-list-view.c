@@ -277,8 +277,8 @@ nautilus_list_view_sort (gconstpointer a,
                          gpointer      user_data)
 {
     GQuark attribute_q = GPOINTER_TO_UINT (user_data);
-    NautilusFile *file_a = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) a));
-    NautilusFile *file_b = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) b));
+    NautilusFile *file_a = nautilus_view_item_get_file ((NautilusViewItem *) a);
+    NautilusFile *file_b = nautilus_view_item_get_file ((NautilusViewItem *) b);
 
     /* The reversed argument is FALSE because the columnview sorter handles that
      * itself and if we don't want to reverse the reverse. The directories_first
@@ -300,8 +300,8 @@ sort_directories_func (gconstpointer a,
 
     if (*directories_first)
     {
-        NautilusFile *file_a = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) a));
-        NautilusFile *file_b = nautilus_view_item_get_file (NAUTILUS_VIEW_ITEM ((gpointer) b));
+        NautilusFile *file_a = nautilus_view_item_get_file ((NautilusViewItem *) a);
+        NautilusFile *file_b = nautilus_view_item_get_file ((NautilusViewItem *) b);
         gboolean a_is_directory = nautilus_file_is_directory (file_a);
         gboolean b_is_directory = nautilus_file_is_directory (file_b);
 
