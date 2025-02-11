@@ -98,16 +98,14 @@ void
 nautilus_hash_queue_remove (NautilusHashQueue *queue,
                             gconstpointer      key)
 {
-    GList *link = g_hash_table_lookup (queue->item_to_link_map, key);
+    gpointer map_key;
+    GList *link;
 
-    if (link == NULL)
+    if (g_hash_table_steal_extended (queue->item_to_link_map, key, &map_key, (gpointer *) &link))
     {
-        /* It's not on the queue */
-        return;
+        g_queue_delete_link ((GQueue *) queue, link);
+        queue->key_destroy_func (map_key);
     }
-
-    g_queue_delete_link ((GQueue *) queue, link);
-    g_hash_table_remove (queue->item_to_link_map, key);
 }
 
 gpointer
