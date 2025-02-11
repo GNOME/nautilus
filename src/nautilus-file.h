@@ -97,7 +97,7 @@ typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       gpointer       callback_data);
 
 
-#define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL)
+#define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER)
 
 typedef void NautilusFileListHandle;
 
