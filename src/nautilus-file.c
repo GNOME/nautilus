@@ -4799,7 +4799,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         icon = nautilus_icon_info_new_for_paintable (paintable, scale);
     }
     else if (file->details->is_thumbnailing ||
-             !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL))
+             !nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER))
     {
         g_autoptr (GIcon) gicon = g_themed_icon_new (ICON_NAME_THUMBNAIL_LOADING);
         icon = nautilus_icon_info_lookup (gicon, size, scale);
@@ -7842,7 +7842,7 @@ nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
     {
         nautilus_file_invalidate_extension_info_internal (file);
     }
-    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL))
+    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_BUFFER))
     {
         invalidate_thumbnail (file);
     }
@@ -7947,7 +7947,7 @@ nautilus_file_get_all_attributes (void)
            NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
            NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO |
-           NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL |
+           NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER |
            NAUTILUS_FILE_ATTRIBUTE_MOUNT;
 }
 
