@@ -75,8 +75,9 @@ typedef struct
  *  idle handler is currently registered. */
 static guint thumbnail_thread_starter_id = 0;
 
-/* The list of NautilusThumbnailInfo structs containing information about the
- *  thumbnails we are making. */
+/* Hash queues of NautilusThumbnailInfo structs containing information about
+ * the thumbnails we are making, split into a normal and high priority. */
+static NautilusHashQueue *priority_thumbnails_to_make = NULL;
 static NautilusHashQueue *thumbnails_to_make = NULL;
 
 /* The icons being currently thumbnailed. */
@@ -200,6 +201,7 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
         return;
     }
 
+    nautilus_hash_queue_remove (priority_thumbnails_to_make, file_uri);
     nautilus_hash_queue_remove (thumbnails_to_make, file_uri);
 
     info = g_hash_table_lookup (currently_thumbnailing_hash, file_uri);
@@ -217,7 +219,18 @@ nautilus_thumbnail_prioritize (const char *file_uri)
         return;
     }
 
-    nautilus_hash_queue_move_existing_to_head (thumbnails_to_make, file_uri);
+    NautilusThumbnailInfo *info = nautilus_hash_queue_find_item (thumbnails_to_make,
+                                                                 file_uri);
+    if (info != NULL)
+    {
+        nautilus_hash_queue_enqueue (priority_thumbnails_to_make, info);
+        nautilus_hash_queue_remove (thumbnails_to_make, file_uri);
+    }
+    else
+    {
+        /* Files at the bottom of the visible view call this function last, so
+         * moving to the head of the queue here is counter-productive. */
+    }
 }
 
 void
@@ -228,7 +241,17 @@ nautilus_thumbnail_deprioritize (const char *file_uri)
         return;
     }
 
-    nautilus_hash_queue_move_existing_to_tail (thumbnails_to_make, file_uri);
+    NautilusThumbnailInfo *info = nautilus_hash_queue_find_item (priority_thumbnails_to_make,
+                                                                 file_uri);
+    if (info != NULL)
+    {
+        nautilus_hash_queue_enqueue (thumbnails_to_make, info);
+        nautilus_hash_queue_remove (priority_thumbnails_to_make, file_uri);
+    }
+    else
+    {
+        nautilus_hash_queue_move_existing_to_tail (thumbnails_to_make, file_uri);
+    }
 }
 
 /***************************************************************************
@@ -343,6 +366,8 @@ nautilus_create_thumbnail (NautilusFile *file)
     if (G_UNLIKELY (thumbnails_to_make == NULL))
     {
         thumbnails_to_make = nautilus_hash_queue_new (g_str_hash, g_str_equal, create_info_key, NULL);
+        priority_thumbnails_to_make = nautilus_hash_queue_new (g_str_hash, g_str_equal,
+                                                               create_info_key, NULL);
         currently_thumbnailing_hash = g_hash_table_new (g_str_hash,
                                                         g_str_equal);
     }
@@ -354,6 +379,10 @@ nautilus_create_thumbnail (NautilusFile *file)
     if (existing_info == NULL)
     {
         existing_info = nautilus_hash_queue_find_item (thumbnails_to_make, info->image_uri);
+    }
+    if (existing_info == NULL)
+    {
+        existing_info = nautilus_hash_queue_find_item (priority_thumbnails_to_make, info->image_uri);
     }
 
     if (existing_info == NULL)
@@ -404,7 +433,8 @@ thumbnail_finalize (NautilusThumbnailInfo *info)
         nautilus_hash_queue_enqueue (thumbnails_to_make, info);
     }
 
-    if (nautilus_hash_queue_is_empty (thumbnails_to_make))
+    if (nautilus_hash_queue_is_empty (thumbnails_to_make) &&
+        nautilus_hash_queue_is_empty (priority_thumbnails_to_make))
     {
         g_debug ("(Thumbnail Async Thread) Exiting");
     }
@@ -547,11 +577,20 @@ thumbnail_starter_cb (gpointer data)
     }
 
     /* We loop until the queue is empty, or we reach the thread limit. */
-    while (ignored_thumbnails < nautilus_hash_queue_get_length (thumbnails_to_make) &&
+    while (ignored_thumbnails < (nautilus_hash_queue_get_length (priority_thumbnails_to_make) +
+                                 nautilus_hash_queue_get_length (thumbnails_to_make)) &&
            running_threads <= max_threads)
     {
-        info = nautilus_hash_queue_peek_head (thumbnails_to_make);
-        nautilus_hash_queue_remove (thumbnails_to_make, info->image_uri);
+        if (nautilus_hash_queue_get_length (priority_thumbnails_to_make) > 0)
+        {
+            info = nautilus_hash_queue_peek_head (priority_thumbnails_to_make);
+            nautilus_hash_queue_remove (priority_thumbnails_to_make, info->image_uri);
+        }
+        else
+        {
+            info = nautilus_hash_queue_peek_head (thumbnails_to_make);
+            nautilus_hash_queue_remove (thumbnails_to_make, info->image_uri);
+        }
 
         current_orig_mtime = info->updated_file_mtime;
         time (&current_time);
