@@ -164,9 +164,8 @@ update_icon (NautilusNameCell *self)
     gtk_widget_set_margin_bottom (self->fixed_height_box, extra_margin);
 
     if (icon_size >= NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE &&
-        nautilus_file_get_thumbnail_path (file) != NULL &&
-        nautilus_file_should_show_thumbnail (file) &&
-        nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER))
+        nautilus_file_has_thumbnail (file) &&
+        nautilus_file_should_show_thumbnail (file))
     {
         gtk_widget_add_css_class (self->icon, "thumbnail");
     }

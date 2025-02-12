@@ -27,7 +27,7 @@
 #include "nautilus-file-undo-operations.h"
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*,preview::icon"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*,preview::icon"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -155,6 +155,7 @@ struct NautilusFilePrivate
 	
 	guint got_custom_display_name       : 1;
 
+        guint thumbnail_info_is_up_to_date  : 1;
 	guint thumbnail_is_up_to_date       : 1;
 	guint thumbnailing_failed           : 1;
 	
@@ -235,6 +236,8 @@ gboolean      nautilus_file_update_info                    (NautilusFile        
 							    GFileInfo              *info);
 gboolean      nautilus_file_update_name                    (NautilusFile           *file,
 							    const char             *name);
+gboolean      nautilus_file_update_thumbnail_info          (NautilusFile           *file,
+                                                            GFileInfo              *info);
 gboolean      nautilus_file_update_metadata_from_info      (NautilusFile           *file,
 							    GFileInfo              *info);
 
