@@ -43,6 +43,13 @@
 /* Keep async. jobs down to this number for all directories. */
 #define MAX_ASYNC_JOBS 10
 
+struct ThumbnailInfoState
+{
+    NautilusDirectory *directory;
+    GCancellable *cancellable;
+    NautilusFile *file;
+};
+
 struct ThumbnailBufState
 {
     NautilusDirectory *directory;
@@ -428,6 +435,18 @@ deep_count_cancel (NautilusDirectory *directory)
 }
 
 static void
+thumbnail_info_cancel (NautilusDirectory *directory)
+{
+    if (directory->details->thumbnail_info_state != NULL)
+    {
+        g_cancellable_cancel (directory->details->thumbnail_info_state->cancellable);
+        directory->details->thumbnail_info_state->directory = NULL;
+        directory->details->thumbnail_info_state = NULL;
+        async_job_end (directory, "thumbnail info");
+    }
+}
+
+static void
 thumbnail_buf_cancel (NautilusDirectory *directory)
 {
     if (directory->details->thumbnail_buf_state != NULL)
@@ -645,9 +664,16 @@ nautilus_directory_set_up_request (NautilusFileAttributes file_attributes)
         REQUEST_SET_TYPE (request, REQUEST_EXTENSION_INFO);
     }
 
+    if ((file_attributes & NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO) != 0)
+    {
+        REQUEST_SET_TYPE (request, REQUEST_THUMBNAIL_INFO);
+        REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
+    }
+
     if (file_attributes & NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER)
     {
         REQUEST_SET_TYPE (request, REQUEST_THUMBNAIL_BUFFER);
+        REQUEST_SET_TYPE (request, REQUEST_THUMBNAIL_INFO);
         REQUEST_SET_TYPE (request, REQUEST_FILE_INFO);
     }
 
@@ -1592,6 +1618,13 @@ nautilus_async_destroying_file (NautilusFile *file)
         changed = TRUE;
     }
 
+    if (directory->details->thumbnail_info_state != NULL &&
+        directory->details->thumbnail_info_state->file == file)
+    {
+        directory->details->thumbnail_info_state->file = NULL;
+        changed = TRUE;
+    }
+
     if (directory->details->thumbnail_buf_state != NULL &&
         directory->details->thumbnail_buf_state->file == file)
     {
@@ -1657,6 +1690,12 @@ static gboolean
 lacks_extension_info (NautilusFile *file)
 {
     return file->details->pending_info_providers != NULL;
+}
+
+static gboolean
+lacks_thumbnail_info (NautilusFile *file)
+{
+    return !file->details->thumbnail_info_is_up_to_date;
 }
 
 static gboolean
@@ -1748,6 +1787,14 @@ request_is_satisfied (NautilusDirectory *directory,
     if (REQUEST_WANTS_TYPE (request, REQUEST_DEEP_COUNT))
     {
         if (has_problem (directory, file, lacks_deep_count))
+        {
+            return FALSE;
+        }
+    }
+
+    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_INFO))
+    {
+        if (has_problem (directory, file, lacks_thumbnail_info))
         {
             return FALSE;
         }
@@ -3121,6 +3168,132 @@ file_info_start (NautilusDirectory *directory,
 }
 
 static void
+thumbnail_info_state_free (ThumbnailInfoState *state)
+{
+    g_clear_object (&state->cancellable);
+    g_free (state);
+}
+
+static void
+thumbnail_info_stop (NautilusDirectory *directory)
+{
+    if (directory->details->thumbnail_info_state == NULL)
+    {
+        return;
+    }
+
+    NautilusFile *file = directory->details->thumbnail_info_state->file;
+
+    if (file != NULL)
+    {
+        g_assert (NAUTILUS_IS_FILE (file));
+        g_assert (file->details->directory == directory);
+
+        if (is_needy (file,
+                      lacks_thumbnail_info,
+                      REQUEST_THUMBNAIL_INFO))
+        {
+            return;
+        }
+    }
+
+    /* The info is not wanted, so stop it. */
+    thumbnail_info_cancel (directory);
+}
+
+static void
+thumbnail_info_done (NautilusDirectory *directory,
+                     NautilusFile      *file,
+                     GFileInfo         *info)
+{
+    if (info != NULL)
+    {
+        file->details->thumbnail_info_is_up_to_date = TRUE;
+    }
+
+    nautilus_directory_async_state_changed (directory);
+}
+
+static void
+thumbnail_info_query_callback (GObject      *source_object,
+                               GAsyncResult *res,
+                               gpointer      user_data)
+{
+    ThumbnailInfoState *state = user_data;
+    gboolean changed = FALSE;
+
+    if (state->directory == NULL)
+    {
+        /* Operation was cancelled. Bail out */
+        thumbnail_info_state_free (state);
+        return;
+    }
+
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileInfo) info = g_file_query_info_finish (G_FILE (source_object), res, &error);
+    g_autoptr (NautilusDirectory) directory = nautilus_directory_ref (state->directory);
+    g_autoptr (NautilusFile) file = nautilus_file_ref (state->file);
+
+    if (info != NULL && error == NULL)
+    {
+        changed = nautilus_file_update_thumbnail_info (state->file, info);
+    }
+
+    state->directory->details->thumbnail_info_state = NULL;
+    async_job_end (state->directory, "thumbnail info");
+
+    thumbnail_info_done (directory, file, info);
+
+    if (changed)
+    {
+        nautilus_file_changed (file);
+    }
+
+    thumbnail_info_state_free (state);
+}
+
+static void
+thumbnail_info_start (NautilusDirectory *directory,
+                      NautilusFile      *file,
+                      gboolean          *doing_io)
+{
+    if (directory->details->thumbnail_info_state != NULL)
+    {
+        *doing_io = TRUE;
+        return;
+    }
+
+    if (!is_needy (file,
+                   lacks_thumbnail_info,
+                   REQUEST_THUMBNAIL_INFO))
+    {
+        return;
+    }
+    *doing_io = TRUE;
+
+    if (!async_job_start (directory, "thumbnail info"))
+    {
+        return;
+    }
+
+    ThumbnailInfoState *state = g_new0 (ThumbnailInfoState, 1);
+    g_autoptr (GFile) location = nautilus_file_get_location (file);
+
+    state->directory = directory;
+    state->file = file;
+    state->cancellable = g_cancellable_new ();
+
+    directory->details->thumbnail_info_state = state;
+
+    g_file_query_info_async (location,
+                             "thumbnail::*",
+                             G_FILE_QUERY_INFO_NONE,
+                             G_PRIORITY_DEFAULT, state->cancellable,
+                             thumbnail_info_query_callback,
+                             state);
+}
+
+static void
 thumbnail_buf_done (NautilusDirectory *directory,
                     NautilusFile      *file,
                     GdkPixbuf         *pixbuf)
@@ -3828,6 +4001,7 @@ start_or_stop_io (NautilusDirectory *directory)
     deep_count_stop (directory);
     extension_info_stop (directory);
     mount_stop (directory);
+    thumbnail_info_stop (directory);
     thumbnail_buf_stop (directory);
     filesystem_info_stop (directory);
 
@@ -3839,6 +4013,7 @@ start_or_stop_io (NautilusDirectory *directory)
 
         /* Start getting attributes if possible */
         file_info_start (directory, file, &doing_io);
+        thumbnail_info_start (directory, file, &doing_io);
 
         if (doing_io)
         {
@@ -3932,6 +4107,7 @@ nautilus_directory_cancel (NautilusDirectory *directory)
     file_list_cancel (directory);
     new_files_cancel (directory);
     extension_info_cancel (directory);
+    thumbnail_info_cancel (directory);
     thumbnail_buf_cancel (directory);
     mount_cancel (directory);
     filesystem_info_cancel (directory);
@@ -3974,6 +4150,17 @@ cancel_file_info_for_file (NautilusDirectory *directory,
     if (directory->details->get_info_file == file)
     {
         file_info_cancel (directory);
+    }
+}
+
+static void
+cancel_thumbnail_info_for_file (NautilusDirectory *directory,
+                                NautilusFile      *file)
+{
+    if (directory->details->thumbnail_info_state != NULL &&
+        directory->details->thumbnail_info_state->file == file)
+    {
+        thumbnail_info_cancel (directory);
     }
 }
 
@@ -4039,6 +4226,11 @@ cancel_loading_attributes (NautilusDirectory      *directory,
         extension_info_cancel (directory);
     }
 
+    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_INFO))
+    {
+        thumbnail_info_cancel (directory);
+    }
+
     if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_BUFFER))
     {
         thumbnail_buf_cancel (directory);
@@ -4078,6 +4270,10 @@ nautilus_directory_cancel_loading_file_attributes (NautilusDirectory      *direc
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILESYSTEM_INFO))
     {
         cancel_filesystem_info_for_file (directory, file);
+    }
+    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_INFO))
+    {
+        cancel_thumbnail_info_for_file (directory, file);
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_BUFFER))
     {
