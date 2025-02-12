@@ -33,6 +33,7 @@ typedef struct DirectoryCountState DirectoryCountState;
 typedef struct DeepCountState DeepCountState;
 typedef struct GetInfoState GetInfoState;
 typedef struct NewFilesState NewFilesState;
+typedef struct ThumbnailInfoState ThumbnailInfoState;
 typedef struct ThumbnailBufState ThumbnailBufState;
 typedef struct MountState MountState;
 typedef struct FilesystemInfoState FilesystemInfoState;
@@ -42,6 +43,7 @@ typedef enum {
 	REQUEST_DIRECTORY_COUNT,
 	REQUEST_FILE_INFO,
 	REQUEST_FILE_LIST, /* always FALSE if file != NULL */
+	REQUEST_THUMBNAIL_INFO,
 	REQUEST_EXTENSION_INFO,
 	REQUEST_THUMBNAIL_BUFFER,
 	REQUEST_MOUNT,
@@ -121,6 +123,8 @@ struct NautilusDirectoryPrivate
 	NautilusInfoProvider *extension_info_provider;
 	NautilusOperationHandle *extension_info_in_progress;
 	guint extension_info_idle;
+
+	ThumbnailInfoState *thumbnail_info_state;
 
 	ThumbnailBufState *thumbnail_buf_state;
 
