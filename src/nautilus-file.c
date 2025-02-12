@@ -2881,6 +2881,30 @@ nautilus_file_update_info (NautilusFile *file,
     return update_info_internal (file, info, FALSE);
 }
 
+gboolean
+nautilus_file_update_thumbnail_info (NautilusFile *file,
+                                     GFileInfo    *info)
+{
+    gboolean changed = FALSE;
+
+    const gchar *thumbnail_path = g_file_info_get_attribute_byte_string (info,
+                                                                         G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
+    if (g_set_str (&file->details->thumbnail_path, thumbnail_path))
+    {
+        changed = TRUE;
+    }
+
+    gboolean thumbnailing_failed = g_file_info_get_attribute_boolean (info,
+                                                                      G_FILE_ATTRIBUTE_THUMBNAILING_FAILED);
+    if (file->details->thumbnailing_failed != thumbnailing_failed)
+    {
+        changed = TRUE;
+        file->details->thumbnailing_failed = thumbnailing_failed;
+    }
+
+    return changed;
+}
+
 static gboolean
 update_name_internal (NautilusFile *file,
                       const char   *name,
@@ -7790,6 +7814,12 @@ invalidate_file_info (NautilusFile *file)
 }
 
 static void
+invalidate_thumbnail_info (NautilusFile *file)
+{
+    file->details->thumbnail_info_is_up_to_date = FALSE;
+}
+
+static void
 invalidate_thumbnail (NautilusFile *file)
 {
     file->details->thumbnail_is_up_to_date = FALSE;
@@ -7841,6 +7871,10 @@ nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
     if (REQUEST_WANTS_TYPE (request, REQUEST_EXTENSION_INFO))
     {
         nautilus_file_invalidate_extension_info_internal (file);
+    }
+    if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_INFO))
+    {
+        invalidate_thumbnail_info (file);
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_THUMBNAIL_BUFFER))
     {
@@ -7947,6 +7981,7 @@ nautilus_file_get_all_attributes (void)
            NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
            NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO |
+           NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO |
            NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER |
            NAUTILUS_FILE_ATTRIBUTE_MOUNT;
 }
