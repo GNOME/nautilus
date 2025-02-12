@@ -1,3 +1,67 @@
+Major Changes in 48.beta
+========================
+* Enhancements:
+- Improve directory loading performance (Khalid Abu Shawarib, Peter Eisenmann)
+- Use AdwDialog for list view column chooser and properties dialog (Automeris naranja)
+- Change tab behavior for the sidebar (Lukáš Tyrychtr)
+- Create about dialog from appdata (Felipe Borges, Matthijs Velsink, Peter Eisenmann)
+- Port various dialogs to AdwAlertDialog (Automeris naranja)
+- Keep mount monitor around for caching in gvfs to work (Khalid Abu Shawarib)
+- Adjust to localsearch changes (Bobby Rong, Carlos Garnacho, Khalid Abu Shawarib, Sam Thursfield)
+- Hide Trash banner when empty (Isaac Yeo)
+- Ellipsize sidebar labels in the middle (Peter Eisenmann)
+- Add a CONTRIBUTING file (Corey Berla)
+- Allow removing bookmarks from pathbar (Isaac Yeo)
+- Various UI tweaks and label changes (Automeris naranja, Brage Fuglseth, Jamie Gravendeel, Khalid Abu Shawarib)
+- Various speedups (Corey Berla, Khalid Abu Shawarib)
+
+* Bugfixes:
+- Fix unintended grid relayouting on thumbnail loading (Calvin Walton)
+- Fix double a11y presentation of the filename in grid view (Lukáš Tyrychtr)
+- Keep CI running (Khalid Abu Shawarib, Peter Eisenmann)
+- Fix query editor translation (Aleksandr Melman)
+- Hide empty extensions list in properties (Khalid Abu Shawarib)
+- Fix NULL dereference with extensions (Philipp Unger)
+
+* Cleanups:
+- Improve grid selection implementation (Adrien Plazas)
+- Avoid setting up unnecessary directory monitors (Corey Berla)
+- Replace setlocale hack with uselocale (Khalid Abu Shawarib)
+- Stop setting invisible menu icons (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 47.2
+=====================
+* Enhancements:
+ - Adopt CI release workflow (Khalid Abu Shawarib)
+ - Speed up batch file deletions (Khalid Abu Shawarib)
+ - Speed up simple recursive search through mount monitors (Khalid Abu Shawarib)
+
+* Bugfixes:
+ - Fix thumbnails for changed files (Khalid Abu Shawarib)
+ - Fix parent path URIs for remote path (rain)
+ - Fix potential crashes in directory callbacks (Khalid Abu Shawarib)
+
+* Translation updates (GNOME Translation Project contributors)
+
+Major Changes in 47.1
+=====================
+* Enhancements:
+ - Speed up thumbnail loading (Khalid Abu Shawarib)
+* Bugfixes:
+ - Do not force reload when error is present to avoid showing auth dialog (Gary Li)
+ - Open folder in correct window during a DnD hover (Khalid Abu Shawarib)
+ - Show username in file properties if name is an empty string (Khalid Abu Shawarib)
+ - Various a11y fixes (Khalid Abu Shawarib)
+ - Fix number placement when making new name for directory (Khalid Abu Shawarib)
+ - Various pathbar fixes (Corey Berla, Khalid Abu Shawarib)
+ - Show alert dialog when a symlink is broken (Automeris naranja)
+ - Fix crashes when opening (Khalid Abu Shawarib)
+ - Various sidebar fixes (Khalid Abu Shawarib, sid)
+ - Fix ctrl + scroll to zoom in and out of view (Corey Berla)
+* Translation updates (GNOME Translation Project contributors)
+
 Major changes in 47.0
 =====================
 * Enhancements
