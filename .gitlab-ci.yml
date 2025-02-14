@@ -1,6 +1,7 @@
 include:
   - project: "GNOME/citemplates"
     file: "flatpak/flatpak_ci_initiative.yml"
+  - remote: 'https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/e195d80f35b45cc73668be3767b923fd76c70ed5/templates/fedora.yml'
   - component: gitlab.gnome.org/GNOME/citemplates/release-service@master
     inputs:
       job-stage: release
