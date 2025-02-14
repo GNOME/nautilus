@@ -62,9 +62,9 @@ workflow:
            $CI_PIPELINE_SOURCE == "web") &&
           $CI_COMMIT_TITLE !~ /^Update.*translation$/
 
-.nautilus.fedora:rawhide:
+.nautilus.fedora:
     variables:
-        FDO_DISTRIBUTION_VERSION: rawhide
+        FDO_DISTRIBUTION_VERSION: 41
         FDO_DISTRIBUTION_TAG: '2025-02-14.0'
         FDO_DISTRIBUTION_COMPRESSION_FORMAT: zstd:chunked
 
@@ -91,7 +91,7 @@ nightly@aarch64:
 potfile:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora:rawhide
+        - .nautilus.fedora
     stage: review
     script:
         - data/check-potfiles.sh
@@ -99,7 +99,7 @@ potfile:
 style check:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora:rawhide
+        - .nautilus.fedora
     stage: review
     artifacts:
         name: 'Style check artifacts'
@@ -117,7 +117,7 @@ style check:
 update image:
     extends:
     - .fdo.container-build@fedora
-    - .nautilus.fedora:rawhide
+    - .nautilus.fedora
     stage: image
     variables:
         FDO_DISTRIBUTION_PACKAGES: $DEPENDENCIES
@@ -130,7 +130,7 @@ update image:
 asan:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora:rawhide
+        - .nautilus.fedora
     variables:
         CFLAGS: "-fno-omit-frame-pointer -fsanitize=address"
         LSAN_OPTIONS: suppressions=$CI_PROJECT_DIR/data/leak-suppress.txt
@@ -155,7 +155,7 @@ asan:
 pages:
     extends:
         - .fdo.distribution-image@fedora
-        - .nautilus.fedora:rawhide
+        - .nautilus.fedora
     stage: deploy
     rules:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == "GNOME"
