@@ -123,9 +123,6 @@ update image:
         FDO_DISTRIBUTION_PACKAGES: $DEPENDENCIES
         FDO_DISTRIBUTION_EXEC: ".gitlab/image-script.sh"
         CFLAGS: "-fno-omit-frame-pointer"
-    rules:
-        - if: $CI_PROJECT_NAMESPACE != "GNOME"
-          when: never
 
 asan:
     extends:
