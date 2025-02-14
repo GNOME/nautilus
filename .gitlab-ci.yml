@@ -119,7 +119,7 @@ asan:
     script:
         - meson setup -Dextensions=false -Dintrospection=false -Dtests=all $MESON_BUILD_DIR
         - meson compile -C $MESON_BUILD_DIR
-        - meson test -C $MESON_BUILD_DIR
+        - meson test --suite display --suite displayless -C $MESON_BUILD_DIR
     artifacts:
         name: 'Address Sanitizer-built test results'
         when: on_failure
