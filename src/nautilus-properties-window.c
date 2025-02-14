@@ -412,11 +412,8 @@ typedef struct
     GList *files;
     GtkWidget *parent_widget;
     GtkWindow *parent_window;
-    char *startup_id;
     char *pending_key;
     GHashTable *pending_files;
-    NautilusPropertiesWindowCallback callback;
-    gpointer callback_data;
     NautilusPropertiesWindow *window;
     gboolean cancelled;
 } StartupData;
@@ -3637,9 +3634,6 @@ startup_data_new (GList                            *files,
                   const char                       *pending_key,
                   GtkWidget                        *parent_widget,
                   GtkWindow                        *parent_window,
-                  const char                       *startup_id,
-                  NautilusPropertiesWindowCallback  callback,
-                  gpointer                          callback_data,
                   NautilusPropertiesWindow         *window)
 {
     StartupData *data;
@@ -3649,12 +3643,9 @@ startup_data_new (GList                            *files,
     data->files = nautilus_file_list_copy (files);
     data->parent_widget = parent_widget;
     data->parent_window = parent_window;
-    data->startup_id = g_strdup (startup_id);
     data->pending_key = g_strdup (pending_key);
     data->pending_files = g_hash_table_new (g_direct_hash,
                                             g_direct_equal);
-    data->callback = callback;
-    data->callback_data = callback_data;
     data->window = window;
 
     for (l = data->files; l != NULL; l = l->next)
@@ -3671,7 +3662,6 @@ startup_data_free (StartupData *data)
     nautilus_file_list_free (data->files);
     g_hash_table_destroy (data->pending_files);
     g_free (data->pending_key);
-    g_free (data->startup_id);
     g_free (data);
 }
 
@@ -3822,12 +3812,6 @@ widget_on_destroy (GtkWidget *widget,
 {
     StartupData *data = (StartupData *) user_data;
 
-
-    if (data->callback != NULL)
-    {
-        data->callback (data->callback_data);
-    }
-
     properties_window_finish (data);
 
     return GDK_EVENT_PROPAGATE;
@@ -3864,10 +3848,7 @@ is_directory_ready_callback (NautilusFile *file,
 
 void
 nautilus_properties_window_present (GList                            *files,
-                                    GtkWidget                        *parent_widget,
-                                    const gchar                      *startup_id,
-                                    NautilusPropertiesWindowCallback  callback,
-                                    gpointer                          callback_data)
+                                    GtkWidget                        *parent_widget)
 {
     GList *l, *next;
     GtkWindow *parent_window;
@@ -3887,9 +3868,6 @@ nautilus_properties_window_present (GList                            *files,
     /* Look to see if we're already waiting for a window for this file. */
     if (g_hash_table_lookup (pending_lists, pending_key) != NULL)
     {
-        /* FIXME: No callback is done if this happen. In practice, it's a quite
-         * corner case
-         */
         return;
     }
 
@@ -3906,9 +3884,6 @@ nautilus_properties_window_present (GList                            *files,
                                      pending_key,
                                      parent_widget,
                                      parent_window,
-                                     startup_id,
-                                     callback,
-                                     callback_data,
                                      NULL);
 
     /* Wait until we can tell whether it's a directory before showing, since
