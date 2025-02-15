@@ -109,7 +109,7 @@ update image:
 
 asan:
     variables:
-        CFLAGS: "-fno-omit-frame-pointer -fsanitize=address"
+        CFLAGS: "-fno-omit-frame-pointer"
         LSAN_OPTIONS: suppressions=$CI_PROJECT_DIR/data/leak-suppress.txt
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: analyze
@@ -117,7 +117,7 @@ asan:
         - when: manual
           allow_failure: true
     script:
-        - meson setup -Dextensions=false -Dintrospection=false -Dtests=all $MESON_BUILD_DIR
+        - meson setup -Db_sanitize=address -Dextensions=false -Dintrospection=false -Dtests=all $MESON_BUILD_DIR
         - meson compile -C $MESON_BUILD_DIR
         - meson test --suite display --suite displayless -C $MESON_BUILD_DIR
     artifacts:
