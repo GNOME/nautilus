@@ -19,6 +19,8 @@
  *
  */
 
+#include <adwaita.h>
+
 #include <config.h>
 
 #include <string.h>
@@ -351,15 +353,9 @@ nautilus_floating_bar_constructed (GObject *obj)
 
     box = GTK_WIDGET (obj);
 
-    w = gtk_spinner_new ();
+    w = adw_spinner_new ();
     gtk_box_append (GTK_BOX (box), w);
     gtk_widget_set_visible (w, self->show_spinner);
-    /* As a workaround for https://gitlab.gnome.org/GNOME/gtk/-/issues/1025,
-     * ensure the spinner animates if and only if it's visible, to reduce CPU
-     * usage. */
-    g_object_bind_property (obj, "show-spinner",
-                            w, "spinning",
-                            G_BINDING_SYNC_CREATE);
     self->spinner = w;
 
     gtk_widget_set_size_request (w, 16, 16);
