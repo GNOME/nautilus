@@ -20,7 +20,7 @@ struct _NautilusAppChooser
     gchar *file_name;
     gboolean single_content_type;
 
-    GtkWidget *app_chooser_widget_box;
+    GtkWidget *content_box;
     GtkWidget *label_description;
     GtkWidget *set_default_row;
     GtkWidget *set_default_box;
@@ -169,7 +169,7 @@ nautilus_app_chooser_constructed (GObject *object)
     self->app_chooser_widget = gtk_app_chooser_widget_new (self->content_type);
     gtk_widget_set_vexpand (self->app_chooser_widget, TRUE);
     gtk_widget_add_css_class (self->app_chooser_widget, "lowres-icon");
-    gtk_box_append (GTK_BOX (self->app_chooser_widget_box), self->app_chooser_widget);
+    gtk_box_append (GTK_BOX (self->content_box), self->app_chooser_widget);
 
     gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
@@ -256,7 +256,7 @@ nautilus_app_chooser_class_init (NautilusAppChooserClass *klass)
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-app-chooser.ui");
 
-    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, app_chooser_widget_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, content_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, label_description);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_row);
     gtk_widget_class_bind_template_child (widget_class, NautilusAppChooser, set_default_box);

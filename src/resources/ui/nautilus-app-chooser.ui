@@ -35,7 +35,7 @@
                             <property name="margin-start">18</property>
                             <property name="margin-end">18</property>
                             <property name="child">
-                              <object class="GtkBox">
+                              <object class="GtkBox" id="content_box">
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">12</property>
                                 <child>
@@ -44,12 +44,6 @@
                                     <property name="wrap-mode">PANGO_WRAP_WORD_CHAR</property>
                                     <property name="justify">center</property>
                                     <property name="label" translatable="yes">Choose an app to open the selected files.</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkBox" id="app_chooser_widget_box">
-                                    <property name="halign">center</property>
-                                    <property name="vexpand">True</property>
                                   </object>
                                 </child>
                               </object>
