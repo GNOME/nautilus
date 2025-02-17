@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus trunk\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2025-01-27 16:12+0000\n"
-"PO-Revision-Date: 2025-01-28 17:28+0300\n"
+"POT-Creation-Date: 2025-02-13 04:20+0000\n"
+"PO-Revision-Date: 2025-02-15 15:41+0300\n"
 "Last-Translator: Artur So <arturios2005@mail.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -613,7 +613,7 @@ msgstr "Каналы"
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: extensions/audio-video-properties/totem-properties-view.c:338
 #: extensions/image-properties/nautilus-image-properties-model.c:280
-#: src/nautilus-application.c:185 src/nautilus-window-slot.c:1853
+#: src/nautilus-application.c:185 src/nautilus-window-slot.c:1846
 msgid "Oops! Something went wrong."
 msgstr "Ой! Что-то пошло не так."
 
@@ -1145,7 +1145,7 @@ msgstr "Новизна"
 msgid "The date the file was accessed by the user."
 msgstr "Дата последнего обращения пользователя к файлу."
 
-#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:736
+#: src/nautilus-column-utilities.c:159 src/nautilus-properties-window.c:737
 #: src/nautilus-star-cell.c:66
 msgid "Star"
 msgstr "Избранное"
@@ -1301,7 +1301,7 @@ msgid "Details: The proxy has not been created."
 msgstr "Подробности: Прокси-сервер не был создан."
 
 #. Translators: this is of the format "hostname (uri-scheme)"
-#: src/nautilus-directory.c:640
+#: src/nautilus-directory.c:644
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -1533,7 +1533,7 @@ msgstr[0] "%'u файл"
 msgstr[1] "%'u файла"
 msgstr[2] "%'u файлов"
 
-#: src/nautilus-file.c:6327 src/nautilus-properties-window.c:2094
+#: src/nautilus-file.c:6327 src/nautilus-properties-window.c:2088
 #, c-format
 msgid "%s byte"
 msgid_plural "%s bytes"
@@ -1788,7 +1788,7 @@ msgstr[0] "%'d час"
 msgstr[1] "%'d часа"
 msgstr[2] "%'d часов"
 
-#: src/nautilus-file-operations.c:484 src/nautilus-properties-window.c:899
+#: src/nautilus-file-operations.c:484 src/nautilus-properties-window.c:900
 msgid "unknown"
 msgstr "неизвестно"
 
@@ -1991,7 +1991,7 @@ msgstr "Не удалось извлечь «%s»"
 #: src/nautilus-file-operations.c:2336
 #, c-format
 msgid "Unable to unmount “%s”"
-msgstr "Не удалось размонтировать «%s»"
+msgstr "Не удалось отсоединить «%s»"
 
 #: src/nautilus-file-operations.c:2507
 msgid "Empty Trash Before Ejecting?"
@@ -2598,7 +2598,7 @@ msgstr "Сжатие файлов"
 msgid "Searching…"
 msgstr "Поиск…"
 
-#: src/nautilus-files-view.c:399 src/nautilus-window-slot.c:939
+#: src/nautilus-files-view.c:399 src/nautilus-window-slot.c:926
 msgid "Loading…"
 msgstr "Загрузка…"
 
@@ -2751,7 +2751,7 @@ msgid "Select Copy Destination"
 msgstr "Выбрать место для копирования"
 
 #: src/nautilus-files-view.c:6109 src/nautilus-files-view.c:6497
-#: src/nautilus-portal.c:417 src/nautilus-properties-window.c:4066
+#: src/nautilus-portal.c:417 src/nautilus-properties-window.c:4063
 #: src/resources/ui/nautilus-files-view-select-items.ui:23
 msgid "_Select"
 msgstr "_Выбрать"
@@ -3882,7 +3882,7 @@ msgstr "Меню текущей папки"
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:404 src/nautilus-properties-window.c:848
+#: src/nautilus-pathbar.c:404 src/nautilus-properties-window.c:849
 msgid "Operating System"
 msgstr "Операционная система"
 
@@ -4052,64 +4052,64 @@ msgstr "Только запись, без доступа"
 msgid "Access-Only"
 msgstr "Только доступ"
 
-#: src/nautilus-properties-window.c:637
+#: src/nautilus-properties-window.c:638
 msgid "Custom icon removed"
 msgstr "Пользовательский значок удален"
 
-#: src/nautilus-properties-window.c:638 src/nautilus-window.c:807
+#: src/nautilus-properties-window.c:639 src/nautilus-window.c:807
 #: src/resources/ui/nautilus-window.ui:22
 msgid "_Undo"
 msgstr "_Отменить"
 
-#: src/nautilus-properties-window.c:668
+#: src/nautilus-properties-window.c:669
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "Нельзя назначить более одного пользовательского значка одновременно!"
 
-#: src/nautilus-properties-window.c:669
+#: src/nautilus-properties-window.c:670
 msgid "Please drop just one image to set a custom icon."
 msgstr ""
 "Перетащите только одно изображение, чтобы установить пользовательский значок."
 
-#: src/nautilus-properties-window.c:685
+#: src/nautilus-properties-window.c:686
 msgid "The file that you dropped is not local."
 msgstr "Файл, который вы перетащили, не является локальным."
 
-#: src/nautilus-properties-window.c:686 src/nautilus-properties-window.c:693
+#: src/nautilus-properties-window.c:687 src/nautilus-properties-window.c:694
 msgid "You can only use local images as custom icons."
 msgstr "В качестве значков можно использовать только локальные изображения."
 
-#: src/nautilus-properties-window.c:692
+#: src/nautilus-properties-window.c:693
 msgid "The file that you dropped is not an image."
 msgstr "Файл, который вы перетащили, не является изображением."
 
 #. Translators: This is a verb for tagging or untagging a file with a star.
 #. Unmarks a file as starred (starred)
-#: src/nautilus-properties-window.c:736 src/nautilus-star-cell.c:66
+#: src/nautilus-properties-window.c:737 src/nautilus-star-cell.c:66
 #: src/resources/ui/nautilus-files-view-context-menus.ui:256
 msgid "Unstar"
 msgstr "Удалить из избранных"
 
-#: src/nautilus-properties-window.c:1579
+#: src/nautilus-properties-window.c:1588
 msgid "Cancel Group Change?"
 msgstr "Отменить изменение группы?"
 
-#: src/nautilus-properties-window.c:1728
+#: src/nautilus-properties-window.c:1737
 msgid "Cancel Owner Change?"
 msgstr "Отменить изменение владельца?"
 
-#: src/nautilus-properties-window.c:1880 src/nautilus-properties-window.c:1927
+#: src/nautilus-properties-window.c:1876 src/nautilus-properties-window.c:1921
 msgid "Multiple"
 msgstr "Несколько"
 
-#: src/nautilus-properties-window.c:2061
+#: src/nautilus-properties-window.c:2055
 msgid "Empty folder"
 msgstr "Пустая папка"
 
-#: src/nautilus-properties-window.c:2065
+#: src/nautilus-properties-window.c:2059
 msgid "Contents unreadable"
 msgstr "Содержимое нечитаемо"
 
-#: src/nautilus-properties-window.c:2077
+#: src/nautilus-properties-window.c:2071
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4117,26 +4117,26 @@ msgstr[0] "%'d объект, всего %s"
 msgstr[1] "%'d объекта, всего %s"
 msgstr[2] "%'d объектов, всего %s"
 
-#: src/nautilus-properties-window.c:2087
+#: src/nautilus-properties-window.c:2081
 msgid "(some contents unreadable)"
 msgstr "(некоторое содержимое нечитаемо)"
 
 #. Translators: %s will be filled with a filesystem type, such as 'ext4' or 'msdos'.
-#: src/nautilus-properties-window.c:2419
+#: src/nautilus-properties-window.c:2413
 #, c-format
 msgid "%s Filesystem"
 msgstr "Файловая система %s"
 
-#: src/nautilus-properties-window.c:3552
+#: src/nautilus-properties-window.c:3549
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Не удалось определить права доступа к объекту «%s»."
 
-#: src/nautilus-properties-window.c:3931
+#: src/nautilus-properties-window.c:3928
 msgid "Creating Properties window."
 msgstr "Создание окна свойств."
 
-#: src/nautilus-properties-window.c:4065
+#: src/nautilus-properties-window.c:4062
 msgid "Select Custom Icon"
 msgstr "Выбрать пользовательский значок"
 
@@ -4390,68 +4390,68 @@ msgstr ""
 "Alexey Rubtsov <rushills@gmail.com>, 2020-2021\n"
 "Aleksandr Melman <alexmelman88@gmail.com>, 2022-2023"
 
-#: src/nautilus-window-slot.c:166
+#: src/nautilus-window-slot.c:165
 msgid "Parent folder"
 msgstr "Родительская папка"
 
-#: src/nautilus-window-slot.c:167
+#: src/nautilus-window-slot.c:166
 #: src/resources/ui/nautilus-history-controls.ui:11
 msgid "Back"
 msgstr "Назад"
 
-#: src/nautilus-window-slot.c:168
+#: src/nautilus-window-slot.c:167
 #: src/resources/ui/nautilus-history-controls.ui:19
 msgid "Forward"
 msgstr "Вперёд"
 
-#: src/nautilus-window-slot.c:925 src/resources/ui/nautilus-file-chooser.ui:27
+#: src/nautilus-window-slot.c:912 src/resources/ui/nautilus-file-chooser.ui:27
 #: src/resources/ui/nautilus-window.ui:117
 msgid "Search Everywhere"
 msgstr "Поиск повсюду"
 
-#: src/nautilus-window-slot.c:926
+#: src/nautilus-window-slot.c:913
 msgid "Find files and folders in all search locations"
 msgstr "Поиск файлов и папок во всех местах поиска"
 
-#: src/nautilus-window-slot.c:929
+#: src/nautilus-window-slot.c:916
 msgid "Search Settings"
 msgstr "Настройки поиска"
 
-#: src/nautilus-window-slot.c:1859
+#: src/nautilus-window-slot.c:1852
 msgid "Unable to display the contents of this folder."
 msgstr "Не удалось показать содержимое этой папки."
 
-#: src/nautilus-window-slot.c:1863
+#: src/nautilus-window-slot.c:1856
 msgid "This location doesn’t appear to be a folder."
 msgstr "Этот адрес не является папкой."
 
-#: src/nautilus-window-slot.c:1875
+#: src/nautilus-window-slot.c:1868
 #, c-format
 msgid "Unable to find “%s”. Please check the spelling and try again."
 msgstr ""
 "Не удалось найти «%s». Проверьте правильность ввода и повторите попытку."
 
-#: src/nautilus-window-slot.c:1880
+#: src/nautilus-window-slot.c:1873
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Не удалось найти запрошенный файл. Проверьте правильность ввода и повторите "
 "попытку."
 
-#: src/nautilus-window-slot.c:1891
+#: src/nautilus-window-slot.c:1884
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Адреса «%s» не поддерживаются."
 
-#: src/nautilus-window-slot.c:1896
+#: src/nautilus-window-slot.c:1889
 msgid "Unable to handle this kind of location."
 msgstr "Невозможно обработать этот тип адреса."
 
-#: src/nautilus-window-slot.c:1904
+#: src/nautilus-window-slot.c:1897
 msgid "Unable to access the requested location."
 msgstr "Не удалось получить доступ к запрошенному адресу."
 
-#: src/nautilus-window-slot.c:1910
+#: src/nautilus-window-slot.c:1903
 msgid "Don’t have permission to access the requested location."
 msgstr "Недостаточно прав для получения доступа к запрошенному адресу."
 
@@ -4460,7 +4460,7 @@ msgstr "Недостаточно прав для получения доступ
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1921
+#: src/nautilus-window-slot.c:1914
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4471,7 +4471,7 @@ msgstr ""
 #. This case can be hit when server application is not installed
 #. * or is inactive in the system user is trying to connect to.
 #.
-#: src/nautilus-window-slot.c:1930
+#: src/nautilus-window-slot.c:1923
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
@@ -4479,7 +4479,7 @@ msgstr ""
 "Сервер отказал в подключении. Обычно это означает, что подключение "
 "блокируется межсетевым экраном или сервис не запущен."
 
-#: src/nautilus-window-slot.c:1949
+#: src/nautilus-window-slot.c:1942
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Сообщение о необработанной ошибке: %s"
@@ -5132,7 +5132,7 @@ msgstr "_Присоединить"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:149
 #: src/gtk/nautilusgtkplacessidebar.c:2934
 msgid "_Unmount"
-msgstr "О_тсоединить том"
+msgstr "О_тсоединить"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:154
 #: src/gtk/nautilusgtkplacessidebar.c:2941
@@ -5491,37 +5491,37 @@ msgstr "Не удалось определить разрешения выбра
 msgid "Only the owner can edit these permissions"
 msgstr "Только владелец может изменять эти разрешения"
 
-#: src/resources/ui/nautilus-properties-window.ui:564
+#: src/resources/ui/nautilus-properties-window.ui:562
 msgid "_Owner"
 msgstr "_Владелец"
 
-#: src/resources/ui/nautilus-properties-window.ui:576
-#: src/resources/ui/nautilus-properties-window.ui:616
-#: src/resources/ui/nautilus-properties-window.ui:645
+#: src/resources/ui/nautilus-properties-window.ui:575
+#: src/resources/ui/nautilus-properties-window.ui:615
+#: src/resources/ui/nautilus-properties-window.ui:644
 msgid "Access"
 msgstr "Доступ"
 
-#: src/resources/ui/nautilus-properties-window.ui:584
-#: src/resources/ui/nautilus-properties-window.ui:624
-#: src/resources/ui/nautilus-properties-window.ui:653
+#: src/resources/ui/nautilus-properties-window.ui:583
+#: src/resources/ui/nautilus-properties-window.ui:623
+#: src/resources/ui/nautilus-properties-window.ui:652
 msgid "Folder Access"
 msgstr "Доступ к папке"
 
-#: src/resources/ui/nautilus-properties-window.ui:592
-#: src/resources/ui/nautilus-properties-window.ui:632
-#: src/resources/ui/nautilus-properties-window.ui:661
+#: src/resources/ui/nautilus-properties-window.ui:591
+#: src/resources/ui/nautilus-properties-window.ui:631
+#: src/resources/ui/nautilus-properties-window.ui:660
 msgid "File Access"
 msgstr "Доступ к файлу"
 
-#: src/resources/ui/nautilus-properties-window.ui:604
+#: src/resources/ui/nautilus-properties-window.ui:603
 msgid "_Group"
 msgstr "_Группа"
 
-#: src/resources/ui/nautilus-properties-window.ui:640
+#: src/resources/ui/nautilus-properties-window.ui:639
 msgid "Other Users"
 msgstr "Другие пользователи"
 
-#: src/resources/ui/nautilus-properties-window.ui:672
+#: src/resources/ui/nautilus-properties-window.ui:671
 msgid "Security Context"
 msgstr "Контекст безопасности"
 
@@ -5780,7 +5780,7 @@ msgstr "Открыть корзину"
 #: src/gtk/nautilusgtkplacessidebar.c:1040
 #, c-format
 msgid "Mount and Open “%s”"
-msgstr "Смонтировать и открыть «%s»"
+msgstr "Присоединить и открыть «%s»"
 
 #: src/gtk/nautilusgtkplacessidebar.c:1018
 msgid "New bookmark"
