@@ -26,6 +26,7 @@
 #include "nautilus-freedesktop-generated.h"
 #include "nautilus-properties-window.h"
 
+#include <adwaita.h>
 #include <gio/gio.h>
 
 struct _NautilusFreedesktopDBus
@@ -126,8 +127,14 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
     files = g_list_reverse (files);
 
     g_application_hold (g_application_get_default ());
-    nautilus_properties_window_present (files, NULL, startup_id,
-                                        properties_window_on_finished, NULL);
+
+    GtkWidget *prop_window = (GtkWidget *) nautilus_properties_window_new (files);
+    g_signal_connect_swapped (prop_window, "closed",
+                              G_CALLBACK (properties_window_on_finished), NULL);
+    adw_dialog_present (ADW_DIALOG (prop_window), NULL);
+
+    GtkWindow *root_window = GTK_WINDOW (gtk_widget_get_root (prop_window));
+    gtk_window_set_startup_id (root_window, startup_id);
 
     nautilus_file_list_free (files);
 
