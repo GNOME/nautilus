@@ -59,8 +59,6 @@
  */
 #define PROPERTIES_MAX_NAMES 50
 
-static GHashTable *pending_lists;
-
 typedef struct
 {
     NautilusFile *file;
@@ -413,7 +411,6 @@ typedef struct
     GtkWidget *parent_widget;
     GtkWindow *parent_window;
     char *startup_id;
-    char *pending_key;
     NautilusPropertiesWindowCallback callback;
     gpointer callback_data;
     NautilusFileListHandle *handle;
@@ -3594,35 +3591,8 @@ should_show_permissions (NautilusPropertiesWindow *self)
     return TRUE;
 }
 
-static char *
-get_pending_key (GList *file_list)
-{
-    GList *uris = NULL;
-    GList *l;
-    GString *key;
-
-    uris = NULL;
-    for (l = file_list; l != NULL; l = l->next)
-    {
-        uris = g_list_prepend (uris, nautilus_file_get_uri (NAUTILUS_FILE (l->data)));
-    }
-    uris = g_list_sort (uris, (GCompareFunc) strcmp);
-
-    key = g_string_new ("");
-    for (l = uris; l != NULL; l = l->next)
-    {
-        g_string_append (key, l->data);
-        g_string_append (key, ";");
-    }
-
-    g_list_free_full (uris, g_free);
-
-    return g_string_free (key, FALSE);
-}
-
 static StartupData *
 startup_data_new (GList                            *files,
-                  const char                       *pending_key,
                   GtkWidget                        *parent_widget,
                   GtkWindow                        *parent_window,
                   const char                       *startup_id,
@@ -3637,7 +3607,6 @@ startup_data_new (GList                            *files,
     data->parent_widget = parent_widget;
     data->parent_window = parent_window;
     data->startup_id = g_strdup (startup_id);
-    data->pending_key = g_strdup (pending_key);
     data->callback = callback;
     data->callback_data = callback_data;
     data->window = window;
@@ -3649,7 +3618,6 @@ static void
 startup_data_free (StartupData *data)
 {
     nautilus_file_list_free (data->files);
-    g_free (data->pending_key);
     g_free (data->startup_id);
     g_free (data);
 }
@@ -3792,10 +3760,6 @@ remove_pending (StartupData *startup_data,
         eel_timed_wait_stop
             (cancel_create_properties_window_callback, startup_data);
     }
-    if (startup_data->pending_key != NULL)
-    {
-        g_hash_table_remove (pending_lists, startup_data->pending_key);
-    }
 }
 
 static gboolean
@@ -3840,26 +3804,9 @@ nautilus_properties_window_present (GList                            *files,
 {
     GtkWindow *parent_window;
     StartupData *startup_data;
-    g_autofree char *pending_key = NULL;
 
     g_return_if_fail (files != NULL);
     g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
-
-    if (pending_lists == NULL)
-    {
-        pending_lists = g_hash_table_new (g_str_hash, g_str_equal);
-    }
-
-    pending_key = get_pending_key (files);
-
-    /* Look to see if we're already waiting for a window for this file. */
-    if (g_hash_table_lookup (pending_lists, pending_key) != NULL)
-    {
-        /* FIXME: No callback is done if this happen. In practice, it's a quite
-         * corner case
-         */
-        return;
-    }
 
     if (parent_widget)
     {
@@ -3871,7 +3818,6 @@ nautilus_properties_window_present (GList                            *files,
     }
 
     startup_data = startup_data_new (files,
-                                     pending_key,
                                      parent_widget,
                                      parent_window,
                                      startup_id,
@@ -3883,7 +3829,6 @@ nautilus_properties_window_present (GList                            *files,
      * some one-time layout decisions depend on that info.
      */
 
-    g_hash_table_insert (pending_lists, startup_data->pending_key, startup_data->pending_key);
     if (parent_widget)
     {
         g_signal_connect (parent_widget, "destroy",
