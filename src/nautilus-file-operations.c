@@ -2514,7 +2514,7 @@ create_empty_trash_prompt (UnmountData *data)
                                     "cancel", _("Cancel"),
                                     "do-not-empty", _("Do _Not Empty"),
                                     /* Translators: This is an action in a dialog to
-                                     * to clear trashed items. */
+                                     * clear trashed items. */
                                     "empty-trash", _("_Empty"),
                                     NULL);
     adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "empty-trash");
