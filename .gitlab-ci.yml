@@ -125,6 +125,7 @@ update image:
     - .nautilus.fedora
     stage: image
     variables:
+        GIT_STRATEGY: none
         FDO_DISTRIBUTION_PACKAGES: $DEPENDENCIES
         FDO_DISTRIBUTION_EXEC: ".gitlab/image-script.sh"
         CFLAGS: "-fno-omit-frame-pointer"
