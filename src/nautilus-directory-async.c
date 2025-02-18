@@ -802,16 +802,17 @@ should_skip_file (GFileInfo *info)
         show_hidden_files_changed_callback (NULL);
     }
 
+    if (show_hidden_files)
+    {
+        return FALSE;
+    }
+
     is_hidden = g_file_info_get_attribute_boolean (info,
                                                    G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
                 g_file_info_get_attribute_boolean (info,
                                                    G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
-    if (!show_hidden_files && is_hidden)
-    {
-        return TRUE;
-    }
 
-    return FALSE;
+    return is_hidden;
 }
 
 static void
