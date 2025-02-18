@@ -812,7 +812,6 @@ static gboolean
 should_skip_file (GFileInfo *info)
 {
     static gboolean show_hidden_files_changed_callback_installed = FALSE;
-    gboolean is_hidden;
 
     /* Add the callback once for the life of our process */
     if (!show_hidden_files_changed_callback_installed)
@@ -828,13 +827,10 @@ should_skip_file (GFileInfo *info)
         show_hidden_files_changed_callback (NULL);
     }
 
-    is_hidden = g_file_info_get_attribute_boolean (info,
-                                                   G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
-                g_file_info_get_attribute_boolean (info,
-                                                   G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
-    if (!show_hidden_files && is_hidden)
+    if (!show_hidden_files)
     {
-        return TRUE;
+        return g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN) ||
+               g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP);
     }
 
     return FALSE;
