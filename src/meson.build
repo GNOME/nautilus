@@ -271,6 +271,8 @@ libnautilus_sources = [
   'nautilus-file-undo-manager.h',
   'nautilus-batch-rename-dialog.c',
   'nautilus-batch-rename-dialog.h',
+  'nautilus-batch-rename-item.c',
+  'nautilus-batch-rename-item.h',
   'nautilus-batch-rename-utilities.c',
   'nautilus-batch-rename-utilities.h',
   'nautilus-search-engine-tracker.c',

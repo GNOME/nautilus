@@ -133,6 +133,15 @@
 .batch-rename-preview {
   border-top: solid var(--border-color) 1px;
 }
+
+.batch-rename-preview listview > row {
+  padding: 0;
+}
+
+.batch-rename-preview listview > row > * {
+  padding: 6px;
+}
+
 .conflict-row {
     background: var(--warning-bg-color);
     color: var(--warning-fg-color);

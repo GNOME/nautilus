@@ -209,7 +209,7 @@ static const TagConstants numbering_tags_constants[] =
 typedef struct
 {
     gchar *name;
-    gint index;
+    guint index;
 } ConflictData;
 
 typedef struct {

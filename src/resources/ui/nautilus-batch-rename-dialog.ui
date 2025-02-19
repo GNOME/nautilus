@@ -324,26 +324,22 @@
                       <class name="batch-rename-preview"/>
                     </style>
                     <property name="child">
-                      <object class="GtkViewport">
-                        <property name="child">
-                          <object class="GtkBox" id="a_box">
-                            <child>
-                              <object class="GtkListBox" id="original_name_listbox">
-                                <property name="hexpand">True</property>
-                                <property name="selection_mode">GTK_SELECTION_NONE</property>
+                      <object class="GtkListView" id="batch_listview">
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory" id="factory">
+                            <signal name="setup" handler="batch_row_setup" swapped="yes"/>
+                            <signal name="bind" handler="batch_row_bind" swapped="yes"/>
+                            <signal name="unbind" handler="batch_row_unbind" swapped="yes"/>
+                          </object>
+                        </property>
+                        <property name="show-separators">True</property>
+                        <property name="model">
+                          <object class="GtkNoSelection">
+                            <property name="model">
+                              <object class="GListStore" id="batch_listmodel">
+                                <property name="item-type">NautilusBatchRenameItem</property>
                               </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="arrow_listbox">
-                                <property name="selection_mode">GTK_SELECTION_NONE</property>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="GtkListBox" id="result_listbox">
-                                <property name="hexpand">True</property>
-                                <property name="selection_mode">GTK_SELECTION_NONE</property>
-                              </object>
-                            </child>
+                            </property>
                           </object>
                         </property>
                       </object>
