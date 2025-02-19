@@ -3606,7 +3606,6 @@ setup_widgets (GList    *file_list,
                gpointer  data)
 {
     NautilusPropertiesWindow *window = data;
-    window->files = nautilus_file_list_copy (file_list);
 
     for (GList *l = window->files; l != NULL; l = l->next)
     {
@@ -3655,11 +3654,21 @@ setup_widgets (GList    *file_list,
                                            main_tag, 1);
 }
 
+/**
+ * nautilus_properties_window_new:
+ * @files: (transfer full) a list of files which the properties
+ *     should be displayed of
+ *
+ * Creates a new #NautilusPropertiesWindow
+ *
+ * Returns: (transfer full): a new #NautilusPropertiesWindow
+ */
 NautilusPropertiesWindow *
 nautilus_properties_window_new (GList *files)
 {
     NautilusPropertiesWindow *self;
     self = NAUTILUS_PROPERTIES_WINDOW (g_object_new (NAUTILUS_TYPE_PROPERTIES_WINDOW, NULL));
+    self->files = files;
 
     nautilus_file_list_call_when_ready (files,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO,
@@ -3670,6 +3679,14 @@ nautilus_properties_window_new (GList *files)
     return self;
 }
 
+/**
+ * nautilus_properties_window_present:
+ * @files: (transfer full) a list of files which the properties
+ *     should be displayed of
+ * @parent_widget: widget the dialog should be attached to
+ *
+ * Creates and presents a new #NautilusPropertiesWindow
+ */
 void
 nautilus_properties_window_present (GList     *files,
                                     GtkWidget *parent_widget)

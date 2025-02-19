@@ -136,8 +136,6 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
     GtkWindow *root_window = GTK_WINDOW (gtk_widget_get_root (prop_window));
     gtk_window_set_startup_id (root_window, startup_id);
 
-    nautilus_file_list_free (files);
-
     nautilus_freedesktop_file_manager1_complete_show_item_properties (object, invocation);
     return TRUE;
 }
