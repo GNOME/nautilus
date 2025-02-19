@@ -117,7 +117,8 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
 
     files = g_list_reverse (files);
 
-    GtkWindow *window = nautilus_properties_present_window (files, startup_id);
+    GtkWindow *window = nautilus_properties_present_window (g_steal_pointer (&files),
+                                                            startup_id);
 
     g_application_hold (application);
     g_signal_connect_swapped (window, "destroyed",

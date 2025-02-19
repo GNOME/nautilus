@@ -3663,13 +3663,17 @@ properties_files_are_ready (GList    **file_list,
     }
 }
 
+/**
+ * @files: (transfer full): List of files of which to show properties
+ */
 static NautilusPropertiesWidget *
 properties_widget_new (NautilusFileList *files)
 {
     NautilusPropertiesWidget *self =
         NAUTILUS_PROPERTIES_WIDGET (g_object_new (NAUTILUS_TYPE_PROPERTIES_WIDGET, NULL));
+    g_autolist (NautilusFile) taken_files = files;
 
-    nautilus_file_list_call_when_ready (self->files,
+    nautilus_file_list_call_when_ready (files,
                                         NAUTILUS_FILE_ATTRIBUTE_INFO |
                                         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
                                         &self->handle,
@@ -3691,6 +3695,9 @@ create_properties_window (GtkWidget *content)
     return GTK_WINDOW (window);
 }
 
+/**
+ * @files: (transfer full): List of files of which to show properties
+ */
 GtkWindow *
 nautilus_properties_present_window (NautilusFileList *files,
                                     const char       *startup_id)
@@ -3712,6 +3719,9 @@ nautilus_properties_present_window (NautilusFileList *files,
     return window;
 }
 
+/**
+ * @files: (transfer full): List of files of which to show properties
+ */
 void
 nautilus_properties_present_dialog (NautilusFileList *files,
                                     GtkWidget        *parent_widget)
