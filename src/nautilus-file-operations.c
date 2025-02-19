@@ -8154,22 +8154,16 @@ extract_job_on_scanned (AutoarExtractor *extractor,
                         guint            total_files,
                         gpointer         user_data)
 {
-    guint64 total_size;
-    ExtractJob *extract_job;
-    GFile *source_file;
-    g_autofree gchar *basename = NULL;
     g_autoptr (GFileInfo) fsinfo = NULL;
     guint64 free_size;
 
-    extract_job = user_data;
-    total_size = autoar_extractor_get_total_size (extractor);
-    source_file = autoar_extractor_get_source_file (extractor);
+    guint64 total_size = autoar_extractor_get_total_size (extractor);
+    GFile *output_file = autoar_extractor_get_output_file (extractor);
 
+    ExtractJob *extract_job = user_data;
     extract_job->expected_total_files = total_files;
 
-    basename = get_basename (source_file);
-
-    fsinfo = g_file_query_filesystem_info (source_file,
+    fsinfo = g_file_query_filesystem_info (output_file,
                                            G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
                                            G_FILE_ATTRIBUTE_FILESYSTEM_READONLY,
                                            extract_job->common.cancellable,
@@ -8182,6 +8176,9 @@ extract_job_on_scanned (AutoarExtractor *extractor,
      */
     if (total_size != G_MAXUINT64 && total_size > free_size)
     {
+        GFile *source_file = autoar_extractor_get_source_file (extractor);
+        g_autofree gchar *basename = get_basename (source_file);
+
         nautilus_progress_info_take_status (extract_job->common.progress,
                                             g_strdup_printf (_("Error extracting “%s”"),
                                                              basename));
