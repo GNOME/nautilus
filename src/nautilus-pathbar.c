@@ -221,8 +221,6 @@ action_pathbar_properties (GSimpleAction *action,
     files = g_list_append (NULL, nautilus_file_ref (self->context_menu_file));
 
     nautilus_properties_window_present (files, GTK_WIDGET (self));
-
-    nautilus_file_list_free (files);
 }
 
 static void
