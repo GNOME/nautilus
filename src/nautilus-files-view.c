@@ -2604,13 +2604,12 @@ action_properties (GSimpleAction *action,
 
             AdwDialog *dialog = ADW_DIALOG (nautilus_properties_window_new (files));
             adw_dialog_present (dialog, GTK_WIDGET (view));
-
-            nautilus_file_list_free (files);
         }
     }
     else
     {
-        AdwDialog *dialog = ADW_DIALOG (nautilus_properties_window_new (selection));
+        AdwDialog *dialog = ADW_DIALOG (
+            nautilus_properties_window_new (g_steal_pointer (&selection)));
         adw_dialog_present (dialog, GTK_WIDGET (view));
     }
 }
@@ -2635,8 +2634,6 @@ action_current_dir_properties (GSimpleAction *action,
 
         AdwDialog *dialog = ADW_DIALOG (nautilus_properties_window_new (files));
         adw_dialog_present (dialog, GTK_WIDGET (view));
-
-        nautilus_file_list_free (files);
     }
 }
 
