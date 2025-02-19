@@ -140,8 +140,6 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
                               G_CALLBACK (properties_window_on_finished), window);
     adw_dialog_present (dialog, GTK_WIDGET (window));
 
-    nautilus_file_list_free (files);
-
     nautilus_freedesktop_file_manager1_complete_show_item_properties (object, invocation);
     return TRUE;
 }

@@ -2142,8 +2142,6 @@ properties_cb (GSimpleAction *action,
 
   AdwDialog *dialog = ADW_DIALOG (nautilus_properties_window_new (list));
   adw_dialog_present (dialog, GTK_WIDGET (sidebar));
-
-  nautilus_file_list_free (list);
 }
 
 static void

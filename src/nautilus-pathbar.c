@@ -223,8 +223,6 @@ action_pathbar_properties (GSimpleAction *action,
 
     AdwDialog *dialog = ADW_DIALOG (nautilus_properties_window_new (files));
     adw_dialog_present (dialog, GTK_WIDGET (self));
-
-    nautilus_file_list_free (files);
 }
 
 static void
