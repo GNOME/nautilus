@@ -8378,9 +8378,8 @@ static void
 file_list_file_ready_callback (NautilusFile *file,
                                gpointer      user_data)
 {
-    FileListReadyData *data;
+    FileListReadyData *data = user_data;
 
-    data = user_data;
     g_hash_table_remove (data->remaining_files, file);
 
     if (g_hash_table_size (data->remaining_files) == 0)
@@ -8401,27 +8400,24 @@ nautilus_file_list_call_when_ready (GList                     *file_list,
                                     NautilusFileListCallback   callback,
                                     gpointer                   callback_data)
 {
-    GList *l;
-    FileListReadyData *data;
-    NautilusFile *file;
-
     g_return_if_fail (file_list != NULL);
 
-    data = file_list_ready_data_new
-               (file_list, callback, callback_data);
+    FileListReadyData *data = file_list_ready_data_new (file_list,
+                                                        callback,
+                                                        callback_data);
 
     if (handle)
     {
         *handle = (NautilusFileListHandle *) data;
     }
 
-
-    l = file_list;
-    while (l != NULL)
+    for (GList *l = file_list; l != NULL;)
     {
-        file = NAUTILUS_FILE (l->data);
-        /* Need to do this here, as the list can be modified by this call */
+        NautilusFile *file = NAUTILUS_FILE (l->data);
+
+        /* Need to do this here, as the callback can modify the list */
         l = l->next;
+
         nautilus_file_call_when_ready (file,
                                        attributes,
                                        file_list_file_ready_callback,
@@ -8432,29 +8428,26 @@ nautilus_file_list_call_when_ready (GList                     *file_list,
 void
 nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
 {
-    GList *l;
-    NautilusFile *file;
-    FileListReadyData *data;
-
     g_return_if_fail (handle != NULL);
 
-    data = (FileListReadyData *) handle;
+    FileListReadyData *data = (FileListReadyData *) handle;
 
-    l = g_list_find (ready_data_list, data);
-    if (l != NULL)
+    if (g_list_find (ready_data_list, data) == NULL)
     {
-        g_autoptr (GPtrArray) remaining_files = g_hash_table_steal_all_keys (data->remaining_files);
-
-        for (guint i = 0; i < remaining_files->len; i++)
-        {
-            file = NAUTILUS_FILE (remaining_files->pdata[i]);
-
-            NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->cancel_call_when_ready
-                (file, file_list_file_ready_callback, data);
-        }
-
-        file_list_ready_data_free (data);
+        return;
     }
+
+    g_autoptr (GPtrArray) remaining_files = g_hash_table_steal_all_keys (data->remaining_files);
+
+    for (guint i = 0; i < remaining_files->len; i++)
+    {
+        NautilusFile *file = NAUTILUS_FILE (remaining_files->pdata[i]);
+        NautilusFileClass *file_class = NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file));
+
+        file_class->cancel_call_when_ready (file, file_list_file_ready_callback, data);
+    }
+
+    file_list_ready_data_free (data);
 }
 
 static void
