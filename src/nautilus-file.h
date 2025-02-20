@@ -97,7 +97,7 @@ typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       gpointer       callback_data);
 
 
-#define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER)
+#define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER)
 
 typedef void NautilusFileListHandle;
 
@@ -157,6 +157,7 @@ NautilusFile *          nautilus_file_get_parent                        (Nautilu
 GFile *                 nautilus_file_get_parent_location               (NautilusFile                   *file);
 char *                  nautilus_file_get_parent_uri                    (NautilusFile                   *file);
 const char *            nautilus_file_get_thumbnail_path                (NautilusFile                   *file);
+gboolean                nautilus_file_has_thumbnail                     (NautilusFile                   *file);
 gboolean                nautilus_file_can_get_size                      (NautilusFile                   *file);
 guint64                 nautilus_file_get_size                          (NautilusFile                   *file);
 time_t                  nautilus_file_get_mtime                         (NautilusFile                   *file);

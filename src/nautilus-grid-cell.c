@@ -53,9 +53,8 @@ update_icon (NautilusGridCell *self)
      */
     gtk_widget_set_size_request (self->fixed_height_box, icon_size, icon_size);
     gtk_widget_set_size_request (self->icon_bin, icon_size, icon_size);
-    if (nautilus_file_get_thumbnail_path (file) != NULL &&
-        nautilus_file_should_show_thumbnail (file) &&
-        nautilus_file_check_if_ready (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL_BUFFER))
+    if (nautilus_file_has_thumbnail (file) &&
+        nautilus_file_should_show_thumbnail (file))
     {
         gtk_widget_add_css_class (self->icon, "thumbnail");
     }

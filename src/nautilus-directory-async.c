@@ -1701,7 +1701,8 @@ lacks_thumbnail_info (NautilusFile *file)
 static gboolean
 lacks_thumbnail_buf (NautilusFile *file)
 {
-    return file->details->thumbnail_path != NULL &&
+    return file->details->thumbnail_info_is_up_to_date &&
+           file->details->thumbnail_path != NULL &&
            !file->details->thumbnail_is_up_to_date &&
            nautilus_file_should_show_thumbnail (file);
 }
@@ -4032,8 +4033,8 @@ start_or_stop_io (NautilusDirectory *directory)
         mount_start (directory, file, &doing_io);
         directory_count_start (directory, file, &doing_io);
         deep_count_start (directory, file, &doing_io);
-        thumbnail_buf_start (directory, file, &doing_io);
         filesystem_info_start (directory, file, &doing_io);
+        thumbnail_buf_start (directory, file, &doing_io);
 
         if (doing_io)
         {
